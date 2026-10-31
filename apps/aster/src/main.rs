@@ -56,6 +56,11 @@ fn process_identity(command: Option<&Command>, is_interactive: bool) -> Option<P
             | Command::Logout
             | Command::Mcp(_)
             | Command::Plugin(_)
+            | Command::Tool(_)
+            | Command::Env(_)
+            | Command::Exec(_)
+            | Command::Activate(_)
+            | Command::Use(_)
             | Command::Memory(_)
             | Command::Models
             | Command::Sessions(_)
@@ -97,6 +102,11 @@ fn command_needs_pre_sandbox_policy_heal(command: Option<&Command>) -> bool {
             | Command::Login { .. }
             | Command::Mcp(_)
             | Command::Plugin(_)
+            | Command::Tool(_)
+            | Command::Env(_)
+            | Command::Exec(_)
+            | Command::Activate(_)
+            | Command::Use(_)
             | Command::Memory(_)
             | Command::Sessions(_)
             | Command::Usage(_)
@@ -2296,6 +2306,26 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                 init_tracing_simple("cli");
                 let _otel_guard = aster_telemetry::otel_layer::otel_guard();
                 return aster_pager::plugin_cmd::run(plugin_args).await;
+            }
+            Command::Tool(tool_args) => {
+                init_tracing_simple("cli");
+                return aster_pager::env_manager_cmd::run_tool(tool_args).await;
+            }
+            Command::Env(env_args) => {
+                init_tracing_simple("cli");
+                return aster_pager::env_manager_cmd::run_env(env_args).await;
+            }
+            Command::Exec(exec_args) => {
+                init_tracing_simple("cli");
+                return aster_pager::env_manager_cmd::run_exec(exec_args).await;
+            }
+            Command::Activate(activate_args) => {
+                init_tracing_simple("cli");
+                return aster_pager::env_manager_cmd::run_activate(activate_args);
+            }
+            Command::Use(use_args) => {
+                init_tracing_simple("cli");
+                return aster_pager::env_manager_cmd::run_use_forward(use_args).await;
             }
             Command::Models => {
                 init_tracing_simple("cli");

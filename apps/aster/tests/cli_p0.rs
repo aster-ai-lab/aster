@@ -19,7 +19,6 @@ const SHARED_TITLE: &str = "shared fixture title";
 
 struct MockState {
     tool_seq: u64,
-    shell_sent: bool,
 }
 
 struct Isolated {
@@ -56,10 +55,7 @@ fn spawn_mock(marker: &Path) -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("bind fixture");
     let addr = listener.local_addr().expect("fixture addr");
     let marker_text = marker.display().to_string();
-    let state = Arc::new(Mutex::new(MockState {
-        tool_seq: 0,
-        shell_sent: false,
-    }));
+    let state = Arc::new(Mutex::new(MockState { tool_seq: 0 }));
     std::thread::spawn(move || {
         for stream in listener.incoming() {
             let Ok(mut stream) = stream else { continue };
@@ -161,10 +157,11 @@ fn decide(raw: &str, marker: &str, state: &mut MockState) -> String {
         return reply_tool("session_title", &args, state, streaming);
     }
     if raw.contains("SHELL-ORACLE") && has_tools(&parsed) {
-        if state.shell_sent {
+        // Key off this conversation's tool receipts so a prior auto-refusal
+        // session cannot sticky-skip the later yolo/full-access shell turn.
+        if conversation_has_tool_receipt(&parsed) {
             return reply_text("SHELL-DONE", streaming);
         }
-        state.shell_sent = true;
         let command = format!("printf side-effect > '{marker}'");
         let args = serde_json::json!({
             "command": command
@@ -192,6 +189,19 @@ fn has_tools(body: &serde_json::Value) -> bool {
     body.get("tools")
         .and_then(serde_json::Value::as_array)
         .is_some_and(|tools| !tools.is_empty())
+}
+
+fn conversation_has_tool_receipt(body: &serde_json::Value) -> bool {
+    body.get("messages")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|messages| {
+            messages.iter().any(|message| {
+                message
+                    .get("role")
+                    .and_then(serde_json::Value::as_str)
+                    .is_some_and(|role| role == "tool")
+            })
+        })
 }
 
 fn pre_analysis() -> String {
@@ -1251,7 +1261,7 @@ default_model = "{MODEL_ID}"
     // Ubuntu CI compiles this test. The refusal text and the absent marker are
     // a macOS product gate, so that host is the only one that runs this oracle.
     #[cfg(target_os = "macos")]
-    assert_macos_shell_refusal(&isolated, turn);
+    assert_macos_shell_gates(&isolated, turn);
 
     assert_same_tree(
         "developer ~/.aster",
@@ -1277,11 +1287,50 @@ default_model = "{MODEL_ID}"
     oracle("isolated-home", "developer homes unchanged");
 }
 
-/// Requires the shipped macOS shell refusal. Not compiled on Linux, so Ubuntu
+/// macOS shell gates for the shipped binary. Not compiled on Linux, so Ubuntu
 /// CI does not spawn the marker command.
+///
+/// Unescalated `auto` must hit the native lifetime refusal (no side effect).
+/// `yolo` / Full access installs host execution and may create the marker —
+/// that is the documented escape hatch, not a regression of the refuse path.
 #[cfg(target_os = "macos")]
-fn assert_macos_shell_refusal(isolated: &Isolated, turn: Duration) {
-    let shell = run(
+fn assert_macos_shell_gates(isolated: &Isolated, turn: Duration) {
+    let _ = fs::remove_file(&isolated.marker);
+    let refused = run(
+        isolated,
+        &[
+            "-p",
+            "SHELL-ORACLE run a shell command",
+            "--output-format",
+            "streaming-json",
+            "--permission-mode",
+            "auto",
+            "--trust",
+            "--no-auto-update",
+            "--disable-web-search",
+        ],
+        turn,
+    );
+    let refused_text = refused.combined();
+    assert!(
+        refused_text.contains("native_process_lifetime_unqualified"),
+        "unescalated shell tool was not refused:\n{refused_text}"
+    );
+    assert!(
+        !isolated.marker.exists(),
+        "unescalated shell left a side effect at {}",
+        isolated.marker.display()
+    );
+    oracle(
+        "shell-refusal",
+        &format!(
+            "marker file was not created; {}",
+            excerpt_around(&refused_text, "native_process_lifetime_unqualified", 120)
+        ),
+    );
+
+    let _ = fs::remove_file(&isolated.marker);
+    let yolo = run(
         isolated,
         &[
             "-p",
@@ -1297,21 +1346,17 @@ fn assert_macos_shell_refusal(isolated: &Isolated, turn: Duration) {
         ],
         turn,
     );
-    let shell_text = shell.combined();
+    let yolo_text = yolo.combined();
     assert!(
-        shell_text.contains("native_process_lifetime_unqualified"),
-        "shell tool was not refused:\n{shell_text}"
+        isolated.marker.exists(),
+        "yolo/full-access shell did not create the marker:\n{yolo_text}"
     );
     assert!(
-        !isolated.marker.exists(),
-        "shell command left a side effect at {}",
-        isolated.marker.display()
+        !yolo_text.contains("native_process_lifetime_unqualified"),
+        "yolo still reported native refusal:\n{yolo_text}"
     );
     oracle(
-        "shell-refusal",
-        &format!(
-            "marker file was not created; {}",
-            excerpt_around(&shell_text, "native_process_lifetime_unqualified", 120)
-        ),
+        "shell-yolo-host",
+        "marker file created under yolo/full-access host execution",
     );
 }

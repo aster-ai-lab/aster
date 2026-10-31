@@ -401,4 +401,20 @@ mod tests {
         entry.schema = "foreign.code.session-store-wal-entry.v1".into();
         assert!(entry.validate().unwrap_err().to_string().contains("unsupported"));
     }
+
+    #[test]
+    fn snapshot_digest_matches_accepts_legacy_a3s_domain() {
+        #[derive(Serialize)]
+        struct Snap {
+            session_id: &'static str,
+        }
+        let snap = Snap {
+            session_id: "session-1",
+        };
+        let current = snapshot_content_digest(&snap).unwrap();
+        let legacy = digest_json(LEGACY_SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN, &snap).unwrap();
+        assert!(snapshot_content_digest_matches(&snap, &current).unwrap());
+        assert!(snapshot_content_digest_matches(&snap, &legacy).unwrap());
+        assert!(!snapshot_content_digest_matches(&snap, &digest('z')).unwrap());
+    }
 }
