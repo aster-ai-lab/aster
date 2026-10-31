@@ -102,7 +102,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             "git", "config", "--file", str(ROOT / ".gitmodules"),
             "--get", "submodule.studio.url",
         ], cwd=ROOT, text=True, encoding="utf-8").strip()
-        self.assertEqual(modules, "git@github.com:kense-labs/studio.git")
+        self.assertEqual(modules, "git@github.com:aster-ai-lab/studio.git")
         tracked = subprocess.check_output([
             "git", "ls-files", "--stage", "--", "apps/studio",
         ], cwd=ROOT, text=True, encoding="utf-8").splitlines()

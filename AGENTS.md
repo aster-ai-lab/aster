@@ -138,7 +138,7 @@ adapted from Microsoft's [Pragmatic Rust Guidelines](https://microsoft.github.io
 - `apps/studio` is the shared desktop host; `just build-studio` builds it with
   ACP and Office. Its default `aster` tenant is Aster. Keep tenant
   identities and data isolated. It is a private submodule from
-  `git@github.com:kense-labs/studio.git`, tracked on `main`; never add its
+  `git@github.com:aster-ai-lab/studio.git`, tracked on `main`; never add its
   source files to the parent repository. Initialize it before Cargo commands.
 - Office lives in `packages/office` and `crates/office`; it must build without
   the retired application. Its required sources have been merged.
