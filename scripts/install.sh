@@ -120,7 +120,7 @@ if [[ -n "$direct_url" ]]; then
   asset_name="${direct_url##*/}"
 elif [[ -n "$release_base" ]]; then
   case "$release_base" in
-    *x.ai*|*://*) refuse ;;
+    *://*) refuse ;;
   esac
   if [[ ! -d "$release_base" ]]; then
     echo "error: ASTER_RELEASE_BASE is not a local release directory" >&2
@@ -205,8 +205,44 @@ fi
 
 unpack="${work}/unpack"
 mkdir -p "$unpack"
+sandbox_files=(
+  sandbox/a3s-oci
+  sandbox/a3s-oci-krun-runtime/libkrun.1.17.0.dylib
+  sandbox/a3s-oci-krun-runtime/libkrunfw.5.dylib
+  sandbox/a3s-oci-krun-shim
+  sandbox/a3s-oci-system.ext4
+  sandbox/bundle/config.json
+  sandbox/bundle/rootfs.tar
+  sandbox/manifest.json
+  sandbox/system-image.json
+)
 case "$asset_name" in
   *.tar.gz)
+    tar -tzf "$archive" > "$work/members"
+    seen="|"
+    count=0
+    while IFS= read -r name; do
+      case "$name" in
+        aster|a3s-code-acp|BUILD_ID|SHA256SUMS) ;;
+        *)
+          allowed=0
+          if [[ "$platform" == macos ]]; then
+            for member in "${sandbox_files[@]}"; do
+              if [[ "$name" == "$member" ]]; then allowed=1; break; fi
+            done
+          fi
+          [[ "$allowed" == 1 ]] || { echo "error: archive member is not a release file" >&2; exit 1; }
+          ;;
+      esac
+      if [[ "$seen" == *"|${name}|"* ]]; then echo "error: duplicate archive member" >&2; exit 1; fi
+      seen="${seen}${name}|"
+      count=$((count + 1))
+      [[ "$count" -le 13 ]] || { echo "error: too many archive members" >&2; exit 1; }
+    done < "$work/members"
+    tar -tvzf "$archive" > "$work/member-types"
+    if LC_ALL=C grep -q '^[^-]' "$work/member-types"; then
+      echo "error: release archive must contain regular files" >&2; exit 1
+    fi
     tar -C "$unpack" -xzf "$archive"
     src_aster="${unpack}/aster"
     src_acp="${unpack}/a3s-code-acp"
@@ -238,7 +274,7 @@ if [[ ! -f "$src_aster" || ! -f "$src_acp" ]]; then
   exit 1
 fi
 
-# The archive contains a closed two-file checksum set and one source identity.
+# Checksums cover the pair and every included sandbox companion.
 [[ -f "$unpack/BUILD_ID" && -f "$unpack/SHA256SUMS" ]] || {
   echo "error: release is missing paired build identity or checksums" >&2; exit 1;
 }
@@ -250,7 +286,22 @@ sha256_file() {
 }
 name_aster="${src_aster##*/}"
 name_acp="${src_acp##*/}"
-expected_sums="$(cd "$unpack" && sha256_file "$name_aster" && sha256_file "$name_acp")"
+has_sandbox=0
+if [[ -d "$unpack/sandbox" ]]; then has_sandbox=1; fi
+if [[ "$platform" == macos && "$has_sandbox" != 1 ]]; then
+  echo "error: macOS release is missing sandbox companions" >&2; exit 1
+fi
+expected_sums="$(
+  cd "$unpack"
+  sha256_file "$name_aster"
+  sha256_file "$name_acp"
+  if [[ "$has_sandbox" == 1 ]]; then
+    for name in "${sandbox_files[@]}"; do
+      [[ -f "$name" && ! -L "$name" ]] || { echo "error: release is missing sandbox companions" >&2; exit 1; }
+      sha256_file "$name"
+    done
+  fi
+)"
 [[ "$(cat "$unpack/SHA256SUMS")" == "$expected_sums" ]] || {
   echo "error: paired binary checksum mismatch" >&2; exit 1;
 }
@@ -264,11 +315,17 @@ mkdir -p "$prefix"
 if [[ -d "$dest_aster" || -d "$dest_acp" ]]; then
   echo "error: binary destination is a directory" >&2; exit 1
 fi
+dest_sandbox="${prefix}/sandbox"
+if [[ "$has_sandbox" == 1 && ( -L "$dest_sandbox" || ( -e "$dest_sandbox" && ! -d "$dest_sandbox" ) ) ]]; then
+  echo "error: sandbox destination must be a regular directory" >&2; exit 1
+fi
 lock="${prefix}/.aster-install.lock"
 mkdir "$lock" || { echo "error: another pair installation needs to finish" >&2; exit 1; }
 stage="$(mktemp -d "${prefix}/.aster-install.XXXXXX")" || { rmdir "$lock"; exit 1; }
 promoted_aster=0
 promoted_acp=0
+sandbox_backed_up=0
+sandbox_promoted=0
 installed=0
 cleanup_pair() {
   local status=$?
@@ -279,6 +336,14 @@ cleanup_pair() {
     fi
     if [[ "$promoted_acp" == 1 ]]; then
       if [[ -e "$stage/old-acp" || -L "$stage/old-acp" ]]; then mv -f "$stage/old-acp" "$dest_acp" || recovered=0; else rm -f "$dest_acp" || recovered=0; fi
+    fi
+    if [[ "$sandbox_promoted" == 1 ]]; then rm -rf "$dest_sandbox" || recovered=0; fi
+    if [[ "$sandbox_backed_up" == 1 ]]; then
+      if [[ ! -e "$dest_sandbox" && ! -L "$dest_sandbox" ]]; then
+        mv "$stage/old-sandbox" "$dest_sandbox" || recovered=0
+      else
+        recovered=0
+      fi
     fi
   fi
   if [[ "$recovered" == 0 ]]; then
@@ -296,6 +361,10 @@ trap 'exit 143' TERM
 cp -f "$src_aster" "$stage/new-aster"
 cp -f "$src_acp" "$stage/new-acp"
 chmod 755 "$stage/new-aster" "$stage/new-acp"
+if [[ "$has_sandbox" == 1 ]]; then
+  cp -R "$unpack/sandbox" "$stage/new-sandbox"
+  chmod 755 "$stage/new-sandbox/a3s-oci" "$stage/new-sandbox/a3s-oci-krun-shim"
+fi
 [[ ! -e "$dest_aster" && ! -L "$dest_aster" ]] || cp -Pp "$dest_aster" "$stage/old-aster"
 [[ ! -e "$dest_acp" && ! -L "$dest_acp" ]] || cp -Pp "$dest_acp" "$stage/old-acp"
 mv -f "$stage/new-aster" "$dest_aster"
@@ -303,6 +372,14 @@ promoted_aster=1
 # shortcut: two renames cannot survive every power loss; use one version-directory pointer when crash-atomic upgrades are required.
 mv -f "$stage/new-acp" "$dest_acp"
 promoted_acp=1
+if [[ "$has_sandbox" == 1 ]]; then
+  if [[ -d "$dest_sandbox" ]]; then
+    mv "$dest_sandbox" "$stage/old-sandbox"
+    sandbox_backed_up=1
+  fi
+  mv "$stage/new-sandbox" "$dest_sandbox"
+  sandbox_promoted=1
+fi
 installed=1
 if [[ "$platform" == "macos" ]] && command -v xattr >/dev/null 2>&1; then
   xattr -d com.apple.quarantine "$dest_aster" 2>/dev/null || true
