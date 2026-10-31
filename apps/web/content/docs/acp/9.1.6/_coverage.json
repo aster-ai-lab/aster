@@ -1,7 +1,19 @@
 [
   {
+    "method": "aster/compact_conversation",
+    "page": "../sessions/"
+  },
+  {
     "method": "aster/followup/generate",
     "page": "../sessions/"
+  },
+  {
+    "method": "aster/goal/control",
+    "page": "../goals/"
+  },
+  {
+    "method": "aster/goal/definition",
+    "page": "../goals/"
   },
   {
     "method": "aster/goal/import",
@@ -12,19 +24,7 @@
     "page": "../goals/"
   },
   {
-    "method": "aster/goal/definition",
-    "page": "../goals/"
-  },
-  {
     "method": "aster/goal/plan",
-    "page": "../goals/"
-  },
-  {
-    "method": "aster/goal/control",
-    "page": "../goals/"
-  },
-  {
-    "method": "aster/goal/wait",
     "page": "../goals/"
   },
   {
@@ -32,23 +32,11 @@
     "page": "../goals/"
   },
   {
-    "method": "aster/review/target",
+    "method": "aster/goal/wait",
     "page": "../goals/"
   },
   {
-    "method": "aster/review/admit",
-    "page": "../goals/"
-  },
-  {
-    "method": "aster/review/settle",
-    "page": "../goals/"
-  },
-  {
-    "method": "aster/wiki/search",
-    "page": "../memory/"
-  },
-  {
-    "method": "aster/workspace/search/v1",
+    "method": "aster/interject",
     "page": "../sessions/"
   },
   {
@@ -64,6 +52,38 @@
     "page": "../sessions/"
   },
   {
+    "method": "aster/permission_posture",
+    "page": "../permissions/"
+  },
+  {
+    "method": "aster/review/admit",
+    "page": "../goals/"
+  },
+  {
+    "method": "aster/review/settle",
+    "page": "../goals/"
+  },
+  {
+    "method": "aster/review/target",
+    "page": "../goals/"
+  },
+  {
+    "method": "aster/session/background-tasks/stop/v1",
+    "page": "../sessions/"
+  },
+  {
+    "method": "aster/session/background-tasks/v1",
+    "page": "../sessions/"
+  },
+  {
+    "method": "aster/session/delete",
+    "page": "../sessions/"
+  },
+  {
+    "method": "aster/session/fork/prefix/v1",
+    "page": "../sessions/"
+  },
+  {
     "method": "aster/session/info",
     "page": "../sessions/"
   },
@@ -72,39 +92,23 @@
     "page": "../sessions/"
   },
   {
-    "method": "aster/session/delete",
+    "method": "aster/session/tooling/v1",
     "page": "../sessions/"
-  },
-  {
-    "method": "aster/permission_posture",
-    "page": "../permissions/"
   },
   {
     "method": "aster/session/transcript/page/v1",
     "page": "../sessions/"
   },
   {
-    "method": "aster/session/fork/prefix/v1",
+    "method": "aster/subagent/cancel",
     "page": "../sessions/"
   },
   {
-    "method": "aster/session/tooling/v1",
-    "page": "../sessions/"
+    "method": "aster/wiki/search",
+    "page": "../memory/"
   },
   {
-    "method": "aster/session/background-tasks/v1",
-    "page": "../sessions/"
-  },
-  {
-    "method": "aster/session/background-tasks/stop/v1",
-    "page": "../sessions/"
-  },
-  {
-    "method": "aster/compact_conversation",
-    "page": "../sessions/"
-  },
-  {
-    "method": "aster/interject",
+    "method": "aster/workspace/search/v1",
     "page": "../sessions/"
   }
 ]

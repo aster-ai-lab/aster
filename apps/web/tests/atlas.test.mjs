@@ -42,7 +42,8 @@ test('every migrated Pele diagram preserves original labels, node identities, re
     const source = await readFile(path.join(directory, '_diagrams', `${entry.name}.mmd`), 'utf8');
     const original = JSON.parse(execFileSync('git', ['show', `4faf25b927784f03f32777c05c3506228cdcb4cd:apps/web/content/docs/${entry.product}/${entry.version}/_atlas/${entry.name}.json`], { cwd: root, encoding: 'utf8' }));
     assert.equal(definition.title, original.spec.title);
-    assert.deepEqual(definition.steps, original.steps);
+    const branded = (value) => JSON.parse(JSON.stringify(value).replaceAll('a3s-', 'aster-').replaceAll('A3S ', 'Aster ').replaceAll('a3s/', 'aster/'));
+    assert.deepEqual(definition.steps, branded(original.steps));
     const styles = new Map();
     const result = renderAtlas(source, definition, `${entry.product}/${entry.version}/${entry.name}`, styles);
     const dom = new JSDOM(result.markup);
@@ -60,13 +61,14 @@ test('every migrated Pele diagram preserves original labels, node identities, re
       for (const node of originalNodes) {
         const actual = svg.querySelector(`.pele-node[data-id="${node.id}"]`).textContent.replace(/\s/g, '');
         for (const text of [node.label, node.sub, ...(node.items ?? [])].filter(Boolean)) {
-          assert.ok(source.includes(text), `${entry.name}: original label missing from authored source: ${text}`);
-          assert.ok(actual.includes(text.replace(/\s/g, '')), `${entry.name}: label missing from rendered node: ${text}`);
+          const expected = branded(text);
+          assert.ok(source.includes(expected), `${entry.name}: original label missing from authored source: ${expected}`);
+          assert.ok(actual.includes(expected.replace(/\s/g, '')), `${entry.name}: label missing from rendered node: ${expected}`);
         }
       }
       assert.equal(svg.querySelectorAll('.pele-edge').length, (original.spec.edges ?? original.spec.messages ?? []).length);
       for (const relation of original.spec.edges ?? original.spec.messages ?? []) {
-        if (relation[2]) assert.ok(svg.textContent.includes(relation[2]), `${entry.name}: relationship label missing`);
+        if (relation[2]) assert.ok(svg.textContent.includes(branded(relation[2])), `${entry.name}: relationship label missing`);
       }
       const standalone = new JSDOM(result.svg);
       assert.equal(standalone.window.document.querySelectorAll('script,image,a,foreignObject').length, 0);

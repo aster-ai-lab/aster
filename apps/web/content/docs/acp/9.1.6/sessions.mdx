@@ -31,7 +31,7 @@ cwd 仍受启动工作区范围约束，allowRelax 兼容字段不能扩大宿�
 
 `aster/followup/generate` 在回合结束后接收 sessionId、prompt 和 response，返回 suggestions。它不会另开用户回合，也不会代替用户继续任务；建议不可用时应按空结果处理，而不是编造下一条指令。
 
-`aster/session/background-tasks/v1` 使用 `aster.acp.session-background-tasks.v1` 查询会话的后台任务快照，包含子 Agent 与记忆提取任务的状态、时间和结果。`aster/session/background-tasks/stop/v1` 使用同一 schema 并额外传入 taskId，返回是否实际停止。未知会话或任务必须按错误处理，不能显示为已停止。
+`aster/session/background-tasks/v1` 使用 `aster.acp.session-background-tasks.v1` 查询会话的后台任务快照，包含子 Agent 与记忆提取任务的状态、时间和结果。`aster/session/background-tasks/stop/v1` 使用同一 schema 并额外传入 taskId，返回是否实际停止。 `aster/subagent/cancel` 按子 Agent 标识请求停止，并返回是否实际取消。未知会话或任务必须按错误处理，不能显示为已停止。
 
 ## 前缀分支
 
