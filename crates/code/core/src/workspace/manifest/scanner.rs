@@ -527,7 +527,9 @@ mod cancellation_tests {
         std::fs::write(workspace.path().join(".gitignore"), ".aster/\n").unwrap();
         std::fs::create_dir_all(workspace.path().join(".aster/kb/sources")).unwrap();
         std::fs::write(
-            workspace.path().join(".aster/kb/sources/seeded-kb-token.md"),
+            workspace
+                .path()
+                .join(".aster/kb/sources/seeded-kb-token.md"),
             "seeded_kb_token_for_scan\n",
         )
         .unwrap();

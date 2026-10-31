@@ -393,7 +393,10 @@ providers "url-inferred" {
     );
 
     let glm = config.find_provider("glm-01").expect("glm-01");
-    assert_eq!(glm.protocol, Some(crate::config::ProviderProtocol::Anthropic));
+    assert_eq!(
+        glm.protocol,
+        Some(crate::config::ProviderProtocol::Anthropic)
+    );
     assert_eq!(
         config
             .llm_config("glm-01", "glm-5.3-flash")

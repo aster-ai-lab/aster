@@ -418,7 +418,9 @@ async fn synchronous_session_build_keeps_configured_memory_observers() {
     session
         .memory()
         .unwrap()
-        .remember(aster_durable_memory::MemoryItem::new("A durable learned preference."))
+        .remember(aster_durable_memory::MemoryItem::new(
+            "A durable learned preference.",
+        ))
         .await
         .unwrap();
 

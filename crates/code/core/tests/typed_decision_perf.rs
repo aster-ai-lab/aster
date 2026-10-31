@@ -305,9 +305,7 @@ struct HostSample {
 fn escalation_class(escalation: &aster_core::Escalation) -> &'static str {
     match escalation {
         aster_core::Escalation::Evidence(_) => "evidence",
-        aster_core::Escalation::Rejected(aster_core::HostEvidenceError::Empty) => {
-            "rejected_empty"
-        }
+        aster_core::Escalation::Rejected(aster_core::HostEvidenceError::Empty) => "rejected_empty",
         aster_core::Escalation::Rejected(aster_core::HostEvidenceError::NotJson) => {
             "rejected_not_json"
         }
@@ -406,10 +404,7 @@ fn complex_billing_triage_flash_percentiles() {
                     latency: started.elapsed(),
                     prompt_tokens: usage.0,
                     completion_tokens: usage.1,
-                    admitted: matches!(
-                        composition.escalation,
-                        aster_core::Escalation::Evidence(_)
-                    ),
+                    admitted: matches!(composition.escalation, aster_core::Escalation::Evidence(_)),
                     class: escalation_class(&composition.escalation),
                 }
             }

@@ -99,8 +99,7 @@ providers "mock" {
     let initialized = rpc(&mut input, &mut output, json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{}}})).await;
     assert!(initialized.get("result").is_some(), "{initialized}");
     for (id, method) in [(2, "session/new"), (3, "session/load")] {
-        let mut params =
-            json!({"cwd":foreign,"mcpServers":[],"_meta":{"asterPluginSelection":selected.cursor()}});
+        let mut params = json!({"cwd":foreign,"mcpServers":[],"_meta":{"asterPluginSelection":selected.cursor()}});
         if method == "session/load" {
             params["sessionId"] = "foreign-session".into();
         }

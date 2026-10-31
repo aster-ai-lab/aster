@@ -40,16 +40,14 @@ async fn preview_does_not_execute(session: &aster_core::AgentSession) {
     let command = tick_request(session, "preview-only");
     let workspace = std::path::PathBuf::from(&command.workspace.display_root);
     let before =
-        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id())
-            .unwrap();
+        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id()).unwrap();
     let runs = serde_json::to_value(session.runs().await).unwrap();
     assert_eq!(
         session.preview_goal_tick(&command).await.unwrap(),
         GoalTickDecisionV1::BudgetExhausted
     );
     assert_eq!(
-        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id())
-            .unwrap(),
+        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id()).unwrap(),
         before
     );
     assert_eq!(serde_json::to_value(session.runs().await).unwrap(), runs);
@@ -283,7 +281,9 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     assert_eq!(
         before
             .iter()
-            .filter(|f| f.kind == "aster.goal.step.accepted" && f.payload["body"]["run_id"] == run_id)
+            .filter(
+                |f| f.kind == "aster.goal.step.accepted" && f.payload["body"]["run_id"] == run_id
+            )
             .count(),
         1
     );
@@ -429,8 +429,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
         .unwrap();
     admit_source_plan(&session, workspace.path(), false, &value);
     let facts = || {
-        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-auto-live")
-            .unwrap()
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-auto-live").unwrap()
     };
     let tick = tick_request(&session, &format!("auto-{}", uuid::Uuid::new_v4()));
     let defined = facts();
@@ -778,8 +777,7 @@ async fn prove_current_step(modify: bool) {
     );
     preview_does_not_execute(&restored).await;
     assert_eq!(
-        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
-            .unwrap(),
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live").unwrap(),
         facts
     );
     if modify {

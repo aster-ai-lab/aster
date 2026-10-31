@@ -15,8 +15,8 @@ fn init_logging() {
         .try_init();
 }
 
-use aster_acp::{load_launch_config, AsterCodeAgent};
 use agent_client_protocol as acp;
+use aster_acp::{load_launch_config, AsterCodeAgent};
 
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the model configured in .aster/config.acl"]

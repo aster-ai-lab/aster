@@ -514,7 +514,10 @@ pub(crate) fn prepare_definition(
 }
 
 pub(crate) fn refuse_unbound_goal_execution(facts: &[Fact]) -> Result<(), GoalControlError> {
-    if facts.iter().any(|fact| fact.kind.starts_with("aster.goal.")) {
+    if facts
+        .iter()
+        .any(|fact| fact.kind.starts_with("aster.goal."))
+    {
         return Err(refused(
             GoalRefusal::HostDriverConflict,
             "goal-bound execution requires the original qualified goal projection",

@@ -103,7 +103,9 @@ pub(crate) fn force_transient_collection_open_for_test(force: bool) {
 }
 
 fn ensure_initialized() -> Result<(), String> {
-    INITIALIZATION.get_or_init(bootstrap_aster_vec_engine).clone()
+    INITIALIZATION
+        .get_or_init(bootstrap_aster_vec_engine)
+        .clone()
 }
 
 fn map_insert_write_result(result: &aster_vec::WriteResult) -> Result<(), String> {
@@ -165,7 +167,9 @@ impl AsterVecLexicalIndex {
         }
         let collection_path = strip_windows_verbatim_prefix(collection_root.to_path_buf())
             .to_str()
-            .ok_or_else(|| AsterVecBuildError::Fatal("aster-vec lexical path is not UTF-8".to_owned()))?
+            .ok_or_else(|| {
+                AsterVecBuildError::Fatal("aster-vec lexical path is not UTF-8".to_owned())
+            })?
             .to_owned();
         let collection = Collection::create_and_open(&collection_path, &schema, None)
             .map_err(retryable_error)?;
@@ -243,7 +247,9 @@ impl AsterVecLexicalIndex {
 
         let collection_path = strip_windows_verbatim_prefix(collection_root.to_path_buf())
             .to_str()
-            .ok_or_else(|| AsterVecBuildError::Fatal("aster-vec lexical path is not UTF-8".to_owned()))?
+            .ok_or_else(|| {
+                AsterVecBuildError::Fatal("aster-vec lexical path is not UTF-8".to_owned())
+            })?
             .to_owned();
         let collection = Collection::open(&collection_path, None).map_err(retryable_error)?;
 

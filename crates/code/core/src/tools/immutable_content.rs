@@ -13,7 +13,8 @@ use thiserror::Error;
 
 pub const IMMUTABLE_CONTENT_ADAPTER_BINDING_SCHEMA_V1: &str =
     "aster.code.immutable-content-adapter-binding.v1";
-pub const IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1: &str = "aster.code.immutable-content-descriptor.v1";
+pub const IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1: &str =
+    "aster.code.immutable-content-descriptor.v1";
 pub const IMMUTABLE_CONTENT_REFERENCE_SCHEMA_V1: &str = "aster.code.immutable-content-reference.v1";
 pub const TOOL_RESULT_CONTENT_MEDIA_TYPE: &str = "text/plain; charset=utf-8";
 

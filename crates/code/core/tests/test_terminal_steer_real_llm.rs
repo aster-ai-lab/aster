@@ -6,9 +6,7 @@
 mod support;
 
 use aster_core::budget::{BudgetDecision, BudgetGuard};
-use aster_core::fact_control::{
-    read_workspace_facts, thread_for_session, TURN_COMPLETE_FACT_KIND,
-};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session, TURN_COMPLETE_FACT_KIND};
 use aster_core::llm::TokenUsage;
 use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 use aster_core::{

@@ -150,7 +150,10 @@ pub(super) fn goals() {
         tui.wait_fact(fact, before);
         tui.record(command, fact);
     }
-    assert!(tui.facts().iter().any(|f| f["type"] == "aster.goal.created"));
+    assert!(tui
+        .facts()
+        .iter()
+        .any(|f| f["type"] == "aster.goal.created"));
     tui.quit();
     tui.finish();
 }

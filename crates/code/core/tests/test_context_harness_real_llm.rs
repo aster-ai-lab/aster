@@ -206,7 +206,10 @@ async fn real_llm_recovers_an_omitted_middle_from_the_artifact_and_reports_conte
     assert!(dump[0].output.contains("[tool output bounded by"));
     assert!(dump[0].output.contains("aster://tool-output/dump_rows/"));
     assert!(!dump[0].output.contains("NEEDLE_VALUE"));
-    assert!(trace.mentions("aster://tool-output/dump_rows/"), "{trace:#?}");
+    assert!(
+        trace.mentions("aster://tool-output/dump_rows/"),
+        "{trace:#?}"
+    );
     assert!(trace.text.contains("K7Q2-PLUM"), "{}", trace.text);
 
     let report = session.context_report().expect("context report");
@@ -275,7 +278,10 @@ async fn real_llm_searches_a_long_fetched_page_without_fetching_again() {
         "the page result was bounded a second time: {}",
         fetch[0].output
     );
-    assert!(trace.mentions("aster://tool-output/web_fetch/"), "{trace:#?}");
+    assert!(
+        trace.mentions("aster://tool-output/web_fetch/"),
+        "{trace:#?}"
+    );
     assert!(trace.text.contains("34096"), "{}", trace.text);
     assert_eq!(trace.gate, None);
 }

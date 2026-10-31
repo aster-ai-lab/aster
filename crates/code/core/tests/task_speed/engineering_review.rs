@@ -73,9 +73,7 @@ async fn run(id: &str, prompt: &str) -> (Turn, Vec<TokenUsage>, f64) {
                 SessionOptions::new()
                     .with_session_id(id)
                     .with_permission_policy(permissions)
-                    .with_confirmation_manager(Arc::new(
-                        aster_core::hitl::AutoApproveConfirmation,
-                    ))
+                    .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_manual_delegation_enabled(true)
                     .with_auto_delegation_enabled(false)

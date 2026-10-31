@@ -265,7 +265,11 @@ fn render_store(store: &Store) -> String {
                 attributes: [(
                     "rules".into(),
                     aster_acl::Value::List(
-                        rules.iter().cloned().map(aster_acl::Value::String).collect(),
+                        rules
+                            .iter()
+                            .cloned()
+                            .map(aster_acl::Value::String)
+                            .collect(),
                     ),
                 )]
                 .into(),

@@ -3,6 +3,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+use anyhow::Result;
 use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
 use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
@@ -12,7 +13,6 @@ use aster_core::{
     Agent, AgentEvent, CodeError, InterruptRequest, PlanningMode, RunControlError,
     RunControlOperation, RunControlReceiptState, RunStatus, SessionOptions, SteerRequest,
 };
-use anyhow::Result;
 use async_trait::async_trait;
 use tokio::sync::{mpsc, Notify};
 use tokio_util::sync::CancellationToken;
@@ -223,9 +223,7 @@ async fn session_with_client(
         .unwrap()
 }
 
-async fn active_snapshot(
-    session: &aster_core::AgentSession,
-) -> aster_core::RunControlSnapshot {
+async fn active_snapshot(session: &aster_core::AgentSession) -> aster_core::RunControlSnapshot {
     tokio::time::timeout(TEST_TIMEOUT, async {
         loop {
             if let Some(snapshot) = session.run_control_snapshot().await {

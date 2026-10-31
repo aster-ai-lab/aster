@@ -6,9 +6,9 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::sync::Arc;
 
-use aster_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use agent_client_protocol as acp;
 use agent_client_protocol::Client;
+use aster_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use tokio::sync::{watch, Mutex, OwnedMutexGuard};
 use tokio::task::JoinHandle;
 
@@ -506,10 +506,7 @@ fn completion_bell_due(
     ) && elapsed.as_secs() >= notifications.min_seconds
 }
 
-fn posture_policy(
-    posture: &str,
-    denies: &[String],
-) -> aster_core::permissions::PermissionPolicy {
+fn posture_policy(posture: &str, denies: &[String]) -> aster_core::permissions::PermissionPolicy {
     let mut policy = aster_core::permissions::policy_for_posture(posture);
     for rule in denies {
         policy = policy.deny(rule);

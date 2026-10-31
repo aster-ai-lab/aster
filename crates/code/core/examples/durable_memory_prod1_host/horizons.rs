@@ -7,13 +7,13 @@
 
 use super::corpus;
 use super::session::{wait_for_published_run, wait_for_unchanged_run, CANDIDATE_LIMIT};
+use anyhow::{Context, Result};
 use aster_core::memory::{
     ScheduledSemanticRefresh, SemanticRefreshRunMetrics, SemanticRefreshRunOutcome,
 };
 use aster_core::{DurableMemoryRecallChannel, DurableMemorySession};
 use aster_durable_memory::repository::MemoryRepository;
 use aster_durable_memory::vector::{VectorIndex, VectorSearchRequest};
-use anyhow::{Context, Result};
 use serde::Serialize;
 use std::collections::BTreeSet;
 use std::sync::Arc;

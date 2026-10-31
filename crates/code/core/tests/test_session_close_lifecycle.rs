@@ -717,8 +717,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
     // *checkpoint contract* — what the run-resumption code reads —
     // is intact across the migration.)
     let cp_after = {
-        let s: std::sync::Arc<dyn aster_core::store::SessionStore> =
-            std::sync::Arc::clone(&store);
+        let s: std::sync::Arc<dyn aster_core::store::SessionStore> = std::sync::Arc::clone(&store);
         s.load_loop_checkpoint(seeded_run_id)
             .await
             .expect("load checkpoint after migration")

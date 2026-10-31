@@ -4,8 +4,8 @@
 //! field, so Harbor reads either lane the same way. It stays adapter-local:
 //! the generic Code run store remains provider-neutral.
 
-use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{Context, Result};
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use serde::Serialize;
 use std::time::Instant;
 
@@ -161,8 +161,7 @@ impl RunProgress {
             return;
         }
         self.remember_error(error);
-        if let Some(provider_error) =
-            error.downcast_ref::<aster_core::llm::NonRetryableLlmError>()
+        if let Some(provider_error) = error.downcast_ref::<aster_core::llm::NonRetryableLlmError>()
         {
             self.provider = provider_error.provider().map(str::to_owned);
             self.provider_status = provider_error.status();

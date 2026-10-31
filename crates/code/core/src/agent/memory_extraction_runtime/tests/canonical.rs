@@ -553,7 +553,10 @@ async fn v2_shadow_candidate_and_failure_preserve_v1_truth_on_both_stores() {
                 Some("workflow")
             );
             assert_eq!(
-                draft.labels.get("aster.extraction.scope").map(String::as_str),
+                draft
+                    .labels
+                    .get("aster.extraction.scope")
+                    .map(String::as_str),
                 Some("workspace")
             );
             assert_eq!(

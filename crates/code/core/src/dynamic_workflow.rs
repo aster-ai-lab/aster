@@ -24,13 +24,13 @@ use crate::{
     },
     planning::{Complexity, ExecutionPlan, Task, TaskStatus},
 };
+use anyhow::{Context, Result};
 use aster_flow::{
     CancellationRequest, FanoutFlowEventObserver, FlowEngine, FlowEvent, FlowEventEnvelope,
     FlowEventObserver, FlowEventStore, FlowRuntime, InMemoryEventStore, LocalFileEventStore,
     RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand, StepInvocation, StepStatus,
     WorkflowInvocation, WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSpec,
 };
-use anyhow::{Context, Result};
 use async_trait::async_trait;
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -580,7 +580,10 @@ impl DynamicWorkflowRuntime {
         }
     }
 
-    async fn admit_step(&self, invocation: &StepInvocation) -> aster_flow::Result<DynamicStepLease> {
+    async fn admit_step(
+        &self,
+        invocation: &StepInvocation,
+    ) -> aster_flow::Result<DynamicStepLease> {
         self.ensure_continuation_lease().await?;
         let identity = dynamic_workflow_step_identity(
             &invocation.run_id,

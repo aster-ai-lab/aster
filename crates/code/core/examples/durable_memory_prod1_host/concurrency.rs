@@ -14,10 +14,10 @@
 
 use super::connection::RedisSocket;
 use super::redis_index::RedisVectorIndex;
+use anyhow::{Context, Result};
 use aster_durable_memory::vector::{
     VectorIndex, VectorIndexDescriptor, VectorIndexError, VectorRecord, VectorRevision,
 };
-use anyhow::{Context, Result};
 use serde::Serialize;
 use std::sync::Arc;
 

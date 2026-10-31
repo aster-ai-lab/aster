@@ -171,11 +171,7 @@ fn shipped_retrieval_aster_test_terminal_round_trip() {
         .arg(&workspace)
         .args(["--tui-columns", "120", "--tui-rows", "40", "--json"])
         .current_dir(artifact_root)
-        .envs(child_env(
-            env!("CARGO_BIN_EXE_aster-acp"),
-            &config,
-            &home,
-        ))
+        .envs(child_env(env!("CARGO_BIN_EXE_aster-acp"), &config, &home))
         .env("ASTER_HOME", home.join(".aster"))
         .output()
         .expect("Aster Test TUI driver");

@@ -2,8 +2,8 @@
 //! with the ACP `available_commands_update` session notification.
 
 use super::AsterCodeAgent;
-use aster_core::AgentSession;
 use agent_client_protocol::{self as acp, Client as _};
+use aster_core::AgentSession;
 
 fn goal_command() -> acp::AvailableCommand {
     acp::AvailableCommand::new("goal", "Set, pause, resume, or clear a durable goal").input(

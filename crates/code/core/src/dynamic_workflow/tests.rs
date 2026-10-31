@@ -1885,13 +1885,9 @@ fn dynamic_workflow_continuation_identity_binds_persisted_facts_not_progress() {
     let envelope = |sequence, event| {
         FlowEventEnvelope::new(run_id, sequence, uuid::Uuid::new_v4(), Utc::now(), event)
     };
-    let spec = WorkflowSpec::rust_embedded(
-        "aster.dynamic-workflow",
-        source_hash(source),
-        "ptc",
-        "run",
-    )
-    .with_runtime_build(runtime_build.clone());
+    let spec =
+        WorkflowSpec::rust_embedded("aster.dynamic-workflow", source_hash(source), "ptc", "run")
+            .with_runtime_build(runtime_build.clone());
     let created = envelope(
         1,
         FlowEvent::RunCreated {
@@ -2024,13 +2020,9 @@ fn dynamic_workflow_claim_identity_is_stable_across_history_progress() {
     let empty =
         dynamic_workflow_claim_identity(run_id, source, &input, runtime_build.as_str(), &[])
             .unwrap();
-    let spec = WorkflowSpec::rust_embedded(
-        "aster.dynamic-workflow",
-        source_hash(source),
-        "ptc",
-        "run",
-    )
-    .with_runtime_build(runtime_build.clone());
+    let spec =
+        WorkflowSpec::rust_embedded("aster.dynamic-workflow", source_hash(source), "ptc", "run")
+            .with_runtime_build(runtime_build.clone());
     let progressed = vec![
         FlowEventEnvelope::new(
             run_id,
@@ -2128,12 +2120,8 @@ async function run(ctx, inputs) {
         dir.path(),
     )));
     let legacy_engine = FlowEngine::new(store, runtime);
-    let spec = WorkflowSpec::rust_embedded(
-        "aster.dynamic-workflow",
-        source_hash(source),
-        "ptc",
-        "run",
-    );
+    let spec =
+        WorkflowSpec::rust_embedded("aster.dynamic-workflow", source_hash(source), "ptc", "run");
     legacy_engine
         .start_with_id("legacy-unpinned-run", spec, json!({}))
         .await

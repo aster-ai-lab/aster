@@ -608,11 +608,9 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     print_row(&measurement);
     assert_lookup_evidence(&session, &answer);
     assert!(answer.text.contains("M1-GOAL-83be21"), "{}", answer.text);
-    let before = aster_core::fact_control::read_workspace_facts(
-        session.workspace(),
-        session.session_id(),
-    )
-    .unwrap();
+    let before =
+        aster_core::fact_control::read_workspace_facts(session.workspace(), session.session_id())
+            .unwrap();
     let create = GoalDefinitionCommandV1 {
         kind: GoalCommandKindV1::Create,
         import_source: None,
@@ -634,11 +632,9 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
         expected_goal_sequence: None,
     };
     let first = session.apply_goal_definition(create.clone()).unwrap();
-    let bound = aster_core::fact_control::read_workspace_facts(
-        session.workspace(),
-        session.session_id(),
-    )
-    .unwrap();
+    let bound =
+        aster_core::fact_control::read_workspace_facts(session.workspace(), session.session_id())
+            .unwrap();
     assert_eq!(&bound[..before.len()], before.as_slice());
     assert_eq!(bound.len(), before.len() + 1);
     session.save().await.unwrap();
@@ -675,11 +671,9 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     revise.goal.description = "Review both deployment references".into();
     let second = reopened.apply_goal_definition(revise).unwrap();
     assert_eq!(second.binding.goal_revision, 2);
-    let revised = aster_core::fact_control::read_workspace_facts(
-        reopened.workspace(),
-        reopened.session_id(),
-    )
-    .unwrap();
+    let revised =
+        aster_core::fact_control::read_workspace_facts(reopened.workspace(), reopened.session_id())
+            .unwrap();
     assert_eq!(&revised[..bound.len()], bound.as_slice());
     assert_eq!(revised.len(), bound.len() + 1);
     let error = reopened
@@ -691,11 +685,8 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
         "{error}"
     );
     assert_eq!(
-        aster_core::fact_control::read_workspace_facts(
-            reopened.workspace(),
-            reopened.session_id()
-        )
-        .unwrap(),
+        aster_core::fact_control::read_workspace_facts(reopened.workspace(), reopened.session_id())
+            .unwrap(),
         revised
     );
     let usage = reopened.recorded_usage_tokens();
@@ -713,11 +704,9 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     let cancelled = reopened.apply_goal_control(cancel.clone()).unwrap();
     assert_eq!(cancelled.state, GoalState::Cancelled);
     assert_eq!(cancelled.binding, second.binding);
-    let retained = aster_core::fact_control::read_workspace_facts(
-        reopened.workspace(),
-        reopened.session_id(),
-    )
-    .unwrap();
+    let retained =
+        aster_core::fact_control::read_workspace_facts(reopened.workspace(), reopened.session_id())
+            .unwrap();
     assert_eq!(&retained[..revised.len()], revised.as_slice());
     assert_eq!(retained.len(), revised.len() + 1);
     assert_eq!(retained.last().unwrap().kind, "aster.goal.cancelled");
@@ -746,11 +735,8 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     );
     assert_eq!(reopened.recorded_usage_tokens(), usage);
     assert_eq!(
-        aster_core::fact_control::read_workspace_facts(
-            reopened.workspace(),
-            reopened.session_id()
-        )
-        .unwrap(),
+        aster_core::fact_control::read_workspace_facts(reopened.workspace(), reopened.session_id())
+            .unwrap(),
         retained
     );
     reopened.close().await;
@@ -761,9 +747,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() {
-    use aster_core::goal_control::{
-        GoalCommandKindV1, GoalDefinitionCommandV1, GoalPlanCommandV1,
-    };
+    use aster_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1, GoalPlanCommandV1};
     use aster_core::planning::TaskStatus;
     use aster_core::store::FileSessionStore;
     use aster_core::workspace::WorkspaceServices;
@@ -802,11 +786,9 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1);
     // Qualify original receipt provenance before associating any durable Goal metadata.
-    let source_facts = aster_core::fact_control::read_workspace_facts(
-        session.workspace(),
-        session.session_id(),
-    )
-    .unwrap();
+    let source_facts =
+        aster_core::fact_control::read_workspace_facts(session.workspace(), session.session_id())
+            .unwrap();
     let binding = runs[0]
         .capability_binding
         .as_ref()
@@ -934,11 +916,9 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     acceptance.proposal_sequence = proposed.plan_fact_sequence;
     let accepted = session.apply_goal_plan(acceptance.clone()).unwrap();
     assert!(accepted.plan_accepted);
-    let before = aster_core::fact_control::read_workspace_facts(
-        session.workspace(),
-        session.session_id(),
-    )
-    .unwrap();
+    let before =
+        aster_core::fact_control::read_workspace_facts(session.workspace(), session.session_id())
+            .unwrap();
     session.save().await.unwrap();
     session.close().await;
     agent.close().await;
@@ -986,11 +966,9 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     print_row(&measurement);
     assert!(answer.text.contains(LOOKUP_ANSWER), "{}", answer.text);
     assert!(tool_uses(&answer).iter().any(|(name, _)| name == "read"));
-    let after = aster_core::fact_control::read_workspace_facts(
-        reopened.workspace(),
-        reopened.session_id(),
-    )
-    .unwrap();
+    let after =
+        aster_core::fact_control::read_workspace_facts(reopened.workspace(), reopened.session_id())
+            .unwrap();
     assert_eq!(&after[..before.len()], before.as_slice());
     assert!(after[before.len()..]
         .iter()
@@ -1003,10 +981,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     assert_eq!(bindings[0].payload["body"]["step_id"], expected_ready[0]);
     let current = reopened.goal_definition().unwrap().unwrap();
     assert_eq!(current.binding, accepted.binding);
-    assert_eq!(
-        current.state,
-        aster_core::goal_control::GoalState::Active
-    );
+    assert_eq!(current.state, aster_core::goal_control::GoalState::Active);
     let plan = current.plan.unwrap();
     assert_eq!(plan.definition_identity().unwrap(), identity);
     assert!(plan
@@ -1263,9 +1238,8 @@ async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
         "{}",
         answer.text
     );
-    let after =
-        aster_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
-            .unwrap();
+    let after = aster_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
+        .unwrap();
     assert!(
         after
             .iter()
@@ -1429,9 +1403,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the pinned real provider"]
 async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
-    use aster_core::context::{
-        ContextProvider, ContextQuery, RecentWorkspaceFilesContextProvider,
-    };
+    use aster_core::context::{ContextProvider, ContextQuery, RecentWorkspaceFilesContextProvider};
     use aster_core::workspace::{ManifestWorkspaceBackend, WorkspaceServices};
     use std::sync::Arc;
 
@@ -1536,11 +1508,9 @@ async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
             "{calls:?}"
         );
         assert!(calls.iter().all(|(name, _)| name == "read"), "{calls:?}");
-        let facts = aster_core::fact_control::read_workspace_facts(
-            workspace.path(),
-            session.session_id(),
-        )
-        .unwrap();
+        let facts =
+            aster_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
+                .unwrap();
         assert!(facts
             .iter()
             .filter(|f| f.kind == "context.sections")
@@ -1682,11 +1652,9 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
             proposal.proposal_sequence = proposed.plan_fact_sequence;
             session.apply_goal_plan(proposal).unwrap();
         }
-        let before = aster_core::fact_control::read_workspace_facts(
-            workspace.path(),
-            session.session_id(),
-        )
-        .unwrap();
+        let before =
+            aster_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
+                .unwrap();
         assert_eq!(&before[..prior_facts.len()], prior_facts.as_slice());
         let (measurement, answer) = timed_send(
             if reopened { "GOAL-REOPEN" } else { "GOAL-RUN" },
@@ -1700,11 +1668,9 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
         assert!(tool_uses(&answer)
             .iter()
             .any(|(name, args)| name == "read" && args.to_string().contains("task-source.txt")));
-        let after = aster_core::fact_control::read_workspace_facts(
-            workspace.path(),
-            session.session_id(),
-        )
-        .unwrap();
+        let after =
+            aster_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
+                .unwrap();
         assert_eq!(&after[..before.len()], before.as_slice());
         let new_facts = &after[before.len()..];
         assert_eq!(
@@ -1748,7 +1714,10 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
                 result
                     .ensure_prepared(preparations.get(&key).unwrap())
                     .unwrap();
-                assert_eq!(result.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
+                assert_eq!(
+                    result.outcome,
+                    aster_effect::ToolExecutionOutcome::Succeeded
+                );
                 assert_eq!(
                     result.effects.completeness,
                     aster_effect::ToolObservationCompleteness::Complete

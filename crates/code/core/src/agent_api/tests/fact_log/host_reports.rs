@@ -158,7 +158,10 @@ async fn an_ignored_nested_workspace_write_cannot_finish_as_narrative() {
         })
         .map(|fact| serde_json::from_value(fact.payload["receipt"].clone()).unwrap())
         .unwrap();
-    assert_eq!(receipt.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
+    assert_eq!(
+        receipt.outcome,
+        aster_effect::ToolExecutionOutcome::Succeeded
+    );
     assert_eq!(
         receipt.effects.completeness,
         aster_effect::ToolObservationCompleteness::Complete

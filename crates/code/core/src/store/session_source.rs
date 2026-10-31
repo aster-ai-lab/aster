@@ -1,8 +1,8 @@
 //! Immutable references to the original policy/Goal source, never another content store.
 
 use crate::execution_identity::ExecutionIdentityV1;
-use aster_effect::Fact;
 use anyhow::{bail, Result};
+use aster_effect::Fact;
 use serde::{Deserialize, Serialize};
 
 const SOURCE_DOMAIN: &str = "aster.code.session-fact-source.v1";

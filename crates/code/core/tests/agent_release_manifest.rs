@@ -350,12 +350,18 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error =
         AgentReleaseManifest::parse(&duplicate).expect_err("duplicate requirement must fail");
-    assert_eq!(error.code(), "aster.code.agent_release.duplicate_capability");
+    assert_eq!(
+        error.code(),
+        "aster.code.agent_release.duplicate_capability"
+    );
 
     let duplicate_provenance = fixture().replace("provenance \"source\"", "provenance \"builder\"");
     let error = AgentReleaseManifest::parse(&duplicate_provenance)
         .expect_err("provenance kinds must be unique");
-    assert_eq!(error.code(), "aster.code.agent_release.duplicate_provenance");
+    assert_eq!(
+        error.code(),
+        "aster.code.agent_release.duplicate_provenance"
+    );
 
     let plaintext_secret = fixture().replace(
         "target = \"environment\"\n    destination = \"PROVIDER_API_KEY\"",
@@ -412,7 +418,10 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
     let error = manifest
         .verify_compatibility(&wrong_protocol)
         .expect_err("protocol mismatch must fail");
-    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
+    assert_eq!(
+        error.code(),
+        "aster.code.agent_release.incompatible_protocol"
+    );
 
     let future_source = fixture().replace(AGENT_PROTOCOL_V1, "aster.code.agent.v2");
     let future_manifest =
@@ -420,7 +429,10 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
     let error = future_manifest
         .verify_compatibility(&compatibility())
         .expect_err("a valid but unavailable protocol must fail before activation");
-    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
+    assert_eq!(
+        error.code(),
+        "aster.code.agent_release.incompatible_protocol"
+    );
 
     let missing = AgentReleaseCompatibility::new(
         AGENT_PROTOCOL_V1,
@@ -444,7 +456,10 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
 
     let invalid_level = AgentReleaseCapability::new("workspace.local", 0)
         .expect_err("zero capability level must fail");
-    assert_eq!(invalid_level.code(), "aster.code.agent_release.invalid_field");
+    assert_eq!(
+        invalid_level.code(),
+        "aster.code.agent_release.invalid_field"
+    );
 
     let demanding_source = fixture().replacen(
         "capability \"workspace.local\" {\n    level = 1",

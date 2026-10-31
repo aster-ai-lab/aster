@@ -173,7 +173,8 @@ impl EvidenceRunStateV1 {
         };
         let prompt_bytes =
             u64::try_from(snapshot.prompt.len()).map_err(|_| EvidenceError::NumericOverflow)?;
-        let prompt_digest = digest_bytes("aster.code.evidence.prompt.v1", snapshot.prompt.as_bytes());
+        let prompt_digest =
+            digest_bytes("aster.code.evidence.prompt.v1", snapshot.prompt.as_bytes());
         let result_bytes = snapshot
             .result_text
             .as_ref()
@@ -529,7 +530,10 @@ impl EvidenceSnapshotV1 {
             }
             if let Some(content) = artifact.content.as_deref() {
                 if artifact.content_digest
-                    != digest_bytes("aster.code.evidence.artifact-content.v1", content.as_bytes())
+                    != digest_bytes(
+                        "aster.code.evidence.artifact-content.v1",
+                        content.as_bytes(),
+                    )
                 {
                     return Err(EvidenceError::DigestMismatch("artifact.content_digest"));
                 }

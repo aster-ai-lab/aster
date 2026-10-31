@@ -21,7 +21,9 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
         self.assertIn("cargo build --locked --release -p aster-acp --bin aster-acp", text)
         self.assertNotIn("cargo test", text)
         self.assertNotIn("cargo fmt", text)
-        self.assertNotIn("cargo build --locked --release -p aster", text)
+        # Require a package-name boundary: a bare `-p aster` substring also
+        # matches `-p aster-acp` and would refuse the ACP-only release build.
+        self.assertNotRegex(text, r"cargo build --locked --release -p aster(?!-acp)\b")
         self.assertNotIn("package-aster", text)
         self.assertNotIn("release-aster-desktop", text)
         self.assertNotIn("release-aster-cli", text)

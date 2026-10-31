@@ -1,6 +1,7 @@
 use super::fixture::{QualificationProvider, TARGET_INDEX, TARGET_QUERY};
 use super::measurement::{ExpectedBytes, ExpectedWork};
 use super::{CANDIDATE_LIMIT, CORPUS_RECORDS, EMBEDDING_BATCH_INPUTS, RUN_TIMEOUT};
+use anyhow::{bail, Context, Result};
 use aster_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
 use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
@@ -14,7 +15,6 @@ use aster_core::{
 use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
 use aster_durable_memory::vector::{SqliteVectorIndex, VectorIndex};
 use aster_durable_memory::InMemoryStore;
-use anyhow::{bail, Context, Result};
 use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;

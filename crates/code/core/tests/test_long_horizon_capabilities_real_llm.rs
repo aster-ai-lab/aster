@@ -147,8 +147,8 @@ async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
     .expect("turn failed");
     println!("LH4 reply: {}", answer.text.trim());
 
-    let facts = aster_core::fact_control::read_workspace_facts(&root, "lh4-capabilities")
-        .expect("facts");
+    let facts =
+        aster_core::fact_control::read_workspace_facts(&root, "lh4-capabilities").expect("facts");
 
     // PLAN oracle: an update_plan call is on record.
     let plan_call = facts

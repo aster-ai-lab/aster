@@ -4,11 +4,11 @@
 //!
 //! `cargo run --locked --release -p aster-core --example workspace_persistent_index_benchmark --features aster-vec-fts`
 
+use anyhow::{Context, Result};
 use aster_core::workspace::{
     ChunkCatalogLimits, ChunkingConfig, LexicalSearchRequest, WorkspaceChunkCatalog,
     WorkspaceLexicalEngine, WorkspacePath, WorkspacePersistentIndex,
 };
-use anyhow::{Context, Result};
 use std::time::{Duration, Instant};
 
 // Catalog admission is intentionally not part of this benchmark. The public

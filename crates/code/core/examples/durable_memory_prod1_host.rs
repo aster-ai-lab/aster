@@ -35,11 +35,11 @@ mod resilience;
 #[path = "durable_memory_prod1_host/session.rs"]
 mod session;
 
+use anyhow::{Context, Result};
 use aster_core::embedding::EmbeddingProvider;
 use aster_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
 use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
 use aster_durable_memory::vector::{VectorIndex, VectorIndexDescriptor};
-use anyhow::{Context, Result};
 use boyue::BoyueEmbeddingProvider;
 use concurrency::ConcurrencyEvidence;
 use connection::RedisSocket;

@@ -1,8 +1,8 @@
 #![cfg(test)]
 
 use super::{AsterCodeAgent, SessionSetup};
-use aster_core::{sandbox::SandboxNetworkMode, CodeConfig};
 use agent_client_protocol::{self as acp, Agent as _};
+use aster_core::{sandbox::SandboxNetworkMode, CodeConfig};
 
 #[tokio::test]
 async fn knowledge_compile_modes_keep_the_candidate_only_ceiling() {
@@ -500,7 +500,8 @@ fn host_session_status_names_live_search_and_closed_semantic() {
         mcp_servers: Vec::new(),
     };
     let trust = root.path().join("hooks-trust.json");
-    let options = AsterCodeAgent::core_session_options("host-session", setup.model_id, setup.effort);
+    let options =
+        AsterCodeAgent::core_session_options("host-session", setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),
         &setup.host,
@@ -579,7 +580,8 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let options = AsterCodeAgent::core_session_options("hook-session", setup.model_id, setup.effort);
+    let options =
+        AsterCodeAgent::core_session_options("hook-session", setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),
         &setup.host,
@@ -826,7 +828,10 @@ async fn office_tools_follow_only_the_explicit_host_capability() {
     let agent = AsterCodeAgent::new(launch);
     for (metadata, enabled) in [
         (serde_json::json!({}), false),
-        (serde_json::json!({"asterHost":{"officeTools":false}}), false),
+        (
+            serde_json::json!({"asterHost":{"officeTools":false}}),
+            false,
+        ),
         (serde_json::json!({"asterHost":{"officeTools":true}}), true),
     ] {
         let opened = agent
@@ -945,9 +950,7 @@ async fn durable_collection_stays_closed_until_the_first_recall() {
         .expect("capability status");
     assert!(extra.contains("memory: 耐久集合"));
 
-    let agent = aster_core::Agent::from_config(config)
-        .await
-        .expect("agent");
+    let agent = aster_core::Agent::from_config(config).await.expect("agent");
     let session = agent
         .session_async(root.path().to_string_lossy().to_string(), Some(options))
         .await

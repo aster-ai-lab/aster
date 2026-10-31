@@ -1068,8 +1068,11 @@ mod tests {
     use crate::content_digest::digest_bytes;
 
     fn identity(tag: &str) -> ExecutionIdentityV1 {
-        ExecutionIdentityV1::derive("aster.test.flow-decision", &serde_json::json!({ "tag": tag }))
-            .unwrap()
+        ExecutionIdentityV1::derive(
+            "aster.test.flow-decision",
+            &serde_json::json!({ "tag": tag }),
+        )
+        .unwrap()
     }
 
     fn receipt(identity: ExecutionIdentityV1) -> ExecutionResultReceiptV1 {

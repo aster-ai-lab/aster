@@ -19,9 +19,9 @@
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
 
+use anyhow::{anyhow, Context, Result};
 use aster_core::config::{AccountImport, WorkspaceLayerAdmission, WorkspaceMcpDeclaration};
 use aster_core::CodeConfig;
-use anyhow::{anyhow, Context, Result};
 
 #[cfg(feature = "account-import")]
 use crate::cc_switch;
@@ -305,12 +305,8 @@ fn admit_workspace_layer(
             acl: layer.acl.clone(),
         })
         .collect();
-    let admission = aster_core::config::admit_untrusted_layers(
-        config,
-        &layer_acls,
-        &repository_root,
-        &trust,
-    )?;
+    let admission =
+        aster_core::config::admit_untrusted_layers(config, &layer_acls, &repository_root, &trust)?;
     if !admission.withheld_blocks.is_empty() {
         tracing::warn!(
             withheld_blocks = ?admission.withheld_blocks,

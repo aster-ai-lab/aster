@@ -242,7 +242,10 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
             "private_vector_qxz=excluded\n",
         )
         .unwrap();
-        for path in ["meta/aster-session.json", "child-task/meta/aster-session.json"] {
+        for path in [
+            "meta/aster-session.json",
+            "child-task/meta/aster-session.json",
+        ] {
             let locator = agent.workspace.join(path);
             std::fs::create_dir_all(locator.parent().unwrap()).unwrap();
             std::fs::write(
@@ -697,8 +700,10 @@ async fn an_unknown_extension_method_is_method_not_found() {
     assert!(unknown.get("result").is_none(), "{unknown}");
 
     let known = agent
-        .rpc(json!({"jsonrpc":"2.0","id":4,"method":"_aster/session/info",
-                    "params":{"sessionId": session_id}}))
+        .rpc(
+            json!({"jsonrpc":"2.0","id":4,"method":"_aster/session/info",
+                    "params":{"sessionId": session_id}}),
+        )
         .await;
     assert!(known.get("error").is_none(), "{known}");
     agent.stop().await;

@@ -138,7 +138,10 @@ async fn prove_snapshot_source(file: bool) {
                     1,
                     "policy-only later history remains forkable"
                 );
-                assert_eq!(aster_effect::LogStore::read(&log, &thread).unwrap(), original);
+                assert_eq!(
+                    aster_effect::LogStore::read(&log, &thread).unwrap(),
+                    original
+                );
             }
             assert_eq!(calls.load(Ordering::SeqCst), attempts);
         }
@@ -309,7 +312,10 @@ async fn fork_refuses_invalid_source_before_first_snapshot() {
                 error.to_string().contains("durable session source"),
                 "{error}"
             );
-            assert_eq!(aster_effect::LogStore::read(&log, &thread).unwrap(), original);
+            assert_eq!(
+                aster_effect::LogStore::read(&log, &thread).unwrap(),
+                original
+            );
             assert_eq!(calls.load(Ordering::SeqCst), attempts);
             session.close().await;
             agent.close().await;

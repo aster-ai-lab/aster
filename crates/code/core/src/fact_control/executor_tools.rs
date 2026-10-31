@@ -249,7 +249,8 @@ impl ToolRunner for ExecutorTools {
         self: Arc<Self>,
         request: aster_effect::ToolPreparationRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> aster_effect::coding::BoxFuture<Result<aster_effect::PreparedToolExecution, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<aster_effect::PreparedToolExecution, ActorError>>
+    {
         Box::pin(receipts::prepare_tools(self, request, cancel))
     }
 

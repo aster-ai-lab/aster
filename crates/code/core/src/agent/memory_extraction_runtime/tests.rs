@@ -513,7 +513,9 @@ fn related_memories_skip_sensitive_items() {
 
 #[tokio::test]
 async fn related_memories_are_loaded_for_extraction_prompt() {
-    let memory = Arc::new(AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new())));
+    let memory = Arc::new(AgentMemory::new(Arc::new(
+        aster_durable_memory::InMemoryStore::new(),
+    )));
     memory
         .remember(
             MemoryItem::new(

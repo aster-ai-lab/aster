@@ -73,8 +73,7 @@ fn an_override_keeps_harness_state_out_of_the_workspace() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let _entered = runtime.enter();
     let services =
-        aster_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace)
-            .unwrap();
+        aster_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace).unwrap();
     assert!(services.persistent_index().is_some());
     assert!(
         std::fs::read_dir(state.join("indexes")).unwrap().count() == 1,

@@ -1,7 +1,7 @@
 //! In-process checks for the user's text length and percentage requirements.
 
-use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use anyhow::Result;
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::{json, Value};

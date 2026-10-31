@@ -118,11 +118,7 @@ async fn live_session(
     max_slices: u64,
     max_no_progress: u64,
     padded: bool,
-) -> (
-    Agent,
-    aster_core::AgentSession,
-    Arc<compaction::UsageProbe>,
-) {
+) -> (Agent, aster_core::AgentSession, Arc<compaction::UsageProbe>) {
     let opened = open_live(workspace, session_id, value, max_slices, max_no_progress).await;
     create_goal(&opened.1, workspace, padded);
     opened
@@ -135,11 +131,7 @@ async fn open_live(
     value: &str,
     max_slices: u64,
     max_no_progress: u64,
-) -> (
-    Agent,
-    aster_core::AgentSession,
-    Arc<compaction::UsageProbe>,
-) {
+) -> (Agent, aster_core::AgentSession, Arc<compaction::UsageProbe>) {
     let mut config = load_pinned_layer_c_config();
     let deadline = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -257,8 +249,7 @@ async fn waits_real_independent_step_runs_and_the_answer_reaches_the_waiting_ste
         ],
     );
     let facts = || {
-        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-wait-live")
-            .unwrap()
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-wait-live").unwrap()
     };
     let question = GoalWaitConditionV1::QuestionAnswer {
         question: "Which release code should be reported?".into(),

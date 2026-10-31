@@ -208,7 +208,10 @@ async fn async_session_code_intelligence_attaches_tools() {
     let plain = agent
         .session_async(
             root.path().display().to_string(),
-            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
+            Some(
+                SessionOptions::new()
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
+            ),
         )
         .await
         .unwrap();
@@ -330,7 +333,10 @@ async fn sync_session_uses_cached_global_mcp_without_blocking_runtime() {
     let session = agent
         .session(
             "/tmp/test-sync-global-mcp",
-            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
+            Some(
+                SessionOptions::new()
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
+            ),
         )
         .unwrap();
 

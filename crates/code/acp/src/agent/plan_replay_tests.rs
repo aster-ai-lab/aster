@@ -430,7 +430,10 @@ fn replay_exposes_compaction_turn_completion_and_legacy_as_typed_updates() {
             .map(replay_json)
             .collect::<Vec<_>>();
         assert_eq!(notifications.len(), 1);
-        assert_eq!(notifications[0]["method"], "_aster/session/transcript/update");
+        assert_eq!(
+            notifications[0]["method"],
+            "_aster/session/transcript/update"
+        );
         assert_eq!(
             notifications[0]["params"]["schema"],
             TRANSCRIPT_UPDATE_SCHEMA
@@ -460,21 +463,22 @@ fn replay_preserves_legacy_display_without_creating_an_executable_message() {
         text: "A stored historical message.".into(),
         attachments: vec![],
     };
-    let entry = replay_entry(
-        aster_core::store::TranscriptEntryPayload::LegacyHistory {
-            source_kind: "legacy.studio.entry".into(),
-            fact_key: "historical-fact".into(),
-            reason: "Display-only imported history".into(),
-            display: Some(display.clone()),
-        },
-    );
+    let entry = replay_entry(aster_core::store::TranscriptEntryPayload::LegacyHistory {
+        source_kind: "legacy.studio.entry".into(),
+        fact_key: "historical-fact".into(),
+        reason: "Display-only imported history".into(),
+        display: Some(display.clone()),
+    });
     let notifications = transcript_replay_notifications(&acp::SessionId::new("s"), &entry)
         .unwrap()
         .into_iter()
         .map(replay_json)
         .collect::<Vec<_>>();
     assert_eq!(notifications.len(), 1);
-    assert_eq!(notifications[0]["method"], "_aster/session/transcript/update");
+    assert_eq!(
+        notifications[0]["method"],
+        "_aster/session/transcript/update"
+    );
     assert_eq!(
         notifications[0]["params"]["update"]["sessionUpdate"],
         "legacy_history"

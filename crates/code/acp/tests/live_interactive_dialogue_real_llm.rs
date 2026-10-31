@@ -498,8 +498,10 @@ async fn real_agent_tool_dialogue_gates_then_remembers_workspace_state() {
 async fn real_agent_dialogue_resumes_after_process_restart() {
     tokio::task::LocalSet::new()
         .run_until(async move {
-            let workspace = std::env::temp_dir()
-                .join(format!("aster-live-restart-dialogue-{}", std::process::id()));
+            let workspace = std::env::temp_dir().join(format!(
+                "aster-live-restart-dialogue-{}",
+                std::process::id()
+            ));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 

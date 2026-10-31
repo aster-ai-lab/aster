@@ -626,11 +626,9 @@ async fn portable_recovery_rejects_foreign_release_identity() {
         .expect_err("foreign release must fail closed");
     assert!(matches!(
         error,
-        AgentProtocolCheckpointRecoveryError::Harness(
-            aster_core::AgentProtocolHarnessError::Host(
-                aster_core::AgentProtocolHostError::ReleaseMismatch
-            )
-        )
+        AgentProtocolCheckpointRecoveryError::Harness(aster_core::AgentProtocolHarnessError::Host(
+            aster_core::AgentProtocolHostError::ReleaseMismatch
+        ))
     ));
     harness.close().await;
 }

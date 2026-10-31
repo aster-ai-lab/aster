@@ -12,9 +12,11 @@ fn namespace_campaign(log: &dyn LogStore, old_text: &str) {
     let session = "exact-session";
     let run = "external:运行";
     let id = "request:输入";
-    let digest =
-        crate::content_digest::digest_json("aster.code.steer-input.identity.v1", &[session, run, id])
-            .unwrap();
+    let digest = crate::content_digest::digest_json(
+        "aster.code.steer-input.identity.v1",
+        &[session, run, id],
+    )
+    .unwrap();
     // Every digest-shaped old raw id is still a valid old host request id.
     let old = message_fact(format!("steer:{digest}"), old_text);
     aster_effect::append_input(log, session, old).unwrap();

@@ -355,7 +355,9 @@ fn acl_value_to_json(value: &aster_acl::Value) -> Option<JsonValue> {
             Some(JsonValue::Object(object))
         }
         aster_acl::Value::Null => Some(JsonValue::Null),
-        aster_acl::Value::Call(name, _) if name == "env" => acl_string(value).map(JsonValue::String),
+        aster_acl::Value::Call(name, _) if name == "env" => {
+            acl_string(value).map(JsonValue::String)
+        }
         aster_acl::Value::Call(_, _) => None,
     }
 }

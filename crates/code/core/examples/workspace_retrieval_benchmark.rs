@@ -10,6 +10,7 @@
 //! bounded by its public resource contract. The embedding provider is
 //! deterministic so the measurements exclude network variability.
 
+use anyhow::{bail, Context, Result};
 use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProvider, EmbeddingProviderDescriptor,
     EmbeddingProviderError, EmbeddingVector,
@@ -23,7 +24,6 @@ use aster_core::{
 use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord, VectorSearchRequest,
 };
-use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use serde_json::json;
 use std::sync::atomic::{AtomicUsize, Ordering};

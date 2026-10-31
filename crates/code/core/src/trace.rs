@@ -234,7 +234,10 @@ mod tests {
         assert_eq!(events[0].schema, TRACE_EVENT_SCHEMA);
         assert_eq!(events[0].kind, TraceEventKind::ToolExecution);
         assert_eq!(events[0].metadata_keys, vec!["artifact", "file_path"]);
-        assert_eq!(events[0].artifact_uris, vec!["aster://tool-output/read/abc"]);
+        assert_eq!(
+            events[0].artifact_uris,
+            vec!["aster://tool-output/read/abc"]
+        );
     }
 
     #[test]

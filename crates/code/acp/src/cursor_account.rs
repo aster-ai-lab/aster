@@ -13,8 +13,8 @@
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use anyhow::{Context, Result};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use serde_json::Value;
 
 /// Provider name registered into [`aster_core::CodeConfig`].

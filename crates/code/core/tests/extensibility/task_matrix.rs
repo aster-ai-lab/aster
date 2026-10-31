@@ -1240,7 +1240,9 @@ fn vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_coun
         drop(span);
         assert_eq!(observations.summary()["vm_count"], 1);
         let span = tracing::info_span!(target:"aster_core::sandbox::oci","oci_command");
-        span.in_scope(||tracing::debug!(target:"aster_core::sandbox::oci",phase="vm_create",elapsed_ms=1.0));
+        span.in_scope(
+            || tracing::debug!(target:"aster_core::sandbox::oci",phase="vm_create",elapsed_ms=1.0),
+        );
         drop(span);
         assert_eq!(
             observations.summary()["vm_count"],

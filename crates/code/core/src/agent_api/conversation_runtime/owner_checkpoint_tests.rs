@@ -609,8 +609,8 @@ async fn matrix_join_spawn(spawn: AgentRunSpawn) -> String {
 }
 
 async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool) {
-    use aster_effect::{FileLog, LogStore, NewFact};
     use aster_durable_memory::{FileMemoryStore, InMemoryStore, MemoryStore};
+    use aster_effect::{FileLog, LogStore, NewFact};
     use std::sync::atomic::Ordering;
     use std::time::Duration;
 

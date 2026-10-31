@@ -51,7 +51,8 @@ impl HostConfig {
                  ASTER_DM_PROD1_ALLOW_DEFAULT_DB=1 to override"
             );
         }
-        let revision = optional("ASTER_DM_PROD1_REVISION").unwrap_or_else(|| "unpinned".to_string());
+        let revision =
+            optional("ASTER_DM_PROD1_REVISION").unwrap_or_else(|| "unpinned".to_string());
         let pack_directory = optional("ASTER_DM_PROD1_PACK_DIR")
             .map(PathBuf::from)
             .unwrap_or_else(|| PathBuf::from(format!("/tmp/dm-prod1-host-{revision}")));

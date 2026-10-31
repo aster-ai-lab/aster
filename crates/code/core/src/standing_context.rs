@@ -20,8 +20,8 @@
 use std::io::Read;
 use std::path::Path;
 
-use aster_effect::{LogStore, NewFact};
 use anyhow::{bail, Context, Result};
+use aster_effect::{LogStore, NewFact};
 use serde::Serialize;
 
 use crate::content_digest::digest_json;

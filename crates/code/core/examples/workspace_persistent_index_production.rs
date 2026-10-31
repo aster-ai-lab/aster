@@ -8,11 +8,11 @@
 //!
 //! `cargo run --locked --release -p aster-core --example workspace_persistent_index_production --features aster-vec-fts`
 
+use anyhow::{bail, Context, Result};
 use aster_core::workspace::{
     scan_workspace_files, LexicalSearchRequest, ManifestWorkspaceBackend, WorkspaceLexicalEngine,
     WorkspacePersistentIndex, WorkspacePersistentIndexPhase, WorkspaceServices,
 };
-use anyhow::{bail, Context, Result};
 use std::fs;
 use std::path::Path;
 use std::sync::Arc;
