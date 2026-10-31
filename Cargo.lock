@@ -3361,7 +3361,7 @@ dependencies = [
 
 [[package]]
 name = "aster-studio"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "agent-client-protocol",
  "anyhow",

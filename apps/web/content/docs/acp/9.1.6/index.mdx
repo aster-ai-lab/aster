@@ -31,7 +31,7 @@ Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust
 
 <PeleAtlasDiagram name="acp-boundary" label="客户端、ACP 与 Core" description="ACP 把进程间请求适配到 Core。Rust 宿主也可直接嵌入 Core，两条入口的公开能力不能混为一谈。" />
 
-协议实现从 <SourceRef path="crates/code/acp/src/agent.rs" match="pub struct AsterCodeAgent {">AsterCodeAgent</SourceRef> 开始；会话装配见 <SourceRef path="crates/code/acp/src/agent/session_open.rs" match="pub(super) async fn open_core_session(">open_core_session</SourceRef>，工具与模型运行则交给 Core。
+协议实现从 <SourceRef path="crates/code/acp/src/agent.rs" match="pub struct A3sCodeAgent {">A3sCodeAgent</SourceRef> 开始；会话装配见 <SourceRef path="crates/code/acp/src/agent/session_open.rs" match="pub(super) async fn open_core_session(">open_core_session</SourceRef>，工具与模型运行则交给 Core。
 
 | 想追踪的路径 | 实现入口 | 配套章节 |
 | --- | --- | --- |
