@@ -111,7 +111,13 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         self.assertFalse(list(studio.rglob("Cargo.lock")))
         for base in [studio, ROOT / "packages", ROOT / "apps/web", ROOT / "apps/use-registry"]:
             for directory, dirs, files in os.walk(base):
-                dirs[:] = [name for name in dirs if name not in {"node_modules", "dist", "target", ".git"}]
+                # Studio local evidence under artifacts/ may contain absolute
+                # machine symlinks; they are not product sources for this gate.
+                dirs[:] = [
+                    name
+                    for name in dirs
+                    if name not in {"node_modules", "dist", "target", ".git", "artifacts"}
+                ]
                 for name in dirs + files:
                     path = Path(directory) / name
                     if path.is_symlink():
