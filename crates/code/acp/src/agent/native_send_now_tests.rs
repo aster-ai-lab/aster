@@ -93,8 +93,13 @@ async fn send_now_retires_the_real_native_worker_before_admitting_the_next_turn(
             "printf started > started.txt; sleep 8; printf late > late.txt"
         };
         let client = Arc::new(NativeCommandThenAnswer::new(command.into()));
+        let sandbox = Arc::new(aster_core::sandbox::ProcessHostBashSandbox::new(
+            workspace.clone(),
+            None,
+        ));
         let session = Arc::new(core.session_async(workspace.display().to_string(), Some(aster_core::SessionOptions::new()
             .with_llm_client(client.clone())
+            .with_sandbox_handle(sandbox)
             .with_session_id(id.0.to_string())
             .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_continuation(false)
@@ -142,9 +147,17 @@ async fn native_failed_shell_keeps_both_output_streams_in_the_model_request() {
     let stdout = format!("STDOUT-{}", uuid::Uuid::new_v4());
     let stderr = format!("STDERR-{}", uuid::Uuid::new_v4());
     let (name, script, command) = if cfg!(windows) {
-        ("probe script.ps1", format!("[Console]::Out.WriteLine('{stdout}')\n[Console]::Error.WriteLine('{stderr}')\n[Console]::Out.WriteLine('CWD=' + (Get-Location).Path)\nexit 7\n"), "& './probe script.ps1'")
+        (
+            "probe-script.ps1",
+            format!("[Console]::Out.WriteLine('{stdout}')\n[Console]::Error.WriteLine('{stderr}')\n[Console]::Out.WriteLine('CWD=' + (Get-Location).Path)\nexit 7\n"),
+            "& './probe-script.ps1'",
+        )
     } else {
-        ("probe script.sh", format!("printf '%s\\n' '{stdout}'\nprintf '%s\\n' '{stderr}' >&2\nprintf 'CWD=%s\\n' \"$PWD\"\nexit 7\n"), "/bin/sh './probe script.sh'")
+        (
+            "probe-script.sh",
+            format!("printf '%s\\n' '{stdout}'\nprintf '%s\\n' '{stderr}' >&2\nprintf 'CWD=%s\\n' \"$PWD\"\nexit 7\n"),
+            "/bin/sh './probe-script.sh'",
+        )
     };
     std::fs::write(root.path().join(name), &script).unwrap();
     let client = Arc::new(NativeCommandThenAnswer::new(command.into()));
@@ -154,12 +167,19 @@ async fn native_failed_shell_keeps_both_output_streams_in_the_model_request() {
         ..Default::default()
     });
     let core = aster_core::Agent::from_config(config).await.unwrap();
+    // Pin the process-host runner: this oracle checks stdout/stderr retention for
+    // a controlled non-zero exit, not native bubblewrap/Seatbelt admission.
+    let sandbox = Arc::new(aster_core::sandbox::ProcessHostBashSandbox::new(
+        root.path().to_path_buf(),
+        None,
+    ));
     let session = core
         .session_async(
             root.path().display().to_string(),
             Some(
                 aster_core::SessionOptions::new()
                     .with_llm_client(client.clone())
+                    .with_sandbox_handle(sandbox)
                     .with_continuation(false)
                     .with_auto_delegation_enabled(false)
                     .with_planning_mode(aster_core::PlanningMode::Disabled)
@@ -197,9 +217,18 @@ async fn native_failed_shell_keeps_both_output_streams_in_the_model_request() {
             _ => None,
         })
         .collect::<Vec<_>>();
-    assert_eq!(results.len(), 1);
-    assert_eq!(*results[0].1, Some(true));
-    assert!(results[0].0.starts_with("Tool exit code: 7\n"));
+    assert_eq!(results.len(), 1, "tool results: {results:?}");
+    assert_eq!(
+        *results[0].1,
+        Some(true),
+        "model received: {:?}",
+        results[0].0
+    );
+    assert!(
+        results[0].0.starts_with("Tool exit code: 7\n"),
+        "model received: {:?}",
+        results[0].0
+    );
     assert!(
         results[0].0.contains(&stdout) && results[0].0.contains(&stderr),
         "model received: {:?}",
