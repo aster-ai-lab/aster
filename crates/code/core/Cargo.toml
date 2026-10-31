@@ -1,6 +1,6 @@
 [package]
 name = "aster-core"
-version = "9.1.6"
+version = "9.1.7"
 edition = "2021"
 authors = ["Aster Team"]
 license = "MIT"
