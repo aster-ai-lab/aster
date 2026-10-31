@@ -65,6 +65,77 @@ impl ToolStore {
         list(&self.root)
     }
 
+    /// Host-visible store root (installs, shims, receipts, current pointers).
+    pub fn root_path(&self) -> &Path {
+        &self.root
+    }
+
+    /// Versioned install directory for a tool, when a current pointer exists.
+    pub fn install_dir(&self, name: &str) -> Result<Option<PathBuf>, ToolAcquireError> {
+        parse_tool_name(name)?;
+        let Some(version) = read_pointer(&self.root, name)? else {
+            return Ok(None);
+        };
+        let directory = join_under(&self.root, &["installs", name, &version])?;
+        if !directory.exists() {
+            return Ok(None);
+        }
+        ensure_real_directory(&directory)?;
+        Ok(Some(directory))
+    }
+
+    /// Read a verified installation's identity without changing the current pointer.
+    /// `None` selects the current version. A missing installation returns `None`;
+    /// malformed records, links, and missing executable files return an error.
+    pub fn installed_receipt(
+        &self,
+        name: &str,
+        version: Option<&str>,
+    ) -> Result<Option<ToolReceipt>, ToolAcquireError> {
+        parse_tool_name(name)?;
+        let version = match version {
+            Some(version) => version.to_string(),
+            None => match read_pointer(&self.root, name)? {
+                Some(version) => version,
+                None => return Ok(None),
+            },
+        };
+        parse_tool_version(&version)?;
+        let directory = join_under(&self.root, &["installs", name, &version])?;
+        if !directory
+            .try_exists()
+            .map_err(|error| ToolAcquireError::io("inspect installed version", &directory, error))?
+        {
+            return Ok(None);
+        }
+        ensure_real_directory(&directory)?;
+        let record = join_under(&self.root, &["receipts", name, &format!("{version}.json")])?;
+        let receipt: ToolReceipt = if record
+            .try_exists()
+            .map_err(|error| ToolAcquireError::io("inspect version receipt", &record, error))?
+        {
+            read_json(&record)?
+        } else if read_pointer(&self.root, name)?.as_deref() == Some(version.as_str()) {
+            // Older installs have only the current receipt; its exact identity remains authoritative.
+            read_receipt(&self.root, name)?
+        } else {
+            return Ok(None);
+        };
+        if receipt.schema != RECEIPT_SCHEMA || receipt.name != name || receipt.version != version {
+            return Err(ToolAcquireError::ReceiptDisagrees { name: name.into() });
+        }
+        parse_tool_name(&receipt.executable)?;
+        parse_tool_spec(&receipt.spec)?;
+        normalize_sha256(&receipt.sha256)?;
+        ensure_real_file(&directory.join(&receipt.executable))?;
+        Ok(Some(receipt))
+    }
+
+    /// Shim directory that should be prepended to PATH.
+    pub fn shim_dir(&self) -> PathBuf {
+        self.root.join("shims")
+    }
+
     pub async fn remove(&self, name: &str) -> Result<(), ToolAcquireError> {
         let root = self.root.clone();
         let name = name.to_string();
@@ -160,6 +231,16 @@ pub(crate) fn apply_local(
         &request.executable_name,
         expected.as_deref().unwrap_or(&hashed),
     )?;
+    ensure_parent_real(root, &["receipts", &receipt.name])?;
+    let version_receipt = join_under(
+        root,
+        &[
+            "receipts",
+            &receipt.name,
+            &format!("{}.json", receipt.version),
+        ],
+    )?;
+    write_atomic(&version_receipt, &json_bytes(&receipt)?)?;
     publish_current(root, &receipt)?;
     clear_failure(root, &request.name)?;
     Ok(receipt)
@@ -277,6 +358,7 @@ fn remove(root: &Path, name: &str) -> Result<(), ToolAcquireError> {
         &["receipts", &format!("{name}.failure.json")],
     )?)?;
     remove_owned_file(&join_under(root, &["current", name])?)?;
+    remove_owned_tree(&join_under(root, &["receipts", name])?)?;
     remove_owned_tree(&join_under(root, &["installs", name])?)?;
     Ok(())
 }
@@ -525,7 +607,7 @@ pub(crate) fn remove_owned_tree(path: &Path) -> Result<(), ToolAcquireError> {
     Ok(())
 }
 
-fn write_atomic(path: &Path, bytes: &[u8]) -> Result<(), ToolAcquireError> {
+pub(crate) fn write_atomic(path: &Path, bytes: &[u8]) -> Result<(), ToolAcquireError> {
     let parent = path.parent().ok_or_else(|| ToolAcquireError::Io {
         action: "locate tool file parent",
         path: path.to_path_buf(),
@@ -562,8 +644,21 @@ fn write_atomic(path: &Path, bytes: &[u8]) -> Result<(), ToolAcquireError> {
 
 fn read_json<T: DeserializeOwned>(path: &Path) -> Result<T, ToolAcquireError> {
     ensure_real_file(path)?;
-    let bytes =
-        fs::read(path).map_err(|error| ToolAcquireError::io("read tool record", path, error))?;
+    const MAX_RECORD_BYTES: u64 = 64 * 1024;
+    let mut bytes = Vec::new();
+    File::open(path)
+        .and_then(|file| file.take(MAX_RECORD_BYTES + 1).read_to_end(&mut bytes))
+        .map_err(|error| ToolAcquireError::io("read tool record", path, error))?;
+    if bytes.len() as u64 > MAX_RECORD_BYTES {
+        return Err(ToolAcquireError::io(
+            "read tool record",
+            path,
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "tool record exceeds 65536 bytes",
+            ),
+        ));
+    }
     serde_json::from_slice(&bytes).map_err(|error| {
         ToolAcquireError::io(
             "parse tool record",
@@ -643,115 +738,4 @@ async fn spawn_blocking<T: Send + 'static>(
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn payload(directory: &Path, name: &str, bytes: &[u8]) -> PathBuf {
-        let path = directory.join(name);
-        fs::write(&path, bytes).unwrap();
-        path
-    }
-
-    fn sha256(bytes: &[u8]) -> String {
-        hex_encode(&Sha256::digest(bytes))
-    }
-
-    #[tokio::test]
-    async fn checksum_failure_keeps_the_previous_current_version() {
-        let temporary = tempfile::tempdir().unwrap();
-        let store = ToolStore::open(temporary.path()).unwrap();
-        let good = b"#!/bin/sh\necho uv\n";
-        let good_path = payload(temporary.path(), "uv-good", good);
-        store
-            .apply_local(LocalApply {
-                name: "uv".to_string(),
-                spec: "uv".to_string(),
-                version: "1.0.0".to_string(),
-                executable_name: "uv".to_string(),
-                payload: good_path,
-                sha256: Some(sha256(good)),
-                require_checksum: true,
-                companions: Vec::new(),
-            })
-            .await
-            .unwrap();
-
-        let bad = b"not-the-published-bytes";
-        let bad_path = payload(temporary.path(), "uv-bad", bad);
-        let error = store
-            .apply_local(LocalApply {
-                name: "uv".to_string(),
-                spec: "uv".to_string(),
-                version: "2.0.0".to_string(),
-                executable_name: "uv".to_string(),
-                payload: bad_path,
-                sha256: Some(sha256(good)),
-                require_checksum: true,
-                companions: Vec::new(),
-            })
-            .await
-            .unwrap_err();
-        assert_eq!(error.code(), "use.tool_acquire.checksum_mismatch");
-        assert_eq!(
-            fs::read_to_string(temporary.path().join("current/uv")).unwrap(),
-            "1.0.0\n"
-        );
-        assert!(!temporary.path().join("installs/uv/2.0.0").exists());
-        assert!(temporary.path().join("installs/uv/1.0.0/uv").is_file());
-        let failure: ToolFailureRecord = serde_json::from_slice(
-            &fs::read(temporary.path().join("receipts/uv.failure.json")).unwrap(),
-        )
-        .unwrap();
-        assert_eq!(failure.schema, crate::FAILURE_SCHEMA);
-        assert_eq!(failure.version, "2.0.0");
-        let listed = store.list().await.unwrap();
-        assert_eq!(listed.len(), 1);
-        assert_eq!(listed[0].version, "1.0.0");
-    }
-
-    #[tokio::test]
-    async fn first_checksum_failure_leaves_no_current_version() {
-        let temporary = tempfile::tempdir().unwrap();
-        let store = ToolStore::open(temporary.path()).unwrap();
-        let bytes = b"tool";
-        let error = store
-            .apply_local(LocalApply {
-                name: "rg".to_string(),
-                spec: "rg".to_string(),
-                version: "14.1.1".to_string(),
-                executable_name: "rg".to_string(),
-                payload: payload(temporary.path(), "rg-payload", bytes),
-                sha256: Some("ab".repeat(32)),
-                require_checksum: true,
-                companions: Vec::new(),
-            })
-            .await
-            .unwrap_err();
-        assert_eq!(error.code(), "use.tool_acquire.checksum_mismatch");
-        assert!(!temporary.path().join("current/rg").exists());
-        assert!(store.list().await.unwrap().is_empty());
-    }
-
-    #[cfg(unix)]
-    #[tokio::test]
-    async fn remove_refuses_a_symlinked_install_directory() {
-        let temporary = tempfile::tempdir().unwrap();
-        let store = ToolStore::open(temporary.path()).unwrap();
-        let outside = tempfile::tempdir().unwrap();
-        let kept = outside.path().join("kept.txt");
-        fs::write(&kept, b"keep").unwrap();
-        fs::create_dir_all(temporary.path().join("installs")).unwrap();
-        std::os::unix::fs::symlink(outside.path(), temporary.path().join("installs/uv")).unwrap();
-
-        let error = store.remove("uv").await.unwrap_err();
-        assert_eq!(error.code(), "use.tool_acquire.link_refused");
-        assert_eq!(fs::read(&kept).unwrap(), b"keep");
-        assert!(temporary
-            .path()
-            .join("installs/uv")
-            .symlink_metadata()
-            .unwrap()
-            .file_type()
-            .is_symlink());
-    }
-}
+mod tests;

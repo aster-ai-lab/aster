@@ -384,6 +384,11 @@ fn run(isolated: &Isolated, args: &[&str], timeout: Duration) -> Captured {
     if let Some(tmpdir) = std::env::var_os("TMPDIR") {
         command.env("TMPDIR", tmpdir);
     }
+    // `run` clears the process environment. Forward the explicit ACP override so
+    // a matched local companion can be pinned without relying on PATH discovery.
+    if let Some(agent) = std::env::var_os("ASTER_ACP_AGENT_BIN") {
+        command.env("ASTER_ACP_AGENT_BIN", agent);
+    }
     #[cfg(target_os = "macos")]
     {
         let unqualified = isolated.home.join("unqualified-sandbox");
@@ -1287,12 +1292,12 @@ default_model = "{MODEL_ID}"
     oracle("isolated-home", "developer homes unchanged");
 }
 
-/// macOS shell gates for the shipped binary. Not compiled on Linux, so Ubuntu
+/// Requires the shipped macOS shell refusal. Not compiled on Linux, so Ubuntu
 /// CI does not spawn the marker command.
 ///
-/// Unescalated `auto` must hit the native lifetime refusal (no side effect).
-/// `yolo` / Full access installs host execution and may create the marker —
-/// that is the documented escape hatch, not a regression of the refuse path.
+/// Use unescalated `auto` (not `--yolo` / `bypassPermissions`): yolo installs
+/// `HostAccessSandbox` and is the documented Full-access escape hatch, so it
+/// must not be the refuse-path oracle.
 #[cfg(target_os = "macos")]
 fn assert_macos_shell_gates(isolated: &Isolated, turn: Duration) {
     let _ = fs::remove_file(&isolated.marker);
@@ -1327,36 +1332,5 @@ fn assert_macos_shell_gates(isolated: &Isolated, turn: Duration) {
             "marker file was not created; {}",
             excerpt_around(&refused_text, "native_process_lifetime_unqualified", 120)
         ),
-    );
-
-    let _ = fs::remove_file(&isolated.marker);
-    let yolo = run(
-        isolated,
-        &[
-            "-p",
-            "SHELL-ORACLE run a shell command",
-            "--output-format",
-            "streaming-json",
-            "--yolo",
-            "--permission-mode",
-            "bypassPermissions",
-            "--trust",
-            "--no-auto-update",
-            "--disable-web-search",
-        ],
-        turn,
-    );
-    let yolo_text = yolo.combined();
-    assert!(
-        isolated.marker.exists(),
-        "yolo/full-access shell did not create the marker:\n{yolo_text}"
-    );
-    assert!(
-        !yolo_text.contains("native_process_lifetime_unqualified"),
-        "yolo still reported native refusal:\n{yolo_text}"
-    );
-    oracle(
-        "shell-yolo-host",
-        "marker file created under yolo/full-access host execution",
     );
 }

@@ -44,6 +44,16 @@ pub enum Command {
     Mcp(crate::mcp_cmd::McpArgs),
     /// Manage plugins and marketplace sources
     Plugin(crate::plugin_cmd::PluginArgs),
+    /// Install and pin project tools (mise-like; reads `.aster/env.acl`)
+    Tool(crate::env_manager_cmd::ToolArgs),
+    /// Show or edit environment variables in `.aster/env.acl`
+    Env(crate::env_manager_cmd::EnvArgs),
+    /// Run a command with managed tool PATH and env vars
+    Exec(crate::env_manager_cmd::ExecArgs),
+    /// Print shell activation for managed tools and env vars
+    Activate(crate::env_manager_cmd::ActivateArgs),
+    /// Forward to the `aster-use` package manager binary
+    Use(crate::env_manager_cmd::UseForwardArgs),
     /// Manage cross-session memory
     Memory(crate::memory_cmd::MemoryArgs),
     /// List available models and exit

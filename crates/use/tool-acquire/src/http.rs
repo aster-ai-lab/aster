@@ -4,6 +4,7 @@
 //! A missing publisher digest refuses the payload.
 
 use std::io::{Cursor, Read};
+use std::sync::Arc;
 use std::time::Duration;
 
 use base64::engine::general_purpose::STANDARD;
@@ -18,6 +19,9 @@ use crate::spec::{parse_tool_version, ToolBackend, ToolSpec};
 use crate::store::hex_encode;
 
 const MAX_BYTES: usize = 200 * 1024 * 1024;
+
+/// Bytes received so far and an optional `Content-Length` total.
+pub type DownloadProgress = Arc<dyn Fn(u64, Option<u64>) + Send + Sync>;
 const GITHUB_API: &str = "https://api.github.com";
 const NPM_REGISTRY: &str = "https://registry.npmjs.org";
 
@@ -67,6 +71,7 @@ pub struct HttpSource {
     mirror_host: Option<String>,
     github_token: Option<String>,
     npm_hosts: &'static [&'static str],
+    progress: Option<DownloadProgress>,
 }
 
 impl std::fmt::Debug for HttpSource {
@@ -126,6 +131,12 @@ impl HttpSource {
         self.github_mirror.as_deref()
     }
 
+    /// Report download progress as `(received, content_length)`.
+    pub fn with_progress(mut self, progress: DownloadProgress) -> Self {
+        self.progress = Some(progress);
+        self
+    }
+
     fn build(
         github_api: String,
         npm_registry: String,
@@ -167,6 +178,7 @@ impl HttpSource {
             mirror_host,
             github_token,
             npm_hosts,
+            progress: None,
         })
     }
 }
@@ -507,7 +519,7 @@ impl HttpSource {
         if !self.allows(url) {
             return Err(ToolAcquireError::DownloadRejected);
         }
-        let response = self
+        let mut response = self
             .client
             .get(url)
             .send()
@@ -515,19 +527,35 @@ impl HttpSource {
         if !response.status().is_success() {
             return Err(ToolAcquireError::DownloadRejected);
         }
-        if response
-            .content_length()
-            .is_some_and(|length| length > MAX_BYTES as u64)
-        {
+        let total = response.content_length();
+        if total.is_some_and(|length| length > MAX_BYTES as u64) {
             return Err(ToolAcquireError::DownloadRejected);
         }
-        let bytes = response
-            .bytes()
-            .map_err(|_| ToolAcquireError::DownloadRejected)?;
-        if bytes.len() > MAX_BYTES {
-            return Err(ToolAcquireError::DownloadRejected);
+        let mut bytes = Vec::new();
+        if let Some(length) = total {
+            let length = usize::try_from(length).map_err(|_| ToolAcquireError::DownloadRejected)?;
+            bytes.reserve(length.min(MAX_BYTES));
         }
-        Ok(bytes.to_vec())
+        let mut buffer = [0u8; 64 * 1024];
+        loop {
+            let count = response
+                .read(&mut buffer)
+                .map_err(|_| ToolAcquireError::DownloadRejected)?;
+            if count == 0 {
+                break;
+            }
+            if bytes.len() + count > MAX_BYTES {
+                return Err(ToolAcquireError::DownloadRejected);
+            }
+            bytes.extend_from_slice(&buffer[..count]);
+            if let Some(progress) = &self.progress {
+                progress(bytes.len() as u64, total);
+            }
+        }
+        if let Some(progress) = &self.progress {
+            progress(bytes.len() as u64, total.or(Some(bytes.len() as u64)));
+        }
+        Ok(bytes)
     }
 }
 

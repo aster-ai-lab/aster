@@ -17,6 +17,8 @@ pub enum ToolAcquireError {
     ChecksumMismatch,
     #[error("installed version {version} already has a different checksum")]
     VersionConflict { version: String },
+    #[error("installed identity for {name}@{version} does not match its declaration")]
+    InstallationIdentityMismatch { name: String, version: String },
     #[error("refusing to follow a link at {}", path.display())]
     LinkRefused { path: PathBuf },
     #[error("payload is not a regular file: {}", path.display())]
@@ -44,6 +46,10 @@ pub enum ToolAcquireError {
     LatestUnavailable,
     #[error("tool runtime is missing: {0}")]
     RuntimeMissing(String),
+    #[error("invalid env acl: {0}")]
+    InvalidEnvAcl(String),
+    #[error("unknown env tool: {0}")]
+    UnknownEnvTool(String),
 }
 
 impl ToolAcquireError {
@@ -57,6 +63,9 @@ impl ToolAcquireError {
             Self::ChecksumRequired => "use.tool_acquire.checksum_required",
             Self::ChecksumMismatch => "use.tool_acquire.checksum_mismatch",
             Self::VersionConflict { .. } => "use.tool_acquire.version_conflict",
+            Self::InstallationIdentityMismatch { .. } => {
+                "use.tool_acquire.installation_identity_mismatch"
+            }
             Self::LinkRefused { .. } => "use.tool_acquire.link_refused",
             Self::PayloadInvalid { .. } => "use.tool_acquire.payload_invalid",
             Self::NotExecutable => "use.tool_acquire.not_executable",
@@ -68,6 +77,8 @@ impl ToolAcquireError {
             Self::DownloadRejected => "use.tool_acquire.download_rejected",
             Self::LatestUnavailable => "use.tool_acquire.latest_unavailable",
             Self::RuntimeMissing(_) => "use.tool_acquire.runtime_missing",
+            Self::InvalidEnvAcl(_) => "use.tool_acquire.invalid_env_acl",
+            Self::UnknownEnvTool(_) => "use.tool_acquire.unknown_env_tool",
         }
     }
 

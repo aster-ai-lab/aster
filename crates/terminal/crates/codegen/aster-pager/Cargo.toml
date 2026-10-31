@@ -154,6 +154,7 @@ aster-update = {path = "../aster-update"}
 aster-ratatui-inline = {path = "../aster-ratatui-inline"}
 aster-ratatui-textarea = {path = "../aster-ratatui-textarea"}
 aster-acl = {path = "../../../../acl"}
+aster-use-tool-acquire = {path = "../../../../use/tool-acquire"}
 aster-mermaid = {path = "../aster-mermaid"}
 aster-markdown = {path = "../aster-markdown"}
 aster-announcements = {path = "../aster-announcements"}

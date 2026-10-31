@@ -70,6 +70,7 @@ tikv-jemalloc-sys = {version = "0.7", optional = true}
 tikv-jemalloc-ctl = {version = "0.7", optional = true, features = ["stats", "use_std"]}
 
 [dev-dependencies]
+aster-use-tool-acquire = {path = "../../crates/use/tool-acquire"}
 serde = {workspace = true}
 aster-acl = {path = "../../crates/acl"}
 aster-core = {path = "../../crates/code/core"}

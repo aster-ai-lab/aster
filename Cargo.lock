@@ -780,6 +780,7 @@ dependencies = [
  "aster-telemetry",
  "aster-tty-utils",
  "aster-update",
+ "aster-use-tool-acquire",
  "aster-version",
  "aster-workspace",
  "clap",
@@ -2549,6 +2550,7 @@ dependencies = [
  "aster-tools",
  "aster-tty-utils",
  "aster-update",
+ "aster-use-tool-acquire",
  "aster-version",
  "aster-voice",
  "aster-workspace",
@@ -3978,6 +3980,7 @@ dependencies = [
 name = "aster-use-tool-acquire"
 version = "0.2.4"
 dependencies = [
+ "aster-acl",
  "aster-use-core",
  "base64 0.22.1",
  "flate2",
