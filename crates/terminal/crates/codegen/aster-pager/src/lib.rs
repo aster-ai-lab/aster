@@ -21,6 +21,7 @@ pub mod diagnostics;
 pub mod disk_usage_cmd;
 pub mod docs;
 pub mod doctor_cmd;
+pub mod env_manager_cmd;
 pub mod export_cmd;
 pub(crate) mod fs_size;
 pub mod git_info;

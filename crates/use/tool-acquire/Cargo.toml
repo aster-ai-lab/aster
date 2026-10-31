@@ -10,6 +10,7 @@ rust-version = "1.82"
 publish = false
 
 [dependencies]
+aster-acl = {path = "../../acl"}
 aster-use-core = {path = "../core"}
 zip = {version = "2", default-features = false, features = ["deflate"]}
 tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "sync", "time"]}

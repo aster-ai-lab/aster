@@ -65,6 +65,30 @@ impl ToolStore {
         list(&self.root)
     }
 
+    /// Host-visible store root (installs, shims, receipts, current pointers).
+    pub fn root_path(&self) -> &Path {
+        &self.root
+    }
+
+    /// Versioned install directory for a tool, when a current pointer exists.
+    pub fn install_dir(&self, name: &str) -> Result<Option<PathBuf>, ToolAcquireError> {
+        parse_tool_name(name)?;
+        let Some(version) = read_pointer(&self.root, name)? else {
+            return Ok(None);
+        };
+        let directory = join_under(&self.root, &["installs", name, &version])?;
+        if !directory.exists() {
+            return Ok(None);
+        }
+        ensure_real_directory(&directory)?;
+        Ok(Some(directory))
+    }
+
+    /// Shim directory that should be prepended to PATH.
+    pub fn shim_dir(&self) -> PathBuf {
+        self.root.join("shims")
+    }
+
     pub async fn remove(&self, name: &str) -> Result<(), ToolAcquireError> {
         let root = self.root.clone();
         let name = name.to_string();
@@ -753,5 +777,28 @@ mod tests {
             .unwrap()
             .file_type()
             .is_symlink());
+    }
+
+    #[tokio::test]
+    async fn install_dir_follows_current_pointer() {
+        let temporary = tempfile::tempdir().unwrap();
+        let store = ToolStore::open(temporary.path()).unwrap();
+        store
+            .apply_local(LocalApply {
+                name: "uv".to_string(),
+                spec: "github:astral-sh/uv".to_string(),
+                version: "0.6.0".to_string(),
+                executable_name: "uv".to_string(),
+                payload: payload(temporary.path(), "uv", b"#!/bin/sh\necho uv\n"),
+                sha256: None,
+                require_checksum: false,
+                companions: Vec::new(),
+            })
+            .await
+            .unwrap();
+        let directory = store.install_dir("uv").unwrap().unwrap();
+        assert_eq!(directory, store.root_path().join("installs/uv/0.6.0"));
+        assert!(directory.join("uv").is_file());
+        assert_eq!(store.shim_dir(), store.root_path().join("shims"));
     }
 }

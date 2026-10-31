@@ -44,6 +44,10 @@ pub enum ToolAcquireError {
     LatestUnavailable,
     #[error("tool runtime is missing: {0}")]
     RuntimeMissing(String),
+    #[error("invalid env acl: {0}")]
+    InvalidEnvAcl(String),
+    #[error("unknown env tool: {0}")]
+    UnknownEnvTool(String),
 }
 
 impl ToolAcquireError {
@@ -68,6 +72,8 @@ impl ToolAcquireError {
             Self::DownloadRejected => "use.tool_acquire.download_rejected",
             Self::LatestUnavailable => "use.tool_acquire.latest_unavailable",
             Self::RuntimeMissing(_) => "use.tool_acquire.runtime_missing",
+            Self::InvalidEnvAcl(_) => "use.tool_acquire.invalid_env_acl",
+            Self::UnknownEnvTool(_) => "use.tool_acquire.unknown_env_tool",
         }
     }
 

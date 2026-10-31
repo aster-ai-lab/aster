@@ -69,6 +69,26 @@ const CATALOG: &[CatalogTool] = &[
         executable: "aster-box",
         pipx_extras: None,
     },
+    // Desktop runtime packs. Archives ship as aster-<name>-*-<host>.tar.gz on
+    // aster-ai-lab/aster releases; unchanged versions skip reinstall via receipts.
+    CatalogTool {
+        name: "aster-sandbox",
+        spec: "github:aster-ai-lab/aster",
+        executable: "aster-sandbox",
+        pipx_extras: None,
+    },
+    CatalogTool {
+        name: "aster-document",
+        spec: "github:aster-ai-lab/aster",
+        executable: "aster-document",
+        pipx_extras: None,
+    },
+    CatalogTool {
+        name: "aster-office",
+        spec: "github:aster-ai-lab/aster",
+        executable: "aster-office",
+        pipx_extras: None,
+    },
     CatalogTool {
         name: "claude",
         spec: "npm:@anthropic-ai/claude-code",
