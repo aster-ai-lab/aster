@@ -10,7 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
-NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
+NAMES = [f"aster-cli-v0.1.7-{os}.{extension}" for os, extension in
          [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]]
 
 
@@ -19,7 +19,7 @@ class ReleaseAssembly(unittest.TestCase):
                  qualification_exit=0, artifact_run_id="123", branch_qualification=1,
                  yolo_qualification_exit=0):
         lines = (ROOT / ".github/workflows/release-aster-cli.yml").read_text().splitlines()
-        start = lines.index("      - name: Assemble draft aster-cli v0.1.6")
+        start = lines.index("      - name: Assemble draft aster-cli v0.1.7")
         start = lines.index("        run: |", start) + 1
         end = start
         while end < len(lines) and (not lines[end].strip() or lines[end].startswith("          ")):
@@ -44,7 +44,7 @@ class ReleaseAssembly(unittest.TestCase):
             if missing:
                 (dist / NAMES[-1]).unlink()
             if extra:
-                (dist / "aster-cli-v0.1.6-kylin.tar.gz").write_bytes(b"retired fixture")
+                (dist / "aster-cli-v0.1.7-kylin.tar.gz").write_bytes(b"retired fixture")
             gh = commands / "gh"
             gh.write_text('''#!/bin/sh
 case "$1:$2" in
@@ -91,8 +91,8 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
     def test_three_archives_form_a_draft_bound_to_the_artifact_source(self):
         result, manifest, args = self.assemble()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(manifest["version"], "0.1.6")
-        self.assertEqual(manifest["tag"], "aster-cli-v0.1.6")
+        self.assertEqual(manifest["version"], "0.1.7")
+        self.assertEqual(manifest["tag"], "aster-cli-v0.1.7")
         self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
         self.assertEqual(args[args.index("--target") + 1], SOURCE_SHA)
         self.assertIn("--draft", args)
@@ -184,7 +184,7 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertNotIn("cargo test", text)
         self.assertIn("bash scripts/publish-aster-cli.sh", text)
         publisher = (ROOT / "scripts/publish-aster-cli.sh").read_text()
-        self.assertIn("python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.6-macos.tar.gz --output-dir", publisher)
+        self.assertIn("python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.7-macos.tar.gz --output-dir", publisher)
         self.assertIn("--mode yolo --output-dir qualification/yolo", publisher)
         publish_job = text.split("\n  publish:\n", 1)[1]
         self.assertIn("runs-on: ${{ inputs.qualified_runner }}", publish_job)
@@ -196,9 +196,9 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 2)
         self.assertIn("shared-key: aster-cli-release-${{ matrix.platform }}", text)
         self.assertIn("shared-key: aster-cli-release-linux", text)
-        self.assertIn("asset: aster-cli-v0.1.6-macos.tar.gz", text)
-        self.assertIn("asset: aster-cli-v0.1.6-windows.zip", text)
-        self.assertIn('package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.6-linux.tar.gz"', text)
+        self.assertIn("asset: aster-cli-v0.1.7-macos.tar.gz", text)
+        self.assertIn("asset: aster-cli-v0.1.7-windows.zip", text)
+        self.assertIn('package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.7-linux.tar.gz"', text)
         self.assertIn('run-id: ${{ inputs.artifact_run_id != \'\' && inputs.artifact_run_id || github.run_id }}', text)
 
     def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):

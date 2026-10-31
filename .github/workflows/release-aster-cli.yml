@@ -21,7 +21,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: aster-cli-v0.1.6
+  group: aster-cli-v0.1.7
   cancel-in-progress: false
 
 jobs:
@@ -66,10 +66,10 @@ jobs:
         include:
           - os: macos-latest
             platform: macos
-            asset: aster-cli-v0.1.6-macos.tar.gz
+            asset: aster-cli-v0.1.7-macos.tar.gz
           - os: windows-latest
             platform: windows
-            asset: aster-cli-v0.1.6-windows.zip
+            asset: aster-cli-v0.1.7-windows.zip
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
@@ -201,11 +201,11 @@ jobs:
           set -euo pipefail
           . "$HOME/.cargo/env"
           bin_dir="${CARGO_TARGET_DIR:-target}/release"
-          bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.6-linux.tar.gz"
+          bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.7-linux.tar.gz"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-linux
-          path: aster-cli-v0.1.6-linux.tar.gz
+          path: aster-cli-v0.1.7-linux.tar.gz
           if-no-files-found: error
 
   publish:
@@ -228,7 +228,7 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Assemble draft aster-cli v0.1.6
+      - name: Assemble draft aster-cli v0.1.7
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
