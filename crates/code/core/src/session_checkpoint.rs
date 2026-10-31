@@ -29,7 +29,8 @@ pub const SESSION_CHECKPOINT_LOGICAL_RESUME_SEMANTICS_V1: &str = "between_tool_r
 pub const SESSION_CHECKPOINT_MAX_CONTENT_BYTES: u64 = 256 * 1024 * 1024;
 
 const SNAPSHOT_EVIDENCE_DIGEST_DOMAIN_V1: &str = "aster.code.session-snapshot-evidence-digest.v1";
-const LOGICAL_RESUME_EVIDENCE_DIGEST_DOMAIN_V1: &str = "aster.code.logical-resume-evidence-digest.v1";
+const LOGICAL_RESUME_EVIDENCE_DIGEST_DOMAIN_V1: &str =
+    "aster.code.logical-resume-evidence-digest.v1";
 const CHECKPOINT_DESCRIPTOR_DIGEST_DOMAIN_V1: &str =
     "aster.code.session-checkpoint-descriptor-digest.v1";
 pub(super) const MAX_ID_BYTES: usize = 256;

@@ -15,8 +15,8 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use aster_core::{ModelConfig, ModelModalities, ProviderConfig};
 use anyhow::{Context, Result};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig};
 use serde_json::Value;
 
 /// Provider name registered into [`aster_core::CodeConfig`].

@@ -14,6 +14,7 @@ mod result;
 #[path = "terminal_bench_runner/sandbox.rs"]
 mod sandbox;
 
+use anyhow::{Context, Result};
 use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use aster_core::hitl::AutoApproveConfirmation;
 use aster_core::llm::CodexLoginClient;
@@ -21,11 +22,8 @@ use aster_core::skills::SkillRegistry;
 use aster_core::verification::{
     VerificationCheck, VerificationReport, VerificationStatus, VERIFICATION_REPORT_SCHEMA,
 };
-use aster_core::{
-    Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots,
-};
+use aster_core::{Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots};
 use aster_durable_memory::InMemoryStore;
-use anyhow::{Context, Result};
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -740,10 +738,7 @@ mod tests {
         assert!(HARBOR_HOST_LLM_TIMEOUT_MS > 120_000);
         let effort = SessionOptions::new().with_reasoning_effort(HARBOR_HOST_REASONING_EFFORT);
         assert_eq!(effort.reasoning_effort.as_deref(), Some("max"));
-        assert_eq!(
-            aster_core::llm::deepseek_thinking_top_p("max"),
-            Some(0.95)
-        );
+        assert_eq!(aster_core::llm::deepseek_thinking_top_p("max"), Some(0.95));
         assert_eq!(aster_core::llm::deepseek_thinking_top_p("none"), None);
         assert_eq!(
             aster_core::context_window_for_model(

@@ -546,7 +546,10 @@ async fn persistent_bm25_falls_back_to_the_catalog_before_native_ready() {
         .unwrap();
     assert!(stable.success, "{}", stable.content);
     let stable_metadata = stable.metadata.unwrap();
-    assert_eq!(stable_metadata["execution_mode"], "persistent_aster_vec_fts");
+    assert_eq!(
+        stable_metadata["execution_mode"],
+        "persistent_aster_vec_fts"
+    );
     assert_eq!(stable_metadata["freshness"], "rebuilding");
     assert_eq!(stable_metadata["catalog_source_revision"], 2);
 

@@ -9,9 +9,7 @@ use aster_core::memory::{
     MemoryMaintenanceOptions, MemoryMaintenancePhase, ScheduledSemanticRefresh,
     SEMANTIC_REFRESH_JOB_NAME,
 };
-use aster_core::{
-    Agent, AgentSession, CodeError, LlmClient, SessionBuildResource, SessionOptions,
-};
+use aster_core::{Agent, AgentSession, CodeError, LlmClient, SessionBuildResource, SessionOptions};
 use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,

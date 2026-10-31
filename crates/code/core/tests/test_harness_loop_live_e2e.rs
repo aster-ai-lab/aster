@@ -52,7 +52,9 @@ fn options(session_id: &str, allow_write: bool) -> SessionOptions {
     }
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(
+            aster_durable_memory::InMemoryStore::new(),
+        ))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -480,9 +482,10 @@ async fn deepseek_flash_verify_commands_reports_host_shell_effect() {
         "verify_commands must Pass on host shell effect: {report:?}"
     );
     assert!(
-        report.checks.iter().all(|check| {
-            check.status == aster_core::verification::VerificationStatus::Passed
-        }),
+        report
+            .checks
+            .iter()
+            .all(|check| { check.status == aster_core::verification::VerificationStatus::Passed }),
         "every verify_commands check must Pass: {:?}",
         report.checks
     );

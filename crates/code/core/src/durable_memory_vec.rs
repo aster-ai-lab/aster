@@ -11,9 +11,11 @@
 //! core behind `aster-vec-fts`) so the memory layer and the workspace lexical
 //! index share one engine and one operational model.
 
-use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType};
-use aster_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, SearchQuery};
 use anyhow::{anyhow, Result};
+use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType};
+use aster_vec::{
+    Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, SearchQuery,
+};
 use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock, Weak};

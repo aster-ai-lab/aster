@@ -167,7 +167,10 @@ async fn workspace_search_wiki_refuses_scope_overrides_and_respects_live_denies(
     let ctx = ToolContext::new(root.path().into());
     // Legacy models still emit scope=local; admit it as current instead of failing closed.
     let local = tool
-        .execute(&json!({"query":"workspaceanswer42marker","scope":"local"}), &ctx)
+        .execute(
+            &json!({"query":"workspaceanswer42marker","scope":"local"}),
+            &ctx,
+        )
         .await
         .unwrap();
     assert!(local.success, "{local:?}");

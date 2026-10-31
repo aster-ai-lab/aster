@@ -21,8 +21,9 @@ pub(super) fn run_execution_cycle(
                 "tool_effect_admission_missing: original Run has no capability binding".into(),
             )
         })?;
-    let digest = crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
-        .map_err(|error| ActorError::Schema(error.to_string()))?;
+    let digest =
+        crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
+            .map_err(|error| ActorError::Schema(error.to_string()))?;
     Ok(receipts::execution_cycle(
         facts,
         &thread_for_session(&surface.session_id),

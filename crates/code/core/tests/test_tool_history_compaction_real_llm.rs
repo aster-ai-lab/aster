@@ -9,9 +9,7 @@ mod support;
 use aster_core::budget::{BudgetDecision, BudgetGuard};
 use aster_core::fact_control::{read_workspace_facts, thread_for_session};
 use aster_core::harness_loop::CompletionTerminal;
-use aster_core::llm::{
-    LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
-};
+use aster_core::llm::{LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition};
 use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 use aster_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
 use aster_durable_memory::MemoryStore;
@@ -484,7 +482,10 @@ async fn scenario(corrected: bool) {
         prepared.identity.admission.as_ref().unwrap().thread_id,
         thread_for_session(&session_id)
     );
-    assert_eq!(receipt.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
+    assert_eq!(
+        receipt.outcome,
+        aster_effect::ToolExecutionOutcome::Succeeded
+    );
     assert_eq!(
         receipt.effects.completeness,
         aster_effect::ToolObservationCompleteness::Complete

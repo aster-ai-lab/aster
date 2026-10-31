@@ -116,7 +116,12 @@ fn a_foreign_or_later_slice_cannot_refresh_this_slice() {
         "other-run"
     ));
     let mut current = receipt_pair(ToolEffectObservationV1::complete(vec![]));
-    current.push(fact(4, "aster.goal.slice.admitted", "later-slice", json!({})));
+    current.push(fact(
+        4,
+        "aster.goal.slice.admitted",
+        "later-slice",
+        json!({}),
+    ));
     current.extend(facts.into_iter().skip(1).map(|mut fact| {
         fact.seq += 3;
         fact

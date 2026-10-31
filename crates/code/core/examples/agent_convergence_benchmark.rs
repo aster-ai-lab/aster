@@ -3,6 +3,7 @@
 //! Run with:
 //! `cargo run -p aster-core --example agent_convergence_benchmark --release`
 
+use anyhow::{Context, Result};
 use aster_core::hitl::AutoApproveConfirmation;
 use aster_core::llm::{StreamEvent, ToolDefinition};
 use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
@@ -12,7 +13,6 @@ use aster_core::{
     Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, Message, PlanningMode, SessionOptions,
     TokenUsage,
 };
-use anyhow::{Context, Result};
 use async_trait::async_trait;
 use serde::Serialize;
 use serde_json::{json, Value};

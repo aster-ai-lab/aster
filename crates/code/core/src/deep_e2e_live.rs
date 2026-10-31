@@ -1850,7 +1850,8 @@ async fn case_agent_release_contract(commit: &str) {
         AGENT_PROTOCOL_V1,
     };
 
-    const RAW_FIXTURE: &str = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
+    const RAW_FIXTURE: &str =
+        include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
     let fixture = RAW_FIXTURE.replace("\r\n", "\n").replace('\r', "\n");
     let manifest = AgentReleaseManifest::parse(&fixture).expect("manifest");
     let digest = manifest.artifact().digest().to_string();

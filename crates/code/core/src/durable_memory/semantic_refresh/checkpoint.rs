@@ -5,7 +5,9 @@ use crate::durable_memory::semantic_binding::{
 use aster_durable_memory::repository::{
     MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_NODES, MEMORY_NAMESPACE_SNAPSHOT_PROFILE_V1,
 };
-use aster_durable_memory::vector::{VectorIndexChangeToken, VectorIndexStatus, VectorMutationConsistency};
+use aster_durable_memory::vector::{
+    VectorIndexChangeToken, VectorIndexStatus, VectorMutationConsistency,
+};
 use serde::{Deserialize, Serialize};
 
 /// Stable schema of a persisted semantic-refresh recovery checkpoint.

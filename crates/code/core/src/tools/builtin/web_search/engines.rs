@@ -2,7 +2,7 @@
 
 use crate::config::SearchCascadeTier;
 use aster_search::providers::{
-    AsterConfig, AliyunConfig, AnySearchConfig, BochaConfig, BuiltinProvider, CredentialSource,
+    AliyunConfig, AnySearchConfig, AsterConfig, BochaConfig, BuiltinProvider, CredentialSource,
     DeepSeekConfig, DoubaoConfig, FirecrawlConfig, TavilyConfig, TencentConfig, TinyFishConfig,
 };
 use aster_search::{

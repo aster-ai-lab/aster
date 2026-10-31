@@ -2,6 +2,7 @@
 //! The orthogonal-vector control isolates lexical/ranking behavior; it makes no
 //! claim about real embedding quality or tokenizer-measured token savings.
 
+use anyhow::{bail, Context, Result};
 use aster_core::{
     Agent, ChunkCatalogLimits, ChunkingConfig, CodeConfig, EmbeddingBatchRequest,
     EmbeddingBatchResponse, EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError,
@@ -11,7 +12,6 @@ use aster_core::{
     WorkspaceResult, WorkspaceRetrievalOptions, WorkspaceRetrievalPhase, WorkspaceServices,
     WorkspaceWriteOutcome,
 };
-use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::json;

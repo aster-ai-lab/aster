@@ -1,8 +1,8 @@
 //! Release-only ACL env injection. Credentials never cross stdout or argv.
 
+use anyhow::{anyhow, bail, ensure, Context, Result};
 use aster_acl::{Block, Document, Value};
 use aster_core::config::CodeConfig;
-use anyhow::{anyhow, bail, ensure, Context, Result};
 use std::{
     collections::BTreeMap,
     ffi::OsString,
@@ -156,7 +156,8 @@ fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepar
     let (provider, model) = config
         .default_model_config()
         .ok_or_else(|| anyhow!("configured default provider/model is missing"))?;
-    let mut document = aster_acl::parse(content).map_err(|_| anyhow!("invalid ACL configuration"))?;
+    let mut document =
+        aster_acl::parse(content).map_err(|_| anyhow!("invalid ACL configuration"))?;
     // This is an environment-variable spelling, never an entity classifier.
     let provider_env: String = provider
         .name

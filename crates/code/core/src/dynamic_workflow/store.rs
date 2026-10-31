@@ -72,7 +72,11 @@ impl CrossProcessFlowEventStore {
 
 #[async_trait]
 impl FlowEventStore for CrossProcessFlowEventStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let _process_guard = self.process_lock.lock().await;
         let _file_guard = self.acquire_file_lock().await?;
         self.inner.append(run_id, event).await

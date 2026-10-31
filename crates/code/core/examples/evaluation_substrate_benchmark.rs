@@ -160,8 +160,8 @@ async fn run_sample() -> anyhow::Result<Sample> {
         let envelope = EvaluationWireEnvelopeV1::from_evaluation_record(record.clone())?;
         let encoded = envelope.to_vec()?;
         let decoded = EvaluationWireEnvelopeV1::from_slice(&encoded)?;
-        let round_trip: EvaluationRecordV1 = decoded
-            .payload_as(aster_core::evaluation::EvaluationWireKindV1::EvaluationRecord)?;
+        let round_trip: EvaluationRecordV1 =
+            decoded.payload_as(aster_core::evaluation::EvaluationWireKindV1::EvaluationRecord)?;
         if round_trip != *record {
             anyhow::bail!("evaluation wire round trip changed a record");
         }

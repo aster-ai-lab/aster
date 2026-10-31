@@ -9,6 +9,7 @@ use crate::config::{BrowserBackend, HeadlessConfig};
 #[cfg(feature = "headless-search")]
 use crate::moli_runtime::ensure_moli;
 use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
+use anyhow::Result;
 #[cfg(feature = "headless-search")]
 use aster_search::product::PendingHeadlessRuntime;
 use aster_search::product::{execute_cascade, CascadeControls, CascadeRequest, HeadlessBrowser};
@@ -16,7 +17,6 @@ use aster_search::proxy::ProxyConfig;
 use aster_search::{
     EngineTierPlan, Metrics, MetricsSnapshot, SearchCoalescerSnapshot, SearchQuery, SearchResult,
 };
-use anyhow::Result;
 use async_trait::async_trait;
 use regex::Regex;
 use std::collections::HashMap;

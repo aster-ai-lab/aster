@@ -78,12 +78,14 @@ pub struct Campaign {
 
 impl Campaign {
     pub async fn prepare(prefix: &str) -> Self {
-        let selected = std::env::var("ASTER_LIVE_MODEL").expect("explicit ASTER_LIVE_MODEL required");
+        let selected =
+            std::env::var("ASTER_LIVE_MODEL").expect("explicit ASTER_LIVE_MODEL required");
         let source = PathBuf::from(
             std::env::var_os("ASTER_CONFIG_FILE").expect("explicit trusted ACL required"),
         );
         let evidence = PathBuf::from(
-            std::env::var_os("ASTER_LH_EVIDENCE_DIR").expect("explicit evidence directory required"),
+            std::env::var_os("ASTER_LH_EVIDENCE_DIR")
+                .expect("explicit evidence directory required"),
         );
         assert!(source.is_absolute() && evidence.is_absolute());
         let trusted = CodeConfig::from_file(&source)

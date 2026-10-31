@@ -88,7 +88,10 @@ impl ProjectedFlowHandle {
         self.capability_run.close().await.map_err(Into::into)
     }
 
-    async fn await_flow<T>(&self, future: impl Future<Output = aster_flow::Result<T>>) -> Result<T> {
+    async fn await_flow<T>(
+        &self,
+        future: impl Future<Output = aster_flow::Result<T>>,
+    ) -> Result<T> {
         let cancellation = self.capability_run.run_scope().cancellation();
         tokio::pin!(future);
         tokio::select! {

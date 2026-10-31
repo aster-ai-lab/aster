@@ -83,7 +83,9 @@ pub enum CapabilityRuntimeError {
     Scope(#[from] CapabilityScopeError),
     #[error("A Session capability batch with an Aster Use cursor requires a lease provider")]
     MissingUseLeaseProvider,
-    #[error("A Session capability batch without an Aster Use cursor cannot carry a lease provider")]
+    #[error(
+        "A Session capability batch without an Aster Use cursor cannot carry a lease provider"
+    )]
     UnexpectedUseLeaseProvider,
     #[error(
         "Aster Use lease provider does not match the batch cursor (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"

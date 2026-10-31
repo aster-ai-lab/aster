@@ -7,7 +7,10 @@ async fn test_local_session_installs_native_sandbox_by_default() {
     let session = agent
         .session_async(
             workspace.path().display().to_string(),
-            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
+            Some(
+                SessionOptions::new()
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
+            ),
         )
         .await
         .unwrap();

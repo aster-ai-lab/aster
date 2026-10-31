@@ -230,9 +230,9 @@ impl AsterCodeAgent {
             // A fixed checker keeps the capability ceiling empty even after a mode change.
             let mut options = options;
             options.hook_executor = None;
-            Ok(options.with_isolated_context().with_permission_policy(
-                aster_core::permissions::PermissionPolicy::new().deny("*"),
-            ))
+            Ok(options
+                .with_isolated_context()
+                .with_permission_policy(aster_core::permissions::PermissionPolicy::new().deny("*")))
         } else if let Some(scope) = &setup.host.knowledge_compile {
             let mut options = options;
             options.hook_executor = None;

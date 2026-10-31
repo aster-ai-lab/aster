@@ -107,7 +107,8 @@ fn shell_proof_requires_a_complete_successful_exact_parent_and_current_effect_id
                 receipt.exit_code = Some(1);
             }
             "incomplete" => {
-                receipt.effects.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
+                receipt.effects.completeness =
+                    aster_effect::ToolObservationCompleteness::Incomplete;
                 receipt.effects.reason = Some("controlled incomplete parent observation".into());
             }
             "later-bytes" => {
@@ -178,9 +179,12 @@ fn shell_proof_authority_is_bounded_by_existing_command_and_effect_limits() {
     let root = tempfile::tempdir().unwrap();
     for command in [
         "x".repeat(aster_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES + 1),
-        std::iter::repeat_n("test -f checked.txt", aster_effect::MAX_TOOL_EFFECT_PATHS + 1)
-            .collect::<Vec<_>>()
-            .join(";"),
+        std::iter::repeat_n(
+            "test -f checked.txt",
+            aster_effect::MAX_TOOL_EFFECT_PATHS + 1,
+        )
+        .collect::<Vec<_>>()
+        .join(";"),
     ] {
         let mut scope = checked_scope(root.path());
         let started = scope.begin_nested_mutation().unwrap();

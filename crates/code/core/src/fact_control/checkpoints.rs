@@ -29,7 +29,8 @@ pub(super) async fn save_committed(
         let Some(value) = fact.payload.get("receipt") else {
             return false;
         };
-        let Ok(result) = serde_json::from_value::<aster_effect::ToolExecutionResultV1>(value.clone())
+        let Ok(result) =
+            serde_json::from_value::<aster_effect::ToolExecutionResultV1>(value.clone())
         else {
             return false;
         };

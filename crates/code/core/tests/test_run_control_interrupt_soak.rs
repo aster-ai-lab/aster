@@ -3,15 +3,11 @@
 //! the invocation observes that it was not cancelled.
 
 use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use aster_core::llm::{
-    ContentBlock, LlmClient, LlmResponse, Message, TokenUsage, ToolDefinition,
-};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, TokenUsage, ToolDefinition};
 use aster_core::memory::MemoryConfig;
 use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 use aster_core::tools::{Tool, ToolContext, ToolOutput};
-use aster_core::{
-    Agent, InterruptRequest, PlanningMode, RunStatus, SessionOptions, SteerRequest,
-};
+use aster_core::{Agent, InterruptRequest, PlanningMode, RunStatus, SessionOptions, SteerRequest};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
@@ -64,9 +60,7 @@ impl LlmClient for ToolCallClient {
         let response = tool_response(self.calls.fetch_add(1, Ordering::SeqCst));
         let (tx, rx) = tokio::sync::mpsc::channel(4);
         tokio::spawn(async move {
-            let _ = tx
-                .send(aster_core::llm::StreamEvent::Done(response))
-                .await;
+            let _ = tx.send(aster_core::llm::StreamEvent::Done(response)).await;
         });
         Ok(rx)
     }

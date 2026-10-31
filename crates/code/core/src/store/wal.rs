@@ -21,8 +21,7 @@ const SESSION_STORE_WAL_DIGEST_DOMAIN: &str = "aster.code.session-store-wal-entr
 const SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN: &str = "aster.code.session-store-snapshot.identity.v1";
 /// Pre-rename schema retained so 0.1.8 session stores copied into 0.1.9+ still open.
 const LEGACY_SESSION_STORE_WAL_ENTRY_SCHEMA_V1: &str = "a3s.code.session-store-wal-entry.v1";
-const LEGACY_SESSION_STORE_WAL_DIGEST_DOMAIN: &str =
-    "a3s.code.session-store-wal-entry.identity.v1";
+const LEGACY_SESSION_STORE_WAL_DIGEST_DOMAIN: &str = "a3s.code.session-store-wal-entry.identity.v1";
 const LEGACY_SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN: &str =
     "a3s.code.session-store-snapshot.identity.v1";
 
@@ -135,10 +134,7 @@ pub fn snapshot_content_digest<T: Serialize>(snapshot: &T) -> Result<String> {
 }
 
 /// True when `expected` matches the current or legacy snapshot digest domain.
-pub fn snapshot_content_digest_matches<T: Serialize>(
-    snapshot: &T,
-    expected: &str,
-) -> Result<bool> {
+pub fn snapshot_content_digest_matches<T: Serialize>(snapshot: &T, expected: &str) -> Result<bool> {
     if snapshot_content_digest(snapshot)? == expected {
         return Ok(true);
     }
@@ -399,7 +395,11 @@ mod tests {
         entry.validate().unwrap();
 
         entry.schema = "foreign.code.session-store-wal-entry.v1".into();
-        assert!(entry.validate().unwrap_err().to_string().contains("unsupported"));
+        assert!(entry
+            .validate()
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported"));
     }
 
     #[test]

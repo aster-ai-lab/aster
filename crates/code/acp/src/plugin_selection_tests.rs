@@ -728,7 +728,10 @@ async fn native_acp_binding_rejects_cursor_forgery_and_unbound_executable_metada
     )
     .await
     .is_err());
-    request["_meta"].as_object_mut().unwrap().remove("asterTools");
+    request["_meta"]
+        .as_object_mut()
+        .unwrap()
+        .remove("asterTools");
     let opened =
         agent_client_protocol::Agent::new_session(&agent, serde_json::from_value(request).unwrap())
             .await

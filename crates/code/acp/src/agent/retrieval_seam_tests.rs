@@ -63,11 +63,9 @@ async fn embedded_local_vectors_publish_before_search_and_are_released_on_close(
     assert_eq!(status.coverage_bps, 10_000);
     assert_eq!(status.model.as_ref().unwrap().provider, "light");
     let found = session
-        .semantic_search(
-            aster_core::workspace::WorkspaceSemanticSearchRequest::new(
-                "parse application configuration",
-            ),
-        )
+        .semantic_search(aster_core::workspace::WorkspaceSemanticSearchRequest::new(
+            "parse application configuration",
+        ))
         .await
         .unwrap();
     assert!(found
@@ -90,9 +88,9 @@ async fn embedded_local_vectors_publish_before_search_and_are_released_on_close(
     assert_eq!(closed.phase, WorkspaceRetrievalPhase::Closed);
     assert_eq!(closed.vector_records, 0);
     assert!(session
-        .semantic_search(
-            aster_core::workspace::WorkspaceSemanticSearchRequest::new("configuration")
-        )
+        .semantic_search(aster_core::workspace::WorkspaceSemanticSearchRequest::new(
+            "configuration"
+        ))
         .await
         .is_err());
 }
@@ -145,11 +143,9 @@ async fn offline_vectors_index_a_large_fixture_before_search_with_bounded_state(
         for _ in 0..5 {
             let query_started = std::time::Instant::now();
             let found = session
-                .semantic_search(
-                    aster_core::workspace::WorkspaceSemanticSearchRequest::new(
-                        "payment ledger invoices and customer billing",
-                    ),
-                )
+                .semantic_search(aster_core::workspace::WorkspaceSemanticSearchRequest::new(
+                    "payment ledger invoices and customer billing",
+                ))
                 .await
                 .unwrap();
             assert!(found

@@ -3,11 +3,11 @@
 use std::path::PathBuf;
 use std::rc::Rc;
 
+use agent_client_protocol as acp;
+use anyhow::{Context, Result};
 use aster_acp::unattended::{Unattended, DEFAULT_EXECUTION_BUDGET_MS};
 use aster_acp::{load_launch_config_with_imports, AsterCodeAgent, PluginSelectionHost};
 use aster_core::config::AccountImport;
-use agent_client_protocol as acp;
-use anyhow::{Context, Result};
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
 #[path = "aster-acp/startup_error.rs"]

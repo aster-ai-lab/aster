@@ -500,8 +500,9 @@ fn test_delegated_plan_step_prompt_includes_plan_goal_context() {
 
 #[test]
 fn test_memory_items_become_context_result() {
-    let item = aster_durable_memory::MemoryItem::new("Use focused regression tests for context changes.")
-        .with_importance(0.8);
+    let item =
+        aster_durable_memory::MemoryItem::new("Use focused regression tests for context changes.")
+            .with_importance(0.8);
 
     let result = crate::memory::memory_items_to_context_result("memory", vec![item.clone()]);
 
@@ -3164,7 +3165,8 @@ async fn test_agent_memory_recall_routes_through_context_assembly() {
         "Memory-aware response",
     )]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     memory
         .remember(
             aster_durable_memory::MemoryItem::new(
@@ -3229,7 +3231,8 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
     };
     let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo")
+            .unwrap();
     repository
         .apply(aster_durable_memory::repository::MemoryChangeSet::new(
             "seed-v2-context",
@@ -3374,7 +3377,8 @@ async fn test_agent_llm_memory_extraction_stores_durable_items() {
         ),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -3421,7 +3425,8 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
     ]));
     let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo")
+            .unwrap();
     #[allow(deprecated)]
     let binding = crate::durable_memory::DurableMemorySession::active_recall(
         repository.clone(),
@@ -3462,7 +3467,9 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
         .unwrap();
 
     assert!(repository
-        .query(aster_durable_memory::repository::MemoryQuery::new(namespace.clone()))
+        .query(aster_durable_memory::repository::MemoryQuery::new(
+            namespace.clone()
+        ))
         .await
         .unwrap()
         .hits
@@ -3544,7 +3551,8 @@ async fn completed_tool_results_do_not_become_long_term_memory_history() {
 async fn test_streaming_llm_memory_extraction_does_not_block_final_result() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -3595,7 +3603,8 @@ async fn test_streaming_llm_memory_extraction_does_not_block_final_result() {
 #[tokio::test]
 async fn scoped_streaming_memory_extraction_survives_turn_cancel() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let set = crate::capability::CapabilitySet::empty().unwrap();
     let ceiling = crate::capability::CapabilityCeiling::all(
@@ -4133,7 +4142,8 @@ async fn test_auto_compact_can_repeat_inside_one_tool_driven_task() {
 async fn test_streaming_llm_memory_extraction_queues_every_completed_turn() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4231,7 +4241,8 @@ async fn test_streaming_llm_memory_judge_evaluates_trivial_turns_asynchronously(
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4277,7 +4288,8 @@ async fn test_agent_llm_memory_extraction_uses_budget_guard() {
     ]));
     let budget = Arc::new(CountingBudgetGuard::new(0));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4318,7 +4330,8 @@ async fn test_agent_llm_memory_extraction_includes_related_memory_context() {
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     memory
         .remember(
             aster_durable_memory::MemoryItem::new(
@@ -4495,7 +4508,8 @@ async fn test_agent_llm_memory_extraction_skips_when_budget_denies() {
     // Deny the memory extraction call after pre-analysis + the main turn.
     let budget = Arc::new(CountingBudgetGuard::new(3));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4551,7 +4565,8 @@ async fn test_agent_llm_memory_extraction_merges_duplicate_durable_items() {
         )),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let existing = aster_durable_memory::MemoryItem::new(existing_content)
         .with_type(aster_durable_memory::MemoryType::Procedural)
         .with_importance(0.4)
@@ -4615,7 +4630,8 @@ async fn test_agent_llm_memory_judge_returns_empty_for_trivial_turns() {
         MockLlmClient::text_response("Hello."),
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4671,7 +4687,8 @@ async fn test_agent_llm_memory_judge_returns_empty_for_read_only_tool_turns() {
         MockLlmClient::text_response("README says Aster memory notes."),
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
-    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let memory =
+        crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let (event_tx, _event_rx) = broadcast::channel(100);
     let mut yolo_lanes = std::collections::HashSet::new();

@@ -1,5 +1,6 @@
 //! `DurableMemorySession` construction over the injected Redis backend.
 
+use anyhow::{bail, Context, Result};
 use aster_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
 use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
@@ -12,7 +13,6 @@ use aster_core::{
 use aster_durable_memory::repository::{MemoryNamespace, MemoryRepository};
 use aster_durable_memory::vector::VectorIndex;
 use aster_durable_memory::InMemoryStore;
-use anyhow::{bail, Context, Result};
 use sha2::{Digest, Sha256};
 use std::sync::Arc;
 use std::time::Duration;

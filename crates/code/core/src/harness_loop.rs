@@ -776,7 +776,8 @@ impl MutationLedger {
         let mut failed_changed = false;
         for change in &result.effects.changes {
             if !crate::porcelain::is_harness_path(&change.path)
-                && result.effects.completeness == aster_effect::ToolObservationCompleteness::Complete
+                && result.effects.completeness
+                    == aster_effect::ToolObservationCompleteness::Complete
             {
                 match result.outcome {
                     aster_effect::ToolExecutionOutcome::Failed

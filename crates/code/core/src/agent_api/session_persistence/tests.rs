@@ -50,7 +50,8 @@ fn durable_memory_session(
 ) -> crate::durable_memory::DurableMemorySession {
     let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope)
+            .unwrap();
     let policy = crate::durable_memory::DurableMemoryRecallPolicy::try_new(max_results, 0.25)
         .unwrap()
         .try_with_related_lookups(2)
@@ -61,7 +62,8 @@ fn durable_memory_session(
 fn durable_memory_shadow_session(scope: &str) -> crate::durable_memory::DurableMemorySession {
     let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope)
+            .unwrap();
     crate::durable_memory::DurableMemorySession::active_recall(
         repository,
         namespace,

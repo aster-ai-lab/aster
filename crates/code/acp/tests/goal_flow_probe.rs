@@ -21,8 +21,8 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Duration;
 
-use aster_acp::{load_launch_config, AsterCodeAgent};
 use agent_client_protocol as acp;
+use aster_acp::{load_launch_config, AsterCodeAgent};
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 

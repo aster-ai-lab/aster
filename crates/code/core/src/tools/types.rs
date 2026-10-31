@@ -939,7 +939,8 @@ impl ToolContext {
                 "resolve_path is only valid for local workspaces; this session uses a non-local workspace backend, call resolve_workspace_path() instead"
             );
         }
-        aster_common::tools::resolve_path(&self.workspace, path).map_err(|e| anyhow::anyhow!("{}", e))
+        aster_common::tools::resolve_path(&self.workspace, path)
+            .map_err(|e| anyhow::anyhow!("{}", e))
     }
 
     /// Resolve path for writing (allows non-existent files).

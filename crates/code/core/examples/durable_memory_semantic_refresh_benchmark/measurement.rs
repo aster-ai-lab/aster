@@ -1,5 +1,5 @@
-use aster_core::memory::{SemanticRefreshRunMetrics, SemanticRefreshRunOutcome};
 use anyhow::{bail, Context, Result};
+use aster_core::memory::{SemanticRefreshRunMetrics, SemanticRefreshRunOutcome};
 use serde::Serialize;
 use serde_json::json;
 use std::time::Duration;

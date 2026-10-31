@@ -12,11 +12,11 @@ mod measurement;
 #[path = "durable_memory_semantic_refresh_benchmark/runtime.rs"]
 mod runtime;
 
+use anyhow::{bail, Context, Result};
 use aster_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
 use aster_core::DurableMemorySemanticRefreshCheckpoint;
 use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace};
 use aster_durable_memory::vector::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
-use anyhow::{bail, Context, Result};
 use fixture::{revise_source_node, seed_repository, QualificationProvider};
 use measurement::{
     duration_ms, latency, machine_metadata, max_rss, resident_set_bytes, rss_delta,

@@ -4,12 +4,12 @@
 //! repository and the embedding request so a qualification pack cannot leak
 //! prompt plaintext.
 
+use anyhow::{Context, Result};
 use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, MemoryChangeSet, MemoryNamespace,
     MemoryNodeDraft, MemoryOperation, MemoryRelation, MemoryRelationKind, MemoryRepository,
     MemoryStatus, RevisionMode, MAX_CHANGE_OPERATIONS,
 };
-use anyhow::{Context, Result};
 use chrono::{DateTime, TimeDelta, Utc};
 use sha2::{Digest, Sha256};
 

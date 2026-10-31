@@ -199,8 +199,10 @@ async fn resolved_native_sandbox_denies_outside_workspace_write_on_this_host() {
         .await
         .expect("native sandbox probe must succeed before claiming integration");
 
-    let outside =
-        std::env::temp_dir().join(format!("aster-cmd-sandbox-escape-{}.txt", std::process::id()));
+    let outside = std::env::temp_dir().join(format!(
+        "aster-cmd-sandbox-escape-{}.txt",
+        std::process::id()
+    ));
     let _ = std::fs::remove_file(&outside);
     let command = format!(
         "printf 'escaped\\n' > '{}'",
@@ -244,7 +246,8 @@ async fn live_flash_bash_through_aster_cmd_sandbox_writes_workspace_token() {
     assert_live_native_lifetime_supported();
     let workspace = tempfile::tempdir().expect("workspace");
     let sandbox = Arc::new(
-        NativeBashSandbox::new(workspace.path()).expect("resolved native aster-cmd-sandbox must init"),
+        NativeBashSandbox::new(workspace.path())
+            .expect("resolved native aster-cmd-sandbox must init"),
     );
     assert_eq!(sandbox.backend(), NATIVE_SANDBOX_BACKEND);
     sandbox.probe().await.expect("probe");

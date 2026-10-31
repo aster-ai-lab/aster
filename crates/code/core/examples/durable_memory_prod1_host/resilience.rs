@@ -2,8 +2,8 @@
 
 use super::connection::RedisSocket;
 use super::redis_index::RedisVectorIndex;
-use aster_durable_memory::vector::{VectorIndex, VectorIndexDescriptor};
 use anyhow::{Context, Result};
+use aster_durable_memory::vector::{VectorIndex, VectorIndexDescriptor};
 use redis::RedisError;
 use serde::Serialize;
 use std::sync::Arc;

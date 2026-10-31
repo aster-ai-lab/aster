@@ -151,7 +151,8 @@ async fn bounded_reader_keeps_the_source_and_refuses_special_files() {
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(root.path().join(".aster")).unwrap();
         std::fs::create_dir(root.path().join("outside")).unwrap();
-        std::os::unix::fs::symlink(root.path().join("outside"), root.path().join(".aster")).unwrap();
+        std::os::unix::fs::symlink(root.path().join("outside"), root.path().join(".aster"))
+            .unwrap();
         std::fs::write(root.path().join(SOURCE_PATH), "{}").unwrap();
         assert!(preview_import(root.path(), &request).await.is_err());
     }

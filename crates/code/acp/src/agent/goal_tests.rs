@@ -1,11 +1,11 @@
 #![cfg(test)]
 
 use super::{test_launch, AsterCodeAgent};
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_core::goal_control::{
     GoalCommandKindV1, GoalDefinitionCommandV1, GoalImportSourceV1, GoalState,
 };
 use aster_core::workspace::WorkspaceServices;
-use agent_client_protocol::{self as acp, Agent as _};
 
 #[tokio::test]
 async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts() {
@@ -135,8 +135,7 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
             _ => panic!("unexpected default goal decision"),
         }
         let thread = aster_core::fact_control::thread_for_session(session.session_id());
-        let facts =
-            aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+        let facts = aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
         assert!(!facts.iter().any(|fact| fact.kind == "model.turn"));
         session.close().await;
     }
@@ -217,7 +216,10 @@ async fn preview(
     }))
     .unwrap();
     let response = agent
-        .ext_method(acp::ExtRequest::new("aster/goal/import/preview", raw.into()))
+        .ext_method(acp::ExtRequest::new(
+            "aster/goal/import/preview",
+            raw.into(),
+        ))
         .await?;
     Ok(serde_json::from_str(response.0.get()).unwrap())
 }
@@ -550,16 +552,15 @@ async fn prove_bound_clear(real_model: bool) {
         .await
         .expect("bounded live turn")
         .unwrap_or_else(|error| {
-            let tail = aster_core::fact_control::read_workspace_facts(root.path(), &thread).map(
-                |facts| {
+            let tail =
+                aster_core::fact_control::read_workspace_facts(root.path(), &thread).map(|facts| {
                     facts
                         .into_iter()
                         .rev()
                         .take(16)
                         .map(|fact| (fact.seq, fact.kind))
                         .collect::<Vec<_>>()
-                },
-            );
+                });
             panic!(
                 "live ACP failed: {error:?}; usage={:?}; fact tail={tail:?}",
                 session.recorded_usage_tokens()
@@ -1022,9 +1023,8 @@ async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
         .unwrap()
         .text();
     assert!(answer.contains(&marker), "{answer}");
-    let facts =
-        aster_core::fact_control::read_workspace_facts(next.workspace(), next.session_id())
-            .unwrap();
+    let facts = aster_core::fact_control::read_workspace_facts(next.workspace(), next.session_id())
+        .unwrap();
     let input = facts
         .iter()
         .rev()

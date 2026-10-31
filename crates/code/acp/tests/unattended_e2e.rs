@@ -1248,7 +1248,10 @@ async fn an_interactive_launch_never_binds_the_gate_and_keeps_state_in_the_works
                         || body.contains("Host note: A host admission bind")),
                 "an interactive turn received unattended host text"
             );
-            assert!(workspace.join(".aster").is_dir(), "default state root moved");
+            assert!(
+                workspace.join(".aster").is_dir(),
+                "default state root moved"
+            );
             assert!(
                 !entries(&tmp)
                     .iter()

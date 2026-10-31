@@ -1608,10 +1608,7 @@ fn shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent() {
     std::fs::set_permissions(&agent, std::fs::Permissions::from_mode(0o755)).expect("executable");
     let agent_text = agent.to_string_lossy().to_string();
     let binary = tui_binary();
-    for variable in [
-        "ASTER_CONNECT_TIMEOUT_SECS",
-        "GROK_CONNECT_UI_TIMEOUT_SECS",
-    ] {
+    for variable in ["ASTER_CONNECT_TIMEOUT_SECS", "GROK_CONNECT_UI_TIMEOUT_SECS"] {
         let home = root.path().join(variable);
         std::fs::create_dir_all(&home).expect("home");
         let home_text = home.to_string_lossy().to_string();
@@ -1639,10 +1636,7 @@ fn shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent() {
         let raw = String::from_utf8_lossy(&pty.raw);
         assert!(!status.success(), "an unresponsive agent cannot start");
         assert!(raw.contains("startup timed out"), "{raw}");
-        assert!(
-            raw.contains("ASTER_CONNECT_TIMEOUT_SECS=60 aster"),
-            "{raw}"
-        );
+        assert!(raw.contains("ASTER_CONNECT_TIMEOUT_SECS=60 aster"), "{raw}");
     }
     oracle(
         "shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent",
@@ -3902,7 +3896,8 @@ const REAL_GOAL_MODEL: &str = "boyue/deepseek-v4-flash";
 
 /// Explicit host ACL: the operator's live file plus trusted goal bounds.
 fn write_real_goal_acl(home: &Path) -> PathBuf {
-    let source = std::env::var_os("ASTER_CONFIG_FILE").expect("ASTER_CONFIG_FILE names the live ACL");
+    let source =
+        std::env::var_os("ASTER_CONFIG_FILE").expect("ASTER_CONFIG_FILE names the live ACL");
     let mut acl = std::fs::read_to_string(source).expect("live ACL");
     let deadline = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)

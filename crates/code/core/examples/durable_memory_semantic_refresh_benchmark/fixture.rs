@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
@@ -7,7 +8,6 @@ use aster_durable_memory::repository::{
     MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus, RevisionMode,
     MAX_CHANGE_OPERATIONS,
 };
-use anyhow::{Context, Result};
 use async_trait::async_trait;
 use chrono::{DateTime, TimeDelta, Utc};
 use sha2::{Digest, Sha256};

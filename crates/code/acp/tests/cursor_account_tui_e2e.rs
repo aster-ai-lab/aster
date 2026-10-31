@@ -306,8 +306,14 @@ import_accounts = ["cursor"]
     ];
     match login {
         Login::Present => {
-            env.push(("ASTER_CURSOR_HOME".into(), cursor_home.display().to_string()));
-            env.push(("ASTER_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
+            env.push((
+                "ASTER_CURSOR_HOME".into(),
+                cursor_home.display().to_string(),
+            ));
+            env.push((
+                "ASTER_CURSOR_TOKEN_FILE".into(),
+                token.display().to_string(),
+            ));
             env.push((
                 "ASTER_CURSOR_MODELS_FILE".into(),
                 models.display().to_string(),
@@ -315,8 +321,14 @@ import_accounts = ["cursor"]
         }
         Login::Disabled => {
             env.push(("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()));
-            env.push(("ASTER_CURSOR_HOME".into(), cursor_home.display().to_string()));
-            env.push(("ASTER_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
+            env.push((
+                "ASTER_CURSOR_HOME".into(),
+                cursor_home.display().to_string(),
+            ));
+            env.push((
+                "ASTER_CURSOR_TOKEN_FILE".into(),
+                token.display().to_string(),
+            ));
             env.push((
                 "ASTER_CURSOR_MODELS_FILE".into(),
                 models.display().to_string(),

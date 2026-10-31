@@ -193,7 +193,8 @@ impl AsterCodeAgent {
                 .map(|entry| {
                     let mut row = json!(entry);
                     row["source"] = json!("local");
-                    row["_meta"] = json!({"asterCode/sessionCatalog": "aster.code.session-catalog.v1"});
+                    row["_meta"] =
+                        json!({"asterCode/sessionCatalog": "aster.code.session-catalog.v1"});
                     row
                 })
                 .collect();

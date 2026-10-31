@@ -104,7 +104,8 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
     assert!(low.thinking_budget < high.thinking_budget);
     assert!(high.thinking_budget < max.thinking_budget);
 
-    let claude = AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
+    let claude =
+        AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
     assert_eq!(claude.reasoning_effort.as_deref(), Some("high"));
     assert_eq!(claude.thinking_budget, Some(high.thinking_budget));
     assert_eq!(claude.max_tool_rounds, Some(0));
@@ -136,7 +137,8 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
 fn budget_line_states_a_maximum() {
     let high = effort_limits("high").expect("high");
     assert_eq!(high.thinking_budget, 16_384);
-    let options = AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
+    let options =
+        AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
     let text = options
         .prompt_slots
         .and_then(|slots| slots.guidelines)
@@ -178,7 +180,8 @@ fn empty_registry_still_states_the_product_boundary() {
     assert!(!catalog.contains("search_skills"));
     assert!(!catalog.contains("skills add"));
     let high = effort_limits("high").expect("high");
-    let options = AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
+    let options =
+        AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
     let text = options
         .prompt_slots
         .and_then(|slots| slots.guidelines)
@@ -252,7 +255,8 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     const SKILL_BODY: &str = "BODY-skill-9f3a-unique";
     const WIKI_BODY: &str = "BODY-wiki-9f3a-unique";
     const SECRET: &str = "do-not-leak-connector-cmd-9f3a";
-    let root = std::env::temp_dir().join(format!("aster-acp-local-assets-{}", uuid::Uuid::new_v4()));
+    let root =
+        std::env::temp_dir().join(format!("aster-acp-local-assets-{}", uuid::Uuid::new_v4()));
     let _ = std::fs::remove_dir_all(&root);
     let capabilities = root.join("capabilities");
     let skills = capabilities.join("skills").join("brief-writer");
@@ -562,10 +566,7 @@ fn effort_limits_preserve_thinking_and_parallel_resource_settings() {
     assert_eq!(ultra.thinking_budget, max.thinking_budget);
     let ultra_options =
         AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(ultra));
-    assert_eq!(
-        ultra_options.planning_mode,
-        aster_core::PlanningMode::Auto
-    );
+    assert_eq!(ultra_options.planning_mode, aster_core::PlanningMode::Auto);
     assert!(effort_limits("not-a-level").is_none());
 }
 
@@ -1302,10 +1303,7 @@ async fn seam_admission_acp_permission_and_goal() {
         None,
         crate::goal::parse_goal_command("/goal ship the seam").expect("goal command"),
     );
-    assert_eq!(
-        applied.plan.mode(),
-        Some(aster_core::PlanningMode::Enabled)
-    );
+    assert_eq!(applied.plan.mode(), Some(aster_core::PlanningMode::Enabled));
     assert_eq!(
         applied.next.as_ref().map(|goal| goal.objective.as_str()),
         Some("ship the seam")
@@ -1452,7 +1450,8 @@ fn delete_removes_only_the_named_id() {
 
 #[tokio::test]
 async fn new_session_attaches_file_session_store() {
-    let root = std::env::temp_dir().join(format!("aster-acp-session-store-{}", uuid::Uuid::new_v4()));
+    let root =
+        std::env::temp_dir().join(format!("aster-acp-session-store-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let sessions_dir = root.join("sessions");
     let mut launch = test_launch(Some(sessions_dir.clone()));
@@ -1476,7 +1475,8 @@ async fn new_session_attaches_file_session_store() {
 
 #[tokio::test]
 async fn set_session_model_replaces_a_live_session() {
-    let root = std::env::temp_dir().join(format!("aster-acp-model-switch-{}", uuid::Uuid::new_v4()));
+    let root =
+        std::env::temp_dir().join(format!("aster-acp-model-switch-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let sessions_dir = root.join("sessions");
     let mut launch = test_launch(Some(sessions_dir));
@@ -1509,7 +1509,8 @@ async fn set_session_model_replaces_a_live_session() {
 
 #[tokio::test]
 async fn the_model_config_option_selects_the_session_model() {
-    let root = std::env::temp_dir().join(format!("aster-acp-model-option-{}", uuid::Uuid::new_v4()));
+    let root =
+        std::env::temp_dir().join(format!("aster-acp-model-option-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
@@ -1685,9 +1686,10 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let _ = AsterCodeAgent::core_session_options("sid", "model", None);
     assert!(effort_limits_from_meta(None).is_none());
 
-    let (text, attachments) =
-        AsterCodeAgent::prompt_content(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))])
-            .expect("text prompt");
+    let (text, attachments) = AsterCodeAgent::prompt_content(&[acp::ContentBlock::Text(
+        acp::TextContent::new(" hello "),
+    )])
+    .expect("text prompt");
     assert_eq!(text, " hello ");
     assert!(attachments.is_empty());
 
@@ -2282,8 +2284,10 @@ fn confirmation_then_execution_opens_one_tool_row() {
 
 #[test]
 fn workspace_and_home_skill_roots_are_loaded_when_they_exist() {
-    let root =
-        std::env::temp_dir().join(format!("aster-acp-workspace-skills-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!(
+        "aster-acp-workspace-skills-{}",
+        uuid::Uuid::new_v4()
+    ));
     let home = root.join("home");
     let outside = root.join("outside");
     for base in [&root, &home, &outside] {
@@ -2656,7 +2660,8 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
         .run_until(async {
             let mut launch = tests::test_launch(Some(root.join("sessions")));
             launch.workspace = root.clone();
-            let handler_agent = AsterCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
+            let handler_agent =
+                AsterCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
             let (agent_read, agent_write) = tokio::io::split(agent_end);

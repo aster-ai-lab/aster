@@ -419,7 +419,8 @@ mod tests {
 
     #[test]
     fn one_generation_freezes_tools_and_omits_host_surfaces() {
-        let root = std::env::temp_dir().join(format!("aster-harness-freeze-{}", std::process::id()));
+        let root =
+            std::env::temp_dir().join(format!("aster-harness-freeze-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (path, digest) = skill_file(&root, REVIEW);
         let raw = snapshot(

@@ -1,10 +1,8 @@
 #![cfg(any(windows, target_os = "linux"))]
 
 use super::*;
-use aster_core::llm::{
-    ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition,
-};
 use acp::Agent as _;
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 

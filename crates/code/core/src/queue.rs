@@ -17,8 +17,8 @@
 //! The actual queue implementation is in `SessionLaneQueue` which is backed
 //! by aster-lane with features like DLQ, metrics, retry policies, and rate limiting.
 
-pub use aster_lane::MetricsSnapshot;
 use anyhow::Result;
+pub use aster_lane::MetricsSnapshot;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

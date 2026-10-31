@@ -26,7 +26,10 @@ async fn thought_content_is_omitted_and_extension_outcomes_are_bounded() {
     assert!(text.contains("contentOmitted"));
     let params = serde_json::value::to_raw_value(&serde_json::json!({"sessionId":"fixture","outcome":{"terminal":"verified","status":"passed"}})).unwrap();
     client
-        .ext_notification(acp::ExtNotification::new("aster/turn/outcome", params.into()))
+        .ext_notification(acp::ExtNotification::new(
+            "aster/turn/outcome",
+            params.into(),
+        ))
         .await
         .unwrap();
     assert_eq!(
@@ -47,7 +50,10 @@ async fn thought_content_is_omitted_and_extension_outcomes_are_bounded() {
     let params =
         serde_json::value::to_raw_value(&serde_json::json!({"sessionId":"fixture"})).unwrap();
     assert!(client
-        .ext_notification(acp::ExtNotification::new("aster/turn/outcome", params.into()))
+        .ext_notification(acp::ExtNotification::new(
+            "aster/turn/outcome",
+            params.into()
+        ))
         .await
         .is_err());
     assert!(capture.lock().unwrap().overflow);

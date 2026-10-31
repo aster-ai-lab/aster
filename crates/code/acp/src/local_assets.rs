@@ -11,9 +11,9 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
+use anyhow::Result;
 use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 use aster_core::tools::{Tool, ToolContext, ToolOutput};
-use anyhow::Result;
 use async_trait::async_trait;
 use serde_json::{json, Value};
 #[path = "connector_notes.rs"]
@@ -184,16 +184,15 @@ pub fn open_local_asset(
         policy = policy.deny(TOOL_NAME);
     }
     policy = policy.allow(TOOL_NAME);
-    let found =
-        match aster_core::fact_control::admit_tool_call(&policy, TOOL_NAME, &args, || {
-            load_catalog(roots)
-                .into_iter()
-                .find(|item| item.kind == kind && item.name == name)
-        }) {
-            Ok(item) => item,
-            Err(PermissionDecision::Deny) => return Err("denied"),
-            Err(_) => return Err("denied"),
-        };
+    let found = match aster_core::fact_control::admit_tool_call(&policy, TOOL_NAME, &args, || {
+        load_catalog(roots)
+            .into_iter()
+            .find(|item| item.kind == kind && item.name == name)
+    }) {
+        Ok(item) => item,
+        Err(PermissionDecision::Deny) => return Err("denied"),
+        Err(_) => return Err("denied"),
+    };
     let Some(item) = found else {
         return Err("missing");
     };

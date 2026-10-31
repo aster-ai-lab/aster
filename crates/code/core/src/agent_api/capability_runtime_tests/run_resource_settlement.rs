@@ -593,7 +593,10 @@ async fn seed_resume(session: &AgentSession, checkpoint: bool) {
         .unwrap()
         .append(
             &crate::fact_control::thread_for_session(session.id()),
-            &[aster_effect::message_fact("resume-resource", "own resource")],
+            &[aster_effect::message_fact(
+                "resume-resource",
+                "own resource",
+            )],
             None,
         )
         .unwrap();
