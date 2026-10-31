@@ -48,7 +48,13 @@ jobs:
         run: rustup show active-toolchain
       - name: Install pnpm
         shell: bash
-        run: corepack enable && pnpm --version
+        # Root packageManager is bun; activate the Studio-pinned pnpm without
+        # letting corepack read the repository root specification.
+        run: |
+          set -euo pipefail
+          npm install -g pnpm@12.6.0
+          cd apps/studio
+          pnpm --version
       - name: Build the sealed desktop bundle
         shell: bash
         env:
