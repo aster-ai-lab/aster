@@ -1,18 +1,19 @@
-name: Release aster
+name: Release aster-acp
 
 # Core/ACP only. Aster CLI and Desktop use separate product namespaces.
+# Tag, Release, and archive prefix share aster-acp-vX.Y.Z.
 on:
   workflow_dispatch:
   push:
     tags:
-      - "aster-v[0-9]+.[0-9]+.[0-9]+"
+      - "aster-acp-v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: aster-${{ github.ref }}
+  group: aster-acp-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -113,7 +114,7 @@ jobs:
   publish:
     name: Publish Core/ACP source release
     needs: build
-    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'aster-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'aster-acp-v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -130,7 +131,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          version="${GITHUB_REF_NAME#aster-v}"
+          version="${GITHUB_REF_NAME#aster-acp-v}"
           acp_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
           core_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/core/Cargo.toml", "rb"))["package"]["version"])')"
           if ! test "$version" = "$acp_version"; then
@@ -162,7 +163,7 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             --verify-tag \
             --latest=false \
-            --title "Aster Code / ACP v${version}" \
+            --title "aster-acp v${version}" \
             --notes-file "$notes" \
             "${files[@]}" dist/SHA256SUMS
           gh release view "${GITHUB_REF_NAME}"

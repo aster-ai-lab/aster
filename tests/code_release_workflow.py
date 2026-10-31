@@ -30,7 +30,8 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
 
     def test_tag_publish_waits_for_qualification_and_all_cached_code_lanes(self):
         text = WORKFLOW.read_text()
-        self.assertIn('tags:\n      - "aster-v[0-9]+.[0-9]+.[0-9]+"', text)
+        self.assertIn('tags:\n      - "aster-acp-v[0-9]+.[0-9]+.[0-9]+"', text)
+        self.assertNotIn('tags:\n      - "aster-v[0-9]+.[0-9]+.[0-9]+"', text)
         self.assertIn("needs: qualified", text)
         self.assertIn("needs: build", text)
         self.assertIn("actions/workflows/qualify-code.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed", text)
@@ -97,7 +98,7 @@ printf '%s\\n' "$QUALIFIED_COUNT"
 
 
 class CodePublication(unittest.TestCase):
-    def publish(self, *, tag="aster-v9.1.6", core="9.1.6", notes=True, wrong_asset=False):
+    def publish(self, *, tag="aster-acp-v9.1.6", core="9.1.6", notes=True, wrong_asset=False):
         script = workflow_script("release-code.yml", "Publish versioned release")
         with tempfile.TemporaryDirectory(prefix="aster-release-") as directory:
             root = Path(directory)
@@ -143,7 +144,15 @@ esac
         self.assertIn("--latest=false", args)
         self.assertIn("--verify-tag", args)
         self.assertEqual(args[args.index("--notes-file") + 1], "crates/code/manual/RELEASE_9.1.6.md")
-        for options in [{"tag": "v9.1.6"}, {"core": "9.1.5"}, {"notes": False}, {"wrong_asset": True}]:
+        self.assertIn("aster-acp-v9.1.6", args)
+        self.assertIn("aster-acp v9.1.6", args)
+        for options in [
+            {"tag": "v9.1.6"},
+            {"tag": "aster-v9.1.6"},
+            {"core": "9.1.5"},
+            {"notes": False},
+            {"wrong_asset": True},
+        ]:
             with self.subTest(options=options):
                 result, args = self.publish(**options)
                 self.assertNotEqual(result.returncode, 0)
