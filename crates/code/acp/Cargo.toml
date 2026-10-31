@@ -1,10 +1,10 @@
 [package]
 name = "aster-acp"
-version = "9.1.6"
+version = "9.1.7"
 edition = "2021"
 authors = ["Aster Team"]
 license = "MIT"
-description = "ACP stdio agent over aster-core 9.1.6 for Aster desktop hosts"
+description = "ACP stdio agent over aster-core 9.1.7 for Aster desktop hosts"
 publish = false
 
 [[bin]]
