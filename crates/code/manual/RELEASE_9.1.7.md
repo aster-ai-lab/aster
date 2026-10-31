@@ -26,7 +26,7 @@ Build from the repository root with the pinned Rust toolchain. Before tagging, r
 
 Do not tag from a dirty worktree or from a revision with unresolved conflicts. Do not treat selected local tests as whole-workspace, real-model, or cross-platform qualification.
 
-Tag the clean candidate as `aster-v9.1.7` (never a bare `v9.1.7`). The `release-code.yml` workflow must create the Core/ACP Release with `--latest=false`.
+Tag the clean candidate as `aster-acp-v9.1.7` (never a bare `v9.1.7`, and never the retired `aster-v9.1.7` / `a3s-code-v*` namespaces). The `release-code.yml` workflow must create the Core/ACP Release with `--latest=false`. Archive names share the same `aster-acp-v9.1.7` prefix.
 
 ## Qualification limits
 
@@ -36,7 +36,7 @@ Mediated-network Gate 4 residuals, macOS descendant-process containment without 
 
 ## Local qualification on 2026-10-31
 
-These entries qualify the working-tree candidate only. A clean committed SHA and hosted platform lanes remain required before tagging `aster-v9.1.7`.
+These entries qualify the working-tree candidate only. A clean committed SHA and hosted platform lanes remain required before tagging `aster-acp-v9.1.7`.
 
 - `cargo test --locked -p aster-acp --lib execution_boundary`: 4 passed.
 - `cargo test --locked -p aster-acp --lib only_a_learnable_bash`: 1 passed (sandboxed learnable path still offers `allow-always`).

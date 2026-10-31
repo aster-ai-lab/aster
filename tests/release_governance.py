@@ -128,7 +128,7 @@ esac
         self.assertEqual(mutations, [])
 
     def test_non_desktop_latest_is_refused_before_channel_mutation(self):
-        for tag in ("aster-v9.1.6", "aster-cli-v0.1.4", "aster-cli-stable"):
+        for tag in ("aster-acp-v9.1.7", "aster-cli-v0.1.4", "aster-cli-stable"):
             with self.subTest(tag=tag):
                 result, mutations = self.publish(latest_tag=tag)
                 self.assertNotEqual(result.returncode, 0)
@@ -150,18 +150,37 @@ class ReleaseContracts(unittest.TestCase):
 
     def test_code_release_uses_its_namespace_and_never_takes_latest(self):
         workflow = (ROOT / ".github/workflows/release-code.yml").read_text()
-        self.assertIn('      - "aster-v[0-9]+.[0-9]+.[0-9]+"', workflow)
+        self.assertIn('      - "aster-acp-v[0-9]+.[0-9]+.[0-9]+"', workflow)
+        self.assertNotIn('      - "aster-v[0-9]+.[0-9]+.[0-9]+"', workflow)
         self.assertNotIn('      - "v[0-9]+.[0-9]+.[0-9]+"', workflow)
         self.assertIn("gh release create", workflow)
         self.assertIn("--latest=false", workflow)
-        self.assertIn('version="${GITHUB_REF_NAME#aster-v}"', workflow)
+        self.assertIn('version="${GITHUB_REF_NAME#aster-acp-v}"', workflow)
         self.assertIn('test "$version" = "$acp_version"', workflow)
         self.assertIn('test "$version" = "$core_version"', workflow)
+        self.assertIn('startsWith(github.ref_name, \'aster-acp-v\')', workflow)
+        self.assertIn('--title "aster-acp v${version}"', workflow)
 
     def test_desktop_rolling_channel_never_takes_latest(self):
         workflow = (ROOT / ".github/workflows/release-aster-desktop.yml").read_text()
         command = workflow.split("gh release create desktop-stable", 1)[1].split("\n          fi", 1)[0]
         self.assertIn("--latest=false", command)
+
+    def test_governance_documents_namespaces_retention_and_forbidden_latest_tag(self):
+        text = (ROOT / "docs/release-governance.md").read_text()
+        self.assertIn("| Core／ACP | `aster-acp-vX.Y.Z` |", text)
+        self.assertIn("| Aster CLI | `aster-cli-vX.Y.Z` |", text)
+        self.assertIn("| Aster 桌面版 | `vX.Y.Z` |", text)
+        self.assertIn("## 保留与清理", text)
+        self.assertIn("当前版与上一版", text)
+        self.assertIn("禁止创建名为 `latest` 的 Git tag 或 Release", text)
+        self.assertIn("`a3s-code-v*`", text)
+        self.assertIn("`aster-v*`", text)
+        self.assertIn("迁移完成后删除旧 Release 与旧 tag", text)
+        self.assertIn("## 分支卫生", text)
+        self.assertIn("默认分支只有 `main`", text)
+        self.assertIn("已完成发布的 `release/*` 分支", text)
+        self.assertIn("PR 合并后自动删除头部分支", text)
 
     def test_ci_and_cli_preflight_run_release_governance(self):
         for name in (".github/workflows/ci.yml", ".github/workflows/release-aster-cli.yml"):

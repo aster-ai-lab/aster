@@ -8,20 +8,37 @@
 | --- | --- | --- |
 | Aster 桌面版 | `vX.Y.Z` | 桌面安装包；通用 `v*` 命名空间只属于 Aster 应用 |
 | Aster CLI | `aster-cli-vX.Y.Z` | 同源码构建的 `aster` 与 `aster-acp` 成对归档及 `latest.json` |
-| Core／ACP | `aster-vX.Y.Z` | Core／ACP 源码版本与 ACP 平台归档 |
+| Core／ACP | `aster-acp-vX.Y.Z` | Core／ACP 源码版本与 ACP 平台归档；标签与归档前缀一致 |
 | 桌面滚动通道 | `desktop-stable` | `desktop-latest.json` 与桌面更新归档 |
 | CLI 滚动通道 | `aster-cli-stable` | 指向当前版本化 CLI Release 的 `latest.json` |
+
+历史标签 `a3s-code-v*` 与短暂使用的 `aster-v*`（Core／ACP）不再接收新发布；既有归档可按「已发布内容的修正」迁到 `aster-acp-v*`，且必须保持同一提交与同一 SHA-256。迁移完成后删除旧 Release 与旧 tag，不得并存两套同版本地址。
+
+禁止创建名为 `latest` 的 Git tag 或 Release。GitHub 的「Latest」是 Release 标记，不是标签名；字面 tag `latest` 与 `/releases/latest` 语义冲突，属于历史错误入口，发现即删。
 
 只有 Aster 桌面版的版本化 Release 可以标记为仓库 Latest。Core／ACP、CLI 和滚动通道发布必须显式使用 `--latest=false`，不得改变 Latest。
 
 GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容入口。新版客户端不得读取该地址。每次发布新的 CLI stable 版本时，必须同时更新 `aster-cli-stable/latest.json` 和当前 Aster Latest Release 上的兼容 `latest.json`；清单始终指向版本化 `aster-cli-vX.Y.Z` Release，不指向滚动通道中的二进制。
+
+## 保留与清理
+
+每个产品线的**版本化** Release 默认只保留当前版与上一版（共 2 个），便于回滚；更早的版本化 Release 与对应 tag 应删除。滚动通道 tag（`desktop-stable`、`aster-cli-stable`）永久保留，但通道上的历史二进制同样只保留当前与上一版所引用的归档。
+
+| 保留 | 删除 |
+| --- | --- |
+| 当前与上一版 `vX.Y.Z`（桌面，含仓库 Latest） | 更早的桌面版本化 Release／tag |
+| 当前与上一版 `aster-cli-vX.Y.Z` | 更早的 CLI 版本化 Release／tag |
+| 当前与上一版 `aster-acp-vX.Y.Z` | 更早的 Core／ACP 版本化 Release／tag；全部 `a3s-code-v*`／`aster-v*`（Core／ACP） |
+| `desktop-stable`、`aster-cli-stable` 及各自当前清单 | 字面 tag／Release `latest`；通道内超出保留窗口的旧归档 |
+
+清理顺序：先确认通道清单与仓库 Latest 仍指向保留窗口内的版本与 SHA-256，再删 Release，最后删远程 tag。清理后必须复核公开下载地址、Latest 归属和两个更新通道。
 
 ## 构建边界
 
 - 从仓库根目录使用固定 Rust 工具链和锁文件构建。
 - CLI 的 `aster` 与 `aster-acp` 必须从同一干净提交构建、验证并成对发布；归档同时携带共享 `BUILD_ID` 和 `SHA256SUMS`。
 - 桌面版通过 `release-aster-desktop.yml` 构建并更新 `desktop-stable`；安装包版本与 Core／ACP 版本相互独立。
-- Core／ACP 通过 `release-code.yml` 构建。只有 `aster-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。
+- Core／ACP 通过 `release-code.yml` 构建。只有 `aster-acp-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。归档文件名使用同一前缀（`aster-acp-vX.Y.Z-<platform>.*`）。
 - 不得从有未提交修改或未完成指定平台验证的工作树发布。发布记录必须能定位到准确源码提交。
 
 ## 发布顺序
@@ -29,7 +46,7 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 ### Core／ACP
 
 1. 在干净提交上完成 Core／ACP 验证并更新版本与发布说明。
-2. 推送 `aster-vX.Y.Z`，不要推送裸 `vX.Y.Z`。
+2. 推送 `aster-acp-vX.Y.Z`，不要推送裸 `vX.Y.Z`，也不要再使用已退役的 `aster-vX.Y.Z` / `a3s-code-vX.Y.Z`。
 3. 由 `release-code.yml` 完成平台构建和 Release 创建；该流程固定 `--latest=false`。
 
 ### Aster CLI
@@ -54,4 +71,16 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 - 滚动通道和明确约定的兼容清单可以更新；版本化归档的历史校验值不得因此改变。
 - 修正后必须验证公开下载地址、Latest 归属和两个更新通道，而不能只检查 Release 页面标题。
 
-`tests/release_governance.py` 固化上述命名空间、通道地址和 CLI 通道发布行为；主 CI 与 CLI 发布预检都必须运行该测试。
+## 分支卫生
+
+默认分支只有 `main`。远程功能／修复／杂务分支在对应 Pull Request **合并或关闭后删除**；已完成发布的 `release/*` 分支在版本化 tag 与 Release 就绪后删除（提交由 tag 保留，勿依赖长期 release 分支）。
+
+| 保留 | 删除 |
+| --- | --- |
+| `main` | 已合并 PR 的头部分支 |
+| 仍打开的 PR 头部分支 | 已关闭且不打算再开的 PR 头部分支 |
+| （无长期 `release/*`） | tip 已包含在对应产品 tag 中的 `release/*`；`ahead=0` 的陈旧实验分支 |
+
+禁止把 `release/*` 当作第二个长期集成线。发布专用修复应先回到 `main`，或确认已打进版本化 tag 后再删分支。仓库应开启「PR 合并后自动删除头部分支」，避免再堆积已合并分支。
+
+`tests/release_governance.py` 固化上述命名空间、通道地址、保留策略和 CLI 通道发布行为；主 CI 与 CLI 发布预检都必须运行该测试。
