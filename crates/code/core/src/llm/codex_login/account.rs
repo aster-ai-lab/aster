@@ -523,13 +523,11 @@ mod tests {
         .unwrap();
         let import = load_from_home(home.path()).unwrap().unwrap();
         assert_eq!(import.default_model_id, "synthetic-selected-model");
-        assert!(
-            import
-                .provider
-                .models
-                .iter()
-                .any(|model| model.id == "synthetic-selected-model")
-        );
+        assert!(import
+            .provider
+            .models
+            .iter()
+            .any(|model| model.id == "synthetic-selected-model"));
     }
 
     #[test]

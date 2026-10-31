@@ -39,8 +39,8 @@ pub(crate) use batch::MAX_BATCH_INVOCATIONS;
 pub(crate) use read::read_image_file;
 #[cfg(test)]
 pub(crate) use safe_http::{
-    RedirectQueryPolicy, ResolutionScript, SafeHttpError, get_with_redirects_observed,
-    set_resolution_script,
+    get_with_redirects_observed, set_resolution_script, RedirectQueryPolicy, ResolutionScript,
+    SafeHttpError,
 };
 #[cfg(test)]
 pub(crate) use web_fetch::WebFetchTool;
@@ -503,12 +503,10 @@ mod tests {
 
         registry.set_sandbox(Arc::new(Backend(false)));
         assert!(!registry.contains("background"));
-        assert!(
-            !registry
-                .definitions()
-                .iter()
-                .any(|definition| definition.name == "background")
-        );
+        assert!(!registry
+            .definitions()
+            .iter()
+            .any(|definition| definition.name == "background"));
 
         registry.set_sandbox(Arc::new(Backend(true)));
         assert!(registry.contains("background"));

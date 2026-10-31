@@ -181,9 +181,7 @@ async fn soak_interrupt_storm_settles_once_without_late_effects() {
             .await
             .unwrap_or_else(|error| panic!("cycle {cycle} stream: {error}"));
         // Consume the bounded stream while the tool starts and controls settle.
-        let drain = tokio::spawn(async move {
-            while events.recv().await.is_some() {}
-        });
+        let drain = tokio::spawn(async move { while events.recv().await.is_some() {} });
         let deadline = std::time::Instant::now() + Duration::from_secs(5);
         while entered.load(Ordering::SeqCst) == cycle {
             if std::time::Instant::now() > deadline {

@@ -147,25 +147,20 @@ async fn assert_native_start_is_unsupported(
         output.error_kind,
         Some(ToolErrorKind::Unsupported { .. })
     ));
-    assert!(
-        !owned
-            .ctx
-            .sandbox
-            .as_ref()
-            .unwrap()
-            .supports_background_execution()
-    );
-    assert!(
-        output
-            .metadata
-            .as_ref()
-            .is_none_or(|metadata| metadata.get("workspace_child").is_none())
-    );
-    assert!(
-        tool.runs
-            .names_for(owned.ctx.capability_run_instance_id().unwrap())
-            .is_empty()
-    );
+    assert!(!owned
+        .ctx
+        .sandbox
+        .as_ref()
+        .unwrap()
+        .supports_background_execution());
+    assert!(output
+        .metadata
+        .as_ref()
+        .is_none_or(|metadata| metadata.get("workspace_child").is_none()));
+    assert!(tool
+        .runs
+        .names_for(owned.ctx.capability_run_instance_id().unwrap())
+        .is_empty());
     assert!(
         owned.facts().is_empty(),
         "unsupported admission must emit no background facts"
@@ -202,11 +197,9 @@ async fn start_without_a_run_owner_is_refused() {
     let ctx = ToolContext::new(workspace.path().to_path_buf()).with_session_id("background-plain");
     let output = start(&BackgroundTool::default(), &ctx, "watch", "echo hi").await;
     assert!(!output.success);
-    assert!(
-        output
-            .content
-            .contains("requires a Run-owned capability context")
-    );
+    assert!(output
+        .content
+        .contains("requires a Run-owned capability context"));
 }
 
 #[tokio::test]
@@ -220,11 +213,9 @@ async fn unknown_action_names_the_closed_set() {
         )
         .await
         .unwrap();
-    assert!(
-        output
-            .content
-            .contains("the closed set is start, tail, stop")
-    );
+    assert!(output
+        .content
+        .contains("the closed set is start, tail, stop"));
 }
 
 #[test]
@@ -243,18 +234,14 @@ fn terminal_disposition_and_settlement_basis_parse_name_their_closed_sets() {
             value
         );
     }
-    assert!(
-        BackgroundDisposition::parse("done")
-            .unwrap_err()
-            .to_string()
-            .contains("background disposition")
-    );
-    assert!(
-        ProcessSettlementBasis::parse("terminated")
-            .unwrap_err()
-            .to_string()
-            .contains("background process settlement basis")
-    );
+    assert!(BackgroundDisposition::parse("done")
+        .unwrap_err()
+        .to_string()
+        .contains("background disposition"));
+    assert!(ProcessSettlementBasis::parse("terminated")
+        .unwrap_err()
+        .to_string()
+        .contains("background process settlement basis"));
 }
 
 #[tokio::test]
@@ -783,13 +770,11 @@ async fn failed_command_still_records_and_folds_workspace_changes() {
     );
     #[cfg(unix)]
     assert_eq!(changed.after.mode.unwrap() & 0o777, 0o600);
-    assert!(
-        terminal.payload["changed_paths"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|path| path == "changed.txt")
-    );
+    assert!(terminal.payload["changed_paths"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|path| path == "changed.txt"));
     assert!(terminal.payload["output"]["total_bytes"].as_u64().unwrap() > 0);
     assert!(
         !crate::harness_loop::absorb_open_workspace_children(
@@ -835,12 +820,10 @@ async fn native_background_denies_outside_and_control_metadata_writes() {
         "the sandboxed shell must run before its denial counts as evidence"
     );
     assert!(!owned.workspace.path().join(".a3s/host-leak").exists());
-    assert!(
-        owned
-            .facts()
-            .iter()
-            .any(|fact| fact.payload["event"] == "exited" && fact.payload["exit_code"] != 0)
-    );
+    assert!(owned
+        .facts()
+        .iter()
+        .any(|fact| fact.payload["event"] == "exited" && fact.payload["exit_code"] != 0));
     owned.close().await;
 }
 
@@ -872,12 +855,10 @@ async fn native_background_denies_ungranted_network_egress() {
     let task = task(&tool, &owned.ctx, "network-denied");
     wait_settled(&task).await;
     assert!(task.failure().is_none(), "{:?}", task.failure());
-    assert!(
-        owned
-            .facts()
-            .iter()
-            .any(|fact| fact.payload["line"] == "sandbox-ready")
-    );
+    assert!(owned
+        .facts()
+        .iter()
+        .any(|fact| fact.payload["line"] == "sandbox-ready"));
     assert!(
         tokio::time::timeout(Duration::from_millis(100), listener.accept())
             .await
@@ -1112,21 +1093,17 @@ async fn parallel_background_tasks_publish_lifecycle_and_stop_independently() {
     let long_snapshot = tracker.get(&long.task_id).await.unwrap();
     assert_eq!(long_snapshot.status, SubagentStatus::Cancelled);
     assert!(long_snapshot.finished_ms.is_some());
-    assert!(
-        long_snapshot
-            .progress
-            .iter()
-            .any(|entry| entry.metadata["command"] == "sleep 30")
-    );
+    assert!(long_snapshot
+        .progress
+        .iter()
+        .any(|entry| entry.metadata["command"] == "sleep 30"));
     let quick_snapshot = tracker.get(&quick.task_id).await.unwrap();
     assert_eq!(quick_snapshot.status, SubagentStatus::Failed);
     assert!(quick_snapshot.finished_ms.is_some());
-    assert!(
-        quick_snapshot
-            .progress
-            .iter()
-            .any(|entry| entry.metadata["command"] == "exit 7" && entry.metadata["exitCode"] == 7)
-    );
+    assert!(quick_snapshot
+        .progress
+        .iter()
+        .any(|entry| entry.metadata["command"] == "exit 7" && entry.metadata["exitCode"] == 7));
 
     let mut terminal = Vec::new();
     while terminal.len() < 2 {

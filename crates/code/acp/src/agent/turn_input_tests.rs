@@ -85,14 +85,12 @@ async fn malformed_send_now_is_refused_without_cancelling_a_turn() {
         let error = result
             .expect("invalid send-now metadata must be refused before work")
             .unwrap_err();
-        assert!(
-            error
-                .data
-                .unwrap()
-                .as_str()
-                .unwrap()
-                .contains("sendNow must be a boolean")
-        );
+        assert!(error
+            .data
+            .unwrap()
+            .as_str()
+            .unwrap()
+            .contains("sendNow must be a boolean"));
         assert!(agent.cancelled_generation.lock().await.is_empty());
     }
 }

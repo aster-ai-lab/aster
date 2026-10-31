@@ -95,30 +95,12 @@ impl Client for Host {
             .lock()
             .unwrap()
             .push((method.clone(), params.clone()));
-        let value = if method == "a3s/document/release_run" {
-            self.state.closing.add_permits(1);
-            self.state.release.acquire().await.unwrap().forget();
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    probe.call(json!({"harness":{"operation":"release_run","params":params}}))
-                }
-                None => json!({"runId":params["runId"],"released":self.state.ack}),
-            }
-        } else {
-            assert_eq!(method, "a3s/document/read");
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    let value = probe.call(json!({"harness":{"operation":"read","params":params}}));
-                    if let Some(lease) = probe.editor.take() {
-                        probe.call(json!({"request":{"operation":"close","lease":lease}}));
-                    }
-                    value
-                }
-                None => {
-                    json!({"path":self.root.join("note.txt"),"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap().to_string(),"version":1,"text":"clean text","dirty":false,"diskConflict":false},"runId":params["runId"],"released":false})
-                }
+        self.state.closing.add_permits(1);
+        self.state.release.acquire().await.unwrap().forget();
+        let mut probe = self.state.probe.lock().unwrap();
+        let value = match probe.as_mut() {
+            Some(probe) => {
+                probe.call(json!({"harness":{"operation":"release_run","params":params}}))
             }
             None => json!({"runId":params["runId"],"released":self.state.ack}),
         };

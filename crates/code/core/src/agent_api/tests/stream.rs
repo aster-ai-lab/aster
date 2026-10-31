@@ -63,12 +63,10 @@ async fn test_stream_updates_history_and_auto_saves() {
         run_records[0].snapshot.status,
         crate::run::RunStatus::Completed
     );
-    assert!(
-        run_records[0]
-            .events
-            .iter()
-            .any(|record| matches!(record.event, AgentEvent::End { .. }))
-    );
+    assert!(run_records[0]
+        .events
+        .iter()
+        .any(|record| matches!(record.event, AgentEvent::End { .. })));
 }
 
 /// After a completed tool round, `auto_save` must flush `sessions` JSON at the
@@ -263,11 +261,9 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
 
     let tasks = session.subagent_tasks().await;
     assert_eq!(tasks.len(), 2);
-    assert!(
-        tasks
-            .iter()
-            .all(|task| task.status == SubagentStatus::Completed)
-    );
+    assert!(tasks
+        .iter()
+        .all(|task| task.status == SubagentStatus::Completed));
 }
 
 #[tokio::test]
@@ -706,12 +702,10 @@ async fn cancelled_fact_stream_settles_without_memory_extraction() {
         extraction_calls.load(std::sync::atomic::Ordering::SeqCst),
         0
     );
-    assert!(
-        session
-            .history()
-            .iter()
-            .any(|message| message.text().contains("interrupted"))
-    );
+    assert!(session
+        .history()
+        .iter()
+        .any(|message| message.text().contains("interrupted")));
 }
 
 struct SlowExtractionClient {

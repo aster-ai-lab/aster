@@ -387,8 +387,12 @@ impl A3sCodeAgent {
             progress,
         );
         update["completedAt"] = serde_json::json!(finished_ms);
-        let session = self.sessions.lock().await
-            .get(session_id.0.as_ref()).map(|live| Arc::clone(&live.session));
+        let session = self
+            .sessions
+            .lock()
+            .await
+            .get(session_id.0.as_ref())
+            .map(|live| Arc::clone(&live.session));
         if let Some(session) = session {
             if session.subagent_task(task_id).await.is_some_and(|task| {
                 task.status == a3s_code_core::subagent_task_tracker::SubagentStatus::Cancelled

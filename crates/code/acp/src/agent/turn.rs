@@ -975,11 +975,9 @@ fn usage_update(
         ),
         (
             "estimatedOtherContextTokens".to_string(),
-            serde_json::json!(
-                snapshot
-                    .estimated_prompt_tokens
-                    .saturating_sub(estimated_user_tokens)
-            ),
+            serde_json::json!(snapshot
+                .estimated_prompt_tokens
+                .saturating_sub(estimated_user_tokens)),
         ),
     ]));
     update

@@ -106,5 +106,8 @@ async fn tools_list_changed_grows_the_cached_catalog_without_reconnect() {
     .await
     .expect("the grown tool never surfaced without a reconnect");
     assert_eq!(refreshed.len(), 2, "the refresh replaces, not appends");
-    manager.disconnect("grow").await.expect("disconnect fixture");
+    manager
+        .disconnect("grow")
+        .await
+        .expect("disconnect fixture");
 }

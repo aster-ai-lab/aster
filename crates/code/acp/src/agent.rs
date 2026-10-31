@@ -9,7 +9,7 @@ use std::sync::Arc;
 use a3s_code_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use agent_client_protocol as acp;
 use agent_client_protocol::Client;
-use tokio::sync::{Mutex, OwnedMutexGuard, watch};
+use tokio::sync::{watch, Mutex, OwnedMutexGuard};
 use tokio::task::JoinHandle;
 
 use crate::config::LaunchConfig;
@@ -46,8 +46,8 @@ use emit::{progress_duration_ms, progress_tokens_used, subagent_finished_update}
 use extensions::answer_wiki_search;
 #[cfg(test)]
 use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
-use host_methods::{HostMethod, session_tooling_projection};
-use models::{EffortLimits, effort_guideline, effort_limits};
+use host_methods::{session_tooling_projection, HostMethod};
+use models::{effort_guideline, effort_limits, EffortLimits};
 #[cfg(test)]
 use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
 #[cfg(test)]

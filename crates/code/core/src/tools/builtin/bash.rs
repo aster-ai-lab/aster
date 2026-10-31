@@ -663,7 +663,10 @@ impl Tool for BashTool {
             }
         };
         let request_network_grant = raw_mode == "request_network_grant"
-            && ctx.sandbox.as_ref().is_none_or(|sandbox| sandbox.is_isolated());
+            && ctx
+                .sandbox
+                .as_ref()
+                .is_none_or(|sandbox| sandbox.is_isolated());
         if let Err(error) = self.validate_execution_available(args, ctx) {
             let message = error.to_string();
             return Ok(

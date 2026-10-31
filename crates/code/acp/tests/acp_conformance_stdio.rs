@@ -779,7 +779,7 @@ async fn subagent_cancel(wire: &mut Wire, fixture: &Fixture, model: &Model) -> O
     ensure!(
         wire.seen[start..].iter().any(|v| {
             v["params"]["update"]["sessionUpdate"] == "subagent_finished"
-            && v["params"]["update"]["status"] == "stopped"
+                && v["params"]["update"]["status"] == "stopped"
         }),
         "no observed child cancellation"
     );
