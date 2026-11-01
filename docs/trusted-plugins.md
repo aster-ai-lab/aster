@@ -2,8 +2,10 @@
 
 The official authoring repository is
 [`aster-ai-lab/plugins`](https://github.com/aster-ai-lab/plugins). Installable
-`.aix` packages will be published as OCI artifacts in GitHub Packages (GHCR)
-and associated with that repository. This source does not depend on mise's
+`.aix` packages use OCI artifacts in GitHub Packages (GHCR) associated with
+that repository. The three macOS ARM64 runtime components have published catalog
+records; the remaining tool and application plugins still need publication.
+This source does not depend on mise's
 registry or executable.
 
 The package host builds the existing `aster-use` CLI and runs its native
@@ -119,6 +121,15 @@ is `aster use registry package check <file.aix> --json`; standalone SDK users ca
 invoke the same command as `aster-use registry package check`.
 This format check alone does not establish publisher identity or signatures.
 
+Native UI package inventory includes the complete declared root, including
+license notices and other non-web files, in its bounded content identity.
+Browser projection exposes only supported web media; it does not serve those
+other files. The strict `list_ui_package_assets` API retains its existing refusal
+of unknown media. All 35 existing `apps/use-registry/packages` sources now build
+as native AIX archives, including the five previously refused for bundled legal
+notices. Their missing per-package licenses and publication metadata still need
+review before admission to the official source.
+
 ## External tool archives
 
 The tool owner now parses bounded schema-v1 `toolchain` ACL through
@@ -187,12 +198,17 @@ omits Environment Dependencies; both former dependency routes redirect to
 
 The native `/api/plugins` adapter resolves an explicitly configured, enabled,
 caller-pinned Registry whose URL is exactly the main-branch `registry/` tree in
-`aster-ai-lab/plugins`. It rejects missing or ambiguous source configuration and
-never substitutes ModelScope or the old hardcoded dependency list. Pagination,
+`aster-ai-lab/plugins`, or the public root pin shipped with the desktop. Missing
+configuration returns an explicit setup state; ambiguous or invalid configuration
+refuses. Installation still requires a trusted source. The adapter never
+substitutes ModelScope or the old hardcoded dependency list. Pagination,
 search, category counts and installed filtering operate on verified compatible
 stable records. The page has refresh/retry, installation status and progress,
 updates and removal. These are local source changes, not a published desktop
-release or evidence that the production Registry is populated.
+release. A separate live SDK check now verifies the three official runtime records
+against the root pinned in the repository's `ASTER_PLUGIN_ROOT_SHA256` variable.
+That online query does not establish anonymous artifact access or complete plugin
+management acceptance.
 
 Install requests bind package ID, selected version and archive digest. Downloads
 reuse the TUF/GHCR verifier and `ExtensionLifecyclePackage::prepare_remote`, then
@@ -320,7 +336,7 @@ component-aware bootstrap before they can accept a slim update.
 
 ## Publication and trust
 
-Publish from the `plugins` repository workflow, associate the OCI package with
+Publish with the native scripts in the `plugins` repository, associate the OCI package with
 `https://github.com/aster-ai-lab/plugins`, and use the workflow's scoped
 `GITHUB_TOKEN`. Official public packages must be readable anonymously; first
 publication needs an explicit package-visibility check because GHCR defaults
@@ -332,10 +348,10 @@ expiry and rollback contracts.
 The signed catalog now admits native `.aix` targets and the versioned GHCR
 target contract. Local HTTP protocol tests cover digest-bound downloads,
 resumption, redirect authorization, damaged blobs, metadata bounds, native
-package preparation and cached/offline reuse. Real published GHCR artifacts,
-initial trust-root establishment, publication automation, source activation and
-installed-product acceptance remain required. Repository ownership and a file
-extension do not replace those checks.
+package preparation and cached/offline reuse. Slim release builds additionally
+verify the signed catalog against the component lock and perform fresh anonymous
+installation through the native SDK CLI in a temporary profile. Repository
+ownership and a file extension do not replace those checks.
 
 ## References and current status
 
@@ -355,13 +371,16 @@ extension do not replace those checks.
 - [TUF specification](https://github.com/theupdateframework/specification/blob/master/tuf-spec.md)
   defines signed metadata updates and consistent snapshots.
 
-The repository was confirmed empty through the GitHub API on 2026-11-01.
-No official plugin, signing root, workflow or GHCR artifact has been published
-by this task. Native AIX validation and the GHCR read/cache contract have local
-behavioral evidence. Domain admission and native OCI publication preparation
-are implemented locally; their current verification is recorded in the dated
-CLI evidence, including three actual CLI preparation/refusal cases against a
-fixed 14-file native archive. The signing-root choice and domain-organized
-repository publication are pending. Complete source installation acceptance remains
-required. Broader SDK suites also retain fixture/content-digest failures;
-focused protocol checks do not close that regression gate.
+The repository was initialized on 2026-11-01–02 with the public TUF root,
+domain ownership, native publication scripts and daily metadata signing. Three
+macOS ARM64 runtime plugins are published in GHCR with compatible 46-character
+content versions and full integrity digests. Initial 70-character candidates are
+retained as withdrawn catalog entries because the tool selector contract is
+frozen at 64 characters. The native client verifies all six signed records.
+
+All three GHCR packages are currently private. Fresh anonymous installation
+reaches GHCR and fails with HTTP 401; the slim-release gate therefore blocks
+publication until their visibility is public. Full bootstrap delivery remains
+the default. The dated [verification record](evidence/desktop/2026-11-01-aix-runtime/OUTCOME.md)
+contains source provenance, test results and coverage limits. The broad SDK suite
+retains the same 57 fixture/content-digest failures as the committed baseline.

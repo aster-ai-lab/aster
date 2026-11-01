@@ -1,35 +1,38 @@
 {
   "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
-  "signedCatalogRecordsVerifiedByNativeClient": 3,
+  "signedCatalogRecordsVerifiedByNativeClient": 6,
+  "availableRuntimeVersions": 3,
+  "withdrawnInitialCandidates": 3,
   "anonymousInstallVerified": false,
   "stableSlimEnabled": false,
-  "studioCommit": "13eab4f957e9b091d00b53b872991f9f13450c8c",
+  "studioCommit": "a371b25465ca76f0561bf650f6c54407ef3c0ba3",
+  "pluginsPublicationCommit": "2de88bbd7b7166e14149b8547cb13d049c04bc51",
   "packages": [
     {
       "packageId": "aster/aster-document",
       "target": "darwin-arm64",
-      "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2",
-      "archiveSha256": "a689f6c422b9a81115d1a4000803af36ec0db0b82db7f9ff0ce62e5047eead24",
+      "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b",
+      "archiveSha256": "1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20",
       "ociRepository": "ghcr.io/aster-ai-lab/plugins/operations/aster/aster-document",
-      "ociManifestSha256": "sha256:a54ce56349fedcb62b63f2054ec7b2db13de3835633c21f967fcf2ec1ccba9bd",
+      "ociManifestSha256": "sha256:c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e",
       "visibility": "private"
     },
     {
       "packageId": "aster/aster-office",
       "target": "darwin-arm64",
-      "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c",
-      "archiveSha256": "95fc496612927babb2778740cdc3759c88763004fcc1e6acd8765aa4e2358708",
+      "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613",
+      "archiveSha256": "a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838",
       "ociRepository": "ghcr.io/aster-ai-lab/plugins/operations/aster/aster-office",
-      "ociManifestSha256": "sha256:9837082cb7a2f6f8d7ea06673e786c2a2285be96215fe9241e579abf112661aa",
+      "ociManifestSha256": "sha256:cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176",
       "visibility": "private"
     },
     {
       "packageId": "aster/aster-sandbox",
       "target": "darwin-arm64",
-      "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819",
-      "archiveSha256": "36e8ef630c707251047b212e862ff960bb54899f9e76ce3b2eb019e984a92f9e",
+      "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a",
+      "archiveSha256": "92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522",
       "ociRepository": "ghcr.io/aster-ai-lab/plugins/operations/aster/aster-sandbox",
-      "ociManifestSha256": "sha256:63f15cd734c604f8e15c7f8ce896af51989b9096d89981babb84c6b9521b6cb5",
+      "ociManifestSha256": "sha256:1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3",
       "visibility": "private"
     }
   ]

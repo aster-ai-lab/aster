@@ -35,6 +35,7 @@ public registry and the complete component-aware bridge release first.
 | Desktop update delivery tests | 15 pass |
 | Renderer onboarding and component settings | 5 pass |
 | Deferred packaging through standalone SDK CLI | 6 pass |
+| Slim release pin binding | 1 pass with 7 drift cases |
 | Delivery Python suite | 28 pass, 1 pre-existing failure |
 | Workspace dependency checks | 7 pass using installed Python 3.13 |
 | Release governance checks | 10 pass |
@@ -97,9 +98,14 @@ runtime packages public. No personal GitHub credential is embedded in the produc
 Native CLI installation currently reaches GHCR and refuses HTTP 401, matching
 the recorded private package visibility. Release qualification also exposed that
 the first 70-character component versions exceed the frozen 64-character plugin
-selector limit. Compatible candidates use a 46-character content version while
+selector limit. Compatible published artifacts use a 46-character content version while
 retaining full SHA-256 integrity fields. The frozen SDK tool schema is unchanged;
-the original candidate archives remain intact pending the compatible publication.
+the original candidate archives remain intact and their catalog entries are
+withdrawn. The native client verifies six signed records: three compatible
+available versions and three withdrawn candidates. The production slim-build gate
+matches each signed record to the lock, installs into a fresh temporary profile,
+and checks the installed version, enabled state and native package digest. It
+currently refuses the private registry's HTTP 401 before allowing publication.
 
 ## Coverage limits
 

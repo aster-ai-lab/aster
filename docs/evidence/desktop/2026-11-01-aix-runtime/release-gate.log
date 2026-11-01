@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/studio/scripts/verify_runtime_registry.py", line 58, in <module>
+    verify(Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]).resolve())
+  File "/Users/roylin/code/aster/apps/studio/scripts/verify_runtime_registry.py", line 46, in verify
+    run("install", entry["packageId"], "--registry-name", "aster-official", "--scope-kind", "user",
+  File "/Users/roylin/code/aster/apps/studio/scripts/verify_runtime_registry.py", line 39, in run
+    raise RuntimeError(result.stdout.strip() or result.stderr.strip())
+RuntimeError: {
+  "error": {
+    "code": "use.extension.registry_oci_invalid",
+    "details": {},
+    "message": "GHCR metadata returned HTTP 401 Unauthorized."
+  },
+  "ok": false,
+  "schemaVersion": 1
+}

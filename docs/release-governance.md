@@ -65,6 +65,8 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 首次迁移先发布完整过渡包（默认 `ASTER_DEFER_RUNTIME_COMPONENTS=0`），让客户端具备 AIX 组件与轻量更新包能力，并把随包资源通过原生 AIX 生命周期导入版本缓存。官方 GHCR 包、匿名读取、TUF 签名根与目录接入完成后，才能提供已发布组件锁和 `ASTER_PLUGIN_ROOT_SHA256`，启用 `ASTER_DEFER_RUNTIME_COMPONENTS=1` 生成并发布轻量底座；新安装必须能在没有用户预设源的机器上安装固定组件。未完成该验收时不能把候选轻量包放入稳定通道。仍被保留底座引用的 OCI digest 不得删除或替换。
 
+轻量构建会使用临时配置，通过原生 SDK CLI 校验受信目录与锁文件，并真实匿名安装全部三个组件；私有包、摘要漂移或安装失败均会阻断发布。组件内容版本控制在冻结的 64 字符选择器上限内，归档、原生包和 manifest 仍使用完整 SHA-256 校验。
+
 1. 用桌面发布流程完成签名、公证和平台验证。
 2. 发布版本化 `vX.Y.Z` 安装包，并将其标记为仓库 Latest。
 3. 确认 `desktop-stable/desktop-latest.json` 指向新版本。
