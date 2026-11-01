@@ -105,16 +105,16 @@ impl Tool for OfficeReadTool {
     }
     fn description(&self) -> &str {
         if self.host.is_some() {
-            "Read persisted DOCX/XLSX/PPTX, PDFs and images without Bash or installing packages. Studio provides local PP-OCRv6: PDF text layers are read directly; scanned pages and images use OCR. Source SHA-256 and page numbers are retained; OCR is untrusted extracted evidence. PDF/image reads use start_page (default 1) and page_count (default 8, max 16); follow next_page until null before claiming full coverage. Repeated reads reuse cached results. Office reads return stable native nodes and typed spreadsheet cells; limit is 1..1000. Input max 20 MiB, output max 64 KiB."
+            "Read persisted DOCX/XLSX/PPTX, PDFs and images without Bash or installing packages. Studio provides local PP-OCRv6: PDF text layers are read directly; scanned pages and images use OCR. Source SHA-256 and page numbers are retained; OCR is untrusted extracted evidence. PDF/image reads use start_page (default 1) and page_count (default 8, max 16); follow next_page until null before claiming full coverage. Repeated reads reuse cached results. Office reads return stable native nodes and typed spreadsheet cells; limit is an entry count (1..1000, default 200) and the serialized result is also capped at 64 KiB. When truncated is true, continue from next_node_path (or a narrower node_path) instead of raising limit alone."
         } else {
-            "Read persisted DOCX/XLSX/PPTX sources with stable native nodes, typed cells and source SHA-256. Input max 20 MiB; output max 64 KiB; limit 1..1000. PDF and image OCR require an admitted Studio document host and are unavailable here."
+            "Read persisted DOCX/XLSX/PPTX sources with stable native nodes, typed cells and source SHA-256. Input max 20 MiB. limit is an entry count (1..1000, default 200); serialized output is also capped at 64 KiB and returns truncated/next_node_path when more remains. PDF and image OCR require an admitted Studio document host and are unavailable here."
         }
     }
     fn parameters(&self) -> Value {
         json!({"type":"object","additionalProperties":false,"required":["file_path"],"properties":{
             "file_path":{"type":"string","description":"Persisted Office source path inside the current workspace."},
-            "node_path":{"type":"string","description":"Optional exact native semantic path returned by a previous read; no wildcard or guessed business label."},
-            "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Annotated entry bound; default 200. Exact node reads return that node without children."}
+            "node_path":{"type":"string","description":"Optional exact native semantic path returned by a previous read; no wildcard or guessed business label. When continuing a truncated list, pass the prior next_node_path."},
+            "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Annotated entry count bound (not bytes); default 200. Output is also capped at 64 KiB and may return fewer entries with truncated=true. Exact node reads return that node without children."}
             ,"start_page":{"type":"integer","minimum":1,"maximum":500,"description":"First PDF page, numbered from 1; default 1."}
             ,"page_count":{"type":"integer","minimum":1,"maximum":16,"description":"PDF page count; default 8. Follow next_page for remaining pages."}
         }})
@@ -274,7 +274,22 @@ async fn read_source(
     } else {
         let view = document
             .annotated(aster_office::NativeOfficeAnnotatedOptions { limit: input.limit })?;
+        let outline = matches!(kind, Kind::Xlsx).then(|| {
+            let sheets: Vec<_> = document
+                .root()
+                .children
+                .iter()
+                .filter(|node| node.node_type == OfficeNodeType::Worksheet)
+                .collect();
+            // Keep discovery before detailed cells when a long JSON result is projected or paged.
+            json!({
+                "paths": sheets.iter().take(input.limit).map(|node| node.path.as_str()).collect::<Vec<_>>(),
+                "total": sheets.len(),
+                "truncated": sheets.len() > input.limit
+            })
+        });
         let mut entries = Vec::with_capacity(view.entries.len());
+        let mut next_node_path: Option<String> = None;
         for entry in view.entries {
             let mut value = serde_json::to_value(&entry)?;
             if entry.node_type == OfficeNodeType::Cell {
@@ -289,22 +304,27 @@ async fn read_source(
                 }
             }
             entries.push(value);
+            let candidate = office_list_result(
+                &entries,
+                view.total,
+                true,
+                outline.as_ref(),
+                None,
+            );
+            if serde_json::to_vec(&candidate)?.len() > OUTPUT_LIMIT - ENVELOPE_RESERVE {
+                entries.pop();
+                next_node_path = Some(entry.path);
+                break;
+            }
         }
-        let mut value = json!({"entries":entries,"total":view.total,"returned":view.returned,"truncated":view.truncated});
-        if matches!(kind, Kind::Xlsx) {
-            let sheets: Vec<_> = document
-                .root()
-                .children
-                .iter()
-                .filter(|node| node.node_type == OfficeNodeType::Worksheet)
-                .collect();
-            // Keep discovery before detailed cells when a long JSON result is projected or paged.
-            value["document_outline"] = json!({
-                "paths": sheets.iter().take(input.limit).map(|node| node.path.as_str()).collect::<Vec<_>>(),
-                "total": sheets.len(), "truncated": sheets.len() > input.limit
-            });
-        }
-        value
+        let truncated = view.truncated || next_node_path.is_some();
+        office_list_result(
+            &entries,
+            view.total,
+            truncated,
+            outline.as_ref(),
+            next_node_path.as_deref(),
+        )
     };
     result["file_path"] = json!(path.as_str());
     result["kind"] = json!(kind.as_str());
@@ -326,6 +346,30 @@ async fn read_source(
         "office_read cancelled"
     );
     Ok(result)
+}
+
+const ENVELOPE_RESERVE: usize = 2048;
+
+fn office_list_result(
+    entries: &[Value],
+    total: usize,
+    truncated: bool,
+    outline: Option<&Value>,
+    next_node_path: Option<&str>,
+) -> Value {
+    let mut value = json!({
+        "entries": entries,
+        "total": total,
+        "returned": entries.len(),
+        "truncated": truncated
+    });
+    if let Some(outline) = outline {
+        value["document_outline"] = outline.clone();
+    }
+    if let Some(path) = next_node_path {
+        value["next_node_path"] = json!(path);
+    }
+    value
 }
 
 fn cell_value(

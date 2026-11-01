@@ -585,6 +585,7 @@ pub struct AsterCodeAgent {
     /// What the untrusted workspace layer was refused or left pending.
     workspace_admission: aster_core::config::WorkspaceLayerAdmission,
     client_reads_files: std::cell::Cell<bool>,
+    client_terminal_markdown: std::cell::Cell<bool>,
     /// Trusted launcher instructions from initialize, kept separate from the
     /// workspace configuration and applied whenever a session is opened.
     client_rules: RefCell<Option<String>>,
@@ -594,9 +595,7 @@ pub struct AsterCodeAgent {
 }
 
 fn model_picker_label(provider_name: &str, display_name: &str) -> String {
-    if provider_name == "cc-switch" || provider_name.starts_with("cc-switch-") {
-        format!("cc-switch · {display_name}")
-    } else if provider_name == "grok" {
+    if provider_name == "grok" {
         format!("grok · {display_name}")
     } else if provider_name == "cursor" {
         format!("cursor · {display_name}")
@@ -608,9 +607,7 @@ fn model_picker_label(provider_name: &str, display_name: &str) -> String {
 }
 
 fn model_picker_description(provider_name: &str) -> String {
-    if provider_name == "cc-switch" || provider_name.starts_with("cc-switch-") {
-        "Imported from local CC Switch".to_string()
-    } else if provider_name == "grok" {
+    if provider_name == "grok" {
         "Logged-in Grok account".to_string()
     } else if provider_name == "cursor" {
         "Logged-in Cursor account".to_string()
@@ -624,6 +621,12 @@ fn model_picker_description(provider_name: &str) -> String {
 impl AsterCodeAgent {
     pub fn new(launch: LaunchConfig) -> Self {
         let model_id = launch.model_id.clone();
+        let effort = effort_limits(
+            launch
+                .config
+                .reasoning_effort
+                .map_or("high", |effort| effort.as_str()),
+        );
         let managed_memory = Arc::new(aster_core::durable_memory_vec::LazyFileMemoryStore::new(
             session_memory_dir(&launch.workspace, &launch.config),
         ));
@@ -637,8 +640,7 @@ impl AsterCodeAgent {
             sessions: Arc::new(Mutex::new(HashMap::new())),
             session_loads: InflightSessionLoads::new(),
             model_id: Mutex::new(model_id),
-            // aster TUI default is BudgetProfile index 2 (`high`).
-            effort: Mutex::new(effort_limits("high")),
+            effort: Mutex::new(effort),
             goals: Mutex::new(HashMap::new()),
             turn_generation: Mutex::new(HashMap::new()),
             cancelled_generation: Mutex::new(HashMap::new()),
@@ -651,6 +653,7 @@ impl AsterCodeAgent {
             unattended: None,
             workspace_admission: Default::default(),
             client_reads_files: std::cell::Cell::new(false),
+            client_terminal_markdown: std::cell::Cell::new(false),
             client_rules: RefCell::new(None),
             client_permissions: RefCell::new(ClientPermissionRules::default()),
             first_run_config: false,
@@ -1010,6 +1013,11 @@ the user lists recent sessions with `aster sessions list`. \
 For persisted DOCX/XLSX/PPTX/PDF and image sources, prefer office_read when exposed, and \
 use the exposed native Office creation and output_check tools before probing \
 external packages. Respect each tool's explicit unavailable capabilities. \
+Before promising an image-backed, rendered, or dependency-heavy delivery plan, \
+confirm the live tools, schemas, workspace write paths, image backends and \
+verification path that this session actually exposes; if a capability is missing, \
+state the supported alternative and verification scope instead of inventing one. \
+office_read and structural checks are not pixel-level PowerPoint proof. \
 Before finishing, read back deliverables and check every factual and numerical \
 claim against source locations, periods, units and calculation inputs. \
 Structural file validation does not prove semantic correctness. Use date_span \
@@ -1021,6 +1029,20 @@ a requirement or inventing missing facts.";
 
 const HOST_PARALLEL_TASKS: usize = 8;
 const HOST_CONTINUATION_TURNS: u32 = 8;
+
+const TERMINAL_MARKDOWN_PRESENTATION: &str = "\
+The client displays terminal Markdown, not browser HTML. Use Markdown for the \
+readable answer, including a text explanation of diagrams. When an HTML visual \
+is requested, create a standalone UTF-8 .html artifact with the available file \
+tools at the user's requested path (otherwise choose a workspace path), read it \
+back, and link it with a relative Markdown file link labelled Open HTML preview. \
+Keep the title and a concise summary in the message so SSH, tmux and ordinary \
+terminals remain usable. The link opens in the OS default application, usually a browser; do not claim an \
+inline browser preview. Prefer self-contained static HTML/CSS/SVG without scripts \
+or remote resources unless the requested artifact needs them. Do not dump raw \
+HTML/CSS/SVG into prose unless the user explicitly requests source code. Preserve \
+the user's source, required content and output path; never replace a requested \
+HTML artifact with only a summary or an image.";
 
 /// Meta key marking a `request_permission` as an agent question riding the
 /// permission channel, not a permission ask; the payload carries

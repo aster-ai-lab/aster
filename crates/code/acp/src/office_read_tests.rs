@@ -236,11 +236,20 @@ async fn output_and_argument_bounds_refuse_unbounded_reads() {
         editor.add_paragraph("/body", text).unwrap();
     }
     editor.save().await.unwrap();
-    let error = read(root.path(), json!({"file_path":"long.docx"}))
+    let partial = read(root.path(), json!({"file_path":"long.docx"}))
         .await
-        .unwrap_err()
-        .to_string();
-    assert!(error.contains("output exceeds 64 KiB"), "{error}");
+        .unwrap();
+    assert_eq!(partial["truncated"], true);
+    assert!(partial["returned"].as_u64().unwrap() > 0);
+    assert!(partial["returned"].as_u64().unwrap() < partial["total"].as_u64().unwrap());
+    assert!(
+        partial.get("next_node_path").and_then(|value| value.as_str()).is_some(),
+        "{partial}"
+    );
+    assert!(
+        serde_json::to_vec(&partial).unwrap().len() <= 64 * 1024,
+        "partial result must stay inside the output budget"
+    );
     assert_eq!(
         read(root.path(), json!({"file_path":"long.docx","limit":1}))
             .await
