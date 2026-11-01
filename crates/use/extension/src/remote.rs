@@ -27,6 +27,7 @@ mod cache_policy;
 mod catalog;
 mod download;
 mod network;
+pub(crate) mod oci;
 mod package_graph;
 mod presentation;
 mod resumable_http;
@@ -65,8 +66,8 @@ pub use presentation::{
     MAX_PACKAGE_PRESENTATION_MEDIA, PACKAGE_PRESENTATION_INDEX_SCHEMA, PACKAGE_PRESENTATION_SCHEMA,
 };
 use target::{
-    decode_registry_target_metadata, resolved_remote_package, validate_target_metadata,
-    validate_target_name, RegistryTargetMetadata,
+    decode_registry_target_metadata, resolved_remote_package, validate_target_name,
+    RegistryTargetMetadata,
 };
 pub use target_cache::{VerifiedTargetObservation, VerifiedTargetObservationStatus};
 
@@ -502,11 +503,10 @@ async fn prepare_remote_package_with_access(
     let mut identities = BTreeSet::new();
     let mut incompatible = false;
     for (target_name, target) in repository.all_targets() {
-        let Some(metadata) = target.custom.get(REGISTRY_METADATA_KEY) else {
+        if !target.custom.contains_key(REGISTRY_METADATA_KEY) {
             continue;
-        };
-        let metadata = decode_registry_target_metadata(target_name, metadata)?;
-        validate_target_metadata(target_name, target, &metadata)?;
+        }
+        let metadata = decode_registry_target_metadata(target_name, target)?;
         let identity = (
             metadata.package_id().to_owned(),
             metadata.version().to_owned(),
@@ -591,6 +591,7 @@ async fn prepare_remote_package_with_access(
         verified_catalog,
         registry.clone(),
         access,
+        metadata.oci,
     ))
 }
 
@@ -669,11 +670,10 @@ fn verified_registry_metadata(
     let mut identities = BTreeSet::new();
     let mut package_targets = 0_u64;
     for (target_name, target) in repository.all_targets() {
-        let Some(metadata) = target.custom.get(REGISTRY_METADATA_KEY) else {
+        if !target.custom.contains_key(REGISTRY_METADATA_KEY) {
             continue;
-        };
-        let metadata = decode_registry_target_metadata(target_name, metadata)?;
-        validate_target_metadata(target_name, target, &metadata)?;
+        }
+        let metadata = decode_registry_target_metadata(target_name, target)?;
         let identity = (
             metadata.package_id().to_owned(),
             metadata.version().to_owned(),

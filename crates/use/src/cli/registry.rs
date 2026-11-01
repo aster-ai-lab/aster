@@ -2,20 +2,31 @@ use std::path::PathBuf;
 
 use aster_use_core::{UseError, UseResult};
 use aster_use_extension::{
-    inspect_verified_target_cache, prune_verified_target_cache, GitHubRegistryRepository,
-    RegistrySourceInput, RegistrySourceStore, TrustedRegistry, VerifiedTargetCachePolicy,
-    DEFAULT_GITHUB_REGISTRY_PATH, DEFAULT_GITHUB_REGISTRY_REF,
-    DEFAULT_VERIFIED_TARGET_CACHE_MAX_BYTES, DEFAULT_VERIFIED_TARGET_CACHE_MAX_ENTRIES,
-    DEFAULT_VERIFIED_TARGET_CACHE_MIN_FREE_BYTES,
+    build_aix_package, inspect_aix_package, inspect_verified_target_cache, prepare_aix_publication,
+    prune_verified_target_cache, GitHubRegistryRepository, RegistrySourceInput,
+    RegistrySourceStore, TrustedRegistry, VerifiedTargetCachePolicy, DEFAULT_GITHUB_REGISTRY_PATH,
+    DEFAULT_GITHUB_REGISTRY_REF, DEFAULT_VERIFIED_TARGET_CACHE_MAX_BYTES,
+    DEFAULT_VERIFIED_TARGET_CACHE_MAX_ENTRIES, DEFAULT_VERIFIED_TARGET_CACHE_MIN_FREE_BYTES,
 };
 
 use super::{flag_argument, option_argument, usage_error, value_argument, CommandOutput};
+use tokio::io::AsyncWriteExt;
+
+#[cfg(test)]
+#[path = "registry/aix_tests.rs"]
+mod aix_tests;
 
 pub(super) async fn run(args: &[String]) -> UseResult<CommandOutput> {
     match (
         args.first().map(String::as_str),
         args.get(1).map(String::as_str),
     ) {
+        (Some("package"), Some("build")) => package_build(args).await,
+        (Some("package"), Some("check")) => package_check(args).await,
+        (Some("package"), Some("prepare")) => package_prepare(args).await,
+        (Some("package"), _) => Err(usage_error(
+            "registry package requires build, check, or prepare",
+        )),
         (Some("source"), Some("list")) => source_list(args).await,
         (Some("source"), Some("add")) => source_add(args).await,
         (Some("source"), Some("replace")) => source_replace(args).await,
@@ -36,8 +47,153 @@ pub(super) async fn run(args: &[String]) -> UseResult<CommandOutput> {
         ))),
         (Some("cache"), None) => Err(usage_error("registry cache requires usage or prune")),
         (Some(command), _) => Err(usage_error(format!("unknown registry command '{command}'"))),
-        (None, _) => Err(usage_error("registry requires source or cache")),
+        (None, _) => Err(usage_error("registry requires source, cache, or package")),
     }
+}
+
+async fn package_build(args: &[String]) -> UseResult<CommandOutput> {
+    validate_options(
+        args,
+        3,
+        &["--json"],
+        &["--output"],
+        "registry package build",
+    )?;
+    let source = value_argument(
+        args,
+        2,
+        "registry package build requires a source directory",
+    )?;
+    let output = required_option(args, "--output", "registry package build")?;
+    let package =
+        build_aix_package(std::path::Path::new(source), std::path::Path::new(output)).await?;
+    Ok(CommandOutput::success(
+        format!(
+            "Built AIX package '{}' {} at '{}'.",
+            package.package_id, package.version, output
+        ),
+        serde_json::json!({"aixPackage":package, "archivePath":output}),
+    ))
+}
+
+async fn package_check(args: &[String]) -> UseResult<CommandOutput> {
+    validate_options(args, 3, &["--json"], &[], "registry package check")?;
+    let path = value_argument(
+        args,
+        2,
+        "registry package check requires an AIX archive path",
+    )?;
+    let package = inspect_aix_package(std::path::Path::new(path)).await?;
+    Ok(CommandOutput::success(
+        format!(
+            "Validated AIX package '{}' {} ({} files).",
+            package.package_id, package.version, package.file_count
+        ),
+        serde_json::json!({"aixPackage": package}),
+    ))
+}
+
+async fn package_prepare(args: &[String]) -> UseResult<CommandOutput> {
+    validate_options(
+        args,
+        3,
+        &["--json"],
+        &["--repository", "--domain", "--output"],
+        "registry package prepare",
+    )?;
+    let archive = value_argument(
+        args,
+        2,
+        "registry package prepare requires an AIX archive path",
+    )?;
+    let repository = required_option(args, "--repository", "registry package prepare")?;
+    let domain = required_option(args, "--domain", "registry package prepare")?;
+    let output = std::path::Path::new(required_option(
+        args,
+        "--output",
+        "registry package prepare",
+    )?);
+    let publication = prepare_aix_publication(
+        std::path::Path::new(repository),
+        domain,
+        std::path::Path::new(archive),
+    )
+    .await?;
+    let parent = output
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or(std::path::Path::new("."));
+    let filename = output
+        .file_name()
+        .ok_or_else(|| usage_error("--output requires an OCI manifest filename"))?;
+    let output = tokio::fs::canonicalize(parent)
+        .await
+        .map_err(|error| {
+            UseError::new(
+                "use.cli.io",
+                format!("Failed to resolve OCI manifest output directory: {error}"),
+            )
+        })?
+        .join(filename);
+    if output.starts_with(publication.source_path()) {
+        return Err(usage_error(
+            "OCI manifest output must be outside the validated plugin source directory",
+        ));
+    }
+    let publication_json = serde_json::to_value(&publication).map_err(|error| {
+        UseError::new(
+            "use.cli.output_invalid",
+            format!("Cannot encode publication metadata: {error}"),
+        )
+    })?;
+    let output_json = serde_json::to_value(&output).map_err(|error| {
+        UseError::new(
+            "use.cli.output_invalid",
+            format!("Cannot encode publication output path: {error}"),
+        )
+    })?;
+    let mut file = tokio::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&output)
+        .await
+        .map_err(|error| {
+            UseError::new(
+                "use.cli.io",
+                format!(
+                    "Failed to create new OCI manifest '{}': {error}",
+                    output.display()
+                ),
+            )
+        })?;
+    file.write_all(publication.manifest_bytes())
+        .await
+        .map_err(|error| {
+            UseError::new(
+                "use.cli.io",
+                format!(
+                    "Failed to write OCI manifest '{}': {error}",
+                    output.display()
+                ),
+            )
+        })?;
+    file.sync_all().await.map_err(|error| {
+        UseError::new(
+            "use.cli.io",
+            format!(
+                "Failed to sync OCI manifest '{}': {error}",
+                output.display()
+            ),
+        )
+    })?;
+    Ok(CommandOutput::success(
+        format!(
+            "Prepared AIX OCI manifest for '{}' at '{}'.",
+            publication.package().package_id,
+            output.display()
+        ),
+        serde_json::json!({"aixPublication": publication_json, "manifestPath": output_json}),
+    ))
 }
 
 async fn source_list(args: &[String]) -> UseResult<CommandOutput> {

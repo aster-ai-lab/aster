@@ -8,6 +8,7 @@ use url::Url;
 
 use crate::package::io_error;
 
+use super::oci::{AixOciSource, GhcrClient};
 use super::resumable_http;
 use super::target_cache::{stage_cached_target, ResumableTarget};
 use super::target_cache_inventory::ensure_staging_capacity;
@@ -24,6 +25,7 @@ pub struct PreparedRemotePackage {
     verified_catalog: VerifiedPluginCatalogRecord,
     registry: super::TrustedRegistry,
     access: RemoteRegistryAccess,
+    oci: Option<AixOciSource>,
 }
 
 impl std::fmt::Debug for PreparedRemotePackage {
@@ -43,6 +45,7 @@ impl PreparedRemotePackage {
         verified_catalog: VerifiedPluginCatalogRecord,
         registry: super::TrustedRegistry,
         access: RemoteRegistryAccess,
+        oci: Option<AixOciSource>,
     ) -> Self {
         Self {
             repository,
@@ -51,6 +54,7 @@ impl PreparedRemotePackage {
             verified_catalog,
             registry,
             access,
+            oci,
         }
     }
 
@@ -114,6 +118,7 @@ impl PreparedRemotePackage {
                     digest,
                     self.registry.target_cache_policy(),
                     true,
+                    None,
                 )
                 .await?
             }
@@ -157,6 +162,7 @@ impl PreparedRemotePackage {
                     &self.resolved.sha256,
                     self.registry.target_cache_policy(),
                     false,
+                    self.oci.as_ref(),
                 )
                 .await?
             }
@@ -181,7 +187,10 @@ impl PreparedRemotePackage {
     }
 }
 
-#[allow(clippy::too_many_arguments)]
+#[expect(
+    clippy::too_many_arguments,
+    reason = "one shared transaction retains signed target, network and cache evidence"
+)]
 pub(super) async fn download_and_cache_target(
     repository: &Repository,
     target_name: &TargetName,
@@ -193,29 +202,32 @@ pub(super) async fn download_and_cache_target(
     expected_sha256: &str,
     target_cache_policy: VerifiedTargetCachePolicy,
     planning: bool,
+    oci: Option<&AixOciSource>,
 ) -> UseResult<(TempDir, PathBuf)> {
-    let verification_stream = repository
-        .read_target(target_name)
-        .await
-        .map_err(|error| {
-            target_download_error(
-                planning,
-                format!(
-                    "The current TUF repository cannot verify target '{}': {error}",
-                    target_name.raw()
-                ),
-            )
-        })?
-        .ok_or_else(|| {
-            target_download_error(
-                planning,
-                format!(
-                    "The signed TUF target '{}' is no longer available.",
-                    target_name.raw()
-                ),
-            )
-        })?;
-    drop(verification_stream);
+    if oci.is_none() {
+        let verification_stream = repository
+            .read_target(target_name)
+            .await
+            .map_err(|error| {
+                target_download_error(
+                    planning,
+                    format!(
+                        "The current TUF repository cannot verify target '{}': {error}",
+                        target_name.raw()
+                    ),
+                )
+            })?
+            .ok_or_else(|| {
+                target_download_error(
+                    planning,
+                    format!(
+                        "The signed TUF target '{}' is no longer available.",
+                        target_name.raw()
+                    ),
+                )
+            })?;
+        drop(verification_stream);
+    }
     let temporary = tokio::task::spawn_blocking(tempfile::tempdir)
         .await
         .map_err(|error| {
@@ -239,19 +251,25 @@ pub(super) async fn download_and_cache_target(
     )
     .await?;
     if !target.is_ready() {
-        let url = resumable_http::target_url(
-            targets_url,
-            target_name,
-            expected_sha256,
-            consistent_snapshot,
-        )
-        .map_err(|error| target_download_error(planning, error.message))?;
-        let error_code = if planning {
-            "use.extension.registry_planning_target_invalid"
+        if let Some(source) = oci {
+            GhcrClient::new(network_policy)?
+                .download(source, &mut target)
+                .await?;
         } else {
-            "use.extension.registry_download_failed"
-        };
-        resumable_http::download(&mut target, &url, network_policy, error_code).await?;
+            let url = resumable_http::target_url(
+                targets_url,
+                target_name,
+                expected_sha256,
+                consistent_snapshot,
+            )
+            .map_err(|error| target_download_error(planning, error.message))?;
+            let error_code = if planning {
+                "use.extension.registry_planning_target_invalid"
+            } else {
+                "use.extension.registry_download_failed"
+            };
+            resumable_http::download(&mut target, &url, network_policy, error_code, None).await?;
+        }
     }
     let file_name = target_name
         .resolved()

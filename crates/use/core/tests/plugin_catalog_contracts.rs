@@ -1,10 +1,12 @@
 use aster_use_core::{
-    CatalogPlanningTarget, CatalogSurface, ExecutablePlanningSurface, InstalledPluginPlanEvidence,
-    McpReleaseDescriptor, OkfBundleContract, PackageSurfaceKind, PlanPackageRole,
-    PlanningArtifactRef, PlanningSurfaceActivation, PluginCatalogRecord, PluginPermissionCeiling,
-    PluginPlanSource, PluginPlanningBundle, PluginSurfaceRef, ToolReleaseDescriptor,
+    CatalogArchive, CatalogAvailability, CatalogPackage, CatalogPlanningTarget, CatalogSurface,
+    ExecutablePlanningSurface, InstalledPluginPlanEvidence, McpReleaseDescriptor,
+    OkfBundleContract, PackageSurfaceKind, PlanPackageRole, PlanningArtifactRef,
+    PlanningSurfaceActivation, PluginCatalogRecord, PluginPermissionCeiling, PluginPlanSource,
+    PluginPlanningBundle, PluginReleaseChannel, PluginSurfaceRef, ToolReleaseDescriptor,
     ToolWorkloadClass, VerifiedCatalogProvenance, VerifiedPluginCatalogRecord,
-    INSTALLED_PLUGIN_PLAN_EVIDENCE_SCHEMA, PLUGIN_CATALOG_SCHEMA_V3, PLUGIN_PLANNING_BUNDLE_SCHEMA,
+    INSTALLED_PLUGIN_PLAN_EVIDENCE_SCHEMA, PLUGIN_CATALOG_SCHEMA_V3, PLUGIN_PERMISSION_SCHEMA,
+    PLUGIN_PLANNING_BUNDLE_SCHEMA,
 };
 use sha2::{Digest, Sha256};
 
@@ -28,6 +30,72 @@ const CATALOG_DIGEST: &str =
 
 fn canonical_fixture(bytes: &[u8]) -> &[u8] {
     bytes.strip_suffix(b"\n").unwrap_or(bytes)
+}
+
+#[test]
+fn native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats() {
+    let ceiling = PluginPermissionCeiling {
+        schema: PLUGIN_PERMISSION_SCHEMA.into(),
+        surfaces: Vec::new(),
+    };
+    let digest = format!("sha256:{:x}", Sha256::digest(b"native archive fixture"));
+    let mut catalog = PluginCatalogRecord {
+        schema: PLUGIN_CATALOG_SCHEMA_V3.into(),
+        package_id: "aster/native".into(),
+        display_name: "Native AIX".into(),
+        description: "Native package target admission.".into(),
+        publisher: "aster".into(),
+        keywords: vec!["native".into()],
+        categories: vec!["development".into()],
+        version: "2.0.0".into(),
+        channel: PluginReleaseChannel::Stable,
+        requires_use: ">=0.3.0, <0.4.0".into(),
+        dependencies: Vec::new(),
+        target: "linux-x86_64".into(),
+        surfaces: vec![CatalogSurface {
+            kind: PackageSurfaceKind::Skill,
+            id: "guide".into(),
+            optional: false,
+            workload: None,
+            mcp_transport: None,
+            mcp_tool_count: None,
+            okf_bundle: None,
+            requires: Vec::new(),
+        }],
+        permission_ceiling_digest: ceiling.descriptor_digest().unwrap(),
+        permission_ceiling: ceiling,
+        planning: None,
+        archive: CatalogArchive {
+            target_name: "extensions/aster/native/2.0.0/stable/linux-x86_64/native.aix".into(),
+            length: 22,
+            sha256: digest.clone(),
+        },
+        package: CatalogPackage {
+            expanded_bytes: 100,
+            file_count: 3,
+            sha256: Some(digest.clone()),
+            manifest_sha256: Some(digest),
+        },
+        license: "MIT".into(),
+        repository: "https://github.com/aster-ai-lab/plugins".into(),
+        availability: CatalogAvailability::Available,
+    };
+    let bytes = catalog.canonical_bytes().unwrap();
+    assert_eq!(
+        PluginCatalogRecord::from_json(&bytes)
+            .unwrap()
+            .archive
+            .target_name,
+        catalog.archive.target_name
+    );
+    catalog.archive.target_name = catalog
+        .archive
+        .target_name
+        .replace("native.aix", "native.vsix");
+    assert_eq!(
+        catalog.validate().unwrap_err().code,
+        "use.plugin.catalog_invalid"
+    );
 }
 
 #[test]

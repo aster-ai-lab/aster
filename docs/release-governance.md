@@ -59,6 +59,12 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 ### Aster 桌面版
 
+桌面运行组件统一使用 `.aix` 插件，发布到 `aster-ai-lab/plugins` 仓库关联的 GitHub Packages（GHCR），由受信 TUF 目录绑定 OCI manifest、AIX blob 和原生包摘要。沙箱、文档引擎（包含 ONNX Runtime）、Office 分别使用 `aster/aster-sandbox`、`aster/aster-document`、`aster/aster-office`。平台是发布变体，不进入包 ID。底座构建只消费已发布的组件锁（`ASTER_RUNTIME_COMPONENTS_LOCK`），不重建运行时插件。底座内的 `runtime-components.json` 固定兼容版本、平台、包与归档摘要；已安装且版本、摘要一致的组件不再安装。Office 首次使用时安装。
+
+`pnpm package:host` 构建现有 `aster-use` CLI，并通过 `registry package build/check/prepare` 生成 AIX、OCI manifest 和发布证据；这些构建产物不上传到桌面 Release。只有 `plugins` 的包发布流程与受信目录负责组件分发，桌面首次启动复用同一扩展 Registry 的安装记录和不可变版本目录。
+
+首次迁移先发布完整过渡包（默认 `ASTER_DEFER_RUNTIME_COMPONENTS=0`），让客户端具备 AIX 组件与轻量更新包能力，并把随包资源通过原生 AIX 生命周期导入版本缓存。官方 GHCR 包、匿名读取、TUF 签名根与目录接入完成后，才能提供已发布组件锁和 `ASTER_PLUGIN_ROOT_SHA256`，启用 `ASTER_DEFER_RUNTIME_COMPONENTS=1` 生成并发布轻量底座；新安装必须能在没有用户预设源的机器上安装固定组件。未完成该验收时不能把候选轻量包放入稳定通道。仍被保留底座引用的 OCI digest 不得删除或替换。
+
 1. 用桌面发布流程完成签名、公证和平台验证。
 2. 发布版本化 `vX.Y.Z` 安装包，并将其标记为仓库 Latest。
 3. 确认 `desktop-stable/desktop-latest.json` 指向新版本。

@@ -1,0 +1,27 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/runtime-clean-sdk/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/runtime-clean-sdk/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling libc v0.2.189
+   Compiling serde_core v1.0.229
+   Compiling idna v1.1.0
+   Compiling cpufeatures v0.2.17
+   Compiling errno v0.3.14
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling serde_yaml_ng v0.10.0
+   Compiling olpc-cjson v0.1.4
+   Compiling rustix v1.1.6
+   Compiling sha2 v0.10.9
+   Compiling getrandom v0.3.4
+   Compiling url v2.5.8
+   Compiling tempfile v3.27.0
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/target/runtime-clean-sdk/crates/use/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 16s
+     Running tests/plugin_catalog_contracts.rs (/Users/roylin/code/aster/target/studio/aster/debug/deps/plugin_catalog_contracts-4f3196649712ec19)
+
+running 1 test
+test native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.00s
+

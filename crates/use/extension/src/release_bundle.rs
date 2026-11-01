@@ -99,3 +99,26 @@ pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBun
     package.validate()?;
     Ok(package)
 }
+
+/// Validate an AIX archive with the installer's native reader and package contracts.
+/// This performs bounded extraction/hashing in temporary storage and never installs,
+/// executes, grants permissions to, or marks the package as trusted.
+pub async fn inspect_aix_package(path: &Path) -> UseResult<ReleaseBundlePackage> {
+    if path.extension() != Some(std::ffi::OsStr::new("aix")) {
+        return Err(UseError::new(
+            "use.extension.package_unsupported",
+            "Published AIX packages require the exact .aix extension.",
+        ));
+    }
+    let metadata = fs::symlink_metadata(path)
+        .await
+        .map_err(|error| io_error("inspect AIX archive", path, error))?;
+    if !metadata.is_file() {
+        return Err(UseError::new(
+            "use.extension.package_unsupported",
+            "Published AIX packages must be regular archive files.",
+        ));
+    }
+    let source = super::source::prepare_package_source(path).await?;
+    inspect_release_bundle(source.root()).await
+}

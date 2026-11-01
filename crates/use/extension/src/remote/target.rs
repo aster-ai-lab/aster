@@ -2,6 +2,8 @@ use aster_use_core::{PluginCatalogRecord, UseError, UseResult};
 use semver::Version;
 use tough::{Repository, TargetName};
 
+use super::oci::AixOciSource;
+
 use super::{
     hex_lower, validate_channel, ResolvedRemotePackage, TrustedRegistry, MAX_REMOTE_ARCHIVE_BYTES,
 };
@@ -13,6 +15,7 @@ mod aix_tests;
 #[derive(Debug, Clone)]
 pub(super) struct RegistryTargetMetadata {
     record: Box<PluginCatalogRecord>,
+    pub(super) oci: Option<AixOciSource>,
 }
 
 impl RegistryTargetMetadata {
@@ -43,8 +46,17 @@ impl RegistryTargetMetadata {
 
 pub(super) fn decode_registry_target_metadata(
     target_name: &TargetName,
-    value: &serde_json::Value,
+    target: &tough::schema::Target,
 ) -> UseResult<RegistryTargetMetadata> {
+    let value = target
+        .custom
+        .get(super::REGISTRY_METADATA_KEY)
+        .ok_or_else(|| {
+            UseError::new(
+                "use.extension.registry_target_invalid",
+                "The signed target has no Aster catalog metadata.",
+            )
+        })?;
     let bytes = serde_json::to_vec(value).map_err(|error| {
         UseError::new(
             "use.extension.registry_target_invalid",
@@ -64,12 +76,16 @@ pub(super) fn decode_registry_target_metadata(
             ),
         )
     })?;
-    Ok(RegistryTargetMetadata {
+    let mut metadata = RegistryTargetMetadata {
         record: Box::new(record),
-    })
+        oci: None,
+    };
+    validate_target_metadata(target_name, target, &metadata)?;
+    metadata.oci = AixOciSource::from_target(target_name, metadata.catalog_record())?;
+    Ok(metadata)
 }
 
-pub(super) fn validate_target_metadata(
+fn validate_target_metadata(
     target_name: &TargetName,
     target: &tough::schema::Target,
     metadata: &RegistryTargetMetadata,

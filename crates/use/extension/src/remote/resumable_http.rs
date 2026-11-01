@@ -1,7 +1,9 @@
 use std::time::Duration;
 
 use aster_use_core::{UseError, UseResult};
-use reqwest::header::{ACCEPT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, LOCATION, RANGE};
+use reqwest::header::{
+    HeaderValue, ACCEPT_ENCODING, AUTHORIZATION, CONTENT_LENGTH, CONTENT_RANGE, LOCATION, RANGE,
+};
 use reqwest::{Response, StatusCode};
 use tough::TargetName;
 use url::Url;
@@ -50,6 +52,7 @@ pub(super) async fn download(
     url: &Url,
     network_policy: RegistryNetworkPolicy,
     error_code: &'static str,
+    authorization: Option<&HeaderValue>,
 ) -> UseResult<()> {
     if target.is_ready() {
         return Ok(());
@@ -84,6 +87,7 @@ pub(super) async fn download(
             url,
             requested_offset,
             error_code,
+            authorization,
         )
         .await
         {
@@ -142,7 +146,7 @@ pub(super) async fn download(
                 Ok(None) => break,
                 Err(error) => {
                     target.checkpoint().await?;
-                    last_stream_error = Some(error.to_string());
+                    last_stream_error = Some(error.without_url().to_string());
                     break;
                 }
             }
@@ -173,6 +177,7 @@ async fn send_request(
     initial_url: &Url,
     offset: u64,
     error_code: &'static str,
+    authorization: Option<&HeaderValue>,
 ) -> UseResult<Response> {
     validate_download_url(initial_url)
         .map_err(|error| download_error(error_code, error.message))?;
@@ -193,13 +198,21 @@ async fn send_request(
             .map_err(|error| download_error(error_code, error.message))?,
         };
         let mut request = client.get(url.clone()).header(ACCEPT_ENCODING, "identity");
+        if url.origin() == initial_url.origin() {
+            if let Some(authorization) = authorization {
+                request = request.header(AUTHORIZATION, authorization);
+            }
+        }
         if offset > 0 {
             request = request.header(RANGE, format!("bytes={offset}-"));
         }
         let response = request.send().await.map_err(|error| {
             download_error(
                 error_code,
-                format!("Failed to request the signed Registry target: {error}"),
+                format!(
+                    "Failed to request the signed Registry target: {}",
+                    error.without_url()
+                ),
             )
         })?;
         if !response.status().is_redirection() {

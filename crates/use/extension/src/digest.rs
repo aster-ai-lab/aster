@@ -8,10 +8,11 @@ use sha2::{Digest, Sha256};
 use super::package::{io_error, MAX_PACKAGE_BYTES, MAX_PACKAGE_FILES};
 use super::source::sanitized_relative_path;
 
-struct PackageFile {
-    normalized: String,
-    path: PathBuf,
-    size: u64,
+#[derive(Debug)]
+pub(crate) struct PackageFile {
+    pub(crate) normalized: String,
+    pub(crate) path: PathBuf,
+    pub(crate) size: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -38,11 +39,8 @@ pub(crate) async fn package_fingerprint(root: &Path) -> UseResult<PackageFingerp
 }
 
 fn hash_package(root: &Path) -> UseResult<PackageFingerprint> {
-    let mut files = Vec::new();
-    let mut entries = 0_usize;
-    let mut bytes = 0_u64;
-    collect_files(root, root, &mut files, &mut entries, &mut bytes)?;
-    files.sort_by(|left, right| left.normalized.cmp(&right.normalized));
+    let files = collect_package_files(root)?;
+    let bytes = files.iter().map(|file| file.size).sum();
 
     let mut digest = Sha256::new();
     digest.update(b"aster-use-expanded-package-v1\0");
@@ -80,6 +78,15 @@ fn hash_package(root: &Path) -> UseResult<PackageFingerprint> {
         file_count,
         byte_count: bytes,
     })
+}
+
+pub(crate) fn collect_package_files(root: &Path) -> UseResult<Vec<PackageFile>> {
+    let mut files = Vec::new();
+    let mut entries = 0_usize;
+    let mut bytes = 0_u64;
+    collect_files(root, root, &mut files, &mut entries, &mut bytes)?;
+    files.sort_by(|left, right| left.normalized.cmp(&right.normalized));
+    Ok(files)
 }
 
 fn collect_files(

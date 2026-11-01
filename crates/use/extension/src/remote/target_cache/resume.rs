@@ -228,6 +228,10 @@ impl ResumableTarget {
         self.expected_length
     }
 
+    pub(in crate::remote) fn expected_sha256(&self) -> &str {
+        &self.expected_sha256
+    }
+
     pub(in crate::remote) async fn reset(&mut self) -> UseResult<()> {
         let path = self.partial_path.clone();
         let partial = self.partial_mut()?;
@@ -433,7 +437,8 @@ async fn open_existing_partial(path: &Path) -> UseResult<Option<fs::File>> {
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
         Err(error) => {
             if let Ok(metadata) = fs::symlink_metadata(path).await {
-                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                    || !metadata.is_file()
                 {
                     return Err(target_cache_error(
                         "use.extension.registry_target_cache_invalid",

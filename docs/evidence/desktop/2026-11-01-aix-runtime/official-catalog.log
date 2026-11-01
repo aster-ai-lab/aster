@@ -1,0 +1,206 @@
+{
+  "data": {
+    "nextCursors": [],
+    "plugins": [
+      {
+        "provenance": {
+          "catalogRecordDigest": "sha256:9b24276b8376ca3513ff14dab9dfabd4e721e274f69127d7b3d9798d86594c7a",
+          "registryName": "aster-official",
+          "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+          "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+          "rootVersion": 1,
+          "snapshotVersion": 3,
+          "targetsVersion": 3,
+          "timestampVersion": 3
+        },
+        "record": {
+          "archive": {
+            "length": 46719510,
+            "sha256": "sha256:a689f6c422b9a81115d1a4000803af36ec0db0b82db7f9ff0ce62e5047eead24",
+            "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2/stable/darwin-arm64/oci-ghcr-v1/operations/a54ce56349fedcb62b63f2054ec7b2db13de3835633c21f967fcf2ec1ccba9bd/aster-document.aix"
+          },
+          "availability": {
+            "state": "available"
+          },
+          "categories": [
+            "operations"
+          ],
+          "channel": "stable",
+          "description": "Pinned native runtime assets for Aster desktop.",
+          "displayName": "aster-document",
+          "keywords": [
+            "desktop",
+            "runtime"
+          ],
+          "license": "MIT",
+          "package": {
+            "expandedBytes": 84508760,
+            "fileCount": 30,
+            "manifestSha256": "sha256:d9171e3ecfdeb432669c5962784fb81d7aa94603519f348e6d6de7653d2a8bb9",
+            "sha256": "sha256:2d508cef015cdc34cb14f0302f8c1e4dde6502ccb8814a48fb957fc0abfc4745"
+          },
+          "packageId": "aster/aster-document",
+          "permissionCeiling": {
+            "schema": "aster.use.plugin-permissions.v1",
+            "surfaces": []
+          },
+          "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+          "publisher": "aster",
+          "repository": "https://github.com/aster-ai-lab/plugins",
+          "requiresUse": ">=0.3.0, <0.4.0",
+          "schema": "aster.use.plugin-catalog.v3",
+          "surfaces": [
+            {
+              "id": "runtime",
+              "kind": "plugin",
+              "optional": false
+            }
+          ],
+          "target": "darwin-arm64",
+          "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2"
+        }
+      },
+      {
+        "provenance": {
+          "catalogRecordDigest": "sha256:acac2b905e17cef4cf413bfe8f8c3c0f0331d898bcb71d11b35f30fcf73de0e0",
+          "registryName": "aster-official",
+          "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+          "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+          "rootVersion": 1,
+          "snapshotVersion": 3,
+          "targetsVersion": 3,
+          "timestampVersion": 3
+        },
+        "record": {
+          "archive": {
+            "length": 8231292,
+            "sha256": "sha256:95fc496612927babb2778740cdc3759c88763004fcc1e6acd8765aa4e2358708",
+            "targetName": "extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c/stable/darwin-arm64/oci-ghcr-v1/operations/9837082cb7a2f6f8d7ea06673e786c2a2285be96215fe9241e579abf112661aa/aster-office.aix"
+          },
+          "availability": {
+            "state": "available"
+          },
+          "categories": [
+            "operations"
+          ],
+          "channel": "stable",
+          "description": "Pinned native runtime assets for Aster desktop.",
+          "displayName": "aster-office",
+          "keywords": [
+            "desktop",
+            "runtime"
+          ],
+          "license": "MIT",
+          "package": {
+            "expandedBytes": 19725357,
+            "fileCount": 5,
+            "manifestSha256": "sha256:2e090ca979a887b8aa678350f0ff146b7619787fa4f0463ee90e55d1d702fdb5",
+            "sha256": "sha256:748ca3e218bdab216796d78eec955cfe4dff736d29163bc4dd0114a9351f173d"
+          },
+          "packageId": "aster/aster-office",
+          "permissionCeiling": {
+            "schema": "aster.use.plugin-permissions.v1",
+            "surfaces": []
+          },
+          "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+          "publisher": "aster",
+          "repository": "https://github.com/aster-ai-lab/plugins",
+          "requiresUse": ">=0.3.0, <0.4.0",
+          "schema": "aster.use.plugin-catalog.v3",
+          "surfaces": [
+            {
+              "id": "runtime",
+              "kind": "plugin",
+              "optional": false
+            }
+          ],
+          "target": "darwin-arm64",
+          "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c"
+        }
+      },
+      {
+        "provenance": {
+          "catalogRecordDigest": "sha256:6b55f8933783fa61a838cadf4f486fa50fa05216742a65ea2803b34d53dd0bab",
+          "registryName": "aster-official",
+          "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+          "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+          "rootVersion": 1,
+          "snapshotVersion": 3,
+          "targetsVersion": 3,
+          "timestampVersion": 3
+        },
+        "record": {
+          "archive": {
+            "length": 49896432,
+            "sha256": "sha256:36e8ef630c707251047b212e862ff960bb54899f9e76ce3b2eb019e984a92f9e",
+            "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819/stable/darwin-arm64/oci-ghcr-v1/operations/63f15cd734c604f8e15c7f8ce896af51989b9096d89981babb84c6b9521b6cb5/aster-sandbox.aix"
+          },
+          "availability": {
+            "state": "available"
+          },
+          "categories": [
+            "operations"
+          ],
+          "channel": "stable",
+          "description": "Pinned native runtime assets for Aster desktop.",
+          "displayName": "aster-sandbox",
+          "keywords": [
+            "desktop",
+            "runtime"
+          ],
+          "license": "MIT",
+          "package": {
+            "expandedBytes": 172875379,
+            "fileCount": 13,
+            "manifestSha256": "sha256:19a09441ffc2fe86bee9757f55be0cce2592e2dffc564ffba088632aae268eb8",
+            "sha256": "sha256:25fb8f6e991b741bf8beb14ba9b46800d7e7291b00710f14efb95560b78da55b"
+          },
+          "packageId": "aster/aster-sandbox",
+          "permissionCeiling": {
+            "schema": "aster.use.plugin-permissions.v1",
+            "surfaces": []
+          },
+          "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+          "publisher": "aster",
+          "repository": "https://github.com/aster-ai-lab/plugins",
+          "requiresUse": ">=0.3.0, <0.4.0",
+          "schema": "aster.use.plugin-catalog.v3",
+          "surfaces": [
+            {
+              "id": "runtime",
+              "kind": "plugin",
+              "optional": false
+            }
+          ],
+          "target": "darwin-arm64",
+          "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819"
+        }
+      }
+    ],
+    "snapshots": [
+      {
+        "ageSeconds": 0,
+        "catalogRecords": 3,
+        "hostTarget": "darwin-arm64",
+        "metadata": {
+          "packageTargets": 3,
+          "registryName": "aster-official",
+          "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+          "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+          "rootVersion": 1,
+          "snapshotVersion": 3,
+          "targetsVersion": 3,
+          "timestampVersion": 3
+        },
+        "snapshotDigest": "sha256:5b383535ccb23c95bd65cd65f07e04a92f46bf1ac9ebdd8beb3ed6c8b88b920e",
+        "source": "refreshed",
+        "useVersion": "0.3.3",
+        "verifiedAtUnixSeconds": 1793548949
+      }
+    ],
+    "sourceRevision": "sha256:074017792c0066a8ad78ce8ee5298a7dc096eed57b8e403d78e1a81f8b31349e",
+    "totalMatches": 3
+  },
+  "ok": true,
+  "schemaVersion": 1
+}

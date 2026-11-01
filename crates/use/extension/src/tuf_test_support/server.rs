@@ -17,6 +17,9 @@ struct SharedServerState {
     routes: Arc<Mutex<HashMap<String, Vec<u8>>>>,
     requests: Arc<Mutex<Vec<String>>>,
     range_requests: Arc<Mutex<Vec<(String, String)>>>,
+    authorization_requests: Arc<Mutex<Vec<(String, String)>>>,
+    redirects: Arc<Mutex<HashMap<String, String>>>,
+    unknown_lengths: Arc<Mutex<HashSet<String>>>,
     interruptions: Arc<Mutex<HashMap<String, InterruptedResponse>>>,
     content_range_overrides: Arc<Mutex<HashMap<String, String>>>,
     ignored_range_paths: Arc<Mutex<HashSet<String>>>,
@@ -45,6 +48,9 @@ impl TestServer {
             routes: Arc::new(Mutex::new(routes)),
             requests: Arc::new(Mutex::new(Vec::new())),
             range_requests: Arc::new(Mutex::new(Vec::new())),
+            authorization_requests: Arc::new(Mutex::new(Vec::new())),
+            redirects: Arc::new(Mutex::new(HashMap::new())),
+            unknown_lengths: Arc::new(Mutex::new(HashSet::new())),
             interruptions: Arc::new(Mutex::new(HashMap::new())),
             content_range_overrides: Arc::new(Mutex::new(HashMap::new())),
             ignored_range_paths: Arc::new(Mutex::new(HashSet::new())),
@@ -85,6 +91,34 @@ impl TestServer {
     pub(crate) fn clear_requests(&self) {
         self.shared.requests.lock().unwrap().clear();
         self.shared.range_requests.lock().unwrap().clear();
+        self.shared.authorization_requests.lock().unwrap().clear();
+    }
+
+    pub(crate) fn authorizations_for(&self, path: &str) -> Vec<String> {
+        self.shared
+            .authorization_requests
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|(request, _)| request == path)
+            .map(|(_, value)| value.clone())
+            .collect()
+    }
+
+    pub(crate) fn redirect(&self, path: &str, location: &str) {
+        self.shared
+            .redirects
+            .lock()
+            .unwrap()
+            .insert(path.into(), location.into());
+    }
+
+    pub(crate) fn omit_content_length_for(&self, path: &str) {
+        self.shared
+            .unknown_lengths
+            .lock()
+            .unwrap()
+            .insert(path.into());
     }
 
     pub(crate) fn replace_routes(&self, routes: HashMap<String, Vec<u8>>) {
@@ -197,6 +231,22 @@ fn serve(mut stream: TcpStream, shared: &SharedServerState) {
             .unwrap()
             .push((path.clone(), range.clone()));
     }
+    if let Some(authorization) = request.lines().skip(1).find_map(|line| {
+        let (name, value) = line.split_once(':')?;
+        name.eq_ignore_ascii_case("authorization")
+            .then(|| value.trim().to_owned())
+    }) {
+        shared
+            .authorization_requests
+            .lock()
+            .unwrap()
+            .push((path.clone(), authorization));
+    }
+    if let Some(location) = shared.redirects.lock().unwrap().get(&path).cloned() {
+        let _ = stream.write_all(format!("HTTP/1.1 302 Found\r\nLocation: {location}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").as_bytes());
+        let _ = stream.flush();
+        return;
+    }
     let body = shared.routes.lock().unwrap().get(&path).cloned();
     let effective_range = if shared.ignored_range_paths.lock().unwrap().contains(&path) {
         None
@@ -231,9 +281,13 @@ fn serve(mut stream: TcpStream, shared: &SharedServerState) {
         })
         .map(|value| format!("Content-Range: {value}\r\n"))
         .unwrap_or_default();
+    let content_length = if shared.unknown_lengths.lock().unwrap().contains(&path) {
+        String::new()
+    } else {
+        format!("Content-Length: {}\r\n", body.len())
+    };
     let header = format!(
-        "HTTP/1.1 {status}\r\nContent-Length: {}\r\nAccept-Ranges: bytes\r\n{content_range}Connection: close\r\n\r\n",
-        body.len()
+        "HTTP/1.1 {status}\r\n{content_length}Accept-Ranges: bytes\r\n{content_range}Connection: close\r\n\r\n"
     );
     let interrupted_bytes = {
         let mut interruptions = shared.interruptions.lock().unwrap();

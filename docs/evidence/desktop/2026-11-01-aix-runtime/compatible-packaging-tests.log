@@ -1,0 +1,13 @@
+runtime AIX plugins /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/runtime-keep-f4ous2vy/out
+.runtime AIX plugins /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp5krnt46s/out
+runtime AIX pins reused from /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp5krnt46s/out/runtime-components.json
+runtime AIX pins reused from /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp5krnt46s/out/runtime-components.json
+.runtime AIX plugins /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/runtime-defer-dtegt1rk/out
+runtime AIX pins reused from /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/runtime-defer-dtegt1rk/out/runtime-components.json
+..runtime AIX plugins /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/runtime 组件-5q3to4ed/out
+runtime AIX plugins /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/runtime 组件-5q3to4ed/out
+..
+----------------------------------------------------------------------
+Ran 6 tests in 1.012s
+
+OK

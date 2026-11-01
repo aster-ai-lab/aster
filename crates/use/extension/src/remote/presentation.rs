@@ -334,6 +334,7 @@ async fn fetch_media(
                 digest,
                 registry.target_cache_policy(),
                 false,
+                None,
             )
             .await?
         }
@@ -389,6 +390,7 @@ async fn load_target_bytes(
                 digest,
                 registry.target_cache_policy(),
                 false,
+                None,
             )
             .await?
         }

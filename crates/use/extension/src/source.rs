@@ -9,7 +9,7 @@ use tokio::fs;
 
 use super::package::{io_error, MANIFEST_NAME, MAX_PACKAGE_BYTES, MAX_PACKAGE_FILES};
 
-const MAX_ARCHIVE_BYTES: u64 = 512 * 1024 * 1024;
+pub(crate) const MAX_ARCHIVE_BYTES: u64 = 512 * 1024 * 1024;
 const MAX_PATH_BYTES: usize = 4_096;
 const MAX_PATH_DEPTH: usize = 32;
 

@@ -14,6 +14,7 @@ extern crate self as aster_use_extension;
 mod test_filesystem;
 
 mod agent_parameters;
+mod aix_pack;
 mod atomic_file;
 mod composer_mode;
 mod digest;
@@ -28,6 +29,7 @@ mod paths;
 mod plugin_manifest;
 #[cfg(test)]
 mod plugin_manifest_tests;
+mod publication;
 mod registry;
 mod registry_io;
 mod registry_sources;
@@ -60,6 +62,7 @@ pub use agent_parameters::{
     parse_agent_parameter_schema, validate_agent_parameter_values, AgentParameterField,
     AgentParameterKind, AgentParameterSchema,
 };
+pub use aix_pack::build_aix_package;
 #[doc(hidden)]
 pub use atomic_file::{
     persist_named_temporary_noclobber_blocking, persist_temporary_noclobber_blocking,
@@ -76,6 +79,7 @@ pub use plugin_manifest::{
     PluginOkfSurface, PluginSkillSurface, PluginUiSurface, SkillHostMode, SurfaceActivation,
     ToolServiceSurface, ToolSurface, ToolTaskSource, ToolTaskSurface, ToolWorkload,
 };
+pub use publication::{prepare_aix_publication, PreparedAixPublication};
 pub use registry::{
     validate_catalog_manifest_binding, ExtensionLifecycleGraphPublication,
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionLifecycleResult,
@@ -93,7 +97,8 @@ pub use registry_sources::{
     REGISTRY_SOURCE_CONFIG_SCHEMA_VERSION,
 };
 pub use release_bundle::{
-    inspect_release_bundle, ReleaseBundlePackage, RELEASE_BUNDLE_SCHEMA_VERSION,
+    inspect_aix_package, inspect_release_bundle, ReleaseBundlePackage,
+    RELEASE_BUNDLE_SCHEMA_VERSION,
 };
 pub use remote::{
     download_locked_cached_remote_packages, download_locked_remote_packages,

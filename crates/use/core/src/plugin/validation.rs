@@ -175,7 +175,8 @@ pub(super) fn valid_target_name(value: &str) -> bool {
         && matches!(
             value.rsplit('/').next(),
             Some(name)
-                if name.ends_with(".tar.gz")
+                if name.ends_with(".aix")
+                    || name.ends_with(".tar.gz")
                     || name.ends_with(".tgz")
                     || name.ends_with(".zip")
         )

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
-use tough::{ExpirationEnforcement, FilesystemTransport, Limits, Repository, RepositoryLoader};
+use tough::{ExpirationEnforcement, Limits, Repository, RepositoryLoader};
 use url::Url;
 
 use crate::package::{activate_temporary_file, io_error, sync_parent_directory, unique_suffix};
@@ -16,6 +16,9 @@ use super::super::{
     MAX_BOOTSTRAP_ROOT_BYTES, MAX_ROOT_UPDATES,
 };
 use super::{catalog_cache_error, VerifiedRegistryMetadata};
+
+mod file_transport;
+use file_transport::NativeMetadataTransport;
 
 const CATALOG_CACHE_SCHEMA: &str = "aster.use.catalog-cache.v1";
 const CATALOG_CACHE_DIRECTORY: &str = "catalog-metadata";
@@ -191,7 +194,8 @@ pub(super) async fn load_cached_repository(
                 io_error("inspect verified catalog snapshot", &cache_directory, error)
             }
         })?;
-    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
+    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata)
+        || !cache_metadata.is_dir()
     {
         return Err(catalog_cache_error(
             "use.extension.catalog_cache_invalid",
@@ -249,7 +253,7 @@ pub(super) async fn load_cached_repository(
         )
     })?;
     let repository = RepositoryLoader::new(&root, metadata_url.clone(), metadata_url)
-        .transport(FilesystemTransport)
+        .transport(NativeMetadataTransport)
         .limits(repository_limits())
         .expiration_enforcement(ExpirationEnforcement::Safe)
         .load()
@@ -282,7 +286,8 @@ pub(super) async fn validate_cached_registry_identity_if_present(
             ));
         }
     };
-    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
+    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata)
+        || !cache_metadata.is_dir()
     {
         return Err(catalog_cache_error(
             "use.extension.catalog_cache_invalid",

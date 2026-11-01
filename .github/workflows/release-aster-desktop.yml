@@ -7,6 +7,10 @@ on:
         description: "Desktop version to publish (x.y.z); assets attach to the desktop-stable channel release"
         required: true
         type: string
+      defer_runtime_components:
+        description: "Slim installer (enable after existing clients receive the component-aware bootstrap release)"
+        type: boolean
+        default: false
       notes_en:
         description: "Required English notes under ## New Features, ## Improvements, and ## Bug Fixes"
         required: true
@@ -33,6 +37,9 @@ jobs:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
       ASTER_TENANT_SLUG: aster
+      ASTER_DEFER_RUNTIME_COMPONENTS: ${{ inputs.defer_runtime_components && '1' || '0' }}
+      ASTER_PLUGIN_ROOT_SHA256: ${{ vars.ASTER_PLUGIN_ROOT_SHA256 }}
+      ASTER_RUNTIME_COMPONENTS_LOCK: ${{ github.workspace }}/apps/studio/resources/runtime-components.lock.json
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned desktop sources

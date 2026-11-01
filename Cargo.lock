@@ -3424,6 +3424,7 @@ dependencies = [
  "tokio",
  "tokio-stream",
  "tokio-util",
+ "tracing",
  "url",
  "uuid 1.26.1",
  "zip 7.3.0",

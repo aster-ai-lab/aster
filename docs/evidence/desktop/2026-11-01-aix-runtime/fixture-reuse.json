@@ -1,0 +1,17 @@
+[
+  {
+    "path": "apps/api/vendor/web/public/cases/acp-cloud-agent.aix",
+    "sha256": "13703b3c2ebe8bfba56e367d28772d5505502e11c19f88c44b2af1195fef1926",
+    "bytes": 3378
+  },
+  {
+    "path": "docs/evidence/desktop/2026-10-29-personal-library-ocr/fixtures/ocr-source.png",
+    "sha256": "4c7711913ffbeedff1062ca4a75d45843e4c13425a99b27aee7ef4610b5d36eb",
+    "bytes": 41422
+  },
+  {
+    "path": "docs/evidence/desktop/2026-10-29-personal-library-ocr/fixtures/mixed-source.pdf",
+    "sha256": "ebfeb9a90e059b652eb3e4e25fbeecf07af3801706e98a17404cbb3fd6eaa227",
+    "bytes": 37264
+  }
+]

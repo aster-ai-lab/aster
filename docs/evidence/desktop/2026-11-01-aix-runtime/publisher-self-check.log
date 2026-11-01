@@ -1,0 +1,1 @@
+Same native AIX versions skip ORAS upload; changed archive bytes are refused; all signed catalog records are preserved.

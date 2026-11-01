@@ -1,0 +1,121 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/runtime-clean-sdk/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/runtime-clean-sdk/Cargo.toml
+   Compiling syn v2.0.119
+   Compiling parking_lot_core v0.9.12
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling serde_core v1.0.229
+   Compiling parking_lot v0.12.5
+   Compiling slab v0.4.12
+   Compiling tokio v1.53.3
+   Compiling futures-util v0.3.34
+   Compiling serde v1.0.229
+   Compiling tracing-attributes v0.1.31
+   Compiling fnv v1.0.7
+   Compiling tracing v0.1.44
+   Compiling getrandom v0.3.4
+   Compiling serde_json v1.0.151
+   Compiling tokio-util v0.7.19
+   Compiling h2 v0.4.20
+   Compiling zerocopy v0.8.63
+   Compiling httpdate v1.0.3
+   Compiling hyper v1.12.0
+   Compiling hyper-util v0.1.19
+   Compiling tower v0.5.3
+   Compiling ppv-lite86 v0.2.21
+   Compiling tokio-rustls v0.26.6
+   Compiling rand_core v0.9.5
+   Compiling autocfg v1.5.1
+   Compiling mime v0.3.17
+   Compiling rand_chacha v0.9.0
+   Compiling num-traits v0.2.19
+   Compiling hyper-rustls v0.27.2
+   Compiling tower-http v0.6.11
+   Compiling mime_guess v2.0.5
+   Compiling ident_case v1.0.1
+   Compiling strsim v0.11.1
+   Compiling darling_core v0.21.3
+   Compiling rand v0.9.5
+   Compiling serde_urlencoded v0.7.1
+   Compiling futures-executor v0.3.34
+   Compiling pin-project-internal v1.1.10
+   Compiling pulldown-cmark v0.13.6
+   Compiling ref-cast v1.0.25
+   Compiling unicode-width v0.2.0
+   Compiling getrandom v0.4.3
+   Compiling vcpkg v0.2.15
+   Compiling rustversion v1.0.23
+   Compiling libsqlite3-sys v0.35.0
+   Compiling snafu-derive v0.8.9
+   Compiling getopts v0.2.24
+   Compiling tempfile v3.27.0
+   Compiling pin-project v1.1.10
+   Compiling futures v0.3.34
+   Compiling darling_macro v0.21.3
+   Compiling sha1 v0.10.7
+   Compiling olpc-cjson v0.1.4
+   Compiling iana-time-zone v0.1.65
+   Compiling ref-cast-impl v1.0.25
+   Compiling serde_derive_internals v0.30.0
+   Compiling zlib-rs v0.6.8
+   Compiling memchr v2.8.3
+   Compiling paste v1.0.15
+   Compiling foldhash v0.1.5
+   Compiling utf-8 v0.7.6
+   Compiling data-encoding v2.11.1
+   Compiling pulldown-cmark-escape v0.11.0
+   Compiling serde_yaml_ng v0.10.0
+   Compiling jiff v0.2.38
+   Compiling reqwest v0.13.5
+   Compiling flate2 v1.1.10
+   Compiling tungstenite v0.26.2
+   Compiling hashbrown v0.15.5
+   Compiling schemars_derive v1.2.3
+   Compiling chrono v0.4.45
+   Compiling darling v0.21.3
+   Compiling snafu v0.8.9
+   Compiling reqwest v0.12.28
+   Compiling serde_plain v1.0.2
+   Compiling async-recursion v1.1.1
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/target/runtime-clean-sdk/crates/use/core)
+   Compiling tough v0.24.0
+   Compiling axum-core v0.5.2
+   Compiling uuid v1.26.1
+   Compiling rmcp-macros v0.8.5
+   Compiling schemars v1.2.3
+   Compiling hashlink v0.10.0
+   Compiling tokio-tungstenite v0.26.2
+   Compiling zip v2.6.1
+   Compiling sse-stream v0.2.6
+   Compiling serde_path_to_error v0.1.20
+   Compiling tokio-stream v0.1.19
+   Compiling axum-macros v0.5.0
+   Compiling matchit v0.8.4
+   Compiling fallible-iterator v0.3.0
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling axum v0.8.4
+   Compiling rusqlite v0.37.0
+   Compiling rmcp v0.8.5
+   Compiling aster-use-extension v0.3.3 (/Users/roylin/code/aster/target/runtime-clean-sdk/crates/use/extension)
+   Compiling aster-runtime v0.8.0 (/Users/roylin/code/aster/target/runtime-clean-sdk/crates/runtime)
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster-use v0.3.3 (/Users/roylin/code/aster/target/runtime-clean-sdk/crates/use)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 14s
+     Running unittests src/lib.rs (/Users/roylin/code/aster/target/studio/aster/debug/deps/aster_use-00e14233b4d5a0ce)
+
+running 3 tests
+test cli::registry::aix_tests::registry_package_check_validates_a_native_archive_without_installing_it ... ok
+test cli::registry::aix_tests::registry_package_prepare_writes_exact_oci_bytes_and_preserves_existing_outputs ... ok
+test cli::registry::aix_tests::registry_package_build_produces_a_checkable_archive_and_preserves_existing_output ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 326 filtered out; finished in 0.03s
+

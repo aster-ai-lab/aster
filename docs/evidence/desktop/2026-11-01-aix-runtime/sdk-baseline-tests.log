@@ -1,0 +1,554 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/target/runtime-baseline-sdk/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/target/runtime-baseline-sdk/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling aster-use-extension v0.3.3 (/Users/roylin/code/aster/target/runtime-baseline-sdk/crates/use/extension)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.51s
+     Running unittests src/lib.rs (target/studio/aster/debug/deps/aster_use_extension-5f0b9e34b3bd8e02)
+
+running 191 tests
+test atomic_file::tests::file_removal_deletes_the_exact_path ... ok
+test atomic_file::tests::path_rename_preserves_read_only_file_evidence ... ok
+test atomic_file::tests::directory_removal_deletes_the_exact_tree ... ok
+test atomic_file::tests::replaces_an_existing_target ... ok
+test atomic_file::tests::path_rename_moves_a_directory_without_leaving_the_source ... ok
+test atomic_file::tests::noclobber_rejects_an_existing_target_without_changing_it ... ok
+test agent_parameters::tests::nested_objects_arrays_and_unknown_keywords_are_refused ... ok
+test agent_parameters::tests::a_legal_schema_accepts_a_flat_value_map ... ok
+test agent_parameters::tests::a_missing_required_value_is_refused ... ok
+test paths::tests::package_paths_preserve_publisher_namespace ... ok
+test composer_mode::tests::slides_mode_names_its_agent_and_editor ... ok
+test package_inventory_tests::aix_inventory_rejects_escape_and_file_directory_aliases ... ok
+test plugin_manifest_tests::a_plugin_surface_is_a_package_type ... ok
+test package_inventory_tests::aix_inventory_requires_every_owned_view_entry_and_script ... ok
+test plugin_manifest_tests::a_skill_host_is_the_closed_set_docx_review_and_paperloom ... ok
+test plugin_manifest_tests::mhs_bridge_reuses_standard_mcp_flow_skill_and_ui_surfaces ... ok
+test package::atomic_activation_tests::atomic_activation_replaces_a_target_beyond_the_legacy_windows_path_limit ... ok
+test plugin_manifest_tests::registry_management_route_is_reserved_from_packages ... ok
+test plugin_manifest_tests::parses_schema_v3_named_multi_surfaces ... ok
+test plugin_manifest_tests::an_agent_or_plugin_package_depends_on_many_surfaces_and_pages ... ok
+test plugin_manifest_tests::schema_v3_acl_fixture_has_a_stable_digest ... ok
+test plugin_manifest_tests::parsed_v3_manifest_still_requires_the_current_compiled_host ... ok
+test plugin_manifest_tests::schema_v3_okf_acl_fixture_has_a_stable_digest ... ok
+test plugin_manifest_tests::rejects_pre_release_manifest_schemas_with_a_rebuild_instruction ... ok
+test plugin_manifest_tests::schema_v3_parses_an_exact_named_okf_surface_and_skill_dependency ... ok
+test plugin_manifest_tests::rejects_obsolete_cli_surfaces_and_unsafe_schema_v3_tool_contracts ... ok
+test plugin_manifest_tests::rejects_duplicate_or_missing_named_surface_dependencies ... ok
+test plugin_manifest_tests::schema_v3_parses_aster_flow_surfaces_and_typed_consumers ... ok
+test plugin_manifest_tests::schema_v3_parses_sorted_versioned_package_dependencies ... ok
+test digest::tests::package_digest_is_order_independent_and_content_sensitive ... ok
+test plugin_manifest_tests::schema_v3_requires_an_explicit_v3_host_compatibility_gate ... ok
+test plugin_manifest_tests::the_vercel_weather_sample_declares_a_city_parameter ... ok
+test plugin_manifest_tests::an_agent_package_declares_one_required_agent_surface ... ok
+test plugin_manifest_tests::schema_v3_okf_rejects_drift_unknown_authority_and_missing_dependencies ... ok
+test plugin_manifest_tests::schema_v3_ui_parses_bounded_workbench_metadata ... ok
+test plugin_manifest_tests::schema_v3_rejects_unsafe_package_dependency_declarations ... ok
+test plugin_manifest_tests::schema_v3_rejects_invalid_flow_runtime_source_export_and_dependencies ... ok
+test package_tests::admitted_package_fixture_contains_all_six_surface_kinds ... FAILED
+test package_tests::mhs_bridge_fixture_is_a_bounded_standard_surface_package ... ok
+test package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed ... FAILED
+test package_tests::schema_v3_packages_require_a_bounded_utf8_readme ... ok
+test package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed ... FAILED
+test package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds ... FAILED
+test package_tests::validates_tool_release_class_and_manifest_binding ... ok
+test registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded ... FAILED
+test registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed ... FAILED
+test registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed ... FAILED
+test registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state ... FAILED
+test registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed ... FAILED
+test registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root ... FAILED
+test registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories ... FAILED
+test registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it ... FAILED
+test registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation ... FAILED
+test registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts ... FAILED
+test registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation ... FAILED
+test registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover ... FAILED
+test registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation ... FAILED
+test registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version ... FAILED
+test registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal ... FAILED
+test registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication ... FAILED
+test registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest ... FAILED
+test registry::tests::published_generation_lease_is_send_and_sync ... ok
+test registry::tests::snapshot_lease::snapshot_cursor_rejects_noncanonical_unleasable_routes ... ok
+test registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal ... FAILED
+test package::registry_lock_tests::mutation_reports_busy_after_the_bounded_wait ... ok
+test registry::tests::snapshot_lease::snapshot_lease_fails_closed_for_callable_legacy_routes ... ok
+test registry_sources::github::tests::ambiguous_slugs_refs_and_paths_fail_closed ... ok
+test registry_sources::github::tests::explicit_ref_and_nested_registry_path_remain_canonical ... ok
+test registry_sources::github::tests::repository_slug_maps_to_the_default_registry_tree ... ok
+test registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure ... FAILED
+test package::registry_lock_tests::mutation_waits_for_a_transient_registry_reconciliation ... ok
+test registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence ... FAILED
+test registry_sources::tests::noncanonical_or_unknown_acl_fails_closed ... ok
+test registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover ... FAILED
+test registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set ... FAILED
+test registry_sources::tests::host_network_policy_is_applied_to_every_resolved_source ... ok
+test registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes ... FAILED
+test registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance ... FAILED
+test remote::cache_policy::tests::cache_policy_is_bounded_and_send_sync ... ok
+test registry_sources::tests::disabling_the_only_source_removes_selection_without_deleting_trust_state ... ok
+test remote::catalog_tests::catalog_input_schemas_publish_the_same_closed_bounds_as_runtime_contracts ... ok
+test remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network ... FAILED
+test remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound ... FAILED
+test remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download ... FAILED
+test registry_sources::tests::replacing_or_removing_unknown_sources_fails_without_writing ... ok
+test remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically ... FAILED
+test remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed ... FAILED
+test registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency ... FAILED
+test remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record ... FAILED
+test registry_sources::tests::source_mutations_fail_closed_while_the_configuration_lock_is_held ... ok
+test remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached ... FAILED
+test remote::network::tests::public_client_rejects_local_domain_before_resolving ... ok
+test registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations ... FAILED
+test remote::network::tests::public_policy_rejects_special_address_space ... ok
+test remote::network::tests::public_client_rejects_loopback_before_connecting ... ok
+test registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover ... FAILED
+test remote::package_graph::tests::root_version_requirement_selects_the_highest_match ... FAILED
+test remote::package_graph::tests::invalid_root_version_requirement_fails_closed ... FAILED
+test remote::package_graph::tests::exact_root_version_remains_exact ... FAILED
+test remote::resumable_http::tests::consistent_target_url_matches_tuf_nested_path_rules ... ok
+test registry_sources::tests::imported_trusted_roots_are_digest_bound_and_revalidated ... ok
+test registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation ... FAILED
+test remote::target::aix_tests::aix_registry_target_keeps_the_exact_package_version_channel_and_platform_binding ... ok
+test registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions ... FAILED
+test registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest ... FAILED
+test registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence ... FAILED
+test registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors ... FAILED
+test remote::catalog_tests::public_catalog_policy_rejects_loopback_before_metadata_transport ... ok
+test remote::target_cache::observation_tests::exact_target_observation_rejects_links_without_following_them ... ok
+test remote::target_cache::observation_tests::exact_target_observation_fails_closed_on_ambiguous_or_oversized_state ... ok
+test registry_sources::tests::removing_the_default_is_allowed_when_every_other_source_is_disabled ... ok
+test remote::target_cache::observation_tests::exact_target_observation_reports_missing_partial_and_complete_bytes ... ok
+test remote::target_cache::resume::tests::complete_partial_is_verified_and_promoted_without_a_request ... ok
+test remote::target_cache_inventory::tests::cache_entry_names_are_exact_and_portable ... ok
+test registry_sources::tests::source_replacement_changes_identity_without_rewriting_an_old_datastore ... ok
+test remote::target_cache_inventory::tests::admission_preserves_the_current_partial_and_reclaims_verified_targets ... ok
+test remote::target_cache_inventory::tests::staging_capacity_overflow_fails_before_disk_inspection ... ok
+test remote::target_cache::resume::tests::partial_larger_than_signed_length_fails_closed ... ok
+test remote::tests::bootstrap_root_inspection_derives_exact_evidence_without_registry_state ... ok
+test remote::target_cache_inventory::tests::admission_removes_a_partial_redundant_with_a_verified_target ... ok
+test remote::target_cache_inventory::tests::inventory_rejects_unowned_entries ... ok
+test remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target ... FAILED
+test remote::target_cache::resume::tests::linked_partial_fails_closed ... ok
+test remote::tests::catalog_v3_static_package_has_no_planning_target_download ... FAILED
+test remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download ... FAILED
+test remote::tests::executable_archive_download_retains_its_verified_planning_bundle ... FAILED
+test remote::target_cache::resume::tests::replacement_after_verification_is_not_published_as_verified ... ok
+test remote::tests::caller_pinned_root_rejects_empty_oversized_and_mismatched_bytes ... ok
+test remote::target_cache::resume::tests::verified_handle_stages_original_after_target_path_replacement ... ok
+test registry_sources::tests::source_mutations_are_revision_bound_and_preserve_isolated_datastores ... ok
+test remote::target_cache_inventory::tests::prune_removes_stale_files_then_the_oldest_verified_target ... ok
+test remote::tests::verified_target_cache_enforces_entry_retention_during_commit ... FAILED
+test registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed ... FAILED
+test remote::tests::verified_targets_are_content_addressed_and_reusable_without_network ... FAILED
+test review_package_manifest::aster_review_declares_skill_and_picker_together ... ok
+test review_package_manifest::aster_robot_workbenches_declare_the_workbench_and_skill ... ok
+test registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically ... FAILED
+test source::tests::archive_paths_reject_cross_platform_escapes_and_device_names ... ok
+test source::aix_tests::aix_refuses_incomplete_native_packages_and_nested_manifest_roots ... ok
+test source::tests::tar_package_accepts_an_explicit_current_directory_root ... ok
+test source::aix_tests::aix_refuses_traversal_and_a_renamed_vsix_without_the_native_manifest ... ok
+test source::tests::tar_package_ignores_bounded_macos_appledouble_metadata ... ok
+test source::tests::zip_package_rejects_parent_traversal ... ok
+test source::tests::tar_package_rejects_symbolic_links ... ok
+test state_maintenance::tests::maintenance_rejects_a_linked_lock ... ok
+test studio_contract::tests::declared_points_require_their_native_declaration_and_available_scope ... ok
+test studio_contract::tests::studio_contract_enums_round_trip_and_reject_unknown_values ... ok
+test state_maintenance::tests::shared_maintenance_rejects_a_durable_restore_marker ... ok
+test surface_files::ui_root_tests::ui_entry_must_stay_inside_the_declared_root ... ok
+test surface_files::planning_binding_tests::native_planning_launchers_bind_exactly_to_the_package_manifest ... ok
+test workbench_command_tests::aix_view_commands_and_menu_positions_are_typed_and_preserved ... ok
+test source::aix_tests::aix_extracts_the_existing_acl_manifest_and_preserves_package_identity ... ok
+test workbench_command_tests::package_commands_menus_and_keybindings_are_workbench_points ... ok
+test workbench_manifest_tests::aix_acl_groups_owned_views_in_activitybar_and_panel_containers ... ok
+test surface_files::ui_root_tests::ui_root_digests_the_whole_tree_and_refuses_a_foreign_file ... ok
+test workbench_command_tests::aix_view_commands_refuse_unknown_references_and_unsupported_contracts ... ok
+test workbench_manifest_tests::aix_limits_container_count_and_preserves_existing_unplaced_ui_metadata ... ok
+test workbench_manifest_tests::aix_composer_scope_is_closed_and_does_not_grant_other_points_temporal_ownership ... ok
+test workbench_manifest_tests::aix_ui_points_are_explicit_versioned_and_do_not_mix_with_container_placement ... ok
+test workbench_manifest_tests::aix_tree_presentation_is_closed_and_requires_an_owned_container ... ok
+test workbench_manifest_tests::aix_view_declarations_fail_closed_on_missing_placement_and_foreign_container_binding ... ok
+test workbench_manifest_tests::aix_visibility_conditions_are_typed_bounded_and_preserved ... ok
+test workbench_manifest_tests::ui_contribution_identity_is_typed_package_scoped_and_round_trips ... ok
+test workspace_grant_lifecycle_fault_matrix::workspace_grant_checkpoint_crash_child ... ignored, subprocess helper for Grant checkpoint crash injection
+test workbench_manifest_tests::duplicate_view_ids_remain_rejected_by_contribution_identity_validation ... ok
+test workspace_grant_tests::grant_store_contract_is_send_and_sync ... ok
+test workspace_grant_tests::grant_store_fails_closed_on_non_regular_or_tampered_records ... ok
+test workspace_grant_tests::grant_store_mutation_rejects_an_active_state_restore ... ok
+test workspace_grant_tests::concurrent_grant_writes_converge_on_the_highest_revision ... ok
+test state_maintenance::tests::exclusive_maintenance_waits_for_shared_and_blocks_new_shared_guards ... ok
+test workspace_grant_tests::grant_store_rejects_stale_conflicting_and_pre_revocation_regrants ... ok
+test remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download ... FAILED
+test workspace_grant_tests::grant_store_rejects_valid_records_moved_across_scope_paths ... ok
+test workspace_grant_tests::grant_store_revalidates_ceiling_lifetime_and_package_generation ... ok
+test remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock ... FAILED
+test remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order ... FAILED
+test workspace_grant_tests::grant_store_round_trips_active_authority_and_persists_revocation ... ok
+test workspace_grant_tests::package_generations_can_coexist_during_blue_green_upgrade ... ok
+test workspace_grant_tests::revocation_requires_exact_current_grant_ownership ... ok
+test remote::resume_tests::mismatched_content_range_discards_the_unverified_partial ... ok
+test remote::resume_tests::server_that_ignores_range_restarts_from_a_complete_response ... ok
+test remote::tests::reviewed_registry_plan_fails_before_target_download ... ok
+test remote::tests::caller_pinned_root_is_idempotent_and_never_downloaded ... ok
+test remote::tests::tuf_rejects_wrong_root_and_tampered_target ... ok
+test remote::tests::tuf_catalog_lists_signed_packages_without_downloading_targets ... ok
+test remote::tests::tuf_refresh_verifies_metadata_without_downloading_targets ... ok
+test remote::resume_tests::tampered_resumable_prefix_fails_digest_verification_and_is_discarded ... ok
+test remote::tests::cached_target_tampering_and_missing_content_fail_closed_without_network ... ok
+test remote::resume_tests::interrupted_target_download_resumes_from_a_durable_verified_prefix ... ok
+test remote::tests::tuf_rejects_metadata_tampering_expiration_and_rollback ... ok
+test workspace_grant_lifecycle_fault_matrix::every_workspace_grant_durable_checkpoint_recovers_after_process_exit ... ok
+
+failures:
+
+---- package_tests::admitted_package_fixture_contains_all_six_surface_kinds stdout ----
+
+thread 'package_tests::admitted_package_fixture_contains_all_six_surface_kinds' (71922195) panicked at crates/use/extension/src/package_tests.rs:337:52:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed stdout ----
+
+thread 'package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed' (71922196) panicked at crates/use/extension/src/package_tests.rs:278:52:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d, concepts 4, files 7, bytes 2053; observed digest sha256:e37c0559f5c7838275dcc76644f87414160cb82f66e8b8fca6d7f2bc9bd3cdcd, concepts 4, files 7, bytes 2055.", suggestion: None, details: {} }
+
+---- package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed stdout ----
+
+thread 'package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed' (71922197) panicked at crates/use/extension/src/package_tests.rs:471:5:
+assertion `left == right` failed
+  left: "sha256:5eb64476fea4393e314173043f395cf9f5159e5b845dcac1d088980afbca4f67"
+ right: "sha256:9d62c4d2f9ee09a587d9e053fc44ae87134a032471b87a1ce5f149f3b3126987"
+
+---- package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds stdout ----
+
+thread 'package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds' (71922199) panicked at crates/use/extension/src/package_tests.rs:236:51:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d, concepts 4, files 7, bytes 2053; observed digest sha256:e37c0559f5c7838275dcc76644f87414160cb82f66e8b8fca6d7f2bc9bd3cdcd, concepts 4, files 7, bytes 2055.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded stdout ----
+
+thread 'registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded' (71922254) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:161:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed stdout ----
+
+thread 'registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed' (71922261) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed stdout ----
+
+thread 'registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed' (71922255) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state stdout ----
+
+thread 'registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state' (71922244) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed stdout ----
+
+thread 'registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed' (71922252) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root stdout ----
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root' (71922270) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:140:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories stdout ----
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories' (71922267) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:15:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it stdout ----
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it' (71922273) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:88:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation stdout ----
+
+thread 'registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation' (71922234) panicked at crates/use/extension/src/registry_tests/cutover.rs:230:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts stdout ----
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts' (71922240) panicked at crates/use/extension/src/registry_tests/graph_cutover.rs:23:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation stdout ----
+
+thread 'registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation' (71922236) panicked at crates/use/extension/src/registry_tests/cutover.rs:17:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover stdout ----
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover' (71922238) panicked at crates/use/extension/src/registry_tests/graph_cutover.rs:118:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation stdout ----
+
+thread 'registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation' (71922235) panicked at crates/use/extension/src/registry_tests/cutover.rs:102:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version stdout ----
+
+thread 'registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version' (71922341) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:1126:10:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal' (71922293) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:773:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication' (71922295) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:720:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest stdout ----
+
+thread 'registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest' (71922354) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:667:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal' (71922301) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:457:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure' (71922305) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:305:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence' (71922312) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:70:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover' (71922325) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:147:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set stdout ----
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set' (71922239) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes stdout ----
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes' (71922242) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance' (71922334) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:234:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network stdout ----
+
+thread 'remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network' (71922433) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound stdout ----
+
+thread 'remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound' (71922437) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download stdout ----
+
+thread 'remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download' (71922438) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically stdout ----
+
+thread 'remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically' (71922440) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed stdout ----
+
+thread 'remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed' (71922442) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency' (71922298) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record stdout ----
+
+thread 'remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record' (71922450) panicked at crates/use/extension/src/remote_catalog_tests.rs:244:69:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached stdout ----
+
+thread 'remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached' (71922469) panicked at crates/use/extension/src/remote_catalog_tests.rs:130:69:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations stdout ----
+
+thread 'registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations' (71922237) panicked at crates/use/extension/src/registry_tests/cutover.rs:315:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover' (71922337) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:970:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- remote::package_graph::tests::root_version_requirement_selects_the_highest_match stdout ----
+
+thread 'remote::package_graph::tests::root_version_requirement_selects_the_highest_match' (71922480) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::package_graph::tests::invalid_root_version_requirement_fails_closed stdout ----
+
+thread 'remote::package_graph::tests::invalid_root_version_requirement_fails_closed' (71922479) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::package_graph::tests::exact_root_version_remains_exact stdout ----
+
+thread 'remote::package_graph::tests::exact_root_version_remains_exact' (71922478) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation' (71922338) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:822:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions' (71922299) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:1032:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest stdout ----
+
+thread 'registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest' (71922350) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:623:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence stdout ----
+
+thread 'registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence' (71922346) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:15:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors stdout ----
+
+thread 'registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors' (71922365) panicked at crates/use/extension/src/registry_tests/snapshot_lease.rs:123:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target stdout ----
+
+thread 'remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target' (71922637) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::tests::catalog_v3_static_package_has_no_planning_target_download stdout ----
+
+thread 'remote::tests::catalog_v3_static_package_has_no_planning_target_download' (71922641) panicked at crates/use/extension/src/remote_tests.rs:371:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download stdout ----
+
+thread 'remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download' (71922640) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::tests::executable_archive_download_retains_its_verified_planning_bundle stdout ----
+
+thread 'remote::tests::executable_archive_download_retains_its_verified_planning_bundle' (71922645) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::tests::verified_target_cache_enforces_entry_retention_during_commit stdout ----
+
+thread 'remote::tests::verified_target_cache_enforces_entry_retention_during_commit' (71922716) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed stdout ----
+
+thread 'registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed' (71922336) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:543:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- remote::tests::verified_targets_are_content_addressed_and_reusable_without_network stdout ----
+
+thread 'remote::tests::verified_targets_are_content_addressed_and_reusable_without_network' (71922721) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically stdout ----
+
+thread 'registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically' (71922360) panicked at crates/use/extension/src/registry_tests/snapshot_lease.rs:17:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download stdout ----
+
+thread 'remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download' (71922441) panicked at crates/use/extension/src/remote_catalog_tests.rs:90:10:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_untrusted", message: "TUF verification failed for registry 'fixture': Failed to fetch http://127.0.0.1:64904/metadata/targets.json: Transport 'other' error fetching 'http://127.0.0.1:64904/metadata/targets.json': Maximum size 3505 (specified by snapshot.json) exceeded", suggestion: None, details: {} }
+
+---- remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock stdout ----
+
+thread 'remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock' (71922445) panicked at crates/use/extension/src/remote_catalog_tests.rs:365:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_target_invalid", message: "TUF target 'extensions/acme/knowledge/1.0.0/stable/darwin-arm64/acme-knowledge-1.0.0-darwin-arm64.tar.gz' has an invalid signed plugin catalog record: The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order stdout ----
+
+thread 'remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order' (71922444) panicked at crates/use/extension/src/remote_catalog_tests.rs:470:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_target_invalid", message: "TUF target 'extensions/acme/root/1.0.0/stable/darwin-arm64/acme-root-1.0.0-darwin-arm64.tar.gz' has an invalid signed plugin catalog record: The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+
+failures:
+    package_tests::admitted_package_fixture_contains_all_six_surface_kinds
+    package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed
+    package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed
+    package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds
+    registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation
+    registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation
+    registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation
+    registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations
+    registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover
+    registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set
+    registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts
+    registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes
+    registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state
+    registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed
+    registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded
+    registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed
+    registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed
+    registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories
+    registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root
+    registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it
+    registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal
+    registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication
+    registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency
+    registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions
+    registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal
+    registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure
+    registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence
+    registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover
+    registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance
+    registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed
+    registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover
+    registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation
+    registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version
+    registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence
+    registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest
+    registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest
+    registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically
+    registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors
+    remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network
+    remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound
+    remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download
+    remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically
+    remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download
+    remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed
+    remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order
+    remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock
+    remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record
+    remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached
+    remote::package_graph::tests::exact_root_version_remains_exact
+    remote::package_graph::tests::invalid_root_version_requirement_fails_closed
+    remote::package_graph::tests::root_version_requirement_selects_the_highest_match
+    remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target
+    remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download
+    remote::tests::catalog_v3_static_package_has_no_planning_target_download
+    remote::tests::executable_archive_download_retains_its_verified_planning_bundle
+    remote::tests::verified_target_cache_enforces_entry_retention_during_commit
+    remote::tests::verified_targets_are_content_addressed_and_reusable_without_network
+
+test result: FAILED. 133 passed; 57 failed; 1 ignored; 0 measured; 0 filtered out; finished in 4.40s
+
+error: test failed, to rerun pass `-p aster-use-extension --lib`

@@ -10,9 +10,8 @@ use tough::{Repository, TargetName};
 
 use super::{
     decode_registry_target_metadata, host_target, load_repository, resolved_remote_package,
-    validate_target_metadata, verified_catalog_record, verified_registry_metadata,
-    RegistryTargetMetadata, ResolvedRemotePackage, TrustedRegistry, MAX_REGISTRY_PACKAGE_TARGETS,
-    REGISTRY_METADATA_KEY,
+    verified_catalog_record, verified_registry_metadata, RegistryTargetMetadata,
+    ResolvedRemotePackage, TrustedRegistry, MAX_REGISTRY_PACKAGE_TARGETS, REGISTRY_METADATA_KEY,
 };
 
 mod cache;
@@ -343,11 +342,10 @@ pub async fn list_remote_packages(
     >::new();
 
     for (target_name, target) in repository.all_targets() {
-        let Some(custom) = target.custom.get(REGISTRY_METADATA_KEY) else {
+        if !target.custom.contains_key(REGISTRY_METADATA_KEY) {
             continue;
-        };
-        let package = decode_registry_target_metadata(target_name, custom)?;
-        validate_target_metadata(target_name, target, &package)?;
+        }
+        let package = decode_registry_target_metadata(target_name, target)?;
         if !metadata_is_compatible(&package, &host)? {
             continue;
         }
@@ -562,11 +560,10 @@ fn collect_catalog_entries(
 ) -> UseResult<Vec<CatalogEntry>> {
     let mut entries = Vec::new();
     for (target_name, target) in repository.all_targets() {
-        let Some(custom) = target.custom.get(REGISTRY_METADATA_KEY) else {
+        if !target.custom.contains_key(REGISTRY_METADATA_KEY) {
             continue;
-        };
-        let metadata = decode_registry_target_metadata(target_name, custom)?;
-        validate_target_metadata(target_name, target, &metadata)?;
+        }
+        let metadata = decode_registry_target_metadata(target_name, target)?;
         let record = metadata.into_catalog_record();
         let version = Version::parse(&record.version).map_err(|error| {
             registry_target_error(format!(

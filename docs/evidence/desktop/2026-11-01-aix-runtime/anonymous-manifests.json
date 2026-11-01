@@ -1,0 +1,17 @@
+[
+  {
+    "packageId": "aster/aster-document",
+    "anonymousManifestAvailable": false,
+    "error": "Error response from registry: unauthorized: authentication required"
+  },
+  {
+    "packageId": "aster/aster-office",
+    "anonymousManifestAvailable": false,
+    "error": "Error response from registry: unauthorized: authentication required"
+  },
+  {
+    "packageId": "aster/aster-sandbox",
+    "anonymousManifestAvailable": false,
+    "error": "Error response from registry: unauthorized: authentication required"
+  }
+]

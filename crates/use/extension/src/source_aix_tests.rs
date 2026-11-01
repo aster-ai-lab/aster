@@ -31,9 +31,13 @@ async fn aix_extracts_the_existing_acl_manifest_and_preserves_package_identity()
                 .unwrap()
                 .to_string_lossy()
                 .replace('\\', "/");
-            writer
-                .start_file(relative, zip::write::SimpleFileOptions::default())
-                .unwrap();
+            let options = zip::write::SimpleFileOptions::default();
+            #[cfg(unix)]
+            let options = {
+                use std::os::unix::fs::PermissionsExt;
+                options.unix_permissions(std::fs::metadata(&path).unwrap().permissions().mode())
+            };
+            writer.start_file(relative, options).unwrap();
             writer.write_all(&std::fs::read(path).unwrap()).unwrap();
         }
     }
@@ -48,6 +52,11 @@ async fn aix_extracts_the_existing_acl_manifest_and_preserves_package_identity()
         .unwrap();
     assert_eq!(manifest.package_id, "acme/research");
     assert_eq!(manifest.version.to_string(), "2.0.0");
+    let inspected = super::super::inspect_aix_package(&path).await.unwrap();
+    assert_eq!(inspected.package_id, "acme/research");
+    assert_eq!(inspected.version, "2.0.0");
+    assert_eq!(inspected.surfaces, ["tool", "mcp", "skill", "ui"]);
+    assert_eq!(inspected.package_sha256.len(), 64);
 }
 
 #[tokio::test]
@@ -56,7 +65,10 @@ async fn aix_refuses_traversal_and_a_renamed_vsix_without_the_native_manifest() 
     let traversal = temp.path().join("traversal.aix");
     archive(&traversal, "../aster-use-extension.acl", b"escape");
     assert_eq!(
-        prepare_package_source(&traversal).await.unwrap_err().code,
+        super::super::inspect_aix_package(&traversal)
+            .await
+            .unwrap_err()
+            .code,
         "use.extension.path_escape"
     );
     let foreign = temp.path().join("foreign.aix");
@@ -66,13 +78,19 @@ async fn aix_refuses_traversal_and_a_renamed_vsix_without_the_native_manifest() 
         br#"{"publisher":"sample","name":"foreign"}"#,
     );
     assert_eq!(
-        prepare_package_source(&foreign).await.unwrap_err().code,
+        super::super::inspect_aix_package(&foreign)
+            .await
+            .unwrap_err()
+            .code,
         "use.extension.package_layout_invalid"
     );
     let invalid = temp.path().join("invalid.aix");
     fs::write(&invalid, b"not an archive").await.unwrap();
     assert_eq!(
-        prepare_package_source(&invalid).await.unwrap_err().code,
+        super::super::inspect_aix_package(&invalid)
+            .await
+            .unwrap_err()
+            .code,
         "use.extension.package_archive_invalid"
     );
 }
@@ -84,13 +102,44 @@ async fn aix_refuses_incomplete_native_packages_and_nested_manifest_roots() {
     let incomplete = temp.path().join("incomplete.aix");
     archive(&incomplete, MANIFEST_NAME, manifest);
     assert_eq!(
-        prepare_package_source(&incomplete).await.unwrap_err().code,
+        super::super::inspect_aix_package(&incomplete)
+            .await
+            .unwrap_err()
+            .code,
         "use.extension.package_file_missing"
     );
     let nested = temp.path().join("nested.aix");
     archive(&nested, "package/aster-use-extension.acl", manifest);
     assert_eq!(
-        prepare_package_source(&nested).await.unwrap_err().code,
+        super::super::inspect_aix_package(&nested)
+            .await
+            .unwrap_err()
+            .code,
         "use.extension.package_layout_invalid"
+    );
+}
+
+#[tokio::test]
+async fn published_aix_inspection_refuses_directories_and_other_extensions() {
+    let temp = tempfile::tempdir().unwrap();
+    for name in ["legacy.zip", "uppercase.AIX"] {
+        let path = temp.path().join(name);
+        fs::write(&path, b"not a native archive").await.unwrap();
+        assert_eq!(
+            super::super::inspect_aix_package(&path)
+                .await
+                .unwrap_err()
+                .code,
+            "use.extension.package_unsupported"
+        );
+    }
+    let directory = temp.path().join("native.aix");
+    fs::create_dir(&directory).await.unwrap();
+    assert_eq!(
+        super::super::inspect_aix_package(&directory)
+            .await
+            .unwrap_err()
+            .code,
+        "use.extension.package_unsupported"
     );
 }
