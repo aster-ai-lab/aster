@@ -1,0 +1,24 @@
+Copying 44136fa355b3 application/vnd.oci.empty.v1+json
+Copying 1a3d0e0d8917 aster-document.aix
+Copied  44136fa355b3 application/vnd.oci.empty.v1+json
+Copied  1a3d0e0d8917 aster-document.aix
+Copying c00ff5ad3a5b application/vnd.oci.image.manifest.v1+json
+Copied  c00ff5ad3a5b application/vnd.oci.image.manifest.v1+json
+Copied [oci-layout] /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpqxjdnfcz:candidate => [registry] ghcr.io/aster-ai-lab/plugins/aster/aster-document:darwin-arm64-1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20
+Digest: sha256:c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e
+Copying 44136fa355b3 application/vnd.oci.empty.v1+json
+Copying a35f661c2187 aster-office.aix
+Copied  44136fa355b3 application/vnd.oci.empty.v1+json
+Copied  a35f661c2187 aster-office.aix
+Copying cdfdcd69a964 application/vnd.oci.image.manifest.v1+json
+Copied  cdfdcd69a964 application/vnd.oci.image.manifest.v1+json
+Copied [oci-layout] /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpx7b5tzqm:candidate => [registry] ghcr.io/aster-ai-lab/plugins/aster/aster-office:darwin-arm64-a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838
+Digest: sha256:cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176
+Copying 92dbe5b6b87b aster-sandbox.aix
+Copying 44136fa355b3 application/vnd.oci.empty.v1+json
+Copied  44136fa355b3 application/vnd.oci.empty.v1+json
+Copied  92dbe5b6b87b aster-sandbox.aix
+Copying 1aa03b2381d8 application/vnd.oci.image.manifest.v1+json
+Copied  1aa03b2381d8 application/vnd.oci.image.manifest.v1+json
+Copied [oci-layout] /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmp4zt9cakt:candidate => [registry] ghcr.io/aster-ai-lab/plugins/aster/aster-sandbox:darwin-arm64-92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522
+Digest: sha256:1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3

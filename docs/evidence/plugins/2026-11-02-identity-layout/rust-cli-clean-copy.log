@@ -1,0 +1,8 @@
+
+running 3 tests
+test cli::registry::aix_tests::registry_package_check_validates_a_native_archive_without_installing_it ... ok
+test cli::registry::aix_tests::registry_package_prepare_writes_exact_oci_bytes_and_preserves_existing_outputs ... ok
+test cli::registry::aix_tests::registry_package_build_produces_a_checkable_archive_and_preserves_existing_output ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 333 filtered out; finished in 0.07s
+

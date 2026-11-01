@@ -1,0 +1,121 @@
+COMMAND: ('registry', 'source', 'add', 'aster-official', '--github', 'aster-ai-lab/plugins', '--trust-root', 'e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b') STATUS: 0
+{
+  "data": {
+    "registrySources": {
+      "action": "add",
+      "changed": true,
+      "previousRevision": "4f6d5a3a0fdec089c533b00ecf8677bcc67d84fe6bcd144e152699ad9b59c53e",
+      "schemaVersion": 1,
+      "snapshot": {
+        "defaultRegistry": "aster-official",
+        "revision": "074017792c0066a8ad78ce8ee5298a7dc096eed57b8e403d78e1a81f8b31349e",
+        "schemaVersion": 1,
+        "sources": [
+          {
+            "cachePolicy": {
+              "maxBytes": 4294967296,
+              "maxEntries": 4096,
+              "minFreeBytes": 268435456
+            },
+            "enabled": true,
+            "importedTrustedRoot": false,
+            "name": "aster-official",
+            "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+            "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+            "sourceIdentity": "0d77e9fce0859f73e53143b2d4c31786ca1748e56bec6bd6811fb6df24b85e73"
+          }
+        ]
+      }
+    }
+  },
+  "ok": true,
+  "schemaVersion": 1
+}
+
+
+COMMAND: ('plugin', 'inspect', 'aster/aster-document', '--version', '0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b', '--channel', 'stable') STATUS: 0
+{
+  "data": {
+    "plugin": {
+      "provenance": {
+        "catalogRecordDigest": "sha256:9171297b851d9f56fe816dbe7dd8518cb1841bb18fff44deccea88a0224cb4a4",
+        "registryName": "aster-official",
+        "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+        "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+        "rootVersion": 1,
+        "snapshotVersion": 6,
+        "targetsVersion": 6,
+        "timestampVersion": 6
+      },
+      "record": {
+        "archive": {
+          "length": 46758302,
+          "sha256": "sha256:1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20",
+          "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b/stable/darwin-arm64/oci-ghcr-v1/c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e/aster-document.aix"
+        },
+        "availability": {
+          "state": "available"
+        },
+        "categories": [
+          "operations"
+        ],
+        "channel": "stable",
+        "description": "Pinned native runtime assets for Aster desktop.",
+        "displayName": "aster-document",
+        "keywords": [
+          "desktop",
+          "runtime"
+        ],
+        "license": "MIT",
+        "package": {
+          "expandedBytes": 84508736,
+          "fileCount": 30,
+          "manifestSha256": "sha256:7bb9eb2037614f600e724859489e85b1da3eacb3927e6a032fc4365ffa5e2eb2",
+          "sha256": "sha256:66f8800cdc0e814a4fa047cc605a30af0c33ebf0bbad9a960c6a9b661de3a412"
+        },
+        "packageId": "aster/aster-document",
+        "permissionCeiling": {
+          "schema": "aster.use.plugin-permissions.v1",
+          "surfaces": []
+        },
+        "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+        "publisher": "aster",
+        "repository": "https://github.com/aster-ai-lab/plugins",
+        "requiresUse": ">=0.3.0, <0.4.0",
+        "schema": "aster.use.plugin-catalog.v3",
+        "surfaces": [
+          {
+            "id": "runtime",
+            "kind": "plugin",
+            "optional": false
+          }
+        ],
+        "target": "darwin-arm64",
+        "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b"
+      }
+    },
+    "snapshot": {
+      "ageSeconds": 0,
+      "catalogRecords": 3,
+      "hostTarget": "darwin-arm64",
+      "metadata": {
+        "packageTargets": 3,
+        "registryName": "aster-official",
+        "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+        "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+        "rootVersion": 1,
+        "snapshotVersion": 6,
+        "targetsVersion": 6,
+        "timestampVersion": 6
+      },
+      "snapshotDigest": "sha256:6d10a0c36a6f384775b7de4e476af00386b5701dcc0df92dedf0a8a05369a7a1",
+      "source": "refreshed",
+      "useVersion": "0.3.4",
+      "verifiedAtUnixSeconds": 1793576043
+    }
+  },
+  "ok": true,
+  "schemaVersion": 1
+}
+
+

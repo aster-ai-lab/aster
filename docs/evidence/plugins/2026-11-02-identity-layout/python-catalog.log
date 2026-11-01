@@ -1,0 +1,12 @@
+test_all_catalog_records_match_current_signed_targets (test_catalog.CatalogTest) ... ok
+test_duplicate_signed_targets_are_refused (test_catalog.CatalogTest) ... ok
+test_flat_or_misplaced_records_are_refused (test_catalog.CatalogTest) ... ok
+test_identity_includes_namespace_version_channel_and_target (test_catalog.CatalogTest) ... ok
+test_missing_or_empty_catalog_is_refused (test_catalog.CatalogTest) ... ok
+test_recursive_loading_does_not_depend_on_domain (test_catalog.CatalogTest) ... ok
+test_runtime_locks_select_exact_available_catalog_records (test_catalog.CatalogTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.008s
+
+OK

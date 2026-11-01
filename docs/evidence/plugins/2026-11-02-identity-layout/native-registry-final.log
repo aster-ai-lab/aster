@@ -1,0 +1,4 @@
+PASS native trusted catalog: aster/aster-document extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b/stable/darwin-arm64/oci-ghcr-v1/c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e/aster-document.aix
+PASS native trusted catalog: aster/aster-office extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64/oci-ghcr-v1/cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176/aster-office.aix
+PASS native trusted catalog: aster/aster-sandbox extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix
+PASS native TUF verification and exact inspection of all three published records

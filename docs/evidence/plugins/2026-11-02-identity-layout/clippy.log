@@ -1,0 +1,33 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+    Checking aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo clippy --fix --lib -p aster-runtime -- --no-deps` to apply 1 suggestion)
+warning: this function has too many arguments (8/7)
+    --> crates/use/extension/src/plugin_manifest.rs:1102:1
+     |
+1102 | / pub(crate) fn validate_dependencies(
+1103 | |     tools: &[ToolSurface],
+1104 | |     mcp: &[PluginMcpSurface],
+1105 | |     okf: &[PluginOkfSurface],
+...    |
+1110 | |     plugins: &[PackagePluginSurface],
+1111 | | ) -> UseResult<()> {
+     | |__________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+     = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: `aster-use-extension` (lib) generated 1 warning
+    Checking aster-use v0.3.4 (/Users/roylin/code/aster/crates/use)
+warning: `aster-use-extension` (lib test) generated 1 warning (1 duplicate)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 20m 03s

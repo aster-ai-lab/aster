@@ -1,0 +1,32 @@
+Analysis of sampling aster_use-9f5979ab38acd707 (pid 94115) every 1 millisecond
+Process:         aster_use-9f5979ab38acd707 [94115]
+Path:            /Users/USER/*/aster_use-9f5979ab38acd707
+Load Address:    0x100d54000
+Identifier:      aster_use-9f5979ab38acd707
+Version:         ???
+Code Type:       ARM64
+Parent Process:  cargo [88957]
+Target Type:     live task
+
+Date/Time:       2026-11-02 07:05:56.011 +0800
+Launch Time:     2026-11-02 07:02:18.650 +0800
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         112K
+Physical footprint (peak):  112K
+Idle exit:                  untracked
+----
+
+Call graph:
+    886 Thread_73586191: Main Thread   DispatchQueue_<multiple>
+      886 _dyld_start  (in dyld) + 0  [0x10880c9c0]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        886
+
+Binary images description not available
+

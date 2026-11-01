@@ -1,0 +1,25 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+   Compiling aster-use v0.3.4 (/Users/roylin/code/aster/crates/use)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 28s
+     Running unittests src/lib.rs (target/debug/deps/aster_use-9f5979ab38acd707)
+
+running 3 tests
+test cli::registry::aix_tests::registry_package_check_validates_a_native_archive_without_installing_it ... ok
+test cli::registry::aix_tests::registry_package_prepare_writes_exact_oci_bytes_and_preserves_existing_outputs ... ok
+test cli::registry::aix_tests::registry_package_build_produces_a_checkable_archive_and_preserves_existing_output ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 333 filtered out; finished in 0.07s
+

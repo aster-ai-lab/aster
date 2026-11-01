@@ -1,4 +1,4 @@
-//! Prepare native AIX publication from an explicitly owned domain source directory.
+//! Prepare native AIX publication from package-identity sources and domain policy.
 
 use std::path::{Path, PathBuf};
 
@@ -74,17 +74,13 @@ pub async fn prepare_aix_publication(
         .await
         .map_err(|error| io_error("resolve plugin repository", repository_root, error))?;
     let owners = domains::admit(&repository_root, domain, publisher).await?;
-    let expected_source = repository_root
-        .join("plugins")
-        .join(domain)
-        .join(publisher)
-        .join(name);
+    let expected_source = repository_root.join("plugins").join(publisher).join(name);
     let source_path = fs::canonicalize(&expected_source)
         .await
-        .map_err(|error| io_error("resolve domain plugin source", &expected_source, error))?;
+        .map_err(|error| io_error("resolve plugin source", &expected_source, error))?;
     if source_path != expected_source {
         return Err(invalid(
-            "Domain plugin source directories must not be redirected through links.",
+            "Plugin source directories must not be redirected through links.",
         ));
     }
     validate_text_asset(
@@ -98,7 +94,7 @@ pub async fn prepare_aix_publication(
     .await?;
     if inspect_release_bundle(&source_path).await? != package {
         return Err(invalid(
-            "The AIX archive must contain exactly the current domain plugin source files.",
+            "The AIX archive must contain exactly the current plugin source files.",
         ));
     }
     let mut input = fs::File::open(archive)
@@ -134,10 +130,7 @@ pub async fn prepare_aix_publication(
         domain: domain.into(),
         owners,
         source_path,
-        oci_repository: format!(
-            "ghcr.io/aster-ai-lab/plugins/{domain}/{}",
-            package.package_id
-        ),
+        oci_repository: format!("ghcr.io/aster-ai-lab/plugins/{}", package.package_id),
         package,
         archive_sha256,
         archive_length,

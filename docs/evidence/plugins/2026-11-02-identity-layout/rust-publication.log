@@ -1,0 +1,37 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 49s
+     Running unittests src/lib.rs (target/debug/deps/aster_use_extension-6995bf91986feb4d)
+
+running 7 tests
+test publication::domains::tests::policy_refuses_unknown_fields_duplicate_domains_and_invalid_ownership ... ok
+test publication::domains::tests::domain_file_admission_preserves_encoding_and_size_limits ... ok
+test publication::tests::publication_refuses_a_link_redirecting_the_explicit_domain_directory ... ok
+test publication::tests::publication_binds_explicit_domain_source_archive_and_exact_oci_bytes ... ok
+test publication::tests::admitted_domain_changes_preserve_package_source_and_oci_identity ... ok
+test publication::tests::publication_requires_an_included_nonempty_utf8_license ... ok
+test publication::tests::publication_refuses_unadmitted_domain_publishers_and_source_drift ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 215 filtered out; finished in 0.02s
+
+     Running tests/workspace_grant_lifecycle.rs (target/debug/deps/workspace_grant_lifecycle-e8fd4e628b785a30)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/workspace_grant_resolution.rs (target/debug/deps/workspace_grant_resolution-4338aa0fcd85afb3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/workspace_grant_snapshots.rs (target/debug/deps/workspace_grant_snapshots-b6e1183f665ee098)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+

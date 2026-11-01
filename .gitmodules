@@ -12,3 +12,7 @@
 	path = apps/dashboard
 	url = git@github.com:aster-ai-lab/dashboard.git
 	branch = main
+[submodule "plugins"]
+	path = plugins
+	url = https://github.com/aster-ai-lab/plugins.git
+	branch = main

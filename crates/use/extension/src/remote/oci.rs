@@ -83,27 +83,24 @@ impl AixOciSource {
             return Ok(None);
         };
         let parts = oci.split('/').collect::<Vec<_>>();
-        let [domain, manifest_sha256, filename] = parts.as_slice() else {
+        let [manifest_sha256, filename] = parts.as_slice() else {
             return Err(invalid(
-                "The AIX OCI target requires domain, manifest SHA-256 and archive name.",
+                "The AIX OCI target requires manifest SHA-256 and archive name.",
             ));
         };
         let name = catalog.package_id.rsplit('/').next().unwrap_or_default();
-        if !crate::valid_segment(domain)
-            || !catalog
-                .categories
-                .iter()
-                .any(|category| category == *domain)
-            || manifest_sha256.len() != 64
+        if manifest_sha256.len() != 64
             || !manifest_sha256
                 .bytes()
                 .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
             || *filename != format!("{name}.aix")
         {
-            return Err(invalid("The AIX OCI target domain, immutable digest or native archive identity is invalid."));
+            return Err(invalid(
+                "The AIX OCI target immutable digest or native archive identity is invalid.",
+            ));
         }
         Ok(Some(Self {
-            repository: format!("aster-ai-lab/plugins/{domain}/{}", catalog.package_id),
+            repository: format!("aster-ai-lab/plugins/{}", catalog.package_id),
             manifest_sha256: (*manifest_sha256).into(),
             filename: (*filename).into(),
         }))

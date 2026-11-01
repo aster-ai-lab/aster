@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<stdin>", line 14, in <module>
+  File "<stdin>", line 10, in run
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Users/roylin/code/aster/target/runtime-layout-native/debug/aster-use', 'plugin', 'inspect', 'aster/aster-document', '--version', '0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b', '--channel', 'stable', '--json']' returned non-zero exit status 1.

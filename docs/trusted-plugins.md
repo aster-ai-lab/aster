@@ -13,7 +13,24 @@ The package host builds the existing `aster-use` CLI and runs its native
 through the same Rust SDK in process. Final release archive and remote GHCR
 installation acceptance remain required.
 
-## Domain organization
+## Local source checkout
+
+The official repository is checked out at `plugins/` as a public Git submodule.
+From the Aster repository root, initialize the exact recorded revision with:
+
+```sh
+git submodule update --init plugins
+```
+
+The submodule tracks `main`, while the parent gitlink pins a reviewed commit.
+Updating the source requires committing the new gitlink in Aster. Plugin sources
+belong to the submodule; Aster does not track them individually or add another
+Cargo workspace. `target/plugins-bootstrap/source` is temporary build staging,
+not the maintained source checkout. Native archives and models remain in GHCR.
+The authoritative directory and maintenance rules are in the submodule's
+[`docs/layout.md`](https://github.com/aster-ai-lab/plugins/blob/main/docs/layout.md).
+
+## Package organization
 
 Use one source directory per plugin. The primary domain is explicit repository
 metadata and must agree with the signed catalog's categories. Do not infer a
@@ -24,22 +41,26 @@ search metadata; they do not duplicate a plugin's source or identity.
 plugins/                         # repository root
 ├── README.md
 ├── CONTRIBUTING.md
-├── CODEOWNERS
 ├── domains.acl                  # admitted domain IDs and ownership
 ├── plugins/
-│   └── <domain>/
-│       └── <publisher>/
-│           └── <name>/
-│               ├── aster-use-extension.acl
-│               ├── README.md
-│               ├── LICENSE
-│               ├── skills/      # only surfaces declared by this plugin
-│               ├── tools/
-│               └── tests/
+│   └── <publisher>/
+│       └── <name>/
+│           ├── aster-use-extension.acl
+│           ├── README.md
+│           ├── LICENSE
+│           ├── skills/          # only surfaces declared by this plugin
+│           ├── tools/
+│           └── tests/
 ├── registry/
 │   ├── metadata/                # signed TUF metadata, public keys only
-│   └── catalog/                 # generated verified catalog records
-└── .github/workflows/
+│   ├── catalog/<publisher>/<name>/<version>/<channel>/<target>.json
+│   ├── locks/runtime/<target>.json
+│   └── root.sha256
+├── recipes/runtime/<target>.py
+├── scripts/
+├── tests/
+├── docs/
+└── .github/                     # CODEOWNERS and workflows
 ```
 
 The native preparation command admits this bounded ACL policy shape (the
@@ -68,11 +89,11 @@ automatic classifier. A new domain needs an explicit domain/ownership entry.
 The package ID remains `<publisher>/<name>` when a domain changes. Existing
 digest-pinned releases must remain available at their original addresses.
 
-For example, source under `plugins/development/aster/<name>/` publishes to:
+For example, source under `plugins/aster/<name>/` publishes to:
 
 ```text
-ghcr.io/aster-ai-lab/plugins/development/aster/<name>:<target>-<archive-sha256>
-ghcr.io/aster-ai-lab/plugins/development/aster/<name>@sha256:<manifest-digest>
+ghcr.io/aster-ai-lab/plugins/aster/<name>:<target>-<archive-sha256>
+ghcr.io/aster-ai-lab/plugins/aster/<name>@sha256:<manifest-digest>
 ```
 
 Tags support discovery. Installation and project locks use immutable digests.
@@ -82,11 +103,12 @@ adds the versioned OCI location contract:
 
 ```text
 extensions/<publisher>/<name>/<version>/<channel>/<target>/
-  oci-ghcr-v1/<domain>/<manifest-sha256>/<name>.aix
+  oci-ghcr-v1/<manifest-sha256>/<name>.aix
 ```
 
-This is one continuous target name. Its domain must appear in the signed
-catalog's categories. Its SHA-256 is exactly 64 lowercase hexadecimal digits.
+This is one continuous target name. Domains are explicit signed categories and
+publication admission metadata, independent of the package storage identity.
+Its SHA-256 is exactly 64 lowercase hexadecimal digits.
 Existing catalog digests and package locks therefore retain the OCI manifest
 identity together with the AIX blob digest, without adding mutable tag lookup.
 Ordinary HTTP targets retain their existing names and behavior.
@@ -251,7 +273,7 @@ checks while plugin management is added.
 Source authors build a native archive and prepare its exact OCI manifest locally:
 
 ```sh
-aster use registry package build /path/to/plugins/plugins/development/aster/example \
+aster use registry package build /path/to/plugins/plugins/aster/example \
   --output /path/to/build/example.aix --json
 aster use registry package check /path/to/build/example.aix --json
 aster use registry package prepare /path/to/build/example.aix \
@@ -272,7 +294,7 @@ Invalid source or output leaves no partial archive. This creates no
 installation or trust grant and performs no signing or upload. Windows writes
 regular-file mode 0644; native platform release checks remain required.
 
-Preparation locates `plugins/<domain>/<publisher>/<name>` from the validated
+Preparation locates `plugins/<publisher>/<name>` from the validated
 native package identity, checks domain/publisher admission, requires a nonempty
 UTF-8 `LICENSE`, and compares the complete expanded source fingerprint with
 the AIX archive. Redirected source directories refuse. It hashes archive bytes
@@ -301,7 +323,7 @@ The Studio packaging source builds these packages with the existing native
 `aster use registry package build`, `check` and `prepare` commands. It emits
 AIX blobs, exact OCI manifests and publication receipts under
 `target/release/runtime-components/`. Generated publication source trees live
-under `repository/<target>/plugins/operations/aster/<name>` within that build
+under `repository/<target>/plugins/aster/<name>` within that build
 directory, outside tracked source. Domain preparation is local evidence;
 production review authority, signing and publication remain separate gates.
 
@@ -374,9 +396,10 @@ ownership and a file extension do not replace those checks.
 The repository was initialized on 2026-11-01–02 with the public TUF root,
 domain ownership, native publication scripts and daily metadata signing. Three
 macOS ARM64 runtime plugins are published in GHCR with compatible 46-character
-content versions and full integrity digests. Initial 70-character candidates are
-retained as withdrawn catalog entries because the tool selector contract is
-frozen at 64 characters. The native client verifies all six signed records.
+content versions and full integrity digests. The pre-release layout redesign
+removes the three withdrawn 70-character experiments from the active catalog;
+three available component records remain. Source and GHCR paths use the stable
+`<publisher>/<name>` identity independently of domain categories.
 
 All three GHCR packages are currently private. Fresh anonymous installation
 reaches GHCR and fails with HTTP 401; the slim-release gate therefore blocks

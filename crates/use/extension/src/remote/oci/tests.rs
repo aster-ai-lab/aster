@@ -12,7 +12,8 @@ use crate::remote::{
 };
 use crate::VerifiedTargetCachePolicy;
 
-const TOKEN_PATH: &str = "/token?service=ghcr.io&scope=repository%3Aaster-ai-lab%2Fplugins%2Fresearch%2Faster%2Fscience%3Apull";
+const TOKEN_PATH: &str =
+    "/token?service=ghcr.io&scope=repository%3Aaster-ai-lab%2Fplugins%2Faster%2Fscience%3Apull";
 const TOKEN: &str = "synthetic-ghcr-token-never-in-errors";
 
 fn fixture() -> (Vec<u8>, PluginCatalogRecord, Vec<u8>, AixOciSource) {
@@ -68,7 +69,7 @@ fn fixture() -> (Vec<u8>, PluginCatalogRecord, Vec<u8>, AixOciSource) {
     catalog.archive.length = bytes.len() as u64;
     catalog.archive.sha256 = format!("sha256:{digest}");
     catalog.archive.target_name = format!(
-        "extensions/aster/science/{PACKAGE_VERSION}/stable/{}/oci-ghcr-v1/research/{}/science.aix",
+        "extensions/aster/science/{PACKAGE_VERSION}/stable/{}/oci-ghcr-v1/{}/science.aix",
         catalog.target,
         hex_lower(&Sha256::digest(&manifest))
     );
@@ -107,17 +108,23 @@ fn routes(bytes: &[u8], manifest: &[u8], source: &AixOciSource) -> HashMap<Strin
 }
 
 #[test]
-fn oci_targets_require_an_explicit_signed_domain_digest_and_native_aix_identity() {
+fn oci_targets_require_a_signed_digest_and_native_aix_identity() {
     let (_, catalog, _, source) = fixture();
-    assert_eq!(
-        source.repository,
-        "aster-ai-lab/plugins/research/aster/science"
-    );
+    assert_eq!(source.repository, "aster-ai-lab/plugins/aster/science");
+    let mut recategorized = catalog.clone();
+    recategorized.categories = vec!["development".into()];
+    let recategorized_source = AixOciSource::from_target(
+        &TargetName::new(recategorized.archive.target_name.clone()).unwrap(),
+        &recategorized,
+    )
+    .unwrap()
+    .unwrap();
+    assert_eq!(source.repository, recategorized_source.repository);
     for changed in [
         catalog
             .archive
             .target_name
-            .replace("/research/", "/development/"),
+            .replace("oci-ghcr-v1/", "oci-ghcr-v1/research/"),
         catalog
             .archive
             .target_name
@@ -133,7 +140,7 @@ fn oci_targets_require_an_explicit_signed_domain_digest_and_native_aix_identity(
         catalog
             .archive
             .target_name
-            .replace("/research/", "/research/extra/"),
+            .replace("science.aix", "nested/science.aix"),
     ] {
         assert_eq!(
             AixOciSource::from_target(&TargetName::new(changed).unwrap(), &catalog)

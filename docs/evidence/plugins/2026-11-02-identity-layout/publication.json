@@ -1,0 +1,52 @@
+{
+  "catalogRecords": 3,
+  "tufVersion": 6,
+  "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+  "packages": [
+    {
+      "packageId": "aster/aster-office",
+      "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613",
+      "archive": {
+        "targetName": "extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64/oci-ghcr-v1/cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176/aster-office.aix",
+        "length": 8272636,
+        "sha256": "sha256:a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838"
+      },
+      "package": {
+        "expandedBytes": 19725333,
+        "fileCount": 5,
+        "sha256": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff",
+        "manifestSha256": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d"
+      }
+    },
+    {
+      "packageId": "aster/aster-sandbox",
+      "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a",
+      "archive": {
+        "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix",
+        "length": 50188055,
+        "sha256": "sha256:92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522"
+      },
+      "package": {
+        "expandedBytes": 172875355,
+        "fileCount": 13,
+        "sha256": "sha256:8d3a3cc109db423fa3f8ad487479f92688eb288dcc070e6a9cc095ffd553b98c",
+        "manifestSha256": "sha256:dd402e2b58f6e405ec4cf8dab9c60c6684583c05e00805d599e8286979ed1b26"
+      }
+    },
+    {
+      "packageId": "aster/aster-document",
+      "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b",
+      "archive": {
+        "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b/stable/darwin-arm64/oci-ghcr-v1/c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e/aster-document.aix",
+        "length": 46758302,
+        "sha256": "sha256:1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20"
+      },
+      "package": {
+        "expandedBytes": 84508736,
+        "fileCount": 30,
+        "sha256": "sha256:66f8800cdc0e814a4fa047cc605a30af0c33ebf0bbad9a960c6a9b661de3a412",
+        "manifestSha256": "sha256:7bb9eb2037614f600e724859489e85b1da3eacb3927e6a032fc4365ffa5e2eb2"
+      }
+    }
+  ]
+}

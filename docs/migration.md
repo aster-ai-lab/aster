@@ -488,6 +488,19 @@ not a complete KV cache, packed-cache CUDA implementation or deployed model.
 
 用户授权将 `apps/studio` 改为私有子仓库，父仓库仅锁定提交引用。`apps/work` 与 `apps/desktop` 已退出目录与构建。早期完整桌面源码及源码补丁从父仓库分支和标签历史清理；原始证据在私有子仓库保留。构建仍使用根 Cargo 工作区和锁文件，CI 需配置 `STUDIO_READ_TOKEN`。
 
+## 官方插件源码子模块（2026-11-02）
+
+用户授权将现有公开仓库 `https://github.com/aster-ai-lab/plugins.git` 检出到
+`plugins/`，跟踪 `main`，由父仓库的 gitlink 固定版本。插件源码、发布脚本、
+目录及公开 TUF 元数据留在该子模块；二进制与模型仍由 GHCR 分发。
+`target/plugins-bootstrap/source` 仅保留为临时构建暂存，不再充当正式源码位置。
+本次没有增加 Cargo 工作区或复制私钥、凭据及用户状态。
+
+按用户要求直接落地发布前的目标结构：源码及 OCI 仓库使用发布者/插件名，业务领域
+保留为显式策略与分类。目录记录按发布者/插件名/版本/渠道/平台分层；构建配方、
+运行时锁、签名元数据和脚本分别维护。同步修改原生生产者与消费者，不保留旧目录
+或旧 OCI 目标格式的兼容解析；移除活动目录中的三个未发布无效版本试验。
+
 ## Private submodule remotes moved to aster-ai-lab, 2026-10-31
 
 `apps/studio`, `apps/api`, `apps/cloud`, and `apps/dashboard` now track
