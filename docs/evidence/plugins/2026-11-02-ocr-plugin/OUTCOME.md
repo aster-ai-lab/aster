@@ -46,13 +46,29 @@ private Studio evidence.
 
 ## Distribution gate
 
-All four official GHCR packages are private. Anonymous token requests return
-HTTP 401, and a real native installation-plan request returns
-`use.extension.registry_oci_invalid` for that reason. GitHub's package settings
-show Public disabled by organization policy. Enabling the organization's public
-package policy needs the user's pending approval. Anonymous installation and the
-slim desktop release gate remain unqualified; no desktop Release or channel
-manifest was published. The README states this limitation.
+Before authorization, all four official GHCR packages were private. Anonymous
+token requests returned HTTP 401, and a real native installation-plan request
+returned `use.extension.registry_oci_invalid`. The original failure evidence is
+retained in `package-visibility.json` and `actual-install-plan.json`.
+
+After the user's explicit authorization on 2026-11-02, the organization policy
+was enabled and the four `plugins/aster/*` packages were made public. Anonymous
+token requests now return HTTP 200. A fresh isolated profile passed the existing
+`verify_runtime_registry.py` gate for all four exact locked versions: remote
+inspection, plan/apply, TUF and archive/package/manifest digest checks, and enabled
+installation verification. See `public-package-visibility.json`,
+`public-runtime-install.json` and `public-runtime-install.log`.
+
+A second isolated anonymous installation of OCR passed actual stdio MCP
+discovery, a ready doctor, exact frozen-image recognition, source SHA-256 and
+geometry checks. Its post-use inspection was unchanged. See
+`public-installed-ocr.json` and `public-installed-real-mcp.json`. The pre-existing
+runtime tests separately verify unchanged pins reuse the same receipt/generation.
+
+The anonymous-install prerequisite for a slim desktop release has passed. No
+desktop Release or channel manifest was published; a new complete signed desktop
+archive still requires its own release qualification. The README states this
+scope.
 
 Only macOS ARM64 was runtime-qualified. Linux/Kylin, Windows, other CPUs, and a
 complete new signed desktop archive were not qualified by this task.

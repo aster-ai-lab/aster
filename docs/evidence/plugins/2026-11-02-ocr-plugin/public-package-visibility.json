@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-02T04:13:53.279229+00:00",
+  "credentialsSent": false,
+  "packages": [
+    {
+      "package": "plugins/aster/aster-document",
+      "visibility": "public",
+      "anonymousTokenStatus": 200
+    },
+    {
+      "package": "plugins/aster/aster-ocr",
+      "visibility": "public",
+      "anonymousTokenStatus": 200
+    },
+    {
+      "package": "plugins/aster/aster-office",
+      "visibility": "public",
+      "anonymousTokenStatus": 200
+    },
+    {
+      "package": "plugins/aster/aster-sandbox",
+      "visibility": "public",
+      "anonymousTokenStatus": 200
+    }
+  ]
+}
