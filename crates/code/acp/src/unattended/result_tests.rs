@@ -1,6 +1,35 @@
 use super::*;
 
 #[test]
+fn transient_provider_exhaustion_overrides_an_earlier_completion_gate_error() {
+    for status in [429, 503] {
+        let mut progress = RunProgress::new();
+        progress.phase = ExecutionPhase::Joining;
+        progress
+            .remember_error("completion gate: workspace mutation has no bound Passed verification");
+        let provider: anyhow::Error =
+            aster_core::llm::RetryExhaustedError::from_status(11, status, "fixture").into();
+        let failure = aster_core::llm::RetryableProviderFailure::from_error(&provider).unwrap();
+        let error: anyhow::Error = RetryableExternalFailure(failure).into();
+        progress.remember_failure(&error);
+        let (outcome, reason) = classify_failure(&progress, &error);
+        let report = serde_json::to_value(progress.report(outcome, reason)).unwrap();
+        assert_eq!(report["reason"], "retryable_external");
+        assert_eq!(report["outcome"], "failed");
+        assert_eq!(report["providerStatus"], status);
+        assert_eq!(report["exitCode"], 1);
+        assert!(report["lastError"]
+            .as_str()
+            .unwrap()
+            .contains(&status.to_string()));
+        assert!(!report["lastError"]
+            .as_str()
+            .unwrap()
+            .contains("completion gate"));
+    }
+}
+
+#[test]
 fn an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error() {
     let mut progress = RunProgress::new();
     progress.phase = ExecutionPhase::Streaming;

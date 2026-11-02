@@ -1,0 +1,241 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:31:26
+   |
+31 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 14 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling aster-acp v9.1.7 (/Users/roylin/code/aster/crates/code/acp)
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+warning: function `digest` is never used
+  --> crates/code/acp/tests/long_horizon/artifact.rs:41:8
+   |
+41 | pub fn digest(path: &Path) -> std::io::Result<String> {
+   |        ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-acp` (test "unattended_e2e") generated 1 warning
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.97s
+     Running tests/unattended_e2e.rs (target-goal-issues/debug/deps/unattended_e2e-a173a1d86c6bd9ba)
+
+running 27 tests
+test a_continuation_attempt_never_outlives_the_run_deadline ... ok
+test a_delegated_child_refusal_returns_to_the_actual_acp_parent ... ACP_CHILD_REFUSAL_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-child-refusal-ws-39668-1793613815248009000","childModelCalls":5,"parentModelCalls":2,"successfulChildReceipts":3,"deniedChildReceipts":2,"promptMs":621}
+ok
+test a_goal_launch_runs_the_first_attempt_as_the_bound_task_slice ... ok
+test a_missing_skill_call_does_not_block_later_writes ... ok
+test a_successful_write_cycle_stops_before_another_actual_acp_generation ... ACP_STATE_CYCLE_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-state-cycle-ws-39668-1793613816865049000","externalEdit":false,"modelCalls":8,"successfulReceipts":8,"deniedReceipts":0,"promptMs":1280}
+ok
+test an_interactive_launch_never_binds_the_gate_and_keeps_state_in_the_workspace ... ok
+test an_interactive_run_stops_generating_after_repeated_original_refusals ... ACP_REFUSAL_CYCLE_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-refusal-ws-39668-1793613818457815000","modelCalls":5,"successfulReceipts":3,"deniedReceipts":2,"promptMs":368}
+ok
+test artifact::tests::bounded_artifacts_refuse_directories_oversize_and_traversal ... ok
+test artifact::tests::fixture_links_and_nonregular_files_are_refused_before_reading ... ok
+test artifact::tests::public_handoff_evidence_is_bounded_and_omits_private_model_fields ... ok
+test bash_in_a_large_non_git_workspace_does_not_end_the_run ... ok
+test candidate::tests::a_member_changed_after_selection_cannot_be_frozen_as_approved ... ok
+test candidate::tests::linked_or_nonregular_members_are_refused_without_reading_them ... ok
+test candidate::tests::registered_pair_copies_only_the_declared_bytes_despite_other_candidates ... ok
+test candidate::tests::same_build_id_does_not_admit_changed_binary_bytes_or_a_partial_pair ... ok
+test candidate::tests::unknown_manifest_fields_stale_ids_and_oversized_records_fail_closed ... ok
+test convergence::actual_acp_compaction_allows_new_external_observations ... ACP_CONVERGENCE {"fresh":true,"requests":7,"successfulReceipts":7,"deniedReceipts":0,"compactions":6,"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-convergence 观察-ws-39668-1793613819878958000"}
+ok
+test convergence::actual_acp_compaction_keeps_the_original_repeat_allowance ... ACP_CONVERGENCE {"fresh":false,"requests":5,"successfulReceipts":3,"deniedReceipts":2,"compactions":3,"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-convergence 观察-ws-39668-1793613820912446000"}
+ok
+test default_goal_stagnation_writes_a_terminal_result_before_the_deadline ... STALLED_GOAL_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-stalled-goal-ws-39668-1793613821451128000","privateState":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-stalled-goal-tmp-39668-1793613821451594000","written":true,"verificationAttempts":4,"modelCalls":15,"verifiedSequence":17,"slices":4,"resultExists":true,"timedOut":false}
+STALLED_GOAL_RESULT {"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"execution_failed","terminalEvent":true,"exitCode":1,"durationMs":1438,"turns":13,"toolCalls":5,"successfulToolCalls":5,"artifactEvidenceCount":0,"errorCount":0,"lastError":"goal.continuation_stopped: the task goal is unfinished; next=needs_input"}
+ok
+test goal_feedback::rejected_goal_delivers_all_feedback_then_accepts_new_verified_file ... ORACLE issue=20 result=pass rejected_judgments=1 verifications=2 deliverable=present
+ok
+test one_external_edit_does_not_disable_later_actual_acp_cycle_detection ... ACP_STATE_CYCLE_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-state-cycle-ws-39668-1793613823797060000","externalEdit":true,"modelCalls":9,"successfulReceipts":9,"deniedReceipts":0,"promptMs":1437}
+ok
+test provider_failures::exhausted_provider_failure_has_a_retryable_external_result ... PROVIDER_RESULT status=429 goal=false record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":3593,"turns":7,"toolCalls":2,"successfulToolCalls":2,"artifactEvidenceCount":1,"errorCount":3,"providerStatus":429,"lastError":"Provider request failed with HTTP 429 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=429 recover=false failures=33 checks=0 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":3593,"turns":7,"toolCalls":2,"successfulToolCalls":2,"artifactEvidenceCount":1,"errorCount":3,"providerStatus":429,"lastError":"Provider request failed with HTTP 429 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+PROVIDER_RESULT status=503 goal=false record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":3595,"turns":7,"toolCalls":2,"successfulToolCalls":2,"artifactEvidenceCount":1,"errorCount":3,"providerStatus":503,"lastError":"Provider request failed with HTTP 503 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=503 recover=false failures=33 checks=0 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":3595,"turns":7,"toolCalls":2,"successfulToolCalls":2,"artifactEvidenceCount":1,"errorCount":3,"providerStatus":503,"lastError":"Provider request failed with HTTP 503 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ok
+test provider_failures::failed_goal_provider_is_retryable_without_replaying_the_exact_run ... PROVIDER_RESULT status=429 goal=true record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":251,"turns":3,"toolCalls":1,"successfulToolCalls":1,"artifactEvidenceCount":0,"errorCount":1,"providerStatus":429,"lastError":"Provider request failed with HTTP 429 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=429 recover=false failures=11 checks=0 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":251,"turns":3,"toolCalls":1,"successfulToolCalls":1,"artifactEvidenceCount":0,"errorCount":1,"providerStatus":429,"lastError":"Provider request failed with HTTP 429 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+PROVIDER_RESULT status=503 goal=true record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":253,"turns":3,"toolCalls":1,"successfulToolCalls":1,"artifactEvidenceCount":0,"errorCount":1,"providerStatus":503,"lastError":"Provider request failed with HTTP 503 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=503 recover=false failures=11 checks=0 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"failed","reason":"retryable_external","terminalEvent":false,"exitCode":1,"durationMs":253,"turns":3,"toolCalls":1,"successfulToolCalls":1,"artifactEvidenceCount":0,"errorCount":1,"providerStatus":503,"lastError":"Provider request failed with HTTP 503 after 11 attempts; retry when the provider recovers"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ok
+test provider_failures::recovered_provider_can_receive_gate_guidance_and_verify_the_write ... PROVIDER_RESULT status=429 goal=false record={"schema":"aster.code.terminal-bench-result.v1","outcome":"succeeded","reason":"agent_end","terminalEvent":true,"exitCode":0,"durationMs":2594,"turns":36,"toolCalls":3,"successfulToolCalls":3,"artifactEvidenceCount":1,"errorCount":1,"lastError":"LLM API request failed after 11 attempts. Last status: 429 Too Many Requests Body: {\"error\":{\"message\":\"fixture transient provider failure\"}}"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=429 recover=true failures=13 checks=1 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"succeeded","reason":"agent_end","terminalEvent":true,"exitCode":0,"durationMs":2594,"turns":36,"toolCalls":3,"successfulToolCalls":3,"artifactEvidenceCount":1,"errorCount":1,"lastError":"LLM API request failed after 11 attempts. Last status: 429 Too Many Requests Body: {\"error\":{\"message\":\"fixture transient provider failure\"}}"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+PROVIDER_RESULT status=503 goal=false record={"schema":"aster.code.terminal-bench-result.v1","outcome":"succeeded","reason":"agent_end","terminalEvent":true,"exitCode":0,"durationMs":2616,"turns":36,"toolCalls":3,"successfulToolCalls":3,"artifactEvidenceCount":1,"errorCount":1,"lastError":"LLM API request failed after 11 attempts. Last status: 503 Service Unavailable Body: {\"error\":{\"message\":\"fixture transient provider failure\"}}"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ORACLE issue=295 status=503 recover=true failures=13 checks=1 record={"schema":"aster.code.terminal-bench-result.v1","outcome":"succeeded","reason":"agent_end","terminalEvent":true,"exitCode":0,"durationMs":2616,"turns":36,"toolCalls":3,"successfulToolCalls":3,"artifactEvidenceCount":1,"errorCount":1,"lastError":"LLM API request failed after 11 attempts. Last status: 503 Service Unavailable Body: {\"error\":{\"message\":\"fixture transient provider failure\"}}"} response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, meta: None })
+ok
+test reused_model_ids_keep_distinct_actual_acp_authorizations_and_rows ... ACP_REUSED_ID_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-state-cycle-ws-39668-1793613838376917000","modelCalls":8,"rawModelId":"call_write_1","uniqueApprovals":8,"toolRows":8,"successfulReceipts":8}
+ACP_STATE_CYCLE_OBSERVATION {"workspace":"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-unattended-state-cycle-ws-39668-1793613838376917000","externalEdit":false,"modelCalls":8,"successfulReceipts":8,"deniedReceipts":0,"promptMs":1336}
+ok
+test unattended_prompt_binds_proves_and_records_without_touching_the_workspace ... ok
+test verified_goal_finishes_without_repeating_read_only_verification ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 35.56s
+

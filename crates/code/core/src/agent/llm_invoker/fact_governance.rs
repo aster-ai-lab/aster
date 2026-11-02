@@ -29,6 +29,7 @@ pub struct FactModelBinding {
 
 pub(crate) enum FactModelFrame {
     RawStream(StreamEvent),
+    ProviderFailure(crate::llm::RetryableProviderFailure),
     Capability {
         call_sequence: u64,
         snapshot: RunCapabilitySnapshotV1,
@@ -483,9 +484,15 @@ impl PreparedFactModelCall {
         attempt: CancellationToken,
         accounting: Arc<FactModelAccountingObservation>,
     ) -> Result<FactModelCallOutcome, ActorError> {
-        self.run_inner(&sender, &attempt, &accounting)
-            .await
-            .map_err(crate::fact_control::model_error)
+        let result = self.run_inner(&sender, &attempt, &accounting).await;
+        if let Err(error) = &result {
+            if let Some(failure) = crate::llm::RetryableProviderFailure::from_error(error) {
+                let _ = self
+                    .send(&sender, FactModelFrame::ProviderFailure(failure), &attempt)
+                    .await;
+            }
+        }
+        result.map_err(crate::fact_control::model_error)
     }
 
     async fn run_inner(

@@ -86,6 +86,17 @@ impl AgentSession {
         RunControl::from_session(self).run_events(run_id).await
     }
 
+    /// Return typed transient provider exhaustion for a retained live Run.
+    ///
+    /// This diagnostic follows Run retention and is not restored from checkpoints.
+    pub async fn run_provider_failure(
+        &self,
+        run_id: &str,
+    ) -> Option<crate::llm::RetryableProviderFailure> {
+        self.run_snapshot(run_id).await?;
+        self.run_store.provider_failure(run_id).await
+    }
+
     /// Read bounded evidence from this session's original Run and artifact
     /// stores, without starting an execution or changing its history.
     ///

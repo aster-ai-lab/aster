@@ -27,8 +27,21 @@ pub(crate) enum TerminalReason {
     EvidenceMissing,
     ProviderRejected,
     ProviderExhausted,
+    RetryableExternal,
     DeadlineExceeded,
 }
+
+#[derive(Debug)]
+pub(crate) struct RetryableExternalFailure(pub(crate) aster_core::llm::RetryableProviderFailure);
+
+impl std::fmt::Display for RetryableExternalFailure {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(formatter, "Provider request failed with HTTP {} after {} attempts; retry when the provider recovers",
+            self.0.status_code(), self.0.attempts())
+    }
+}
+
+impl std::error::Error for RetryableExternalFailure {}
 
 #[derive(Debug)]
 pub(crate) struct ExecutionDeadline;
@@ -150,6 +163,11 @@ impl RunProgress {
     }
 
     pub(crate) fn remember_failure(&mut self, error: &anyhow::Error) {
+        if let Some(failure) = error.downcast_ref::<RetryableExternalFailure>() {
+            self.provider_status = Some(failure.0.status_code());
+            self.last_error = Some(bound_error(error.to_string()));
+            return;
+        }
         if is_execution_deadline(error)
             || error
                 .downcast_ref::<crate::goal::GoalContinuationStopped>()
@@ -304,6 +322,12 @@ pub(crate) fn classify_failure(
     progress: &RunProgress,
     error: &anyhow::Error,
 ) -> (ExecutionResultOutcomeV1, TerminalReason) {
+    if error.downcast_ref::<RetryableExternalFailure>().is_some() {
+        return (
+            ExecutionResultOutcomeV1::Failed,
+            TerminalReason::RetryableExternal,
+        );
+    }
     if progress.evidence_missing {
         return (
             ExecutionResultOutcomeV1::Failed,

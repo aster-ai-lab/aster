@@ -1,0 +1,108 @@
+{
+  "baseline_head": "5ce1049228f094a1631e30f8e489084b4858e47b",
+  "review_head": "8b4e657a9d3d95ea656730c20c079a96d9499324",
+  "files": [
+    {
+      "path": "crates/code/core/src/llm/error.rs",
+      "sha256": "d44b31a4d6b15975dca70734859d011e6737fe08cb89c96b66d8cd8e5c5458db",
+      "after_sha256": "982e9c4559c3a24e4cedc387a9b32b9c3c5e4d98aa9b35949fc974bc91d1cc73",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/llm/mod.rs",
+      "sha256": "d19bd8714a5ea1445586874cbdf40ebdd8037f3dbe4620915876f5eedc6c0654",
+      "after_sha256": "a1de55396d9bfe516708d11c10dae5d122eac0e6b8e5b85181db05e3a43eb541",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/run.rs",
+      "sha256": "e46cd68ffd08ccf043ad387e5f7d94b0918b1633dbb5f40f8d74748c69aa35fe",
+      "after_sha256": "af017eb3b8453a31eb26db18e51deb103ba60fde1369ee1a5df106e242d3124a",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/agent_api/run_facade.rs",
+      "sha256": "d9ef8d765f81932dcac97c0ac384037316c527d88232cf1f13937d32003bff0c",
+      "after_sha256": "598084b0af4d8912ec33cb9a4c3865aa3e2855dcd8f106f49c0a63bca0c2ffef",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/agent/llm_invoker/fact_governance.rs",
+      "sha256": "01a73f21f31d3f51d18b472e43f6b103e820113f74d01d8f61a718a892d17730",
+      "after_sha256": "52906ed0f2988bb662b6459675ec33c163d4898df725a4d142f887b26e50ca46",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_call.rs",
+      "sha256": "c517c0dbc6858ba514fa46482e471cf28fd5d6ac89717f0418631ba074270288",
+      "after_sha256": "cd590969ec07644ad09a40b76b2fe668c4289993377d21803e5af399e1524df7",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/fact_control/model_governance_tests.rs",
+      "sha256": "13ff73370861ee9ff69cc0c9af9e1bf399cc88d99b3658c0f2040596dc83626d",
+      "after_sha256": "13ff73370861ee9ff69cc0c9af9e1bf399cc88d99b3658c0f2040596dc83626d",
+      "changed": false
+    },
+    {
+      "path": "crates/code/acp/src/agent/unattended_turn.rs",
+      "sha256": "2b442a42afdc61ed8730852c1f4dff033870b0f94453c2a8e1e13fd10e48fdd9",
+      "after_sha256": "e364c6efc29dff70936d6bf5502916f9fce99a19a3a6e5f47ef7ac701ad25468",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/src/unattended.rs",
+      "sha256": "06913db059660c446aed90f1c3fe07098675359ef94be1a8ade975ceb7ca3f40",
+      "after_sha256": "06f6bcb80df6e9df04c54d6d01829696abc23458032b80e7e858b9b136aa8d8a",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/src/unattended/result.rs",
+      "sha256": "23a53c2757b4d96dc74d31c5b62a42d0e7b5082627214e7ce9ca1e5716a5c2d8",
+      "after_sha256": "10b467f7504f4d6274f6a0729ad6a5f95a2fbab2799124a8d06dd1c6a0dd23a3",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/src/unattended/tests.rs",
+      "sha256": "850f29f8a2fa9f8fad039d0ce2fb55c8c4375534aedfda21f1200353d90c0230",
+      "after_sha256": "218eadb6b3b6109c30f7fbcc2146928dc4b4521a6266bedd8f44a860fc814735",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/src/unattended/result_tests.rs",
+      "sha256": "75feb1035fc646fc68d0a2e0f58555bbf0dab14e578e4fd15506541588438d3d",
+      "after_sha256": "4002f8e4919215076ee0a1c8f55afa38ba707151f7b1daf85f3fea40ec828861",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/tests/unattended_e2e.rs",
+      "sha256": "6398412f7eb73fe1ff4d95b5b6fa4976f8304cae070cad28ee7610971483fa07",
+      "after_sha256": "3f1bf8aa7a19b0f51e05eb995031816fb066eb0bcd55e1a4f60a6d8479fe7ea5",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/llm/provider_failure_tests.rs",
+      "sha256": null,
+      "after_sha256": "98f0084632a3e78c631d350e0d05f63dc577c0534930931553f3b6b4fce0d677",
+      "changed": true
+    },
+    {
+      "path": "crates/code/core/src/run/provider_failure_tests.rs",
+      "sha256": null,
+      "after_sha256": "bcd2c3ef876e0fdc26b32d0f72d9fc544fb6ec6b6e3936539c8f4cda5c9ef4b2",
+      "changed": true
+    },
+    {
+      "path": "crates/code/acp/tests/unattended_e2e/provider_failures.rs",
+      "sha256": null,
+      "after_sha256": "005b846cc8206db32027a89354fa0d188145be4df9fa59729015af1c6d882804",
+      "changed": true
+    },
+    {
+      "path": "tests/e2e/unattended-provider-retry.acl",
+      "sha256": null,
+      "after_sha256": "b5d1b67229e7ec93ab14c79121ea03f0c3c392e694f521b4a366569f480882ea",
+      "changed": true
+    }
+  ]
+}

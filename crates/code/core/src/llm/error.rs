@@ -9,6 +9,39 @@ use thiserror::Error;
 /// account quota, and not for ordinary transient rate limits.
 const MAX_PROVIDER_ERROR_MESSAGE_BYTES: usize = 4 * 1024;
 
+/// Transient provider exhaustion retained for the exact live Run.
+///
+/// Contains only status and attempt count, never response bodies or credentials.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RetryableProviderFailure {
+    status: u16,
+    attempts: u32,
+}
+
+impl RetryableProviderFailure {
+    /// Classify a typed provider failure, including errors with anyhow context.
+    /// Permanent account/quota refusals are not transient rate limits.
+    pub fn from_error(error: &anyhow::Error) -> Option<Self> {
+        let error = error.downcast_ref::<crate::retry::RetryExhaustedError>()?;
+        matches!(error.status_code(), 408 | 429 | 500..=599).then_some(Self {
+            status: error.status_code(),
+            attempts: error.attempts(),
+        })
+    }
+
+    pub fn status_code(self) -> u16 {
+        self.status
+    }
+
+    pub fn attempts(self) -> u32 {
+        self.attempts
+    }
+}
+
+#[cfg(test)]
+#[path = "provider_failure_tests.rs"]
+mod provider_failure_tests;
+
 #[derive(Debug, Error)]
 #[error("{message}")]
 pub struct NonRetryableLlmError {

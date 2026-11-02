@@ -3,8 +3,8 @@
 
 use super::*;
 use crate::unattended::result::{
-    classify_failure, persist_result, ExecutionDeadline, ExecutionPhase, RunProgress,
-    TerminalReason,
+    classify_failure, persist_result, ExecutionDeadline, ExecutionPhase, RetryableExternalFailure,
+    RunProgress, TerminalReason,
 };
 use crate::unattended::{
     bind_continuation, first_prompt, host_admission_step, host_verification_report,
@@ -84,6 +84,7 @@ impl AsterCodeAgent {
                 if matches!(
                     reason,
                     TerminalReason::ProviderRejected
+                        | TerminalReason::RetryableExternal
                         | TerminalReason::WorkerExitedWithoutTerminalEvent
                         | TerminalReason::StreamClosedWithoutTerminalEvent
                         | TerminalReason::DeadlineExceeded
@@ -171,6 +172,34 @@ impl AsterCodeAgent {
                 } => (turn_permit, facts, join_failure),
             };
             turn_permit = permit;
+            if let Some(failure) = facts.provider_failure.filter(|_| join_failure.is_none()) {
+                // An exact failed Goal Run cannot be replayed as a new slice.
+                // Its provider has already applied the HTTP Retry-After policy.
+                if unattended.goal_continuation {
+                    return Err(RetryableExternalFailure(failure).into());
+                }
+                let Some(delay) = budget.provider_retry_delay() else {
+                    return Err(RetryableExternalFailure(failure).into());
+                };
+                if let Some(detail) = &facts.last_error {
+                    prompt = non_terminal_continuation(detail);
+                }
+                let remaining = unattended
+                    .max_execution_ms
+                    .saturating_sub(progress.duration_ms());
+                tokio::select! {
+                    biased;
+                    _ = self.wait_for_turn_cancel(session_id.0.as_ref(), generation) => {
+                        return Ok(Some(Ok(acp::PromptResponse::new(acp::StopReason::Cancelled))));
+                    }
+                    _ = tokio::time::sleep(std::time::Duration::from_millis(remaining)) => {
+                        return Err(RetryableExternalFailure(failure).into());
+                    }
+                    _ = tokio::time::sleep(delay) => {}
+                }
+                continue;
+            }
+            budget.provider_failures = 0;
             if unattended.goal_continuation {
                 if facts
                     .last_error
@@ -321,6 +350,7 @@ impl AsterCodeAgent {
         remaining: std::time::Duration,
     ) -> anyhow::Result<Attempt> {
         let mut facts = AttemptFacts::default();
+        let run_id = stream.run.as_ref().map(|run| run.id().to_owned());
         let attempt::AttemptCompletion {
             mut state,
             join_failure,
@@ -345,6 +375,9 @@ impl AsterCodeAgent {
                 return Ok(Attempt::Cancelled(response));
             }
         };
+        if let Some(run_id) = run_id {
+            facts.provider_failure = session.run_provider_failure(&run_id).await;
+        }
         progress.phase = ExecutionPhase::Joining;
         if let Some(failure) = &join_failure {
             progress.remember_error(failure);

@@ -290,6 +290,12 @@ pub(super) async fn project_model_frame(
     let mut capability_digest = None;
     let mut usage = false;
     let event = match frame {
+        FactModelFrame::ProviderFailure(failure) => {
+            if let (Some(store), Some(run_id)) = (&surface.run_store, &surface.run_id) {
+                store.record_provider_failure(run_id, failure).await;
+            }
+            return Ok(None);
+        }
         FactModelFrame::RawStream(crate::llm::StreamEvent::Done(response)) => {
             record_usage(surface, &response);
             return Ok(Some(response));

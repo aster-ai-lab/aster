@@ -1,0 +1,7 @@
+
+running 2 tests
+test llm::error::provider_failure_tests::only_typed_transient_exhaustion_is_retryable ... ok
+test run::provider_failure_tests::provider_failure_follows_run_retention_without_creating_unknown_runs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5900 filtered out; finished in 0.00s
+

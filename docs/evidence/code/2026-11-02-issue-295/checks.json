@@ -1,0 +1,122 @@
+[
+  {
+    "name": "core-provider-unit",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-core",
+      "--lib",
+      "provider_failure",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "core-model-governance",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-core",
+      "--lib",
+      "fact_governance",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "acp-unattended-unit",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--lib",
+      "unattended",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "acp-attempt-unit",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--lib",
+      "attempt_tests",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "core-retry-authority",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-core",
+      "--test",
+      "terminal_bench_retry_authority",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "unattended-all-e2e",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--test",
+      "unattended_e2e",
+      "--",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "-p",
+      "aster-core",
+      "-p",
+      "aster-acp",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "build-pair",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "-p",
+      "aster",
+      "-p",
+      "aster-acp",
+      "--bins"
+    ],
+    "exit_code": 101
+  }
+]

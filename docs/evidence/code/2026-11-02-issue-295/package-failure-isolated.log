@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'agent_api::tests::package::package_provider_failure_and_generation_drift_fail_closed_without_fallback' (75359492) panicked at crates/code/core/src/agent_api/tests/fixtures.rs:479:6:
+called `Result::unwrap()` on an `Err` value: InvalidBinding("capability snapshot digest does not bind this package, generation, and Knowledge surface")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agent_api::tests::package::package_provider_failure_and_generation_drift_fail_closed_without_fallback ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::package::package_provider_failure_and_generation_drift_fail_closed_without_fallback
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5901 filtered out; finished in 0.04s
+

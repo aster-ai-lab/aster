@@ -33,6 +33,8 @@ pub(crate) struct LoopPolicy {
     /// Idle host stream retries before giving up on the attempt. Origin:
     /// headless stream dropouts on flaky links (PR #8 era).
     pub(crate) host_idle_attempts: usize,
+    /// Provider cycles after HTTP retries, isolated from model progress (#295).
+    pub(crate) host_provider_attempts: usize,
     /// Unproven stops tolerated before the attempt is treated as
     /// non-terminal. Origin: verifier latency spikes mid-run.
     pub(crate) host_unproven_stops: usize,
@@ -46,6 +48,7 @@ pub(crate) struct LoopPolicy {
 
 pub(crate) const LOOP_POLICY: LoopPolicy = LoopPolicy {
     host_idle_attempts: HOST_IDLE_ATTEMPTS,
+    host_provider_attempts: HOST_PROVIDER_ATTEMPTS,
     host_unproven_stops: HOST_UNPROVEN_STOPS,
     max_tool_rounds: MAX_TOOL_ROUNDS,
     max_continuation_turns: MAX_CONTINUATION_TURNS,
@@ -57,6 +60,8 @@ pub(crate) const LOOP_POLICY: LoopPolicy = LoopPolicy {
 /// not consume this budget. The same digest twice still fails closed. The
 /// execution deadline bounds a run that keeps producing new digests.
 const HOST_IDLE_ATTEMPTS: usize = 16;
+/// Separate provider cycles after Core's HTTP retries (#295).
+const HOST_PROVIDER_ATTEMPTS: usize = 3;
 /// A tool call after a host bind is not evidence the task grader would pass.
 /// Ask the model to prove the original requirements again, this many times.
 const HOST_UNPROVEN_STOPS: usize = 3;
@@ -302,6 +307,15 @@ pub(crate) struct HostAdmissionBudget {
     non_terminal_used: usize,
     unproven_stops: usize,
     fresh_review_used: bool,
+    pub(crate) provider_failures: usize,
+}
+
+impl HostAdmissionBudget {
+    pub(crate) fn provider_retry_delay(&mut self) -> Option<std::time::Duration> {
+        self.provider_failures += 1;
+        (self.provider_failures < LOOP_POLICY.host_provider_attempts)
+            .then(|| std::time::Duration::from_secs(1 << (self.provider_failures - 1)))
+    }
 }
 
 fn idle_retry_available(used: usize) -> bool {
@@ -315,6 +329,7 @@ pub(crate) struct AttemptFacts {
     pub(crate) tools: usize,
     pub(crate) failed: bool,
     pub(crate) last_error: Option<String>,
+    pub(crate) provider_failure: Option<aster_core::llm::RetryableProviderFailure>,
 }
 
 /// Decide the next host-admission cycle from the stream that just ended.

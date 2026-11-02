@@ -18,6 +18,8 @@ mod artifact;
 mod candidate;
 #[path = "unattended_e2e/goal_feedback.rs"]
 mod goal_feedback;
+#[path = "unattended_e2e/provider_failures.rs"]
+mod provider_failures;
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
@@ -239,6 +241,9 @@ fn reply_tool(name: &str, args: serde_json::Value, seq: u64, streaming: bool) ->
 /// and stops whenever the last message is a tool result.
 fn decide(raw: &str, script: &mut Script) -> String {
     let parsed: serde_json::Value = serde_json::from_str(raw).unwrap_or(serde_json::Value::Null);
+    if let Some(body) = provider_failures::planning_reply(&parsed) {
+        return body;
+    }
     let streaming = parsed["stream"].as_bool().unwrap_or(false);
     if raw.contains("context-compaction engine") {
         return reply_text(

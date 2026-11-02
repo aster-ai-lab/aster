@@ -206,7 +206,12 @@ pub(crate) struct RunEventObservation {
 struct RetainedRunEvents {
     records: Vec<RunEventRecord>,
     serialized_bytes: usize,
+    provider_failure: Option<crate::llm::RetryableProviderFailure>,
 }
+
+#[cfg(test)]
+#[path = "run/provider_failure_tests.rs"]
+mod provider_failure_tests;
 
 impl RunSnapshot {
     fn new(id: String, session_id: String, prompt: String) -> Self {
@@ -529,6 +534,23 @@ impl InMemoryRunStore {
         Ok(run.clone())
     }
 
+    pub(crate) async fn record_provider_failure(
+        &self,
+        run_id: &str,
+        failure: crate::llm::RetryableProviderFailure,
+    ) {
+        if let Some(events) = self.events.write().await.get_mut(run_id) {
+            events.provider_failure = Some(failure);
+        }
+    }
+
+    pub(crate) async fn provider_failure(
+        &self,
+        run_id: &str,
+    ) -> Option<crate::llm::RetryableProviderFailure> {
+        self.events.read().await.get(run_id)?.provider_failure
+    }
+
     pub async fn events(&self, run_id: &str) -> Vec<RunEventRecord> {
         self.events
             .read()
@@ -635,6 +657,7 @@ impl InMemoryRunStore {
                     .map(serialized_event_record_len)
                     .fold(0usize, usize::saturating_add),
                 records: record.events,
+                provider_failure: None,
             };
             trim_retained_events(
                 &mut retained,

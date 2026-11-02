@@ -10,7 +10,33 @@ fn facts(gate_digest: Option<String>, tools: usize, failed: bool) -> AttemptFact
         tools,
         failed,
         last_error: None,
+        provider_failure: None,
     }
+}
+
+#[test]
+fn provider_retries_leave_task_admission_budgets_untouched() {
+    let mut budget = HostAdmissionBudget::default();
+    for delay in [1, 2] {
+        assert_eq!(
+            budget.provider_retry_delay(),
+            Some(std::time::Duration::from_secs(delay))
+        );
+    }
+    assert_eq!(budget.provider_retry_delay(), None);
+    assert_eq!(
+        (
+            budget.idle_used,
+            budget.non_terminal_used,
+            budget.unproven_stops
+        ),
+        (0, 0, 0)
+    );
+    budget.provider_failures = 0;
+    assert_eq!(
+        budget.provider_retry_delay(),
+        Some(std::time::Duration::from_secs(1))
+    );
 }
 
 #[test]
