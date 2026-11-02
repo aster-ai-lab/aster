@@ -1,0 +1,44 @@
+[
+  {
+    "name": "browser",
+    "command": "STUDIO_E2E_BASE_URL=http://127.0.0.1:4537 node node_modules/@playwright/test/cli.js test -c playwright.composer-audit.config.ts tests/e2e/composer-audit/permission-picker-motion.spec.ts --project chromium --project webkit --reporter=json",
+    "exit_code": 0,
+    "passed": 6,
+    "failed": 0
+  },
+  {
+    "name": "renderer",
+    "command": "pnpm test:renderer src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.test.tsx src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.dismiss.test.tsx",
+    "exit_code": 0,
+    "passed": 29
+  },
+  {
+    "name": "oxlint",
+    "command": "pnpm exec oxlint src/renderer/pages/agents/WorkbenchPermissionPicker.tsx tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+    "exit_code": 0
+  },
+  {
+    "name": "eslint",
+    "command": "pnpm exec eslint src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+    "exit_code": 0,
+    "existing_warnings": 2
+  },
+  {
+    "name": "i18n",
+    "command": "pnpm i18n:check",
+    "exit_code": 0,
+    "translations": 25484
+  },
+  {
+    "name": "typecheck",
+    "command": "pnpm typecheck",
+    "exit_code": 1,
+    "errors": 257,
+    "changed_paths_reported": false
+  },
+  {
+    "name": "format",
+    "command": "pnpm exec oxfmt --check src/renderer/pages/agents/WorkbenchPermissionPicker.tsx src/renderer/pages/agents/WorkbenchPermissionPicker.module.css tests/e2e/composer-audit/permission-picker-motion.spec.ts src/renderer/i18n/locales/en-us.json src/renderer/i18n/locales/zh-cn.json",
+    "exit_code": 0
+  }
+]

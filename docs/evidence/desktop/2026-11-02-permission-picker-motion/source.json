@@ -1,0 +1,81 @@
+{
+  "root_review_head": "5a9bded4d7136c11ad0957e052f1e7c17170f9c4",
+  "studio_review_head": "43bb70e39670955731e546027844f3caca0808f9",
+  "tracked_deltas": [
+    {
+      "path": "apps/studio/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "relative_path": "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "head": "43bb70e39670955731e546027844f3caca0808f9",
+      "before_sha256": "79051645063b277a9809b5dd7d7ef9125d09a6c53cead8ee76246785030099f3",
+      "working_sha256": "74e80c1368049fdd9b7b6c7acdfd608317279d14eca8499dfb1d0df27421a74d",
+      "selected_sha256": "74e80c1368049fdd9b7b6c7acdfd608317279d14eca8499dfb1d0df27421a74d",
+      "candidate": ".git/aster-permission-picker-motion/candidates/apps/studio/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx"
+    },
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/en-us.json",
+      "relative_path": "src/renderer/i18n/locales/en-us.json",
+      "head": "43bb70e39670955731e546027844f3caca0808f9",
+      "before_sha256": "e4217f5ccca5342fc4ae7d774562b2514a21c9baccd86c8667b068ece06cfe25",
+      "working_sha256": "03f61840357bbdfe1a9de1ecedca6b3da4532212297220829bf91ae627834190",
+      "selected_sha256": "0e0345f26095a0220ccf846a9dadca286ac0919968930d0d15820de7fa43ce57",
+      "candidate": ".git/aster-permission-picker-motion/candidates/apps/studio/src/renderer/i18n/locales/en-us.json"
+    },
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/zh-cn.json",
+      "relative_path": "src/renderer/i18n/locales/zh-cn.json",
+      "head": "43bb70e39670955731e546027844f3caca0808f9",
+      "before_sha256": "077347e41de63b2ec19be8c31c510ce382f8c7bb22a1eeca107bfd06eefb601e",
+      "working_sha256": "f7f1a562933aa29eaee0a6df8d4d56642c1418a58fc40b689f7b6422cf5ba33e",
+      "selected_sha256": "55bce58c2cc39672382b7248a79f1276fb46eb9a37abf8d498a2cc3f560b0098",
+      "candidate": ".git/aster-permission-picker-motion/candidates/apps/studio/src/renderer/i18n/locales/zh-cn.json"
+    }
+  ],
+  "new_source_files": [
+    {
+      "path": "apps/studio/src/renderer/pages/agents/WorkbenchPermissionPicker.module.css",
+      "sha256": "6b34a3779dc2a760a1faca6faf2781b40f4d05218787a42ced21d0069066e8f8"
+    },
+    {
+      "path": "apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+      "sha256": "58e9360a950d87963622923d1b1ca6e71cfa5bd51ed66630711d83d39660e4d6"
+    }
+  ],
+  "reference_capture": {
+    "id": "scrawl-1793626073405-75ab-10.scrawl",
+    "manifest_sha256": "bcbf92318b8b5b83aa9210ebe605647bf1310f57256d22a946e59badf1380315",
+    "reviewed": [
+      "contact-sheet.png",
+      "frames/frame-01.png",
+      "frames/frame-02.png",
+      "frames/frame-03.png",
+      "zoom/zoom-500-1500.png"
+    ],
+    "keyframes_ms": [
+      881,
+      2501,
+      6358
+    ]
+  },
+  "images": [
+    {
+      "path": "chromium-reduced.png",
+      "sha256": "e97a99f921e251951901b3be59bc6698db6597c0be916ef27f412d751925cc0d"
+    },
+    {
+      "path": "chromium.png",
+      "sha256": "e97a99f921e251951901b3be59bc6698db6597c0be916ef27f412d751925cc0d"
+    },
+    {
+      "path": "preview.png",
+      "sha256": "47539f0cac7b649e78a15c9b99d909644f718f0bed80f39166debd93d0841ac4"
+    },
+    {
+      "path": "webkit-reduced.png",
+      "sha256": "24454d65f289e2df2b000f7f1004ab3ec44a03d925f8e8ca1e5c47b444738d09"
+    },
+    {
+      "path": "webkit.png",
+      "sha256": "24454d65f289e2df2b000f7f1004ab3ec44a03d925f8e8ca1e5c47b444738d09"
+    }
+  ]
+}

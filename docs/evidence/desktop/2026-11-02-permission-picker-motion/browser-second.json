@@ -1,0 +1,307 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/26.8.1/bin/node",
+      "/Users/roylin/code/aster/apps/studio/node_modules/@playwright/test/cli.js",
+      "test",
+      "-c",
+      "playwright.composer-audit.config.ts",
+      "tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+      "--project",
+      "chromium",
+      "--reporter=json"
+    ],
+    "configFile": "/Users/roylin/code/aster/apps/studio/playwright.composer-audit.config.ts",
+    "rootDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "permission-picker-motion.spec.ts",
+      "file": "permission-picker-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "keeps every mode readable and selectable through consecutive animated changes",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4413,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:39:81",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                      "column": 81,
+                      "line": 39
+                    },
+                    "snippet": "  37 |   expect(box.x + box.width).toBeLessThanOrEqual(948)\n  38 |   expect(box.y + box.height).toBeLessThanOrEqual(628)\n> 39 |   expect(await menu.evaluate((node) => node.scrollHeight <= node.clientHeight)).toBe(true)\n     |                                                                                 ^\n  40 |   for (const row of await menu.getByRole('menuitemradio').all()) await expect(row).toBeInViewport({ ratio: 1 })\n  41 |   await expect(menu.getByRole('menuitemradio', { checked: true })).toHaveCount(1)\n  42 | })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                        "column": 81,
+                        "line": 39
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  37 |   expect(box.x + box.width).toBeLessThanOrEqual(948)\n  38 |   expect(box.y + box.height).toBeLessThanOrEqual(628)\n> 39 |   expect(await menu.evaluate((node) => node.scrollHeight <= node.clientHeight)).toBe(true)\n     |                                                                                 ^\n  40 |   for (const row of await menu.getByRole('menuitemradio').all()) await expect(row).toBeInViewport({ ratio: 1 })\n  41 |   await expect(menu.getByRole('menuitemradio', { checked: true })).toHaveCount(1)\n  42 | })\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:39:81"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T13:44:04.669Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-k-b7459-onsecutive-animated-changes-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-k-b7459-onsecutive-animated-changes-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                    "column": 81,
+                    "line": 39
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-922096b3b8ab8aa427a5",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 16,
+          "column": 5
+        },
+        {
+          "title": "keyboard selection and interrupted opening leave the picker usable",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21976,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: /^授权模式:/ }).first()\nExpected: \u001b[32m\"auto\"\u001b[39m\nReceived: \u001b[31m\"default\"\u001b[39m\nTimeout:  20000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    3 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-radix-popper-side=\"bottom\" data-radix-popper-align=\"start\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-vi…>…</button>\u001b[22m\n\u001b[2m      - unexpected value \"default\"\u001b[22m\n\u001b[2m    41 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m       - unexpected value \"default\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: /^授权模式:/ }).first()\nExpected: \u001b[32m\"auto\"\u001b[39m\nReceived: \u001b[31m\"default\"\u001b[39m\nTimeout:  20000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    3 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-radix-popper-side=\"bottom\" data-radix-popper-align=\"start\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-vi…>…</button>\u001b[22m\n\u001b[2m      - unexpected value \"default\"\u001b[22m\n\u001b[2m    41 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m       - unexpected value \"default\"\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:59:25",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                      "column": 25,
+                      "line": 59
+                    },
+                    "snippet": "  57 |   await page.keyboard.press('ArrowDown')\n  58 |   await page.keyboard.press('Enter')\n> 59 |   await expect(trigger).toHaveAttribute('data-posture', 'auto')\n     |                         ^\n  60 |   await trigger.click()\n  61 |   await trigger.click()\n  62 |   await trigger.click()"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                        "column": 25,
+                        "line": 59
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: /^授权模式:/ }).first()\nExpected: \u001b[32m\"auto\"\u001b[39m\nReceived: \u001b[31m\"default\"\u001b[39m\nTimeout:  20000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    3 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-radix-popper-side=\"bottom\" data-radix-popper-align=\"start\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-vi…>…</button>\u001b[22m\n\u001b[2m      - unexpected value \"default\"\u001b[22m\n\u001b[2m    41 × locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_3c_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m       - unexpected value \"default\"\u001b[22m\n\n\n  57 |   await page.keyboard.press('ArrowDown')\n  58 |   await page.keyboard.press('Enter')\n> 59 |   await expect(trigger).toHaveAttribute('data-posture', 'auto')\n     |                         ^\n  60 |   await trigger.click()\n  61 |   await trigger.click()\n  62 |   await trigger.click()\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:59:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T13:44:09.407Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-k-998fc-ing-leave-the-picker-usable-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-k-998fc-ing-leave-the-picker-usable-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                    "column": 25,
+                    "line": 59
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-515c0912024b702688f5",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 44,
+          "column": 5
+        },
+        {
+          "title": "reduced motion reveals the same choices immediately in a narrow window",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21346,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('menu')\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('menu')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('menu')\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('menu')\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:73:22",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                      "column": 22,
+                      "line": 73
+                    },
+                    "snippet": "  71 |   await trigger.click()\n  72 |   const menu = page.getByRole('menu')\n> 73 |   await expect(menu).toBeVisible()\n     |                      ^\n  74 |   const motion = await menu.evaluate((node) => ({\n  75 |     opacity: getComputedStyle(node).opacity,\n  76 |     animations: node.getAnimations({ subtree: true }).length,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                        "column": 22,
+                        "line": 73
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('menu')\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('menu')\u001b[22m\n\n\n  71 |   await trigger.click()\n  72 |   const menu = page.getByRole('menu')\n> 73 |   await expect(menu).toBeVisible()\n     |                      ^\n  74 |   const motion = await menu.evaluate((node) => ({\n  75 |     opacity: getComputedStyle(node).opacity,\n  76 |     animations: node.getAnimations({ subtree: true }).length,\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts:73:22"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T13:44:31.651Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-r-7b171-ediately-in-a-narrow-window-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/permission-picker-motion-r-7b171-ediately-in-a-narrow-window-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+                    "column": 22,
+                    "line": 73
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-04da4863d25ffed58fe2",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 67,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T13:44:04.366Z",
+    "duration": 48773.609000000004,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

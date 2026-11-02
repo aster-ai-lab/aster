@@ -1,0 +1,1 @@
+Initial browser attempt stopped: setup incorrectly required the optional native installer dialog to appear. No picker interaction occurred. The fixture now closes this unrelated dialog only when present; product assertions are unchanged.

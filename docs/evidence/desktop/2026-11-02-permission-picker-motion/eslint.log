@@ -1,0 +1,7 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchPermissionPicker.tsx
+  148:50  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+  149:56  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+
+✖ 2 problems (0 errors, 2 warnings)
+
