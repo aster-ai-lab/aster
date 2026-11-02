@@ -822,9 +822,6 @@ impl TurnFinish {
             self.persistence.clear_loop_checkpoint(run_id).await;
         }
         if let Ok(result) = outcome {
-            self.persistence.record_usage(&result.usage);
-        }
-        if let Ok(result) = outcome {
             if update_history && !result.messages.is_empty() {
                 let mut messages = result.messages.clone();
                 strip_attachment_annotation(&mut messages);

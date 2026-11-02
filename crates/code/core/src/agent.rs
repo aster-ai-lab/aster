@@ -54,7 +54,7 @@ mod execution_state;
 pub(crate) use execution_state::ExecutionSeed;
 mod hook_runtime;
 mod invocation_context;
-pub(crate) use invocation_context::InvocationContext;
+pub(crate) use invocation_context::{InvocationContext, UsageRecorder};
 mod llm_invoker;
 pub(crate) use llm_invoker::{
     FactAccountingDisposition, FactModelAccountingObservation, FactModelCallOutcome,
@@ -1229,6 +1229,7 @@ pub(crate) struct TurnEngine {
     /// Secret-free middleware stage counters shared with the session when
     /// installed via [`AgentLoop::with_model_middleware_obs`].
     middleware_obs: Arc<ModelMiddlewareObs>,
+    usage_recorder: Option<UsageRecorder>,
     tool_executor: Arc<ToolExecutor>,
     tool_context: ToolContext,
     config: AgentConfig,

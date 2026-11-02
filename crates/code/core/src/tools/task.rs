@@ -241,6 +241,7 @@ pub struct TaskExecutor {
     scoped_tools: Vec<Arc<dyn Tool>>,
     /// Parent capabilities to inherit into child runs.
     parent_context: Option<crate::child_run::ChildRunContext>,
+    usage_recorder: Option<crate::agent::UsageRecorder>,
     /// Search configuration captured from the invoking parent context.
     search_config: Option<Arc<crate::config::SearchConfig>>,
     /// Agent-scoped search admission shared with delegated child runs.
@@ -300,6 +301,7 @@ impl TaskExecutor {
             child_tool_presentation: None,
             scoped_tools: Vec::new(),
             parent_context: None,
+            usage_recorder: None,
             search_config: None,
             search_bulkhead: None,
             search_retry_budget: None,
@@ -347,6 +349,7 @@ impl TaskExecutor {
             child_tool_presentation: None,
             scoped_tools: Vec::new(),
             parent_context: None,
+            usage_recorder: None,
             search_config: None,
             search_bulkhead: None,
             search_retry_budget: None,
@@ -407,6 +410,7 @@ impl TaskExecutor {
     fn scoped_for_invocation(self: &Arc<Self>, ctx: &ToolContext) -> Arc<Self> {
         let mut scoped = self.as_ref().clone();
         scoped.reply_language = ctx.reply_language();
+        scoped.usage_recorder = ctx.usage_recorder.clone();
         scoped.search_config = ctx.search_config.clone();
         scoped.search_bulkhead = Some(ctx.search_bulkhead());
         scoped.search_retry_budget = Some(ctx.search_retry_budget());
@@ -437,6 +441,7 @@ impl TaskExecutor {
             .with_session_id(session_id)
             .with_cancellation(cancellation);
         context.inherit_reply_language(self.reply_language.as_deref());
+        context.usage_recorder = self.usage_recorder.clone();
         if let (Some(bulkhead), Some(retry_budget)) =
             (&self.search_bulkhead, &self.search_retry_budget)
         {

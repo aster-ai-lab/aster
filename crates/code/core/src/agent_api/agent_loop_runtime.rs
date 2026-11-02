@@ -244,6 +244,7 @@ fn assemble_pinned_agent_loop(
         inputs.middleware,
         inputs.queue,
     )
+    .with_usage_recorder(inputs.usage_recorder)
 }
 
 /// Inputs for the one synchronous assembly implementation. None owns a Session
@@ -254,6 +255,7 @@ struct LoopAssemblyInputs {
     tool_context: crate::tools::ToolContext,
     model_admission: crate::llm::ModelGenerationAdmission,
     middleware: Arc<crate::agent::ModelMiddlewareObs>,
+    usage_recorder: crate::agent::UsageRecorder,
     queue: Option<Arc<crate::session_lane_queue::SessionLaneQueue>>,
     external_hooks: Option<Arc<dyn HookExecutor>>,
     mcp_managers: Vec<Arc<crate::mcp::McpManager>>,
@@ -270,6 +272,7 @@ impl LoopAssemblyInputs {
             tool_context: session.tool_context.clone(),
             model_admission: session.model_generation_admission.clone(),
             middleware: Arc::clone(&session.middleware_obs),
+            usage_recorder: session_usage_recorder(session),
             queue: session.command_queue.clone(),
             external_hooks: session.hook_executor.clone(),
             mcp_managers: session.mcp_managers.clone(),
@@ -1090,6 +1093,11 @@ fn apply_non_budget_runtime_overrides(
     }
 }
 
+fn session_usage_recorder(session: &AgentSession) -> crate::agent::UsageRecorder {
+    let state = Arc::clone(&session.persistence_state);
+    Arc::new(move |usage| crate::error::write_or_recover(&state).record_usage(usage))
+}
+
 fn finish_agent_loop(
     session: &AgentSession,
     tool_executor: Arc<crate::tools::ToolExecutor>,
@@ -1104,6 +1112,7 @@ fn finish_agent_loop(
         Arc::clone(&session.middleware_obs),
         session.command_queue.clone(),
     )
+    .with_usage_recorder(session_usage_recorder(session))
 }
 
 fn finish_agent_loop_from_inputs(

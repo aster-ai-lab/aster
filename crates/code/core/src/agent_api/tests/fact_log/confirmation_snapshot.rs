@@ -6,6 +6,116 @@ use serde_json::{json, Value};
 use std::sync::atomic::AtomicBool;
 use tokio::sync::oneshot;
 
+#[tokio::test]
+async fn confirmed_usage_is_saved_before_waiting_for_host_input() {
+    use crate::store::{FileSessionStore, SessionStore};
+
+    for question in [false, true] {
+        let workspace = tempfile::tempdir().unwrap();
+        let storage = tempfile::tempdir().unwrap();
+        let store = Arc::new(FileSessionStore::new(storage.path()).await.unwrap());
+        let mut config = test_config();
+        config.memory = Some(crate::memory::MemoryConfig {
+            llm_extraction: false,
+            ..Default::default()
+        });
+        let agent = crate::Agent::from_config(config).await.unwrap();
+        let mut response = if question {
+            tool_response(
+                "pending-question",
+                "ask_user",
+                json!({
+                    "question":"Continue?", "allow_free_text":true,
+                }),
+            )
+        } else {
+            tool_response(
+                "pending-write",
+                "write",
+                json!({
+                    "file_path":"not-approved.txt", "content":"must not be written",
+                }),
+            )
+        };
+        response.usage = TokenUsage {
+            prompt_tokens: 13,
+            completion_tokens: 6,
+            total_tokens: 19,
+            cache_read_tokens: Some(8),
+            ..Default::default()
+        };
+        let client = Arc::new(ScriptedClient {
+            seen: Default::default(),
+            responses: std::sync::Mutex::new(vec![response, text_response("unused")]),
+        });
+        let (broadcast, _) = tokio::sync::broadcast::channel(8);
+        let session = agent
+            .build_session(
+                workspace.path().to_string_lossy().into_owned(),
+                client.clone(),
+                &crate::SessionOptions::new()
+                    .with_session_id("pending-input-usage")
+                    .with_session_store(store.clone())
+                    .with_auto_save(true)
+                    .with_confirmation_manager(Arc::new(crate::hitl::ConfirmationManager::new(
+                        ConfirmationPolicy::enabled(),
+                        broadcast,
+                    )))
+                    .with_permission_policy(crate::permissions::PermissionPolicy::new())
+                    .with_planning_mode(crate::PlanningMode::Disabled)
+                    .with_auto_delegation_enabled(false)
+                    .with_manual_delegation_enabled(false)
+                    .with_continuation(false),
+            )
+            .unwrap();
+        let (mut events, worker) = session
+            .stream("Run the controlled host input probe", None)
+            .await
+            .unwrap();
+        let presented = tokio::time::timeout(std::time::Duration::from_secs(10), async {
+            while let Some(event) = events.recv().await {
+                if matches!(
+                    (question, event),
+                    (true, crate::agent::AgentEvent::UserQuestion { .. })
+                        | (false, crate::agent::AgentEvent::ConfirmationRequired { .. })
+                ) {
+                    return true;
+                }
+            }
+            false
+        })
+        .await
+        .unwrap_or(false);
+        let live = session.recorded_usage_tokens().2;
+        let reopened = FileSessionStore::new(storage.path()).await.unwrap();
+        let saved_before_answer = reopened.load_snapshot("pending-input-usage").await.unwrap();
+        let drain = tokio::spawn(async move { while events.recv().await.is_some() {} });
+        let cancelled = session.cancel().await;
+        tokio::time::timeout(std::time::Duration::from_secs(10), worker)
+            .await
+            .unwrap()
+            .unwrap();
+        tokio::time::timeout(std::time::Duration::from_secs(10), drain)
+            .await
+            .unwrap()
+            .unwrap();
+        session.close().await;
+        agent.close().await;
+
+        assert!(presented && cancelled, "question={question}");
+        assert_eq!(client.seen.lock().unwrap().len(), 1);
+        assert_eq!(live, 19);
+        assert!(!workspace.path().join("not-approved.txt").exists());
+        let saved = saved_before_answer
+            .expect("host input must not appear before its confirmed usage is saved");
+        assert_eq!(
+            saved.session.total_usage.total_tokens, 19,
+            "question={question}"
+        );
+        assert_eq!(saved.session.total_usage.cache_read_tokens, Some(8));
+    }
+}
+
 #[derive(Clone)]
 struct SnapshotConfirmation {
     enabled: Arc<AtomicBool>,

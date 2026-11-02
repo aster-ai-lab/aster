@@ -221,14 +221,22 @@ async fn test_resume_session() {
 
 #[tokio::test]
 async fn test_session_snapshots_accumulate_completed_run_usage() {
+    let root = tempfile::tempdir().unwrap();
     let store = Arc::new(crate::store::MemorySessionStore::new());
-    let agent = Agent::from_config(test_config()).await.unwrap();
+    let mut config = test_config();
+    config.memory = Some(crate::memory::MemoryConfig {
+        llm_extraction: false,
+        prune_policy: None,
+        ..Default::default()
+    });
+    let agent = Agent::from_config(config).await.unwrap();
     let opts = SessionOptions::new()
         .with_session_store(store.clone())
-        .with_session_id("usage-snapshot-test");
+        .with_session_id("usage-snapshot-test")
+        .with_planning_mode(crate::PlanningMode::Disabled);
     let session = agent
         .build_session(
-            "/tmp/test-usage-snapshot".into(),
+            root.path().display().to_string(),
             Arc::new(StaticStreamingClient::new("done")),
             &opts,
         )
@@ -255,6 +263,8 @@ async fn test_session_snapshots_accumulate_completed_run_usage() {
     assert_eq!(second.session.total_usage.completion_tokens, 2);
     assert_eq!(second.session.total_usage.total_tokens, 4);
     assert_eq!(second.session.created_at, first.session.created_at);
+    session.close().await;
+    agent.close().await;
 }
 
 #[tokio::test]
@@ -986,4 +996,64 @@ async fn test_file_session_store_persistence() {
     );
     let data = store2.load("file-persist").await.unwrap().unwrap();
     assert_eq!(data.messages.len(), 1);
+}
+
+#[tokio::test]
+async fn failed_verification_auto_saves_all_reported_model_usage() {
+    let workspace = tempfile::tempdir().unwrap();
+    let store_dir = tempfile::tempdir().unwrap();
+    let store = Arc::new(
+        crate::store::FileSessionStore::new(store_dir.path())
+            .await
+            .unwrap(),
+    );
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            workspace.path().to_str().unwrap().to_owned(),
+            Arc::new(ScriptedStreamingClient::new(vec![
+                scripted_tool_call_response(
+                    "write-without-proof",
+                    "write",
+                    serde_json::json!({
+                        "file_path": "result.txt", "content": "written without verification"
+                    }),
+                ),
+                scripted_text_response("The file was written."),
+            ])),
+            &SessionOptions::new()
+                .with_session_id("failed-usage")
+                .with_session_store(store)
+                .with_auto_save(true)
+                .with_planning_mode(crate::prompts::PlanningMode::Disabled)
+                .with_auto_delegation_enabled(false)
+                .with_manual_delegation_enabled(false)
+                .with_permission_policy(
+                    crate::permissions::PermissionPolicy::new().allow("write(*)"),
+                ),
+        )
+        .unwrap();
+    let updates = session.subscribe_usage();
+    let result = session.send("Write result.txt, then report.", None).await;
+    assert!(
+        result.is_err(),
+        "an unverified write must still fail the completion gate"
+    );
+    assert_eq!(
+        std::fs::read_to_string(workspace.path().join("result.txt")).unwrap(),
+        "written without verification"
+    );
+    assert_eq!(updates.borrow().total_tokens, 4);
+    let reopened = crate::store::FileSessionStore::new(store_dir.path())
+        .await
+        .unwrap();
+    let snapshot = reopened.load_snapshot(session.id()).await.unwrap().unwrap();
+    assert_eq!(snapshot.session.total_usage.total_tokens, 4);
+    assert!(!crate::fact_control::read_workspace_facts(
+        workspace.path(),
+        &crate::fact_control::thread_for_session(session.id()),
+    )
+    .unwrap()
+    .iter()
+    .any(|fact| fact.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND));
 }

@@ -112,6 +112,7 @@ impl crate::agent::TurnEngine {
             model_generation_admission,
             shared_model_generation_admission: false,
             middleware_obs: ModelMiddlewareObs::shared(),
+            usage_recorder: tool_context.usage_recorder.clone(),
             tool_executor,
             tool_context,
             config,
@@ -160,6 +161,12 @@ impl crate::agent::TurnEngine {
         middleware_obs: Arc<ModelMiddlewareObs>,
     ) -> Self {
         self.middleware_obs = middleware_obs;
+        self
+    }
+
+    pub(crate) fn with_usage_recorder(mut self, recorder: super::UsageRecorder) -> Self {
+        self.tool_context.usage_recorder = Some(recorder.clone());
+        self.usage_recorder = Some(recorder);
         self
     }
 

@@ -588,6 +588,10 @@ impl AgentSession {
 
     /// Provider token totals already accumulated for this session.
     ///
+    /// Includes successful reported main, planning, compaction, memory and
+    /// delegated calls. Run-local usage remains separate. Restored totals are
+    /// taken from the last saved session snapshot.
+    ///
     /// `(prompt, completion, total)`.
     pub fn recorded_usage_tokens(&self) -> (u64, u64, u64) {
         let usage = SessionView::from_session(self).recorded_token_usage();

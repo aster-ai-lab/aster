@@ -15,6 +15,8 @@ use tokio::sync::Mutex;
 use tokio::sync::{broadcast, mpsc};
 use tokio_util::sync::CancellationToken;
 
+pub(crate) type UsageRecorder = Arc<dyn Fn(&crate::llm::TokenUsage) + Send + Sync>;
+
 /// Governance resources snapshotted when a run starts.
 ///
 /// Runtime overrides are resolved before this value is created. Keeping the
@@ -65,6 +67,7 @@ pub(crate) struct InvocationContext {
     agent_event_tx: Option<broadcast::Sender<AgentEvent>>,
     agent_event_barrier: Option<AgentEventBarrier>,
     governance: InvocationGovernance,
+    usage_recorder: Option<UsageRecorder>,
     run_control: Option<Arc<crate::run_control::RunControlInbox>>,
     model_evidence: Option<ModelEvidenceState>,
     memory_context_sequence: Arc<AtomicU64>,
@@ -92,12 +95,19 @@ pub(crate) struct FactInvocationView {
     session_id: Arc<str>,
     cancellation: CancellationToken,
     budget_guard: Option<Arc<dyn BudgetGuard>>,
+    usage_recorder: Option<UsageRecorder>,
     lineage: Arc<AtomicU64>,
     call_sequence: Arc<AtomicU64>,
     source: RunCapabilityEvidenceSource,
 }
 
 impl FactInvocationView {
+    pub(super) fn record_usage(&self, usage: &crate::llm::TokenUsage) {
+        if let Some(recorder) = &self.usage_recorder {
+            recorder(usage);
+        }
+    }
+
     pub(super) fn session_id(&self) -> &str {
         &self.session_id
     }
@@ -181,6 +191,12 @@ impl std::fmt::Debug for InvocationContext {
 }
 
 impl InvocationContext {
+    pub(super) fn record_usage(&self, usage: &crate::llm::TokenUsage) {
+        if let Some(recorder) = &self.usage_recorder {
+            recorder(usage);
+        }
+    }
+
     pub(crate) fn new(
         run_id: impl Into<Arc<str>>,
         session_id: impl Into<Arc<str>>,
@@ -202,6 +218,7 @@ impl InvocationContext {
             agent_event_tx: None,
             agent_event_barrier: None,
             governance,
+            usage_recorder: None,
             run_control: None,
             model_evidence: None,
             memory_context_sequence: Arc::new(AtomicU64::new(0)),
@@ -318,6 +335,7 @@ impl InvocationContext {
             session_id: Arc::clone(&self.session_id),
             cancellation: self.cancellation.clone(),
             budget_guard: self.governance.budget_guard.clone(),
+            usage_recorder: self.usage_recorder.clone(),
             lineage: Arc::clone(&self.memory_context_sequence),
             call_sequence: Arc::clone(&state.call_sequence),
             source: state.source.freeze_for_fact_attempt(),
@@ -390,6 +408,7 @@ impl InvocationContext {
     /// Install run identity and cancellation into a tool context before any
     /// direct, queued, nested, or delegated tool invocation begins.
     pub(crate) fn bind_tool_context(&self, mut context: ToolContext) -> ToolContext {
+        context.usage_recorder = self.usage_recorder.clone();
         if !self.session_id.is_empty() {
             context = context.with_session_id(self.session_id.to_string());
         }
@@ -446,14 +465,16 @@ impl crate::agent::TurnEngine {
             governance.permission_checker.as_ref(),
             governance.confirmation_manager.is_some(),
         );
-        InvocationContext::new(
+        let mut invocation = InvocationContext::new(
             run_id,
             Arc::<str>::from(session_id.unwrap_or("")),
             cancellation,
             event_tx,
             governance,
         )
-        .with_model_evidence(evidence)
+        .with_model_evidence(evidence);
+        invocation.usage_recorder = self.usage_recorder.clone();
+        invocation
     }
 }
 

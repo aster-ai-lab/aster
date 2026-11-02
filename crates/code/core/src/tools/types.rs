@@ -275,6 +275,7 @@ pub struct ToolContext {
     pub(crate) tool_invoker: Option<Arc<dyn super::invocation::ToolInvoker>>,
     /// Per-run governed LLM facade for tools that perform model sub-calls.
     pub(crate) llm_client: Option<Arc<dyn crate::llm::LlmClient>>,
+    pub(crate) usage_recorder: Option<crate::agent::UsageRecorder>,
     /// Shared active-generation gate for this agent/session runtime.
     pub(crate) model_generation_admission: Option<crate::llm::ModelGenerationAdmission>,
     /// Optional capacity already acquired by an outer model-generation step.
@@ -433,6 +434,7 @@ impl ToolContext {
             run_work_policy: None,
             tool_invoker: None,
             llm_client: None,
+            usage_recorder: None,
             model_generation_admission: None,
             model_generation_permit: None,
             host_direct_policy: None,

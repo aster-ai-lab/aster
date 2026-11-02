@@ -140,6 +140,19 @@ pub(super) async fn emit_interactive_host_event(
     surface: &crate::fact_control::SessionSurface,
     event: AgentEvent,
 ) {
+    // A host can wait indefinitely for input after the confirmed generation.
+    if matches!(
+        &event,
+        AgentEvent::ConfirmationRequired { .. } | AgentEvent::UserQuestion { .. }
+    ) {
+        if let Some(persistence) = surface
+            .persistence
+            .as_ref()
+            .filter(|persistence| persistence.has_unsaved_usage())
+        {
+            persistence.auto_save_if_enabled().await;
+        }
+    }
     if let AgentEvent::TaskUpdated { tasks, .. } = &event {
         if let Some(persistence) = &surface.persistence {
             persistence.replace_tasks(tasks.clone());

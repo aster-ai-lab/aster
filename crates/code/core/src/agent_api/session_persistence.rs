@@ -208,12 +208,23 @@ impl SessionPersistenceContext {
         *write_or_recover(&self.history) = messages;
     }
 
-    pub(super) fn record_usage(&self, usage: &crate::llm::TokenUsage) {
-        write_or_recover(&self.persistence_state).record_usage(usage);
-    }
-
     pub(crate) fn replace_tasks(&self, tasks: Vec<crate::planning::Task>) {
         write_or_recover(&self.persistence_state).replace_tasks(tasks);
+    }
+
+    pub(super) fn has_unsaved_usage(&self) -> bool {
+        let state = read_or_recover(&self.persistence_state);
+        let saved = state
+            .baseline
+            .as_ref()
+            .map(|baseline| baseline.total_usage.clone())
+            .unwrap_or_default();
+        let current = &state.total_usage;
+        current.prompt_tokens != saved.prompt_tokens
+            || current.completion_tokens != saved.completion_tokens
+            || current.total_tokens != saved.total_tokens
+            || current.cache_read_tokens != saved.cache_read_tokens
+            || current.cache_write_tokens != saved.cache_write_tokens
     }
 
     pub(crate) async fn save(&self) -> Result<()> {

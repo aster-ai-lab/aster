@@ -446,6 +446,7 @@ impl PreparedFactModelCall {
     ) -> anyhow::Result<FactModelCallOutcome> {
         // The caller retained the winning actual Ok/Done and synchronously
         // marked Required before entering this callback future.
+        self.view.record_usage(&response.usage);
         record_after_llm(
             self.view.budget_guard(),
             self.view.session_id(),

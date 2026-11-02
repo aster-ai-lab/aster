@@ -526,9 +526,6 @@ impl RuntimeEventSink {
 
     async fn apply(&self, event: &AgentEvent) {
         match event {
-            AgentEvent::End { usage, .. } => {
-                crate::error::write_or_recover(&self.persistence_state).record_usage(usage);
-            }
             AgentEvent::TaskUpdated { tasks, .. } => {
                 crate::error::write_or_recover(&self.persistence_state)
                     .replace_tasks(tasks.clone());

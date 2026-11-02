@@ -542,6 +542,7 @@ impl LlmInvoker {
             response = invocation => response?,
         };
         let _ = ModelMiddlewareStage::UsageAccounting;
+        self.invocation.record_usage(&response.usage);
         record_after_llm(
             self.invocation.governance().budget_guard(),
             self.invocation.session_id(),
@@ -766,6 +767,7 @@ impl LlmInvoker {
                     break;
                 };
                 if let StreamEvent::Done(response) = &event {
+                    invocation.record_usage(&response.usage);
                     record_after_llm(budget_guard.as_ref(), &session_id, &response.usage).await;
                     match record_model_usage(
                         &invocation,
