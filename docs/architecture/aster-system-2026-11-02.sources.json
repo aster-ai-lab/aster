@@ -249,21 +249,22 @@
       3840,
       3480
     ],
-    "raster_visual_review": "passed after correcting covered ingress arrows, replay route and long completion text",
-    "playwright_geometry": "unavailable: required Chromium executable is not installed; no download performed"
+    "raster_visual_review": "Passed after wording revision: labels, arrows and clipping checked in the regenerated PNG.",
+    "playwright_geometry": "unavailable: required Chromium executable is not installed; no download performed",
+    "wording_review": "Replaced abstract labels with concrete descriptions; original source snapshot retained."
   },
   "artifacts": [
     {
       "path": "docs/architecture/aster-system-2026-11-02.svg",
-      "sha256": "721e1bf13e3d06643b97d1e6f709f3c434d4e411abab8cd23eabc03c80d13004"
+      "sha256": "3cf1e4ee305d7d6ae681a74b0107f44fc784cff68826ec59ca559d84f28a3c86"
     },
     {
       "path": "docs/architecture/aster-system-2026-11-02.png",
-      "sha256": "6c2a960137081399a8cfb68a7723db6664e2eb6ae21b84a30cc51f171c4971d9"
+      "sha256": "054ba7f3475615701ff34f28bbe80f001b5f350f570ce30fbb3af2a62e420530"
     },
     {
       "path": "docs/architecture/aster-system-2026-11-02.md",
-      "sha256": "a90b4e14118cafdb61663446d774b43630bba7053d470ef5861a40255b5e3dea"
+      "sha256": "276dc9c8d131bb4dde072d914f43bad8f14520df57df085156a1bdc859cf263d"
     }
   ]
 }
