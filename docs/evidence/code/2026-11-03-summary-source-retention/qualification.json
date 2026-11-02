@@ -1,5 +1,5 @@
 {
-  "status": "Under-budget source-retention fix qualified; frozen original GLM cohort newly started; overall objective active",
+  "status": "REJECTED: candidate failed original Holdout at 600s; source expansion withdrawn; frozen Feed continues once for complete evidence",
   "host": {
     "os": "Darwin",
     "release": "25.6.0",
@@ -527,13 +527,28 @@
   },
   "real_glm": {
     "label": "summary-source-retention-1",
-    "state": "RUNNING",
+    "state": "HOLDOUT_FAILED_FEED_RUNNING",
     "model": "glm-01/glm-5.3",
     "attempts_per_case": 1,
     "baseline": "stream-preview-1",
     "accepted_speed_gain_percent": null,
     "accepted_token_gain_percent": null,
-    "supplementary": "NOT RUN; both originals must pass first"
+    "supplementary": "NOT RUN; both originals must pass first",
+    "holdout": {
+      "pass": false,
+      "task_seconds": 600.102,
+      "process_seconds": 614.778470083,
+      "completed_reads": 5,
+      "compactions": 11,
+      "requests": 40,
+      "known_usage_responses": 39,
+      "unknown_usage_responses": 1,
+      "known_tokens": 705718,
+      "full_native_tokens": null,
+      "prompt_error": "prompt_timeout",
+      "artifact_correct": false,
+      "tools_terminal": true
+    }
   },
   "last_real_cohort": {
     "source_commit": "fbd6e78d86ba4770f9ef0de6bd6da77bceac6918",
@@ -550,5 +565,45 @@
     "Recovery from truncated summaries or all arithmetic mistakes",
     "Original seven supplementary or TUI end-to-end acceptance",
     "Current installed TUI update, Release or Windows/Linux native qualification"
-  ]
+  ],
+  "tui_startup": {
+    "status": "passed",
+    "scenario_count": 1,
+    "step_count": 11,
+    "snapshots": [
+      {
+        "id": "full-welcome",
+        "rows": 40,
+        "columns": 120,
+        "process_running": true,
+        "output_truncated": false
+      },
+      {
+        "id": "small-snapshot",
+        "rows": 20,
+        "columns": 60,
+        "process_running": true,
+        "output_truncated": false
+      },
+      {
+        "id": "standard-snapshot",
+        "rows": 24,
+        "columns": 80,
+        "process_running": true,
+        "output_truncated": false
+      }
+    ],
+    "process_seconds": 5.467345,
+    "scenario_ms": 5460,
+    "cleanup_error": null,
+    "baseline": null,
+    "delta_percent": null,
+    "model_requests": 0
+  },
+  "candidate_commit": "393aa8c3b8076b3abe6aa8e6f17c2c4c87d54c65",
+  "reversion": {
+    "of_commit": "393aa8c3b8076b3abe6aa8e6f17c2c4c87d54c65",
+    "restored_source_from": "75dba989d5afb6e41bcaed44ca971cfb4fefa868",
+    "reason": "No accepted completion or resource benefit; original Holdout timed out with materially higher known spend. Single-attempt observations do not isolate causal effects."
+  }
 }
