@@ -841,7 +841,13 @@ async fn resume_session_async_inner(
     bail_if_agent_closed(agent)?;
     let reservation = reserve_session(agent, session_id)?;
 
-    let session = build_resumed_session(agent, session_id, options, workspace_override).await?;
+    let session = Box::pin(build_resumed_session(
+        agent,
+        session_id,
+        options,
+        workspace_override,
+    ))
+    .await?;
     if let Err(error) = reservation.finalize(&session.close_handle) {
         session.close().await;
         return Err(error);
@@ -871,7 +877,7 @@ pub(super) async fn replace_session_async(
         .save()
         .await?;
     let options = options.with_session_id(&session_id);
-    let replacement = build_resumed_session(agent, &session_id, options, None).await?;
+    let replacement = Box::pin(build_resumed_session(agent, &session_id, options, None)).await?;
     if let Err(error) = reservation.finalize(&replacement.close_handle).await {
         replacement.close().await;
         return Err(error);
@@ -879,6 +885,7 @@ pub(super) async fn replace_session_async(
     Ok(replacement)
 }
 
+// Callers box this pipeline to bound the stack used by composed resume futures.
 async fn build_resumed_session(
     agent: &Agent,
     session_id: &str,
