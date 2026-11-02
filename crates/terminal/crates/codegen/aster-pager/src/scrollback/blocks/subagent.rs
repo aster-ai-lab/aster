@@ -304,6 +304,7 @@ impl BlockContent for SubagentBlock {
     }
 
     fn is_groupable(&self) -> bool {
-        true
+        // Background terminal rows are notifications independent of the parent's turn.
+        !self.is_background || matches!(self.kind, SubagentBlockKind::Started)
     }
 }

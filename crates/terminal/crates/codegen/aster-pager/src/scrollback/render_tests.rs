@@ -858,6 +858,56 @@ fn rendered_verb_group_folds_subagent_row_and_expansion_keeps_activity() {
     );
 }
 
+#[test]
+fn background_terminal_notifications_remain_visible_across_tool_folds() {
+    use crate::scrollback::blocks::SubagentBlock;
+    use std::time::Duration;
+
+    for group_verbs in [true, false] {
+        crate::appearance::cache::set_group_tool_verbs(group_verbs);
+        for (block, status) in [
+            (
+                SubagentBlock::completed("task", "child", Duration::from_secs(3)),
+                "completed in",
+            ),
+            (
+                SubagentBlock::cancelled("task", "child", Duration::from_secs(3)),
+                "cancelled in",
+            ),
+            (
+                SubagentBlock::failed(
+                    "task",
+                    "child",
+                    Duration::from_secs(3),
+                    Some("fixture failure".into()),
+                ),
+                "failed in",
+            ),
+        ] {
+            let mut state = crate::scrollback::ScrollbackState::new();
+            state.push_block(RenderBlock::agent_message("parent response"));
+            for i in 0..8 {
+                state.push_block(RenderBlock::read(format!("before-{i}"), None));
+            }
+            state.push_block(RenderBlock::Subagent(block));
+            for i in 0..8 {
+                state.push_block(RenderBlock::read(format!("after-{i}"), None));
+            }
+            let viewport = Rect::new(0, 0, 100, 40);
+            state.prepare_layout(viewport.width, viewport.height);
+            let buffer = render_state(&state, viewport, true).0;
+            let text = (0..viewport.height)
+                .map(|y| buffer_row_text(&buffer, y))
+                .collect::<Vec<_>>()
+                .join("\n");
+            assert!(
+                text.contains(&format!("Subagent {status}")),
+                "group_verbs={group_verbs}: {text}"
+            );
+        }
+    }
+}
+
 /// Render a prepared state, feeding the fold's spans when `with_spans`.
 /// Returns the frame buffer plus the full render result (selection model included).
 /// The span-less path is what harnesses exercise and must keep the legacy plain-count header text.

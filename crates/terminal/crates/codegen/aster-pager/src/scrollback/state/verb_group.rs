@@ -12,7 +12,7 @@
 use ratatui::style::Modifier;
 use ratatui::text::{Line, Span};
 
-use crate::scrollback::block::RenderBlock;
+use crate::scrollback::block::{BlockContent, RenderBlock};
 use crate::scrollback::blocks::SubagentBlockKind;
 use crate::scrollback::blocks::tool::{ToolCallBlock, VerbGroupKind};
 use crate::scrollback::entry::ScrollbackEntry;
@@ -50,8 +50,11 @@ pub(crate) fn run_step(entry: &ScrollbackEntry, show_thinking: bool) -> RunStep 
             // Toggling a member of an expanded group therefore never dissolves the group
             RunStep::Transparent
         }
-    } else if matches!(entry.block, RenderBlock::Subagent(_)) {
-        if entry.display_mode == DisplayMode::Collapsed && !entry.is_pending_user_input {
+    } else if let RenderBlock::Subagent(block) = &entry.block {
+        if block.is_groupable()
+            && entry.display_mode == DisplayMode::Collapsed
+            && !entry.is_pending_user_input
+        {
             RunStep::Member(VerbGroupKind::Subagent)
         } else {
             // Subagent rows are always collapsed single-row entries; prompt chrome keeps them standalone and breaks the run
@@ -401,13 +404,14 @@ mod tests {
         entry(ToolCallBlock::Read(ReadToolCallBlock::new(path)))
     }
 
-    fn subagent(block: SubagentBlock) -> ScrollbackEntry {
+    fn subagent(mut block: SubagentBlock) -> ScrollbackEntry {
+        block.is_background = false;
         ScrollbackEntry::new(RenderBlock::Subagent(block))
     }
 
     fn sub_started(child_sid: &str) -> ScrollbackEntry {
         subagent(SubagentBlock::started(
-            "task", child_sid, "explore", None, None, None, /*is_background=*/ true,
+            "task", child_sid, "explore", None, None, None, /*is_background=*/ false,
         ))
     }
 
@@ -682,8 +686,7 @@ mod tests {
 
     #[test]
     fn subagent_rows_bucket_with_tools_and_count_distinct_subagents() {
-        // A background subagent leaves both its started row and a terminal row in the run
-        // The child-session-id source override collapses them to one displayed subagent
+        // Multiple lifecycle rows for one child still count as one child.
         let entries = vec![
             read("a.rs"),
             sub_started("child-A"),
