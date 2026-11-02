@@ -113,7 +113,7 @@ H3 是 2026-10-04 那次 `Turn failed in 18m57s` 的回归：审查期间并行�
 | P6 | 启动 | pty | `launch_once(false)`，测试 `shipped_tui_launch_resume_and_visible_commands` | 首帧非空，且含 ACL 模型 id |
 | P7 | 恢复 / 继续 | pty | 同测试的 `launch_once(true)` 与 `launch_continued` | `--continue` 的会话 id 等于第一次的 id。旁边发现代理、不设 `ASTER_ACP_AGENT_BIN` 时同样相等。oracle 名 `continue-same-session`、`continue-without-agent-env` |
 | P8 | 可见命令面板 | pty | 同测试，`palette_offers` 对照 `FULLSCREEN_PALETTE` | 面板上有 `yolo`，描述含 `skip all permission prompts`。隐藏名不在面板上 |
-| P9 | 只有 xAI key 时模型字段保持 ACL 默认 | pty | `shipped_tui_xai_key_keeps_acl_model` | 信息行模型字段等于 `acl_default_model(config)`。环境里凭证只有 `XAI_API_KEY`。home 下没有 `cc-switch.db` |
+| P9 | 只有 xAI key 时模型字段保持 ACL 默认 | pty | `shipped_tui_xai_key_keeps_acl_model` | 信息行模型字段等于 `acl_default_model(config)`。环境里凭证只有 `XAI_API_KEY`，没有本地账号导入授权 |
 
 ### 4.5 留在外部资格、不进入上面四层
 

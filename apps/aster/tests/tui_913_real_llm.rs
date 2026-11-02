@@ -643,7 +643,6 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
             "ASTER_CONFIG".to_string(),
             launch_config.display().to_string(),
         ),
-        ("ASTER_DISABLE_CC_SWITCH".to_string(), "1".into()),
         ("ASTER_DISABLE_GROK_ACCOUNT".to_string(), "1".into()),
         ("ASTER_DISABLE_CURSOR_ACCOUNT".to_string(), "1".into()),
         ("HOME".to_string(), home.display().to_string()),

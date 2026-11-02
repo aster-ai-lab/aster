@@ -31,7 +31,7 @@ cargo build --locked -p aster -p aster-acp --features aster-acp/headless-search
 | `--model` / `-m` | 选择已配置的 provider/model；未知值应拒绝 |
 | `--reasoning-effort LEVEL` | 选择支持的推理强度，不能发明新枚举值 |
 | `--plugin-store DIR` | 原生启动器拥有的插件存储位置 |
-| `--import-accounts LIST` | 显式选择 cc-switch、grok、cursor、codex 账号导入适配器 |
+| `--import-accounts LIST` | 显式选择 grok、cursor、codex 账号导入适配器 |
 | `--list-workspace-mcp` | 列出项目声明及信任状态，不启动未信任命令 |
 | `--trust-workspace-mcp ID` | 对核对过的声明明确授权；all 只在确实全部可信时使用 |
 | `--unattended` | 启用无人在端的运行策略，见无人值守章节 |
@@ -42,6 +42,8 @@ cargo build --locked -p aster -p aster-acp --features aster-acp/headless-search
 | `--version` / `-V`、`--help` / `-h` | 查看包版本和用法 |
 
 参数缺值、未知参数和无效枚举会返回错误。不要用忽略参数的包装脚本掩盖客户端与代理版本不匹配。
+
+CC Switch 账号导入已退役。升级前请从 `import_accounts` 或 `--import-accounts` 中移除 `cc-switch`；已有用户配置和会话不会被自动删除。
 
 ## 配置分层和凭据
 

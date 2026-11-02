@@ -76,7 +76,7 @@ try:
             config = home / '.aster/config.acl'
             config.parent.mkdir()
             config.write_text(f'providers "mock" {{\n base_url = "http://127.0.0.1:{server.server_port}/v1"\n api_key = "issue2-fixture-not-real"\n models "gpt" {{\n }}\n}}\ndefault_model = "mock/gpt"\n')
-            environment = {'HOME': str(home), 'GROK_HOME': str(home / 'grok'), 'XDG_CONFIG_HOME': str(home / 'config'), 'XDG_CACHE_HOME': str(home / 'cache'), 'XDG_DATA_HOME': str(home / 'data'), 'XDG_STATE_HOME': str(home / 'state'), 'ASTER_CONFIG': str(config), 'ASTER_ACP_AGENT_BIN': str(args.binaries.resolve() / 'aster-acp'), 'ASTER_DISABLE_CC_SWITCH': '1', 'ASTER_DISABLE_GROK_ACCOUNT': '1', 'ASTER_DISABLE_CURSOR_ACCOUNT': '1', 'PATH': '/usr/bin:/bin:/usr/sbin:/opt/homebrew/bin', 'TERM': 'dumb', 'LANG': 'en_US.UTF-8', 'RUST_LOG': 'warn'}
+            environment = {'HOME': str(home), 'GROK_HOME': str(home / 'grok'), 'XDG_CONFIG_HOME': str(home / 'config'), 'XDG_CACHE_HOME': str(home / 'cache'), 'XDG_DATA_HOME': str(home / 'data'), 'XDG_STATE_HOME': str(home / 'state'), 'ASTER_CONFIG': str(config), 'ASTER_ACP_AGENT_BIN': str(args.binaries.resolve() / 'aster-acp'), 'ASTER_DISABLE_GROK_ACCOUNT': '1', 'ASTER_DISABLE_CURSOR_ACCOUNT': '1', 'PATH': '/usr/bin:/bin:/usr/sbin:/opt/homebrew/bin', 'TERM': 'dumb', 'LANG': 'en_US.UTF-8', 'RUST_LOG': 'warn'}
             if api_key:
                 environment['ASTER_API_KEY'] = 'issue2-fixture-not-real'
             command = [str(args.binaries.resolve() / 'aster'), '-p', 'Return ' + marker, '--cwd', str(workspace), '--output-format', 'json']

@@ -89,7 +89,7 @@ def main():
                        ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay),
                        ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'),
                        ASTER_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'),
-                       ASTER_DISABLE_CC_SWITCH='1', ASTER_DISABLE_GROK_ACCOUNT='1',
+                       ASTER_DISABLE_GROK_ACCOUNT='1',
                        ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color')
             env.pop('ASTER_LH_CANDIDATE_MANIFEST', None)
             checked = subprocess.run(['aster-test', 'check', str(suite), '--json'],

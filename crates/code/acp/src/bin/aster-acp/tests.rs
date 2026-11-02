@@ -151,3 +151,16 @@ fn account_imports_are_off_unless_named_from_the_closed_set() {
     assert!(parse(&["--import-accounts", "keychain"]).is_err());
     assert!(parse(&["--import-accounts", ""]).is_err());
 }
+
+#[test]
+fn retired_account_import_is_rejected_before_launch() {
+    assert!(parse(&["--import-accounts", "cc-switch"]).is_err());
+    assert!(parse(&["--import-accounts", "cursor,cc-switch"]).is_err());
+    assert!(parse(&[
+        "--import-accounts",
+        "cursor",
+        "--import-accounts",
+        "cc-switch"
+    ])
+    .is_err());
+}

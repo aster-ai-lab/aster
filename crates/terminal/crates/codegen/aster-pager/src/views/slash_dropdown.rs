@@ -1098,8 +1098,8 @@ mod tests {
         let tabs = vec![
             "anthropic".to_string(),
             "boyue".to_string(),
-            "cc-switch".to_string(),
-            "cc-switch-zhipu-glm-01".to_string(),
+            "codex".to_string(),
+            "company-zhipu-model-01".to_string(),
             "cursor".to_string(),
         ];
         let area = Rect::new(0, 0, 30, 2);
@@ -1118,7 +1118,7 @@ mod tests {
         let row = tab_row(&buf, 30);
         assert!(row.contains("cursor"), "{row}");
         assert!(
-            row.contains("cc-switch-zhipu-glm-01"),
+            row.contains("company-zhipu-model-01"),
             "a tab that fits must keep its full label: {row}"
         );
         assert!(!row.contains('…'), "{row}");

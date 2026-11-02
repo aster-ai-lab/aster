@@ -10,7 +10,6 @@ fn start(workspace: &std::path::Path, home: &std::path::Path) -> (Child, BufRead
         .arg(workspace)
         .env("HOME", home)
         .env("ASTER_LOG_FILE", "0")
-        .env("ASTER_DISABLE_CC_SWITCH", "1")
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env_remove("ASTER_CONFIG")

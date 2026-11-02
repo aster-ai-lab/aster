@@ -250,8 +250,8 @@ fn has_api_host(base_url: &str, expected: &str) -> bool {
 /// Whether this provider/base URL pair speaks Anthropic Messages (`/v1/messages`).
 ///
 /// Selection is by wire contract, not by a host-local provider nickname:
-/// known Anthropic aliases, the CC Switch import prefix, or an Anthropic
-/// Messages base URL (including BigModel's `/api/anthropic` gateway).
+/// known Anthropic aliases or an Anthropic Messages base URL
+/// (including BigModel's `/api/anthropic` gateway).
 pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
     ProviderProtocol::resolve(None, provider, base_url) == ProviderProtocol::Anthropic
 }
@@ -447,9 +447,9 @@ mod protocol_routing_tests {
     }
 
     #[test]
-    fn anthropic_messages_follow_aliases_import_prefix_or_base_url() {
+    fn anthropic_messages_follow_aliases_or_base_url() {
         assert!(uses_anthropic_messages_api("anthropic", None));
-        assert!(uses_anthropic_messages_api("cc-switch-zhipu-glm-01", None));
+        assert!(uses_anthropic_messages_api("claude", None));
         assert!(!uses_anthropic_messages_api("glm-01", None));
         assert!(uses_anthropic_messages_api(
             "glm-01",

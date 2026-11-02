@@ -422,7 +422,6 @@ impl Agent {
             .env("PATH", std::env::var_os("PATH").unwrap_or_default())
             .env("HOME", &home)
             .env("ASTER_STATE_HOME", &state)
-            .env("ASTER_DISABLE_CC_SWITCH", "1")
             .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
             .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .stdin(Stdio::piped())

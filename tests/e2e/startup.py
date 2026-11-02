@@ -13,7 +13,6 @@ with tempfile.TemporaryDirectory(prefix="aster-terminal-") as directory:
         "HOME": directory,
         "GROK_HOME": str(Path(directory) / "grok"),
         "ASTER_CONFIG": str(root / "tests/fixtures/terminal/config.acl"),
-        "ASTER_DISABLE_CC_SWITCH": "1",
         "ASTER_DISABLE_GROK_ACCOUNT": "1",
         "ASTER_DISABLE_CURSOR_ACCOUNT": "1",
         "TERM": "xterm-256color",

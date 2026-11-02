@@ -157,7 +157,7 @@ impl ProviderProtocol {
             return protocol;
         }
         let name = provider_name.trim();
-        if matches!(name, "anthropic" | "claude" | "cc-switch") || name.starts_with("cc-switch-") {
+        if matches!(name, "anthropic" | "claude") {
             return Self::Anthropic;
         }
         if matches!(name, "glm" | "zhipu" | "bigmodel") {

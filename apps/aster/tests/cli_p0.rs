@@ -372,7 +372,6 @@ fn run(isolated: &Isolated, args: &[&str], timeout: Duration) -> Captured {
         .env("GROK_HOME", &isolated.grok_home)
         .env("ASTER_CONFIG", &isolated.config)
         .env("ASTER_RELEASE_BASE", isolated.home.join("release-fixture"))
-        .env("ASTER_DISABLE_CC_SWITCH", "1")
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("GROK_MANAGED_CONFIG", "0")

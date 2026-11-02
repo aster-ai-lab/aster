@@ -66,7 +66,6 @@ fn child_env(command: &mut portable_pty::CommandBuilder, home: &Path, workspace:
     command.env("HOME", home);
     command.env("PATH", "/usr/bin:/bin:/usr/local/bin");
     command.env("TERM", "xterm-256color");
-    command.env("ASTER_DISABLE_CC_SWITCH", "1");
     command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
     command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
     command.cwd(workspace);
@@ -80,7 +79,6 @@ fn shell_env(command: &mut Command, home: &Path) {
     command.env("HOME", home);
     command.env("PATH", "/usr/bin:/bin:/usr/local/bin");
     command.env("TERM", "xterm-256color");
-    command.env("ASTER_DISABLE_CC_SWITCH", "1");
     command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
     command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
     if let Some(tmpdir) = std::env::var_os("TMPDIR") {

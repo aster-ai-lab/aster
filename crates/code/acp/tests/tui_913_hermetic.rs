@@ -741,7 +741,6 @@ fn child_env(config: &Path, home: &Path) -> Vec<(String, String)> {
     vec![
         ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
         ("ASTER_CONFIG".into(), config.display().to_string()),
-        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
         ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
         ("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
         ("HOME".into(), home.display().to_string()),

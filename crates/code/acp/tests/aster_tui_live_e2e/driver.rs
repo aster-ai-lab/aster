@@ -212,7 +212,6 @@ impl LiveTui {
         for (name, value) in &self.fixture_env {
             command.env(name, value);
         }
-        command.env("ASTER_DISABLE_CC_SWITCH", "1");
         command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
         command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
         command.env("TERM", "xterm-256color");

@@ -149,13 +149,7 @@ pub fn model_sends_native_effort(model_id: &str) -> bool {
         None => ("", id.as_str()),
     };
     match provider {
-        name if matches!(
-            name,
-            "anthropic" | "claude" | "cc-switch" | "glm" | "zhipu" | "bigmodel" | "deepseek"
-        ) || name.starts_with("cc-switch-") =>
-        {
-            true
-        }
+        "anthropic" | "claude" | "glm" | "zhipu" | "bigmodel" | "deepseek" => true,
         "openai" | "gpt" | "grok" | "xai" | "codex" => is_openai_reasoning_model(name),
         // Bare or custom-qualified ids still follow the model catalog: a host
         // nickname such as `glm-01/glm-5.3-flash` must not lose GLM effort.

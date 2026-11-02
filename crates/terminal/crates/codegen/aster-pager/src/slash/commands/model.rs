@@ -618,14 +618,14 @@ mod tests {
     #[test]
     fn provider_tabs_appear_only_with_two_or_more_providers() {
         let mut state = ModelState::default();
-        let (a, ai) = plain_model("cc-switch/glm", "cc-switch · glm");
+        let (a, ai) = plain_model("codex/glm", "codex · glm");
         state.available.insert(a, ai);
         assert!(model_provider_tabs(&state).is_empty());
 
         let (b, bi) = plain_model("grok/grok-4.7", "grok · grok-4.7");
         state.available.insert(b.clone(), bi);
         let tabs = model_provider_tabs(&state);
-        assert_eq!(tabs, vec!["cc-switch".to_string(), "grok".to_string()]);
+        assert_eq!(tabs, vec!["codex".to_string(), "grok".to_string()]);
 
         state.current = Some(b);
         assert_eq!(initial_provider_tab(&state, &tabs), 1);

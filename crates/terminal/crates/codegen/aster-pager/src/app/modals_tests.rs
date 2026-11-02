@@ -69,9 +69,9 @@ fn plain_model(id: &str, name: &str) -> (acp::ModelId, acp::ModelInfo) {
 #[test]
 fn model_picker_arrows_switch_provider_and_filter_rows() {
     let mut agent = make_agent();
-    let (cc, cc_info) = plain_model("cc-switch/glm", "cc-switch · glm");
+    let (codex, codex_info) = plain_model("codex/glm", "codex · glm");
     let (grok, grok_info) = plain_model("grok/grok-4", "grok · grok-4");
-    agent.session.models.available.insert(cc, cc_info);
+    agent.session.models.available.insert(codex, codex_info);
     agent
         .session
         .models
@@ -115,8 +115,8 @@ fn model_picker_arrows_switch_provider_and_filter_rows() {
     assert_eq!(window.active_tab, 0);
     assert_eq!(items.len(), 1);
     assert!(
-        items[0].match_text.contains("cc-switch"),
-        "Left from grok wraps to cc-switch, got {:?}",
+        items[0].match_text.contains("codex"),
+        "Left from grok wraps to codex, got {:?}",
         items[0].match_text
     );
 
@@ -136,7 +136,7 @@ fn model_picker_arrows_switch_provider_and_filter_rows() {
 #[test]
 fn model_picker_effort_phase_lists_aster_budget_levels() {
     let mut agent = make_agent();
-    let id = acp::ModelId::new(Arc::from("cc-switch/glm"));
+    let id = acp::ModelId::new(Arc::from("codex/glm"));
     let efforts = ["low", "medium", "high", "xhigh", "max"]
         .into_iter()
         .map(|level| {
@@ -150,7 +150,7 @@ fn model_picker_effort_phase_lists_aster_budget_levels() {
         .collect::<Vec<_>>();
     agent.session.models.available.insert(
         id.clone(),
-        acp::ModelInfo::new(id, "cc-switch · glm").meta(
+        acp::ModelInfo::new(id, "codex · glm").meta(
             serde_json::json!({
                 "supportsReasoningEffort": true,
                 "reasoningEffort": "high",
@@ -178,5 +178,5 @@ fn model_picker_effort_phase_lists_aster_budget_levels() {
     let shown: Vec<&str> = items.iter().map(|item| item.display.as_str()).collect();
     assert_eq!(shown, ["low", "medium", "high", "xhigh", "max"]);
     assert_eq!(state.selected, 2, "high is the advertised default");
-    assert_eq!(items[2].insert_text, "cc-switch · glm high");
+    assert_eq!(items[2].insert_text, "codex · glm high");
 }

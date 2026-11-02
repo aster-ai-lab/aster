@@ -100,7 +100,6 @@ import_accounts = [{import_accounts}]
         ),
         ("ASTER_HOME".to_string(), aster_home.display().to_string()),
         ("ASTER_CONFIG".to_string(), config.display().to_string()),
-        ("ASTER_DISABLE_CC_SWITCH".to_string(), "1".to_string()),
         ("ASTER_DISABLE_GROK_ACCOUNT".to_string(), "1".to_string()),
         ("ASTER_DISABLE_CURSOR_ACCOUNT".to_string(), "1".to_string()),
         ("ASTER_DISABLE_CODEX_ACCOUNT".to_string(), "1".to_string()),
