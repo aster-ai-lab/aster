@@ -808,6 +808,12 @@ pub(super) fn handle_session_notification_with_origin(
             tokens_used,
             ..
         } => {
+            // ACP calls cancelled children `stopped`; pager state uses `cancelled`.
+            let status = if status == "stopped" {
+                "cancelled".to_owned()
+            } else {
+                status
+            };
             tracing::info!(
                 child_session_id = %child_session_id,
                 status = %status,

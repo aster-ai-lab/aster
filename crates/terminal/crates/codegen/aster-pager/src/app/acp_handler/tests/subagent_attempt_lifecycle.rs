@@ -479,6 +479,27 @@
     }
 
     #[test]
+    fn acp_stopped_child_is_cancelled_in_foreground_and_background() {
+        for background in [false, true] {
+            let mut app = make_app_with_agent("sess-parent");
+            let child = "child-acp-stopped";
+            app.agents.get_mut(&AgentId(0)).unwrap().session.tracker.task_tool_background.insert(child.into(), background);
+            assert!(spawn(&mut app, child, "at1.one", 1));
+            let mut update = test_subagent_finished_for_attempt(child, Some("at1.one"));
+            let AsterSessionUpdate::SubagentFinished { status, error, .. } = &mut update else { unreachable!() };
+            *status = "stopped".into();
+            *error = None;
+            assert!(sequenced(&mut app, update, 2));
+            let agent = app.agents.get(&AgentId(0)).unwrap();
+            let info = agent.subagent_sessions.get(child).unwrap();
+            assert_eq!(info.attempt.status.as_deref(), Some("cancelled"));
+            let row = if background { info.attempt.terminal_entry_id } else { info.attempt.scrollback_entry_id }.unwrap();
+            assert!(matches!(&agent.scrollback.get_by_id(row).unwrap().block,
+                RenderBlock::Subagent(block) if matches!(block.kind, SubagentBlockKind::Cancelled { .. })));
+        }
+    }
+
+    #[test]
     fn new_attempt_resets_tool_delta_indexes_and_activity() {
         let mut app = make_app_with_agent("sess-parent");
         let child = "child-tool-deltas";
