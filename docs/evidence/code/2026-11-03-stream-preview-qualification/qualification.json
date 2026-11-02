@@ -1,5 +1,5 @@
 {
-  "status": "Generic fixes qualified; frozen original GLM cohort started once and pending; overall objective remains active",
+  "status": "Generic correctness fixes published; original GLM cohort 0/2, no accepted speed/token gain; overall objective active",
   "host": {
     "os": "Darwin",
     "release": "25.6.0",
@@ -446,13 +446,1081 @@
   },
   "real_glm": {
     "label": "stream-preview-1",
-    "state": "RUNNING",
-    "attempts_per_case": 1,
+    "state": "FINISHED",
+    "passed": 0,
+    "total": 2,
     "model": "glm-01/glm-5.3",
-    "originals_only": true,
-    "speed_gain_percent": null,
-    "token_gain_percent": null,
-    "supplementary": "NOT RUN; requires both originals passing"
+    "attempts_per_case": 1,
+    "cases": [
+      {
+        "case": "holdout",
+        "pass": false,
+        "task_seconds": 227.986,
+        "process_seconds": 242.989726125,
+        "native_tokens": 160289,
+        "native_usage_complete": true,
+        "requests": 10,
+        "completed_reads": 5,
+        "compactions": 2,
+        "tools_terminal": true,
+        "bound_verified_outcome": false,
+        "artifact_or_oracle_correct": false,
+        "last_stop_reason": "max_tokens",
+        "summary_calls": 2,
+        "summary_max_tokens_calls": 2,
+        "http_statuses": {
+          "200": 10
+        },
+        "transport_failures": 0,
+        "rejections": 0,
+        "original_facts_available": true,
+        "prompt_result_state": "Err",
+        "prompt_error": "unexpected_prompt_terminal",
+        "cleanup_ok": true,
+        "timing_partition": {
+          "complete": true,
+          "process_pid": 67624,
+          "wall_us": 242984606,
+          "partition_us": {
+            "task": 227919289,
+            "cleanup": 2233,
+            "preparation": 14670477,
+            "verification": 9612,
+            "fixture": 843,
+            "other_instrumented": 40,
+            "unattributed": 382112
+          },
+          "sum_us": 242984606,
+          "unattributed_percent": 0.15725769886838017,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "phase_coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        },
+        "comparisons": {
+          "convergence-native-usage-1": {
+            "task_seconds": {
+              "before": 118.982,
+              "after": 227.986,
+              "delta": 109.00399999999999,
+              "percent": 91.61385755828613
+            },
+            "process_seconds": {
+              "before": 135.668201209,
+              "after": 242.989726125,
+              "delta": 107.32152491600002,
+              "percent": 79.10588034602799
+            },
+            "native_tokens": {
+              "before": 236133,
+              "after": 160289,
+              "delta": -75844,
+              "percent": -32.119187068304726
+            },
+            "requests": {
+              "before": 10,
+              "after": 10,
+              "delta": 0,
+              "percent": 0.0
+            },
+            "completed_reads": {
+              "before": 5,
+              "after": 5,
+              "delta": 0,
+              "percent": 0.0
+            },
+            "compactions": {
+              "before": 0,
+              "after": 2,
+              "delta": 2,
+              "percent": null
+            }
+          },
+          "published-main-8805-4": {
+            "task_seconds": {
+              "before": 113.11,
+              "after": 227.986,
+              "delta": 114.87599999999999,
+              "percent": 101.56131199717086
+            },
+            "process_seconds": {
+              "before": 131.212412166,
+              "after": 242.989726125,
+              "delta": 111.777313959,
+              "percent": 85.18806423403589
+            },
+            "native_tokens": {
+              "before": 260816,
+              "after": 160289,
+              "delta": -100527,
+              "percent": -38.543264216919205
+            },
+            "requests": {
+              "before": 11,
+              "after": 10,
+              "delta": -1,
+              "percent": -9.090909090909093
+            },
+            "completed_reads": {
+              "before": 5,
+              "after": 5,
+              "delta": 0,
+              "percent": 0.0
+            },
+            "compactions": {
+              "before": 0,
+              "after": 2,
+              "delta": 2,
+              "percent": null
+            }
+          }
+        },
+        "phase_trace_complete": true,
+        "phase_totals": {
+          "artifact_read": {
+            "count": 6,
+            "inclusive_us": 363,
+            "union_us": 365,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "build_id_query": {
+            "count": 2,
+            "inclusive_us": 6603296,
+            "union_us": 6603298,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_prepare": {
+            "count": 1,
+            "inclusive_us": 14599356,
+            "union_us": 14599357,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_spawn": {
+            "count": 1,
+            "inclusive_us": 3891,
+            "union_us": 3891,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_load": {
+            "count": 1,
+            "inclusive_us": 2071014,
+            "union_us": 2071014,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_copy": {
+            "count": 2,
+            "inclusive_us": 3750413,
+            "union_us": 3750414,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_digest": {
+            "count": 4,
+            "inclusive_us": 4095077,
+            "union_us": 4095079,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_open": {
+            "count": 6,
+            "inclusive_us": 352,
+            "union_us": 358,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_reap": {
+            "count": 1,
+            "inclusive_us": 1953,
+            "union_us": 1954,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_spawn": {
+            "count": 1,
+            "inclusive_us": 3489,
+            "union_us": 3490,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_stop": {
+            "count": 2,
+            "inclusive_us": 34,
+            "union_us": 37,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "compaction": {
+            "count": 2,
+            "inclusive_us": 89492717,
+            "union_us": 89492717,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_identity_recheck": {
+            "count": 1,
+            "inclusive_us": 226,
+            "union_us": 226,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_load": {
+            "count": 1,
+            "inclusive_us": 785,
+            "union_us": 785,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_close": {
+            "count": 1,
+            "inclusive_us": 2092,
+            "union_us": 2092,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_spawn": {
+            "count": 1,
+            "inclusive_us": 3622,
+            "union_us": 3622,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fact_read": {
+            "count": 1,
+            "inclusive_us": 1902,
+            "union_us": 1902,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "feed_publish": {
+            "count": 4,
+            "inclusive_us": 15278,
+            "union_us": 15278,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "file_digest": {
+            "count": 4,
+            "inclusive_us": 2168902,
+            "union_us": 2168908,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fixture_setup": {
+            "count": 1,
+            "inclusive_us": 843,
+            "union_us": 843,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "freeze_pair": {
+            "count": 1,
+            "inclusive_us": 12572619,
+            "union_us": 12572619,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "incoming_request": {
+            "count": 10,
+            "inclusive_us": 31676,
+            "union_us": 31675,
+            "overlap_us": 1,
+            "max_parallel": 1
+          },
+          "initialize": {
+            "count": 1,
+            "inclusive_us": 13407,
+            "union_us": 13408,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "isolated_config": {
+            "count": 1,
+            "inclusive_us": 636,
+            "union_us": 637,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_headers": {
+            "count": 7,
+            "inclusive_us": 48993559,
+            "union_us": 48993568,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_request": {
+            "count": 10,
+            "inclusive_us": 227280644,
+            "union_us": 227280648,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_stream": {
+            "count": 7,
+            "inclusive_us": 64448932,
+            "union_us": 64448938,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "oracle": {
+            "count": 2,
+            "inclusive_us": 1300,
+            "union_us": 1166,
+            "overlap_us": 134,
+            "max_parallel": 2
+          },
+          "process_spawn": {
+            "count": 1,
+            "inclusive_us": 4531,
+            "union_us": 4531,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "prompt": {
+            "count": 1,
+            "inclusive_us": 227919288,
+            "union_us": 227919289,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "public_evidence_write": {
+            "count": 1,
+            "inclusive_us": 1615,
+            "union_us": 1616,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_close": {
+            "count": 1,
+            "inclusive_us": 140,
+            "union_us": 141,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_reply": {
+            "count": 3,
+            "inclusive_us": 88,
+            "union_us": 90,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_start": {
+            "count": 1,
+            "inclusive_us": 219,
+            "union_us": 219,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "result_write": {
+            "count": 1,
+            "inclusive_us": 6543,
+            "union_us": 6544,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "route_discovery": {
+            "count": 1,
+            "inclusive_us": 1522,
+            "union_us": 1523,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "session_new": {
+            "count": 1,
+            "inclusive_us": 53820,
+            "union_us": 53821,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "test_process": {
+            "count": 1,
+            "inclusive_us": 242989617,
+            "union_us": 242989617,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tester_copy": {
+            "count": 1,
+            "inclusive_us": 344,
+            "union_us": 345,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "timing_flush": {
+            "count": 1,
+            "inclusive_us": 40,
+            "union_us": 40,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tool": {
+            "count": 6,
+            "inclusive_us": 14514,
+            "union_us": 14514,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "wire_close": {
+            "count": 1,
+            "inclusive_us": 7,
+            "union_us": 7,
+            "overlap_us": 0,
+            "max_parallel": 1
+          }
+        }
+      },
+      {
+        "case": "feed",
+        "pass": false,
+        "task_seconds": 496.938,
+        "process_seconds": 515.165659667,
+        "native_tokens": 348814,
+        "native_usage_complete": true,
+        "requests": 20,
+        "completed_reads": 7,
+        "compactions": 8,
+        "tools_terminal": true,
+        "bound_verified_outcome": true,
+        "artifact_or_oracle_correct": false,
+        "last_stop_reason": "end_turn",
+        "summary_calls": 8,
+        "summary_max_tokens_calls": 7,
+        "http_statuses": {
+          "200": 20
+        },
+        "transport_failures": 0,
+        "rejections": 0,
+        "original_facts_available": true,
+        "prompt_result_state": "Ok",
+        "prompt_error": null,
+        "cleanup_ok": true,
+        "timing_partition": {
+          "complete": true,
+          "process_pid": 68574,
+          "wall_us": 515162490,
+          "partition_us": {
+            "task": 496879660,
+            "cleanup": 2204,
+            "preparation": 15564242,
+            "verification": 2101890,
+            "fixture": 597,
+            "other_instrumented": 48,
+            "unattributed": 613849
+          },
+          "sum_us": 515162490,
+          "unattributed_percent": 0.11915638500776715,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "phase_coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        },
+        "comparisons": {
+          "convergence-native-usage-1": {
+            "task_seconds": {
+              "before": 88.285,
+              "after": 496.938,
+              "delta": 408.653,
+              "percent": 462.87931132128904
+            },
+            "process_seconds": {
+              "before": 107.75066775000002,
+              "after": 515.165659667,
+              "delta": 407.41499191699995,
+              "percent": 378.1090181847155
+            },
+            "native_tokens": {
+              "before": 79614,
+              "after": 348814,
+              "delta": 269200,
+              "percent": 338.1314844122893
+            },
+            "requests": {
+              "before": 5,
+              "after": 20,
+              "delta": 15,
+              "percent": 300.0
+            },
+            "completed_reads": {
+              "before": 2,
+              "after": 7,
+              "delta": 5,
+              "percent": 250.0
+            },
+            "compactions": {
+              "before": 0,
+              "after": 8,
+              "delta": 8,
+              "percent": null
+            }
+          },
+          "published-main-8805-4": {
+            "task_seconds": {
+              "before": 157.033,
+              "after": 496.938,
+              "delta": 339.905,
+              "percent": 216.45450319359628
+            },
+            "process_seconds": {
+              "before": 174.099210084,
+              "after": 515.165659667,
+              "delta": 341.066449583,
+              "percent": 195.9035020425659
+            },
+            "native_tokens": {
+              "before": 105705,
+              "after": 348814,
+              "delta": 243109,
+              "percent": 229.98817463696136
+            },
+            "requests": {
+              "before": 6,
+              "after": 20,
+              "delta": 14,
+              "percent": 233.33333333333334
+            },
+            "completed_reads": {
+              "before": 3,
+              "after": 7,
+              "delta": 4,
+              "percent": 133.33333333333334
+            },
+            "compactions": {
+              "before": 0,
+              "after": 8,
+              "delta": 8,
+              "percent": null
+            }
+          }
+        },
+        "incorrect_scalar_fields": 30,
+        "report_total": 803318,
+        "expected_total": 999024,
+        "reported_total_minus_expected": -195706,
+        "phase_trace_complete": true,
+        "phase_totals": {
+          "artifact_read": {
+            "count": 8,
+            "inclusive_us": 551,
+            "union_us": 555,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "build_id_query": {
+            "count": 2,
+            "inclusive_us": 7019623,
+            "union_us": 7019625,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_prepare": {
+            "count": 1,
+            "inclusive_us": 15502565,
+            "union_us": 15502566,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_spawn": {
+            "count": 1,
+            "inclusive_us": 2522,
+            "union_us": 2523,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_load": {
+            "count": 1,
+            "inclusive_us": 2423310,
+            "union_us": 2423310,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_copy": {
+            "count": 2,
+            "inclusive_us": 3886018,
+            "union_us": 3886019,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_digest": {
+            "count": 4,
+            "inclusive_us": 4846504,
+            "union_us": 4846507,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_open": {
+            "count": 6,
+            "inclusive_us": 595,
+            "union_us": 598,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_reap": {
+            "count": 1,
+            "inclusive_us": 2008,
+            "union_us": 2009,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_spawn": {
+            "count": 1,
+            "inclusive_us": 2243,
+            "union_us": 2244,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_stop": {
+            "count": 2,
+            "inclusive_us": 22,
+            "union_us": 23,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "compaction": {
+            "count": 8,
+            "inclusive_us": 320703968,
+            "union_us": 320703973,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_identity_recheck": {
+            "count": 1,
+            "inclusive_us": 113,
+            "union_us": 113,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_load": {
+            "count": 1,
+            "inclusive_us": 1015,
+            "union_us": 1016,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_close": {
+            "count": 1,
+            "inclusive_us": 2094,
+            "union_us": 2094,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_spawn": {
+            "count": 1,
+            "inclusive_us": 2351,
+            "union_us": 2352,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fact_read": {
+            "count": 1,
+            "inclusive_us": 4003,
+            "union_us": 4003,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "feed_publish": {
+            "count": 6,
+            "inclusive_us": 7311,
+            "union_us": 7313,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "file_digest": {
+            "count": 6,
+            "inclusive_us": 4216268,
+            "union_us": 4216274,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fixture_setup": {
+            "count": 1,
+            "inclusive_us": 2983,
+            "union_us": 2983,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "freeze_pair": {
+            "count": 1,
+            "inclusive_us": 13477247,
+            "union_us": 13477248,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "identity_recheck": {
+            "count": 1,
+            "inclusive_us": 2049230,
+            "union_us": 2049231,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "incoming_request": {
+            "count": 20,
+            "inclusive_us": 68298,
+            "union_us": 68302,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "initialize": {
+            "count": 1,
+            "inclusive_us": 13432,
+            "union_us": 13433,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "isolated_config": {
+            "count": 1,
+            "inclusive_us": 688,
+            "union_us": 689,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_headers": {
+            "count": 11,
+            "inclusive_us": 47382965,
+            "union_us": 47382981,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_request": {
+            "count": 20,
+            "inclusive_us": 495249920,
+            "union_us": 495249928,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_stream": {
+            "count": 11,
+            "inclusive_us": 102903483,
+            "union_us": 102903494,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "oracle": {
+            "count": 4,
+            "inclusive_us": 2060696,
+            "union_us": 2058314,
+            "overlap_us": 2382,
+            "max_parallel": 2
+          },
+          "permission": {
+            "count": 1,
+            "inclusive_us": 6,
+            "union_us": 7,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "process_spawn": {
+            "count": 1,
+            "inclusive_us": 2646,
+            "union_us": 2646,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "prompt": {
+            "count": 1,
+            "inclusive_us": 496879660,
+            "union_us": 496879660,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "public_evidence_write": {
+            "count": 1,
+            "inclusive_us": 8990,
+            "union_us": 8990,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_close": {
+            "count": 1,
+            "inclusive_us": 109,
+            "union_us": 110,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_reply": {
+            "count": 9,
+            "inclusive_us": 284,
+            "union_us": 289,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_start": {
+            "count": 1,
+            "inclusive_us": 170,
+            "union_us": 170,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "result_write": {
+            "count": 1,
+            "inclusive_us": 42042,
+            "union_us": 42042,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "route_discovery": {
+            "count": 1,
+            "inclusive_us": 2492,
+            "union_us": 2493,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "session_new": {
+            "count": 1,
+            "inclusive_us": 45720,
+            "union_us": 45720,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "test_process": {
+            "count": 1,
+            "inclusive_us": 515165598,
+            "union_us": 515165598,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tester_copy": {
+            "count": 1,
+            "inclusive_us": 239,
+            "union_us": 240,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "timing_flush": {
+            "count": 1,
+            "inclusive_us": 48,
+            "union_us": 48,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tool": {
+            "count": 10,
+            "inclusive_us": 96098,
+            "union_us": 96099,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "wire_close": {
+            "count": 1,
+            "inclusive_us": 6,
+            "union_us": 6,
+            "overlap_us": 0,
+            "max_parallel": 1
+          }
+        }
+      }
+    ],
+    "total_native_tokens": 509103,
+    "cohort_process_seconds": 758.737408,
+    "supplementary": "NOT RUN; both originals must pass first",
+    "input_config_and_source_unchanged": true,
+    "owned_test_driver_pids_remaining": [],
+    "accepted_task_speed_gain_percent": null,
+    "accepted_task_token_gain_percent": null,
+    "arithmetic_mismatches": [
+      {
+        "version": 1,
+        "field": "discount_cents",
+        "expected": 383,
+        "actual": 439
+      },
+      {
+        "version": 1,
+        "field": "subtotal_cents",
+        "expected": 76580,
+        "actual": 87769
+      },
+      {
+        "version": 1,
+        "field": "tax_cents",
+        "expected": 5715,
+        "actual": 6547
+      },
+      {
+        "version": 1,
+        "field": "total_cents",
+        "expected": 81912,
+        "actual": 93877
+      },
+      {
+        "version": 1,
+        "field": "units",
+        "expected": 189,
+        "actual": 219
+      },
+      {
+        "version": 2,
+        "field": "discount_cents",
+        "expected": 962,
+        "actual": 2100
+      },
+      {
+        "version": 2,
+        "field": "subtotal_cents",
+        "expected": 96185,
+        "actual": 105004
+      },
+      {
+        "version": 2,
+        "field": "tax_cents",
+        "expected": 7142,
+        "actual": 7718
+      },
+      {
+        "version": 2,
+        "field": "total_cents",
+        "expected": 102365,
+        "actual": 110622
+      },
+      {
+        "version": 2,
+        "field": "units",
+        "expected": 237,
+        "actual": 261
+      },
+      {
+        "version": 3,
+        "field": "discount_cents",
+        "expected": 1738,
+        "actual": 3355
+      },
+      {
+        "version": 3,
+        "field": "subtotal_cents",
+        "expected": 115886,
+        "actual": 124266
+      },
+      {
+        "version": 3,
+        "field": "tax_cents",
+        "expected": 8561,
+        "actual": 9068
+      },
+      {
+        "version": 3,
+        "field": "total_cents",
+        "expected": 122709,
+        "actual": 129979
+      },
+      {
+        "version": 3,
+        "field": "units",
+        "expected": 285,
+        "actual": 303
+      },
+      {
+        "version": 4,
+        "field": "discount_cents",
+        "expected": 2714,
+        "actual": 3647
+      },
+      {
+        "version": 4,
+        "field": "subtotal_cents",
+        "expected": 135683,
+        "actual": 145872
+      },
+      {
+        "version": 4,
+        "field": "tax_cents",
+        "expected": 9973,
+        "actual": 10667
+      },
+      {
+        "version": 4,
+        "field": "total_cents",
+        "expected": 142942,
+        "actual": 147892
+      },
+      {
+        "version": 4,
+        "field": "units",
+        "expected": 333,
+        "actual": 345
+      },
+      {
+        "version": 5,
+        "field": "discount_cents",
+        "expected": 3889,
+        "actual": 112
+      },
+      {
+        "version": 5,
+        "field": "subtotal_cents",
+        "expected": 155576,
+        "actual": 56491
+      },
+      {
+        "version": 5,
+        "field": "tax_cents",
+        "expected": 11377,
+        "actual": 4229
+      },
+      {
+        "version": 5,
+        "field": "total_cents",
+        "expected": 163064,
+        "actual": 60608
+      },
+      {
+        "version": 5,
+        "field": "units",
+        "expected": 381,
+        "actual": 387
+      },
+      {
+        "version": 7,
+        "field": "discount_cents",
+        "expected": 6848,
+        "actual": 2753
+      },
+      {
+        "version": 7,
+        "field": "subtotal_cents",
+        "expected": 195650,
+        "actual": 78650
+      },
+      {
+        "version": 7,
+        "field": "tax_cents",
+        "expected": 14160,
+        "actual": 5692
+      },
+      {
+        "version": 7,
+        "field": "total_cents",
+        "expected": 202962,
+        "actual": 81589
+      },
+      {
+        "field": "total_cents",
+        "expected": 999024,
+        "actual": 803318
+      }
+    ]
   },
   "not_claimed": [
     "Overall speed and token savings with full task success",
@@ -461,5 +1529,6 @@
     "Native Windows/Linux runtime compatibility",
     "All-workspace format/CI success",
     "Release packaging or deployment"
-  ]
+  ],
+  "published_commit": "fbd6e78d86ba4770f9ef0de6bd6da77bceac6918"
 }
