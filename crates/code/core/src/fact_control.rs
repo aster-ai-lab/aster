@@ -562,7 +562,16 @@ impl Completion for LiveCompletion {
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner)
                     .clone();
-                let gate = surface.agent.decide_fact_completion_gate(&ledger, &reports);
+                let agent = surface.agent.clone();
+                // A host preview may read disk and can finish after caller cancellation.
+                let gate = tokio::task::spawn_blocking(move || {
+                    agent.fact_model_verification_gate(&ledger, &reports)
+                })
+                .await
+                .map_err(|error| ActorError::Handler {
+                    key: "model-input-verification".into(),
+                    message: error.to_string(),
+                })?;
                 if let Some(context) = crate::harness_loop::model_verification_context(gate) {
                     let system = system.get_or_insert_with(String::new);
                     system.push_str("\n\n");

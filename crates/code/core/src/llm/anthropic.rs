@@ -622,7 +622,7 @@ impl AnthropicClient {
                 let mut current_tool_id = String::new();
                 let mut current_tool_name = String::new();
                 let mut current_tool_input = String::new();
-                let mut usage = TokenUsage::default();
+                let mut usage = AnthropicUsage::default();
                 let mut stop_reason = None;
                 let mut response_id = None;
                 let mut response_model = None;
@@ -782,32 +782,32 @@ impl AnthropicClient {
                                             response_id = message.id;
                                             response_model = message.model;
                                             response_object = message.message_type;
-                                            usage = match message.usage.token_usage() {
-                                                Ok(usage) => usage,
-                                                Err(error) => {
-                                                    tracing::error!(%error, "invalid Anthropic token usage");
-                                                    return;
-                                                }
-                                            };
+                                            usage = message.usage;
                                         }
                                         AnthropicStreamEvent::MessageDelta {
                                             delta,
                                             usage: msg_usage,
                                         } => {
                                             stop_reason = Some(delta.stop_reason);
-                                            usage.completion_tokens = msg_usage.output_tokens;
-                                            let Some(total) = usage
-                                                .prompt_tokens
-                                                .checked_add(usage.completion_tokens)
-                                            else {
-                                                tracing::error!(
-                                                    "Anthropic total token count overflow"
-                                                );
-                                                return;
-                                            };
-                                            usage.total_tokens = total;
+                                            if let Some(input) = msg_usage.input_tokens {
+                                                usage.input_tokens = input;
+                                            }
+                                            usage.cache_read_input_tokens = msg_usage
+                                                .cache_read_input_tokens
+                                                .or(usage.cache_read_input_tokens);
+                                            usage.cache_creation_input_tokens = msg_usage
+                                                .cache_creation_input_tokens
+                                                .or(usage.cache_creation_input_tokens);
+                                            usage.output_tokens = msg_usage.output_tokens;
                                         }
                                         AnthropicStreamEvent::MessageStop => {
+                                            let usage = match usage.token_usage() {
+                                                Ok(usage) => usage,
+                                                Err(error) => {
+                                                    tracing::error!(%error, "invalid Anthropic token usage");
+                                                    return;
+                                                }
+                                            };
                                             if !text_content.is_empty() {
                                                 content_blocks.push(ContentBlock::Text {
                                                     text: std::mem::take(&mut text_content),
@@ -898,7 +898,7 @@ pub(crate) enum AnthropicContentBlock {
     },
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub(crate) struct AnthropicUsage {
     pub(crate) input_tokens: usize,
     pub(crate) output_tokens: usize,
@@ -907,7 +907,7 @@ pub(crate) struct AnthropicUsage {
 }
 
 impl AnthropicUsage {
-    fn token_usage(self) -> Result<TokenUsage> {
+    fn token_usage(&self) -> Result<TokenUsage> {
         use super::metering::{InputAccounting, ObservedTokens};
 
         // Messages input_tokens excludes cached input; OpenAI-style prompt_tokens includes it.
@@ -997,6 +997,9 @@ pub(crate) struct AnthropicMessageDeltaData {
 #[derive(Debug, Deserialize)]
 pub(crate) struct AnthropicOutputUsage {
     pub(crate) output_tokens: usize,
+    pub(crate) input_tokens: Option<usize>,
+    pub(crate) cache_read_input_tokens: Option<usize>,
+    pub(crate) cache_creation_input_tokens: Option<usize>,
 }
 
 #[derive(Debug, Deserialize)]
