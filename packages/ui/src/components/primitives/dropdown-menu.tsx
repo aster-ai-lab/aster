@@ -72,6 +72,8 @@ function DropdownMenuContent({
   const dismissal = usePopupDismissal(ref)
   const popupState = React.use(PopupDismissContext)
   const contentRef = React.useRef<HTMLDivElement | null>(null)
+  const focusedItemRef = React.useRef<HTMLElement | null>(null)
+  const highlightObserverRef = React.useRef<ResizeObserver | null>(null)
   const pointer = React.useRef(false)
   const clearTimer = React.useRef(0)
   const reducedMotion = useReducedMotion()
@@ -85,13 +87,45 @@ function DropdownMenuContent({
     glide: boolean
     danger: boolean
   } | null>(null)
-  React.useEffect(() => () => window.clearTimeout(clearTimer.current), [])
+  const stopObservingHighlight = React.useCallback(() => {
+    highlightObserverRef.current?.disconnect()
+    highlightObserverRef.current = null
+    focusedItemRef.current = null
+  }, [])
+  const measureHighlight = React.useCallback((target: HTMLElement, glide: boolean) => {
+    const content = contentRef.current
+    if (!content?.contains(target)) return
+    const box = target.getBoundingClientRect()
+    const bounds = content.getBoundingClientRect()
+    const top = box.top - bounds.top + content.scrollTop - content.clientTop
+    const left = box.left - bounds.left + content.scrollLeft - content.clientLeft
+    const danger = target.dataset.variant === 'destructive'
+    setHighlight((current) => {
+      if (
+        current &&
+        current.top === top &&
+        current.left === left &&
+        current.width === box.width &&
+        current.height === box.height &&
+        current.danger === danger
+      ) return current
+      return { top, left, width: box.width, height: box.height, glide: glide && current !== null, danger }
+    })
+  }, [])
+  React.useEffect(
+    () => () => {
+      window.clearTimeout(clearTimer.current)
+      stopObservingHighlight()
+    },
+    [stopObservingHighlight]
+  )
   React.useEffect(() => {
     if (popupState?.open !== false) return
     window.clearTimeout(clearTimer.current)
     pointer.current = false
+    stopObservingHighlight()
     setHighlight(null)
-  }, [popupState?.open])
+  }, [popupState?.open, stopObservingHighlight])
   const setContentRef = React.useCallback(
     (node: HTMLDivElement | null) => {
       contentRef.current = node
@@ -134,19 +168,23 @@ function DropdownMenuContent({
                 )
               : null
           if (!target || !content.contains(target)) {
+            stopObservingHighlight()
             clearTimer.current = window.setTimeout(() => setHighlight(null), pointer.current ? 70 : 0)
             return
           }
-          const box = target.getBoundingClientRect()
-          const bounds = content.getBoundingClientRect()
-          setHighlight((current) => ({
-            top: box.top - bounds.top + content.scrollTop - content.clientTop,
-            left: box.left - bounds.left + content.scrollLeft - content.clientLeft,
-            width: box.width,
-            height: box.height,
-            glide: pointer.current && current !== null,
-            danger: target.dataset.variant === 'destructive'
-          }))
+          if (focusedItemRef.current !== target) {
+            stopObservingHighlight()
+            focusedItemRef.current = target
+            if (typeof ResizeObserver !== 'undefined') {
+              const observer = new ResizeObserver(() => {
+                if (focusedItemRef.current === target) measureHighlight(target, false)
+              })
+              highlightObserverRef.current = observer
+              observer.observe(content)
+              observer.observe(target)
+            }
+          }
+          measureHighlight(target, pointer.current)
         }}
         onPointerDownCapture={(event) => {
           dismissal.inside()

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
@@ -80,6 +80,62 @@ describe('DropdownMenuContent', () => {
       await user.keyboard('{Enter}')
       expect(onSelect).toHaveBeenCalledOnce()
     } finally {
+      if (previousTenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = previousTenant
+    }
+  })
+
+  it('keeps the Aster highlight aligned when the focused item is resized', async () => {
+    const previousTenant = document.documentElement.dataset.tenant
+    const PreviousObserver = globalThis.ResizeObserver
+    document.documentElement.dataset.tenant = 'aster'
+    const observers: { callback: ResizeObserverCallback; targets: Set<Element> }[] = []
+    globalThis.ResizeObserver = class {
+      record: (typeof observers)[number]
+      constructor(callback: ResizeObserverCallback) {
+        this.record = { callback, targets: new Set() }
+        observers.push(this.record)
+      }
+      observe(target: Element) {
+        this.record.targets.add(target)
+      }
+      unobserve(target: Element) {
+        this.record.targets.delete(target)
+      }
+      disconnect() {
+        this.record.targets.clear()
+      }
+    }
+    try {
+      const onSelect = vi.fn()
+      const view = render(
+        <DropdownMenu open>
+          <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onSelect={onSelect}>Resizable item</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+      const item = screen.getByRole('menuitem', { name: 'Resizable item' })
+      const menu = screen.getByRole('menu')
+      let width = 100
+      vi.spyOn(item, 'getBoundingClientRect').mockImplementation(() => new DOMRect(10, 20, width, 36))
+      vi.spyOn(menu, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, 0, width + 20, 56))
+      fireEvent.focus(item)
+      const highlight = menu.querySelector<HTMLElement>('[data-slot="dropdown-menu-highlight"]')!
+      await waitFor(() => expect(highlight.style.width).toBe('100px'))
+      const observer = observers.find((candidate) => candidate.targets.has(item))
+      expect(observer).toBeDefined()
+      width = 180
+      act(() => observer!.callback([], {} as ResizeObserver))
+      await waitFor(() => expect(highlight.style.width).toBe('180px'))
+      act(() => item.focus())
+      await userEvent.setup().keyboard('{Enter}')
+      expect(onSelect).toHaveBeenCalledOnce()
+      view.unmount()
+      expect(observer!.targets.size).toBe(0)
+    } finally {
+      globalThis.ResizeObserver = PreviousObserver
       if (previousTenant === undefined) delete document.documentElement.dataset.tenant
       else document.documentElement.dataset.tenant = previousTenant
     }
