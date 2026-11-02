@@ -16,6 +16,7 @@ import { cn } from '../../lib/cn';
 import { menuCardClass, menuRowClass, menuRowSelectedClass } from '../../lib/menu-surface';
 import { usePortalContainer } from '../primitives/portal-container';
 import { usePopupDismissal } from '../primitives/popup-dismissal';
+import { SelectionHighlight } from '../primitives/selection-highlight';
 
 function wheelDeltaY(event: WheelEvent, el: HTMLElement) {
   if (event.deltaMode === 1) return event.deltaY * 16;
@@ -54,6 +55,8 @@ type SearchSelectBaseProps = {
   emptyText?: string;
   className?: string;
   panelClassName?: string;
+  /** Keep a single hover plate moving between options. */
+  glidingHighlight?: boolean;
   /** Minimum width for menus with descriptive options, clamped to the viewport. */
   minPanelWidth?: number;
   portalContainer?: HTMLElement | ((trigger: HTMLElement) => HTMLElement);
@@ -110,6 +113,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     emptyText = 'No results',
     className = '',
     panelClassName,
+    glidingHighlight = false,
     minPanelWidth,
     portalContainer: portalTarget,
     disabled = false,
@@ -144,11 +148,13 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [active, setActive] = useState(0);
+  const pointerNavigation = useRef(false);
   const [coords, setCoords] = useState<{
     top: number;
     left: number;
     width: number;
     maxHeight: number;
+    side: 'top' | 'bottom';
   } | null>(null);
   const portalContainer = typeof portalTarget === 'function'
     ? open && triggerRef.current ? portalTarget(triggerRef.current) : inheritedPortalContainer
@@ -229,6 +235,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       left: left - (parent?.left ?? 0) + (portalContainer?.scrollLeft ?? 0),
       width: panelWidth,
       maxHeight,
+      side: openAbove ? 'top' : 'bottom',
     });
   }
 
@@ -316,6 +323,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   }
 
   function onKeyDown(e: KeyboardEvent) {
+    pointerNavigation.current = false;
     if (e.nativeEvent.isComposing) return;
     if (e.key.length === 1 && e.key.trim() && !e.altKey && !e.ctrlKey && !e.metaKey &&
         (!open || e.currentTarget === triggerRef.current)) {
@@ -489,6 +497,8 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
         ? createPortal(
             <div
               ref={dismissal.ref}
+              data-composer-popup={glidingHighlight ? '' : undefined}
+              data-side={coords?.side}
               className={cn(
                 'ui-search-select__panel ui-search-select__panel--portal',
                 menuCardClass,
@@ -512,6 +522,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                       gridTemplateRows: searchable ? 'auto minmax(0, 1fr)' : 'minmax(0, 1fr)',
                       zIndex: 240,
                       animation: instantMotion ? 'none' : undefined,
+                      transition: instantMotion ? 'none' : undefined,
                     }
                   : { position: 'fixed', top: -9999, left: -9999, visibility: 'hidden', zIndex: 240 }
               }
@@ -577,6 +588,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                         disabled={opt.disabled}
                         className={cn(
                           'ui-search-select__option',
+                          glidingHighlight && 'relative isolate',
                           'flex w-full cursor-pointer items-center border-0 bg-transparent text-left',
                           menuRowClass,
                           size === 'sm' ? 'min-h-8 gap-2 px-2' : 'min-h-9 gap-2.5 px-2.5',
@@ -585,8 +597,16 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                           i === active && !chosen && 'bg-[var(--color-surface-2)] text-[var(--color-ink)]',
                           chosen && menuRowSelectedClass,
                         )}
-                        onMouseEnter={() => { if (!opt.disabled) setActive(i); }}
+                        style={glidingHighlight ? { backgroundColor: 'transparent' } : undefined}
+                        onMouseEnter={() => { pointerNavigation.current = true; if (!opt.disabled) setActive(i); }}
                       >
+                        {glidingHighlight && i === active && !opt.disabled ? (
+                          <SelectionHighlight
+                            data-slot="search-select-hover-highlight"
+                            layoutId={`${listId}-hover${pointerNavigation.current ? '' : `-${active}`}`}
+                            style={{ backgroundColor: '#f2f3f5' }}
+                          />
+                        ) : null}
                         {multiple ? (
                           <span
                             className={cn(

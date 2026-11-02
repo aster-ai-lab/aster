@@ -1,0 +1,1 @@
+src/renderer/pages/agents/homeComposerMode.tsx:678:26: warning eslint(no-unsafe-finally): Unsafe `finally` block. help: Control flow inside `try` or `catch` blocks will be overwritten by this statement.

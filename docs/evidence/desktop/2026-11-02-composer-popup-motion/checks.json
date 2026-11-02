@@ -1,0 +1,139 @@
+[
+  {
+    "cwd": "apps/studio",
+    "command": "STUDIO_E2E_BASE_URL=http://127.0.0.1:4537 node node_modules/@playwright/test/cli.js test -c playwright.composer-audit.config.ts popup-motion.spec.ts permission-picker-motion.spec.ts --project chromium --project webkit --reporter=json",
+    "exit": 0,
+    "passed": 20,
+    "log": "browser-qualified.json"
+  },
+  {
+    "cwd": "apps/studio",
+    "command": "node node_modules/vitest/vitest.mjs run --project renderer src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.test.tsx src/renderer/pages/agents/__tests__/WorkbenchPermissionPicker.dismiss.test.tsx src/renderer/pages/agents/__tests__/WorkbenchComposerOptions.test.tsx src/renderer/components/QuickPanel/__tests__/list.accessibility.test.tsx src/renderer/components/QuickPanel/__tests__/view.test.tsx",
+    "exit": 0,
+    "passed": 92,
+    "log": "renderer-final.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "command": "node node_modules/vitest/vitest.mjs run --project renderer src/renderer/pages/agents/__tests__/WorkbenchGoalChip.test.tsx src/renderer/pages/agents/__tests__/WorkbenchWorktreeSlot.test.tsx",
+    "exit": 0,
+    "passed": 6,
+    "log": "goal-worktree-tests.log"
+  },
+  {
+    "cwd": "packages/ui",
+    "command": "node node_modules/vitest/vitest.mjs run src/components/console/__tests__/search-select.test.tsx",
+    "exit": 0,
+    "passed": 23,
+    "log": "ui-recheck.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "command": "node --max-old-space-size=8192 node_modules/typescript/bin/tsc --noEmit -p tsconfig.web.json --composite false",
+    "exit": 2,
+    "errors": 231,
+    "log": "typecheck-web-recheck.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "command": "node --import tsx scripts/i18n-check.ts",
+    "exit": 0,
+    "entries": 25598,
+    "log": "i18n-recheck.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "argv": [
+      "./node_modules/.bin/oxfmt",
+      "--check",
+      "src/renderer/components/SelectorShell.tsx",
+      "src/renderer/components/PromptOptimizeButton.tsx",
+      "src/renderer/components/QuickPanel/list.tsx",
+      "src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "src/renderer/components/composer/AgentParameterForm.tsx",
+      "src/renderer/components/composer/screenshot/VisualPinWindow.tsx",
+      "src/renderer/components/composer/screenshot/VisualFeedbackEditor.tsx",
+      "src/renderer/components/composer/variants/SelectedModelsTrigger.tsx",
+      "src/renderer/components/composer/variants/shared/ComposerToolbarShortcuts.tsx",
+      "src/renderer/components/composer/recording/ComposerRecordingControl.tsx",
+      "src/renderer/components/composer/tokenView/ComposerToken.tsx",
+      "src/renderer/pages/agents/WorkbenchProjectPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchScopePicker.tsx",
+      "src/renderer/pages/agents/WorkbenchModelPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "src/renderer/pages/agents/homeComposerMode.tsx",
+      "src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx",
+      "src/renderer/pages/agents/WorkbenchPermissionPicker.module.css",
+      "src/renderer/pages/agents/WorkbenchWorkspaceFiles.tsx",
+      "src/renderer/pages/agents/modelPickerFloating.tsx",
+      "src/renderer/components/composer/ComposerPopupMotion.tsx",
+      "src/renderer/components/composer/composer-popup-motion.css",
+      "src/renderer/pages/agents/WorkbenchGoalChip.tsx",
+      "src/renderer/pages/agents/WorkbenchWorktreeSlot.tsx",
+      "tests/e2e/composer-audit/popup-motion.spec.ts",
+      "tests/e2e/workbench-office/fixture.ts"
+    ],
+    "exit": 0,
+    "log": "format-final.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "argv": [
+      "./node_modules/.bin/oxlint",
+      "src/renderer/components/SelectorShell.tsx",
+      "src/renderer/components/PromptOptimizeButton.tsx",
+      "src/renderer/components/QuickPanel/list.tsx",
+      "src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "src/renderer/components/composer/AgentParameterForm.tsx",
+      "src/renderer/components/composer/screenshot/VisualPinWindow.tsx",
+      "src/renderer/components/composer/screenshot/VisualFeedbackEditor.tsx",
+      "src/renderer/components/composer/variants/SelectedModelsTrigger.tsx",
+      "src/renderer/components/composer/variants/shared/ComposerToolbarShortcuts.tsx",
+      "src/renderer/components/composer/recording/ComposerRecordingControl.tsx",
+      "src/renderer/components/composer/tokenView/ComposerToken.tsx",
+      "src/renderer/pages/agents/WorkbenchProjectPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchScopePicker.tsx",
+      "src/renderer/pages/agents/WorkbenchModelPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "src/renderer/pages/agents/homeComposerMode.tsx",
+      "src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx",
+      "src/renderer/pages/agents/WorkbenchWorkspaceFiles.tsx",
+      "src/renderer/pages/agents/modelPickerFloating.tsx",
+      "src/renderer/components/composer/ComposerPopupMotion.tsx",
+      "src/renderer/pages/agents/WorkbenchGoalChip.tsx",
+      "src/renderer/pages/agents/WorkbenchWorktreeSlot.tsx"
+    ],
+    "exit": 0,
+    "log": "oxlint-final.log"
+  },
+  {
+    "cwd": "apps/studio",
+    "argv": [
+      "./node_modules/.bin/eslint",
+      "src/renderer/components/SelectorShell.tsx",
+      "src/renderer/components/PromptOptimizeButton.tsx",
+      "src/renderer/components/QuickPanel/list.tsx",
+      "src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "src/renderer/components/composer/AgentParameterForm.tsx",
+      "src/renderer/components/composer/screenshot/VisualPinWindow.tsx",
+      "src/renderer/components/composer/screenshot/VisualFeedbackEditor.tsx",
+      "src/renderer/components/composer/variants/SelectedModelsTrigger.tsx",
+      "src/renderer/components/composer/variants/shared/ComposerToolbarShortcuts.tsx",
+      "src/renderer/components/composer/recording/ComposerRecordingControl.tsx",
+      "src/renderer/components/composer/tokenView/ComposerToken.tsx",
+      "src/renderer/pages/agents/WorkbenchProjectPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchScopePicker.tsx",
+      "src/renderer/pages/agents/WorkbenchModelPicker.tsx",
+      "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "src/renderer/pages/agents/homeComposerMode.tsx",
+      "src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx",
+      "src/renderer/pages/agents/WorkbenchWorkspaceFiles.tsx",
+      "src/renderer/pages/agents/modelPickerFloating.tsx",
+      "src/renderer/components/composer/ComposerPopupMotion.tsx",
+      "src/renderer/pages/agents/WorkbenchGoalChip.tsx",
+      "src/renderer/pages/agents/WorkbenchWorktreeSlot.tsx"
+    ],
+    "exit": 0,
+    "log": "eslint-final.log"
+  }
+]
