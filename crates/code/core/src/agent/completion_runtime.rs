@@ -49,6 +49,20 @@ impl crate::agent::TurnEngine {
         self.decide_fact_completion_gate(ledger, &reports)
     }
 
+    pub(crate) fn fact_model_verification_gate(
+        &self,
+        ledger: &crate::harness_loop::MutationLedger,
+        reports: &[crate::verification::VerificationReport],
+    ) -> crate::harness_loop::CompletionGate {
+        let mut reports = reports.to_vec();
+        crate::completion_attestor::merge_preview_report(
+            self.config.completion_attestor.as_ref(),
+            ledger,
+            &mut reports,
+        );
+        self.decide_fact_completion_gate(ledger, &reports)
+    }
+
     /// Decide the gate without re-running the attestor (reports already merged).
     pub(crate) fn decide_fact_completion_gate(
         &self,

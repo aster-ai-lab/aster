@@ -47,6 +47,15 @@ pub trait CompletionAttestor: Send + Sync {
     fn attest_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
         self.attest(ledger.digest(), &attestation_paths(ledger))
     }
+
+    /// Read current evidence for model guidance without consuming a final proof.
+    ///
+    /// Opt in only when this callback is read-only and repeatable. The default
+    /// preserves custom hosts whose final attestation is a one-shot operation.
+    /// A preview is not retained as final completion evidence.
+    fn preview_ledger(&self, _ledger: &MutationLedger) -> Option<VerificationReport> {
+        None
+    }
 }
 
 fn attestation_paths(ledger: &MutationLedger) -> Vec<MutatedPathRecord> {
@@ -71,6 +80,27 @@ pub fn merge_attested_report(
     ledger: &MutationLedger,
     reports: &mut Vec<VerificationReport>,
 ) {
+    merge_report(attestor, ledger, reports, |attestor, ledger| {
+        attestor.attest_ledger(ledger)
+    });
+}
+
+pub(crate) fn merge_preview_report(
+    attestor: Option<&Arc<dyn CompletionAttestor>>,
+    ledger: &MutationLedger,
+    reports: &mut Vec<VerificationReport>,
+) {
+    merge_report(attestor, ledger, reports, |attestor, ledger| {
+        attestor.preview_ledger(ledger)
+    });
+}
+
+fn merge_report(
+    attestor: Option<&Arc<dyn CompletionAttestor>>,
+    ledger: &MutationLedger,
+    reports: &mut Vec<VerificationReport>,
+    attest: impl FnOnce(&dyn CompletionAttestor, &MutationLedger) -> Option<VerificationReport>,
+) {
     let Some(attestor) = attestor else {
         return;
     };
@@ -81,7 +111,7 @@ pub fn merge_attested_report(
     if digest.trim().is_empty() {
         return;
     }
-    let Some(report) = attestor.attest_ledger(ledger) else {
+    let Some(report) = attest(attestor.as_ref(), ledger) else {
         return;
     };
     let Some(report) = accept_report(ReportAuthor::Host, report) else {
@@ -138,6 +168,10 @@ impl DiskContentAttestor {
 }
 
 impl CompletionAttestor for DiskContentAttestor {
+    fn preview_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
+        self.attest_ledger(ledger)
+    }
+
     fn attest_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
         use aster_effect::ToolFileKind;
         let records = ledger.observed_records();
@@ -204,6 +238,10 @@ fn disk_content_report(effect_digest: &str) -> VerificationReport {
     )
     .with_effect_digest(effect_digest.to_owned())
 }
+
+#[cfg(test)]
+#[path = "completion_attestor/preview_tests.rs"]
+mod preview_tests;
 
 #[cfg(test)]
 mod tests {

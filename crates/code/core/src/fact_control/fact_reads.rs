@@ -169,12 +169,24 @@ pub(super) fn message_from_fact(fact: &aster_effect::Fact) -> Option<Message> {
             match decided {
                 ModelDecision::Text { text } => Some(Message::assistant(&text)),
                 ModelDecision::Tool { call, also } => {
-                    let rendered = std::iter::once(call)
-                        .chain(also)
+                    let mut spoken = std::collections::BTreeSet::new();
+                    let prose = std::iter::once(&call)
+                        .chain(&also)
+                        .filter_map(|call| call.text.as_deref())
+                        .filter(|text| !text.is_empty() && spoken.insert(*text))
+                        .collect::<Vec<_>>()
+                        .join("\n");
+                    let rendered = std::iter::once(&call)
+                        .chain(&also)
                         .map(|call| format!("Tool call {} ({}): {}", call.name, call.id, call.args))
                         .collect::<Vec<_>>()
                         .join("\n");
-                    Some(Message::assistant(&rendered))
+                    let text = if prose.is_empty() {
+                        rendered
+                    } else {
+                        format!("{prose}\n{rendered}")
+                    };
+                    Some(Message::assistant(&text))
                 }
                 ModelDecision::Question { question, .. } => Some(Message::assistant(&question)),
             }
@@ -216,3 +228,7 @@ pub fn phase_name(phase: CodingPhase) -> &'static str {
 pub fn project_needs_confirmation(policy: &PermissionPolicy, tool_name: &str) -> bool {
     confirmation_required(policy, tool_name)
 }
+
+#[cfg(test)]
+#[path = "fact_reads/tests.rs"]
+mod tests;

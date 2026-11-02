@@ -25,6 +25,8 @@ use crate::exit::Exit;
 use crate::fact::{Fact, NewFact};
 
 #[cfg(test)]
+mod context_pressure_tests;
+#[cfg(test)]
 mod convergence_tests;
 #[cfg(test)]
 mod revalidation_tests;
@@ -327,12 +329,11 @@ impl HarnessConfig {
         })
     }
 
-    /// Compact from provider prompt tokens and keep a recent token budget.
-    /// The character threshold no longer fires on this config.
+    /// Prefer provider prompt tokens and keep a recent token budget.
+    /// Missing current usage falls back to the configured character threshold.
     pub fn with_token_compact(mut self, after_tokens: u64, keep_tokens: usize) -> Self {
         self.compact_after_tokens = Some(after_tokens.max(1));
         self.compact_keep_tokens = keep_tokens.max(1);
-        self.compact_after_chars = usize::MAX;
         self
     }
 
@@ -723,8 +724,8 @@ fn after_input(state: SchedulerState, config: &HarnessConfig) -> SchedulerState 
     let token_pressure = config
         .compact_after_tokens
         .is_some_and(|limit| state.prompt_tokens.is_some_and(|used| used >= limit));
-    let char_pressure =
-        config.compact_after_tokens.is_none() && state.size() >= config.compact_after_chars;
+    let char_pressure = (config.compact_after_tokens.is_none() || state.prompt_tokens.is_none())
+        && state.size() >= config.compact_after_chars;
     let needs_compact =
         !prefix.is_empty() && (token_pressure || char_pressure) && !state.compacted_awaiting_model;
     SchedulerState {
@@ -748,8 +749,7 @@ fn prompt_tokens_of(payload: &Value) -> Option<u64> {
 }
 
 fn on_model(mut state: SchedulerState, config: &HarnessConfig, payload: &Value) -> SchedulerState {
-    let prompt_tokens = prompt_tokens_of(payload).or(state.prompt_tokens);
-    state.prompt_tokens = prompt_tokens;
+    state.prompt_tokens = prompt_tokens_of(payload);
     state.compacted_awaiting_model = false;
     let decided = match serde_json::from_value::<ModelDecision>(payload.clone()) {
         Ok(decided) => decided,
@@ -814,6 +814,13 @@ fn on_model(mut state: SchedulerState, config: &HarnessConfig, payload: &Value) 
                 return state;
             }
             let mut messages = state.messages.clone();
+            let mut spoken = std::collections::BTreeSet::new();
+            // Keep prose ahead of the batch so compaction keeps its call/result group intact.
+            for text in calls.iter().filter_map(|call| call.text.as_deref()) {
+                if !text.is_empty() && spoken.insert(text) {
+                    messages.push(format!("assistant\n{text}"));
+                }
+            }
             for call in &calls {
                 messages.push(format!("assistant\ntool {}\n{}", call.name, call.args));
             }

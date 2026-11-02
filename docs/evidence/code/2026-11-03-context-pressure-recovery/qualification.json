@@ -1,0 +1,244 @@
+{
+  "base": "be25bf6e5a31ced46f2a12be3100ecc030f4c5c3",
+  "source": [
+    {
+      "path": "crates/effect/src/coding.rs",
+      "sha256": "799afdf43cdb716650d883c6c8705bfb5c6b235400e3b3911d1bf0f74ff5b23b"
+    },
+    {
+      "path": "crates/effect/src/coding/context_pressure_tests.rs",
+      "sha256": "3e2c4e3244251883e4dd828cb5a69d1b9cf600d49c5b49a7e992d82f8ff2e8ec"
+    }
+  ],
+  "red": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-effect",
+      "--lib",
+      "coding::context_pressure_tests",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "process_seconds": 4.462234625,
+    "trace_complete": true,
+    "test_results": [
+      "test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 89 filtered out; finished in 0.00s"
+    ],
+    "model_requests": 0
+  },
+  "first_partial_fix": [
+    {
+      "phase": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/context_pressure_tests.rs"
+      ],
+      "status": "FINISHED",
+      "exit_code": 0,
+      "process_seconds": 0.03905975,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "green",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-effect",
+        "--lib",
+        "coding::context_pressure_tests",
+        "--",
+        "--nocapture"
+      ],
+      "status": "FINISHED",
+      "exit_code": 101,
+      "process_seconds": 3.837240125,
+      "trace_complete": true,
+      "test_results": [
+        "test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 89 filtered out; finished in 0.00s"
+      ],
+      "model_requests": 0
+    }
+  ],
+  "final": [
+    {
+      "phase": "format_final",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/context_pressure_tests.rs"
+      ],
+      "status": "FINISHED",
+      "exit_code": 0,
+      "process_seconds": 0.039237041,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "green_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-effect",
+        "--lib",
+        "coding::context_pressure_tests",
+        "--",
+        "--nocapture"
+      ],
+      "status": "FINISHED",
+      "exit_code": 0,
+      "process_seconds": 6.283901792,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 89 filtered out; finished in 0.00s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "effect_all_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-effect"
+      ],
+      "status": "FINISHED",
+      "exit_code": 0,
+      "process_seconds": 23.186672458,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 91 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.65s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.99s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+        "test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.19s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "clippy_final",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.dev.package.sha2.opt-level=3",
+        "-p",
+        "aster-effect",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "status": "FINISHED",
+      "exit_code": 0,
+      "process_seconds": 4.7808431250000005,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "workspace_format_final",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "status": "FINISHED",
+      "exit_code": 1,
+      "process_seconds": 22.647522416999998,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    }
+  ],
+  "format": {
+    "failed_path_count": 783,
+    "owned_intersection": []
+  },
+  "metrics": {
+    "passes_before": 1,
+    "passes_after": 3,
+    "total": 3,
+    "pass_rate_delta_percentage_points": 66.66666666666667,
+    "failures_percent": -100,
+    "compactions": {
+      "missing": {
+        "before": 0,
+        "after": 3,
+        "percent": null
+      },
+      "later_missing": {
+        "before": 0,
+        "after": 2,
+        "percent": null
+      },
+      "fresh_known": {
+        "before": 0,
+        "after": 0,
+        "percent": null
+      }
+    },
+    "whole_effect_process": {
+      "before": 23.011998041,
+      "after": 23.186672458,
+      "percent": 0.7590580213364673,
+      "note": "Three new tests; not a task benchmark."
+    }
+  },
+  "real_llm_requests": 0,
+  "accepted_task_efficiency_gain": false,
+  "new_configuration": 0,
+  "new_provider_usage_values": false,
+  "os": "macOS arm64",
+  "rust": "1.97.1"
+}

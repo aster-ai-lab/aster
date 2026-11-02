@@ -7,6 +7,8 @@ use crate::budget::{BudgetDecision, BudgetGuard};
 use crate::llm::{LlmResponse, StreamEvent, TokenUsage};
 use std::future::Future;
 
+mod verification_preview;
+
 #[derive(Default)]
 struct Records(Mutex<Vec<TokenUsage>>);
 #[async_trait::async_trait]
