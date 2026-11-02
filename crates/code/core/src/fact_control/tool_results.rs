@@ -384,6 +384,17 @@ pub(super) async fn confirmation_parked(
     if run_permission(policy, checker, agent, name, args) != PermissionDecision::Ask {
         return false;
     }
+    // Invalid model input must reach the schema receipt without consuming human approval.
+    if surface.is_some_and(|surface| {
+        surface
+            .agent
+            .tool_executor_handle()
+            .registry()
+            .validate_arguments(name, args)
+            .is_err()
+    }) {
+        return false;
+    }
     // A command the sandbox will not start cannot be authorized by waiting.
     if surface
         .and_then(|surface| surface.agent.execution_unavailable(name, args))

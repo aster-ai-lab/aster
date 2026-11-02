@@ -202,7 +202,7 @@ pub(super) async fn prepare_tools(
     let effective_digest = aster_effect::tool_args_digest(&request.call.args)?;
     // Actor approval covers only the original invocation, never rewritten input.
     request.call.needs_confirmation &= effective_digest == original_digest;
-    if argument_error.is_none() && denial.is_none() {
+    if argument_error.is_none() && denial.is_none() && effective_digest != original_digest {
         argument_error = tools
             .executor
             .registry()
@@ -252,7 +252,8 @@ pub(super) async fn prepare_tools(
     // park; it is not proof that the call was refused. Recheck that same
     // authority when no actor confirmation was required. Rewritten Ask
     // arguments never inherit approval of the original arguments.
-    let unconfirmed_ask = if effective_permission == PermissionDecision::Ask
+    let unconfirmed_ask = if argument_error.is_none()
+        && effective_permission == PermissionDecision::Ask
         && !request.call.needs_confirmation
     {
         match tools.agent.as_ref() {

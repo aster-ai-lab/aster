@@ -2,6 +2,49 @@
 
 use super::*;
 
+#[tokio::test]
+async fn invalid_unconfirmed_arguments_keep_the_schema_error_without_effects() {
+    let root = tempfile::tempdir().unwrap();
+    let (base, executions, hooks) = schema_tools(root.path(), None);
+    let mut tools = base.as_ref().clone();
+    tools.permission = PermissionPolicy::new();
+    let (events, _) = tokio::sync::broadcast::channel(8);
+    let manager = Arc::new(crate::hitl::ConfirmationManager::new(
+        crate::hitl::ConfirmationPolicy::enabled(),
+        events,
+    ));
+    let hook_engine = tools.agent.as_ref().unwrap().hook_executor();
+    tools.agent = Some(crate::agent::AgentLoop::new(
+        Arc::new(crate::agent::tests::MockLlmClient::new(Vec::new())),
+        Arc::clone(&tools.executor),
+        tools.context.clone(),
+        crate::agent::AgentConfig {
+            confirmation_manager: Some(manager.clone()),
+            hook_engine,
+            ..Default::default()
+        },
+    ));
+    let tools = Arc::new(tools);
+    let prepared = prepare_tools(
+        Arc::clone(&tools),
+        request("invalid-unconfirmed", json!({"unexpected":true})),
+        Default::default(),
+    )
+    .await
+    .unwrap();
+    let result = execute_prepared(tools, prepared).await;
+    assert_eq!(result.outcome, ToolExecutionOutcome::Failed);
+    assert!(result
+        .output
+        .as_str()
+        .unwrap()
+        .contains("Invalid arguments for tool 'receipt_probe'"));
+    assert_eq!(executions.load(Ordering::SeqCst), 0);
+    assert_eq!(hooks.load(Ordering::SeqCst), 0);
+    assert!(manager.pending_confirmations().await.is_empty());
+    assert!(result.effects.changes.is_empty());
+}
+
 struct StrictReceiptProbe(Arc<AtomicUsize>);
 
 #[async_trait::async_trait]

@@ -3,6 +3,37 @@
 use super::*;
 
 #[tokio::test]
+async fn invalid_model_arguments_do_not_park_for_confirmation() {
+    let root = tempfile::tempdir().unwrap();
+    let mut surface = tool_history_tests::surface(
+        root.path(),
+        Arc::new(tool_history_tests::ObservedClient::default()),
+    );
+    let (events, _) = tokio::sync::broadcast::channel(8);
+    surface.confirmation = Some(Arc::new(crate::hitl::ConfirmationManager::new(
+        crate::hitl::ConfirmationPolicy::enabled(),
+        events,
+    )));
+    let invalid = serde_json::json!({"unexpected":true});
+    assert!(surface
+        .agent
+        .tool_executor_handle()
+        .registry()
+        .validate_arguments("read", &invalid)
+        .is_err());
+    assert!(!confirmation_parked(&PermissionPolicy::new(), Some(&surface), "read", &invalid).await);
+    assert!(
+        confirmation_parked(
+            &PermissionPolicy::new(),
+            Some(&surface),
+            "read",
+            &serde_json::json!({"file_path":"a.txt"})
+        )
+        .await
+    );
+}
+
+#[tokio::test]
 async fn owned_consent_ids_are_fresh_without_hiding_same_response_collisions_or_changing_legacy_ids(
 ) {
     let root = tempfile::tempdir().unwrap();
