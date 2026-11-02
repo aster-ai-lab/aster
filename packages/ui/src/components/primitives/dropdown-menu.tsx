@@ -101,6 +101,7 @@ function DropdownMenuContent({
           contentRef.current = null
           cleanup()
         }
+      return undefined
     },
     [dismissal.ref]
   )
