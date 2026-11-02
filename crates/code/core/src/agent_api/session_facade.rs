@@ -598,6 +598,16 @@ impl AgentSession {
         )
     }
 
+    /// Observe the latest reported cumulative usage, including late helper calls.
+    ///
+    /// The initial value includes restored usage. Intermediate updates may
+    /// coalesce. Dropping the receiver does not cancel work, and the receiver
+    /// does not keep the session alive. The channel closes when the session
+    /// and its retained workers release their accounting state.
+    pub fn subscribe_usage(&self) -> tokio::sync::watch::Receiver<crate::llm::TokenUsage> {
+        crate::error::write_or_recover(&self.persistence_state).subscribe_usage()
+    }
+
     /// Tokens, cache share and the tool results that weigh most in this session.
     pub fn context_report(&self) -> crate::error::Result<SessionContextReport> {
         let usage = SessionView::from_session(self).recorded_token_usage();

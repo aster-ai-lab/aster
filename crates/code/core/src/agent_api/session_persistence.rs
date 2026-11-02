@@ -24,6 +24,8 @@ pub(super) struct SessionPersistenceState {
     baseline: Option<SessionData>,
     total_usage: crate::llm::TokenUsage,
     tasks: Vec<crate::planning::Task>,
+    usage_updates: Option<tokio::sync::watch::Sender<crate::llm::TokenUsage>>,
+    save_gate: Arc<tokio::sync::Mutex<()>>,
 }
 
 #[derive(Clone)]
@@ -36,6 +38,15 @@ struct SessionPersistenceSeed {
 impl SessionPersistenceState {
     pub(super) fn recorded_usage(&self) -> crate::llm::TokenUsage {
         self.total_usage.clone()
+    }
+
+    pub(super) fn subscribe_usage(
+        &mut self,
+    ) -> tokio::sync::watch::Receiver<crate::llm::TokenUsage> {
+        let initial = self.total_usage.clone();
+        self.usage_updates
+            .get_or_insert_with(|| tokio::sync::watch::channel(initial).0)
+            .subscribe()
     }
 
     pub(super) fn record_usage(&mut self, usage: &crate::llm::TokenUsage) {
@@ -57,6 +68,9 @@ impl SessionPersistenceState {
             self.total_usage.cache_write_tokens,
             usage.cache_write_tokens,
         );
+        if let Some(updates) = &self.usage_updates {
+            updates.send_replace(self.total_usage.clone());
+        }
     }
 
     pub(super) fn tasks_snapshot(&self) -> Vec<crate::planning::Task> {
@@ -70,6 +84,9 @@ impl SessionPersistenceState {
 
     fn restore(&mut self, session: SessionData) {
         self.total_usage = session.total_usage.clone();
+        if let Some(updates) = &self.usage_updates {
+            updates.send_replace(self.total_usage.clone());
+        }
         self.tasks = session.tasks.clone();
         self.baseline = Some(session);
     }
@@ -205,6 +222,9 @@ impl SessionPersistenceContext {
             None => return Ok(()),
         };
 
+        // Late helper saves share capture/commit order with the next Run.
+        let gate = Arc::clone(&read_or_recover(&self.persistence_state).save_gate);
+        let _guard = gate.lock().await;
         let snapshot = self.capture_snapshot().await?;
         store.save_snapshot(&snapshot).await.map_err(|error| {
             CodeError::Session(format!(
