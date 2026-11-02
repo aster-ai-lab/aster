@@ -1,0 +1,408 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/26.8.1/bin/node",
+      "/Users/roylin/code/aster/apps/studio/node_modules/@playwright/test/cli.js",
+      "test",
+      "-c",
+      "playwright.composer-audit.config.ts",
+      "tests/e2e/composer-audit/popup-motion.spec.ts",
+      "--project",
+      "chromium",
+      "--reporter=json"
+    ],
+    "configFile": "/Users/roylin/code/aster/apps/studio/playwright.composer-audit.config.ts",
+    "rootDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "popup-motion.spec.ts",
+      "file": "popup-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "permission hover glides without choosing a mode or losing the draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2639,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:21.954Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-fcc8c82c60779cf7c4eb",
+          "file": "popup-motion.spec.ts",
+          "line": 28,
+          "column": 5
+        },
+        {
+          "title": "options popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2130,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:24.685Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-ba2e08396e539bce23bb",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "model popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21394,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:76:33",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 33,
+                      "line": 76
+                    },
+                    "snippet": "  74 |       '[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)'\n  75 |     )\n> 76 |     await expect(items.first()).toBeVisible()\n     |                                 ^\n  77 |     await items.first().hover()\n  78 |     await follows(popup, items.first())\n  79 |     await popup.screenshot({ path: info.outputPath(`${kind}-hover.png`) })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 33,
+                        "line": 76
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-model-picker=\"true\"]').first().locator('[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)').first()\u001b[22m\n\n\n  74 |       '[role=\"option\"]:not([aria-disabled=\"true\"]), [role=\"menuitemradio\"]:not(:disabled), [data-composer-popup-item]:not(:disabled)'\n  75 |     )\n> 76 |     await expect(items.first()).toBeVisible()\n     |                                 ^\n  77 |     await items.first().hover()\n  78 |     await follows(popup, items.first())\n  79 |     await popup.screenshot({ path: info.outputPath(`${kind}-hover.png`) })\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:76:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:26.821Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 33,
+                    "line": 76
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-d34e60732d81c8132d6c",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "scope popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1941,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:48.429Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-c1349bc2855b1adba34a",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "optimize popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2053,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:50.472Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a291f8ca98f085717393",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "slash candidates share pointer feedback and keep keyboard focus in the editor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2544,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:52.534Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-62778530f72b29171ad9",
+          "file": "popup-motion.spec.ts",
+          "line": 85,
+          "column": 5
+        },
+        {
+          "title": "reduced motion keeps the popup and its choices immediately usable",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2214,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:116:88",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 88,
+                      "line": 116
+                    },
+                    "snippet": "  114 |   await item.hover()\n  115 |   await follows(popup, item)\n> 116 |   expect(await popup.evaluate((node) => node.getAnimations({ subtree: true }).length)).toBe(0)\n      |                                                                                        ^\n  117 |   await item.click()\n  118 |   await expect(page.getByRole('button', { name: /^授权模式:/ }).first()).toHaveAttribute('data-posture', 'auto')\n  119 | })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 88,
+                        "line": 116
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n\n  114 |   await item.hover()\n  115 |   await follows(popup, item)\n> 116 |   expect(await popup.evaluate((node) => node.getAnimations({ subtree: true }).length)).toBe(0)\n      |                                                                                        ^\n  117 |   await item.click()\n  118 |   await expect(page.getByRole('button', { name: /^授权模式:/ }).first()).toHaveAttribute('data-posture', 'auto')\n  119 | })\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:116:88"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:12:55.082Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-reduced-motio-312ba--choices-immediately-usable-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-reduced-motio-312ba--choices-immediately-usable-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 88,
+                    "line": 116
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a9c32f34caffec9bc71b",
+          "file": "popup-motion.spec.ts",
+          "line": 103,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T15:12:21.666Z",
+    "duration": 35662.03,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

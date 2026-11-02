@@ -14,6 +14,26 @@ const options = [
 ]
 
 describe('SearchSelect editor choices', () => {
+  it('moves its hover plate without changing the selected value or highlighting a disabled option', () => {
+    const change = vi.fn()
+    render(<SearchSelect glidingHighlight searchable={false} allowClear={false} options={[
+      { value: 'alpha', label: 'Alpha' },
+      { value: 'beta', label: 'Beta' },
+      { value: 'gamma', label: 'Gamma', disabled: true }
+    ]} value="alpha" onChange={change} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Alpha' }))
+    const beta = screen.getByRole('option', { name: 'Beta' })
+    fireEvent.mouseEnter(beta.querySelector('button')!)
+    // The plate is a maintained visual slot; selection remains the owner's value.
+    expect(beta.querySelector('[data-slot="search-select-hover-highlight"]')).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Alpha' })).toHaveAttribute('aria-selected', 'true')
+    expect(change).not.toHaveBeenCalled()
+    fireEvent.mouseEnter(screen.getByRole('option', { name: 'Gamma' }).querySelector('button')!)
+    expect(beta.querySelector('[data-slot="search-select-hover-highlight"]')).toBeInTheDocument()
+    fireEvent.click(beta)
+    expect(change).toHaveBeenCalledExactlyOnceWith('beta')
+  })
+
   it('skips disabled options for keyboard activation and refuses their pointer activation', () => {
     const change = vi.fn()
     render(<SearchSelect searchable={false} allowClear={false} options={[

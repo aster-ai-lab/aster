@@ -1,0 +1,583 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/26.8.1/bin/node",
+      "/Users/roylin/code/aster/apps/studio/node_modules/@playwright/test/cli.js",
+      "test",
+      "-c",
+      "playwright.composer-audit.config.ts",
+      "tests/e2e/composer-audit/popup-motion.spec.ts",
+      "--project",
+      "chromium",
+      "--reporter=json"
+    ],
+    "configFile": "/Users/roylin/code/aster/apps/studio/playwright.composer-audit.config.ts",
+    "rootDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "popup-motion.spec.ts",
+      "file": "popup-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "permission hover glides without choosing a mode or losing the draft",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21609,
+                  "error": {
+                    "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"保留这份草稿\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"保留这份草稿\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:30:16",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 16,
+                      "line": 30
+                    },
+                    "snippet": "  28 | test('permission hover glides without choosing a mode or losing the draft', async ({ page }, info) => {\n  29 |   const editor = await start(page)\n> 30 |   await editor.fill('保留这份草稿')\n     |                ^\n  31 |   const trigger = page.getByRole('button', { name: /^授权模式:/ }).first()\n  32 |   const posture = await trigger.getAttribute('data-posture')\n  33 |   await trigger.click()"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 16,
+                        "line": 30
+                      },
+                      "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"保留这份草稿\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  28 | test('permission hover glides without choosing a mode or losing the draft', async ({ page }, info) => {\n  29 |   const editor = await start(page)\n> 30 |   await editor.fill('保留这份草稿')\n     |                ^\n  31 |   const trigger = page.getByRole('button', { name: /^授权模式:/ }).first()\n  32 |   const posture = await trigger.getAttribute('data-posture')\n  33 |   await trigger.click()\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:30:16"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:06:46.346Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-permission-ho-5e33d--a-mode-or-losing-the-draft-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-permission-ho-5e33d--a-mode-or-losing-the-draft-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 16,
+                    "line": 30
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-fcc8c82c60779cf7c4eb",
+          "file": "popup-motion.spec.ts",
+          "line": 28,
+          "column": 5
+        },
+        {
+          "title": "options popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21101,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '更多选项', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" aria-label=\"更多选项\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-slot=\"popover-trigger\" data-workbench-chip=\"options\" class=\"grid size-[30px] place-items-center rounded-[8px] bg-transparent text-[var(--color-ink-faint)] outline-none hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink)] focus-visible:ring-2 focus-visible:ring-black/10\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '更多选项', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" aria-label=\"更多选项\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-slot=\"popover-trigger\" data-workbench-chip=\"options\" class=\"grid size-[30px] place-items-center rounded-[8px] bg-transparent text-[var(--color-ink-faint)] outline-none hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink)] focus-visible:ring-2 focus-visible:ring-black/10\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 27,
+                      "line": 62
+                    },
+                    "snippet": "  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 27,
+                        "line": 62
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '更多选项', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" aria-label=\"更多选项\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-slot=\"popover-trigger\" data-workbench-chip=\"options\" class=\"grid size-[30px] place-items-center rounded-[8px] bg-transparent text-[var(--color-ink-faint)] outline-none hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink)] focus-visible:ring-2 focus-visible:ring-black/10\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:07:08.272Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-options-popup-026b8-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-options-popup-026b8-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 27,
+                    "line": 62
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-ba2e08396e539bce23bb",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "model popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21145,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"选择模型\" type=\"button\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-chip=\"model\" data-slot=\"popover-trigger\" data-ui=\"agents.workbench-home-composer\" class=\"flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"选择模型\" type=\"button\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-chip=\"model\" data-slot=\"popover-trigger\" data-ui=\"agents.workbench-home-composer\" class=\"flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 27,
+                      "line": 62
+                    },
+                    "snippet": "  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 27,
+                        "line": 62
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"选择模型\" type=\"button\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-chip=\"model\" data-slot=\"popover-trigger\" data-ui=\"agents.workbench-home-composer\" class=\"flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:07:29.672Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 27,
+                    "line": 62
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-d34e60732d81c8132d6c",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "scope popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21102,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^任务范围:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" title=\"选择项目\" type=\"button\" aria-busy=\"false\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-scope=\"true\" data-slot=\"popover-trigger\" aria-label=\"任务范围: 选择项目 · 当前目录\" class=\"inline-flex h-[30px] max-w-[15rem] min-w-0 items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none transition-colors outline-none select-none bg-[#f7f7f7] text-[#3f3f3f] hover:bg-[#f0f0f0] data-[state=open]:bg-[#ededed] focus-visible:ring-2 focus-visible:ring-black/10 disab…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^任务范围:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" title=\"选择项目\" type=\"button\" aria-busy=\"false\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-scope=\"true\" data-slot=\"popover-trigger\" aria-label=\"任务范围: 选择项目 · 当前目录\" class=\"inline-flex h-[30px] max-w-[15rem] min-w-0 items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none transition-colors outline-none select-none bg-[#f7f7f7] text-[#3f3f3f] hover:bg-[#f0f0f0] data-[state=open]:bg-[#ededed] focus-visible:ring-2 focus-visible:ring-black/10 disab…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 27,
+                      "line": 62
+                    },
+                    "snippet": "  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 27,
+                        "line": 62
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^任务范围:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" title=\"选择项目\" type=\"button\" aria-busy=\"false\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-workbench-scope=\"true\" data-slot=\"popover-trigger\" aria-label=\"任务范围: 选择项目 · 当前目录\" class=\"inline-flex h-[30px] max-w-[15rem] min-w-0 items-center gap-1.5 rounded-[8px] px-2 text-[13px] leading-none transition-colors outline-none select-none bg-[#f7f7f7] text-[#3f3f3f] hover:bg-[#f0f0f0] data-[state=open]:bg-[#ededed] focus-visible:ring-2 focus-visible:ring-black/10 disab…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  60 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  61 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 62 |     await trigger.first().click()\n     |                           ^\n  63 |     const selector =\n  64 |       kind === 'options'\n  65 |         ? '[data-workbench-menu=\"options\"]'\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:62:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:07:51.165Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-scope-popup-s-2acdc-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-scope-popup-s-2acdc-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 27,
+                    "line": 62
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-c1349bc2855b1adba34a",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "optimize popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21086,
+                  "error": {
+                    "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"整理这段说明\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"整理这段说明\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:53:43",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 43,
+                      "line": 53
+                    },
+                    "snippet": "  51 |   test(`${kind} popup shares the entrance and item highlight`, async ({ page }, info) => {\n  52 |     const editor = await start(page)\n> 53 |     if (kind === 'optimize') await editor.fill('整理这段说明')\n     |                                           ^\n  54 |     const trigger =\n  55 |       kind === 'options'\n  56 |         ? page.getByRole('button', { name: '更多选项', exact: true })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 43,
+                        "line": 53
+                      },
+                      "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"整理这段说明\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  51 |   test(`${kind} popup shares the entrance and item highlight`, async ({ page }, info) => {\n  52 |     const editor = await start(page)\n> 53 |     if (kind === 'optimize') await editor.fill('整理这段说明')\n     |                                           ^\n  54 |     const trigger =\n  55 |       kind === 'options'\n  56 |         ? page.getByRole('button', { name: '更多选项', exact: true })\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:53:43"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:08:12.544Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-optimize-popu-8eccd-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-optimize-popu-8eccd-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 43,
+                    "line": 53
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a291f8ca98f085717393",
+          "file": "popup-motion.spec.ts",
+          "line": 51,
+          "column": 7
+        },
+        {
+          "title": "slash candidates share pointer feedback and keep keyboard focus in the editor",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21099,
+                  "error": {
+                    "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"/\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"/\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:87:16",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 16,
+                      "line": 87
+                    },
+                    "snippet": "  85 | test('slash candidates share pointer feedback and keep keyboard focus in the editor', async ({ page }, info) => {\n  86 |   const editor = await start(page)\n> 87 |   await editor.fill('/')\n     |                ^\n  88 |   const popup = page.getByTestId('quick-panel-body')\n  89 |   await expect(popup).toBeVisible()\n  90 |   await expect(popup).toHaveAttribute('data-composer-popup', '')"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 16,
+                        "line": 87
+                      },
+                      "message": "TimeoutError: locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-ui~=\"workbench.home\"]').getByRole('textbox').first()\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"1\" spellcheck=\"false\" aria-label=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" placeholder=\"描述任务，输入 / 使用指令或技能，@ 选择工作区文件\" data-ui=\"chat.deferred-composer-surface.composer-input part:composer-input\" class=\"box-border block w-full min-w-0 flex-1 resize-none overflow-auto bg-transparent text-foreground outline-none\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"/\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  85 | test('slash candidates share pointer feedback and keep keyboard focus in the editor', async ({ page }, info) => {\n  86 |   const editor = await start(page)\n> 87 |   await editor.fill('/')\n     |                ^\n  88 |   const popup = page.getByTestId('quick-panel-body')\n  89 |   await expect(popup).toBeVisible()\n  90 |   await expect(popup).toHaveAttribute('data-composer-popup', '')\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:87:16"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:08:33.932Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-slash-candida-5f315-eyboard-focus-in-the-editor-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-slash-candida-5f315-eyboard-focus-in-the-editor-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 16,
+                    "line": 87
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-62778530f72b29171ad9",
+          "file": "popup-motion.spec.ts",
+          "line": 85,
+          "column": 5
+        },
+        {
+          "title": "reduced motion keeps the popup and its choices immediately usable",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21082,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_2l_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_2l_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:109:6",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 6,
+                      "line": 109
+                    },
+                    "snippet": "  107 |     .getByRole('button', { name: /^授权模式:/ })\n  108 |     .first()\n> 109 |     .click()\n      |      ^\n  110 |   const popup = page.locator('[data-workbench-menu=\"authorize\"]')\n  111 |   await expect(popup).toBeVisible()\n  112 |   await expect(popup).toHaveCSS('transition-duration', '0s')"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 6,
+                        "line": 109
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^授权模式:/ }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button data-ui=\"\" type=\"button\" id=\"radix-_r_2l_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" data-posture=\"default\" data-plan-first=\"false\" aria-label=\"授权模式: 修改前确认\" data-workbench-chip=\"authorize\" data-slot=\"dropdown-menu-trigger\" class=\"src-renderer-pages-agents-WorkbenchPermissionPicker-module__trigger-g76xGJ flex h-[30px] items-center gap-1.5 rounded-[8px] px-2 text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/10 bg-transparent text-[#3f3f3f] hover:bg-[#f7f…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n\n  107 |     .getByRole('button', { name: /^授权模式:/ })\n  108 |     .first()\n> 109 |     .click()\n      |      ^\n  110 |   const popup = page.locator('[data-workbench-menu=\"authorize\"]')\n  111 |   await expect(popup).toBeVisible()\n  112 |   await expect(popup).toHaveCSS('transition-duration', '0s')\n    at /Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:109:6"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T15:08:55.312Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-reduced-motio-312ba--choices-immediately-usable-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/apps/studio/test-results/composer-audit/popup-motion-reduced-motio-312ba--choices-immediately-usable-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 6,
+                    "line": 109
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a9c32f34caffec9bc71b",
+          "file": "popup-motion.spec.ts",
+          "line": 103,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T15:06:46.046Z",
+    "duration": 150465.16999999998,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  }
+}

@@ -47,7 +47,13 @@ fn a_new_user_message_starts_a_fresh_duplicate_window() {
     let config = HarnessConfig::new(16, usize::MAX, 8, 1, vec![], vec![]).unwrap();
     let mut state = SchedulerState::new();
     state.messages = vec!["assistant\ntool read\n{\"file_path\":\"recovery.txt\"}".into()];
-    state.duplicate_start = 0;
+    state.duplicate_calls.insert(
+        (
+            "read".into(),
+            tool_args_digest(&json!({"file_path":"recovery.txt"})).unwrap(),
+        ),
+        3,
+    );
     state.duplicate_reset_pending = true;
     let fact = Fact {
         seq: 1,
@@ -57,14 +63,14 @@ fn a_new_user_message_starts_a_fresh_duplicate_window() {
         payload: json!({"text":"read recovery.txt again"}),
     };
     let state = step(state, &fact, &config);
-    assert_eq!(state.duplicate_start, state.messages.len());
+    assert!(state.duplicate_calls.is_empty());
     assert!(!state.duplicate_reset_pending);
     assert!(state
         .messages
         .last()
         .is_some_and(|line| line == "user\nread recovery.txt again"));
     assert!(duplicate_nudge(
-        &state.messages[state.duplicate_start..],
+        &state.duplicate_calls,
         &ToolCall {
             id: "read-again".into(),
             name: "read".into(),
@@ -75,16 +81,20 @@ fn a_new_user_message_starts_a_fresh_duplicate_window() {
         },
         Some(3),
     )
+    .unwrap()
     .is_none());
 }
 
 #[test]
-fn compaction_translates_only_a_known_retained_suffix() {
+fn compaction_preserves_original_duplicate_counts_for_every_retained_suffix() {
     let config = HarnessConfig::new(16, usize::MAX, 8, 1, vec![], vec![]).unwrap();
-    for (kept, expected) in [(vec!["c", "d"], 1), (vec!["unrelated"], 0), (vec![], 0)] {
+    for kept in [vec!["c", "d"], vec!["unrelated"], vec![]] {
         let mut state = SchedulerState::new();
         state.messages = ["a", "b", "c", "d"].map(str::to_owned).to_vec();
-        state.duplicate_start = 3;
+        state
+            .duplicate_calls
+            .insert(("read".into(), tool_args_digest(&json!({})).unwrap()), 3);
+        let original = state.duplicate_calls.clone();
         let fact = Fact {
             seq: 1,
             kind: "compaction.done".into(),
@@ -93,7 +103,7 @@ fn compaction_translates_only_a_known_retained_suffix() {
             payload: json!({"summary":"controlled summary","kept":kept}),
         };
         let state = step(state, &fact, &config);
-        assert_eq!(state.duplicate_start, expected);
+        assert_eq!(state.duplicate_calls, original);
     }
 }
 
@@ -101,6 +111,9 @@ fn compaction_translates_only_a_known_retained_suffix() {
 fn progress_waits_for_the_whole_model_tool_batch() {
     let mut state = SchedulerState::new();
     state.messages = vec!["assistant\ntool verify\n{}".into()];
+    state
+        .duplicate_calls
+        .insert(("verify".into(), tool_args_digest(&json!({})).unwrap()), 3);
     state.duplicate_reset_pending = true;
     state.queued.push(ToolCall {
         id: "later-ask".into(),
@@ -112,7 +125,7 @@ fn progress_waits_for_the_whole_model_tool_batch() {
     });
     let state = promote_queued(state);
     assert_eq!(state.phase, CodingPhase::Confirm);
-    assert_eq!(state.duplicate_start, 0);
+    assert_eq!(state.duplicate_calls.len(), 1);
     assert!(state.duplicate_reset_pending);
     let state = step(
         state,
@@ -126,6 +139,6 @@ fn progress_waits_for_the_whole_model_tool_batch() {
         &HarnessConfig::new(16, usize::MAX, 8, 1, vec![], vec![]).unwrap(),
     );
     assert_eq!(state.phase, CodingPhase::Done);
-    assert_eq!(state.duplicate_start, state.messages.len());
+    assert!(state.duplicate_calls.is_empty());
     assert!(!state.duplicate_reset_pending);
 }

@@ -1159,7 +1159,6 @@ pub(crate) fn is_harness_path(path: &str) -> bool {
             component,
             std::path::Component::Normal(name)
                 if name == ".aster"
-                    || name == ".aster"
                     || name == ".aster-agent-retrievals"
                     || name == ".git"
                     || name == "__pycache__"

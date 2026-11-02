@@ -5,7 +5,7 @@ use super::*;
 mod cache_proof;
 pub(super) use cache_proof::CacheProofCursor;
 mod novelty;
-pub(super) use novelty::novel_information;
+pub(super) use novelty::{information_identity, novel_information};
 mod refusal;
 pub(super) use refusal::{child_execution_cycle, execution_cycle, ExecutionCycle};
 
@@ -67,7 +67,16 @@ pub(super) fn runner_interrupted_value(output: &str) -> serde_json::Value {
 
 pub(super) async fn prepare_tools(
     tools: Arc<ExecutorTools>,
+    request: ToolPreparationRequest,
+    cancel: tokio_util::sync::CancellationToken,
+) -> Result<PreparedToolExecution, ActorError> {
+    prepare_tools_with_refusal(tools, request, None, cancel).await
+}
+
+pub(super) async fn prepare_tools_with_refusal(
+    tools: Arc<ExecutorTools>,
     mut request: ToolPreparationRequest,
+    refusal: Option<String>,
     cancel: tokio_util::sync::CancellationToken,
 ) -> Result<PreparedToolExecution, ActorError> {
     let original_digest = aster_effect::tool_args_digest(&request.call.args)?;
@@ -180,6 +189,9 @@ pub(super) async fn prepare_tools(
                 }
             }
         }
+    }
+    if denial.is_none() && argument_error.is_none() && !cancel.is_cancelled() {
+        denial = refusal;
     }
     if denial.is_none() && argument_error.is_none() && !cancel.is_cancelled() {
         if let Some(agent) = &tools.agent {

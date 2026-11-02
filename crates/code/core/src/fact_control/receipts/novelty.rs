@@ -69,17 +69,12 @@ pub(in crate::fact_control) fn novel_information(
 }
 
 // The raw observation excludes host repeat hints and caller-controlled metadata.
-pub(super) fn information_identity(
+pub(in crate::fact_control) fn information_identity(
     tool: &str,
     result: &ToolExecutionResultV1,
     args: &str,
 ) -> Result<Option<String>, ActorError> {
-    if !matches!(
-        result.outcome,
-        ToolExecutionOutcome::Succeeded | ToolExecutionOutcome::Failed
-    ) || result.effects.completeness != ToolObservationCompleteness::Complete
-        || !result.effects.unresolved_external_operations.is_empty()
-    {
+    if !result.has_complete_observation() {
         return Ok(None);
     }
     let Some(body) = result.output.as_str() else {
@@ -105,10 +100,12 @@ pub(super) fn information_identity(
                 .map_err(|error| ActorError::Schema(error.to_string()))?
         }
     };
-    crate::content_digest::digest_json(
-        "aster.code.tool-information.v1",
-        &(tool, args, result.outcome, result.exit_code, observation),
+    aster_effect::tool_information_digest(
+        tool,
+        args,
+        result.outcome,
+        result.exit_code,
+        &observation,
     )
     .map(Some)
-    .map_err(|error| ActorError::Schema(error.to_string()))
 }

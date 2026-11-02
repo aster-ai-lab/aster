@@ -1,0 +1,11 @@
+{
+  "studio_commit": "62653218fa1a96f7776b2e433178478d19fd9c16",
+  "remote_main": "62653218fa1a96f7776b2e433178478d19fd9c16",
+  "local_signature": "good",
+  "dco_signed_off": true,
+  "github_verification": {
+    "verified": false,
+    "reason": "unknown_key"
+  },
+  "root_base": "5a9bded4d7136c11ad0957e052f1e7c17170f9c4"
+}

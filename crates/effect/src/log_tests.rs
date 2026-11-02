@@ -243,3 +243,124 @@ fn byte_limit_compacts_only_the_already_summarized_message_prefix() {
             <= MAX_LOG_BYTES
     );
 }
+
+fn blob_fact(kind: &str, key: &str, bytes: usize) -> NewFact {
+    NewFact {
+        kind: kind.into(),
+        key: key.into(),
+        payload: serde_json::json!({ "text": "x".repeat(bytes) }),
+    }
+}
+
+#[test]
+fn byte_limit_prunes_prepared_tool_calls_and_superseded_summaries() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    for round in 0..6 {
+        for (kind, key) in [
+            ("tool.prepared", format!("prepared-{round}")),
+            ("compaction.done", format!("compaction-{round}")),
+        ] {
+            log.append("thread-1", &[blob_fact(kind, &key, 1024 * 1024)], None)
+                .unwrap();
+        }
+    }
+    for index in 0..12 {
+        log.append(
+            "thread-1",
+            &[blob_fact(
+                "tool.prepared",
+                &format!("late-{index}"),
+                1024 * 1024,
+            )],
+            None,
+        )
+        .unwrap();
+    }
+    let facts = log.read("thread-1").unwrap();
+    let kind_of = |key: &str| {
+        facts
+            .iter()
+            .find(|fact| fact.key == key)
+            .unwrap()
+            .kind
+            .clone()
+    };
+    assert_eq!(kind_of("compaction-0"), "compaction.pruned");
+    assert_eq!(kind_of("prepared-0"), "compaction.pruned");
+    assert_eq!(kind_of("compaction-5"), "compaction.done");
+    assert_eq!(kind_of("late-11"), "tool.prepared");
+    assert_eq!(
+        facts.iter().map(|fact| fact.seq).collect::<Vec<_>>(),
+        (1..=facts.len() as u64).collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn byte_limit_keeps_the_log_when_pruning_cannot_make_room() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    log.append(
+        "thread-1",
+        &[typed_fact("user.message", "preserve-if-full")],
+        None,
+    )
+    .unwrap();
+    log.append(
+        "thread-1",
+        &[typed_fact("compaction.done", "compaction")],
+        None,
+    )
+    .unwrap();
+    for index in 0..15 {
+        log.append(
+            "thread-1",
+            &[blob_fact(
+                "goal.definition",
+                &format!("goal-{index}"),
+                1024 * 1024,
+            )],
+            None,
+        )
+        .unwrap();
+    }
+    log.append(
+        "thread-1",
+        &[blob_fact("goal.definition", "goal-last", 900 * 1024)],
+        None,
+    )
+    .unwrap();
+    let before = std::fs::read(dir.path().join("thread-1.jsonl")).unwrap();
+    assert!(log
+        .append(
+            "thread-1",
+            &[blob_fact("user.message", "next", 200 * 1024)],
+            None
+        )
+        .is_err());
+    assert!(
+        std::fs::read(dir.path().join("thread-1.jsonl")).unwrap() == before,
+        "a refused append must preserve the original log bytes"
+    );
+}
+
+#[test]
+fn rewind_cannot_cut_into_compacted_history() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    for (kind, key) in [
+        ("user.message", "old-user"),
+        ("compaction.done", "compaction"),
+        ("user.message", "after"),
+    ] {
+        log.append("thread-1", &[typed_fact(kind, key)], None)
+            .unwrap();
+    }
+    let opened = log.read_opened("thread-1", false).unwrap().unwrap();
+    let retained = compacted_message_prefix(&opened.facts).unwrap();
+    log.rewrite_compacted("thread-1", &opened, &retained)
+        .unwrap();
+    drop(opened);
+    assert!(log.truncate_after("thread-1", 1).is_err());
+    assert_eq!(log.truncate_after("thread-1", 2).unwrap(), 1);
+}

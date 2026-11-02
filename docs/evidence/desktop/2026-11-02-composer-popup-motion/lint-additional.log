@@ -1,0 +1,6 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchWorktreeSlot.tsx
+  6:34  warning  Unexpected path "@renderer/pages/settings/aligned/worktreeStore" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+✖ 1 problem (0 errors, 1 warning)
+
