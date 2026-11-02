@@ -3,6 +3,24 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 #[test]
+fn acl_reasoning_effort_round_trips_and_obeys_layer_precedence() {
+    let source = "default_model = \"mock/model\"\nreasoning_effort = \"max\"\n";
+    let mut config = CodeConfig::from_acl(source).unwrap();
+    assert_eq!(config.reasoning_effort, Some(ReasoningEffort::Max));
+    config.reasoning_effort = Some(ReasoningEffort::Low);
+    let updated = rewrite_acl_sections(source, &config, &[ConfigSection::ReasoningEffort]).unwrap();
+    assert_eq!(
+        CodeConfig::from_acl(&updated).unwrap().reasoning_effort,
+        Some(ReasoningEffort::Low)
+    );
+    let merged = CodeConfig::from_acl_layers(&[source, "reasoning_effort = \"medium\"\n"]).unwrap();
+    assert_eq!(merged.reasoning_effort, Some(ReasoningEffort::Medium));
+    for invalid in ["reasoning_effort = \"unknown\"", "reasoning_effort = 42"] {
+        assert!(CodeConfig::from_acl(invalid).is_err(), "{invalid}");
+    }
+}
+
+#[test]
 fn test_config_default() {
     let config = CodeConfig::default();
     assert!(config.skill_dirs.is_empty());

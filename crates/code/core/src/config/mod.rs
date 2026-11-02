@@ -27,7 +27,9 @@ mod workspace_trust;
 
 pub use account_import::AccountImport;
 pub use editor::{rewrite_acl_sections, ConfigSection};
+mod reasoning_effort;
 pub(crate) use loader::parse_mcp_server_block;
+pub use reasoning_effort::ReasoningEffort;
 /// Built-in provider name for Cloud-admitted Inference route models.
 pub const ASTER_INFERENCE_PROVIDER: &str = "aster-inference";
 
@@ -184,6 +186,14 @@ pub struct CodeConfig {
     /// Default model in "provider/model" format (e.g., "anthropic/claude-sonnet-4-20250514")
     #[serde(default, alias = "default_model")]
     pub default_model: Option<String>,
+
+    /// Initial effort for new sessions; explicit host launch options take precedence.
+    #[serde(
+        default,
+        alias = "reasoning_effort",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub reasoning_effort: Option<ReasoningEffort>,
 
     /// Provider configurations
     #[serde(default)]

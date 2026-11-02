@@ -25,6 +25,13 @@ pub(super) fn render_single_section(
             "default_model",
             config.default_model.as_deref().map(string),
         )],
+        ConfigSection::ReasoningEffort => vec![scalar_entry(
+            &["reasoning_effort"],
+            "reasoning_effort",
+            config
+                .reasoning_effort
+                .map(|effort| string(effort.as_str())),
+        )],
         ConfigSection::ModelRuntime => vec![
             scalar_entry(
                 &["thinking_budget", "thinkingBudget"],

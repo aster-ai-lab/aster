@@ -6,6 +6,39 @@ fn meta(value: serde_json::Value) -> Option<acp::Meta> {
 }
 
 #[tokio::test]
+async fn new_agent_restores_acl_effort_and_explicit_launch_override_wins() {
+    let root = tempfile::tempdir().unwrap();
+    for (override_token, expected) in [(None, "max"), (Some("low"), "low")] {
+        let mut launch = tests::test_launch(Some(root.path().join("store")));
+        launch.workspace = root.path().into();
+        launch.config.reasoning_effort = Some(aster_core::config::ReasoningEffort::Max);
+        let mut agent = AsterCodeAgent::new(launch);
+        if let Some(token) = override_token {
+            agent = agent.with_default_reasoning_effort(token).unwrap();
+        }
+        let created = agent
+            .new_session(acp::NewSessionRequest::new(root.path()))
+            .await
+            .unwrap();
+        let models = created.models.unwrap();
+        let active = models
+            .available_models
+            .iter()
+            .find(|model| model.model_id == models.current_model_id)
+            .unwrap();
+        assert_eq!(active.meta.as_ref().unwrap()["reasoningEffort"], expected);
+    }
+    let mut launch = tests::test_launch(Some(root.path().join("default-store")));
+    launch.workspace = root.path().into();
+    launch.config.reasoning_effort = Some(aster_core::config::ReasoningEffort::Default);
+    let agent = AsterCodeAgent::new(launch);
+    assert!(
+        agent.effort.lock().await.is_none(),
+        "an explicitly saved default removes effort overrides"
+    );
+}
+
+#[tokio::test]
 async fn terminal_initial_effort_reaches_new_session_and_allows_later_selection() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));

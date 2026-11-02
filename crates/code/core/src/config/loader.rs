@@ -544,6 +544,7 @@ const KNOWN_CONFIG_BLOCKS: &[&str] = &[
     "auto_delegation",
     "auto_parallel",
     "default_model",
+    "reasoning_effort",
     "goal_control",
     "document_parser",
     "import_accounts",
@@ -784,6 +785,13 @@ impl CodeConfig {
                     if let Some(default_model) = acl_label_or_attr(&block, &["default_model"]) {
                         config.default_model = Some(default_model);
                     }
+                }
+                "reasoning_effort" => {
+                    let value =
+                        acl_string_attr(&block, &["reasoning_effort"]).ok_or_else(|| {
+                            CodeError::Config("reasoning_effort requires a string".into())
+                        })?;
+                    config.reasoning_effort = Some(super::ReasoningEffort::parse(&value)?);
                 }
                 "storage_backend" => {
                     if let Some(backend) = acl_string_attr(&block, &["storage_backend"]) {

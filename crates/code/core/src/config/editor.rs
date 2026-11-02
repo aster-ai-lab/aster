@@ -10,6 +10,7 @@ use crate::error::{CodeError, Result};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ConfigSection {
     DefaultModel,
+    ReasoningEffort,
     Providers,
     ModelRuntime,
     GoalControl,
