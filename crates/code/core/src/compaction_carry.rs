@@ -138,12 +138,12 @@ pub(crate) fn seal_summary(model_summary: &str, carried: &CarriedObligations) ->
 /// A message that is only the standing instruction document. Summarizer input
 /// skips these so the model cannot rewrite them.
 pub(crate) fn is_pure_standing_message(message: &Message) -> bool {
-    is_pure_standing(&message.text())
+    message.role != "tool" && is_pure_standing(&message.text())
 }
 
 pub(crate) fn is_pure_standing_line(line: &str) -> bool {
-    let body = folded_body(line);
-    is_pure_standing(body)
+    let (role, body) = split_folded(line);
+    role != "tool" && is_pure_standing(body)
 }
 
 /// Fallback summaries must stay short. A first user turn longer than a normal
@@ -183,6 +183,9 @@ fn absorb_message(
     revisions: &mut Vec<String>,
     message: &Message,
 ) {
+    if message.role == "tool" {
+        return;
+    }
     let text = message.text();
     if let Some(block) = extract_standing(&text) {
         push_unique(&mut carried.standing, block);
@@ -220,6 +223,10 @@ fn absorb_folded(carried: &mut CarriedObligations, revisions: &mut Vec<String>, 
         return;
     }
     let (role, body) = split_folded(line);
+    // Tool data can use the same headings as the sealed instruction document.
+    if role == "tool" || line.starts_with("assistant\ntool ") {
+        return;
+    }
     if let Some(block) = extract_standing(body) {
         push_unique(&mut carried.standing, block);
     }
@@ -551,10 +558,6 @@ fn strip_heading(text: &str, heading: &str) -> String {
         .join("\n\n")
 }
 
-fn folded_body(line: &str) -> &str {
-    split_folded(line).1
-}
-
 fn split_folded(line: &str) -> (&str, &str) {
     if let Some(body) = line.strip_prefix("user\n") {
         ("user", body)
@@ -621,6 +624,10 @@ fn revision_text_in(text: &str) -> Option<String> {
     }
     section_body(text, "## Revision").filter(|body| !body.is_empty())
 }
+
+#[cfg(test)]
+#[path = "compaction_carry_tests.rs"]
+mod role_tests;
 
 #[cfg(test)]
 mod tests {
