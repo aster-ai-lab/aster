@@ -14,8 +14,8 @@
 //! 4. Re-arm the same policy so a long session can compact repeatedly
 
 use crate::llm::{
-    estimate_message_tokens, ContentBlock, LlmClient, Message, ToolResultContent,
-    ToolResultContentField,
+    estimate_message_tokens, estimate_prompt_tokens, ContentBlock, LlmClient, Message,
+    ToolResultContent, ToolResultContentField,
 };
 use anyhow::{Context, Result};
 use std::sync::Arc;
@@ -740,9 +740,9 @@ fn truncate_tool_result(content: &ToolResultContentField, max_bytes: usize) -> S
 
 /// Summarize an already-split fact-log prefix.
 ///
-/// The caller keeps the recent tail. This path prunes older tool output, asks
-/// the model for a handoff, and caps that handoff. It does not keep a second
-/// recent slice inside the prefix.
+/// The caller keeps the recent tail. This path prunes older tool output when
+/// needed, asks the model for a handoff, and caps that handoff. It does not
+/// keep a second recent slice inside the prefix.
 pub(crate) async fn summarize_folded_prefix(
     client: &dyn LlmClient,
     lines: &[String],
@@ -751,27 +751,30 @@ pub(crate) async fn summarize_folded_prefix(
 ) -> Result<String> {
     let mut carried = crate::compaction_carry::obligations_from_folded(lines);
     carried.durable_source = source.cloned();
-    let protect = TOOL_OUTPUT_PROTECT_TOKENS.min(window_tokens / 4);
-    let pruned = prune_folded_tool_outputs(lines, protect);
-    let conversation = pruned
-        .iter()
-        .filter(|line| !crate::compaction_carry::is_pure_standing_line(line))
-        .cloned()
-        .collect::<Vec<_>>()
-        .join("\n");
-    let prompt = crate::prompts::render(
-        crate::prompts::CONTEXT_COMPACT,
-        &[
-            ("goal", carried.active_goal.as_deref().unwrap_or("")),
-            ("conversation", &conversation),
-        ],
-    );
+    let render_prefix = |lines: &[String]| {
+        let conversation = lines
+            .iter()
+            .filter(|line| !crate::compaction_carry::is_pure_standing_line(line))
+            .cloned()
+            .collect::<Vec<_>>()
+            .join("\n");
+        Message::user(&crate::prompts::render(
+            crate::prompts::CONTEXT_COMPACT,
+            &[
+                ("goal", carried.active_goal.as_deref().unwrap_or("")),
+                ("conversation", &conversation),
+            ],
+        ))
+    };
+    let mut messages = [render_prefix(lines)];
+    // Use the same quarter-window reserve as message compaction.
+    let input_allowance = window_tokens - window_tokens / 4;
+    if estimate_prompt_tokens(&messages, Some(compaction_system_prompt()), &[]) > input_allowance {
+        let protect = TOOL_OUTPUT_PROTECT_TOKENS.min(window_tokens / 4);
+        messages = [render_prefix(&prune_folded_tool_outputs(lines, protect))];
+    }
     let response = client
-        .complete(
-            &[Message::user(&prompt)],
-            Some(compaction_system_prompt()),
-            &[],
-        )
+        .complete(&messages, Some(compaction_system_prompt()), &[])
         .await
         .context("Failed to generate conversation summary")?;
     let summary_text = response.text();

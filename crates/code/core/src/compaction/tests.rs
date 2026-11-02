@@ -71,6 +71,41 @@ async fn folded_prefix_summary_is_model_text_and_prunes_old_tool_output() {
     assert!(!prompt.contains(&huge));
 }
 
+#[tokio::test]
+async fn folded_prefix_preserves_all_observations_when_the_summary_request_fits() {
+    let client = RecordingSummaryClient {
+        prompts: Mutex::new(Vec::new()),
+        systems: Mutex::new(Vec::new()),
+    };
+    let observation = format!(
+        "before{}MIDDLE-EVIDENCE-A4{}after",
+        "\u{03b1}".repeat(12_000),
+        "\u{03b2}".repeat(12_000)
+    );
+    let lines = vec![
+        "user\nPreserve the observations for the handoff.".into(),
+        format!("tool\n{observation}"),
+        "assistant\nContinue inspection.".into(),
+        "tool\nnewer observation".into(),
+    ];
+    assert!(lines.join("\n").len() < 32_768 * 2);
+    summarize_folded_prefix(&client, &lines, 32_768, None)
+        .await
+        .unwrap();
+    let prompts = client.prompts.lock().unwrap();
+    assert_eq!(prompts.len(), 1);
+    let prompt = &prompts[0];
+    assert!(
+        prompt.len() < 32_768 * 3,
+        "fixture fits the existing input allowance"
+    );
+    assert!(
+        prompt.contains(&observation),
+        "do not delete evidence before a summarizer that can receive it"
+    );
+    assert!(prompt.contains("newer observation"));
+}
+
 // -- should_auto_compact tests --
 
 #[test]

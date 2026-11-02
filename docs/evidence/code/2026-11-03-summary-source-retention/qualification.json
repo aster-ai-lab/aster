@@ -1,0 +1,554 @@
+{
+  "status": "Under-budget source-retention fix qualified; frozen original GLM cohort newly started; overall objective active",
+  "host": {
+    "os": "Darwin",
+    "release": "25.6.0",
+    "architecture": "arm64",
+    "rust": "1.97.1",
+    "target": "aarch64-apple-darwin"
+  },
+  "source": {
+    "base": "75dba989d5afb6e41bcaed44ca971cfb4fefa868",
+    "tree": "32c4b63159faab28c91bb99ece8fa3fbf67ef04c",
+    "files": [
+      {
+        "path": "crates/code/core/src/compaction.rs",
+        "sha256": "5ac8f258cae6bebf903639f16f491f53ad62148157406bce5a5239ce373a70e9",
+        "git_blob": "c2605400dd716b3aab17181a857f4d121c3bc48f"
+      },
+      {
+        "path": "crates/code/core/src/compaction/tests.rs",
+        "sha256": "eedc35ac48e4d5ebac12290a62887196690be249ce36bb2cebb761ec05303701",
+        "git_blob": "f7378715bd0ac3dc969c380128a114dc6c8c3ad6"
+      }
+    ]
+  },
+  "scope": "Folded prefix compaction only; preserve complete observations when full summarizer prompt fits existing approximate input allowance",
+  "reused": [
+    "estimate_prompt_tokens",
+    "prune_folded_tool_outputs",
+    "existing quarter-window reserve",
+    "CarriedObligations sealing"
+  ],
+  "new_configuration": 0,
+  "new_dependencies": 0,
+  "extra_model_calls_per_compaction": 0,
+  "provider_output_cap_changes": 0,
+  "focused_red": [
+    {
+      "phase": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/code/core/src/compaction/tests.rs"
+      ],
+      "exit_code": 0,
+      "process_seconds": 0.027565,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "red",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "compaction::tests::folded_prefix_",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "process_seconds": 82.346186,
+      "trace_complete": true,
+      "test_results": [
+        "test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 5696 filtered out; finished in 0.08s"
+      ],
+      "model_requests": 0
+    }
+  ],
+  "initial_green_attempt": [
+    {
+      "phase": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/code/core/src/compaction.rs",
+        "crates/code/core/src/compaction/tests.rs"
+      ],
+      "exit_code": 0,
+      "process_seconds": 0.030804,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0,
+      "trace_note": "Trace also retains original red setup format; this row uses only latest format span."
+    },
+    {
+      "phase": "green",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "compaction::tests::folded_prefix_",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "process_seconds": 41.35812,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    }
+  ],
+  "initial_green_note": "Build failed with E0308/E0599 before tests; corrected to existing Message::user(&str) and shared estimate_prompt_tokens. Raw log and actual 41.358120s retained. Initial format trace contains two runs; metadata uses latest span only.",
+  "focused_outcome": {
+    "before_passed": 1,
+    "before_failed": 1,
+    "after_passed": 2,
+    "after_failed": 0,
+    "pass_rate_delta_percentage_points": 50,
+    "red_process_seconds": 82.346186,
+    "green_process_seconds": 74.705456,
+    "process_delta_percent": -9.278790398379844,
+    "limit": "Includes compilation/cache differences; not task speed",
+    "native_model_requests": 0
+  },
+  "matrix": [
+    {
+      "phase": "format_final",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/code/core/src/compaction.rs",
+        "crates/code/core/src/compaction/tests.rs"
+      ],
+      "exit_code": 0,
+      "process_seconds": 0.031792,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "green_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "compaction::tests::folded_prefix_",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "process_seconds": 74.705456,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5696 filtered out; finished in 0.00s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "core_default_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "--",
+        "compaction::",
+        "compaction_carry::",
+        "fact_control::",
+        "agent::conversation_compaction_soak::",
+        "agent::turn_context::",
+        "agent_api::tests::background_subagent::",
+        "tools::task::tests::provider_fairness::",
+        "llm::output_cap_tests::",
+        "llm::anthropic::",
+        "llm::metering::",
+        "completion_attestor::",
+        "agent::tool_completion_runtime::verification_metadata_tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "process_seconds": 12.423599,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 359 passed; 0 failed; 1 ignored; 0 measured; 5338 filtered out; finished in 11.81s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "core_cli_json_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "--features",
+        "serde_json/preserve_order",
+        "--",
+        "compaction::",
+        "compaction_carry::",
+        "fact_control::",
+        "agent::conversation_compaction_soak::",
+        "agent::turn_context::",
+        "agent_api::tests::background_subagent::",
+        "tools::task::tests::provider_fairness::",
+        "llm::output_cap_tests::",
+        "llm::anthropic::",
+        "llm::metering::",
+        "completion_attestor::",
+        "agent::tool_completion_runtime::verification_metadata_tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "process_seconds": 97.940414,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 359 passed; 0 failed; 1 ignored; 0 measured; 5338 filtered out; finished in 11.17s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "core_minimal_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "--no-default-features",
+        "--features",
+        "minimal",
+        "--",
+        "compaction::",
+        "compaction_carry::",
+        "fact_control::",
+        "agent::conversation_compaction_soak::",
+        "agent::turn_context::",
+        "agent_api::tests::background_subagent::",
+        "tools::task::tests::provider_fairness::",
+        "llm::output_cap_tests::",
+        "llm::anthropic::",
+        "llm::metering::",
+        "completion_attestor::",
+        "agent::tool_completion_runtime::verification_metadata_tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "process_seconds": 82.861921,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 359 passed; 0 failed; 1 ignored; 0 measured; 5223 filtered out; finished in 11.37s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "core_clippy_final",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.dev.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "process_seconds": 60.669507,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    },
+    {
+      "phase": "acp_controls_final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-acp",
+        "--lib",
+        "--",
+        "compaction",
+        "agent::extensions::plan_replay_tests::",
+        "agent::emit::tests::",
+        "agent::host_methods::tests::",
+        "agent::turn_terminal_tests::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "process_seconds": 58.048147,
+      "trace_complete": true,
+      "test_results": [
+        "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 466 filtered out; finished in 3.14s"
+      ],
+      "model_requests": 0
+    },
+    {
+      "phase": "workspace_format_final",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "process_seconds": 22.175478,
+      "trace_complete": true,
+      "test_results": [],
+      "model_requests": 0
+    }
+  ],
+  "process_comparisons": [
+    {
+      "phase": "core_default_final",
+      "before_seconds": 12.695662,
+      "after_seconds": 12.423599,
+      "delta_percent": -2.1429603277087983,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    },
+    {
+      "phase": "core_cli_json_final",
+      "before_seconds": 87.476036,
+      "after_seconds": 97.940414,
+      "delta_percent": 11.962565381906431,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    },
+    {
+      "phase": "core_minimal_final",
+      "before_seconds": 80.747,
+      "after_seconds": 82.861921,
+      "delta_percent": 2.6191945211586853,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    },
+    {
+      "phase": "core_clippy_final",
+      "before_seconds": 63.049517,
+      "after_seconds": 60.669507,
+      "delta_percent": -3.7748266969277466,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    },
+    {
+      "phase": "acp_controls_final",
+      "before_seconds": 55.72814,
+      "after_seconds": 58.048147,
+      "delta_percent": 4.163079909001088,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    },
+    {
+      "phase": "workspace_format_final",
+      "before_seconds": 20.793938,
+      "after_seconds": 22.175478,
+      "delta_percent": 6.643955560509984,
+      "limit": "Different build cache and one additional test per Core selection; not task performance"
+    }
+  ],
+  "format": {
+    "failed_path_count": 783,
+    "owned_intersection": []
+  },
+  "own_clippy_warning_blocks": [],
+  "frozen_build": {
+    "build_id": "aster-cli-pair-v1:1ce05d49f357cc6fdc299b87d908490e3f6ca5d5:aarch64-apple-darwin",
+    "source_before_after_identical": true,
+    "reviewed_production_source_matches": true,
+    "members": {
+      "aster": {
+        "path": "/Users/roylin/code/aster/target/qualification/fallback-state-summary-source-retention-1-80534237-47e0-4201-8267-229c9ffa4c43/aster",
+        "sha256": "90811e3fdd28d2ccc385ee43a4b8079b1f1c6b96dff38dbb6ce17401172702b6",
+        "bytes": 811481240
+      },
+      "aster-acp": {
+        "path": "/Users/roylin/code/aster/target/qualification/fallback-state-summary-source-retention-1-80534237-47e0-4201-8267-229c9ffa4c43/aster-acp",
+        "sha256": "c3d9f5e7614164ba8e5fdfb88e9accf491f16913ebf527ae280ba1c17e92ab43",
+        "bytes": 347263720
+      },
+      "deloop_generalization_real_llm": {
+        "path": "/Users/roylin/code/aster/target/qualification/fallback-state-summary-source-retention-1-80534237-47e0-4201-8267-229c9ffa4c43/deloop_generalization_real_llm",
+        "sha256": "acbbe67fffff61fa24fa01b35fef30df11a6484c954161e2de8a098a06cb2b63",
+        "bytes": 41410032
+      },
+      "deloop_real_llm": {
+        "path": "/Users/roylin/code/aster/target/qualification/fallback-state-summary-source-retention-1-80534237-47e0-4201-8267-229c9ffa4c43/deloop_real_llm",
+        "sha256": "9a21100da9f58e56f816fe81dc2e58b39821786a0744b7abcab0ec10362668ae",
+        "bytes": 41498288
+      },
+      "long_horizon_real_llm": {
+        "path": "/Users/roylin/code/aster/target/qualification/fallback-state-summary-source-retention-1-80534237-47e0-4201-8267-229c9ffa4c43/long_horizon_real_llm",
+        "sha256": "346bd0052a5ca36a3af5a6cd096b84b6b7ddb10a65cf4894c12e4d9ce9b1ca3c",
+        "bytes": 65644104
+      }
+    },
+    "config_sha256": "476b5d3aac696be64cdd6860842ccd9257618a5f4a6430826d4c1ef34b7e3445",
+    "archived_files": [
+      {
+        "name": "summary-source-retention-1-after-build-namespace.json",
+        "sha256": "dec93107be4078cc6cbb6e11770cdf94bf663aeba77692faef4212ef950c2374",
+        "bytes": 2300115
+      },
+      {
+        "name": "summary-source-retention-1-after-build-phase-timing.jsonl",
+        "sha256": "52a506346d9ff4ec7f2a70f1172b7f643fdcb395401d599e7d515cdd23ebbfab",
+        "bytes": 2807
+      },
+      {
+        "name": "summary-source-retention-1-before-build-namespace.json",
+        "sha256": "dec93107be4078cc6cbb6e11770cdf94bf663aeba77692faef4212ef950c2374",
+        "bytes": 2300115
+      },
+      {
+        "name": "summary-source-retention-1-before-build-phase-timing.jsonl",
+        "sha256": "3ac7e9e68b819f5792ced2d050dc78c7b47ba696d5b5e3393f1247d3f916299e",
+        "bytes": 2807
+      },
+      {
+        "name": "summary-source-retention-1-build-phase-summary.json",
+        "sha256": "1963a176e4710607a8a12ae5fc94b18fbb04fac39c646310415897a883aa3b5a",
+        "bytes": 30662
+      },
+      {
+        "name": "summary-source-retention-1-build-phase-timing.jsonl",
+        "sha256": "c3da73547085ee9b9c103d066a80592379fb24964598a748a457eac8a9bd97f7",
+        "bytes": 8029
+      },
+      {
+        "name": "summary-source-retention-1-build-status.json",
+        "sha256": "23168a161091bc11942f3b08e3a8345225686b00b9d135a8ae17f8050c4578fc",
+        "bytes": 1047
+      },
+      {
+        "name": "summary-source-retention-1-freeze-phase-timing.jsonl",
+        "sha256": "06642f29568d9494a0dae514756c4da1e13e052daa602599c2d606bfb9523c28",
+        "bytes": 24818
+      },
+      {
+        "name": "summary-source-retention-1-identity.json",
+        "sha256": "04547e46de7d135f0927736cc787dfd7623d2412e0ef5725839bc836ae126a26",
+        "bytes": 2411
+      },
+      {
+        "name": "summary-source-retention-1-inputs.json",
+        "sha256": "e5eb0dac0b0c5e816c7e5995a0d579d50e79ea330273fcf9649308fbe5e27dde",
+        "bytes": 2253
+      },
+      {
+        "name": "summary-source-retention-1-live-tests-build.log",
+        "sha256": "0ab73320b0e5d98409efc050900ab17830582484c41add91a3b7854813cd44b1",
+        "bytes": 12350
+      },
+      {
+        "name": "summary-source-retention-1-pair-build.log",
+        "sha256": "2a481cfb0719052bf9f61ed11484752993ebe619b416939a4d8643b5c70dbf1e",
+        "bytes": 14477
+      },
+      {
+        "name": "summary-source-retention-1-pair.json",
+        "sha256": "07b04ba2582d15580cd75270684714313a8983b30ee493f824b187f41e206d75",
+        "bytes": 816
+      }
+    ],
+    "source_tree": "32c4b63159faab28c91bb99ece8fa3fbf67ef04c",
+    "unchanged_original_test_paths": 98
+  },
+  "pair_build": {
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/build.py",
+      "summary-source-retention-1"
+    ],
+    "exit_code": 0,
+    "process_seconds": 65.214471,
+    "trace_complete": true,
+    "model_requests": 0
+  },
+  "real_glm": {
+    "label": "summary-source-retention-1",
+    "state": "RUNNING",
+    "model": "glm-01/glm-5.3",
+    "attempts_per_case": 1,
+    "baseline": "stream-preview-1",
+    "accepted_speed_gain_percent": null,
+    "accepted_token_gain_percent": null,
+    "supplementary": "NOT RUN; both originals must pass first"
+  },
+  "last_real_cohort": {
+    "source_commit": "fbd6e78d86ba4770f9ef0de6bd6da77bceac6918",
+    "evidence_commit": "75dba989d5afb6e41bcaed44ca971cfb4fefa868",
+    "passed": 0,
+    "total": 2,
+    "native_tokens": 509103,
+    "cohort_process_seconds": 758.737408,
+    "feed_incorrect_scalar_fields": 30
+  },
+  "not_claimed": [
+    "Overall task completion with simultaneous speed/token savings",
+    "A hard native-token input bound from an estimator",
+    "Recovery from truncated summaries or all arithmetic mistakes",
+    "Original seven supplementary or TUI end-to-end acceptance",
+    "Current installed TUI update, Release or Windows/Linux native qualification"
+  ]
+}
