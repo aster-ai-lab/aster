@@ -1,0 +1,226 @@
+{
+  "at": "2026-11-02T15:34:58.178346+00:00",
+  "status": "FOCUSED_AND_CONNECTED_QUALIFIED",
+  "base_commit": "4892ab29ea235c6c76136879eba526995529d8f8",
+  "qualified_tree": "1298657cbbf970ad4dcd1265636362babf4868ca",
+  "qualified_sources": {
+    "crates/code/core/src/verification.rs": "b0eb29f3a2706fb6e668134b5eb16f7562adf6d3fdb8d2f63f4f84303b2ac24e",
+    "crates/code/core/src/agent/tool_completion_runtime.rs": "b39b8d6a6555be7c31f331507bda69db21f24a3f3be98f46598a5a0ec7f75152",
+    "crates/code/core/src/verification/deletion_tests.rs": "f49299c17510978224ff79537653ec828fb8d62bc875402d8802674afc7af6c2"
+  },
+  "scope": "Existing Host VerificationReport binding for successfully checked, re-observed deletion-only effects; declared host contracts and completion gate unchanged.",
+  "actual_user_failure": {
+    "successful_tools": 4,
+    "deleted_paths_with_typed_missing_identity": 4,
+    "bound_reports": 0,
+    "private_reasoning_inspected": false,
+    "session_modified": false
+  },
+  "focused": {
+    "before_passed": 1,
+    "before_failed": 1,
+    "after_passed": 2,
+    "after_failed": 0,
+    "failure_delta_percent": -100.0,
+    "pass_rate_delta_percentage_points": 50.0,
+    "process_seconds": {
+      "before": 174.383039,
+      "after": 118.194399,
+      "delta": -56.18863999999999,
+      "percent": -32.22139052181559
+    },
+    "note": "Source baselines and compile/loading differ; no task performance claim."
+  },
+  "gates": [
+    {
+      "name": "core-default",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "--",
+        "verification::",
+        "harness_loop::tests::",
+        "agent::tool_completion_runtime::",
+        "fact_control::receipts::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "at": "2026-11-02T15:26:39.513164+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [
+        {
+          "passed": 227,
+          "failed": 0,
+          "ignored": 0,
+          "body_seconds": 9.92
+        }
+      ],
+      "process_seconds": 10.753118
+    },
+    {
+      "name": "core-cli-json",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.test.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--lib",
+        "--features",
+        "serde_json/preserve_order",
+        "--",
+        "verification::",
+        "harness_loop::tests::",
+        "agent::tool_completion_runtime::",
+        "fact_control::receipts::",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "at": "2026-11-02T15:28:26.275103+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [
+        {
+          "passed": 227,
+          "failed": 0,
+          "ignored": 0,
+          "body_seconds": 9.94
+        }
+      ],
+      "process_seconds": 106.758977
+    },
+    {
+      "name": "owning-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.dev.package.sha2.opt-level=3",
+        "-p",
+        "aster-core",
+        "--all-targets",
+        "--no-deps",
+        "--features",
+        "serde_json/preserve_order"
+      ],
+      "exit_code": 0,
+      "at": "2026-11-02T15:29:40.730944+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [],
+      "process_seconds": 74.45362
+    },
+    {
+      "name": "pair-build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--target-dir",
+        "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+        "--config",
+        "profile.dev.package.sha2.opt-level=3",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp",
+        "--bins"
+      ],
+      "exit_code": 0,
+      "at": "2026-11-02T15:32:00.141023+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [],
+      "process_seconds": 139.423778
+    },
+    {
+      "name": "own-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--check",
+        "crates/code/core/src/verification.rs",
+        "crates/code/core/src/verification/deletion_tests.rs",
+        "crates/code/core/src/agent/tool_completion_runtime.rs"
+      ],
+      "exit_code": 0,
+      "at": "2026-11-02T15:32:00.201386+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [],
+      "process_seconds": 0.057785
+    },
+    {
+      "name": "workspace-format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "at": "2026-11-02T15:32:21.904890+00:00",
+      "model_requests": 0,
+      "before": null,
+      "percent": null,
+      "tests": [],
+      "process_seconds": 21.702111
+    }
+  ],
+  "workspace_format": {
+    "status": "EXISTING_FAILURE",
+    "paths": 783,
+    "owned_paths_affected": 0,
+    "note": "The isolated checkout has only the reviewed fix; all reported formatting paths are unchanged committed files."
+  },
+  "real_model_requests": 0,
+  "task_speed_delta_percent": null,
+  "task_tokens_delta_percent": null,
+  "controls": [
+    "real shell check on independent space/non-ASCII filenames",
+    "all removed paths covered",
+    "metadata round-trip",
+    "partial coverage refused",
+    "recreated path refused",
+    "mixed write refused",
+    "declared suite requirement retained"
+  ],
+  "platform": "macOS arm64, pinned Rust1.97.1; Linux/Windows native runtime not tested",
+  "setup_failures": [
+    "Initial test-only BashTool import E0432 corrected before valid red; log retained.",
+    "Original checkout has unrelated host-contract edits, so identical new binding block was applied to exact main at its existing checks; unrelated changes excluded."
+  ],
+  "explicitly_not_claimed": [
+    "Current installed Studio/TUI has not been rebuilt/reinstalled.",
+    "No actual user deletion repeated and no session success state rewritten.",
+    "No full remote CI or whole-repo formatting pass.",
+    "Original GLM long-horizon critical cohort and final TUI background/cancel/restart acceptance remain outstanding."
+  ]
+}

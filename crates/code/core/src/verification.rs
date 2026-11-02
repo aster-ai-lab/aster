@@ -1257,6 +1257,56 @@ pub fn host_report_for_verified_mutation_path_with_content(
     )
 }
 
+/// Re-observe a complete deletion-only ledger after a successful host shell check.
+pub(crate) fn host_report_for_verified_deletions(
+    workspace: &Path,
+    command: &str,
+    ledger: &crate::harness_loop::MutationLedger,
+) -> Option<VerificationReport> {
+    if ledger.is_empty()
+        || ledger.observation_incomplete()
+        || ledger.has_open_children()
+        || ledger.has_failed_effects()
+        || !ledger.observed_records().iter().all(|record| {
+            record
+                .after_identity
+                .as_ref()
+                .is_some_and(|identity| identity.kind == aster_effect::ToolFileKind::Missing)
+        })
+    {
+        return None;
+    }
+    let checked = shell_segments(command)
+        .into_iter()
+        .filter_map(|segment| unquote_shell_token(segment.strip_prefix("test ! -e ")?.trim()))
+        .collect::<Vec<_>>();
+    if !ledger.paths().all(|path| {
+        checked
+            .iter()
+            .any(|checked| mutation_path_matches(path, checked))
+    }) || !ledger.observes_current_workspace(workspace)
+    {
+        return None;
+    }
+    Some(
+        VerificationReport::new(
+            "shell:deleted_paths",
+            ledger
+                .paths()
+                .map(|path| {
+                    VerificationCheck::required(
+                        format!("absent:{path}"),
+                        "path_absent",
+                        format!("Host re-observed deleted path absent: {path}"),
+                    )
+                    .with_status(VerificationStatus::Passed)
+                })
+                .collect(),
+        )
+        .with_effect_digest(ledger.digest()),
+    )
+}
+
 /// Host-declared verification contract: one shell command that counts as the
 /// workspace's project-suite verification, plus the paths a passing run
 /// covers.
@@ -1644,3 +1694,7 @@ impl Verifier for StaticVerifier {
 #[cfg(test)]
 #[path = "verification/tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "verification/deletion_tests.rs"]
+mod deletion_tests;

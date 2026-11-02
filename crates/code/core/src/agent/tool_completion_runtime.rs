@@ -398,6 +398,19 @@ impl crate::agent::TurnEngine {
         let Some(command) = shell_command else {
             return;
         };
+        if allow_synthesis
+            && tool_call.name.eq_ignore_ascii_case("bash")
+            && self.config.verification_contracts.is_empty()
+        {
+            if let Some(report) = crate::verification::host_report_for_verified_deletions(
+                &self.tool_context.workspace,
+                command,
+                &state.mutations,
+            ) {
+                state.verification_reports.push(report);
+                return;
+            }
+        }
         let checks = crate::verification::existence_checks(command);
         if checks.is_empty() {
             // No path-referencing segment: the only remaining binder is a
