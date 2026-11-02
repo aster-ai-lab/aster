@@ -1,0 +1,192 @@
+{
+  "at": "2026-11-02T16:15:49.329748+00:00",
+  "status": "REJECTED_AND_WITHDRAWN",
+  "model": "glm-01/glm-5.3",
+  "config_identity_unchanged": true,
+  "candidate_build_id": "aster-cli-pair-v1:15e67cdf9f0e22ca50f1140b7531dda96111387c:aarch64-apple-darwin",
+  "critical_passed": 0,
+  "critical_total": 2,
+  "supplementary_run": 0,
+  "supplementary_total": 7,
+  "native_tokens_complete": true,
+  "full_native_tokens": 1099697,
+  "cases": [
+    {
+      "case": "holdout",
+      "pass": false,
+      "exit_code": 101,
+      "prompt_ms": 600079,
+      "requests": 40,
+      "compactions": 15,
+      "completed_reads": 5,
+      "full_native_tokens": 614766,
+      "outer_seconds": 617.5243124589999,
+      "unknown_usage_sequences": [],
+      "deltas": {
+        "compactions": {
+          "before": 3,
+          "after": 15,
+          "delta": 12,
+          "percent": 400.0
+        },
+        "completed_reads": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0.0
+        },
+        "full_native_tokens": {
+          "before": 209040,
+          "after": 614766,
+          "delta": 405726,
+          "percent": 194.09012629161884
+        },
+        "outer_seconds": {
+          "before": 341.583033625,
+          "after": 617.5243124589999,
+          "delta": 275.94127883399995,
+          "percent": 80.78307517373258
+        },
+        "prompt_ms": {
+          "before": 321229,
+          "after": 600079,
+          "delta": 278850,
+          "percent": 86.80723097852311
+        },
+        "requests": {
+          "before": 13,
+          "after": 40,
+          "delta": 27,
+          "percent": 207.6923076923077
+        }
+      },
+      "performance_qualified": false,
+      "source_mutation": false,
+      "tools_terminal": true,
+      "cleanup": {
+        "Ok": null
+      },
+      "result_sha256": "ac739cd61a07b31135e250b1fedfa8d641ea4e0226181ce034a4733879c2c99d",
+      "phase_timing": {
+        "complete": false,
+        "process_pid": 74400,
+        "wall_us": 617518654,
+        "partition_us": {
+          "task": 600003536,
+          "cleanup": 2313,
+          "preparation": 15977877,
+          "verification": 30760,
+          "fixture": 870,
+          "other_instrumented": 14224,
+          "unattributed": 1489074
+        },
+        "sum_us": 617518654,
+        "unattributed_percent": 0.24113830252000779,
+        "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+      },
+      "bounded_generation_requests": 15,
+      "bounded_generation_max_tokens_stops": 15
+    },
+    {
+      "case": "feed",
+      "pass": false,
+      "exit_code": 101,
+      "prompt_ms": 600074,
+      "requests": 40,
+      "compactions": 19,
+      "completed_reads": 3,
+      "full_native_tokens": 484931,
+      "outer_seconds": 618.1734760420001,
+      "unknown_usage_sequences": [],
+      "deltas": {
+        "compactions": {
+          "before": 6,
+          "after": 19,
+          "delta": 13,
+          "percent": 216.66666666666666
+        },
+        "completed_reads": {
+          "before": 6,
+          "after": 3,
+          "delta": -3,
+          "percent": -50.0
+        },
+        "full_native_tokens": {
+          "before": null,
+          "after": 484931,
+          "delta": null,
+          "percent": null
+        },
+        "outer_seconds": {
+          "before": 618.081174417,
+          "after": 618.1734760420001,
+          "delta": 0.0923016250000046,
+          "percent": 0.014933576497790497
+        },
+        "prompt_ms": {
+          "before": 600065,
+          "after": 600074,
+          "delta": 9,
+          "percent": 0.0014998375176022598
+        },
+        "requests": {
+          "before": 17,
+          "after": 40,
+          "delta": 23,
+          "percent": 135.29411764705884
+        }
+      },
+      "performance_qualified": false,
+      "source_mutation": false,
+      "tools_terminal": true,
+      "cleanup": {
+        "Ok": null
+      },
+      "result_sha256": "4f3f07b3766d71ea54af9211fddf7392b6951b95e7dd4e746db6b273d982304a",
+      "phase_timing": {
+        "complete": true,
+        "process_pid": 85351,
+        "wall_us": 618170558,
+        "partition_us": {
+          "task": 600002972,
+          "cleanup": 2324,
+          "preparation": 15593404,
+          "verification": 2217363,
+          "fixture": 3248,
+          "other_instrumented": 35,
+          "unattributed": 351212
+        },
+        "sum_us": 618170558,
+        "unattributed_percent": 0.056814740762855934,
+        "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+      },
+      "bounded_generation_requests": 18,
+      "bounded_generation_max_tokens_stops": 18
+    }
+  ],
+  "source_restoration": {
+    "original_checkout": "owned three files restored byte-for-byte to preimages",
+    "approved_worktree": "owned three files restored byte-for-byte to preimages",
+    "published_deletion_fix_retained": "bef171d2c962e3fea94ecc3fa91a6e235e5755c5"
+  },
+  "real_task_optimization_accepted": false,
+  "local_evidence": [
+    "preregistration.json",
+    "comparison-preregistration.json",
+    "candidate.patch",
+    "qualified-source-archive.json",
+    "canonical-frozen-inputs.json",
+    "isolated-build-evidence/",
+    "archived-live/",
+    "archive-verification.json",
+    "rejection-and-restoration.json"
+  ],
+  "private_reasoning_inspected": false,
+  "limits": [
+    "Historical N=1 baseline and source/host/provider variation prevent causal AB claims.",
+    "Feed baseline has unknown usage; full-token delta and percent remain null.",
+    "Holdout timing records an unfinished compaction, with no dropped records.",
+    "No actual TUI end-to-end acceptance rerun for this candidate.",
+    "Overall optimization goal remains active and unachieved."
+  ]
+}
