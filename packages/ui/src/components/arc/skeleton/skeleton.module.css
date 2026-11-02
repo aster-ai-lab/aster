@@ -12,3 +12,11 @@
 
 /* Aster adaptation: bare block primitive; sizing comes from utility classes. */
 .block { display: block; border-radius: var(--radius-control); background: color-mix(in oklab, var(--border-strong) 38%, var(--surface)); animation: skeleton-pulse 1.8s var(--ease-in-out) calc(var(--index, 0) * 90ms) 11 both; }
+@media (prefers-reduced-motion: reduce) { .block { animation: none; } }
+
+/* Give adjacent Aster placeholders the same quiet stagger as KUI's multi-line skeleton. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-tenant='aster'] .block:nth-child(4n + 2) { animation-delay: calc(var(--index, 1) * 90ms); }
+  html[data-tenant='aster'] .block:nth-child(4n + 3) { animation-delay: calc(var(--index, 2) * 90ms); }
+  html[data-tenant='aster'] .block:nth-child(4n + 4) { animation-delay: calc(var(--index, 3) * 90ms); }
+}

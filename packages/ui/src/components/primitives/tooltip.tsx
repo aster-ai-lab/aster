@@ -278,12 +278,19 @@ export type TooltipContentProps = React.ComponentProps<typeof RadixContent> & {
 }
 
 const TOOLTIP_HOVER_DELAY_MS = 500
+const ASTER_TOOLTIP_HOVER_DELAY_MS = 250
+
+function defaultTooltipDelay() {
+  return typeof document !== 'undefined' && document.documentElement.dataset.tenant === 'aster'
+    ? ASTER_TOOLTIP_HOVER_DELAY_MS
+    : TOOLTIP_HOVER_DELAY_MS
+}
 
 /** True under an explicit `TooltipProvider`: its tooltips share one open/skip-delay state. */
 const SharedTooltipProviderContext = React.createContext(false)
 
 function TooltipProviderBase({
-  delayDuration = TOOLTIP_HOVER_DELAY_MS,
+  delayDuration = defaultTooltipDelay(),
   skipDelayDuration = 0,
   ...props
 }: TooltipProviderProps) {
@@ -313,7 +320,7 @@ function TooltipOwnProvider({ delayDuration, children }: { delayDuration: number
 }
 
 function TooltipRoot({
-  delayDuration = TOOLTIP_HOVER_DELAY_MS,
+  delayDuration = defaultTooltipDelay(),
   open: openProp,
   defaultOpen,
   onOpenChange,
@@ -456,7 +463,7 @@ export const Tooltip = ({
   content,
   title,
   placement,
-  delay = TOOLTIP_HOVER_DELAY_MS,
+  delay = defaultTooltipDelay(),
   sideOffset = 0,
   showArrow = true,
   fullWidthTrigger = false,

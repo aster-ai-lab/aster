@@ -52,22 +52,49 @@ function renderOpenTooltipContent(content: ReactNode, props?: ComponentProps<typ
 
 describe('Tooltip', () => {
   describe('hover timing', () => {
+    it('uses the KUI pointer-intent delay for Aster and cancels a brief hover', () => {
+      const tenant = document.documentElement.dataset.tenant
+      vi.useFakeTimers()
+      try {
+        document.documentElement.dataset.tenant = 'aster'
+        render(
+          <Tooltip content="hint">
+            <button type="button">Trigger</button>
+          </Tooltip>
+        )
+        const trigger = screen.getByRole('button', { name: 'Trigger' })
+        fireEvent.pointerMove(trigger, { pointerType: 'mouse' })
+        act(() => vi.advanceTimersByTime(249))
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+        fireEvent.pointerLeave(trigger, { pointerType: 'mouse' })
+        act(() => vi.advanceTimersByTime(250))
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+        fireEvent.pointerMove(trigger, { pointerType: 'mouse' })
+        act(() => vi.advanceTimersByTime(250))
+        expect(screen.getByRole('tooltip')).toHaveTextContent('hint')
+      } finally {
+        vi.useRealTimers()
+        if (tenant === undefined) delete document.documentElement.dataset.tenant
+        else document.documentElement.dataset.tenant = tenant
+      }
+    })
+
     it.each([
       [
         'Tooltip',
-        <Tooltip content="timed tip">
+        <Tooltip key="tooltip" content="timed tip">
           <button type="button">Timed trigger</button>
         </Tooltip>
       ],
       [
         'NormalTooltip',
-        <NormalTooltip content="timed tip">
+        <NormalTooltip key="normal" content="timed tip">
           <button type="button">Timed trigger</button>
         </NormalTooltip>
       ],
       [
         'TooltipRoot',
-        <TooltipRoot>
+        <TooltipRoot key="root">
           <TooltipTrigger asChild>
             <button type="button">Timed trigger</button>
           </TooltipTrigger>
@@ -76,7 +103,7 @@ describe('Tooltip', () => {
       ],
       [
         'TooltipProvider',
-        <TooltipProvider>
+        <TooltipProvider key="provider">
           <RadixTooltipRoot>
             <TooltipTrigger asChild>
               <button type="button">Timed trigger</button>

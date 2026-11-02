@@ -1,5 +1,5 @@
 // Original: src/renderer/components/Spinner.tsx
-import { Search } from 'lucide-react'
+import { LoaderCircle, Search } from 'lucide-react'
 import { motion } from 'motion/react'
 
 interface Props {
@@ -18,6 +18,15 @@ const spinnerVariants = {
 }
 
 export default function Spinner({ text, className = '' }: Props) {
+  const isAster = typeof document !== 'undefined' && document.documentElement.dataset.tenant === 'aster'
+  if (isAster) {
+    return (
+      <div role="status" className={`flex items-center gap-1 p-0 text-muted-foreground ${className}`}>
+        <LoaderCircle aria-hidden="true" size={16} className="shrink-0 motion-safe:animate-spin" />
+        <span>{text}</span>
+      </div>
+    )
+  }
   return (
     <motion.div
       className={`flex items-center gap-1 p-0 ${className}`}

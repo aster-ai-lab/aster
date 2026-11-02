@@ -42,5 +42,6 @@
 .menuSurface { padding: 5px; border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--surface-raised); box-shadow: var(--shadow-floating); }
 /* Aster adaptation: the primitive renders Radix items without Arc's gliding highlight layer. */
 .item[data-highlighted] { background: var(--surface-muted); }
+:global(html[data-tenant='aster']) [data-slot='dropdown-menu-content'][data-aster-gliding-highlight] .item[data-highlighted] { background: transparent; }
 
 }

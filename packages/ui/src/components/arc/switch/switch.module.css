@@ -32,3 +32,16 @@
 .track[data-loading="true"] .thumb > svg { width: 62%; height: 62%; }
 
 @media (prefers-reduced-motion: reduce) { .track[data-size] .thumb { transition: none; } }
+
+/* KUI switch feedback: keep the track fixed and stretch the thumb toward the other end while held. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-tenant='aster'] .track[data-size] .thumb {
+    transition: translate .26s var(--ease-standard), width .16s var(--ease-standard), background-color var(--duration-standard) var(--ease-standard);
+  }
+  html[data-tenant='aster'] .track[data-size]:active:not(:disabled) .thumb {
+    width: calc(var(--switch-h, 24px) - 1px);
+  }
+  html[data-tenant='aster'] .track[data-size][data-state='checked']:active:not(:disabled) .thumb {
+    translate: calc(var(--switch-w, 42px) - var(--switch-h, 24px) - 5px) 0;
+  }
+}

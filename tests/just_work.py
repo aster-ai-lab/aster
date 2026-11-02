@@ -281,6 +281,15 @@ class StudioLauncherTest(unittest.TestCase):
                 self.assertEqual(calls[0], [*shared, "--bin", "aster-acp", "--bin", "aster-office"])
                 self.assertEqual(calls[1], [*shared, "--bin", "Studio"])
                 expected_target = root / override if override else root / f"target/studio/{tenant}"
+                self.assertEqual(
+                    Path((root / "document-assets.txt").read_text()).resolve(),
+                    (expected_target / "debug/studio-resources/document").resolve(),
+                )
+                if sys.platform == "darwin" and platform.machine() == "arm64":
+                    self.assertEqual(
+                        Path((root / "sandbox-assets.txt").read_text()).resolve(),
+                        (expected_target / "debug").resolve(),
+                    )
                 self.assertTrue((expected_target / "debug/aster-acp").is_file())
                 self.assertFalse((root / "target/debug/aster-acp").exists())
 
@@ -348,6 +357,15 @@ class StudioLauncherTest(unittest.TestCase):
     def product_fixture(self, root, tenant):
         source = Path(__file__).resolve().parents[1] / "apps/studio/scripts/studio_product.py"
         shutil.copy2(source, root / "apps/studio/scripts/studio_product.py")
+        # This fixture tests the build graph, not the real document asset pipeline.
+        # Record the destination so the launcher still has to stage it correctly.
+        (root / "apps/studio/scripts/document_assets.py").write_text(
+            'import sys\nfrom pathlib import Path\nPath("document-assets.txt").write_text(sys.argv[1])\n'
+        )
+        (root / "apps/studio/scripts/sandbox_assets.py").write_text(
+            'from pathlib import Path\ndef stage(target, profile):\n'
+            '    Path("sandbox-assets.txt").write_text(str(target / profile))\n'
+        )
         brand = root / "apps/web/public/tenant" / tenant
         brand.mkdir(parents=True)
         for name in ("icon.icns", "icon.png", "icon.ico", "logo-light.png", "mark-light.png"):
@@ -387,6 +405,7 @@ class StudioLauncherTest(unittest.TestCase):
         env.pop("ASTER_TENANT_SLUG", None)
         env.pop("STUDIO_RENDERER_DEV", None)
         env.pop("CARGO_TARGET_DIR", None)
+        env.pop("ASTER_DEFER_RUNTIME_COMPONENTS", None)
         return root, env, opened
 
 

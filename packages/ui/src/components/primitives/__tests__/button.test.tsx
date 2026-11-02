@@ -1,12 +1,56 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { Button } from '../button'
 
 describe('Button', () => {
+  it('provides press motion for an ordinary Aster button', async () => {
+    const tenant = document.documentElement.dataset.tenant
+    try {
+      document.documentElement.dataset.tenant = 'aster'
+      const user = userEvent.setup()
+      render(<Button>Save</Button>)
+      const button = screen.getByRole('button', { name: 'Save' })
+      await user.pointer({ keys: '[MouseLeft>]', target: button })
+      await waitFor(() => {
+        const scale = /scale\((\d*\.?\d+)\)/.exec(button.style.transform)
+        expect(scale).not.toBeNull()
+        expect(Number(scale?.[1])).toBeLessThan(1)
+      })
+      await user.pointer({ keys: '[/MouseLeft]' })
+    } finally {
+      if (tenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = tenant
+    }
+  })
+
+  it('updates structured card content without replacing or hiding the existing card', () => {
+    const tenant = document.documentElement.dataset.tenant
+    const card = (status: string) => (
+      <Button variant="ghost">
+        <span>
+          <span data-testid="card-name">Project</span>
+          <span>{status}</span>
+        </span>
+      </Button>
+    )
+    try {
+      document.documentElement.dataset.tenant = 'aster'
+      const { rerender } = render(card('Pending'))
+      const name = screen.getByTestId('card-name')
+      rerender(card('Published'))
+      expect(screen.getByTestId('card-name')).toBe(name)
+      expect(screen.getByText('Published')).toBeVisible()
+      expect(screen.queryByText('Pending')).not.toBeInTheDocument()
+    } finally {
+      if (tenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = tenant
+    }
+  })
+
   it('keeps a visible keyboard focus outline on link variants', () => {
     render(<Button variant="link">Learn more</Button>)
 

@@ -7,7 +7,7 @@
 @keyframes aster-popup-from-above {
   from {
     opacity: 0;
-    translate: 0 -0.5rem;
+    translate: 0 calc(0px - var(--aster-popup-travel, 0.5rem));
   }
 
   to {
@@ -19,7 +19,7 @@
 @keyframes aster-popup-from-below {
   from {
     opacity: 0;
-    translate: 0 0.5rem;
+    translate: 0 var(--aster-popup-travel, 0.5rem);
   }
 
   to {
@@ -31,7 +31,7 @@
 @keyframes aster-popup-from-left {
   from {
     opacity: 0;
-    translate: -0.5rem 0;
+    translate: calc(0px - var(--aster-popup-travel, 0.5rem)) 0;
   }
 
   to {
@@ -43,7 +43,7 @@
 @keyframes aster-popup-from-right {
   from {
     opacity: 0;
-    translate: 0.5rem 0;
+    translate: var(--aster-popup-travel, 0.5rem) 0;
   }
 
   to {
@@ -60,7 +60,7 @@
 
   to {
     opacity: 0;
-    translate: 0 -0.5rem;
+    translate: 0 calc(0px - var(--aster-popup-travel, 0.5rem));
   }
 }
 
@@ -72,7 +72,7 @@
 
   to {
     opacity: 0;
-    translate: 0 0.5rem;
+    translate: 0 var(--aster-popup-travel, 0.5rem);
   }
 }
 
@@ -84,7 +84,7 @@
 
   to {
     opacity: 0;
-    translate: -0.5rem 0;
+    translate: calc(0px - var(--aster-popup-travel, 0.5rem)) 0;
   }
 }
 
@@ -96,7 +96,7 @@
 
   to {
     opacity: 0;
-    translate: 0.5rem 0;
+    translate: var(--aster-popup-travel, 0.5rem) 0;
   }
 }
 
@@ -145,6 +145,15 @@
 }
 
 @layer components {
+  /* Tooltip travel is shorter than the larger anchored menu surfaces. */
+  html[data-tenant='aster'] [data-slot='tooltip-content'] {
+    --aster-popup-travel: 3px;
+    transform: none;
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
   [data-slot='dropdown-menu-content']:not([data-side]),
   [data-slot='dropdown-menu-sub-content']:not([data-side]),
   [data-slot='context-menu-content']:not([data-side]),

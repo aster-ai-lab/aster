@@ -1,12 +1,14 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
+import { motion } from 'motion/react'
 import * as React from 'react'
 
-import arcDropdown from '../arc/dropdown-menu/dropdown-menu.module.css'
-
+import { useReducedMotion } from '../../lib/useReducedMotion'
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
+
+import arcDropdown from '../arc/dropdown-menu/dropdown-menu.module.css'
 
 function DropdownMenu({
   open,
@@ -61,15 +63,129 @@ function DropdownMenuContent({
   onPointerDownCapture,
   onClickCapture,
   onCloseAutoFocus,
+  onFocusCapture,
+  onKeyDownCapture,
+  onPointerMoveCapture,
+  children,
   ...props
 }: DropdownMenuContentProps) {
   const dismissal = usePopupDismissal(ref)
+  const popupState = React.use(PopupDismissContext)
+  const contentRef = React.useRef<HTMLDivElement | null>(null)
+  const focusedItemRef = React.useRef<HTMLElement | null>(null)
+  const highlightObserverRef = React.useRef<ResizeObserver | null>(null)
+  const pointer = React.useRef(false)
+  const clearTimer = React.useRef(0)
+  const reducedMotion = useReducedMotion()
+  const isAster = typeof document !== 'undefined' && document.documentElement.dataset.tenant === 'aster'
+  const canAnimateHighlight = isAster && !props.asChild
+  const [highlight, setHighlight] = React.useState<{
+    top: number
+    left: number
+    width: number
+    height: number
+    glide: boolean
+    danger: boolean
+  } | null>(null)
+  const stopObservingHighlight = React.useCallback(() => {
+    highlightObserverRef.current?.disconnect()
+    highlightObserverRef.current = null
+    focusedItemRef.current = null
+  }, [])
+  const measureHighlight = React.useCallback((target: HTMLElement, glide: boolean) => {
+    const content = contentRef.current
+    if (!content?.contains(target)) return
+    const box = target.getBoundingClientRect()
+    const bounds = content.getBoundingClientRect()
+    const top = box.top - bounds.top + content.scrollTop - content.clientTop
+    const left = box.left - bounds.left + content.scrollLeft - content.clientLeft
+    const danger = target.dataset.variant === 'destructive'
+    setHighlight((current) => {
+      if (
+        current &&
+        current.top === top &&
+        current.left === left &&
+        current.width === box.width &&
+        current.height === box.height &&
+        current.danger === danger
+      ) return current
+      return { top, left, width: box.width, height: box.height, glide: glide && current !== null, danger }
+    })
+  }, [])
+  React.useEffect(
+    () => () => {
+      window.clearTimeout(clearTimer.current)
+      stopObservingHighlight()
+    },
+    [stopObservingHighlight]
+  )
+  React.useEffect(() => {
+    if (popupState?.open !== false) return
+    window.clearTimeout(clearTimer.current)
+    pointer.current = false
+    stopObservingHighlight()
+    setHighlight(null)
+  }, [popupState?.open, stopObservingHighlight])
+  const setContentRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      contentRef.current = node
+      const cleanup = dismissal.ref(node)
+      if (cleanup)
+        return () => {
+          contentRef.current = null
+          cleanup()
+        }
+      return undefined
+    },
+    [dismissal.ref]
+  )
   return (
     <DropdownMenuPortal container={portalContainer}>
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
-        ref={dismissal.ref}
+        ref={setContentRef}
+        data-aster-gliding-highlight={canAnimateHighlight && highlight ? '' : undefined}
+        onPointerMoveCapture={(event) => {
+          pointer.current = true
+          onPointerMoveCapture?.(event)
+        }}
+        onKeyDownCapture={(event) => {
+          pointer.current = false
+          onKeyDownCapture?.(event)
+        }}
+        onFocusCapture={(event) => {
+          onFocusCapture?.(event)
+          if (!canAnimateHighlight) return
+          window.clearTimeout(clearTimer.current)
+          const content = contentRef.current
+          // A submenu is portalled but still bubbles React focus events through here.
+          if (!content?.contains(event.target)) return
+          const target =
+            event.target instanceof Element
+              ? event.target.closest<HTMLElement>(
+                  '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]'
+                )
+              : null
+          if (!target || !content.contains(target)) {
+            stopObservingHighlight()
+            clearTimer.current = window.setTimeout(() => setHighlight(null), pointer.current ? 70 : 0)
+            return
+          }
+          if (focusedItemRef.current !== target) {
+            stopObservingHighlight()
+            focusedItemRef.current = target
+            if (typeof ResizeObserver !== 'undefined') {
+              const observer = new ResizeObserver(() => {
+                if (focusedItemRef.current === target) measureHighlight(target, false)
+              })
+              highlightObserverRef.current = observer
+              observer.observe(content)
+              observer.observe(target)
+            }
+          }
+          measureHighlight(target, pointer.current)
+        }}
         onPointerDownCapture={(event) => {
           dismissal.inside()
           onPointerDownCapture?.(event)
@@ -98,11 +214,38 @@ function DropdownMenuContent({
           // so hover/click reach the items instead of the window-drag hit test (Electron).
           'arc',
           arcDropdown.menuSurface,
-          'z-[240] max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag] data-[state=closed]:pointer-events-none',
+          'relative z-[240] max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag] data-[state=closed]:pointer-events-none',
           className
         )}
-        {...props}
-      />
+        {...props}>
+        {canAnimateHighlight ? (
+          <>
+            {highlight && (
+              <motion.span
+                aria-hidden="true"
+                data-slot="dropdown-menu-highlight"
+                className={arcDropdown.highlight}
+                style={{ left: 0, right: 'auto' }}
+                data-tone={highlight.danger ? 'danger' : undefined}
+                initial={false}
+                animate={{
+                  x: highlight.left,
+                  y: highlight.top,
+                  width: highlight.width,
+                  height: highlight.height,
+                  opacity: 1
+                }}
+                transition={
+                  highlight.glide && !reducedMotion ? { type: 'spring', duration: 0.24, bounce: 0 } : { duration: 0 }
+                }
+              />
+            )}
+            {children}
+          </>
+        ) : (
+          children
+        )}
+      </DropdownMenuPrimitive.Content>
     </DropdownMenuPortal>
   )
 }
