@@ -8,6 +8,6 @@ test_recursive_loading_does_not_depend_on_domain (test_catalog.CatalogTest) ... 
 test_runtime_locks_select_exact_available_catalog_records (test_catalog.CatalogTest) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 0.055s
+Ran 8 tests in 0.011s
 
 OK

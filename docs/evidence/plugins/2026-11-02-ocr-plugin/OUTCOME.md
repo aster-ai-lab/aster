@@ -41,7 +41,7 @@ Host: macOS 26.6.2 ARM64; pinned Rust 1.97.1; Python 3.13 for the workspace guar
 Clippy completed for OCR, extension/CLI, and Studio with their supported default
 features. OCR is clean; the other packages retain existing warnings. Workspace
 format checking passed. Typecheck retains unrelated web/E2E failures. Focused
-frontend tests and i18n validation passed; exact limits are also recorded in the
+frontend tests (8), product tests (13), delivery tests (29), and i18n validation passed; exact limits are also recorded in the
 private Studio evidence.
 
 ## Distribution gate
@@ -56,3 +56,11 @@ manifest was published. The README states this limitation.
 
 Only macOS ARM64 was runtime-qualified. Linux/Kylin, Windows, other CPUs, and a
 complete new signed desktop archive were not qualified by this task.
+
+
+The old unreleased document bootstrap with embedded OCR was removed from the
+active catalog. TUF generation 8 selects four current packages and one native
+planning target. Immutable history and old OCI bytes remain identifiable.
+The deferred package entry and archive verifier passed for Aster and ToYou using
+hermetic build/network fixtures; these tests do not qualify a new production
+archive or bypass the separate anonymous-install release gate.
