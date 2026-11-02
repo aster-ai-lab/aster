@@ -8,6 +8,7 @@ import selectors
 import signal
 import subprocess
 import sys
+import time
 
 
 def prompt_digest(prompt):
@@ -27,13 +28,18 @@ def main():
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     trace = os.fdopen(fd, "w", buffering=1)
     sequence = 0
+    origin_ns = time.monotonic_ns()
+    unix_origin_us = time.time_ns() // 1000
     pending = {}
     model_requests = {}
 
     def retain(event):
         nonlocal sequence
         sequence += 1
-        trace.write(json.dumps({"seq": sequence, **event}, separators=(",", ":")) + "\n")
+        elapsed_us = (time.monotonic_ns() - origin_ns) // 1000
+        trace.write(json.dumps({"seq": sequence, "pid": os.getpid(), "elapsed_us": elapsed_us,
+                              "clock_origin_unix_us": unix_origin_us,
+                              "unix_time_us": unix_origin_us + elapsed_us, **event}, separators=(",", ":")) + "\n")
         trace.flush()
 
     def observe(packet, source):
@@ -48,6 +54,10 @@ def main():
             params = packet["params"]
             retain({"kind": "queue-changed", "session_id": params.get("sessionId"),
                     "running_prompt_id": params.get("runningPromptId")})
+        elif source == "client" and method == "session/cancel":
+            params = packet["params"]
+            retain({"kind": "cancel-request", "session_id": params.get("sessionId"),
+                    "prompt_id": params.get("_meta", {}).get("promptId")})
         if source == "client" and (
             method in ("session/new", "session/load", "session/set_model")
             or (method == "session/set_config_option" and packet["params"].get("configId") == "model")

@@ -53,7 +53,19 @@ class RelayTests(unittest.TestCase):
                 trace = path.read_text()
                 self.assertNotIn("RELAY-SECRET-CANARY", trace)
                 self.assertEqual(path.stat().st_mode & 0o777, 0o600)
-                return [json.loads(line) for line in trace.splitlines()]
+                events = [json.loads(line) for line in trace.splitlines()]
+                origin = events[0]["clock_origin_unix_us"]
+                previous_elapsed = 0
+                for sequence, event in enumerate(events, 1):
+                    self.assertEqual(event["seq"], sequence)
+                    self.assertEqual(event.pop("pid"), process.pid)
+                    elapsed = event.pop("elapsed_us")
+                    self.assertIs(type(elapsed), int)
+                    self.assertGreaterEqual(elapsed, previous_elapsed)
+                    self.assertEqual(event.pop("clock_origin_unix_us"), origin)
+                    self.assertEqual(event.pop("unix_time_us"), origin + elapsed)
+                    previous_elapsed = elapsed
+                return events
             finally:
                 if process.poll() is None:
                     process.kill()
@@ -72,6 +84,20 @@ class RelayTests(unittest.TestCase):
     def test_eof_does_not_invent_a_terminal(self):
         events = self.exercise(False)
         self.assertEqual([e["kind"] for e in events], ["prompt-request", "proxy-closed"])
+        self.assertEqual(events[-1]["pending_prompts"], 1)
+
+    def test_cancel_is_timed_without_claiming_the_prompt_has_stopped(self):
+        events = self.exercise(False, packets=[
+            {"jsonrpc":"2.0", "id":9, "method":"session/prompt", "params":{
+                "sessionId":"s1", "_meta":{"promptId":"p1"},
+                "prompt":[{"type":"text", "text":"RELAY-SECRET-CANARY"}]}},
+            {"jsonrpc":"2.0", "method":"session/cancel", "params":{
+                "sessionId":"s1", "_meta":{"promptId":"p1"}}},
+        ])
+        self.assertEqual([event["kind"] for event in events],
+                         ["prompt-request", "cancel-request", "proxy-closed"])
+        self.assertEqual(events[1], {"seq":2, "kind":"cancel-request",
+                                    "session_id":"s1", "prompt_id":"p1"})
         self.assertEqual(events[-1]["pending_prompts"], 1)
 
     def test_notification_trace_retains_identity_without_message_or_queue_text(self):
