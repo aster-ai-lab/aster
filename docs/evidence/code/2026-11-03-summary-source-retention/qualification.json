@@ -1,5 +1,5 @@
 {
-  "status": "REJECTED: candidate failed original Holdout at 600s; source expansion withdrawn; frozen Feed continues once for complete evidence",
+  "status": "REJECTED: original cohort 0/2; source candidate reverted on remote main; no accepted task savings",
   "host": {
     "os": "Darwin",
     "release": "25.6.0",
@@ -527,28 +527,885 @@
   },
   "real_glm": {
     "label": "summary-source-retention-1",
-    "state": "HOLDOUT_FAILED_FEED_RUNNING",
+    "state": "FINISHED",
+    "passed": 0,
+    "total": 2,
     "model": "glm-01/glm-5.3",
     "attempts_per_case": 1,
-    "baseline": "stream-preview-1",
+    "cases": [
+      {
+        "case": "holdout",
+        "pass": false,
+        "task_seconds": 600.102,
+        "process_seconds": 614.778470083,
+        "native_tokens": null,
+        "known_native_tokens": 705718,
+        "unknown_native_responses": 1,
+        "requests": 40,
+        "completed_reads": 5,
+        "compactions": 11,
+        "tools_terminal": true,
+        "artifact_or_oracle_correct": false,
+        "bound_verified_outcome": false,
+        "last_stop_reason": null,
+        "summary_calls": 11,
+        "summary_max_tokens_calls": 8,
+        "prompt_state": "Err",
+        "prompt_error": "prompt_timeout",
+        "cleanup_ok": true,
+        "timing_partition": {
+          "complete": true,
+          "process_pid": 86110,
+          "wall_us": 614773042,
+          "partition_us": {
+            "task": 600003572,
+            "cleanup": 2335,
+            "preparation": 14404463,
+            "verification": 26600,
+            "fixture": 351,
+            "other_instrumented": 4735,
+            "unattributed": 330986
+          },
+          "sum_us": 614773042,
+          "unattributed_percent": 0.053838730293577185,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "phase_coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        },
+        "comparisons": {
+          "stream-preview-1": {
+            "task_seconds": {
+              "before": 227.986,
+              "after": 600.102,
+              "delta": 372.116,
+              "percent": 163.21879413648207
+            },
+            "process_seconds": {
+              "before": 242.989726125,
+              "after": 614.778470083,
+              "delta": 371.788743958,
+              "percent": 153.00595209804985
+            },
+            "native_tokens": {
+              "before": 160289,
+              "after": null,
+              "delta": null,
+              "percent": null
+            },
+            "requests": {
+              "before": 10,
+              "after": 40,
+              "delta": 30,
+              "percent": 300.0
+            },
+            "completed_reads": {
+              "before": 5,
+              "after": 5,
+              "delta": 0,
+              "percent": 0.0
+            },
+            "compactions": {
+              "before": 2,
+              "after": 11,
+              "delta": 9,
+              "percent": 450.0
+            }
+          },
+          "published-main-8805-4": {
+            "task_seconds": {
+              "before": 113.11,
+              "after": 600.102,
+              "delta": 486.99199999999996,
+              "percent": 430.54725488462554
+            },
+            "process_seconds": {
+              "before": 131.212412166,
+              "after": 614.778470083,
+              "delta": 483.56605791699997,
+              "percent": 368.5368250872706
+            },
+            "native_tokens": {
+              "before": 260816,
+              "after": null,
+              "delta": null,
+              "percent": null
+            },
+            "requests": {
+              "before": 11,
+              "after": 40,
+              "delta": 29,
+              "percent": 263.6363636363636
+            },
+            "completed_reads": {
+              "before": 5,
+              "after": 5,
+              "delta": 0,
+              "percent": 0.0
+            },
+            "compactions": {
+              "before": 0,
+              "after": 11,
+              "delta": 11,
+              "percent": null
+            }
+          }
+        },
+        "phase_trace_complete": true,
+        "phase_trace_errors": [],
+        "phase_totals": {
+          "artifact_read": {
+            "count": 6,
+            "inclusive_us": 422,
+            "union_us": 424,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "build_id_query": {
+            "count": 2,
+            "inclusive_us": 6877512,
+            "union_us": 6877515,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_prepare": {
+            "count": 1,
+            "inclusive_us": 14302139,
+            "union_us": 14302140,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_spawn": {
+            "count": 1,
+            "inclusive_us": 3710,
+            "union_us": 3711,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_load": {
+            "count": 1,
+            "inclusive_us": 2079653,
+            "union_us": 2079653,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_copy": {
+            "count": 2,
+            "inclusive_us": 3169365,
+            "union_us": 3169365,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_digest": {
+            "count": 4,
+            "inclusive_us": 4105096,
+            "union_us": 4105101,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_open": {
+            "count": 6,
+            "inclusive_us": 347,
+            "union_us": 351,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_reap": {
+            "count": 1,
+            "inclusive_us": 1884,
+            "union_us": 1885,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_spawn": {
+            "count": 1,
+            "inclusive_us": 3414,
+            "union_us": 3415,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_stop": {
+            "count": 2,
+            "inclusive_us": 25,
+            "union_us": 26,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "compaction": {
+            "count": 11,
+            "inclusive_us": 437674528,
+            "union_us": 437674531,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_identity_recheck": {
+            "count": 1,
+            "inclusive_us": 241,
+            "union_us": 242,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_load": {
+            "count": 1,
+            "inclusive_us": 684,
+            "union_us": 685,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_close": {
+            "count": 1,
+            "inclusive_us": 2045,
+            "union_us": 2042,
+            "overlap_us": 3,
+            "max_parallel": 1
+          },
+          "driver_spawn": {
+            "count": 1,
+            "inclusive_us": 3546,
+            "union_us": 3546,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fact_read": {
+            "count": 1,
+            "inclusive_us": 6461,
+            "union_us": 6462,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "feed_publish": {
+            "count": 4,
+            "inclusive_us": 3731,
+            "union_us": 3732,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "file_digest": {
+            "count": 4,
+            "inclusive_us": 2170108,
+            "union_us": 2170112,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fixture_setup": {
+            "count": 1,
+            "inclusive_us": 350,
+            "union_us": 351,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "freeze_pair": {
+            "count": 1,
+            "inclusive_us": 12274515,
+            "union_us": 12274516,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "incoming_request": {
+            "count": 40,
+            "inclusive_us": 142163,
+            "union_us": 142169,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "initialize": {
+            "count": 1,
+            "inclusive_us": 13122,
+            "union_us": 13122,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "isolated_config": {
+            "count": 1,
+            "inclusive_us": 644,
+            "union_us": 644,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_headers": {
+            "count": 28,
+            "inclusive_us": 68427411,
+            "union_us": 68427450,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_request": {
+            "count": 40,
+            "inclusive_us": 596975794,
+            "union_us": 596975814,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_stream": {
+            "count": 27,
+            "inclusive_us": 61781742,
+            "union_us": 61781771,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "oracle": {
+            "count": 2,
+            "inclusive_us": 1546,
+            "union_us": 1346,
+            "overlap_us": 200,
+            "max_parallel": 2
+          },
+          "process_spawn": {
+            "count": 1,
+            "inclusive_us": 4894,
+            "union_us": 4894,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "prompt": {
+            "count": 1,
+            "inclusive_us": 600003570,
+            "union_us": 600003572,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "public_evidence_write": {
+            "count": 1,
+            "inclusive_us": 12221,
+            "union_us": 12222,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_close": {
+            "count": 1,
+            "inclusive_us": 292,
+            "union_us": 293,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_reply": {
+            "count": 12,
+            "inclusive_us": 383,
+            "union_us": 385,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_start": {
+            "count": 1,
+            "inclusive_us": 215,
+            "union_us": 216,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "result_write": {
+            "count": 1,
+            "inclusive_us": 18791,
+            "union_us": 18792,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "route_discovery": {
+            "count": 1,
+            "inclusive_us": 1540,
+            "union_us": 1540,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "session_new": {
+            "count": 1,
+            "inclusive_us": 85489,
+            "union_us": 85490,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "test_process": {
+            "count": 1,
+            "inclusive_us": 614778401,
+            "union_us": 614778401,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tester_copy": {
+            "count": 1,
+            "inclusive_us": 232,
+            "union_us": 232,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "timing_flush": {
+            "count": 1,
+            "inclusive_us": 51,
+            "union_us": 51,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tool": {
+            "count": 29,
+            "inclusive_us": 34722,
+            "union_us": 33953,
+            "overlap_us": 769,
+            "max_parallel": 2
+          },
+          "wire_close": {
+            "count": 1,
+            "inclusive_us": 67,
+            "union_us": 67,
+            "overlap_us": 0,
+            "max_parallel": 1
+          }
+        }
+      },
+      {
+        "case": "feed",
+        "pass": false,
+        "task_seconds": 575.782,
+        "process_seconds": 596.2968669580001,
+        "native_tokens": 267758,
+        "known_native_tokens": 267758,
+        "unknown_native_responses": 0,
+        "requests": 18,
+        "completed_reads": 6,
+        "compactions": 7,
+        "tools_terminal": true,
+        "artifact_or_oracle_correct": false,
+        "bound_verified_outcome": false,
+        "last_stop_reason": "max_tokens",
+        "summary_calls": 7,
+        "summary_max_tokens_calls": 6,
+        "prompt_state": "Err",
+        "prompt_error": "unexpected_prompt_terminal",
+        "cleanup_ok": true,
+        "timing_partition": {
+          "complete": true,
+          "process_pid": 88379,
+          "wall_us": 596294100,
+          "partition_us": {
+            "task": 575720191,
+            "cleanup": 1980,
+            "preparation": 17882047,
+            "verification": 2111973,
+            "fixture": 791,
+            "other_instrumented": 46,
+            "unattributed": 577072
+          },
+          "sum_us": 596294100,
+          "unattributed_percent": 0.09677640613918535,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "phase_coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        },
+        "comparisons": {
+          "stream-preview-1": {
+            "task_seconds": {
+              "before": 496.938,
+              "after": 575.782,
+              "delta": 78.84400000000005,
+              "percent": 15.865963158381934
+            },
+            "process_seconds": {
+              "before": 515.165659667,
+              "after": 596.2968669580001,
+              "delta": 81.13120729100012,
+              "percent": 15.748566653965801
+            },
+            "native_tokens": {
+              "before": 348814,
+              "after": 267758,
+              "delta": -81056,
+              "percent": -23.23759940828063
+            },
+            "requests": {
+              "before": 20,
+              "after": 18,
+              "delta": -2,
+              "percent": -9.999999999999998
+            },
+            "completed_reads": {
+              "before": 7,
+              "after": 6,
+              "delta": -1,
+              "percent": -14.28571428571429
+            },
+            "compactions": {
+              "before": 8,
+              "after": 7,
+              "delta": -1,
+              "percent": -12.5
+            }
+          },
+          "published-main-8805-4": {
+            "task_seconds": {
+              "before": 157.033,
+              "after": 575.782,
+              "delta": 418.749,
+              "percent": 266.6630580833329
+            },
+            "process_seconds": {
+              "before": 174.099210084,
+              "after": 596.2968669580001,
+              "delta": 422.19765687400013,
+              "percent": 242.50406229315846
+            },
+            "native_tokens": {
+              "before": 105705,
+              "after": 267758,
+              "delta": 162053,
+              "percent": 153.30684452012676
+            },
+            "requests": {
+              "before": 6,
+              "after": 18,
+              "delta": 12,
+              "percent": 200.0
+            },
+            "completed_reads": {
+              "before": 3,
+              "after": 6,
+              "delta": 3,
+              "percent": 100.0
+            },
+            "compactions": {
+              "before": 0,
+              "after": 7,
+              "delta": 7,
+              "percent": null
+            }
+          }
+        },
+        "phase_trace_complete": true,
+        "phase_trace_errors": [],
+        "phase_totals": {
+          "artifact_read": {
+            "count": 7,
+            "inclusive_us": 605,
+            "union_us": 607,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "build_id_query": {
+            "count": 2,
+            "inclusive_us": 10164811,
+            "union_us": 10164813,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_prepare": {
+            "count": 1,
+            "inclusive_us": 17814726,
+            "union_us": 17814726,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "campaign_spawn": {
+            "count": 1,
+            "inclusive_us": 4837,
+            "union_us": 4838,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_load": {
+            "count": 1,
+            "inclusive_us": 2111368,
+            "union_us": 2111369,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_copy": {
+            "count": 2,
+            "inclusive_us": 3177118,
+            "union_us": 3177120,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_digest": {
+            "count": 4,
+            "inclusive_us": 4191016,
+            "union_us": 4191018,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "candidate_member_open": {
+            "count": 6,
+            "inclusive_us": 723,
+            "union_us": 727,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_reap": {
+            "count": 1,
+            "inclusive_us": 1785,
+            "union_us": 1785,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_spawn": {
+            "count": 1,
+            "inclusive_us": 4312,
+            "union_us": 4312,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "child_stop": {
+            "count": 2,
+            "inclusive_us": 22,
+            "union_us": 23,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "compaction": {
+            "count": 7,
+            "inclusive_us": 314537774,
+            "union_us": 314537775,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_identity_recheck": {
+            "count": 1,
+            "inclusive_us": 73,
+            "union_us": 74,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "config_load": {
+            "count": 1,
+            "inclusive_us": 1567,
+            "union_us": 1568,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_close": {
+            "count": 1,
+            "inclusive_us": 1861,
+            "union_us": 1861,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "driver_spawn": {
+            "count": 1,
+            "inclusive_us": 4442,
+            "union_us": 4443,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fact_read": {
+            "count": 1,
+            "inclusive_us": 2785,
+            "union_us": 2786,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "feed_publish": {
+            "count": 6,
+            "inclusive_us": 10487,
+            "union_us": 10490,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "file_digest": {
+            "count": 6,
+            "inclusive_us": 4393297,
+            "union_us": 4393304,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "fixture_setup": {
+            "count": 1,
+            "inclusive_us": 3834,
+            "union_us": 3834,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "freeze_pair": {
+            "count": 1,
+            "inclusive_us": 15609149,
+            "union_us": 15609150,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "identity_recheck": {
+            "count": 1,
+            "inclusive_us": 2038779,
+            "union_us": 2038779,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "incoming_request": {
+            "count": 18,
+            "inclusive_us": 49681,
+            "union_us": 49685,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "initialize": {
+            "count": 1,
+            "inclusive_us": 16751,
+            "union_us": 16751,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "isolated_config": {
+            "count": 1,
+            "inclusive_us": 702,
+            "union_us": 702,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_headers": {
+            "count": 10,
+            "inclusive_us": 39407546,
+            "union_us": 39407559,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_request": {
+            "count": 18,
+            "inclusive_us": 574558979,
+            "union_us": 574558984,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "model_stream": {
+            "count": 10,
+            "inclusive_us": 200055730,
+            "union_us": 200055741,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "oracle": {
+            "count": 3,
+            "inclusive_us": 2047642,
+            "union_us": 2047643,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "process_spawn": {
+            "count": 1,
+            "inclusive_us": 2281,
+            "union_us": 2281,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "prompt": {
+            "count": 1,
+            "inclusive_us": 575720190,
+            "union_us": 575720191,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "public_evidence_write": {
+            "count": 1,
+            "inclusive_us": 4368,
+            "union_us": 4369,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_close": {
+            "count": 1,
+            "inclusive_us": 119,
+            "union_us": 119,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_reply": {
+            "count": 8,
+            "inclusive_us": 267,
+            "union_us": 269,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "relay_start": {
+            "count": 1,
+            "inclusive_us": 159,
+            "union_us": 159,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "result_write": {
+            "count": 1,
+            "inclusive_us": 64103,
+            "union_us": 64104,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "route_discovery": {
+            "count": 1,
+            "inclusive_us": 2041,
+            "union_us": 2043,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "session_new": {
+            "count": 1,
+            "inclusive_us": 45732,
+            "union_us": 45732,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "test_process": {
+            "count": 1,
+            "inclusive_us": 596296787,
+            "union_us": 596296787,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tester_copy": {
+            "count": 1,
+            "inclusive_us": 251,
+            "union_us": 251,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "timing_flush": {
+            "count": 1,
+            "inclusive_us": 46,
+            "union_us": 46,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "tool": {
+            "count": 9,
+            "inclusive_us": 13524,
+            "union_us": 13525,
+            "overlap_us": 0,
+            "max_parallel": 1
+          },
+          "wire_close": {
+            "count": 1,
+            "inclusive_us": 6,
+            "union_us": 6,
+            "overlap_us": 0,
+            "max_parallel": 1
+          }
+        }
+      }
+    ],
+    "known_native_tokens": 973476,
+    "unknown_native_responses": 1,
+    "full_native_tokens": null,
+    "cohort_process_seconds": 1211.700922,
+    "baseline_cohort_process_seconds": 758.737408,
+    "cohort_process_delta_percent": 59.69964169738156,
     "accepted_speed_gain_percent": null,
     "accepted_token_gain_percent": null,
-    "supplementary": "NOT RUN; both originals must pass first",
-    "holdout": {
-      "pass": false,
-      "task_seconds": 600.102,
-      "process_seconds": 614.778470083,
-      "completed_reads": 5,
-      "compactions": 11,
-      "requests": 40,
-      "known_usage_responses": 39,
-      "unknown_usage_responses": 1,
-      "known_tokens": 705718,
-      "full_native_tokens": null,
-      "prompt_error": "prompt_timeout",
-      "artifact_correct": false,
-      "tools_terminal": true
-    }
+    "owned_local_pids_remaining": [],
+    "config_frozen_members_and_candidate_source_verified": true,
+    "supplementary": "NOT RUN; both originals must pass first"
   },
   "last_real_cohort": {
     "source_commit": "fbd6e78d86ba4770f9ef0de6bd6da77bceac6918",
@@ -604,6 +1461,84 @@
   "reversion": {
     "of_commit": "393aa8c3b8076b3abe6aa8e6f17c2c4c87d54c65",
     "restored_source_from": "75dba989d5afb6e41bcaed44ca971cfb4fefa868",
-    "reason": "No accepted completion or resource benefit; original Holdout timed out with materially higher known spend. Single-attempt observations do not isolate causal effects."
+    "reason": "No accepted completion or resource benefit; original Holdout timed out with materially higher known spend. Single-attempt observations do not isolate causal effects.",
+    "commit": "ab6fc743bf90dee779ef1033725a4461e514eea8"
+  },
+  "restored_main": {
+    "commit": "ab6fc743bf90dee779ef1033725a4461e514eea8",
+    "production_matches_previous_qualified_namespace": true,
+    "cli_namespace_hash": "37140202a2a7892fb5bd8567bc6af64b356f21aa",
+    "reusable_frozen_pair_build_id": "aster-cli-pair-v1:37140202a2a7892fb5bd8567bc6af64b356f21aa:aarch64-apple-darwin",
+    "approved_worktree_production_diff": []
+  },
+  "tui_restored_main": {
+    "phase": "tui_restored_main",
+    "command": [
+      "a3s-test",
+      "run",
+      "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/tests/e2e/startup.acl",
+      "--tui-executable",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-stream-preview-1-ddb15975-3530-4ae0-be3c-7f129b781755/aster",
+      "--tui-arg=--cwd",
+      "--tui-arg=/Users/roylin/code/aster/target/qualification/tui-restored-main-e798b837-364a-4877-8943-1a2e1713324e",
+      "--tui-working-directory",
+      "/Users/roylin/code/aster/target/qualification/tui-restored-main-e798b837-364a-4877-8943-1a2e1713324e",
+      "--tui-columns",
+      "120",
+      "--tui-rows",
+      "40",
+      "--json"
+    ],
+    "exit_code": 0,
+    "process_seconds": 5.090032,
+    "trace_complete": true,
+    "candidate_build_id": "aster-cli-pair-v1:37140202a2a7892fb5bd8567bc6af64b356f21aa:aarch64-apple-darwin",
+    "source_namespace_matches_current_main": true,
+    "model_requests": 0,
+    "status": "passed",
+    "scenario_count": 1,
+    "step_count": 11,
+    "scenario_ms": 5051,
+    "snapshots": [
+      {
+        "id": "full-welcome",
+        "rows": 40,
+        "columns": 120,
+        "process_running": true,
+        "output_truncated": false
+      },
+      {
+        "id": "small-snapshot",
+        "rows": 20,
+        "columns": 60,
+        "process_running": true,
+        "output_truncated": false
+      },
+      {
+        "id": "standard-snapshot",
+        "rows": 24,
+        "columns": 80,
+        "process_running": true,
+        "output_truncated": false
+      }
+    ],
+    "cleanup_error": null,
+    "before_seconds": 5.467345,
+    "process_delta_percent": -6.901210733911977,
+    "comparison_limit": "One observation per different Core source; same unchanged TUI scenario, no task speed claim"
+  },
+  "cohort_prompt_partition": {
+    "before_prompt_seconds": 724.924,
+    "after_prompt_seconds": 1175.884,
+    "prompt_delta_percent": 62.207900414388284,
+    "before_outside_prompt_seconds": 33.81340799999998,
+    "after_outside_prompt_seconds": 35.81692199999998,
+    "outside_prompt_delta_percent": 5.9252057645298395,
+    "definition": "Sequential cohort process minus its two prompt durations; residual includes preparation, oracle, cleanup and wrapper work, distinct from native exclusive phase attribution."
+  },
+  "disproven_lead": {
+    "claim": "Cached input is double-counted by restored Core usage normalization",
+    "evidence": "Original stream-preview-1 public ACP usage_update used equals independent relay prompt_tokens, including call 7=19268, call 8=22667, compaction call 9=5363 and call 10=19302.",
+    "status": "Disproven; do not alter accounting to suppress compaction."
   }
 }
