@@ -1,0 +1,10 @@
+{
+  "root_base": "a0f3fc06268912efc39390234d748909e8439218",
+  "studio_remote_main": "986c9c4edd12275371e050aafd9aa4cc490a43e4",
+  "local_signature": "good",
+  "dco_signed_off": true,
+  "github_verification": {
+    "verified": false,
+    "reason": "unknown_key"
+  }
+}
