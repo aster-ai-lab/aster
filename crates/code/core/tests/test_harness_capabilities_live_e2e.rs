@@ -197,7 +197,7 @@ fn workspace_files(root: &Path) -> Vec<String> {
         for entry in entries.flatten() {
             let path = entry.path();
             let name = entry.file_name();
-            if name == ".aster" || name == ".aster" || name == ".git" {
+            if name == ".aster" || name == ".git" {
                 continue;
             }
             if path.is_dir() {

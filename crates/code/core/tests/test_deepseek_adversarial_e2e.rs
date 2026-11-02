@@ -527,7 +527,7 @@ fn assert_workspace_contains_only(workspace: &Path, expected: &[&str]) {
             // are created by workspace services / default security — not shell
             // side effects. The cancellation gate only cares about user-visible
             // artifacts from the cancellable command.
-            if name == ".aster" || name == ".aster" || name == ".git" {
+            if name == ".aster" || name == ".git" {
                 return None;
             }
             Some(name)
