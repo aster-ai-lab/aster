@@ -3,14 +3,15 @@ use std::path::PathBuf;
 use aster_use_core::{UseError, UseResult};
 use aster_use_extension::{
     build_aix_package, inspect_aix_package, inspect_verified_target_cache, prepare_aix_publication,
-    prune_verified_target_cache, GitHubRegistryRepository, RegistrySourceInput,
-    RegistrySourceStore, TrustedRegistry, VerifiedTargetCachePolicy, DEFAULT_GITHUB_REGISTRY_PATH,
-    DEFAULT_GITHUB_REGISTRY_REF, DEFAULT_VERIFIED_TARGET_CACHE_MAX_BYTES,
-    DEFAULT_VERIFIED_TARGET_CACHE_MAX_ENTRIES, DEFAULT_VERIFIED_TARGET_CACHE_MIN_FREE_BYTES,
+    prepare_aix_publication_with_catalog, prune_verified_target_cache, GitHubRegistryRepository,
+    RegistrySourceInput, RegistrySourceStore, TrustedRegistry, VerifiedTargetCachePolicy,
+    DEFAULT_GITHUB_REGISTRY_PATH, DEFAULT_GITHUB_REGISTRY_REF,
+    DEFAULT_VERIFIED_TARGET_CACHE_MAX_BYTES, DEFAULT_VERIFIED_TARGET_CACHE_MAX_ENTRIES,
+    DEFAULT_VERIFIED_TARGET_CACHE_MIN_FREE_BYTES,
 };
 
 use super::{flag_argument, option_argument, usage_error, value_argument, CommandOutput};
-use tokio::io::AsyncWriteExt;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 #[cfg(test)]
 #[path = "registry/aix_tests.rs"]
@@ -98,102 +99,128 @@ async fn package_prepare(args: &[String]) -> UseResult<CommandOutput> {
         args,
         3,
         &["--json"],
-        &["--repository", "--domain", "--output"],
+        &[
+            "--repository",
+            "--domain",
+            "--output",
+            "--catalog-metadata",
+            "--planning-output",
+        ],
         "registry package prepare",
     )?;
-    let archive = value_argument(
+    let archive = std::path::Path::new(value_argument(
         args,
         2,
         "registry package prepare requires an AIX archive path",
-    )?;
-    let repository = required_option(args, "--repository", "registry package prepare")?;
-    let domain = required_option(args, "--domain", "registry package prepare")?;
-    let output = std::path::Path::new(required_option(
+    )?);
+    let repository = std::path::Path::new(required_option(
         args,
-        "--output",
+        "--repository",
         "registry package prepare",
     )?);
-    let publication = prepare_aix_publication(
-        std::path::Path::new(repository),
-        domain,
-        std::path::Path::new(archive),
+    let domain = required_option(args, "--domain", "registry package prepare")?;
+    let publication = if let Some(path) = option_argument(args, "--catalog-metadata")? {
+        let mut metadata = Vec::new();
+        tokio::fs::File::open(path)
+            .await
+            .map_err(publication_io)?
+            .take(64 * 1024 + 1)
+            .read_to_end(&mut metadata)
+            .await
+            .map_err(publication_io)?;
+        prepare_aix_publication_with_catalog(repository, domain, archive, &metadata).await?
+    } else {
+        prepare_aix_publication(repository, domain, archive).await?
+    };
+    let output = publication_output_path(
+        std::path::Path::new(required_option(
+            args,
+            "--output",
+            "registry package prepare",
+        )?),
+        publication.source_path(),
     )
     .await?;
-    let parent = output
-        .parent()
-        .filter(|path| !path.as_os_str().is_empty())
-        .unwrap_or(std::path::Path::new("."));
-    let filename = output
-        .file_name()
-        .ok_or_else(|| usage_error("--output requires an OCI manifest filename"))?;
-    let output = tokio::fs::canonicalize(parent)
-        .await
-        .map_err(|error| {
-            UseError::new(
-                "use.cli.io",
-                format!("Failed to resolve OCI manifest output directory: {error}"),
-            )
-        })?
-        .join(filename);
-    if output.starts_with(publication.source_path()) {
+    let planning = match (
+        publication.planning_bytes().is_empty(),
+        option_argument(args, "--planning-output")?,
+    ) {
+        (true, None) => None,
+        (false, Some(path)) => Some(
+            publication_output_path(std::path::Path::new(path), publication.source_path()).await?,
+        ),
+        (false, None) => {
+            return Err(usage_error(
+                "Executable catalog preparation requires --planning-output",
+            ))
+        }
+        (true, Some(_)) => {
+            return Err(usage_error(
+                "--planning-output requires an executable catalog",
+            ))
+        }
+    };
+    if planning.as_ref() == Some(&output) {
         return Err(usage_error(
-            "OCI manifest output must be outside the validated plugin source directory",
+            "OCI and planning outputs require different paths",
         ));
     }
-    let publication_json = serde_json::to_value(&publication).map_err(|error| {
-        UseError::new(
-            "use.cli.output_invalid",
-            format!("Cannot encode publication metadata: {error}"),
-        )
-    })?;
-    let output_json = serde_json::to_value(&output).map_err(|error| {
-        UseError::new(
-            "use.cli.output_invalid",
-            format!("Cannot encode publication output path: {error}"),
-        )
-    })?;
-    let mut file = tokio::fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&output)
-        .await
-        .map_err(|error| {
-            UseError::new(
-                "use.cli.io",
-                format!(
-                    "Failed to create new OCI manifest '{}': {error}",
-                    output.display()
-                ),
-            )
-        })?;
-    file.write_all(publication.manifest_bytes())
-        .await
-        .map_err(|error| {
-            UseError::new(
-                "use.cli.io",
-                format!(
-                    "Failed to write OCI manifest '{}': {error}",
-                    output.display()
-                ),
-            )
-        })?;
-    file.sync_all().await.map_err(|error| {
-        UseError::new(
-            "use.cli.io",
-            format!(
-                "Failed to sync OCI manifest '{}': {error}",
-                output.display()
-            ),
-        )
-    })?;
+    let publication_json = serde_json::to_value(&publication)
+        .map_err(|error| UseError::new("use.cli.output_invalid", error.to_string()))?;
+    let output_json = serde_json::to_value(&output)
+        .map_err(|error| UseError::new("use.cli.output_invalid", error.to_string()))?;
+    let planning_json = serde_json::to_value(&planning)
+        .map_err(|error| UseError::new("use.cli.output_invalid", error.to_string()))?;
+    write_publication_output(&output, publication.manifest_bytes()).await?;
+    if let Some(path) = &planning {
+        write_publication_output(path, publication.planning_bytes()).await?;
+    }
     Ok(CommandOutput::success(
         format!(
             "Prepared AIX OCI manifest for '{}' at '{}'.",
             publication.package().package_id,
             output.display()
         ),
-        serde_json::json!({"aixPublication": publication_json, "manifestPath": output_json}),
+        serde_json::json!({"aixPublication": publication_json, "manifestPath": output_json, "planningPath": planning_json}),
     ))
+}
+
+async fn publication_output_path(
+    path: &std::path::Path,
+    source: &std::path::Path,
+) -> UseResult<PathBuf> {
+    let parent = path
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or(std::path::Path::new("."));
+    let filename = path
+        .file_name()
+        .ok_or_else(|| usage_error("Publication output requires a filename"))?;
+    let output = tokio::fs::canonicalize(parent)
+        .await
+        .map_err(publication_io)?
+        .join(filename);
+    if output.starts_with(source) {
+        return Err(usage_error(
+            "Publication output must be outside the validated plugin source directory",
+        ));
+    }
+    Ok(output)
+}
+
+async fn write_publication_output(path: &std::path::Path, bytes: &[u8]) -> UseResult<()> {
+    let mut file = tokio::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
+        .await
+        .map_err(publication_io)?;
+    file.write_all(bytes).await.map_err(publication_io)?;
+    file.sync_all().await.map_err(publication_io)
+}
+
+fn publication_io(error: std::io::Error) -> UseError {
+    UseError::new("use.cli.io", format!("Publication I/O failed: {error}"))
 }
 
 async fn source_list(args: &[String]) -> UseResult<CommandOutput> {

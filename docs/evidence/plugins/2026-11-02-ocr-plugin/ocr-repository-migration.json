@@ -1,0 +1,37 @@
+{
+  "repository": "https://github.com/aster-ai-lab/OCR",
+  "deleted": true,
+  "verifiedHttpStatus": 404,
+  "sourceRevision": "75099d5ebe675cac9a69d1d8e3663733714ad751",
+  "gitBundleSha256": "2bf575b5745c6319e631edac1eff7f40917761c75ece4fd26960bfd6bc65ec67",
+  "localBackup": "target/ocr-migration",
+  "assets": [
+    {
+      "release": "v0.3.0",
+      "name": "aster-use-ocr-assets-0.3.0.tar.gz",
+      "size": 26110635,
+      "sha256": "25abc059ff1085187b6184033a936b0e5308b7f59ba4df2bfe5c95c7eec99c2c"
+    },
+    {
+      "release": "v0.3.0",
+      "name": "checksums.txt",
+      "size": 100,
+      "sha256": "7a6283550a08afd4ada40101433414ace9347f23ebd01df2384420213c5a8d80"
+    },
+    {
+      "release": "ppocr-v6-paddlex-paddle3.0.0-native-v1",
+      "name": "ppocr-checksums.txt",
+      "size": 95,
+      "sha256": "571505bb72ebc6d13cb652d269dd34f8d882888f2617e8064437d1a31f1bc39a"
+    },
+    {
+      "release": "ppocr-v6-paddlex-paddle3.0.0-native-v1",
+      "name": "ppocr-v6-small-native-v1.tar",
+      "size": 31074816,
+      "sha256": "c5b040d7abe67ef8c144c493bcb6b38e79f902d1841224146fc5d0d3800921de"
+    }
+  ],
+  "replacement": "aster/aster-ocr",
+  "format": "aix",
+  "qualifiedTarget": "darwin-arm64"
+}

@@ -3942,22 +3942,19 @@ name = "aster-use-ocr"
 version = "0.3.2"
 dependencies = [
  "aster-use-core",
+ "aster-use-extension",
  "async-trait",
  "clap",
  "clipper2",
- "flate2",
- "fs2",
  "image",
  "imageproc",
  "ort",
- "reqwest 0.12.28",
  "rmcp 0.8.5",
  "schemars 1.2.3",
  "serde",
  "serde_json",
  "serde_yaml",
  "sha2 0.10.9",
- "tar",
  "tempfile",
  "tokio",
 ]

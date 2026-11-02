@@ -371,7 +371,14 @@
       "source": "apps/work/vendor/crates/ocr",
       "revision": null,
       "package": "aster-use-ocr",
-      "version": "0.3.2"
+      "version": "0.3.2",
+      "distribution": {
+        "format": "aix",
+        "package": "aster/aster-ocr",
+        "registry_repository": "https://github.com/aster-ai-lab/plugins",
+        "retired_model_repository": "https://github.com/aster-ai-lab/OCR",
+        "retired_model_revision": "75099d5ebe675cac9a69d1d8e3663733714ad751"
+      }
     },
     {
       "path": "crates/office/crates/cli",

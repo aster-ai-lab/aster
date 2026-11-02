@@ -1,0 +1,396 @@
+[
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": "2025-03-26",
+      "capabilities": {
+        "tools": {}
+      },
+      "serverInfo": {
+        "name": "aster-use-ocr",
+        "title": "Aster Use OCR",
+        "version": "0.3.2",
+        "websiteUrl": "https://github.com/aster-ai-lab/plugins"
+      },
+      "instructions": "Call ocr_doctor first. Use ocr_extract only for a local image path supplied by the task. The configured provider is 'pp-ocr-v6' using 'onnx-runtime'. This provider keeps source bytes on device. Preserve the source SHA-256 and distinguish OCR text from verified source text."
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "tools": [
+        {
+          "name": "ocr_doctor",
+          "description": "Inspect the configured OCR provider without reading an image",
+          "inputSchema": {
+            "properties": {},
+            "type": "object"
+          },
+          "outputSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "definitions": {
+              "OcrReadinessSchema": {
+                "enum": [
+                  "ready",
+                  "missing",
+                  "broken",
+                  "unknown"
+                ],
+                "type": "string"
+              }
+            },
+            "properties": {
+              "engine": {
+                "nullable": true,
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "model": {
+                "nullable": true,
+                "type": "string"
+              },
+              "modelDir": {
+                "nullable": true,
+                "type": "string"
+              },
+              "provider": {
+                "nullable": true,
+                "type": "string"
+              },
+              "readiness": {
+                "$ref": "#/definitions/OcrReadinessSchema"
+              },
+              "sendsSourceOffDevice": {
+                "type": "boolean"
+              },
+              "suggestions": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "readiness",
+              "sendsSourceOffDevice",
+              "message"
+            ],
+            "title": "OcrDiagnostic",
+            "type": "object"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "ocr_extract",
+          "description": "Extract text and available layout evidence from one bounded local image through the configured OCR provider",
+          "inputSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "properties": {
+              "path": {
+                "description": "Local PNG, JPEG, WebP, GIF, BMP, or TIFF image path",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "title": "OcrRequest",
+            "type": "object"
+          },
+          "outputSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "definitions": {
+              "OcrArtifactSchema": {
+                "properties": {
+                  "media_type": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "format": "uint64",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "path",
+                  "media_type",
+                  "size",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "OcrBlock": {
+                "properties": {
+                  "boundingBox": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/OcrBoundingBox"
+                      },
+                      {
+                        "const": null,
+                        "nullable": true
+                      }
+                    ]
+                  },
+                  "confidence": {
+                    "description": "Provider recognition confidence from 0 through 1, when available",
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "detectionConfidence": {
+                    "description": "Provider text-detection confidence from 0 through 1, when available",
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "page": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "polygon": {
+                    "description": "Four polygon vertices in source-image coordinates, when available",
+                    "items": {
+                      "$ref": "#/definitions/OcrPoint"
+                    },
+                    "maxItems": 4,
+                    "minItems": 4,
+                    "nullable": true,
+                    "type": "array"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "page",
+                  "text"
+                ],
+                "type": "object"
+              },
+              "OcrBoundingBox": {
+                "properties": {
+                  "height": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "width": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "x": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "y": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y",
+                  "width",
+                  "height"
+                ],
+                "type": "object"
+              },
+              "OcrPoint": {
+                "properties": {
+                  "x": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "y": {
+                    "format": "uint32",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "type": "object"
+              }
+            },
+            "properties": {
+              "blocks": {
+                "items": {
+                  "$ref": "#/definitions/OcrBlock"
+                },
+                "type": "array"
+              },
+              "engine": {
+                "type": "string"
+              },
+              "model": {
+                "nullable": true,
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "source": {
+                "$ref": "#/definitions/OcrArtifactSchema"
+              },
+              "text": {
+                "type": "string"
+              },
+              "warnings": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "provider",
+              "engine",
+              "source",
+              "text"
+            ],
+            "title": "OcrResult",
+            "type": "object"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"engine\":\"onnx-runtime\",\"message\":\"Packaged local PP-OCRv6 assets are available.\",\"model\":\"PP-OCRv6_small\",\"modelDir\":\"/Users/roylin/code/aster/target/runtime-ocr-candidate/repository/darwin-arm64/plugins/aster/aster-ocr/payload/ocr-models/PP-OCRv6_small\",\"provider\":\"pp-ocr-v6\",\"readiness\":\"ready\",\"sendsSourceOffDevice\":false}"
+        }
+      ],
+      "structuredContent": {
+        "engine": "onnx-runtime",
+        "message": "Packaged local PP-OCRv6 assets are available.",
+        "model": "PP-OCRv6_small",
+        "modelDir": "/Users/roylin/code/aster/target/runtime-ocr-candidate/repository/darwin-arm64/plugins/aster/aster-ocr/payload/ocr-models/PP-OCRv6_small",
+        "provider": "pp-ocr-v6",
+        "readiness": "ready",
+        "sendsSourceOffDevice": false
+      },
+      "isError": false
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"blocks\":[{\"boundingBox\":{\"height\":148,\"width\":853,\"x\":70,\"y\":117},\"confidence\":0.9957722425460815,\"detectionConfidence\":0.8729673624038696,\"page\":1,\"polygon\":[{\"x\":70,\"y\":117},{\"x\":923,\"y\":117},{\"x\":923,\"y\":265},{\"x\":70,\"y\":265}],\"text\":\"ASTER OCR\"},{\"boundingBox\":{\"height\":155,\"width\":937,\"x\":72,\"y\":354},\"confidence\":0.9999903440475464,\"detectionConfidence\":0.8811190724372864,\"page\":1,\"polygon\":[{\"x\":72,\"y\":360},{\"x\":1008,\"y\":354},{\"x\":1009,\"y\":503},{\"x\":73,\"y\":509}],\"text\":\"1234567890\"}],\"engine\":\"onnx-runtime\",\"model\":\"PP-OCRv6_small\",\"provider\":\"pp-ocr-v6\",\"source\":{\"mediaType\":\"image/png\",\"path\":\"/Users/roylin/code/aster/target/ocr-plugin-qualification/文本 识别.png\",\"sha256\":\"e8a343b4638ef10d8624e408368d6f6836b8af71624051b37603b9d225eac4db\",\"size\":72790},\"text\":\"ASTER OCR\\n1234567890\"}"
+        }
+      ],
+      "structuredContent": {
+        "blocks": [
+          {
+            "boundingBox": {
+              "height": 148,
+              "width": 853,
+              "x": 70,
+              "y": 117
+            },
+            "confidence": 0.9957722425460815,
+            "detectionConfidence": 0.8729673624038696,
+            "page": 1,
+            "polygon": [
+              {
+                "x": 70,
+                "y": 117
+              },
+              {
+                "x": 923,
+                "y": 117
+              },
+              {
+                "x": 923,
+                "y": 265
+              },
+              {
+                "x": 70,
+                "y": 265
+              }
+            ],
+            "text": "ASTER OCR"
+          },
+          {
+            "boundingBox": {
+              "height": 155,
+              "width": 937,
+              "x": 72,
+              "y": 354
+            },
+            "confidence": 0.9999903440475464,
+            "detectionConfidence": 0.8811190724372864,
+            "page": 1,
+            "polygon": [
+              {
+                "x": 72,
+                "y": 360
+              },
+              {
+                "x": 1008,
+                "y": 354
+              },
+              {
+                "x": 1009,
+                "y": 503
+              },
+              {
+                "x": 73,
+                "y": 509
+              }
+            ],
+            "text": "1234567890"
+          }
+        ],
+        "engine": "onnx-runtime",
+        "model": "PP-OCRv6_small",
+        "provider": "pp-ocr-v6",
+        "source": {
+          "mediaType": "image/png",
+          "path": "/Users/roylin/code/aster/target/ocr-plugin-qualification/文本 识别.png",
+          "sha256": "e8a343b4638ef10d8624e408368d6f6836b8af71624051b37603b9d225eac4db",
+          "size": 72790
+        },
+        "text": "ASTER OCR\n1234567890"
+      },
+      "isError": false
+    }
+  }
+]

@@ -19,7 +19,8 @@ PP-OCRv6 provider.
 - Every provider descriptor must declare whether it sends source bytes off
   device; SDK and MCP surfaces must preserve that policy.
 - Preserve the `aster-use-ocr` crate, binary, MCP, and Skill identities.
-- Aster Use owns the built-in `ocr` route and product component policy.
+- Distribute the complete OCR capability as `aster/aster-ocr` in native `.aix` format.
+  Hosts own installation policy; the plugin owns its MCP entry and packaged Skill.
 - `aster-use-core` owns shared machine contracts; depend on the local workspace crate.
 
 ## Engineering

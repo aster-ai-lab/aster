@@ -79,7 +79,9 @@ pub use plugin_manifest::{
     PluginOkfSurface, PluginSkillSurface, PluginUiSurface, SkillHostMode, SurfaceActivation,
     ToolServiceSurface, ToolSurface, ToolTaskSource, ToolTaskSurface, ToolWorkload,
 };
-pub use publication::{prepare_aix_publication, PreparedAixPublication};
+pub use publication::{
+    prepare_aix_publication, prepare_aix_publication_with_catalog, PreparedAixPublication,
+};
 pub use registry::{
     validate_catalog_manifest_binding, ExtensionLifecycleGraphPublication,
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionLifecycleResult,

@@ -60,6 +60,14 @@ impl ReleaseBundlePackage {
 }
 
 pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBundlePackage> {
+    inspect_release_bundle_source(package_root)
+        .await
+        .map(|(package, _, _)| package)
+}
+
+pub(crate) async fn inspect_release_bundle_source(
+    package_root: &Path,
+) -> UseResult<(ReleaseBundlePackage, super::ExtensionManifest, Vec<u8>)> {
     let metadata = fs::symlink_metadata(package_root)
         .await
         .map_err(|error| io_error("inspect release bundle", package_root, error))?;
@@ -75,7 +83,7 @@ pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBun
     let package_root = fs::canonicalize(package_root)
         .await
         .map_err(|error| io_error("resolve release bundle", package_root, error))?;
-    let (manifest, _) = read_manifest(&package_root).await?;
+    let (manifest, manifest_bytes) = read_manifest(&package_root).await?;
     validate_surface_files(&manifest, &package_root).await?;
     let fingerprint = package_fingerprint(&package_root).await?;
     let surfaces = manifest
@@ -87,9 +95,9 @@ pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBun
     let package = ReleaseBundlePackage {
         schema_version: RELEASE_BUNDLE_SCHEMA_VERSION,
         component_id: format!("use/{}", manifest.package_id),
-        package_id: manifest.package_id,
-        version: manifest.version,
-        route: manifest.route,
+        package_id: manifest.package_id.clone(),
+        version: manifest.version.clone(),
+        route: manifest.route.clone(),
         package_sha256: fingerprint.sha256,
         file_count: fingerprint.file_count,
         byte_count: fingerprint.byte_count,
@@ -97,7 +105,7 @@ pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBun
         activity_count,
     };
     package.validate()?;
-    Ok(package)
+    Ok((package, manifest, manifest_bytes))
 }
 
 /// Validate an AIX archive with the installer's native reader and package contracts.

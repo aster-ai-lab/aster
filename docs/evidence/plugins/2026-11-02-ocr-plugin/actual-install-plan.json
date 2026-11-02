@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "use.extension.registry_oci_invalid",
+    "details": {},
+    "message": "GHCR metadata returned HTTP 401 Unauthorized."
+  },
+  "ok": false,
+  "schemaVersion": 1
+}

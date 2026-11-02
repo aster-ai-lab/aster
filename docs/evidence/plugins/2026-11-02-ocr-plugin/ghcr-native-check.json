@@ -1,0 +1,22 @@
+{
+  "data": {
+    "aixPackage": {
+      "activityCount": 0,
+      "byteCount": 71605506,
+      "componentId": "use/aster/aster-ocr",
+      "fileCount": 29,
+      "packageId": "aster/aster-ocr",
+      "packageSha256": "4edf60fa09575435622190071622ac2b5ee8b5ead43fde7187a41f8f66a134f6",
+      "route": "aster-ocr",
+      "schemaVersion": 1,
+      "surfaces": [
+        "mcp",
+        "skill",
+        "plugin"
+      ],
+      "version": "0.1.0+a786b17bf82fa03f81f3435035ae05deafbc4426"
+    }
+  },
+  "ok": true,
+  "schemaVersion": 1
+}

@@ -730,3 +730,15 @@ Edge services `auth`, `billing`, `config`, `runtime`, and `runner` moved under
 longer root workspace members. Compat symlinks preserve the legacy `apps/auth`
 family of paths for Tilt, scripts, and submodule references. `apps/gateway`
 stays in the root workspace because Studio embeds it.
+
+## OCR distribution moved to a native plugin (2026-11-02)
+
+The complete local OCR capability is distributed as `aster/aster-ocr` in native
+`.aix` format through `aster-ai-lab/plugins` and GHCR. Rust source and the canonical
+`aster-use-ocr` Skill remain in `crates/ocr`; Studio uses the plugin's stdio MCP
+entry instead of linking the engine. PDFium and fonts remain in the document
+component. The legacy model-only `aster-ai-lab/OCR` repository was deleted after
+backing up and checking its Git history and four release assets and qualifying
+real recognition and the replacement GHCR archive. See
+`docs/evidence/plugins/2026-11-02-ocr-plugin/OUTCOME.md` for exact evidence and the
+pending organization policy gate on anonymous package downloads.

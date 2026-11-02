@@ -1,0 +1,37 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Checking slab v0.4.12
+    Checking hyper v1.12.0
+    Checking flate2 v1.1.10
+    Checking aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+    Checking aster-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+    Checking aster-runtime v0.8.0 (/Users/roylin/code/aster/crates/runtime)
+    Checking futures-util v0.3.34
+    Checking zip v2.6.1
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Checking tower v0.5.3
+    Checking hyper-util v0.1.19
+    Checking tokio-util v0.7.19
+    Checking futures-executor v0.3.34
+    Checking tokio-tungstenite v0.26.2
+    Checking sse-stream v0.2.6
+    Checking futures v0.3.34
+    Checking tower-http v0.6.11
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+    Checking hyper-rustls v0.27.2
+    Checking axum v0.8.4
+    Checking reqwest v0.12.28
+    Checking reqwest v0.13.5
+    Checking rmcp v0.8.5
+    Checking tough v0.24.0
+    Checking aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+    Checking aster-use v0.3.4 (/Users/roylin/code/aster/crates/use)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.05s

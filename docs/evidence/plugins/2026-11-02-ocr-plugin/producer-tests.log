@@ -1,0 +1,6 @@
+test_complete_inputs_have_stable_versions_and_changed_models_are_refused (test_package_plugin.OcrPackageTest) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.031s
+
+OK

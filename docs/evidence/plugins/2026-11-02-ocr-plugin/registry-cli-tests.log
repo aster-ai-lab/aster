@@ -1,0 +1,47 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling futures-util v0.3.34
+   Compiling mime_guess v2.0.5
+   Compiling flate2 v1.1.10
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling zip v2.6.1
+   Compiling tokio-util v0.7.19
+   Compiling tower v0.5.3
+   Compiling futures-executor v0.3.34
+   Compiling tokio-tungstenite v0.26.2
+   Compiling sse-stream v0.2.6
+   Compiling futures v0.3.34
+   Compiling tower-http v0.6.11
+   Compiling h2 v0.4.20
+   Compiling hyper v1.12.0
+   Compiling hyper-util v0.1.19
+   Compiling hyper-rustls v0.27.2
+   Compiling axum v0.8.4
+   Compiling reqwest v0.12.28
+   Compiling reqwest v0.13.5
+   Compiling tough v0.24.0
+   Compiling rmcp v0.8.5
+   Compiling aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+   Compiling aster-use v0.3.4 (/Users/roylin/code/aster/crates/use)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.57s
+     Running unittests src/lib.rs (target/runtime-layout-native/debug/deps/aster_use-9f5979ab38acd707)
+
+running 6 tests
+test cli::registry::tests::registry_source_rejects_ambiguous_url_and_github_authority ... ok
+test cli::registry::tests::source_cache_policy_options_are_typed_and_non_repeatable ... ok
+test cli::registry::tests::github_registry_options_resolve_to_a_canonical_repository_registry ... ok
+test cli::registry::aix_tests::registry_package_check_validates_a_native_archive_without_installing_it ... ok
+test cli::registry::aix_tests::registry_package_prepare_writes_exact_oci_bytes_and_preserves_existing_outputs ... ok
+test cli::registry::aix_tests::registry_package_build_produces_a_checkable_archive_and_preserves_existing_output ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 330 filtered out; finished in 0.05s
+

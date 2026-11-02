@@ -2,17 +2,19 @@
 
 use std::path::{Path, PathBuf};
 
-use aster_use_core::{UseError, UseResult};
+use aster_use_core::{PluginCatalogRecord, UseError, UseResult};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use tokio::fs;
 use tokio::io::AsyncReadExt;
 
 use crate::package::{io_error, validate_text_asset};
+use crate::release_bundle::inspect_release_bundle_source;
 use crate::remote::oci::encode_aix_manifest;
 use crate::source::MAX_ARCHIVE_BYTES;
-use crate::{inspect_aix_package, inspect_release_bundle, ReleaseBundlePackage};
+use crate::{inspect_aix_package, ReleaseBundlePackage};
 
+mod catalog;
 mod domains;
 #[cfg(test)]
 mod tests;
@@ -21,7 +23,7 @@ const ERROR: &str = "use.extension.publication_invalid";
 
 /// Admitted source identity and immutable OCI bytes, without signing or upload.
 /// Only the validating preparation function can construct this value.
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PreparedAixPublication {
     domain: String,
@@ -34,6 +36,23 @@ pub struct PreparedAixPublication {
     manifest_sha256: String,
     #[serde(skip)]
     manifest_bytes: Vec<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    catalog: Option<PluginCatalogRecord>,
+    #[serde(skip)]
+    planning_bytes: Vec<u8>,
+}
+
+impl std::fmt::Debug for PreparedAixPublication {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("PreparedAixPublication")
+            .field("package", &self.package)
+            .field("oci_repository", &self.oci_repository)
+            .field("archive_sha256", &self.archive_sha256)
+            .field("archive_length", &self.archive_length)
+            .field("manifest_sha256", &self.manifest_sha256)
+            .finish_non_exhaustive()
+    }
 }
 
 impl PreparedAixPublication {
@@ -51,6 +70,16 @@ impl PreparedAixPublication {
     pub fn manifest_bytes(&self) -> &[u8] {
         &self.manifest_bytes
     }
+
+    /// Return the generated catalog, when publication metadata was supplied.
+    pub fn catalog(&self) -> Option<&PluginCatalogRecord> {
+        self.catalog.as_ref()
+    }
+
+    /// Return canonical planning bytes for executable surfaces; empty for data packages.
+    pub fn planning_bytes(&self) -> &[u8] {
+        &self.planning_bytes
+    }
 }
 
 /// Check domain/publisher admission, native source layout, license and AIX bytes.
@@ -65,6 +94,34 @@ pub async fn prepare_aix_publication(
     repository_root: &Path,
     domain: &str,
     archive: &Path,
+) -> UseResult<PreparedAixPublication> {
+    prepare(repository_root, domain, archive, None).await
+}
+
+/// Generate a catalog and native planning contract from admitted package bytes.
+///
+/// Metadata is bounded JSON registry data. Permissions are author-declared and
+/// checked by the native catalog contract; this operation never executes a package.
+pub async fn prepare_aix_publication_with_catalog(
+    repository_root: &Path,
+    domain: &str,
+    archive: &Path,
+    metadata: &[u8],
+) -> UseResult<PreparedAixPublication> {
+    prepare(
+        repository_root,
+        domain,
+        archive,
+        Some(catalog::parse(metadata)?),
+    )
+    .await
+}
+
+async fn prepare(
+    repository_root: &Path,
+    domain: &str,
+    archive: &Path,
+    metadata: Option<catalog::CatalogMetadata>,
 ) -> UseResult<PreparedAixPublication> {
     let package = inspect_aix_package(archive).await?;
     let (publisher, name) = package.package_id.split_once('/').ok_or_else(|| {
@@ -92,7 +149,9 @@ pub async fn prepare_aix_publication(
         256 * 1024,
     )
     .await?;
-    if inspect_release_bundle(&source_path).await? != package {
+    let (source_package, manifest, source_manifest_bytes) =
+        inspect_release_bundle_source(&source_path).await?;
+    if source_package != package {
         return Err(invalid(
             "The AIX archive must contain exactly the current plugin source files.",
         ));
@@ -126,7 +185,7 @@ pub async fn prepare_aix_publication(
         archive_sha256.clone(),
         archive_length,
     )?;
-    Ok(PreparedAixPublication {
+    let mut publication = PreparedAixPublication {
         domain: domain.into(),
         owners,
         source_path,
@@ -136,7 +195,16 @@ pub async fn prepare_aix_publication(
         archive_length,
         manifest_sha256: format!("sha256:{:x}", Sha256::digest(&manifest_bytes)),
         manifest_bytes,
-    })
+        catalog: None,
+        planning_bytes: Vec::new(),
+    };
+    if let Some(metadata) = metadata {
+        let (record, planning) =
+            catalog::prepare(&publication, &manifest, &source_manifest_bytes, metadata).await?;
+        publication.catalog = Some(record);
+        publication.planning_bytes = planning;
+    }
+    Ok(publication)
 }
 
 fn invalid(message: impl Into<String>) -> UseError {

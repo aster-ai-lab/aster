@@ -1,155 +1,46 @@
 # Aster OCR
 
-`aster-use-ocr` is the independently maintained, provider-oriented OCR library
-used by Aster Use. Its stable boundary is the `OcrProvider` interface, not one OCR
-model:
+Provider-oriented Rust OCR interfaces and the native executable shipped in
+[`aster/aster-ocr`](https://github.com/aster-ai-lab/plugins/tree/main/plugins/aster/aster-ocr).
+The official distribution is one self-contained `.aix` containing the executable,
+ONNX Runtime, PP-OCRv6 models, licenses, stdio MCP entry and `aster-use-ocr` Skill.
+The desktop base uses the provider-neutral API and calls the plugin through MCP.
 
 ```text
-bounded image -> OcrClient -> Arc<dyn OcrProvider> -> provider output
-                    |
-                    +-> canonical path, media type, size, and SHA-256 evidence
-```
-
-`OcrClient` validates and hashes each bounded local image before invoking the
-injected provider. A provider owns recognition, readiness, model identity, and
-its off-device data policy, but cannot replace the canonical source evidence.
-Provider results may include text only or optional confidence, polygon, and
-bounding-box evidence.
-
-The default feature set supplies `PpOcrV6Provider`, a local implementation using
-ONNX Runtime and the pinned `PP-OCRv6_small` model bundle. It is the default Aster
-Use integration, not the architectural limit. Other local or remote providers
-can implement `OcrProvider` and be injected as typed objects without changing
-the client contract or selecting a backend by a raw string.
-
-## Provider interface
-
-```rust
-use aster_use_ocr::{
-    OcrClient, OcrInput, OcrProvider, OcrProviderDescriptor,
-    OcrProviderOutput, OcrProviderStatus, Readiness, UseResult,
-};
-use async_trait::async_trait;
-
-struct MyProvider;
-
-#[async_trait]
-impl OcrProvider for MyProvider {
-    fn descriptor(&self) -> OcrProviderDescriptor {
-        OcrProviderDescriptor::new("my-provider", "my-engine", false)
-            .expect("static provider descriptor")
-    }
-
-    fn diagnostic(&self) -> OcrProviderStatus {
-        OcrProviderStatus {
-            readiness: Readiness::Ready,
-            model: Some("my-model".into()),
-            model_dir: None,
-            message: "ready".into(),
-            suggestions: Vec::new(),
-        }
-    }
-
-    async fn recognize(&self, input: OcrInput) -> UseResult<OcrProviderOutput> {
-        let _validated_bytes = input.bytes();
-        Ok(OcrProviderOutput {
-            model: Some("my-model".into()),
-            text: "recognized text".into(),
-            blocks: Vec::new(),
-            warnings: Vec::new(),
-        })
-    }
-}
-
-let client = OcrClient::with_provider(MyProvider)?;
-# Ok::<(), aster_use_ocr::UseError>(())
-```
-
-Use `default-features = false` when only the provider-neutral contract and
-client are required. Enable `mcp` for a provider-neutral MCP host,
-`ppocr-v6` for the local default provider, or `cli` for the bundled application
-surface (which assembles both).
-
-## Default PP-OCRv6 provider
-
-The default provider is:
-
-- provider: `pp-ocr-v6`
-- engine: `onnx-runtime`
-- model bundle: `PP-OCRv6_small`
-- source policy: local only
-
-For each image it runs detection, DB post-processing, reading-order sorting,
-perspective crop correction, batched recognition, and CTC decoding. It does not
-require Python or PaddlePaddle and does not transfer image bytes off device.
-
-The release packages the pinned detection and recognition models. If the model
-bundle is absent or damaged, install or repair it explicitly:
-
-```bash
-aster install use/ocr
-aster install use/ocr --force
-```
-
-Model installation uses the immutable Aster OCR release bundle derived from the
-pinned PaddleOCR artifacts, rather than depending on the upstream CDN at
-install time. Downloads bound connection setup and stalled reads without a
-total transfer deadline, so a healthy slow link can still complete the bundle.
-Interrupted bodies retry from an exact validated byte range; a server that
-ignores the range restarts the staging file instead of appending. The same
-bounded retry budget covers transient connection and origin failures. The
-complete bundle still must match its pinned length and SHA-256 before
-activation, and extraction admits only the four declared model assets.
-
-`ASTER_OCR_MODEL_DIR` can point development builds at an explicit PP-OCRv6 model
-bundle. `ASTER_USE_OCR_HOME` overrides its managed model root for packaging,
-tests, or an isolated installation. These settings configure the default
-provider; custom providers own their own typed configuration.
-
-## Commands
-
-Aster Use assembles the default provider as its reserved built-in `ocr` route:
-
-```bash
-aster use ocr doctor --json
-aster use ocr extract ./scan.png --json
-aster use mcp serve ocr
-```
-
-The standalone development binary accepts the equivalent domain arguments:
-
-```bash
 aster-use-ocr doctor --json
-aster-use-ocr extract ./scan.png --json
-aster-use-ocr serve --mcp
+aster-use-ocr extract "/local/发票 1.png" --json
+aster-use-ocr serve --mcp --profile document
 ```
 
-`OcrMcpServer::new` accepts any provider-backed `OcrClient` and projects the
-provider's off-device policy into MCP tool annotations. `from_env` selects the
-local PP-OCRv6 default for the bundled CLI.
+Use the executable from the verified installed package's `payload/` directory;
+Windows uses `aster-use-ocr.exe`. MCP exposes `ocr_doctor` and `ocr_extract`, with
+`{"path":"/exact/local/image.png"}`. Structured results contain provider, engine,
+model, original source evidence, text, blocks and warnings. Qualified tool names
+come from host discovery. The retired built-in `aster use ocr` route is unavailable.
 
-Supported client inputs are bounded local PNG, JPEG, WebP, GIF, BMP, and TIFF
-files. URLs and PDF rasterization are outside the current client contract.
+The packaged executable binds its own adjacent library and models, ahead of any
+old user cache. General detection is bounded to 4000 pixels; the document profile
+uses 1536. Recognition stays local and never downloads assets. The host renders
+PDF pages before image recognition. Native execution is not an OS sandbox.
 
-## Build
+`OcrClient` validates bounded source input and owns its path, media type, size and
+SHA-256. Injected `OcrProvider` implementations supply recognition content without
+replacing that source evidence. Build with no default features for this API alone.
 
-```bash
-cargo fmt --all -- --check
-cargo test --no-default-features --lib --locked
-cargo check --no-default-features --features mcp --locked
-cargo test --locked
-cargo clippy --all-targets --all-features --locked -- -D warnings
-cargo package --locked
-```
+The existing explicit `install_ppocr_v6`, `repair_ppocr_v6`, and
+`uninstall_managed_ppocr_v6` APIs now manage the complete official AIX through the
+native extension lifecycle. They no longer download a separate model archive.
+Unchanged verified releases reuse their installed generation. A small local
+reference locates models in the canonical installed package; it does not copy them.
+For normal AI use, install and authorize through the host plugin manager described
+in the [plugins Skill](https://github.com/aster-ai-lab/plugins/tree/main/skills/aster-plugins).
 
-The library depends on the stable `aster-use-core` machine contracts. Aster Use
-pins an immutable OCR revision when assembling its built-in provider, Skill,
-and model assets.
+Source and Skill live here. Release source metadata and signed catalogs live in
+the plugins repository. Build `aster-use-ocr` with the pinned workspace toolchain,
+then run `scripts/package_plugin.py` with explicit native executable, runtime,
+model directory, notices directory, output directory and `aster-use` builder.
+It checks the four pinned model digests and invokes native `registry package
+build/check/prepare`; do not create ZIP files and rename them to `.aix`.
 
-## Release ownership
-
-This repository owns the provider interface, default PP-OCRv6 implementation,
-tests, model provenance, Skill content, crate publication, and platform
-archives. Aster Use owns the built-in route, chosen default provider, capability
-projection, component policy, and final product assembly. Releases are joined
-only through immutable revisions and SHA-256-bound artifacts.
+Only targets in the signed official catalog are released and runtime-qualified.
+See `THIRD_PARTY_NOTICES.md` for model and runtime provenance.

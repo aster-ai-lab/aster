@@ -1,0 +1,26 @@
+[
+  {
+    "package": "plugins/aster/aster-document",
+    "visibility": "private",
+    "repository": "aster-ai-lab/plugins",
+    "anonymousTokenHttpStatus": 401
+  },
+  {
+    "package": "plugins/aster/aster-ocr",
+    "visibility": "private",
+    "repository": "aster-ai-lab/plugins",
+    "anonymousTokenHttpStatus": 401
+  },
+  {
+    "package": "plugins/aster/aster-office",
+    "visibility": "private",
+    "repository": "aster-ai-lab/plugins",
+    "anonymousTokenHttpStatus": 401
+  },
+  {
+    "package": "plugins/aster/aster-sandbox",
+    "visibility": "private",
+    "repository": "aster-ai-lab/plugins",
+    "anonymousTokenHttpStatus": 401
+  }
+]

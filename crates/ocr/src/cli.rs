@@ -1,3 +1,4 @@
+use std::ffi::OsString;
 use std::path::PathBuf;
 
 use aster_use_core::{UseError, UseResult};
@@ -5,7 +6,7 @@ use clap::error::ErrorKind;
 use clap::{Parser, Subcommand};
 use serde::Serialize;
 
-use crate::{OcrClient, OcrMcpServer, OcrRequest};
+use crate::{OcrClient, OcrMcpServer, OcrRequest, PpOcrV6Profile, PpOcrV6Provider};
 
 #[derive(Debug)]
 pub struct CommandOutput {
@@ -69,6 +70,10 @@ struct Cli {
     #[arg(long, global = true)]
     json: bool,
 
+    /// Detection bounds; document matches Studio's 1536-pixel profile.
+    #[arg(long, global = true, value_enum, default_value = "general")]
+    profile: PpOcrV6Profile,
+
     #[command(subcommand)]
     command: Command,
 }
@@ -88,7 +93,12 @@ enum Command {
 }
 
 pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
-    let mut argv = vec!["aster-use-ocr".to_string()];
+    run_os(args.into_iter().map(OsString::from).collect()).await
+}
+
+/// Parse native process arguments without normalizing filesystem values.
+pub async fn run_os(args: Vec<OsString>) -> UseResult<CommandOutput> {
+    let mut argv = vec![OsString::from("aster-use-ocr")];
     argv.extend(args);
     let cli = match Cli::try_parse_from(argv) {
         Ok(cli) => cli,
@@ -110,11 +120,13 @@ pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
         if cli.json {
             return Err(usage_error("--json cannot be combined with serve --mcp"));
         }
-        OcrMcpServer::from_env()?.serve_stdio().await?;
+        OcrMcpServer::new(client_for_profile(cli.profile).await?)
+            .serve_stdio()
+            .await?;
         return Ok(CommandOutput::silent());
     }
 
-    let client = OcrClient::from_env()?;
+    let client = client_for_profile(cli.profile).await?;
     match cli.command {
         Command::Doctor => CommandOutput::data(client.diagnostic()),
         Command::Extract { path } => {
@@ -127,6 +139,51 @@ pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
     }
 }
 
+async fn client_for_profile(profile: PpOcrV6Profile) -> UseResult<OcrClient> {
+    tokio::task::spawn_blocking(move || {
+        let executable = std::env::current_exe()
+            .map_err(|error| UseError::new("use.ocr.executable_missing", error.to_string()))?;
+        let root = executable.parent().ok_or_else(|| {
+            UseError::new(
+                "use.ocr.executable_missing",
+                "OCR executable has no parent directory.",
+            )
+        })?;
+        let models = root.join("ocr-models").join(crate::config::MODEL_FAMILY);
+        if models
+            .try_exists()
+            .map_err(|error| UseError::new("use.ocr.model_invalid", error.to_string()))?
+        {
+            let runtime = if cfg!(target_os = "macos") {
+                "libonnxruntime.dylib"
+            } else if cfg!(windows) {
+                "onnxruntime.dll"
+            } else if cfg!(target_os = "linux") {
+                "libonnxruntime.so"
+            } else {
+                return Err(UseError::new(
+                    "use.ocr.platform_unsupported",
+                    "Unsupported OCR platform.",
+                ));
+            };
+            return OcrClient::with_provider(PpOcrV6Provider::from_paths_with_profile(
+                &models,
+                &root.join(runtime),
+                profile,
+            )?);
+        }
+        if profile == PpOcrV6Profile::Document {
+            return Err(UseError::new(
+                "use.ocr.model_missing",
+                "The OCR plugin's packaged models are missing.",
+            ));
+        }
+        OcrClient::from_env()
+    })
+    .await
+    .map_err(|error| UseError::new("use.ocr.runtime_failed", error.to_string()))?
+}
+
 fn output_error(error: serde_json::Error) -> UseError {
     UseError::new(
         "use.ocr.output_invalid",
@@ -135,26 +192,8 @@ fn output_error(error: serde_json::Error) -> UseError {
 }
 
 fn usage_error(message: impl Into<String>) -> UseError {
-    UseError::new("use.ocr.usage_invalid", message).with_suggestion("Run 'aster use ocr --help'.")
+    UseError::new("use.ocr.usage_invalid", message).with_suggestion("Run 'aster-use-ocr --help'.")
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn doctor_is_versioned_even_when_no_provider_is_ready() {
-        let output = run(vec!["doctor".to_string(), "--json".to_string()])
-            .await
-            .unwrap();
-        assert_eq!(output.json["schemaVersion"], 1);
-        assert_eq!(output.json["ok"], true);
-        assert!(output.json["data"]["readiness"].is_string());
-    }
-
-    #[tokio::test]
-    async fn serve_requires_an_explicit_protocol() {
-        let error = run(vec!["serve".to_string()]).await.unwrap_err();
-        assert_eq!(error.code, "use.ocr.usage_invalid");
-    }
-}
+mod tests;

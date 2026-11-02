@@ -16,6 +16,14 @@ use crate::provider::{
 pub const PP_OCR_V6_PROVIDER_ID: &str = "pp-ocr-v6";
 const ENGINE_NAME: &str = "onnx-runtime";
 
+/// Detection bounds for standalone images and desktop document pages.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "cli", derive(clap::ValueEnum))]
+pub enum PpOcrV6Profile {
+    General,
+    Document,
+}
+
 /// Local PP-OCRv6 provider shipped as the default Aster Use integration.
 #[derive(Clone)]
 pub struct PpOcrV6Provider {
@@ -43,6 +51,15 @@ impl PpOcrV6Provider {
     /// Uses host-owned packaged assets without changing process environment variables.
     /// Detection is bounded to 1536 pixels; recognition crops retain source resolution.
     pub fn from_paths(model_dir: &std::path::Path, runtime: &std::path::Path) -> UseResult<Self> {
+        Self::from_paths_with_profile(model_dir, runtime, PpOcrV6Profile::Document)
+    }
+
+    /// Bind immutable packaged assets and the caller's detection profile.
+    pub fn from_paths_with_profile(
+        model_dir: &std::path::Path,
+        runtime: &std::path::Path,
+        profile: PpOcrV6Profile,
+    ) -> UseResult<Self> {
         let assets = crate::assets::validate_assets(model_dir, OcrInstallSource::Packaged)?;
         if !runtime.is_absolute() || !runtime.is_file() {
             return Err(UseError::new(
@@ -50,13 +67,22 @@ impl PpOcrV6Provider {
                 "The packaged ONNX Runtime library is missing.",
             ));
         }
-        ort::init_from(runtime.to_string_lossy())
+        let runtime_text = runtime.to_str().ok_or_else(|| {
+            UseError::new(
+                "use.ocr.runtime_path_encoding",
+                "ONNX Runtime requires a UTF-8 library path.",
+            )
+        })?;
+        ort::init_from(runtime_text)
             .with_name("aster-local-ocr")
             .commit()
             .map_err(|error| UseError::new("use.ocr.runtime_failed", error.to_string()))?;
         Ok(Self {
             assets: Some(assets),
-            max_detection_side: 1_536,
+            max_detection_side: match profile {
+                PpOcrV6Profile::General => 4_000,
+                PpOcrV6Profile::Document => 1_536,
+            },
             ..Self::from_env()?
         })
     }
@@ -85,10 +111,44 @@ impl PpOcrV6Provider {
     }
 
     fn resolve_assets(&self) -> UseResult<crate::assets::ModelAssets> {
-        self.assets
+        let assets = self
+            .assets
             .clone()
             .map(Ok)
-            .unwrap_or_else(resolve_model_assets)
+            .unwrap_or_else(resolve_model_assets)?;
+        if assets.source == OcrInstallSource::Managed {
+            let payload = assets
+                .root
+                .parent()
+                .and_then(std::path::Path::parent)
+                .ok_or_else(|| {
+                    UseError::new("use.ocr.runtime_missing", "Missing OCR plugin payload.")
+                })?;
+            let library = payload.join(if cfg!(windows) {
+                "onnxruntime.dll"
+            } else if cfg!(target_os = "macos") {
+                "libonnxruntime.dylib"
+            } else {
+                "libonnxruntime.so"
+            });
+            if !library.is_file() {
+                return Err(UseError::new(
+                    "use.ocr.runtime_missing",
+                    "The managed OCR plugin runtime library is missing.",
+                ));
+            }
+            let path = library.to_str().ok_or_else(|| {
+                UseError::new(
+                    "use.ocr.runtime_path_encoding",
+                    "ONNX Runtime requires a UTF-8 library path.",
+                )
+            })?;
+            ort::init_from(path)
+                .with_name("aster-local-ocr")
+                .commit()
+                .map_err(|error| UseError::new("use.ocr.runtime_failed", error.to_string()))?;
+        }
+        Ok(assets)
     }
 }
 
@@ -115,7 +175,7 @@ impl OcrProvider for PpOcrV6Provider {
             (
                 Readiness::Missing,
                 vec![
-                    "Run 'aster install use/ocr' to install the pinned local model bundle."
+                    "Install the official 'aster/aster-ocr' AIX plugin through the host plugin manager."
                         .to_string(),
                 ],
             )
@@ -123,7 +183,7 @@ impl OcrProvider for PpOcrV6Provider {
             (
                 Readiness::Broken,
                 vec![
-                    "Run 'aster install use/ocr --force' to restore the pinned local model bundle."
+                    "Repair the complete 'aster/aster-ocr' AIX plugin through the host plugin manager."
                         .to_string(),
                 ],
             )

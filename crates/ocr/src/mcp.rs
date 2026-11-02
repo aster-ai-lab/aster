@@ -98,7 +98,7 @@ impl ServerHandler for OcrMcpServer {
                 title: Some("Aster Use OCR".to_string()),
                 version: env!("CARGO_PKG_VERSION").to_string(),
                 icons: None,
-                website_url: Some("https://github.com/aster-ai-lab/OCR".to_string()),
+                website_url: Some("https://github.com/aster-ai-lab/plugins".to_string()),
             },
             instructions: Some(format!(
                 "Call ocr_doctor first. Use ocr_extract only for a local image path supplied by the task. The configured provider is '{}' using '{}'. {data_policy} Preserve the source SHA-256 and distinguish OCR text from verified source text.",

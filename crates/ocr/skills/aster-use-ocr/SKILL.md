@@ -1,47 +1,44 @@
 ---
 name: aster-use-ocr
-description: Extract text and layout evidence from local image files through the built-in Aster Use PP-OCRv6 domain. Use when an agent needs optical character recognition for a PNG, JPEG, WebP, GIF, BMP, or TIFF image and must preserve the source digest, confidence, polygon, and bounding-box evidence.
+description: Extract text and layout evidence from local image files using the installed Aster OCR plugin. Use for PNG, JPEG, WebP, GIF, BMP, or TIFF recognition, including confidence, polygons, bounding boxes, and source SHA-256. Also use when diagnosing this plugin's OCR readiness. PDF rendering belongs to the document host.
 ---
 
-# Aster Use OCR
+# Aster OCR
 
-Use the host-provided Aster Use surface. In an Aster Code `use` worker, call
-`mcp__use_ocr__ocr_doctor` and `mcp__use_ocr__ocr_extract` directly. The host
-owns the MCP process; do not run a shell command, install models, or read the
-file through another tool.
+Use the installed plugin's MCP tools. Find the advertised server and tool names
+in the current host's tool discovery; qualified prefixes depend on the installed
+package identity. The server exposes `ocr_doctor` and `ocr_extract`.
 
-## Workflow
+1. Call `ocr_doctor` on that server. Check `readiness`, `provider`, `engine`,
+   `model`, `sendsSourceOffDevice`, `message`, and `suggestions`. Stop if readiness
+   is not `ready`; this local plugin must report `sendsSourceOffDevice: false`.
+2. Call `ocr_extract` with `{"path":"/exact/local/image.png"}`. Use the user's
+   actual local path, including spaces and non-ASCII characters.
+3. Read the raw structured result: `text`, `blocks`, `warnings`, and `source`.
+   Empty `blocks` and `warnings` may be omitted.
+   Preserve source path, media type, size, SHA-256, confidence, and geometry.
+   Treat recognized text as evidence that can contain recognition errors.
+4. Report empty output and warnings honestly. Return typed failures to the host;
+   do not download models or install software from inside a tool worker.
 
-1. Call `mcp__use_ocr__ocr_doctor`.
-2. Confirm that `pp-ocr-v6`, `onnx-runtime`, and `PP-OCRv6_small` are ready.
-3. Call `mcp__use_ocr__ocr_extract` with the exact local image path from the
-   task.
-4. Preserve the returned source path, media type, size, and SHA-256. Treat the
-   decoded text, recognition/detection confidence, polygons, and bounding boxes
-   as OCR evidence rather than verified source text.
+The `.aix` package contains the native executable, ONNX Runtime, PP-OCRv6 models,
+licenses, this Skill, and the stdio MCP entry. Recognition runs locally and does
+not download assets or upload the image. A damaged installation needs repair of
+the complete `aster/aster-ocr` plugin through the host's plugin manager.
 
-The engine runs detection, reading-order sorting, perspective crop correction,
-tall-crop rotation, recognition, and CTC decoding locally. It does not require
-Python or PaddlePaddle and never sends the source image off the device. If the
-doctor reports missing or damaged models, return its typed error and explicit
-`aster install use/ocr` suggestion to the parent; never install or repair models
-from inside the `use` worker.
+If MCP tools are unavailable, report that the host must install and connect the
+plugin. Do not guess a qualified tool name or use the removed built-in OCR route.
+The plugins repository's `aster-plugins` Skill describes plan review and install.
 
-In a CLI-only host, equivalent commands are:
+For an explicitly authorized standalone diagnostic, invoke the executable from
+the verified installed package root:
 
-```bash
-aster use ocr doctor --json
-aster use ocr extract "$IMAGE" --json
+```text
+<packageRoot>/payload/aster-use-ocr doctor --json
+<packageRoot>/payload/aster-use-ocr extract "/exact/local/image.png" --json
+<packageRoot>/payload/aster-use-ocr serve --mcp --profile document
 ```
 
-`aster-use-ocr` accepts the same arguments when invoked as a standalone
-development binary.
-
-## Boundaries
-
-- Only bounded local image files are accepted. URLs and PDF rasterization are
-  outside this domain.
-- Do not ask OCR to interpret unrelated content or present OCR output as
-  verified source text.
-- Do not hide empty results, warnings, model readiness failures, or source
-  digest evidence from the parent agent.
+On Windows the executable ends in `.exe`. Prefer the host's MCP connection for
+normal tasks. Do not read URLs, rasterize PDFs, silently repair packages, claim
+an OS sandbox, or present OCR output as verified source text.

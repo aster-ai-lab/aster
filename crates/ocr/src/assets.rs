@@ -1,3 +1,4 @@
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use aster_use_core::{UseError, UseResult};
@@ -5,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::config::{load_detection, load_recognition, MODEL_FAMILY};
 
-pub(crate) const RECEIPT_FILE: &str = ".aster-ppocr-v6.json";
+pub(crate) const RECEIPT_FILE: &str = "plugin-models.json";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -77,8 +78,7 @@ pub(crate) fn resolve_model_assets() -> UseResult<ModelAssets> {
         return validate_assets(&path, OcrInstallSource::Environment);
     }
 
-    let managed = managed_model_dir()?;
-    if path_exists(&managed)? {
+    if let Some(managed) = managed_model_dir()? {
         return validate_assets(&managed, OcrInstallSource::Managed);
     }
 
@@ -95,9 +95,10 @@ pub(crate) fn resolve_model_assets() -> UseResult<ModelAssets> {
         "use.ocr.model_missing",
         format!("The local {MODEL_FAMILY} model bundle is not installed."),
     )
-    .with_suggestion("Run 'aster install use/ocr'.")
-    .with_detail("source", "missing")
-    .with_detail("modelDir", managed.display().to_string()))
+    .with_suggestion(
+        "Install the official 'aster/aster-ocr' AIX plugin through the host plugin manager.",
+    )
+    .with_detail("source", "missing"))
 }
 
 pub(crate) fn validate_assets(root: &Path, source: OcrInstallSource) -> UseResult<ModelAssets> {
@@ -152,9 +153,49 @@ pub(crate) fn managed_root() -> UseResult<PathBuf> {
     ))
 }
 
-pub(crate) fn managed_model_dir() -> UseResult<PathBuf> {
-    Ok(managed_root()?.join(MODEL_FAMILY))
+pub(crate) fn managed_model_dir() -> UseResult<Option<PathBuf>> {
+    let path = managed_root()?.join(RECEIPT_FILE);
+    read_model_reference(&path)
 }
+
+fn read_model_reference(path: &Path) -> UseResult<Option<PathBuf>> {
+    let file = match std::fs::File::open(path) {
+        Ok(file) => file,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => {
+            return Err(model_error(
+                OcrInstallSource::Managed,
+                path,
+                error.to_string(),
+            ))
+        }
+    };
+    let mut bytes = Vec::new();
+    file.take(16 * 1024 + 1)
+        .read_to_end(&mut bytes)
+        .map_err(|error| model_error(OcrInstallSource::Managed, path, error.to_string()))?;
+    if bytes.len() > 16 * 1024 {
+        return Err(model_error(
+            OcrInstallSource::Managed,
+            path,
+            "OCR plugin model reference exceeds 16 KiB.",
+        ));
+    }
+    let models: PathBuf = serde_json::from_slice(&bytes)
+        .map_err(|error| model_error(OcrInstallSource::Managed, path, error.to_string()))?;
+    if !models.is_absolute() {
+        return Err(model_error(
+            OcrInstallSource::Managed,
+            path,
+            "OCR plugin model reference must be absolute.",
+        ));
+    }
+    Ok(Some(models))
+}
+
+#[cfg(test)]
+#[path = "assets/tests.rs"]
+mod tests;
 
 fn checked_file(
     root: &Path,
@@ -222,7 +263,9 @@ fn path_exists(path: &Path) -> UseResult<bool> {
 
 fn model_error(source: OcrInstallSource, root: &Path, message: impl Into<String>) -> UseError {
     UseError::new("use.ocr.model_invalid", message)
-        .with_suggestion("Run 'aster install use/ocr --force' to restore the pinned PP-OCRv6 bundle.")
+        .with_suggestion(
+            "Repair the complete 'aster/aster-ocr' AIX plugin through the host plugin manager.",
+        )
         .with_detail("source", source_name(source))
         .with_detail("modelDir", root.display().to_string())
 }

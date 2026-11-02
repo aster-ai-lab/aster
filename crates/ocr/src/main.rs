@@ -2,9 +2,9 @@ use std::process::ExitCode;
 
 #[tokio::main]
 async fn main() -> ExitCode {
-    let args = std::env::args().skip(1).collect::<Vec<_>>();
+    let args = std::env::args_os().skip(1).collect::<Vec<_>>();
     let json = args.iter().any(|argument| argument == "--json");
-    match aster_use_ocr::cli::run(args).await {
+    match aster_use_ocr::cli::run_os(args).await {
         Ok(output) => {
             if output.should_print && json {
                 println!(
