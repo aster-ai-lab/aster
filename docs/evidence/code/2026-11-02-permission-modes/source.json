@@ -1,0 +1,130 @@
+{
+  "root_review_head": "af4849c89b916a2f5f9439ffe6dd8e879ac6de5f",
+  "studio_review_head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+  "tracked_deltas": [
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/en-us.json",
+      "repo": "apps/studio",
+      "relative_path": "src/renderer/i18n/locales/en-us.json",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/renderer/i18n/locales/en-us.json",
+      "before_sha256": "2c741393a9575ec02416665e17e6967a1162ab08a44de9eca2703755ece7102f",
+      "working_sha256": "82c57a23fd8c4e243e85d17b9a02903b7763a8d8e90659461bf1955502fb519e",
+      "candidate_sha256": "a2d402c59f40d37d4728c0149a7d4563aa01b4e978b2b1aabd33fb15ccf6f124"
+    },
+    {
+      "path": "apps/studio/src/renderer/i18n/locales/zh-cn.json",
+      "repo": "apps/studio",
+      "relative_path": "src/renderer/i18n/locales/zh-cn.json",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/renderer/i18n/locales/zh-cn.json",
+      "before_sha256": "b7210608751da2cd27813f3f00f55a7a9c1a2f890d18519411ba2381835640c0",
+      "working_sha256": "1077cb9ac61481561ba082fdac345ad16d280aabe5c3eea5d6f4c2f71e5d178a",
+      "candidate_sha256": "c7afa65fbfd59f5d18ac899798a348569487ab4fbe1a4379092a3b62fa638694"
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "repo": "apps/studio",
+      "relative_path": "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "before_sha256": "f17dad152714aefbcf8b0477f03918967244fa65e32f8d5b7f44dd353eb50a30",
+      "working_sha256": "ddc9dd2b7d7916be360fb80f6df705386a88c0fe9f3a099d448abf69fff90e09",
+      "candidate_sha256": "ddc9dd2b7d7916be360fb80f6df705386a88c0fe9f3a099d448abf69fff90e09"
+    },
+    {
+      "path": "apps/studio/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+      "repo": "apps/studio",
+      "relative_path": "src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/renderer/pages/agents/useAgentChatRuntimeState.ts",
+      "before_sha256": "020e10aa149d22ed5b3d023d0b89ba76d28815ac5cd363f8dc179a1732efc07c",
+      "working_sha256": "0699bf223404f9e03fcb17a9e7b477ed259167d6d1cfe4b7a28633b8ec66a19e",
+      "candidate_sha256": "0699bf223404f9e03fcb17a9e7b477ed259167d6d1cfe4b7a28633b8ec66a19e"
+    },
+    {
+      "path": "apps/studio/src/shared/ai/transport/stream.ts",
+      "repo": "apps/studio",
+      "relative_path": "src/shared/ai/transport/stream.ts",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/shared/ai/transport/stream.ts",
+      "before_sha256": "d45596a9f26925ce1a722b685ea180b49a613e95d3e1bc66f34308abc3204b2d",
+      "working_sha256": "11cd6fc7c45636154fdf68fe08b6a50e0eb8682b1c132545026f9a9fc92c4724",
+      "candidate_sha256": "11cd6fc7c45636154fdf68fe08b6a50e0eb8682b1c132545026f9a9fc92c4724"
+    },
+    {
+      "path": "apps/studio/src/shared/ipc/schemas/__tests__/ai.test.ts",
+      "repo": "apps/studio",
+      "relative_path": "src/shared/ipc/schemas/__tests__/ai.test.ts",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/shared/ipc/schemas/__tests__/ai.test.ts",
+      "before_sha256": "19cdf47596568899d84a5e8fca03a5d994c1eb6d9ed776f267f818431f945049",
+      "working_sha256": "2b4ed1f9e68ada23d032a10a910d745bff353402b644cc306ea6c416e6d57175",
+      "candidate_sha256": "2b4ed1f9e68ada23d032a10a910d745bff353402b644cc306ea6c416e6d57175"
+    },
+    {
+      "path": "apps/studio/src/shared/ipc/schemas/ai.ts",
+      "repo": "apps/studio",
+      "relative_path": "src/shared/ipc/schemas/ai.ts",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src/shared/ipc/schemas/ai.ts",
+      "before_sha256": "4f5827564001ac3a95f53648ba61c378cdb9a834699658829c0d226c7c0742a3",
+      "working_sha256": "48035eddcfce88351e54a46a5815537e103076339c5278a86ac1dad6fa68a3ae",
+      "candidate_sha256": "48035eddcfce88351e54a46a5815537e103076339c5278a86ac1dad6fa68a3ae"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/store.rs",
+      "repo": "apps/studio",
+      "relative_path": "src-tauri/src/agent_plane/store.rs",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src-tauri/src/agent_plane/store.rs",
+      "before_sha256": "22c356f743e3d4944d33d5f158dca3d9295925f87ec480e7c6e8f9372606b3c3",
+      "working_sha256": "5683bd8a718d4ade63cefb31d53dec563552a1c47ee2e867d89d09a1ba81fac2",
+      "candidate_sha256": "5683bd8a718d4ade63cefb31d53dec563552a1c47ee2e867d89d09a1ba81fac2"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/turns.rs",
+      "repo": "apps/studio",
+      "relative_path": "src-tauri/src/agent_plane/turns.rs",
+      "head": "878b5c59caa3db7f3b21b519d3fcadc3c6ec79af",
+      "candidate": ".git/aster-permission-modes/candidates/apps/studio/src-tauri/src/agent_plane/turns.rs",
+      "before_sha256": "7d0e0ca778908450ad7651d7229d302bfce383e69bb64cb9a79bae7a1466bc74",
+      "working_sha256": "f99a83f6751ec5dc7d71932ea0620c2e28aeb18ef3f002f705538452969ad01e",
+      "candidate_sha256": "f99a83f6751ec5dc7d71932ea0620c2e28aeb18ef3f002f705538452969ad01e"
+    },
+    {
+      "path": "crates/code/acp/tests/unattended_e2e.rs",
+      "repo": ".",
+      "relative_path": "crates/code/acp/tests/unattended_e2e.rs",
+      "head": "af4849c89b916a2f5f9439ffe6dd8e879ac6de5f",
+      "candidate": ".git/aster-permission-modes/candidates/crates/code/acp/tests/unattended_e2e.rs",
+      "before_sha256": "3f1bf8aa7a19b0f51e05eb995031816fb066eb0bcd55e1a4f60a6d8479fe7ea5",
+      "working_sha256": "ed03f98b56b756dc82e6dd13cad64767e4be718e2f7715a857fc1a1c36d7d0d5",
+      "candidate_sha256": "c2a48e7b0aff5d41a43da5594cffcbf28b91492962b75b3209beb20d9da0fdcd"
+    },
+    {
+      "path": "crates/code/core/prompts/common/runtime_contract.md",
+      "repo": ".",
+      "relative_path": "crates/code/core/prompts/common/runtime_contract.md",
+      "head": "af4849c89b916a2f5f9439ffe6dd8e879ac6de5f",
+      "candidate": ".git/aster-permission-modes/candidates/crates/code/core/prompts/common/runtime_contract.md",
+      "before_sha256": "4960818ec842dd8d595ff067b513217bd68243613b1e522dbb738f5c33925abb",
+      "working_sha256": "cd8bf3915fc958d81036b6a003517dafc00aadb58e2a670fd440d8568f23e3d1",
+      "candidate_sha256": "cd8bf3915fc958d81036b6a003517dafc00aadb58e2a670fd440d8568f23e3d1"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "crates/code/acp/tests/unattended_e2e/permission_modes.rs",
+      "sha256": "e13efd348ce7139b221f3b3e869839c979c3e85f3919ad1634e997f8da12530b"
+    },
+    {
+      "path": "tests/e2e/interactive-permission-modes.acl",
+      "sha256": "7039d7fab82c9984d30cb8d71ca3a5f879b08b8d78776e2aa3356a5b962b454e"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/permission_mode_tests.rs",
+      "sha256": "dc7addf5f706479f60d6e9dba76a8b89fe7842fc5e83e8a823a44207ab387001"
+    }
+  ]
+}

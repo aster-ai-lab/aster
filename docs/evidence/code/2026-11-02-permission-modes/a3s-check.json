@@ -1,0 +1,51 @@
+{
+  "name": "interactive-permission-modes",
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "interactive-mode-boundaries",
+      "name": "interactive-mode-boundaries",
+      "surface": "tui",
+      "timeout_ms": 120000,
+      "steps": [
+        {
+          "id": "all-interactive-cases-pass",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "test result: ok. 2 passed; 0 failed"
+            }
+          }
+        },
+        {
+          "id": "full-access-without-confirmation",
+          "action": {
+            "type": "assert",
+            "expectation": {
+              "type": "text_visible",
+              "value": "PERMISSION_ORACLE mode=yolo operation=host asks=0"
+            }
+          }
+        },
+        {
+          "id": "rejection-without-execution",
+          "action": {
+            "type": "assert",
+            "expectation": {
+              "type": "text_visible",
+              "value": "PERMISSION_REJECTION mode=default asks=1 executed=false"
+            }
+          }
+        },
+        {
+          "id": "permission-results",
+          "action": {
+            "type": "terminal_recording",
+            "path": "terminal/permission-results.vt"
+          }
+        }
+      ]
+    }
+  ]
+}

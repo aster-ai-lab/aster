@@ -1,0 +1,51 @@
+{
+  "model": "glm-02/glm-5.3",
+  "cases": [
+    {
+      "name": "direct",
+      "elapsed_ms": 43531
+    },
+    {
+      "name": "explain",
+      "elapsed_ms": 51459
+    },
+    {
+      "name": "review",
+      "elapsed_ms": 114929
+    },
+    {
+      "name": "repair",
+      "elapsed_ms": 30988
+    }
+  ],
+  "accepted_cases": [
+    "direct",
+    "explain",
+    "repair"
+  ],
+  "frozen_grader_failed_cases": [
+    "review"
+  ],
+  "test_functions": {
+    "passed": 1,
+    "failed": 1
+  },
+  "failure": "parent-only read/search assertion at prompt_boundary_tests.rs:164",
+  "review_parent_tools": [
+    "task"
+  ],
+  "review_task_metadata_source_anchors": [
+    {
+      "tool": "read",
+      "url_or_path": "src/limit.rs"
+    },
+    {
+      "tool": "search",
+      "url_or_path": "src/limit.rs"
+    }
+  ],
+  "review_task_exit_code": 0,
+  "classification": "evaluator does not account for delegated source inspection",
+  "grader_changed": false,
+  "log_sha256": "cc0a0c4ef175028fdbcc056608f47fe9e2f7bae55bfbf1ef5e1dfa3166764688"
+}

@@ -1,0 +1,7 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/useAgentChatRuntimeState.ts
+   32:34  warning  Unexpected path "@renderer/pages/settings/aligned/worktreeStore" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+  226:15  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable                                                                                                          i18n/no-template-in-t
+
+✖ 2 problems (0 errors, 2 warnings)
+

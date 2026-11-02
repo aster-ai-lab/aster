@@ -1,0 +1,105 @@
+{
+  "run_id": "a3s-test-20239-1",
+  "suite": "interactive-permission-modes",
+  "status": "passed",
+  "scenarios": [
+    {
+      "id": "interactive-mode-boundaries",
+      "name": "interactive-mode-boundaries",
+      "surface": "tui",
+      "status": "passed",
+      "duration_ms": 7325,
+      "steps": [
+        {
+          "id": "all-interactive-cases-pass",
+          "status": "passed",
+          "duration_ms": 7308,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal wait condition matched",
+            "data": {
+              "output": {
+                "retained_bytes": 17311,
+                "total_bytes": 17311,
+                "truncated": false
+              },
+              "process": {
+                "exit_code": 0,
+                "running": false,
+                "signal": null
+              },
+              "surface": "tui",
+              "viewport": {
+                "alternate_screen": false,
+                "application_cursor": false,
+                "bracketed_paste": false,
+                "columns": 240,
+                "cursor": {
+                  "column": 0,
+                  "row": 79,
+                  "visible": true
+                },
+                "rows": 80,
+                "text": "running 2 tests\ntest permission_modes::interactive_permission_modes_apply_to_each_prompt_and_preserve_denies ... PERMISSION_ORACLE mode=default operation=read asks=0 response=Ok(PromptResponse { user_message_id: None, stop_reason: EndTurn, usage: None, met\na: Some({\"usage\": Object {\"inputTokens\": Number(0), \"outputTokens\": Number(9), \"totalTokens\": Number(9), \"cachedReadTokens\": Number(0), \"cacheCreationTokens\": Number(0), \"modelCalls\": Number(2), \"costIsPartial\": Bool(true), \"numTurns\": Numb\ner(2), \"usageIsIncomplete\": Bool(true)}}) })\nPERMISSION_ORACLE mode=default operation=write asks=1 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 56d16085786ee8512c587bca7e250f6190fcb94869fc1a2a21060\nb61d4464053 (0-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this dige\nst. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=default operation=host asks=1 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 56d16085786ee8512c587bca7e250f6190fcb94869fc1a2a21060b\n61d4464053 (0-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this diges\nt. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=default operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 56d16085786ee8512c587bca7e250f6190fcb94869fc1a2a2106\n0b61d4464053 (0-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this dig\nest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=auto operation=read asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 56d16085786ee8512c587bca7e250f6190fcb94869fc1a2a21060b61d\n4464053 (0-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest.\nNext step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=auto operation=write asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation f596bb503ab56ec75d53605476304f09a018223687801d62797284c9\n823b43ad (0-default-write.txt, 1-auto-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waive\nr for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=auto operation=host asks=1 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation f596bb503ab56ec75d53605476304f09a018223687801d62797284c98\n23b43ad (0-default-write.txt, 1-auto-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver\n for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=auto operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation f596bb503ab56ec75d53605476304f09a018223687801d62797284c\n9823b43ad (0-default-write.txt, 1-auto-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiv\ner for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=read asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation f596bb503ab56ec75d53605476304f09a018223687801d62797284c98\n23b43ad (0-default-write.txt, 1-auto-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver\n for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=write asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a311\n1366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or o\nbtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=host asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a3111\n366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or ob\ntain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a31\n11366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or\nobtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=plan operation=read asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a3111\n366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or ob\ntain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=plan operation=write asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a311\n1366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or o\nbtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=plan operation=host asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a3111\n366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or ob\ntain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=plan operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a31\n11366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or\nobtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=default operation=read asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 65818ee91bb117c86aa43ef2ca013101243ec1e35049c5a11334a3\n111366bbed (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or\n obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test command>`.\")) })\nPERMISSION_ORACLE mode=default operation=write asks=1 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 208e4177b067dc04d404666c42e7db293bb813882600dc609fd0e\n09da44d4fe0 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with requ\nired checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test\ncommand>`.\")) })\nPERMISSION_ORACLE mode=default operation=host asks=1 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 208e4177b067dc04d404666c42e7db293bb813882600dc609fd0e0\n9da44d4fe0 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with requi\nred checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test c\nommand>`.\")) })\nPERMISSION_ORACLE mode=default operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 208e4177b067dc04d404666c42e7db293bb813882600dc609fd0\ne09da44d4fe0 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with req\nuired checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test\n command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=read asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation 208e4177b067dc04d404666c42e7db293bb813882600dc609fd0e09da\n44d4fe0 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required\n checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt && <test comm\nand>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=write asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation b2be79d4544cc96cd37423cbdc6c58a9000336e06d165ebee87afc26\ne7f03314 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt, and 1 more) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest\nwith required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt\n&& <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=host asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation b2be79d4544cc96cd37423cbdc6c58a9000336e06d165ebee87afc26e\n7f03314 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt, and 1 more) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest w\nith required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt &\n& <test command>`.\")) })\nPERMISSION_ORACLE mode=yolo operation=denied asks=0 response=Err(Error { code: -32603: Internal error, message: \"Internal error\", data: Some(String(\"completion gate: workspace mutation b2be79d4544cc96cd37423cbdc6c58a9000336e06d165ebee87afc2\n6e7f03314 (0-default-write.txt, 1-auto-write.txt, 2-yolo-write.txt, 4-default-write.txt, and 1 more) has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest\n with required checks Passed, or obtain a host waiver for this digest. Next step: run one `bash` command that exits 0 and includes `test -f 0-default-write.txt` with the check that proves the change, for example `test -f 0-default-write.txt\n && <test command>`.\")) })\nok\ntest permission_modes::rejecting_a_command_does_not_execute_or_learn_an_approval ... PERMISSION_REJECTION mode=default asks=1 executed=false\nPERMISSION_REJECTION mode=auto asks=1 executed=false\nPERMISSION_REJECTION mode=default asks=1 executed=false\nok\n\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 6.57s\n\n"
+              }
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "full-access-without-confirmation",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal text is visible",
+            "data": {
+              "text": "PERMISSION_ORACLE mode=yolo operation=host asks=0",
+              "visible": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "rejection-without-execution",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal text is visible",
+            "data": {
+              "text": "PERMISSION_REJECTION mode=default asks=1 executed=false",
+              "visible": true
+            },
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "id": "permission-results",
+          "status": "passed",
+          "duration_ms": 0,
+          "attempts": 1,
+          "output": {
+            "summary": "terminal recording captured",
+            "data": {
+              "bytes": 17311
+            },
+            "evidence": [
+              {
+                "name": "terminal/permission-results.vt",
+                "path": "/Users/roylin/code/aster/.a3s-test/runs/a3s-test-20239-1/interactive-mode-boundaries/terminal/permission-results.vt",
+                "media_type": "application/vnd.a3s.terminal-vt"
+              }
+            ]
+          },
+          "error": null
+        }
+      ],
+      "error": null,
+      "cleanup_error": null
+    }
+  ]
+}

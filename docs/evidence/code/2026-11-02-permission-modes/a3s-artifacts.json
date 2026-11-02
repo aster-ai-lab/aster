@@ -1,0 +1,11 @@
+{
+  "run_id": "a3s-test-43033-1",
+  "status": "passed",
+  "artifacts": [
+    {
+      "path": "terminal/permission-results.vt",
+      "bytes": 17311,
+      "sha256": "cac758ab0fd6284d440bc12f8bc7394dc11d334a5a8c3db343678ea8fe7e829e"
+    }
+  ]
+}

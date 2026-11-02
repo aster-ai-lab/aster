@@ -1,0 +1,151 @@
+{
+  "operations": [
+    {
+      "mode": "default",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "default",
+      "operation": "write",
+      "asks": 1
+    },
+    {
+      "mode": "default",
+      "operation": "host",
+      "asks": 1
+    },
+    {
+      "mode": "default",
+      "operation": "denied",
+      "asks": 0
+    },
+    {
+      "mode": "auto",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "auto",
+      "operation": "write",
+      "asks": 0
+    },
+    {
+      "mode": "auto",
+      "operation": "host",
+      "asks": 1
+    },
+    {
+      "mode": "auto",
+      "operation": "denied",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "write",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "host",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "denied",
+      "asks": 0
+    },
+    {
+      "mode": "plan",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "plan",
+      "operation": "write",
+      "asks": 0
+    },
+    {
+      "mode": "plan",
+      "operation": "host",
+      "asks": 0
+    },
+    {
+      "mode": "plan",
+      "operation": "denied",
+      "asks": 0
+    },
+    {
+      "mode": "default",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "default",
+      "operation": "write",
+      "asks": 1
+    },
+    {
+      "mode": "default",
+      "operation": "host",
+      "asks": 1
+    },
+    {
+      "mode": "default",
+      "operation": "denied",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "read",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "write",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "host",
+      "asks": 0
+    },
+    {
+      "mode": "yolo",
+      "operation": "denied",
+      "asks": 0
+    }
+  ],
+  "rejected_commands": [
+    "default",
+    "auto",
+    "default"
+  ],
+  "process_e2e_test_functions_passed": 29,
+  "glm53_cases": [
+    {
+      "name": "direct",
+      "elapsed_ms": 13927
+    },
+    {
+      "name": "explain",
+      "elapsed_ms": 28750
+    },
+    {
+      "name": "review",
+      "elapsed_ms": 85442
+    },
+    {
+      "name": "repair",
+      "elapsed_ms": 21292
+    }
+  ],
+  "glm53_log_sha256": "97847ed0c3f4e4d3f3d3862a81e4110bbbca9f5cb09cef438137a46b69853366",
+  "final_shared_checkout_test_functions_passed": 32,
+  "final_glm53_summary": "glm53-final-summary.json"
+}

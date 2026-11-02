@@ -18,6 +18,8 @@ mod artifact;
 mod candidate;
 #[path = "unattended_e2e/goal_feedback.rs"]
 mod goal_feedback;
+#[path = "unattended_e2e/permission_modes.rs"]
+mod permission_modes;
 #[path = "unattended_e2e/provider_failures.rs"]
 mod provider_failures;
 use async_trait::async_trait;
