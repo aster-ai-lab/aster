@@ -1,5 +1,5 @@
 {
-  "status": "HERMETIC_AND_FROZEN_QUALIFIED_REAL_GLM_IN_PROGRESS",
+  "status": "FUNCTIONAL_FIX_PUBLISHED_PERFORMANCE_NOT_ACCEPTED_USER_STOPPED",
   "source": {
     "base": "beb8dda4a302137154f30354fc94deb54f6552ae",
     "tree": "5ef018af22c6771e4401d66c399bdbb7baafecf4",
@@ -553,13 +553,13 @@
     "all_other_cli_source_unchanged": true
   },
   "real_glm": {
-    "status": "IN_PROGRESS",
+    "status": "FINISHED",
     "label": "public-progress-1",
     "baseline": "stream-preview-1",
     "model": "glm-01/glm-5.3",
     "caps": "Original 4096 output / 40 requests / 600s prompt / 1800s workflow",
     "first_attempts_only": true,
-    "supplementary": "Original seven only after both critical cases pass",
+    "supplementary": "NOT_RUN: both original critical cases failed",
     "accepted_speed_token_gain": null,
     "admission": {
       "at": "2026-11-02T21:56:44.275155+00:00",
@@ -586,7 +586,294 @@
       "source_changes": 4,
       "supplementary": "original seven only if both original critical cases pass"
     },
-    "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/public-progress-1-live"
+    "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/public-progress-1-live",
+    "holdout": {
+      "case": "holdout",
+      "current": {
+        "pass": false,
+        "task_seconds": 207.262,
+        "process_seconds": 222.373084792,
+        "native_tokens": 161479,
+        "known_native_tokens": 161479,
+        "requests": 10,
+        "known_responses": 10,
+        "reads": 5,
+        "compactions": 2,
+        "artifact_correct": false,
+        "bound_verified_outcome": false,
+        "tools_terminal": true,
+        "cleanup": {
+          "Ok": null
+        },
+        "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/public-progress-1-live/deloop-independent-records-0ba4294b-0fa6-4939-9d93-63d18db3ef6c/result.json"
+      },
+      "baseline": {
+        "pass": false,
+        "task_seconds": 227.986,
+        "process_seconds": 242.989726125,
+        "native_tokens": 160289,
+        "known_native_tokens": 160289,
+        "requests": 10,
+        "known_responses": 10,
+        "reads": 5,
+        "compactions": 2,
+        "artifact_correct": false,
+        "bound_verified_outcome": false,
+        "tools_terminal": true,
+        "cleanup": {
+          "Ok": null
+        },
+        "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/stream-preview-1-live/deloop-independent-records-30f230b7-2ddb-4b36-bda0-16705249831b/result.json"
+      },
+      "vs_baseline": {
+        "task_seconds": {
+          "before": 227.986,
+          "after": 207.262,
+          "delta": -20.72399999999999,
+          "percent": -9.090031844060597
+        },
+        "process_seconds": {
+          "before": 242.989726125,
+          "after": 222.373084792,
+          "delta": -20.616641333000018,
+          "percent": -8.484573262325624
+        },
+        "native_tokens": {
+          "before": 160289,
+          "after": 161479,
+          "delta": 1190,
+          "percent": 0.7424090237009295
+        },
+        "requests": {
+          "before": 10,
+          "after": 10,
+          "delta": 0,
+          "percent": 0.0
+        },
+        "reads": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0.0
+        },
+        "compactions": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0.0
+        }
+      }
+    },
+    "feed": {
+      "case": "feed",
+      "current": {
+        "pass": false,
+        "task_seconds": 469.087,
+        "process_seconds": 486.754533791,
+        "native_tokens": 247319,
+        "known_native_tokens": 247319,
+        "known_responses": 18,
+        "requests": 18,
+        "reads": 7,
+        "compactions": 7,
+        "artifact_correct": false,
+        "bound_verified_outcome": false,
+        "tools_terminal": true,
+        "cleanup": {
+          "Ok": null
+        },
+        "rejected": 0,
+        "transport_failures": 0,
+        "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/public-progress-1-live/deloop-changing-feed-3cbe6e69-1d66-427e-9775-4dff7792f044/result.json"
+      },
+      "baseline": {
+        "pass": false,
+        "task_seconds": 496.938,
+        "process_seconds": 515.165659667,
+        "native_tokens": 348814,
+        "known_native_tokens": 348814,
+        "known_responses": 20,
+        "requests": 20,
+        "reads": 7,
+        "compactions": 8,
+        "artifact_correct": false,
+        "bound_verified_outcome": true,
+        "tools_terminal": true,
+        "cleanup": {
+          "Ok": null
+        },
+        "rejected": 0,
+        "transport_failures": 0,
+        "evidence": "/Users/roylin/code/aster/target/qualification/r16-isolated-12dcb27b8b394f7483e8c67debfe8dff/docs/evidence/code/2026-11-02-summary-input-retention/stream-preview-1-live/deloop-changing-feed-bc9d11ba-a4e2-4638-a43b-3937a2833abb/result.json"
+      },
+      "vs_baseline": {
+        "task_seconds": {
+          "before": 496.938,
+          "after": 469.087,
+          "delta": -27.851,
+          "percent": -5.604522093299369
+        },
+        "process_seconds": {
+          "before": 515.165659667,
+          "after": 486.754533791,
+          "delta": -28.41112587600003,
+          "percent": -5.514949481369702
+        },
+        "native_tokens": {
+          "before": 348814,
+          "after": 247319,
+          "delta": -101495,
+          "percent": -29.09716926499509
+        },
+        "requests": {
+          "before": 20,
+          "after": 18,
+          "delta": -2,
+          "percent": -9.999999999999998
+        },
+        "reads": {
+          "before": 7,
+          "after": 7,
+          "delta": 0,
+          "percent": 0.0
+        },
+        "compactions": {
+          "before": 8,
+          "after": 7,
+          "delta": -1,
+          "percent": -12.5
+        }
+      }
+    },
+    "cohort": {
+      "passed": 0,
+      "total": 2,
+      "native_tokens": 408798,
+      "baseline_native_tokens": 509103,
+      "wall_seconds": 709.693548,
+      "baseline_wall_seconds": 758.737408,
+      "wall_delta_percent": -6.463877948139862,
+      "process_checks": [
+        {
+          "case": "deloop-changing-feed-3cbe6e69-1d66-427e-9775-4dff7792f044",
+          "role": "parent_pid",
+          "pid": 93963,
+          "not_live": true
+        },
+        {
+          "case": "deloop-changing-feed-3cbe6e69-1d66-427e-9775-4dff7792f044",
+          "role": "pid",
+          "pid": 94048,
+          "not_live": true
+        },
+        {
+          "case": "deloop-independent-records-0ba4294b-0fa6-4939-9d93-63d18db3ef6c",
+          "role": "parent_pid",
+          "pid": 91560,
+          "not_live": true
+        },
+        {
+          "case": "deloop-independent-records-0ba4294b-0fa6-4939-9d93-63d18db3ef6c",
+          "role": "pid",
+          "pid": 91709,
+          "not_live": true
+        }
+      ],
+      "user_stop": "No new optimization or test started after explicit user stop; both existing cases exited naturally before cleanup; no signals sent.",
+      "native_delta_percent": -19.702299927519572
+    },
+    "phases": {
+      "holdout": {
+        "native_trace_complete": true,
+        "errors": [],
+        "partition": {
+          "complete": true,
+          "process_pid": 91560,
+          "wall_us": 222367989,
+          "partition_us": {
+            "task": 207202715,
+            "cleanup": 2311,
+            "preparation": 14173797,
+            "verification": 8196,
+            "fixture": 397,
+            "other_instrumented": 52,
+            "unattributed": 980521
+          },
+          "sum_us": 222367989,
+          "unattributed_percent": 0.4409452117678682,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        }
+      },
+      "feed": {
+        "native_trace_complete": true,
+        "errors": [],
+        "partition": {
+          "complete": true,
+          "process_pid": 93963,
+          "wall_us": 486751774,
+          "partition_us": {
+            "task": 469026088,
+            "cleanup": 2150,
+            "preparation": 14585142,
+            "verification": 2101430,
+            "fixture": 3208,
+            "other_instrumented": 56,
+            "unattributed": 1033700
+          },
+          "sum_us": 486751774,
+          "unattributed_percent": 0.2123669712603862,
+          "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+        },
+        "coverage": {
+          "campaign_prepare": "observed",
+          "config_load": "observed",
+          "freeze_pair": "observed",
+          "build_id_query": "observed",
+          "initialize": "observed",
+          "session_new": "observed",
+          "prompt": "observed",
+          "driver_close": "observed",
+          "relay_close": "observed",
+          "oracle": "observed",
+          "timing_flush": "observed"
+        }
+      }
+    },
+    "outer": {
+      "exit_code": 1,
+      "trace_complete": true,
+      "phases": {
+        "original_critical_cohort": {
+          "count": 1,
+          "inclusive_us": 709693548,
+          "union_us": 709693548,
+          "overlap_us": 0,
+          "max_parallel": 1
+        },
+        "process_spawn": {
+          "count": 1,
+          "inclusive_us": 1726,
+          "union_us": 1727,
+          "overlap_us": 0,
+          "max_parallel": 1
+        }
+      }
+    },
+    "passed": 0,
+    "total": 2
   },
   "coverage_limits": [
     "Core profiles repeat the same selected cases; no threefold independent coverage claim.",
@@ -698,5 +985,49 @@
     "candidate_build_id": "aster-cli-pair-v1:c01b5aaa4910f4201129c171a157bba99d22de42:aarch64-apple-darwin",
     "limit": "Startup only; no task speed or background/cancel/restart qualification."
   },
-  "publication_scope": "Generic public transcript fidelity fix only. Original task-level optimization and complete TUI acceptance remain unproven."
+  "publication_scope": "Generic public transcript fidelity fix only. Original task-level optimization and complete TUI acceptance remain unproven.",
+  "postchecks": {
+    "frozen_members": {
+      "aster": true,
+      "aster-acp": true,
+      "deloop_generalization_real_llm": true,
+      "deloop_real_llm": true,
+      "long_horizon_real_llm": true
+    },
+    "original_config_unchanged": true,
+    "owned_processes": [
+      {
+        "case": "deloop-changing-feed-3cbe6e69-1d66-427e-9775-4dff7792f044",
+        "role": "parent_pid",
+        "pid": 93963,
+        "not_live": true
+      },
+      {
+        "case": "deloop-changing-feed-3cbe6e69-1d66-427e-9775-4dff7792f044",
+        "role": "pid",
+        "pid": 94048,
+        "not_live": true
+      },
+      {
+        "case": "deloop-independent-records-0ba4294b-0fa6-4939-9d93-63d18db3ef6c",
+        "role": "parent_pid",
+        "pid": 91560,
+        "not_live": true
+      },
+      {
+        "case": "deloop-independent-records-0ba4294b-0fa6-4939-9d93-63d18db3ef6c",
+        "role": "pid",
+        "pid": 91709,
+        "not_live": true
+      }
+    ]
+  },
+  "user_stop": {
+    "request": "Commit, merge and push to remote main; do not continue optimizing; other processes will optimize.",
+    "new_tests_started_after_request": 0,
+    "new_optimization_candidates": 0,
+    "signals_sent": 0,
+    "other_processes_modified": false,
+    "source_fix_commit": "405a70e72a0e363edf44efa1b5b51c3846e4147f"
+  }
 }
