@@ -569,7 +569,6 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
         .arg("--cwd")
         .arg(workspace)
         .env("ASTER_CONFIG", config)
-        .env("ASTER_DISABLE_CC_SWITCH", "1")
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
@@ -1044,7 +1043,6 @@ fn t_ask() {
     let env = [
         ("ASTER_ACP_AGENT_BIN", acp_bin.as_str()),
         ("ASTER_CONFIG", config_path.as_str()),
-        ("ASTER_DISABLE_CC_SWITCH", "1"),
         ("ASTER_DISABLE_GROK_ACCOUNT", "1"),
         ("ASTER_DISABLE_CURSOR_ACCOUNT", "1"),
         ("XAI_API_KEY", "sk-dummy-not-a-model"),

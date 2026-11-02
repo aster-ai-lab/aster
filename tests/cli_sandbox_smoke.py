@@ -88,7 +88,7 @@ def main():
             (assets / "latest.json").write_text(json.dumps({"version": version, "tag": "aster-cli-v" + version,
                 "assets": {"macos": {"name": args.archive.name, "sha256": result["sha256"]}}}, separators=(",", ":")))
             env = dict(os.environ, HOME=str(home), ASTER_HOME=str(home / ".aster"), GROK_HOME=str(home / ".aster"),
-                       ASTER_RELEASE_BASE=str(assets), ASTER_DISABLE_CC_SWITCH="1", ASTER_DISABLE_GROK_ACCOUNT="1",
+                       ASTER_RELEASE_BASE=str(assets), ASTER_DISABLE_GROK_ACCOUNT="1",
                        ASTER_DISABLE_CURSOR_ACCOUNT="1", ASTER_ACP_AGENT_BIN=str(pair / "aster-acp"))
             for key in ("ASTER_SANDBOX_DIR", "ASTER_GUEST_SYSTEM_IMAGE", "ASTER_KRUN_SHIM",
                         "ASTER_INSTALL_URL", "GROK_INSTALL_URL"):

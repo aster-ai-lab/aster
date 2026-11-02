@@ -12,19 +12,7 @@ mod count_limits;
 mod tool_publication;
 
 #[test]
-fn cc_switch_picker_label_includes_other_profiles() {
-    assert_eq!(
-        model_picker_label("cc-switch", "glm-5.3"),
-        "cc-switch · glm-5.3"
-    );
-    assert_eq!(
-        model_picker_label("cc-switch-zhipu-glm-01", "Zhipu GLM 01 · glm-5.2"),
-        "cc-switch · Zhipu GLM 01 · glm-5.2"
-    );
-    assert_eq!(
-        model_picker_description("cc-switch-zhipu-glm-01"),
-        "Imported from local CC Switch"
-    );
+fn imported_account_picker_label_names_the_source() {
     assert_eq!(
         model_picker_label("cursor", "Composer 2.5"),
         "cursor · Composer 2.5"
@@ -1743,7 +1731,7 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     );
 
     let mut launch = test_launch(None);
-    launch.config.providers[0].name = "cc-switch".into();
+    launch.config.providers[0].name = "codex".into();
     launch.config.providers[0].models[0].name = "  ".into();
     launch.config.providers[1].name = "grok".into();
     let catalog = AsterCodeAgent::new(launch);
@@ -1752,7 +1740,7 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
         .into_iter()
         .map(|info| info.name)
         .collect();
-    assert!(names.iter().any(|name| name.starts_with("cc-switch")));
+    assert!(names.iter().any(|name| name.starts_with("codex")));
     assert!(names.iter().any(|name| name.starts_with("grok")));
     let fallback = catalog.model_state_with("missing/id", Some("low"));
     assert_ne!(fallback.current_model_id.0.as_ref(), "missing/id");

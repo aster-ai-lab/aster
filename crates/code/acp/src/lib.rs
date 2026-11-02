@@ -7,8 +7,6 @@ mod agent;
 pub mod approval_learning;
 #[cfg(feature = "svg-png")]
 mod artifact_image;
-#[cfg(feature = "account-import")]
-mod cc_switch;
 mod config;
 #[cfg(feature = "account-import")]
 mod cursor_account;

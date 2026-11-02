@@ -239,7 +239,6 @@ impl Driver {
             .env("TMPDIR", home.join("tmp"))
             .env("LANG", "en_US.UTF-8")
             .env(super::config::RELAY_KEY_ENV, relay_key)
-            .env("ASTER_DISABLE_CC_SWITCH", "1")
             .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
             .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .stdin(Stdio::piped())

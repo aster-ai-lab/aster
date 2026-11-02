@@ -92,7 +92,7 @@ def main():
         relay = root / 'acp-trace-proxy'
         relay.write_bytes((REPO / 'apps/aster/tests/tui_913_real_llm/acp_trace_proxy.py').read_bytes())
         relay.chmod(0o700)
-        env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay), ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'), ASTER_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'), ASTER_DISABLE_CC_SWITCH='1', ASTER_DISABLE_GROK_ACCOUNT='1', ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color', TERM_PROGRAM='Apple_Terminal')
+        env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay), ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'), ASTER_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'), ASTER_DISABLE_GROK_ACCOUNT='1', ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color', TERM_PROGRAM='Apple_Terminal')
         env.pop('ASTER_LH_CANDIDATE_MANIFEST', None)
         try:
             admitted = subprocess.run(['aster-test', 'check', str(suite), '--json'], cwd=REPO, capture_output=True, text=True)

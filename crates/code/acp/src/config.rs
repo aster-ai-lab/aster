@@ -2,7 +2,6 @@
 //!
 //! When the host opts in (`import_accounts` in a trusted layer, or
 //! `--import-accounts`), also merges:
-//! - the current Claude provider from a local CC Switch database
 //! - models from a logged-in Grok CLI account (`~/.grok`)
 //! - models from a logged-in Cursor account on this machine
 //! - models from a logged-in Codex account (`~/.codex`)
@@ -23,8 +22,6 @@ use anyhow::{anyhow, Context, Result};
 use aster_core::config::{AccountImport, WorkspaceLayerAdmission, WorkspaceMcpDeclaration};
 use aster_core::CodeConfig;
 
-#[cfg(feature = "account-import")]
-use crate::cc_switch;
 #[cfg(feature = "account-import")]
 use crate::cursor_account;
 #[cfg(feature = "account-import")]
@@ -146,7 +143,7 @@ pub fn load_launch_config_with_imports(
             "default_model must be set in provider/model format \
              (configure ~/.aster/config.acl, or opt into a local account with \
              `import_accounts = [\"cursor\"]` there or `--import-accounts cursor`; \
-             sources: cc-switch, grok, cursor)"
+             sources: grok, cursor, codex)"
         ));
     };
     if !model_id.contains('/') {
@@ -250,7 +247,6 @@ fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) ->
                 continue;
             }
             let merged = match import {
-                AccountImport::CcSwitch => cc_switch::merge_into_config(config),
                 AccountImport::Grok => grok_account::merge_into_config(config),
                 AccountImport::Cursor => cursor_account::merge_into_config(config),
                 AccountImport::Codex => {
@@ -769,7 +765,6 @@ mod tests {
         let model = std::env::var_os("ASTER_DEFAULT_MODEL");
         let cursor_disable = std::env::var_os("ASTER_DISABLE_CURSOR_ACCOUNT");
         std::env::remove_var("USERPROFILE");
-        std::env::set_var("ASTER_DISABLE_CC_SWITCH", "1");
         std::env::set_var("ASTER_DISABLE_GROK_ACCOUNT", "1");
         std::env::set_var("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(test));
@@ -785,7 +780,6 @@ mod tests {
             Some(value) => std::env::set_var("ASTER_DEFAULT_MODEL", value),
             None => std::env::remove_var("ASTER_DEFAULT_MODEL"),
         }
-        std::env::remove_var("ASTER_DISABLE_CC_SWITCH");
         std::env::remove_var("ASTER_DISABLE_GROK_ACCOUNT");
         match cursor_disable {
             Some(value) => std::env::set_var("ASTER_DISABLE_CURSOR_ACCOUNT", value),

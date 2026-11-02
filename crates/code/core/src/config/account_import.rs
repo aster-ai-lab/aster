@@ -11,8 +11,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum AccountImport {
-    /// The current Claude providers in the CC Switch database.
-    CcSwitch,
     /// The logged-in Grok CLI account (`~/.grok`).
     Grok,
     /// The logged-in Cursor account (CLI config, keychain or IDE state).
@@ -22,23 +20,21 @@ pub enum AccountImport {
 }
 
 impl AccountImport {
-    pub const ALL: [Self; 4] = [Self::CcSwitch, Self::Grok, Self::Cursor, Self::Codex];
+    pub const ALL: [Self; 3] = [Self::Grok, Self::Cursor, Self::Codex];
 
     pub fn parse(value: &str) -> Result<Self, String> {
         match value.trim() {
-            "cc-switch" => Ok(Self::CcSwitch),
             "grok" => Ok(Self::Grok),
             "cursor" => Ok(Self::Cursor),
             "codex" => Ok(Self::Codex),
             other => Err(format!(
-                "unknown account import {other:?} (closed set: cc-switch, grok, cursor, codex)"
+                "unknown account import {other:?} (closed set: grok, cursor, codex)"
             )),
         }
     }
 
     pub fn as_str(self) -> &'static str {
         match self {
-            Self::CcSwitch => "cc-switch",
             Self::Grok => "grok",
             Self::Cursor => "cursor",
             Self::Codex => "codex",

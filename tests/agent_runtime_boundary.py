@@ -226,7 +226,7 @@ def account_mods(text):
         if not rest.endswith(";"):
             continue
         name = rest[:-1].strip()
-        if name == "cc_switch" or name.endswith("_account"):
+        if name.endswith("_account"):
             names.append(name)
     return names
 
@@ -275,7 +275,6 @@ def check_account_mods(text, baseline):
 
 FEATURE_GATES = {
     "mod artifact_image;": '#[cfg(feature = "svg-png")]',
-    "mod cc_switch;": '#[cfg(feature = "account-import")]',
     "mod cursor_account;": '#[cfg(feature = "account-import")]',
     "mod grok_account;": '#[cfg(feature = "account-import")]',
 }
@@ -555,13 +554,13 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
         self.assertIn("event_loop inline tests grew", str(caught.exception))
 
     def test_account_mod_growth_is_rejected(self):
-        text = "mod cc_switch;\nmod cursor_account;\nmod grok_account;\nmod extra_account;\n"
+        text = "mod cursor_account;\nmod grok_account;\nmod extra_account;\n"
         with self.assertRaises(BoundaryError) as caught:
             check_account_mods(text, self.baseline["acp_account_mods"])
         self.assertIn("extra_account", str(caught.exception))
 
     def test_ungated_account_mod_is_rejected(self):
-        text = "mod cc_switch;\n"
+        text = "mod cursor_account;\n"
         with self.assertRaises(BoundaryError) as caught:
             check_feature_gates(text)
         self.assertIn("account-import", str(caught.exception))

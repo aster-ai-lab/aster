@@ -633,7 +633,6 @@ async fn spawn_agent_with_env(
         .arg("--cwd")
         .arg(workspace)
         .env("ASTER_CONFIG", config)
-        .env("ASTER_DISABLE_CC_SWITCH", "1")
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
@@ -1935,12 +1934,8 @@ fn key_only_env(acp: &str, config: &Path, home: &Path) -> Vec<(String, String)> 
 const KEY_ONLY_FORBIDDEN: &[&str] = &[
     "ASTER_DEFAULT_MODEL",
     "ASTER_PREFER_GROK",
-    "ASTER_PREFER_CC_SWITCH",
     "ASTER_DISABLE_GROK_ACCOUNT",
-    "ASTER_DISABLE_CC_SWITCH",
     "ASTER_GROK_HOME",
-    "ASTER_CC_SWITCH_DB",
-    "CC_SWITCH_HOME",
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_MODEL",
     "OPENAI_API_KEY",
@@ -1951,7 +1946,6 @@ fn child_env(acp: &str, config: &Path, home: &Path) -> Vec<(String, String)> {
     vec![
         ("ASTER_ACP_AGENT_BIN".into(), acp.into()),
         ("ASTER_CONFIG".into(), config.display().to_string()),
-        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
         ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
         ("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
         ("XAI_API_KEY".into(), "sk-dummy-not-a-model".into()),
@@ -2603,7 +2597,6 @@ fn shipped_tui_xai_key_keeps_acl_model() {
         !grok.join("auth.json").is_file(),
         "hermetic home must not contain grok auth"
     );
-    assert!(!home.join(".cc-switch").join("cc-switch.db").is_file());
     let (addr, _state) = spawn_mock(
         &workspace.join("side-effect.txt"),
         &workspace.join("late.txt"),

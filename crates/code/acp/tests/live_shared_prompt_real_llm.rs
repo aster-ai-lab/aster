@@ -133,7 +133,6 @@ async fn spawn_agent(
         .arg("--model")
         .arg(model)
         .env("ASTER_CONFIG", config)
-        .env("ASTER_DISABLE_CC_SWITCH", "1")
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .current_dir(workspace)
