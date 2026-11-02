@@ -50,6 +50,8 @@ function SearchInput({
 }: SearchInputProps) {
   const hasValue = value !== undefined && value !== null && String(value).length > 0
   const showClear = onClear !== undefined && clearLabel !== undefined && hasValue
+  const reserveClearSpace =
+    onClear !== undefined && typeof document !== 'undefined' && document.documentElement.dataset.tenant === 'aster'
 
   return (
     <InputGroup
@@ -73,11 +75,27 @@ function SearchInput({
         )}
         {...props}
       />
-      {showClear && (
-        <InputGroupAddon align="inline-end">
-          <InputGroupButton type="button" size="icon-xs" aria-label={clearLabel} disabled={disabled} onClick={onClear}>
-            <X className="size-3.5" />
-          </InputGroupButton>
+      {(showClear || reserveClearSpace) && (
+        <InputGroupAddon align="inline-end" className={reserveClearSpace ? 'w-8 shrink-0' : undefined}>
+          {showClear && (
+            <InputGroupButton
+              type="button"
+              size="icon-xs"
+              aria-label={clearLabel}
+              disabled={disabled}
+              className={
+                reserveClearSpace
+                  ? 'motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-150'
+                  : undefined
+              }
+              onClick={(event) => {
+                const input = event.currentTarget.closest('[data-slot="input-group"]')?.querySelector('input')
+                onClear()
+                if (reserveClearSpace) input?.focus()
+              }}>
+              <X className="size-3.5" />
+            </InputGroupButton>
+          )}
         </InputGroupAddon>
       )}
     </InputGroup>

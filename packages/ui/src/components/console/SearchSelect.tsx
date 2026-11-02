@@ -308,6 +308,9 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   }
 
   function openMenu(initialIndex?: number) {
+    // macOS WebKit does not always focus a clicked button. Keep select-only
+    // keyboard navigation on the trigger even when the menu opens by pointer.
+    if (!searchable) triggerRef.current?.focus({ preventScroll: true });
     setQuery('');
     setDebouncedQuery('');
     const selected = options.findIndex((option) => !option.disabled && isChosen(option.value));

@@ -42,6 +42,23 @@ describe('SearchSelect editor choices', () => {
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
   })
 
+  it('focuses a select-only trigger opened by pointer so Escape closes just the menu', () => {
+    const outerEscape = vi.fn()
+    window.addEventListener('keydown', outerEscape)
+    try {
+      render(<SearchSelect searchable={false} allowClear={false} options={options} value="beta" onChange={vi.fn()} />)
+      const trigger = screen.getByRole('button', { name: 'Beta' })
+      fireEvent.click(trigger)
+      expect(trigger).toHaveFocus()
+      fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+      expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+      expect(outerEscape).not.toHaveBeenCalled()
+      expect(trigger).toHaveFocus()
+    } finally {
+      window.removeEventListener('keydown', outerEscape)
+    }
+  })
+
   it('shows grouped font previews and option metadata', () => {
     render(<SearchSelect searchable={false} allowClear={false} options={[
       { value: 'serif', label: 'Serif', group: 'Fonts', meta: 'Installed', previewStyle: { fontFamily: 'serif' } }

@@ -45,6 +45,16 @@ function labelKey(node: ReactNode): string {
   return `<${typeof type === "string" ? type : type?.displayName ?? type?.name ?? ""}>${labelKey((node.props as { children?: ReactNode }).children)}`;
 }
 
+/** Keep structured content mounted when only its nested data changes. */
+function isSimpleLabel(node: ReactNode): boolean {
+  if (node == null || typeof node === "boolean" || typeof node === "string" || typeof node === "number" || typeof node === "bigint") return true;
+  if (Array.isArray(node)) return node.every(isSimpleLabel);
+  if (!isValidElement(node)) return false;
+  const children = (node.props as { children?: ReactNode }).children;
+  if (typeof node.type !== "string" || node.type === "svg") return children == null || node.type === "svg";
+  return node.type === "span" && (children == null || typeof children === "string" || typeof children === "number");
+}
+
 /** Springs the slot to the natural width of the incoming label when it changes, so a new label never snaps the button's size.
  *  The outgoing label is popped out of flow at once, so it never holds the old width. Other resizes (a late web font, a parent reflow) jump straight to the new width, so nothing wobbles on first paint. */
 function useMorphWidth(content: RefObject<HTMLElement | null>, key: string, reduced: boolean, enabled: boolean) {
@@ -83,12 +93,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   ref,
 ) {
   const reduceMotion = useReducedMotion() ?? false;
-  // Aster keeps controls stationary under the pointer for precise desktop interaction.
-  const stablePress = typeof document !== "undefined" && document.documentElement.dataset.tenant === "aster";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const contentRef = useRef<HTMLSpanElement>(null);
-  const key = labelKey(children);
-  const width = useMorphWidth(contentRef, key, reduceMotion, !size.startsWith("icon"));
+  const aster = typeof document !== "undefined" && document.documentElement.dataset.tenant === "aster";
+  const animateLabel = !aster || isSimpleLabel(children);
+  const key = animateLabel ? labelKey(children) : "";
+  const width = useMorphWidth(contentRef, key, reduceMotion, animateLabel && !size.startsWith("icon"));
   const setRefs = useCallback((node: HTMLButtonElement | null) => {
     buttonRef.current = node;
     if (typeof ref === "function") ref(node); else if (ref) ref.current = node;
@@ -110,7 +120,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       aria-busy={loading || undefined}
       custom={buttonRef}
       variants={pressVariants}
-      whileTap={reduceMotion || stablePress || anchorsLayer || inert ? undefined : "pressed"}
+      whileTap={reduceMotion || anchorsLayer || inert ? undefined : "pressed"}
       transition={motionTokens.spring.snappy}
       {...props}
       aria-disabled={props["aria-disabled"] || undefined}
@@ -128,9 +138,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       </AnimatePresence>
       <motion.span className={[styles.labelSlot, loading ? styles.loadingLabel : ""].filter(Boolean).join(" ")} style={{ width }}>
         <span ref={contentRef} data-slot="button-label" className={styles.labelContent}>
-          <AnimatePresence mode="popLayout" initial={false}>
-            <LabelPhase key={key} icon={!/\S/.test(key.replace(/<[^>]*>/g, ""))} reduced={reduceMotion}>{children}</LabelPhase>
-          </AnimatePresence>
+          {animateLabel ? (
+            <AnimatePresence mode="popLayout" initial={false}>
+              <LabelPhase key={key} icon={!/\S/.test(key.replace(/<[^>]*>/g, ""))} reduced={reduceMotion}>{children}</LabelPhase>
+            </AnimatePresence>
+          ) : children}
         </span>
       </motion.span>
     </motion.button>

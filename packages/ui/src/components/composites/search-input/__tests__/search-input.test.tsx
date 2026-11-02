@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { SearchInput } from '../index'
@@ -47,6 +49,38 @@ describe('SearchInput', () => {
     fireEvent.click(screen.getByRole('button', { name: '清除' }))
 
     expect(onClear).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps the clear space stable and returns focus to the Aster search field', async () => {
+    const previousTenant = document.documentElement.dataset.tenant
+    document.documentElement.dataset.tenant = 'aster'
+    function Example() {
+      const [value, setValue] = useState('query')
+      return (
+        <SearchInput
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          onClear={() => setValue('')}
+          clearLabel="清除"
+        />
+      )
+    }
+    try {
+      const user = userEvent.setup()
+      const { container } = render(<Example />)
+      const slot = container.querySelector('[data-align="inline-end"]')
+      expect(slot).toHaveClass('w-8')
+      await user.click(screen.getByRole('button', { name: '清除' }))
+      expect(screen.getByRole('searchbox')).toHaveValue('')
+      expect(screen.getByRole('searchbox')).toHaveFocus()
+      expect(screen.queryByRole('button', { name: '清除' })).not.toBeInTheDocument()
+      expect(container.querySelector('[data-align="inline-end"]')).toBe(slot)
+      await user.type(screen.getByRole('searchbox'), 'new query')
+      expect(screen.getByRole('searchbox')).toHaveValue('new query')
+    } finally {
+      if (previousTenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = previousTenant
+    }
   })
 
   it('disables the input and the clear button when disabled', () => {

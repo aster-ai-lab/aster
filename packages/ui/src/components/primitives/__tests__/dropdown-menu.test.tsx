@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
@@ -30,6 +30,61 @@ afterEach(() => {
 })
 
 describe('DropdownMenuContent', () => {
+  it('preserves a single custom content child in Aster', () => {
+    const previousTenant = document.documentElement.dataset.tenant
+    document.documentElement.dataset.tenant = 'aster'
+    try {
+      render(
+        <DropdownMenu open>
+          <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+          <DropdownMenuContent asChild>
+            <section data-testid="custom-menu">
+              <DropdownMenuItem>Item</DropdownMenuItem>
+            </section>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+      expect(screen.getByTestId('custom-menu')).toContainElement(screen.getByRole('menuitem', { name: 'Item' }))
+    } finally {
+      if (previousTenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = previousTenant
+    }
+  })
+
+  it('keeps an Aster menu highlight on the focused item without changing keyboard selection', async () => {
+    const previousTenant = document.documentElement.dataset.tenant
+    document.documentElement.dataset.tenant = 'aster'
+    const onSelect = vi.fn()
+    try {
+      const user = userEvent.setup()
+      render(
+        <DropdownMenu open>
+          <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>First</DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" onSelect={onSelect}>
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+      const first = screen.getByRole('menuitem', { name: 'First' })
+      const remove = screen.getByRole('menuitem', { name: 'Delete' })
+      fireEvent.focus(first)
+      const menu = screen.getByRole('menu')
+      expect(menu.querySelector('[data-slot="dropdown-menu-highlight"]')).toBeInTheDocument()
+      fireEvent.pointerMove(remove)
+      fireEvent.focus(remove)
+      expect(menu.querySelector('[data-slot="dropdown-menu-highlight"]')).toHaveAttribute('data-tone', 'danger')
+      remove.focus()
+      await user.keyboard('{Enter}')
+      expect(onSelect).toHaveBeenCalledOnce()
+    } finally {
+      if (previousTenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = previousTenant
+    }
+  })
+
   it('uses the provider portal container by default', () => {
     const portalContainer = document.createElement('div')
     document.body.appendChild(portalContainer)
@@ -61,6 +116,40 @@ describe('DropdownMenuContent', () => {
     }
   })
 
+  it('retains the parent highlight and selects a portalled submenu item in Aster', async () => {
+    const previousTenant = document.documentElement.dataset.tenant
+    document.documentElement.dataset.tenant = 'aster'
+    const onSelect = vi.fn()
+    try {
+      const user = userEvent.setup()
+      render(
+        <DropdownMenu open>
+          <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSub open>
+              <DropdownMenuSubTrigger>More</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onSelect={onSelect}>Sub item</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+      const parent = screen.getByRole('menuitem', { name: 'More' })
+      const subitem = screen.getByRole('menuitem', { name: 'Sub item' })
+      act(() => parent.focus())
+      const content = parent.closest('[data-slot="dropdown-menu-content"]')
+      expect(content?.querySelector('[data-slot="dropdown-menu-highlight"]')).toBeInTheDocument()
+      act(() => subitem.focus())
+      expect(content?.querySelector('[data-slot="dropdown-menu-highlight"]')).toBeInTheDocument()
+      await user.keyboard('{Enter}')
+      expect(onSelect).toHaveBeenCalledOnce()
+    } finally {
+      if (previousTenant === undefined) delete document.documentElement.dataset.tenant
+      else document.documentElement.dataset.tenant = previousTenant
+    }
+  })
+
   it('allows keyboard selection of a checked menu item', async () => {
     const user = userEvent.setup()
     const onCheckedChange = vi.fn()
@@ -68,7 +157,9 @@ describe('DropdownMenuContent', () => {
       <DropdownMenu open>
         <DropdownMenuTrigger>Open</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuCheckboxItem checked onCheckedChange={onCheckedChange}>Notifications</DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem checked onCheckedChange={onCheckedChange}>
+            Notifications
+          </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )
@@ -122,7 +213,9 @@ describe('DropdownMenuContent', () => {
     )
 
     const item = screen.getByText('Delete').closest('[data-slot="dropdown-menu-item"]')
-    expect(item?.className.replaceAll('"', "'")).toContain("data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!")
+    expect(item?.className.replaceAll('"', "'")).toContain(
+      "data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!"
+    )
     expect(item).not.toHaveClass('data-[variant=destructive]:*:[svg]:text-destructive!')
   })
 
