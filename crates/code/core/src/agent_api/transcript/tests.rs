@@ -440,6 +440,60 @@ async fn transcript_refuses_unknown_corrupt_and_unreadable_sources() {
 }
 
 #[tokio::test]
+async fn yielded_turn_keeps_assistant_text_without_a_completion_boundary() {
+    let fixture = fixture("yielded-transcript").await;
+    append(
+        &fixture,
+        "user.message",
+        "request",
+        serde_json::json!({"text":"Start the background work"}),
+    );
+    append(
+        &fixture,
+        "model.turn",
+        "reply",
+        serde_json::json!({"kind":"text","text":"The child is still running"}),
+    );
+    append(
+        &fixture,
+        "turn.yielded",
+        "yield",
+        serde_json::json!({"pending_children":["child-1"],"run_id":"parent-run"}),
+    );
+    let before = source_cut(&fixture);
+    let transcript = page(&fixture);
+    assert_eq!(transcript.entries.len(), 2);
+    assert!(matches!(
+        &transcript.entries[1].payload,
+        TranscriptEntryPayload::Assistant { text } if text == "The child is still running"
+    ));
+    assert!(!transcript
+        .entries
+        .iter()
+        .any(|entry| entry.kind == TranscriptEntryKind::TurnComplete));
+    assert_eq!(source_cut(&fixture), before);
+    assert_eq!(fixture.client.calls.load(Ordering::SeqCst), 0);
+    close(fixture).await;
+}
+
+#[tokio::test]
+async fn transcript_rejects_corrupt_yield_without_model_repair() {
+    let fixture = fixture("corrupt-yield").await;
+    append(
+        &fixture,
+        "turn.yielded",
+        "yield",
+        serde_json::json!({"pending_children":[42],"run_id":null}),
+    );
+    assert!(matches!(
+        fixture.session.transcript_page(Default::default()),
+        Err(CodeError::Session(_))
+    ));
+    assert_eq!(fixture.client.calls.load(Ordering::SeqCst), 0);
+    close(fixture).await;
+}
+
+#[tokio::test]
 async fn prefix_fork_is_non_destructive_and_reopens_only_the_completed_prefix() {
     let fixture = two_turn_fixture("fork-source").await;
     let page = page(&fixture);

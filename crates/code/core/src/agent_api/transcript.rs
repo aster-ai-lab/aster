@@ -152,6 +152,7 @@ pub(crate) fn project_entries(facts: &[Fact]) -> Result<Vec<TranscriptEntry>> {
                     | "tool.result"
                     | "tool.prepared"
                     | "turn.complete"
+                    | "turn.yielded"
                     | "compaction.done"
                     | "question.answered"
                     | "confirmation.answered"
@@ -260,6 +261,7 @@ pub(crate) fn project_entries(facts: &[Fact]) -> Result<Vec<TranscriptEntry>> {
                                         | "model.turn"
                                         | "compaction.done"
                                         | "turn.complete"
+                                        | "turn.yielded"
                                 ) {
                                     break;
                                 }
@@ -348,6 +350,30 @@ pub(crate) fn project_entries(facts: &[Fact]) -> Result<Vec<TranscriptEntry>> {
                         kept_lines,
                     },
                 )?);
+            }
+            "turn.yielded" => {
+                #[derive(serde::Deserialize)]
+                struct YieldedTurn {
+                    pending_children: Vec<String>,
+                    run_id: Option<String>,
+                }
+                let yielded: YieldedTurn =
+                    serde_json::from_value(fact.payload.clone()).map_err(|error| {
+                        transcript_error(format!(
+                            "corrupt turn.yielded at seq {}: {error}",
+                            fact.seq
+                        ))
+                    })?;
+                if yielded.pending_children.is_empty()
+                    || yielded.pending_children.iter().any(String::is_empty)
+                    || yielded.run_id.as_ref().is_some_and(String::is_empty)
+                {
+                    return Err(transcript_error(format!(
+                        "corrupt turn.yielded at seq {}",
+                        fact.seq
+                    )));
+                }
+                // Yielding keeps the confirmed assistant text; it grants no completion boundary.
             }
             "turn.complete" => {
                 let terminal = required_string(fact, "terminal")?.to_string();
