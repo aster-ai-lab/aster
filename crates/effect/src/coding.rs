@@ -814,6 +814,13 @@ fn on_model(mut state: SchedulerState, config: &HarnessConfig, payload: &Value) 
                 return state;
             }
             let mut messages = state.messages.clone();
+            let mut spoken = std::collections::BTreeSet::new();
+            // Keep prose ahead of the batch so compaction keeps its call/result group intact.
+            for text in calls.iter().filter_map(|call| call.text.as_deref()) {
+                if !text.is_empty() && spoken.insert(text) {
+                    messages.push(format!("assistant\n{text}"));
+                }
+            }
             for call in &calls {
                 messages.push(format!("assistant\ntool {}\n{}", call.name, call.args));
             }

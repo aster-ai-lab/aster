@@ -178,3 +178,55 @@ fn compact_tail_does_not_keep_a_record_with_another_calls_result() {
         .iter()
         .any(|line| line.starts_with("assistant\ntool read")));
 }
+
+#[test]
+fn tool_turn_public_progress_reaches_compaction_once() {
+    let call = |id: &str, text: Option<&str>| ToolCall {
+        id: id.into(),
+        name: "read".into(),
+        args: json!({"file_path": format!("{id}.txt")}),
+        needs_confirmation: false,
+        text: text.map(str::to_owned),
+        reasoning: Some("synthetic-private-reasoning".into()),
+    };
+    let decision = ModelDecision::Tool {
+        call: call("first", Some("Observed copper=83, lavender=17.")),
+        also: vec![
+            call("second", Some("Observed copper=83, lavender=17.")),
+            call("third", Some("Next inspect the remaining source.")),
+            call("fourth", Some("")),
+            call("fifth", None),
+        ],
+    };
+    let state = fold(&[fact(
+        0,
+        "model.turn",
+        serde_json::to_value(decision).unwrap(),
+    )]);
+    assert!(state.schema_error.is_none());
+    assert_eq!(state.phase, CodingPhase::Tool);
+    let (prefix, _) = split_compact_tail(&state.messages, 0);
+    let transcript = prefix.join("\n");
+    assert_eq!(
+        transcript
+            .matches("Observed copper=83, lavender=17.")
+            .count(),
+        1
+    );
+    assert_eq!(
+        transcript
+            .matches("Next inspect the remaining source.")
+            .count(),
+        1
+    );
+    assert!(!transcript.contains("synthetic-private-reasoning"));
+    let start = state
+        .messages
+        .iter()
+        .position(|line| line.starts_with("assistant\ntool "))
+        .unwrap();
+    assert!(state.messages[start..]
+        .iter()
+        .all(|line| line.starts_with("assistant\ntool ")));
+    assert_eq!(state.messages[start..].len(), 5);
+}
