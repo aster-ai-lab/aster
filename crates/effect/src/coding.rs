@@ -5,11 +5,12 @@
 //! transition only when the fold enables one. Answering or confirming appends
 //! a fact, and the next `resume` derives the tool or model call from that fact.
 
+use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tokio_util::sync::CancellationToken;
 
@@ -24,14 +25,16 @@ use crate::exit::Exit;
 use crate::fact::{Fact, NewFact};
 
 #[cfg(test)]
+mod convergence_tests;
+#[cfg(test)]
 mod revalidation_tests;
 mod tool_effects;
 pub use tool_effects::{
-    tool_args_digest, ToolAdmissionIdentityV1, ToolEffectObservationV1, ToolExecutionOutcome,
-    ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind, ToolInvocationIdentityV1,
-    ToolObservationCompleteness, ToolPathChangeV1, ToolPreparedV1, ToolRecoveryPolicy,
-    MAX_TOOL_EFFECT_CANONICAL_BYTES, MAX_TOOL_EFFECT_PATHS, TOOL_PREPARED_SCHEMA,
-    TOOL_RESULT_SCHEMA,
+    tool_args_digest, tool_information_digest, ToolAdmissionIdentityV1, ToolEffectObservationV1,
+    ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind,
+    ToolInvocationIdentityV1, ToolObservationCompleteness, ToolPathChangeV1, ToolPreparedV1,
+    ToolRecoveryPolicy, MAX_TOOL_EFFECT_CANONICAL_BYTES, MAX_TOOL_EFFECT_PATHS,
+    TOOL_PREPARED_SCHEMA, TOOL_RESULT_SCHEMA,
 };
 
 pub type BoxFuture<T> = Pin<Box<dyn Future<Output = T> + Send>>;
@@ -183,6 +186,67 @@ pub trait ToolRunner: Send + Sync + 'static {
             });
             Ok(PreparedToolExecution { prepared, execute })
         })
+    }
+
+    /// Prepare a scheduler refusal without entering input hooks or the tool body.
+    /// Adapters that bind host authority override this to retain that binding and
+    /// their original validation/permission refusals. Existing adapters need no new method.
+    fn prepare_with_refusal(
+        self: Arc<Self>,
+        request: ToolPreparationRequest,
+        refusal: Option<String>,
+        cancel: CancellationToken,
+    ) -> BoxFuture<Result<PreparedToolExecution, ActorError>> {
+        let Some(refusal) = refusal else {
+            return self.prepare(request, cancel);
+        };
+        Box::pin(async move {
+            let args = tool_args_digest(&request.call.args)?;
+            let prepared = ToolPreparedV1 {
+                schema: TOOL_PREPARED_SCHEMA.into(),
+                identity: request.identity,
+                tool_name: request.call.name,
+                original_args_digest: args.clone(),
+                effective_args_digest: args,
+                recovery: ToolRecoveryPolicy::NeverReplay,
+                baseline: None,
+            };
+            let result = ToolExecutionResultV1 {
+                schema: TOOL_RESULT_SCHEMA.into(),
+                identity: prepared.identity.clone(),
+                prepared_digest: prepared.digest()?,
+                outcome: ToolExecutionOutcome::Denied,
+                exit_code: None,
+                output: Value::String(refusal),
+                effects: ToolEffectObservationV1::complete(vec![]),
+            };
+            Ok(PreparedToolExecution {
+                prepared,
+                execute: Effect::succeed(result),
+            })
+        })
+    }
+
+    /// Normalize a settled observation for the scheduler's replayable information meter.
+    /// Hosts with presentation envelopes override this; private envelope parsing stays there.
+    fn information_identity(
+        &self,
+        prepared: &ToolPreparedV1,
+        result: &ToolExecutionResultV1,
+    ) -> Result<Option<String>, ActorError> {
+        if !result.has_complete_observation() {
+            return Ok(None);
+        }
+        let observation =
+            tool_effects::digest_json("aster.effect.tool-observation.v1", &result.output)?;
+        tool_information_digest(
+            &prepared.tool_name,
+            &prepared.effective_args_digest,
+            result.outcome,
+            result.exit_code,
+            &observation,
+        )
+        .map(Some)
     }
 
     /// True when every call in the batch can run at the same time.
@@ -471,7 +535,8 @@ struct SchedulerState {
     cycle: u64,
     phase: CodingPhase,
     messages: Vec<String>,
-    duplicate_start: usize,
+    duplicate_calls: BTreeMap<(String, String), u32>,
+    seen_information: BTreeSet<String>,
     duplicate_reset_pending: bool,
     summary: String,
     tool_runs: u32,
@@ -494,6 +559,9 @@ struct SchedulerState {
     preparations: Vec<ToolPreparedV1>,
     completed_invocations: Vec<ToolInvocationIdentityV1>,
     legacy_pending: bool,
+    /// A `compaction.pruned` tombstone was folded and the compaction summary
+    /// that covers it has not arrived. Facts in between are inert.
+    in_pruned_span: bool,
 }
 
 /// Rendered when background arrivals exceeded [`BACKGROUND_PENDING_CAP`]
@@ -513,7 +581,8 @@ impl SchedulerState {
             cycle: 0,
             phase: CodingPhase::Idle,
             messages: Vec::new(),
-            duplicate_start: 0,
+            duplicate_calls: BTreeMap::new(),
+            seen_information: BTreeSet::new(),
             duplicate_reset_pending: false,
             summary: String::new(),
             tool_runs: 0,
@@ -529,6 +598,7 @@ impl SchedulerState {
             preparations: Vec::new(),
             completed_invocations: Vec::new(),
             legacy_pending: false,
+            in_pruned_span: false,
         }
     }
 
@@ -797,6 +867,52 @@ struct SummaryPayload {
     summary: String,
     #[serde(default)]
     kept: Vec<String>,
+    #[serde(default)]
+    carry: Option<CompactionCarry>,
+}
+
+/// Fold state that outlives a compaction but is not derivable from its summary.
+/// The log may replace every transcript fact before the compaction with a
+/// tombstone; the fold then restores these counters from the compaction fact
+/// instead of from the facts it no longer has. Older compactions lack it.
+#[derive(Serialize, Deserialize)]
+struct CompactionCarry {
+    turn: u64,
+    cycle: u64,
+    tool_runs: u32,
+    duplicate_calls: Vec<(String, String, u32)>,
+    seen_information: Vec<String>,
+    duplicate_reset_pending: bool,
+}
+
+impl CompactionCarry {
+    fn of(state: &SchedulerState) -> Self {
+        Self {
+            turn: state.turn,
+            cycle: state.cycle,
+            tool_runs: state.tool_runs,
+            duplicate_calls: state
+                .duplicate_calls
+                .iter()
+                .map(|((name, digest), count)| (name.clone(), digest.clone(), *count))
+                .collect(),
+            seen_information: state.seen_information.iter().cloned().collect(),
+            duplicate_reset_pending: state.duplicate_reset_pending,
+        }
+    }
+
+    fn restore(self, state: &mut SchedulerState) {
+        state.turn = self.turn;
+        state.cycle = self.cycle;
+        state.tool_runs = self.tool_runs;
+        state.duplicate_calls = self
+            .duplicate_calls
+            .into_iter()
+            .map(|(name, digest, count)| ((name, digest), count))
+            .collect();
+        state.seen_information = self.seen_information.into_iter().collect();
+        state.duplicate_reset_pending = self.duplicate_reset_pending;
+    }
 }
 
 fn estimate_tokens(text: &str) -> usize {
@@ -820,7 +936,7 @@ fn promote_queued(mut state: SchedulerState) -> SchedulerState {
         state.pending_call = None;
         // Keep all calls in this model batch protected, including later Ask groups.
         if state.duplicate_reset_pending {
-            state.duplicate_start = state.messages.len();
+            state.duplicate_calls.clear();
             state.duplicate_reset_pending = false;
         }
         return state;
@@ -910,20 +1026,25 @@ fn split_compact_tail(messages: &[String], keep_tokens: usize) -> (Vec<String>, 
     (messages[..start].to_vec(), messages[start..].to_vec())
 }
 
-fn duplicate_nudge(messages: &[String], call: &ToolCall, threshold: Option<u32>) -> Option<String> {
-    let threshold = threshold.filter(|value| *value > 0)?;
-    let line = format!("assistant\ntool {}\n{}", call.name, call.args);
-    let count = messages
-        .iter()
-        .filter(|message| message.as_str() == line)
-        .count();
-    if count <= threshold as usize {
-        return None;
+fn duplicate_nudge(
+    calls: &BTreeMap<(String, String), u32>,
+    call: &ToolCall,
+    threshold: Option<u32>,
+) -> Result<Option<String>, ActorError> {
+    let Some(threshold) = threshold.filter(|value| *value > 0) else {
+        return Ok(None);
+    };
+    let count = calls
+        .get(&(call.name.clone(), tool_args_digest(&call.args)?))
+        .copied()
+        .unwrap_or(0);
+    if count < threshold {
+        return Ok(None);
     }
-    Some(format!(
+    Ok(Some(format!(
         "Tool '{}' has been called {} times with identical arguments. Change your approach instead of repeating this call.",
         call.name, count
-    ))
+    )))
 }
 
 fn known_identity_changed(change: &ToolPathChangeV1) -> bool {
@@ -953,6 +1074,8 @@ struct ToolResultPayload {
     tool_call_id: Option<String>,
     #[serde(default)]
     receipt: Option<ToolExecutionResultV1>,
+    #[serde(default, rename = "informationIdentity")]
+    information_identity: Option<String>,
     ok: bool,
     output: String,
     /// When set, this result counts toward the tool ceiling even if `ok` is false.
@@ -962,7 +1085,19 @@ struct ToolResultPayload {
 }
 
 fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> SchedulerState {
+    if state.in_pruned_span
+        && !matches!(
+            fact.kind.as_str(),
+            "compaction.done" | "compaction.pruned" | "background.output"
+        )
+    {
+        return state;
+    }
     match fact.kind.as_str() {
+        "compaction.pruned" => SchedulerState {
+            in_pruned_span: true,
+            ..state
+        },
         "user.message" => match serde_json::from_value::<TextPayload>(fact.payload.clone()) {
             Ok(payload) => {
                 // Arrivals that belonged to the previous turn land before the
@@ -972,14 +1107,14 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                 let state = flush_background(state);
                 let mut messages = state.messages.clone();
                 messages.push(format!("user\n{}", payload.text));
-                let duplicate_start = messages.len();
                 after_input(
                     SchedulerState {
                         turn: state.turn + 1,
                         cycle: 0,
                         messages,
                         tool_runs: 0,
-                        duplicate_start,
+                        duplicate_calls: BTreeMap::new(),
+                        seen_information: BTreeSet::new(),
                         duplicate_reset_pending: false,
                         ..state
                     },
@@ -993,22 +1128,38 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
             }
         },
         "compaction.done" => match serde_json::from_value::<SummaryPayload>(fact.payload.clone()) {
-            Ok(payload) => SchedulerState {
-                duplicate_start: if state.messages.ends_with(&payload.kept) {
-                    state
-                        .duplicate_start
-                        .saturating_sub(state.messages.len() - payload.kept.len())
-                } else {
-                    0
-                },
-                summary: payload.summary,
-                compacted_awaiting_model: true,
-                // The count before compaction no longer describes the prompt.
-                prompt_tokens: None,
-                phase: CodingPhase::Infer,
-                messages: payload.kept,
-                ..state
-            },
+            Ok(payload) => {
+                let opaque = state.in_pruned_span;
+                let mut next = SchedulerState {
+                    summary: payload.summary,
+                    compacted_awaiting_model: true,
+                    // The count before compaction no longer describes the prompt.
+                    prompt_tokens: None,
+                    phase: CodingPhase::Infer,
+                    messages: payload.kept,
+                    in_pruned_span: false,
+                    ..state
+                };
+                if opaque {
+                    // A compaction is only appended between completed steps.
+                    next.pending_call = None;
+                    next.queued.clear();
+                    next.preparations.clear();
+                    next.pending_question = None;
+                    next.assistant = None;
+                    match payload.carry {
+                        Some(carry) => carry.restore(&mut next),
+                        // A tombstoned log from before compactions carried
+                        // counters. The sequence number exceeds every turn so far,
+                        // so later keys cannot reuse a retained identity.
+                        None => {
+                            next.turn = next.turn.max(fact.seq);
+                            next.cycle = 0;
+                        }
+                    }
+                }
+                next
+            }
             Err(error) => {
                 state.phase = CodingPhase::Done;
                 state.schema_error = Some(error.to_string());
@@ -1146,6 +1297,26 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                     state.phase = CodingPhase::Done;
                     return state;
                 }
+                if let Some(call) = &state.pending_call {
+                    let args = match tool_args_digest(&call.args) {
+                        Ok(args) => args,
+                        Err(error) => {
+                            state.schema_error = Some(error.to_string());
+                            state.phase = CodingPhase::Done;
+                            return state;
+                        }
+                    };
+                    let action = (call.name.clone(), args);
+                    if payload
+                        .information_identity
+                        .as_ref()
+                        .is_some_and(|identity| state.seen_information.insert(identity.clone()))
+                    {
+                        state.duplicate_calls.remove(&action);
+                    }
+                    let count = state.duplicate_calls.entry(action).or_default();
+                    *count = count.saturating_add(1);
+                }
                 if let Some(receipt) = &payload.receipt {
                     state.duplicate_reset_pending |= receipt.effects.completeness
                         == ToolObservationCompleteness::Complete
@@ -1255,21 +1426,24 @@ fn transitions_of(
                 to_summarize.insert(0, state.summary.clone());
             }
             let (turn, cycle) = (state.turn, state.cycle);
+            let carry = CompactionCarry::of(state);
             vec![Transition {
                 key: format!("compact:{turn}:{cycle}"),
                 run: Effect::from_async_observed(move |services: Arc<CodingServices>, cancel| {
                     let to_summarize = to_summarize.clone();
                     let kept = kept.clone();
+                    let carry = serde_json::to_value(&carry);
                     async move {
                         tokio::select! {
                             biased;
                             _ = cancel.cancelled() => Err(Exit::Interrupt),
                             summary = services.compactor.compact(&to_summarize) => {
                                 let summary = summary?;
+                                let carry = carry.map_err(|error| Exit::Die(error.to_string()))?;
                                 Ok(vec![NewFact {
                                     kind: "compaction.done".into(),
                                     key: format!("compaction:{turn}:{cycle}"),
-                                    payload: json!({ "summary": summary, "kept": kept }),
+                                    payload: json!({ "summary": summary, "kept": kept, "carry": carry }),
                                 }])
                             }
                         }
@@ -1391,7 +1565,7 @@ fn transitions_of(
                     }).collect()).into(),
                 }];
             }
-            let messages = state.messages[state.duplicate_start..].to_vec();
+            let duplicates = state.duplicate_calls.clone();
             let threshold = config.duplicate_threshold;
             let key = batch
                 .iter()
@@ -1403,10 +1577,16 @@ fn transitions_of(
                 run: TransitionProgram::Prepared(Effect::from_async_observed(
                     move |services: Arc<CodingServices>, cancel| {
                         let batch = batch.clone();
-                        let messages = messages.clone();
+                        let duplicates = duplicates.clone();
                         async move {
                             prepare_tool_batch(
-                                services, batch, &messages, threshold, turn, cycle, cancel,
+                                services,
+                                batch,
+                                &duplicates,
+                                threshold,
+                                turn,
+                                cycle,
+                                cancel,
                             )
                             .await
                         }
@@ -1506,6 +1686,18 @@ fn validate_folded_result(
     state: &SchedulerState,
     payload: &ToolResultPayload,
 ) -> Result<(), ActorError> {
+    if let Some(identity) = &payload.information_identity {
+        tool_effects::validate_digest(identity)?;
+        if !payload
+            .receipt
+            .as_ref()
+            .is_some_and(ToolExecutionResultV1::has_complete_observation)
+        {
+            return Err(ActorError::Schema(
+                "tool information requires a complete original receipt".into(),
+            ));
+        }
+    }
     if let Some(receipt) = &payload.receipt {
         receipt.validate()?;
     }
@@ -1557,7 +1749,7 @@ fn validate_folded_result(
 async fn prepare_tool_batch(
     services: Arc<CodingServices>,
     batch: Vec<ToolCall>,
-    messages: &[String],
+    duplicates: &BTreeMap<(String, String), u32>,
     threshold: Option<u32>,
     turn: u64,
     cycle: u64,
@@ -1582,15 +1774,16 @@ async fn prepare_tool_batch(
         {
             Some(format!("Tool '{}' has been called 2 times with identical arguments. Change your approach instead of repeating this call.", call.name))
         } else {
-            duplicate_nudge(messages, call, threshold)
+            duplicate_nudge(duplicates, call, threshold).map_err(Exit::Fail)?
         };
         accepted.push(call);
-        let mut execution = Arc::clone(&services.tools)
-            .prepare(
+        let execution = Arc::clone(&services.tools)
+            .prepare_with_refusal(
                 ToolPreparationRequest {
                     identity: identity.clone(),
                     call: call.clone(),
                 },
+                nudge,
                 cancel.clone(),
             )
             .await
@@ -1604,20 +1797,6 @@ async fn prepare_tool_batch(
             return Err(Exit::Fail(ActorError::Schema(
                 "tool_effect_identity_mismatch: runner changed selected intent".into(),
             )));
-        }
-        if let Some(nudge) = nudge {
-            // A convergence refusal still binds the same admitted invocation;
-            // only its execution continuation is replaced by a no-effect result.
-            let result = ToolExecutionResultV1 {
-                schema: TOOL_RESULT_SCHEMA.into(),
-                identity: execution.prepared.identity.clone(),
-                prepared_digest: execution.prepared.digest().map_err(Exit::Fail)?,
-                outcome: ToolExecutionOutcome::Denied,
-                exit_code: None,
-                output: Value::String(nudge),
-                effects: ToolEffectObservationV1::complete(Vec::new()),
-            };
-            execution.execute = Effect::succeed(result);
         }
         prepared_batch.push(execution);
     }
@@ -1638,7 +1817,7 @@ async fn prepare_tool_batch(
         let prepared_batch = Arc::clone(&prepared_batch);
         async move {
             let results = if parallel {
-                run_prepared_parallel(&prepared_batch, services, cancel).await
+                run_prepared_parallel(&prepared_batch, Arc::clone(&services), cancel).await
             } else {
                 let mut results = Vec::with_capacity(prepared_batch.len());
                 for execution in prepared_batch.iter() {
@@ -1667,7 +1846,16 @@ async fn prepare_tool_batch(
                         )
                         .map_err(Exit::Fail)?,
                     };
-                    receipt_fact(&execution.prepared, result).map_err(Exit::Fail)
+                    let information = services
+                        .tools
+                        .information_identity(&execution.prepared, &result)
+                        .map_err(Exit::Fail)?;
+                    let mut fact = receipt_fact(&execution.prepared, result).map_err(Exit::Fail)?;
+                    if let Some(information) = information {
+                        tool_effects::validate_digest(&information).map_err(Exit::Fail)?;
+                        fact.payload["informationIdentity"] = information.into();
+                    }
+                    Ok(fact)
                 })
                 .collect()
         }
@@ -1688,7 +1876,10 @@ async fn run_prepared_one(
             outcome: ToolExecutionOutcome::Cancelled,
             exit_code: None,
             output: Value::String("cancelled".into()),
-            effects: ToolEffectObservationV1::complete(Vec::new()),
+            // Preparation may already have run input hooks.
+            effects: ToolEffectObservationV1::incomplete(
+                "cancelled after preparation; preparation effects were not observed",
+            ),
         });
     }
     // Once execution started, its returned host evidence survives a late cancel.
@@ -1740,7 +1931,7 @@ async fn run_prepared_parallel(
 async fn run_tool_batch(
     services: Arc<CodingServices>,
     batch: Vec<ToolCall>,
-    messages: &[String],
+    duplicates: &BTreeMap<(String, String), u32>,
     threshold: Option<u32>,
     turn: u64,
     cycle: u64,
@@ -1749,7 +1940,7 @@ async fn run_tool_batch(
     let prepared = prepare_tool_batch(
         Arc::clone(&services),
         batch,
-        messages,
+        duplicates,
         threshold,
         turn,
         cycle,
@@ -2065,7 +2256,7 @@ mod batch_overlap_tests {
             run_tool_batch(
                 services(tools),
                 read_batch(parties),
-                &[],
+                &BTreeMap::new(),
                 None,
                 1,
                 1,
@@ -2109,7 +2300,7 @@ mod batch_overlap_tests {
             run_tool_batch(
                 services(tools),
                 batch,
-                &[],
+                &BTreeMap::new(),
                 Some(1),
                 1,
                 1,
@@ -2150,7 +2341,7 @@ mod batch_overlap_tests {
         run_tool_batch(
             services(parallel_tools),
             batch.clone(),
-            &[],
+            &BTreeMap::new(),
             None,
             1,
             1,
@@ -2164,7 +2355,7 @@ mod batch_overlap_tests {
         run_tool_batch(
             services(serial_tools),
             batch,
-            &[],
+            &BTreeMap::new(),
             None,
             1,
             1,

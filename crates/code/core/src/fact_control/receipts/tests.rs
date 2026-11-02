@@ -9,6 +9,7 @@ use serde_json::json;
 mod argument_validation;
 mod cache_proof;
 mod cache_provenance;
+mod convergence_preparation;
 mod event_cancellation;
 mod execution_availability;
 mod heredoc_approval;

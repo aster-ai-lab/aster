@@ -245,6 +245,26 @@ async fn capability_turn(
 }
 
 impl ToolRunner for ExecutorTools {
+    fn prepare_with_refusal(
+        self: Arc<Self>,
+        request: aster_effect::ToolPreparationRequest,
+        refusal: Option<String>,
+        cancel: tokio_util::sync::CancellationToken,
+    ) -> aster_effect::coding::BoxFuture<Result<aster_effect::PreparedToolExecution, ActorError>>
+    {
+        Box::pin(receipts::prepare_tools_with_refusal(
+            self, request, refusal, cancel,
+        ))
+    }
+
+    fn information_identity(
+        &self,
+        prepared: &aster_effect::ToolPreparedV1,
+        result: &aster_effect::ToolExecutionResultV1,
+    ) -> Result<Option<String>, ActorError> {
+        receipts::information_identity(&prepared.tool_name, result, &prepared.effective_args_digest)
+    }
+
     fn prepare(
         self: Arc<Self>,
         request: aster_effect::ToolPreparationRequest,

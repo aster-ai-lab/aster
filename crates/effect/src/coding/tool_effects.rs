@@ -287,6 +287,16 @@ pub struct ToolExecutionResultV1 {
 }
 
 impl ToolExecutionResultV1 {
+    /// Whether this result contains a settled observation eligible for information credit.
+    /// This does not prove task progress or successful completion.
+    pub fn has_complete_observation(&self) -> bool {
+        matches!(
+            self.outcome,
+            ToolExecutionOutcome::Succeeded | ToolExecutionOutcome::Failed
+        ) && self.effects.completeness == ToolObservationCompleteness::Complete
+            && self.effects.unresolved_external_operations.is_empty()
+    }
+
     pub fn validate(&self) -> Result<(), ActorError> {
         if self.schema != TOOL_RESULT_SCHEMA {
             return Err(schema_error(&self.schema));
@@ -326,7 +336,22 @@ pub fn tool_args_digest(args: &Value) -> Result<String, ActorError> {
     digest_json("aster.code.tool-arguments.v1", args)
 }
 
-fn digest_json<T: Serialize>(domain: &str, value: &T) -> Result<String, ActorError> {
+/// Identity of an admitted tool's original observation, excluding invocation IDs.
+/// The host supplies its normalized observation digest after validating the receipt.
+pub fn tool_information_digest(
+    tool: &str,
+    effective_args: &str,
+    outcome: ToolExecutionOutcome,
+    exit_code: Option<i32>,
+    observation: &str,
+) -> Result<String, ActorError> {
+    digest_json(
+        "aster.code.tool-information.v1",
+        &(tool, effective_args, outcome, exit_code, observation),
+    )
+}
+
+pub(super) fn digest_json<T: Serialize>(domain: &str, value: &T) -> Result<String, ActorError> {
     let bytes = serde_json::to_vec(value).map_err(|error| ActorError::Schema(error.to_string()))?;
     let mut digest = Sha256::new();
     digest.update(domain.as_bytes());
@@ -343,7 +368,7 @@ fn bound_json<T: Serialize>(value: &T) -> Result<(), ActorError> {
     Ok(())
 }
 
-fn validate_digest(value: &str) -> Result<(), ActorError> {
+pub(super) fn validate_digest(value: &str) -> Result<(), ActorError> {
     let Some(hex) = value.strip_prefix("sha256:") else {
         return Err(identity_error("digest must use sha256 prefix"));
     };

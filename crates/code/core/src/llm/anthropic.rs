@@ -1,5 +1,8 @@
 //! Anthropic Claude LLM client
 
+#[cfg(test)]
+mod usage_tests;
+
 use super::http::{default_http_client, normalize_base_url, HttpClient};
 use super::structured;
 use super::types::*;
@@ -414,13 +417,7 @@ impl AnthropicClient {
                     transcript_text: None,
                     transcript_visibility: Default::default(),
                 },
-                usage: TokenUsage {
-                    prompt_tokens: parsed.usage.input_tokens,
-                    completion_tokens: parsed.usage.output_tokens,
-                    total_tokens: parsed.usage.input_tokens + parsed.usage.output_tokens,
-                    cache_read_tokens: parsed.usage.cache_read_input_tokens,
-                    cache_write_tokens: parsed.usage.cache_creation_input_tokens,
-                },
+                usage: parsed.usage.token_usage()?,
                 stop_reason: Some(parsed.stop_reason),
                 token_logprobs: Vec::new(),
                 meta: Some(LlmResponseMeta {
@@ -785,7 +782,13 @@ impl AnthropicClient {
                                             response_id = message.id;
                                             response_model = message.model;
                                             response_object = message.message_type;
-                                            usage.prompt_tokens = message.usage.input_tokens;
+                                            usage = match message.usage.token_usage() {
+                                                Ok(usage) => usage,
+                                                Err(error) => {
+                                                    tracing::error!(%error, "invalid Anthropic token usage");
+                                                    return;
+                                                }
+                                            };
                                         }
                                         AnthropicStreamEvent::MessageDelta {
                                             delta,
@@ -793,8 +796,16 @@ impl AnthropicClient {
                                         } => {
                                             stop_reason = Some(delta.stop_reason);
                                             usage.completion_tokens = msg_usage.output_tokens;
-                                            usage.total_tokens =
-                                                usage.prompt_tokens + usage.completion_tokens;
+                                            let Some(total) = usage
+                                                .prompt_tokens
+                                                .checked_add(usage.completion_tokens)
+                                            else {
+                                                tracing::error!(
+                                                    "Anthropic total token count overflow"
+                                                );
+                                                return;
+                                            };
+                                            usage.total_tokens = total;
                                         }
                                         AnthropicStreamEvent::MessageStop => {
                                             if !text_content.is_empty() {
@@ -893,6 +904,34 @@ pub(crate) struct AnthropicUsage {
     pub(crate) output_tokens: usize,
     pub(crate) cache_read_input_tokens: Option<usize>,
     pub(crate) cache_creation_input_tokens: Option<usize>,
+}
+
+impl AnthropicUsage {
+    fn token_usage(self) -> Result<TokenUsage> {
+        use super::metering::{InputAccounting, ObservedTokens};
+
+        // Messages input_tokens excludes cached input; OpenAI-style prompt_tokens includes it.
+        let observed = ObservedTokens::from_reported(
+            Some(self.input_tokens as u64),
+            Some(self.output_tokens as u64),
+            Some(self.cache_read_input_tokens.unwrap_or(0) as u64),
+            Some(self.cache_creation_input_tokens.unwrap_or(0) as u64),
+            InputAccounting::ExcludesCache,
+        )?;
+        Ok(TokenUsage {
+            prompt_tokens: observed
+                .input_tokens
+                .context("missing normalized input tokens")?
+                .try_into()?,
+            completion_tokens: self.output_tokens,
+            total_tokens: observed
+                .total_tokens()?
+                .context("missing normalized total tokens")?
+                .try_into()?,
+            cache_read_tokens: self.cache_read_input_tokens,
+            cache_write_tokens: self.cache_creation_input_tokens,
+        })
+    }
 }
 
 #[derive(Debug, Deserialize)]

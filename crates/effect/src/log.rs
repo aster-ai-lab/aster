@@ -328,6 +328,14 @@ impl FileLog {
         if removed == 0 {
             return Ok(0);
         }
+        let prefix = &opened.facts[..retained];
+        if prefix.iter().any(|fact| fact.kind == "compaction.pruned")
+            && !prefix.iter().any(|fact| fact.kind == "compaction.done")
+        {
+            return Err(storage_error(
+                "cannot rewind into history already compacted away at the byte limit",
+            ));
+        }
         let bytes = encode_facts(&opened.facts[..retained], MAX_LOG_BYTES, false)?;
         let tmp = Self::tmp_name(thread_id);
         // Exclusive creation never truncates an attacker-planted scratch file.
@@ -427,6 +435,9 @@ impl LogStore for FileLog {
                     let Some(retained) = compacted_message_prefix(&opened_log.facts) else {
                         return Err(error);
                     };
+                    let retained_bytes = encode_facts(&retained, MAX_LOG_BYTES, false)?;
+                    // A refused append must leave its original history intact.
+                    encode_facts(&added, MAX_LOG_BYTES - retained_bytes.len() as u64, false)?;
                     self.rewrite_compacted(thread_id, opened_log, &retained)?;
                     opened = self.read_opened(thread_id, true)?;
                     current = opened
@@ -462,8 +473,9 @@ impl LogStore for FileLog {
 }
 
 /// Replace model-visible messages already covered by the latest compaction
-/// summary with tiny tombstones. Seq, key and every non-transcript fact stay in
-/// place, so replay still sees a contiguous log with no duplicated identities.
+/// summary with tiny tombstones. Superseded summaries and preparations are
+/// covered too; the newest summary carries their scheduler state for replay.
+/// Seq, key and other evidence stay in place.
 fn compacted_message_prefix(facts: &[Fact]) -> Option<Vec<Fact>> {
     let anchor = facts
         .iter()
@@ -476,7 +488,12 @@ fn compacted_message_prefix(facts: &[Fact]) -> Option<Vec<Fact>> {
             if index < anchor
                 && matches!(
                     fact.kind.as_str(),
-                    "user.message" | "model.turn" | "tool.result" | "question.answered"
+                    "user.message"
+                        | "model.turn"
+                        | "tool.prepared"
+                        | "tool.result"
+                        | "question.answered"
+                        | "compaction.done"
                 )
             {
                 pruned = true;
