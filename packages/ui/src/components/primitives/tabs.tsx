@@ -2,6 +2,8 @@ import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { cva } from 'class-variance-authority'
 import * as React from 'react'
 
+import arcTabs from '../arc/tabs/tabs.module.css'
+
 import { cn } from '../../lib/utils'
 import { SelectionHighlight } from './selection-highlight'
 
@@ -80,10 +82,17 @@ const tabsListVariants = cva('inline-flex items-center justify-center', {
 
 function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) {
   const { variant, orientation } = React.use(TabsContext)
+  // The default (segmented) variant borrows Arc's pill shell; the line/underline/workflow variants stay native.
+  const isDefault = variant === 'default'
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      className={cn(tabsListVariants({ variant, orientation }), className)}
+      className={cn(
+        isDefault
+          ? cn('arc', arcTabs.listShell, 'w-fit', orientation === 'vertical' && 'flex-col')
+          : tabsListVariants({ variant, orientation }),
+        className
+      )}
       {...props}
     />
   )
@@ -169,11 +178,15 @@ const tabsTriggerVariants = cva(
 
 function TabsTrigger({ className, children, value, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
   const { variant, orientation, value: selectedValue, highlightId } = React.use(TabsContext)
+  const isDefault = variant === 'default'
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       value={value}
-      className={cn(tabsTriggerVariants({ variant, orientation }), className)}
+      className={cn(
+        isDefault ? cn('arc', arcTabs.trigger, 'flex-1 gap-1.5 [&_svg:not([class*="size-"])]:size-4') : tabsTriggerVariants({ variant, orientation }),
+        className
+      )}
       {...props}>
       {variant !== 'workflow' && value === selectedValue && (
         <SelectionHighlight
@@ -181,14 +194,10 @@ function TabsTrigger({ className, children, value, ...props }: React.ComponentPr
           layoutId={highlightId}
           className={
             variant === 'default'
-              ? 'bg-white dark:bg-[#3a3a3a]'
+              ? arcTabs.selection
               : cn('inset-x-0 top-auto bottom-0 bg-foreground', variant === 'line' ? 'h-1' : 'h-0.5')
           }
-          style={
-            variant === 'default'
-              ? { borderRadius: 6, boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)' }
-              : { borderRadius: 2 }
-          }
+          style={variant === 'default' ? undefined : { borderRadius: 2 }}
         />
       )}
       {children}

@@ -284,6 +284,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
   const [activeValue, setActiveValue] = React.useState('')
   const triggerInputRef = React.useRef<HTMLInputElement>(null)
   const defaultValueLabelId = React.useId()
+  const popupContentId = React.useId()
   const [listElement, setListElement] = React.useState<HTMLDivElement | null>(null)
   const [activeDescendant, setActiveDescendant] = React.useState<string>()
   const defaultTriggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${defaultValueLabelId}` : undefined
@@ -291,13 +292,10 @@ export function Combobox<TExtra extends object = Record<never, never>>({
   const open = controlledOpen ?? internalOpen
   const setOpen = React.useCallback(
     (nextOpen: boolean) => {
-      if (onOpenChange) {
-        onOpenChange(nextOpen)
-      } else {
-        setInternalOpen(nextOpen)
-      }
+      if (controlledOpen === undefined) setInternalOpen(nextOpen)
+      onOpenChange?.(nextOpen)
     },
-    [onOpenChange]
+    [controlledOpen, onOpenChange]
   )
 
   const value = controlledValue ?? internalValue
@@ -587,6 +585,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
               aria-controls={open ? listElement?.id : undefined}
               aria-activedescendant={open ? activeDescendant : undefined}
               aria-autocomplete="list"
+              data-popup-trigger-for={popupContentId}
               aria-invalid={error}
               role="combobox"
               autoComplete="off"
@@ -707,6 +706,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
         </PopoverTrigger>
       )}
       <PopoverContent
+        id={popupContentId}
         sideOffset={6}
         className={cn(
           'z-[240] rounded-[12px] border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-0 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)]',

@@ -1,6 +1,8 @@
 import * as SliderPrimitive from '@radix-ui/react-slider'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 import * as React from 'react'
+
+import arcSlider from '../arc/slider/slider.module.css'
 
 import { cn } from '../../lib/utils'
 
@@ -8,45 +10,6 @@ type SliderMark = {
   value: number
   label: React.ReactNode
 }
-
-const sliderTrackVariants = cva(
-  cn(
-    'relative grow overflow-hidden rounded-full bg-foreground/10',
-    'data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full'
-  ),
-  {
-    variants: {
-      size: {
-        sm: 'data-[orientation=horizontal]:h-1 data-[orientation=vertical]:w-1',
-        md: 'data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:w-1.5',
-        lg: 'data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2'
-      }
-    },
-    defaultVariants: {
-      size: 'md'
-    }
-  }
-)
-
-const sliderThumbVariants = cva(
-  cn(
-    'block shrink-0 rounded-full border border-background bg-neutral-900 shadow-none transition-[color,box-shadow] dark:bg-neutral-100',
-    'ring-foreground/20 hover:ring-4 focus-visible:ring-2 focus-visible:outline-hidden focus-visible:ring-inset',
-    'disabled:pointer-events-none disabled:opacity-50'
-  ),
-  {
-    variants: {
-      size: {
-        sm: 'size-3.5',
-        md: 'size-4',
-        lg: 'size-5'
-      }
-    },
-    defaultVariants: {
-      size: 'md'
-    }
-  }
-)
 
 const sliderMarkLabelVariants = cva('absolute top-0 leading-none whitespace-nowrap text-muted-foreground', {
   variants: {
@@ -60,26 +23,6 @@ const sliderMarkLabelVariants = cva('absolute top-0 leading-none whitespace-nowr
     size: 'md'
   }
 })
-
-const sliderValueLabelVariants = cva(
-  cn(
-    'pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-full',
-    'rounded-[6px] bg-neutral-900 px-1.5 py-0.5 text-white dark:bg-neutral-100 dark:text-neutral-900',
-    'opacity-0 motion-safe:scale-0 motion-safe:transition-[scale,opacity] motion-safe:duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100'
-  ),
-  {
-    variants: {
-      size: {
-        sm: '-top-1 text-[10px]',
-        md: '-top-1.5 text-xs',
-        lg: '-top-2 text-sm'
-      }
-    },
-    defaultVariants: {
-      size: 'md'
-    }
-  }
-)
 
 function Slider({
   className,
@@ -96,14 +39,14 @@ function Slider({
   getThumbAriaValueText,
   onValueChange,
   ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root> &
-  VariantProps<typeof sliderTrackVariants> & {
-    marks?: SliderMark[]
-    showValueLabel?: boolean
-    formatValueLabel?: (value: number) => React.ReactNode
-    getThumbAriaLabel?: (index: number) => string
-    getThumbAriaValueText?: (value: number, index: number) => string
-  }) {
+}: React.ComponentProps<typeof SliderPrimitive.Root> & {
+  size?: 'sm' | 'md' | 'lg'
+  marks?: SliderMark[]
+  showValueLabel?: boolean
+  formatValueLabel?: (value: number) => React.ReactNode
+  getThumbAriaLabel?: (index: number) => string
+  getThumbAriaValueText?: (value: number, index: number) => string
+}) {
   const [localValues, setLocalValues] = React.useState(() =>
     Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min]
   )
@@ -134,23 +77,33 @@ function Slider({
         !marks?.length && className
       )}
       {...props}>
-      <SliderPrimitive.Track data-slot="slider-track" className={sliderTrackVariants({ size })}>
+      <SliderPrimitive.Track
+        data-slot="slider-track"
+        data-size={size ?? 'md'}
+        className={cn('arc', arcSlider.track)}>
         <SliderPrimitive.Range
           data-slot="slider-range"
-          className={cn(
-            'absolute bg-neutral-900 dark:bg-neutral-100 data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'
-          )}
+          className={cn('arc', arcSlider.fill, 'data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full')}
         />
       </SliderPrimitive.Track>
       {localValues.map((val, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
+          data-size={size ?? 'md'}
           key={index}
           aria-label={getThumbAriaLabel?.(index)}
           aria-valuetext={getThumbAriaValueText?.(val, index)}
-          className={cn(sliderThumbVariants({ size }), showValueLabel && 'group')}>
+          className={cn('arc', arcSlider.thumb, 'shrink-0 disabled:pointer-events-none disabled:opacity-50', showValueLabel && 'group')}>
           {showValueLabel && (
-            <span data-slot="slider-value-label" className={sliderValueLabelVariants({ size })}>
+            <span
+              data-slot="slider-value-label"
+              className={cn(
+                'arc',
+                arcSlider.bubble,
+                'pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-full',
+                size === 'sm' ? '-top-1 text-[10px]' : size === 'lg' ? '-top-2 text-sm' : '-top-1.5 text-xs',
+                'opacity-0 motion-safe:scale-0 motion-safe:transition-[scale,opacity] motion-safe:duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100'
+              )}>
               {formatValueLabel ? formatValueLabel(val) : val}
             </span>
           )}

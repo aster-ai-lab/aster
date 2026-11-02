@@ -138,6 +138,6 @@ describe('HorizontalScrollContainer', () => {
     })
 
     expect(await screen.findByRole('button', { name: 'Scroll right' })).toBeInTheDocument()
-    expect(resizeObserverInstances).toHaveLength(1)
+    expect(resizeObserverInstances.filter((observer) => observer.targets.includes(scrollElement))).toHaveLength(1)
   })
 })

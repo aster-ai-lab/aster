@@ -1,5 +1,7 @@
 'use client'
 
+import arcProgress from '../arc/progress/progress.module.css'
+
 import { cn } from '../../lib/utils'
 
 type CircularProgressProps = {
@@ -40,7 +42,7 @@ const CircularProgress = ({
   const offset = circumference * (1 - normalizedValue / 100)
 
   return (
-    <div className="relative inline-flex items-center justify-center">
+    <div className={cn('arc', 'relative inline-flex items-center justify-center')}>
       <svg
         width={size}
         height={size}
@@ -68,7 +70,7 @@ const CircularProgress = ({
           strokeDashoffset={offset}
           fill="transparent"
           strokeDasharray={circumference}
-          className={cn('stroke-foreground', progressClassName)}
+          className={cn(arcProgress.bar, 'stroke-foreground', progressClassName)}
         />
       </svg>
       {showLabel && (

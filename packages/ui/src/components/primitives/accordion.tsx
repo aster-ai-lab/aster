@@ -2,19 +2,17 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from 'lucide-react'
 import * as React from 'react'
 
+import arcAccordion from '../arc/accordion/accordion.module.css'
+
 import { cn } from '../../lib/utils'
 
-function Accordion({ ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
-  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+function Accordion({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+  return <AccordionPrimitive.Root data-slot="accordion" className={cn('arc', arcAccordion.accordion, className)} {...props} />
 }
 
 function AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>) {
   return (
-    <AccordionPrimitive.Item
-      data-slot="accordion-item"
-      className={cn('border-b border-border/60 first:border-t last:border-b-0', className)}
-      {...props}
-    />
+    <AccordionPrimitive.Item data-slot="accordion-item" className={cn('arc', arcAccordion.item, className)} {...props} />
   )
 }
 
@@ -24,16 +22,19 @@ function AccordionTrigger({ className, children, ...props }: React.ComponentProp
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'flex flex-1 items-center justify-between gap-4 rounded-md py-4 text-left text-sm leading-4 font-semibold text-foreground/90',
-          'transition-colors outline-none',
-          'focus-visible:bg-accent/50',
-          'disabled:pointer-events-none disabled:opacity-50',
-          '[&[data-state=open]>svg]:rotate-180',
+          'arc',
+          arcAccordion.trigger,
+          'flex-1 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180',
           className
         )}
         {...props}>
         {children}
-        <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-foreground/60 motion-safe:transition-transform motion-safe:duration-200" />
+        <ChevronDownIcon
+          className={cn(
+            arcAccordion.icon,
+            'pointer-events-none size-4 shrink-0 motion-safe:transition-transform motion-safe:duration-200'
+          )}
+        />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
@@ -48,7 +49,9 @@ function AccordionContent({ className, contentClassName, children, ...props }: A
     <AccordionPrimitive.Content
       data-slot="accordion-content"
       className={cn(
-        'overflow-hidden text-sm leading-5 text-foreground/60 motion-safe:data-[state=closed]:animate-accordion-up motion-safe:data-[state=open]:animate-accordion-down',
+        'arc',
+        arcAccordion.panel,
+        'motion-safe:data-[state=closed]:animate-accordion-up motion-safe:data-[state=open]:animate-accordion-down',
         contentClassName
       )}
       {...props}>

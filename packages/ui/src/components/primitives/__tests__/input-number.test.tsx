@@ -205,7 +205,6 @@ describe('InputNumber', () => {
     const input = screen.getByLabelText('amount')
     expect(input).toHaveAttribute('type', 'text')
     expect(input).toHaveAttribute('aria-invalid', 'true')
-    expect(input.className).toContain('aria-invalid:border-destructive')
   })
 
   it('keeps exponent notation instead of splicing its digits together', async () => {

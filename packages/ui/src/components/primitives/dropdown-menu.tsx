@@ -2,6 +2,8 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
+import arcDropdown from '../arc/dropdown-menu/dropdown-menu.module.css'
+
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
@@ -94,7 +96,9 @@ function DropdownMenuContent({
         className={cn(
           // no-drag punches the popup's area out of any titlebar drag region it overlaps,
           // so hover/click reach the items instead of the window-drag hit test (Electron).
-          'z-[240] max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag] data-[state=closed]:pointer-events-none',
+          'arc',
+          arcDropdown.menuSurface,
+          'z-[240] max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag] data-[state=closed]:pointer-events-none',
           className
         )}
         {...props}
@@ -122,7 +126,9 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-[8px] px-2 py-1.5 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!",
+        'arc',
+        arcDropdown.item,
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4 data-[variant=destructive]:[&_svg:not([class*="text-"])]:text-destructive!',
         className
       )}
       {...props}
@@ -140,7 +146,9 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-[8px] py-1.5 pr-2 pl-8 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        'arc',
+        arcDropdown.item,
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       checked={checked}
@@ -168,7 +176,9 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-[8px] py-1.5 pr-2 pl-8 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        'arc',
+        arcDropdown.item,
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       {...props}>
@@ -236,7 +246,9 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "flex cursor-default items-center gap-2 rounded-[8px] px-2 py-1.5 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)] data-[inset]:pl-8 data-[state=open]:bg-[var(--color-surface-2)] data-[state=open]:text-[var(--color-ink)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+        'arc',
+        arcDropdown.item,
+        'relative flex cursor-default items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[state=open]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       {...props}>
@@ -255,7 +267,9 @@ function DropdownMenuSubContent({
       <DropdownMenuPrimitive.SubContent
         data-slot="dropdown-menu-sub-content"
         className={cn(
-          'z-[240] min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]',
+          'arc',
+          arcDropdown.menuSurface,
+          'z-[240] min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden text-[13px] [-webkit-app-region:no-drag]',
           className
         )}
         {...props}

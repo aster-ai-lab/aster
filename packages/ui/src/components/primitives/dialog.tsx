@@ -3,6 +3,8 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import * as React from 'react'
 
+import arcDialog from '../arc/dialog/dialog.module.css'
+
 import { cn } from '../../lib/utils'
 import { buttonVariants } from './button'
 import { DIALOG_CLOSE_DURATION_MS } from '@aster-ai-lab/ui/utils'
@@ -31,7 +33,9 @@ function DialogOverlay({ className, onPointerDown, ...props }: React.ComponentPr
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        'fixed inset-0 z-[80] bg-black/20',
+        'arc',
+        arcDialog.overlay,
+        'fixed inset-0 z-[80]!',
         'motion-reduce:animate-none',
         className
       )}
@@ -43,12 +47,13 @@ function DialogOverlay({ className, onPointerDown, ...props }: React.ComponentPr
   )
 }
 
-type DialogContentSize = 'sm' | 'default' | 'lg' | 'xl'
+type DialogContentSize = 'sm' | 'default' | 'md' | 'lg' | 'xl'
 type DialogContentMotion = 'directional' | 'fade-scale'
 
 const dialogContentSizeClass: Record<DialogContentSize, string> = {
   sm: 'sm:max-w-sm',
   default: 'sm:max-w-lg',
+  md: 'sm:max-w-lg',
   lg: 'sm:max-w-xl',
   xl: 'sm:max-w-[720px]'
 }
@@ -126,7 +131,9 @@ function DialogContent({
         className={cn(
           // no-drag punches the dialog's area out of any titlebar drag region it overlaps,
           // so the close button stays clickable when the dialog reaches max height (Electron).
-          'pointer-events-auto fixed top-[50%] left-[50%] z-[80] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[12px] border-0 bg-card p-6 text-card-foreground shadow-[0_12px_32px_rgba(0,0,0,0.12)] [-webkit-app-region:no-drag]',
+          'arc',
+          arcDialog.surface,
+          'pointer-events-auto fixed top-[50%] left-[50%] z-[80]! grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 p-6 [-webkit-app-region:no-drag]',
           'motion-reduce:animate-none',
           dialogContentSizeClass[size],
           className,

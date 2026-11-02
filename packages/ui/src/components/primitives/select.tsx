@@ -3,6 +3,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import * as React from 'react'
 
+import arcSelect from '../arc/select/select.module.css'
+
 import { cn } from '../../lib/utils'
 
 import { usePortalContainer } from './portal-container'
@@ -101,7 +103,8 @@ function SelectTrigger({
     size?: 'sm' | 'default'
   }) {
   const selectContext = React.use(SelectContext)
-  const state = props.disabled ? 'disabled' : props['aria-invalid'] ? 'error' : 'default'
+  const invalid = props['aria-invalid'] !== undefined && props['aria-invalid'] !== false && props['aria-invalid'] !== 'false'
+  const state = props.disabled ? 'disabled' : invalid ? 'error' : 'default'
   const handleRef = React.useCallback(
     (node: HTMLButtonElement | null) => {
       selectContext?.setTriggerElement(node)
@@ -116,14 +119,16 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        selectTriggerVariants({ state, size }),
-        "w-fit whitespace-nowrap data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+        'arc',
+        arcSelect.trigger,
+        state === 'error' && 'border-destructive!',
+        "w-fit whitespace-nowrap data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}>
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
+        <ChevronDownIcon className={cn(arcSelect.chevron, 'size-4')} />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -202,7 +207,9 @@ function SelectContent({
         className={cn(
           // no-drag punches the popup's area out of any titlebar drag region it overlaps,
           // so hover/click reach the items instead of the window-drag hit test (Electron).
-          'relative z-[240] max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]',
+          'arc',
+          arcSelect.menuSurface,
+          'relative z-[240] max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag]',
           position === 'popper' &&
             'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className
@@ -240,7 +247,9 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center gap-2 rounded-[8px] py-1.5 pr-8 pl-2 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-[var(--color-surface)] data-[state=checked]:font-medium data-[state=checked]:text-[var(--color-ink)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        'arc',
+        arcSelect.item,
+        'relative flex w-full gap-2 pr-8 pl-2 text-[13px] data-[disabled]:pointer-events-none data-[state=checked]:font-medium [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       {...props}>

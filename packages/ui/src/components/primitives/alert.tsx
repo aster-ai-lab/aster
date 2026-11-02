@@ -2,8 +2,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckCircle2, Info, TriangleAlert, XCircle } from 'lucide-react'
 import * as React from 'react'
 
+import arcAlert from '../arc/alert/alert.module.css'
+
 import { cn } from '../../lib/utils'
 
+/** Legacy class recipe, kept for callers that style custom banners; the Alert itself now wears Arc styles. */
 const alertVariants = cva(
   cn(
     'relative flex w-full items-start gap-3 rounded-md border px-3 py-2.5 text-sm leading-5 shadow-xs',
@@ -101,6 +104,8 @@ function Alert({
   const heading = message ?? title
   const Icon = alertIcons[resolvedType]
   const alertRole = role ?? (resolvedType === 'error' ? 'alert' : 'status')
+  /** Aster's info/success/warning/error map onto Arc's info/success/warning/danger tones. */
+  const arcTone = { info: arcAlert.info, success: arcAlert.success, warning: arcAlert.warning, error: arcAlert.danger }[resolvedType]
 
   return (
     <div
@@ -108,23 +113,23 @@ function Alert({
       role={alertRole}
       data-slot="alert"
       data-type={resolvedType}
-      className={cn(alertVariants({ type: resolvedType }), className)}
+      className={cn('arc', arcAlert.alert, arcTone, className)}
       {...props}>
       {showIcon && (
-        <span data-slot="alert-icon" data-type={resolvedType} className={alertIconContainerVariants({ type: resolvedType })}>
+        <span data-slot="alert-icon" data-type={resolvedType} className={cn(arcAlert.icon, alertIconContainerVariants({ type: resolvedType }))}>
           {icon ?? <Icon size={16} className={cn('lucide-custom', alertIconVariants({ type: resolvedType }))} />}
         </span>
       )}
-      <div data-slot="alert-content" className="min-w-0 flex-1">
+      <div data-slot="alert-content" className={cn(arcAlert.copy, 'min-w-0 flex-1')}>
         {children ?? (
           <>
             {heading && (
-              <div data-slot="alert-message" className="font-medium">
+              <div data-slot="alert-message" className={cn(arcAlert.title, 'font-medium')}>
                 {heading}
               </div>
             )}
             {description && (
-              <div data-slot="alert-description" className="mt-1 text-xs leading-5 opacity-90">
+              <div data-slot="alert-description" className={arcAlert.description}>
                 {description}
               </div>
             )}

@@ -89,6 +89,7 @@ export function DocumentPageLayoutRibbon({
               'document.pageLayout.marginsAria',
             )}
             value={marginPreset}
+            menuMinWidth={288}
             options={marginPresetOptions(messages)}
             onValueChange={(preset) => {
               if (preset === 'custom') {

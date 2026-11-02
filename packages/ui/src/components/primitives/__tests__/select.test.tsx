@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 
 import { PortalContainerProvider } from '../portal-container'
@@ -29,7 +30,8 @@ afterEach(() => {
 })
 
 describe('SelectContent', () => {
-  it('keeps the field fill when opened and uses the inset focus ring', () => {
+  it('can be reached by keyboard and exposes its current value', async () => {
+    const user = userEvent.setup()
     render(
       <Select defaultValue="alpha">
         <SelectTrigger aria-label="Mode">
@@ -42,8 +44,32 @@ describe('SelectContent', () => {
     )
 
     const trigger = screen.getByRole('combobox', { name: 'Mode' })
-    expect(trigger).toHaveClass('focus-visible:ring-black/10')
-    expect(trigger).not.toHaveClass('aria-expanded:border-primary')
+    await user.tab()
+    expect(trigger).toHaveFocus()
+    expect(trigger).toHaveTextContent('Alpha')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('allows consumers to supply the full-width layout', () => {
+    render(
+      <Select defaultValue="alpha">
+        <SelectTrigger aria-label="Mode" size="sm" className="w-full h-8"><SelectValue /></SelectTrigger>
+        <SelectContent><SelectItem value="alpha">Alpha</SelectItem></SelectContent>
+      </Select>
+    )
+    const trigger = screen.getByRole('combobox', { name: 'Mode' })
+    expect(trigger).toHaveClass('w-full', 'h-8')
+    expect(trigger).not.toHaveClass('w-fit!')
+  })
+
+  it('does not show the error state when aria-invalid is the string false', () => {
+    render(
+      <Select defaultValue="alpha">
+        <SelectTrigger aria-label="Mode" aria-invalid="false"><SelectValue /></SelectTrigger>
+        <SelectContent><SelectItem value="alpha">Alpha</SelectItem></SelectContent>
+      </Select>
+    )
+    expect(screen.getByRole('combobox', { name: 'Mode' })).not.toHaveClass('border-destructive!')
   })
 
   it('opens and closes without controlled open props', async () => {

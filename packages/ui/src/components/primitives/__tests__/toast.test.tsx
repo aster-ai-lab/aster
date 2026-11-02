@@ -44,7 +44,9 @@ describe('Toast', () => {
     expect(screen.getByText('First').closest('[inert]')).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Restore Second' }))
     expect([...archived]).toEqual(['First', 'Third', 'Fourth'])
-    expect(screen.queryByText('Second')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Restore Second' })).not.toBeInTheDocument()
+    const exiting = screen.queryByText('Second')
+    if (exiting) expect(exiting.closest('[inert]')).not.toBeNull()
     fireEvent.mouseLeave(region)
     expect(screen.getByText('First').closest('[inert]')).not.toBeNull()
   })
@@ -72,7 +74,8 @@ describe('Toast', () => {
     act(() => {
       vi.advanceTimersByTime(600)
     })
-    expect(screen.queryByText('First')).not.toBeInTheDocument()
+    const exiting = screen.queryByText('First')
+    if (exiting) expect(exiting.closest('[inert]')).not.toBeNull()
     expect(screen.getByText('Second')).toBeInTheDocument()
     act(() => {
       vi.advanceTimersByTime(400)
@@ -147,10 +150,8 @@ describe('Toast', () => {
     const title = screen.getByText('Item deleted')
 
     expect(actionButton).toHaveAttribute('data-variant', 'outline')
-    // These layout classes keep the 30px action (the quiet-button spec height), primary copy, and close control on one row
-    // while the root remains top-aligned so the description stays below that row.
     expect(screen.getByRole('status')).toHaveClass('items-start')
-    expect(actionButton).toHaveClass('min-h-7.5')
+    expect(actionButton).toBeEnabled()
     expect(title).toHaveClass('min-h-7', 'py-1')
     expect(closeButton.parentElement).toHaveClass('flex', 'min-h-7', 'items-center')
   })

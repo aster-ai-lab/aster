@@ -1,0 +1,32 @@
+.field { display: inline-flex; align-items: flex-start; gap: 0; min-width: 0; }
+.box { position: relative; flex: 0 0 auto; display: grid; place-items: center; width: var(--control-height-md); height: var(--control-height-md); border: 0; border-radius: var(--radius-control); padding: 0; background: transparent; color: var(--control-glyph); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* The square is the only part that reacts to a press, so the hit area and label never move. */
+.visual { position: relative; display: block; width: 18px; height: 18px; border: 1px solid var(--border-strong); border-radius: 5px; background: var(--surface); transition: border-color var(--duration-fast) var(--ease-standard), transform var(--duration-spring) var(--ease-spring); }
+.fill { position: absolute; inset: -1px; border-radius: inherit; background: var(--control-on); }
+.mark { position: absolute; inset: -1px; width: 18px; height: 18px; overflow: visible; }
+.box[data-state="checked"] .visual, .box[data-state="indeterminate"] .visual { border-color: var(--control-on); }
+@media (hover: hover) and (pointer: fine) { .box[data-state="unchecked"]:hover:not(:disabled) .visual { border-color: var(--text-muted); } }
+.box:active:not(:disabled) .visual { transform: scale(.95); transition: border-color var(--duration-fast) var(--ease-standard), transform var(--duration-instant) var(--ease-standard); }
+.box:disabled { opacity: .5; cursor: not-allowed; }
+/* The label's first line centers on the square: (44px box - 19.6px line) / 2. */
+.copy { display: grid; gap: 2px; min-width: 0; margin-left: 1px; padding-top: calc((var(--control-height-md) - var(--text-sm) * 1.4) / 2); }
+.copy label { color: var(--foreground); font-size: var(--text-sm); font-weight: 500; line-height: var(--leading-body); cursor: pointer; }
+.copy span { color: var(--text-muted); font-size: var(--text-xs); line-height: var(--leading-body); }
+@media (prefers-reduced-motion: reduce) { .visual, .box:active:not(:disabled) .visual { transition: none; transform: none; } }
+
+/*
+ * Aster adaptations for the primitive Checkbox: the Radix Root wears .visual directly, so
+ * data-state sits on the visual and the checked fill is its own background (no .fill child).
+ * Arc's own component keeps the .box hit-area structure above.
+ */
+.visual[data-size="sm"], .visual[data-size="md"] { width: 16px; height: 16px; border-radius: 4.5px; }
+.visual[data-size="lg"] { width: 24px; height: 24px; border-radius: 7px; }
+.visual[data-size] { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.visual[data-size][data-state="checked"], .visual[data-size][data-state="indeterminate"] { background: var(--control-on); border-color: var(--control-on); }
+.visual[data-size][data-state="checked"] > *, .visual[data-size][data-state="indeterminate"] > * { color: var(--control-glyph); }
+@media (hover: hover) and (pointer: fine) { .visual[data-size][data-state="unchecked"]:hover:not(:disabled) { border-color: var(--text-muted); } }
+.visual[data-size]:active:not(:disabled) { transform: scale(.95); transition: border-color var(--duration-fast) var(--ease-standard), transform var(--duration-instant) var(--ease-standard); }
+.visual[data-size]:disabled { opacity: .5; cursor: not-allowed; }
+.visual[data-size][aria-invalid="true"] { border-color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) { .visual[data-size]:active:not(:disabled) { transform: none; transition: none; } }

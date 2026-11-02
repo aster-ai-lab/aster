@@ -4,13 +4,15 @@ import { Loader } from 'lucide-react'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
+import { Button as ArcButton } from '../arc/button/button'
+
 import { cn } from '../../lib/utils'
 
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-2 whitespace-nowrap',
     'rounded-md font-normal motion-safe:transition-[background-color,color,border-color,box-shadow,opacity] motion-safe:duration-150 active:opacity-80',
-    'disabled:pointer-events-none disabled:opacity-40',
+    'disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
     "shrink-0 outline-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'data-[busy=true]:cursor-progress data-[busy=true]:opacity-100',
     'shadow-none'
@@ -80,6 +82,7 @@ function Button({
   loadingIconClassName,
   disabled,
   children,
+  onClick,
   to,
   href,
   ...props
@@ -103,6 +106,25 @@ function Button({
   // Use custom icon or default icon
   const spinnerElement = loadingIcon ?? defaultLoadingIcon
 
+  const arcVariant = arcVariants[variant ?? 'default']
+  const arcSize = arcSizes[size ?? 'default']
+  if (arcVariant && arcSize && !asChild && to === undefined && href === undefined && loadingIcon === undefined && loadingIconClassName === undefined) {
+    return (
+      <ArcButton
+        data-slot="button"
+        data-variant={variant ?? 'default'}
+        className={className}
+        variant={arcVariant}
+        size={arcSize}
+        loading={loading ?? false}
+        disabled={disabled}
+        onClick={onClick}
+        {...props}>
+        {children}
+      </ArcButton>
+    )
+  }
+
   return (
     <Comp
       data-slot="button"
@@ -113,7 +135,15 @@ function Button({
       data-busy={loading || undefined}
       {...(to !== undefined ? { to } : {})}
       {...(href !== undefined ? { href } : {})}
-      {...props}>
+      {...props}
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        if (!asChild && to === undefined && href === undefined && (props['aria-disabled'] === true || props['aria-disabled'] === 'true')) {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+        onClick?.(event)
+      }}>
       {/* asChild mode does not support loading because Slot requires a single child element */}
       {asChild ? (
         children
@@ -144,5 +174,28 @@ function Button({
 }
 
 type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>
+type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>
+
+/** Map the existing API onto Arc's variants and shared size scale. */
+const arcVariants: Partial<Record<ButtonVariant, 'primary' | 'secondary' | 'ghost' | 'danger'>> = {
+  default: 'primary',
+  primary: 'primary',
+  accent: 'primary',
+  emphasis: 'primary',
+  secondary: 'secondary',
+  outline: 'secondary',
+  ghost: 'ghost',
+  destructive: 'danger'
+}
+const arcSizes: Partial<Record<ButtonSize, 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg' | 'icon-navbar'>> = {
+  default: 'sm',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  icon: 'icon',
+  'icon-sm': 'icon-sm',
+  'icon-lg': 'icon-lg',
+  'icon-navbar': 'icon-navbar'
+}
 
 export { Button, type ButtonProps, type ButtonVariant, buttonVariants }

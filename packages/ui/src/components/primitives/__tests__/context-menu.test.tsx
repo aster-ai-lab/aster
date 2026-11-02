@@ -274,7 +274,7 @@ describe('ContextMenu primitive', () => {
       openMenu(screen.getByText('Trigger'))
 
       const item = screen.getByText('Delete').closest('[data-slot="context-menu-item"]')
-      expect(item).toHaveClass("data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!")
+      expect(item?.className.replaceAll('"', "'")).toContain("data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!")
       expect(item).not.toHaveClass('data-[variant=destructive]:*:[svg]:text-destructive!')
     })
   })

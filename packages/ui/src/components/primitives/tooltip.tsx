@@ -8,6 +8,8 @@ import {
 } from '@radix-ui/react-tooltip'
 import * as React from 'react'
 
+import arcTooltip from '../arc/tooltip/tooltip.module.css'
+
 import { cn } from '../../lib/utils'
 import { usePortalContainer } from './portal-container'
 
@@ -368,11 +370,14 @@ function TooltipTrigger({ onFocus, ...props }: TooltipTriggerProps) {
 // no-drag punches the popup's area out of any titlebar drag region it overlaps,
 // so hover/click reach the items instead of the window-drag hit test (Electron).
 // Radix Tooltip 的打开态 data-state 是 instant-open/delayed-open（非 open），选择器必须用子串匹配
-const contentStyles =
-  'z-[80] w-fit max-w-80 origin-(--radix-tooltip-content-transform-origin) rounded-md bg-neutral-900 px-3 py-1.5 text-neutral-50 text-xs leading-relaxed whitespace-normal break-words dark:bg-neutral-100 dark:text-neutral-900 [-webkit-app-region:no-drag]'
+const contentStyles = cn(
+  'arc',
+  arcTooltip.tooltip,
+  'w-fit max-w-96 leading-relaxed whitespace-normal break-words [-webkit-app-region:no-drag]'
+)
 
 const arrowStyles =
-  'z-[80] -translate-y-px fill-neutral-900 stroke-neutral-900 stroke-2 dark:fill-neutral-100 dark:stroke-neutral-100 [paint-order:stroke_fill]'
+  'z-[80] -translate-y-px fill-(--foreground) stroke-(--foreground) stroke-2 [paint-order:stroke_fill]'
 
 function TooltipContent({
   className,

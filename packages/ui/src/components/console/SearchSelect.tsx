@@ -54,6 +54,8 @@ type SearchSelectBaseProps = {
   emptyText?: string;
   className?: string;
   panelClassName?: string;
+  /** Minimum width for menus with descriptive options, clamped to the viewport. */
+  minPanelWidth?: number;
   portalContainer?: HTMLElement | ((trigger: HTMLElement) => HTMLElement);
   disabled?: boolean;
   /** sm = compact toolbar / card header filters */
@@ -108,6 +110,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     emptyText = 'No results',
     className = '',
     panelClassName,
+    minPanelWidth,
     portalContainer: portalTarget,
     disabled = false,
     size = 'md',
@@ -207,7 +210,10 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     const el = rootRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const panelWidth = Math.min(Math.max(rect.width, size === 'sm' ? 10 * 16 : 12 * 16), window.innerWidth - 16);
+    const panelWidth = Math.min(
+      Math.max(rect.width, size === 'sm' ? 10 * 16 : 12 * 16, minPanelWidth ?? 0),
+      Math.max(0, window.innerWidth - 16),
+    );
     let left = rect.left;
     left = Math.max(8, Math.min(left, window.innerWidth - panelWidth - 8));
     const panelHeight = panelRef.current?.offsetHeight ?? 0;
@@ -246,7 +252,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       window.removeEventListener('scroll', onScroll, true);
       observer.disconnect();
     };
-  }, [open, size, filtered.length, portalContainer]);
+  }, [open, size, filtered.length, portalContainer, minPanelWidth]);
 
   useLayoutEffect(() => {
     if (!open) return;

@@ -1,0 +1,10 @@
+/* Arc messages: toasts ride the raised surface with a floating shadow; the pill inverts with the theme. */
+.card { border-radius: var(--radius-control); border: 1px solid var(--border-subtle); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
+.iconWell { border-radius: 0.5rem; background: var(--surface-muted); }
+.muted { color: var(--text-secondary); }
+.close { border-radius: var(--radius-control); color: var(--text-muted); transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), scale var(--duration-instant) var(--ease-standard); }
+@media (hover: hover) and (pointer: fine) { .close:hover { background: var(--surface-muted); color: var(--foreground); } }
+.close:active { scale: 0.9; }
+.pill { border-radius: var(--radius-pill); background: var(--foreground); color: var(--background); box-shadow: var(--shadow-floating); }
+
+@media (prefers-reduced-motion: reduce) { .close { transition: none; } .close:active { scale: none; } }

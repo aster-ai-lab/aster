@@ -1,0 +1,3 @@
+/* Arc progress: value changes glide on the standard curve instead of snapping frame-to-frame. */
+.bar { transition: stroke-dashoffset var(--duration-considered) var(--ease-standard), stroke var(--duration-fast) var(--ease-standard); }
+@media (prefers-reduced-motion: reduce) { .bar { transition: none; } }

@@ -3,10 +3,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, SquareIcon } from 'lucide-react'
 import * as React from 'react'
 
+import arcCheckbox from '../arc/checkbox/checkbox.module.css'
+
 import { cn } from '../../lib/utils'
 
 export type CheckedState = CheckboxPrimitive.CheckedState
 
+/** Legacy class recipe, kept for callers that style custom checkboxes; the Checkbox itself now wears Arc styles. */
 const checkboxVariants = cva(
   cn(
     // 16px box. Radius stays 4px: 8px would be a circle, and pills are reserved for the session dot.
@@ -57,7 +60,7 @@ function Checkbox({
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       data-size={size}
-      className={cn(checkboxVariants({ size }), className)}
+      className={cn('arc', arcCheckbox.visual, className)}
       {...props}>
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"

@@ -5,6 +5,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
+import arcContext from '../arc/context-menu/context-menu.module.css'
+
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
@@ -14,11 +16,17 @@ import { usePortalContainer } from './portal-container'
 const menuContentStyles = cn(
   // no-drag punches the popup's area out of any titlebar drag region it overlaps,
   // so hover/click reach the items instead of the window-drag hit test (Electron).
-  'z-[240] max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]'
+  'arc',
+  arcContext.menuSurface,
+  'z-[240] max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag]'
 )
 const menuSubContentStyles = cn(
-  'z-[240] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-1.5 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] [-webkit-app-region:no-drag]'
+  'arc',
+  arcContext.menuSurface,
+  'z-[240] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden text-[13px] [-webkit-app-region:no-drag]'
 )
+const menuItemSvgStyles =
+  '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4'
 
 const menuItemVariants = cva(
   cn(
@@ -188,8 +196,10 @@ function ContextMenuSubTrigger({
       data-slot="context-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        menuItemVariants({ inset }),
-        'data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+        'arc',
+        arcContext.item,
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[state=open]:text-foreground',
+        menuItemSvgStyles,
         className
       )}
       {...props}>
@@ -276,7 +286,14 @@ function ContextMenuItem({
       data-slot="context-menu-item"
       data-inset={inset}
       data-variant={variant}
-      className={cn(menuItemVariants({ variant, inset }), className)}
+      className={cn(
+        'arc',
+        arcContext.item,
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8',
+        'data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:[&_svg:not([class*="text-"])]:text-destructive!',
+        menuItemSvgStyles,
+        className
+      )}
       {...props}
     />
   )
@@ -291,7 +308,13 @@ function ContextMenuCheckboxItem({
   return (
     <ContextMenuPrimitive.CheckboxItem
       data-slot="context-menu-checkbox-item"
-      className={cn(menuItemVariants({ inset: true }), 'pr-2', className)}
+      className={cn(
+        'arc',
+        arcContext.item,
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        menuItemSvgStyles,
+        className
+      )}
       checked={checked}
       {...props}>
       <span className="pointer-events-none absolute left-2 flex size-4 items-center justify-center">
@@ -312,7 +335,13 @@ function ContextMenuRadioItem({
   return (
     <ContextMenuPrimitive.RadioItem
       data-slot="context-menu-radio-item"
-      className={cn(menuItemVariants({ inset: true }), 'pr-2', className)}
+      className={cn(
+        'arc',
+        arcContext.item,
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        menuItemSvgStyles,
+        className
+      )}
       {...props}>
       <span className="pointer-events-none absolute left-2 flex size-4 items-center justify-center">
         <ContextMenuPrimitive.ItemIndicator>

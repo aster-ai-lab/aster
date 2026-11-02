@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -59,6 +61,24 @@ describe('DropdownMenuContent', () => {
     }
   })
 
+  it('allows keyboard selection of a checked menu item', async () => {
+    const user = userEvent.setup()
+    const onCheckedChange = vi.fn()
+    render(
+      <DropdownMenu open>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuCheckboxItem checked onCheckedChange={onCheckedChange}>Notifications</DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+    const item = screen.getByRole('menuitemcheckbox', { name: 'Notifications' })
+    expect(item).toHaveAttribute('aria-checked', 'true')
+    item.focus()
+    await user.keyboard('{Enter}')
+    expect(onCheckedChange).toHaveBeenCalledWith(false)
+  })
+
   it('marks content and sub-content as no-drag so they stay clickable over titlebar drag regions', () => {
     render(
       <DropdownMenu open>
@@ -102,7 +122,7 @@ describe('DropdownMenuContent', () => {
     )
 
     const item = screen.getByText('Delete').closest('[data-slot="dropdown-menu-item"]')
-    expect(item).toHaveClass("data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!")
+    expect(item?.className.replaceAll('"', "'")).toContain("data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-destructive!")
     expect(item).not.toHaveClass('data-[variant=destructive]:*:[svg]:text-destructive!')
   })
 

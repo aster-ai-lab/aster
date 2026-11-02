@@ -18,6 +18,7 @@ const motionSnapshots = vi.hoisted(() => ({
 
 vi.mock('motion/react', async () => {
   const ReactActual = await vi.importActual<typeof React>('react')
+  const motionActual = await vi.importActual<typeof import('motion/react')>('motion/react')
   const motionPropNames = new Set(['initial', 'animate', 'exit', 'transition'])
   const createMotionComponent =
     (tag: 'div' | 'aside') =>
@@ -34,13 +35,20 @@ vi.mock('motion/react', async () => {
       return ReactActual.createElement(tag, { ...domProps, ref }, children)
     }
 
+  const panelMotion = {
+    aside: createMotionComponent('aside'),
+    div: createMotionComponent('div')
+  }
   return {
+    ...motionActual,
     AnimatePresence: ({ children }: { children: React.ReactNode }) =>
       ReactActual.createElement(ReactActual.Fragment, null, children),
-    motion: {
-      aside: createMotionComponent('aside'),
-      div: createMotionComponent('div')
-    }
+    motion: new Proxy(motionActual.motion, {
+      get(target, key, receiver) {
+        if (key === 'aside' || key === 'div') return panelMotion[key]
+        return Reflect.get(target, key, receiver)
+      }
+    })
   }
 })
 

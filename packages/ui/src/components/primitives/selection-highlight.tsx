@@ -25,7 +25,7 @@ export function SelectionHighlight({
       layoutId={reducedMotion ? undefined : layoutId}
       layoutDependency={layoutId}
       initial={false}
-      transition={{ type: 'spring', duration: 0.42, bounce: 0.12 }}
+      transition={{ type: 'spring', duration: 0.42, bounce: 0 }}
       className={cn('pointer-events-none absolute inset-0 -z-10', className)}
       style={{ borderRadius: 'inherit', ...style }}
     />

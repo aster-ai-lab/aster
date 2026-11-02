@@ -2,6 +2,8 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 
+import arcRadio from '../arc/radio/radio.module.css'
+
 import { cn } from '../../lib/utils'
 
 const radioGroupItemVariants = cva(
@@ -39,9 +41,9 @@ function RadioGroupItem({
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"
       data-size={size}
-      className={cn(radioGroupItemVariants({ size }), className)}
+      className={cn('arc', arcRadio.item, radioGroupItemVariants({ size }), className)}
       {...props}>
-      <RadioGroupPrimitive.Indicator data-slot="radio-group-indicator" />
+      <RadioGroupPrimitive.Indicator data-slot="radio-group-indicator" className={arcRadio.dot} />
     </RadioGroupPrimitive.Item>
   )
 }

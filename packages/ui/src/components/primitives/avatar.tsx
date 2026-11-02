@@ -1,6 +1,8 @@
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import * as React from 'react'
 
+import arcAvatar from '../arc/avatar/avatar.module.css'
+
 import { cn } from '../../lib/utils'
 
 function Avatar({
@@ -30,10 +32,7 @@ function Avatar({
       key={imageKey ?? '__no-avatar-image__'}
       data-slot="avatar"
       data-size={size}
-      className={cn(
-        'group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6',
-        className
-      )}
+      className={cn('arc group/avatar relative shrink-0 select-none', arcAvatar.avatar, className)}
       {...props}>
       {children}
     </AvatarPrimitive.Root>
@@ -52,6 +51,7 @@ function AvatarFallback({ className, ...props }: React.ComponentProps<typeof Ava
       data-slot="avatar-fallback"
       className={cn(
         'flex size-full items-center justify-center rounded-full text-sm group-data-[size=sm]/avatar:text-xs',
+        arcAvatar.fallback,
         className
       )}
       {...props}

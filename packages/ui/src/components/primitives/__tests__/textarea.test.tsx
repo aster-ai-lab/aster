@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { Input } from '../textarea'
 
@@ -10,21 +11,24 @@ afterEach(() => {
 })
 
 describe('TextareaInput', () => {
-  it('auto-grows with its content via field-sizing-content', () => {
-    // jsdom cannot lay out `field-sizing: content`; asserting the class is the
-    // contract check that the auto-grow behavior is actually shipped.
-    render(<Input defaultValue="long answer that should wrap and grow the field" />)
-
-    expect(screen.getByDisplayValue('long answer that should wrap and grow the field')).toHaveClass(
-      'field-sizing-content'
-    )
+  it('reports edits to the consumer', async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<Input aria-label="Answer" onValueChange={onValueChange} />)
+    await user.type(screen.getByRole('textbox', { name: 'Answer' }), 'hello')
+    expect(onValueChange).toHaveBeenLastCalledWith('hello')
   })
 
-  it('keeps the auto-grow class when a consumer adds its own classes', () => {
-    render(<Input className="resize-none" />)
+  it('preserves explicit accessibility errors and lets hasError override them', () => {
+    const { rerender } = render(<Input aria-label="Answer" aria-invalid="grammar" />)
+    const field = screen.getByRole('textbox', { name: 'Answer' })
+    expect(field).toHaveAttribute('aria-invalid', 'grammar')
+    rerender(<Input aria-label="Answer" aria-invalid="false" hasError />)
+    expect(field).toHaveAttribute('aria-invalid', 'true')
+  })
 
-    const field = screen.getByRole('textbox')
-    expect(field).toHaveClass('field-sizing-content')
-    expect(field).toHaveClass('resize-none')
+  it('keeps consumer classes on the field', () => {
+    render(<Input className="resize-none" />)
+    expect(screen.getByRole('textbox')).toHaveClass('resize-none')
   })
 })

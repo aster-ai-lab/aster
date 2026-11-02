@@ -66,7 +66,21 @@ describe('Office shared design roles', () => {
     document.querySelector('.aster-office')!.classList.remove('aster-office');
     expect(getComputedStyle(trigger).borderRadius).toBe('8px');
     await act(async () => trigger.click());
-    expect(getComputedStyle(document.querySelector('.ui-search-select__panel')!).borderRadius).toBe('12px');
+    expect(getComputedStyle(document.querySelector('.ui-search-select__panel')!).borderRadius).toBe('8px');
+  });
+
+  it('keeps a selected option legible and inset on a dark Office surface', async () => {
+    const trigger = await mount();
+    const surface = document.querySelector<HTMLElement>('[data-aster-office]')!;
+    surface.style.setProperty('--aster-panel-soft', '#303030');
+    surface.style.setProperty('--aster-ink', '#f5f5f5');
+    surface.style.setProperty('--color-surface', '#ffffff');
+    await act(async () => trigger.click());
+    const panel = document.querySelector<HTMLElement>('.work-office-select-menu')!;
+    const option = panel.querySelector<HTMLElement>('.ui-search-select__option.is-selected')!;
+    expect(getComputedStyle(panel).padding).toBe('8px');
+    expect(getComputedStyle(option).backgroundColor).toBe('#303030');
+    expect(getComputedStyle(option).color).toBe('#f5f5f5');
   });
 
   it('uses regular 13px buttons, a 30px compact target and stable pending content', async () => {
@@ -169,7 +183,7 @@ describe('Office shared design roles', () => {
     await act(async () => trigger.click());
     const panel = document.querySelector<HTMLElement>('.ui-search-select__panel')!;
     expect(panel.closest('.aster-office-floating-root') !== null).toBe(true);
-    expect(getComputedStyle(panel).borderRadius).toBe('12px');
+    expect(getComputedStyle(panel).borderRadius).toBe('8px');
     expect(getComputedStyle(panel).color).toBe('#123456');
     expect(getComputedStyle(panel).fontFamily).toContain('Workspace UI');
     expect(getComputedStyle(panel.querySelector('button')!).minHeight).toBe('32px');

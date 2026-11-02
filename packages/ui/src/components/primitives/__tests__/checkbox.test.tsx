@@ -1,28 +1,29 @@
 // @vitest-environment happy-dom
+import '@testing-library/jest-dom/vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
 import { Checkbox } from '../checkbox'
 
 describe('Checkbox', () => {
-  it('uses the 16px ink box from the design spec', () => {
-    render(<Checkbox defaultChecked aria-label="Accept" />)
+  it('toggles with the keyboard and exposes its state', async () => {
+    const user = userEvent.setup()
+    render(<Checkbox aria-label="Accept" />)
     const box = screen.getByRole('checkbox', { name: 'Accept' })
-    const className = box.className
-    for (const token of [
-      'size-4',
-      'rounded-[4px]',
-      'border-[#e5e5e5]',
-      'bg-white',
-      'data-[state=checked]:bg-[#171717]',
-      'data-[state=checked]:text-white',
-      'focus-visible:ring-black/10',
-      'disabled:opacity-40'
-    ]) {
-      expect(className).toContain(token)
-    }
-    expect(className).not.toContain('hover:scale')
-    expect(className).not.toContain('animate-checkbox')
+    await user.tab()
+    expect(box).toHaveFocus()
+    await user.keyboard(' ')
+    expect(box).toBeChecked()
     expect(box.querySelector('svg')?.getAttribute('stroke-width')).toBe('1.7')
+    await user.keyboard(' ')
+    expect(box).not.toBeChecked()
+  })
+  it('does not toggle while disabled', async () => {
+    const user = userEvent.setup()
+    render(<Checkbox disabled aria-label="Accept" />)
+    const box = screen.getByRole('checkbox', { name: 'Accept' })
+    await user.click(box)
+    expect(box).not.toBeChecked()
   })
 })

@@ -52,7 +52,18 @@ function DialogWithSelect({ onOpenChange }: { onOpenChange: (open: boolean) => v
 }
 
 describe('Dialog primitive', () => {
-  it('uses the 12px dialog panel and lets a square override replace it', () => {
+  it('supports the medium size used by the first-run dialog', () => {
+    render(
+      <Dialog open>
+        <DialogContent size="md" aria-describedby={undefined}>
+          <DialogTitle>First-run setup</DialogTitle>
+        </DialogContent>
+      </Dialog>
+    )
+    expect(screen.getByRole('dialog', { name: 'First-run setup' })).toHaveClass('sm:max-w-lg')
+  })
+
+  it('accepts a square panel override', () => {
     render(
       <>
         <Dialog open>
@@ -68,12 +79,8 @@ describe('Dialog primitive', () => {
       </>
     )
 
-    const panel = screen.getByText('Default panel').closest('[data-slot="dialog-content"]')
     const square = screen.getByText('Square panel').closest('[data-slot="dialog-content"]')
-    expect(panel).toHaveClass('rounded-[12px]')
-    expect(panel).not.toHaveClass('rounded-3xl')
     expect(square).toHaveClass('rounded-none')
-    expect(square).not.toHaveClass('rounded-[12px]')
   })
 
   it('keeps nested dialogs in the page dialog portal instead of the parent dialog content', () => {

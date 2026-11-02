@@ -24,6 +24,7 @@ export function OfficeSelect<T extends string>({
   placeholder,
   className = '',
   menuClassName = '',
+  menuMinWidth,
   ariaKeyShortcuts,
   initialFocus = false,
   id,
@@ -40,6 +41,7 @@ export function OfficeSelect<T extends string>({
   className?: string;
   /** Extra class on the portaled list, so one menu can follow a different chrome. */
   menuClassName?: string;
+  menuMinWidth?: number;
   ariaKeyShortcuts?: string;
   initialFocus?: boolean;
   id?: string;
@@ -62,6 +64,7 @@ export function OfficeSelect<T extends string>({
       }}
       className={`work-office-select ${className}`}
       panelClassName={`work-office-select-menu ${menuClassName}`}
+      minPanelWidth={menuMinWidth}
       portalContainer={(trigger) => officeFloatingPortalRoot(trigger.ownerDocument, trigger)}
       size={size}
       disabled={disabled}

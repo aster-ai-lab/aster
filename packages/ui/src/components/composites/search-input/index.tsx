@@ -52,7 +52,10 @@ function SearchInput({
   const showClear = onClear !== undefined && clearLabel !== undefined && hasValue
 
   return (
-    <InputGroup size={size} className={containerClassName} data-disabled={disabled ? 'true' : undefined}>
+    <InputGroup
+      size={size}
+      className={cn('has-[[data-slot=input-group-control]:focus-visible]:ring-0', containerClassName)}
+      data-disabled={disabled ? 'true' : undefined}>
       <InputGroupAddon>
         <Search />
       </InputGroupAddon>

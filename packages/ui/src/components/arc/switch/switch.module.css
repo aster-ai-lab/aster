@@ -1,0 +1,34 @@
+.switch { display: inline-flex; min-height: var(--control-height-md); align-items: center; gap: var(--space-3); padding: 0; border: 0; color: var(--foreground); background: transparent; font: inherit; font-size: var(--text-sm); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.switch:disabled { cursor: not-allowed; opacity: .5; }
+/* Fixed box: the thumb moves inside it with transforms, so nothing around the switch shifts. The track crossfades between the two fills. */
+.track { position: relative; box-sizing: border-box; display: flex; flex: 0 0 auto; width: var(--switch-w, 42px); height: var(--switch-h, 24px); align-items: center; padding: 3px; border: 0; border-radius: var(--radius-pill); background: var(--control-track); isolation: isolate; transition: background-color var(--duration-fast) var(--ease-standard); }
+.track::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--control-on); opacity: 0; transition: opacity var(--duration-standard) var(--ease-standard); }
+.switch[data-state="checked"] .track::before { opacity: 1; }
+.thumb { flex: 0 0 auto; width: 18px; height: 18px; border-radius: var(--radius-pill); background: var(--control-thumb); box-shadow: var(--control-thumb-shadow); will-change: transform; transition: background-color var(--duration-standard) var(--ease-standard); }
+.switch[data-state="checked"] .thumb { background: var(--control-thumb-on); }
+@media (hover: hover) and (pointer: fine) { .switch[data-state="unchecked"]:hover:not(:disabled) .track { background: var(--control-track-hover); } }
+.switch:focus-visible { outline: none; }
+.label { line-height: var(--leading-body); }
+@media (prefers-reduced-motion: reduce) { .track, .track::before, .thumb, .track[data-size] .thumb { transition: none; } }
+
+/*
+ * Aster adaptations for the primitive Switch: the Radix Root wears .track directly, so
+ * data-state sits on the track and the thumb travels by CSS. Gated on [data-size] because
+ * only the primitive sets it — Arc's own Switch moves the thumb with motion transforms,
+ * which would double with a CSS translate.
+ */
+.track[data-size="xs"] { --switch-w: 32px; --switch-h: 16px; }
+.track[data-size="sm"] { --switch-w: 36px; --switch-h: 20px; }
+.track[data-size="md"] { --switch-w: 42px; --switch-h: 24px; }
+.track[data-size="lg"] { --switch-w: 46px; --switch-h: 24px; }
+.track[data-size] { display: inline-flex; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+.track[data-size]:disabled { cursor: not-allowed; opacity: .5; }
+.track[data-size][data-state="checked"]::before { opacity: 1; }
+/* 260ms matches Arc's snappy thumb spring (visualDuration .26, bounce 0); a plain ease reads identical without a JS spring. */
+.track[data-size] .thumb { width: calc(var(--switch-h, 24px) - 6px); height: calc(var(--switch-h, 24px) - 6px); display: flex; align-items: center; justify-content: center; transition: translate .26s var(--ease-standard), background-color var(--duration-standard) var(--ease-standard); }
+.track[data-size][data-state="checked"] .thumb { translate: calc(var(--switch-w, 42px) - var(--switch-h, 24px)) 0; background: var(--control-thumb-on); }
+@media (hover: hover) and (pointer: fine) { .track[data-size][data-state="unchecked"]:hover:not(:disabled) { background: var(--control-track-hover); } }
+.track[data-loading="true"] .thumb { color: var(--foreground); }
+.track[data-loading="true"] .thumb > svg { width: 62%; height: 62%; }
+
+@media (prefers-reduced-motion: reduce) { .track[data-size] .thumb { transition: none; } }

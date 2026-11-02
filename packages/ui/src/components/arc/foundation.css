@@ -1,0 +1,167 @@
+/*
+ * Arc UI foundation tokens, scoped to `.arc` so they never leak into the host app.
+ * Source: uiarc.dev arc-foundation, adapted:
+ *  - `:root` selectors become `.arc`; Arc components always render with the class.
+ *  - shadcn-shared names (--background, --foreground, --border, --accent)
+ *    inherit from the host theme instead of redefining it.
+ *  - Control heights, radius and label size follow the shared design standards.
+ *  - Keyboard focus styles cover scoped controls and their descendants.
+ */
+.arc {
+  --neutral-0: oklch(100% 0 0);
+  --neutral-1: oklch(99% 0 0);
+  --neutral-2: oklch(97.8% 0 0);
+  --neutral-3: oklch(95.8% 0 0);
+  --neutral-4: oklch(91.5% 0 0);
+  --neutral-5: oklch(84% 0 0);
+  --neutral-6: oklch(72% 0 0);
+  --neutral-7: oklch(59% 0 0);
+  --neutral-8: oklch(46% 0 0);
+  --neutral-9: oklch(34% 0 0);
+  --neutral-10: oklch(23% 0 0);
+  --neutral-11: oklch(15% 0 0);
+  --surface: var(--background);
+  --surface-raised: var(--popover, var(--background));
+  --surface-muted: color-mix(in oklab, var(--foreground) 4%, var(--background));
+  --text-secondary: color-mix(in oklab, var(--foreground) 75%, transparent);
+  --text-muted: color-mix(in oklab, var(--foreground) 55%, transparent);
+  --border-strong: color-mix(in oklab, var(--foreground) 20%, transparent);
+  --border-subtle: color-mix(in oklab, var(--foreground) 8%, transparent);
+  --arc-accent: var(--primary);
+  --arc-accent-strong: color-mix(in oklab, var(--primary) 80%, var(--foreground));
+  --arc-accent-subtle: color-mix(in oklab, var(--primary) 10%, transparent);
+  --arc-accent-foreground: var(--primary-foreground);
+  --control-on: var(--primary);
+  --control-glyph: var(--primary-foreground);
+  --control-track: color-mix(in oklab, var(--foreground) 11%, var(--background));
+  --control-track-hover: color-mix(in oklab, var(--foreground) 15%, var(--background));
+  --control-thumb: oklch(100% 0 0);
+  /* The on-track is --primary, which inverts to near-white in Aster's dark theme; the thumb must invert with it. */
+  --control-thumb-on: var(--control-glyph);
+  --control-thumb-shadow: 0 0 0 0.5px oklch(0% 0 0 / 0.07), 0 1px 2px oklch(0% 0 0 / 0.14), 0 2px 6px oklch(0% 0 0 / 0.06);
+  --control-on-subtle: color-mix(in oklab, var(--control-on) 10%, transparent);
+  --control-fill: var(--control-on);
+  --focus-ring: transparent;
+  --tone-teal: oklch(50% 0.095 182);
+  --tone-sky: oklch(51% 0.11 240);
+  --tone-orchid: oklch(52% 0.17 322);
+  --tone-violet: oklch(51% 0.16 290);
+  --tone-rose: oklch(53% 0.18 10);
+  --tone-amber: oklch(55% 0.12 68);
+  --tone-green: oklch(50% 0.12 162);
+  --success: var(--tone-green);
+  --warning: var(--tone-amber);
+  --danger: var(--destructive);
+  --info: var(--tone-sky);
+  --shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.035);
+  --shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.065);
+  --shadow-floating: 0 20px 48px oklch(0% 0 0 / 0.105);
+  --arc-gradient-from: oklch(90% 0.045 300);
+  --arc-gradient-to: oklch(92% 0.045 65);
+  --arc-gradient: linear-gradient(100deg, var(--arc-gradient-from), var(--arc-gradient-to));
+  --arc-gradient-foreground: oklch(22% 0.01 300);
+  --arc-gradient-soft: linear-gradient(135deg, oklch(97.5% 0.016 300), oklch(98% 0.016 65));
+  --arc-gradient-line: linear-gradient(100deg, oklch(83% 0.06 300), oklch(86% 0.06 65));
+  --arc-gradient-ink: linear-gradient(100deg, oklch(47% 0.1 300), oklch(50% 0.09 55));
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.5rem;
+  --radius-surface: 0.5rem;
+  --radius-pill: 9999px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.125rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3.25rem;
+  --text-5xl: 4.5rem;
+  --tracking-display: -0.03em;
+  --tracking-body: -0.01em;
+  --leading-display: 1.1;
+  --leading-body: 1.4;
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: linear(
+    0, 0.0213, 0.0739, 0.1443, 0.2235, 0.305, 0.3849, 0.4606, 0.5305, 0.594, 0.6508, 0.7011, 0.7452, 0.7836, 0.8168,
+    0.8454, 0.8699, 0.8907, 0.9084, 0.9234, 0.9361, 0.9467, 0.9557, 0.9632, 0.9694, 0.9747, 0.979, 0.9826, 0.9857,
+    0.9882, 0.9902, 0.992, 0.9934, 0.9946, 0.9955, 0.9963, 1
+  );
+  --duration-instant: 120ms;
+  --duration-fast: 160ms;
+  --duration-standard: 240ms;
+  --duration-considered: 480ms;
+  --duration-spring: 580ms;
+  --focus-outline: var(--foreground);
+  --focus-outline-width: 2px;
+  --focus-outline-offset: 2px;
+}
+
+:is(.dark, [data-theme='dark']) .arc {
+  --surface: var(--background);
+  /* Dark fills invert to near-white, so a white resting thumb (slider) needs a ring that reads against them. */
+  --control-thumb-shadow: 0 0 0 0.5px oklch(0% 0 0 / 0.25), 0 1px 2px oklch(0% 0 0 / 0.28), 0 2px 6px oklch(0% 0 0 / 0.16);
+  --surface-raised: var(--popover, var(--background));
+  --surface-muted: color-mix(in oklab, var(--foreground) 8%, var(--background));
+  --text-secondary: color-mix(in oklab, var(--foreground) 80%, transparent);
+  --text-muted: color-mix(in oklab, var(--foreground) 60%, transparent);
+  --border-strong: color-mix(in oklab, var(--foreground) 30%, transparent);
+  --border-subtle: color-mix(in oklab, var(--foreground) 12%, transparent);
+  --arc-accent-strong: color-mix(in oklab, var(--primary) 85%, white);
+  --arc-accent-subtle: color-mix(in oklab, var(--primary) 18%, transparent);
+  --control-on: var(--primary);
+  --control-glyph: var(--primary-foreground);
+  --control-track: color-mix(in oklab, var(--foreground) 22%, var(--background));
+  --control-track-hover: color-mix(in oklab, var(--foreground) 28%, var(--background));
+  --control-fill: color-mix(in oklab, var(--primary) 85%, var(--foreground));
+  --shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.18);
+  --shadow-raised: 0 8px 22px oklch(0% 0 0 / 0.22);
+  --shadow-floating: 0 22px 55px oklch(0% 0 0 / 0.34);
+  --arc-gradient-from: oklch(38% 0.05 300);
+  --arc-gradient-to: oklch(40% 0.045 60);
+  --arc-gradient-foreground: oklch(96% 0.005 300);
+  --arc-gradient-soft: linear-gradient(135deg, oklch(23.5% 0.016 300), oklch(24% 0.014 65));
+  --arc-gradient-line: linear-gradient(100deg, oklch(48% 0.06 300), oklch(52% 0.055 65));
+  --arc-gradient-ink: linear-gradient(100deg, oklch(82% 0.07 300), oklch(86% 0.065 70));
+  --tone-teal: oklch(79% 0.13 182);
+  --tone-sky: oklch(79% 0.095 236);
+  --tone-orchid: oklch(76% 0.15 322);
+  --tone-violet: oklch(74% 0.125 290);
+  --tone-rose: oklch(71% 0.155 8);
+  --tone-amber: oklch(83% 0.12 78);
+  --tone-green: oklch(79% 0.14 162);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-standard: 0ms;
+    --duration-considered: 0ms;
+    --duration-spring: 0ms;
+  }
+}
+
+/* Arc controls can carry the scope class on the focused element itself. */
+.arc:focus-visible:not([role='menu'], [role='dialog'], [role='listbox'], [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'], [role='option'], [data-slot='input-group-control'], [data-slot='input'], [tabindex='-1']),
+.arc :focus-visible:not([role='menu'], [role='dialog'], [role='listbox'], [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'], [role='option'], [data-slot='input-group-control'], [data-slot='input'], [tabindex='-1']) {
+  outline: var(--focus-outline-width, 2px) solid var(--focus-outline) !important;
+  outline-offset: var(--focus-outline-offset, 2px) !important;
+}

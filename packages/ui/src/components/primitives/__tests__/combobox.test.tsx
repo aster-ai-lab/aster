@@ -14,6 +14,20 @@ const options: ComboboxOption[] = [
 ]
 
 describe('Combobox external search keyboard', () => {
+  it('opens and closes itself while notifying an uncontrolled observer', async () => {
+    const user = userEvent.setup()
+    const onOpenChange = vi.fn()
+    render(<Combobox options={options} searchPlacement="trigger" onOpenChange={onOpenChange} />)
+    const input = screen.getByRole('combobox')
+    await user.click(input)
+    expect(input).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('option', { name: 'Beta' })).toBeInTheDocument()
+    await user.keyboard('{Escape}')
+    expect(input).toHaveAttribute('aria-expanded', 'false')
+    expect(onOpenChange).toHaveBeenCalledWith(true)
+    expect(onOpenChange).toHaveBeenLastCalledWith(false)
+  })
+
   it('keeps the input focused and the suggestions closed after a pointer selection', async () => {
     const user = userEvent.setup()
     const change = vi.fn()

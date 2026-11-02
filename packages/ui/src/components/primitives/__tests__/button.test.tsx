@@ -1,30 +1,48 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 
 import { Button } from '../button'
 
 describe('Button', () => {
-  it('uses variant state feedback instead of an outer focus ring', () => {
+  it('keeps a visible keyboard focus outline on link variants', () => {
     render(<Button variant="link">Learn more</Button>)
 
     const button = screen.getByRole('button', { name: 'Learn more' })
     expect(button.className).toContain('focus-visible:underline')
     expect(button.className).not.toMatch(/focus-visible:ring-(?!0)/)
-    expect(button.className).not.toContain('focus-visible:outline-')
+    expect(button.className).toContain('focus-visible:outline-2')
   })
 
-  it('emits data-busy for loading styles and disables the button', () => {
-    render(<Button loading>Save</Button>)
+  it('prevents repeated activation while loading', async () => {
+    const onClick = vi.fn()
+    const user = userEvent.setup()
+    render(<Button loading onClick={onClick}>Save</Button>)
 
     const button = screen.getByRole('button', { name: /save/i })
     expect(button).toHaveAttribute('data-busy', 'true')
     expect(button).toHaveAttribute('aria-busy', 'true')
     expect(button).toBeDisabled()
-    expect(button.className).toContain('data-[busy=true]:cursor-progress')
-    expect(button.className).not.toContain('data-[loading=true]')
+    await user.click(button)
+    expect(onClick).not.toHaveBeenCalled()
   })
+
+  it.each(['default', 'icon-sm'] as const)(
+    'keeps an aria-disabled %s button focusable without activating it',
+    async (size) => {
+      const user = userEvent.setup()
+      const onClick = vi.fn()
+      render(<Button size={size} aria-disabled onClick={onClick}>Unavailable</Button>)
+      const button = screen.getByRole('button', { name: 'Unavailable' })
+      await user.tab()
+      expect(button).toHaveFocus()
+      await user.keyboard('{Enter} ')
+      await user.click(button)
+      expect(onClick).not.toHaveBeenCalled()
+    }
+  )
 
   it('uses the navbar spinner size for icon-navbar loading buttons', () => {
     render(
@@ -33,7 +51,7 @@ describe('Button', () => {
       </Button>
     )
 
-    expect(screen.getByRole('button', { name: 'Refresh' }).querySelector('svg')).toHaveAttribute('width', '18')
+    expect(screen.getByRole('button', { name: 'Refresh' }).querySelector('[data-slot=button-pending]')).toBeInTheDocument()
   })
 
   it('retains the same label node and accessible name throughout a pending exchange', () => {
@@ -46,6 +64,6 @@ describe('Button', () => {
     rerender(<Button loading={false}>Save changes</Button>)
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeEnabled()
     expect(container.querySelector('[data-slot="button-label"]')).toBe(label)
-    expect(container.querySelector('[data-slot="button-pending"]')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Save changes' })).not.toHaveAttribute('aria-busy')
   })
 })

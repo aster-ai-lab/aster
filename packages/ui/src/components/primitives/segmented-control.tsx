@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import arcSegmented from '../arc/segmented-control/segmented-control.module.css'
+
 import { cn } from '../../lib/utils'
 import { SelectionHighlight } from './selection-highlight'
 
@@ -89,7 +91,9 @@ function SegmentedControl<TValue extends string = string>({
       data-size={size}
       aria-disabled={disabled}
       className={cn(
-        'relative isolate inline-flex items-center rounded-[8px] border-0 bg-[#f5f5f5] p-1 dark:bg-[#2c2c2c]',
+        'arc',
+        arcSegmented.root,
+        'relative isolate inline-flex items-center',
         disabled && 'pointer-events-none opacity-50',
         className
       )}
@@ -106,28 +110,21 @@ function SegmentedControl<TValue extends string = string>({
             }}
             type="button"
             role="radio"
+            data-size={size}
             aria-checked={selected}
             disabled={disabled || option.disabled}
             tabIndex={option.value === focusValue ? 0 : -1}
             onClick={() => handleSelect(option)}
             onKeyDown={(event) => handleKeyDown(event, option)}
             className={cn(
-              'relative inline-flex shrink-0 items-center justify-center rounded-[6px] font-medium whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150',
-              'focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:ring-inset disabled:pointer-events-none disabled:opacity-50',
-              size === 'sm' ? 'h-[22px] gap-1.5 px-3 text-[13px]' : 'h-[22px] gap-2 px-3 text-[13px]',
-              selected
-                ? 'text-[#171717] dark:text-[#f5f5f5]'
-                : 'text-[#6f6f6f] hover:text-[#171717] dark:text-[#9a9a9a] dark:hover:text-[#f5f5f5]'
+              'arc',
+              arcSegmented.button,
+              'relative inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150 disabled:pointer-events-none disabled:opacity-50'
             )}>
             {selected && (
-              <SelectionHighlight
-                data-slot="segmented-control-indicator"
-                layoutId={highlightId}
-                className="bg-white dark:bg-[#3a3a3a]"
-                style={{ borderRadius: 6, boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)' }}
-              />
+              <SelectionHighlight data-slot="segmented-control-indicator" layoutId={highlightId} className={arcSegmented.selection} />
             )}
-            <span className="relative z-10 inline-flex items-center gap-[inherit]">{option.label}</span>
+            <span className={arcSegmented.label}>{option.label}</span>
           </button>
         )
       })}

@@ -1,11 +1,13 @@
 import * as React from 'react'
 
+import arcInput from '../arc/input/input.module.css'
+
 import { cn } from '../../lib/utils'
 
 type InputSize = 'sm' | 'md'
 
 interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'> {
-  /** Control height: 30px search field (`sm`) or 36px field (`md`, default). */
+  /** Control height: 36px (`sm`) or 44px (`md`, default). */
   size?: InputSize
   /** Show a clear affordance when the field has a value; fires onChange with an empty value. */
   allowClear?: boolean
@@ -13,25 +15,41 @@ interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'> {
   onClear?: () => void
 }
 
-function Input({ className, type, size = 'md', allowClear, onClear, value, onChange, ...props }: InputProps) {
-  const hasValue = value !== undefined && value !== null && String(value) !== ''
+function Input({ className, type, size = 'md', allowClear, onClear, value, onChange, ref, ...props }: InputProps) {
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const [uncontrolledHasValue, setUncontrolledHasValue] = React.useState(() =>
+    props.defaultValue !== undefined && String(props.defaultValue) !== ''
+  )
+  const controlled = value !== undefined
+  const hasValue = controlled ? value !== null && String(value) !== '' : uncontrolledHasValue
+  React.useImperativeHandle(ref, () => inputRef.current!, [allowClear])
+
+  React.useEffect(() => {
+    const input = inputRef.current
+    const form = input?.form
+    if (!allowClear || controlled || !input || !form) return
+    const handleReset = () => {
+      queueMicrotask(() => {
+        if (inputRef.current === input) setUncontrolledHasValue(input.value !== '')
+      })
+    }
+    form.addEventListener('reset', handleReset)
+    return () => form.removeEventListener('reset', handleReset)
+  }, [allowClear, controlled])
 
   const input = (
     <input
+      ref={inputRef}
       type={type}
       value={value}
-      onChange={onChange}
+      onChange={(event) => {
+        if (allowClear && !controlled) setUncontrolledHasValue(event.currentTarget.value !== '')
+        onChange?.(event)
+      }}
       data-slot="input"
       data-size={size}
-      className={cn(
-        'w-full min-w-0 rounded-[8px] border border-transparent bg-[#f5f5f5] py-1 text-[13px] text-[#171717] shadow-none transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-[13px] file:font-medium file:text-[#171717] placeholder:text-[#8a8a8a] disabled:pointer-events-none disabled:cursor-not-allowed dark:bg-[#2c2c2c] dark:text-[#f5f5f5]',
-        size === 'sm' ? 'h-[30px] px-2.5' : 'h-9 px-3',
-        allowClear && hasValue && 'pr-7',
-        'focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10',
-        'disabled:opacity-50',
-        'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-        className
-      )}
+      className={cn('arc', arcInput.input, className)}
+      data-has-clear={allowClear && hasValue ? 'true' : undefined}
       {...props}
     />
   )
@@ -46,10 +64,18 @@ function Input({ className, type, size = 'md', allowClear, onClear, value, onCha
       {hasValue && (
         <button
           type="button"
+          disabled={props.disabled || props.readOnly}
           aria-label="Clear"
           className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-[#8a8a8a] hover:bg-[#f2f3f5] hover:text-[#171717]"
           onClick={() => {
-            onChange?.({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)
+            const node = inputRef.current
+            if (node && (!controlled || onChange)) {
+              // Bypass React's value tracker so a native input event produces a real onChange.
+              const view = node.ownerDocument.defaultView
+              const setter = view && Object.getOwnPropertyDescriptor(view.HTMLInputElement.prototype, 'value')?.set
+              setter?.call(node, '')
+              if (view && setter) node.dispatchEvent(new view.Event('input', { bubbles: true }))
+            }
             onClear?.()
           }}
         >

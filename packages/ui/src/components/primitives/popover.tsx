@@ -3,6 +3,8 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 import * as React from 'react'
 
+import arcPopover from '../arc/popover/popover.module.css'
+
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
@@ -60,7 +62,9 @@ function PopoverContent({
         className={cn(
           // no-drag punches the popup's area out of any titlebar drag region it overlaps,
           // so hover/click reach the items instead of the window-drag hit test (Electron).
-          'z-[240] w-72 origin-(--radix-popover-content-transform-origin) rounded-[12px] border border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-4 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)] outline-hidden [-webkit-app-region:no-drag]',
+          'arc',
+          arcPopover.surface,
+          'z-[240] w-72 origin-(--radix-popover-content-transform-origin) p-4 text-[13px] outline-hidden [-webkit-app-region:no-drag]',
           className
         )}
         {...props}

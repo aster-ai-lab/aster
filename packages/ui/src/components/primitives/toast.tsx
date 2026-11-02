@@ -1,7 +1,9 @@
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, LoaderCircle, X } from 'lucide-react'
-import { motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useIsPresent, useReducedMotion } from 'motion/react'
 import type React from 'react'
 import { createContext, use, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+
+import arcToast from '../arc/toast/toast.module.css'
 
 import { cn } from '../../lib/utils'
 import { Button } from './button'
@@ -350,12 +352,15 @@ export const ToastProvider = ({ children, labels }: { children: React.ReactNode;
   </ToastLabelsContext>
 )
 
+const EASE_STANDARD: [number, number, number, number] = [0.22, 1, 0.36, 1]
+const EASE_EXIT: [number, number, number, number] = [0.7, 0, 0.84, 0]
+
 const typeIconMap: Record<ToastType, React.ReactNode> = {
   error: <AlertCircle className="size-4 text-destructive" strokeWidth={1.7} />,
   success: <CheckCircle2 className="size-4 text-success-subtle-foreground" strokeWidth={1.7} />,
   warning: <AlertTriangle className="size-4 text-warning-subtle-foreground" strokeWidth={1.7} />,
   info: <Info className="size-4 text-info-subtle-foreground" strokeWidth={1.7} />,
-  loading: <LoaderCircle className="size-4 animate-spin text-[#8a8a8a] motion-reduce:animate-none" strokeWidth={1.7} />
+  loading: <LoaderCircle className={cn('size-4 animate-spin motion-reduce:animate-none', arcToast.muted)} strokeWidth={1.7} />
 }
 
 const getToastA11yProps = (type: ToastType): Pick<React.HTMLAttributes<HTMLDivElement>, 'aria-live' | 'role'> => {
@@ -367,6 +372,7 @@ const getToastA11yProps = (type: ToastType): Pick<React.HTMLAttributes<HTMLDivEl
 }
 
 const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: ToastStore; toast: ToastRecord }) => {
+  const isPresent = useIsPresent()
   const action = toast.action
   const icon = toast.icon ?? typeIconMap[toast.type]
   const a11yProps = getToastA11yProps(toast.type)
@@ -375,8 +381,12 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
     return (
       <div
         {...a11yProps}
+        aria-hidden={!isPresent || undefined}
+        inert={!isPresent}
         className={cn(
-          'pointer-events-auto max-w-[min(420px,calc(100vw-2rem))] truncate rounded-full bg-[#171717] px-4 py-2 text-[13px] leading-5 text-white shadow-lg [-webkit-app-region:no-drag]',
+          'arc',
+          arcToast.pill,
+          'pointer-events-auto max-w-[min(420px,calc(100vw-2rem))] truncate px-4 py-2 text-[13px] leading-5 [-webkit-app-region:no-drag]',
           toast.className
         )}
         style={toast.style}
@@ -389,16 +399,20 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
   return (
     <div
       {...a11yProps}
+      aria-hidden={!isPresent || undefined}
+      inert={!isPresent}
       className={cn(
         // no-drag punches the popup's area out of any titlebar drag region it overlaps,
         // so hover/click reach the items instead of the window-drag hit test (Electron).
+        'arc',
+        arcToast.card,
         'pointer-events-auto flex w-max max-w-[min(420px,calc(100vw-3rem))] items-start gap-2.5 [-webkit-app-region:no-drag]',
-        'rounded-[12px] border border-[#ececec] bg-white px-3 py-2.5 text-[#171717] shadow-[0_8px_22px_rgba(20,40,80,0.04)]',
+        'px-3 py-2.5',
         toast.className
       )}
       style={toast.style}
       onClick={toast.onClick}>
-      <div className="flex size-7 shrink-0 items-center justify-center rounded-[8px] bg-[#f5f5f5]" aria-hidden="true">
+      <div className={cn('flex size-7 shrink-0 items-center justify-center', arcToast.iconWell)} aria-hidden="true">
         {icon}
       </div>
       <div className="min-w-0 flex-1">
@@ -412,7 +426,8 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
         {toast.description && (
           <div
             className={cn(
-              'text-xs leading-5 break-words text-[#8a8a8a]',
+              'text-xs leading-5 break-words',
+              arcToast.muted,
               (toast.title || !action) && 'mt-0.5',
               action && !toast.title && 'min-h-7 py-1'
             )}>
@@ -438,7 +453,7 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
         <button
           type="button"
           aria-label={labels.close}
-          className="-mr-1 flex size-6 shrink-0 items-center justify-center rounded-[6px] text-[#8a8a8a] transition-colors outline-none hover:bg-[#f2f3f5] hover:text-[#171717] focus-visible:bg-[#f2f3f5] focus-visible:text-[#171717] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171717]"
+          className={cn('-mr-1 flex size-6 shrink-0 items-center justify-center outline-none', arcToast.close)}
           onClick={(event) => {
             event.stopPropagation()
             store.remove(toast.key)
@@ -460,7 +475,7 @@ export const ToastViewport = ({
   const toasts = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot)
   const toastLabels = getToastLabels(labels)
   const reducedMotion = useReducedMotion()
-  const transition = { duration: reducedMotion ? 0 : 0.25, ease: 'easeOut' as const }
+  const transition = { duration: reducedMotion ? 0 : 0.26, ease: EASE_STANDARD }
   const viewportRef = useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -472,6 +487,8 @@ export const ToastViewport = ({
   }, [expanded, store, toasts.length])
 
   useEffect(() => {
+    const active = document.activeElement
+    if (active instanceof HTMLElement && viewportRef.current?.contains(active) && active.closest('[inert]')) active.blur()
     setFocused(viewportRef.current?.contains(document.activeElement) ?? false)
     if (toasts.length === 0) {
       setHovered(false)
@@ -499,27 +516,32 @@ export const ToastViewport = ({
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
       }}
       role="region">
-      {[...toasts].reverse().map((toast, index) => (
-        <motion.div
-          key={toast.key}
-          layout={reducedMotion ? false : 'position'}
-          transition={transition}
-          inert={!expanded && index > 0}
-          className={cn(!expanded && 'col-start-1 row-start-1')}
-          style={{ zIndex: toasts.length - index }}>
+      <AnimatePresence initial={false}>
+        {[...toasts].reverse().map((toast, index) => (
           <motion.div
-            initial={false}
-            animate={{
-              y: expanded ? 0 : Math.min(index, 2) * 8,
-              scale: expanded ? 1 : 1 - Math.min(index, 2) * 0.04,
-              opacity: expanded || index < 3 ? 1 : 0
-            }}
+            key={toast.key}
+            layout={reducedMotion ? false : 'position'}
+            initial={{ opacity: 0, y: -10, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96, transition: { duration: reducedMotion ? 0 : 0.18, ease: EASE_EXIT } }}
             transition={transition}
-            className="origin-top">
-            <ToastItem labels={toastLabels} store={store} toast={toast} />
+            inert={!expanded && index > 0}
+            className={cn(!expanded && 'col-start-1 row-start-1')}
+            style={{ zIndex: toasts.length - index }}>
+            <motion.div
+              initial={false}
+              animate={{
+                y: expanded ? 0 : Math.min(index, 2) * 8,
+                scale: expanded ? 1 : 1 - Math.min(index, 2) * 0.04,
+                opacity: expanded || index < 3 ? 1 : 0
+              }}
+              transition={transition}
+              className="origin-top">
+              <ToastItem labels={toastLabels} store={store} toast={toast} />
+            </motion.div>
           </motion.div>
-        </motion.div>
-      ))}
+        ))}
+      </AnimatePresence>
     </div>
   )
 }

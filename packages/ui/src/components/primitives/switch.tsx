@@ -1,92 +1,10 @@
 import * as SwitchPrimitive from '@radix-ui/react-switch'
-import { cva } from 'class-variance-authority'
 import * as React from 'react'
 import { useId } from 'react'
 
+import arcSwitch from '../arc/switch/switch.module.css'
+
 import { cn } from '../../lib/utils'
-
-const switchRootVariants = cva(
-  [
-    'cs-switch cs-switch-root',
-    'group peer relative inline-flex shrink-0 cursor-pointer items-center rounded-full shadow-xs motion-safe:transition-[background-color,box-shadow,opacity] motion-safe:duration-150 outline-none',
-    'data-[state=checked]:bg-neutral-900 data-[state=unchecked]:bg-gray-500/20 dark:data-[state=checked]:bg-neutral-100',
-    'disabled:cursor-not-allowed disabled:opacity-40',
-    'focus-visible:[box-shadow:inset_0_0_0_1px_var(--ring)]'
-  ],
-  {
-    variants: {
-      size: {
-        xs: ['h-4.5 w-8'],
-        sm: ['h-5 w-9'],
-        md: ['h-5.5 w-11'],
-        lg: ['h-6 w-11']
-      },
-      loading: {
-        false: null,
-        true: ['bg-neutral-400! dark:bg-neutral-500!']
-      }
-    },
-    defaultVariants: {
-      size: 'md',
-      loading: false
-    }
-  }
-)
-
-const switchThumbVariants = cva(
-  [
-    'cs-switch cs-switch-thumb',
-    'pointer-events-none block rounded-full ring-0 motion-safe:transition-[translate,background-color] motion-safe:duration-[240ms] motion-safe:ease-out data-[state=unchecked]:translate-x-0'
-  ],
-  {
-    variants: {
-      size: {
-        xs: ['ml-[1px] size-4 data-[state=checked]:translate-x-3.5'],
-        sm: ['ml-[1px] size-4.5 data-[state=checked]:translate-x-4'],
-        md: ['ml-0.5 size-[19px] data-[state=checked]:translate-x-[21px]'],
-        lg: ['ml-[3px] size-5 data-[state=checked]:translate-x-4.5']
-      },
-      loading: {
-        false: null,
-        true: ['bg-transparent!']
-      }
-    },
-    compoundVariants: [
-      {
-        size: 'xs',
-        loading: true,
-        className: 'ml-0.5 size-3.5 data-[state=checked]:translate-x-3.5'
-      },
-      {
-        size: 'sm',
-        loading: true,
-        className: 'ml-0.5 size-3.5 data-[state=checked]:translate-x-4.5'
-      },
-      {
-        size: 'md',
-        loading: true,
-        className: 'ml-1 size-4 data-[state=checked]:translate-x-5'
-      },
-      {
-        size: 'lg',
-        loading: true,
-        className: 'ml-1 size-4.5 data-[state=checked]:translate-x-4.5'
-      }
-    ]
-  }
-)
-
-const switchThumbSvgVariants = cva(['size-full'], {
-  variants: {
-    loading: {
-      false: null,
-      true: ['motion-safe:animate-spin']
-    }
-  },
-  defaultVariants: {
-    loading: false
-  }
-})
 
 // Enhanced Switch component with loading state support
 interface SwitchProps extends Omit<React.ComponentProps<typeof SwitchPrimitive.Root>, 'children'> {
@@ -102,32 +20,29 @@ interface SwitchProps extends Omit<React.ComponentProps<typeof SwitchPrimitive.R
   label?: string
 }
 
-function Switch({ loading = false, size = 'md', className, classNames, label, id, ...props }: SwitchProps) {
+function Switch({ loading = false, size = 'md', className, classNames, label, id, disabled, ...props }: SwitchProps) {
   const autoId = useId()
   const switchId = id ?? (label ? autoId : undefined)
   const control = (
     <SwitchPrimitive.Root
       id={switchId}
       data-slot="switch"
-      className={cn(switchRootVariants({ size, loading }), className, classNames?.root)}
+      data-size={size}
+      data-loading={loading || undefined}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      className={cn('arc', arcSwitch.track, 'group peer', className, classNames?.root)}
       {...props}>
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className={cn(switchThumbVariants({ size, loading }), classNames?.thumb)}>
-        <svg
-          viewBox="0 0 19 19"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className={cn(
-            'text-white group-data-[state=checked]:text-white dark:group-data-[state=checked]:text-[#171717]',
-            switchThumbSvgVariants({ loading }),
-            classNames?.thumbSvg
-          )}>
-          <path
-            d="M9.5 0C14.7467 0 19 4.25329 19 9.5C19 14.7467 14.7467 19 9.5 19C4.25329 19 0 14.7467 0 9.5C0 4.25329 4.25329 0 9.5 0ZM9.5 6.33301C8.91711 6.33301 8.44445 6.8058 8.44434 7.38867V11.6113C8.44445 12.1942 8.91711 12.667 9.5 12.667C10.0829 12.667 10.5555 12.1942 10.5557 11.6113V7.38867C10.5555 6.8058 10.0829 6.33301 9.5 6.33301Z"
-            fill="currentColor"
-          />
-        </svg>
+      <SwitchPrimitive.Thumb data-slot="switch-thumb" className={cn(arcSwitch.thumb, classNames?.thumb)}>
+        {loading && (
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={cn('motion-safe:animate-spin', classNames?.thumbSvg)}>
+            <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="24 20" />
+          </svg>
+        )}
       </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>
   )

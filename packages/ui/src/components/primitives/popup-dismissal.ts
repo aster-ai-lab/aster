@@ -70,8 +70,8 @@ export function usePopupDismissal(
         if (!mounted || !node || insideReactTree.current) return
         const target = event.target
         if (target instanceof Node && node.contains(target)) return
-        const trigger = target instanceof Element ? target.closest('[aria-controls]') : null
-        if (node.id && trigger?.getAttribute('aria-controls') === node.id) return
+        const trigger = target instanceof Element ? target.closest('[aria-controls], [data-popup-trigger-for]') : null
+        if (node.id && (trigger?.getAttribute('aria-controls') === node.id || trigger?.getAttribute('data-popup-trigger-for') === node.id)) return
         pointerDismissed.current = true
         onOpenChange(false)
       })

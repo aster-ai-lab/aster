@@ -55,6 +55,25 @@ describe('SearchSelect editor choices', () => {
 
 describe('SearchSelect popup anchoring', () => {
   it.each([
+    { viewport: 800, expectedWidth: 288, expectedLeft: 504 },
+    { viewport: 240, expectedWidth: 224, expectedLeft: 8 }
+  ])('fits descriptive options within a $viewport px viewport', ({ viewport, expectedWidth, expectedLeft }) => {
+    vi.stubGlobal('innerWidth', viewport)
+    try {
+      render(<SearchSelect searchable={false} options={options} value="alpha" onChange={vi.fn()} minPanelWidth={288} />)
+      const trigger = screen.getByRole('button', { name: 'Alpha' })
+      vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
+        left: 700, top: 100, bottom: 132, width: 100
+      } as DOMRect)
+      fireEvent.click(trigger)
+      expect(screen.getByRole('presentation')).toHaveStyle({ width: `${expectedWidth}px`, left: `${expectedLeft}px` })
+    } finally {
+      vi.unstubAllGlobals()
+      vi.restoreAllMocks()
+    }
+  })
+
+  it.each([
     { viewport: 600, top: 550, bottom: 580, expectedTop: 404, maxHeight: 536 },
     { viewport: 600, top: 390, bottom: 420, expectedTop: 426, maxHeight: 166 },
     { viewport: 200, top: 70, bottom: 100, expectedTop: 106, maxHeight: 86 }

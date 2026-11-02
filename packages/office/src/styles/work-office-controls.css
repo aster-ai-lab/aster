@@ -32,6 +32,23 @@
   min-width: 0;
 }
 
+/* The panel is portaled into the office surface; use its own light/dark tokens. */
+.work-office-select-menu {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.work-office-select-menu .ui-search-select__option.is-selected,
+.work-office-select-menu .ui-search-select__option.is-active,
+.work-office-select-menu .ui-search-select__option:hover {
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
+}
+
+.work-office-select-menu .ui-search-select__meta {
+  color: var(--aster-muted);
+}
+
 .work-office-color-trigger,
 .work-office-text-field,
 .work-office-text-area,
