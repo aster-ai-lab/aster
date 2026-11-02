@@ -1,0 +1,169 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:14226) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/provider.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-provider.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/local-build.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-local-build.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |aiCore| packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts (13 tests | 2 failed) 15ms
+   ❯ summarizeHistory (13)
+     × preserves completion state without demanding a reasoning transcript 7ms
+     × keeps summaries advisory and permits necessary clarification 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |aiCore| packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts > summarizeHistory > preserves completion state without demanding a reasoning transcript
+AssertionError: expected 'You have been working on the task des…' to contain 'Completed requests stay completed'
+
+- Expected
++ Received
+
+- Completed requests stay completed
++ You have been working on the task described above but have not yet completed it. Write a continuation summary that will allow you (or another instance of yourself) to resume work efficiently in a future context window where the conversation history will be replaced with this summary.
++
++ Before providing your final summary, wrap your analysis in <analysis></analysis> tags to organize your thoughts and ensure you've covered all necessary points. This analysis scratchpad will be stripped from the final output — use it freely to reason through the conversation.
++
++ In your analysis:
++ - Chronologically review what happened in the conversation
++ - Identify the user's explicit requests, intents, and any clarifications
++ - Note key decisions, constraints, and information discovered
++ - Track errors or obstacles encountered and how they were addressed
++ - Pay attention to specific user feedback, especially corrections
++
++ Your final summary (inside <summary></summary> tags) should be structured, concise, and actionable. Include:
++
++ 1. Task Overview
++    The user's core request and success criteria. Any clarifications or constraints specified.
++
++ 2. Current State
++    What has been completed so far. Key outputs, artifacts, or findings produced. Any state or identifiers that need to persist (file paths, URLs, ticket IDs, etc.) — preserve these verbatim.
++
++ 3. Important Discoveries
++    Constraints or requirements uncovered. Decisions made and their rationale. Approaches that were tried and didn't work (and why). Errors encountered and how they were resolved.
++
++ 4. Next Steps
++    Specific actions needed to complete the task. Any blockers or open questions. Priority order if multiple steps remain.
++
++ 5. Context to Preserve
++    User preferences or style requirements. Domain-specific details that aren't obvious from the conversation. Any promises or commitments made to the user.
++
++ Here's an example of the expected format:
++
++ <example>
++ <analysis>
++ [Your thought process reviewing the conversation, identifying what matters]
++ </analysis>
++
++ <summary>
++ 1. Task Overview:
++    [User's core request and success criteria]
++
++ 2. Current State:
++    - [What has been completed]
++    - [Key outputs or identifiers to preserve verbatim]
++
++ 3. Important Discoveries:
++    - [Key constraints, decisions, failed approaches, errors resolved]
++
++ 4. Next Steps:
++    - [Specific actions in priority order]
++
++ 5. Context to Preserve:
++    - [Preferences, commitments, domain details]
++ </summary>
++ </example>
++
++ Be concise but complete — err on the side of including information that would prevent duplicate work or repeated mistakes. Write in a way that enables immediate resumption of the task.
+
+ ❯ packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts:16:27
+     14|     const compress = vi.fn(async (messages: ContextMessage[]) => {
+     15|       const instruction = messages[messages.length - 1].content
+     16|       expect(instruction).toContain('Completed requests stay completed…
+       |                           ^
+     17|       expect(instruction).not.toContain('have not yet completed')
+     18|       expect(instruction).not.toContain('wrap your analysis')
+ ❯ summarizeHistory packages/aiCore/src/core/context/janitor.ts:264:21
+ ❯ packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts:22:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |aiCore| packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts > summarizeHistory > keeps summaries advisory and permits necessary clarification
+AssertionError: expected 'This session is being continued from …' to contain 'fallible reference'
+
+- Expected
++ Received
+
+- fallible reference
++ This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
++
++ Original result and open facts.
++
++ Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+ ❯ packages/aiCore/src/core/context/__tests__/summarizeHistory.test.ts:28:21
+     26|     const wrapper = ContextPrompts.getCompactSummaryWrapper('Original …
+     27|     expect(wrapper).toContain('Original result and open facts.')
+     28|     expect(wrapper).toContain('fallible reference')
+       |                     ^
+     29|     expect(wrapper).toContain('Ask only')
+     30|     expect(wrapper).not.toContain('without asking the user any further…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 passed (13)
+   Start at  00:58:16
+   Duration  151ms (transform 54%, tests 23%, import 11%, worker 6%, setup 6%)
+

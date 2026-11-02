@@ -62,7 +62,7 @@ pub(crate) fn named_policy(name: &str) -> Result<WorkPolicyV1, String> {
     if matches!(selected, EngineeringPolicy::Disabled) {
         return Err("EngineeringPolicy none has no instruction body".into());
     }
-    WorkPolicyV1::new(selected.as_str(), 1, INSTRUCTIONS).map_err(|error| error.to_string())
+    WorkPolicyV1::new(selected.as_str(), 2, INSTRUCTIONS).map_err(|error| error.to_string())
 }
 
 /// Subject kind every admitted engineering draft names; its uri is the target digest.

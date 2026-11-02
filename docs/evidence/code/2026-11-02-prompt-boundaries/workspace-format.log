@@ -1,0 +1,206 @@
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:5:
+     let options = AsterCodeAgent::core_session_options("prompt-boundary", "controlled/model", None);
+     let prompt = options.prompt_slots.unwrap().build();
+     assert!(prompt.contains("explanation, diagnosis, review or modification"));
+[31m-    for domain in ["office_read", "date_span", "sequence_changes", "checkValidity"] {
+(B[m[32m+    for domain in [
+(B[m[32m+        "office_read",
+(B[m[32m+        "date_span",
+(B[m[32m+        "sequence_changes",
+(B[m[32m+        "checkValidity",
+(B[m[32m+    ] {
+(B[m         assert!(!prompt.contains(domain), "default ACP advertises {domain}");
+     }
+ }
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:18:
+             source_review,
+             ..Default::default()
+         };
+[31m-        let prompt = crate::host_context::merge_studio_host(
+(B[m[31m-            aster_core::SystemPromptSlots::default(),
+(B[m[31m-            &host,
+(B[m[31m-        )
+(B[m[31m-        .build();
+(B[m[31m-        assert_eq!(prompt.contains("office_read"), office_tools && !source_review);
+(B[m[31m-        assert_eq!(prompt.contains("sequence_changes"), office_tools && !source_review);
+(B[m[32m+        let prompt =
+(B[m[32m+            crate::host_context::merge_studio_host(aster_core::SystemPromptSlots::default(), &host)
+(B[m[32m+                .build();
+(B[m[32m+        assert_eq!(
+(B[m[32m+            prompt.contains("office_read"),
+(B[m[32m+            office_tools && !source_review
+(B[m[32m+        );
+(B[m[32m+        assert_eq!(
+(B[m[32m+            prompt.contains("sequence_changes"),
+(B[m[32m+            office_tools && !source_review
+(B[m[32m+        );
+(B[m     }
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:33:
+     let policy = crate::engineering::named_policy("engineering-v1").unwrap();
+     assert!(policy.instructions().contains("primary session"));
+     assert!(policy.instructions().contains("delegated reviewer"));
+[31m-    assert!(policy.instructions().contains("inspect the target directly"));
+(B[m[32m+    assert!(policy
+(B[m[32m+        .instructions()
+(B[m[32m+        .contains("inspect the target directly"));
+(B[m     assert!(policy.instructions().contains("Do not delegate again"));
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:130:
+ async fn prompt_boundary_real_model_repairs_and_passes_host_checker() {
+     use acp::Agent as _;
+ 
+[31m-    let root = tempfile::Builder::new().prefix("prompt repair Δ ").tempdir().unwrap();
+(B[m[32m+    let root = tempfile::Builder::new()
+(B[m[32m+        .prefix("prompt repair Δ ")
+(B[m[32m+        .tempdir()
+(B[m[32m+        .unwrap();
+(B[m     const CHECK: &str = "from limit import first_lines\nassert first_lines([]) == []\nassert first_lines([1,2]) == [1,2]\nassert first_lines([1,2,3,4,5]) == [1,2,3]\nprint('checks passed')\n";
+[31m-    std::fs::write(root.path().join("limit.py"), "def first_lines(lines):\n    return list(lines[:4])\n").unwrap();
+(B[m[32m+    std::fs::write(
+(B[m[32m+        root.path().join("limit.py"),
+(B[m[32m+        "def first_lines(lines):\n    return list(lines[:4])\n",
+(B[m[32m+    )
+(B[m[32m+    .unwrap();
+(B[m     std::fs::write(root.path().join("check.py"), CHECK).unwrap();
+[31m-    let baseline = std::process::Command::new("python3").arg("check.py").current_dir(root.path()).output().unwrap();
+(B[m[32m+    let baseline = std::process::Command::new("python3")
+(B[m[32m+        .arg("check.py")
+(B[m[32m+        .current_dir(root.path())
+(B[m[32m+        .output()
+(B[m[32m+        .unwrap();
+(B[m     assert!(!baseline.status.success(), "fixture must expose the defect");
+     let config = std::env::var_os("ASTER_CONFIG_FILE").expect("explicit live ACL");
+[31m-    let mut launch = crate::config::load_launch_config(root.path().into(), Some(config.into())).unwrap();
+(B[m[32m+    let mut launch =
+(B[m[32m+        crate::config::load_launch_config(root.path().into(), Some(config.into())).unwrap();
+(B[m     launch.model_id = "boyue/deepseek-v4-flash".into();
+     launch.config.default_model = Some(launch.model_id.clone());
+     launch.config.sessions_dir = Some(root.path().join("store"));
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:144:
+[31m-    launch.config.verification_contracts = vec![aster_core::config::WorkspaceVerificationContract {
+(B[m[31m-        workspace: root.path().into(),
+(B[m[31m-        contract: aster_core::verification::VerificationContractV1::new("prompt-repair", "python3 check.py", ["limit.py"]).unwrap(),
+(B[m[31m-    }];
+(B[m[32m+    launch.config.verification_contracts =
+(B[m[32m+        vec![aster_core::config::WorkspaceVerificationContract {
+(B[m[32m+            workspace: root.path().into(),
+(B[m[32m+            contract: aster_core::verification::VerificationContractV1::new(
+(B[m[32m+                "prompt-repair",
+(B[m[32m+                "python3 check.py",
+(B[m[32m+                ["limit.py"],
+(B[m[32m+            )
+(B[m[32m+            .unwrap(),
+(B[m[32m+        }];
+(B[m     let host = AsterCodeAgent::new(launch);
+[31m-    let meta = serde_json::json!({"permissionPosture":"yolo"}).as_object().unwrap().clone();
+(B[m[31m-    let id = host.new_session(acp::NewSessionRequest::new(root.path()).meta(meta)).await.unwrap().session_id;
+(B[m[32m+    let meta = serde_json::json!({"permissionPosture":"yolo"})
+(B[m[32m+        .as_object()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .clone();
+(B[m[32m+    let id = host
+(B[m[32m+        .new_session(acp::NewSessionRequest::new(root.path()).meta(meta))
+(B[m[32m+        .await
+(B[m[32m+        .unwrap()
+(B[m[32m+        .session_id;
+(B[m     const PROMPT: &str = "Fix limit.py so first_lines returns at most the first three inputs, preserving order and accepting empty and short inputs. Inspect and run the existing python3 check.py checker. Do not modify check.py, install dependencies, add files or change unrelated behavior. Finish after the required checker passes.";
+     let started = std::time::Instant::now();
+     eprintln!("PROMPT_CASE_BEGIN repair model=boyue/deepseek-v4-flash prompt={PROMPT:?}");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/agent/prompt_boundary_tests.rs:154:
+[31m-    let result = tokio::time::timeout(std::time::Duration::from_secs(420), host.prompt(acp::PromptRequest::new(id.clone(), vec![acp::ContentBlock::Text(acp::TextContent::new(PROMPT))]))).await.expect("bounded live repair");
+(B[m[31m-    let checked = std::process::Command::new("python3").arg("check.py").current_dir(root.path()).output().unwrap();
+(B[m[31m-    let session = host.sessions.lock().await.get(id.0.as_ref()).unwrap().session.clone();
+(B[m[32m+    let result = tokio::time::timeout(
+(B[m[32m+        std::time::Duration::from_secs(420),
+(B[m[32m+        host.prompt(acp::PromptRequest::new(
+(B[m[32m+            id.clone(),
+(B[m[32m+            vec![acp::ContentBlock::Text(acp::TextContent::new(PROMPT))],
+(B[m[32m+        )),
+(B[m[32m+    )
+(B[m[32m+    .await
+(B[m[32m+    .expect("bounded live repair");
+(B[m[32m+    let checked = std::process::Command::new("python3")
+(B[m[32m+        .arg("check.py")
+(B[m[32m+        .current_dir(root.path())
+(B[m[32m+        .output()
+(B[m[32m+        .unwrap();
+(B[m[32m+    let session = host
+(B[m[32m+        .sessions
+(B[m[32m+        .lock()
+(B[m[32m+        .await
+(B[m[32m+        .get(id.0.as_ref())
+(B[m[32m+        .unwrap()
+(B[m[32m+        .session
+(B[m[32m+        .clone();
+(B[m     eprintln!("PROMPT_CASE_RESULT repair elapsed_ms={} usage={:?} result={result:?} independent_check={:?}", started.elapsed().as_millis(), session.recorded_usage_tokens(), checked.status);
+[31m-    assert_eq!(std::fs::read_to_string(root.path().join("check.py")).unwrap(), CHECK);
+(B[m[31m-    assert!(checked.status.success(), "independent checker: {}", String::from_utf8_lossy(&checked.stderr));
+(B[m[32m+    assert_eq!(
+(B[m[32m+        std::fs::read_to_string(root.path().join("check.py")).unwrap(),
+(B[m[32m+        CHECK
+(B[m[32m+    );
+(B[m[32m+    assert!(
+(B[m[32m+        checked.status.success(),
+(B[m[32m+        "independent checker: {}",
+(B[m[32m+        String::from_utf8_lossy(&checked.stderr)
+(B[m[32m+    );
+(B[m     assert_eq!(result.unwrap().stop_reason, acp::StopReason::EndTurn);
+     session.close().await;
+ }
+Diff in /Users/roylin/code/aster/crates/code/core/src/prompts/tests.rs:795:
+ #[test]
+ fn generic_prompt_keeps_host_domains_out_and_has_a_stop_rule() {
+     let built = SystemPromptSlots::default().build();
+[31m-    for domain in ["checkValidity", "office_read", "date_span", "ask_user_form", "json-render"] {
+(B[m[32m+    for domain in [
+(B[m[32m+        "checkValidity",
+(B[m[32m+        "office_read",
+(B[m[32m+        "date_span",
+(B[m[32m+        "ask_user_form",
+(B[m[32m+        "json-render",
+(B[m[32m+    ] {
+(B[m         assert!(!built.contains(domain), "generic prompt contains {domain}");
+     }
+     assert!(built.contains("Do not reopen settled decisions without new evidence"));
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/code_cli_config_tests.rs:24:
+ fn preview_cannot_overwrite_an_external_edit() {
+     let temp = tempfile::tempdir().unwrap();
+     let roots = roots(&temp);
+[31m-    write(&roots, input("claude-code", json!([{"target":"claude-settings","content":"preview source"}]))).unwrap();
+(B[m[31m-    let snapshot = read(&roots, ReadInput { targets: vec!["claude-settings".into()] }).unwrap();
+(B[m[32m+    write(
+(B[m[32m+        &roots,
+(B[m[32m+        input(
+(B[m[32m+            "claude-code",
+(B[m[32m+            json!([{"target":"claude-settings","content":"preview source"}]),
+(B[m[32m+        ),
+(B[m[32m+    )
+(B[m[32m+    .unwrap();
+(B[m[32m+    let snapshot = read(
+(B[m[32m+        &roots,
+(B[m[32m+        ReadInput {
+(B[m[32m+            targets: vec!["claude-settings".into()],
+(B[m[32m+        },
+(B[m[32m+    )
+(B[m[32m+    .unwrap();
+(B[m     let path = &snapshot.files[0].path;
+     fs::write(path, b"external edit").unwrap();
+[31m-    let result = write(&roots, input("claude-code", json!([{"target":"claude-settings","content":"edited preview"}])));
+(B[m[31m-    assert!(result.is_err(), "a stale preview must not replace an external edit");
+(B[m[32m+    let result = write(
+(B[m[32m+        &roots,
+(B[m[32m+        input(
+(B[m[32m+            "claude-code",
+(B[m[32m+            json!([{"target":"claude-settings","content":"edited preview"}]),
+(B[m[32m+        ),
+(B[m[32m+    );
+(B[m[32m+    assert!(
+(B[m[32m+        result.is_err(),
+(B[m[32m+        "a stale preview must not replace an external edit"
+(B[m[32m+    );
+(B[m     assert_eq!(fs::read(path).unwrap(), b"external edit");
+ }
+ 

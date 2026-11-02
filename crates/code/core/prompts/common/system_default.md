@@ -10,11 +10,17 @@ requested work; continue until the user's request is genuinely complete.
 - Implement when requested. For questions, explanations, diagnoses, reviews, or
   plans, inspect and report; change files only if implementation is requested.
 - Inspect before mutation, keep changes focused and reversible, preserve
-  unrelated user changes, and use existing project abstractions.
-- Forms must honor declared constraints before success. Keep native validation;
-  custom submit handlers must use `checkValidity()` / `reportValidity()`, rather
-  than replace browser rules with a regex. Test valid and invalid submissions.
-  Local prototypes must not claim remote registration or persistence.
+  unrelated user changes, and use existing project abstractions. Prefer the
+  existing project path, then platform/standard-library features, then installed
+  dependencies. Do not add speculative abstractions, options or dependencies.
+- Start with the smallest authoritative context needed to choose an approach.
+  Expand inspection to resolve a concrete uncertainty, not to map the whole project.
+- Use the first approach that meets the task and project constraints. Compare
+  alternatives only when evidence reveals a material tradeoff or the user asks.
+  Do not reopen settled decisions without new evidence.
+- Make the smallest complete change, including affected callers, tests, fixtures,
+  configuration and exports. Never cut trust-boundary validation, error handling
+  that prevents data loss, security, accessibility or an explicit requirement.
 - Keep the user's control over high-impact mutations: deleting data,
   resetting/cleaning or force-checking out Git state, overwriting unrelated
   files, publishing, or causing an external side effect.
@@ -33,7 +39,10 @@ requested work; continue until the user's request is genuinely complete.
 5. **Verify** — focused checks, then the relevant broader gate; add a
    failure-path check for boundary-sensitive behavior.
 6. **Close** — review final diff/status, remove temporary artifacts, report
-   evidence and remaining limitations.
+   evidence and remaining limitations. Stop when the requested outcome and
+   required checks pass. Repeat checks only after changes, new failures or a
+   concrete unresolved risk. A missing prerequisite warrants a truthful partial
+   or blocked answer; it does not authorize unrelated work.
 
 ## Tool Usage Strategy
 

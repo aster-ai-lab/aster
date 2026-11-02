@@ -1,0 +1,162 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:8142) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/local-build.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-local-build.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/provider.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-provider.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+ ❯ |shared| src/shared/ai/__tests__/promptGeneration.test.ts (1 test | 1 failed) 6ms
+   ❯ agent prompt generation contract (1)
+     × generates a bounded role from supplied facts without invented biography or a greeting loop 5ms
+ ❯ |renderer| src/renderer/components/__tests__/PromptOptimizeButton.test.tsx (8 tests | 1 failed) 430ms
+   ❯ promptOptimizationSystemPrompt (2)
+     × does not apply unselected methods or change prompt authority 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |shared| src/shared/ai/__tests__/promptGeneration.test.ts > agent prompt generation contract > generates a bounded role from supplied facts without invented biography or a greeting loop
+AssertionError: expected '\nYou are a Prompt Generator. You wil…' to contain 'same language'
+
+- Expected
++ Received
+
+- same language
++
++ You are a Prompt Generator. You will integrate user input information into a structured Prompt using Markdown syntax. Please do not use code blocks for output, display directly!
++
++ ## Role:
++ [Please fill in the role name you want to define]
++
++ ## Background:
++ [Please describe the background information of the role, such as its history, origin, or specific knowledge background]
++
++ ## Preferences:
++ [Please describe the role's preferences or specific style, such as preferences for certain designs or cultures]
++
++ ## Profile:
++ - version: 0.2
++ - language: English
++ - description: [Please briefly describe the main function of the role, within 50 words]
++
++ ## Goals:
++ [Please list the main goal 1 of the role]
++ [Please list the main goal 2 of the role]
++ ...
++
++ ## Constraints:
++ [Please list constraint 1 that the role must follow in interactions]
++ [Please list constraint 2 that the role must follow in interactions]
++ ...
++
++ ## Skills:
++ [Skill 1 that the role needs to have to achieve goals under constraints]
++ [Skill 2 that the role needs to have to achieve goals under constraints]
++ ...
++
++ ## Examples:
++ [Provide an output example 1, showing possible answers or behaviors of the role]
++ [Provide an output example 2]
++ ...
++
++ ## OutputFormat:
++ [Please describe the first step of the role's workflow]
++ [Please describe the second step of the role's workflow]
++ ...
++
++ ## Initialization:
++ As [role name], with [list skills], strictly adhering to [list constraints], using default [select language] to talk with users, welcome users in a friendly manner. Then introduce yourself and prompt the user for input.
++
+
+ ❯ src/shared/ai/__tests__/promptGeneration.test.ts:7:26
+      5| describe('agent prompt generation contract', () => {
+      6|   it('generates a bounded role from supplied facts without invented bi…
+      7|     expect(AGENT_PROMPT).toContain('same language')
+       |                          ^
+      8|     expect(AGENT_PROMPT).toContain('Do not invent')
+      9|     expect(AGENT_PROMPT).toContain('available tools')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |renderer| src/renderer/components/__tests__/PromptOptimizeButton.test.tsx > promptOptimizationSystemPrompt > does not apply unselected methods or change prompt authority
+AssertionError: expected '你是提示词优化器。只输出优化后的完整提示词，不解释、不添加前言或 Mark…' not to contain '- depth：'
+
+- Expected
++ Received
+
+- - depth：
++ 你是提示词优化器。只输出优化后的完整提示词，不解释、不添加前言或 Markdown 代码围栏。
++ 保留用户真实意图、语言、交付物和约束，不虚构数据、文件、权限、工具或指标。
++ 按用户选择的方法优化：speed。
++ - speed：减少等待与冗余，但不牺牲可靠性。
++ - altitude：从表面任务提升到真实结果和下一步决策。
++ - depth：采用领域专家的原始材料、专业方法和独立验证。
++ - range：只引入能改变产出的跨领域工具、方法或评审，不做空泛角色扮演。
++ 优化后的提示词必须包含实际执行方法和外部验收，不让模型自证正确；保持简洁、可直接执行。
+
+ ❯ src/renderer/components/__tests__/PromptOptimizeButton.test.tsx:127:24
+    125|     const prompt = promptOptimizationSystemPrompt(new Set(['speed']))
+    126|     expect(prompt).toContain('- speed：')
+    127|     expect(prompt).not.toContain('- depth：')
+       |                        ^
+    128|     expect(prompt).not.toContain('- altitude：')
+    129|     expect(prompt).not.toContain('- range：')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 7 passed (9)
+   Start at  00:47:23
+   Duration  4.93s (import 56%, transform 27%, tests 9%, environment 6%, setup 1%)
+

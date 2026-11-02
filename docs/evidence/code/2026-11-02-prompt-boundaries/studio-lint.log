@@ -1,0 +1,8 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/components/PromptOptimizeButton.tsx
+  175:33  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+  183:24  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+  186:24  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+
+✖ 3 problems (0 errors, 3 warnings)
+

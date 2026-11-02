@@ -187,18 +187,17 @@ fn empty_registry_still_states_the_product_boundary() {
         .and_then(|slots| slots.guidelines)
         .expect("session boundary");
     assert!(text.contains("Do not read or explain the product implementation"));
-    assert!(text.contains("aster sessions list"));
     assert!(text.contains("Finish the user's outcome in this turn."));
     for rule in [
-        "prefer office_read when exposed",
-        "check every factual and numerical claim against source locations",
-        "Structural file validation does not prove semantic correctness",
-        "explicit endpoint-counting convention",
-        "every adjacent step",
+        "explanation, diagnosis, review or modification",
+        "For execution requests, perform",
+        "naming a command alone does not execute it",
         "explain the conflict and ask which takes priority",
     ] {
         assert!(text.contains(rule), "missing session guidance: {rule}");
     }
+    assert!(!text.contains("office_read"));
+    assert!(!text.contains("sequence_changes"));
 }
 
 #[test]
@@ -242,7 +241,7 @@ fn studio_host_keeps_the_budget_line_in_the_session_options() {
     assert!(!guidelines.contains("每次都带上"));
     let extra = slots.extra.expect("host extra");
     assert!(extra.contains("Host instructions:\n每次都带上"));
-    assert!(extra.contains("代码审查：在独立子会话中审查本次改动"));
+    assert!(extra.contains("separate read-only review session"));
     assert_eq!(slots.output_language.as_deref(), Some("zh-CN"));
 }
 

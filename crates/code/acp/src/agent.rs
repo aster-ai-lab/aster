@@ -303,7 +303,7 @@ fn session_capability_note(
         "search modes: grep, glob, bm25, semantic, hybrid.\n\
          If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."
     } else {
-        "search modes: grep, glob, bm25, hybrid.\n语义检索关闭；hybrid 使用可用的精确、词法和符号通道。"
+        "search modes: grep, glob, bm25, hybrid.\nSemantic retrieval is disabled; hybrid uses available exact, lexical and symbol channels."
     };
     format!(
         "Session capabilities:\n\
@@ -848,7 +848,7 @@ impl AsterCodeAgent {
                 hook_count,
                 pending_hooks,
                 setup.mcp_servers.len(),
-                "耐久集合",
+                "durable collections",
             ),
         );
         let contracts = config
@@ -1007,22 +1007,13 @@ pub(crate) const HOST_EFFORT_LEVELS: &[&str] = &["low", "medium", "high", "xhigh
 /// Always-on turn boundary. The skill command is an example, not a matcher.
 const SESSION_OUTCOME_BOUNDARY: &str = "\
 Finish the user's outcome in this turn. Do not read or explain the product \
-implementation unless the user asked to change that implementation. When a \
-host command already does the outcome, name that command and stop. Example: \
-the user lists recent sessions with `aster sessions list`. \
-For persisted DOCX/XLSX/PPTX/PDF and image sources, prefer office_read when exposed, and \
-use the exposed native Office creation and output_check tools before probing \
-external packages. Respect each tool's explicit unavailable capabilities. \
-Before promising an image-backed, rendered, or dependency-heavy delivery plan, \
-confirm the live tools, schemas, workspace write paths, image backends and \
-verification path that this session actually exposes; if a capability is missing, \
-state the supported alternative and verification scope instead of inventing one. \
-office_read and structural checks are not pixel-level PowerPoint proof. \
-Before finishing, read back deliverables and check every factual and numerical \
-claim against source locations, periods, units and calculation inputs. \
-Structural file validation does not prove semantic correctness. Use date_span \
-with an explicit endpoint-counting convention and sequence_changes to check \
-every adjacent step; an overall increase does not establish a monotonic sequence. \
+implementation merely to perform a product operation. Read and explain it when \
+the user requests explanation, diagnosis, review or modification. For usage \
+questions, give the known host command directly. For execution requests, perform \
+the authorized operation with exposed tools and report its actual result; naming \
+a command alone does not execute it. Preserve the requested deliverables and \
+verify their content against authoritative sources and the user's criteria. \
+Stop once the outcome and required checks are complete. \
 If the user's content, format and length requirements cannot all be satisfied, \
 explain the conflict and ask which takes priority instead of silently dropping \
 a requirement or inventing missing facts.";
@@ -1100,6 +1091,10 @@ mod registration_cleanup_tests;
 
 #[cfg(test)]
 mod engineering_tests;
+
+#[cfg(test)]
+#[path = "agent/prompt_boundary_tests.rs"]
+mod prompt_boundary_tests;
 
 #[cfg(test)]
 mod review_tests;

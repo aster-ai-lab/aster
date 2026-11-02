@@ -185,7 +185,7 @@ impl RouterTable {
             } else {
                 Cow::Borrowed(host)
             };
-            self.host_routes.get(normalized.as_ref())
+            self.host_routes.get::<str>(normalized.as_ref())
         });
         let Some(host_routes) = host_routes else {
             return self.match_indices(

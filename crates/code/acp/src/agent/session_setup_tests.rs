@@ -483,7 +483,7 @@ fn typed_setup_preserves_host_safety_and_context_without_activation() {
     assert!(extra.contains("Preserve these host instructions"));
     assert!(extra.contains("bm25"));
     assert!(extra.contains("code_symbols"));
-    assert!(extra.contains("语义检索关闭"));
+    assert!(extra.contains("Semantic retrieval is disabled"));
     assert!(options.hook_executor.is_some());
 }
 
@@ -525,8 +525,8 @@ fn host_session_status_names_live_search_and_closed_semantic() {
         .expect("capability status");
     assert!(extra.contains("bm25"));
     assert!(extra.contains("code_symbols"));
-    assert!(extra.contains("语义检索关闭"));
-    assert!(extra.contains("memory: 耐久集合"));
+    assert!(extra.contains("Semantic retrieval is disabled"));
+    assert!(extra.contains("memory: durable collections"));
     assert!(extra.contains("hooks: 0"));
     assert!(extra.contains("mcp: 0"));
     assert!(extra.contains("pending hooks: 0"));
@@ -604,7 +604,7 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
         .expect("capability status");
     assert!(extra.contains("hooks: 2"));
     assert!(extra.contains("pending hooks: 1"));
-    assert!(extra.contains("语义检索关闭"));
+    assert!(extra.contains("Semantic retrieval is disabled"));
 
     let executor = options.hook_executor.expect("hook executor");
     executor
@@ -948,7 +948,7 @@ async fn durable_collection_stays_closed_until_the_first_recall() {
         .as_ref()
         .and_then(|slots| slots.extra.as_deref())
         .expect("capability status");
-    assert!(extra.contains("memory: 耐久集合"));
+    assert!(extra.contains("memory: durable collections"));
 
     let agent = aster_core::Agent::from_config(config).await.expect("agent");
     let session = agent

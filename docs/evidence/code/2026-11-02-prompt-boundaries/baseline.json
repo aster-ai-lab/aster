@@ -1,0 +1,226 @@
+{
+  "parent_head": "a07aa32496cd11f31a620296c13874efab7fdf2c",
+  "studio_head": "4c05bd1086a38f2fc8b7195fb2fee60a723b5509",
+  "files": [
+    {
+      "path": "crates/code/core/prompts/analysis/intent_classify_system.md",
+      "bytes": 2475,
+      "sha256": "59d9a9d61c6ff3ffa4961c4abf284017338a5c2d187f5735a5670135839f111a"
+    },
+    {
+      "path": "crates/code/core/prompts/analysis/pre_analysis_system.md",
+      "bytes": 2413,
+      "sha256": "2107576ea7f53ed6025b0c9037684e44494c5f5faea84cc3e9bb53ddabc69731"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/llm_plan_system.md",
+      "bytes": 385,
+      "sha256": "587c650c183d99ab84d3290ff4c598fd29119e6f9f15d2fa26c330badb31e283"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/llm_goal_check_system.md",
+      "bytes": 1280,
+      "sha256": "b58673d2e0f86837fae369935d026a8c433e497b6ff4a62bb3404619e7d5d4a3"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/goal_pre_analysis_system.md",
+      "bytes": 1449,
+      "sha256": "3bff1f4ba1d1cb70ec6710e824d7175caaf935f1e465a3f53c95c33c47442506"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/plan_execute_step.md",
+      "bytes": 39,
+      "sha256": "68d7be340fb5d5212b2e83ab4f33b5acc6da8b9fb582e431b79e49ea19f19def"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/llm_goal_extract_system.md",
+      "bytes": 502,
+      "sha256": "da293dc1d455ff2009df4123c3e0d3f0e9463dabc596156022e0002cea74356d"
+    },
+    {
+      "path": "crates/code/core/prompts/planning/plan_execute_goal.md",
+      "bytes": 63,
+      "sha256": "6ec617547a378321929958eb730bc2a5defafca773186aa27f2922cca9ea3691"
+    },
+    {
+      "path": "crates/code/core/prompts/agents/explore.md",
+      "bytes": 693,
+      "sha256": "539eccf3f094852cf797a486067c3153a4b97074dc6fd2cefb5bd9b2dc5ef6eb"
+    },
+    {
+      "path": "crates/code/core/prompts/agents/verification.md",
+      "bytes": 1157,
+      "sha256": "cb57b45757bf7cc3c34f9569734a41c5f9209876a9adc81b7cee568077cb986f"
+    },
+    {
+      "path": "crates/code/core/prompts/agents/code_review.md",
+      "bytes": 635,
+      "sha256": "cbd9a5f09880666ed4f224faa42d29c7f551ff60da7d7964359c9650586d69f1"
+    },
+    {
+      "path": "crates/code/core/prompts/agents/plan.md",
+      "bytes": 823,
+      "sha256": "9eab70e798078e4db236af4f637ec3e97b3c080f63a28443b257b5c306332033"
+    },
+    {
+      "path": "crates/code/core/prompts/common/system_default.md",
+      "bytes": 4595,
+      "sha256": "4ae03184033a34367ecf5e109124454d6db9f9dc0fd6823231587d5d24942be0"
+    },
+    {
+      "path": "crates/code/core/prompts/common/context_compact.md",
+      "bytes": 1376,
+      "sha256": "fed33dea1ce2e77af1ef198c4ece6e29a23600d99872d19291ca4c23ebe6d13e"
+    },
+    {
+      "path": "crates/code/core/prompts/common/system_default_response_format.md",
+      "bytes": 673,
+      "sha256": "a78bc103d4aa882687bd86c4ee650b68190c016f4e8344991d344ea2c955a38f"
+    },
+    {
+      "path": "crates/code/core/prompts/common/repository_tool_contract_readonly.md",
+      "bytes": 2122,
+      "sha256": "900e4a7c1663a945aaa982b0220347a74feb23de829aac5ad196dea7408340a8"
+    },
+    {
+      "path": "crates/code/core/prompts/common/skills_catalog_header.md",
+      "bytes": 688,
+      "sha256": "6a98b8fef207455244f68b4f3454a3855ecb1464d595ccdbf7b4a0f6b78b7c5e"
+    },
+    {
+      "path": "crates/code/core/prompts/common/system_default_role_line.md",
+      "bytes": 233,
+      "sha256": "78cefd927d0f3d14640c3ce1630bac43db2df0eec9cfd652c7050da3cf46192e"
+    },
+    {
+      "path": "crates/code/core/prompts/common/boundaries.md",
+      "bytes": 697,
+      "sha256": "65ee864e1d638e771327413550a8a6c85b9bb300e9cc0747382d77e87e7be0c5"
+    },
+    {
+      "path": "crates/code/core/prompts/common/repository_tool_contract.md",
+      "bytes": 3543,
+      "sha256": "3539382764f76c419f8de292bf6675ccb5484977e7e015bd15d5cb43d4d066c6"
+    },
+    {
+      "path": "crates/code/core/prompts/common/context_summary_prefix.md",
+      "bytes": 70,
+      "sha256": "d48bd8883aa9400e2205d4700bc8e94e897e0311adb342d6ca0340abccc48b99"
+    },
+    {
+      "path": "crates/code/core/prompts/common/continuation.md",
+      "bytes": 198,
+      "sha256": "a7038c0a3e254eb28de7b63eb573e4560cb353c4b1bf3e7f79759b8cf8249bd8"
+    },
+    {
+      "path": "crates/code/core/prompts/common/runtime_contract.md",
+      "bytes": 2037,
+      "sha256": "207a37eab514210b93024adba74c71673ac2a08b42dc83e562a677e028de071c"
+    },
+    {
+      "path": "crates/code/acp/prompts/engineering.md",
+      "bytes": 2646,
+      "sha256": "08cb4b7c5eb98dcb7072a410bc8f56eba1ab4eaca78d9c554cc2a4d88a3be4f7"
+    },
+    {
+      "path": "crates/code/core/src/prompts.rs",
+      "bytes": 34809,
+      "sha256": "cabb1ac29b6ac53002671084dfa17c1c618c968ccb8b5e980c46486589534fde"
+    },
+    {
+      "path": "crates/code/core/src/agent/prompt_runtime.rs",
+      "bytes": 5694,
+      "sha256": "ad5fcc2af784142fcd00325508f5c789bfc5a5094dbc17a128ae3e70d7a1d29f"
+    },
+    {
+      "path": "crates/code/acp/src/agent.rs",
+      "bytes": 42451,
+      "sha256": "dfe7c29f99990f08f2dbf89d5cab0546a14bfba40cde4b2cea52c71044cf2846"
+    },
+    {
+      "path": "crates/code/acp/src/agent/models.rs",
+      "bytes": 10828,
+      "sha256": "952d36230ccd16f307068fa53acb282d701ba9e599cb16808caabd5a546c710c"
+    },
+    {
+      "path": "crates/code/acp/src/host_context.rs",
+      "bytes": 26676,
+      "sha256": "4ed2581256ce988efa7cb806c9e35f1996718567a833565180ab50819a270843"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_open.rs",
+      "bytes": 35747,
+      "sha256": "5db3c9fc214833ddc209e5d4616c656b7284c77aeef0e98af83564bdbd41cce3"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/delivery_contract.md",
+      "bytes": 4781,
+      "sha256": "cbd887ce788360d277896b61067ebf47ed3f2b490fb8147b3646eea2e49c8c2b"
+    },
+    {
+      "path": "apps/studio/src/renderer/components/PromptOptimizeButton.tsx",
+      "bytes": 9166,
+      "sha256": "35a6bbf97010f68d0dfa5d601ebb58bd701fba115fc0a4f6d529759409b6573b"
+    },
+    {
+      "path": "apps/studio/src/shared/ai/prompts.ts",
+      "bytes": 3549,
+      "sha256": "d9caf3308a5892ac12c93febc7ddd90a8450696592443b7ee4c0cc8f1f334be8"
+    },
+    {
+      "path": "apps/studio/src/renderer/utils/resourceCatalog/constants.ts",
+      "bytes": 2208,
+      "sha256": "306c806a1b835b8cb732e9df6ba20dbfb8b7669339eee1ef512d0e495bb78526"
+    },
+    {
+      "path": "apps/studio/packages/aiCore/src/core/context/prompts.ts",
+      "bytes": 8752,
+      "sha256": "e846f0d5195a6cf5eb4a3d618ed86e1c69789f6a51390d35c3af92cff65d6a1f"
+    },
+    {
+      "path": "apps/gateway/src/router/mod.rs",
+      "bytes": 19690,
+      "sha256": "5838db55df9be516edf28376259ad8060cbf101030dde0c595c8392ab97b3797"
+    },
+    {
+      "path": "apps/gateway/src/usage/persistence.rs",
+      "bytes": 53055,
+      "sha256": "6aa8a1ca60884ecea221ccc2346b4a24517f7620e3fb566065fb9fe293e27c65"
+    },
+    {
+      "path": "crates/code/acp/src/engineering/tests.rs",
+      "bytes": 2965,
+      "sha256": "9215066378f740edb81a3746b91ad0c19e41f73c69201a023fcc252eb3c329dd"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/delivery_contract_tests.rs",
+      "bytes": 7245,
+      "sha256": "e330ef2a654c6e24af50fc5d6ee9580da6bd5fa3d913bf80592bcb82c7d87dcc"
+    },
+    {
+      "path": "crates/code/acp/src/agent/retrieval_seam_tests.rs",
+      "bytes": 19569,
+      "sha256": "9b24a89ae5fe40650b044266a3575f34bc6aeeddba5cfab9b55589a3317b288f"
+    },
+    {
+      "path": "crates/code/acp/src/agent/session_setup_tests.rs",
+      "bytes": 36739,
+      "sha256": "6ee018ce3a95eac21703d7551b284ef50a808a24b52e6df16fd4d7ecd103f0ef"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/turns.rs",
+      "bytes": 407910,
+      "sha256": "dd95ecdc995661b1d56860fb399f80652dc9fae40ff8409f942a3f736a712974"
+    },
+    {
+      "path": "apps/studio/src-tauri/src/agent_plane/tobot_memory.rs",
+      "bytes": 26948,
+      "sha256": "1adeff41f3f54092c1757b28ff5b2d869cd9a1259f8148f6c0c6d823f5b8d43c"
+    },
+    {
+      "path": "crates/code/acp/src/agent/plan_replay_tests.rs",
+      "bytes": 22084,
+      "sha256": "0b536356c6519186642b1f0e9952bbaac6ac830a025f15ee680c373261e690de"
+    }
+  ]
+}

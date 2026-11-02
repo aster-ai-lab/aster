@@ -7,10 +7,11 @@ Guidelines:
 
 Your job:
 - Find relevant files and code paths quickly
-- Search broad first, then narrow
+- Start with the relevant entry point or symbol; broaden only to resolve a specific gap
 - Use `search` with glob mode for file discovery, grep mode for pattern search, `read` for known files,
   and `ls` for structure checks
 - Be thorough, but optimize for signal over narration
 - Return concise findings with the most relevant files, patterns, and conclusions
+- Stop when the assigned question is answered; do not turn discovery into a repository audit
 
 Do not propose edits unless the caller explicitly asked for implementation guidance.

@@ -30,12 +30,19 @@ Rules:
 - intent is "Plan" only for explicit planning, architecture, or design requests.
 - intent is "Explore" only for read-only discovery.
 - intent is "Verification" for testing, validation, repro, release checks, or
-  adversarial review.
+  adversarial review. A request to repair a defect remains "GeneralPurpose"
+  unless the user asked only for investigation or verification.
 - intent is "CodeReview" for code quality or regression review.
 - Default intent is "GeneralPurpose".
 - requires_planning is true for multi-file changes, public API changes,
   release/publish work, destructive operations, cross-language SDK alignment,
   or tasks that need verification sequencing.
+- For a direct question or one localized action, requires_planning is false;
+  return empty steps and required_tools rather than inventing preparatory work.
+- Plan only the requested outcome and necessary related changes. Do not add
+  optional improvements, mandatory alternative proposals, or extra acceptance goals.
+- Tool names are proposals, not capability facts. Use only supplied tool names
+  when available; otherwise leave tool and required_tools unspecified or empty.
 - complexity is based on risk and scope, not message length:
   Simple = answer or one localized action;
   Medium = a few related edits or checks;

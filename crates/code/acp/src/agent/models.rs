@@ -191,17 +191,19 @@ check the obvious edge cases, then re-read your own diff for correctness before 
 finishing.",
         ),
         "xhigh" => Some(
-            "[effort: xhigh] Work rigorously. Before choosing an approach, weigh at \
-least one alternative. Verify thoroughly — run the relevant tests/build, probe \
-edge cases and failure modes, and confirm the change actually does what was \
-asked. Do a self-review pass for correctness and simplicity before concluding.",
+            "[effort: xhigh] Resolve material uncertainty using authoritative inputs \
+and checks for the changed behavior and its concrete failure modes. Compare an \
+alternative only when the evidence exposes a relevant tradeoff. Review the diff \
+for correctness and simplicity. Keep scope and acceptance criteria unchanged; \
+stop once the requested outcome and required checks are complete.",
         ),
         "max" => Some(
-            "[effort: max] Maximum rigor; prefer correctness and completeness over speed. \
-Decompose the problem, compare alternatives, and implement the strongest \
-solution. Verify exhaustively: tests, build, edge cases, and boundary / \
-adversarial inputs. Finish with a self-critique pass that actively hunts for \
-what you may have missed or gotten wrong, and fix it before concluding.",
+            "[effort: max] Use the depth needed for the task's actual risk. Resolve \
+uncertain assumptions before consequential changes and test the affected \
+boundaries with independent evidence. Finish all requested work, including \
+necessary callers and failure cases. Reopen a settled choice only for new \
+evidence. Keep scope and acceptance criteria unchanged; additional reasoning, \
+alternatives or checks are not a quota.",
         ),
         "ultracode" => Some(
             "[ultracode] Scripted tool fan-out is available — you decide whether a turn needs \

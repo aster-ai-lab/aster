@@ -18,27 +18,10 @@ fn test_all_prompts_loaded() {
     assert!(!SKILLS_CATALOG_HEADER.is_empty());
     assert!(!SKILLS_CATALOG_HEADER.contains("search_skills"));
     assert!(SKILLS_CATALOG_HEADER.contains("`Skill`"));
-    assert!(SKILLS_CATALOG_HEADER.contains("ask_user_form"));
-    assert!(SKILLS_CATALOG_HEADER.contains("`json-render`"));
-    assert!(SKILLS_CATALOG_HEADER.contains("`ask-form`"));
-    assert!(SKILLS_CATALOG_HEADER.contains("only if it appears in the catalog"));
-    assert!(
-        SKILLS_CATALOG_HEADER.contains("If that skill is absent, use the closed component catalog")
-    );
-    let first_load = SKILLS_CATALOG_HEADER
-        .find("load the `ask-form` skill")
-        .expect("load before the form");
-    let second_load = SKILLS_CATALOG_HEADER
-        .rfind("load the `ask-form` skill")
-        .expect("load before the fence");
-    assert!(first_load < second_load);
-    assert!(first_load < SKILLS_CATALOG_HEADER.find("ask_user_form").unwrap());
-    assert!(
-        second_load
-            < SKILLS_CATALOG_HEADER
-                .find("emit one `json-render` fence")
-                .unwrap()
-    );
+    assert!(SKILLS_CATALOG_HEADER.contains("not merely a keyword"));
+    assert!(SKILLS_CATALOG_HEADER.contains("does not grant tools"));
+    assert!(!SKILLS_CATALOG_HEADER.contains("ask_user_form"));
+    assert!(!SKILLS_CATALOG_HEADER.contains("json-render"));
     assert!(!SKILLS_CATALOG_HEADER.contains("skills add"));
     assert!(!PLAN_EXECUTE_GOAL.is_empty());
     assert!(!PLAN_EXECUTE_STEP.is_empty());
@@ -807,4 +790,30 @@ fn classifier_prose_is_not_a_typed_label() {
         AgentStyle::style_from_classifier_text("I would explore the surrounding files"),
         AgentStyle::GeneralPurpose
     );
+}
+
+#[test]
+fn generic_prompt_keeps_host_domains_out_and_has_a_stop_rule() {
+    let built = SystemPromptSlots::default().build();
+    for domain in [
+        "checkValidity",
+        "office_read",
+        "date_span",
+        "ask_user_form",
+        "json-render",
+    ] {
+        assert!(!built.contains(domain), "generic prompt contains {domain}");
+    }
+    assert!(built.contains("Do not reopen settled decisions without new evidence"));
+    assert!(built.contains("required checks pass"));
+    assert!(built.contains("change files only if implementation is requested"));
+}
+
+#[test]
+fn continuation_preserves_report_only_and_blocked_outcomes() {
+    assert!(CONTINUATION.contains("original request"));
+    assert!(CONTINUATION.contains("final answer"));
+    assert!(CONTINUATION.contains("missing prerequisite"));
+    assert!(!CONTINUATION.contains("just act"));
+    assert!(!CONTINUATION.contains("The task is not yet complete"));
 }

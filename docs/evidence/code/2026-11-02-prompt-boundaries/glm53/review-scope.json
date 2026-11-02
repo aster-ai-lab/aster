@@ -1,0 +1,11 @@
+{
+  "reason": "Two fixed-deadline GLM review timeouts, followed by a 136.530 s successful review with repeated directory listings and searches for a four-line target. The generic role also imposed review dimensions beyond the requested correctness scope.",
+  "evidence": [
+    "live-initialized-host.log",
+    "timeout-diagnostic.log",
+    "pool-health-live.log"
+  ],
+  "before_sha256": "481d370558babdd42277aa608a2188f63e1b4211279821873b86c37f88b361dc",
+  "after_sha256": "165fbec7a789d863aaede3255ae773525e65e6c778cde7da5ee7c0f816abbdc9",
+  "change": "Honor requested dimensions, follow dependencies only for a concrete finding uncertainty, and stop after evidence and coverage are sufficient. No permission, budget, model, scenario input, assertion or deadline changes."
+}

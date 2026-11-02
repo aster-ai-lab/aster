@@ -19,13 +19,13 @@ fn explicit_policy_is_validated_and_omission_keeps_defaults() {
             .unwrap()
             .unwrap();
     assert_eq!(policy.id(), EngineeringPolicy::V1.as_str());
-    assert_eq!(policy.revision(), 1);
+    assert_eq!(policy.revision(), 2);
     assert_eq!(policy.instructions(), INSTRUCTIONS);
     assert!(INSTRUCTIONS.len() <= 4096);
     assert!(!INSTRUCTIONS.contains('\0'));
     assert_eq!(
         policy.digest().unwrap(),
-        WorkPolicyV1::new("engineering-v1", 1, INSTRUCTIONS)
+        WorkPolicyV1::new("engineering-v1", 2, INSTRUCTIONS)
             .unwrap()
             .digest()
             .unwrap()

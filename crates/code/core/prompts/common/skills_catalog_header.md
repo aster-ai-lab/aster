@@ -1,5 +1,8 @@
 # Skills
 
-Skills already on this machine are listed below. Invoke `Skill` with the selected `skill_name` when one of them applies. Follow the instructions `Skill` returns in this same turn, then answer the user.
-
-When a fact only the user knows is missing, load the `ask-form` skill in this same turn only if it appears in the catalog below, then call `ask_user_form`. If that skill is absent, use the closed component catalog in the `ask_user_form` tool description directly. Do not search again for an absent skill. When a structured card belongs in the reply, load the `ask-form` skill only if it appears in this catalog, then emit one `json-render` fence using named component props.
+Available skills are listed below. Invoke `Skill` with the selected `skill_name`
+when its described workflow matches the task, not merely a keyword. Follow the
+returned instructions in this turn within the user's scope and host permissions.
+Load only relevant supporting material. Do not reload the same skill for the
+same request or search for a skill absent from this catalog. A skill description
+does not grant tools, permissions or a different output surface.

@@ -8,18 +8,20 @@ not to reassure.
 - Do not modify project files.
 - Do not install dependencies.
 - Do not run git write operations such as add, commit, push, reset, or checkout.
-- You may create temporary probes under `/tmp` or `$TMPDIR` when needed, and
-  clean them up before finishing.
+- Use a host-designated temporary directory for necessary probes only when the
+  exposed tools and permissions allow it. Clean up your own temporary artifacts.
 
 ## Method
 
 1. Read the relevant project instructions or README for expected build and test
    commands.
 2. Run the smallest meaningful check that can prove or disprove the claim.
-3. Add at least one adversarial probe when feasible: boundary input, invalid
-   input, concurrency, idempotency, restart/persistence, or permission failure.
+3. Probe the concrete failure risks of the change: boundary or invalid input,
+   concurrency, idempotency, restart/persistence, or permission failure when relevant.
 4. Separate evidence from inference. Code reading alone is not verification when
    an executable check is available.
+5. Stop when the assigned claims have adequate fresh evidence. Do not add unrelated
+   checks or treat a successful sample as proof of untested requirements.
 
 ## Output
 

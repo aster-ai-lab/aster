@@ -8,8 +8,7 @@
 use aster_core::permissions::PermissionPolicy;
 use aster_core::SystemPromptSlots;
 
-// The fixed transport allowance fits 8000 user characters, 4096 delivery characters,
-// and their separator without shrinking the existing Unicode boundary.
+// Preserve 8000 caller characters beside the bounded delivery contract and separator.
 const GUIDELINES_LIMIT: usize = 12 * 1024;
 const ROLE_LIMIT: usize = 500;
 const DIRECTIVE_LIMIT: usize = 500;
@@ -20,10 +19,10 @@ const DIRECTIVE_COUNT_LIMIT: usize = 8;
 mod limits_tests;
 
 /// Studio admits `open_workspace_browser` for this pane. Prompt text never grants the tool.
-const USER_BROWSER_PANE: &str = "Aster's built-in workspace browser pane is available through open_workspace_browser when that tool is in your list: call it with an http(s) or file URL to open the pane, then quote its success payload (opened URL) or exact rejection reason. Do not ask the user to open the browser or verify a public page for you. After a failed web_fetch or web_search, prefer open_workspace_browser for a public URL check when the tool is available; otherwise quote that tool's exact domain, error class, and message — never paraphrase it as a generic network security block or 网络安全检查, and never claim a browser check you did not run. open_workspace_browser confirms navigation intent only; it does not read the DOM, click, or screenshot. Computer-use or Browser agent control appear separately when the host admits them (Settings → Browser → Allow AI browser control / computer-use).";
+const USER_BROWSER_PANE: &str = "Aster's built-in workspace browser pane is available through open_workspace_browser when that tool is in your list: call it with an http(s) or file URL to open the pane, then quote its success payload (opened URL) or exact rejection reason. Do not ask the user to open the browser or verify a public page for you. After a failed web_fetch or web_search, prefer open_workspace_browser for a public URL check when the tool is available; otherwise quote that tool's exact domain, error class, and message — never paraphrase it as a generic network security block, and never claim a browser check you did not run. open_workspace_browser confirms navigation intent only; it does not read the DOM, click, or screenshot. Computer-use or Browser agent control appear separately when the host admits them (Settings → Browser → Allow AI browser control / computer-use).";
 
 /// Same sentence the Studio chat preface uses for subagent review.
-const REVIEW_SUBAGENT: &str = "代码审查：在独立子会话中审查本次改动，不要把审查过程写进当前会话。";
+const REVIEW_SUBAGENT: &str = "For code review, use a separate read-only review session when delegation is exposed and permitted. A delegated reviewer inspects directly without further delegation. Keep review discovery out of the primary transcript; report findings and coverage limits there.";
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct StudioHost {
@@ -239,8 +238,12 @@ fn host_extra(host: &StudioHost) -> String {
     if host.review_subagent {
         lines.push(REVIEW_SUBAGENT.to_string());
     }
+    if host.office_tools && !host.source_review && host.knowledge_compile.is_none() {
+        lines.push(include_str!("../prompts/office.md").trim().to_string());
+    }
     if host.user_browser_pane && host.knowledge_compile.is_none() && !host.source_review {
         lines.push(USER_BROWSER_PANE.to_string());
+        lines.push(include_str!("../prompts/browser.md").trim().to_string());
     }
     if lines.is_empty() {
         return String::new();
@@ -450,6 +453,7 @@ mod tests {
         let delivery_contract =
             include_str!("../../../../apps/studio/src-tauri/src/agent_plane/delivery_contract.md")
                 .trim();
+        assert!(8000 + 2 + delivery_contract.chars().count() <= GUIDELINES_LIMIT);
         let caller = format!("每次都带上{}", "字".repeat(7995));
         let parsed = meta(serde_json::json!({
             "asterHost": {
@@ -471,7 +475,7 @@ mod tests {
         assert_eq!(built.matches(delivery_contract).count(), 1);
         for required in [
             "Do not turn goals, targets or plans into completed events or actual periods",
-            "Label assumptions “待核实” as unverified hypotheses",
+            "Label assumptions as unverified hypotheses",
             "do not imply supporting source evidence or confirmed causes",
             "Verify every derived numerical conclusion with available tools",
             "Compare the same periods, coverage, units and exclusions",
@@ -522,7 +526,7 @@ mod tests {
         assert!(extra.contains("Allow AI browser control"));
         assert!(extra.contains("exact domain, error class, and message"));
         assert!(extra.contains("generic network security block"));
-        assert!(extra.contains("网络安全检查"));
+        assert!(!extra.contains("网络安全检查"));
         assert!(!extra.contains("no ACP tool"));
         assert!(!extra.contains("user pane only"));
 

@@ -477,16 +477,15 @@ impl AgentStyle {
 ///
 /// ## Intent-Based Selection
 ///
-/// When `style` is left as `AgentStyle::GeneralPurpose` (the default), the
-/// system will attempt to detect the user's intent from their first message and
-/// automatically select an appropriate style. To override this behavior, explicitly
-/// set the `style` field.
+/// Primary sessions retain `AgentStyle::GeneralPurpose` unless the host selects
+/// a specialty style. The standalone [`SystemPromptSlots::build_with_message`]
+/// convenience method supports local intent-based selection for explicit callers.
 #[derive(Debug, Clone, Default)]
 pub struct SystemPromptSlots {
     /// Agent style — determines which base prompt template is used.
     ///
-    /// When `None` (default), the style is auto-detected from the user's message.
-    /// Explicitly set this to force a particular style regardless of message content.
+    /// When `None` (default), primary sessions use `GeneralPurpose`. Explicitly
+    /// set this to select a specialty style and its permission overlay.
     pub style: Option<AgentStyle>,
 
     /// Custom role/identity prepended before the core prompt.

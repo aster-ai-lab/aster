@@ -1,0 +1,9 @@
+{
+  "evidence": "review-diagnostic.log",
+  "observed_refusal": "Tool execution was rejected by the host confirmation.",
+  "cause": "The headless ACP fixture has no client connection to answer the default confirmation request for task.",
+  "repair": "Use the existing initialize permissionRules metadata to allow task only and explicitly deny write, edit, patch and bash. Assert the admitted policy before invoking GLM. Original behavioral assertions are retained.",
+  "unchanged": "GLM 5.3 route, all scenario prompts, source/checker fixtures, assertions and 300/420 second deadlines.",
+  "test_source_sha256": "c6a7c1c5ede850090e3d281bcb133dc0da8bdff21840e11ed107527b49af6d37",
+  "first_setup_repair_failure": "live-confirmed-host.log: permissionRules at session/new was ignored; this protocol admits it at initialize only."
+}

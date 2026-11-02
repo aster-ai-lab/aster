@@ -62,7 +62,7 @@ impl AsterCodeAgent {
                     .with_manual_delegation_enabled(true);
             }
             guideline = format!(
-                "The thinking budget is a maximum, not a quota. thinking_budget={}. Stop when the user's outcome is done.",
+                "The thinking budget is a maximum, not a quota. thinking_budget={}. Do not expand the task or invent checks to spend the budget. Stop when the user's outcome is done.",
                 limits.thinking_budget
             );
             if !aster_core::llm::model_sends_native_effort(model_id) {

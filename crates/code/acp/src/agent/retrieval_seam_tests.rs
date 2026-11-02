@@ -441,7 +441,7 @@ async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
             .expect("host options");
     assert!(closed_options.workspace_retrieval.is_none());
     let closed_note = capability_note(&closed_options);
-    assert!(closed_note.contains("语义检索关闭"));
+    assert!(closed_note.contains("Semantic retrieval is disabled"));
     assert!(!closed_note.contains("semantic, hybrid"));
     let closed_session = open_session(&agent, closed.path(), closed_options).await;
     assert_eq!(
@@ -478,7 +478,7 @@ async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
     assert!(blocked_note.contains("search modes: grep, glob, bm25, semantic, hybrid."));
     assert!(blocked_note
         .contains("If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."));
-    assert!(!blocked_note.contains("语义检索关闭"));
+    assert!(!blocked_note.contains("Semantic retrieval is disabled"));
     let blocked_session = open_session(&agent, blocked_root.path(), blocked_options).await;
     assert_eq!(
         blocked_session.workspace_retrieval_status().phase,

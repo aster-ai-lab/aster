@@ -677,7 +677,7 @@ fn validate_directory_contents_sync(
             entry.map_err(|source| UsageSpoolError::io("list directory", directory, source))?;
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if allowed.contains(name.as_ref()) {
+        if allowed.contains::<str>(name.as_ref()) {
             continue;
         }
         if is_spool_recovery_artifact(&name, manifest) {
@@ -1169,7 +1169,7 @@ async fn validate_directory_contents(
     {
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if !allowed.contains(name.as_ref()) {
+        if !allowed.contains::<str>(name.as_ref()) {
             return Err(UsageSpoolError::corrupt(format!(
                 "directory contains untracked path {:?}",
                 name
