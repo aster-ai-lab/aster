@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1740" viewBox="0 0 1920 1740" role="img" aria-labelledby="title desc">
+<title id="title">Aster current system architecture, source checked on 2026-11-02</title>
+<desc id="desc">Studio and terminal hosts use ACP; Rust embedders call AgentSession directly. Admission composes the harness and binds capabilities. FactRun drives an effect actor, model and tool ports, and a non-bypassable completion gate. The fact log feeds replay; live events and the run store are projections. Provider, host tool and optional cloud services have separate boundaries.</desc>
+<defs>
+ <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#52647e"/></marker>
+ <marker id="violetArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#5b4bd9"/></marker>
+ <linearGradient id="actor" x1="0" x2="1"><stop stop-color="#353277"/><stop offset="1" stop-color="#5144ce"/></linearGradient>
+</defs>
+<style>
+ text { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; fill:#17263d; }
+ .title {font-size:36px;font-weight:750;letter-spacing:-.5px}
+ .section {font-size:24px;font-weight:700}
+ .heading {font-size:23px;font-weight:700}
+ .body {font-size:19px;fill:#42536c}
+ .small {font-size:17px;fill:#52647e}
+ .tiny {font-size:16px;fill:#64748b}
+ .white {fill:#fff}
+ .link {fill:none;stroke:#52647e;stroke-width:2.4;marker-end:url(#arrow);stroke-linejoin:round}
+ .feedback {fill:none;stroke:#5b4bd9;stroke-width:3;marker-end:url(#violetArrow);stroke-linejoin:round}
+</style>
+<rect width="1920" height="1740" fill="#f5f7fc"/>
+
+<text x="58" y="61" class="title">Aster · 源码核对后的整体架构</text>
+<text x="60" y="96" class="small">2026-11-02 工作区快照 · Core / ACP 9.1.7 · aster CLI 0.1.6 · 包含未提交的并行工作，详见配套源码清单</text>
+<text x="60" y="126" class="tiny">实线 = 模块级调用或事实流    虚线框 = 责任边界    底部卡片 = 端口对接的系统    本图不是逐函数调用图</text>
+<rect x="60" y="165" width="530" height="116" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="83" y="200" class="heading">Studio · React + Tauri</text>
+<text x="83" y="231" class="body">Agent Plane：桌面交互、租户与会话投影</text>
+<text x="83" y="258" class="body">Office / Browser / Capture / 产物预览由宿主集成</text>
+<rect x="620" y="165" width="360" height="116" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="643" y="200" class="heading">aster · Terminal TUI</text>
+<text x="643" y="231" class="body">Pager、终端交互、ACP 事件展示</text>
+<text x="643" y="258" class="body">校验并启动配套 aster-acp</text>
+<rect x="1010" y="165" width="330" height="116" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="1033" y="200" class="heading">Rust SDK Host</text>
+<text x="1033" y="231" class="body">嵌入 aster-core</text>
+<text x="1033" y="258" class="body">直接调用 AgentSession</text>
+<rect x="1370" y="165" width="490" height="206" rx="16" fill="#edf4ff" stroke="#a9c5ec" stroke-width="1.6"/>
+<text x="1393" y="200" class="heading">Studio 辅助模型路径</text>
+<text x="1393" y="231" class="body">例：workbench 独立成果审查</text>
+<text x="1393" y="258" class="body">Provider / ModelControl 调用，无工具循环</text>
+<text x="1393" y="285" class="body">它有独立证据与结果校验</text>
+<text x="1393" y="312" class="body">不能视为统一 ACP 路径的一部分</text>
+<path d="M325 281V310" class="link"/>
+<path d="M800 281V310" class="link"/>
+<rect x="60" y="310" width="920" height="70" rx="16" fill="#eef1ff" stroke="#b9b5ed" stroke-width="1.6"/>
+<text x="83" y="345" class="heading">aster-acp · ACP JSON-RPC / stdio</text>
+<text x="944" y="353" class="small" text-anchor="end">协议 → Session / 事件、审批与恢复映射</text>
+<text x="1189" y="332" class="small">直接 SDK</text>
+<rect x="45" y="418" width="1830" height="995" rx="24" fill="#fbfcff" stroke="#9baac1" stroke-width="1.6" stroke-dasharray="7 6"/>
+<text x="70" y="451" class="section">aster-core · 共享执行内核</text>
+<rect x="80" y="470" width="1720" height="65" rx="14" fill="#eef1ff" stroke="#b9b5ed" stroke-width="1.6"/>
+<text x="110" y="510" class="heading">AgentSession API</text>
+<text x="395" y="510" class="body">send / stream · confirm_tool_use · steer / resume_run · cancel / close</text>
+<path d="M520 380V470" class="link"/>
+<path d="M1175 281V470" class="link"/>
+<path d="M355 535V570" class="link"/>
+<path d="M945 535V570" class="link"/>
+<path d="M1535 535V570" class="link"/>
+<rect x="80" y="570" width="550" height="135" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="103" y="605" class="heading">Session / Run Admission</text>
+<text x="103" y="636" class="body">Session 单飞准入；绑定能力快照与版本</text>
+<text x="103" y="663" class="body">Run → Turn → Subtask → Turn；取消与清理随所有权</text>
+<text x="103" y="690" class="body">显式后台任务提升到 Run，不能延长父作用域</text>
+<rect x="665" y="570" width="550" height="135" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="688" y="605" class="heading">Meta Harness · 准入时组装</text>
+<text x="688" y="636" class="body">stock / host:&lt;id&gt;；Rust 宿主也可提供完整组装器</text>
+<text x="688" y="663" class="body">有序 Moore 组件 → HarnessGraph → Actor</text>
+<text x="688" y="690" class="body">KernelPolicy 常驻；组装器不能关闭内核治理</text>
+<rect x="1250" y="570" width="550" height="135" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="1273" y="605" class="heading">上下文与策略输入</text>
+<text x="1273" y="636" class="body">Prompt slots / WorkPolicy / skills / host context</text>
+<text x="1273" y="663" class="body">ContextProvider：保留最新、去重、排序、token 预算</text>
+<text x="1273" y="690" class="body">上下文装配提供输入；不产生第二套执行控制器</text>
+<path d="M355 705V745" class="link"/>
+<path d="M945 705V745" class="link"/>
+<path d="M1535 705V745" class="link"/>
+<rect x="210" y="745" width="1460" height="160" rx="22" fill="url(#actor)" stroke="#454099" stroke-width="1.6"/>
+<text x="940" y="789" class="heading white" text-anchor="middle">FactRun + aster-effect Actor</text>
+<text x="940" y="822" class="body white" text-anchor="middle">append fact → fold log → choose transition → execute effect → append result</text>
+<rect x="335" y="845" width="226" height="42" rx="11" fill="#eeedff" stroke="#eeedff" stroke-width="1.6"/>
+<text x="448" y="873" class="body" text-anchor="middle">system</text>
+<rect x="581" y="845" width="226" height="42" rx="11" fill="#eeedff" stroke="#eeedff" stroke-width="1.6"/>
+<text x="694" y="873" class="body" text-anchor="middle">tools</text>
+<rect x="827" y="845" width="226" height="42" rx="11" fill="#eeedff" stroke="#eeedff" stroke-width="1.6"/>
+<text x="940" y="873" class="body" text-anchor="middle">budget</text>
+<rect x="1073" y="845" width="226" height="42" rx="11" fill="#eeedff" stroke="#eeedff" stroke-width="1.6"/>
+<text x="1186" y="873" class="body" text-anchor="middle">compact</text>
+<rect x="1319" y="845" width="226" height="42" rx="11" fill="#eeedff" stroke="#eeedff" stroke-width="1.6"/>
+<text x="1432" y="873" class="body" text-anchor="middle">infer</text>
+<text x="940" y="937" class="small" text-anchor="middle">停等 ≠ 结束：确认 / 用户补充写入新事实后 resume；steer 写入新 user.message；取消单独传播</text>
+<path d="M335 905V977" class="link"/>
+<path d="M930 905V977" class="link"/>
+<path d="M1540 905V977" class="link"/>
+<rect x="80" y="977" width="510" height="157" rx="16" fill="#edf4ff" stroke="#a9c5ec" stroke-width="1.6"/>
+<text x="103" y="1012" class="heading">LiveCompletion · 模型端口</text>
+<text x="103" y="1043" class="body">LlmClient / provider 适配；结构化输出与流式事件</text>
+<text x="103" y="1070" class="body">task scheduler + generation pool（支持时）</text>
+<text x="103" y="1097" class="body">分开管理：模型容量、token、quiet gap、运行时长</text>
+<rect x="625" y="977" width="610" height="157" rx="16" fill="#edf8f2" stroke="#a6ceb6" stroke-width="1.6"/>
+<text x="648" y="1012" class="heading">Tool Runtime · 执行前授权</text>
+<text x="648" y="1043" class="body">PermissionPolicy：Allow / Ask / Deny → ToolRunner</text>
+<text x="648" y="1070" class="body">ToolExecutor / Registry；内置、MCP、Skill、Task</text>
+<text x="648" y="1097" class="body">workspace / sandbox / artifacts；超时与协作取消</text>
+<rect x="1270" y="977" width="530" height="157" rx="16" fill="#fff6e9" stroke="#e4c18b" stroke-width="1.6"/>
+<text x="1293" y="1012" class="heading">Completion Gate · 唯一完成裁决</text>
+<text x="1293" y="1043" class="body">mutation ledger + reports / waiver + effect digest</text>
+<text x="1293" y="1070" class="body">Allow 才写 turn.complete；未满足则拒绝完成</text>
+<text x="1293" y="1097" class="body">Narrative / Verified / Waived / Distinct</text>
+<text x="1293" y="1124" class="body">forced_stop 独立标记中断原因</text>
+<path d="M1235 1057H1270" class="link"/>
+<text x="940" y="1167" class="small" text-anchor="middle">模型响应、工具结果与完成证据由执行内核纳入事实链</text>
+<path d="M335 1134V1190" class="link"/>
+<path d="M930 1134V1190" class="link"/>
+<path d="M1540 1134V1190" class="link"/>
+<rect x="210" y="1190" width="1590" height="91" rx="14" fill="#fff6ec" stroke="#dfaa62" stroke-width="1.6"/>
+<text x="1005" y="1224" class="heading" text-anchor="middle">Append-only Fact Log / 共享 FileLog · 运行决策与恢复的权威历史</text>
+<text x="1005" y="1256" class="small" text-anchor="middle">user.message · model.turn · tool.result · confirmation / question answers · turn.complete · durable source / evidence</text>
+<path d="M210 1234H65V825H210" class="feedback"/>
+<text x="87" y="1174" class="small">fold / replay</text>
+<path d="M1005 1281V1314" class="link"/>
+<rect x="210" y="1314" width="1590" height="62" rx="13" fill="#eff2f7" stroke="#cbd4df" stroke-width="1.6"/>
+<text x="1005" y="1353" class="body" text-anchor="middle">checkpoint 绑定 durable source；RunStore / AgentEvent 是执行投影；最终完成状态服从 Completion Gate</text>
+<text x="60" y="1456" class="section">端口、宿主服务与可选部署</text>
+<rect x="60" y="1481" width="540" height="141" rx="16" fill="#edf4ff" stroke="#a9c5ec" stroke-width="1.6"/>
+<text x="83" y="1516" class="heading">模型 / Provider 后端</text>
+<text x="83" y="1547" class="body">远程 API 或配置的模型后端；由 LlmClient 适配</text>
+<text x="83" y="1574" class="body">可选 Gateway 路由；并非每次运行的必经节点</text>
+<text x="83" y="1601" class="body">Studio 辅助模型调用使用自己的调用与校验路径</text>
+<rect x="630" y="1481" width="570" height="141" rx="16" fill="#edf8f2" stroke="#a6ceb6" stroke-width="1.6"/>
+<text x="653" y="1516" class="heading">工具与数据服务</text>
+<text x="653" y="1547" class="body">宿主工具 / MCP；Office / Browser / Capture</text>
+<text x="653" y="1574" class="body">本机 sandbox companion；文件、产物与检索后端</text>
+<text x="653" y="1601" class="body">租户、成员记忆与索引有各自的数据与信任边界</text>
+<rect x="1230" y="1481" width="630" height="141" rx="16" fill="#fff" stroke="#c8d2e2" stroke-width="1.6"/>
+<text x="1253" y="1516" class="heading">可选控制面与高级能力</text>
+<text x="1253" y="1547" class="body">Cloud / API / Control plane 使用独立工作区</text>
+<text x="1253" y="1574" class="body">local-code 默认；advanced-harness 由 feature 开启</text>
+<text x="1253" y="1601" class="body">可组合 Harness ≠ 默认自动改写 / 评估自身 Harness</text>
+<text x="60" y="1666" class="small">原图核心主线成立：事件驱动执行、权限前置、事实回放与完成门槛。修正了 ACP 必经、Meta Harness 方向和线性 End 的误导。</text>
+<text x="60" y="1698" class="tiny">源码依据与局限：aster-system-2026-11-02.md / .sources.json    ·    独立存储并不都归入 Fact Log    ·    本图不等于发布包或跨平台实测证明</text>
+</svg>
