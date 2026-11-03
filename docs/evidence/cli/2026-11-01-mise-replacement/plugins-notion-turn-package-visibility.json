@@ -1,0 +1,17 @@
+{
+  "capturedAtUtc": "2026-11-01T18:49:34.198454+00:00",
+  "packages": [
+    {
+      "name": "plugins/operations/aster/aster-document",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/operations/aster/aster-office",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/operations/aster/aster-sandbox",
+      "visibility": "private"
+    }
+  ]
+}

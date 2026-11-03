@@ -23,7 +23,7 @@ const MANIFEST: &str = r#"extension "aster/sample" {
 async fn registry_package_build_produces_a_checkable_archive_and_preserves_existing_output() {
     let temporary = tempfile::tempdir().unwrap();
     let repository = temporary.path().join("源码 repository");
-    let source = repository.join("plugins/aster/sample");
+    let source = repository.join("plugins/knowledge/aster/sample");
     std::fs::create_dir_all(source.join("skills/guide")).unwrap();
     std::fs::write(
         repository.join("domains.acl"),
@@ -166,7 +166,7 @@ async fn registry_package_check_validates_a_native_archive_without_installing_it
 async fn registry_package_prepare_writes_exact_oci_bytes_and_preserves_existing_outputs() {
     let temporary = tempfile::tempdir().unwrap();
     let root = temporary.path().join("中文 repository");
-    let source = root.join("plugins/aster/sample");
+    let source = root.join("plugins/knowledge/aster/sample");
     std::fs::create_dir_all(source.join("skills/guide")).unwrap();
     std::fs::write(
         root.join("domains.acl"),

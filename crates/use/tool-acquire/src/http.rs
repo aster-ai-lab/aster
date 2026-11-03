@@ -3,6 +3,7 @@
 //! `pipx:` is not downloaded here. The host installs it with `uv`.
 //! A missing publisher digest refuses the payload.
 
+use std::collections::BTreeMap;
 use std::io::{Cursor, Read};
 use std::sync::Arc;
 use std::time::Duration;
@@ -14,9 +15,15 @@ use sha2::{Digest, Sha256, Sha512};
 
 use crate::catalog::catalog;
 use crate::error::ToolAcquireError;
-use crate::source::{CompanionFile, ToolPayload, ToolQuery, ToolSource};
-use crate::spec::{parse_tool_version, ToolBackend, ToolSpec};
+use crate::source::{CompanionFile, InstallPayload, ToolPayload, ToolQuery, ToolSource};
+use crate::spec::{parse_tool_version, CoreRuntime, ToolBackend, ToolSpec};
 use crate::store::hex_encode;
+use crate::version::{semver_prerelease, VersionListing, MAX_VERSIONS};
+
+mod node;
+pub use node::NodeSignatureError;
+mod toolchain;
+pub use toolchain::{InstalledToolchain, PreparedToolchain, ToolchainPlugin};
 
 const MAX_BYTES: usize = 200 * 1024 * 1024;
 
@@ -46,8 +53,8 @@ impl std::fmt::Debug for FetchPolicy {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
             .debug_struct("FetchPolicy")
-            .field("github_mirror", &self.github_mirror)
-            .field("npm_registry", &self.npm_registry)
+            .field("github_mirror", &debug_origin(&self.github_mirror))
+            .field("npm_registry", &debug_origin(&self.npm_registry))
             .field(
                 "github_token",
                 &if self.github_token.is_empty() {
@@ -65,6 +72,7 @@ pub struct HttpSource {
     client: reqwest::blocking::Client,
     github_api: String,
     npm_registry: String,
+    node_dist: String,
     loopback: bool,
     tokens: &'static [&'static str],
     github_mirror: Option<String>,
@@ -78,10 +86,14 @@ impl std::fmt::Debug for HttpSource {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
             .debug_struct("HttpSource")
-            .field("github_api", &self.github_api)
-            .field("npm_registry", &self.npm_registry)
+            .field("github_api", &debug_origin(&self.github_api))
+            .field("npm_registry", &debug_origin(&self.npm_registry))
+            .field("node_dist", &debug_origin(&self.node_dist))
             .field("loopback", &self.loopback)
-            .field("github_mirror", &self.github_mirror)
+            .field(
+                "github_mirror",
+                &self.github_mirror.as_deref().and_then(debug_origin),
+            )
             .field("github_token", &self.github_token.as_ref().map(|_| "set"))
             .finish()
     }
@@ -108,6 +120,8 @@ impl HttpSource {
         )
     }
 
+    /// Loopback-only fixture transport, available to tests or the opt-in test-support feature.
+    #[cfg(any(test, feature = "test-support"))]
     pub fn for_test(
         github_api: impl Into<String>,
         npm_registry: impl Into<String>,
@@ -167,9 +181,14 @@ impl HttpSource {
             .timeout(Duration::from_secs(60))
             .user_agent("aster-use-tool-acquire")
             .build()
-            .map_err(|_| ToolAcquireError::DownloadRejected)?;
+            .map_err(ToolAcquireError::http)?;
         Ok(Self {
             client,
+            node_dist: if loopback {
+                github_api.clone()
+            } else {
+                node::DEFAULT_DIST.into()
+            },
             github_api,
             npm_registry,
             loopback,
@@ -183,9 +202,28 @@ impl HttpSource {
     }
 }
 
+fn debug_origin(value: &str) -> Option<String> {
+    if value.is_empty() {
+        return None;
+    }
+    Some(
+        reqwest::Url::parse(value)
+            .ok()
+            .filter(|url| url.has_host())
+            .map(|url| url.origin().ascii_serialization())
+            .unwrap_or_else(|| "<configured>".into()),
+    )
+}
+
 impl ToolSource for HttpSource {
     fn fetch(&self, query: &ToolQuery) -> Result<ToolPayload, ToolAcquireError> {
+        if let Some(version) = &query.version {
+            parse_tool_version(version)?;
+        }
         match query.spec.backend() {
+            ToolBackend::Core(CoreRuntime::Node) => {
+                Err(ToolAcquireError::RuntimeLayoutRequired { runtime: "node" })
+            }
             ToolBackend::Github { owner, repo } | ToolBackend::Aqua { owner, repo } => {
                 self.fetch_github(owner, repo, query.version.as_deref(), &query.executable)
             }
@@ -199,8 +237,18 @@ impl ToolSource for HttpSource {
         }
     }
 
+    fn fetch_installation(&self, query: &ToolQuery) -> Result<InstallPayload, ToolAcquireError> {
+        match query.spec.backend() {
+            ToolBackend::Core(CoreRuntime::Node) => self.fetch_node(query),
+            _ => self.fetch(query).map(InstallPayload::Executable),
+        }
+    }
+
     fn latest(&self, spec: &ToolSpec) -> Result<String, ToolAcquireError> {
         match spec.backend() {
+            ToolBackend::Core(CoreRuntime::Node) => self
+                .node_versions()?
+                .resolve(&crate::VersionRequest::parse("latest")?),
             ToolBackend::Github { owner, repo } | ToolBackend::Aqua { owner, repo } => {
                 if let Some(executable) = catalog_executable(spec.raw()) {
                     let chosen = self.resolve_github(owner, repo, None, executable)?;
@@ -218,6 +266,90 @@ impl ToolSource for HttpSource {
                 Err(ToolAcquireError::LatestUnavailable)
             }
         }
+    }
+
+    fn versions(&self, spec: &ToolSpec) -> Result<VersionListing, ToolAcquireError> {
+        match spec.backend() {
+            ToolBackend::Core(CoreRuntime::Node) => self.node_versions(),
+            ToolBackend::Github { owner, repo } | ToolBackend::Aqua { owner, repo } => {
+                let mut versions = Vec::new();
+                for page in 1..=MAX_VERSIONS / 100 + 1 {
+                    let url = format!(
+                        "{}/repos/{owner}/{repo}/releases?per_page=100&page={page}",
+                        self.github_api.trim_end_matches('/')
+                    );
+                    let value = self.get_json(&url)?;
+                    let items = value.as_array().ok_or(ToolAcquireError::DownloadRejected)?;
+                    if items.len() > 100 || versions.len() + items.len() > MAX_VERSIONS {
+                        return Err(ToolAcquireError::VersionListLimit);
+                    }
+                    for release in items {
+                        if metadata_flag(release, "draft")? {
+                            continue;
+                        }
+                        let tag = release
+                            .get("tag_name")
+                            .and_then(|tag| tag.as_str())
+                            .ok_or(ToolAcquireError::DownloadRejected)?;
+                        versions.push((
+                            tag.strip_prefix('v').unwrap_or(tag).to_string(),
+                            metadata_flag(release, "prerelease")?,
+                        ));
+                    }
+                    if items.len() < 100 {
+                        return VersionListing::new(versions, BTreeMap::new());
+                    }
+                }
+                Err(ToolAcquireError::VersionListLimit)
+            }
+            ToolBackend::Npm { package } => {
+                let url = format!(
+                    "{}/{}",
+                    self.npm_registry.trim_end_matches('/'),
+                    npm_path(package)
+                );
+                let metadata = self.get_json(&url)?;
+                let versions = metadata
+                    .get("versions")
+                    .and_then(|value| value.as_object())
+                    .ok_or(ToolAcquireError::DownloadRejected)?;
+                if versions.len() > MAX_VERSIONS {
+                    return Err(ToolAcquireError::VersionListLimit);
+                }
+                let aliases = match metadata.get("dist-tags") {
+                    None => BTreeMap::new(),
+                    Some(tags) => tags
+                        .as_object()
+                        .ok_or(ToolAcquireError::DownloadRejected)?
+                        .iter()
+                        .map(|(name, target)| {
+                            target
+                                .as_str()
+                                .map(|target| (name.clone(), target.to_string()))
+                                .ok_or(ToolAcquireError::DownloadRejected)
+                        })
+                        .collect::<Result<BTreeMap<_, _>, _>>()?,
+                };
+                VersionListing::new(
+                    versions
+                        .keys()
+                        .map(|version| (version.clone(), semver_prerelease(version)))
+                        .collect(),
+                    aliases,
+                )
+            }
+            ToolBackend::Pipx { .. } | ToolBackend::Catalog => {
+                Err(ToolAcquireError::VersionListingUnsupported)
+            }
+        }
+    }
+}
+
+fn metadata_flag(value: &serde_json::Value, field: &str) -> Result<bool, ToolAcquireError> {
+    match value.get(field) {
+        None => Ok(false),
+        Some(serde_json::Value::Bool(flag)) => Ok(*flag),
+        Some(_) => Err(ToolAcquireError::DownloadRejected),
     }
 }
 
@@ -467,15 +599,9 @@ impl HttpSource {
         if let Some(header) = self.token_header(url) {
             request = request.header("authorization", header);
         }
-        let response = request
-            .send()
-            .map_err(|_| ToolAcquireError::DownloadRejected)?;
-        if !response.status().is_success() {
-            return Err(ToolAcquireError::DownloadRejected);
-        }
-        response
-            .json()
-            .map_err(|_| ToolAcquireError::DownloadRejected)
+        let response = request.send().map_err(ToolAcquireError::http)?;
+        let bytes = read_http_response(response, None, MAX_BYTES)?;
+        serde_json::from_slice(&bytes).map_err(ToolAcquireError::MetadataJson)
     }
 
     fn allows(&self, url: &str) -> bool {
@@ -515,48 +641,73 @@ impl HttpSource {
         }
     }
 
+    fn prepare_toolchain_download(&self, original: &str) -> Result<String, ToolAcquireError> {
+        match original.strip_prefix("https://registry.npmjs.org/") {
+            Some(path) if !self.loopback => Ok(format!(
+                "{}/{path}",
+                self.npm_registry.trim_end_matches('/')
+            )),
+            _ => self.prepare_download(original),
+        }
+    }
+
     fn download(&self, url: &str) -> Result<Vec<u8>, ToolAcquireError> {
+        self.download_bounded(url, MAX_BYTES)
+    }
+
+    fn download_bounded(&self, url: &str, max_bytes: usize) -> Result<Vec<u8>, ToolAcquireError> {
         if !self.allows(url) {
             return Err(ToolAcquireError::DownloadRejected);
         }
-        let mut response = self
+        let response = self
             .client
             .get(url)
             .send()
-            .map_err(|_| ToolAcquireError::DownloadRejected)?;
-        if !response.status().is_success() {
-            return Err(ToolAcquireError::DownloadRejected);
-        }
-        let total = response.content_length();
-        if total.is_some_and(|length| length > MAX_BYTES as u64) {
-            return Err(ToolAcquireError::DownloadRejected);
-        }
-        let mut bytes = Vec::new();
-        if let Some(length) = total {
-            let length = usize::try_from(length).map_err(|_| ToolAcquireError::DownloadRejected)?;
-            bytes.reserve(length.min(MAX_BYTES));
-        }
-        let mut buffer = [0u8; 64 * 1024];
-        loop {
-            let count = response
-                .read(&mut buffer)
-                .map_err(|_| ToolAcquireError::DownloadRejected)?;
-            if count == 0 {
-                break;
-            }
-            if bytes.len() + count > MAX_BYTES {
-                return Err(ToolAcquireError::DownloadRejected);
-            }
-            bytes.extend_from_slice(&buffer[..count]);
-            if let Some(progress) = &self.progress {
-                progress(bytes.len() as u64, total);
-            }
-        }
-        if let Some(progress) = &self.progress {
-            progress(bytes.len() as u64, total.or(Some(bytes.len() as u64)));
-        }
-        Ok(bytes)
+            .map_err(ToolAcquireError::http)?;
+        read_http_response(response, self.progress.as_ref(), max_bytes)
     }
+}
+
+fn read_http_response(
+    response: reqwest::blocking::Response,
+    progress: Option<&DownloadProgress>,
+    max_bytes: usize,
+) -> Result<Vec<u8>, ToolAcquireError> {
+    let mut response = response
+        .error_for_status()
+        .map_err(ToolAcquireError::http)?;
+    if !response.status().is_success() {
+        return Err(ToolAcquireError::DownloadRejected);
+    }
+    let total = response.content_length();
+    if total.is_some_and(|length| length > max_bytes as u64) {
+        return Err(ToolAcquireError::DownloadRejected);
+    }
+    let mut bytes = Vec::new();
+    if let Some(length) = total {
+        let length = usize::try_from(length).map_err(|_| ToolAcquireError::DownloadRejected)?;
+        bytes.reserve(length.min(max_bytes));
+    }
+    let mut buffer = [0u8; 64 * 1024];
+    loop {
+        let count = response
+            .read(&mut buffer)
+            .map_err(ToolAcquireError::HttpRead)?;
+        if count == 0 {
+            break;
+        }
+        if bytes.len() + count > max_bytes {
+            return Err(ToolAcquireError::DownloadRejected);
+        }
+        bytes.extend_from_slice(&buffer[..count]);
+        if let Some(progress) = progress {
+            progress(bytes.len() as u64, total);
+        }
+    }
+    if let Some(progress) = progress {
+        progress(bytes.len() as u64, total.or(Some(bytes.len() as u64)));
+    }
+    Ok(bytes)
 }
 
 /// Host aliases, most specific first. `select_asset` stops at the first alias
@@ -706,7 +857,7 @@ fn choose_release<'a>(
                 [one] => {
                     return Ok(ReleaseChoice {
                         version: &release.version,
-                        asset: *one,
+                        asset: one,
                         assets: &release.assets,
                     });
                 }
@@ -1254,13 +1405,14 @@ fn url_allowed_str(
     if matches!(
         host,
         "api.github.com"
+            | "nodejs.org"
             | "github.com"
             | "objects.githubusercontent.com"
             | "release-assets.githubusercontent.com"
     ) {
         return true;
     }
-    if npm_hosts.iter().any(|item| *item == host) {
+    if npm_hosts.contains(&host) {
         return true;
     }
     if mirror_host == Some(host) {
@@ -1275,6 +1427,15 @@ fn mirrored_path_is_official(path: &str) -> bool {
     };
     official_asset_url(embedded)
 }
+
+#[cfg(test)]
+mod error_tests;
+
+#[cfg(test)]
+mod test_server;
+
+#[cfg(test)]
+mod version_tests;
 
 #[cfg(test)]
 mod tests {
@@ -1771,7 +1932,10 @@ mod tests {
         let linux = &["linux-arm64"];
         let linux_releases = [product];
         let linux_choice = choose_release(&linux_releases, linux, "aster-box").unwrap();
-        assert_eq!(linux_choice.asset.name, "aster-box-v3.3.0-linux-arm64.tar.gz");
+        assert_eq!(
+            linux_choice.asset.name,
+            "aster-box-v3.3.0-linux-arm64.tar.gz"
+        );
     }
 
     #[test]
@@ -1809,7 +1973,11 @@ mod tests {
         paths.sort_unstable();
         assert_eq!(
             paths,
-            vec!["aster-box-guest-init", "aster-box-shim", "lib/libkrun.dylib",]
+            vec![
+                "aster-box-guest-init",
+                "aster-box-shim",
+                "lib/libkrun.dylib",
+            ]
         );
     }
 

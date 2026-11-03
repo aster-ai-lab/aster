@@ -1,0 +1,2 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-01 17:34:58.623 Df log[79541:3f20278] [com.apple.log:] log run noninteractively, parent: 81052 (codex), args: '/usr/bin/log' 'show' '--last' '8m' '--style' 'compact' '--predicate' 'eventMessage CONTAINS "env_manager-dc365661741318e2"'

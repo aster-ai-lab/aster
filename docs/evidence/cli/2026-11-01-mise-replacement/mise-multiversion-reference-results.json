@@ -1,0 +1,10 @@
+{
+  "reference": "specs/031-cli-mise-replacement/contracts/mise-multiversion-reference.json",
+  "sha256": "70ab8db3b3034b0c20453e6638ddd64ac538b39d601a2d67f4dbc248107ec07b",
+  "cases": 5,
+  "native_commands": 25,
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "timeout_seconds": 25,
+  "aster_multiversion_implemented": false,
+  "producer_repair": "Canonicalize both native paths before relative comparison; initial and unchanged isolated /var versus /private/var failures retained. Native commands, case inputs, hooks and timeouts were unchanged."
+}

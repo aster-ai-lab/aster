@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/launcher.py", line 5, in <module>
+    from babeldoc.main import cli
+  File "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/site-packages/babeldoc/main.py", line 20, in <module>
+    import babeldoc.format.pdf.high_level
+  File "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/site-packages/babeldoc/format/pdf/high_level.py", line 28, in <module>
+    from babeldoc.format.pdf.document_il.backend.pdf_creater import SAVE_PDF_STAGE_NAME
+  File "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/site-packages/babeldoc/format/pdf/document_il/backend/pdf_creater.py", line 16, in <module>
+    from bitstring import BitStream
+ImportError: cannot import name 'BitStream' from 'bitstring' (/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/site-packages/bitstring/__init__.py)

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "data": {
+    "operation": "create",
+    "created": true,
+    "kind": "spreadsheet",
+    "outputPath": "/Users/roylin/code/aster/.tmp/studio-plugin-chrome-followup/office-actual/Office 验证 space/workbook.xlsx",
+    "revision": {
+      "archiveBytes": 2485,
+      "sha256": "e4f476a64ee972b20ddb51ca81b5c3799c2a2508cd8de949371931ba6c56ee78"
+    }
+  }
+}

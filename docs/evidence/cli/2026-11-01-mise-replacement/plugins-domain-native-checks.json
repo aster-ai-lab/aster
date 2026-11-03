@@ -1,0 +1,33 @@
+{
+  "startedAtUtc": "2026-11-01T16:09:52.978553+00:00",
+  "checks": [
+    {
+      "name": "registry-domain-native-tests-current",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::registry::tests",
+        "--",
+        "--nocapture"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "registry-domain-studio-clippy-current",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-extension v0.3.3 (/Users/roylin/code/aster/crates/use/extension)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.18s
+     Running unittests src/lib.rs (target/debug/deps/aster_use_extension-5f0b9e34b3bd8e02)
+
+running 1 test
+test remote::catalog_tests::consistent_snapshot_catalog_keeps_offline_pagination_and_rejects_damaged_versioned_metadata ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 217 filtered out; finished in 0.56s
+

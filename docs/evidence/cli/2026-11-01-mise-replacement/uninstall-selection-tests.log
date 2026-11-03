@@ -1,0 +1,12 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.32s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-d1fbb0cc5bcff877)
+
+running 1 test
+test store::tests::uninstall_selection_prefers_exact_labels_and_retains_ambiguous_prefix_candidates ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 114 filtered out; finished in 0.18s
+

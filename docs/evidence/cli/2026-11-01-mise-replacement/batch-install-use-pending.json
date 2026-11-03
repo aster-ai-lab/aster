@@ -1,0 +1,85 @@
+{
+  "captured_at": 1793592129.30639,
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "release": "25.6.0"
+  },
+  "toolchain": "1.97.1",
+  "source_hashes": {
+    "crates/use/tool-acquire/src/store.rs": "80dfad452b096f5a0d3e99f634b22f8c840eaf36cfdeec5bc0311eb472f90a37",
+    "crates/use/tool-acquire/src/store/tests.rs": "3a420401e7e11684f17c4b1acb8f917edcc0dc3c3c07b9e96384a47913fd2dbb",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "5acdb65735f7a1cb91a8e8f75997d806133ba4e9cbd53091f8823b055be1754a",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/tests.rs": "49f0e04ca42c98622972c0768899d729f9e78b3732e357f0c3f3e1a87df7f1aa",
+    "apps/aster/tests/env_manager.rs": "49c4fb92e98a75a35b1842f079534381c431804494c406f10864bc9cba775bf7",
+    "tests/cli_mise_batch_install_reference.py": "b352db135a8e8a2edc6c86ca39f3e68abc57488b56a1c39096a2c5bedf7eb52e",
+    "specs/031-cli-mise-replacement/contracts/mise-batch-install-reference.json": "7a0e1bd7735dab6567e70a803dca944cbebf28ba3a9260469fbff18be8f78f50"
+  },
+  "tool_tests": {
+    "passed": 130,
+    "failed": 0,
+    "ignored": 4,
+    "log": "mise-batch-install-tool-tests.log"
+  },
+  "frozen_mise": {
+    "cases": 7,
+    "native_commands": 73,
+    "tag": "v2026.10.25",
+    "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+    "reference_sha256": "7a0e1bd7735dab6567e70a803dca944cbebf28ba3a9260469fbff18be8f78f50"
+  },
+  "native_checks_status": "pending",
+  "commands_at_capture": [
+    {
+      "name": "tool-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "log": ".tmp/mise-batch-install-tool-clippy.log",
+      "status": "running",
+      "started": 1793590812.8196192
+    }
+  ],
+  "pending_sessions": {
+    "pager_tests": 34648,
+    "verification_pipeline": 32924
+  },
+  "fixture_refinements_before_first_cli_compile": [
+    {
+      "at": 1793590992.423441,
+      "before": "9bfcda4be9b4f23b609ef2e916abfd40d6312712ac67dbbcfdc5745024cd1ddf",
+      "after": "cd1bd6a14d6d01a59f7e8d4980699f1f8144986e27844d66de4c124b5a700caa",
+      "reason": "Before first CLI execution, cover current-pointer independence and remote latest alias; use a non-downloading missing runtime to verify later argument rejection hermetically.",
+      "active_commands": [
+        "tool-clippy"
+      ]
+    },
+    {
+      "at": 1793591805.261775,
+      "source_sha256": "49c4fb92e98a75a35b1842f079534381c431804494c406f10864bc9cba775bf7",
+      "reason": "Before first CLI compile/execution, replace the unrelated fixture declaration jq with the actually admitted catalog identity gh. No frozen reference input changed.",
+      "pipeline_commands": [
+        {
+          "name": "tool-clippy",
+          "status": "running",
+          "exit": null
+        }
+      ]
+    }
+  ],
+  "explicitly_not_claimed": [
+    "new CLI acceptance",
+    "package-wide Clippy",
+    "root format and locality for this source capture",
+    "full mise parity",
+    "complete old dependency-page parity",
+    "native GUI acceptance",
+    "release qualification"
+  ]
+}

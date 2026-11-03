@@ -6,12 +6,13 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::error::ToolAcquireError;
 use crate::lock::{join_under, InstallLock};
 use crate::receipt::ToolReceipt;
-use crate::source::{ToolQuery, ToolSource};
+use crate::source::{InstallPayload, ToolQuery, ToolSource};
 use crate::spec::{parse_tool_name, parse_tool_spec, parse_tool_version};
 use crate::store::{
     self, apply_local, ensure_real_directory, ensure_real_file, read_pointer, read_receipt,
     remove_owned_tree, LocalApply,
 };
+use crate::version::{VersionRequest, VersionRequestKind};
 
 /// Install one resolved spec through a source, then publish it with the store.
 #[derive(Debug, Clone)]
@@ -23,47 +24,99 @@ pub struct AcquireRequest {
 }
 
 impl crate::store::ToolStore {
+    /// Install an exact version pin without consulting a version listing.
     pub fn acquire_with(
         &self,
         request: AcquireRequest,
         source: &dyn ToolSource,
     ) -> Result<ToolReceipt, ToolAcquireError> {
-        parse_tool_name(&request.name)?;
-        parse_tool_name(&request.executable_name)?;
-        let spec = parse_tool_spec(&request.spec)?;
-        if let Some(version) = &request.version {
-            parse_tool_version(version)?;
-        }
-        let payload = source.fetch(&ToolQuery {
-            spec: spec.clone(),
-            version: request.version.clone(),
-            executable: request.executable_name.clone(),
-        })?;
-        parse_tool_version(&payload.version)?;
-        if let Some(wanted) = &request.version {
-            if wanted != &payload.version {
-                return Err(ToolAcquireError::VersionConflict {
-                    version: payload.version,
-                });
-            }
-        }
-        let incoming =
-            write_incoming(self.root(), &request.name, &payload.version, &payload.bytes)?;
-        let applied = apply_local(
-            self.root(),
-            LocalApply {
-                name: request.name,
-                spec: spec.raw().to_string(),
-                version: payload.version,
-                executable_name: request.executable_name,
-                payload: incoming.clone(),
-                sha256: Some(payload.sha256),
-                require_checksum: true,
-                companions: payload.companions,
-            },
+        let (prepared, version) = PreparedAcquire::new(request)?;
+        prepared.with_version(version)?.acquire(self, source)
+    }
+
+    /// Resolve a bounded version request, then install the resulting concrete version.
+    pub fn acquire_requested_with(
+        &self,
+        request: AcquireRequest,
+        source: &dyn ToolSource,
+    ) -> Result<ToolReceipt, ToolAcquireError> {
+        let (prepared, raw_version) = PreparedAcquire::new(request)?;
+        let immutable_node = matches!(
+            prepared.spec.backend(),
+            crate::ToolBackend::Core(crate::CoreRuntime::Node)
         );
-        let _ = fs::remove_file(&incoming);
-        applied
+        let mut version = if let Some(version) = &raw_version {
+            let request_version = VersionRequest::parse(version)?;
+            match request_version.kind() {
+                VersionRequestKind::Latest => None,
+                VersionRequestKind::Version(version)
+                    if immutable_node
+                        && matches!(
+                            versions::Versioning::new(version),
+                            Some(versions::Versioning::Ideal(_))
+                        ) =>
+                {
+                    Some(version.clone())
+                }
+                VersionRequestKind::Path(_)
+                | VersionRequestKind::System
+                | VersionRequestKind::Reference { .. } => {
+                    // shortcut: these modes need context owners, implement them before T004 is complete.
+                    return Err(ToolAcquireError::UnsupportedVersionRequest(
+                        request_version.canonical(),
+                    ));
+                }
+                _ => {
+                    let selected = match self.remote_versions_with(&prepared.spec, Some(source)) {
+                        Ok(listing) => listing.resolve(&request_version)?,
+                        Err(ToolAcquireError::VersionListingUnsupported) => {
+                            match request_version.kind() {
+                                VersionRequestKind::Version(version) => version.clone(),
+                                _ => {
+                                    return Err(ToolAcquireError::UnsupportedVersionRequest(
+                                        request_version.canonical(),
+                                    ))
+                                }
+                            }
+                        }
+                        Err(error) => return Err(error),
+                    };
+                    Some(selected)
+                }
+            }
+        } else {
+            None
+        };
+        if immutable_node {
+            let selected = match version {
+                Some(version) => version,
+                None => match self.remote_versions_with(&prepared.spec, Some(source)) {
+                    Ok(listing) => listing.resolve(&VersionRequest::parse("latest")?)?,
+                    Err(ToolAcquireError::VersionListingUnsupported) => {
+                        source.latest(&prepared.spec)?
+                    }
+                    Err(error) => return Err(error),
+                },
+            };
+            // Official Node release versions identify immutable distributions.
+            let _lock = InstallLock::acquire(self.root())?;
+            if let Some(receipt) =
+                self.installed_receipt(&prepared.request.name, Some(&selected))?
+            {
+                if receipt.spec != prepared.spec.raw()
+                    || receipt.executable != prepared.request.executable_name
+                {
+                    return Err(ToolAcquireError::InstallationIdentityMismatch {
+                        name: receipt.name,
+                        version: receipt.version,
+                    });
+                }
+                store::publish_current(self.root(), &receipt)?;
+                return Ok(receipt);
+            }
+            version = Some(selected);
+        }
+        prepared.with_version(version)?.acquire(self, source)
     }
 
     pub fn which(&self, name: &str) -> Result<Option<PathBuf>, ToolAcquireError> {
@@ -73,7 +126,11 @@ impl crate::store::ToolStore {
             return Ok(None);
         }
         let receipt = read_receipt(self.root(), name)?;
-        let shim = join_under(self.root(), &["shims", &receipt.executable])?;
+        let archived = crate::archive::ArchiveRecord::read(self.root(), &receipt)?.is_some();
+        let shim = join_under(
+            self.root(),
+            &["shims", &store::shim_name(&receipt.executable, archived)],
+        )?;
         if !shim.exists() {
             return Ok(None);
         }
@@ -127,6 +184,75 @@ impl crate::store::ToolStore {
     }
 }
 
+struct PreparedAcquire {
+    request: AcquireRequest,
+    spec: crate::ToolSpec,
+}
+
+impl PreparedAcquire {
+    fn new(mut request: AcquireRequest) -> Result<(Self, Option<String>), ToolAcquireError> {
+        parse_tool_name(&request.name)?;
+        parse_tool_name(&request.executable_name)?;
+        let spec = parse_tool_spec(&request.spec)?;
+        let version = request.version.take();
+        Ok((Self { request, spec }, version))
+    }
+
+    fn with_version(mut self, version: Option<String>) -> Result<Self, ToolAcquireError> {
+        if let Some(version) = &version {
+            parse_tool_version(version)?;
+        }
+        self.request.version = version;
+        Ok(self)
+    }
+
+    fn acquire(
+        self,
+        store: &crate::ToolStore,
+        source: &dyn ToolSource,
+    ) -> Result<ToolReceipt, ToolAcquireError> {
+        let Self { request, spec } = self;
+        let payload = source.fetch_installation(&ToolQuery {
+            spec: spec.clone(),
+            version: request.version.clone(),
+            executable: request.executable_name.clone(),
+        })?;
+        parse_tool_version(payload.version())?;
+        if let Some(wanted) = &request.version {
+            if wanted != payload.version() {
+                return Err(ToolAcquireError::VersionConflict {
+                    version: payload.version().to_string(),
+                });
+            }
+        }
+        let payload = match payload {
+            InstallPayload::Archive(payload) => return store.acquire_archive(request, payload),
+            InstallPayload::Executable(payload) => payload,
+        };
+        let incoming = write_incoming(
+            store.root(),
+            &request.name,
+            &payload.version,
+            &payload.bytes,
+        )?;
+        let applied = apply_local(
+            store.root(),
+            LocalApply {
+                name: request.name,
+                spec: spec.raw().to_string(),
+                version: payload.version,
+                executable_name: request.executable_name,
+                payload: incoming.clone(),
+                sha256: Some(payload.sha256),
+                require_checksum: true,
+                companions: payload.companions,
+            },
+        );
+        let _ = fs::remove_file(&incoming);
+        applied
+    }
+}
+
 fn write_incoming(
     root: &Path,
     name: &str,
@@ -154,6 +280,9 @@ fn write_incoming(
         .map_err(|error| ToolAcquireError::io("sync incoming tool", &path, error))?;
     Ok(path)
 }
+
+#[cfg(test)]
+mod version_tests;
 
 #[cfg(test)]
 mod tests {

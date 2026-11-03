@@ -6,6 +6,8 @@
 # Evidence and model fixtures carry SHA-256 identities over their exact bytes.
 /docs/evidence/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /crates/deepseek/fixtures/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/crates/use/tool-acquire/src/http/node/node.asc -text
+/crates/use/tool-acquire/src/http/node/testdata/* -text
 /docs/evidence/power/2026-10-22-native-deepseek-h200/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evidence/power/2026-10-22-h200-official/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evidence/power/2026-10-24-h200-submit/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

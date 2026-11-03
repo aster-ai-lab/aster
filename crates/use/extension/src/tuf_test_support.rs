@@ -65,6 +65,25 @@ impl TestTarget {
 }
 
 impl TestRepository {
+    pub(crate) fn with_consistent_snapshot(mut self) -> Self {
+        let mut root: Value = serde_json::from_slice(&self.routes["/metadata/root.json"]).unwrap();
+        root["signed"]["consistent_snapshot"] = json!(true);
+        let key_id = root["signatures"][0]["keyid"].as_str().unwrap();
+        let key = Ed25519KeyPair::from_seed_unchecked(&[7_u8; 32]).unwrap();
+        let bytes = signed_document(&key, key_id, root["signed"].clone());
+        self.root_sha256 = sha256(&bytes);
+        self.routes.insert("/metadata/root.json".to_owned(), bytes);
+        for role in ["snapshot", "targets"] {
+            let path = format!("/metadata/{role}.json");
+            let bytes = self.routes.remove(&path).unwrap();
+            let value: Value = serde_json::from_slice(&bytes).unwrap();
+            let version = value["signed"]["version"].as_u64().unwrap();
+            self.routes
+                .insert(format!("/metadata/{version}.{role}.json"), bytes);
+        }
+        self
+    }
+
     pub(crate) fn new(archive: Vec<u8>, metadata_version: u64, expires: &str) -> Self {
         Self::with_package_version(archive, PACKAGE_VERSION, metadata_version, expires)
     }

@@ -1,0 +1,32 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling serde_spanned v1.1.2
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling prod-mc-cli-chat-proxy-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/prod/mc/cli-chat-proxy-types)
+   Compiling aster-config v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config)
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.49s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-2f2de0535b3675f2)
+
+running 1 test
+test env_lock::tests::legacy_v1_literal_operator_names_keep_their_exact_identity_through_locked_install ... FAILED
+
+failures:
+
+---- env_lock::tests::legacy_v1_literal_operator_names_keep_their_exact_identity_through_locked_install stdout ----
+
+thread 'env_lock::tests::legacy_v1_literal_operator_names_keep_their_exact_identity_through_locked_install' (62783771) panicked at crates/use/tool-acquire/src/env_lock/tests.rs:271:46:
+called `Result::unwrap()` on an `Err` value: InvalidEnvLock("context-dependent requests are not supported by this managed lock")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    env_lock::tests::legacy_v1_literal_operator_names_keep_their_exact_identity_through_locked_install
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 104 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `-p aster-use-tool-acquire --lib`

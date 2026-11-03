@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+    "registry",
+    "package",
+    "prepare",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/aster-box-0.1.0-darwin-arm64.aix",
+    "--repository",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/repository",
+    "--domain",
+    "operations",
+    "--catalog-metadata",
+    "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.json",
+    "--output",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/isolated-retry.oci.json",
+    "--json"
+  ],
+  "exitCode": 1,
+  "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.catalog_package_mismatch\",\n    \"details\": {},\n    \"message\": \"The catalog record is invalid during manifest binding: The plugin catalog identity, search metadata, compatibility, or target is invalid.\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+  "stderr": ""
+}

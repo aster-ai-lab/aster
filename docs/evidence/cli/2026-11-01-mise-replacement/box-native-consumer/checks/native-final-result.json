@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+    "capabilities::toolchain::tests::box_native::actual_box_aix_executes_linux_commands_before_package_retirement",
+    "--ignored",
+    "--exact",
+    "--nocapture"
+  ],
+  "exitCode": 0,
+  "seconds": 8.395033375010826,
+  "aixSha256": "370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+  "aixLength": 26530058,
+  "sourcesUnchanged": true,
+  "builderSha256": "2d2784edcf1ca58c6dd755a67eceb971fd227722d2ae67b8f41b14f1d71e7d23",
+  "runnerSha256": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2",
+  "binariesUnchanged": true,
+  "published": false
+}

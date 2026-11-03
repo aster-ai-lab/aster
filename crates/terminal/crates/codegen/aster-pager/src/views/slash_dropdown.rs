@@ -291,23 +291,22 @@ fn paint_provider_tabs(
     let start = first_visible_provider_tab(&widths, active, area.width);
     let mut x = area.x;
     let right = area.x.saturating_add(area.width);
-    for index in start..tabs.len() {
+    for (index, (label, &full)) in tabs.iter().zip(&widths).enumerate().skip(start) {
         if x >= right {
             break;
         }
         let room = right - x;
-        let full = widths[index];
         let (shown, width) = if full > room {
             // A later tab that does not fit stays off-screen. Only a tab that
             // is itself wider than the row is clipped.
             if index != start {
                 break;
             }
-            let shown = truncate_str(&tabs[index], room as usize);
+            let shown = truncate_str(label, room as usize);
             let width = shown.width() as u16;
             (shown, width)
         } else {
-            (tabs[index].clone(), full)
+            (label.clone(), full)
         };
         if width == 0 {
             break;
@@ -349,10 +348,13 @@ fn first_visible_provider_tab(widths: &[u16], active: usize, viewport: u16) -> u
 }
 
 fn provider_tabs_fit(widths: &[u16], start: usize, end: usize, viewport: u16) -> bool {
+    let Some(widths) = widths.get(start..=end) else {
+        return false;
+    };
     let mut used = 0u16;
-    for index in start..=end {
-        let extra = if index == start { 0 } else { PROVIDER_TAB_GAP };
-        let next = used.saturating_add(extra).saturating_add(widths[index]);
+    for (index, &width) in widths.iter().enumerate() {
+        let extra = if index == 0 { 0 } else { PROVIDER_TAB_GAP };
+        let next = used.saturating_add(extra).saturating_add(width);
         if next > viewport {
             return false;
         }

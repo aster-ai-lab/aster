@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'remote::package_graph::tests::invalid_root_version_requirement_fails_closed' (71133275) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::package_graph::tests::invalid_root_version_requirement_fails_closed ... FAILED
+
+failures:
+
+failures:
+    remote::package_graph::tests::invalid_root_version_requirement_fails_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.00s
+

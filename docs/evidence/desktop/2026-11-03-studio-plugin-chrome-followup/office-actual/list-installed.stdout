@@ -1,0 +1,33 @@
+{
+  "data": {
+    "packages": [
+      {
+        "packageId": "aster/aster-office",
+        "state": {
+          "capabilityGeneration": 1,
+          "capabilityRevision": "sha256:3cea49bdb1190083979f6ff5bb99a9b1129b48f23a39409f794f5e207795bc59",
+          "desired": "enabled",
+          "manifestDigest": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d",
+          "observed": "ready",
+          "packageDigest": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff",
+          "packageGeneration": 1,
+          "receiptDigest": "sha256:81b1a26aa1e4b522547bf753f7e6ba441eb127ec981959ba94b47d077768d71c",
+          "selectedSurfaces": [
+            {
+              "id": "runtime",
+              "kind": "plugin"
+            }
+          ],
+          "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613"
+        }
+      }
+    ],
+    "scope": {
+      "id": "office-qualification",
+      "kind": "user"
+    },
+    "snapshotDigest": "sha256:bc40efe1d910d2d3160b0c3d98831a33473e9baa3312dccd0abfbad0bca1f2a2"
+  },
+  "ok": true,
+  "schemaVersion": 1
+}

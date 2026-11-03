@@ -1,0 +1,15 @@
+[
+  {
+    "packageId": "aster/aster-box",
+    "aix": "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix",
+    "version": "3.2.7",
+    "tool": "aster-box",
+    "versionArgs": [
+      "--version"
+    ],
+    "requiredCommands": [
+      "aster-box"
+    ],
+    "nativeTarget": "aarch64-apple-darwin"
+  }
+]

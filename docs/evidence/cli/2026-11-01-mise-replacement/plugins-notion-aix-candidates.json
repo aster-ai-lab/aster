@@ -1,0 +1,76 @@
+{
+  "capturedAtUtc": "2026-11-01T21:25:55.738786+00:00",
+  "packageId": "aster/ntn",
+  "version": "0.23.25",
+  "artifactFormat": "aix",
+  "upstreamArchiveSha256": "2e822403b0b52b6f159c44c72085329d42415aebe12b570889f6a1fc45277004",
+  "results": [
+    {
+      "target": "darwin-arm64",
+      "platform": "aarch64-macos-",
+      "entry": "dist/ntn-darwin-arm64/ntn",
+      "checks": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "archiveSha256": "0cc69aa7c037b8b8c64b09ce0553c97326c4a2a63047d406bfb3fba4f9e09a31",
+      "sourceFilesMatchFinalArchive": true
+    },
+    {
+      "target": "darwin-x86_64",
+      "platform": "x86_64-macos-",
+      "entry": "dist/ntn-darwin-x64/ntn",
+      "checks": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "archiveSha256": "97d0cf20898c7e07dc46c4259fec992f7935d268f8a988949c99a74b45ca7079",
+      "sourceFilesMatchFinalArchive": true
+    },
+    {
+      "target": "linux-arm64",
+      "platform": "aarch64-linux-gnu",
+      "entry": "dist/ntn-linux-arm64/ntn",
+      "checks": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "archiveSha256": "b5f687d0a5c2233196b540b7a7c77f2d980e74e730fe7ef1f3bbc077a7e071d6",
+      "sourceFilesMatchFinalArchive": true
+    },
+    {
+      "target": "linux-x86_64",
+      "platform": "x86_64-linux-gnu",
+      "entry": "dist/ntn-linux-x64/ntn",
+      "checks": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "archiveSha256": "d70a981877c5d7e72ed0dea8d58d7d303a5ff523666285473fc1d0ddedd3e53b",
+      "sourceFilesMatchFinalArchive": true
+    },
+    {
+      "target": "windows-x86_64",
+      "platform": "x86_64-windows-msvc",
+      "entry": "dist/ntn-win32-x64/ntn.exe",
+      "checks": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "archiveSha256": "8ec712f57069683476b792aec8911b9f7b22afb0803031868b4f6428fd92c5d7",
+      "sourceFilesMatchFinalArchive": true
+    }
+  ],
+  "publicationAccepted": false,
+  "desktopLifecycleAccepted": false
+}

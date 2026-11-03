@@ -1,0 +1,90 @@
+{
+  "sourceSha256": {
+    "src/renderer/services/capabilities/capabilityCatalogue.ts": "4fb119274f51700e2a03d400090edf7eefd0bd82a303c7de8940f33bdae63c4e",
+    "src/renderer/pages/capabilities/capabilitiesData.ts": "c2aca86e14a72c9e1cffddd110c62560894d4ccd419fff2ba73cb7782173a88a",
+    "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx": "2b4118e7e02afb4608eedf749430f24a0202bbca89607949078733a36377c6dd",
+    "src/renderer/pages/settings/ProviderSettings/ProviderSpecific/providerSpecificSettingsRegistry.tsx": "442c69a66769ed897bc68f6f3a3e2093061214dc0bdbd4551446c364c9174303",
+    "src/renderer/pages/settings/ProviderSettings/__tests__/asterOauth.test.tsx": "61c69366be1fd4f8553b6b59d6417f7d5e11668f90a131eb8d4c4893e1cbef51",
+    "src/renderer/pages/settings/ProviderSettings/components/__tests__/ProviderSpecificSettings.test.tsx": "0f81d14f0574b079aa7aaece82fdc630bb1e03f65725d0fd02e0f9d5b43c1667"
+  },
+  "checks": [
+    {
+      "name": "installed-plugin-renderer-final",
+      "argv": [
+        "pnpm",
+        "test:renderer",
+        "src/renderer/routes/app/__tests__/local-build.test.ts",
+        "src/renderer/utils/__tests__/sidebarShortcuts.test.ts",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx",
+        "src/renderer/pages/settings/__tests__/SettingsPage.test.tsx",
+        "src/renderer/components/__tests__/settingsGateway.test.ts",
+        "src/renderer/services/capabilities/__tests__/modelscopeCatalogue.test.ts",
+        "src/renderer/services/capabilities/__tests__/modelscopeInstall.test.ts",
+        "src/renderer/pages/settings/ProviderSettings/__tests__/asterOauth.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/components/__tests__/ProviderSpecificSettings.test.tsx"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "installed-plugin-eslint-final",
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/ProviderSpecific/providerSpecificSettingsRegistry.tsx",
+        "src/renderer/pages/settings/ProviderSettings/__tests__/asterOauth.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/components/__tests__/ProviderSpecificSettings.test.tsx"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "installed-plugin-oxlint-final",
+      "argv": [
+        "pnpm",
+        "exec",
+        "oxlint",
+        "--deny-warnings",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/ProviderSpecific/providerSpecificSettingsRegistry.tsx",
+        "src/renderer/pages/settings/ProviderSettings/__tests__/asterOauth.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/components/__tests__/ProviderSpecificSettings.test.tsx"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "installed-plugin-format-final",
+      "argv": [
+        "pnpm",
+        "exec",
+        "oxfmt",
+        "--check",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/ProviderSpecific/providerSpecificSettingsRegistry.tsx",
+        "src/renderer/pages/settings/ProviderSettings/__tests__/asterOauth.test.tsx",
+        "src/renderer/pages/settings/ProviderSettings/components/__tests__/ProviderSpecificSettings.test.tsx"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "installed-plugin-typecheck-web-final",
+      "argv": [
+        "pnpm",
+        "run",
+        "typecheck:web"
+      ],
+      "exitCode": 2,
+      "sourcesUnchanged": true
+    }
+  ]
+}

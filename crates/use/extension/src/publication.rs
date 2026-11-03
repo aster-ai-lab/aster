@@ -1,4 +1,4 @@
-//! Prepare native AIX publication from package-identity sources and domain policy.
+//! Prepare native AIX publication from domain-organized sources and domain policy.
 
 use std::path::{Path, PathBuf};
 
@@ -102,6 +102,9 @@ pub async fn prepare_aix_publication(
 ///
 /// Metadata is bounded JSON registry data. Permissions are author-declared and
 /// checked by the native catalog contract; this operation never executes a package.
+/// UI, Agent, Flow, Skill, OKF and data surfaces preserve their manifest graph.
+/// Executable planning supports package-local Tool Tasks and stdio MCP servers;
+/// release-backed and catalog MCP launchers return an unsupported-publication error.
 pub async fn prepare_aix_publication_with_catalog(
     repository_root: &Path,
     domain: &str,
@@ -131,7 +134,11 @@ async fn prepare(
         .await
         .map_err(|error| io_error("resolve plugin repository", repository_root, error))?;
     let owners = domains::admit(&repository_root, domain, publisher).await?;
-    let expected_source = repository_root.join("plugins").join(publisher).join(name);
+    let expected_source = repository_root
+        .join("plugins")
+        .join(domain)
+        .join(publisher)
+        .join(name);
     let source_path = fs::canonicalize(&expected_source)
         .await
         .map_err(|error| io_error("resolve plugin source", &expected_source, error))?;

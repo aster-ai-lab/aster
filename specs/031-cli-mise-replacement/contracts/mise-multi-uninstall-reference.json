@@ -1,0 +1,554 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "host": {
+    "os": "Darwin",
+    "arch": "arm64"
+  },
+  "timeout_seconds": 25,
+  "installations": {
+    "fixture": [
+      "1.0.0",
+      "2.0.0"
+    ],
+    "other": [
+      "1.0.0"
+    ]
+  },
+  "requested_cases": [
+    "multiple_exact",
+    "later_ambiguous",
+    "global_all",
+    "global_preview",
+    "duplicate_requests"
+  ],
+  "status": "passed",
+  "cases": [
+    {
+      "name": "multiple_exact",
+      "arguments": [
+        "fixture@1.0.0",
+        "other@1.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/0/owned fixture plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@1.0.0  204ms\nmise ✓ fixture@2.0.0  223ms\nmise ████████████████ 2/2 · installed 2 tools in 224ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/0/owned other plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@1.0.0  183ms\nmise ████████████████ 1/1 · installed 1 tool in 184ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture@1.0.0",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 2 tools\nmise ✓ fixture@1.0.0  4ms\nmise ✓ other@1.0.0    4ms\nmise ████████████████ 2/2 · removed 2 tools in 8ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/0/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "2.0.0"
+        ],
+        "other": []
+      }
+    },
+    {
+      "name": "later_ambiguous",
+      "arguments": [
+        "other",
+        "fixture"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/1/owned fixture plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@2.0.0  185ms\nmise ✓ fixture@1.0.0  204ms\nmise ████████████████ 2/2 · installed 2 tools in 205ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/1/owned other plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@1.0.0  190ms\nmise ████████████████ 1/1 · installed 1 tool in 191ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "other",
+            "fixture"
+          ],
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise ERROR multiple tools specified, use --all to uninstall all versions\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/1/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/1/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/1/data/installs/other/1.0.0/bin/other"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 1,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ],
+        "other": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "global_all",
+      "arguments": [
+        "--all"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/2/owned fixture plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@1.0.0  191ms\nmise ✓ fixture@2.0.0  211ms\nmise ████████████████ 2/2 · installed 2 tools in 211ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/2/owned other plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@1.0.0  182ms\nmise ████████████████ 1/1 · installed 1 tool in 183ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--all"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 3 tools\nmise ✓ fixture@1.0.0  6ms\nmise ✓ fixture@2.0.0  6ms\nmise ✓ other@1.0.0    4ms\nmise ████████████████ 3/3 · removed 3 tools in 18ms\n"
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [],
+        "other": []
+      }
+    },
+    {
+      "name": "global_preview",
+      "arguments": [
+        "--all",
+        "--dry-run-code"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/owned fixture plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@1.0.0  194ms\nmise ✓ fixture@2.0.0  213ms\nmise ████████████████ 2/2 · installed 2 tools in 214ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/owned other plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@1.0.0  620ms\nmise ████████████████ 1/1 · installed 1 tool in 621ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--all",
+            "--dry-run-code"
+          ],
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise fixture@1.0.0   uninstall\nmise fixture@1.0.0   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/fixture/1.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/cache/fixture/1.0.0\nmise fixture@1.0.0 ✓ uninstalled (dry-run)\nmise fixture@2.0.0   uninstall\nmise fixture@2.0.0   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/fixture/2.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/cache/fixture/2.0.0\nmise fixture@2.0.0 ✓ uninstalled (dry-run)\nmise other@1.0.0     uninstall\nmise other@1.0.0     remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/other/1.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/cache/other/1.0.0\nmise other@1.0.0   ✓ uninstalled (dry-run)\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/3/data/installs/other/1.0.0/bin/other"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 1,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ],
+        "other": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "duplicate_requests",
+      "arguments": [
+        "fixture@1.0.0",
+        "fixture@1.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/4/owned fixture plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@1.0.0  528ms\nmise ✓ fixture@2.0.0  547ms\nmise ████████████████ 2/2 · installed 2 tools in 548ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/4/owned other plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@1.0.0  531ms\nmise ████████████████ 1/1 · installed 1 tool in 531ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture@1.0.0",
+            "fixture@1.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.0.0  5ms\nmise ████████████████ 1/1 · removed 1 tool in 5ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/4/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise multi uninstall z4kskmue/4/data/installs/other/1.0.0/bin/other"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "51754bac4921a6d462403c52b6f941921ff0df82f4e5b0aa37237f4470b1fd05",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "2.0.0"
+        ],
+        "other": [
+          "1.0.0"
+        ]
+      }
+    }
+  ]
+}

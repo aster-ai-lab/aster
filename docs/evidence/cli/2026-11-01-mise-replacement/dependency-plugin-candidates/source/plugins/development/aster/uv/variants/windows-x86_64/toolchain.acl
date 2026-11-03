@@ -1,0 +1,17 @@
+toolchain {
+ schema_version = 1
+ name = "uv"
+ spec = "github:astral-sh/uv"
+ version = "0.13.6"
+ executable = "uv"
+ platform = "x86_64-windows-msvc"
+ url = "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-pc-windows-msvc.zip"
+ length = 15239500
+ sha256 = "a2a8820d5eea32f08ef467ef3b7f66883a9b076d5737a2fc2fbb5f458d1bb50f"
+ format = "zip"
+ prefix = ""
+ bin_dirs = [""]
+ executable_mode = "0755"
+ command "uv" { path = "uv.exe" }
+ command "uvx" { path = "uvx.exe" }
+}

@@ -1,0 +1,640 @@
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:1:
+ use super::*;
+[31m-use crate::{load_env_declarations_with_sources, project_env_path, write_env_declarations, EnvDeclarations, LocalApply};
+(B[m[32m+use crate::{
+(B[m[32m+    load_env_declarations_with_sources, project_env_path, write_env_declarations, EnvDeclarations,
+(B[m[32m+    LocalApply,
+(B[m[32m+};
+(B[m use std::collections::BTreeMap;
+ 
+ fn declare(path: &Path, requests: &[&str]) {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:6:
+[31m-    write_env_declarations(path, &EnvDeclarations {
+(B[m[31m-        tools: BTreeMap::from([("uv".into(), requests.iter().map(|x| (*x).to_owned()).collect())]),
+(B[m[31m-        vars: BTreeMap::new(),
+(B[m[31m-    }).unwrap();
+(B[m[32m+    write_env_declarations(
+(B[m[32m+        path,
+(B[m[32m+        &EnvDeclarations {
+(B[m[32m+            tools: BTreeMap::from([(
+(B[m[32m+                "uv".into(),
+(B[m[32m+                requests.iter().map(|x| (*x).to_owned()).collect(),
+(B[m[32m+            )]),
+(B[m[32m+            vars: BTreeMap::new(),
+(B[m[32m+        },
+(B[m[32m+    )
+(B[m[32m+    .unwrap();
+(B[m }
+ 
+ async fn install(store: &ToolStore, root: &Path, version: &str) {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:13:
+     let payload = root.join("payload");
+     fs::write(&payload, b"native fixture bytes").unwrap();
+[31m-    store.apply_local(LocalApply {name:"uv".into(),spec:"github:astral-sh/uv".into(),version:version.into(),executable_name:"uv".into(),payload,sha256:None,require_checksum:false,companions:vec![]}).await.unwrap();
+(B[m[32m+    store
+(B[m[32m+        .apply_local(LocalApply {
+(B[m[32m+            name: "uv".into(),
+(B[m[32m+            spec: "github:astral-sh/uv".into(),
+(B[m[32m+            version: version.into(),
+(B[m[32m+            executable_name: "uv".into(),
+(B[m[32m+            payload,
+(B[m[32m+            sha256: None,
+(B[m[32m+            require_checksum: false,
+(B[m[32m+            companions: vec![],
+(B[m[32m+        })
+(B[m[32m+        .await
+(B[m[32m+        .unwrap();
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:22:
+     let a = temporary.path().join("项目 with spaces/a");
+     let b = temporary.path().join("项目 with spaces/b");
+     let store = ToolStore::open(home.join("tools")).unwrap();
+[31m-    for version in ["1.0.0","1.5.0","2.0.0"] { install(&store,temporary.path(),version).await; }
+(B[m[32m+    for version in ["1.0.0", "1.5.0", "2.0.0"] {
+(B[m[32m+        install(&store, temporary.path(), version).await;
+(B[m[32m+    }
+(B[m     declare(&project_env_path(&a), &["1"]);
+     declare(&project_env_path(&b), &["2.0.0"]);
+[31m-    for project in [&a,&b] {
+(B[m[31m-        let loaded = load_env_declarations_with_sources(project,&home).unwrap();
+(B[m[31m-        if project==&a { assert!(!store.root_path().join(TRACKING).exists()); }
+(B[m[32m+    for project in [&a, &b] {
+(B[m[32m+        let loaded = load_env_declarations_with_sources(project, &home).unwrap();
+(B[m[32m+        if project == &a {
+(B[m[32m+            assert!(!store.root_path().join(TRACKING).exists());
+(B[m[32m+        }
+(B[m         loaded.track_sources(&store).unwrap();
+     }
+     let before = fs::read(store.root_path().join(TRACKING)).unwrap();
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:34:
+[31m-    let plan = store.plan_prune(&home,&[]).unwrap();
+(B[m[31m-    assert_eq!(plan.tools().iter().map(|x|x.version.as_str()).collect::<Vec<_>>(),["1.0.0"]);
+(B[m[31m-    assert_eq!(fs::read(store.root_path().join(TRACKING)).unwrap(),before);
+(B[m[31m-    assert_eq!(store.all_uninstall_candidates().unwrap().len(),3);
+(B[m[32m+    let plan = store.plan_prune(&home, &[]).unwrap();
+(B[m[32m+    assert_eq!(
+(B[m[32m+        plan.tools()
+(B[m[32m+            .iter()
+(B[m[32m+            .map(|x| x.version.as_str())
+(B[m[32m+            .collect::<Vec<_>>(),
+(B[m[32m+        ["1.0.0"]
+(B[m[32m+    );
+(B[m[32m+    assert_eq!(fs::read(store.root_path().join(TRACKING)).unwrap(), before);
+(B[m[32m+    assert_eq!(store.all_uninstall_candidates().unwrap().len(), 3);
+(B[m     declare(&project_env_path(&a), &["2.0.0"]);
+     fs::remove_file(project_env_path(&b)).unwrap();
+[31m-    let plan = store.plan_prune(&home,&[]).unwrap();
+(B[m[31m-    assert_eq!(plan.tools().len(),2);
+(B[m[32m+    let plan = store.plan_prune(&home, &[]).unwrap();
+(B[m[32m+    assert_eq!(plan.tools().len(), 2);
+(B[m     assert_eq!(plan.stale_configs(), &[project_env_path(&b)]);
+[31m-    assert_eq!(store.prune_env_sources().unwrap(),1);
+(B[m[31m-    assert_eq!(read_sources(&store).unwrap(),BTreeSet::from([project_env_path(&a)]));
+(B[m[32m+    assert_eq!(store.prune_env_sources().unwrap(), 1);
+(B[m[32m+    assert_eq!(
+(B[m[32m+        read_sources(&store).unwrap(),
+(B[m[32m+        BTreeSet::from([project_env_path(&a)])
+(B[m[32m+    );
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:49:
+     let temporary = tempfile::tempdir().unwrap();
+     let home = temporary.path().join("home");
+     let store = ToolStore::open(home.join("tools")).unwrap();
+[31m-    for version in ["1.0.0","1.5.0","2.0.0"] { install(&store,temporary.path(),version).await; }
+(B[m[31m-    assert_eq!(store.plan_prune(&home,&[]).unwrap().tools().len(),3);
+(B[m[31m-    declare(&user_env_path(&home), &["1.0.0","1.5.0"]);
+(B[m[31m-    assert_eq!(store.plan_prune(&home,&[]).unwrap().tools()[0].version,"2.0.0");
+(B[m[31m-    assert!(store.plan_prune(&home,&["fd".into()]).unwrap().tools().is_empty());
+(B[m[31m-    assert!(store.plan_prune(&home,&["../uv".into()]).is_err());
+(B[m[32m+    for version in ["1.0.0", "1.5.0", "2.0.0"] {
+(B[m[32m+        install(&store, temporary.path(), version).await;
+(B[m[32m+    }
+(B[m[32m+    assert_eq!(store.plan_prune(&home, &[]).unwrap().tools().len(), 3);
+(B[m[32m+    declare(&user_env_path(&home), &["1.0.0", "1.5.0"]);
+(B[m[32m+    assert_eq!(
+(B[m[32m+        store.plan_prune(&home, &[]).unwrap().tools()[0].version,
+(B[m[32m+        "2.0.0"
+(B[m[32m+    );
+(B[m[32m+    assert!(store
+(B[m[32m+        .plan_prune(&home, &["fd".into()])
+(B[m[32m+        .unwrap()
+(B[m[32m+        .tools()
+(B[m[32m+        .is_empty());
+(B[m[32m+    assert!(store.plan_prune(&home, &["../uv".into()]).is_err());
+(B[m }
+ 
+ #[tokio::test]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:61:
+ async fn missing_payloads_remain_candidates_but_invalid_declarations_stop_planning() {
+     let temporary = tempfile::tempdir().unwrap();
+[31m-    let home=temporary.path().join("home");
+(B[m[31m-    let store=ToolStore::open(home.join("tools")).unwrap();
+(B[m[31m-    install(&store,temporary.path(),"1.0.0").await;
+(B[m[32m+    let home = temporary.path().join("home");
+(B[m[32m+    let store = ToolStore::open(home.join("tools")).unwrap();
+(B[m[32m+    install(&store, temporary.path(), "1.0.0").await;
+(B[m     fs::remove_file(store.root_path().join("installs/uv/1.0.0/uv")).unwrap();
+[31m-    assert_eq!(store.plan_prune(&home,&[]).unwrap().tools().len(),1);
+(B[m[31m-    fs::write(user_env_path(&home),"invalid { ").unwrap();
+(B[m[31m-    assert!(store.plan_prune(&home,&[]).is_err());
+(B[m[32m+    assert_eq!(store.plan_prune(&home, &[]).unwrap().tools().len(), 1);
+(B[m[32m+    fs::write(user_env_path(&home), "invalid { ").unwrap();
+(B[m[32m+    assert!(store.plan_prune(&home, &[]).is_err());
+(B[m     assert!(store.stale_env_sources().unwrap().is_empty());
+[31m-    assert_eq!(store.all_uninstall_candidates().unwrap().len(),1);
+(B[m[32m+    assert_eq!(store.all_uninstall_candidates().unwrap().len(), 1);
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:75:
+ fn tracking_preserves_native_path_units_and_refuses_invalid_metadata() {
+[31m-    let temporary=tempfile::tempdir().unwrap();
+(B[m[31m-    let store=ToolStore::open(temporary.path().join("tools")).unwrap();
+(B[m[31m-    let path=temporary.path().join("项目 with spaces/.aster/env.acl");
+(B[m[31m-    let mut sources=BTreeSet::from([path]);
+(B[m[31m-    #[cfg(target_os="linux")]
+(B[m[32m+    let temporary = tempfile::tempdir().unwrap();
+(B[m[32m+    let store = ToolStore::open(temporary.path().join("tools")).unwrap();
+(B[m[32m+    let path = temporary.path().join("项目 with spaces/.aster/env.acl");
+(B[m[32m+    let mut sources = BTreeSet::from([path]);
+(B[m[32m+    #[cfg(target_os = "linux")]
+(B[m     {
+         use std::os::unix::ffi::OsStringExt;
+[31m-        sources.insert(temporary.path().join(OsString::from_vec(b"native-\xff".to_vec())).join(".aster/env.acl"));
+(B[m[32m+        sources.insert(
+(B[m[32m+            temporary
+(B[m[32m+                .path()
+(B[m[32m+                .join(OsString::from_vec(b"native-\xff".to_vec()))
+(B[m[32m+                .join(".aster/env.acl"),
+(B[m[32m+        );
+(B[m     }
+[31m-    #[cfg(not(target_os="linux"))]
+(B[m[31m-    let _=&mut sources;
+(B[m[32m+    #[cfg(not(target_os = "linux"))]
+(B[m[32m+    let _ = &mut sources;
+(B[m     store.track_env_sources(&sources).unwrap();
+[31m-    assert_eq!(read_sources(&store).unwrap(),sources);
+(B[m[31m-    fs::write(store.root_path().join(TRACKING),br#"{"schema":"foreign","paths":[]}"#).unwrap();
+(B[m[31m-    assert!(matches!(read_sources(&store),Err(ToolAcquireError::InvalidEnvTracking(_))));
+(B[m[31m-    assert!(store.plan_prune(temporary.path(),&[]).is_err());
+(B[m[32m+    assert_eq!(read_sources(&store).unwrap(), sources);
+(B[m[32m+    fs::write(
+(B[m[32m+        store.root_path().join(TRACKING),
+(B[m[32m+        br#"{"schema":"foreign","paths":[]}"#,
+(B[m[32m+    )
+(B[m[32m+    .unwrap();
+(B[m[32m+    assert!(matches!(
+(B[m[32m+        read_sources(&store),
+(B[m[32m+        Err(ToolAcquireError::InvalidEnvTracking(_))
+(B[m[32m+    ));
+(B[m[32m+    assert!(store.plan_prune(temporary.path(), &[]).is_err());
+(B[m }
+ 
+ #[test]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune/tests.rs:95:
+ fn native_process_inspection_includes_this_test_executable() {
+[31m-    let current=std::env::current_exe().unwrap().canonicalize().unwrap();
+(B[m[31m-    assert!(running_executables().unwrap().iter().any(|path| path.canonicalize().is_ok_and(|path|path==current)));
+(B[m[32m+    let current = std::env::current_exe().unwrap().canonicalize().unwrap();
+(B[m[32m+    assert!(running_executables()
+(B[m[32m+        .unwrap()
+(B[m[32m+        .iter()
+(B[m[32m+        .any(|path| path.canonicalize().is_ok_and(|path| path == current)));
+(B[m }
+ 
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:11:
+ use crate::lock::InstallLock;
+ use crate::spec::parse_tool_name;
+ use crate::store::{json_bytes, read_json_bounded, write_atomic};
+[31m-use crate::{read_env_declarations, resolve_env_tool, user_env_path, ToolAcquireError, ToolReceipt, ToolStore, VersionRequest, VersionRequestKind};
+(B[m[32m+use crate::{
+(B[m[32m+    read_env_declarations, resolve_env_tool, user_env_path, ToolAcquireError, ToolReceipt,
+(B[m[32m+    ToolStore, VersionRequest, VersionRequestKind,
+(B[m[32m+};
+(B[m 
+ const TRACKING: &str = "env-sources-v1.json";
+ const MAX_TRACKING_BYTES: u64 = 4 * 1024 * 1024;
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:38:
+ }
+ 
+ impl ToolPrunePlan {
+[31m-    pub fn tools(&self) -> &[ToolReceipt] { &self.tools }
+(B[m[31m-    pub fn stale_configs(&self) -> &[PathBuf] { &self.stale_configs }
+(B[m[32m+    pub fn tools(&self) -> &[ToolReceipt] {
+(B[m[32m+        &self.tools
+(B[m[32m+    }
+(B[m[32m+    pub fn stale_configs(&self) -> &[PathBuf] {
+(B[m[32m+        &self.stale_configs
+(B[m[32m+    }
+(B[m }
+ 
+ impl ToolStore {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:47:
+     /// executable paths. Never downloads, changes tracking, or removes files.
+     /// This is blocking I/O. Invalid declarations/records and unsupported native
+     /// process inspection refuse the entire plan before any removal.
+[31m-    pub fn plan_prune(&self, aster_home: &Path, names: &[String]) -> Result<ToolPrunePlan, ToolAcquireError> {
+(B[m[31m-        for name in names { parse_tool_name(name)?; }
+(B[m[32m+    pub fn plan_prune(
+(B[m[32m+        &self,
+(B[m[32m+        aster_home: &Path,
+(B[m[32m+        names: &[String],
+(B[m[32m+    ) -> Result<ToolPrunePlan, ToolAcquireError> {
+(B[m[32m+        for name in names {
+(B[m[32m+            parse_tool_name(name)?;
+(B[m[32m+        }
+(B[m         let tracked = read_sources(self)?;
+         let mut paths = tracked.clone();
+         paths.insert(user_env_path(aster_home));
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:56:
+         let mut stale_configs = Vec::new();
+         for path in paths {
+             let Some(config) = read_env_declarations(&path)? else {
+[31m-                if tracked.contains(&path) { stale_configs.push(path); }
+(B[m[32m+                if tracked.contains(&path) {
+(B[m[32m+                    stale_configs.push(path);
+(B[m[32m+                }
+(B[m                 continue;
+             };
+             for (name, requests) in config.tools {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:63:
+                 for raw in requests {
+                     let request = VersionRequest::parse(&raw)?;
+[31m-                    if matches!(request.kind(), VersionRequestKind::Path(_) | VersionRequestKind::System) {
+(B[m[32m+                    if matches!(
+(B[m[32m+                        request.kind(),
+(B[m[32m+                        VersionRequestKind::Path(_) | VersionRequestKind::System
+(B[m[32m+                    ) {
+(B[m                         continue;
+                     }
+                     let tool = resolve_env_tool(&name, &raw, None, None)?;
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:73:
+             }
+         }
+         let running = running_executables()?;
+[31m-        let tools = self.all_uninstall_candidates()?.into_iter().filter(|receipt| {
+(B[m[31m-            (names.is_empty() || names.contains(&receipt.name))
+(B[m[31m-                && !needed.contains(&(receipt.name.clone(), receipt.version.clone()))
+(B[m[31m-                && !running.iter().any(|path| path.starts_with(self.root_path().join("installs").join(&receipt.name).join(&receipt.version)))
+(B[m[31m-        }).collect();
+(B[m[31m-        Ok(ToolPrunePlan { tools, stale_configs })
+(B[m[32m+        let tools = self
+(B[m[32m+            .all_uninstall_candidates()?
+(B[m[32m+            .into_iter()
+(B[m[32m+            .filter(|receipt| {
+(B[m[32m+                (names.is_empty() || names.contains(&receipt.name))
+(B[m[32m+                    && !needed.contains(&(receipt.name.clone(), receipt.version.clone()))
+(B[m[32m+                    && !running.iter().any(|path| {
+(B[m[32m+                        path.starts_with(
+(B[m[32m+                            self.root_path()
+(B[m[32m+                                .join("installs")
+(B[m[32m+                                .join(&receipt.name)
+(B[m[32m+                                .join(&receipt.version),
+(B[m[32m+                        )
+(B[m[32m+                    })
+(B[m[32m+            })
+(B[m[32m+            .collect();
+(B[m[32m+        Ok(ToolPrunePlan {
+(B[m[32m+            tools,
+(B[m[32m+            stale_configs,
+(B[m[32m+        })
+(B[m     }
+ 
+     /// Remove only missing tracked declaration paths. Existing declarations and
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:88:
+         let _lock = InstallLock::acquire(self.root_path())?;
+         let mut paths = read_sources(self)?;
+         let before = paths.len();
+[31m-        for path in missing_sources(&paths)? { paths.remove(&path); }
+(B[m[31m-        if paths.len() != before { write_sources(self, &paths)?; }
+(B[m[32m+        for path in missing_sources(&paths)? {
+(B[m[32m+            paths.remove(&path);
+(B[m[32m+        }
+(B[m[32m+        if paths.len() != before {
+(B[m[32m+            write_sources(self, &paths)?;
+(B[m[32m+        }
+(B[m         Ok(before - paths.len())
+     }
+ 
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:99:
+         missing_sources(&read_sources(self)?)
+     }
+ 
+[31m-    pub(crate) fn track_env_sources(&self, sources: &BTreeSet<PathBuf>) -> Result<(), ToolAcquireError> {
+(B[m[31m-        if sources.is_empty() { return Ok(()); }
+(B[m[32m+    pub(crate) fn track_env_sources(
+(B[m[32m+        &self,
+(B[m[32m+        sources: &BTreeSet<PathBuf>,
+(B[m[32m+    ) -> Result<(), ToolAcquireError> {
+(B[m[32m+        if sources.is_empty() {
+(B[m[32m+            return Ok(());
+(B[m[32m+        }
+(B[m         let _lock = InstallLock::acquire(self.root_path())?;
+         let mut paths = read_sources(self)?;
+         let before = paths.len();
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:107:
+         paths.extend(sources.iter().cloned());
+[31m-        if paths.len() != before { write_sources(self, &paths)?; }
+(B[m[32m+        if paths.len() != before {
+(B[m[32m+            write_sources(self, &paths)?;
+(B[m[32m+        }
+(B[m         Ok(())
+     }
+ }
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:114:
+     let mut stale = Vec::new();
+     for path in paths {
+         match fs::metadata(path) {
+[31m-            Ok(_) => {},
+(B[m[32m+            Ok(_) => {}
+(B[m             Err(error) if error.kind() == std::io::ErrorKind::NotFound => stale.push(path.clone()),
+[31m-            Err(error) => return Err(ToolAcquireError::io("inspect tracked declaration", path, error)),
+(B[m[32m+            Err(error) => {
+(B[m[32m+                return Err(ToolAcquireError::io(
+(B[m[32m+                    "inspect tracked declaration",
+(B[m[32m+                    path,
+(B[m[32m+                    error,
+(B[m[32m+                ))
+(B[m[32m+            }
+(B[m         }
+     }
+     Ok(stale)
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:125:
+ fn read_sources(store: &ToolStore) -> Result<BTreeSet<PathBuf>, ToolAcquireError> {
+     let path = store.root_path().join(TRACKING);
+     match fs::symlink_metadata(&path) {
+[31m-        Ok(_) => {},
+(B[m[32m+        Ok(_) => {}
+(B[m         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(BTreeSet::new()),
+[31m-        Err(error) => return Err(ToolAcquireError::io("inspect environment tracking", path, error)),
+(B[m[32m+        Err(error) => {
+(B[m[32m+            return Err(ToolAcquireError::io(
+(B[m[32m+                "inspect environment tracking",
+(B[m[32m+                path,
+(B[m[32m+                error,
+(B[m[32m+            ))
+(B[m[32m+        }
+(B[m     }
+     let data: TrackedSources = read_json_bounded(&path, MAX_TRACKING_BYTES)?;
+     if data.schema != TRACKING_SCHEMA || data.paths.len() > MAX_SOURCES {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:134:
+[31m-        return Err(ToolAcquireError::InvalidEnvTracking("unsupported schema or source count".into()));
+(B[m[32m+        return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+            "unsupported schema or source count".into(),
+(B[m[32m+        ));
+(B[m     }
+[31m-    data.paths.into_iter().map(|bytes| {
+(B[m[31m-        let path = decode_path(bytes)?;
+(B[m[31m-        if !path.is_absolute() { return Err(ToolAcquireError::InvalidEnvTracking("source must be an absolute path".into())); }
+(B[m[31m-        Ok(path)
+(B[m[31m-    }).collect()
+(B[m[32m+    data.paths
+(B[m[32m+        .into_iter()
+(B[m[32m+        .map(|bytes| {
+(B[m[32m+            let path = decode_path(bytes)?;
+(B[m[32m+            if !path.is_absolute() {
+(B[m[32m+                return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+                    "source must be an absolute path".into(),
+(B[m[32m+                ));
+(B[m[32m+            }
+(B[m[32m+            Ok(path)
+(B[m[32m+        })
+(B[m[32m+        .collect()
+(B[m }
+ 
+ fn write_sources(store: &ToolStore, paths: &BTreeSet<PathBuf>) -> Result<(), ToolAcquireError> {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:144:
+[31m-    if paths.len() > MAX_SOURCES { return Err(ToolAcquireError::InvalidEnvTracking("source count exceeds 4096".into())); }
+(B[m[31m-    let paths = paths.iter().map(|path| encode_path(path)).collect::<Result<_, _>>()?;
+(B[m[31m-    let bytes = json_bytes(&TrackedSources { schema: TRACKING_SCHEMA.into(), paths })?;
+(B[m[31m-    if bytes.len() as u64 > MAX_TRACKING_BYTES { return Err(ToolAcquireError::InvalidEnvTracking("tracking exceeds its byte limit".into())); }
+(B[m[32m+    if paths.len() > MAX_SOURCES {
+(B[m[32m+        return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+            "source count exceeds 4096".into(),
+(B[m[32m+        ));
+(B[m[32m+    }
+(B[m[32m+    let paths = paths
+(B[m[32m+        .iter()
+(B[m[32m+        .map(|path| encode_path(path))
+(B[m[32m+        .collect::<Result<_, _>>()?;
+(B[m[32m+    let bytes = json_bytes(&TrackedSources {
+(B[m[32m+        schema: TRACKING_SCHEMA.into(),
+(B[m[32m+        paths,
+(B[m[32m+    })?;
+(B[m[32m+    if bytes.len() as u64 > MAX_TRACKING_BYTES {
+(B[m[32m+        return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+            "tracking exceeds its byte limit".into(),
+(B[m[32m+        ));
+(B[m[32m+    }
+(B[m     write_atomic(&store.root_path().join(TRACKING), &bytes)
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:151:
+ fn running_executables() -> Result<Vec<PathBuf>, ToolAcquireError> {
+     if !sysinfo::IS_SUPPORTED_SYSTEM {
+[31m-        return Err(ToolAcquireError::InvalidEnvTracking("native process inspection is unsupported on this platform".into()));
+(B[m[32m+        return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+            "native process inspection is unsupported on this platform".into(),
+(B[m[32m+        ));
+(B[m     }
+[31m-    let system = System::new_with_specifics(RefreshKind::new().with_processes(ProcessRefreshKind::new().with_exe(UpdateKind::Always)));
+(B[m[31m-    Ok(system.processes().values().filter_map(|process| process.exe()).map(Path::to_path_buf).collect())
+(B[m[32m+    let system = System::new_with_specifics(
+(B[m[32m+        RefreshKind::new().with_processes(ProcessRefreshKind::new().with_exe(UpdateKind::Always)),
+(B[m[32m+    );
+(B[m[32m+    Ok(system
+(B[m[32m+        .processes()
+(B[m[32m+        .values()
+(B[m[32m+        .filter_map(|process| process.exe())
+(B[m[32m+        .map(Path::to_path_buf)
+(B[m[32m+        .collect())
+(B[m }
+ 
+ #[cfg(unix)]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:169:
+ #[cfg(windows)]
+ fn encode_path(path: &Path) -> Result<Vec<u8>, ToolAcquireError> {
+     use std::os::windows::ffi::OsStrExt;
+[31m-    Ok(path.as_os_str().encode_wide().flat_map(u16::to_le_bytes).collect())
+(B[m[32m+    Ok(path
+(B[m[32m+        .as_os_str()
+(B[m[32m+        .encode_wide()
+(B[m[32m+        .flat_map(u16::to_le_bytes)
+(B[m[32m+        .collect())
+(B[m }
+ #[cfg(windows)]
+ fn decode_path(bytes: Vec<u8>) -> Result<PathBuf, ToolAcquireError> {
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:176:
+     use std::os::windows::ffi::OsStringExt;
+[31m-    if bytes.len() % 2 != 0 { return Err(ToolAcquireError::InvalidEnvTracking("invalid Windows path units".into())); }
+(B[m[31m-    let units: Vec<_> = bytes.chunks_exact(2).map(|chunk| u16::from_le_bytes([chunk[0],chunk[1]])).collect();
+(B[m[32m+    if bytes.len() % 2 != 0 {
+(B[m[32m+        return Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+            "invalid Windows path units".into(),
+(B[m[32m+        ));
+(B[m[32m+    }
+(B[m[32m+    let units: Vec<_> = bytes
+(B[m[32m+        .chunks_exact(2)
+(B[m[32m+        .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))
+(B[m[32m+        .collect();
+(B[m     Ok(PathBuf::from(OsString::from_wide(&units)))
+ }
+ #[cfg(not(any(unix, windows)))]
+Diff in /Users/roylin/code/aster/crates/use/tool-acquire/src/prune.rs:182:
+[31m-fn encode_path(_: &Path) -> Result<Vec<u8>, ToolAcquireError> { Err(ToolAcquireError::InvalidEnvTracking("unsupported native path format".into())) }
+(B[m[32m+fn encode_path(_: &Path) -> Result<Vec<u8>, ToolAcquireError> {
+(B[m[32m+    Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+        "unsupported native path format".into(),
+(B[m[32m+    ))
+(B[m[32m+}
+(B[m #[cfg(not(any(unix, windows)))]
+[31m-fn decode_path(_: Vec<u8>) -> Result<PathBuf, ToolAcquireError> { Err(ToolAcquireError::InvalidEnvTracking("unsupported native path format".into())) }
+(B[m[32m+fn decode_path(_: Vec<u8>) -> Result<PathBuf, ToolAcquireError> {
+(B[m[32m+    Err(ToolAcquireError::InvalidEnvTracking(
+(B[m[32m+        "unsupported native path format".into(),
+(B[m[32m+    ))
+(B[m[32m+}
+(B[m 
+ #[cfg(test)]
+ mod tests;
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:350:
+             json,
+         } => ls_remote_cmd(&tool, offline, json).await,
+         ToolCommand::Use { tool, global, json } => use_cmd(tool, global, json).await,
+[31m-        ToolCommand::Prune { tool, configs, tools, yes, dry_run, dry_run_code, json } => {
+(B[m[31m-            tokio::task::spawn_blocking(move || prune_cmd(&tool, configs, tools, yes, dry_run, dry_run_code, json))
+(B[m[31m-                .await.context("prune unused tool versions task")?
+(B[m[31m-        }
+(B[m[32m+        ToolCommand::Prune {
+(B[m[32m+            tool,
+(B[m[32m+            configs,
+(B[m[32m+            tools,
+(B[m[32m+            yes,
+(B[m[32m+            dry_run,
+(B[m[32m+            dry_run_code,
+(B[m[32m+            json,
+(B[m[32m+        } => tokio::task::spawn_blocking(move || {
+(B[m[32m+            prune_cmd(&tool, configs, tools, yes, dry_run, dry_run_code, json)
+(B[m[32m+        })
+(B[m[32m+        .await
+(B[m[32m+        .context("prune unused tool versions task")?,
+(B[m         ToolCommand::Ls { json } => ls_cmd(json),
+         ToolCommand::Which { tool, json } => {
+             tokio::task::spawn_blocking(move || which_cmd(&tool, json))
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:626:
+         write_env_declarations(&path, &file)?;
+         load_env_declarations_with_sources(&project, &home)?.track_sources(&store)
+     })
+[31m-        .await
+(B[m[31m-        .context("write environment pin task")??;
+(B[m[32m+    .await
+(B[m[32m+    .context("write environment pin task")??;
+(B[m     refresh_dispatch_shims(&context).await?;
+     emit_install(json, &receipts)?;
+     Ok(())
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:977:
+     ))
+ }
+ 
+[31m-fn prune_cmd(names: &[String], configs: bool, tools: bool, yes: bool, dry_run: bool, dry_run_code: bool, json: bool) -> Result<()> {
+(B[m[32m+fn prune_cmd(
+(B[m[32m+    names: &[String],
+(B[m[32m+    configs: bool,
+(B[m[32m+    tools: bool,
+(B[m[32m+    yes: bool,
+(B[m[32m+    dry_run: bool,
+(B[m[32m+    dry_run_code: bool,
+(B[m[32m+    json: bool,
+(B[m[32m+) -> Result<()> {
+(B[m     let (home, _project, store) = open_context()?;
+     let clean_tools = tools || !configs;
+     let clean_configs = configs || !tools;
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:984:
+     let selected = if clean_tools {
+         store.plan_prune(&home, names)?.tools().to_vec()
+[31m-    } else { Vec::new() };
+(B[m[31m-    let stale = if clean_configs { store.stale_env_sources()? } else { Vec::new() };
+(B[m[32m+    } else {
+(B[m[32m+        Vec::new()
+(B[m[32m+    };
+(B[m[32m+    let stale = if clean_configs {
+(B[m[32m+        store.stale_env_sources()?
+(B[m[32m+    } else {
+(B[m[32m+        Vec::new()
+(B[m[32m+    };
+(B[m     let preview = dry_run || dry_run_code;
+     if !preview && !selected.is_empty() {
+[31m-        for receipt in &selected { writeln!(std::io::stderr().lock(), "Unused {}@{}", receipt.name, receipt.version)?; }
+(B[m[32m+        for receipt in &selected {
+(B[m[32m+            writeln!(
+(B[m[32m+                std::io::stderr().lock(),
+(B[m[32m+                "Unused {}@{}",
+(B[m[32m+                receipt.name,
+(B[m[32m+                receipt.version
+(B[m[32m+            )?;
+(B[m[32m+        }
+(B[m         if !confirm_tool_removal(selected.len(), yes, "unused-version cleanup")? {
+             writeln!(std::io::stderr().lock(), "Cancelled.")?;
+             return Ok(());
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:994:
+         }
+     }
+     if !preview {
+[31m-        for receipt in &selected { store.remove_version_sync(&receipt.name, &receipt.version)?; }
+(B[m[31m-        if clean_configs { store.prune_env_sources()?; }
+(B[m[32m+        for receipt in &selected {
+(B[m[32m+            store.remove_version_sync(&receipt.name, &receipt.version)?;
+(B[m[32m+        }
+(B[m[32m+        if clean_configs {
+(B[m[32m+            store.prune_env_sources()?;
+(B[m[32m+        }
+(B[m         #[cfg(unix)]
+[31m-        if !selected.is_empty() { reshim_store(&home, &store)?; }
+(B[m[32m+        if !selected.is_empty() {
+(B[m[32m+            reshim_store(&home, &store)?;
+(B[m[32m+        }
+(B[m     }
+     let mut stdout = std::io::stdout().lock();
+     if json {
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:1004:
+[31m-        writeln!(stdout, "{}", serde_json::json!({"dryRun":preview,"configs":stale.len(),"tools":selected.iter().map(|receipt| serde_json::json!({"name":receipt.name,"version":receipt.version})).collect::<Vec<_>>() }))?;
+(B[m[32m+        writeln!(
+(B[m[32m+            stdout,
+(B[m[32m+            "{}",
+(B[m[32m+            serde_json::json!({"dryRun":preview,"configs":stale.len(),"tools":selected.iter().map(|receipt| serde_json::json!({"name":receipt.name,"version":receipt.version})).collect::<Vec<_>>() })
+(B[m[32m+        )?;
+(B[m     } else {
+[31m-        for receipt in &selected { writeln!(stdout, "{} {}@{}.", if preview {"Would remove"} else {"Removed"}, receipt.name, receipt.version)?; }
+(B[m[31m-        writeln!(stdout,"{} {} missing configuration record(s).",if preview {"Would forget"} else {"Forgot"},stale.len())?;
+(B[m[32m+        for receipt in &selected {
+(B[m[32m+            writeln!(
+(B[m[32m+                stdout,
+(B[m[32m+                "{} {}@{}.",
+(B[m[32m+                if preview { "Would remove" } else { "Removed" },
+(B[m[32m+                receipt.name,
+(B[m[32m+                receipt.version
+(B[m[32m+            )?;
+(B[m[32m+        }
+(B[m[32m+        writeln!(
+(B[m[32m+            stdout,
+(B[m[32m+            "{} {} missing configuration record(s).",
+(B[m[32m+            if preview { "Would forget" } else { "Forgot" },
+(B[m[32m+            stale.len()
+(B[m[32m+        )?;
+(B[m     }
+     if dry_run_code && !selected.is_empty() {
+         stdout.flush()?;
+Diff in /Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs:1225:
+     let sources = context.declarations.clone();
+     let store = context.store.clone();
+     tokio::task::spawn_blocking(move || sources.track_sources(&store))
+[31m-        .await.context("track admitted environment sources task")??;
+(B[m[32m+        .await
+(B[m[32m+        .context("track admitted environment sources task")??;
+(B[m     Ok(())
+ }
+ 

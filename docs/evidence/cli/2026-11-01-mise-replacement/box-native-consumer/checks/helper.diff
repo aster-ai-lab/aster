@@ -1,0 +1,56 @@
+--- before/capabilities_toolchain_tests.rs
++++ after/capabilities_toolchain_tests.rs
+@@ -10,6 +10,10 @@
+ use super::super::{LocalCapabilities, PluginPin, digest_of, sync_plugins_with_toolchain};
+ 
+ const PACKAGE: &str = "use/aster/tool-probe";
++
++#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
++#[path = "capabilities_toolchain_box_tests.rs"]
++mod box_native;
+ 
+ struct Fixture {
+     _directory: tempfile::TempDir,
+@@ -601,16 +605,19 @@
+ #[test]
+ #[ignore = "requires declared AIX candidates and real upstream release downloads"]
+ fn actual_dependency_aix_candidates_are_queryable_executable_and_removable() {
+-    verify_actual_dependency_candidates(std::time::Duration::from_secs(10));
++    verify_actual_dependency_candidates(std::time::Duration::from_secs(10), None);
+ }
+ 
+ #[test]
+ #[ignore = "requires the complete independently built BabelDOC AIX candidate"]
+ fn actual_embedded_babeldoc_aix_is_queryable_executable_and_removable() {
+-    verify_actual_dependency_candidates(std::time::Duration::from_secs(120));
+-}
+-
+-fn verify_actual_dependency_candidates(command_timeout: std::time::Duration) {
++    verify_actual_dependency_candidates(std::time::Duration::from_secs(120), None);
++}
++
++fn verify_actual_dependency_candidates(
++    command_timeout: std::time::Duration,
++    consumer: Option<fn(&tokio::runtime::Runtime, &Path, &Path) -> Value>,
++) {
+     let input = std::env::var_os("ASTER_TEST_DEPENDENCY_AIX_INPUTS").unwrap();
+     let cases: Vec<Value> = serde_json::from_slice(&fs::read(input).unwrap()).unwrap();
+     assert!(!cases.is_empty());
+@@ -727,9 +734,15 @@
+             outputs.push(json!({"command":command,"stdout":stdout}));
+         }
+         let lease = store.acquire_sync(&publication.cursor()).unwrap();
++        let consumer_evidence = consumer
++            .map(|exercise| exercise(&runtime, installed.paths().executable(), root.path()));
+         accepted.push((id.to_owned(), slug, publication, lease));
+-        evidence
+-            .push(json!({"packageId":id,"aixArchiveSha256":digest_of(&bytes),"outputs":outputs}));
++        let mut result =
++            json!({"packageId":id,"aixArchiveSha256":digest_of(&bytes),"outputs":outputs});
++        if let Some(consumer_evidence) = consumer_evidence {
++            result["nativeConsumer"] = consumer_evidence;
++        }
++        evidence.push(result);
+     }
+     drop(runtime);
+     let page: Value = serde_json::from_slice(

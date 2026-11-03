@@ -1,0 +1,17 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.78s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-2e3e956bc0d99306)
+
+running 6 tests
+test http::node::tests::native_version_admission_and_complete_layout_protocol_refuse_before_io ... ok
+test http::node::tests::provider_declared_lts_aliases_and_latest_resolve_from_official_metadata_shape ... ok
+test http::node::verify::tests::all_pinned_public_key_blocks_are_parsed_and_inputs_are_bounded ... ok
+test http::node::tests::invalid_signatures_refuse_before_requesting_a_runtime_archive ... ok
+test http::node::verify::tests::official_historical_node_signature_verifies_and_tampered_bytes_do_not ... ok
+test http::node::tests::official_signature_is_checked_before_an_altered_runtime_archive_is_refused ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 0.05s
+

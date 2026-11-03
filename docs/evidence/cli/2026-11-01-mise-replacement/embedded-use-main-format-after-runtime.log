@@ -1,0 +1,43 @@
+Diff in /Users/roylin/code/aster/apps/aster/src/main.rs:1837:
+     let cores = std::thread::available_parallelism().unwrap_or(NonZeroUsize::MIN);
+     let resolved = match std::env::var(GROK_WORKER_THREADS_ENV) {
+         Ok(value) => worker_threads_from(Some(&value), cores),
+[31m-        Err(std::env::VarError::NotPresent) => WorkerCount::Accepted(
+(B[m[31m-            if is_environment_command(command) {
+(B[m[32m+        Err(std::env::VarError::NotPresent) => {
+(B[m[32m+            WorkerCount::Accepted(if is_environment_command(command) {
+(B[m                 NonZeroUsize::MIN
+             } else {
+                 default_worker_threads(cores)
+Diff in /Users/roylin/code/aster/apps/aster/src/main.rs:1845:
+[31m-            },
+(B[m[31m-        ),
+(B[m[32m+            })
+(B[m[32m+        }
+(B[m         Err(std::env::VarError::NotUnicode(value)) => WorkerCount::Ignored {
+             value: value.to_string_lossy().into_owned(),
+             used: default_worker_threads(cores),
+Diff in /Users/roylin/code/aster/apps/aster/src/main.rs:2149:
+         }
+     }
+     let runtime = build_cli_runtime(args.command.as_ref()).unwrap_or_else(|e| {
+[31m-            eprintln!("Aster: failed to start tokio runtime: {e}");
+(B[m[31m-            shutdown_and_flush_telemetry(1);
+(B[m[31m-        });
+(B[m[32m+        eprintln!("Aster: failed to start tokio runtime: {e}");
+(B[m[32m+        shutdown_and_flush_telemetry(1);
+(B[m[32m+    });
+(B[m     let result = run_and_shutdown(runtime, async_main(args), RUNTIME_SHUTDOWN_GRACE);
+     aster_telemetry::debug_log::flush();
+     if let Err(e) = result {
+Diff in /Users/roylin/code/aster/apps/aster/src/main.rs:2178:
+     if is_environment_command(command) {
+         let runtime = aster_tty_utils::runtime::apply_blocking_pool(&mut builder).build()?;
+         aster_tty_utils::runtime::prewarm_blocking_pool_n(
+[31m-            runtime.handle(), 1, std::time::Duration::from_secs(5),
+(B[m[32m+            runtime.handle(),
+(B[m[32m+            1,
+(B[m[32m+            std::time::Duration::from_secs(5),
+(B[m         )?;
+         Ok(runtime)
+     } else {

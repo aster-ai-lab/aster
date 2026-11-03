@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "data": {
+    "operation": "create",
+    "created": true,
+    "kind": "presentation",
+    "outputPath": "/Users/roylin/code/aster/.tmp/studio-plugin-chrome-followup/office-actual/Office 验证 space/deck.pptx",
+    "revision": {
+      "archiveBytes": 4437,
+      "sha256": "b6ae72fdfa594c6b39ed75373cfd2fde9a88dbff56b321f124fa475f6da08490"
+    }
+  }
+}

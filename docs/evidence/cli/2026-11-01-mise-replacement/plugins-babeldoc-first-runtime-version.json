@@ -1,0 +1,14 @@
+{
+  "capturedAtUtc": "2026-11-01T21:53:54.762323+00:00",
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-runtime/bin/babeldoc-stream",
+    "--version"
+  ],
+  "timeoutSeconds": null,
+  "exitCode": 1,
+  "seconds": 6.986704166,
+  "launcherSha256": "f3c4626903cefa2c49f6cfca6845f3aeebfb8e6cb2ccd845e57b1d52cee28365",
+  "aixInstallationAccepted": false,
+  "translationAccepted": false,
+  "systemPythonUsed": false
+}

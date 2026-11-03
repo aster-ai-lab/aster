@@ -3,9 +3,11 @@
 //! The trusted root is pinned out of band by SHA-256. Tough then verifies the
 //! complete root/timestamp/snapshot/targets chain, enforces expiration, and
 //! persists metadata versions in its datastore to reject rollback attacks.
+//! Metadata access waits asynchronously for at most 30 seconds when another
+//! operation owns the datastore lock. Dropping the future cancels that wait.
 
 use std::collections::BTreeSet;
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
@@ -21,7 +23,9 @@ use tough::{ExpirationEnforcement, Limits, Repository};
 use tough::{RepositoryLoader, TargetName};
 use url::Url;
 
-use super::package::{activate_temporary_file, io_error, sync_parent_directory, unique_suffix};
+use super::package::{
+    activate_temporary_file, io_error, lock_is_contended, sync_parent_directory, unique_suffix,
+};
 
 mod cache_policy;
 mod catalog;
@@ -78,6 +82,8 @@ pub const MAX_BOOTSTRAP_ROOT_BYTES: u64 = 1024 * 1024;
 const MAX_REMOTE_ARCHIVE_BYTES: u64 = 512 * 1024 * 1024;
 const MAX_REGISTRY_PACKAGE_TARGETS: u64 = 10_000;
 const MAX_ROOT_UPDATES: u64 = 64;
+const METADATA_LOCK_TIMEOUT: Duration = Duration::from_secs(30);
+const METADATA_LOCK_POLL_INTERVAL: Duration = Duration::from_millis(50);
 
 /// One configured registry whose TUF root is pinned out of band.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -189,6 +195,22 @@ impl TrustedRegistry {
         &self.datastore
     }
 
+    /// Observe retained bytes for one exact target without network or writes.
+    /// This is progress evidence, not content verification or installation authority.
+    pub async fn observe_target(
+        &self,
+        expected_length: u64,
+        expected_sha256: &str,
+    ) -> UseResult<VerifiedTargetObservation> {
+        observe_verified_target_cache_entry(
+            self.datastore(),
+            self.name(),
+            expected_length,
+            expected_sha256,
+        )
+        .await
+    }
+
     pub const fn target_cache_policy(&self) -> VerifiedTargetCachePolicy {
         self.target_cache_policy
     }
@@ -220,7 +242,7 @@ impl TrustedRegistry {
         }
         let evidence = pinned_bootstrap_root(self, bytes)?;
         ensure_metadata_directory(&self.datastore).await?;
-        let _lock = acquire_metadata_lock(&self.datastore)?;
+        let _lock = acquire_metadata_lock(&self.datastore).await?;
         let cache = self.datastore.join(ROOT_CACHE_NAME);
         match read_trusted_root_file(&cache).await? {
             Some(existing) => {
@@ -715,7 +737,7 @@ fn verified_registry_metadata(
 
 async fn load_repository(registry: &TrustedRegistry) -> UseResult<Repository> {
     ensure_metadata_directory(&registry.datastore).await?;
-    let lock = acquire_metadata_lock(&registry.datastore)?;
+    let lock = acquire_metadata_lock(&registry.datastore).await?;
     let root = load_trusted_root(registry).await?;
     let metadata_url = registry.metadata_url()?;
     let targets_url = registry.targets_url()?;
@@ -797,25 +819,36 @@ async fn ensure_metadata_directory(path: &Path) -> UseResult<()> {
     Ok(())
 }
 
-fn acquire_metadata_lock(datastore: &Path) -> UseResult<MetadataLock> {
+async fn acquire_metadata_lock(datastore: &Path) -> UseResult<MetadataLock> {
     let path = datastore.join(".metadata.lock");
-    let file = OpenOptions::new()
+    let file = fs::OpenOptions::new()
         .create(true)
         .read(true)
         .write(true)
         .truncate(false)
         .open(&path)
-        .map_err(|error| io_error("open TUF metadata lock", &path, error))?;
-    file.try_lock_exclusive().map_err(|error| {
-        UseError::new(
-            "use.extension.registry_busy",
-            format!(
-                "Another process is updating registry metadata '{}': {error}",
-                datastore.display()
-            ),
-        )
-    })?;
-    Ok(MetadataLock(file))
+        .await
+        .map_err(|error| io_error("open TUF metadata lock", &path, error))?
+        .into_std()
+        .await;
+    let deadline = super::route_lock::deadline_after(METADATA_LOCK_TIMEOUT)?;
+    loop {
+        match FileExt::try_lock_exclusive(&file) {
+            Ok(()) => return Ok(MetadataLock(file)),
+            Err(error) if lock_is_contended(&error) => {
+                let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+                if remaining.is_zero() {
+                    return Err(UseError::new(
+                        "use.extension.registry_busy",
+                        "Registry metadata is still in use after waiting 30 seconds.",
+                    )
+                    .with_detail("timeoutMs", 30_000));
+                }
+                tokio::time::sleep(METADATA_LOCK_POLL_INTERVAL.min(remaining)).await;
+            }
+            Err(error) => return Err(io_error("lock TUF metadata", &path, error)),
+        }
+    }
 }
 
 async fn load_trusted_root(registry: &TrustedRegistry) -> UseResult<Vec<u8>> {

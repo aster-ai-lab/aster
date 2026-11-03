@@ -1,0 +1,12 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s
+     Running tests/plugin_catalog_contracts.rs (target/mise-replacement-checks/debug/deps/plugin_catalog_contracts-e986ba289774078d)
+
+running 1 test
+test native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.00s
+

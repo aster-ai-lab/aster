@@ -34,6 +34,25 @@ pub struct ToolFailureRecord {
 }
 
 impl ToolReceipt {
+    pub(crate) fn validate(
+        &self,
+        name: &str,
+        version: Option<&str>,
+    ) -> Result<(), ToolAcquireError> {
+        if self.schema != RECEIPT_SCHEMA
+            || self.name != name
+            || version.is_some_and(|version| self.version != version)
+        {
+            return Err(ToolAcquireError::ReceiptDisagrees { name: name.into() });
+        }
+        crate::spec::parse_tool_name(&self.name)?;
+        crate::spec::parse_tool_name(&self.executable)?;
+        crate::spec::parse_tool_version(&self.version)?;
+        crate::parse_tool_spec(&self.spec)?;
+        crate::store::normalize_sha256(&self.sha256)?;
+        Ok(())
+    }
+
     pub(crate) fn new(
         name: &str,
         spec: &str,

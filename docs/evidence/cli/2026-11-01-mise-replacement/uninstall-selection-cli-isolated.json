@@ -1,0 +1,169 @@
+{
+  "original_failed": 20,
+  "test_binary": "/Users/roylin/code/aster/target/debug/deps/env_manager-dc365661741318e2",
+  "test_binary_sha256": "9c527da3358effff9bb991ec6746365510ad718e5ed1e6c7e44b49bc420cd4a7",
+  "input_or_timeout_changes": false,
+  "isolated": [
+    {
+      "case": "offline_install_and_missing_lock_refuse_without_network",
+      "exit": 0,
+      "elapsed_ms": 921,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "exec_preserves_exit_codes_and_signal_termination",
+      "exit": 0,
+      "elapsed_ms": 848,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "exec_preserves_non_utf8_process_arguments",
+      "exit": 0,
+      "elapsed_ms": 611,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+      "exit": 101,
+      "elapsed_ms": 20506,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "closed_stdout_returns_an_io_error_without_panicking",
+      "exit": 0,
+      "elapsed_ms": 579,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "nested_cli_environment_inherits_user_and_ancestor_values",
+      "exit": 0,
+      "elapsed_ms": 1068,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "missing_pin_refuses_before_starting_the_requested_process",
+      "exit": 0,
+      "elapsed_ms": 711,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "invalid_variable_name_does_not_replace_the_project_file",
+      "exit": 0,
+      "elapsed_ms": 688,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "failed_install_does_not_panic_or_replace_the_project_pin",
+      "exit": 0,
+      "elapsed_ms": 806,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "exec_tool_overrides_use_the_argument_root_and_preserve_configuration",
+      "exit": 101,
+      "elapsed_ms": 20433,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "configured_path_and_system_requests_match_frozen_mise_context_results",
+      "exit": 101,
+      "elapsed_ms": 20623,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "cli_latest_can_execute_when_only_a_prerelease_is_installed",
+      "exit": 101,
+      "elapsed_ms": 20655,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions",
+      "exit": 101,
+      "elapsed_ms": 21023,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints",
+      "exit": 101,
+      "elapsed_ms": 20545,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin",
+      "exit": 101,
+      "elapsed_ms": 20910,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer",
+      "exit": 101,
+      "elapsed_ms": 20501,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "cli_exec_and_which_select_project_versions_without_network_or_pointer_changes",
+      "exit": 101,
+      "elapsed_ms": 20508,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata",
+      "exit": 101,
+      "elapsed_ms": 21041,
+      "cli_sha256_before": "85d08219b261224dc753dd7b7d91e96d9c0a077ab787c40046d8bfa3e100ebd1",
+      "cli_sha256_after": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+      "cli_unchanged_during_case": false
+    },
+    {
+      "case": "uninstall_rejects_ambiguity_and_previews_leave_payloads_and_pins_unchanged",
+      "exit": 101,
+      "elapsed_ms": 20527,
+      "cli_sha256_before": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+      "cli_sha256_after": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+      "cli_unchanged_during_case": true
+    },
+    {
+      "case": "package_commands_use_the_embedded_sdk_without_an_external_companion",
+      "exit": 101,
+      "elapsed_ms": 20419,
+      "cli_sha256_before": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+      "cli_sha256_after": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+      "cli_unchanged_during_case": true
+    }
+  ],
+  "scope": "Original test binary against the current CLI artifact; source changes may create a later CLI digest"
+}

@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "scope": "Box maintained-source package preparation and retained desktop-owner lifecycle",
+  "builderSha256": "2d2784edcf1ca58c6dd755a67eceb971fd227722d2ae67b8f41b14f1d71e7d23",
+  "nativeRunnerSha256": "7d662542d79f8b5d83a0caec1a024a9ddb52566d49aa4e223fe478aede8ef1d4",
+  "sourcesUnchanged": true,
+  "binariesUnchanged": true,
+  "checks": [
+    {
+      "name": "recipe-current",
+      "argv": [
+        "python3",
+        "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.py",
+        "/Users/roylin/code/aster/.tmp/plugin-registry/box-aix-candidate/aster-box-darwin-arm64.tar.gz",
+        "--aster-use-bin",
+        "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+        "--out",
+        "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-final"
+      ],
+      "exitCode": 0,
+      "seconds": 6.0986723750000005
+    },
+    {
+      "name": "native-management",
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-studio-native-tests",
+        "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 8.348668708999998
+    }
+  ],
+  "published": false,
+  "nativeVmExecutionAccepted": false,
+  "currentStudioRebuildClaimed": false
+}

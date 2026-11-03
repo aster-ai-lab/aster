@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-15646f658281df7e",
+    "--exact",
+    "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "exit": 0,
+  "before": {
+    "test": "2a43867d51a04c3ef05d24f689de919d0a6541183001f137e0d920b909e71ae6",
+    "cli": "d1aec0f8d3672f3dcb6f9470b0faa23b489700b3d17f81e8df4d7b7261dc0579"
+  },
+  "after": {
+    "test": "2a43867d51a04c3ef05d24f689de919d0a6541183001f137e0d920b909e71ae6",
+    "cli": "d1aec0f8d3672f3dcb6f9470b0faa23b489700b3d17f81e8df4d7b7261dc0579"
+  },
+  "unchanged": true
+}

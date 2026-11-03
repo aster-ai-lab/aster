@@ -9,7 +9,14 @@ use crate::extension_cli::{
     external_package_id, install_remote_extension, installed_extension_for_id,
     installed_extensions, uninstall_extension, upgrade_remote_extension,
 };
+use std::ffi::OsString;
 use std::time::Duration;
+
+mod output;
+pub use output::write_result;
+
+/// Worker stack required when polling the schema-v3 CLI graph on Windows.
+pub const CLI_WORKER_STACK_SIZE: usize = 8 * 1024 * 1024;
 
 mod component;
 mod knowledge;
@@ -81,13 +88,45 @@ impl CommandOutput {
     }
 }
 
+/// Admit native command arguments to the existing UTF-8 CLI language.
+/// Invalid text returns a typed error without echoing argument contents.
+/// Poll on a Tokio worker with [`CLI_WORKER_STACK_SIZE`]. Command effects and
+/// cancellation follow [`run`]; started blocking work may outlive cancellation.
+pub async fn run_os(args: Vec<OsString>) -> UseResult<CommandOutput> {
+    run(decode_args(args)?).await
+}
+
+/// Run the package CLI under the `aster use` host command, using its usage text.
+/// Argument admission, worker stack, effects and cancellation follow [`run_os`].
+pub async fn run_embedded_os(args: Vec<OsString>) -> UseResult<CommandOutput> {
+    dispatch(decode_args(args)?, "aster use").await
+}
+
+fn decode_args(args: Vec<OsString>) -> UseResult<Vec<String>> {
+    // shortcut: the existing parser uses UTF-8 operands; admit native path operands when that parser is extended.
+    args.into_iter()
+        .map(|argument| {
+            argument.into_string().map_err(|_| {
+                UseError::new(
+                    "use.cli.argument_encoding",
+                    "Package command arguments must be valid UTF-8.",
+                )
+            })
+        })
+        .collect()
+}
+
 pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
+    dispatch(args, "aster-use").await
+}
+
+async fn dispatch(args: Vec<String>, invocation: &'static str) -> UseResult<CommandOutput> {
     let Some(command) = args.first().map(String::as_str) else {
-        return Ok(help());
+        return Ok(help(invocation));
     };
     match command {
         "-V" | "--version" | "version" => Ok(version()),
-        "-h" | "--help" | "help" => Ok(help()),
+        "-h" | "--help" | "help" => Ok(help(invocation)),
         "capabilities" => capabilities().await,
         "capability" => capability(&args[1..]).await,
         "doctor" => doctor(args.get(1).map(String::as_str)).await,
@@ -125,7 +164,7 @@ fn version() -> CommandOutput {
     }
 }
 
-fn help() -> CommandOutput {
+fn help(invocation: &str) -> CommandOutput {
     CommandOutput::success(
         concat!(
             "aster-use — AI Native Package Manager\n\n",
@@ -172,7 +211,7 @@ fn help() -> CommandOutput {
             "  aster-use extension diagnose <publisher/name> [--history] --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
             "  aster-use extension planning-evidence <publisher/name> [--json]\n",
             "  aster-use extension snapshot|watch [--after-generation <n>] [--timeout-ms <ms>] [--json]\n",
-        ),
+        ).replace("aster-use", invocation),
         serde_json::json!({
             "commands": [
                 "capabilities",

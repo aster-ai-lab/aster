@@ -1,0 +1,190 @@
+{
+  "captured_at_utc": "2026-11-01T11:08:36.006838+00:00",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "full_goal_complete": false,
+  "checks": [
+    {
+      "log": "legacy-literal-tool-suite.log",
+      "passed": 103,
+      "failed": 0,
+      "ignored": 2,
+      "sha256": "48841917bfa991de51b67689f7c8d9f49e0c3131fe4a256e8d12ceb34bbb1de6"
+    },
+    {
+      "log": "legacy-literal-lock-tests-refreshed.log",
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0,
+      "sha256": "158662b173c1fe0b3d3255ca0e20df94d4a77331139f2539a41258dd450f743a"
+    }
+  ],
+  "negative_regression_before_fix": {
+    "log": "legacy-literal-lock-before.log",
+    "passed": 0,
+    "failed": 1,
+    "isolated": true
+  },
+  "library_clippy": {
+    "exit_code": 0,
+    "log": "legacy-literal-tool-clippy-final.log",
+    "package_warnings": 0
+  },
+  "dependency_checks": {
+    "passed": 7,
+    "log": "legacy-literal-dependencies.log"
+  },
+  "focused_format": {
+    "exit_code": 0,
+    "logs": [
+      "legacy-literal-tool-format-final.log",
+      "legacy-literal-cli-format-final.log"
+    ]
+  },
+  "workspace_format": {
+    "exit_code": 1,
+    "distinct_paths": 779,
+    "changed_literal_paths_in_diagnostics": [],
+    "log": "legacy-literal-workspace-format.log"
+  },
+  "lock_consistency_refusals_retained": [
+    "legacy-literal-lock-tests-final.log",
+    "legacy-literal-cli-tests.log"
+  ],
+  "locked_offline_metadata": {
+    "exit_code": 0,
+    "stderr_log": "legacy-current-metadata.stderr.log",
+    "lock_regenerated_by_this_task": false
+  },
+  "pending_checks": [
+    {
+      "name": "pager_clippy",
+      "session_id": 88136,
+      "log": "uninstall-selection-pager-clippy.log"
+    },
+    {
+      "name": "current_cli_regression",
+      "session_id": 96503,
+      "log": "uninstall-provider-selection-cli-tests.log"
+    }
+  ],
+  "frozen_baseline": {
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "paths": 690,
+    "oracle_cases": 10,
+    "oracle_versions": 11
+  },
+  "unchecked": [
+    "Subsequent embedded-package source checks; owning pager Clippy still has 42 pre-existing indexing diagnostics and release efficiency remains unachieved",
+    "Unlocked/new-schema migration for ambiguous old declarations",
+    "Reference execution, path/system locks and complete backend layouts",
+    "Native Linux/Windows",
+    "Final archived installation and release efficiency",
+    "All remaining required mise capabilities"
+  ],
+  "source_sha256": {
+    "crates/use/tool-acquire/src/env_acl.rs": "be3135878157e93928f0ff3ceb0470aae3fa294b6ed47bfbb5a4b70b001f3f3c",
+    "crates/use/tool-acquire/src/env_lock.rs": "380120f27aa92ccc6ad8b6fa441132e1371ae9bf3bd8000578dfbc59c441fccc",
+    "crates/use/tool-acquire/src/env_lock/tests.rs": "99357920ac9bf295dccabdc3b48a918deaf5587056ae6f25a9e96b82af46a75b",
+    "apps/aster/tests/env_manager.rs": "c8901347ac7a4cca4dff6b434dd274a62dc2c2608fe756933cb0033316e3026b",
+    "specs/031-cli-mise-replacement/tasks.md": "34e6b08295003e71be95e88b45c1e5e63c7821345a283d796bd9fb0e66126fb5",
+    "specs/031-cli-mise-replacement/data-model.md": "e5a208b326033ef6e3bf9736ba0a2b0c28c79e060bab4527f016706bb3e588f8",
+    "specs/031-cli-mise-replacement/contracts/mise-baseline.json": "28b0b575f1ad3aa491b5ea2497db0d0d6015762185d389efaf2259854f0f7473",
+    "specs/031-cli-mise-replacement/contracts/mise-version-reference.json": "3bf3d6e006ac388e7a6e87af47e1a700da69f12307841dd13a75c87fd3670df5"
+  },
+  "previous_pending_checks": [
+    {
+      "name": "paired_cli_acp_build",
+      "session_id": 15388,
+      "exit_code": 101,
+      "log": "legacy-literal-paired-build.log",
+      "reason": "ACP Meta type mismatch; the current shared source was corrected separately"
+    },
+    {
+      "name": "actual_cli_literal_regression",
+      "session_id": 26061,
+      "exit_code": 130,
+      "log": "legacy-literal-cli-tests-refreshed.log",
+      "reason": "Intentionally interrupted for material context source/dependency integration"
+    },
+    {
+      "name": "cli_clippy",
+      "session_id": 91878,
+      "exit_code": 255,
+      "log": "legacy-literal-cli-clippy.log",
+      "reason": "Intentionally interrupted for material context source/dependency integration"
+    }
+  ],
+  "current_context_library": {
+    "passed": 107,
+    "ignored": 2,
+    "log": "context-tool-suite.log",
+    "clippy_exit_code": 0,
+    "clippy_log": "context-tool-clippy.log"
+  },
+  "current_pager_regressions": {
+    "exit_code": 0,
+    "passed": 13,
+    "log": "context-pager-tests.log"
+  },
+  "native_cli_evidence": {
+    "initial_suite": {
+      "passed": 0,
+      "failed": 17,
+      "exit_code": 101,
+      "log": "context-cli-tests.log"
+    },
+    "isolated_replay": {
+      "passed": 17,
+      "report": "context-cli-isolated.json"
+    },
+    "same_binary_parallel_replay": {
+      "passed": 17,
+      "exit_code": 0,
+      "log": "context-cli-parallel-replay.log"
+    },
+    "paired_build": {
+      "exit_code": 0,
+      "log": "context-paired-build.log"
+    },
+    "test_binary_sha256": "c6cb7f202577b932286afb2ee242a0b308adf97f2ba94b1337d8a4ace22c9023"
+  },
+  "owning_cli_clippy": {
+    "exit_code": 101,
+    "existing_diagnostics": 42,
+    "paths": 9,
+    "log": "context-cli-clippy.log",
+    "report": "context-cli-clippy-findings.json"
+  },
+  "updated_cli_regressions_including_literal_v1": {
+    "exit_code": 0,
+    "passed": 18,
+    "log": "context-override-cli-tests.log"
+  },
+  "updated_paired_build": {
+    "exit_code": 0,
+    "log": "context-override-paired-build.log"
+  },
+  "updated_pager_regressions": {
+    "exit_code": 0,
+    "passed": 15,
+    "log": "context-override-pager-tests.log"
+  },
+  "startup_stage_report": "context-startup-validation-summary.json",
+  "latest_stage_report": "uninstall-provider-selection-validation-summary.json",
+  "prior_pending_terminal_results": [
+    {
+      "session_id": 5608,
+      "exit_code": 101,
+      "log": "embedded-use-cli-tests-final.log"
+    },
+    {
+      "session_id": 42696,
+      "exit_code": 0,
+      "log": "uninstall-version-paired-build.log"
+    }
+  ]
+}

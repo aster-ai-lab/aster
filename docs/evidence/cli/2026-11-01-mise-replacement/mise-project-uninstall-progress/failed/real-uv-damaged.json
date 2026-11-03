@@ -1,0 +1,53 @@
+{
+  "status": "returned",
+  "startedAtUnixSeconds": 1793647086.543227,
+  "commands": [
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "--no-auto-update",
+        "tool",
+        "use",
+        "uv@0.13.6",
+        "--json"
+      ],
+      "timeoutSeconds": 120,
+      "exit": 0,
+      "stdout": "[\n  {\n    \"name\": \"uv\",\n    \"version\": \"0.13.6\",\n    \"executable\": \"uv\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "--no-auto-update",
+        "tool",
+        "which",
+        "uv"
+      ],
+      "timeoutSeconds": 20,
+      "exit": 0,
+      "stdout": "/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged uv 中文 7au9im6r/home/tools/installs/uv/0.13.6/uv\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "--no-auto-update",
+        "tool",
+        "uninstall",
+        "--project",
+        "--yes",
+        "--json"
+      ],
+      "timeoutSeconds": 20,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Error: inspect tool file failed at /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged uv 中文 7au9im6r/home/tools/installs/uv/0.13.6/uv: No such file or directory (os error 2): No such file or directory (os error 2)\n"
+    }
+  ],
+  "selectedExecutableSha256": "3996850e6d85e60b0142b40af4bd984822d65f736b52209921c47312450685cb",
+  "observedExit": 1,
+  "selectedDirectoryRemains": true,
+  "declarationUnchanged": true,
+  "finishedAtUnixSeconds": 1793647105.78704
+}

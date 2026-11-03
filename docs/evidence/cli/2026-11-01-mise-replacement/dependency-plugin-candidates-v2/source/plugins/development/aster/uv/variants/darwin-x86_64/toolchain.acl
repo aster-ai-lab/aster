@@ -1,0 +1,17 @@
+toolchain {
+ schema_version = 1
+ name = "uv"
+ spec = "github:astral-sh/uv"
+ version = "0.13.6"
+ executable = "uv"
+ platform = "x86_64-macos-"
+ url = "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-apple-darwin.tar.gz"
+ length = 17004934
+ sha256 = "63ba17fdda55ad1a230d4b37fc6017ffa10c23688c83818bd3bfdf914c652a02"
+ format = "tar.gz"
+ prefix = ""
+ bin_dirs = ["uv-x86_64-apple-darwin"]
+ executable_mode = "0755"
+ command "uv" { path = "uv-x86_64-apple-darwin/uv" }
+ command "uvx" { path = "uv-x86_64-apple-darwin/uvx" }
+}

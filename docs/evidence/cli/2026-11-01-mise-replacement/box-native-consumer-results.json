@@ -1,0 +1,619 @@
+{
+  "schema": "aster.box-native-consumer-evidence.v1",
+  "status": "progress",
+  "observedAtUnixSeconds": 1793652959,
+  "host": "macOS-26.6.2-arm64-arm-64bit",
+  "rustToolchain": "1.97.1",
+  "previousGoalTurn": "progress: maintained Box source and verified its package lifecycle",
+  "scope": "Two basic Box MicroVM commands through the native installed-package owner",
+  "sourceSha256": {
+    "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "bb3577d792e097e5ee01b1c275d12a343ad13648bbb60db9e1bf68b2e7a4db32",
+    "apps/studio/src-tauri/src/capabilities_toolchain_box_tests.rs": "af44cc9a842d585ebd0ed19a4d41edd625e03b8b5d6f4e5b4f98393c30a0c563",
+    "plugins/plugins/operations/aster/aster-box/README.md": "0fc094ed01e6240139ad0c63fd89cd208b13c2131a7c2781cf7687c6f882a051",
+    "plugins/recipes/aster-box/darwin-arm64.py": "126499b87c1a414dc2d30780b8f6238072330099cbba6e34ae7a1c021b55e192",
+    "plugins/recipes/aster-box/darwin-arm64.json": "e1f47e7cc5a34da177c5b633e4606969ff7974ab44ec6cbbd0ab11142eefcf87",
+    "specs/031-cli-mise-replacement/contracts/box-native-vm-reference.json": "a6d8be7a61a2b0b9cba4aa5e1a936093e378a95b0086c5686a8893f30e7c1ebb",
+    "specs/031-cli-mise-replacement/tasks.md": "d664b4e85237c246c22b647b8133e0e98bd1abac283fbd4a71433bf0c3118f28",
+    "specs/031-cli-mise-replacement/contracts/capability-matrix.md": "15ce88f9f1870584ff0cbf81aff33c171085970d0b036399ccf4782ddfe7f362"
+  },
+  "sampledNativeSourceSha256": {
+    "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "bb3577d792e097e5ee01b1c275d12a343ad13648bbb60db9e1bf68b2e7a4db32",
+    "apps/studio/src-tauri/src/capabilities_toolchain_box_tests.rs": "af44cc9a842d585ebd0ed19a4d41edd625e03b8b5d6f4e5b4f98393c30a0c563",
+    "apps/studio/src-tauri/src/capabilities_toolchain.rs": "3d0309af79b63ba0d515f34f297767ed3a35fc2d2d4c8848e2b4b867c2631e27",
+    "apps/studio/src-tauri/src/capabilities.rs": "0177045f3ffd014fdb53e8b8e6147723e319317d7eca2b108555892301b77c34",
+    "Cargo.toml": "1d35b191251905a03167da438010700df0fd53a7443b39b537713f2c745baa8b",
+    "Cargo.lock": "3353ea91ea4abb84d53f6e86991e11ab3e2fdb33bc05aca1796afebead826ece",
+    "rust-toolchain.toml": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc"
+  },
+  "frozenReference": {
+    "path": "specs/031-cli-mise-replacement/contracts/box-native-vm-reference.json",
+    "sha256": "a6d8be7a61a2b0b9cba4aa5e1a936093e378a95b0086c5686a8893f30e7c1ebb",
+    "contract": {
+      "schemaVersion": 1,
+      "target": "darwin-arm64",
+      "guestTarget": "aarch64-linux-musl",
+      "imageInput": "docker.io/library/alpine:3.22.1",
+      "pulledImageDigest": "sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1",
+      "offlineFixtureLength": 4139520,
+      "offlineFixtureSha256": "0429125e10364631040a9eda0da9340494e6b5e0552403533e480b4e111841cb",
+      "nativeOwnerTest": "capabilities::toolchain::tests::box_native::actual_box_aix_executes_linux_commands_before_package_retirement",
+      "commandTimeoutSeconds": 120,
+      "guestTimeoutSeconds": 30,
+      "loadTimeoutSeconds": 30,
+      "versionTimeoutSeconds": 10,
+      "expectedGuestStdoutBlocks": [
+        "aster-box-plugin-vm-ok\nLinux\naarch64\n",
+        "aster-box-plugin-exit-17\n"
+      ],
+      "expectedExitCodes": [
+        0,
+        17
+      ],
+      "isolatedHome": true,
+      "network": "none",
+      "published": false
+    }
+  },
+  "externalFixture": {
+    "path": ".tmp/box-plugin-vm-probe/alpine-arm64.oci.tar",
+    "length": 4139520,
+    "sha256": "0429125e10364631040a9eda0da9340494e6b5e0552403533e480b4e111841cb",
+    "retainedOutsideGit": true,
+    "publicFixtureHostingClaimed": false
+  },
+  "finalAix": {
+    "path": ".tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix",
+    "length": 26530058,
+    "sha256": "370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e"
+  },
+  "checks": {
+    "focusedTests": {
+      "passed": 6,
+      "failed": 0,
+      "ignoredExternal": 4
+    },
+    "initialNativeConsumer": {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+        "capabilities::toolchain::tests::box_native::actual_box_aix_executes_linux_commands_before_package_retirement",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 11.998575999983586,
+      "sourceSha256": {
+        "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "bb3577d792e097e5ee01b1c275d12a343ad13648bbb60db9e1bf68b2e7a4db32",
+        "apps/studio/src-tauri/src/capabilities_toolchain_box_tests.rs": "af44cc9a842d585ebd0ed19a4d41edd625e03b8b5d6f4e5b4f98393c30a0c563",
+        "apps/studio/src-tauri/src/capabilities_toolchain.rs": "3d0309af79b63ba0d515f34f297767ed3a35fc2d2d4c8848e2b4b867c2631e27",
+        "apps/studio/src-tauri/src/capabilities.rs": "0177045f3ffd014fdb53e8b8e6147723e319317d7eca2b108555892301b77c34",
+        "Cargo.toml": "1d35b191251905a03167da438010700df0fd53a7443b39b537713f2c745baa8b",
+        "Cargo.lock": "3353ea91ea4abb84d53f6e86991e11ab3e2fdb33bc05aca1796afebead826ece",
+        "rust-toolchain.toml": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc"
+      },
+      "sourcesUnchanged": true,
+      "runner": {
+        "source": "/Users/roylin/code/aster/target/debug/deps/aster_studio_lib-cf9a454712b9bd72",
+        "copy": "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+        "length": 466322096,
+        "sha256Before": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2",
+        "sha256After": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2"
+      },
+      "inputs": "/Users/roylin/code/aster/.tmp/plugins-box-maintained/native-inputs.json",
+      "fixture": "/Users/roylin/code/aster/.tmp/box-plugin-vm-probe/alpine-arm64.oci.tar",
+      "published": false
+    },
+    "finalNativeConsumer": {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+        "capabilities::toolchain::tests::box_native::actual_box_aix_executes_linux_commands_before_package_retirement",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 8.395033375010826,
+      "aixSha256": "370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+      "aixLength": 26530058,
+      "sourcesUnchanged": true,
+      "builderSha256": "2d2784edcf1ca58c6dd755a67eceb971fd227722d2ae67b8f41b14f1d71e7d23",
+      "runnerSha256": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2",
+      "binariesUnchanged": true,
+      "published": false
+    },
+    "finalDefaultNativeCaller": {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+        "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 5.965691415942274,
+      "runnerSha256": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2",
+      "runnerUnchanged": true
+    },
+    "sdkPackageChecks": {
+      "packageId": "aster/aster-box",
+      "target": "darwin-arm64",
+      "runtimeLength": 26582246,
+      "runtimeSha256": "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7",
+      "checks": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+            "registry",
+            "package",
+            "build",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/repository/plugins/operations/aster/aster-box",
+            "--output",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix",
+            "--json"
+          ],
+          "exitCode": 0,
+          "stdout": "{\n  \"data\": {\n    \"aixPackage\": {\n      \"activityCount\": 0,\n      \"byteCount\": 26590293,\n      \"componentId\": \"use/aster/aster-box\",\n      \"fileCount\": 7,\n      \"packageId\": \"aster/aster-box\",\n      \"packageSha256\": \"798fb6ecf49161d22d100cb667d50ac1e3f15bd0dc0e1c46e5477f48e5ddd332\",\n      \"route\": \"aster-box\",\n      \"schemaVersion\": 1,\n      \"surfaces\": [\n        \"plugin\"\n      ],\n      \"version\": \"0.1.0\"\n    },\n    \"archivePath\": \"/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix\"\n  },\n  \"ok\": true,\n  \"schemaVersion\": 1\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+            "registry",
+            "package",
+            "check",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix",
+            "--json"
+          ],
+          "exitCode": 0,
+          "stdout": "{\n  \"data\": {\n    \"aixPackage\": {\n      \"activityCount\": 0,\n      \"byteCount\": 26590293,\n      \"componentId\": \"use/aster/aster-box\",\n      \"fileCount\": 7,\n      \"packageId\": \"aster/aster-box\",\n      \"packageSha256\": \"798fb6ecf49161d22d100cb667d50ac1e3f15bd0dc0e1c46e5477f48e5ddd332\",\n      \"route\": \"aster-box\",\n      \"schemaVersion\": 1,\n      \"surfaces\": [\n        \"plugin\"\n      ],\n      \"version\": \"0.1.0\"\n    }\n  },\n  \"ok\": true,\n  \"schemaVersion\": 1\n}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+            "registry",
+            "package",
+            "prepare",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.aix",
+            "--repository",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/repository",
+            "--domain",
+            "operations",
+            "--catalog-metadata",
+            "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.json",
+            "--output",
+            "/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.oci.json",
+            "--json"
+          ],
+          "exitCode": 0,
+          "stdout": "{\n  \"data\": {\n    \"aixPublication\": {\n      \"archiveLength\": 26530058,\n      \"archiveSha256\": \"sha256:370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e\",\n      \"catalog\": {\n        \"archive\": {\n          \"length\": 26530058,\n          \"sha256\": \"sha256:370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e\",\n          \"targetName\": \"extensions/aster/aster-box/0.1.0/stable/darwin-arm64/oci-ghcr-v1/f12600d7f1f4407e057908f3f505974ec1f451d6e9b2fa8a3b67e14ba66f6622/aster-box.aix\"\n        },\n        \"availability\": {\n          \"state\": \"available\"\n        },\n        \"categories\": [\n          \"operations\"\n        ],\n        \"channel\": \"stable\",\n        \"description\": \"Box 3.2.7 with its entitled VM shim, Linux guest helper and native libraries.\",\n        \"displayName\": \"Aster Box\",\n        \"keywords\": [\n          \"aster-box\",\n          \"toolchain\",\n          \"virtualization\"\n        ],\n        \"license\": \"MIT\",\n        \"package\": {\n          \"expandedBytes\": 26590293,\n          \"fileCount\": 7,\n          \"manifestSha256\": \"sha256:baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f\",\n          \"sha256\": \"sha256:798fb6ecf49161d22d100cb667d50ac1e3f15bd0dc0e1c46e5477f48e5ddd332\"\n        },\n        \"packageId\": \"aster/aster-box\",\n        \"permissionCeiling\": {\n          \"schema\": \"aster.use.plugin-permissions.v1\",\n          \"surfaces\": []\n        },\n        \"permissionCeilingDigest\": \"sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c\",\n        \"publisher\": \"aster\",\n        \"repository\": \"https://github.com/aster-ai-lab/plugins\",\n        \"requiresUse\": \">=0.3.4, <0.4.0\",\n        \"schema\": \"aster.use.plugin-catalog.v3\",\n        \"surfaces\": [\n          {\n            \"id\": \"toolchain\",\n            \"kind\": \"plugin\",\n            \"optional\": false\n          }\n        ],\n        \"target\": \"darwin-arm64\",\n        \"version\": \"0.1.0\"\n      },\n      \"domain\": \"operations\",\n      \"manifestSha256\": \"sha256:f12600d7f1f4407e057908f3f505974ec1f451d6e9b2fa8a3b67e14ba66f6622\",\n      \"ociRepository\": \"ghcr.io/aster-ai-lab/plugins/aster/aster-box\",\n      \"owners\": [\n        \"aster-ai-lab\"\n      ],\n      \"package\": {\n        \"activityCount\": 0,\n        \"byteCount\": 26590293,\n        \"componentId\": \"use/aster/aster-box\",\n        \"fileCount\": 7,\n        \"packageId\": \"aster/aster-box\",\n        \"packageSha256\": \"798fb6ecf49161d22d100cb667d50ac1e3f15bd0dc0e1c46e5477f48e5ddd332\",\n        \"route\": \"aster-box\",\n        \"schemaVersion\": 1,\n        \"surfaces\": [\n          \"plugin\"\n        ],\n        \"version\": \"0.1.0\"\n      },\n      \"sourcePath\": \"/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/repository/plugins/operations/aster/aster-box\"\n    },\n    \"manifestPath\": \"/Users/roylin/code/aster/.tmp/box-plugin-owner/qualified-final/aster-box-0.1.0-darwin-arm64.oci.json\",\n    \"planningPath\": null\n  },\n  \"ok\": true,\n  \"schemaVersion\": 1\n}\n",
+          "stderr": ""
+        }
+      ],
+      "published": false
+    },
+    "clippy": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exitCode": 0,
+      "diagnosticsInChangedRustFiles": 0,
+      "reportedStudioLibTestWarnings": 309,
+      "reportedDuplicateWarnings": 246,
+      "typeComplexityCandidatesReadInContext": [
+        "apps/studio/src-tauri/src/agent_plane/catalog.rs:639",
+        "apps/studio/src-tauri/src/workspace_browser.rs:303"
+      ],
+      "notClaimed": [
+        "whole Studio guideline compliance",
+        "all unrelated warnings reviewed or fixed"
+      ]
+    },
+    "scopedFormatExitCode": 0,
+    "finalRootFormatExitCode": 0,
+    "workspaceDependencies": {
+      "interpreter": "python3.12",
+      "passed": 7,
+      "failed": 0
+    },
+    "whitespace": [
+      {
+        "argv": [
+          "git",
+          "-C",
+          "apps/studio",
+          "diff",
+          "--check",
+          "--",
+          "src-tauri/src/capabilities_toolchain_tests.rs",
+          "src-tauri/src/capabilities_toolchain_box_tests.rs"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "-C",
+          "plugins",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--check",
+          "--",
+          "specs/031-cli-mise-replacement/tasks.md",
+          "specs/031-cli-mise-replacement/contracts/capability-matrix.md",
+          "specs/031-cli-mise-replacement/contracts/box-native-vm-reference.json",
+          "docs/evidence/cli/2026-11-01-mise-replacement/OUTCOME.md"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ]
+  },
+  "nativeManagement": {
+    "results": [
+      {
+        "packageId": "aster/aster-box",
+        "aixArchiveSha256": "sha256:370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+        "outputs": [
+          {
+            "command": "aster-box",
+            "stdout": "aster-box 3.2.7\n"
+          }
+        ],
+        "nativeConsumer": {
+          "kind": "box-microvm",
+          "fixtureSha256": "sha256:0429125e10364631040a9eda0da9340494e6b5e0552403533e480b4e111841cb",
+          "nativeVmExecutionAccepted": true,
+          "isolatedHome": true,
+          "systemToolsOnlyPath": true,
+          "commands": [
+            {
+              "script": "printf 'aster-box-plugin-vm-ok\\n'; uname -s; uname -m",
+              "exitCode": 0,
+              "stdout": "Creating box plugin-box-native (d048927b89e8)...\nBox plugin-box-native (d048927b89e8) started. Press Ctrl-C to stop.\naster-box-plugin-vm-ok\nLinux\naarch64\nBox plugin-box-native exited and was removed.\n",
+              "cleanupExitCode": 1,
+              "inventoryEmpty": true,
+              "guestTimeoutSeconds": 30,
+              "commandTimeoutSeconds": 120
+            },
+            {
+              "script": "printf 'aster-box-plugin-exit-17\\n'; exit 17",
+              "exitCode": 17,
+              "stdout": "Creating box plugin-box-native (c8d4b2df5b10)...\nBox plugin-box-native (c8d4b2df5b10) started. Press Ctrl-C to stop.\naster-box-plugin-exit-17\nBox plugin-box-native exited and was removed.\n",
+              "cleanupExitCode": 1,
+              "inventoryEmpty": true,
+              "guestTimeoutSeconds": 30,
+              "commandTimeoutSeconds": 120
+            }
+          ]
+        }
+      }
+    ],
+    "installedCatalogueQueried": true,
+    "allRequestedVersionCommandsExecuted": true,
+    "allCandidatesRemoved": true,
+    "runtimeRetainedUntilLeaseRelease": true,
+    "permanentInstallation": false,
+    "trust": "explicit-local-candidates",
+    "officialRegistryPublicationAccepted": false,
+    "nativeGuiAccepted": false,
+    "commandDeadlineSeconds": 10,
+    "nativeTarget": "aarch64-macos"
+  },
+  "archiveAudit": {
+    "aixSha256": "370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+    "aixLength": 26530058,
+    "allStagedFilesMatchArchive": true,
+    "allCanonicalFilesMatchStagedSource": true,
+    "members": [
+      {
+        "path": "LICENSE",
+        "sha256": "f01977376885dfe6b38a2ca0f4e14373b3dd248d6890fff7a382fe96b263c760",
+        "length": 1091
+      },
+      {
+        "path": "README.md",
+        "sha256": "0fc094ed01e6240139ad0c63fd89cd208b13c2131a7c2781cf7687c6f882a051",
+        "length": 2487
+      },
+      {
+        "path": "SOURCE.json",
+        "sha256": "639410d85eae074e1fb5780247f5bff88229c561a3f8568ad504a6d625b0830b",
+        "length": 2137
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "sha256": "5adbbe4a9101198997b71cef038e773599237a5a32a4f46c159ad7d676eb6b78",
+        "length": 1485
+      },
+      {
+        "path": "aster-use-extension.acl",
+        "sha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
+        "length": 275
+      },
+      {
+        "path": "payload/aster-box-darwin-arm64.tar.gz",
+        "sha256": "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7",
+        "length": 26582246
+      },
+      {
+        "path": "toolchain.acl",
+        "sha256": "04430990410c3efdf429c849dda1c4f5284b5bbe1a8f3254c4b70afeb6b254c7",
+        "length": 572
+      }
+    ]
+  },
+  "retainedFailures": [
+    "initial default Python 3.9 import lacks tomllib; original dependency assertions pass under installed Python 3.12",
+    "initial root format differences in three parallel-development files; files later change outside this increment and identical command passes"
+  ],
+  "cleanupNote": "The --rm success path removes the instance; extra rm attempts report 1 while independently queried inventories remain empty. No rendered-error branching is used.",
+  "originalHelperCallersPreserved": true,
+  "published": false,
+  "permanentInstallation": false,
+  "pending": [],
+  "priorEvidence": "box-maintained-source-results.json",
+  "notClaimed": [
+    "every Box operation or snapshot/service/network behavior",
+    "ACP/agent sandbox integration",
+    "macOS corresponding-source publication qualification",
+    "GUI acceptance",
+    "other native host platforms",
+    "public hosting or CI availability of the qualified offline fixture",
+    "all 49 original IDs migrated and published",
+    "complete mise replacement",
+    "release performance and final archive/sandbox/channel gates",
+    "whole Studio Rust-guideline compliance or audit of every warning",
+    "release or channel publication"
+  ],
+  "retainedFiles": [
+    {
+      "path": "box-native-consumer/checks/before/capabilities_toolchain_tests.rs",
+      "length": 29053,
+      "sha256": "ea06417dffb0387f78baeaaacd72487870bce1cf7a8cbbd37d4129cb9afa5a82"
+    },
+    {
+      "path": "box-native-consumer/checks/helper.diff",
+      "length": 2429,
+      "sha256": "dc75f670d452c80076fcae4e71b59fd0f0bbdcd7a6a4259f88ca57214d583b02"
+    },
+    {
+      "path": "box-native-consumer/checks/source-before.json",
+      "length": 770,
+      "sha256": "c4919829deb8d7086d1e841b36f00b5cac07e587a0838aee0c7da4efe86a0c33"
+    },
+    {
+      "path": "box-native-consumer/checks/focused-tests.log",
+      "length": 36935,
+      "sha256": "6c05524e7d02261054c4e7e1ccac49467a5f568a16944547faecbce1bd2025a8"
+    },
+    {
+      "path": "box-native-consumer/checks/root-format.log",
+      "length": 5116,
+      "sha256": "6ccbdc71fa51a65da2449349fa4679de555219b3a49be95dc5bb2744b35fd6a7"
+    },
+    {
+      "path": "box-native-consumer/checks/root-format-final.log",
+      "length": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "box-native-consumer/checks/scoped-format.log",
+      "length": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "box-native-consumer/checks/studio-clippy.log",
+      "length": 247925,
+      "sha256": "063791522e57bebc6e3d451b741652519d3d702067266f481df16ecabe6ec8e6"
+    },
+    {
+      "path": "box-native-consumer/checks/clippy-scope-review.json",
+      "length": 542,
+      "sha256": "356e047a9bd7557335aad54ebd3d8e0a9e85f0cab673f20f0ee45f5eb29e6f81"
+    },
+    {
+      "path": "box-native-consumer/checks/workspace-dependencies.log",
+      "length": 188,
+      "sha256": "5705b644e36e23f02947a54d1a0cf9a52e91c4f4c1b98a12b003d01635e00a60"
+    },
+    {
+      "path": "box-native-consumer/checks/workspace-dependencies-python312.log",
+      "length": 726,
+      "sha256": "ff80f6600a4788191dcbc5eea4c3ffa1cc33199453366b6afd1524578b715c4b"
+    },
+    {
+      "path": "box-native-consumer/checks/run-native.py",
+      "length": 1992,
+      "sha256": "1ba9f77ec98ca11cc562dd9dbe52e153ed1235ef74c00ca558d5fd2305a84332"
+    },
+    {
+      "path": "box-native-consumer/checks/native-initial-result.json",
+      "length": 1733,
+      "sha256": "7a514f96c43b3bb189bd498e85c5019ebc7fdcdea4167aceb05e9c543aa01b6a"
+    },
+    {
+      "path": "box-native-consumer/checks/native-initial.log",
+      "length": 236,
+      "sha256": "ddfc6204413165c303ce9a7e998ad0cfc5eb0362fef3d4af9a54865f657e19c2"
+    },
+    {
+      "path": "box-native-consumer/checks/native-management-initial.json",
+      "length": 1986,
+      "sha256": "fe8a5db7f3bb3784baf1c176de864dd80fa2b3f4beed9811c84829fbaf5729aa"
+    },
+    {
+      "path": "box-native-consumer/checks/final-package.py",
+      "length": 3621,
+      "sha256": "0152cbdc81d1a9d41db98e02f5e81fd3c968d2929bb9dec184655857eb1fd6bb"
+    },
+    {
+      "path": "box-native-consumer/checks/final-package.log",
+      "length": 96,
+      "sha256": "ef175fc6441eb53c752fb4c17fb2b3fe71b47d72b951294a3c9b86f43a4c76af"
+    },
+    {
+      "path": "box-native-consumer/checks/native-final-result.json",
+      "length": 669,
+      "sha256": "8d65cbebc6b802e67a6b893c28ae8040cfda81274eea77edf93d5e9169c0165c"
+    },
+    {
+      "path": "box-native-consumer/checks/native-final.log",
+      "length": 236,
+      "sha256": "09d4adf85d9d3226f4eb1e43be1b05d7590fc881f98b4f355cf609ee4c2c61b9"
+    },
+    {
+      "path": "box-native-consumer/checks/native-management-final.json",
+      "length": 1986,
+      "sha256": "4201f210cdfb735daa9de8e02ba1041bb86a810caec50e746ac7ce1847654ffa"
+    },
+    {
+      "path": "box-native-consumer/checks/native-inputs-final.json",
+      "length": 347,
+      "sha256": "4b124b0ac3a1d950a94c06dd5cc10646252de2ae6d71fbc37480266dda6e6ce5"
+    },
+    {
+      "path": "box-native-consumer/checks/native-default-result.json",
+      "length": 417,
+      "sha256": "73276d9f59f4bf482c96fe3a23c02e6cac4e7fa0fc8714b29a78e925b15d333d"
+    },
+    {
+      "path": "box-native-consumer/checks/native-default.log",
+      "length": 231,
+      "sha256": "96d8b20adbcccfb0477b96161bf900916d112aff3c3ab874d0d4b9634a546f5c"
+    },
+    {
+      "path": "box-native-consumer/checks/native-management-default.json",
+      "length": 673,
+      "sha256": "ab25bb519ff79530dccddf00abdbb66760d860bd8db00bd9ffe9b2c21aec6d77"
+    },
+    {
+      "path": "box-native-consumer/checks/final-source-archive-audit.json",
+      "length": 1290,
+      "sha256": "159943bd46f61f2dd4583994cd10f8f5d77ed960b87fce828f49869133e997f3"
+    },
+    {
+      "path": "box-native-consumer/checks/diff-checks.json",
+      "length": 849,
+      "sha256": "f63726d96542829eb02c5c2609b2b2abe5a395feaa8813b233c95240a33245c6"
+    },
+    {
+      "path": "box-native-consumer/checks/retain-evidence.py",
+      "length": 8200,
+      "sha256": "9f9e9ba6c619b68070367f3b913820a8fa6f5b5422e4aa3c58c4e0c1164d8ac5"
+    },
+    {
+      "path": "box-native-consumer/checks/upstream-source/release.json",
+      "length": 8526,
+      "sha256": "3b1d86765aadb01ec8c89b359f08e2d78d8e2ed5d11de0aaa3fec51ac8c65271"
+    },
+    {
+      "path": "box-native-consumer/checks/upstream-source/sources.json",
+      "length": 445,
+      "sha256": "dd2ca24644a80da6c1507a0768f74d2b3312e4615e87bad73f7e8ca11acb8cb2"
+    },
+    {
+      "path": "box-native-consumer/checks/qualified-final/checks.json",
+      "length": 6201,
+      "sha256": "cc09dc0ef1990565495ca5b7a6a62efff6cda95b25d55e97354e101dec357593"
+    },
+    {
+      "path": "box-native-consumer/checks/qualified-final/aster-box-0.1.0-darwin-arm64.oci.json",
+      "length": 603,
+      "sha256": "f12600d7f1f4407e057908f3f505974ec1f451d6e9b2fa8a3b67e14ba66f6622"
+    },
+    {
+      "path": "box-native-consumer/checks/qualified-final/repository/plugins/operations/aster/aster-box/toolchain.acl",
+      "length": 572,
+      "sha256": "04430990410c3efdf429c849dda1c4f5284b5bbe1a8f3254c4b70afeb6b254c7"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/probe.py",
+      "length": 3574,
+      "sha256": "868ca529a11ed7910e9c6014d64ec53e11a6fc6593f330f5898c30df86a64024"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/checks.json",
+      "length": 3912,
+      "sha256": "5ea21ee20e9a4f7a6afdce31a298e6970398b86f36d5539650e6d2f7aa93a062"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/accepted.json",
+      "length": 3664,
+      "sha256": "180138284470ce924fa0b83996f185eda8c917117e7cba13c26f56bdffdd0a16"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/image.json",
+      "length": 907,
+      "sha256": "d0f08650d82fa7280e2dc4d66a9f39f83e0dd04dc5f99e6ee8dfb46969193e14"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/fixture-export.json",
+      "length": 640,
+      "sha256": "993759960334ebb1398ecfbb2840e1d8e840008454aad573e0efca20eaf5fbeb"
+    },
+    {
+      "path": "box-native-consumer/diagnostic/kernel-inspection.json",
+      "length": 1145,
+      "sha256": "b79ba551aa44ce3b6ff5ccf81a5fada4e9fa0a87fb4a6ef28a4c2e4ddcbc71b8"
+    },
+    {
+      "path": "box-native-consumer/source/apps/studio/src-tauri/src/capabilities_toolchain_tests.rs",
+      "length": 29566,
+      "sha256": "bb3577d792e097e5ee01b1c275d12a343ad13648bbb60db9e1bf68b2e7a4db32"
+    },
+    {
+      "path": "box-native-consumer/source/apps/studio/src-tauri/src/capabilities_toolchain_box_tests.rs",
+      "length": 4532,
+      "sha256": "af44cc9a842d585ebd0ed19a4d41edd625e03b8b5d6f4e5b4f98393c30a0c563"
+    },
+    {
+      "path": "box-native-consumer/source/plugins/plugins/operations/aster/aster-box/README.md",
+      "length": 2487,
+      "sha256": "0fc094ed01e6240139ad0c63fd89cd208b13c2131a7c2781cf7687c6f882a051"
+    },
+    {
+      "path": "box-native-consumer/source/plugins/recipes/aster-box/darwin-arm64.py",
+      "length": 3640,
+      "sha256": "126499b87c1a414dc2d30780b8f6238072330099cbba6e34ae7a1c021b55e192"
+    },
+    {
+      "path": "box-native-consumer/source/plugins/recipes/aster-box/darwin-arm64.json",
+      "length": 316,
+      "sha256": "e1f47e7cc5a34da177c5b633e4606969ff7974ab44ec6cbbd0ab11142eefcf87"
+    },
+    {
+      "path": "box-native-consumer/source/specs/031-cli-mise-replacement/contracts/box-native-vm-reference.json",
+      "length": 853,
+      "sha256": "a6d8be7a61a2b0b9cba4aa5e1a936093e378a95b0086c5686a8893f30e7c1ebb"
+    },
+    {
+      "path": "box-native-consumer/source/specs/031-cli-mise-replacement/tasks.md",
+      "length": 22728,
+      "sha256": "d664b4e85237c246c22b647b8133e0e98bd1abac283fbd4a71433bf0c3118f28"
+    },
+    {
+      "path": "box-native-consumer/source/specs/031-cli-mise-replacement/contracts/capability-matrix.md",
+      "length": 7130,
+      "sha256": "15ce88f9f1870584ff0cbf81aff33c171085970d0b036399ccf4782ddfe7f362"
+    }
+  ]
+}

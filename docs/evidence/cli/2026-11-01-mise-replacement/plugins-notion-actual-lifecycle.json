@@ -1,0 +1,14 @@
+{
+  "archiveLength": 30645442,
+  "archiveSha256": "2e822403b0b52b6f159c44c72085329d42415aebe12b570889f6a1fc45277004",
+  "entry": "dist/ntn-darwin-arm64/ntn",
+  "explicitToolRemovalPassed": true,
+  "name": "ntn",
+  "offlineReinstallationPassed": true,
+  "onlineInstallationPassed": true,
+  "permanentInstallation": false,
+  "spec": "npm:ntn",
+  "upstreamInstallerInvokedByHost": false,
+  "version": "0.23.25",
+  "versionStdout": "ntn 0.23.25\n"
+}

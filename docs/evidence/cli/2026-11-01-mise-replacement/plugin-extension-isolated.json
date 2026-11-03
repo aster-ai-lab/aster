@@ -1,0 +1,297 @@
+[
+  {
+    "case": "package_tests::admitted_package_fixture_contains_all_six_surface_kinds",
+    "exit_code": 101,
+    "elapsed_seconds": 0.008
+  },
+  {
+    "case": "package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.007
+  },
+  {
+    "case": "package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds",
+    "exit_code": 101,
+    "elapsed_seconds": 0.009
+  },
+  {
+    "case": "package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.008
+  },
+  {
+    "case": "registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation",
+    "exit_code": 101,
+    "elapsed_seconds": 0.013
+  },
+  {
+    "case": "registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation",
+    "exit_code": 101,
+    "elapsed_seconds": 0.015
+  },
+  {
+    "case": "registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts",
+    "exit_code": 101,
+    "elapsed_seconds": 0.014
+  },
+  {
+    "case": "registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover",
+    "exit_code": 101,
+    "elapsed_seconds": 0.014
+  },
+  {
+    "case": "registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation",
+    "exit_code": 101,
+    "elapsed_seconds": 0.015
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set",
+    "exit_code": 101,
+    "elapsed_seconds": 0.017
+  },
+  {
+    "case": "registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes",
+    "exit_code": 101,
+    "elapsed_seconds": 0.016
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations",
+    "exit_code": 101,
+    "elapsed_seconds": 0.017
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "remote::package_graph::tests::exact_root_version_remains_exact",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::package_graph::tests::invalid_root_version_requirement_fails_closed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::package_graph::tests::root_version_requirement_selects_the_highest_match",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence",
+    "exit_code": 101,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency",
+    "exit_code": 101,
+    "elapsed_seconds": 0.013
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions",
+    "exit_code": 101,
+    "elapsed_seconds": 0.015
+  },
+  {
+    "case": "registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors",
+    "exit_code": 101,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "case": "registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed",
+    "exit_code": 101,
+    "elapsed_seconds": 0.018
+  },
+  {
+    "case": "remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "remote::tests::catalog_v3_static_package_has_no_planning_target_download",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "remote::tests::executable_archive_download_retains_its_verified_planning_bundle",
+    "exit_code": 101,
+    "elapsed_seconds": 0.007
+  },
+  {
+    "case": "remote::tests::verified_target_cache_enforces_entry_retention_during_commit",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically",
+    "exit_code": 101,
+    "elapsed_seconds": 0.018
+  },
+  {
+    "case": "remote::tests::verified_targets_are_content_addressed_and_reusable_without_network",
+    "exit_code": 101,
+    "elapsed_seconds": 0.006
+  },
+  {
+    "case": "source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions",
+    "exit_code": 101,
+    "elapsed_seconds": 0.005
+  },
+  {
+    "case": "remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download",
+    "exit_code": 101,
+    "elapsed_seconds": 0.461
+  },
+  {
+    "case": "remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order",
+    "exit_code": 101,
+    "elapsed_seconds": 0.464
+  },
+  {
+    "case": "remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock",
+    "exit_code": 101,
+    "elapsed_seconds": 0.468
+  }
+]

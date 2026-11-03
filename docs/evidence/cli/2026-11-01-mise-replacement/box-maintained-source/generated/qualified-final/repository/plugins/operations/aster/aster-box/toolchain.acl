@@ -1,0 +1,18 @@
+toolchain {
+ schema_version = 1
+ name = "aster-box"
+ spec = "github:aster-ai-lab/Box"
+ version = "3.2.7"
+ executable = "aster-box"
+ platform = "aarch64-macos-"
+ archive = "payload/aster-box-darwin-arm64.tar.gz"
+ length = 26582246
+ sha256 = "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7"
+ format = "tar.gz"
+ prefix = "aster-box"
+ bin_dirs = ["bin"]
+ executable_mode = "0755"
+ command "aster-box" { path = "bin/aster-box" }
+ command "aster-box-shim" { path = "bin/aster-box-shim" }
+ command "aster-box-guest-init" { path = "bin/aster-box-guest-init" }
+}

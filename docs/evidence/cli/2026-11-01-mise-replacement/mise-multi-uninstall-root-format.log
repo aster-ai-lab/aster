@@ -1,0 +1,79 @@
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/document_processors.rs:3:
+ use base64::Engine;
+ use reqwest::blocking::{Client, RequestBuilder};
+ use serde::{Deserialize, Serialize};
+[31m-use serde_json::{json, Map, Value};
+(B[m[32m+use serde_json::{Map, Value, json};
+(B[m use std::collections::{BTreeMap, BTreeSet};
+ use std::io::{Cursor, Read};
+ use std::time::{Duration, Instant};
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/document_processors_tests.rs:17:
+ 
+ #[test]
+ fn processor_page_numbers_are_validated_and_missing_pages_are_explicit() {
+[31m-    assert!(indexed_pages(
+(B[m[31m-        &json!([{"index":0,"markdown":"a"},{"index":0,"markdown":"b"}]),
+(B[m[31m-        "index",
+(B[m[31m-        "markdown",
+(B[m[31m-        false
+(B[m[31m-    )
+(B[m[31m-    .is_err());
+(B[m[32m+    assert!(
+(B[m[32m+        indexed_pages(
+(B[m[32m+            &json!([{"index":0,"markdown":"a"},{"index":0,"markdown":"b"}]),
+(B[m[32m+            "index",
+(B[m[32m+            "markdown",
+(B[m[32m+            false
+(B[m[32m+        )
+(B[m[32m+        .is_err()
+(B[m[32m+    );
+(B[m     assert!(indexed_pages(&json!([{"markdown":"a"}]), "index", "markdown", false).is_err());
+     let pages = indexed_pages(
+         &json!([{"index":1,"markdown":"Actual second page"}]),
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/document_processors_tests.rs:42:
+         1
+     );
+     assert!(configured_url("file:///etc/passwd").is_err());
+[31m-    assert!(signed(
+(B[m[31m-        "GET",
+(B[m[31m-        "https://127.0.0.1/private",
+(B[m[31m-        None,
+(B[m[31m-        Instant::now() + Duration::from_secs(1)
+(B[m[31m-    )
+(B[m[31m-    .is_err());
+(B[m[32m+    assert!(
+(B[m[32m+        signed(
+(B[m[32m+            "GET",
+(B[m[32m+            "https://127.0.0.1/private",
+(B[m[32m+            None,
+(B[m[32m+            Instant::now() + Duration::from_secs(1)
+(B[m[32m+        )
+(B[m[32m+        .is_err()
+(B[m[32m+    );
+(B[m     assert!(identifier("../../other").is_err());
+ }
+ 
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/document_processors_tests.rs:85:
+         }
+         let request = String::from_utf8(data).unwrap();
+         assert!(request.starts_with("POST /v1/ocr "));
+[31m-        assert!(request
+(B[m[31m-            .to_ascii_lowercase()
+(B[m[31m-            .contains("authorization: bearer fixture-key"));
+(B[m[32m+        assert!(
+(B[m[32m+            request
+(B[m[32m+                .to_ascii_lowercase()
+(B[m[32m+                .contains("authorization: bearer fixture-key")
+(B[m[32m+        );
+(B[m         assert!(request.contains("data:image/png;base64,"));
+         assert!(!request.contains("/Users/"));
+         let body = json!({"pages":[{"index":0,"markdown":"Frozen image evidence"}]}).to_string();
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/document_processors_tests.rs:152:
+ 
+ #[test]
+ fn timed_out_provider_jobs_poll_original_ids_without_resubmitting_source_bytes() {
+[31m-    use lopdf::{dictionary, Document, Object};
+(B[m[32m+    use lopdf::{Document, Object, dictionary};
+(B[m     use std::io::{Read, Write};
+     let mut pdf = Document::with_version("1.5");
+     let pages = pdf.new_object_id();

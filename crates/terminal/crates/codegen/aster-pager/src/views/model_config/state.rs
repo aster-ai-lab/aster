@@ -279,8 +279,9 @@ impl ModelConfigState {
                 if fields.is_empty() {
                     return ModelConfigOutcome::Changed;
                 }
-                let next = fields[step(self.detail_index, fields.len(), delta)];
-                self.focus_field(next);
+                if let Some(next) = fields.get(step(self.detail_index, fields.len(), delta)) {
+                    self.focus_field(*next);
+                }
             }
         }
         ModelConfigOutcome::Changed
@@ -492,7 +493,9 @@ impl ModelConfigState {
             .collect::<Vec<_>>();
         let (provider_id, model_id) = split_default(&self.draft.default_model);
         let current = ids.iter().position(|id| id == &provider_id).unwrap_or(0);
-        let next = ids[step(current, ids.len(), delta)].clone();
+        let Some(next) = ids.get(step(current, ids.len(), delta)).cloned() else {
+            return ModelConfigOutcome::Changed;
+        };
         let model = self
             .draft
             .providers
@@ -539,7 +542,9 @@ impl ModelConfigState {
             .position(|model| model.id == model_id)
             .unwrap_or(0);
         let next = step(current, provider.models.len(), delta);
-        let model = provider.models[next].id.clone();
+        let Some(model) = provider.models.get(next).map(|model| model.id.clone()) else {
+            return ModelConfigOutcome::Changed;
+        };
         let provider_id = provider.id.clone();
         self.set_default(&provider_id, &model);
         ModelConfigOutcome::Changed
@@ -658,17 +663,16 @@ impl ModelConfigState {
                 .any(|(other, model)| other != index && model.id == id)
             {
                 None
-            } else if provider
+            } else if let Some(model) = provider
                 .models
-                .get(index)
-                .is_none_or(|model| model.id == id)
+                .get_mut(index)
+                .filter(|model| model.id != id)
             {
-                Some(None)
-            } else {
-                let previous = provider.models[index].id.clone();
-                provider.models[index].id = id.clone();
+                let previous = std::mem::replace(&mut model.id, id.clone());
                 provider.dirty = true;
                 Some(Some((provider.id.clone(), previous)))
+            } else {
+                Some(None)
             }
         };
         let Some(renamed) = renamed else {

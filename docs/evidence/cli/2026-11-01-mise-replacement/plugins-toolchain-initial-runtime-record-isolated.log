@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'http::toolchain::tests::prepared_runtime_waits_for_its_owner_and_verifies_all_files_and_layout' (72925542) panicked at crates/use/tool-acquire/src/http/toolchain/tests.rs:94:38:
+called `Result::unwrap()` on an `Err` value: InvalidInstallation("archive requires bounded entrypoints and PATH directories")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test http::toolchain::tests::prepared_runtime_waits_for_its_owner_and_verifies_all_files_and_layout ... FAILED
+
+failures:
+
+failures:
+    http::toolchain::tests::prepared_runtime_waits_for_its_owner_and_verifies_all_files_and_layout
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 126 filtered out; finished in 0.15s
+

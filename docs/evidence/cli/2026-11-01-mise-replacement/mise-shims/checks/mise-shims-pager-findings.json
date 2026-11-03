@@ -1,0 +1,264 @@
+{
+  "exitCode": 101,
+  "diagnostics": 42,
+  "findings": [
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 146,
+      "column": 9
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 147,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 148,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 149,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 150,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 150,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 151,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 151,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 152,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 152,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 106,
+      "column": 22
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 143,
+      "column": 14
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 173,
+      "column": 14
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs",
+      "line": 248,
+      "column": 9
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs",
+      "line": 290,
+      "column": 20
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 492,
+      "column": 17
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 495,
+      "column": 40
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 498,
+      "column": 24
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 462,
+      "column": 18
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 466,
+      "column": 13
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 467,
+      "column": 16
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 471,
+      "column": 38
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 484,
+      "column": 13
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 812,
+      "column": 28
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 818,
+      "column": 52
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 831,
+      "column": 24
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 940,
+      "column": 38
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 943,
+      "column": 35
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 956,
+      "column": 34
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 967,
+      "column": 17
+    },
+    {
+      "message": "error: slicing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 970,
+      "column": 18
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 286,
+      "column": 28
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 515,
+      "column": 20
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 562,
+      "column": 21
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 690,
+      "column": 32
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 691,
+      "column": 17
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 299,
+      "column": 20
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 306,
+      "column": 39
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 310,
+      "column": 14
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 355,
+      "column": 62
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+      "line": 183,
+      "column": 41
+    },
+    {
+      "message": "error: indexing may panic",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+      "line": 207,
+      "column": 33
+    }
+  ],
+  "uniquePrimaryLocations": 39,
+  "changedCommandFileFindings": 0,
+  "samePrimaryLocationsAsPrevious": true,
+  "addedPrimaryLocations": [],
+  "removedPrimaryLocations": [],
+  "previousDiagnosticCount": 42
+}

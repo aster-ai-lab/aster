@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/deps/aster_use_extension-6995bf91986feb4d",
+        "--exact",
+        "remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed",
+        "--nocapture"
+      ],
+      "exitCode": 101,
+      "stdout": "\nrunning 1 test\ntest remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed ... FAILED\n\nfailures:\n\nfailures:\n    remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 220 filtered out; finished in 0.00s\n\n",
+      "stderr": "\nthread 'remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed' (73234776) panicked at crates/use/extension/src/remote_catalog_tests.rs:977:71:\ncalled `Result::unwrap()` on an `Err` value: UseError { code: \"use.plugin.catalog_invalid\", message: \"The catalog permission ceiling digest does not match its content.\", suggestion: None, details: {} }\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "seconds": 0.005986374999999995,
+      "timeoutSeconds": null,
+      "binarySha256": "7c7d132346c815c68b5c182c5978cd9cab8595ce974049010f3ca7f86aaafdf2",
+      "binaryUnchanged": true,
+      "inputsUnchanged": true
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/deps/aster_use_extension-6995bf91986feb4d",
+        "--exact",
+        "remote::catalog_tests::later_patch_host_floor_filters_the_signed_catalog_before_archive_download",
+        "--nocapture"
+      ],
+      "exitCode": 101,
+      "stdout": "\nrunning 1 test\ntest remote::catalog_tests::later_patch_host_floor_filters_the_signed_catalog_before_archive_download ... FAILED\n\nfailures:\n\nfailures:\n    remote::catalog_tests::later_patch_host_floor_filters_the_signed_catalog_before_archive_download\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 220 filtered out; finished in 0.00s\n\n",
+      "stderr": "\nthread 'remote::catalog_tests::later_patch_host_floor_filters_the_signed_catalog_before_archive_download' (73234779) panicked at crates/use/extension/src/remote_catalog_tests.rs:977:71:\ncalled `Result::unwrap()` on an `Err` value: UseError { code: \"use.plugin.catalog_invalid\", message: \"The catalog permission ceiling digest does not match its content.\", suggestion: None, details: {} }\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "seconds": 0.005876207999999994,
+      "timeoutSeconds": null,
+      "binarySha256": "7c7d132346c815c68b5c182c5978cd9cab8595ce974049010f3ca7f86aaafdf2",
+      "binaryUnchanged": true,
+      "inputsUnchanged": true
+    }
+  ],
+  "sourceSha256": {
+    "crates/use/Cargo.toml": "56e5b72a6d6202df0ff9f8ffa07e40e248521f23d11721beb7ca1d9df8efdd11",
+    "crates/use/extension/Cargo.toml": "f4bcdb11b2af7d85b94e21763c29d9f2affacaf7a2521f7f8105654c4c2a3222",
+    "crates/use/extension/src/lib.rs": "f6b448366637bf613e6c49a4d97ca27b574423783908b18eb77229cb3ee0a3b2",
+    "crates/use/extension/src/plugin_manifest_tests.rs": "66bbc4dbe5755b41b6d4b837bf3a2be3b39e483646210498377016ef65fcb5b5",
+    "crates/use/extension/src/remote_catalog_tests.rs": "77f2b9f629e9b63e90dfffa509dfe73289e7f85aab7330f04e926c07e0e4d03e",
+    "crates/use/extension/src/host_floor_tests.rs": "9f07db049a03eb242d0e27a587452e81c76f783554635c741e4ae7264b38f801"
+  }
+}

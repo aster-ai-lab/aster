@@ -1,0 +1,66 @@
+{
+  "startedAtUtc": "2026-11-02T02:30:09.621201+00:00",
+  "sourceSha256": {
+    "crates/use/tool-acquire/src/store.rs": "7fee60eedca24e0b9f024758a2838f8e12602ada18d0671387214bbbdf4fce71",
+    "crates/use/tool-acquire/src/store/tests.rs": "372096acbc69861ed6d671ed4254c51a359577fa111a8403876172e1f99fbaa6",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "4c70694a99d2403ae129868f85c019c3a9983d890037977c30d75e7f611fc738",
+    "apps/aster/tests/env_manager.rs": "14a21b59e27355850f1f898547d24f3f255768465c508ab6fa6fbe9eb5d9c15b",
+    "tests/cli_mise_multi_uninstall_reference.py": "543a0b96e3ae59d8fb61ffe25545a830071f30ef5bc92915c1520991a0f400c2",
+    "specs/031-cli-mise-replacement/contracts/mise-multi-uninstall-reference.json": "37173fe195b1f08129bd7f239fd513b5ae33bace4377f834f2db5dd6fdf9630b"
+  },
+  "checks": [
+    {
+      "name": "pair",
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp"
+      ],
+      "status": "finished",
+      "log": ".tmp/mise-multi-uninstall-json-final-pair.log",
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "cli",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--test",
+        "env_manager",
+        "uninstall"
+      ],
+      "status": "finished",
+      "log": ".tmp/mise-multi-uninstall-json-final-cli.log",
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire",
+        "-p",
+        "aster-pager",
+        "-p",
+        "aster",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "status": "finished",
+      "log": ".tmp/mise-multi-uninstall-json-final-clippy.log",
+      "exitCode": 101,
+      "sourcesUnchanged": true
+    }
+  ]
+}

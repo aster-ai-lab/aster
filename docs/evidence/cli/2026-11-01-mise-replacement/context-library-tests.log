@@ -1,0 +1,15 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.45s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-d1fbb0cc5bcff877)
+
+running 4 tests
+test env_context::tests::external_paths_retain_native_errors_and_refuse_absent_context ... ok
+test env_context::tests::layered_paths_keep_declaring_roots_overrides_and_secret_redaction ... ok
+test env_context::tests::native_github_and_npm_default_layouts_remain_distinct_and_bounded ... ok
+test env_context::tests::context_selections_execute_external_and_system_commands_without_store_mutation ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 105 filtered out; finished in 1.60s
+

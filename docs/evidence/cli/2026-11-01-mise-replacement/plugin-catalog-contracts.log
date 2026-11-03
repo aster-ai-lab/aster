@@ -1,0 +1,170 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling libc v0.2.189
+   Compiling serde_core v1.0.229
+   Compiling smallvec v1.16.4
+   Compiling form_urlencoded v1.2.2
+   Compiling once_cell v1.21.4
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling errno v0.3.14
+   Compiling cpufeatures v0.2.17
+   Compiling getrandom v0.3.4
+   Compiling sha2 v0.10.9
+   Compiling rustix v1.1.6
+   Compiling tempfile v3.27.0
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling serde_yaml_ng v0.10.0
+   Compiling olpc-cjson v0.1.4
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 44s
+     Running tests/plugin_catalog_contracts.rs (target/mise-replacement-checks/debug/deps/plugin_catalog_contracts-e986ba289774078d)
+
+running 22 tests
+test permission_ceiling_rejects_ambient_or_unscoped_authority ... ok
+test catalog_v3_binds_okf_and_skill_dependency_closure_without_runtime_authority ... FAILED
+test current_verified_catalog_derives_a_plan_ready_selected_install_transition ... FAILED
+test native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats ... FAILED
+test planning_bundle_binds_release_backed_executables_to_catalog_v3 ... FAILED
+test installed_plan_evidence_rejects_catalog_or_capability_drift ... FAILED
+test installed_plan_evidence_binds_catalog_receipt_and_capability_state ... FAILED
+test planning_bundle_binds_package_native_tool_and_stdio_mcp_launchers ... FAILED
+test mhs_bridge_permission_ceiling_grants_only_the_host_gateway_boundary ... FAILED
+test catalog_v3_resolves_flow_between_okf_and_skill_ui_consumers ... FAILED
+test catalog_v3_binds_one_small_deterministic_planning_target ... FAILED
+test current_catalog_resolves_only_the_surface_dependency_closure ... FAILED
+test current_verified_catalog_derives_remove_and_replace_from_observed_surfaces ... FAILED
+test complete_package_catalog_fixture_is_canonical ... FAILED
+test okf_only_catalog_v3_does_not_invent_an_executable_planning_target ... FAILED
+test canonical_plugin_contract_fixtures_have_cross_sdk_digests ... FAILED
+test privilege_bearing_unknown_fields_fail_closed_without_echo ... ok
+test verified_catalog_provenance_accepts_only_secure_or_loopback_registries ... FAILED
+test catalog_rejects_retired_schemas_and_incomplete_current_evidence ... ok
+test verified_catalog_provenance_binds_outer_tuf_evidence_to_the_record ... FAILED
+test planning_bundle_rejects_mutable_artifacts_and_unsupported_catalog_surfaces ... FAILED
+test catalog_record_binds_permissions_surfaces_and_archive ... ok
+
+failures:
+
+---- catalog_v3_binds_okf_and_skill_dependency_closure_without_runtime_authority stdout ----
+
+thread 'catalog_v3_binds_okf_and_skill_dependency_closure_without_runtime_authority' (62006254) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- current_verified_catalog_derives_a_plan_ready_selected_install_transition stdout ----
+
+thread 'current_verified_catalog_derives_a_plan_ready_selected_install_transition' (62006259) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats stdout ----
+
+thread 'native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats' (62006264) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:35:70:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- planning_bundle_binds_release_backed_executables_to_catalog_v3 stdout ----
+
+thread 'planning_bundle_binds_release_backed_executables_to_catalog_v3' (62006268) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- installed_plan_evidence_rejects_catalog_or_capability_drift stdout ----
+
+thread 'installed_plan_evidence_rejects_catalog_or_capability_drift' (62006262) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- installed_plan_evidence_binds_catalog_receipt_and_capability_state stdout ----
+
+thread 'installed_plan_evidence_binds_catalog_receipt_and_capability_state' (62006261) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- planning_bundle_binds_package_native_tool_and_stdio_mcp_launchers stdout ----
+
+thread 'planning_bundle_binds_package_native_tool_and_stdio_mcp_launchers' (62006267) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- mhs_bridge_permission_ceiling_grants_only_the_host_gateway_boundary stdout ----
+
+thread 'mhs_bridge_permission_ceiling_grants_only_the_host_gateway_boundary' (62006263) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:138:5:
+assertion `left == right` failed
+  left: "sha256:0d0f41741a0db9ada1bcc3c844d4524904a26edcd502b82cf70a2efb928461d5"
+ right: "sha256:f5f93fad7d03bef3ad6e1227612169456bf5060f0c8b52c104b82f1798f13fa6"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- catalog_v3_resolves_flow_between_okf_and_skill_ui_consumers stdout ----
+
+thread 'catalog_v3_resolves_flow_between_okf_and_skill_ui_consumers' (62006256) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- catalog_v3_binds_one_small_deterministic_planning_target stdout ----
+
+thread 'catalog_v3_binds_one_small_deterministic_planning_target' (62006255) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- current_catalog_resolves_only_the_surface_dependency_closure stdout ----
+
+thread 'current_catalog_resolves_only_the_surface_dependency_closure' (62006258) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:205:88:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- current_verified_catalog_derives_remove_and_replace_from_observed_surfaces stdout ----
+
+thread 'current_verified_catalog_derives_remove_and_replace_from_observed_surfaces' (62006260) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- complete_package_catalog_fixture_is_canonical stdout ----
+
+thread 'complete_package_catalog_fixture_is_canonical' (62006257) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:1034:76:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- okf_only_catalog_v3_does_not_invent_an_executable_planning_target stdout ----
+
+thread 'okf_only_catalog_v3_does_not_invent_an_executable_planning_target' (62006265) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- canonical_plugin_contract_fixtures_have_cross_sdk_digests stdout ----
+
+thread 'canonical_plugin_contract_fixtures_have_cross_sdk_digests' (62006251) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:59:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- verified_catalog_provenance_accepts_only_secure_or_loopback_registries stdout ----
+
+thread 'verified_catalog_provenance_accepts_only_secure_or_loopback_registries' (62006271) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:1004:65:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- verified_catalog_provenance_binds_outer_tuf_evidence_to_the_record stdout ----
+
+thread 'verified_catalog_provenance_binds_outer_tuf_evidence_to_the_record' (62006272) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:981:65:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+---- planning_bundle_rejects_mutable_artifacts_and_unsupported_catalog_surfaces stdout ----
+
+thread 'planning_bundle_rejects_mutable_artifacts_and_unsupported_catalog_surfaces' (62006269) panicked at crates/use/core/tests/plugin_catalog_contracts.rs:888:87:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+
+
+failures:
+    canonical_plugin_contract_fixtures_have_cross_sdk_digests
+    catalog_v3_binds_okf_and_skill_dependency_closure_without_runtime_authority
+    catalog_v3_binds_one_small_deterministic_planning_target
+    catalog_v3_resolves_flow_between_okf_and_skill_ui_consumers
+    complete_package_catalog_fixture_is_canonical
+    current_catalog_resolves_only_the_surface_dependency_closure
+    current_verified_catalog_derives_a_plan_ready_selected_install_transition
+    current_verified_catalog_derives_remove_and_replace_from_observed_surfaces
+    installed_plan_evidence_binds_catalog_receipt_and_capability_state
+    installed_plan_evidence_rejects_catalog_or_capability_drift
+    mhs_bridge_permission_ceiling_grants_only_the_host_gateway_boundary
+    native_aix_catalog_targets_are_admitted_without_accepting_foreign_package_formats
+    okf_only_catalog_v3_does_not_invent_an_executable_planning_target
+    planning_bundle_binds_package_native_tool_and_stdio_mcp_launchers
+    planning_bundle_binds_release_backed_executables_to_catalog_v3
+    planning_bundle_rejects_mutable_artifacts_and_unsupported_catalog_surfaces
+    verified_catalog_provenance_accepts_only_secure_or_loopback_registries
+    verified_catalog_provenance_binds_outer_tuf_evidence_to_the_record
+
+test result: FAILED. 4 passed; 18 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aster-use-core --test plugin_catalog_contracts`

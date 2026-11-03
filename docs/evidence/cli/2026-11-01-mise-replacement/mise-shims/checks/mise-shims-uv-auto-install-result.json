@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "startedAtUnixSeconds": 1793643493.148031,
+  "argv": [
+    "target/debug/deps/env_manager-1f7217e7bdec0bca",
+    "project_shim_installs_its_missing_declared_version_from_the_real_backend",
+    "--ignored",
+    "--exact",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "selectedVersion": "0.13.6",
+  "commandTimeoutSeconds": 120,
+  "exitCode": 0,
+  "finishedAtUnixSeconds": 1793643514.552265
+}

@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "fd"
+ spec = "github:sharkdp/fd"
+ version = "10.5.0"
+ executable = "fd"
+ platform = "x86_64-macos-"
+ url = "https://github.com/sharkdp/fd/releases/download/v10.5.0/fd-v10.5.0-x86_64-apple-darwin.tar.gz"
+ length = 1426858
+ sha256 = "7e31028c62c6955877735d0406807aa484c2a5e6f86235a59e26c29c301da590"
+ format = "tar.gz"
+ prefix = ""
+ bin_dirs = ["fd-v10.5.0-x86_64-apple-darwin"]
+ executable_mode = "0755"
+ command "fd" { path = "fd-v10.5.0-x86_64-apple-darwin/fd" }
+}

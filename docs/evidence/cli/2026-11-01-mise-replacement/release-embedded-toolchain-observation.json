@@ -1,0 +1,108 @@
+{
+  "capturedAtUtc": "2026-11-01T23:29:23.139070+00:00",
+  "repositories": {
+    "aster": {
+      "head": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "dirtyEntries": 2341
+    },
+    "studio": {
+      "head": "4c05bd1086a38f2fc8b7195fb2fee60a723b5509",
+      "dirtyEntries": 515
+    }
+  },
+  "sourceVersions": {
+    "aster-core": "9.1.7",
+    "aster": "0.1.6",
+    "aster-use": "0.3.4",
+    "aster-use-extension": "0.3.4",
+    "aster-studio": "0.1.11",
+    "aster-acp": "9.1.7"
+  },
+  "developmentProcesses": [],
+  "checks": [
+    {
+      "name": "packages",
+      "argv": [
+        "gh",
+        "api",
+        "--method",
+        "GET",
+        "/orgs/aster-ai-lab/packages",
+        "-f",
+        "package_type=container",
+        "--paginate",
+        "--jq",
+        ".[] | {name,visibility}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"name\":\"plugins/operations/aster/aster-document\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-office\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-sandbox\",\"visibility\":\"private\"}\n{\"name\":\"plugins/aster/aster-document\",\"visibility\":\"private\"}\n{\"name\":\"plugins/aster/aster-office\",\"visibility\":\"private\"}\n{\"name\":\"plugins/aster/aster-sandbox\",\"visibility\":\"private\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "releases",
+      "argv": [
+        "gh",
+        "api",
+        "repos/aster-ai-lab/aster/releases",
+        "--paginate",
+        "--jq",
+        ".[] | {tag_name,draft,prerelease,published_at,target_commitish}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T16:06:16Z\",\"tag_name\":\"v0.1.11\",\"target_commitish\":\"1639ebcaa109d1878eade6d0177df04ebc0a1918\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T11:52:55Z\",\"tag_name\":\"v0.1.10\",\"target_commitish\":\"main\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T21:35:14Z\",\"tag_name\":\"aster-cli-v0.1.7\",\"target_commitish\":\"ca162c96e9d4e4da4785bb1482d78084455a81d3\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T08:49:55Z\",\"tag_name\":\"aster-cli-v0.1.6\",\"target_commitish\":\"60a47ecb20d6488cd01b9b028b85d7f3e4290826\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T23:13:51Z\",\"tag_name\":\"aster-acp-v9.1.7\",\"target_commitish\":\"a7df8281e1865c14c807c54a1aceb6dc36ed876d\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-28T21:05:49Z\",\"tag_name\":\"desktop-stable\",\"target_commitish\":\"3185a21747df621c569ad4828103b53e685a8203\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-28T23:02:51Z\",\"tag_name\":\"aster-cli-stable\",\"target_commitish\":\"f9bddc250b977a3d6eb311ffc7d2f8b36df6b95d\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "latest",
+      "argv": [
+        "gh",
+        "api",
+        "repos/aster-ai-lab/aster/releases/latest",
+        "--jq",
+        "{tag_name,draft,prerelease}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"draft\":false,\"prerelease\":false,\"tag_name\":\"v0.1.11\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ci",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "aster-ai-lab/aster",
+        "--commit",
+        "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+        "--limit",
+        "20",
+        "--json",
+        "workflowName,status,conclusion,headSha,url"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143321\",\"workflowName\":\"Qualify aster\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143274\",\"workflowName\":\"Qualify aster-cli\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143188\",\"workflowName\":\"backend\"},{\"conclusion\":\"success\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143162\",\"workflowName\":\"Cross-platform text\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143189\",\"workflowName\":\"Rust\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "allDevelopmentComplete": false,
+  "sourceFrozen": false,
+  "releaseCreatedByThisTask": false,
+  "governanceRecheck": {
+    "exitCode": 0,
+    "seconds": 1.0257436250000005,
+    "sourceSha256": {
+      "tests/release_governance.py": "83da0c61d2d5c4f843277a572922bf91dbe63eeb49e2991b363962258792fbf3",
+      ".github/workflows/release-aster-cli-channel.yml": "89e2c142f4de617986bc862dfbcc23241ffd5d8ec86a4667c4647011acfe3b2d"
+    },
+    "sourcesUnchanged": true,
+    "caseDeadlinesUnchanged": true
+  },
+  "rootFormatObservationLog": "release-embedded-toolchain-root-format.log",
+  "localSigningReadiness": {
+    "developerIdIdentityAvailable": true,
+    "notaryProfileHistoryReadable": true,
+    "newArchiveSignedOrNotarized": false
+  },
+  "governanceSha256": "26138ea7752624cccb917313cbf888c7f98d63d2efd6fff18d684373f9b13cb8"
+}

@@ -1,0 +1,124 @@
+{
+  "name": "env-project-uninstall",
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "01-decline-project-removal",
+      "name": "01-decline-project-removal",
+      "surface": "tui",
+      "timeout_ms": 30000,
+      "steps": [
+        {
+          "id": "project-selection",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "uv@0.13.6 requested by"
+            }
+          }
+        },
+        {
+          "id": "confirmation",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "[y/N]"
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "action": {
+            "type": "press",
+            "key": "n"
+          }
+        },
+        {
+          "id": "submit",
+          "action": {
+            "type": "press",
+            "key": "Enter"
+          }
+        },
+        {
+          "id": "cancelled",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "Cancelled."
+            }
+          }
+        },
+        {
+          "id": "decline-evidence",
+          "action": {
+            "type": "terminal_recording",
+            "path": "terminal/decline.vt"
+          }
+        }
+      ]
+    },
+    {
+      "id": "02-confirm-project-removal",
+      "name": "02-confirm-project-removal",
+      "surface": "tui",
+      "timeout_ms": 30000,
+      "steps": [
+        {
+          "id": "project-selection",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "uv@0.13.6 requested by"
+            }
+          }
+        },
+        {
+          "id": "confirmation",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "[y/N]"
+            }
+          }
+        },
+        {
+          "id": "confirm",
+          "action": {
+            "type": "press",
+            "key": "y"
+          }
+        },
+        {
+          "id": "submit",
+          "action": {
+            "type": "press",
+            "key": "Enter"
+          }
+        },
+        {
+          "id": "removed",
+          "action": {
+            "type": "wait",
+            "condition": {
+              "type": "text",
+              "value": "Removed uv@0.13.6."
+            }
+          }
+        },
+        {
+          "id": "confirm-evidence",
+          "action": {
+            "type": "terminal_recording",
+            "path": "terminal/confirm.vt"
+          }
+        }
+      ]
+    }
+  ]
+}

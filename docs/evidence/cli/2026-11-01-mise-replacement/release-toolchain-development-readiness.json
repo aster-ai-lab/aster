@@ -1,0 +1,46 @@
+{
+  "capturedAtUtc": "2026-11-01T20:07:02.008457+00:00",
+  "repositories": {
+    ".": {
+      "head": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "statusEntries": 2304
+    },
+    "apps/studio": {
+      "head": "a371b25465ca76f0561bf650f6c54407ef3c0ba3",
+      "statusEntries": 469
+    }
+  },
+  "developmentProcesses": [
+    {
+      "pid": "27566",
+      "parentPid": "81052",
+      "elapsed": "05:26:20",
+      "state": "Ss",
+      "executable": "pnpm"
+    },
+    {
+      "pid": "49949",
+      "parentPid": "49948",
+      "elapsed": "00:02",
+      "state": "R",
+      "executable": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo"
+    },
+    {
+      "pid": "49963",
+      "parentPid": "81052",
+      "elapsed": "00:01",
+      "state": "Ss",
+      "executable": "pnpm"
+    },
+    {
+      "pid": "83397",
+      "parentPid": "81052",
+      "elapsed": "11:08:12",
+      "state": "Ss",
+      "executable": "pnpm"
+    }
+  ],
+  "allDevelopmentComplete": false,
+  "sourceFrozen": false,
+  "productReleaseCreatedByThisTask": false
+}

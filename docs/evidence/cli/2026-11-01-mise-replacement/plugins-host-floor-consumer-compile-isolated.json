@@ -1,0 +1,28 @@
+{
+  "capturedAtUtc": "2026-11-01T21:57:50.416200+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "--locked",
+    "-p",
+    "aster-studio",
+    "--lib",
+    "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+    "--",
+    "--ignored",
+    "--exact",
+    "--nocapture"
+  ],
+  "timeoutSeconds": null,
+  "exitCode": 101,
+  "seconds": 38.229628667,
+  "before": {
+    "consumerSha256": "fcb50526bad0d1cbc3bbea89e3639bd98022270837a415d7ce21ebfc4a736541",
+    "referencedTestFileExists": false,
+    "inputSha256": "7500a8dc4aa5cff5cc309fd10d18e70499355abfff617583b38fe610ee7b6616"
+  },
+  "consumerSourceUnchanged": true,
+  "referencedTestFileExistsAfter": false,
+  "inputsUnchanged": true,
+  "sdkSourcesUnchanged": true
+}

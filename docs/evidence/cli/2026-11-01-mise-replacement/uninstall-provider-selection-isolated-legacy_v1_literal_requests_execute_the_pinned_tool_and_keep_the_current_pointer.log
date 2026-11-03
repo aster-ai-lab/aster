@@ -1,0 +1,6 @@
+
+running 1 test
+test legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 23 filtered out; finished in 3.52s
+

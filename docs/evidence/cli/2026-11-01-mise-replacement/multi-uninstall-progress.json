@@ -1,0 +1,79 @@
+{
+  "capturedAtUtc": "2026-11-02T01:48:00.105078+00:00",
+  "status": "native-aster-checks-running",
+  "sourceSha256": {
+    "crates/use/tool-acquire/src/store.rs": "7fee60eedca24e0b9f024758a2838f8e12602ada18d0671387214bbbdf4fce71",
+    "crates/use/tool-acquire/src/store/tests.rs": "372096acbc69861ed6d671ed4254c51a359577fa111a8403876172e1f99fbaa6",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "1e92169b8c427215b62d64c3d630e25a6fbc62a095affa127b94c43395557c8d",
+    "apps/aster/tests/env_manager.rs": "14a21b59e27355850f1f898547d24f3f255768465c508ab6fa6fbe9eb5d9c15b",
+    "tests/cli_mise_multi_uninstall_reference.py": "543a0b96e3ae59d8fb61ffe25545a830071f30ef5bc92915c1520991a0f400c2",
+    "specs/031-cli-mise-replacement/contracts/mise-multi-uninstall-reference.json": "37173fe195b1f08129bd7f239fd513b5ae33bace4377f834f2db5dd6fdf9630b"
+  },
+  "upstream": {
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "binarySha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+    "nativeCasesPassed": 5,
+    "caseNames": [
+      "multiple_exact",
+      "later_ambiguous",
+      "global_all",
+      "global_preview",
+      "duplicate_requests"
+    ]
+  },
+  "environment": {
+    "os": "macOS",
+    "arch": "arm64",
+    "rust": "1.97.1",
+    "features": "default"
+  },
+  "checks": {
+    "workspaceDependencies": {
+      "passed": true,
+      "tests": 7,
+      "python": "3.13",
+      "originalPython39FailureRetained": true
+    },
+    "scopedRustfmt": {
+      "passed": true
+    },
+    "rootRustfmt": {
+      "passed": false,
+      "preexistingFailuresOutsideEditedPaths": true
+    },
+    "toolTests": {
+      "status": "final-source-run-queued",
+      "firstRunExitCode": 0,
+      "firstRunPassed": 129,
+      "firstRunIgnored": 4,
+      "firstRunSourceChangedDuringCompileWait": true,
+      "finalRunSessionId": 24759,
+      "finalRunLog": "/Users/roylin/code/aster/.tmp/mise-multi-uninstall-tool-final.log",
+      "finalRunRecord": "/Users/roylin/code/aster/.tmp/mise-multi-uninstall-tool-final.json"
+    },
+    "cliAcpBuild": {
+      "status": "compiling",
+      "sessionId": 93728,
+      "log": "/Users/roylin/code/aster/.tmp/mise-multi-uninstall-pair-build.log",
+      "cargoPid": 47792
+    },
+    "owningClippy": {
+      "status": "queued",
+      "log": "/Users/roylin/code/aster/.tmp/mise-multi-uninstall-owning-clippy.log",
+      "sessionId": 58134
+    },
+    "nativeAsterComparison": {
+      "status": "not-run"
+    }
+  },
+  "fullMiseReplacementAccepted": false,
+  "releaseCreated": false,
+  "lastVerifiedWaitAtUtc": "2026-11-02T01:42:47.259210+00:00",
+  "nextChecks": [
+    "Poll original CLI/ACP build session 93728 to terminal.",
+    "Poll owning Clippy session 58134 and final-source tool tests 24759.",
+    "Run cargo test --locked -p aster-pager --lib env_manager_cmd::tests.",
+    "Run cargo test --locked -p aster --test env_manager with unchanged native inputs and deadlines; retain and replay distinct failures separately before fixes."
+  ]
+}

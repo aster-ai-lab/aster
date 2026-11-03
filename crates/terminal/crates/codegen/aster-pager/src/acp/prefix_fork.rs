@@ -143,13 +143,13 @@ pub(crate) async fn fork(
     )
     .await?;
     ensure!(
-        response["schema"] == FORK_SCHEMA
-            && response["operationId"] == operation
-            && response["childId"] == target
-            && response["sourceCut"] == serde_json::to_value(cut)?
-            && response["lineage"]["sourceSessionId"] == parent
-            && response["lineage"]["childSessionId"] == target
-            && response["lineage"]["boundaryEntryId"] == boundary.entry_id,
+        response.get("schema") == Some(&json!(FORK_SCHEMA))
+            && response.get("operationId") == Some(&json!(operation))
+            && response.get("childId") == Some(&json!(target))
+            && response.get("sourceCut") == Some(&serde_json::to_value(cut)?)
+            && response.pointer("/lineage/sourceSessionId") == Some(&json!(parent))
+            && response.pointer("/lineage/childSessionId") == Some(&json!(target))
+            && response.pointer("/lineage/boundaryEntryId") == Some(&json!(boundary.entry_id)),
         "fork response identity mismatch"
     );
     Ok(target)

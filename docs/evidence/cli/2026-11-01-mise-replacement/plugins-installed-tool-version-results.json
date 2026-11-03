@@ -1,0 +1,1910 @@
+{
+  "scope": "Verified installed tool version distinct from package release version",
+  "source_hashes": {
+    "apps/studio/src-tauri/src/capabilities_registry.rs": "7def347f40cbf6cd3f135a8aec77a1334dad64eef2fee06947d94258cb7062f4",
+    "apps/studio/src-tauri/src/capabilities_registry_installed.rs": "da9502e90664a9621afa76848d211155325a34fd81bc6cc29ff45374babbdd13",
+    "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "ea06417dffb0387f78baeaaacd72487870bce1cf7a8cbbd37d4129cb9afa5a82",
+    "apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx": "42e6c53b2671a73150759b911242a7ae88e7d5380ca50f10002826cae700f188",
+    "apps/studio/src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx": "d054b807a357f45501b892357bac30bd026157aff7ee0f6e1882cf12db1ae7c1",
+    "apps/studio/src/renderer/services/capabilities/capabilityCatalogue.ts": "1236226bb350aa49ba883ae1cce474fbf3b9261c85f09bd085883cba56a30ea6",
+    "apps/studio/src/renderer/i18n/locales/en-us.json": "9f39b127ca43d1e954fa3213a4581e4da8c757f53ae588ffecff92cca4bfa5ae",
+    "apps/studio/src/renderer/i18n/locales/zh-cn.json": "3b955819f80101d1f212b6a01de5c5b83bc1c58ca722e5b978ad2b63a5bae44c"
+  },
+  "native_toolchain_tests": {
+    "passed": 6,
+    "ignored": 3
+  },
+  "native_registry_tests": {
+    "passed": 13
+  },
+  "native_clippy_exit": 0,
+  "renderer_plugin_tests": {
+    "passed": 37
+  },
+  "broader_renderer_batch": {
+    "passed": 55,
+    "failed": 1,
+    "failure": "Unchanged ModelScope URL/fixture rejection; isolated replay still fails before the changed decoder."
+  },
+  "format_exit": 0,
+  "eslint": {
+    "exit": 0,
+    "warnings": 4
+  },
+  "scoped_oxlint_exit": 0,
+  "global_oxlint": "tsgolint panics on unchanged bot/asterBotAvatar.tsx program membership",
+  "i18n_exit": 0,
+  "typecheck_diagnostics": [
+    {
+      "target": "node",
+      "file": "rsbuild.config.ts",
+      "line": 256,
+      "code": "TS2339",
+      "message": "Property 'plugins' does not exist on type '((loaderContext: LoaderContext<{}>) => PostCSSOptions) | PostCSSOptions'."
+    },
+    {
+      "target": "node",
+      "file": "rsbuild.config.ts",
+      "line": 264,
+      "code": "TS2339",
+      "message": "Property 'plugins' does not exist on type '((loaderContext: LoaderContext<{}>) => PostCSSOptions) | PostCSSOptions'."
+    },
+    {
+      "target": "node",
+      "file": "rsbuild.config.ts",
+      "line": 273,
+      "code": "TS2322",
+      "message": "Type '(string | RegExp | ((entry: string) => boolean))[]' is not assignable to type 'string | string[] | RegExp | ((entry: string) => boolean) | undefined'."
+    },
+    {
+      "target": "node",
+      "file": "rsbuild.config.ts",
+      "line": 316,
+      "code": "TS2322",
+      "message": "Type 'any[] | { 'node:path': string; 'node:os': string; 'node:crypto': string; 'node:url': string; 'node:fs': string; 'node:stream': string; 'node:buffer': string; 'node:util': string; 'node:http': string; 'node:https': string; 'node:zlib': string; }' is not assignable to type 'ResolveAlias | undefined'."
+    },
+    {
+      "target": "e2e",
+      "file": "rsbuild.config.ts",
+      "line": 256,
+      "code": "TS2339",
+      "message": "Property 'plugins' does not exist on type '((loaderContext: LoaderContext<{}>) => PostCSSOptions) | PostCSSOptions'."
+    },
+    {
+      "target": "e2e",
+      "file": "rsbuild.config.ts",
+      "line": 264,
+      "code": "TS2339",
+      "message": "Property 'plugins' does not exist on type '((loaderContext: LoaderContext<{}>) => PostCSSOptions) | PostCSSOptions'."
+    },
+    {
+      "target": "e2e",
+      "file": "rsbuild.config.ts",
+      "line": 273,
+      "code": "TS2322",
+      "message": "Type '(string | RegExp | ((entry: string) => boolean))[]' is not assignable to type 'string | string[] | RegExp | ((entry: string) => boolean) | undefined'."
+    },
+    {
+      "target": "e2e",
+      "file": "rsbuild.config.ts",
+      "line": 316,
+      "code": "TS2322",
+      "message": "Type 'any[] | { 'node:path': string; 'node:os': string; 'node:crypto': string; 'node:url': string; 'node:fs': string; 'node:stream': string; 'node:buffer': string; 'node:util': string; 'node:http': string; 'node:https': string; 'node:zlib': string; }' is not assignable to type 'ResolveAlias | undefined'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/task-turn-state/turn-state.spec.ts",
+      "line": 17,
+      "code": "TS6133",
+      "message": "'expandSidebar' is declared but its value is never read."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 190,
+      "code": "TS2339",
+      "message": "Property 'querySelector' does not exist on type 'Locator'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 191,
+      "code": "TS2339",
+      "message": "Property 'createTreeWalker' does not exist on type 'Locator'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 196,
+      "code": "TS2339",
+      "message": "Property 'createRange' does not exist on type 'Locator'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 202,
+      "code": "TS2345",
+      "message": "Argument of type 'Event' is not assignable to parameter of type 'string'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 472,
+      "code": "TS2345",
+      "message": "Argument of type '{ className: string; height: number; overflowY: string; pointerEvents: string; scrollHeight: number; clientHeight: number; scrollTop: number; }' is not assignable to parameter of type 'never'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 563,
+      "code": "TS2345",
+      "message": "Argument of type '{ className: string; width: number; left: number; right: number; clientWidth: number; scrollWidth: number; boxSizing: string; paddingLeft: string; paddingRight: string; }' is not assignable to parameter of type 'never'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 623,
+      "code": "TS6133",
+      "message": "'avatar' is declared but its value is never read."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 624,
+      "code": "TS6133",
+      "message": "'name' is declared but its value is never read."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/document-message-content.spec.ts",
+      "line": 707,
+      "code": "TS2345",
+      "message": "Argument of type '{ gap: number; nameLeft: number; nameRight: number; nameHeight: number; nameLineHeight: number; metadataLeft: number; metadataRight: number; metadataHeight: number; metadataLineHeight: number; headerRight: number; documentWidth: number; viewportWidth: number; width: number; }' is not assignable to parameter of type 'never'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/model-recovery.spec.ts",
+      "line": 1,
+      "code": "TS6133",
+      "message": "'TestInfo' is declared but its value is never read."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/paperloom.spec.ts",
+      "line": 1570,
+      "code": "TS2349",
+      "message": "This expression is not callable."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/shell-panel-toggle.spec.ts",
+      "line": 11,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'place' does not exist in type 'OfficeSession'."
+    },
+    {
+      "target": "e2e",
+      "file": "tests/e2e/workbench-office/workbench-ui.spec.ts",
+      "line": 97,
+      "code": "TS6133",
+      "message": "'dragSession' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/__tests__/ProviderAvatar.test.tsx",
+      "line": 35,
+      "code": "TS6133",
+      "message": "'queryByDataSlot' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/app/__tests__/Sidebar.test.tsx",
+      "line": 4,
+      "code": "TS6133",
+      "message": "'userEvent' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/chat/messages/blocks/__tests__/DocumentSelectionReview.test.tsx",
+      "line": 69,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(request: MessageDocumentReviewRequest) => boolean>' is not assignable to parameter of type 'Mock<() => boolean> | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/chat/messages/blocks/__tests__/DocumentSelectionReview.test.tsx",
+      "line": 70,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/chat/messages/blocks/__tests__/DocumentSelectionReview.test.tsx",
+      "line": 100,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/chat/messages/hooks/__tests__/useMessageLeafCapabilities.test.tsx",
+      "line": 39,
+      "code": "TS2556",
+      "message": "A spread argument must either have a tuple type or be passed to a rest parameter."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/composer/__tests__/composerEditingCaret.test.ts",
+      "line": 94,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'defaultPrevented' does not exist in type 'Partial<KeyboardEventInit>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/composer/tools/definitions/__tests__/slashCommandsTool.test.tsx",
+      "line": 2,
+      "code": "TS6133",
+      "message": "'ReactNode' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/layout/FirstRunRuntimeComponentsDialog.tsx",
+      "line": 80,
+      "code": "TS2322",
+      "message": "Type '\"md\"' is not assignable to type 'DialogContentSize | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/QuickPanel/__tests__/list.test.ts",
+      "line": 20,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/QuickPanel/__tests__/list.test.ts",
+      "line": 20,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/QuickPanel/__tests__/list.test.ts",
+      "line": 24,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'id' does not exist in type '{ disabled?: boolean | undefined; alwaysVisible?: boolean | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/Sidebar/__tests__/activityBarData.test.tsx",
+      "line": 180,
+      "code": "TS2339",
+      "message": "Property 'value' does not exist on type 'HTMLElement'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 138,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 138,
+      "code": "TS18048",
+      "message": "'query' is possibly 'undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 220,
+      "code": "TS2322",
+      "message": "Type 'Mock<(_id: string, decision: WorkDecision, _comment: string) => Promise<void>>' is not assignable to type '((id: string, decision: WorkDecision, comment: string, fetchImpl?: { (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }) =>...'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 461,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 464,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 467,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/components/workInbox/WorkInboxPopup.test.tsx",
+      "line": 470,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/data/CacheService.ts",
+      "line": 976,
+      "code": "TS18046",
+      "message": "'entry' is of type 'unknown'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/data/CacheService.ts",
+      "line": 976,
+      "code": "TS18046",
+      "message": "'entry' is of type 'unknown'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/data/CacheService.ts",
+      "line": 983,
+      "code": "TS18046",
+      "message": "'entry' is of type 'unknown'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/data/CacheService.ts",
+      "line": 984,
+      "code": "TS18046",
+      "message": "'entry' is of type 'unknown'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/data/CacheService.ts",
+      "line": 988,
+      "code": "TS2345",
+      "message": "Argument of type 'unknown' is not assignable to parameter of type 'CacheEntry<any>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/hooks/__tests__/useWebviewNavigation.test.tsx",
+      "line": 51,
+      "code": "TS2339",
+      "message": "Property 'goForward' does not exist on type 'HTMLElement'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/hooks/__tests__/useWebviewNavigation.test.tsx",
+      "line": 52,
+      "code": "TS2339",
+      "message": "Property 'goForward' does not exist on type 'HTMLElement'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/hooks/__tests__/useWindowRuntime.editing.test.tsx",
+      "line": 15,
+      "code": "TS2554",
+      "message": "Expected 1 arguments, but got 2."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentChatSettingsPanel.test.tsx",
+      "line": 364,
+      "code": "TS2783",
+      "message": "'workspace' is specified more than once, so this usage will be overwritten."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 15,
+      "code": "TS6133",
+      "message": "'GeneralSettingsModule' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 20,
+      "code": "TS6133",
+      "message": "'WorkbenchWorkspaceModule' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 126,
+      "code": "TS2709",
+      "message": "Cannot use namespace 'WorkbenchWorkspaceModule' as a type."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 132,
+      "code": "TS2709",
+      "message": "Cannot use namespace 'GeneralSettingsModule' as a type."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 884,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 888,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 890,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 1256,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'description' does not exist in type '{ id: string; agentId?: string | undefined; name: string; isNameManuallyEdited?: boolean | undefined; lastActivityAt?: string | undefined; createdAt?: string | undefined; updatedAt: string; workspaceId?: string | undefined; workspace?: { ...; } | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 1262,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'description' does not exist in type '{ id: string; agentId?: string | undefined; name: string; isNameManuallyEdited?: boolean | undefined; lastActivityAt?: string | undefined; createdAt?: string | undefined; updatedAt: string; workspaceId?: string | undefined; workspace?: { ...; } | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 2379,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/AgentPage.test.tsx",
+      "line": 3206,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'description' does not exist in type '{ id: string; agentId?: string | undefined; name: string; isNameManuallyEdited?: boolean | undefined; lastActivityAt?: string | undefined; createdAt?: string | undefined; updatedAt: string; workspaceId?: string | undefined; workspace?: { ...; } | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts",
+      "line": 158,
+      "code": "TS2345",
+      "message": "Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts",
+      "line": 167,
+      "code": "TS2345",
+      "message": "Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts",
+      "line": 180,
+      "code": "TS2345",
+      "message": "Argument of type '(url: string, init: { method: string; body: string; }) => Promise<{ ok: boolean; json: () => Promise<{ result: { text: string; }; }>; } | { ok: boolean; json: () => Promise<{ events: ({ sequence: number; type: string; text: string; } | { ...; })[]; }>; }>' is not assignable to parameter of type 'FetchLike'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 67,
+      "code": "TS2339",
+      "message": "Property 'getClientRects' does not exist on type 'Range | Text'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 75,
+      "code": "TS2339",
+      "message": "Property 'getBoundingClientRect' does not exist on type 'Range | Text'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 139,
+      "code": "TS6133",
+      "message": "'bootError' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 232,
+      "code": "TS2339",
+      "message": "Property 'ReadableStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 232,
+      "code": "TS2339",
+      "message": "Property 'ReadableStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 233,
+      "code": "TS2339",
+      "message": "Property 'TransformStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 234,
+      "code": "TS2339",
+      "message": "Property 'TransformStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 236,
+      "code": "TS2339",
+      "message": "Property 'WritableStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 236,
+      "code": "TS2339",
+      "message": "Property 'WritableStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 237,
+      "code": "TS2339",
+      "message": "Property 'Blob' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 241,
+      "code": "TS2339",
+      "message": "Property 'ReadableStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 245,
+      "code": "TS2339",
+      "message": "Property 'FileReader' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 252,
+      "code": "TS2339",
+      "message": "Property 'Uint8Array' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 265,
+      "code": "TS2339",
+      "message": "Property 'Uint8Array' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 276,
+      "code": "TS2339",
+      "message": "Property 'TransformStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 278,
+      "code": "TS2339",
+      "message": "Property 'Uint8Array' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 295,
+      "code": "TS2339",
+      "message": "Property 'CompressionStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 296,
+      "code": "TS2339",
+      "message": "Property 'DecompressionStream' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 298,
+      "code": "TS2339",
+      "message": "Property 'Response' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 299,
+      "code": "TS2339",
+      "message": "Property 'Response' does not exist on type 'Window'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 318,
+      "code": "TS2345",
+      "message": "Argument of type 'Window & { __ASTER_VIEW_TEST__?: boolean | undefined; }' is not assignable to parameter of type 'typeof globalThis'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 320,
+      "code": "TS2339",
+      "message": "Property 'Request' does not exist on type 'Window & { __ASTER_VIEW_TEST__?: boolean | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 323,
+      "code": "TS2339",
+      "message": "Property 'Headers' does not exist on type 'Window & { __ASTER_VIEW_TEST__?: boolean | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 407,
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"model-1\"; name: string; }' to type 'Model' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 546,
+      "code": "TS2345",
+      "message": "Argument of type 'string' is not assignable to parameter of type '\"app.workspace.path\" | \"agent.commit_attribution.enabled\" | \"agent.document_parse\" | \"agent.icon_type\" | \"agent.input.toolbar.pinned_tools\" | \"agent.language\" | \"agent.session.display_mode\" | ... 291 more ... | \"ui.window_style\"'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1099,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1188,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1545,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1553,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1554,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "line": 1563,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/homeAgentCatalog.test.tsx",
+      "line": 216,
+      "code": "TS2532",
+      "message": "Object is possibly 'undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/homeShelfGrid.test.tsx",
+      "line": 85,
+      "code": "TS2719",
+      "message": "Type '{ slug: string; packageId: string; generation: number; revision: string; containers: { id: string; title: string; icon: string; order: number; location: \"activitybar\" | \"panel\"; when?: Readonly<{ all?: readonly (\"workspace\" | ... 4 more ... | \"harness\")[] | undefined; none?: readonly (\"workspace\" | ... 4 more ... | ...' is not assignable to type '{ slug: string; packageId: string; generation: number; revision: string; containers: { id: string; title: string; icon: string; order: number; location: \"activitybar\" | \"panel\"; when?: Readonly<{ all?: readonly (\"workspace\" | ... 4 more ... | \"harness\")[] | undefined; none?: readonly (\"workspace\" | ... 4 more ... | ...'. Two different types with this name exist, but they are unrelated."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/homeShelfGrid.test.tsx",
+      "line": 92,
+      "code": "TS2739",
+      "message": "Type '{ id: string; title: string; point: \"studio.sidebar\"; order: number; }' is missing the following properties from type '{ id: string; title: string; description: string; point: \"studio.applets\" | \"studio.composer.actions\" | \"studio.editor.custom\" | \"studio.editor\" | \"studio.panel\" | \"studio.sidebar\" | \"studio.workspace\"; ... 11 more ...; priority?: \"default\" | ... 1 more ... | undefined; }': description, icon, container"
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts",
+      "line": 56,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts",
+      "line": 99,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/loadAppletPackage.test.ts",
+      "line": 137,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingPreviewSync.test.ts",
+      "line": 103,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'immediatelyRender' does not exist in type 'Partial<EditorOptions>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingPreviewSync.test.ts",
+      "line": 116,
+      "code": "TS2345",
+      "message": "Argument of type 'Editor' is not assignable to parameter of type 'OfficialWritingPreviewEditor'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingPreviewSync.test.ts",
+      "line": 202,
+      "code": "TS2345",
+      "message": "Argument of type 'Editor' is not assignable to parameter of type 'OfficialWritingPreviewEditor'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx",
+      "line": 44,
+      "code": "TS2345",
+      "message": "Argument of type '(error: unknown) => number' is not assignable to parameter of type '() => number'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx",
+      "line": 116,
+      "code": "TS2352",
+      "message": "Conversion of type 'undefined' to type '{ title: string; content: { type: string; html: string; model?: unknown; }; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/officialWritingWorkspaceFile.test.tsx",
+      "line": 116,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 283,
+      "code": "TS2322",
+      "message": "Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 496,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 549,
+      "code": "TS2352",
+      "message": "Conversion of type 'undefined' to type 'ToolBytes' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 549,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 571,
+      "code": "TS2345",
+      "message": "Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 577,
+      "code": "TS2322",
+      "message": "Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 588,
+      "code": "TS2322",
+      "message": "Type 'Mock<(url: string) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 638,
+      "code": "TS2345",
+      "message": "Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 647,
+      "code": "TS2322",
+      "message": "Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/pdfToolsRun.test.ts",
+      "line": 658,
+      "code": "TS2322",
+      "message": "Type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/presentationModeJourney.test.tsx",
+      "line": 191,
+      "code": "TS2345",
+      "message": "Argument of type '{ title: string; topic: string; }' is not assignable to parameter of type 'HomeComposerDeck'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/presentationModeJourney.test.tsx",
+      "line": 220,
+      "code": "TS2345",
+      "message": "Argument of type '{ title: string; topic: string; }' is not assignable to parameter of type 'HomeComposerDeck'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/presentationModeJourney.test.tsx",
+      "line": 285,
+      "code": "TS2345",
+      "message": "Argument of type '{ slug: string; surfaces: readonly [\"ui\"]; available: boolean; }' is not assignable to parameter of type 'Pick<CapabilityEntry, \"slug\" | \"surfaces\" | \"available\">'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "line": 673,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'isTurnActive' does not exist in type '{ isPending: boolean; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "line": 689,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'pendingApprovals' does not exist in type '{ isPending: boolean; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "line": 695,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'isTurnActive' does not exist in type '{ isPending: boolean; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/useAgentChatRuntimeState.test.tsx",
+      "line": 705,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'isTurnActive' does not exist in type '{ isPending: boolean; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx",
+      "line": 1534,
+      "code": "TS2322",
+      "message": "Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx",
+      "line": 1535,
+      "code": "TS2322",
+      "message": "Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx",
+      "line": 1631,
+      "code": "TS2322",
+      "message": "Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx",
+      "line": 3204,
+      "code": "TS2532",
+      "message": "Object is possibly 'undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchHomeComposerExtras.test.tsx",
+      "line": 450,
+      "code": "TS2741",
+      "message": "Property 'researchMode' is missing in type '{ reviewMode: true; artifactTrace: false; }' but required in type 'HomeComposerFlags'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchModelPicker.test.ts",
+      "line": 59,
+      "code": "TS2352",
+      "message": "Conversion of type '({ id: \"codex::gpt-6-luna\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; } | { id: \"codex::gpt-5-terra\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; })[]' to type 'Model[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/AgentComposer.tsx",
+      "line": 1879,
+      "code": "TS2322",
+      "message": "Type '() => { turnContext?: { conversationId?: string | undefined; cloudBinding?: AixCloudBinding | undefined; agentRuntime?: AixAgentDeclaration | undefined; ... 6 more ...; planFirst?: boolean | undefined; } | undefined; hostContext: StudioHostContext; fastMode?: true | undefined; reasoningEffort: ReasoningEffortOption;...' is not assignable to type '(tokenIds: Set<string>, attachedFiles: ComposerAttachment[]) => Partial<ComposerQueuedMessagePayload>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/AgentComposer.tsx",
+      "line": 2072,
+      "code": "TS2339",
+      "message": "Property 'workbench' does not exist on type 'WorkbenchComposerFill'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "line": 982,
+      "code": "TS2322",
+      "message": "Type '(RightPanelCapability<AgentRightPanelScope> | { component: ({ active, scope }: RightPanelComponentProps<AgentRightPanelScope>) => Element | null; resolve: (scope: AgentRightPanelScope) => { ...; }; } | { ...; } | { ...; })[]' is not assignable to type 'readonly RightPanelCapability<AgentRightPanelScope>[]'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "line": 1891,
+      "code": "TS2322",
+      "message": "Type '({ active, scope, blank, startUrl, tabKey }: RightPanelComponentProps<AgentRightPanelScope> & { blank?: boolean | undefined; startUrl?: string | undefined; tabKey: string; }) => Element | null' is not assignable to type 'ComponentType<RightPanelComponentProps<AgentRightPanelScope>>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/components/AgentRightPane/AgentRightPane.tsx",
+      "line": 1932,
+      "code": "TS2322",
+      "message": "Type '{ component: ({ active, scope, blank, startUrl, tabKey }: RightPanelComponentProps<AgentRightPanelScope> & { blank?: boolean; startUrl?: string; tabKey: string; }) => JSX.Element | null; resolve: (scope: AgentRightPanelScope) => { ...; }; }' is not assignable to type 'RightPanelCapability<AgentRightPanelScope>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/loadAppletPackage.ts",
+      "line": 110,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/officialWritingPreviewSync.ts",
+      "line": 243,
+      "code": "TS2345",
+      "message": "Argument of type 'PreviewSlot[] | null' is not assignable to parameter of type 'PreviewSlot[]'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/OfficialWritingWordPreview.tsx",
+      "line": 127,
+      "code": "TS2322",
+      "message": "Type '(editor: OfficialWritingPreviewEditor) => void' is not assignable to type '(editor: Editor) => void'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/autoReview.test.tsx",
+      "line": 237,
+      "code": "TS2352",
+      "message": "Conversion of type '{ target: ChildNode; }' to type 'MutationRecord' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/autoReview.test.tsx",
+      "line": 240,
+      "code": "TS2352",
+      "message": "Conversion of type '{ target: Element; }' to type 'MutationRecord' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/autoReview.test.tsx",
+      "line": 245,
+      "code": "TS2352",
+      "message": "Conversion of type '{ target: Element; }' to type 'MutationRecord' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/autoReview.test.tsx",
+      "line": 247,
+      "code": "TS2352",
+      "message": "Conversion of type '{ target: HTMLDivElement; }' to type 'MutationRecord' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/reviewAnchors.test.ts",
+      "line": 85,
+      "code": "TS2345",
+      "message": "Argument of type '{ isDestroyed: boolean; state: { doc: { descendants(visitor: (node: { isText: boolean; text?: string | undefined; }, pos: number) => void): void; }; }; commands: { insertDocumentCommentThread: Mock<...>; }; chain(): { ...; }; }' is not assignable to parameter of type 'CommentEditor'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/reviewAnchors.test.ts",
+      "line": 94,
+      "code": "TS2345",
+      "message": "Argument of type '{ isDestroyed: boolean; state: { doc: { descendants(visitor: (node: { isText: boolean; text?: string | undefined; }, pos: number) => void): void; }; }; commands: { insertDocumentCommentThread: Mock<...>; }; chain(): { ...; }; }' is not assignable to parameter of type 'CommentEditor'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/taskConversationCases.test.tsx",
+      "line": 177,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/taskConversationCases.test.tsx",
+      "line": 215,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 569,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 708,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; content: string; }; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 1510,
+      "code": "TS2345",
+      "message": "Argument of type 'Element' is not assignable to parameter of type 'HTMLElement'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 1514,
+      "code": "TS2345",
+      "message": "Argument of type 'Element' is not assignable to parameter of type 'HTMLElement'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2139,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2163,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2200,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2642,
+      "code": "TS2322",
+      "message": "Type '{ type: string; toolCallId: string; state: string; input: { command: string; }; output: string; callProviderMetadata: { cherry: { startedAt: number; }; }; resultProviderMetadata: { cherry: { completedAt: number; }; }; }[]' is not assignable to type 'readonly CherryMessagePart[]'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2784,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 2881,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 3075,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: { file_path: string; }; output: { filePath: string; }; errorText: string; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 3160,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-available\"; input: {}; output: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskConversationMessage.test.tsx",
+      "line": 3196,
+      "code": "TS2352",
+      "message": "Conversion of type '{ type: \"dynamic-tool\"; toolName: string; toolCallId: string; state: \"output-error\"; input: {}; errorText: string; files: string[]; }[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskProductDownload.test.tsx",
+      "line": 50,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskProductDownload.test.tsx",
+      "line": 51,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskProductDownload.test.tsx",
+      "line": 56,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskProductDownload.test.tsx",
+      "line": 63,
+      "code": "TS2339",
+      "message": "Property 'mockClear' does not exist on type '(arg: string | ToastConfig) => string'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/TaskProductDownload.test.tsx",
+      "line": 108,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/turnFileEdits.test.ts",
+      "line": 9,
+      "code": "TS2352",
+      "message": "Conversion of type '({ type: \"tool-read_file\"; state: \"output-available\"; input: { file_path: string; }; } | { type: \"tool-edit_file\"; state: \"output-error\"; input: { file_path: string; }; } | { type: \"tool-edit_file\"; state: \"output-available\"; input: { ...; }; } | { ...; })[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/turnFileEdits.test.ts",
+      "line": 27,
+      "code": "TS2352",
+      "message": "Conversion of type '({ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; }; } | { type: \"tool-bash\"; state: \"output-available\"; input: { command: string; }; })[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/__tests__/turnFileEdits.test.ts",
+      "line": 34,
+      "code": "TS2352",
+      "message": "Conversion of type '({ type: \"tool-write_file\"; state: \"output-available\"; input: { file_path: string; }; } | { type: \"tool-bash\"; state: \"output-available\"; input: { command: string; }; })[]' to type 'CherryMessagePart[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskAutoReview.tsx",
+      "line": 476,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskAutoReview.tsx",
+      "line": 479,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "line": 174,
+      "code": "TS2322",
+      "message": "Type 'Pluggable' is not assignable to type 'Plugin<any[], any, any>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "line": 175,
+      "code": "TS2322",
+      "message": "Type 'Pluggable' is not assignable to type 'Plugin<any[], any, any>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "line": 186,
+      "code": "TS1360",
+      "message": "Type '{ a: ({ children, href, inlinePreview }: { children?: ReactNode; href?: string; inlinePreview?: boolean; }) => JSX.Element; code: ({ children, className }: { children?: ReactNode; className?: string; }) => JSX.Element; p: ({ children }: { children?: ReactNode; }) => any; }' does not satisfy the expected type 'Partial<Components>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "line": 1840,
+      "code": "TS2322",
+      "message": "Type 'JSONValue | undefined' is not assignable to type 'number | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/taskConversation/TaskConversationMessage.tsx",
+      "line": 1841,
+      "code": "TS2322",
+      "message": "Type 'JSONValue | undefined' is not assignable to type 'number | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/WorkbenchFeatureStrip.tsx",
+      "line": 716,
+      "code": "TS2339",
+      "message": "Property 'id' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/WorkbenchScopePicker.tsx",
+      "line": 11,
+      "code": "TS6133",
+      "message": "'readCodeBranchList' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/agents/WorkspaceWikiCatalog.tsx",
+      "line": 90,
+      "code": "TS2339",
+      "message": "Property 'description' does not exist on type '{ id: string; name: string; path: string; type: \"user\" | \"system\"; orderKey: string; createdAt: string; updatedAt: string; purpose?: \"knowledge-compile\" | undefined; deletedAt?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/documents/__tests__/DriveListActions.test.tsx",
+      "line": 35,
+      "code": "TS2352",
+      "message": "Conversion of type 'undefined' to type 'File' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/documents/__tests__/DriveListActions.test.tsx",
+      "line": 35,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/documents/__tests__/OfficeDocumentSurface.test.tsx",
+      "line": 209,
+      "code": "TS2322",
+      "message": "Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/documents/__tests__/WorkspaceFileFrame.test.tsx",
+      "line": 529,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type '(arg: string | ToastConfig) => string'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/home/__tests__/HomeComposerModelPopup.test.tsx",
+      "line": 71,
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"lab::bare\"; providerId: string; name: string; supportsStreaming: true; isEnabled: true; isHidden: false; }' to type 'Model' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/__tests__/workspaceAnalysisPlayback.test.ts",
+      "line": 128,
+      "code": "TS2322",
+      "message": "Type 'AnalysisPlaybackState' is not assignable to type '{ selectedEventId: string; playback: \"following\"; sessionId: string; cursorSeq: number; filters: Exclude<AnalysisFilter, \"all\">[]; lens: AnalysisLens; speed: AnalysisPlaybackSpeed; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/__tests__/workspaceAnalysisPlayback.test.ts",
+      "line": 130,
+      "code": "TS2322",
+      "message": "Type 'AnalysisPlaybackState' is not assignable to type '{ selectedEventId: string; playback: \"following\"; sessionId: string; cursorSeq: number; filters: Exclude<AnalysisFilter, \"all\">[]; lens: AnalysisLens; speed: AnalysisPlaybackSpeed; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/__tests__/workspaceAnalysisPlayback.test.ts",
+      "line": 140,
+      "code": "TS2322",
+      "message": "Type 'AnalysisPlaybackState' is not assignable to type '{ selectedEventId: string; playback: \"following\"; sessionId: string; cursorSeq: number; filters: Exclude<AnalysisFilter, \"all\">[]; lens: AnalysisLens; speed: AnalysisPlaybackSpeed; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/__tests__/workspaceAnalysisPlayback.test.ts",
+      "line": 153,
+      "code": "TS2322",
+      "message": "Type 'AnalysisPlaybackState' is not assignable to type '{ selectedEventId: string; playback: \"following\"; sessionId: string; cursorSeq: number; filters: Exclude<AnalysisFilter, \"all\">[]; lens: AnalysisLens; speed: AnalysisPlaybackSpeed; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/__tests__/workspaceAnalysisResourceGraph.test.ts",
+      "line": 6,
+      "code": "TS2307",
+      "message": "Cannot find module './fixtures/workspaceAnalysisPrivacy' or its corresponding type declarations."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/WorkspaceBoard.tsx",
+      "line": 300,
+      "code": "TS2339",
+      "message": "Property 'taskId' does not exist on type 'KnowledgeWikiBinding'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/WorkspaceBoard.tsx",
+      "line": 301,
+      "code": "TS2339",
+      "message": "Property 'workspaceId' does not exist on type 'KnowledgeWikiBinding'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/WorkspaceBoard.tsx",
+      "line": 303,
+      "code": "TS2339",
+      "message": "Property 'taskId' does not exist on type 'KnowledgeWikiBinding'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/WorkspaceBoard.tsx",
+      "line": 310,
+      "code": "TS2345",
+      "message": "Argument of type '{ id: string; compileJobId: string | null; status: BoardStatus; statusLabel: string | undefined; updatedAt: string | undefined; title: string; sessionId: string; files: WorkspaceWikiScope; compileBinding: KnowledgeWikiBinding; }' is not assignable to parameter of type 'Card'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/knowledge/WorkspaceBoard.tsx",
+      "line": 328,
+      "code": "TS2345",
+      "message": "Argument of type '{ id: string; compileJobId: string; status: \"done\" | \"aborted\"; updatedAt: string; title: string; sessionId: string; files: WorkspaceWikiScope; compileBinding: KnowledgeWikiBinding; }' is not assignable to parameter of type 'Card'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/messages/__tests__/MessagesPage.test.tsx",
+      "line": 3688,
+      "code": "TS2322",
+      "message": "Type 'void' is not assignable to type 'undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/messages/ToBossMark.tsx",
+      "line": 1,
+      "code": "TS1261",
+      "message": "Already included file name '/Users/roylin/code/aster/apps/studio/src/renderer/components/bot/AsterBotAvatar.tsx' differs from file name '/Users/roylin/code/aster/apps/studio/src/renderer/components/bot/asterBotAvatar.tsx' only in casing."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/org/OrgCreateAccount.tsx",
+      "line": 9,
+      "code": "TS2305",
+      "message": "Module '\"./orgApi\"' has no exported member 'createOrgAccount'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/org/orgWorkbenchCatalog.ts",
+      "line": 128,
+      "code": "TS2345",
+      "message": "Argument of type '(key: string) => string' is not assignable to parameter of type 'TFunction<\"translation\", undefined>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/plugins/AixAppletWindow.tsx",
+      "line": 190,
+      "code": "TS7030",
+      "message": "Not all code paths return a value."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/__tests__/settingsAlign.test.tsx",
+      "line": 82,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/__tests__/settingsAlign.test.tsx",
+      "line": 326,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/__tests__/settingsAlign.test.tsx",
+      "line": 337,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/__tests__/SettingsPage.test.tsx",
+      "line": 10,
+      "code": "TS1149",
+      "message": "File name '/Users/roylin/code/aster/apps/studio/src/renderer/i18n/locales/zh-CN.json' differs from already included file name '/Users/roylin/code/aster/apps/studio/src/renderer/i18n/locales/zh-cn.json' only in casing."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/aligned/__tests__/ComputerUsePermission.test.tsx",
+      "line": 97,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type 'Invoke'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/aligned/__tests__/ComputerUsePermission.test.tsx",
+      "line": 116,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type 'Invoke'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/aligned/__tests__/ComputerUsePermission.test.tsx",
+      "line": 118,
+      "code": "TS2339",
+      "message": "Property 'mock' does not exist on type 'Invoke'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ArchiveSettings/AllArchiveSection.tsx",
+      "line": 30,
+      "code": "TS2339",
+      "message": "Property 'paintings' does not exist on type '{ assistants: ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & RefAttributes<SVGSVGElement>>; ... 12 more ...; documents: ForwardRefExoticComponent<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx",
+      "line": 126,
+      "code": "TS2741",
+      "message": "Property '$$typeof' is missing in type 'SidebarIconComponent' but required in type 'ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & RefAttributes<SVGSVGElement>>'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ArchiveSettings/ArchiveDomainSections.tsx",
+      "line": 307,
+      "code": "TS2339",
+      "message": "Property 'paintings' does not exist on type '{ assistants: ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & RefAttributes<SVGSVGElement>>; ... 12 more ...; documents: ForwardRefExoticComponent<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/EvolutionSettings/harnessPlaygroundGraph.ts",
+      "line": 3,
+      "code": "TS2307",
+      "message": "Cannot find module '../../../../../../web/src/flow-designer/flow-node-catalog' or its corresponding type declarations."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/EvolutionSettings/harnessPlaygroundGraph.ts",
+      "line": 4,
+      "code": "TS2307",
+      "message": "Cannot find module '../../../../../../web/src/flow-designer/WorkflowPlayground.examples' or its corresponding type declarations."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/EvolutionSettings/harnessPlaygroundGraph.ts",
+      "line": 8,
+      "code": "TS2307",
+      "message": "Cannot find module '../../../../../../web/src/flow-designer/WorkflowPlayground.model' or its corresponding type declarations."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ExecutionTraceSettings/exportTraceBook.test.ts",
+      "line": 82,
+      "code": "TS2352",
+      "message": "Conversion of type 'undefined' to type 'Blob' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ExecutionTraceSettings/exportTraceBook.test.ts",
+      "line": 82,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ExecutionTraceSettings/extractExecutionTrace.ts",
+      "line": 947,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/McpSettings/__tests__/QuickCreateMcpServerDialog.test.tsx",
+      "line": 44,
+      "code": "TS6133",
+      "message": "'user' is declared but its value is never read."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ConnectionSettings/ApiKey.tsx",
+      "line": 84,
+      "code": "TS2339",
+      "message": "Property 'options' does not exist on type '{ id: string; name: string; reportsActualCost: boolean; apiKeys: { id: string; isEnabled: boolean; label?: string | undefined; }[]; authType: \"api-key\" | \"oauth\" | \"iam-aws\" | \"api-key-aws\" | \"iam-gcp\" | \"iam-azure\"; ... 16 more ...; fastMode?: { ...; } | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ConnectionSettings/ProviderApiSetupDialog.tsx",
+      "line": 82,
+      "code": "TS2339",
+      "message": "Property 'options' does not exist on type '{ id: string; name: string; reportsActualCost: boolean; apiKeys: { id: string; isEnabled: boolean; label?: string | undefined; }[]; authType: \"api-key\" | \"oauth\" | \"iam-aws\" | \"api-key-aws\" | \"iam-gcp\" | \"iam-azure\"; ... 16 more ...; fastMode?: { ...; } | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ModelList/ModelListSyncContent.tsx",
+      "line": 86,
+      "code": "TS2339",
+      "message": "Property 'onRetryLoadModels' does not exist on type 'ModelListSyncContentProps'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ModelList/ModelListSyncContent.tsx",
+      "line": 96,
+      "code": "TS2339",
+      "message": "Property 'onRetryLoadModels' does not exist on type 'ModelListSyncContentProps'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 55,
+      "code": "TS2339",
+      "message": "Property 'filter' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 83,
+      "code": "TS2339",
+      "message": "Property 'addProviderData' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 90,
+      "code": "TS2339",
+      "message": "Property 'filter' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 94,
+      "code": "TS2339",
+      "message": "Property 'id' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 95,
+      "code": "TS2339",
+      "message": "Property 'id' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 119,
+      "code": "TS2339",
+      "message": "Property 'id' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/ProviderSettings/ProviderSettingsPage.tsx",
+      "line": 128,
+      "code": "TS2339",
+      "message": "Property 'id' does not exist on type '{ q?: string | undefined; page?: string | undefined; tool?: CodeCli | undefined; command?: \"app.fullscreen.exit\" | \"app.search\" | \"app.print\" | \"app.sidebar.toggle\" | \"app.settings.open\" | ... 24 more ... | undefined; ... 18 more ...; baseId?: string | undefined; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/SettingsPage.tsx",
+      "line": 80,
+      "code": "TS2322",
+      "message": "Type 'string' is not assignable to type '\"data\" | \"local_backup\" | \"webdav\" | \"nutstore\" | \"s3\" | \"import_settings\" | \"export_menu\" | \"markdown_export\" | \"notion\" | \"yuque\" | \"joplin\" | \"obsidian\" | \"siyuan\" | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/SettingsPage.tsx",
+      "line": 86,
+      "code": "TS2322",
+      "message": "Type 'string' is not assignable to type '\"telegram\" | \"feishu\" | \"qq\" | \"wechat\" | \"discord\" | \"slack\" | ShortcutSettingsGroup | KnowledgeSection | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/__tests__/usagePageCapabilities.test.tsx",
+      "line": 20,
+      "code": "TS2554",
+      "message": "Expected 0 arguments, but got 1."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/__tests__/useUsageData.test.ts",
+      "line": 100,
+      "code": "TS2322",
+      "message": "Type '\"endpoint\"' is not assignable to type '\"model\"'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/__tests__/useUsageData.test.ts",
+      "line": 112,
+      "code": "TS2322",
+      "message": "Type '\"7d\"' is not assignable to type '\"30d\"'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/orgUsage.ts",
+      "line": 166,
+      "code": "TS2345",
+      "message": "Argument of type 'string' is not assignable to parameter of type '\"invalid\" | \"load\" | \"org\" | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/UsageDistributionChart.tsx",
+      "line": 89,
+      "code": "TS2367",
+      "message": "This comparison appears to be unintentional because the types '\"tokens\" | \"requests\"' and '\"cost\"' have no overlap."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/UsageSettings/UsageDistributionChart.tsx",
+      "line": 182,
+      "code": "TS2367",
+      "message": "This comparison appears to be unintentional because the types '\"tokens\" | \"requests\"' and '\"cost\"' have no overlap."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/WebSearchSettings/__tests__/AgentWebSearchSettings.test.tsx",
+      "line": 178,
+      "code": "TS2353",
+      "message": "Object literal may only specify known properties, and 'order' does not exist in type '{ timeout: number; firstTier: \"api\"; engines: Record<string, { enabled: boolean; apiKey?: string | undefined; }>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/WebSearchSettings/__tests__/AgentWebSearchSettings.test.tsx",
+      "line": 211,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/pages/settings/WebSearchSettings/__tests__/AgentWebSearchSettings.test.tsx",
+      "line": 212,
+      "code": "TS2769",
+      "message": "No overload matches this call."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 417,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string, init?: { body?: string | undefined; headers?: { authorization?: string | undefined; } | undefined; } | undefined) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 474,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 494,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<() => Promise<unknown>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 515,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<() => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 535,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<() => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 555,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<{ ok: boolean; text: () => Promise<string>; }>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 572,
+      "code": "TS2493",
+      "message": "Tuple type '[url: string]' of length '1' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/shell/studioClient.test.ts",
+      "line": 572,
+      "code": "TS2339",
+      "message": "Property 'body' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/utils/shiki.ts",
+      "line": 282,
+      "code": "TS2820",
+      "message": "Type '\"text\"' is not assignable to type 'BundledLanguage | LanguageInput | undefined'. Did you mean '\"tex\"'?"
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/windows/selection/action/components/ActionTranslate.tsx",
+      "line": 51,
+      "code": "TS2367",
+      "message": "This comparison appears to be unintentional because the types 'LanguageVarious | null' and '\"zh-TW\"' have no overlap."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 68,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 69,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 72,
+      "code": "TS2493",
+      "message": "Tuple type '[url: string]' of length '1' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 73,
+      "code": "TS2493",
+      "message": "Tuple type '[url: string]' of length '1' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 78,
+      "code": "TS2339",
+      "message": "Property 'headers' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 79,
+      "code": "TS2339",
+      "message": "Property 'headers' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 87,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 88,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 88,
+      "code": "TS2339",
+      "message": "Property 'headers' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 109,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 118,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 124,
+      "code": "TS2345",
+      "message": "Argument of type 'Mock<(url: string, init?: RequestInit | undefined) => Promise<Response>>' is not assignable to parameter of type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; } | undefined'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 146,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '0'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 149,
+      "code": "TS2493",
+      "message": "Tuple type '[]' of length '0' has no element at index '1'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/client.test.ts",
+      "line": 149,
+      "code": "TS2339",
+      "message": "Property 'body' does not exist on type 'never'."
+    },
+    {
+      "target": "web",
+      "file": "src/renderer/workInbox/workToBot.ts",
+      "line": 107,
+      "code": "TS2345",
+      "message": "Argument of type 'WorkKind' is not assignable to parameter of type '\"notice\" | \"approval\" | \"leave\" | \"travel\" | \"expense\" | \"meeting\" | \"seal\" | \"join_request\"'."
+    }
+  ],
+  "source_refinement_after_native_start": {
+    "paths": [
+      "apps/studio/src/renderer/services/capabilities/capabilityCatalogue.ts"
+    ],
+    "reason": "Preserve the complete installed tool version; package-version display truncation must not be applied to a tool receipt. Native Rust sources did not change."
+  },
+  "gui_acceptance": false,
+  "release_performed": false,
+  "logs": {
+    "plugins-tool-version-native.json": "0f7acc9a5e13f1022bc4f9c52574b3113b884d0e1b10ac5b5d1f4b597e7c4e89",
+    "plugins-tool-version-native-tests.log": "f44882b481f3f0087f131cc03b37b7036ed532aec7b99b5e48058a90fc6ce1d2",
+    "plugins-tool-version-native-registry.log": "8ef0efbf08617d7e459919b006c7ce1f2716b841e50bde7c87f454cddadd3430",
+    "plugins-tool-version-native-clippy.log": "16b9539967e5c6c8abf583d9a28d89183b2df39517cf9ad89037d01cdf5c701e",
+    "plugins-tool-version-before.log": "1b125b43a7016c3bfd86842dd30f805cdb280ced9ad5d0c63885cccf8bfe69ce",
+    "plugins-tool-version-before-replay.log": "b774e97a9288811a738e2afda6442aa2022e9a423f84316de9f7c20949993813",
+    "plugins-tool-version-renderer.log": "85c47e2383c6b7f5847666ee4d24d324baa375116ebf3d390f1aae51c6d50103",
+    "plugins-tool-version-renderer-final.log": "e089139337c93b0d6341f042c28e50f090360bafb2e5f3e69f7ed2e67cf9f014",
+    "plugins-tool-version-modelscope-isolated.log": "a222630189d273b1a4340ebd3d4a7b349766ca6a34012d7253eff1099529118a",
+    "plugins-tool-version-format-final.log": "bd597cba4c4a696c7a3559ec8ffa9bbe7013e94494045e2189bedbb337306bf3",
+    "plugins-tool-version-eslint-final.log": "fb42a21bebf8b72d75d3e40494e033842eba9d12a8cc47950536df5ef2cf270f",
+    "plugins-tool-version-oxlint.log": "96e7830cf921208245fde32137a62b98e4d6247fe83c5f1de9a465ced14d47a8",
+    "plugins-tool-version-oxlint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "plugins-tool-version-i18n-sync.log": "f2c79560e122850c4454158d44597f1cfb44c8379795bf99a58eb0689f3f88c8",
+    "plugins-tool-version-i18n.log": "00890d223036e9c98ff063cf66f9039ccde789d024a96430cde5ae68f6fb92a3",
+    "plugins-tool-version-typecheck-final.log": "60626b82d6fb9bf78973b17568dcbfb1724145d25364de442fbac1dd477153a8",
+    "plugins-tool-version-typecheck-comparison.json": "16a53662527708ec1b0d87f29dc04fbe38ea816f3eafe64320ac0cf8ae24cc04",
+    "plugins-tool-version-a3s-capabilities.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "plugins-tool-version-a3s-capabilities.stderr": "a6268f2781930452cd1e6566dfee4763faf0beb356a13a02c40d873ba8674f33",
+    "plugins-tool-version-a3s-gui-certification.json": "2c064cecd11ff072e07638ed84cd5d948811546a6a37286e8163e11c6465d778"
+  }
+}

@@ -1,0 +1,2 @@
+babeldoc-stream==0.6.4.post4
+bitstring>=4.3.0,<5

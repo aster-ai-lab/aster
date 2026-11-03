@@ -1,0 +1,140 @@
+{
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "toolchain": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "full_goal_complete": false,
+  "cli_tests": {
+    "passed": 18,
+    "exit_code": 0,
+    "elapsed_seconds": 30.93,
+    "log": "context-startup-cli-tests.log"
+  },
+  "debug_pair": {
+    "exit_code": 0,
+    "log": "context-startup-paired-build.log"
+  },
+  "owning_aster_clippy": {
+    "exit_code": 0,
+    "log": "context-startup-aster-clippy.log",
+    "limits": "Existing warnings in three other test files and dependencies remain"
+  },
+  "release_pair": {
+    "exit_code": 0,
+    "log": "context-release-paired-build.log",
+    "build_ids": {
+      "aster": "aster-cli-pair-v1:c1fb92b04471dbb1609d6d5098816a77ee968ea9:aarch64-apple-darwin",
+      "aster-acp": "aster-cli-pair-v1:c1fb92b04471dbb1609d6d5098816a77ee968ea9:aarch64-apple-darwin"
+    },
+    "scope": "Predates the subsequent embedded package frontend change"
+  },
+  "guide_files_before": 27,
+  "guide_files_after": 0,
+  "failed_first_recapture": {
+    "tool_session_id": 13894,
+    "process_exit_code": 1,
+    "observed_exception": "subprocess.TimeoutExpired",
+    "command": [
+      ".tmp/mise-replacement/reference/mise",
+      "exec",
+      "node@path:./SDK node",
+      "--",
+      "node"
+    ],
+    "deadline_seconds": 25,
+    "intended_report": "docs/evidence/cli/2026-11-01-mise-replacement/context-selection-benchmark-after-startup.json",
+    "intended_report_exists": false,
+    "completed_sample_rows_recovered": false,
+    "scope": "Observed terminal tool result; the old harness lost partial rows before writing its report. No performance conclusion."
+  },
+  "completed_benchmarks": {
+    "context-selection-benchmark-after-startup-retry.json": {
+      "summary": [
+        {
+          "tool": "aster",
+          "state": "fresh_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 651.85,
+          "max_ms": 9853.958
+        },
+        {
+          "tool": "aster",
+          "state": "repeated_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 224.293,
+          "max_ms": 226.887
+        },
+        {
+          "tool": "mise",
+          "state": "fresh_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 401.447,
+          "max_ms": 420.226
+        },
+        {
+          "tool": "mise",
+          "state": "repeated_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 15.275,
+          "max_ms": 16.797
+        }
+      ],
+      "binary_sha256": {
+        "aster": "ee9537efa2bdac087f3302ecfc00b5b5886cbf3da2595427b1f4dd05a225460a",
+        "mise": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6"
+      }
+    },
+    "context-selection-benchmark-release.json": {
+      "summary": [
+        {
+          "tool": "aster",
+          "state": "fresh_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 627.316,
+          "max_ms": 1560.796
+        },
+        {
+          "tool": "aster",
+          "state": "repeated_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 210.642,
+          "max_ms": 214.79
+        },
+        {
+          "tool": "mise",
+          "state": "fresh_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 393.927,
+          "max_ms": 429.053
+        },
+        {
+          "tool": "mise",
+          "state": "repeated_owned_state",
+          "samples": 5,
+          "complete_samples": true,
+          "median_ms": 15.197,
+          "max_ms": 15.363
+        }
+      ],
+      "binary_sha256": {
+        "aster": "1f371a5c002102f857c23c4d8c03705b65c439f21ddb5de0a5f033e328bebb9f",
+        "mise": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6"
+      }
+    }
+  },
+  "conclusion": "Guide writes are eliminated. Performance acceptance is not achieved; no latency improvement is claimed.",
+  "unchecked": [
+    "Native Linux/Windows",
+    "Final installed archive and sandbox",
+    "All remaining required mise capabilities",
+    "Subsequent embedded package frontend checks"
+  ]
+}

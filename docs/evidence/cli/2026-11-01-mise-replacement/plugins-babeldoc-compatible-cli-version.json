@@ -1,0 +1,17 @@
+{
+  "capturedAtUtc": "2026-11-01T22:00:05.738619+00:00",
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-measurement/owned-python/cpython-3.12.14-macos-aarch64-none/bin/python3.12",
+    "-I",
+    "-B",
+    "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-compatible-v2/cli_probe.py",
+    "--version"
+  ],
+  "timeoutSeconds": null,
+  "exitCode": 0,
+  "seconds": 73.781976166,
+  "requirementsSha256": "6cd27ee08f059342c6ab8edab200d5d98b6b9410d0ff958deeb21b2b13cde5ab",
+  "systemPythonUsed": false,
+  "aixInstallationAccepted": false,
+  "translationAccepted": false
+}

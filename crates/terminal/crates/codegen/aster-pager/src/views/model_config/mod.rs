@@ -1,6 +1,8 @@
 //! `/config` modal for adding and editing ACL providers and models.
 
 mod document;
+#[cfg(test)]
+mod document_labels_tests;
 mod render;
 mod state;
 

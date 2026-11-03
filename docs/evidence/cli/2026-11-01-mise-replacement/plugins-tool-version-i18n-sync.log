@@ -1,0 +1,5 @@
+$ dotenv -e .env -- tsx scripts/i18n-sync.ts
+Added new property: plugins.installed_tool_version
+File zh-cn.json has been sorted and synced to match base locale content
+(node:17736) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "lark-cli"
+ spec = "github:larksuite/cli"
+ version = "1.0.98"
+ executable = "lark-cli"
+ platform = "aarch64-macos-"
+ url = "https://github.com/larksuite/cli/releases/download/v1.0.98/lark-cli-1.0.98-darwin-arm64.tar.gz"
+ length = 14311782
+ sha256 = "ee4a3209bbf8b74ea5c00a07d0da89b79f5e7f6abfd518a8b2d78a7a4f7e3f40"
+ format = "tar.gz"
+ prefix = ""
+ bin_dirs = [""]
+ executable_mode = "0755"
+ command "lark-cli" { path = "lark-cli" }
+}

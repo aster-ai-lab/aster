@@ -1,0 +1,195 @@
+{
+  "schema": "aster.cli.project-uninstall.progress.v1",
+  "status": "in_progress_damaged_cleanup_native_validation_pending",
+  "observedAtUnixSeconds": 1793648704.821402,
+  "healthyCheckpoint": {
+    "nativeFrozenCases": 8,
+    "cliDefaultPassed": 34,
+    "tuiScenariosPassed": 2,
+    "cleanupErrors": 0,
+    "sourceAndArtifactHashesUnchanged": true,
+    "scope": "Before replacing execution-completeness selection with the new identity-only cleanup API"
+  },
+  "confirmedGap": {
+    "nativeDamagedRemovalExit": 0,
+    "realUvAsterExitBeforeFix": 1,
+    "selectedDirectoryRemained": true,
+    "declarationUnchanged": true
+  },
+  "currentFixChecks": {
+    "focusedIdentitySelectionTestPassed": 1,
+    "fullToolTestsPassed": 141,
+    "fullToolTestsIgnored": 5,
+    "toolClippyExitCode": 0
+  },
+  "pending": {
+    "execSessionId": 69315,
+    "controller": ".tmp/mise-project-uninstall-final-checks.py",
+    "record": ".tmp/mise-project-uninstall-final-checks.json"
+  },
+  "limits": [
+    "Current damaged cleanup native CLI and interactive requalification still pending",
+    "Invalid-byte filename fixture fails at macOS filesystem admission; the identical CLI rejection assertion remains a required Linux-native test",
+    "Intermediate E0599 came from editing the SDK/caller during an in-flight build; final checks now run in sequence",
+    "Pager Clippy remains a failure at the prior42 errors/39 primary locations; older changed-test canonicalize warning remains recorded",
+    "Root format fails in four unrelated Studio files on the latest check",
+    "Full mise replacement,49-item plugin migration, desktop acceptance and release are not achieved"
+  ],
+  "retainedFiles": [
+    {
+      "path": "mise-project-uninstall-progress/reference/base.json",
+      "sha256": "0a757e8c1c0d7e7645aaac930967e9c6c63273e2d4ed049947faedf7311d4585",
+      "length": 61338
+    },
+    {
+      "path": "mise-project-uninstall-progress/reference/damaged.json",
+      "sha256": "46093764cba6428f280009b96f9f59637c267a4a0e4bb5352101b46ca8c68367",
+      "length": 2921
+    },
+    {
+      "path": "mise-project-uninstall-progress/reference/base-producer.py",
+      "sha256": "c84a98b4e74ad31a75b6fdd0b4477f7c3aeb83a02e93eb85fc45780835f9aeee",
+      "length": 7336
+    },
+    {
+      "path": "mise-project-uninstall-progress/reference/damaged-producer.py",
+      "sha256": "cd688380e48dbf1adb3e8fa5bf3d9efbfccb2b6b7a3c7a50f26895f10d0cc375",
+      "length": 4933
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/regression.json",
+      "sha256": "d223001347bd464f1c93b36725026dfd8f600c69cc8ed4d3292fb944f89ad67a",
+      "length": 8500
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/focused-cli.log",
+      "sha256": "add761d05b8916819271cf43beaa18535ee57b3c8d0644e10c327d5dce283cdc",
+      "length": 287
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/full-cli.log",
+      "sha256": "5a7e5b1dc90066626223542b84c4131beccc49d6bd16e301292e40999e20d7ec",
+      "length": 2972
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/tui.json",
+      "sha256": "5638bcde8762cb5bbcd0830e9c6e4faab044b8f027b936ce847fb0b3b9577459",
+      "length": 10328
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/decline.vt",
+      "sha256": "cae714e2b16d823b082e0545a0efd65253d646ac38ac740166739726db54e669",
+      "length": 177
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/confirm.vt",
+      "sha256": "3dfea42334d2b7bee3b7a16adf302fa4c4c2d5a28768b8027b41c78cc2b1e309",
+      "length": 185
+    },
+    {
+      "path": "mise-project-uninstall-progress/failed/apfs-fixture.log",
+      "sha256": "03585d6eff948acdf31dfb25ca9af198b9a582b0b13d8a2bacc54f736c8305f9",
+      "length": 873
+    },
+    {
+      "path": "mise-project-uninstall-progress/failed/apfs-fixture-source.rs",
+      "sha256": "a96afc10defd6b3b17309b50de431bed60601a6e019a7017175899ff5cb4245e",
+      "length": 101307
+    },
+    {
+      "path": "mise-project-uninstall-progress/failed/real-uv-damaged.json",
+      "sha256": "ea10e1ba3b0ff3c93b7d2d28336583aad03baa005567a7a88d22b4bd55b9cd08",
+      "length": 1607
+    },
+    {
+      "path": "mise-project-uninstall-progress/failed/real-uv-damaged.log",
+      "sha256": "f4b2d0682a6b39023fcf16382934e0ed1b0339c1a7a3194b10f5eab622495972",
+      "length": 241
+    },
+    {
+      "path": "mise-project-uninstall-progress/failed/intermediate-build.log",
+      "sha256": "d27cd920ee6d23ce647162cc5d6600f0e9f21ee9dfbac9e42256e85821d825aa",
+      "length": 11031
+    },
+    {
+      "path": "mise-project-uninstall-progress/checks/damaged-sdk.log",
+      "sha256": "2a6bf30a3ed5f0326c0ed45c3a1b7b5b9e975d90ed43115428432186f705d9da",
+      "length": 752
+    },
+    {
+      "path": "mise-project-uninstall-progress/checks/tool-tests.log",
+      "sha256": "08bff40ead79ae8d65c93219e433c482efc3f79afea834967ca02a3b7a80fce7",
+      "length": 14554
+    },
+    {
+      "path": "mise-project-uninstall-progress/checks/tool-clippy.log",
+      "sha256": "5bd0448c9e60b02ebf4ff58b2e17d69f5f10fbe6bb7251e8127e19cfccedde3b",
+      "length": 374
+    },
+    {
+      "path": "mise-project-uninstall-progress/checks/format-outside-scope.log",
+      "sha256": "81dfdbd790b47e8d95695c8bb1bc7139dada07bba44187468057e3a1cf21d382",
+      "length": 7097
+    },
+    {
+      "path": "mise-project-uninstall-progress/checks/pager-prior-findings.json",
+      "sha256": "246695709e39d56f8b469f1e68c16bc4a00b0096d275bb93c67bd9496a4fdf85",
+      "length": 7362
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/command-diff.patch",
+      "sha256": "ae0e39bfa697a681429b4433ea464212c217f5d51c8381b5688710fe007c2be5",
+      "length": 7854
+    },
+    {
+      "path": "mise-project-uninstall-progress/healthy/cli-test-diff.patch",
+      "sha256": "b5e45d98ba73aa876b15847459bc8fa105d7134bee869b59c5e3e82e36d1bdaf",
+      "length": 8576
+    },
+    {
+      "path": "mise-project-uninstall-progress/before/command.rs",
+      "sha256": "ad043ace339c9d993d9a2126c5da3fabf61f47bfecf7d2e745feb42f6665024f",
+      "length": 51172
+    },
+    {
+      "path": "mise-project-uninstall-progress/before/cli-test.rs",
+      "sha256": "c223f946a586d690a412f01bfc5a2c74a16d7481f5e9187286bb0e9edf20c99d",
+      "length": 93307
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/store.rs",
+      "sha256": "e13081f812c391e22605e7b0e3f99a84a58625c6c52ac5a6c1b987e1e3be9a99",
+      "length": 56731
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/store-tests.rs",
+      "sha256": "b15218a5c7d4dc35ed4d293d63194d63edfa13d5843c43bf4d01f0026fb48921",
+      "length": 24243
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/command.rs",
+      "sha256": "deb147f2bb48e72beb671d6ff184f60b0c50d80fa57c3c02b1e3a4fd8f689431",
+      "length": 55101
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/cli-test.rs",
+      "sha256": "bc49e482ff4cb0591db33c2a8808aa3cf30a556a1a437e8943b2030ac1e289c2",
+      "length": 104053
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/env-acl.rs",
+      "sha256": "3cb03bcff0e537f59c91c471e93f9b2c5d38cf9871dadd61e90003acba660b89",
+      "length": 22042
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/interactive.acl",
+      "sha256": "d3aabff46aba7734ce93d3bf8fc15b0f4283abca268e96cd78b7093c75811a85",
+      "length": 954
+    },
+    {
+      "path": "mise-project-uninstall-progress/current/serial-checks.py",
+      "sha256": "8653882af6e8acf7e4caa1d9244d4285e395320818d3ef051357aaf48b3cba9d",
+      "length": 2903
+    }
+  ]
+}

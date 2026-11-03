@@ -1,0 +1,136 @@
+{
+  "capturedAtUtc": "2026-11-01T18:17:40.023789+00:00",
+  "parentHead": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+  "studioHead": "a371b25465ca76f0561bf650f6c54407ef3c0ba3",
+  "parentDirtyEntries": 2291,
+  "studioDirtyEntries": 437,
+  "sourceFrozen": false,
+  "allDevelopmentComplete": false,
+  "runs": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T17:22:30Z",
+      "databaseId": 41331143321,
+      "headSha": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "status": "completed",
+      "workflowName": "Qualify aster"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T17:22:30Z",
+      "databaseId": 41331143274,
+      "headSha": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "status": "completed",
+      "workflowName": "Qualify aster-cli"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T17:22:30Z",
+      "databaseId": 41331143189,
+      "headSha": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "status": "completed",
+      "workflowName": "Rust"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T17:22:30Z",
+      "databaseId": 41331143188,
+      "headSha": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "status": "completed",
+      "workflowName": "backend"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-01T17:22:30Z",
+      "databaseId": 41331143162,
+      "headSha": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "status": "completed",
+      "workflowName": "Cross-platform text"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T16:41:29Z",
+      "databaseId": 41327613106,
+      "headSha": "798dd5c67b83c845ac3db3e53949e446de0a092b",
+      "status": "completed",
+      "workflowName": "backend"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T16:41:28Z",
+      "databaseId": 41327612887,
+      "headSha": "798dd5c67b83c845ac3db3e53949e446de0a092b",
+      "status": "completed",
+      "workflowName": "Qualify aster-cli"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T16:41:28Z",
+      "databaseId": 41327612884,
+      "headSha": "798dd5c67b83c845ac3db3e53949e446de0a092b",
+      "status": "completed",
+      "workflowName": "Qualify aster"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-01T16:41:28Z",
+      "databaseId": 41327612845,
+      "headSha": "798dd5c67b83c845ac3db3e53949e446de0a092b",
+      "status": "completed",
+      "workflowName": "Rust"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-01T16:41:28Z",
+      "databaseId": 41327612762,
+      "headSha": "798dd5c67b83c845ac3db3e53949e446de0a092b",
+      "status": "completed",
+      "workflowName": "Cross-platform text"
+    }
+  ],
+  "recentReleases": [
+    {
+      "tag": "v0.1.11",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-31T16:06:16Z"
+    },
+    {
+      "tag": "v0.1.10",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-31T11:52:55Z"
+    },
+    {
+      "tag": "aster-cli-v0.1.7",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-31T21:35:14Z"
+    },
+    {
+      "tag": "aster-cli-v0.1.6",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-31T08:49:55Z"
+    },
+    {
+      "tag": "aster-acp-v9.1.7",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-31T23:13:51Z"
+    },
+    {
+      "tag": "desktop-stable",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-28T21:05:49Z"
+    },
+    {
+      "tag": "aster-cli-stable",
+      "draft": false,
+      "prerelease": false,
+      "publishedAt": "2026-10-28T23:02:51Z"
+    }
+  ],
+  "publishedByThisTask": false
+}

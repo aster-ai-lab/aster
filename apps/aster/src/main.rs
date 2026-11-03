@@ -18,6 +18,7 @@ mod jemalloc_malloc_conf {
     #[unsafe(export_name = "_rjem_malloc_conf")]
     static MALLOC_CONF: MallocConfPtr = MallocConfPtr(CONF.as_ptr());
 }
+use anyhow::{Context as _, Result};
 use aster_pager::agent_runtime::AgentRuntime;
 use aster_pager::app::{
     AgentCmd, Command, EARLY_PREFETCH_WAIT, HeadlessArgs, LeaderMgmtArgs, LeaderMgmtCommand,
@@ -37,12 +38,12 @@ use aster_shell::leader::{
 use aster_telemetry::process_info::{
     Entrypoint, Interactivity, ProcessIdentity, ReleaseChannel, set_identity, set_release_channel,
 };
-use anyhow::Result;
 use std::io::Write;
 use std::net::SocketAddr;
 use std::num::NonZeroUsize;
 use tokio_util::sync::CancellationToken;
 mod agent_command;
+mod use_command;
 fn process_identity(command: Option<&Command>, is_interactive: bool) -> Option<ProcessIdentity> {
     use aster_telemetry::process_info::LeaderMode::Standalone;
     let (entrypoint, interactivity) = match command {
@@ -85,6 +86,18 @@ fn process_identity(command: Option<&Command>, is_interactive: bool) -> Option<P
         leader: Standalone,
         interactivity,
     })
+}
+fn is_environment_command(command: Option<&Command>) -> bool {
+    matches!(
+        command,
+        Some(
+            Command::Tool(_)
+                | Command::Env(_)
+                | Command::Exec(_)
+                | Command::Activate(_)
+                | Command::Use(_)
+        )
+    )
 }
 /// True when this command later boots an agent (`spawn_grok_shell` / agent subcommand) that heals managed policy after `apply_sandbox`.
 fn command_needs_pre_sandbox_policy_heal(command: Option<&Command>) -> bool {
@@ -1830,11 +1843,17 @@ impl WorkerCount {
         }
     }
 }
-fn cli_worker_threads() -> NonZeroUsize {
+fn cli_worker_threads(command: Option<&Command>) -> NonZeroUsize {
     let cores = std::thread::available_parallelism().unwrap_or(NonZeroUsize::MIN);
     let resolved = match std::env::var(GROK_WORKER_THREADS_ENV) {
         Ok(value) => worker_threads_from(Some(&value), cores),
-        Err(std::env::VarError::NotPresent) => worker_threads_from(None, cores),
+        Err(std::env::VarError::NotPresent) => {
+            WorkerCount::Accepted(if is_environment_command(command) {
+                NonZeroUsize::MIN
+            } else {
+                default_worker_threads(cores)
+            })
+        }
         Err(std::env::VarError::NotUnicode(value)) => WorkerCount::Ignored {
             value: value.to_string_lossy().into_owned(),
             used: default_worker_threads(cores),
@@ -2121,7 +2140,9 @@ fn main() {
         release: env!("VERSION_WITH_COMMIT"),
         disabled: aster_shell::agent::config::is_error_reporting_disabled_sync(),
     });
-    aster_pager::docs::extract_user_guide_docs(&aster_shell::util::grok_home::grok_home());
+    if !is_environment_command(args.command.as_ref()) {
+        aster_pager::docs::extract_user_guide_docs(&aster_shell::util::grok_home::grok_home());
+    }
     aster_crash_handler::install_terminal_restore_only();
     if aster_shell::util::config::load_crash_handler_enabled_sync() {
         let crash_dir = crash_dir_for(&args);
@@ -2142,14 +2163,10 @@ fn main() {
             );
         }
     }
-    let workers = cli_worker_threads();
-    let mut builder = tokio::runtime::Builder::new_multi_thread();
-    builder.worker_threads(workers.get()).enable_all();
-    let runtime =
-        aster_tty_utils::runtime::build_with_blocking_pool(&mut builder).unwrap_or_else(|e| {
-            eprintln!("Aster: failed to start tokio runtime: {e}");
-            shutdown_and_flush_telemetry(1);
-        });
+    let runtime = build_cli_runtime(args.command.as_ref()).unwrap_or_else(|e| {
+        eprintln!("Aster: failed to start tokio runtime: {e}");
+        shutdown_and_flush_telemetry(1);
+    });
     let result = run_and_shutdown(runtime, async_main(args), RUNTIME_SHUTDOWN_GRACE);
     aster_telemetry::debug_log::flush();
     if let Err(e) = result {
@@ -2164,6 +2181,26 @@ fn main() {
         std::process::exit(1);
     }
     finalize_span_profile();
+}
+
+fn build_cli_runtime(command: Option<&Command>) -> std::io::Result<tokio::runtime::Runtime> {
+    let workers = cli_worker_threads(command);
+    let mut builder = tokio::runtime::Builder::new_multi_thread();
+    builder.worker_threads(workers.get()).enable_all();
+    if matches!(command, Some(Command::Use(_))) {
+        builder.thread_stack_size(aster_use::cli::CLI_WORKER_STACK_SIZE);
+    }
+    if is_environment_command(command) {
+        let runtime = aster_tty_utils::runtime::apply_blocking_pool(&mut builder).build()?;
+        aster_tty_utils::runtime::prewarm_blocking_pool_n(
+            runtime.handle(),
+            1,
+            std::time::Duration::from_secs(5),
+        )?;
+        Ok(runtime)
+    } else {
+        aster_tty_utils::runtime::build_with_blocking_pool(&mut builder)
+    }
 }
 #[tracing::instrument(level = "debug", skip_all)]
 async fn async_main(mut args: PagerArgs) -> Result<()> {
@@ -2184,7 +2221,9 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
     } else {
         aster_workspace::permission::ClientType::Generic
     });
-    schedule_startup_prewarm();
+    if !is_environment_command(args.command.as_ref()) {
+        schedule_startup_prewarm();
+    }
     args.pin_local_resume_target()?;
     let saved_profile = args.saved_resume_profile();
     let sandbox_profile_arg = match args.startup_sandbox_profile(saved_profile.as_deref()) {
@@ -2321,11 +2360,15 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             }
             Command::Activate(activate_args) => {
                 init_tracing_simple("cli");
-                return aster_pager::env_manager_cmd::run_activate(activate_args);
+                return tokio::task::spawn_blocking(move || {
+                    aster_pager::env_manager_cmd::run_activate(activate_args)
+                })
+                .await
+                .context("activate environment task")?;
             }
             Command::Use(use_args) => {
                 init_tracing_simple("cli");
-                return aster_pager::env_manager_cmd::run_use_forward(use_args).await;
+                return use_command::run(use_args).await;
             }
             Command::Models => {
                 init_tracing_simple("cli");

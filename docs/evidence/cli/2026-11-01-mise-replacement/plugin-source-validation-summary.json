@@ -1,0 +1,112 @@
+{
+  "captured_at_utc": "2026-11-01T05:53:21.718442+00:00",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "goal_complete": false,
+  "published_by_this_task": false,
+  "frozen_baseline": {
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "source_path_count": 690,
+    "oracle_case_count": 10,
+    "oracle_version_count": 11
+  },
+  "focused_checks": [
+    {
+      "log": "plugin-aix-library-tests-native-case.log",
+      "passed": 4,
+      "failed": 0,
+      "sha256": "447039ac929cdbfd687dda6498b606c7590fa49c439fef9c74714774c5f94144"
+    },
+    {
+      "log": "plugin-ghcr-integrity-tests.log",
+      "passed": 5,
+      "failed": 0,
+      "sha256": "5a57e227e2c93fde535b07acc4456ffe668ab126628aa91b7a5bdd2544fde766"
+    },
+    {
+      "log": "plugin-native-cache-transport-tests.log",
+      "passed": 3,
+      "failed": 0,
+      "sha256": "162c97392f52fe4ea8ef76d024e4d9d04758ac310da17a1c9d7f8fb27d8dc847"
+    },
+    {
+      "log": "plugin-native-aix-contract.log",
+      "passed": 1,
+      "failed": 0,
+      "sha256": "d8734c5ec6327b8aabe9b9c1d531a733c17887c35241cdb9f4ab30a4e5731274"
+    },
+    {
+      "log": "plugin-aix-cli-tests-native-manifest.log",
+      "passed": 1,
+      "failed": 0,
+      "sha256": "bc20dee541db76326b2b844be4aec81b7b1f85a0547147ded5ddaac0bc6b25e5"
+    }
+  ],
+  "distinct_focused_tests_passed": 14,
+  "actual_cli_smoke": {
+    "command": [
+      "/Users/roylin/code/aster/target/debug/aster",
+      "use",
+      "registry",
+      "package",
+      "check",
+      "/Users/roylin/code/aster/.tmp/mise-replacement/cli-source-probe/原生 plugin.aix",
+      "--json"
+    ],
+    "profile": "dev/debug",
+    "archive_sha256": "2c63773952647b44c86a6c05b5964f43ce120ca03ad843b53793634598007392",
+    "source_files": 13,
+    "source_bytes": 6216,
+    "deadline_seconds": 15,
+    "exit_code": 0,
+    "elapsed_ms": 13092,
+    "source_and_result_match": true
+  },
+  "full_regression_failures": [
+    {
+      "artifact": "plugin-extension-isolated.json",
+      "cases": 59,
+      "failed_at_replay": 59,
+      "sha256": "d90a51b409045b2fdbc35d0df5ed15639c798713082400ee2da87819875d65fe"
+    },
+    {
+      "artifact": "plugin-catalog-isolated.json",
+      "cases": 18,
+      "failed_at_replay": 17,
+      "sha256": "714a1f8f3278ca5557d1dd7832cf65422edd5d6e7ef7826dd70d6b19bf231197"
+    }
+  ],
+  "replay_note": "Both new extension test-precondition failures were later fixed and pass in focused checks. The 59-case replay retains original results; it is not a post-fix full suite pass.",
+  "unchecked": [
+    "Production signing root",
+    "Domain-organized repository publication",
+    "Real GHCR anonymous artifact installation",
+    "Broader SDK regressions",
+    "Final archive and installed companion membership",
+    "Native Linux and Windows",
+    "Release efficiency distributions",
+    "All remaining required mise capability families"
+  ],
+  "source_sha256": {
+    "Cargo.lock": "d833c8a518848b31626ccd6540c60c5618a46a3e03674392019a9255192a3e56",
+    "crates/use/core/src/lib.rs": "647716f6ce7d0cdbc006eb51ed8af83b9f03ff2d46368542508c6c4a30a14083",
+    "crates/use/core/src/plugin/validation.rs": "044babb77a0e0a9a01550fd3d653405cebaf0b5d55cc8216cc1ae966220c9864",
+    "crates/use/core/tests/plugin_catalog_contracts.rs": "e61f5b2ab741e8f26717fd1e8c046355da71f07dec136e6ed0504fc8a3156c40",
+    "crates/use/extension/src/release_bundle.rs": "b1d8da11a10daa7fded85155e44835cec9040035d972ab1b78e231bafe3d4c52",
+    "crates/use/extension/src/remote/oci.rs": "f442464f278dacf36abf157b0894952a9a2e6a479c735ff1819892c5e0d79486",
+    "crates/use/extension/src/remote/oci/tests.rs": "55d21bf0cbc160f587c890003dc050cae4b097b2d3eed1695a682367de478930",
+    "crates/use/extension/src/remote/resumable_http.rs": "7d796b461dc738984d97c181363f818c97a968a5b448e9588480aaacd7261714",
+    "crates/use/extension/src/remote/catalog/cache.rs": "c01a0b9fef0143fd3296bfdbebaf569358691e2a8676054f2c9322da102c5dfd",
+    "crates/use/extension/src/remote/catalog/cache/file_transport.rs": "83a85302fa08a1549dd75368e95adcdc594c0bcd801a2ec895f470bc793bc159",
+    "crates/use/extension/src/remote/catalog/cache/file_transport/tests.rs": "4be6ecbaecaa313e2594b0be29c970a4190b3070600a6747c46d6218598df210",
+    "crates/use/src/cli/registry.rs": "ec56bb975ea50a47ba0de3db962dead2161562aafee07709cf08f65784900c18",
+    "crates/use/src/cli/registry/aix_tests.rs": "d2488e354d4f6a79f1a45ce8eb153172490615174f3a1c0b1fa9b43f18b6dd4b",
+    "docs/trusted-plugins.md": "a90d083939bd937b44f6afb387495cbf272101ce9b22745ed9c9e9f17b0eb455",
+    "specs/031-cli-mise-replacement/tasks.md": "0c0837e1501ca27f425d1ecce34945dfc0165ee802a20b7a3e1a2973ec46e5e1",
+    "docs/evidence/cli/2026-11-01-mise-replacement/OUTCOME.md": "ac7b3734a885464eb65a7445c3d80b1452ab140c9fe36c539c0efbd7940119b1"
+  }
+}

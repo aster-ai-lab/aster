@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "gh"
+ spec = "github:cli/cli"
+ version = "2.103.3"
+ executable = "gh"
+ platform = "x86_64-linux-gnu"
+ url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz"
+ length = 15031972
+ sha256 = "4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d"
+ format = "tar.gz"
+ prefix = ""
+ bin_dirs = ["gh_2.103.3_linux_amd64/bin"]
+ executable_mode = "0755"
+ command "gh" { path = "gh_2.103.3_linux_amd64/bin/gh" }
+}

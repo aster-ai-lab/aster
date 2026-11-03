@@ -1,0 +1,20 @@
+{
+  "diagnosticOnly": true,
+  "scope": "sampled process is excluded from acceptance",
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+    "exec",
+    "node@path:./one",
+    "node@path:./two",
+    "--",
+    "node"
+  ],
+  "pid": 24378,
+  "deadlineSeconds": 25,
+  "sampleExitCode": 0,
+  "sampleStderr": "Sampling process 24378 for 1 second with 1 millisecond of run time between samples\nSampling completed, processing symbols...\nSample analysis of process 24378 written to file .tmp/mise-exec-multiversion-sample.txt\n",
+  "status": "returned",
+  "exitCode": 0,
+  "stdout": "one\n",
+  "stderr": ""
+}

@@ -19,6 +19,8 @@ mod atomic_file;
 mod composer_mode;
 mod digest;
 mod home;
+#[cfg(test)]
+mod host_floor_tests;
 mod package;
 mod package_inventory;
 #[cfg(test)]
@@ -570,7 +572,9 @@ impl ExtensionManifest {
 
     pub fn supports_use_version(&self, version: &str) -> UseResult<bool> {
         let version = semver::Version::parse(version).map_err(|error| {
-            manifest_error(format!("Invalid Aster Use host version '{version}': {error}"))
+            manifest_error(format!(
+                "Invalid Aster Use host version '{version}': {error}"
+            ))
         })?;
         let Some(requirement) = &self.requires_use else {
             return Ok(true);
@@ -840,13 +844,7 @@ fn parse_extension_block(block: &Block) -> UseResult<ExtensionManifest> {
             "Package manifests require a repository block.",
         ));
     }
-    let current_host = semver::Version::new(0, 3, 0);
-    let obsolete_host = semver::Version::new(0, 2, 1);
-    if !requirement.matches(&current_host) || requirement.matches(&obsolete_host) {
-        return Err(manifest_error(
-            "Schema version 3 must require Aster Use 0.3 and exclude pre-0.3 hosts.",
-        ));
-    }
+    validate_schema_v3_host_requirement(&requirement)?;
     Ok(ExtensionManifest {
         schema_version,
         package_id,
@@ -872,6 +870,29 @@ fn parse_extension_block(block: &Block) -> UseResult<ExtensionManifest> {
         home,
         composer_modes,
     })
+}
+
+fn validate_schema_v3_host_requirement(requirement: &semver::VersionReq) -> UseResult<()> {
+    let mut candidates = vec![semver::Version::new(0, 3, 0)];
+    // Comparator conjunctions form an interval; its patch boundaries cover stable 0.3 hosts.
+    for comparator in &requirement.comparators {
+        if comparator.major == 0 && comparator.minor == Some(3) {
+            let patch = comparator.patch.unwrap_or(0);
+            candidates.push(semver::Version::new(0, 3, patch));
+            if let Some(next) = patch.checked_add(1) {
+                candidates.push(semver::Version::new(0, 3, next));
+            }
+        }
+    }
+    let obsolete_host = semver::Version::new(0, 2, u64::MAX);
+    if !candidates.iter().any(|host| requirement.matches(host))
+        || requirement.matches(&obsolete_host)
+    {
+        return Err(manifest_error(
+            "Schema version 3 must require Aster Use 0.3 and exclude pre-0.3 hosts.",
+        ));
+    }
+    Ok(())
 }
 
 fn parse_package_dependency(block: &Block) -> UseResult<PluginPackageDependency> {

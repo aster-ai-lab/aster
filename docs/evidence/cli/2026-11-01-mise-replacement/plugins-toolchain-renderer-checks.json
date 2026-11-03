@@ -1,0 +1,70 @@
+{
+  "sourceSha256": {
+    "src/renderer/services/capabilities/capabilityCatalogue.ts": "d1c5019dcc4fea69eb068b92a09fa1a22b20ee0e5ed38262ddf9def737904d88",
+    "src/renderer/pages/capabilities/capabilitiesData.ts": "0e9f3e4eaf429008d229575aca47457c237a706c96b30252c6bced5c5379b7c8",
+    "src/renderer/pages/plugins/PluginStorePage.tsx": "e0e174c33ba9796efdeeb99753e6fb65c159df0e3b6c5ec927689ce0de318887",
+    "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx": "125331c98b7e98ee6ce7958ef26280086ca19af972a40f732d57da45ca9b5742"
+  },
+  "checks": [
+    {
+      "name": "toolchain-renderer-focused-final",
+      "argv": [
+        "pnpm",
+        "test:renderer",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx",
+        "src/renderer/pages/plugins/__tests__/pluginExperience.test.tsx",
+        "src/renderer/pages/plugins/__tests__/pluginStoreData.test.ts"
+      ],
+      "exitCode": 0,
+      "seconds": 5.19429225,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "toolchain-renderer-eslint",
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/PluginStorePage.tsx",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx"
+      ],
+      "exitCode": 0,
+      "seconds": 0.9991660830000004,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "toolchain-renderer-oxlint",
+      "argv": [
+        "pnpm",
+        "exec",
+        "oxlint",
+        "--deny-warnings",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/PluginStorePage.tsx",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx"
+      ],
+      "exitCode": 0,
+      "seconds": 0.9216465840000003,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "toolchain-renderer-format",
+      "argv": [
+        "pnpm",
+        "exec",
+        "oxfmt",
+        "--check",
+        "src/renderer/services/capabilities/capabilityCatalogue.ts",
+        "src/renderer/pages/capabilities/capabilitiesData.ts",
+        "src/renderer/pages/plugins/PluginStorePage.tsx",
+        "src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx"
+      ],
+      "exitCode": 0,
+      "seconds": 0.1895573749999997,
+      "sourcesUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "displayName": "Aster Box",
+  "description": "Box 3.2.7 with its entitled VM shim, Linux guest helper and native libraries.",
+  "keywords": ["aster-box", "toolchain", "virtualization"],
+  "categories": ["operations"],
+  "target": "darwin-arm64",
+  "channel": "stable",
+  "license": "MIT"
+}

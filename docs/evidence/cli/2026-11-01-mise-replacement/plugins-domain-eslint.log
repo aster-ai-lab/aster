@@ -1,0 +1,10 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx
+   35:8   warning  Unexpected path "../agents/homePins" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                                import-x/no-restricted-paths
+   36:30  warning  Unexpected path "../agents/notOpenToast" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                            import-x/no-restricted-paths
+   44:8   warning  Unexpected path "../capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                  import-x/no-restricted-paths
+   45:38  warning  Unexpected path "../capabilities/pluginInstallSync" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                 import-x/no-restricted-paths
+  118:9   warning  The 'categories' logical expression could make the dependencies of useEffect Hook (at line 140) change on every render. To fix this, wrap the initialization of 'categories' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+✖ 5 problems (0 errors, 5 warnings)
+

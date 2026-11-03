@@ -1,0 +1,93 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "host": {
+    "os": "Darwin",
+    "arch": "arm64"
+  },
+  "timeout_seconds": 25,
+  "requested_cases": [
+    "use_forward"
+  ],
+  "status": "running",
+  "cases": [
+    {
+      "name": "use_forward",
+      "arguments": [
+        "use",
+        "--pin",
+        "fixture@1.0.0",
+        "fixture@2.0.0"
+      ],
+      "configured": null,
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise qzg_9hya/0/plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise qzg_9hya/0/project/mise.toml"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise qzg_9hya/0/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "use",
+            "--pin",
+            "fixture@1.0.0",
+            "fixture@2.0.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "mise /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise qzg_9hya/0/project/mise.toml tools: fixture@1.0.0, fixture@2.0.0\n",
+          "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@1.0.0  215ms\nmise ✓ fixture@2.0.0  237ms\nmise ████████████████ 2/2 · installed 2 tools in 238ms\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "which",
+            "fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise qzg_9hya/0/data/installs/fixture/1.0.0/bin/fixture\n",
+          "stderr": ""
+        }
+      ],
+      "status": "setup",
+      "hooks": {
+        "list-all": "28767ddda1f96429ecb95faee62448eac7842ee4894a73e9de9dc7e2095589b4",
+        "install": "7b2e48dc587d7a156bc63845beea84fa8bde86be78aa5f1a9a38276f1c78a4f1"
+      },
+      "exit": 0,
+      "config_unchanged": false,
+      "pins": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ]
+      },
+      "installed": [
+        "1.0.0",
+        "2.0.0"
+      ]
+    }
+  ]
+}

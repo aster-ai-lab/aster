@@ -1,0 +1,26 @@
+[
+  {
+    "case": "a_mismatched_presentation_cache_cannot_hide_or_rename_an_installed_plugin",
+    "argv": [
+      "target/debug/deps/aster_studio_lib-79b04d6534407590",
+      "--exact",
+      "capabilities::registry::installed::tests::a_mismatched_presentation_cache_cannot_hide_or_rename_an_installed_plugin",
+      "--nocapture"
+    ],
+    "exitCode": 101,
+    "log": ".tmp/plugin-registry/installed-plugin-compatibility-red-a_mismatched_presentation_cache_cannot_hide_or_rename_an_installed_plugin.log",
+    "deadline": "unchanged; no timeout"
+  },
+  {
+    "case": "legacy_native_ids_keep_their_case_and_segments_when_listed_and_removed",
+    "argv": [
+      "target/debug/deps/aster_studio_lib-79b04d6534407590",
+      "--exact",
+      "capabilities::registry::installed::tests::legacy_native_ids_keep_their_case_and_segments_when_listed_and_removed",
+      "--nocapture"
+    ],
+    "exitCode": 101,
+    "log": ".tmp/plugin-registry/installed-plugin-compatibility-red-legacy_native_ids_keep_their_case_and_segments_when_listed_and_removed.log",
+    "deadline": "unchanged; no timeout"
+  }
+]

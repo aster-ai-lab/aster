@@ -1,0 +1,2 @@
+{"sibling_aster_use_exists": false}
+{"exit": 1, "stdout": "", "stderr": "Error: aster-use not found next to aster or on PATH; set ASTER_USE_BIN\n"}

@@ -1,0 +1,6 @@
+
+running 1 test
+test cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 9.20s
+

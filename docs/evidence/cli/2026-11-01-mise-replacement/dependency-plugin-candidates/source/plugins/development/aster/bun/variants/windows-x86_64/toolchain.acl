@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "bun"
+ spec = "github:oven-sh/bun"
+ version = "1.4.4"
+ executable = "bun"
+ platform = "x86_64-windows-msvc"
+ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x64-baseline.zip"
+ length = 54731686
+ sha256 = "0f20ce6674d4f2dbcc8c5d59fdf99f7ba45f8c3b367e0f5781cbfa30a1c78d99"
+ format = "zip"
+ prefix = ""
+ bin_dirs = ["bun-windows-x64-baseline"]
+ executable_mode = "0755"
+ command "bun" { path = "bun-windows-x64-baseline/bun.exe" }
+}

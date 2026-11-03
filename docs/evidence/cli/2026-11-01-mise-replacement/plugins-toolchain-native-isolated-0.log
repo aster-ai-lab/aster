@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'capabilities::aix_projection::tests::an_installed_acp_cloud_agent_streams_two_turns_on_one_session' (72968851) panicked at apps/studio/src-tauri/src/capabilities_aix_tests.rs:904:60:
+AIX install admission: Custom { kind: InvalidData, error: "AIX manifest is missing" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capabilities::aix_projection::tests::an_installed_acp_cloud_agent_streams_two_turns_on_one_session ... FAILED
+
+failures:
+
+failures:
+    capabilities::aix_projection::tests::an_installed_acp_cloud_agent_streams_two_turns_on_one_session
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1579 filtered out; finished in 0.01s
+

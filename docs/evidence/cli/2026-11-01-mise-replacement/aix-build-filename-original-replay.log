@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'aix_pack::tests::supports_non_utf8_output_filenames_without_changing_path_identity' (70814442) panicked at crates/use/extension/src/aix_pack_tests.rs:190:61:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.io", message: "Failed to publish new AIX archive '/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpwPaex6/native-�.aix': Illegal byte sequence (os error 92)", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test aix_pack::tests::supports_non_utf8_output_filenames_without_changing_path_identity ... FAILED
+
+failures:
+
+failures:
+    aix_pack::tests::supports_non_utf8_output_filenames_without_changing_path_identity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.03s
+

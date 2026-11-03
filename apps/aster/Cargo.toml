@@ -37,6 +37,7 @@ serde_json = {workspace = true}
 dunce = {workspace = true}
 semver = {workspace = true}
 
+aster-use = {path = "../../crates/use"}
 aster-extra-ca = {path = "../../crates/terminal/crates/codegen/aster-extra-ca"}
 aster-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-sandbox"}
 aster-config = {path = "../../crates/terminal/crates/codegen/aster-config"}

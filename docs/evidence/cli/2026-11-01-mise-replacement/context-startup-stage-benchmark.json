@@ -1,0 +1,40 @@
+{
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "binary_sha256": "bb5590600d1bc4a8fb5a6a93984a779b046f02b893a65dbde9a0b4d63ebb12da",
+  "profile": "dev",
+  "background_builds_active": true,
+  "records": [
+    {
+      "command": [
+        "aster",
+        "--build-id"
+      ],
+      "samples_ms": [
+        28.798,
+        10.685,
+        10.397,
+        10.829,
+        9.285
+      ],
+      "median_ms": 10.685
+    },
+    {
+      "command": [
+        "aster",
+        "--version"
+      ],
+      "samples_ms": [
+        41.094,
+        10.731,
+        11.308,
+        11.91,
+        12.037
+      ],
+      "median_ms": 11.91
+    }
+  ],
+  "scope": "Early build-id return versus version parsing; diagnostic only, not a release budget"
+}

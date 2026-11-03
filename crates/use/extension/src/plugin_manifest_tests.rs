@@ -334,6 +334,40 @@ fn schema_v3_requires_an_explicit_v3_host_compatibility_gate() {
 }
 
 #[test]
+fn schema_v3_accepts_later_patch_floors_without_admitting_older_hosts() {
+    for requirement in [
+        ">=0.3.4, <0.4.0",
+        ">0.3.4, <0.4.0",
+        "=0.3.4",
+        "^0.3.4",
+        "~0.3.4",
+        "0.3.*",
+        ">=0.3.0, <0.3.4",
+        "=0.3.18446744073709551615",
+    ] {
+        ExtensionManifest::parse_acl(
+            &NAMED_SURFACE_MANIFEST.replace(">=0.3.0, <0.4.0", requirement),
+        )
+        .unwrap_or_else(|error| panic!("{requirement}: {error}"));
+    }
+    for requirement in [
+        ">=0.2.2, <0.4.0",
+        ">=0.3.0, <0.3.0",
+        ">0.3.4, <0.3.5",
+        ">=0.4.0, <0.5.0",
+        ">0.3.18446744073709551615, <0.4.0",
+    ] {
+        assert!(
+            ExtensionManifest::parse_acl(
+                &NAMED_SURFACE_MANIFEST.replace(">=0.3.0, <0.4.0", requirement),
+            )
+            .is_err(),
+            "{requirement}"
+        );
+    }
+}
+
+#[test]
 fn parsed_v3_manifest_still_requires_the_current_compiled_host() {
     let incompatible =
         ExtensionManifest::parse_acl(&NAMED_SURFACE_MANIFEST.replace(">=0.3.0, <0.4.0", "=0.3.0"))

@@ -1,0 +1,22 @@
+{
+  "apps/studio/src-tauri/src/capabilities.rs": "24df1b879d99d2a7185688dc1e1354aeb3b78384b836cd3d3e44770d4bdb2b46",
+  "apps/studio/src-tauri/src/capabilities_registry.rs": "693ee9931e3de8ccf1b82687357be449c4374064e92d572c0cb8478b7f5e9fbf",
+  "apps/studio/src-tauri/src/capabilities_registry_installed.rs": "d04473ef1b6409fc5955cc1af8024b3fabcb173b8922964155b87389e4419adc",
+  "apps/studio/src-tauri/src/capabilities_toolchain.rs": "c1243939eafa97aba4306c7a6622291347f4dcf9facf2617354b89e220e1aca5",
+  "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "a1c177fb98cd2c6f0b0e6aab9f8d50deef19f307ef68229077dd19d37ef15cf9",
+  "apps/studio/src-tauri/src/agent_plane/plugin_selection.rs": "25fa03bcf3827e3076489d6485c6cac5fb39ad90eb1dfa148605e0b7ccef5d2b",
+  "crates/use/reconcile/src/lib.rs": "cfd914d746298e11d611e25e515fd000221da2d58a4f70986613bf7346659f89",
+  "crates/use/reconcile/src/store.rs": "c5dd319269983ed8e2face7e6a3e8da14ac6ea340a9e0d5b880fefaec6ab1c74",
+  "crates/use/reconcile/src/owned_tests.rs": "43794603eb9a5c6b1104ba2b3d059209eaf11db54762b6cb2123cebf18dccb6b",
+  "crates/use/tool-acquire/src/http.rs": "bcb5f6d2468113669867665b65ccb9dd11d4456739feae84b481bf636e301a25",
+  "crates/use/tool-acquire/src/http/toolchain.rs": "51d42aaee0211d3caa0f9bb0107257fef93a588d43a0d65e1c8bc52d29d68eba",
+  "crates/use/tool-acquire/src/http/toolchain/tests.rs": "ddba757bc91952bee10c1a50d0bb8d6d399f7ca3c065fb237b8bccf4efd4a91a",
+  "crates/use/tool-acquire/src/lib.rs": "8a6de791bf0dfcbf01592752ed8fd694926907fc098ea87124ac179a34ab97c4",
+  "crates/use/tool-acquire/src/archive/store.rs": "a6cde3040eb269bb5ee743ccf86f38e8ed43b29a348ade8d1918876bc9204aaf",
+  "apps/studio/src/renderer/services/capabilities/capabilityCatalogue.ts": "d1c5019dcc4fea69eb068b92a09fa1a22b20ee0e5ed38262ddf9def737904d88",
+  "apps/studio/src/renderer/pages/capabilities/capabilitiesData.ts": "0e9f3e4eaf429008d229575aca47457c237a706c96b30252c6bced5c5379b7c8",
+  "apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx": "e0e174c33ba9796efdeeb99753e6fb65c159df0e3b6c5ec927689ce0de318887",
+  "apps/studio/src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx": "125331c98b7e98ee6ce7958ef26280086ca19af972a40f732d57da45ca9b5742",
+  "apps/studio/src-tauri/src/capabilities_plugin_tests.rs": "07beb7b0bc8823fa8579781f6308620e9eae6b19c3a4c49c4dcb8ca0b4aca5ef",
+  "apps/studio/src-tauri/src/capabilities_aix.rs": "96e5db4cce9d9d860e626c44cf1c48a81393954a75b2855df2c74ecb6c7be86b"
+}

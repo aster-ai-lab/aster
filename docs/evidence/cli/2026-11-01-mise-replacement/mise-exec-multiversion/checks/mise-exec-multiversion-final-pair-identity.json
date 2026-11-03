@@ -1,0 +1,22 @@
+{
+  "observedAtUnixSeconds": 1793629775.731068,
+  "artifacts": [
+    {
+      "path": "target/debug/aster",
+      "sha256": "7a3e31b4348bfda45b31946c0578d5f0dd468f4faca5e968883d7924d58c9083",
+      "length": 901473416,
+      "exitCode": 0,
+      "buildId": "aster-cli-pair-v1:04f9a33ad03dff4794deeacc47f57df6ef1590e6:aarch64-apple-darwin",
+      "stderr": ""
+    },
+    {
+      "path": "target/debug/aster-acp",
+      "sha256": "e4cdca944d2478a4aa158b9c275c3566a0bad1915d9643ef3093f2902e6e263d",
+      "length": 357865672,
+      "exitCode": 0,
+      "buildId": "aster-cli-pair-v1:04f9a33ad03dff4794deeacc47f57df6ef1590e6:aarch64-apple-darwin",
+      "stderr": ""
+    }
+  ],
+  "matching": true
+}

@@ -1,0 +1,1 @@
+{"argv": ["/Users/roylin/code/aster/target/debug/aster", "--no-auto-update", "exec", "--no-install", "--offline", "-t", "node@path:./one", "-t", "node@path:./two", "--", "node"], "expected": "one\n", "timeoutSeconds": 20, "binarySha256": "5e8cf4eed248af4ae3ac9c74dfcd5759411cb58be395c49fc219a4d849317999", "exitCode": 0, "stdout": "two\n", "stderr": "", "status": "returned"}

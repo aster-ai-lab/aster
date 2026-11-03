@@ -1,0 +1,98 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling libc v0.2.189
+   Compiling fs_extra v1.3.0
+   Compiling pkg-config v0.3.34
+   Compiling aws-lc-rs v1.19.0
+   Compiling untrusted v0.7.1
+   Compiling rustls v0.23.46
+   Compiling syn v2.0.119
+   Compiling futures-macro v0.3.34
+   Compiling tracing v0.1.44
+   Compiling aho-corasick v1.1.5
+   Compiling regex-syntax v0.8.11
+   Compiling bstr v1.13.1
+   Compiling base64 v0.23.1
+   Compiling jiff-core v0.1.1
+   Compiling same-file v1.0.6
+   Compiling serde_plain v1.0.2
+   Compiling pem v3.0.6
+   Compiling typed-path v0.9.3
+   Compiling dyn-clone v1.0.20
+   Compiling walkdir v2.5.0
+   Compiling futures-util v0.3.34
+   Compiling jiff v0.2.38
+   Compiling regex-automata v0.4.18
+   Compiling jobserver v0.1.34
+   Compiling errno v0.3.14
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling getrandom v0.2.17
+   Compiling security-framework-sys v2.17.0
+   Compiling core-foundation v0.10.0
+   Compiling socket2 v0.5.10
+   Compiling cpufeatures v0.2.17
+   Compiling getrandom v0.3.4
+   Compiling filetime v0.2.27
+   Compiling fs2 v0.4.3
+   Compiling pin-project-internal v1.1.10
+   Compiling snafu-derive v0.8.9
+   Compiling async-recursion v1.1.1
+   Compiling signal-hook-registry v1.4.8
+   Compiling rustix v1.1.6
+   Compiling sha2 v0.10.9
+   Compiling globset v0.4.19
+   Compiling cc v1.4.7
+   Compiling aster-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+   Compiling aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+   Compiling security-framework v3.6.0
+   Compiling tokio v1.53.3
+   Compiling pin-project v1.1.10
+   Compiling cmake v0.1.54
+   Compiling xattr v1.6.1
+   Compiling tempfile v3.27.0
+   Compiling aws-lc-sys v0.47.0
+   Compiling ring v0.17.14
+   Compiling snafu v0.8.9
+   Compiling tar v0.4.46
+   Compiling futures-executor v0.3.34
+   Compiling futures v0.3.34
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-util v0.7.19
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.19
+   Compiling rustls-webpki v0.103.16
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling hyper-rustls v0.27.2
+   Compiling reqwest v0.13.5
+   Compiling reqwest v0.12.28
+   Compiling tough v0.24.0
+   Compiling aster-use-extension v0.3.3 (/Users/roylin/code/aster/crates/use/extension)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 51.35s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02)
+
+running 4 tests
+test remote::oci::tests::oci_targets_require_an_explicit_signed_domain_digest_and_native_aix_identity ... ok
+test remote::oci::tests::oci_blob_redirects_preserve_range_and_do_not_forward_registry_authorization ... ok
+test remote::oci::tests::bad_oci_manifest_or_metadata_limits_refuse_before_requesting_blob_bytes ... ok
+test remote::oci::tests::signed_oci_identity_seals_native_aix_bytes_and_survives_cached_offline_preparation ... FAILED
+
+failures:
+
+---- remote::oci::tests::signed_oci_identity_seals_native_aix_bytes_and_survives_cached_offline_preparation stdout ----
+
+thread 'remote::oci::tests::signed_oci_identity_seals_native_aix_bytes_and_survives_cached_offline_preparation' (61852538) panicked at crates/use/extension/src/remote/oci/tests.rs:246:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.catalog_cache_untrusted", message: "Cached TUF verification failed for registry 'fixture': Failed to fetch file:///var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpuRqQNi/%E6%9C%AC%E5%9C%B0%20cache%20with%20spaces/catalog-metadata/timestamp.json: Transport 'file not found' error fetching 'file:///var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpuRqQNi/%E6%9C%AC%E5%9C%B0%20cache%20with%20spaces/catalog-metadata/timestamp.json': No such file or directory (os error 2)", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    remote::oci::tests::signed_oci_identity_seals_native_aix_bytes_and_survives_cached_offline_preparation
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 192 filtered out; finished in 1.05s
+
+error: test failed, to rerun pass `-p aster-use-extension --lib`

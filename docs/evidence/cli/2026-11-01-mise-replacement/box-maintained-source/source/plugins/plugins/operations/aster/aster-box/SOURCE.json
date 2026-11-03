@@ -1,0 +1,44 @@
+{
+  "sourceRepository": "https://github.com/aster-ai-lab/aster",
+  "parentHead": "a07aa32496cd11f31a620296c13874efab7fdf2c",
+  "cleanReleaseCommit": false,
+  "sourceSnapshotSha256": "e83545a5bef428af652c61e471d6e05ecb83598212ae9a3f0244412993472b89",
+  "runtimeOrigins": {
+    "bin/aster-box-shim": {
+      "path": "/Users/roylin/code/aster/target/release/aster-box-shim",
+      "sha256": "54c6bd3d84e1be5a2f314a2b86b8aaa74bd724ba498d61fff26bcc5949daa0c9"
+    },
+    "bin/aster-box": {
+      "path": "/Users/roylin/code/aster/target/release/aster-box",
+      "sha256": "71608e215c8a93bc64574d64200b8edd6545575f4c3c09b6815fe4a49e645923"
+    },
+    "bin/aster-box-guest-init": {
+      "path": "/Users/roylin/code/aster/target/aarch64-unknown-linux-musl/release/aster-box-guest-init",
+      "sha256": "dc2a1d84e95594c074b7522f997b2f2ae6ae9ebb991865c51f7d575b0784aed1"
+    },
+    "lib/libkrun.1.17.0.dylib": {
+      "path": "/Users/roylin/code/aster/target/release/build/aster-libkrun-sys-9250398c037dc2a3/out/libkrun/lib/libkrun.1.17.0.dylib",
+      "sha256": "926ad1839494cf3d833bdaf6324dbd795bc859cad77a0e6e83212be743f38b4d"
+    },
+    "lib/libkrun.1.dylib": {
+      "path": "/Users/roylin/code/aster/target/release/build/aster-libkrun-sys-9250398c037dc2a3/out/libkrun/lib/libkrun.1.dylib",
+      "link": "libkrun.1.17.0.dylib"
+    },
+    "lib/libkrun.dylib": {
+      "path": "/Users/roylin/code/aster/target/release/build/aster-libkrun-sys-9250398c037dc2a3/out/libkrun/lib/libkrun.dylib",
+      "link": "libkrun.1.dylib"
+    },
+    "lib/libkrunfw.5.dylib": {
+      "path": "/Users/roylin/code/aster/target/release/build/aster-libkrun-sys-9250398c037dc2a3/out/libkrunfw/lib/libkrunfw.5.dylib",
+      "sha256": "ca7bba4e17038ae73587db1f01a1e1c8e70ca565cae901b5106232e79acded49"
+    },
+    "lib/libkrunfw.dylib": {
+      "path": "/Users/roylin/code/aster/target/release/build/aster-libkrun-sys-9250398c037dc2a3/out/libkrunfw/lib/libkrunfw.dylib",
+      "link": "libkrunfw.5.dylib"
+    }
+  },
+  "minimumMacOS": "11.0",
+  "guestTarget": "aarch64-unknown-linux-musl",
+  "guestStaticElfAccepted": true,
+  "nativeGuestExecutionAccepted": false
+}

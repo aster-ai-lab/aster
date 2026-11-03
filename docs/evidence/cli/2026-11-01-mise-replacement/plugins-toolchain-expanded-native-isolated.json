@@ -1,0 +1,37 @@
+[
+  {
+    "test": "capabilities::aix_projection::tests::an_installed_acp_cloud_agent_streams_two_turns_on_one_session",
+    "binary": "target/debug/deps/aster_studio_lib-79b04d6534407590",
+    "exitCode": 101,
+    "seconds": 0.024661500000000003,
+    "log": ".tmp/plugin-registry/toolchain-studio-failed-isolated-0.log"
+  },
+  {
+    "test": "capabilities::toolchain::tests::failed_toolchain_update_preserves_the_working_publication_and_source",
+    "binary": "target/debug/deps/aster_studio_lib-79b04d6534407590",
+    "exitCode": 101,
+    "seconds": 0.040568458,
+    "log": ".tmp/plugin-registry/toolchain-studio-failed-isolated-1.log"
+  },
+  {
+    "test": "capabilities::toolchain::tests::native_toolchain_install_query_reuse_and_removal_share_the_package_lease",
+    "binary": "target/debug/deps/aster_studio_lib-79b04d6534407590",
+    "exitCode": 101,
+    "seconds": 0.034449707999999996,
+    "log": ".tmp/plugin-registry/toolchain-studio-failed-isolated-2.log"
+  },
+  {
+    "test": "capabilities::toolchain::tests::rewritten_runtime_receipts_require_a_new_verified_generation",
+    "binary": "target/debug/deps/aster_studio_lib-79b04d6534407590",
+    "exitCode": 101,
+    "seconds": 0.043061500000000016,
+    "log": ".tmp/plugin-registry/toolchain-studio-failed-isolated-3.log"
+  },
+  {
+    "test": "capabilities::toolchain::tests::toolchain_declaration_cannot_claim_a_different_package_route",
+    "binary": "target/debug/deps/aster_studio_lib-79b04d6534407590",
+    "exitCode": 101,
+    "seconds": 0.03621016699999999,
+    "log": ".tmp/plugin-registry/toolchain-studio-failed-isolated-4.log"
+  }
+]

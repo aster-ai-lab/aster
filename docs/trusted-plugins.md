@@ -3,8 +3,9 @@
 The official authoring repository is
 [`aster-ai-lab/plugins`](https://github.com/aster-ai-lab/plugins). Installable
 `.aix` packages use OCI artifacts in GitHub Packages (GHCR) associated with
-that repository. The three macOS ARM64 runtime components have published catalog
-records; the remaining tool and application plugins still need publication.
+that repository. Four macOS ARM64 plugins have published catalog records:
+Sandbox, Document, Office and OCR. The remaining tool and application plugins
+still need publication.
 This source does not depend on mise's
 registry or executable.
 
@@ -12,6 +13,15 @@ The package host builds the existing `aster-use` CLI and runs its native
 `registry package build`, `check` and `prepare` commands. The desktop installs
 through the same Rust SDK in process. Final release archive and remote GHCR
 installation acceptance remain required.
+
+The [2026-11-02 native verification](evidence/desktop/2026-11-02-plugins-native/OUTCOME.md)
+records startup-cache repair, runtime-event list refresh and account-free
+installation verification. Office installation/removal and search recovery were
+observed in an isolated desktop instance. The latest replay did not capture
+the earlier market-load error, but unexplained Work navigation keeps full
+end-to-end acceptance failed. Full migration remains open. Source directories
+and native publication preparation now use the explicit
+domain layout below; native checks for that migration are recorded separately.
 
 ## Local source checkout
 
@@ -43,14 +53,15 @@ plugins/                         # repository root
 ├── CONTRIBUTING.md
 ├── domains.acl                  # admitted domain IDs and ownership
 ├── plugins/
-│   └── <publisher>/
-│       └── <name>/
-│           ├── aster-use-extension.acl
-│           ├── README.md
-│           ├── LICENSE
-│           ├── skills/          # only surfaces declared by this plugin
-│           ├── tools/
-│           └── tests/
+│   └── <domain>/
+│       └── <publisher>/
+│           └── <name>/
+│               ├── aster-use-extension.acl
+│               ├── README.md
+│               ├── LICENSE
+│               ├── skills/      # only surfaces declared by this plugin
+│               ├── tools/
+│               └── tests/
 ├── registry/
 │   ├── metadata/                # signed TUF metadata, public keys only
 │   ├── catalog/<publisher>/<name>/<version>/<channel>/<target>.json
@@ -89,7 +100,7 @@ automatic classifier. A new domain needs an explicit domain/ownership entry.
 The package ID remains `<publisher>/<name>` when a domain changes. Existing
 digest-pinned releases must remain available at their original addresses.
 
-For example, source under `plugins/aster/<name>/` publishes to:
+For example, source under `plugins/operations/aster/<name>/` publishes to:
 
 ```text
 ghcr.io/aster-ai-lab/plugins/aster/<name>:<target>-<archive-sha256>
@@ -152,16 +163,165 @@ as native AIX archives, including the five previously refused for bundled legal
 notices. Their missing per-package licenses and publication metadata still need
 review before admission to the official source.
 
+Native catalog preparation now preserves UI, Agent, Flow, Skill, OKF and data
+surfaces with their exact manifest dependency graph. Package-local Tool Tasks
+and stdio MCP servers receive canonical executable planning records, with the
+existing permission-ceiling and package/manifest binding checks. Release-backed
+Tool/MCP and catalog MCP launchers still refuse preparation until their exact
+planning inputs are supported; no OCI address is guessed.
+
+The existing `aster/review@1.3.0` source is now maintained at
+`plugins/plugins/knowledge/aster/review`, with its native catalog input at
+`plugins/recipes/review/any.json`. Skill, agent instructions and three brand
+assets retain their exact source bytes. The included license comes from the
+original source repository's MIT license, and the catalog input names that
+license. Native build, check and OCI/catalog preparation pass for the exact new
+archive, preserving the `合同审查` name and Skill-to-Agent dependency.
+It remains unpublished; host review behavior and GUI installation are not
+accepted by these preparation checks. The remote market still has four records.
+
 ## External tool archives
 
-The tool owner now parses bounded schema-v1 `toolchain` ACL through
+The tool owner parses bounded schema-v1 and schema-v2 `toolchain` ACL through
 `aster_use_tool_acquire::ToolchainPlugin`. It downloads through the existing
 GitHub release transport, or accepts already downloaded archive bytes without
 constructing an HTTP client. Both paths check the exact host platform, declared
 length, SHA-256 and complete source-declared archive layout before publication.
 The declaration is limited to 64 KiB and downloads to its declared length,
-within the existing 200 MiB limit. Unknown fields, credentials, query strings,
+within the existing 200 MiB HTTP limit. Alternatively, `archive` names a
+portable, relative file inside the admitted AIX; exactly one of `url` and
+`archive` is required. Embedded archives allow up to 512 MiB and use the same
+length, digest and layout checks. The host reads those bytes off its async
+executor and retains the owning AIX until preparation finishes. Immutable npm tarballs can also be declared
+with an official `registry.npmjs.org` HTTPS URL; transport follows the selected
+npm registry mirror policy. Unknown fields, credentials, query strings,
 unsupported platforms and archive encodings refuse. No upstream installer runs.
+
+Schema-v2 keeps the common name, source specification, version and executable
+on the `toolchain` block. Each labelled `platform` child owns its exact archive
+URL or embedded path, size, digest, layout and command declarations. All children
+are validated before selecting the current host. Duplicate or unsupported
+platforms, invalid unselected archives and a missing host entry refuse before
+acquisition. Windows command suffixes are checked against the declared target;
+native installation and receipt readers retain their current-host checks.
+Schema-v1 declarations keep their existing installation contract.
+
+Runtime extraction allows 32,768 entries and 4 GiB of expanded file bytes.
+The archive receipt remains bounded to 4 MiB. Desktop AIX admission allows
+512 MiB compressed and 1 GiB of outer ZIP file bytes; its 512-entry ceiling
+remains unchanged. Uploaded skills retain their 32 MiB compressed/64 MiB
+expanded limits, and generic companion installations retain their 8,192-entry
+limit.
+
+The Notion CLI candidate preserves `npm:ntn` as its source identity and selects
+the upstream package's explicitly declared native `dist/` command for each of
+its five supported targets. Its complete tarball and upstream license stay in
+the verified installation; the npm bootstrap script is not invoked. Five AIX
+variants have passed native build, format and OCI preparation, with the same
+`aster/ntn` identity. macOS ARM64 has also passed the desktop owner's real
+download, install, installed-catalogue query, version command, removal and lease
+retirement. This used the explicit local AIX candidate; official publication,
+native GUI acceptance and execution on the other targets remain required.
+
+Notion's maintained source is now
+`plugins/plugins/productivity/aster/ntn`, with one schema-v2 declaration and five
+target-specific catalog inputs under `plugins/recipes/ntn`. The archive and
+command declarations retain every field from the qualified platform candidates,
+and the original upstream MIT notice is byte-identical. Package identity and
+version remain `aster/ntn@0.23.25`; this source promotion is not a publication.
+
+The desktop owner recognizes `plugin "toolchain"` and reads its declared ACL
+entry after native AIX admission. The tool name must equal the package route;
+the package version and tool version are independent. Downloads finish before
+the package reconciliation lock is acquired. Extraction happens in a new
+generation's owned directory, and the verified runtime receipt digest becomes
+part of that publication's cursor. Extraction failure preserves the working
+publication. Updates and removal use the existing generation leases, so an
+accepted runtime remains until its last lease is released. No upstream
+installer or tool command runs during installation.
+
+Installed listings verify the runtime against its publication binding. A
+damaged runtime stays listed with a retry action, including after a page reload.
+Repair fetches and verifies the selected release through the official Registry;
+listing and removal work without that Registry. Acquisition candidates require
+`>=0.3.4, <0.4.0`, matching the implementing SDK contract. Signed catalogue
+queries filter older hosts before downloading an archive, and native admission
+also enforces the requirement. Schema-v3 parsing accepts later patch floors
+without requiring compatibility with exactly 0.3.0; it continues to reject
+requirements that admit pre-0.3 hosts.
+
+The next acquisition candidates cover uv 0.13.6, Bun 1.4.4, fd 10.5.0,
+ripgrep 15.2.0, RTK 1.1.0, Lark CLI 1.0.98 and GitHub CLI 2.103.3. Each has
+five AIX variants; all 35 original archives have checked lengths, SHA-256,
+command paths and retained legal notices. Their AIX sources and OCI layer
+bindings also pass native preparation. macOS ARM64 passes actual upstream
+downloads, installed-list queries, version commands (including uvx), removal
+and lease retirement. CUA CLI 0.9.0 has a separate macOS ARM64 candidate with
+all four required bundle members and the same management/primary-version
+proof. Native CUA GUI/VM operation is not accepted by that version check.
+
+Those seven tools now have maintained source units under
+`plugins/plugins/development/aster/` (uv, bun, fd, rg, rtk and gh) and
+`plugins/plugins/productivity/aster/lark-cli/`. Each source contains one
+schema-v2 declaration preserving the five candidate platform archives. Native
+build/check and all 35 target-specific catalog preparations pass for the seven
+new AIX archives. Catalog inputs live in `plugins/recipes/<name>/<target>.json`.
+The recipe and all original upstream notice bytes remain included; differing
+Windows notices are retained separately and excluded from Git text conversion.
+These packages remain unpublished. Their new native execution results are
+recorded separately from the previous single-platform candidates.
+
+CUA now has maintained source at
+`plugins/plugins/operations/aster/cua`, with its native catalog input at
+`plugins/recipes/cua/darwin-arm64.json`. The new AIX reuses the exact external
+0.9.0 archive declaration and includes both recipe and upstream licenses.
+Native build, inspection and OCI/catalog preparation pass. The desktop owner
+also installs this exact new archive, queries it, runs the primary version
+command, removes it and retires the owned runtime after its final lease.
+It remains unpublished, so the remote market still has four official entries.
+
+Catalog targets use the native Registry spellings `darwin-arm64`,
+`darwin-x86_64`, `linux-arm64`, `linux-x86_64` and `windows-x86_64`.
+Upstream artifact labels such as `darwin-x64` are not catalog targets.
+The current Notion candidate uses these canonical target names while retaining
+the upstream's exact native command paths. None of these acquisition candidates
+has been published; other-target execution and native GUI acceptance remain
+outstanding.
+
+BabelDOC Stream 0.6.4.post4 has no GitHub binary release assets. Its initial
+Python dependency preparation already exceeded the former 8,192-entry and
+200 MiB archive limits, before including an interpreter. The candidate now
+carries its complete runtime as an embedded AIX archive.
+
+The complete runtime includes CPython 3.12.14 from python-build-standalone, all
+pinned wheels, original notices and a declared launcher. Its first startup
+exposed an upstream dependency incompatibility: bitstring 5 removed `BitStream`.
+Following the [upstream compatibility guidance](https://bitstring.readthedocs.io/en/stable/upgrading_to_version_5.html),
+the acquisition recipe limits bitstring to `<5` and constrains the other
+previously resolved versions. The copied runtime now executes its actual
+`babeldoc-stream 0.6.4.post4` entry without a system Python. It contains 15,270
+regular files, nine relative symlinks and 16,989 tree entries. The AIX recipe
+adds a multiprocessing-safe launcher, resulting in 786,780,953 expanded file
+bytes and a 293,903,386-byte gzip archive. Recipe version 0.1.0 preserves the
+exact upstream tool version `0.6.4.post4`. Its 292,412,155-byte AIX has passed
+native package build, check and OCI preparation, with all source files
+re-opened and compared. Upstream AGPL-3.0 notices remain in the package and
+runtime; the Aster recipe has its separate MIT notice. The desktop owner has
+installed this exact AIX, queried its installed record, executed its real
+version command, removed it and retained the runtime until its final lease
+released. Translation, native GUI use, other-target execution and official
+publication remain unverified.
+
+BabelDOC's maintained recipe source is now
+`plugins/plugins/knowledge/aster/babeldoc-stream`.
+`plugins/recipes/babeldoc-stream/darwin-arm64.py` accepts only the independently
+qualified 293,903,386-byte runtime archive with SHA-256
+`bfc1cef574cd1ddba11ce34d952a311e08b562c212d2d60e22794114319d6818`.
+It stages payloads outside Git, generates the native toolchain declaration and
+runs AIX build, check and catalog preparation. The source retains the exact
+wheel lock, launcher, upstream notices and provenance; the final AIX includes
+the complete runtime. Source preparation does not rebuild that runtime,
+translate PDFs, publish the package or connect it to the desktop agent.
 
 For example, CUA CLI 0.9.0 on macOS arm64 has this acquisition declaration:
 
@@ -224,13 +384,24 @@ caller-pinned Registry whose URL is exactly the main-branch `registry/` tree in
 configuration returns an explicit setup state; ambiguous or invalid configuration
 refuses. Installation still requires a trusted source. The adapter never
 substitutes ModelScope or the old hardcoded dependency list. Pagination,
-search, category counts and installed filtering operate on verified compatible
-stable records. The page has refresh/retry, installation status and progress,
+search and market category counts operate on verified compatible stable records.
+Runtime offers prefer the exact version, target, archive and native package
+digests fixed by the desktop host; a different release is not installable.
+The page has refresh/retry, installation status and progress,
 updates and removal. These are local source changes, not a published desktop
 release. A separate live SDK check now verifies the three official runtime records
 against the root pinned in the repository's `ASTER_PLUGIN_ROOT_SHA256` variable.
 That online query does not establish anonymous artifact access or complete plugin
 management acceptance.
+
+The Installed tab reads local published generations and native runtime receipts,
+so listing and removal do not need a reachable catalog. Installs retain their
+verified catalog presentation beside the raw installation; a missing or damaged
+presentation cache falls back to the actual manifest identity. This cache never
+authorizes installation. Old native package IDs keep their original case and
+segments, and existing installation slugs remain valid. Withdrawn generations
+do not reappear from leftover raw files. Unknown archive sizes are omitted for
+older local installs; remote offers still require signed length and digest.
 
 Install requests bind package ID, selected version and archive digest. Downloads
 reuse the TUF/GHCR verifier and `ExtensionLifecyclePackage::prepare_remote`, then
@@ -239,6 +410,15 @@ host's existing compressed and expanded limits. Unsupported Tool/Flow surfaces
 are unavailable until their owning host adapter is implemented. Sandbox and
 Document cannot be removed; registry labels do not grant system-component
 authority.
+
+Ordinary plugin operations retain their exact release, measured progress and
+terminal result in the current tenant's local job journal. On host restart, the
+host checks actual package publications and artifact identity before reporting
+completion. Interrupted operations remain retryable; retry uses the same release
+and the verifier's retained download cache. Installation and removal retries also
+refresh discovery's shared installed-state overlay. These source changes have
+native library and renderer witnesses; a complete native Studio GUI run remains
+required.
 
 The migration inventory below preserves the order and names in
 `apps/studio/src/shared/data/presets/binaryTools.ts`, followed by the cards in
@@ -273,7 +453,7 @@ checks while plugin management is added.
 Source authors build a native archive and prepare its exact OCI manifest locally:
 
 ```sh
-aster use registry package build /path/to/plugins/plugins/aster/example \
+aster use registry package build /path/to/plugins/plugins/development/aster/example \
   --output /path/to/build/example.aix --json
 aster use registry package check /path/to/build/example.aix --json
 aster use registry package prepare /path/to/build/example.aix \
@@ -294,8 +474,9 @@ Invalid source or output leaves no partial archive. This creates no
 installation or trust grant and performs no signing or upload. Windows writes
 regular-file mode 0644; native platform release checks remain required.
 
-Preparation locates `plugins/<publisher>/<name>` from the validated
-native package identity, checks domain/publisher admission, requires a nonempty
+Preparation checks domain/publisher admission, then locates
+`plugins/<domain>/<publisher>/<name>` from that explicit domain and the validated
+native package identity. It requires a nonempty
 UTF-8 `LICENSE`, and compares the complete expanded source fingerprint with
 the AIX archive. Redirected source directories refuse. It hashes archive bytes
 with the existing native AIX compressed-size bound and generates the same OCI
@@ -323,7 +504,7 @@ The Studio packaging source builds these packages with the existing native
 `aster use registry package build`, `check` and `prepare` commands. It emits
 AIX blobs, exact OCI manifests and publication receipts under
 `target/release/runtime-components/`. Generated publication source trees live
-under `repository/<target>/plugins/aster/<name>` within that build
+under `repository/<target>/plugins/operations/aster/<name>` within that build
 directory, outside tracked source. Domain preparation is local evidence;
 production review authority, signing and publication remain separate gates.
 

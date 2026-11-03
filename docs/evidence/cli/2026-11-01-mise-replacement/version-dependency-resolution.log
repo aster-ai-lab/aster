@@ -1,0 +1,8 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest Rust 1.63.0 compatible version
+      Adding versions v8.0.1 (requires Rust 1.85.0)
+ Downloading crates ...
+  Downloaded versions v8.0.1

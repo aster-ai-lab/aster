@@ -180,7 +180,9 @@ fn cached_frames(logo: &'static str) -> &'static [LogoFrame] {
                         } else {
                             '.'
                         };
-                        let cell = &mut cells[row * cols + col];
+                        let Some(cell) = cells.get_mut(row * cols + col) else {
+                            continue;
+                        };
                         if layer
                             && trail < 0.65
                             && cell.is_some_and(|(ch, _)| matches!(ch, '+' | '*' | '#' | '@'))
@@ -204,7 +206,9 @@ fn cached_frames(logo: &'static str) -> &'static [LogoFrame] {
                                     '*' if opacity > 0.25 => '#',
                                     other => other,
                                 };
-                                cells[row * cols + col] = Some((ch, opacity));
+                                if let Some(cell) = cells.get_mut(row * cols + col) {
+                                    *cell = Some((ch, opacity));
+                                }
                             }
                         }
                     }

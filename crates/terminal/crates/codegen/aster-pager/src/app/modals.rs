@@ -100,10 +100,13 @@ impl AgentView {
                         crate::slash::commands::model::initial_provider_tab(models, &tabs);
                 }
                 window.tab_count = tabs.len();
+                let Some(provider) = tabs.get(window.active_tab) else {
+                    return false;
+                };
                 *items = crate::slash::commands::model::filter_model_items_for_provider(
                     models,
                     original_items,
-                    &tabs[window.active_tab],
+                    provider,
                     "",
                 );
             }
@@ -131,16 +134,16 @@ impl AgentView {
             return false;
         }
         let tabs = crate::slash::commands::model::model_provider_tabs(&self.session.models);
-        if tabs.is_empty() || tab_idx >= tabs.len() {
+        let Some(provider) = tabs.get(tab_idx) else {
             return false;
-        }
+        };
         window.active_tab = tab_idx;
         window.tab_count = tabs.len();
         let query = state.query().to_string();
         *items = crate::slash::commands::model::filter_model_items_for_provider(
             &self.session.models,
             original_items,
-            &tabs[tab_idx],
+            provider,
             &query,
         );
         state.selected = 0;
@@ -167,11 +170,15 @@ impl AgentView {
         }
         let mut window = crate::views::modal_window::ModalWindowState::with_tabs(tabs.len());
         window.active_tab = crate::slash::commands::model::initial_provider_tab(models, &tabs);
+        let Some(provider) = tabs.get(window.active_tab) else {
+            return (
+                all_items.clone(),
+                all_items,
+                crate::views::modal_window::ModalWindowState::new(),
+            );
+        };
         let items = crate::slash::commands::model::filter_model_items_for_provider(
-            models,
-            &all_items,
-            &tabs[window.active_tab],
-            "",
+            models, &all_items, provider, "",
         );
         (items, all_items, window)
     }

@@ -1,0 +1,16 @@
+toolchain {
+  schema_version = 1
+  name = "ntn"
+  spec = "npm:ntn"
+  version = "0.23.25"
+  executable = "ntn"
+  platform = "x86_64-macos-"
+  url = "https://registry.npmjs.org/ntn/-/ntn-0.23.25.tgz"
+  length = 30645442
+  sha256 = "2e822403b0b52b6f159c44c72085329d42415aebe12b570889f6a1fc45277004"
+  format = "tar.gz"
+  prefix = "package"
+  bin_dirs = ["dist/ntn-darwin-x64"]
+  executable_mode = "0755"
+  command "ntn" { path = "dist/ntn-darwin-x64/ntn" }
+}

@@ -1,0 +1,25 @@
+{
+  "capturedAtUtc": "2026-11-01T18:05:54.987924+00:00",
+  "packages": [
+    {
+      "packageId": "aster/aster-document",
+      "name": "plugins/operations/aster/aster-document",
+      "visibility": "private",
+      "htmlUrl": "https://github.com/orgs/aster-ai-lab/packages/container/package/plugins%2Foperations%2Faster%2Faster-document"
+    },
+    {
+      "packageId": "aster/aster-office",
+      "name": "plugins/operations/aster/aster-office",
+      "visibility": "private",
+      "htmlUrl": "https://github.com/orgs/aster-ai-lab/packages/container/package/plugins%2Foperations%2Faster%2Faster-office"
+    },
+    {
+      "packageId": "aster/aster-sandbox",
+      "name": "plugins/operations/aster/aster-sandbox",
+      "visibility": "private",
+      "htmlUrl": "https://github.com/orgs/aster-ai-lab/packages/container/package/plugins%2Foperations%2Faster%2Faster-sandbox"
+    }
+  ],
+  "browserAccessHostAvailable": false,
+  "nativeBrowserWindowAvailable": false
+}

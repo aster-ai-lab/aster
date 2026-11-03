@@ -1,0 +1,7301 @@
+[
+  {
+    "name": "uv",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:60fbd5c8a1ed681845eea28d9d622fcde03c51e91a43465b64a1e17db1ed3472",
+    "entries": [
+      {
+        "path": "uv-aarch64-apple-darwin",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "uv-aarch64-apple-darwin/uvx",
+        "length": 334512,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "uv-aarch64-apple-darwin/uv",
+        "length": 27667824,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 28002336
+  },
+  {
+    "name": "uv",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:63ba17fdda55ad1a230d4b37fc6017ffa10c23688c83818bd3bfdf914c652a02",
+    "entries": [
+      {
+        "path": "uv-x86_64-apple-darwin",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "uv-x86_64-apple-darwin/uvx",
+        "length": 344160,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "uv-x86_64-apple-darwin/uv",
+        "length": 38130528,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 38474688
+  },
+  {
+    "name": "uv",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:229e194255c7958d86d56e8790d969a6f74736592133f0dfd0076f754c642c1d",
+    "entries": [
+      {
+        "path": "uv-aarch64-unknown-linux-gnu",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "uv-aarch64-unknown-linux-gnu/uv",
+        "length": 31728432,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "uv-aarch64-unknown-linux-gnu/uvx",
+        "length": 297080,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 32025512
+  },
+  {
+    "name": "uv",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:f29c3e94ffabd7e6f3ba521dba169a9b7ec12100bf3257087f0f24f6123f3645",
+    "entries": [
+      {
+        "path": "uv-x86_64-unknown-linux-gnu",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "uv-x86_64-unknown-linux-gnu/uv",
+        "length": 37784096,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "uv-x86_64-unknown-linux-gnu/uvx",
+        "length": 330448,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 38114544
+  },
+  {
+    "name": "uv",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:a2a8820d5eea32f08ef467ef3b7f66883a9b076d5737a2fc2fbb5f458d1bb50f",
+    "entries": [
+      {
+        "path": "uv.exe",
+        "length": 31803184,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "uvw.exe",
+        "length": 346416,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "uvx.exe",
+        "length": 345392,
+        "mode": 0,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 32494992
+  },
+  {
+    "name": "bun",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:c240d7f0ccb90c263a849fcdb09b7ee62630d921348ed6aafda86b9d577bc510",
+    "entries": [
+      {
+        "path": "bun-darwin-aarch64/",
+        "length": 0,
+        "mode": 16877,
+        "kind": "directory"
+      },
+      {
+        "path": "bun-darwin-aarch64/bun",
+        "length": 88660864,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 88660864
+  },
+  {
+    "name": "bun",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:d4a155adfbfd09155eb3ba05c9e3a544f39297d7a68616d3c7759f67ab5c47dc",
+    "entries": [
+      {
+        "path": "bun-darwin-x64-baseline/",
+        "length": 0,
+        "mode": 16877,
+        "kind": "directory"
+      },
+      {
+        "path": "bun-darwin-x64-baseline/bun",
+        "length": 98168288,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 98168288
+  },
+  {
+    "name": "bun",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:baa6bb36f51d6e58561e02bbea825038a9df454f673d6d776e8bbf86f8c7850e",
+    "entries": [
+      {
+        "path": "bun-linux-aarch64/",
+        "length": 0,
+        "mode": 16877,
+        "kind": "directory"
+      },
+      {
+        "path": "bun-linux-aarch64/bun",
+        "length": 107339768,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 107339768
+  },
+  {
+    "name": "bun",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:e0446eb55995772eb9894bebae9a6be368d985a8b9271ee124486f9946eedd76",
+    "entries": [
+      {
+        "path": "bun-linux-x64-baseline/",
+        "length": 0,
+        "mode": 16877,
+        "kind": "directory"
+      },
+      {
+        "path": "bun-linux-x64-baseline/bun",
+        "length": 107308936,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 107308936
+  },
+  {
+    "name": "bun",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:0f20ce6674d4f2dbcc8c5d59fdf99f7ba45f8c3b367e0f5781cbfa30a1c78d99",
+    "entries": [
+      {
+        "path": "bun-windows-x64-baseline/",
+        "length": 0,
+        "mode": 16895,
+        "kind": "directory"
+      },
+      {
+        "path": "bun-windows-x64-baseline/bun.exe",
+        "length": 115281496,
+        "mode": 33279,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 115281496
+  },
+  {
+    "name": "fd",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:b67e1836c468e42e411984b56e52fa7abec08c2bd22c867398e7cc134aac5e12",
+    "entries": [
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/_fd.ps1",
+        "length": 14366,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/fd.fish",
+        "length": 6280,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/_fdfind",
+        "length": 25,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/fdfind.bash",
+        "length": 299,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/fd.bash",
+        "length": 7313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/_fd",
+        "length": 11722,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/autocomplete/fdfind.fish",
+        "length": 30,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/CHANGELOG.md",
+        "length": 34508,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/fd",
+        "length": 2970480,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/fd.1",
+        "length": 19313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/LICENSE-APACHE",
+        "length": 10838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/LICENSE-MIT",
+        "length": 1082,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-apple-darwin/README.md",
+        "length": 28132,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 14,
+    "expandedBytes": 3104388
+  },
+  {
+    "name": "fd",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:7e31028c62c6955877735d0406807aa484c2a5e6f86235a59e26c29c301da590",
+    "entries": [
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/_fd.ps1",
+        "length": 14366,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/fd.fish",
+        "length": 6280,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/_fdfind",
+        "length": 25,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/fdfind.bash",
+        "length": 299,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/fd.bash",
+        "length": 7313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/_fd",
+        "length": 11722,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/autocomplete/fdfind.fish",
+        "length": 30,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/CHANGELOG.md",
+        "length": 34508,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/fd",
+        "length": 3203488,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/fd.1",
+        "length": 19313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/LICENSE-APACHE",
+        "length": 10838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/LICENSE-MIT",
+        "length": 1082,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-apple-darwin/README.md",
+        "length": 28132,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 14,
+    "expandedBytes": 3337396
+  },
+  {
+    "name": "fd",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:c0ee43802e3313a317c5af2f4eabd6ba13eeedd595af9775f05e18a13ac4f52c",
+    "entries": [
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/CHANGELOG.md",
+        "length": 34508,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/LICENSE-APACHE",
+        "length": 10838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/LICENSE-MIT",
+        "length": 1082,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/README.md",
+        "length": 28132,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/_fd.ps1",
+        "length": 14366,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/fdfind.fish",
+        "length": 30,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/fdfind.bash",
+        "length": 299,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/_fdfind",
+        "length": 25,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/fd.bash",
+        "length": 7313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/_fd",
+        "length": 11722,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/autocomplete/fd.fish",
+        "length": 6280,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/fd",
+        "length": 3204328,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-aarch64-unknown-linux-gnu/fd.1",
+        "length": 19313,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 14,
+    "expandedBytes": 3338236
+  },
+  {
+    "name": "fd",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:a1259cd129636efbc3fef123525c1b49e88fe5088c012630983c310e52fdfa95",
+    "entries": [
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/CHANGELOG.md",
+        "length": 34508,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/LICENSE-APACHE",
+        "length": 10838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/LICENSE-MIT",
+        "length": 1082,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/README.md",
+        "length": 28132,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/_fd.ps1",
+        "length": 14366,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/fdfind.fish",
+        "length": 30,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/fdfind.bash",
+        "length": 299,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/_fdfind",
+        "length": 25,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/fd.bash",
+        "length": 7313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/_fd",
+        "length": 11722,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/autocomplete/fd.fish",
+        "length": 6280,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/fd",
+        "length": 3605744,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-unknown-linux-gnu/fd.1",
+        "length": 19313,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 14,
+    "expandedBytes": 3739652
+  },
+  {
+    "name": "fd",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:a227701b8551c35a9931d9f6da75503cf86d88e182d71fb849a70864c5d57cd7",
+    "entries": [
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/",
+        "length": 0,
+        "mode": 0,
+        "kind": "directory"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/fd.bash",
+        "length": 7043,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/fd.fish",
+        "length": 6208,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/fdfind.bash",
+        "length": 307,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/fdfind.fish",
+        "length": 31,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/_fd",
+        "length": 12007,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/_fd.ps1",
+        "length": 14106,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/autocomplete/_fdfind",
+        "length": 27,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/CHANGELOG.md",
+        "length": 35376,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/fd.1",
+        "length": 19900,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/fd.exe",
+        "length": 4104192,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/LICENSE-APACHE",
+        "length": 11039,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/LICENSE-MIT",
+        "length": 1103,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "fd-v10.5.0-x86_64-pc-windows-msvc/README.md",
+        "length": 28922,
+        "mode": 0,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 14,
+    "expandedBytes": 4240261
+  },
+  {
+    "name": "rg",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:3750b2e93f37e0c692657da574d7019a101c0084da05a790c83fd335bad973e4",
+    "entries": [
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/complete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/rg",
+        "length": 4014576,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/README.md",
+        "length": 21615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/COPYING",
+        "length": 126,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/UNLICENSE",
+        "length": 1211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/doc",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/LICENSE-MIT",
+        "length": 1081,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/doc/CHANGELOG.md",
+        "length": 89888,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/doc/FAQ.md",
+        "length": 42243,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/doc/GUIDE.md",
+        "length": 40895,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/doc/rg.1",
+        "length": 86760,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/complete/_rg.ps1",
+        "length": 26020,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/complete/rg.fish",
+        "length": 15144,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/complete/_rg",
+        "length": 30769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-apple-darwin/complete/rg.bash",
+        "length": 21362,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 16,
+    "expandedBytes": 4391690
+  },
+  {
+    "name": "rg",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:af7825fcc69a2afc7a7aea55fc9af90e26421d8f20fe59df32e233c0b8a231c1",
+    "entries": [
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/complete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/rg",
+        "length": 4387000,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/README.md",
+        "length": 21615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/COPYING",
+        "length": 126,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/UNLICENSE",
+        "length": 1211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/doc",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/LICENSE-MIT",
+        "length": 1081,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/doc/CHANGELOG.md",
+        "length": 89888,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/doc/FAQ.md",
+        "length": 42243,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/doc/GUIDE.md",
+        "length": 40895,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/doc/rg.1",
+        "length": 86760,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/complete/_rg.ps1",
+        "length": 26020,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/complete/rg.fish",
+        "length": 15144,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/complete/_rg",
+        "length": 30769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-apple-darwin/complete/rg.bash",
+        "length": 21362,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 16,
+    "expandedBytes": 4764114
+  },
+  {
+    "name": "rg",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:a740b91c82eaf9914cfedd353572f2791cbe0162c84101ee0951058f4dcbc90d",
+    "entries": [
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/UNLICENSE",
+        "length": 1211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/README.md",
+        "length": 21615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/LICENSE-MIT",
+        "length": 1081,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/rg",
+        "length": 4506992,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/COPYING",
+        "length": 126,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/doc",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/doc/FAQ.md",
+        "length": 42243,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/doc/rg.1",
+        "length": 86760,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/doc/CHANGELOG.md",
+        "length": 89888,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/doc/GUIDE.md",
+        "length": 40895,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/complete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/complete/rg.fish",
+        "length": 15144,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/complete/_rg.ps1",
+        "length": 26020,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/complete/_rg",
+        "length": 30769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-aarch64-unknown-linux-gnu/complete/rg.bash",
+        "length": 21362,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 16,
+    "expandedBytes": 4884106
+  },
+  {
+    "name": "rg",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c",
+    "entries": [
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/UNLICENSE",
+        "length": 1211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/README.md",
+        "length": 21615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/LICENSE-MIT",
+        "length": 1081,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/rg",
+        "length": 5408904,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/COPYING",
+        "length": 126,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/doc",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/doc/FAQ.md",
+        "length": 42243,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/doc/rg.1",
+        "length": 86760,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/doc/CHANGELOG.md",
+        "length": 89888,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/doc/GUIDE.md",
+        "length": 40895,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/complete",
+        "length": 0,
+        "mode": 493,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/complete/rg.fish",
+        "length": 15144,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/complete/_rg.ps1",
+        "length": 26020,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/complete/_rg",
+        "length": 30769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-unknown-linux-musl/complete/rg.bash",
+        "length": 21362,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 16,
+    "expandedBytes": 5786018
+  },
+  {
+    "name": "rg",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:71b2fef860abe467217a538ff31de02f5258807c0129f771846f87bd029aafc5",
+    "entries": [
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/",
+        "length": 0,
+        "mode": 0,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/complete/",
+        "length": 0,
+        "mode": 0,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/complete/rg.bash",
+        "length": 21362,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/complete/rg.fish",
+        "length": 15204,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/complete/_rg",
+        "length": 31501,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/complete/_rg.ps1",
+        "length": 26020,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/COPYING",
+        "length": 129,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/doc/",
+        "length": 0,
+        "mode": 0,
+        "kind": "directory"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/doc/CHANGELOG.md",
+        "length": 91752,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/doc/FAQ.md",
+        "length": 43306,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/doc/GUIDE.md",
+        "length": 41920,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/doc/rg.1",
+        "length": 87183,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/LICENSE-MIT",
+        "length": 1102,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/README.md",
+        "length": 22156,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/rg.exe",
+        "length": 4218880,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "ripgrep-15.2.0-x86_64-pc-windows-msvc/UNLICENSE",
+        "length": 1235,
+        "mode": 0,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 16,
+    "expandedBytes": 4601750
+  },
+  {
+    "name": "rtk",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:8da773b0954cf90b115ec95c4e4eb420f04c39de233c5db102246a6caf073ba7",
+    "entries": [
+      {
+        "path": "rtk",
+        "length": 12576320,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 10756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE-ENGINE",
+        "length": 4273,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 12591349
+  },
+  {
+    "name": "rtk",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:1e23e8b9542b58428e6409c49b1c3fb92c4c0d5125da72e80f002a46086a6c20",
+    "entries": [
+      {
+        "path": "rtk",
+        "length": 14292296,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 10756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE-ENGINE",
+        "length": 4273,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 14307325
+  },
+  {
+    "name": "rtk",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:a5c00c3ab0129884bcb757d348afc1a650efa0f4f0769da97c341f28f89719ed",
+    "entries": [
+      {
+        "path": "rtk",
+        "length": 13266496,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 10756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE-ENGINE",
+        "length": 4273,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 13281525
+  },
+  {
+    "name": "rtk",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:9454ad1b9489daa57ab0a9f4ebe2faaf4dc82b8a0f26c9e5135151abd7c9378d",
+    "entries": [
+      {
+        "path": "rtk",
+        "length": 15784800,
+        "mode": 493,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 10756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE-ENGINE",
+        "length": 4273,
+        "mode": 420,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 15799829
+  },
+  {
+    "name": "rtk",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:c9a8f7a8bad471e64a343314168f38d2399a06fa327cdf5772fb0e645d99ea6f",
+    "entries": [
+      {
+        "path": "LICENSE",
+        "length": 10946,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE-ENGINE",
+        "length": 4368,
+        "mode": 0,
+        "kind": "file"
+      },
+      {
+        "path": "rtk.exe",
+        "length": 18172928,
+        "mode": 0,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 3,
+    "expandedBytes": 18188242
+  },
+  {
+    "name": "lark-cli",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:ee4a3209bbf8b74ea5c00a07d0da89b79f5e7f6abfd518a8b2d78a7a4f7e3f40",
+    "entries": [
+      {
+        "path": "CHANGELOG.md",
+        "length": 81658,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 1084,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "README.md",
+        "length": 19164,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "lark-cli",
+        "length": 47729835,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 4,
+    "expandedBytes": 47831741
+  },
+  {
+    "name": "lark-cli",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:44a4ff98e969385fc4bb4d701735ba319307e50560fa6c4c956178d70ccc3525",
+    "entries": [
+      {
+        "path": "CHANGELOG.md",
+        "length": 81658,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 1084,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "README.md",
+        "length": 19164,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "lark-cli",
+        "length": 50799001,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 4,
+    "expandedBytes": 50900907
+  },
+  {
+    "name": "lark-cli",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:f798b26ce4b369d70411945e7f66bbe4382c411bc47d81950a662de7b69b41ed",
+    "entries": [
+      {
+        "path": "CHANGELOG.md",
+        "length": 81658,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 1084,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "README.md",
+        "length": 19164,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "lark-cli",
+        "length": 45678754,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 4,
+    "expandedBytes": 45780660
+  },
+  {
+    "name": "lark-cli",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:4a12dcb7a0aab25986d8bcd046cb45b08278531a9aac3a12b53cf3d94738fe80",
+    "entries": [
+      {
+        "path": "CHANGELOG.md",
+        "length": 81658,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 1084,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "README.md",
+        "length": 19164,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "lark-cli",
+        "length": 49041570,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 4,
+    "expandedBytes": 49143476
+  },
+  {
+    "name": "lark-cli",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:b13a5d710f9afe327b34bfe68c4a736a574d4d97274f6da862e912dfada1ccdc",
+    "entries": [
+      {
+        "path": "CHANGELOG.md",
+        "length": 81658,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "LICENSE",
+        "length": 1084,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "README.md",
+        "length": 19164,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "lark-cli.exe",
+        "length": 50249728,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 4,
+    "expandedBytes": 50351634
+  },
+  {
+    "name": "gh",
+    "target": "darwin-arm64",
+    "archiveSha256": "sha256:d700207eae9ae98fe2b89535c2c087c07823d4628c56364695a5a07ef311c062",
+    "entries": [
+      {
+        "path": "gh_2.103.3_macOS_arm64/LICENSE",
+        "length": 1068,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-agent-task-create.1",
+        "length": 1811,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-agent-task-list.1",
+        "length": 1116,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-agent-task-view.1",
+        "length": 1798,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-agent-task.1",
+        "length": 1229,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-alias-delete.1",
+        "length": 497,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-alias-import.1",
+        "length": 1347,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-alias-list.1",
+        "length": 535,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-alias-set.1",
+        "length": 2033,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-alias.1",
+        "length": 815,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-api.1",
+        "length": 7611,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-attestation-download.1",
+        "length": 2790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-attestation-trusted-root.1",
+        "length": 1916,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-attestation-verify.1",
+        "length": 9208,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-attestation.1",
+        "length": 838,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-login.1",
+        "length": 4264,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-logout.1",
+        "length": 1671,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-refresh.1",
+        "length": 3502,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-setup-git.1",
+        "length": 1482,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-status.1",
+        "length": 2406,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-switch.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth-token.1",
+        "length": 1151,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-auth.1",
+        "length": 948,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-browse.1",
+        "length": 2152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-cache-delete.1",
+        "length": 1776,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-cache-list.1",
+        "length": 2152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-cache.1",
+        "length": 803,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-code.1",
+        "length": 886,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-cp.1",
+        "length": 2464,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-create.1",
+        "length": 1631,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-delete.1",
+        "length": 1459,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-edit.1",
+        "length": 883,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-jupyter.1",
+        "length": 749,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-list.1",
+        "length": 1585,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-logs.1",
+        "length": 786,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-ports-forward.1",
+        "length": 1075,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-ports-visibility.1",
+        "length": 944,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-ports.1",
+        "length": 1257,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-rebuild.1",
+        "length": 1019,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-ssh.1",
+        "length": 2865,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-stop.1",
+        "length": 923,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace-view.1",
+        "length": 1764,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-codespace.1",
+        "length": 1231,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-completion.1",
+        "length": 1940,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-config-clear-cache.1",
+        "length": 519,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-config-get.1",
+        "length": 586,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-config-list.1",
+        "length": 565,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-config-set.1",
+        "length": 787,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-config.1",
+        "length": 2691,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-copilot.1",
+        "length": 1464,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion-comment.1",
+        "length": 2421,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion-create.1",
+        "length": 1459,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion-edit.1",
+        "length": 1624,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion-list.1",
+        "length": 2642,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion-view.1",
+        "length": 3253,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-discussion.1",
+        "length": 1256,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-browse.1",
+        "length": 1347,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-create.1",
+        "length": 861,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-exec.1",
+        "length": 923,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-install.1",
+        "length": 2758,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-list.1",
+        "length": 514,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-remove.1",
+        "length": 544,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-search.1",
+        "length": 3408,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension-upgrade.1",
+        "length": 615,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-extension.1",
+        "length": 2071,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-clone.1",
+        "length": 794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-create.1",
+        "length": 1624,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-delete.1",
+        "length": 817,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-edit.1",
+        "length": 1452,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-list.1",
+        "length": 1674,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-rename.1",
+        "length": 536,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist-view.1",
+        "length": 840,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gist.1",
+        "length": 794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gpg-key-add.1",
+        "length": 539,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gpg-key-delete.1",
+        "length": 539,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gpg-key-list.1",
+        "length": 479,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-gpg-key.1",
+        "length": 719,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-create.1",
+        "length": 2794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-delete.1",
+        "length": 1283,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-download.1",
+        "length": 2349,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-edit.1",
+        "length": 2154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-list.1",
+        "length": 1714,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact-view.1",
+        "length": 2193,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-artifact.1",
+        "length": 1376,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-close.1",
+        "length": 1182,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-comment.1",
+        "length": 2585,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-create.1",
+        "length": 4003,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-delete.1",
+        "length": 667,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-develop.1",
+        "length": 2060,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-edit.1",
+        "length": 4719,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-list.1",
+        "length": 3104,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-lock.1",
+        "length": 747,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-pin.1",
+        "length": 932,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-reopen.1",
+        "length": 685,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-status.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-transfer.1",
+        "length": 651,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-unlock.1",
+        "length": 615,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-unpin.1",
+        "length": 954,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue-view.1",
+        "length": 1769,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-issue.1",
+        "length": 1547,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label-clone.1",
+        "length": 1528,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label-create.1",
+        "length": 1248,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label-delete.1",
+        "length": 675,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label-edit.1",
+        "length": 1177,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label-list.1",
+        "length": 1816,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-label.1",
+        "length": 886,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-licenses.1",
+        "length": 537,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-org-list.1",
+        "length": 699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-org.1",
+        "length": 591,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-checkout.1",
+        "length": 1390,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-checks.1",
+        "length": 1800,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-close.1",
+        "length": 773,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-comment.1",
+        "length": 2594,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-create.1",
+        "length": 5774,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-diff.1",
+        "length": 2009,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-edit.1",
+        "length": 4777,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-list.1",
+        "length": 3699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-lock.1",
+        "length": 742,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-merge.1",
+        "length": 2095,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-ready.1",
+        "length": 914,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-reopen.1",
+        "length": 693,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-revert.1",
+        "length": 951,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-review.1",
+        "length": 1481,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-status.1",
+        "length": 2098,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-unlock.1",
+        "length": 610,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-update-branch.1",
+        "length": 1257,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr-view.1",
+        "length": 2313,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-pr.1",
+        "length": 1718,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-preview-prompter.1",
+        "length": 774,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-preview.1",
+        "length": 699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-close.1",
+        "length": 1026,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-copy.1",
+        "length": 1181,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-create.1",
+        "length": 977,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-delete.1",
+        "length": 900,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-edit.1",
+        "length": 1202,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-field-create.1",
+        "length": 1428,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-field-delete.1",
+        "length": 790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-field-list.1",
+        "length": 1024,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-add.1",
+        "length": 1079,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-archive.1",
+        "length": 1056,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-create.1",
+        "length": 1119,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-delete.1",
+        "length": 1021,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-edit.1",
+        "length": 3199,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-item-list.1",
+        "length": 2089,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-link.1",
+        "length": 1118,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-list.1",
+        "length": 1168,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-mark-template.1",
+        "length": 1083,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-unlink.1",
+        "length": 1154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project-view.1",
+        "length": 1025,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-project.1",
+        "length": 2069,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-create.1",
+        "length": 5379,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-delete-asset.1",
+        "length": 715,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-delete.1",
+        "length": 747,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-download.1",
+        "length": 1915,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-edit.1",
+        "length": 1600,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-list.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-upload.1",
+        "length": 1016,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-verify-asset.1",
+        "length": 1849,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-verify.1",
+        "length": 1588,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release-view.1",
+        "length": 1404,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-release.1",
+        "length": 1204,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-archive.1",
+        "length": 618,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-autolink-create.1",
+        "length": 2038,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-autolink-delete.1",
+        "length": 766,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-autolink-list.1",
+        "length": 1283,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-autolink-view.1",
+        "length": 1058,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-autolink.1",
+        "length": 1303,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-clone.1",
+        "length": 2279,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-create.1",
+        "length": 3544,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-delete.1",
+        "length": 1033,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-deploy-key-add.1",
+        "length": 1303,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-deploy-key-delete.1",
+        "length": 664,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-deploy-key-list.1",
+        "length": 1046,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-deploy-key.1",
+        "length": 856,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-edit.1",
+        "length": 3704,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-fork.1",
+        "length": 1642,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-gitignore-list.1",
+        "length": 522,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-gitignore-view.1",
+        "length": 1080,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-gitignore.1",
+        "length": 673,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-license-list.1",
+        "length": 631,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-license-view.1",
+        "length": 1219,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-license.1",
+        "length": 609,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-list.1",
+        "length": 3070,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-read-dir.1",
+        "length": 1808,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-read-file.1",
+        "length": 2726,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-rename.1",
+        "length": 1368,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-set-default.1",
+        "length": 1510,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-sync.1",
+        "length": 1626,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-unarchive.1",
+        "length": 630,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo-view.1",
+        "length": 2600,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-repo.1",
+        "length": 1675,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ruleset-check.1",
+        "length": 1756,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ruleset-list.1",
+        "length": 2030,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ruleset-view.1",
+        "length": 1833,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ruleset.1",
+        "length": 1091,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-cancel.1",
+        "length": 655,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-delete.1",
+        "length": 720,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-download.1",
+        "length": 1801,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-list.1",
+        "length": 2470,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-rerun.1",
+        "length": 1514,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-view.1",
+        "length": 2790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run-watch.1",
+        "length": 1407,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-run.1",
+        "length": 1062,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search-code.1",
+        "length": 2685,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search-commits.1",
+        "length": 3412,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search-issues.1",
+        "length": 6018,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search-prs.1",
+        "length": 5955,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search-repos.1",
+        "length": 4211,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-search.1",
+        "length": 2271,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-secret-delete.1",
+        "length": 1411,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-secret-list.1",
+        "length": 1752,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-secret-set.1",
+        "length": 3403,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-secret.1",
+        "length": 1040,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-install.1",
+        "length": 7370,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-list.1",
+        "length": 2235,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-preview.1",
+        "length": 2264,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-publish.1",
+        "length": 2275,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-search.1",
+        "length": 1890,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill-update.1",
+        "length": 2628,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-skill.1",
+        "length": 1555,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ssh-key-add.1",
+        "length": 646,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ssh-key-delete.1",
+        "length": 536,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ssh-key-list.1",
+        "length": 479,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-ssh-key.1",
+        "length": 721,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-status.1",
+        "length": 1152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-variable-delete.1",
+        "length": 1154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-variable-get.1",
+        "length": 1511,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-variable-list.1",
+        "length": 1528,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-variable-set.1",
+        "length": 2482,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-variable.1",
+        "length": 977,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow-disable.1",
+        "length": 741,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow-enable.1",
+        "length": 729,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow-list.1",
+        "length": 1188,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow-run.1",
+        "length": 2222,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow-view.1",
+        "length": 1047,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh-workflow.1",
+        "length": 961,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/share/man/man1/gh.1",
+        "length": 2504,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_arm64/bin/gh",
+        "length": 38931264,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 238,
+    "expandedBytes": 39327316
+  },
+  {
+    "name": "gh",
+    "target": "darwin-x86_64",
+    "archiveSha256": "sha256:a2f86418f4350ae6e9ec60d5000bdf7665728436946a97fc27fe50e6ae752682",
+    "entries": [
+      {
+        "path": "gh_2.103.3_macOS_amd64/LICENSE",
+        "length": 1068,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-agent-task-create.1",
+        "length": 1811,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-agent-task-list.1",
+        "length": 1116,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-agent-task-view.1",
+        "length": 1798,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-agent-task.1",
+        "length": 1229,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-alias-delete.1",
+        "length": 497,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-alias-import.1",
+        "length": 1347,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-alias-list.1",
+        "length": 535,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-alias-set.1",
+        "length": 2033,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-alias.1",
+        "length": 815,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-api.1",
+        "length": 7611,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-attestation-download.1",
+        "length": 2790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-attestation-trusted-root.1",
+        "length": 1916,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-attestation-verify.1",
+        "length": 9208,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-attestation.1",
+        "length": 838,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-login.1",
+        "length": 4264,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-logout.1",
+        "length": 1671,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-refresh.1",
+        "length": 3502,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-setup-git.1",
+        "length": 1482,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-status.1",
+        "length": 2406,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-switch.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth-token.1",
+        "length": 1151,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-auth.1",
+        "length": 948,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-browse.1",
+        "length": 2152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-cache-delete.1",
+        "length": 1776,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-cache-list.1",
+        "length": 2152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-cache.1",
+        "length": 803,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-code.1",
+        "length": 886,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-cp.1",
+        "length": 2464,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-create.1",
+        "length": 1631,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-delete.1",
+        "length": 1459,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-edit.1",
+        "length": 883,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-jupyter.1",
+        "length": 749,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-list.1",
+        "length": 1585,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-logs.1",
+        "length": 786,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-ports-forward.1",
+        "length": 1075,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-ports-visibility.1",
+        "length": 944,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-ports.1",
+        "length": 1257,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-rebuild.1",
+        "length": 1019,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-ssh.1",
+        "length": 2865,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-stop.1",
+        "length": 923,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace-view.1",
+        "length": 1764,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-codespace.1",
+        "length": 1231,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-completion.1",
+        "length": 1940,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-config-clear-cache.1",
+        "length": 519,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-config-get.1",
+        "length": 586,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-config-list.1",
+        "length": 565,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-config-set.1",
+        "length": 787,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-config.1",
+        "length": 2691,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-copilot.1",
+        "length": 1464,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion-comment.1",
+        "length": 2421,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion-create.1",
+        "length": 1459,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion-edit.1",
+        "length": 1624,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion-list.1",
+        "length": 2642,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion-view.1",
+        "length": 3253,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-discussion.1",
+        "length": 1256,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-browse.1",
+        "length": 1347,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-create.1",
+        "length": 861,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-exec.1",
+        "length": 923,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-install.1",
+        "length": 2758,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-list.1",
+        "length": 514,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-remove.1",
+        "length": 544,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-search.1",
+        "length": 3408,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension-upgrade.1",
+        "length": 615,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-extension.1",
+        "length": 2071,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-clone.1",
+        "length": 794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-create.1",
+        "length": 1624,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-delete.1",
+        "length": 817,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-edit.1",
+        "length": 1452,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-list.1",
+        "length": 1674,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-rename.1",
+        "length": 536,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist-view.1",
+        "length": 840,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gist.1",
+        "length": 794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gpg-key-add.1",
+        "length": 539,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gpg-key-delete.1",
+        "length": 539,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gpg-key-list.1",
+        "length": 479,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-gpg-key.1",
+        "length": 719,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-create.1",
+        "length": 2794,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-delete.1",
+        "length": 1283,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-download.1",
+        "length": 2349,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-edit.1",
+        "length": 2154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-list.1",
+        "length": 1714,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact-view.1",
+        "length": 2193,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-artifact.1",
+        "length": 1376,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-close.1",
+        "length": 1182,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-comment.1",
+        "length": 2585,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-create.1",
+        "length": 4003,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-delete.1",
+        "length": 667,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-develop.1",
+        "length": 2060,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-edit.1",
+        "length": 4719,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-list.1",
+        "length": 3104,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-lock.1",
+        "length": 747,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-pin.1",
+        "length": 932,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-reopen.1",
+        "length": 685,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-status.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-transfer.1",
+        "length": 651,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-unlock.1",
+        "length": 615,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-unpin.1",
+        "length": 954,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue-view.1",
+        "length": 1769,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-issue.1",
+        "length": 1547,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label-clone.1",
+        "length": 1528,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label-create.1",
+        "length": 1248,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label-delete.1",
+        "length": 675,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label-edit.1",
+        "length": 1177,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label-list.1",
+        "length": 1816,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-label.1",
+        "length": 886,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-licenses.1",
+        "length": 537,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-org-list.1",
+        "length": 699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-org.1",
+        "length": 591,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-checkout.1",
+        "length": 1390,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-checks.1",
+        "length": 1800,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-close.1",
+        "length": 773,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-comment.1",
+        "length": 2594,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-create.1",
+        "length": 5774,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-diff.1",
+        "length": 2009,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-edit.1",
+        "length": 4777,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-list.1",
+        "length": 3699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-lock.1",
+        "length": 742,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-merge.1",
+        "length": 2095,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-ready.1",
+        "length": 914,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-reopen.1",
+        "length": 693,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-revert.1",
+        "length": 951,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-review.1",
+        "length": 1481,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-status.1",
+        "length": 2098,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-unlock.1",
+        "length": 610,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-update-branch.1",
+        "length": 1257,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr-view.1",
+        "length": 2313,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-pr.1",
+        "length": 1718,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-preview-prompter.1",
+        "length": 774,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-preview.1",
+        "length": 699,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-close.1",
+        "length": 1026,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-copy.1",
+        "length": 1181,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-create.1",
+        "length": 977,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-delete.1",
+        "length": 900,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-edit.1",
+        "length": 1202,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-field-create.1",
+        "length": 1428,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-field-delete.1",
+        "length": 790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-field-list.1",
+        "length": 1024,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-add.1",
+        "length": 1079,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-archive.1",
+        "length": 1056,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-create.1",
+        "length": 1119,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-delete.1",
+        "length": 1021,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-edit.1",
+        "length": 3199,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-item-list.1",
+        "length": 2089,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-link.1",
+        "length": 1118,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-list.1",
+        "length": 1168,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-mark-template.1",
+        "length": 1083,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-unlink.1",
+        "length": 1154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project-view.1",
+        "length": 1025,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-project.1",
+        "length": 2069,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-create.1",
+        "length": 5379,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-delete-asset.1",
+        "length": 715,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-delete.1",
+        "length": 747,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-download.1",
+        "length": 1915,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-edit.1",
+        "length": 1600,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-list.1",
+        "length": 1355,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-upload.1",
+        "length": 1016,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-verify-asset.1",
+        "length": 1849,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-verify.1",
+        "length": 1588,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release-view.1",
+        "length": 1404,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-release.1",
+        "length": 1204,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-archive.1",
+        "length": 618,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-autolink-create.1",
+        "length": 2038,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-autolink-delete.1",
+        "length": 766,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-autolink-list.1",
+        "length": 1283,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-autolink-view.1",
+        "length": 1058,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-autolink.1",
+        "length": 1303,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-clone.1",
+        "length": 2279,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-create.1",
+        "length": 3544,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-delete.1",
+        "length": 1033,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-deploy-key-add.1",
+        "length": 1303,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-deploy-key-delete.1",
+        "length": 664,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-deploy-key-list.1",
+        "length": 1046,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-deploy-key.1",
+        "length": 856,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-edit.1",
+        "length": 3704,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-fork.1",
+        "length": 1642,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-gitignore-list.1",
+        "length": 522,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-gitignore-view.1",
+        "length": 1080,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-gitignore.1",
+        "length": 673,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-license-list.1",
+        "length": 631,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-license-view.1",
+        "length": 1219,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-license.1",
+        "length": 609,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-list.1",
+        "length": 3070,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-read-dir.1",
+        "length": 1808,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-read-file.1",
+        "length": 2726,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-rename.1",
+        "length": 1368,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-set-default.1",
+        "length": 1510,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-sync.1",
+        "length": 1626,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-unarchive.1",
+        "length": 630,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo-view.1",
+        "length": 2600,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-repo.1",
+        "length": 1675,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ruleset-check.1",
+        "length": 1756,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ruleset-list.1",
+        "length": 2030,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ruleset-view.1",
+        "length": 1833,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ruleset.1",
+        "length": 1091,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-cancel.1",
+        "length": 655,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-delete.1",
+        "length": 720,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-download.1",
+        "length": 1801,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-list.1",
+        "length": 2470,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-rerun.1",
+        "length": 1514,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-view.1",
+        "length": 2790,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run-watch.1",
+        "length": 1407,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-run.1",
+        "length": 1062,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search-code.1",
+        "length": 2685,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search-commits.1",
+        "length": 3412,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search-issues.1",
+        "length": 6018,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search-prs.1",
+        "length": 5955,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search-repos.1",
+        "length": 4211,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-search.1",
+        "length": 2271,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-secret-delete.1",
+        "length": 1411,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-secret-list.1",
+        "length": 1752,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-secret-set.1",
+        "length": 3403,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-secret.1",
+        "length": 1040,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-install.1",
+        "length": 7370,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-list.1",
+        "length": 2235,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-preview.1",
+        "length": 2264,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-publish.1",
+        "length": 2275,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-search.1",
+        "length": 1890,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill-update.1",
+        "length": 2628,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-skill.1",
+        "length": 1555,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ssh-key-add.1",
+        "length": 646,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ssh-key-delete.1",
+        "length": 536,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ssh-key-list.1",
+        "length": 479,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-ssh-key.1",
+        "length": 721,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-status.1",
+        "length": 1152,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-variable-delete.1",
+        "length": 1154,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-variable-get.1",
+        "length": 1511,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-variable-list.1",
+        "length": 1528,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-variable-set.1",
+        "length": 2482,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-variable.1",
+        "length": 977,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow-disable.1",
+        "length": 741,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow-enable.1",
+        "length": 729,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow-list.1",
+        "length": 1188,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow-run.1",
+        "length": 2222,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow-view.1",
+        "length": 1047,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh-workflow.1",
+        "length": 961,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/share/man/man1/gh.1",
+        "length": 2504,
+        "mode": 33188,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_macOS_amd64/bin/gh",
+        "length": 42127776,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 238,
+    "expandedBytes": 42523828
+  },
+  {
+    "name": "gh",
+    "target": "linux-arm64",
+    "archiveSha256": "sha256:ee32df2323c8847f5fac6cb6b4b69ca75828e9329a8f22f677021f7b3306ce63",
+    "entries": [
+      {
+        "path": "gh_2.103.3_linux_arm64/LICENSE",
+        "length": 1068,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-agent-task-create.1",
+        "length": 1811,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-agent-task-list.1",
+        "length": 1116,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-agent-task-view.1",
+        "length": 1798,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-agent-task.1",
+        "length": 1229,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-alias-delete.1",
+        "length": 497,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-alias-import.1",
+        "length": 1347,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-alias-list.1",
+        "length": 535,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-alias-set.1",
+        "length": 2033,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-alias.1",
+        "length": 815,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-api.1",
+        "length": 7611,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-attestation-download.1",
+        "length": 2790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-attestation-trusted-root.1",
+        "length": 1916,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-attestation-verify.1",
+        "length": 9208,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-attestation.1",
+        "length": 838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-login.1",
+        "length": 4264,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-logout.1",
+        "length": 1671,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-refresh.1",
+        "length": 3502,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-setup-git.1",
+        "length": 1482,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-status.1",
+        "length": 2406,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-switch.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth-token.1",
+        "length": 1151,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-auth.1",
+        "length": 948,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-browse.1",
+        "length": 2152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-cache-delete.1",
+        "length": 1776,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-cache-list.1",
+        "length": 2152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-cache.1",
+        "length": 803,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-code.1",
+        "length": 886,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-cp.1",
+        "length": 2464,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-create.1",
+        "length": 1631,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-delete.1",
+        "length": 1459,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-edit.1",
+        "length": 883,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-jupyter.1",
+        "length": 749,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-list.1",
+        "length": 1585,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-logs.1",
+        "length": 786,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-ports-forward.1",
+        "length": 1075,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-ports-visibility.1",
+        "length": 944,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-ports.1",
+        "length": 1257,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-rebuild.1",
+        "length": 1019,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-ssh.1",
+        "length": 2865,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-stop.1",
+        "length": 923,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace-view.1",
+        "length": 1764,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-codespace.1",
+        "length": 1231,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-completion.1",
+        "length": 1940,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-config-clear-cache.1",
+        "length": 519,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-config-get.1",
+        "length": 586,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-config-list.1",
+        "length": 565,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-config-set.1",
+        "length": 787,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-config.1",
+        "length": 2691,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-copilot.1",
+        "length": 1463,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion-comment.1",
+        "length": 2421,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion-create.1",
+        "length": 1459,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion-edit.1",
+        "length": 1624,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion-list.1",
+        "length": 2642,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion-view.1",
+        "length": 3253,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-discussion.1",
+        "length": 1256,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-browse.1",
+        "length": 1347,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-create.1",
+        "length": 861,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-exec.1",
+        "length": 923,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-install.1",
+        "length": 2758,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-list.1",
+        "length": 514,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-remove.1",
+        "length": 544,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-search.1",
+        "length": 3408,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension-upgrade.1",
+        "length": 615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-extension.1",
+        "length": 2071,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-clone.1",
+        "length": 794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-create.1",
+        "length": 1624,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-delete.1",
+        "length": 817,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-edit.1",
+        "length": 1452,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-list.1",
+        "length": 1674,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-rename.1",
+        "length": 536,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist-view.1",
+        "length": 840,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gist.1",
+        "length": 794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gpg-key-add.1",
+        "length": 539,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gpg-key-delete.1",
+        "length": 539,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gpg-key-list.1",
+        "length": 479,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-gpg-key.1",
+        "length": 719,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-create.1",
+        "length": 2794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-delete.1",
+        "length": 1283,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-download.1",
+        "length": 2349,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-edit.1",
+        "length": 2154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-list.1",
+        "length": 1714,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact-view.1",
+        "length": 2193,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-artifact.1",
+        "length": 1376,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-close.1",
+        "length": 1182,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-comment.1",
+        "length": 2585,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-create.1",
+        "length": 4003,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-delete.1",
+        "length": 667,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-develop.1",
+        "length": 2060,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-edit.1",
+        "length": 4719,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-list.1",
+        "length": 3104,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-lock.1",
+        "length": 747,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-pin.1",
+        "length": 932,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-reopen.1",
+        "length": 685,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-status.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-transfer.1",
+        "length": 651,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-unlock.1",
+        "length": 615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-unpin.1",
+        "length": 954,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue-view.1",
+        "length": 1769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-issue.1",
+        "length": 1547,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label-clone.1",
+        "length": 1528,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label-create.1",
+        "length": 1248,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label-delete.1",
+        "length": 675,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label-edit.1",
+        "length": 1177,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label-list.1",
+        "length": 1816,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-label.1",
+        "length": 886,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-licenses.1",
+        "length": 537,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-org-list.1",
+        "length": 699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-org.1",
+        "length": 591,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-checkout.1",
+        "length": 1390,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-checks.1",
+        "length": 1800,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-close.1",
+        "length": 773,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-comment.1",
+        "length": 2594,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-create.1",
+        "length": 5774,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-diff.1",
+        "length": 2009,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-edit.1",
+        "length": 4777,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-list.1",
+        "length": 3699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-lock.1",
+        "length": 742,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-merge.1",
+        "length": 2095,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-ready.1",
+        "length": 914,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-reopen.1",
+        "length": 693,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-revert.1",
+        "length": 951,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-review.1",
+        "length": 1481,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-status.1",
+        "length": 2098,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-unlock.1",
+        "length": 610,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-update-branch.1",
+        "length": 1257,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr-view.1",
+        "length": 2313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-pr.1",
+        "length": 1718,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-preview-prompter.1",
+        "length": 774,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-preview.1",
+        "length": 699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-close.1",
+        "length": 1026,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-copy.1",
+        "length": 1181,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-create.1",
+        "length": 977,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-delete.1",
+        "length": 900,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-edit.1",
+        "length": 1202,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-field-create.1",
+        "length": 1428,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-field-delete.1",
+        "length": 790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-field-list.1",
+        "length": 1024,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-add.1",
+        "length": 1079,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-archive.1",
+        "length": 1056,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-create.1",
+        "length": 1119,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-delete.1",
+        "length": 1021,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-edit.1",
+        "length": 3199,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-item-list.1",
+        "length": 2089,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-link.1",
+        "length": 1118,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-list.1",
+        "length": 1168,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-mark-template.1",
+        "length": 1083,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-unlink.1",
+        "length": 1154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project-view.1",
+        "length": 1025,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-project.1",
+        "length": 2069,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-create.1",
+        "length": 5379,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-delete-asset.1",
+        "length": 715,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-delete.1",
+        "length": 747,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-download.1",
+        "length": 1915,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-edit.1",
+        "length": 1600,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-list.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-upload.1",
+        "length": 1016,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-verify-asset.1",
+        "length": 1849,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-verify.1",
+        "length": 1588,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release-view.1",
+        "length": 1404,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-release.1",
+        "length": 1204,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-archive.1",
+        "length": 618,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-autolink-create.1",
+        "length": 2038,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-autolink-delete.1",
+        "length": 766,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-autolink-list.1",
+        "length": 1283,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-autolink-view.1",
+        "length": 1058,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-autolink.1",
+        "length": 1303,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-clone.1",
+        "length": 2279,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-create.1",
+        "length": 3544,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-delete.1",
+        "length": 1033,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-deploy-key-add.1",
+        "length": 1303,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-deploy-key-delete.1",
+        "length": 664,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-deploy-key-list.1",
+        "length": 1046,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-deploy-key.1",
+        "length": 856,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-edit.1",
+        "length": 3704,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-fork.1",
+        "length": 1642,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-gitignore-list.1",
+        "length": 522,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-gitignore-view.1",
+        "length": 1080,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-gitignore.1",
+        "length": 673,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-license-list.1",
+        "length": 631,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-license-view.1",
+        "length": 1219,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-license.1",
+        "length": 609,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-list.1",
+        "length": 3070,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-read-dir.1",
+        "length": 1808,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-read-file.1",
+        "length": 2726,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-rename.1",
+        "length": 1368,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-set-default.1",
+        "length": 1510,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-sync.1",
+        "length": 1626,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-unarchive.1",
+        "length": 630,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo-view.1",
+        "length": 2600,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-repo.1",
+        "length": 1675,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ruleset-check.1",
+        "length": 1756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ruleset-list.1",
+        "length": 2030,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ruleset-view.1",
+        "length": 1833,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ruleset.1",
+        "length": 1091,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-cancel.1",
+        "length": 655,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-delete.1",
+        "length": 720,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-download.1",
+        "length": 1801,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-list.1",
+        "length": 2470,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-rerun.1",
+        "length": 1514,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-view.1",
+        "length": 2790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run-watch.1",
+        "length": 1407,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-run.1",
+        "length": 1062,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search-code.1",
+        "length": 2685,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search-commits.1",
+        "length": 3412,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search-issues.1",
+        "length": 6018,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search-prs.1",
+        "length": 5955,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search-repos.1",
+        "length": 4211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-search.1",
+        "length": 2271,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-secret-delete.1",
+        "length": 1411,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-secret-list.1",
+        "length": 1752,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-secret-set.1",
+        "length": 3403,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-secret.1",
+        "length": 1040,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-install.1",
+        "length": 7370,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-list.1",
+        "length": 2235,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-preview.1",
+        "length": 2264,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-publish.1",
+        "length": 2275,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-search.1",
+        "length": 1890,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill-update.1",
+        "length": 2628,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-skill.1",
+        "length": 1555,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ssh-key-add.1",
+        "length": 646,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ssh-key-delete.1",
+        "length": 536,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ssh-key-list.1",
+        "length": 479,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-ssh-key.1",
+        "length": 721,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-status.1",
+        "length": 1152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-variable-delete.1",
+        "length": 1154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-variable-get.1",
+        "length": 1511,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-variable-list.1",
+        "length": 1528,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-variable-set.1",
+        "length": 2482,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-variable.1",
+        "length": 977,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow-disable.1",
+        "length": 741,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow-enable.1",
+        "length": 729,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow-list.1",
+        "length": 1188,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow-run.1",
+        "length": 2222,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow-view.1",
+        "length": 1047,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh-workflow.1",
+        "length": 961,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/share/man/man1/gh.1",
+        "length": 2504,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_arm64/bin/gh",
+        "length": 38142112,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 238,
+    "expandedBytes": 38538163
+  },
+  {
+    "name": "gh",
+    "target": "linux-x86_64",
+    "archiveSha256": "sha256:4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d",
+    "entries": [
+      {
+        "path": "gh_2.103.3_linux_amd64/LICENSE",
+        "length": 1068,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-agent-task-create.1",
+        "length": 1811,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-agent-task-list.1",
+        "length": 1116,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-agent-task-view.1",
+        "length": 1798,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-agent-task.1",
+        "length": 1229,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-alias-delete.1",
+        "length": 497,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-alias-import.1",
+        "length": 1347,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-alias-list.1",
+        "length": 535,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-alias-set.1",
+        "length": 2033,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-alias.1",
+        "length": 815,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-api.1",
+        "length": 7611,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-attestation-download.1",
+        "length": 2790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-attestation-trusted-root.1",
+        "length": 1916,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-attestation-verify.1",
+        "length": 9208,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-attestation.1",
+        "length": 838,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-login.1",
+        "length": 4264,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-logout.1",
+        "length": 1671,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-refresh.1",
+        "length": 3502,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-setup-git.1",
+        "length": 1482,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-status.1",
+        "length": 2406,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-switch.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth-token.1",
+        "length": 1151,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-auth.1",
+        "length": 948,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-browse.1",
+        "length": 2152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-cache-delete.1",
+        "length": 1776,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-cache-list.1",
+        "length": 2152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-cache.1",
+        "length": 803,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-code.1",
+        "length": 886,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-cp.1",
+        "length": 2464,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-create.1",
+        "length": 1631,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-delete.1",
+        "length": 1459,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-edit.1",
+        "length": 883,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-jupyter.1",
+        "length": 749,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-list.1",
+        "length": 1585,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-logs.1",
+        "length": 786,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-ports-forward.1",
+        "length": 1075,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-ports-visibility.1",
+        "length": 944,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-ports.1",
+        "length": 1257,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-rebuild.1",
+        "length": 1019,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-ssh.1",
+        "length": 2865,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-stop.1",
+        "length": 923,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace-view.1",
+        "length": 1764,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-codespace.1",
+        "length": 1231,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-completion.1",
+        "length": 1940,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-config-clear-cache.1",
+        "length": 519,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-config-get.1",
+        "length": 586,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-config-list.1",
+        "length": 565,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-config-set.1",
+        "length": 787,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-config.1",
+        "length": 2691,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-copilot.1",
+        "length": 1463,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion-comment.1",
+        "length": 2421,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion-create.1",
+        "length": 1459,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion-edit.1",
+        "length": 1624,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion-list.1",
+        "length": 2642,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion-view.1",
+        "length": 3253,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-discussion.1",
+        "length": 1256,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-browse.1",
+        "length": 1347,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-create.1",
+        "length": 861,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-exec.1",
+        "length": 923,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-install.1",
+        "length": 2758,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-list.1",
+        "length": 514,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-remove.1",
+        "length": 544,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-search.1",
+        "length": 3408,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension-upgrade.1",
+        "length": 615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-extension.1",
+        "length": 2071,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-clone.1",
+        "length": 794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-create.1",
+        "length": 1624,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-delete.1",
+        "length": 817,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-edit.1",
+        "length": 1452,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-list.1",
+        "length": 1674,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-rename.1",
+        "length": 536,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist-view.1",
+        "length": 840,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gist.1",
+        "length": 794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gpg-key-add.1",
+        "length": 539,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gpg-key-delete.1",
+        "length": 539,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gpg-key-list.1",
+        "length": 479,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-gpg-key.1",
+        "length": 719,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-create.1",
+        "length": 2794,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-delete.1",
+        "length": 1283,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-download.1",
+        "length": 2349,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-edit.1",
+        "length": 2154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-list.1",
+        "length": 1714,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact-view.1",
+        "length": 2193,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-artifact.1",
+        "length": 1376,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-close.1",
+        "length": 1182,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-comment.1",
+        "length": 2585,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-create.1",
+        "length": 4003,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-delete.1",
+        "length": 667,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-develop.1",
+        "length": 2060,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-edit.1",
+        "length": 4719,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-list.1",
+        "length": 3104,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-lock.1",
+        "length": 747,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-pin.1",
+        "length": 932,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-reopen.1",
+        "length": 685,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-status.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-transfer.1",
+        "length": 651,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-unlock.1",
+        "length": 615,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-unpin.1",
+        "length": 954,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue-view.1",
+        "length": 1769,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-issue.1",
+        "length": 1547,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label-clone.1",
+        "length": 1528,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label-create.1",
+        "length": 1248,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label-delete.1",
+        "length": 675,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label-edit.1",
+        "length": 1177,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label-list.1",
+        "length": 1816,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-label.1",
+        "length": 886,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-licenses.1",
+        "length": 537,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-org-list.1",
+        "length": 699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-org.1",
+        "length": 591,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-checkout.1",
+        "length": 1390,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-checks.1",
+        "length": 1800,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-close.1",
+        "length": 773,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-comment.1",
+        "length": 2594,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-create.1",
+        "length": 5774,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-diff.1",
+        "length": 2009,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-edit.1",
+        "length": 4777,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-list.1",
+        "length": 3699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-lock.1",
+        "length": 742,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-merge.1",
+        "length": 2095,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-ready.1",
+        "length": 914,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-reopen.1",
+        "length": 693,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-revert.1",
+        "length": 951,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-review.1",
+        "length": 1481,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-status.1",
+        "length": 2098,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-unlock.1",
+        "length": 610,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-update-branch.1",
+        "length": 1257,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr-view.1",
+        "length": 2313,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-pr.1",
+        "length": 1718,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-preview-prompter.1",
+        "length": 774,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-preview.1",
+        "length": 699,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-close.1",
+        "length": 1026,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-copy.1",
+        "length": 1181,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-create.1",
+        "length": 977,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-delete.1",
+        "length": 900,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-edit.1",
+        "length": 1202,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-field-create.1",
+        "length": 1428,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-field-delete.1",
+        "length": 790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-field-list.1",
+        "length": 1024,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-add.1",
+        "length": 1079,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-archive.1",
+        "length": 1056,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-create.1",
+        "length": 1119,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-delete.1",
+        "length": 1021,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-edit.1",
+        "length": 3199,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-item-list.1",
+        "length": 2089,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-link.1",
+        "length": 1118,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-list.1",
+        "length": 1168,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-mark-template.1",
+        "length": 1083,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-unlink.1",
+        "length": 1154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project-view.1",
+        "length": 1025,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-project.1",
+        "length": 2069,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-create.1",
+        "length": 5379,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-delete-asset.1",
+        "length": 715,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-delete.1",
+        "length": 747,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-download.1",
+        "length": 1915,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-edit.1",
+        "length": 1600,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-list.1",
+        "length": 1355,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-upload.1",
+        "length": 1016,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-verify-asset.1",
+        "length": 1849,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-verify.1",
+        "length": 1588,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release-view.1",
+        "length": 1404,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-release.1",
+        "length": 1204,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-archive.1",
+        "length": 618,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-autolink-create.1",
+        "length": 2038,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-autolink-delete.1",
+        "length": 766,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-autolink-list.1",
+        "length": 1283,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-autolink-view.1",
+        "length": 1058,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-autolink.1",
+        "length": 1303,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-clone.1",
+        "length": 2279,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-create.1",
+        "length": 3544,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-delete.1",
+        "length": 1033,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-deploy-key-add.1",
+        "length": 1303,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-deploy-key-delete.1",
+        "length": 664,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-deploy-key-list.1",
+        "length": 1046,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-deploy-key.1",
+        "length": 856,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-edit.1",
+        "length": 3704,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-fork.1",
+        "length": 1642,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-gitignore-list.1",
+        "length": 522,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-gitignore-view.1",
+        "length": 1080,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-gitignore.1",
+        "length": 673,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-license-list.1",
+        "length": 631,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-license-view.1",
+        "length": 1219,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-license.1",
+        "length": 609,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-list.1",
+        "length": 3070,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-read-dir.1",
+        "length": 1808,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-read-file.1",
+        "length": 2726,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-rename.1",
+        "length": 1368,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-set-default.1",
+        "length": 1510,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-sync.1",
+        "length": 1626,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-unarchive.1",
+        "length": 630,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo-view.1",
+        "length": 2600,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-repo.1",
+        "length": 1675,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ruleset-check.1",
+        "length": 1756,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ruleset-list.1",
+        "length": 2030,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ruleset-view.1",
+        "length": 1833,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ruleset.1",
+        "length": 1091,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-cancel.1",
+        "length": 655,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-delete.1",
+        "length": 720,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-download.1",
+        "length": 1801,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-list.1",
+        "length": 2470,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-rerun.1",
+        "length": 1514,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-view.1",
+        "length": 2790,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run-watch.1",
+        "length": 1407,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-run.1",
+        "length": 1062,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search-code.1",
+        "length": 2685,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search-commits.1",
+        "length": 3412,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search-issues.1",
+        "length": 6018,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search-prs.1",
+        "length": 5955,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search-repos.1",
+        "length": 4211,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-search.1",
+        "length": 2271,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-secret-delete.1",
+        "length": 1411,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-secret-list.1",
+        "length": 1752,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-secret-set.1",
+        "length": 3403,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-secret.1",
+        "length": 1040,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-install.1",
+        "length": 7370,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-list.1",
+        "length": 2235,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-preview.1",
+        "length": 2264,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-publish.1",
+        "length": 2275,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-search.1",
+        "length": 1890,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill-update.1",
+        "length": 2628,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-skill.1",
+        "length": 1555,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ssh-key-add.1",
+        "length": 646,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ssh-key-delete.1",
+        "length": 536,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ssh-key-list.1",
+        "length": 479,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-ssh-key.1",
+        "length": 721,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-status.1",
+        "length": 1152,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-variable-delete.1",
+        "length": 1154,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-variable-get.1",
+        "length": 1511,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-variable-list.1",
+        "length": 1528,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-variable-set.1",
+        "length": 2482,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-variable.1",
+        "length": 977,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow-disable.1",
+        "length": 741,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow-enable.1",
+        "length": 729,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow-list.1",
+        "length": 1188,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow-run.1",
+        "length": 2222,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow-view.1",
+        "length": 1047,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh-workflow.1",
+        "length": 961,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/share/man/man1/gh.1",
+        "length": 2504,
+        "mode": 420,
+        "kind": "file"
+      },
+      {
+        "path": "gh_2.103.3_linux_amd64/bin/gh",
+        "length": 41070752,
+        "mode": 493,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 238,
+    "expandedBytes": 41466803
+  },
+  {
+    "name": "gh",
+    "target": "windows-x86_64",
+    "archiveSha256": "sha256:98d0cfa794721665d7973dd728c78aff7bd836d58f10f6d7a03568eccb0a22e0",
+    "entries": [
+      {
+        "path": "LICENSE",
+        "length": 1089,
+        "mode": 33206,
+        "kind": "file"
+      },
+      {
+        "path": "bin/gh.exe",
+        "length": 41785144,
+        "mode": 33261,
+        "kind": "file"
+      }
+    ],
+    "entryCount": 2,
+    "expandedBytes": 41786233
+  }
+]

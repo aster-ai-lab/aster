@@ -1,0 +1,7 @@
+
+running 2 tests
+test project_uninstall_matches_eight_frozen_mise_cases_and_preserves_declarations ... ok
+test project_uninstall_preflights_flags_paths_and_nearest_acl_before_removal ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 5.72s
+

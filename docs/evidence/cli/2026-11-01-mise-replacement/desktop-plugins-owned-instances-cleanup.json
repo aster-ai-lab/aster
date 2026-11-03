@@ -1,0 +1,18 @@
+{
+  "capturedAtUtc": "2026-11-01T16:17:13.363429+00:00",
+  "instances": [
+    {
+      "instance": "fork1",
+      "pid": 25801,
+      "signal": "SIGTERM",
+      "ownedInstanceConfirmed": true
+    },
+    {
+      "instance": "fork2",
+      "pid": 23427,
+      "signal": "SIGTERM",
+      "ownedInstanceConfirmed": true
+    }
+  ],
+  "otherProcessesSignalled": false
+}

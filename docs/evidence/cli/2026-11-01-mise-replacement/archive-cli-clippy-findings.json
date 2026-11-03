@@ -1,0 +1,427 @@
+{
+  "exit": 101,
+  "diagnostics_including_lib_and_lib_test": 84,
+  "distinct_primary_spans": 42,
+  "findings": [
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 146,
+      "column": 9,
+      "end_line": 146,
+      "end_column": 27,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 147,
+      "column": 16,
+      "end_line": 147,
+      "end_column": 39,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 148,
+      "column": 16,
+      "end_line": 148,
+      "end_column": 35,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 149,
+      "column": 16,
+      "end_line": 149,
+      "end_column": 37,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 150,
+      "column": 16,
+      "end_line": 150,
+      "end_column": 54,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 150,
+      "column": 16,
+      "end_line": 150,
+      "end_column": 35,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 151,
+      "column": 16,
+      "end_line": 151,
+      "end_column": 53,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 151,
+      "column": 16,
+      "end_line": 151,
+      "end_column": 35,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 152,
+      "column": 16,
+      "end_line": 152,
+      "end_column": 54,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+      "line": 152,
+      "column": 16,
+      "end_line": 152,
+      "end_column": 35,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 106,
+      "column": 22,
+      "end_line": 106,
+      "end_column": 45,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 143,
+      "column": 14,
+      "end_line": 143,
+      "end_column": 27,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+      "line": 173,
+      "column": 14,
+      "end_line": 173,
+      "end_column": 37,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs",
+      "line": 248,
+      "column": 9,
+      "end_line": 248,
+      "end_column": 26,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs",
+      "line": 290,
+      "column": 20,
+      "end_line": 290,
+      "end_column": 40,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 492,
+      "column": 17,
+      "end_line": 492,
+      "end_column": 28,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 495,
+      "column": 40,
+      "end_line": 495,
+      "end_column": 52,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+      "line": 498,
+      "column": 24,
+      "end_line": 498,
+      "end_column": 53,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 462,
+      "column": 18,
+      "end_line": 462,
+      "end_column": 30,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 466,
+      "column": 13,
+      "end_line": 466,
+      "end_column": 24,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 467,
+      "column": 16,
+      "end_line": 467,
+      "end_column": 38,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 471,
+      "column": 38,
+      "end_line": 471,
+      "end_column": 60,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 484,
+      "column": 13,
+      "end_line": 484,
+      "end_column": 24,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 812,
+      "column": 28,
+      "end_line": 812,
+      "end_column": 40,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 818,
+      "column": 52,
+      "end_line": 818,
+      "end_column": 64,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 831,
+      "column": 24,
+      "end_line": 831,
+      "end_column": 37,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 940,
+      "column": 38,
+      "end_line": 940,
+      "end_column": 50,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 943,
+      "column": 35,
+      "end_line": 943,
+      "end_column": 47,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 956,
+      "column": 34,
+      "end_line": 956,
+      "end_column": 46,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 967,
+      "column": 17,
+      "end_line": 967,
+      "end_column": 29,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+      "line": 970,
+      "column": 18,
+      "end_line": 970,
+      "end_column": 36,
+      "message": "slicing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 286,
+      "column": 28,
+      "end_line": 286,
+      "end_column": 80,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 515,
+      "column": 20,
+      "end_line": 515,
+      "end_column": 56,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 562,
+      "column": 21,
+      "end_line": 562,
+      "end_column": 42,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 690,
+      "column": 32,
+      "end_line": 690,
+      "end_column": 54,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+      "line": 691,
+      "column": 17,
+      "end_line": 691,
+      "end_column": 39,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 299,
+      "column": 20,
+      "end_line": 299,
+      "end_column": 33,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 306,
+      "column": 39,
+      "end_line": 306,
+      "end_column": 50,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 310,
+      "column": 14,
+      "end_line": 310,
+      "end_column": 25,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+      "line": 355,
+      "column": 62,
+      "end_line": 355,
+      "end_column": 75,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+      "line": 183,
+      "column": 41,
+      "end_line": 183,
+      "end_column": 64,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    },
+    {
+      "code": "clippy::indexing_slicing",
+      "path": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+      "line": 207,
+      "column": 33,
+      "end_line": 207,
+      "end_column": 56,
+      "message": "indexing may panic",
+      "status": "lint diagnostic; correctness not inferred"
+    }
+  ]
+}

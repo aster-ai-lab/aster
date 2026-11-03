@@ -1,0 +1,478 @@
+{
+  "schema": "aster.box-maintained-source-evidence.v1",
+  "status": "progress",
+  "observedAtUnixSeconds": 1793650878,
+  "host": "macOS-26.6.2-arm64-arm-64bit",
+  "rustToolchain": "1.97.1",
+  "scope": "Box maintained-source authoring and qualified-input packaging",
+  "packageId": "aster/aster-box",
+  "target": "darwin-arm64",
+  "recipeVersion": "0.1.0",
+  "toolVersion": "3.2.7",
+  "authoringSources": {
+    "plugins/plugins/operations/aster/aster-box/LICENSE": {
+      "sha256": "f01977376885dfe6b38a2ca0f4e14373b3dd248d6890fff7a382fe96b263c760",
+      "length": 1091
+    },
+    "plugins/plugins/operations/aster/aster-box/SOURCE.json": {
+      "sha256": "639410d85eae074e1fb5780247f5bff88229c561a3f8568ad504a6d625b0830b",
+      "length": 2137
+    },
+    "plugins/plugins/operations/aster/aster-box/THIRD_PARTY_NOTICES.md": {
+      "sha256": "5adbbe4a9101198997b71cef038e773599237a5a32a4f46c159ad7d676eb6b78",
+      "length": 1485
+    },
+    "plugins/plugins/operations/aster/aster-box/aster-use-extension.acl": {
+      "sha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
+      "length": 275
+    },
+    "plugins/plugins/operations/aster/aster-box/README.md": {
+      "sha256": "487961c3e0acfd288e27077490242e147e9e2b4e725d85174a95a45183e1bb90",
+      "length": 2020
+    },
+    "plugins/recipes/aster-box/darwin-arm64.json": {
+      "sha256": "e1f47e7cc5a34da177c5b633e4606969ff7974ab44ec6cbbd0ab11142eefcf87",
+      "length": 316
+    },
+    "plugins/recipes/aster-box/darwin-arm64.py": {
+      "sha256": "126499b87c1a414dc2d30780b8f6238072330099cbba6e34ae7a1c021b55e192",
+      "length": 3640
+    },
+    "plugins/tests/test_box_recipe.py": {
+      "sha256": "de132f1ae7cd091c50548cad50b4d9caca812905a71eff4aaced467d808f7ed7",
+      "length": 1239
+    },
+    "plugins/docs/layout.md": {
+      "sha256": "163b5438182e73a230e5915b8bea36ee60084df4fe03757c6986c0a440fa27f7",
+      "length": 10359
+    }
+  },
+  "sampledNativeSources": {
+    "Cargo.toml": "1d35b191251905a03167da438010700df0fd53a7443b39b537713f2c745baa8b",
+    "Cargo.lock": "3353ea91ea4abb84d53f6e86991e11ab3e2fdb33bc05aca1796afebead826ece",
+    "rust-toolchain.toml": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc",
+    "crates/use/extension/src/publication/domains.rs": "dd1ba3aa3e1d9f012bce4e19b5cc204b8142efde340505ac253faa4ab5f84de2",
+    "crates/use/extension/src/publication/catalog.rs": "6bf32eafba63637829740e998733a7ea559dd308370707cb4db5aadd9a4abef2",
+    "crates/use/extension/src/publication/tests.rs": "c99bf56a91205e1ff0f73acb3fae0c6b926c2b6ccc93e55aa91bcf0cb3305e36",
+    "crates/use/extension/src/publication.rs": "a8328889a465d4dc183808e4d9529c59d62a67e7a1ded6b61807e84dd15f2950",
+    "crates/use/src/cli/registry.rs": "1d9f84cc386eff73dd350ba52de514ac0569d2e1dbf1112f4ca019eaad484298",
+    "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "ea06417dffb0387f78baeaaacd72487870bce1cf7a8cbbd37d4129cb9afa5a82",
+    "apps/studio/src-tauri/src/capabilities_toolchain.rs": "3d0309af79b63ba0d515f34f297767ed3a35fc2d2d4c8848e2b4b867c2631e27"
+  },
+  "repositoryTests": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "plugins/tests",
+      "-v"
+    ],
+    "passed": 12,
+    "failed": 0
+  },
+  "sdkBuild": {
+    "argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "-p",
+      "aster-use",
+      "--bin",
+      "aster-use"
+    ],
+    "exitCode": 0,
+    "retainedPreexistingWarning": "RuntimeUnitSpec unused import in crates/runtime/src/driver.rs"
+  },
+  "nativeValidation": {
+    "status": "passed",
+    "scope": "Box maintained-source package preparation and retained desktop-owner lifecycle",
+    "builderSha256": "2d2784edcf1ca58c6dd755a67eceb971fd227722d2ae67b8f41b14f1d71e7d23",
+    "nativeRunnerSha256": "7d662542d79f8b5d83a0caec1a024a9ddb52566d49aa4e223fe478aede8ef1d4",
+    "sourcesUnchanged": true,
+    "binariesUnchanged": true,
+    "checks": [
+      {
+        "name": "recipe-current",
+        "argv": [
+          "python3",
+          "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.py",
+          "/Users/roylin/code/aster/.tmp/plugin-registry/box-aix-candidate/aster-box-darwin-arm64.tar.gz",
+          "--aster-use-bin",
+          "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+          "--out",
+          "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-final"
+        ],
+        "exitCode": 0,
+        "seconds": 6.0986723750000005
+      },
+      {
+        "name": "native-management",
+        "argv": [
+          "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-studio-native-tests",
+          "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+          "--ignored",
+          "--exact",
+          "--nocapture"
+        ],
+        "exitCode": 0,
+        "seconds": 8.348668708999998
+      }
+    ],
+    "published": false,
+    "nativeVmExecutionAccepted": false,
+    "currentStudioRebuildClaimed": false
+  },
+  "archiveAudit": {
+    "aixSha256": "05e32dd6d1270cb02195a156c138c650406102c98fc5252873d3b0d3a4e761f6",
+    "aixLength": 26529849,
+    "allStagedFilesMatchArchive": true,
+    "allCanonicalFilesMatchStagedSource": true,
+    "runtimeUnchangedFromQualifiedCandidate": true,
+    "members": [
+      {
+        "path": "LICENSE",
+        "sha256": "f01977376885dfe6b38a2ca0f4e14373b3dd248d6890fff7a382fe96b263c760",
+        "length": 1091
+      },
+      {
+        "path": "README.md",
+        "sha256": "487961c3e0acfd288e27077490242e147e9e2b4e725d85174a95a45183e1bb90",
+        "length": 2020
+      },
+      {
+        "path": "SOURCE.json",
+        "sha256": "639410d85eae074e1fb5780247f5bff88229c561a3f8568ad504a6d625b0830b",
+        "length": 2137
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "sha256": "5adbbe4a9101198997b71cef038e773599237a5a32a4f46c159ad7d676eb6b78",
+        "length": 1485
+      },
+      {
+        "path": "aster-use-extension.acl",
+        "sha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
+        "length": 275
+      },
+      {
+        "path": "payload/aster-box-darwin-arm64.tar.gz",
+        "sha256": "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7",
+        "length": 26582246
+      },
+      {
+        "path": "toolchain.acl",
+        "sha256": "04430990410c3efdf429c849dda1c4f5284b5bbe1a8f3254c4b70afeb6b254c7",
+        "length": 572
+      }
+    ]
+  },
+  "diffChecks": [
+    {
+      "name": "plugins-diff-check",
+      "argv": [
+        "git",
+        "-C",
+        "plugins",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "parent-scope-diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "specs/031-cli-mise-replacement/tasks.md",
+        "docs/evidence/cli/2026-11-01-mise-replacement/OUTCOME.md"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "inventory": {
+    "maintainedSourceCount": 16,
+    "maintainedSources": [
+      "development/aster/bun",
+      "development/aster/fd",
+      "development/aster/gh",
+      "development/aster/rg",
+      "development/aster/rtk",
+      "development/aster/uv",
+      "knowledge/aster/babeldoc-stream",
+      "knowledge/aster/review",
+      "operations/aster/aster-box",
+      "operations/aster/aster-document",
+      "operations/aster/aster-ocr",
+      "operations/aster/aster-office",
+      "operations/aster/aster-sandbox",
+      "operations/aster/cua",
+      "productivity/aster/lark-cli",
+      "productivity/aster/ntn"
+    ],
+    "localCatalogCount": 4,
+    "localCatalogRecords": [
+      "plugins/registry/catalog/aster/aster-document/0.1.0+b3d7cb1b7dac42a0a3e21ab5d0c900e3921d0472/stable/darwin-arm64.json",
+      "plugins/registry/catalog/aster/aster-ocr/0.1.0+a786b17bf82fa03f81f3435035ae05deafbc4426/stable/darwin-arm64.json",
+      "plugins/registry/catalog/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64.json",
+      "plugins/registry/catalog/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64.json"
+    ],
+    "publishedByThisIncrement": false
+  },
+  "nativeManagement": {
+    "results": [
+      {
+        "packageId": "aster/aster-box",
+        "aixArchiveSha256": "sha256:05e32dd6d1270cb02195a156c138c650406102c98fc5252873d3b0d3a4e761f6",
+        "outputs": [
+          {
+            "command": "aster-box",
+            "stdout": "aster-box 3.2.7\n"
+          }
+        ]
+      }
+    ],
+    "installedCatalogueQueried": true,
+    "allRequestedVersionCommandsExecuted": true,
+    "allCandidatesRemoved": true,
+    "runtimeRetainedUntilLeaseRelease": true,
+    "permanentInstallation": false,
+    "trust": "explicit-local-candidates",
+    "officialRegistryPublicationAccepted": false,
+    "nativeGuiAccepted": false,
+    "commandDeadlineSeconds": 10,
+    "nativeTarget": "aarch64-macos"
+  },
+  "retainedFailures": [
+    "old SDK flat-source-path preparation failure and isolated replay",
+    "unsorted new catalog keywords rejected by current SDK and isolated replay; corrected metadata passes"
+  ],
+  "pending": [],
+  "published": false,
+  "notClaimed": [
+    "Box VM execution",
+    "macOS corresponding-source publication qualification",
+    "current Studio rebuild",
+    "native GUI acceptance",
+    "other native targets",
+    "all original inventory migrated and published",
+    "complete mise replacement",
+    "release performance and final archive/sandbox/channel gates",
+    "release or channel publication"
+  ],
+  "retainedFiles": [
+    {
+      "path": "box-maintained-source/checks/repository-tests.log",
+      "sha256": "e64d728a6a52dd653cf07ccbac527f4efbb2c921a0cf6a369aedd4833f527549",
+      "length": 1117
+    },
+    {
+      "path": "box-maintained-source/checks/repository-tests-final.log",
+      "sha256": "f6b5653c4f3c7895a353dddd66268591eff45794ee8a5023445ccc890eaab564",
+      "length": 1117
+    },
+    {
+      "path": "box-maintained-source/checks/build-result.json",
+      "sha256": "833906517a1782c8f476c558411f4398113ce7b79845980b5d19afc73b397211",
+      "length": 570
+    },
+    {
+      "path": "box-maintained-source/checks/builder-build.log",
+      "sha256": "27994da0fec82786f7e6dfdd0147e429d2895f0d6c73b19c44fbe5b0faa1e99c",
+      "length": 881
+    },
+    {
+      "path": "box-maintained-source/checks/recipe.log",
+      "sha256": "c843f1c77aec175707d6f4c3aa3155b7ccefafd5a3fe5b3dc2e19d4a7f485577",
+      "length": 1194
+    },
+    {
+      "path": "box-maintained-source/checks/old-builder-isolated-retry.json",
+      "sha256": "b31b1e14b86fedd5c3a003d14cded594529133f9c7d720d00f1cb720ebfea6d3",
+      "length": 979
+    },
+    {
+      "path": "box-maintained-source/checks/catalog-metadata-before.json",
+      "sha256": "0ec48baa7a64c1a7ab21ad5d0be60dab368556436950e543f8e6a6ef592f8187",
+      "length": 316
+    },
+    {
+      "path": "box-maintained-source/checks/current-builder-isolated-retry.json",
+      "sha256": "066d88d8f64ac19f828a48af1b4355f92661577445b165ec0f4126b2b77e2e43",
+      "length": 999
+    },
+    {
+      "path": "box-maintained-source/checks/first-current-checks.json",
+      "sha256": "596ea262fac48912b89b324434331369b9efafeb102f4542b0e92e3c51793714",
+      "length": 511
+    },
+    {
+      "path": "box-maintained-source/checks/first-recipe-current.log",
+      "sha256": "23b1d5359dea51c92f6c0eed33f56454de2eafee45a8c41ef8b07c1ebb1e0fb4",
+      "length": 1226
+    },
+    {
+      "path": "box-maintained-source/checks/verify-current-first-attempt.py",
+      "sha256": "ce5e90d216d8832432bb32177b047e2facdd89312d921e583707cf6858c144c6",
+      "length": 3583
+    },
+    {
+      "path": "box-maintained-source/checks/verify-current.py",
+      "sha256": "7dd8338d695236bc006611acaf66e62a7c151e67339ee16dda0bd20c6aee0ce6",
+      "length": 3522
+    },
+    {
+      "path": "box-maintained-source/checks/recipe-current.log",
+      "sha256": "8191100979a22923e96e94f8aa16e117e52949c83760f403fd7be347ca34dfe7",
+      "length": 102
+    },
+    {
+      "path": "box-maintained-source/checks/current-checks.json",
+      "sha256": "43db6275b94fd233d951fc37cb87b2b8372212463deda4342998c81854563832",
+      "length": 889
+    },
+    {
+      "path": "box-maintained-source/checks/source-archive-audit.json",
+      "sha256": "d9a09d83b797ba8715f927b6fec73cec7981d6d7c7d924b6c7b9ad4f85662d8d",
+      "length": 1340
+    },
+    {
+      "path": "box-maintained-source/checks/native-inputs.json",
+      "sha256": "f2cd08c060b7920b3a2119215fa7cc7c7e799697dcd25086be3223ed3f437e21",
+      "length": 353
+    },
+    {
+      "path": "box-maintained-source/checks/native-runner.json",
+      "sha256": "200642519c6cf6df41cb4f0a21d4d6353f392234449b1a3df71d0e321dce43ff",
+      "length": 300
+    },
+    {
+      "path": "box-maintained-source/checks/native-management.log",
+      "sha256": "c46e07b69742b64da1e1c16aebcbd02b16c4565d7004cb71bb0cba855c137a7b",
+      "length": 231
+    },
+    {
+      "path": "box-maintained-source/checks/native-management.json",
+      "sha256": "64082183dc64c4caad1b67ca502ad014e08e6fda4279fe3e8477ebec40071de1",
+      "length": 673
+    },
+    {
+      "path": "box-maintained-source/checks/native-source-before.json",
+      "sha256": "b0e1572fe6b03e16678efeabc85d2e9f900226615d2bb5229099d9a6f00cbc8d",
+      "length": 1098
+    },
+    {
+      "path": "box-maintained-source/checks/owned-source-initial.json",
+      "sha256": "d5ef3a4ad38f502518abf737cb2e89635b0dd0e4a421dc7543882c0be2f34612",
+      "length": 1453
+    },
+    {
+      "path": "box-maintained-source/checks/owned-source-before.json",
+      "sha256": "847a668fe38dc8a1f7e38891f54aa217b255669ea6310cc7fdf4e90b3d49dc3b",
+      "length": 1453
+    },
+    {
+      "path": "box-maintained-source/checks/final-validation.json",
+      "sha256": "12657166f0017c6be965b3b44276d33e21d71d358b111d7a51a87f6987700691",
+      "length": 1410
+    },
+    {
+      "path": "box-maintained-source/checks/inventory.json",
+      "sha256": "57bb5c4a304d1fcb876332f460b14a09a67342636cc9ccf0733da6eecb189a18",
+      "length": 1163
+    },
+    {
+      "path": "box-maintained-source/checks/plugins-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "length": 0
+    },
+    {
+      "path": "box-maintained-source/checks/parent-scope-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "length": 0
+    },
+    {
+      "path": "box-maintained-source/generated/qualified/checks.json",
+      "sha256": "e43c969db7a766f9f9072ee901de35f36e132f97af0bfe9d09823ec5c9d1e3e7",
+      "length": 3316
+    },
+    {
+      "path": "box-maintained-source/generated/qualified-current/checks.json",
+      "sha256": "a6c58a362eaa378c953d992bd2bf94336b5e5387056a43c0ad66af2298385be8",
+      "length": 3384
+    },
+    {
+      "path": "box-maintained-source/generated/qualified-final/checks.json",
+      "sha256": "7dab15a2b76ec89fcaccd7e8f4ff95862a0ed0f2208a6b36d11a8af26d451ac9",
+      "length": 6255
+    },
+    {
+      "path": "box-maintained-source/generated/qualified-final/aster-box-0.1.0-darwin-arm64.oci.json",
+      "sha256": "fa01adf9f352522da2d69ee92058c380aa4dec0d92d89ca4e4895068c56712e6",
+      "length": 603
+    },
+    {
+      "path": "box-maintained-source/generated/qualified-final/repository/plugins/operations/aster/aster-box/toolchain.acl",
+      "sha256": "04430990410c3efdf429c849dda1c4f5284b5bbe1a8f3254c4b70afeb6b254c7",
+      "length": 572
+    },
+    {
+      "path": "box-maintained-source/source/plugins/plugins/operations/aster/aster-box/LICENSE",
+      "sha256": "f01977376885dfe6b38a2ca0f4e14373b3dd248d6890fff7a382fe96b263c760",
+      "length": 1091
+    },
+    {
+      "path": "box-maintained-source/source/plugins/plugins/operations/aster/aster-box/SOURCE.json",
+      "sha256": "639410d85eae074e1fb5780247f5bff88229c561a3f8568ad504a6d625b0830b",
+      "length": 2137
+    },
+    {
+      "path": "box-maintained-source/source/plugins/plugins/operations/aster/aster-box/THIRD_PARTY_NOTICES.md",
+      "sha256": "5adbbe4a9101198997b71cef038e773599237a5a32a4f46c159ad7d676eb6b78",
+      "length": 1485
+    },
+    {
+      "path": "box-maintained-source/source/plugins/plugins/operations/aster/aster-box/aster-use-extension.acl",
+      "sha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
+      "length": 275
+    },
+    {
+      "path": "box-maintained-source/source/plugins/plugins/operations/aster/aster-box/README.md",
+      "sha256": "487961c3e0acfd288e27077490242e147e9e2b4e725d85174a95a45183e1bb90",
+      "length": 2020
+    },
+    {
+      "path": "box-maintained-source/source/plugins/recipes/aster-box/darwin-arm64.json",
+      "sha256": "e1f47e7cc5a34da177c5b633e4606969ff7974ab44ec6cbbd0ab11142eefcf87",
+      "length": 316
+    },
+    {
+      "path": "box-maintained-source/source/plugins/recipes/aster-box/darwin-arm64.py",
+      "sha256": "126499b87c1a414dc2d30780b8f6238072330099cbba6e34ae7a1c021b55e192",
+      "length": 3640
+    },
+    {
+      "path": "box-maintained-source/source/plugins/tests/test_box_recipe.py",
+      "sha256": "de132f1ae7cd091c50548cad50b4d9caca812905a71eff4aaced467d808f7ed7",
+      "length": 1239
+    },
+    {
+      "path": "box-maintained-source/source/plugins/docs/layout.md",
+      "sha256": "163b5438182e73a230e5915b8bea36ee60084df4fe03757c6986c0a440fa27f7",
+      "length": 10359
+    },
+    {
+      "path": "box-maintained-source/source/specs/031-cli-mise-replacement/tasks.md",
+      "sha256": "a8b1b3417b2e81ad7cc378c9b3597329a1f2d389b42e00b06fec422147cd81a3",
+      "length": 22127
+    },
+    {
+      "path": "box-maintained-source/checks/retain-evidence.py",
+      "sha256": "1079585c13af23090eedf499e8fcc079cc803a81420f308e051f33712a7c00a6",
+      "length": 5580
+    }
+  ]
+}

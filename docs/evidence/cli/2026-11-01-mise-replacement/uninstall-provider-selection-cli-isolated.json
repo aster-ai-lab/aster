@@ -1,0 +1,251 @@
+{
+  "test_binary": "/Users/roylin/code/aster/target/debug/deps/env_manager-dc365661741318e2",
+  "test_binary_sha256": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "source_log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-cli-tests.log",
+  "source_log_sha256": "c9dfc56db925c7d4c42111c575d883153699c557ece94111d03483359da6f2d4",
+  "complete": true,
+  "passed": 24,
+  "results": [
+    {
+      "test": "offline_install_and_missing_lock_refuse_without_network",
+      "exit_code": 0,
+      "elapsed_seconds": 0.5441059580000001,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-offline_install_and_missing_lock_refuse_without_network.log"
+    },
+    {
+      "test": "closed_stdout_returns_an_io_error_without_panicking",
+      "exit_code": 0,
+      "elapsed_seconds": 0.239282333,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-closed_stdout_returns_an_io_error_without_panicking.log"
+    },
+    {
+      "test": "nested_cli_environment_inherits_user_and_ancestor_values",
+      "exit_code": 0,
+      "elapsed_seconds": 0.801827334,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-nested_cli_environment_inherits_user_and_ancestor_values.log"
+    },
+    {
+      "test": "exec_preserves_non_utf8_process_arguments",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3001399169999992,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-exec_preserves_non_utf8_process_arguments.log"
+    },
+    {
+      "test": "exec_preserves_exit_codes_and_signal_termination",
+      "exit_code": 0,
+      "elapsed_seconds": 0.5786047920000001,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-exec_preserves_exit_codes_and_signal_termination.log"
+    },
+    {
+      "test": "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+      "exit_code": 0,
+      "elapsed_seconds": 3.382696790999999,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-an_explicit_package_command_override_preserves_native_arguments_and_exit_status.log"
+    },
+    {
+      "test": "missing_pin_refuses_before_starting_the_requested_process",
+      "exit_code": 0,
+      "elapsed_seconds": 0.28465625000000117,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-missing_pin_refuses_before_starting_the_requested_process.log"
+    },
+    {
+      "test": "failed_install_does_not_panic_or_replace_the_project_pin",
+      "exit_code": 0,
+      "elapsed_seconds": 0.38315324999999945,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-failed_install_does_not_panic_or_replace_the_project_pin.log"
+    },
+    {
+      "test": "invalid_variable_name_does_not_replace_the_project_file",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2788433330000011,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-invalid_variable_name_does_not_replace_the_project_file.log"
+    },
+    {
+      "test": "exec_tool_overrides_use_the_argument_root_and_preserve_configuration",
+      "exit_code": 0,
+      "elapsed_seconds": 6.558744665999999,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-exec_tool_overrides_use_the_argument_root_and_preserve_configuration.log"
+    },
+    {
+      "test": "configured_path_and_system_requests_match_frozen_mise_context_results",
+      "exit_code": 0,
+      "elapsed_seconds": 15.696010666000003,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-configured_path_and_system_requests_match_frozen_mise_context_results.log"
+    },
+    {
+      "test": "cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions",
+      "exit_code": 0,
+      "elapsed_seconds": 1.654295916999999,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions.log"
+    },
+    {
+      "test": "cli_latest_can_execute_when_only_a_prerelease_is_installed",
+      "exit_code": 0,
+      "elapsed_seconds": 0.38241733299999936,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-cli_latest_can_execute_when_only_a_prerelease_is_installed.log"
+    },
+    {
+      "test": "cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints",
+      "exit_code": 0,
+      "elapsed_seconds": 2.0346127079999974,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints.log"
+    },
+    {
+      "test": "legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer",
+      "exit_code": 0,
+      "elapsed_seconds": 3.538400082999999,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer.log"
+    },
+    {
+      "test": "exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin",
+      "exit_code": 0,
+      "elapsed_seconds": 1.199450542000001,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin.log"
+    },
+    {
+      "test": "cli_exec_and_which_select_project_versions_without_network_or_pointer_changes",
+      "exit_code": 0,
+      "elapsed_seconds": 3.4701506250000023,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-cli_exec_and_which_select_project_versions_without_network_or_pointer_changes.log"
+    },
+    {
+      "test": "cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata",
+      "exit_code": 0,
+      "elapsed_seconds": 7.034960292000001,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata.log"
+    },
+    {
+      "test": "unknown_shell_emits_no_activation_script",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3263849169999986,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-unknown_shell_emits_no_activation_script.log"
+    },
+    {
+      "test": "path_use_persists_the_argument_root_and_system_use_does_not_create_receipts",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8950734159999953,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-path_use_persists_the_argument_root_and_system_use_does_not_create_receipts.log"
+    },
+    {
+      "test": "package_commands_use_the_embedded_sdk_without_an_external_companion",
+      "exit_code": 0,
+      "elapsed_seconds": 14.060772499999999,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-package_commands_use_the_embedded_sdk_without_an_external_companion.log"
+    },
+    {
+      "test": "uninstall_unpin_refuses_invalid_declarations_before_removing_payloads",
+      "exit_code": 0,
+      "elapsed_seconds": 0.32660212500000796,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-uninstall_unpin_refuses_invalid_declarations_before_removing_payloads.log"
+    },
+    {
+      "test": "uninstall_matches_the_eight_frozen_native_mise_cases",
+      "exit_code": 0,
+      "elapsed_seconds": 12.442853291999995,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-uninstall_matches_the_eight_frozen_native_mise_cases.log"
+    },
+    {
+      "test": "uninstall_rejects_ambiguity_and_previews_leave_payloads_and_pins_unchanged",
+      "exit_code": 0,
+      "elapsed_seconds": 2.861404667000002,
+      "test_binary_sha256_before": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "test_binary_sha256_after": "bc4ebc33ddc2afb76443d44f2bc5fe31232e143ce1e24a03c42daa875ec1a7ce",
+      "cli_sha256_before": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "cli_sha256_after": "8eaad29c3b91101e29ae446fef49b487372e7c818d0ffe1175bb6a13a4ef50e5",
+      "log": "docs/evidence/cli/2026-11-01-mise-replacement/uninstall-provider-selection-isolated-uninstall_rejects_ambiguity_and_previews_leave_payloads_and_pins_unchanged.log"
+    }
+  ]
+}

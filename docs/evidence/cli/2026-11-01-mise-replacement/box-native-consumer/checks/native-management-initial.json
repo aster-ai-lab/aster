@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "packageId": "aster/aster-box",
+      "aixArchiveSha256": "sha256:05e32dd6d1270cb02195a156c138c650406102c98fc5252873d3b0d3a4e761f6",
+      "outputs": [
+        {
+          "command": "aster-box",
+          "stdout": "aster-box 3.2.7\n"
+        }
+      ],
+      "nativeConsumer": {
+        "kind": "box-microvm",
+        "fixtureSha256": "sha256:0429125e10364631040a9eda0da9340494e6b5e0552403533e480b4e111841cb",
+        "nativeVmExecutionAccepted": true,
+        "isolatedHome": true,
+        "systemToolsOnlyPath": true,
+        "commands": [
+          {
+            "script": "printf 'aster-box-plugin-vm-ok\\n'; uname -s; uname -m",
+            "exitCode": 0,
+            "stdout": "Creating box plugin-box-native (a99b4bb5c124)...\nBox plugin-box-native (a99b4bb5c124) started. Press Ctrl-C to stop.\naster-box-plugin-vm-ok\nLinux\naarch64\nBox plugin-box-native exited and was removed.\n",
+            "cleanupExitCode": 1,
+            "inventoryEmpty": true,
+            "guestTimeoutSeconds": 30,
+            "commandTimeoutSeconds": 120
+          },
+          {
+            "script": "printf 'aster-box-plugin-exit-17\\n'; exit 17",
+            "exitCode": 17,
+            "stdout": "Creating box plugin-box-native (8d0ae8e1b6ea)...\nBox plugin-box-native (8d0ae8e1b6ea) started. Press Ctrl-C to stop.\naster-box-plugin-exit-17\nBox plugin-box-native exited and was removed.\n",
+            "cleanupExitCode": 1,
+            "inventoryEmpty": true,
+            "guestTimeoutSeconds": 30,
+            "commandTimeoutSeconds": 120
+          }
+        ]
+      }
+    }
+  ],
+  "installedCatalogueQueried": true,
+  "allRequestedVersionCommandsExecuted": true,
+  "allCandidatesRemoved": true,
+  "runtimeRetainedUntilLeaseRelease": true,
+  "permanentInstallation": false,
+  "trust": "explicit-local-candidates",
+  "officialRegistryPublicationAccepted": false,
+  "nativeGuiAccepted": false,
+  "commandDeadlineSeconds": 10,
+  "nativeTarget": "aarch64-macos"
+}

@@ -1,0 +1,30 @@
+{
+  "upstreamName": "babeldoc-stream",
+  "upstreamVersion": "0.6.4.post4",
+  "upstreamLicenseExpression": "AGPL-3.0",
+  "projectUrls": [
+    "Homepage, https://github.com/eeee0717/BabelDOC",
+    "Issues, https://github.com/eeee0717/BabelDOC/issues",
+    "Source, https://github.com/eeee0717/BabelDOC",
+    "Upstream, https://github.com/funstory-ai/BabelDOC"
+  ],
+  "requirementsSha256": "6cd27ee08f059342c6ab8edab200d5d98b6b9410d0ff958deeb21b2b13cde5ab",
+  "bootstrapSha256": "576fe620a0734efe4268a6a6eec5ce8005138433ab0b5242f7e0be259bf196db",
+  "python": {
+    "key": "cpython-3.12.14-macos-aarch64-none",
+    "version": "3.12.14",
+    "version_parts": {
+      "major": 3,
+      "minor": 12,
+      "patch": 14
+    },
+    "path": null,
+    "symlink": null,
+    "url": "https://releases.astral.sh/github/python-build-standalone/releases/download/20260901/cpython-3.12.14%2B20260901-aarch64-apple-darwin-install_only_stripped.tar.gz",
+    "os": "macos",
+    "variant": "default",
+    "implementation": "cpython",
+    "arch": "aarch64",
+    "libc": "none"
+  }
+}

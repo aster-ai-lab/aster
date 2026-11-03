@@ -1,0 +1,60 @@
+{
+  "capturedAtUtc": "2026-11-01T18:34:00.512509+00:00",
+  "version": "0.23.25",
+  "archiveBytes": 30645442,
+  "archiveSha256": "2e822403b0b52b6f159c44c72085329d42415aebe12b570889f6a1fc45277004",
+  "sha512IntegrityVerified": true,
+  "members": [
+    {
+      "name": "package/bin/ntn",
+      "bytes": 823,
+      "mode": "0o755"
+    },
+    {
+      "name": "package/dist/ntn-darwin-arm64/ntn",
+      "bytes": 13403824,
+      "mode": "0o755"
+    },
+    {
+      "name": "package/dist/ntn-darwin-x64/ntn",
+      "bytes": 14915936,
+      "mode": "0o755"
+    },
+    {
+      "name": "package/dist/ntn-linux-arm64/ntn",
+      "bytes": 15142056,
+      "mode": "0o755"
+    },
+    {
+      "name": "package/dist/ntn-linux-x64/ntn",
+      "bytes": 16373496,
+      "mode": "0o755"
+    },
+    {
+      "name": "package/install.cjs",
+      "bytes": 1295,
+      "mode": "0o644"
+    },
+    {
+      "name": "package/dist/ntn-win32-x64/ntn.exe",
+      "bytes": 15342904,
+      "mode": "0o644"
+    },
+    {
+      "name": "package/package.json",
+      "bytes": 439,
+      "mode": "0o644"
+    },
+    {
+      "name": "package/LICENSE.md",
+      "bytes": 1074,
+      "mode": "0o644"
+    },
+    {
+      "name": "package/README.md",
+      "bytes": 4871,
+      "mode": "0o644"
+    }
+  ],
+  "binHeaderHex": "23212f7573722f62696e2f656e76206e"
+}

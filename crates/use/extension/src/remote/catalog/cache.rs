@@ -51,7 +51,7 @@ pub(super) async fn record_catalog_refresh(
     repository: &Repository,
     metadata: &VerifiedRegistryMetadata,
 ) -> UseResult<CatalogCacheStamp> {
-    let _lock = acquire_metadata_lock(registry.datastore())?;
+    let _lock = acquire_metadata_lock(registry.datastore()).await?;
     let cache_directory = ensure_cache_directory(registry.datastore()).await?;
     let root = read_metadata_file(
         &registry.datastore().join("root.json"),
@@ -149,6 +149,20 @@ pub(super) async fn record_catalog_refresh(
         "targets metadata",
     )
     .await?;
+    if repository.root().signed.consistent_snapshot {
+        write_cache_file(
+            &cache_directory.join(snapshot_name),
+            &snapshot,
+            "versioned snapshot metadata",
+        )
+        .await?;
+        write_cache_file(
+            &cache_directory.join(targets_name),
+            &targets,
+            "versioned targets metadata",
+        )
+        .await?;
+    }
     write_cache_stamp(&cache_directory, &stamp).await?;
     Ok(stamp)
 }
@@ -203,7 +217,7 @@ pub(super) async fn load_cached_repository(
         ));
     }
 
-    let _lock = acquire_metadata_lock(registry.datastore())?;
+    let _lock = acquire_metadata_lock(registry.datastore()).await?;
     let stamp_path = cache_directory.join(CATALOG_CACHE_NAME);
     let stamp_bytes = read_metadata_file(&stamp_path, MAX_CATALOG_CACHE_BYTES).await?;
     let stamp: CatalogCacheStamp = serde_json::from_slice(&stamp_bytes).map_err(|error| {
@@ -294,7 +308,7 @@ pub(super) async fn validate_cached_registry_identity_if_present(
             "The verified catalog snapshot path must be a real directory.",
         ));
     }
-    let _lock = acquire_metadata_lock(registry.datastore())?;
+    let _lock = acquire_metadata_lock(registry.datastore()).await?;
     let stamp_path = cache_directory.join(CATALOG_CACHE_NAME);
     let stamp_metadata = match fs::symlink_metadata(&stamp_path).await {
         Ok(metadata) => metadata,

@@ -1,0 +1,9 @@
+extension "aster/gh" {
+ schema_version = 3
+ version = "2.103.3"
+ route = "gh"
+ requires_use = ">=0.3.4, <0.4.0"
+ actions = ["read"]
+ repository { url = "https://github.com/aster-ai-lab/plugins" }
+ plugin "toolchain" { entry = "toolchain.acl" optional = false }
+}

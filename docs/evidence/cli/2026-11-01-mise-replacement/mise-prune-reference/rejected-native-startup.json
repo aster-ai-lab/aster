@@ -1,0 +1,1316 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "timeout_seconds": 25,
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "installations": {
+    "fixture": [
+      "1.0.0",
+      "1.5.0",
+      "2.0.0"
+    ]
+  },
+  "status": "failed",
+  "cases": [
+    {
+      "name": "unreferenced_current_is_unused",
+      "declarations": [],
+      "operation": "none",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/0/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/0/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/0/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  746ms\nmise ✓ fixture@1.0.0  786ms\nmise ✓ fixture@1.5.0  815ms\nmise ████████████████ 3/3 · installed 3 tools in 817ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/0/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 3 tools\nmise ✓ fixture@1.0.0  7ms\nmise ✓ fixture@1.5.0  5ms\nmise ✓ fixture@2.0.0  5ms\nmise ████████████████ 3/3 · removed 3 tools in 20ms\n"
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [],
+      "configs_unchanged": true
+    },
+    {
+      "name": "global_exact",
+      "declarations": [
+        [
+          "global",
+          "1.0.0"
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  596ms\nmise ✓ fixture@1.5.0  617ms\nmise ✓ fixture@1.0.0  633ms\nmise ████████████████ 3/3 · installed 3 tools in 635ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/config",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/config",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 2 tools\nmise ✓ fixture@1.5.0  5ms\nmise ✓ fixture@2.0.0  8ms\nmise ████████████████ 2/2 · removed 2 tools in 15ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/1/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "two_tracked_projects",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ],
+        [
+          "b",
+          "2.0.0"
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.0.0  735ms\nmise ✓ fixture@2.0.0  762ms\nmise ✓ fixture@1.5.0  777ms\nmise ████████████████ 3/3 · installed 3 tools in 779ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project b 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project b 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project b 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/project b 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 1 tool\nmise ✓ fixture@1.5.0  8ms\nmise ████████████████ 1/1 · removed 1 tool in 9ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/2/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.0.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "prefix_keeps_selected_version",
+      "declarations": [
+        [
+          "a",
+          "1"
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.5.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  599ms\nmise ✓ fixture@1.5.0  615ms\nmise ✓ fixture@1.0.0  634ms\nmise ████████████████ 3/3 · installed 3 tools in 636ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 2 tools\nmise ✓ fixture@1.0.0  12ms\nmise ✓ fixture@2.0.0  5ms\nmise ████████████████ 2/2 · removed 2 tools in 18ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/3/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.5.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "ordered_versions",
+      "declarations": [
+        [
+          "a",
+          [
+            "2.0.0",
+            "1.0.0"
+          ]
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.5.0  664ms\nmise ✓ fixture@2.0.0  681ms\nmise ✓ fixture@1.0.0  702ms\nmise ████████████████ 3/3 · installed 3 tools in 703ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 1 tool\nmise ✓ fixture@1.5.0  11ms\nmise ████████████████ 1/1 · removed 1 tool in 11ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/4/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.0.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "changed_tracked_declaration",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ]
+      ],
+      "operation": "change",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  1.7s\nmise ✓ fixture@1.5.0  1.7s\nmise ✓ fixture@1.0.0  1.8s\nmise ████████████████ 3/3 · installed 3 tools in 1.8s\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 2 tools\nmise ✓ fixture@1.0.0  6ms\nmise ✓ fixture@1.5.0  7ms\nmise ████████████████ 2/2 · removed 2 tools in 16ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/5/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "deleted_tracked_declaration",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ]
+      ],
+      "operation": "delete",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.0.0  596ms\nmise ✓ fixture@2.0.0  616ms\nmise ✓ fixture@1.5.0  632ms\nmise ████████████████ 3/3 · installed 3 tools in 634ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/6/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 3 tools\nmise ✓ fixture@1.0.0  6ms\nmise ✓ fixture@1.5.0  5ms\nmise ✓ fixture@2.0.0  6ms\nmise ████████████████ 3/3 · removed 3 tools in 19ms\n"
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [],
+      "configs_unchanged": true
+    },
+    {
+      "name": "preview_preserves_payloads",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--dry-run"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  602ms\nmise ✓ fixture@1.0.0  622ms\nmise ✓ fixture@1.5.0  637ms\nmise ████████████████ 3/3 · installed 3 tools in 639ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--dry-run"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links [dryrun]\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise fixture@1.5.0 is prunable: fixture is required at 1.0.0 by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文/mise.toml\nmise fixture@1.5.0 [dryrun]  uninstall\nmise fixture@1.5.0 [dryrun]  remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/data/installs/fixture/1.5.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/cache/fixture/1.5.0\nmise fixture@1.5.0 [dryrun]  ✓ done\nmise fixture@2.0.0 is prunable: fixture is required at 1.0.0 by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/project a 中文/mise.toml\nmise fixture@2.0.0 [dryrun]  uninstall\nmise fixture@2.0.0 [dryrun]  remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/data/installs/fixture/2.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/cache/fixture/2.0.0\nmise fixture@2.0.0 [dryrun]  ✓ done\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/7/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "preview_code_preserves_payloads",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ]
+      ],
+      "operation": "none",
+      "flags": [
+        "--dry-run-code"
+      ],
+      "expected_exit": 1,
+      "expected_retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.5.0  526ms\nmise ✓ fixture@1.0.0  545ms\nmise ✓ fixture@2.0.0  561ms\nmise ████████████████ 3/3 · installed 3 tools in 563ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--dry-run-code"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise pruned configuration links [dryrun]\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise fixture@1.5.0 is prunable: fixture is required at 1.0.0 by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文/mise.toml\nmise fixture@1.5.0 [dryrun]  uninstall\nmise fixture@1.5.0 [dryrun]  remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/data/installs/fixture/1.5.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/cache/fixture/1.5.0\nmise fixture@1.5.0 [dryrun]  ✓ done\nmise fixture@2.0.0 is prunable: fixture is required at 1.0.0 by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/project a 中文/mise.toml\nmise fixture@2.0.0 [dryrun]  uninstall\nmise fixture@2.0.0 [dryrun]  remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/data/installs/fixture/2.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/cache/fixture/2.0.0\nmise fixture@2.0.0 [dryrun]  ✓ done\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/8/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 1,
+      "retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "confirmation_is_required",
+      "declarations": [],
+      "operation": "none",
+      "flags": [],
+      "expected_exit": 1,
+      "expected_retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  522ms\nmise ✓ fixture@1.0.0  542ms\nmise ✓ fixture@1.5.0  561ms\nmise ████████████████ 3/3 · installed 3 tools in 562ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise ERROR mise prune requires confirmation but there was nobody to ask; pass --yes to prune non-interactively\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/9/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 1,
+      "retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "configs_only_preserves_payloads",
+      "declarations": [
+        [
+          "a",
+          "1.0.0"
+        ]
+      ],
+      "operation": "delete",
+      "flags": [
+        "--configs",
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  532ms\nmise ✓ fixture@1.0.0  557ms\nmise ✓ fixture@1.5.0  572ms\nmise ████████████████ 3/3 · installed 3 tools in 573ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/project a 中文/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/project a 中文/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "exec",
+            "--",
+            "fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/project a 中文",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--configs",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/10/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "exit": 0,
+      "retained": [
+        "1.0.0",
+        "1.5.0",
+        "2.0.0"
+      ],
+      "configs_unchanged": true
+    },
+    {
+      "name": "running_version_is_retained",
+      "declarations": [],
+      "operation": "running",
+      "flags": [
+        "--yes"
+      ],
+      "expected_exit": 0,
+      "expected_retained": [
+        "1.0.0"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/11/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/11/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/11/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  597ms\nmise ✓ fixture@1.5.0  622ms\nmise ✓ fixture@1.0.0  642ms\nmise ████████████████ 3/3 · installed 3 tools in 643ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "prune",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster prune 中文 wl9l1e0k/11/work",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise pruned configuration links\nmise scanning tracked configs resolving tools for this directory\nmise scanning tracked configs listing installed versions\nmise scanning tracked configs checking running processes\nmise scanning tracked configs ✓ done\nmise by @jdx – removing 3 tools\nmise ✓ fixture@1.0.0  5ms\nmise ✓ fixture@1.5.0  4ms\nmise ✓ fixture@2.0.0  5ms\nmise ████████████████ 3/3 · removed 3 tools in 17ms\n"
+        }
+      ],
+      "status": "failed",
+      "hooks": {
+        "list-all": "eeb918188a4de418d3cb8981117f6ee7d05e01dfb66fe53cb4044105fbb9fa29",
+        "install": "be8c100cad477ef45d9e04281e7a143da367ccc979f134cb6c09329e1a9be75e"
+      },
+      "native_sleep_sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+      "held_pid": 77456,
+      "exit": 0,
+      "retained": [],
+      "configs_unchanged": true,
+      "held_alive_after_prune": false,
+      "held_reaped": true
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "before": {
+    "test": "9c8d8ef4d3ebfb53bbf9bb0d2c63c3974299b457d643a07c2e5f5e6705b6b53c",
+    "cli": "7566cf4875ed1d307cbb9b4964567840df551222f3f4269fd9a0ce197c949825"
+  },
+  "after": {
+    "test": "9c8d8ef4d3ebfb53bbf9bb0d2c63c3974299b457d643a07c2e5f5e6705b6b53c",
+    "cli": "7566cf4875ed1d307cbb9b4964567840df551222f3f4269fd9a0ce197c949825"
+  },
+  "unchanged": true,
+  "results": [
+    {
+      "case": "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+      "command": [
+        "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-9792e1e768dbce5a",
+        "--exact",
+        "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 0
+    },
+    {
+      "case": "configured_path_and_system_requests_match_frozen_mise_context_results",
+      "command": [
+        "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-9792e1e768dbce5a",
+        "--exact",
+        "configured_path_and_system_requests_match_frozen_mise_context_results",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 0
+    }
+  ]
+}

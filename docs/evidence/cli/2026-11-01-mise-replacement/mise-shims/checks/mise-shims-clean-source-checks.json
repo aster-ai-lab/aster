@@ -1,0 +1,56 @@
+{
+  "startedAtUnixSeconds": 1793643247.9441931,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "tool-clippy-clean",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "log": ".tmp/mise-shims-tool-clippy-clean.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793643247.944213,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793643654.154207
+    },
+    {
+      "name": "tool-tests-clean",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire"
+      ],
+      "log": ".tmp/mise-shims-tool-tests-clean.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793643654.1545112,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793643907.555431
+    },
+    {
+      "name": "pair-build-clean",
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp"
+      ],
+      "log": ".tmp/mise-shims-pair-build-clean.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793643907.556072,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793644049.883532
+    }
+  ],
+  "finishedAtUnixSeconds": 1793644049.887258
+}

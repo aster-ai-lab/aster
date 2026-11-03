@@ -1,0 +1,32 @@
+Analysis of sampling env_manager-dc365661741318e2 (pid 81964) every 1 millisecond
+Process:         env_manager-dc365661741318e2 [81964]
+Path:            /Users/USER/*/env_manager-dc365661741318e2
+Load Address:    0x100d38000
+Identifier:      env_manager-dc365661741318e2
+Version:         ???
+Code Type:       ARM64
+Parent Process:  python3.12 [81298]
+Target Type:     live task
+
+Date/Time:       2026-11-01 17:31:25.874 +0800
+Launch Time:     2026-11-01 17:29:17.809 +0800
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         96K
+Physical footprint (peak):  96K
+Idle exit:                  untracked
+----
+
+Call graph:
+    884 Thread_65733997: Main Thread   DispatchQueue_<multiple>
+      884 _dyld_start  (in dyld) + 0  [0x101b949c0]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        884
+
+Binary images description not available
+

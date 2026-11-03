@@ -1,0 +1,194 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "host": {
+    "os": "Darwin",
+    "arch": "arm64"
+  },
+  "fixture": "owned local plugin linked with the reference CLI; fresh state for each case",
+  "timeout_seconds": 25,
+  "paranoid": true,
+  "hook_sha256": {
+    "list-all": "3db574b024a50b0092564e38a46160ef2e8e948ee51f1c7603ae94ce6ef9c58c",
+    "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+  },
+  "versions": [
+    {
+      "version": "0.8.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.8.9",
+      "prerelease": false
+    },
+    {
+      "version": "0.81.0",
+      "prerelease": false
+    },
+    {
+      "version": "1.2",
+      "prerelease": false
+    },
+    {
+      "version": "1.2.3",
+      "prerelease": false
+    },
+    {
+      "version": "1.2.9",
+      "prerelease": false
+    },
+    {
+      "version": "1.20.0",
+      "prerelease": false
+    },
+    {
+      "version": "2.78.9",
+      "prerelease": false
+    },
+    {
+      "version": "2.79.0",
+      "prerelease": false
+    },
+    {
+      "version": "3.2.1",
+      "prerelease": false
+    },
+    {
+      "version": "4.0.0-rc.1",
+      "prerelease": true
+    }
+  ],
+  "cases": [
+    {
+      "request": "latest",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@latest",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "3.2.1\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@3.2.1 has no release date, so the 2026-10-31T01:05:31.223818Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@3.2.1  156ms\nmise ████████████████ 1/1 · installed 1 tool in 159ms\n"
+    },
+    {
+      "request": "1.2",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@1.2",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "1.2\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise ✓ fixture@1.2  36ms\nmise ████████████████ 1/1 · installed 1 tool in 37ms\n"
+    },
+    {
+      "request": "prefix:1.2",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@prefix:1.2",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "1.2.9\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T01:05:31.915192Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2.9  47ms\nmise ████████████████ 1/1 · installed 1 tool in 48ms\n"
+    },
+    {
+      "request": "0.8",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@0.8",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "0.8.9\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@0.8.9 has no release date, so the 2026-10-31T01:05:32.34507Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@0.8.9  39ms\nmise ████████████████ 1/1 · installed 1 tool in 41ms\n"
+    },
+    {
+      "request": "prefix:0.8",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@prefix:0.8",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "0.8.9\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@0.8.9 has no release date, so the 2026-10-31T01:05:32.809752Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@0.8.9  37ms\nmise ████████████████ 1/1 · installed 1 tool in 38ms\n"
+    },
+    {
+      "request": "v1.2",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@v1.2",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "1.2.9\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T01:05:33.165359Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2.9  38ms\nmise ████████████████ 1/1 · installed 1 tool in 39ms\n"
+    },
+    {
+      "request": "sub-1:latest",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@sub-1:latest",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "2.79.0\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@2.79.0 has no release date, so the 2026-10-31T01:05:33.530222Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@2.79.0  42ms\nmise ████████████████ 1/1 · installed 1 tool in 44ms\n"
+    },
+    {
+      "request": "sub-0.0.1:2.79.0",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@sub-0.0.1:2.79.0",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "2.78.9\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise WARN  asdf:fixture@2.78.9 has no release date, so the 2026-10-31T01:05:33.995827Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@2.78.9  40ms\nmise ████████████████ 1/1 · installed 1 tool in 42ms\n"
+    },
+    {
+      "request": "4.0.0-rc.1",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@4.0.0-rc.1",
+        "--",
+        "fixture"
+      ],
+      "exit": 0,
+      "stdout": "4.0.0-rc.1\n",
+      "stderr": "mise by @jdx – installing 1 tool\nmise ✓ fixture@4.0.0-rc.1  38ms\nmise ████████████████ 1/1 · installed 1 tool in 39ms\n"
+    },
+    {
+      "request": "prefix:4",
+      "command": [
+        "mise",
+        "exec",
+        "fixture@prefix:4",
+        "--",
+        "fixture"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "mise WARN  Failed to resolve tool version list for fixture: [--runtime] fixture@prefix:4: no versions found for fixture\nmise ERROR \"fixture\" couldn't exec process: No such file or directory\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+    }
+  ]
+}

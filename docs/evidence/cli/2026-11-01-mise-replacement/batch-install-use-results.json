@@ -1,0 +1,104 @@
+{
+  "scope": "Batch install/use selection, preflight, ACL preservation and installed-version reuse",
+  "source_hashes": {
+    "crates/use/tool-acquire/src/store.rs": "80dfad452b096f5a0d3e99f634b22f8c840eaf36cfdeec5bc0311eb472f90a37",
+    "crates/use/tool-acquire/src/store/tests.rs": "3a420401e7e11684f17c4b1acb8f917edcc0dc3c3c07b9e96384a47913fd2dbb",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "5acdb65735f7a1cb91a8e8f75997d806133ba4e9cbd53091f8823b055be1754a",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/tests.rs": "49f0e04ca42c98622972c0768899d729f9e78b3732e357f0c3f3e1a87df7f1aa",
+    "apps/aster/tests/env_manager.rs": "49c4fb92e98a75a35b1842f079534381c431804494c406f10864bc9cba775bf7",
+    "tests/cli_mise_batch_install_reference.py": "b352db135a8e8a2edc6c86ca39f3e68abc57488b56a1c39096a2c5bedf7eb52e",
+    "specs/031-cli-mise-replacement/contracts/mise-batch-install-reference.json": "7a0e1bd7735dab6567e70a803dca944cbebf28ba3a9260469fbff18be8f78f50"
+  },
+  "tool_tests": {
+    "passed": 130,
+    "ignored": 4
+  },
+  "pager_tests": {
+    "passed": 18
+  },
+  "cli_batch": {
+    "passed": 28,
+    "timeouts": 1
+  },
+  "unchanged_isolated_cli_replay": {
+    "started": 1793592669.0654972,
+    "case": "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+    "binaries_before": {
+      "target/debug/aster": "a9f1118977979de66f872b739431ee42c1e3f89d24c8e3d3e2cf7bbd2f6362a3",
+      "target/debug/deps/env_manager-1f7217e7bdec0bca": "1ccb74d79388e307655c6e08efaa798eb0f06e7e129dc791c4d9f861e3c7f982"
+    },
+    "argv": [
+      "/Users/roylin/code/aster/target/debug/deps/env_manager-1f7217e7bdec0bca",
+      "--exact",
+      "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+      "--nocapture"
+    ],
+    "exit": 0,
+    "binaries_after": {
+      "target/debug/aster": "a9f1118977979de66f872b739431ee42c1e3f89d24c8e3d3e2cf7bbd2f6362a3",
+      "target/debug/deps/env_manager-1f7217e7bdec0bca": "1ccb74d79388e307655c6e08efaa798eb0f06e7e129dc791c4d9f861e3c7f982"
+    },
+    "elapsed": 2.439,
+    "binaries_unchanged": true
+  },
+  "paired_build_exit": 0,
+  "tool_clippy_exit": 0,
+  "pager_clippy": {
+    "diagnostic_count": 84,
+    "unique_primary_diagnostics": 39,
+    "files": {
+      "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs": 20,
+      "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs": 6,
+      "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs": 2,
+      "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs": 2,
+      "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs": 6,
+      "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs": 26,
+      "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs": 10,
+      "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs": 8,
+      "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs": 4
+    },
+    "changed_owner_diagnostics": []
+  },
+  "format_exit": 0,
+  "workspace_tests": 7,
+  "fixture_refinements_before_cli_execution": [
+    {
+      "at": 1793590992.423441,
+      "before": "9bfcda4be9b4f23b609ef2e916abfd40d6312712ac67dbbcfdc5745024cd1ddf",
+      "after": "cd1bd6a14d6d01a59f7e8d4980699f1f8144986e27844d66de4c124b5a700caa",
+      "reason": "Before first CLI execution, cover current-pointer independence and remote latest alias; use a non-downloading missing runtime to verify later argument rejection hermetically.",
+      "active_commands": [
+        "tool-clippy"
+      ]
+    },
+    {
+      "at": 1793591805.261775,
+      "source_sha256": "49c4fb92e98a75a35b1842f079534381c431804494c406f10864bc9cba775bf7",
+      "reason": "Before first CLI compile/execution, replace the unrelated fixture declaration jq with the actually admitted catalog identity gh. No frozen reference input changed.",
+      "pipeline_commands": [
+        {
+          "name": "tool-clippy",
+          "status": "running",
+          "exit": null
+        }
+      ]
+    }
+  ],
+  "full_mise_complete": false,
+  "release_performed": false,
+  "logs": {
+    "mise-batch-install-verification.json": "994832d1be70d76fdd07db754bd6e4be5bd33cfce756967497af6cadd4aaad48",
+    "mise-batch-install-pager-tests.log": "7487ecc0d55569edb77671f95218aea4ab766f37903c88cc86ff29a1a60eddb8",
+    "mise-batch-install-tool-clippy.log": "15aa69f8b4037bcee19412a8b65109e2f64e03750a2ed07b57cc3d90d595b209",
+    "mise-batch-install-pair.log": "dc7def652636ffc107d0098f478cfe5686812215d6b53157cbe46fcbc2799b61",
+    "mise-batch-install-cli-tests.log": "5b80362058b04405948b83be1ff2ad46a24b6ae91591890f49399706871703fd",
+    "mise-batch-install-cli-isolated.log": "4ace1688fdbe2059bf708e124116862cd1bc138227feba669231dc6703281321",
+    "mise-batch-install-cli-isolated.json": "b4112917864308cdac3bd00ca6a5fb12f1012fb9d3028b5ada41b91bf268652c",
+    "mise-batch-install-pager-clippy.log": "ec03d8bcfe07eacbc2b746bb24dcc457fa809506d8dc51a4849bc7258bce6e4d",
+    "mise-batch-install-pager-clippy-summary.json": "c0edee3cfe7746a82cf802927b269ad3a236437b49e08805d4d6afef52d2ea20",
+    "mise-batch-install-format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mise-batch-install-workspace.log": "665644861a680bcf6ac14d48455e1fda1a8cfb8c1277597f9d86d5cd803c5923",
+    "mise-batch-install-pre-cli-fixture-refinement.json": "35ad8e54d81f547efe3c24248658f9127d194ab0f7c9d2dd3ef74ce04da1bad9",
+    "mise-batch-install-fixture-catalogue-refinement.json": "873e791e0babfb0e81e04428bbdfcf10904d1de5a7a41d97279d34a066e430e8"
+  }
+}

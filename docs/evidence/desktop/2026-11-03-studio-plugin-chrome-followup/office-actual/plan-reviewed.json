@@ -1,0 +1,12 @@
+{
+  "exactDesktopPinMatched": true,
+  "archiveSha256": "sha256:a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838",
+  "archiveBytes": 8272636,
+  "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613",
+  "target": "darwin-arm64",
+  "packageSha256": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff",
+  "manifestSha256": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d",
+  "emptyPermissionCeiling": true,
+  "noSecretChanges": true,
+  "noWorkspaceImpacts": true
+}

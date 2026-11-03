@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 117, in <module>
+    main()
+    ~~~~^^
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 103, in main
+    result = invoke(command, root / cwd, success)
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 71, in invoke
+    assert (result.returncode == 0) == success, row
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'argv': ['/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster shim mise 中文 p0ijr2j2/data/shims/fixture'], 'cwd': '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster shim mise 中文 p0ijr2j2/missing', 'status': 'returned', 'exit': 0, 'stdout': '3.0.0\n\n', 'stderr': 'mise by @jdx – installing 1 tool\nmise ✓ fixture@3.0.0  39ms\nmise ████████████████ 1/1 · installed 1 tool in 40ms\n'}

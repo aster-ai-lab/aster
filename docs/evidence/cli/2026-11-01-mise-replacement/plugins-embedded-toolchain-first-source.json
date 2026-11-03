@@ -1,0 +1,15 @@
+{
+  "sourceSha256": {
+    "crates/use/tool-acquire/src/http/toolchain.rs": "4e1fa6ab7fedf95ff884e27f685d6bff471e19e63eab7c4b028e2812e7aaafa0",
+    "crates/use/tool-acquire/src/http/toolchain/tests.rs": "c7036f0140b43e7b05fdb138d338858995b1fe05a13a1e4f2a3dd0b37a1f17dc",
+    "crates/use/tool-acquire/src/archive.rs": "5c34cf4f4aa9ee5a007d8106dd4ece38ef3f8580b6f9f03d6d313fb85ba102ae",
+    "crates/use/tool-acquire/src/archive/store.rs": "39f25b0da56bed9c2248b2fe2f5cc930e9e3baed40ecd7314caeb7637af4b33e",
+    "crates/use/tool-acquire/src/archive/tests.rs": "6cd0b7a1861ead11b94107138c3cb021691be2d0bde645acba4b39afefe32bcf"
+  },
+  "initialAndIsolatedExitCodes": [
+    101,
+    101
+  ],
+  "failure": "E0616: new test accessed the private ArchiveRecord.entries field",
+  "caseCodeUnchangedBeforeIsolatedCompile": true
+}

@@ -4,7 +4,7 @@
 [package]
 name = "aster-use"
 publish = false
-version = "0.3.3"
+version = "0.3.4"
 edition = "2021"
 license = "MIT"
 rust-version = "1.85"
@@ -48,7 +48,7 @@ reconcile = ["dep:aster-use-reconcile"]
 aster-use-core = { version = "0.2.4", path = "core" }
 aster-use-tool-acquire = { version = "0.2.4", path = "tool-acquire", optional = true }
 aster-use-reconcile = { version = "0.2.4", path = "reconcile", optional = true }
-aster-use-extension = { version = "0.3.3", path = "extension", optional = true }
+aster-use-extension = { version = "0.3.4", path = "extension", optional = true }
 aster-runtime = { version = "=0.8.0", path = "../runtime", optional = true }
 async-trait = { workspace = true, optional = true }
 axum = { workspace = true, optional = true }

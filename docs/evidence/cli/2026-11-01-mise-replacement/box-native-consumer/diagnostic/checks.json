@@ -1,0 +1,103 @@
+{
+  "aixSha256": "05e32dd6d1270cb02195a156c138c650406102c98fc5252873d3b0d3a4e761f6",
+  "runtimeSha256": "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7",
+  "environment": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "HOME": "/Users/roylin/code/aster/.tmp/box-plugin-vm-probe/os-home",
+    "ASTER_HOME": "/Users/roylin/code/aster/.tmp/box-plugin-vm-probe/home",
+    "RUST_LOG": "warn",
+    "LANG": "en_US.UTF-8"
+  },
+  "checks": [
+    {
+      "name": "version",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "stdout": "aster-box 3.2.7\n",
+      "stderr": "",
+      "timeoutSeconds": 10,
+      "seconds": 0.891747166
+    },
+    {
+      "name": "pull",
+      "args": [
+        "pull",
+        "--platform",
+        "linux/arm64",
+        "docker.io/library/alpine:3.22.1"
+      ],
+      "exitCode": 0,
+      "stdout": "Pulling docker.io/library/alpine:3.22.1...\n  [1/1] 2137a54ba606: 0 B / 3.9 MB downloaded\n  [1/1] 2137a54ba606: 1.0 MB / 3.9 MB downloaded\n  [1/1] 2137a54ba606: 2.0 MB / 3.9 MB downloaded\n  [1/1] 2137a54ba606: 3.0 MB / 3.9 MB downloaded\n  [1/1] 2137a54ba606: 3.9 MB / 3.9 MB downloaded \u2713\nPulled: docker.io/library/alpine:3.22.1 (/Users/roylin/code/aster/.tmp/box-plugin-vm-probe/home/images/sha256/4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1)\n",
+      "stderr": "",
+      "timeoutSeconds": 120,
+      "seconds": 7.562966791999999
+    },
+    {
+      "name": "image-inspect",
+      "args": [
+        "image-inspect",
+        "docker.io/library/alpine:3.22.1"
+      ],
+      "exitCode": 0,
+      "stdout": "[\n  {\n    \"Config\": {\n      \"Cmd\": [\n        \"/bin/sh\"\n      ],\n      \"Entrypoint\": null,\n      \"Env\": {\n        \"PATH\": \"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n      },\n      \"ExposedPorts\": [],\n      \"Healthcheck\": null,\n      \"Labels\": {},\n      \"OnBuild\": [],\n      \"StopSignal\": null,\n      \"User\": null,\n      \"Volumes\": [],\n      \"WorkingDir\": \"/\"\n    },\n    \"Digest\": \"sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1\",\n    \"LayerCount\": 1,\n    \"PulledAt\": \"2026-11-02T20:24:10.767602+00:00\",\n    \"Reference\": \"docker.io/library/alpine:3.22.1\",\n    \"Size\": 4132635\n  }\n]\n",
+      "stderr": "",
+      "timeoutSeconds": 10,
+      "seconds": 0.014900125000000486
+    },
+    {
+      "name": "guest-command",
+      "args": [
+        "run",
+        "--rm",
+        "--no-stdin",
+        "--timeout",
+        "30",
+        "--network",
+        "none",
+        "--name",
+        "plugin-box-vm-probe",
+        "docker.io/library/alpine@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1",
+        "--",
+        "/bin/sh",
+        "-c",
+        "printf \"aster-box-plugin-vm-ok\\n\"; uname -s; uname -m"
+      ],
+      "exitCode": 0,
+      "stdout": "Creating box plugin-box-vm-probe (c8acfe639c5f)...\nBox plugin-box-vm-probe (c8acfe639c5f) started. Press Ctrl-C to stop.\naster-box-plugin-vm-ok\nLinux\naarch64\nBox plugin-box-vm-probe exited and was removed.\n",
+      "stderr": "init.krun: setup_redirects ok\ninit.krun: execvp(/sbin/init) starting\n",
+      "timeoutSeconds": 120,
+      "seconds": 2.2856735420000014
+    },
+    {
+      "name": "cleanup",
+      "args": [
+        "rm",
+        "--force",
+        "plugin-box-vm-probe"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Error: plugin-box-vm-probe: No such box: plugin-box-vm-probe\n",
+      "timeoutSeconds": 30,
+      "seconds": 0.0069875000000010346
+    },
+    {
+      "name": "ps",
+      "args": [
+        "ps",
+        "--all",
+        "--format",
+        "json"
+      ],
+      "exitCode": 0,
+      "stdout": "[]\n",
+      "stderr": "",
+      "timeoutSeconds": 10,
+      "seconds": 0.006942583000000724
+    }
+  ],
+  "packageOwnerIntegrationClaimed": false,
+  "published": false
+}

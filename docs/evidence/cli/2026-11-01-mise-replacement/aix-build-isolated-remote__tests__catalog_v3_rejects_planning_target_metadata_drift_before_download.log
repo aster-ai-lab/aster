@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download' (71133323) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download ... FAILED
+
+failures:
+
+failures:
+    remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.00s
+

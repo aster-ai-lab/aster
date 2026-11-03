@@ -1,0 +1,15 @@
+{
+  "packageId": "aster/ntn",
+  "version": "0.23.25",
+  "aixArchiveSha256": "sha256:0cc69aa7c037b8b8c64b09ce0553c97326c4a2a63047d406bfb3fba4f9e09a31",
+  "versionStdout": "ntn 0.23.25\n",
+  "downloadPreparedBeforePublication": true,
+  "installedCatalogueQueried": true,
+  "nativeCommandExecuted": true,
+  "officialManagementRemovalPassed": true,
+  "runtimeRetainedUntilLeaseRelease": true,
+  "permanentInstallation": false,
+  "trust": "explicit-local-candidate",
+  "officialRegistryPublicationAccepted": false,
+  "nativeGuiAccepted": false
+}

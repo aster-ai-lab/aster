@@ -1,0 +1,40 @@
+{
+  "capturedAtUtc": "2026-11-02T01:12:12.390070+00:00",
+  "rootSha256": "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+  "profile": "/Users/roylin/code/aster/.tmp/plugin-registry/status-followup-official",
+  "binarySha256": "2f599cecc92d16146f6e4b64a47580bc6acd106f871ee73fa8e89f4599ed9a32",
+  "checks": [
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster-use",
+        "registry",
+        "source",
+        "add",
+        "official",
+        "--github",
+        "aster-ai-lab/plugins",
+        "--trust-root",
+        "e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+        "--json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"data\": {\n    \"registrySources\": {\n      \"action\": \"add\",\n      \"changed\": true,\n      \"previousRevision\": \"4f6d5a3a0fdec089c533b00ecf8677bcc67d84fe6bcd144e152699ad9b59c53e\",\n      \"schemaVersion\": 1,\n      \"snapshot\": {\n        \"defaultRegistry\": \"official\",\n        \"revision\": \"65bc16405bddbfbb7d822821a851aac5f718e0eab435c39725c35024c63ff9d4\",\n        \"schemaVersion\": 1,\n        \"sources\": [\n          {\n            \"cachePolicy\": {\n              \"maxBytes\": 4294967296,\n              \"maxEntries\": 4096,\n              \"minFreeBytes\": 268435456\n            },\n            \"enabled\": true,\n            \"importedTrustedRoot\": false,\n            \"name\": \"official\",\n            \"registryUrl\": \"https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/\",\n            \"rootSha256\": \"e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b\",\n            \"sourceIdentity\": \"e54fbee741b9263b225e941e54a9485666c9e8bb2895b47cd1d943c97de2aeef\"\n          }\n        ]\n      }\n    }\n  },\n  \"ok\": true,\n  \"schemaVersion\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster-use",
+        "plugin",
+        "search",
+        "aster",
+        "--limit",
+        "50",
+        "--json"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.registry_oci_invalid\",\n    \"details\": {},\n    \"message\": \"The AIX OCI target requires domain, manifest SHA-256 and archive name.\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+      "stderr": ""
+    }
+  ],
+  "binaryUnchanged": true
+}

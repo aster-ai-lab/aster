@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed' (71133019) panicked at crates/use/extension/src/package_tests.rs:278:52:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d, concepts 4, files 7, bytes 2053; observed digest sha256:e37c0559f5c7838275dcc76644f87414160cb82f66e8b8fca6d7f2bc9bd3cdcd, concepts 4, files 7, bytes 2055.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed ... FAILED
+
+failures:
+
+failures:
+    package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.00s
+

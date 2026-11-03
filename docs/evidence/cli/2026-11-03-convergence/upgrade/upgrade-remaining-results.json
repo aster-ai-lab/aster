@@ -1,0 +1,53 @@
+[
+  {
+    "name": "upgrade-pager-final",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster-pager",
+      "--lib",
+      "--",
+      "env_manager_cmd::",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "seconds": 285.084
+  },
+  {
+    "name": "upgrade-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster-use-tool-acquire",
+      "-p",
+      "aster-pager",
+      "-p",
+      "aster",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit": 0,
+    "seconds": 133.34
+  },
+  {
+    "name": "upgrade-paired-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster",
+      "-p",
+      "aster-acp"
+    ],
+    "exit": 0,
+    "seconds": 248.984
+  }
+]

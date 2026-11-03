@@ -1,0 +1,18 @@
+{
+  "packageId": "aster/cua",
+  "version": "0.9.0",
+  "target": "darwin-arm64",
+  "passed": true,
+  "sourceFilesMatchFinalArchive": true,
+  "aixArchiveSha256": "sha256:9f84309c9a1dc9630ee08eac9a6877639984c106572b508513eddbd01d30c664",
+  "upstreamArchiveSha256": "sha256:8d15f4b82694ee8e1c78b419331795bfb3f5fcbab80a7d03ab409a9da89c0bae",
+  "requiredCommands": [
+    "cua",
+    "cua-vz",
+    "cua-microvm-init",
+    "cua-spacesd-linux-aarch64"
+  ],
+  "sigstoreProvenanceVerified": false,
+  "published": false,
+  "requiresUse": ">=0.3.4, <0.4.0"
+}

@@ -57,7 +57,7 @@ def stage_plugin(source, binary, runtime, models, notices, target):
 
 
 def finish_source(source, target):
-    template = WORKSPACE / "plugins/plugins/aster/aster-ocr"
+    template = WORKSPACE / "plugins" / "plugins" / "operations" / "aster" / "aster-ocr"
     for name in ("README.md", "LICENSE", "aster-use-extension.acl"):
         shutil.copy2(template / name, source / name)
     executable = "aster-use-ocr.exe" if target.startswith("windows-") else "aster-use-ocr"
@@ -125,7 +125,7 @@ def main():
     out, target = args.out.resolve(), host_token()
     out.mkdir(parents=True, exist_ok=True)
     repository = out / "repository" / target
-    source = repository / "plugins/aster/aster-ocr"
+    source = repository / "plugins" / "operations" / "aster" / "aster-ocr"
     if source.exists():
         shutil.rmtree(source)
     version = stage_plugin(source, args.binary.resolve(), args.runtime.resolve(), args.models.resolve(), args.notices.resolve(), target)

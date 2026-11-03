@@ -1,0 +1,71 @@
+{
+  "sourceSha256": {
+    "apps/studio/src-tauri/src/runtime_components.rs": "dd142ca8ecc164a79a76b8939bb29149ea6e0d84adaa0c94410560a800fd0e23",
+    "apps/studio/src-tauri/src/runtime_components_tests.rs": "361311aaae93550b8591e6a673054474517e13845d579905c1fe2ce9819c9e06",
+    "apps/studio/src-tauri/src/capabilities.rs": "1a997195aa0ba59fc3f7f1dea4ffc8b93b971648423c2ef45cc6f22cf5c99432"
+  },
+  "checks": [
+    {
+      "name": "runtime-plugin-materialization-tests-current",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "runtime_components::tests",
+        "--",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "runtime-plugin-callable-regression",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::plugin_publication_tests",
+        "--",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "runtime-plugin-registry-regression",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::registry::tests",
+        "--",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "runtime-plugin-materialization-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    }
+  ]
+}

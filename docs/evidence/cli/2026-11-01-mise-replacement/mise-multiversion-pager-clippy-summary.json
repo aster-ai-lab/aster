@@ -1,0 +1,1446 @@
+{
+  "total_error_diagnostics": 84,
+  "primary_files": {
+    "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs": 20,
+    "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs": 6,
+    "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs": 2,
+    "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs": 2,
+    "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs": 6,
+    "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs": 26,
+    "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs": 10,
+    "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs": 8,
+    "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs": 4
+  },
+  "changed_command_module_errors": [],
+  "errors": [
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 146,
+          "column_start": 9
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 147,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 148,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 149,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 150,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 150,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 151,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 151,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 152,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 152,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 106,
+          "column_start": 22
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 143,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 173,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs",
+          "line_start": 248,
+          "column_start": 9
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs",
+          "line_start": 290,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 492,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 495,
+          "column_start": 40
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 498,
+          "column_start": 24
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 462,
+          "column_start": 18
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 466,
+          "column_start": 13
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 467,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 471,
+          "column_start": 38
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 484,
+          "column_start": 13
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 812,
+          "column_start": 28
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 818,
+          "column_start": 52
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 831,
+          "column_start": 24
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 940,
+          "column_start": 38
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 943,
+          "column_start": 35
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 956,
+          "column_start": 34
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 967,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "slicing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 970,
+          "column_start": 18
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 286,
+          "column_start": 28
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 515,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 562,
+          "column_start": 21
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 690,
+          "column_start": 32
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 691,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 299,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 306,
+          "column_start": 39
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 310,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 355,
+          "column_start": 62
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+          "line_start": 183,
+          "column_start": 41
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+          "line_start": 207,
+          "column_start": 33
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 146,
+          "column_start": 9
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 147,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 148,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 149,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 150,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 150,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 151,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 151,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 152,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs",
+          "line_start": 152,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 106,
+          "column_start": 22
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 143,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/app/modals.rs",
+          "line_start": 173,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs",
+          "line_start": 248,
+          "column_start": 9
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs",
+          "line_start": 290,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 492,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 495,
+          "column_start": 40
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs",
+          "line_start": 498,
+          "column_start": 24
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 462,
+          "column_start": 18
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 466,
+          "column_start": 13
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 467,
+          "column_start": 16
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 471,
+          "column_start": 38
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 484,
+          "column_start": 13
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 812,
+          "column_start": 28
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 818,
+          "column_start": 52
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 831,
+          "column_start": 24
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 940,
+          "column_start": 38
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 943,
+          "column_start": 35
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 956,
+          "column_start": 34
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 967,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "slicing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs",
+          "line_start": 970,
+          "column_start": 18
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 286,
+          "column_start": 28
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 515,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 562,
+          "column_start": 21
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 690,
+          "column_start": 32
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs",
+          "line_start": 691,
+          "column_start": 17
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 299,
+          "column_start": 20
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 306,
+          "column_start": 39
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 310,
+          "column_start": 14
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs",
+          "line_start": 355,
+          "column_start": 62
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+          "line_start": 183,
+          "column_start": 41
+        }
+      ]
+    },
+    {
+      "target": [
+        "lib"
+      ],
+      "code": {
+        "code": "clippy::indexing_slicing",
+        "explanation": null
+      },
+      "message": "indexing may panic",
+      "primary_spans": [
+        {
+          "file_name": "crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs",
+          "line_start": 207,
+          "column_start": 33
+        }
+      ]
+    }
+  ],
+  "unique_primary_locations": 39
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "data": {
+    "view": "text",
+    "result": {
+      "kind": "word",
+      "text": "Aster AIX Office verification",
+      "blocks": [
+        {
+          "path": "/body/p[1]",
+          "text": "Aster AIX Office verification"
+        }
+      ]
+    }
+  }
+}

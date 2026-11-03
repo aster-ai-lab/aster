@@ -1,0 +1,45 @@
+{
+  "startedAtUtc": "2026-11-02T02:01:38.533178+00:00",
+  "sourceSha256": {
+    "apps/studio/src-tauri/src/capabilities_registry.rs": "f5487f453d6c6bc66ad6185c4ac92092445c788f0d940fc022d34d3ac389d072",
+    "apps/studio/src-tauri/src/capabilities_registry_installed.rs": "ddb71ecc34aa2ce17ef279f16ce16a01e48d7cedac33a9da1fadf2c7923c93ef",
+    "apps/studio/src-tauri/src/capabilities_registry_installed_tests.rs": "08e1a624c2b2543b60d1f7dd1bba1562ea88672cd8da4de602ddf44539f15447"
+  },
+  "buildTargetDirectory": "target/studio/aster",
+  "checks": [
+    {
+      "name": "tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::registry",
+        "--",
+        "--nocapture"
+      ],
+      "status": "finished",
+      "log": ".tmp/plugin-pagination-native-tests.log",
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "status": "finished",
+      "log": ".tmp/plugin-pagination-native-clippy.log",
+      "exitCode": 0,
+      "sourcesUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+
+/Users/roylin/code/aster/apps/studio/src/renderer/components/layout/FirstRunRuntimeComponentsDialog.tsx
+  238:19  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+  395:17  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchHome.tsx
+   58:37  warning  Unexpected path "@renderer/pages/capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+   59:30  warning  Unexpected path "@renderer/pages/capabilities/CapabilitiesPage" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+   60:27  warning  Unexpected path "@renderer/pages/settings/TasksSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7         import-x/no-restricted-paths
+  571:5   warning  React Hook useMemo has an unnecessary dependency: 'permissionRevision'. Either exclude it or remove the dependency array                                                             react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx
+  31:32  warning  Unexpected path "@renderer/pages/settings/ProviderSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkbenchModelPicker.tsx
+  15:32  warning  Unexpected path "@renderer/pages/settings/ProviderSettings" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/agents/WorkspaceWikiCatalog.tsx
+  8:27  warning  Unexpected path "@renderer/pages/knowledge/KnowledgePage" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7  import-x/no-restricted-paths
+
+/Users/roylin/code/aster/apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx
+   39:8   warning  Unexpected path "../agents/homePins" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                                import-x/no-restricted-paths
+   40:30  warning  Unexpected path "../agents/notOpenToast" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                            import-x/no-restricted-paths
+   47:8   warning  Unexpected path "../capabilities/capabilitiesData" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                  import-x/no-restricted-paths
+   48:38  warning  Unexpected path "../capabilities/pluginInstallSync" imported in restricted zone. A page must not import another page (cross-page coupling). architecture/renderer.md §7                                 import-x/no-restricted-paths
+  173:9   warning  The 'categories' logical expression could make the dependencies of useEffect Hook (at line 233) change on every render. To fix this, wrap the initialization of 'categories' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+/Users/roylin/code/aster/apps/studio/tests/e2e/workbench-office/navigation-performance.spec.ts
+  0:0  warning  File ignored because of a matching ignore pattern. Use "--no-ignore" to disable file ignore settings or use "--no-warn-ignored" to suppress this warning
+
+✖ 15 problems (0 errors, 15 warnings)
+

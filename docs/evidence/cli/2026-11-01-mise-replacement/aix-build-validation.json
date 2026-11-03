@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "status": "focused-native-build-accepted",
+  "fullGoalComplete": false,
+  "capturedAtUtc": "2026-11-01T13:52:00.601306+00:00",
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "profile": "dev/debug",
+    "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+  },
+  "sourceSha256": {
+    "crates/use/extension/src/aix_pack.rs": "a96d76177657f890185beeb6085d116e7c73c8b5abb0820ff38839be4a37d7b4",
+    "crates/use/extension/src/aix_pack_tests.rs": "f992af8e6c08b6a850ee1713c78f1ede086186b0a1e7b8bdbf86d152bc9200ec",
+    "crates/use/extension/src/digest.rs": "32e74ee508d8c4378b49eca82fd5cf678d0e93b1b5ca9246f8909e21213cbdcf",
+    "crates/use/extension/src/lib.rs": "e692761bb2c1f90adb09b89da5e508d421b9dcae667acca9aed2e2ee2f0e6290",
+    "crates/use/src/cli/registry.rs": "a1ba824ce9afe3d3b6e3c28f9a28fffbf0407e941b5c292241a1b95b4b3060b1",
+    "crates/use/src/cli/registry/aix_tests.rs": "6a635be887398b07b6d4a4d563734911d1a759231ee68ffed19d8808c70ce530",
+    "crates/use/src/cli.rs": "a728a5bfccc895749fb6fcc3b3bde03ae0e1cc25baebe07dd66f8d6cf44f5937",
+    "crates/use/src/cli/output/tests.rs": "369af93843a0387b8b471c97dff175d24db3dc64c718c85102334c519a1a9f58"
+  },
+  "gates": {
+    "extensionFocused": {
+      "exitCode": 0,
+      "log": "aix-build-extension-tests-final.log",
+      "logSha256": "d35e3ff7c9a69cc92aa843f0c9e27263b8a627f5d027bcb846dad05a0da8a22e"
+    },
+    "sdkCli": {
+      "exitCode": 0,
+      "log": "aix-build-cli-tests-current.log",
+      "logSha256": "f0dcb56df6619b5f949c2aab06786e36d379527fd458bd4afbc0ea985c8eb052"
+    },
+    "extensionClippy": {
+      "exitCode": 0,
+      "log": "aix-build-extension-clippy-final.log",
+      "logSha256": "ac4eee1bf9896547fa98217ee012c9c88be6dc4351be8785d8e8b3a2b68da32f"
+    },
+    "sdkClippy": {
+      "exitCode": 0,
+      "log": "aix-build-sdk-clippy.log",
+      "logSha256": "737bc0db67be51a826473d5ab1929bd01fa072c3e03db56df517c90ff05dca5a"
+    },
+    "pairedBuild": {
+      "exitCode": 0,
+      "log": "aix-build-paired-build-final.log",
+      "logSha256": "f6e2d2c333d0db5e8825d9d33704424dc6376bcbe4a3da06a5711e856c780816"
+    },
+    "fullExtensionSuite": {
+      "exitCode": 101,
+      "log": "aix-build-extension-suite.log",
+      "logSha256": "48498951903a819199bb9c086571b0883b085fd7b8ca12eebb17a54f19dfe271"
+    },
+    "focusedFormat": {
+      "exitCode": 0,
+      "log": "aix-build-format-final.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nativeFilenameInitialFailure": {
+      "exitCode": 101,
+      "log": "aix-build-extension-tests.log",
+      "logSha256": "988fb88018b7d292127e1b2f9789588fa34743af4fcfb653aa3f67838ef4f9e0"
+    },
+    "nativeFilenameOriginalIsolatedReplay": {
+      "exitCode": 101,
+      "log": "aix-build-filename-original-replay.log",
+      "logSha256": "b1c38bd0629c46c54127cbbd11cd0cbd755cb35103362b32b341bba633fd045b"
+    },
+    "initialCliTestCompilation": {
+      "exitCode": 101,
+      "log": "aix-build-cli-tests.log",
+      "logSha256": "758bbac113f464c8ca4cca19fb4943c0ee4b2ffe2793944d86c88e80dd714a7c"
+    }
+  },
+  "nativeSmoke": {
+    "report": "aix-build-native-smoke.json",
+    "passed": 8,
+    "externalSdkSiblingPresent": false,
+    "miseAbsent": true,
+    "published": false,
+    "reproducible": true,
+    "fileCount": 4
+  },
+  "fullSuiteReplay": {
+    "report": "aix-build-extension-isolated.json",
+    "failedAlone": 57,
+    "passedAlone": 0,
+    "newFailureNames": [],
+    "testBinarySha256": "db2b0bc8458d252b147d1dda56c4d7be0ace5ef64142797c4115c541d35c7a9d"
+  },
+  "retainedFailures": [
+    "Initial Unix filename test assumed the macOS filesystem accepted an invalid UTF-8 filename. Both the native filesystem oracle and isolated original test refused it with EILSEQ. The new test follows actual filesystem semantics and asserts no alternate/partial file is published.",
+    "Initial new CLI test used unwrap_err on a non-Debug success type; test source was corrected without changing production types or frozen inputs.",
+    "The full extension suite retains 57 previously failing cases, all individually replayed unchanged. Focused success does not establish the wider SDK gate."
+  ],
+  "cuaUpstreamReference": {
+    "report": "cua-cli-external-source.json",
+    "rawManifest": "cua-cli-upstream-release-manifest.json",
+    "cliArtifacts": 6,
+    "darwinArm64ArchiveVerified": true,
+    "members": 4,
+    "publisherSignatureVerified": false
+  },
+  "officialPackages": {
+    "required": 14,
+    "produced": 0,
+    "published": 0
+  },
+  "remaining": [
+    "Toolchain acquisition host integration and its current focused gates",
+    "All 14 actual AIX artifacts and custom/existing-install migration",
+    "Production trust-root custody, signed Registry/GHCR publication and remote acceptance",
+    "Native GUI, Windows/Linux, final release completeness and efficiency",
+    "All uncompleted T004-T014 and 24 frozen feature families"
+  ]
+}

@@ -1,0 +1,15 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-44707e5b55ee6b34)
+
+running 4 tests
+test http::error_tests::malformed_json_keeps_the_parser_error_without_the_response_payload ... ok
+test http::error_tests::truncated_bodies_keep_the_read_error_without_url_credentials ... ok
+test http::error_tests::metadata_and_asset_size_limits_refuse_before_reading_large_bodies ... ok
+test http::error_tests::http_status_and_transport_errors_keep_typed_sources_without_url_credentials ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 80 filtered out; finished in 0.05s
+

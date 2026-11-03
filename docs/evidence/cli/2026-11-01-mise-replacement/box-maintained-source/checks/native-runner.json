@@ -1,0 +1,6 @@
+{
+  "path": "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-studio-native-tests",
+  "sha256": "7d662542d79f8b5d83a0caec1a024a9ddb52566d49aa4e223fe478aede8ef1d4",
+  "length": 464536112,
+  "kind": "retained compiled native test runner; this source-only increment does not rebuild Studio"
+}

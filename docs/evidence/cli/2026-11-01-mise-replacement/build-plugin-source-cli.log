@@ -1,0 +1,29 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-util v0.7.19
+   Compiling tokio-tungstenite v0.26.2
+   Compiling sse-stream v0.2.6
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.19
+   Compiling hyper-rustls v0.27.2
+   Compiling axum v0.8.4
+   Compiling reqwest v0.13.5
+   Compiling reqwest v0.12.28
+   Compiling rmcp v0.8.5
+   Compiling tough v0.24.0
+   Compiling aster-use-extension v0.3.3 (/Users/roylin/code/aster/crates/use/extension)
+   Compiling aster-use v0.3.3 (/Users/roylin/code/aster/crates/use)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 49s

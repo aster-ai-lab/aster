@@ -406,22 +406,14 @@ fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {
         let Some(label) = entry.label.as_deref() else {
             continue;
         };
-        if let Some(index) = draft
-            .providers
-            .iter()
-            .enumerate()
-            .find(|(index, provider)| {
-                !used[*index] && provider.original_label.as_deref() == Some(label)
-            })
-            .map(|(index, _)| index)
+        if let Some((used, provider)) = used
+            .iter_mut()
+            .zip(&draft.providers)
+            .find(|(used, provider)| !**used && provider.original_label.as_deref() == Some(label))
         {
-            used[index] = true;
-            if draft.providers[index].dirty {
-                edits.push((
-                    entry.start,
-                    entry.end,
-                    render_provider(&draft.providers[index]),
-                ));
+            *used = true;
+            if provider.dirty {
+                edits.push((entry.start, entry.end, render_provider(provider)));
             }
         } else {
             edits.push((entry.start, entry.end, String::new()));
@@ -429,8 +421,8 @@ fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {
     }
 
     let mut output = apply_edits(source, edits);
-    for (index, provider) in draft.providers.iter().enumerate() {
-        if !used[index] {
+    for (used, provider) in used.iter().zip(&draft.providers) {
+        if !used {
             output = append_entry(&output, &render_provider(provider));
         }
     }
@@ -746,16 +738,18 @@ fn scan_top_level_entries(source: &str) -> Vec<TopLevelEntry> {
         if index >= bytes.len() {
             break;
         }
-        if !is_ident_start(bytes[index]) {
+        if !bytes.get(index).is_some_and(|byte| is_ident_start(*byte)) {
             index += 1;
             continue;
         }
         let start = index;
         index += 1;
-        while index < bytes.len() && is_ident_part(bytes[index]) {
+        while bytes.get(index).is_some_and(|byte| is_ident_part(*byte)) {
             index += 1;
         }
-        let name = source[start..index].to_string();
+        let Some(name) = source.get(start..index).map(str::to_owned) else {
+            break;
+        };
         let header_start = index;
         let mut cursor = index;
         let mut braces = 0usize;
@@ -764,8 +758,7 @@ fn scan_top_level_entries(source: &str) -> Vec<TopLevelEntry> {
         let mut quote = None;
         let mut escaped = false;
         let mut saw_delimiter = false;
-        while cursor < bytes.len() {
-            let byte = bytes[cursor];
+        while let Some(&byte) = bytes.get(cursor) {
             if let Some(active_quote) = quote {
                 if escaped {
                     escaped = false;
@@ -822,14 +815,19 @@ fn scan_top_level_entries(source: &str) -> Vec<TopLevelEntry> {
                 _ => cursor += 1,
             }
         }
-        let header_end = source[header_start..cursor]
+        let Some(header) = source.get(header_start..cursor) else {
+            break;
+        };
+        let header_end = header
             .find('{')
-            .or_else(|| source[header_start..cursor].find('='))
+            .or_else(|| header.find('='))
             .map(|offset| header_start + offset)
             .unwrap_or(cursor);
         entries.push(TopLevelEntry {
             name,
-            label: parse_first_quoted(&source[header_start..header_end]),
+            label: source
+                .get(header_start..header_end)
+                .and_then(parse_first_quoted),
             start,
             end: cursor,
         });
@@ -862,6 +860,10 @@ fn append_entry(source: &str, entry: &str) -> String {
     output
 }
 
+#[cfg(test)]
+#[path = "document_labels_tests.rs"]
+mod label_tests;
+
 fn normalize_final_newline(mut source: String) -> String {
     while source.ends_with("\n\n\n") {
         source.pop();
@@ -874,10 +876,10 @@ fn normalize_final_newline(mut source: String) -> String {
 
 fn skip_space_and_comments(bytes: &[u8], mut index: usize) -> usize {
     loop {
-        while index < bytes.len() && bytes[index].is_ascii_whitespace() {
+        while bytes.get(index).is_some_and(u8::is_ascii_whitespace) {
             index += 1;
         }
-        if index < bytes.len() && bytes[index] == b'#' {
+        if bytes.get(index) == Some(&b'#') {
             index = skip_line(bytes, index);
             continue;
         }
@@ -890,30 +892,28 @@ fn skip_space_and_comments(bytes: &[u8], mut index: usize) -> usize {
 }
 
 fn skip_line(bytes: &[u8], mut index: usize) -> usize {
-    while index < bytes.len() && bytes[index] != b'\n' {
+    while bytes.get(index).is_some_and(|byte| *byte != b'\n') {
         index += 1;
     }
     index
 }
 
 fn parse_first_quoted(value: &str) -> Option<String> {
-    let bytes = value.as_bytes();
-    let start = bytes
-        .iter()
-        .position(|byte| *byte == b'"' || *byte == b'\'')?;
-    let quote = bytes[start];
+    let (start, quote) = value
+        .char_indices()
+        .find(|(_, character)| matches!(character, '"' | '\''))?;
     let mut result = String::new();
     let mut escaped = false;
-    for byte in &bytes[start + 1..] {
+    for character in value.get(start + quote.len_utf8()..)?.chars() {
         if escaped {
-            result.push(*byte as char);
+            result.push(character);
             escaped = false;
-        } else if *byte == b'\\' {
+        } else if character == '\\' {
             escaped = true;
-        } else if *byte == quote {
+        } else if character == quote {
             return Some(result);
         } else {
-            result.push(*byte as char);
+            result.push(character);
         }
     }
     None

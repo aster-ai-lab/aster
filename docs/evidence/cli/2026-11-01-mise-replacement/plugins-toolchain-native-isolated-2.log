@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'capabilities::toolchain::tests::native_toolchain_install_query_reuse_and_removal_share_the_package_lease' (72968858) panicked at apps/studio/src-tauri/src/capabilities_toolchain_tests.rs:124:55:
+called `Result::unwrap()` on an `Err` value: ChecksumMismatch
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capabilities::toolchain::tests::native_toolchain_install_query_reuse_and_removal_share_the_package_lease ... FAILED
+
+failures:
+
+failures:
+    capabilities::toolchain::tests::native_toolchain_install_query_reuse_and_removal_share_the_package_lease
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1579 filtered out; finished in 0.02s
+

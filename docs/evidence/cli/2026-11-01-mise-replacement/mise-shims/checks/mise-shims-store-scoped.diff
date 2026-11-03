@@ -1,0 +1,166 @@
+--- before/crates/use/tool-acquire/src/store.rs
++++ crates/use/tool-acquire/src/store.rs
+@@ -1,4 +1,4 @@
+-use std::collections::BTreeMap;
++use std::collections::{BTreeMap, BTreeSet};
+ use std::fs::{self, File, OpenOptions};
+ use std::io::{Read, Write};
+ use std::path::{Path, PathBuf};
+@@ -26,6 +26,7 @@
+ 
+ const VERSION_CACHE_SCHEMA: &str = "aster.use.tool-acquire.versions.v1";
+ const MAX_VERSION_CACHE_BYTES: u64 = 8 * 1024 * 1024;
++const DISPATCH_SHIM_HEADER: &[u8] = b"#!/bin/sh\n# Aster project dispatch shim v1\n";
+ 
+ #[derive(Serialize)]
+ struct VersionCache<'a> {
+@@ -163,6 +164,10 @@
+     /// installation-tree entries return an error. This is blocking I/O.
+     pub fn all_uninstall_candidates(&self) -> Result<Vec<ToolReceipt>, ToolAcquireError> {
+         let _lock = InstallLock::acquire(&self.root)?;
++        self.recorded_versions()
++    }
++
++    fn recorded_versions(&self) -> Result<Vec<ToolReceipt>, ToolAcquireError> {
+         let directory = join_under(&self.root, &["installs"])?;
+         let entries = match fs::read_dir(&directory) {
+             Ok(entries) => entries,
+@@ -534,6 +539,138 @@
+         self.root.join("shims")
+     }
+ 
++    /// Rebuild Unix dispatch shims for every command in the installed receipts.
++    /// The host renders a shell body for each `(tool, command)`; it owns selected
++    /// version verification and execution. No tool is installed or selected here.
++    /// Rendering holds the store lock and must not call store mutations.
++    /// Only obsolete shims carrying this method's header are removed. I/O and
++    /// malformed receipt errors are returned; non-Unix targets refuse explicitly.
++    pub fn reshim_with(
++        &self,
++        render: impl Fn(&str, &str) -> Result<Vec<u8>, ToolAcquireError>,
++    ) -> Result<usize, ToolAcquireError> {
++        if !cfg!(unix) {
++            return Err(ToolAcquireError::InvalidInstallation(
++                "project dispatch shims require a Unix host".into(),
++            ));
++        }
++        let _lock = InstallLock::acquire(&self.root)?;
++        let receipts = self.recorded_versions()?;
++        let mut commands = BTreeMap::new();
++        for receipt in receipts {
++            let names = match crate::archive::ArchiveRecord::read(&self.root, &receipt)? {
++                Some(record) => record.entrypoints.into_keys().collect::<Vec<_>>(),
++                None => {
++                    #[cfg(not(unix))]
++                    let names = vec![receipt.executable.clone()];
++                    #[cfg(unix)]
++                    let mut names = vec![receipt.executable.clone()];
++                    #[cfg(unix)]
++                    if let Some(files) = self.installation_files(&receipt.name, &receipt.version)? {
++                        use std::os::unix::fs::PermissionsExt;
++                        for name in files.into_keys().filter(|name| name != &receipt.executable) {
++                            if Path::new(&name).components().count() != 1 {
++                                continue;
++                            }
++                            let path = self
++                                .root
++                                .join("installs")
++                                .join(&receipt.name)
++                                .join(&receipt.version)
++                                .join(&name);
++                            let metadata = match fs::symlink_metadata(&path) {
++                                Ok(metadata) => metadata,
++                                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
++                                    continue
++                                }
++                                Err(error) => {
++                                    return Err(ToolAcquireError::io(
++                                        "inspect shim command",
++                                        &path,
++                                        error,
++                                    ))
++                                }
++                            };
++                            if metadata.is_file()
++                                && !metadata_is_link_or_reparse_point(&metadata)
++                                && metadata.permissions().mode() & 0o111 != 0
++                            {
++                                names.push(name);
++                            }
++                        }
++                    }
++                    names
++                }
++            };
++            for name in names {
++                commands.insert(name, receipt.name.clone());
++                if commands.len() > MAX_TREE_ENTRIES {
++                    return Err(ToolAcquireError::InvalidInstallation(
++                        "dispatch shim count exceeds 8192".into(),
++                    ));
++                }
++            }
++        }
++        let scripts = commands
++            .iter()
++            .map(|(command, tool)| {
++                let mut script = DISPATCH_SHIM_HEADER.to_vec();
++                script.extend(render(tool, command)?);
++                Ok((command, script))
++            })
++            .collect::<Result<Vec<_>, ToolAcquireError>>()?;
++        fs::create_dir_all(self.shim_dir()).map_err(|error| {
++            ToolAcquireError::io("create command shims", self.shim_dir(), error)
++        })?;
++        ensure_real_directory(&self.shim_dir())?;
++        let names: BTreeSet<_> = commands.keys().map(std::ffi::OsString::from).collect();
++        let mut obsolete = Vec::new();
++        let mut remaining = MAX_TREE_ENTRIES;
++        for entry in fs::read_dir(self.shim_dir())
++            .map_err(|error| ToolAcquireError::io("list command shims", self.shim_dir(), error))?
++        {
++            remaining = remaining.checked_sub(1).ok_or_else(|| {
++                ToolAcquireError::InvalidInstallation("shim directory exceeds 8192 entries".into())
++            })?;
++            let entry = entry.map_err(|error| {
++                ToolAcquireError::io("read command shim", self.shim_dir(), error)
++            })?;
++            if names.contains(entry.file_name().as_os_str()) {
++                continue;
++            }
++            let metadata = fs::symlink_metadata(entry.path()).map_err(|error| {
++                ToolAcquireError::io("inspect command shim", entry.path(), error)
++            })?;
++            if !metadata.is_file() || metadata_is_link_or_reparse_point(&metadata) {
++                continue;
++            }
++            if metadata.len() < DISPATCH_SHIM_HEADER.len() as u64 {
++                continue;
++            }
++            let mut header = vec![0; DISPATCH_SHIM_HEADER.len()];
++            let mut file = File::open(entry.path()).map_err(|error| {
++                ToolAcquireError::io("read command shim header", entry.path(), error)
++            })?;
++            file.read_exact(&mut header).map_err(|error| {
++                ToolAcquireError::io("read command shim header", entry.path(), error)
++            })?;
++            if header == DISPATCH_SHIM_HEADER {
++                obsolete.push(entry.path());
++            }
++        }
++        for (command, script) in scripts {
++            let path = self.shim_dir().join(command);
++            write_atomic(&path, &script)?;
++            set_mode(&path, 0o755)?;
++        }
++        for path in obsolete {
++            fs::remove_file(&path).map_err(|error| {
++                ToolAcquireError::io("remove obsolete command shim", &path, error)
++            })?;
++        }
++        Ok(commands.len())
++    }
++
+     /// Read source-declared installation membership. Legacy installs may have no manifest.
+     /// This reads bounded metadata without hashing file contents or changing current pointers.
+     pub fn installation_files(

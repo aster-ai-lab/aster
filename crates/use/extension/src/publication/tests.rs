@@ -41,7 +41,7 @@ struct Fixture {
 fn fixture() -> Fixture {
     let temporary = tempfile::tempdir().unwrap();
     let root = temporary.path().join("插件 source with spaces");
-    let source = root.join("plugins/acme/guide");
+    let source = root.join("plugins/knowledge/acme/guide");
     std::fs::create_dir_all(source.join("skills/guide")).unwrap();
     std::fs::write(root.join("domains.acl"), POLICY).unwrap();
     let archive = root.join("guide.aix");
@@ -107,7 +107,7 @@ async fn publication_binds_explicit_domain_source_archive_and_exact_oci_bytes() 
 }
 
 #[tokio::test]
-async fn admitted_domain_changes_preserve_package_source_and_oci_identity() {
+async fn admitted_domain_moves_preserve_package_and_oci_identity() {
     let fixture = fixture();
     std::fs::write(
         fixture.root.join("domains.acl"),
@@ -117,13 +117,27 @@ async fn admitted_domain_changes_preserve_package_source_and_oci_identity() {
     let knowledge = prepare_aix_publication(&fixture.root, "knowledge", &fixture.archive)
         .await
         .unwrap();
+    let original_source = std::fs::canonicalize(&fixture.source).unwrap();
+    let moved = fixture.root.join("plugins/development/acme/guide");
+    std::fs::create_dir_all(moved.parent().unwrap()).unwrap();
+    std::fs::rename(&fixture.source, &moved).unwrap();
     let development = prepare_aix_publication(&fixture.root, "development", &fixture.archive)
         .await
         .unwrap();
-    assert_eq!(knowledge.source_path(), development.source_path());
+    assert_eq!(knowledge.source_path(), original_source);
+    assert_eq!(
+        development.source_path(),
+        std::fs::canonicalize(&moved).unwrap()
+    );
+    assert_eq!(knowledge.package(), development.package());
     assert_eq!(knowledge.oci_repository, development.oci_repository);
     assert_eq!(knowledge.manifest_bytes(), development.manifest_bytes());
     assert_ne!(knowledge.owners, development.owners);
+    assert!(
+        prepare_aix_publication(&fixture.root, "knowledge", &fixture.archive)
+            .await
+            .is_err()
+    );
 }
 
 #[tokio::test]
@@ -282,6 +296,154 @@ async fn mcp_publication_generates_native_planning_without_executing_the_package
 }
 
 #[tokio::test]
+async fn application_publication_preserves_the_graph_and_native_tool_planning() {
+    use aster_use_core::{ExecutablePlanningSurface, PackageSurfaceKind, ToolWorkloadClass};
+
+    let fixture = application_fixture().await;
+    let mut metadata: serde_json::Value = serde_json::from_slice(&catalog_metadata(true)).unwrap();
+    let mut permission = metadata["permissionCeiling"]["surfaces"][0].clone();
+    permission["surface"] = serde_json::json!({"kind": "tool", "id": "probe"});
+    permission["resources"]["taskTimeoutMs"] = 1000.into();
+    permission["resources"]["maxStdoutBytes"] = 1024.into();
+    permission["resources"]["maxStderrBytes"] = 1024.into();
+    metadata["permissionCeiling"]["surfaces"]
+        .as_array_mut()
+        .unwrap()
+        .push(permission);
+    let prepared = prepare_aix_publication_with_catalog(
+        &fixture.root,
+        "knowledge",
+        &fixture.archive,
+        &serde_json::to_vec(&metadata).unwrap(),
+    )
+    .await
+    .unwrap();
+    let record = prepared.catalog().unwrap();
+    record.validate().unwrap();
+    assert_eq!(
+        record.surfaces.iter().map(|s| s.kind).collect::<Vec<_>>(),
+        [
+            PackageSurfaceKind::Flow,
+            PackageSurfaceKind::Mcp,
+            PackageSurfaceKind::Skill,
+            PackageSurfaceKind::Tool,
+            PackageSurfaceKind::Ui,
+            PackageSurfaceKind::Agent,
+            PackageSurfaceKind::Plugin,
+        ]
+    );
+    assert_eq!(record.surfaces[3].workload, Some(ToolWorkloadClass::Task));
+    assert_eq!(record.surfaces[0].requires[0].id, "probe");
+    assert!(record.surfaces[0].optional);
+    assert_eq!(record.surfaces[4].requires.len(), 2);
+    assert_eq!(record.surfaces[5].requires[0].id, "view");
+    assert_eq!(record.surfaces[6].requires[0].id, "view");
+    let planning =
+        aster_use_core::PluginPlanningBundle::from_json(prepared.planning_bytes()).unwrap();
+    assert_eq!(planning.surfaces.len(), 2);
+    assert!(matches!(
+        planning.surfaces[0],
+        ExecutablePlanningSurface::McpStdio { .. }
+    ));
+    assert_eq!(
+        planning.surfaces[1],
+        ExecutablePlanningSurface::ToolTaskNative {
+            id: "probe".into(),
+            activation: aster_use_core::PlanningSurfaceActivation::Eager,
+            executable: "bin/probe".into(),
+            command: "guide-probe".into(),
+            json_output: true,
+            timeout_ms: 1000,
+        }
+    );
+    assert_eq!(
+        planning.permission_ceiling_digest,
+        record.permission_ceiling_digest
+    );
+    let error = prepare_aix_publication_with_catalog(
+        &fixture.root,
+        "knowledge",
+        &fixture.archive,
+        &catalog_metadata(true),
+    )
+    .await
+    .unwrap_err();
+    assert_eq!(error.code, "use.extension.catalog_package_mismatch");
+}
+
+#[tokio::test]
+async fn okf_publication_preserves_the_native_bundle_contract() {
+    use aster_use_core::{
+        inspect_okf_bundle_files, OkfBundleFile, OkfBundleLimits, OkfFormatVersion,
+    };
+
+    let mut fixture = fixture();
+    let file = OkfBundleFile::new(
+        "guide.md",
+        "---\ntype: Guide\n---\n\nPublication evidence.\n",
+    );
+    let inspected = inspect_okf_bundle_files(
+        OkfFormatVersion::V0_2,
+        OkfBundleLimits::default(),
+        std::slice::from_ref(&file),
+    )
+    .unwrap();
+    std::fs::create_dir_all(fixture.source.join("okf/guide")).unwrap();
+    std::fs::write(fixture.source.join("okf/guide/guide.md"), &file.content).unwrap();
+    let body = MANIFEST.trim_end().strip_suffix('}').unwrap().replace(
+        "requires_mcp = []",
+        "requires_mcp = []\n    requires_okf = [\"knowledge\"]",
+    );
+    let manifest = format!(
+        r#"{body}
+  okf "knowledge" {{
+    format_version = "0.2"
+    root = "okf/guide"
+    content_digest = "{}"
+    concept_count = 1
+    file_count = 1
+    expanded_bytes = {}
+    max_files = 256
+    max_concepts = 64
+    max_expanded_bytes = 67108864
+    max_document_bytes = 1048576
+    max_links_per_document = 2048
+  }}
+}}
+"#,
+        inspected.content_digest, inspected.expanded_bytes
+    );
+    std::fs::write(fixture.source.join("aster-use-extension.acl"), &manifest).unwrap();
+    fixture.archive = fixture.root.join("okf.aix");
+    crate::build_aix_package(&fixture.source, &fixture.archive)
+        .await
+        .unwrap();
+    let prepared = prepare_aix_publication_with_catalog(
+        &fixture.root,
+        "knowledge",
+        &fixture.archive,
+        &catalog_metadata(false),
+    )
+    .await
+    .unwrap();
+    let record = prepared.catalog().unwrap();
+    let parsed = crate::ExtensionManifest::parse_acl(&manifest).unwrap();
+    assert_eq!(
+        record.surfaces[0].kind,
+        aster_use_core::PackageSurfaceKind::Okf
+    );
+    assert_eq!(
+        record.surfaces[0].okf_bundle.as_ref(),
+        Some(&parsed.okf[0].bundle)
+    );
+    assert_eq!(
+        record.surfaces[1].requires[0],
+        record.surfaces[0].reference()
+    );
+    assert!(prepared.planning_bytes().is_empty());
+}
+
+#[tokio::test]
 async fn publication_debug_redacts_payloads_inside_containers() {
     let fixture = fixture();
     let mut publication = prepare_aix_publication(&fixture.root, "knowledge", &fixture.archive)
@@ -334,6 +496,79 @@ async fn mcp_fixture() -> Fixture {
         std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o755)).unwrap();
     }
     fixture.archive = fixture.root.join("mcp.aix");
+    crate::build_aix_package(&fixture.source, &fixture.archive)
+        .await
+        .unwrap();
+    fixture
+}
+
+async fn application_fixture() -> Fixture {
+    let mut fixture = mcp_fixture().await;
+    let manifest = std::fs::read_to_string(fixture.source.join("aster-use-extension.acl")).unwrap();
+    let body = manifest.trim_end().strip_suffix('}').unwrap();
+    std::fs::write(
+        fixture.source.join("aster-use-extension.acl"),
+        format!(
+            r#"{body}
+  tool "probe" {{
+    workload = "task"
+    interface = "cli"
+    executable = "bin/probe"
+    command = "guide-probe"
+    json_output = true
+    timeout_ms = 1000
+    activation = "eager"
+  }}
+  flow "draft" {{
+    engine = "aster-flow"
+    runtime = "native-ts"
+    source = "flows/draft.ts"
+    export = "draft"
+    requires_tool = ["probe"]
+    optional = true
+  }}
+  ui "view" {{
+    entry = "ui/index.html"
+    skill = "guide"
+    bind_flow = ["draft"]
+  }}
+  agent "assistant" {{
+    harness = "builtin"
+    runtime = "cloud"
+    instructions = "agents/INSTRUCTIONS.md"
+    resources {{ cpu_millis = 500 memory_bytes = 268435456 }}
+    requires_ui = ["view"]
+  }}
+  plugin "integration" {{
+    entry = "plugin.txt"
+    requires_ui = ["view"]
+  }}
+}}
+"#
+        ),
+    )
+    .unwrap();
+    for (path, contents) in [
+        ("bin/probe", "#!/bin/sh\nexit 23\n"),
+        ("flows/draft.ts", "export function draft() { return 23; }\n"),
+        ("ui/index.html", "<!doctype html><title>Guide</title>\n"),
+        ("agents/INSTRUCTIONS.md", "Read the guide.\n"),
+        ("plugin.txt", "Application integration.\n"),
+    ] {
+        let target = fixture.source.join(path);
+        std::fs::create_dir_all(target.parent().unwrap()).unwrap();
+        std::fs::write(target, contents).unwrap();
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(
+            fixture.source.join("bin/probe"),
+            std::fs::Permissions::from_mode(0o755),
+        )
+        .unwrap();
+    }
+    fixture.archive = fixture.root.join("application.aix");
     crate::build_aix_package(&fixture.source, &fixture.archive)
         .await
         .unwrap();

@@ -1,0 +1,21 @@
+{
+  "started": 1793592669.0654972,
+  "case": "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+  "binaries_before": {
+    "target/debug/aster": "a9f1118977979de66f872b739431ee42c1e3f89d24c8e3d3e2cf7bbd2f6362a3",
+    "target/debug/deps/env_manager-1f7217e7bdec0bca": "1ccb74d79388e307655c6e08efaa798eb0f06e7e129dc791c4d9f861e3c7f982"
+  },
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/deps/env_manager-1f7217e7bdec0bca",
+    "--exact",
+    "an_explicit_package_command_override_preserves_native_arguments_and_exit_status",
+    "--nocapture"
+  ],
+  "exit": 0,
+  "binaries_after": {
+    "target/debug/aster": "a9f1118977979de66f872b739431ee42c1e3f89d24c8e3d3e2cf7bbd2f6362a3",
+    "target/debug/deps/env_manager-1f7217e7bdec0bca": "1ccb74d79388e307655c6e08efaa798eb0f06e7e129dc791c4d9f861e3c7f982"
+  },
+  "elapsed": 2.439,
+  "binaries_unchanged": true
+}

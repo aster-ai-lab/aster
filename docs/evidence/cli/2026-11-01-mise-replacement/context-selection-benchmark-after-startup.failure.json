@@ -1,0 +1,17 @@
+{
+  "tool_session_id": 13894,
+  "process_exit_code": 1,
+  "observed_exception": "subprocess.TimeoutExpired",
+  "command": [
+    ".tmp/mise-replacement/reference/mise",
+    "exec",
+    "node@path:./SDK node",
+    "--",
+    "node"
+  ],
+  "deadline_seconds": 25,
+  "intended_report": "docs/evidence/cli/2026-11-01-mise-replacement/context-selection-benchmark-after-startup.json",
+  "intended_report_exists": false,
+  "completed_sample_rows_recovered": false,
+  "scope": "Observed terminal tool result; the old harness lost partial rows before writing its report. No performance conclusion."
+}

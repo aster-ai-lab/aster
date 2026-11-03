@@ -1,0 +1,236 @@
+--- before/apps/aster/tests/env_manager.rs
++++ apps/aster/tests/env_manager.rs
+@@ -112,6 +112,233 @@
+         })
+         .await
+         .unwrap();
++}
++
++#[cfg(unix)]
++#[tokio::test]
++async fn project_uninstall_matches_eight_frozen_mise_cases_and_preserves_declarations() {
++    #[derive(serde::Deserialize)]
++    #[serde(untagged)]
++    enum Requests {
++        One(String),
++        Many(Vec<String>),
++    }
++    #[derive(serde::Deserialize)]
++    struct Case {
++        name: String,
++        requests: Option<std::collections::BTreeMap<String, Requests>>,
++        flags: Vec<String>,
++        exit: i32,
++        retained: std::collections::BTreeMap<String, Vec<String>>,
++    }
++    #[derive(serde::Deserialize)]
++    struct Reference {
++        installations: std::collections::BTreeMap<String, Vec<String>>,
++        cases: Vec<Case>,
++    }
++    let reference: Reference = serde_json::from_str(include_str!(
++        "../../../specs/031-cli-mise-replacement/contracts/mise-project-uninstall-reference.json"
++    ))
++    .unwrap();
++    let tool_name = |name: &str| match name {
++        "fixture" => "uv",
++        "other" => "fd",
++        _ => panic!("unknown native reference fixture"),
++    };
++    let temporary = tempfile::tempdir().unwrap();
++    for (index, case) in reference.cases.into_iter().enumerate() {
++        let root = temporary.path().join(format!("project case 中文 {index}"));
++        let home = root.join("home");
++        let project = root.join("parent/project");
++        let cwd = project.join("nested");
++        std::fs::create_dir_all(&cwd).unwrap();
++        let store = ToolStore::open(home.join("tools")).unwrap();
++        for (name, versions) in &reference.installations {
++            let tool = aster_use_tool_acquire::catalog_by_name(tool_name(name)).unwrap();
++            for version in versions {
++                install_tool_fixture(&store, &root, tool.name, tool.spec, version).await;
++            }
++        }
++        let global_path = aster_use_tool_acquire::user_env_path(&home);
++        write_env_acl(
++            &global_path,
++            &EnvConfig {
++                tools: std::collections::BTreeMap::from([("fd".into(), "9.0.0".into())]),
++                vars: Default::default(),
++            },
++        )
++        .unwrap();
++        let mut paths = vec![global_path];
++        if let Some(requests) = case.requests {
++            let parent = project_env_path(project.parent().unwrap());
++            write_env_acl(
++                &parent,
++                &EnvConfig {
++                    tools: std::collections::BTreeMap::from([("uv".into(), "2.0.0".into())]),
++                    vars: Default::default(),
++                },
++            )
++            .unwrap();
++            let nearest = project_env_path(&project);
++            write_env_declarations(
++                &nearest,
++                &EnvDeclarations {
++                    tools: requests
++                        .into_iter()
++                        .map(|(name, requests)| {
++                            let requests = match requests {
++                                Requests::One(request) => vec![request],
++                                Requests::Many(requests) => requests,
++                            };
++                            (tool_name(&name).into(), requests)
++                        })
++                        .collect(),
++                    vars: Default::default(),
++                },
++            )
++            .unwrap();
++            paths.extend([parent, nearest]);
++        }
++        let before: Vec<_> = paths
++            .iter()
++            .map(|path| std::fs::read(path).unwrap())
++            .collect();
++        let mut args = vec!["tool", "uninstall", "--project", "--json"];
++        args.extend(case.flags.iter().map(String::as_str));
++        let output = run(&cwd, &home, &args).await;
++        assert_eq!(
++            output.status.code(),
++            Some(case.exit),
++            "{}: {}",
++            case.name,
++            String::from_utf8_lossy(&output.stderr)
++        );
++        for (name, expected) in case.retained {
++            let name = tool_name(&name);
++            let receipts = store.installed_versions(name).unwrap();
++            assert_eq!(
++                receipts
++                    .iter()
++                    .map(|receipt| &receipt.version)
++                    .collect::<Vec<_>>(),
++                expected.iter().collect::<Vec<_>>(),
++                "{}: {name}",
++                case.name
++            );
++            for receipt in receipts {
++                let paths = store.installation_paths(&receipt).unwrap();
++                let mut command = tokio::process::Command::new(paths.executable());
++                command.env_clear().current_dir(&cwd).kill_on_drop(true);
++                let result = tokio::time::timeout(Duration::from_secs(20), command.output())
++                    .await
++                    .unwrap()
++                    .unwrap();
++                assert!(result.status.success());
++                assert_eq!(result.stdout, format!("{}\n", receipt.version).as_bytes());
++            }
++        }
++        assert_eq!(
++            paths
++                .iter()
++                .map(|path| std::fs::read(path).unwrap())
++                .collect::<Vec<_>>(),
++            before,
++            "{}",
++            case.name
++        );
++    }
++}
++
++#[cfg(unix)]
++#[tokio::test]
++async fn project_uninstall_preflights_flags_paths_and_nearest_acl_before_removal() {
++    let temporary = tempfile::tempdir().unwrap();
++    let home = temporary.path().join("home");
++    let parent = temporary.path().join("parent");
++    let project = parent.join("project");
++    let nested = project.join("nested");
++    std::fs::create_dir_all(&nested).unwrap();
++    let store = ToolStore::open(home.join("tools")).unwrap();
++    install_uv_fixture(&store, temporary.path(), "1.0.0").await;
++    std::fs::create_dir_all(project_env_path(&parent).parent().unwrap()).unwrap();
++    std::fs::write(project_env_path(&parent), "invalid outer declaration").unwrap();
++    std::fs::write(
++        aster_use_tool_acquire::user_env_path(&home),
++        "invalid global declaration",
++    )
++    .unwrap();
++    let config = EnvConfig {
++        tools: std::collections::BTreeMap::from([("uv".into(), "1.0.0".into())]),
++        vars: Default::default(),
++    };
++    let path = project_env_path(&project);
++    write_env_acl(&path, &config).unwrap();
++    for conflict in ["--all", "--unpin", "uv"] {
++        let output = run(
++            &nested,
++            &home,
++            &["tool", "uninstall", "--project", "--yes", conflict],
++        )
++        .await;
++        assert_eq!(output.status.code(), Some(2));
++        assert!(
++            store
++                .installed_receipt("uv", Some("1.0.0"))
++                .unwrap()
++                .is_some()
++        );
++    }
++    std::fs::write(&path, "invalid nearest declaration").unwrap();
++    let output = run(&nested, &home, &["tool", "uninstall", "--project", "--yes"]).await;
++    assert!(!output.status.success());
++    assert!(
++        store
++            .installed_receipt("uv", Some("1.0.0"))
++            .unwrap()
++            .is_some()
++    );
++    // APFS rejects this filename before the CLI can inspect it.
++    #[cfg(target_os = "linux")]
++    {
++        use std::os::unix::ffi::OsStringExt;
++        let non_utf8 = temporary
++            .path()
++            .join(std::ffi::OsString::from_vec(b"project-\xff".to_vec()));
++        write_env_acl(project_env_path(&non_utf8), &config).unwrap();
++        let output = run(
++            &non_utf8,
++            &home,
++            &["tool", "uninstall", "--project", "--yes", "--json"],
++        )
++        .await;
++        assert!(!output.status.success());
++        assert!(
++            store
++                .installed_receipt("uv", Some("1.0.0"))
++                .unwrap()
++                .is_some()
++        );
++    }
++    write_env_acl(&path, &config).unwrap();
++    let before = std::fs::read(&path).unwrap();
++    let output = run(
++        &nested,
++        &home,
++        &["tool", "uninstall", "--project", "--yes", "--json"],
++    )
++    .await;
++    assert!(
++        output.status.success(),
++        "{}",
++        String::from_utf8_lossy(&output.stderr)
++    );
++    assert!(
++        store
++            .installed_receipt("uv", Some("1.0.0"))
++            .unwrap()
++            .is_none()
++    );
++    assert_eq!(std::fs::read(&path).unwrap(), before);
+ }
+ 
+ #[cfg(unix)]

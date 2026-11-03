@@ -1,0 +1,37 @@
+[
+  {
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs",
+      "apps/aster/tests/env_manager.rs"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2021",
+      "crates/use/tool-acquire/src/store.rs",
+      "crates/use/tool-acquire/src/env_context.rs"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "crates/use/tool-acquire",
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs",
+      "apps/aster/tests/env_manager.rs",
+      "docs/cli-environments.md"
+    ],
+    "exit": 0
+  }
+]

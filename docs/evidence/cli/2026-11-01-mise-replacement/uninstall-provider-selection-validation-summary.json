@@ -1,0 +1,137 @@
+{
+  "captured_at_utc": "2026-11-01T11:15:20.526526+00:00",
+  "host": {
+    "system": "Darwin",
+    "arch": "arm64",
+    "rust": "1.97.1"
+  },
+  "full_goal_complete": false,
+  "tool_tests": {
+    "passed": 114,
+    "ignored": 2,
+    "failed": 0,
+    "log": "uninstall-provider-selection-tool-suite.log"
+  },
+  "tool_clippy": {
+    "exit_code": 0,
+    "log": "uninstall-provider-selection-tool-clippy.log"
+  },
+  "new_uninstall_oracle": {
+    "file": "specs/031-cli-mise-replacement/contracts/mise-uninstall-reference.json",
+    "sha256": "2c4cfd8a78c2ab5a92422e991ed58ad3f33ca60f0259127c50ce4e9e5144255e",
+    "cases": 8,
+    "exit_codes": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partial_captures_assembled_from_passed_independent_cases": true
+  },
+  "corrected_assumption": {
+    "counterexample": "mise-uninstall-reference-remaining.json",
+    "case": "prefix_ambiguous",
+    "observed_exit": 0,
+    "removed_version": "1.2.9",
+    "old_assumption": "An explicit prefix retains all fuzzy candidates",
+    "current_behavior": "Bare fragments retain their matches; operators and aliases resolve using source-identified metadata and only select that exact installed version",
+    "not_installed_resolved_version": "No fallback to an older installed version",
+    "old_reference_failure_retained": true
+  },
+  "prior_native_cli_suite": {
+    "log": "embedded-use-cli-tests-final.log",
+    "passed": 3,
+    "failed": 20,
+    "exit_code": 101,
+    "unchanged_command_timeout_seconds": 20
+  },
+  "isolated_cli_replay": {
+    "report": "uninstall-selection-cli-isolated.json",
+    "completed": 20,
+    "passed": 8,
+    "failed": 12,
+    "test_binary_sha256": "9c527da3358effff9bb991ec6746365510ad718e5ed1e6c7e44b49bc420cd4a7",
+    "artifact_changes_during_cases": [
+      "cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata"
+    ],
+    "uniform_cli_artifact_claimed": false
+  },
+  "startup_observation": {
+    "sample": "uninstall-selection-child-79241.sample.txt",
+    "observed": "A sampled CLI child remained at _dyld_start before Rust main, with 112 KiB physical footprint",
+    "root_cause_proven": false
+  },
+  "prior_pair": {
+    "exit_code": 0,
+    "log": "uninstall-version-paired-build.log",
+    "build_ids_match": true,
+    "build_id": "aster-cli-pair-v1:2732cbb11dbe9daaff7f4a8e373b67ce4998921f:aarch64-apple-darwin",
+    "cli_sha256": "6c34d35ad046079aabb96e184b17d0344668c25d72ba72530163ff42cf7f0ec5",
+    "acp_sha256": "7855d767a42d8057d3ebf9ab1c967fd7b443e485d27249c80458857651328253",
+    "scope": "Predates the provider-operator correction and final eight-case Aster comparison"
+  },
+  "prior_aster_clippy": {
+    "exit_code": 0,
+    "log": "uninstall-selection-aster-clippy.log",
+    "scope": "Predates provider-operator correction and final comparative test"
+  },
+  "workspace_format": {
+    "exit_code": 1,
+    "distinct_paths": 8,
+    "changed_selection_paths": [],
+    "log": "uninstall-selection-workspace-format.log"
+  },
+  "source_sha256_not_final_artifact_certification": {
+    "crates/use/tool-acquire/src/store.rs": "86c5cb48c13a8d8242654de8c4832dd9c55df652d7fb8760be15060e01a10c06",
+    "crates/use/tool-acquire/src/store/tests.rs": "4bf160dd97f999071d268c45cf24e594257fe894d39460f0193f653e5cdaaf37",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "f595dd529c3bd3f799172ee74f6faedaa3e199dba8c22b73cce00ba89d84780c",
+    "apps/aster/tests/env_manager.rs": "fe4b20134648f33857e7514c2a4db9d1cca8c6f1682f9c7927de7eb694ee3e53",
+    "tests/cli_mise_uninstall_reference.py": "9fd553ba5cee7c2aa1bf7e786ac543de06dddcaa58c1ceaeedcc3fb00b5096bb",
+    "docs/source-manifest.json": "474448ac0ced505990b60b69d870e2828e3c8c3f73e747723e7c4415f8ce1860"
+  },
+  "remaining": [
+    "Fresh owning Aster Clippy and final paired build after the provider correction",
+    "Parallel CLI stability, native Windows/Linux, and final-source paired artifact validation",
+    "Multiple tools, global/project selection, full backend options, rollback, upgrade and prune",
+    "Final archive/sandbox/notice membership and release efficiency",
+    "Every other required mise capability family remains in scope"
+  ],
+  "previous_pending_checks": [
+    {
+      "name": "pager_clippy",
+      "session_id": 88136,
+      "log": "uninstall-selection-pager-clippy.log"
+    },
+    {
+      "name": "current_cli_regression",
+      "session_id": 96503,
+      "log": "uninstall-provider-selection-cli-tests.log"
+    }
+  ],
+  "pending_checks": [],
+  "completed_followup_checks": {
+    "pager_clippy": {
+      "exit_code": 101,
+      "errors": 42,
+      "log": "uninstall-selection-pager-clippy.log"
+    },
+    "cli_parallel": {
+      "exit_code": 101,
+      "passed": 0,
+      "failed": 24,
+      "log": "uninstall-provider-selection-cli-tests.log"
+    },
+    "cli_isolated": {
+      "exit_code": 0,
+      "passed": 24,
+      "failed": 0,
+      "test_binary_unchanged": true,
+      "cli_artifact_changed_during_cases": false,
+      "report": "uninstall-provider-selection-cli-isolated.json"
+    }
+  }
+}

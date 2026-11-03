@@ -1,0 +1,12 @@
+{
+  "Cargo.toml": "1d35b191251905a03167da438010700df0fd53a7443b39b537713f2c745baa8b",
+  "Cargo.lock": "3353ea91ea4abb84d53f6e86991e11ab3e2fdb33bc05aca1796afebead826ece",
+  "rust-toolchain.toml": "279d77167cec5426fa80f457cd066dc74a360fbe4e2816f4f3fa01487a918fdc",
+  "crates/use/extension/src/publication/domains.rs": "dd1ba3aa3e1d9f012bce4e19b5cc204b8142efde340505ac253faa4ab5f84de2",
+  "crates/use/extension/src/publication/catalog.rs": "6bf32eafba63637829740e998733a7ea559dd308370707cb4db5aadd9a4abef2",
+  "crates/use/extension/src/publication/tests.rs": "c99bf56a91205e1ff0f73acb3fae0c6b926c2b6ccc93e55aa91bcf0cb3305e36",
+  "crates/use/extension/src/publication.rs": "a8328889a465d4dc183808e4d9529c59d62a67e7a1ded6b61807e84dd15f2950",
+  "crates/use/src/cli/registry.rs": "1d9f84cc386eff73dd350ba52de514ac0569d2e1dbf1112f4ca019eaad484298",
+  "apps/studio/src-tauri/src/capabilities_toolchain_tests.rs": "ea06417dffb0387f78baeaaacd72487870bce1cf7a8cbbd37d4129cb9afa5a82",
+  "apps/studio/src-tauri/src/capabilities_toolchain.rs": "3d0309af79b63ba0d515f34f297767ed3a35fc2d2d4c8848e2b4b867c2631e27"
+}

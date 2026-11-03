@@ -245,7 +245,7 @@ async fn delete_companion_session(
     .await?;
     let result: serde_json::Value = serde_json::from_str(response.0.get())?;
     anyhow::ensure!(
-        result["success"] == true,
+        result.get("success").and_then(serde_json::Value::as_bool) == Some(true),
         "companion did not confirm session deletion"
     );
     Ok(())

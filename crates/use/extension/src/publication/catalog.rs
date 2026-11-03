@@ -2,14 +2,14 @@ use aster_use_core::{
     CatalogArchive, CatalogAvailability, CatalogMcpTransport, CatalogPackage,
     CatalogPlanningTarget, CatalogSurface, ExecutablePlanningSurface, PackageSurfaceKind,
     PlanningSurfaceActivation, PluginCatalogRecord, PluginPermissionCeiling, PluginPlanningBundle,
-    PluginReleaseChannel, PLUGIN_CATALOG_SCHEMA_V3, PLUGIN_PERMISSION_SCHEMA,
+    PluginReleaseChannel, ToolWorkloadClass, PLUGIN_CATALOG_SCHEMA_V3, PLUGIN_PERMISSION_SCHEMA,
     PLUGIN_PLANNING_BUNDLE_SCHEMA,
 };
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 
 use super::{invalid, PreparedAixPublication};
-use crate::{ExtensionManifest, PluginMcpLaunch, SurfaceActivation};
+use crate::{ExtensionManifest, PluginMcpLaunch, SurfaceActivation, ToolTaskSource, ToolWorkload};
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -53,23 +53,31 @@ pub(super) async fn prepare(
     }
     let mut surfaces = Vec::new();
     for surface in manifest.plugin_surfaces()? {
-        if !matches!(
-            surface.surface.kind,
-            PackageSurfaceKind::Plugin | PackageSurfaceKind::Skill | PackageSurfaceKind::Mcp
-        ) {
-            return Err(invalid(
-                "This native publisher supports runtime data, Skills and stdio MCP surfaces.",
-            ));
-        }
         surfaces.push(CatalogSurface {
             kind: surface.surface.kind,
-            id: surface.surface.id,
+            id: surface.surface.id.clone(),
             optional: surface.optional,
-            workload: None,
+            workload: manifest
+                .tools
+                .iter()
+                .find(|tool| {
+                    surface.surface.kind == PackageSurfaceKind::Tool
+                        && tool.id == surface.surface.id
+                })
+                .map(|tool| match tool.workload {
+                    ToolWorkload::Task(_) => ToolWorkloadClass::Task,
+                    ToolWorkload::Service(_) => ToolWorkloadClass::Service,
+                }),
             mcp_transport: (surface.surface.kind == PackageSurfaceKind::Mcp)
                 .then_some(CatalogMcpTransport::Stdio),
             mcp_tool_count: None,
-            okf_bundle: None,
+            okf_bundle: manifest
+                .okf
+                .iter()
+                .find(|okf| {
+                    surface.surface.kind == PackageSurfaceKind::Okf && okf.id == surface.surface.id
+                })
+                .map(|okf| okf.bundle.clone()),
             requires: surface.dependencies,
         });
     }
@@ -136,9 +144,7 @@ pub(super) async fn prepare(
         availability: CatalogAvailability::Available,
     };
     let mut executable = Vec::new();
-    let mut mcp_servers = manifest.mcp_servers.iter().collect::<Vec<_>>();
-    mcp_servers.sort_by(|left, right| left.id.cmp(&right.id));
-    for mcp in mcp_servers {
+    for mcp in &manifest.mcp_servers {
         let PluginMcpLaunch::Stdio {
             executable: path,
             args,
@@ -161,6 +167,33 @@ pub(super) async fn prepare(
             args: args.clone(),
         });
     }
+    for tool in &manifest.tools {
+        let ToolWorkload::Task(task) = &tool.workload else {
+            return Err(invalid(
+                "This native publisher requires a package-local Tool Task executable.",
+            ));
+        };
+        let ToolTaskSource::Executable { executable: path } = &task.source else {
+            return Err(invalid(
+                "This native publisher requires a package-local Tool Task executable.",
+            ));
+        };
+        executable.push(ExecutablePlanningSurface::ToolTaskNative {
+            id: tool.id.clone(),
+            activation: match tool.activation {
+                SurfaceActivation::Eager => PlanningSurfaceActivation::Eager,
+                SurfaceActivation::Lazy => PlanningSurfaceActivation::Lazy,
+            },
+            executable: path
+                .to_str()
+                .ok_or_else(|| invalid("Planning executable paths must be UTF-8."))?
+                .into(),
+            command: task.command.clone(),
+            json_output: task.json_output,
+            timeout_ms: task.timeout_ms,
+        });
+    }
+    executable.sort_by_key(ExecutablePlanningSurface::reference);
     let planning_bytes = if executable.is_empty() {
         Vec::new()
     } else {

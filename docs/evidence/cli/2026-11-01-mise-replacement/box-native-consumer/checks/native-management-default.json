@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "packageId": "aster/aster-box",
+      "aixArchiveSha256": "sha256:370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+      "outputs": [
+        {
+          "command": "aster-box",
+          "stdout": "aster-box 3.2.7\n"
+        }
+      ]
+    }
+  ],
+  "installedCatalogueQueried": true,
+  "allRequestedVersionCommandsExecuted": true,
+  "allCandidatesRemoved": true,
+  "runtimeRetainedUntilLeaseRelease": true,
+  "permanentInstallation": false,
+  "trust": "explicit-local-candidates",
+  "officialRegistryPublicationAccepted": false,
+  "nativeGuiAccepted": false,
+  "commandDeadlineSeconds": 10,
+  "nativeTarget": "aarch64-macos"
+}

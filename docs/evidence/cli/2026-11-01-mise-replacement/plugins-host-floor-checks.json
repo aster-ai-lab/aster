@@ -1,0 +1,140 @@
+{
+  "capturedAtUtc": "2026-11-01T22:15:44.753044+00:00",
+  "sourceSha256": {
+    "crates/use/Cargo.toml": "56e5b72a6d6202df0ff9f8ffa07e40e248521f23d11721beb7ca1d9df8efdd11",
+    "crates/use/extension/Cargo.toml": "f4bcdb11b2af7d85b94e21763c29d9f2affacaf7a2521f7f8105654c4c2a3222",
+    "crates/use/extension/src/lib.rs": "f6b448366637bf613e6c49a4d97ca27b574423783908b18eb77229cb3ee0a3b2",
+    "crates/use/extension/src/plugin_manifest_tests.rs": "66bbc4dbe5755b41b6d4b837bf3a2be3b39e483646210498377016ef65fcb5b5",
+    "crates/use/extension/src/remote_catalog_tests.rs": "33b7732ba559ce03b0fc0c68c034f7a44bd452543d544e81df46e7e5e9379eed",
+    "crates/use/extension/src/host_floor_tests.rs": "9f07db049a03eb242d0e27a587452e81c76f783554635c741e4ae7264b38f801"
+  },
+  "checks": [
+    {
+      "name": "sdk-host-floor-tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-use-extension",
+        "--lib",
+        "--",
+        "plugin_manifest_tests",
+        "host_floor_tests",
+        "remote::catalog_tests::later_patch_host_floor",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 81.54545125000001,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "extension-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use-extension",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exitCode": 0,
+      "seconds": 22.43288787499999,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "use-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use",
+        "--all-targets",
+        "--no-deps",
+        "--features",
+        "reconcile,tool-acquire"
+      ],
+      "exitCode": 0,
+      "seconds": 515.0451805,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "sdk-format",
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "crates/use/extension/src/lib.rs",
+        "crates/use/extension/src/plugin_manifest_tests.rs",
+        "crates/use/extension/src/remote_catalog_tests.rs",
+        "crates/use/extension/src/host_floor_tests.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.0460756660000925,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "dependency-native-owner",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+        "--",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 628.078580042,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "cua-native-owner",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+        "--",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 169.12801037500003,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "notion-native-owner",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-studio",
+        "--lib",
+        "capabilities::toolchain::tests::actual_notion_aix_installs_queries_executes_and_removes_through_the_desktop_owner",
+        "--",
+        "--ignored",
+        "--exact",
+        "--nocapture"
+      ],
+      "exitCode": 0,
+      "seconds": 125.59759141699999,
+      "sourcesUnchanged": true
+    }
+  ]
+}

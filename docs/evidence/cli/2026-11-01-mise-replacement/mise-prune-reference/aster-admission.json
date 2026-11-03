@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster",
+    "tool",
+    "prune",
+    "--dry-run",
+    "--json"
+  ],
+  "binary_sha256": "297c67b4a85769380d8688091bef2dcdcbcf71f59429bb6b4cb2cdb79df21485",
+  "timeout_seconds": 25,
+  "exit": 2,
+  "stdout": "",
+  "stderr": "error: unrecognized subcommand 'prune'\n\nUsage: aster tool [OPTIONS] <COMMAND>\n\nFor more information, try '--help'.\n",
+  "status": "returned"
+}

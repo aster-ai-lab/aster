@@ -1,0 +1,234 @@
+{
+  "status": "passed",
+  "startedAtUnixSeconds": 1793646341.4746299,
+  "checks": [
+    {
+      "name": "focused-cli",
+      "argv": [
+        "target/debug/deps/env_manager-1f7217e7bdec0bca",
+        "project_uninstall",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "log": ".tmp/mise-project-uninstall-focused-cli.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793646364.3391109,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793646407.434717,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "name": "full-cli",
+      "argv": [
+        "target/debug/deps/env_manager-1f7217e7bdec0bca",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "log": ".tmp/mise-project-uninstall-full-cli.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793646407.435384,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793646511.60345,
+      "passed": 34,
+      "failed": 0,
+      "ignored": 1
+    },
+    {
+      "name": "tui-setup",
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "--no-auto-update",
+        "tool",
+        "use",
+        "uv@0.13.6",
+        "--json"
+      ],
+      "log": ".tmp/mise-project-uninstall-tui-setup.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793646511.6055748,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793646529.354173
+    },
+    {
+      "name": "tui",
+      "argv": [
+        "/Users/roylin/.local/bin/a3s-test",
+        "run",
+        "/Users/roylin/code/aster/tests/e2e/env-project-uninstall.acl",
+        "--tui-executable",
+        "/usr/bin/env",
+        "--tui-arg=ASTER_HOME=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project confirm 中文 _jwwpgb7/home",
+        "--tui-arg=HOME=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project confirm 中文 _jwwpgb7/home",
+        "--tui-arg=/Users/roylin/code/aster/target/debug/aster",
+        "--tui-arg=--no-auto-update",
+        "--tui-arg=tool",
+        "--tui-arg=uninstall",
+        "--tui-arg=--project",
+        "--tui-working-directory",
+        "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project confirm 中文 _jwwpgb7/project",
+        "--max-parallel-scenarios",
+        "1",
+        "--json"
+      ],
+      "log": ".tmp/mise-project-uninstall-tui.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793646529.579926,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793646530.154509
+    }
+  ],
+  "before": {
+    "identities": {
+      "aster": {
+        "exitCode": 0,
+        "stdout": "aster-cli-pair-v1:4ba90787e3e951157448c2d001d4d7defc71ef4e:aarch64-apple-darwin\n",
+        "stderr": ""
+      },
+      "aster-acp": {
+        "exitCode": 0,
+        "stdout": "aster-cli-pair-v1:4ba90787e3e951157448c2d001d4d7defc71ef4e:aarch64-apple-darwin\n",
+        "stderr": ""
+      }
+    },
+    "artifacts": {
+      "target/debug/aster": {
+        "bytes": 902102200,
+        "sha256": "164d3bb4c0ba4cff455cdc2237837f21124c28be627e5b0913ea5fa2816da24b"
+      },
+      "target/debug/aster-acp": {
+        "bytes": 357911016,
+        "sha256": "e4ae0a00cee986e36db24d828f8a65304f9d804fc91457c6ed4a8649593c787b"
+      },
+      "target/debug/deps/env_manager-1f7217e7bdec0bca": {
+        "bytes": 13699792,
+        "sha256": "e1387038e1461601d26d3cde895502d5cacf9f0202f2dda667a7acf892e61ea0"
+      }
+    },
+    "sources": {
+      "crates/use/tool-acquire/src/env_acl.rs": {
+        "bytes": 22042,
+        "sha256": "3cb03bcff0e537f59c91c471e93f9b2c5d38cf9871dadd61e90003acba660b89"
+      },
+      "crates/use/tool-acquire/src/env_acl/tests.rs": {
+        "bytes": 12318,
+        "sha256": "bd58122b116c6f0075f098c79672b683ee38509b1baa1b3ad46995285e30d928"
+      },
+      "crates/use/tool-acquire/src/lib.rs": {
+        "bytes": 1835,
+        "sha256": "f2e57f017b9615c40560ddd66add3eda3876c1145e9701a85ed2e008be997115"
+      },
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": {
+        "bytes": 55038,
+        "sha256": "0a1683f194b1a782b9c1f92b9a8c6835799522792819d85fbfa416e2a249610c"
+      },
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/tests.rs": {
+        "bytes": 18324,
+        "sha256": "69c3888a00f0b6f12b6c0d5921823786144a32005bd416b515497ea92aa5e70c"
+      },
+      "apps/aster/tests/env_manager.rs": {
+        "bytes": 101488,
+        "sha256": "3679f9fb40cf11e6cef4d54e1a695dcf2a97d9dfed846ef238a919a13f36f00f"
+      },
+      "tests/cli_mise_project_uninstall_reference.py": {
+        "bytes": 7336,
+        "sha256": "c84a98b4e74ad31a75b6fdd0b4477f7c3aeb83a02e93eb85fc45780835f9aeee"
+      },
+      "tests/e2e/env-project-uninstall.acl": {
+        "bytes": 954,
+        "sha256": "d3aabff46aba7734ce93d3bf8fc15b0f4283abca268e96cd78b7093c75811a85"
+      },
+      "specs/031-cli-mise-replacement/contracts/mise-project-uninstall-reference.json": {
+        "bytes": 61338,
+        "sha256": "0a757e8c1c0d7e7645aaac930967e9c6c63273e2d4ed049947faedf7311d4585"
+      }
+    }
+  },
+  "interactive": {
+    "selectedVersion": "0.13.6",
+    "project": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project confirm 中文 _jwwpgb7/project",
+    "home": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project confirm 中文 _jwwpgb7/home",
+    "setupTimeoutSeconds": 120,
+    "scenarioTimeoutMs": 30000,
+    "beforeList": {
+      "exitCode": 0,
+      "stdout": "[\n  {\n    \"schema\": \"aster.use.tool-acquire.receipt.v1\",\n    \"name\": \"uv\",\n    \"spec\": \"github:astral-sh/uv\",\n    \"version\": \"0.13.6\",\n    \"executable\": \"uv\",\n    \"sha256\": \"3996850e6d85e60b0142b40af4bd984822d65f736b52209921c47312450685cb\",\n    \"installedAtMs\": 1793646529287\n  }\n]\n",
+      "stderr": ""
+    },
+    "afterList": {
+      "exitCode": 0,
+      "stdout": "[]\n",
+      "stderr": ""
+    },
+    "declarationUnchanged": true
+  },
+  "after": {
+    "identities": {
+      "aster": {
+        "exitCode": 0,
+        "stdout": "aster-cli-pair-v1:4ba90787e3e951157448c2d001d4d7defc71ef4e:aarch64-apple-darwin\n",
+        "stderr": ""
+      },
+      "aster-acp": {
+        "exitCode": 0,
+        "stdout": "aster-cli-pair-v1:4ba90787e3e951157448c2d001d4d7defc71ef4e:aarch64-apple-darwin\n",
+        "stderr": ""
+      }
+    },
+    "artifacts": {
+      "target/debug/aster": {
+        "bytes": 902102200,
+        "sha256": "164d3bb4c0ba4cff455cdc2237837f21124c28be627e5b0913ea5fa2816da24b"
+      },
+      "target/debug/aster-acp": {
+        "bytes": 357911016,
+        "sha256": "e4ae0a00cee986e36db24d828f8a65304f9d804fc91457c6ed4a8649593c787b"
+      },
+      "target/debug/deps/env_manager-1f7217e7bdec0bca": {
+        "bytes": 13699792,
+        "sha256": "e1387038e1461601d26d3cde895502d5cacf9f0202f2dda667a7acf892e61ea0"
+      }
+    },
+    "sources": {
+      "crates/use/tool-acquire/src/env_acl.rs": {
+        "bytes": 22042,
+        "sha256": "3cb03bcff0e537f59c91c471e93f9b2c5d38cf9871dadd61e90003acba660b89"
+      },
+      "crates/use/tool-acquire/src/env_acl/tests.rs": {
+        "bytes": 12318,
+        "sha256": "bd58122b116c6f0075f098c79672b683ee38509b1baa1b3ad46995285e30d928"
+      },
+      "crates/use/tool-acquire/src/lib.rs": {
+        "bytes": 1835,
+        "sha256": "f2e57f017b9615c40560ddd66add3eda3876c1145e9701a85ed2e008be997115"
+      },
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": {
+        "bytes": 55038,
+        "sha256": "0a1683f194b1a782b9c1f92b9a8c6835799522792819d85fbfa416e2a249610c"
+      },
+      "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/tests.rs": {
+        "bytes": 18324,
+        "sha256": "69c3888a00f0b6f12b6c0d5921823786144a32005bd416b515497ea92aa5e70c"
+      },
+      "apps/aster/tests/env_manager.rs": {
+        "bytes": 101488,
+        "sha256": "3679f9fb40cf11e6cef4d54e1a695dcf2a97d9dfed846ef238a919a13f36f00f"
+      },
+      "tests/cli_mise_project_uninstall_reference.py": {
+        "bytes": 7336,
+        "sha256": "c84a98b4e74ad31a75b6fdd0b4477f7c3aeb83a02e93eb85fc45780835f9aeee"
+      },
+      "tests/e2e/env-project-uninstall.acl": {
+        "bytes": 954,
+        "sha256": "d3aabff46aba7734ce93d3bf8fc15b0f4283abca268e96cd78b7093c75811a85"
+      },
+      "specs/031-cli-mise-replacement/contracts/mise-project-uninstall-reference.json": {
+        "bytes": 61338,
+        "sha256": "0a757e8c1c0d7e7645aaac930967e9c6c63273e2d4ed049947faedf7311d4585"
+      }
+    }
+  },
+  "unchanged": true,
+  "finishedAtUnixSeconds": 1793646530.852101
+}

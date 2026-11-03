@@ -1,0 +1,32 @@
+Analysis of sampling aster (pid 79241) every 10 milliseconds
+Process:         aster [79241]
+Path:            /Users/USER/*/aster
+Load Address:    0x100b10000
+Identifier:      aster
+Version:         ???
+Code Type:       ARM64
+Parent Process:  env_manager-dc365661741318e2 [79096]
+Target Type:     live task
+
+Date/Time:       2026-11-01 18:37:13.599 +0800
+Launch Time:     2026-11-01 18:37:02.385 +0800
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         112K
+Physical footprint (peak):  112K
+Idle exit:                  untracked
+----
+
+Call graph:
+    92 Thread_68831987: Main Thread   DispatchQueue_<multiple>
+      92 _dyld_start  (in dyld) + 0  [0x1369c89c0]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        92
+
+Binary images description not available
+

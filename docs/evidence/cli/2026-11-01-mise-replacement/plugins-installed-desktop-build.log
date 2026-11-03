@@ -1,0 +1,1765 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+/Users/roylin/code/aster/target/studio/aster/debug/studio-resources/document
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on package cache
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:31:26
+   |
+31 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:711:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+711 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 14 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling aster-acp v9.1.7 (/Users/roylin/code/aster/crates/code/acp)
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:65:12
+   |
+58 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+65 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.66s
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.50s
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::new`: unsound due to lack of I/O safety; use `AsyncFd::register` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+  --> crates/oci-runtime/crates/agent/src/executor/terminal.rs:70:35
+   |
+70 |         let descriptor = AsyncFd::new(self.master).map_err(|error| {
+   |                                   ^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: `aster-oci-agent` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.52s
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling apple-cf v0.11.7
+   Compiling apple-metal v0.10.4
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `guest_agent_hello` and `host_runtime_version`
+  --> crates/code/core/src/sandbox/oci.rs:31:26
+   |
+31 | pub(crate) use version::{guest_agent_hello, host_runtime_version};
+   |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:711:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+711 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: constant `HOST_MISMATCH` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:10:7
+   |
+10 | const HOST_MISMATCH: &[u8] = b"guest agent version does not match the host runtime version";
+   |       ^^^^^^^^^^^^^
+
+warning: function `host_runtime_version` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:13:15
+   |
+13 | pub(crate) fn host_runtime_version(host: &[u8]) -> Option<&str> {
+   |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `guest_agent_hello` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:18:15
+   |
+18 | pub(crate) fn guest_agent_hello<'a>(agent: &'a [u8], architecture: &str) -> Option<&'a str> {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `version_immediately_before` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:26:4
+   |
+26 | fn version_immediately_before<'a>(bytes: &'a [u8], marker: &[u8]) -> Option<&'a str> {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `semver_ending_at` is never used
+  --> crates/code/core/src/sandbox/oci/version.rs:44:4
+   |
+44 | fn semver_ending_at(bytes: &[u8], end: usize) -> Option<&str> {
+   |    ^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 14 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `HashMap`
+  --> apps/gateway/src/entrypoint/inference_dispatch.rs:16:24
+   |
+16 | use std::collections::{HashMap, HashSet};
+   |                        ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `hyper::body::Body as _`
+  --> apps/gateway/src/entrypoint/protocol/http_handler.rs:20:5
+   |
+20 | use hyper::body::Body as _;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufferedBody` and `buffer_body_up_to`
+ --> apps/gateway/src/entrypoint/protocol/streaming_handler.rs:9:26
+  |
+9 | use super::body_buffer::{buffer_body_up_to, BufferedBody};
+  |                          ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DECISION_REQUEST_LIMIT_BYTES`, `DecisionAssessment`, `DecisionContentPart`, `DecisionDefinition`, `DecisionRequest`, `DecisionResponse`, `DecisionResult`, `DecisionStepPart`, and `DecisionVisibleTurn`
+  --> apps/gateway/src/inference/mod.rs:41:5
+   |
+41 |     DecisionAssessment, DecisionContentPart, DecisionDefinition, DecisionError, DecisionRequest,
+   |     ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^                 ^^^^^^^^^^^^^^^
+42 |     DecisionResponse, DecisionResult, DecisionService, DecisionStepPart, DecisionVisibleTurn,
+   |     ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^                   ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^
+43 |     DECISION_REQUEST_LIMIT_BYTES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `ChosenGroup`, `DecisionReason`, `FrozenDecision`, `TurnDecisionCache`, and `TurnIdentity`
+  --> apps/gateway/src/inference/mod.rs:48:5
+   |
+48 |     ChosenGroup, DecisionReason, FrozenDecision, TurnDecisionCache, TurnIdentity,
+   |     ^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused imports: `DecisionInputs`, `RouteDecision`, `decision_inputs`, `evaluate_routing`, and `plan_decision_definition`
+  --> apps/gateway/src/inference/mod.rs:77:29
+   |
+77 |     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
+   |                             ^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^
+78 |     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^                               ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/entrypoint/protocol/http_handler.rs:840:21
+    |
+840 |                 let mut response = track_attributed_token_budget_response(
+    |                     ----^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> apps/gateway/src/config/acl/inference.rs:37:9
+   |
+37 |     let mut guardrails = HashMap::new();
+   |         ----^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> apps/gateway/src/inference/authorization.rs:900:9
+    |
+900 |         mut service_is_available: F,
+    |         ----^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:354:5
+    |
+354 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `floor_bp`
+   --> apps/gateway/src/inference/decision.rs:383:5
+    |
+383 |     floor_bp: u32,
+    |     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_floor_bp`
+
+warning: associated function `dormant` is never used
+   --> apps/gateway/src/entrypoint.rs:393:19
+    |
+390 | impl AgentWakePlane {
+    | ------------------- associated function in this implementation
+...
+393 |     pub(crate) fn dormant() -> Self {
+    |                   ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variant `GuardrailBlocked` is never constructed
+  --> apps/gateway/src/inference/access_error.rs:43:5
+   |
+12 | pub(crate) enum InferenceAccessError {
+   |                 -------------------- variant in this enum
+...
+43 |     GuardrailBlocked { reason: String },
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = note: `InferenceAccessError` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: associated items `grant_guardrails`, `with_previous`, and `select_from_effective_targets` are never used
+   --> apps/gateway/src/inference/authorization.rs:222:19
+    |
+219 | impl InferenceAuthorizer {
+    | ------------------------ associated items in this implementation
+...
+222 |     pub(crate) fn grant_guardrails(
+    |                   ^^^^^^^^^^^^^^^^
+...
+294 |     pub(crate) fn with_previous(policy: &InferenceConfig, previous: Option<&Self>) -> Self {
+    |                   ^^^^^^^^^^^^^
+...
+892 |     pub(crate) fn select_from_effective_targets<F>(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `resolve_upstream_keys` is never used
+    --> apps/gateway/src/inference/authorization.rs:1350:4
+     |
+1350 | fn resolve_upstream_keys(policy: &InferenceConfig) -> HashMap<Uuid, HeaderValue> {
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `remember_upstream_key` is never used
+    --> apps/gateway/src/inference/authorization.rs:1368:4
+     |
+1368 | fn remember_upstream_key(
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `BranchPrimary` is never constructed
+  --> apps/gateway/src/inference/decision_cache.rs:66:5
+   |
+57 | pub(crate) enum ChosenGroup {
+   |                 ----------- variant in this enum
+...
+66 |     BranchPrimary { category: String },
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `ChosenGroup` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: methods `len` and `is_empty` are never used
+   --> apps/gateway/src/inference/decision_cache.rs:165:19
+    |
+125 | impl TurnDecisionCache {
+    | ---------------------- methods in this implementation
+...
+165 |     pub(crate) fn len(&self) -> usize {
+    |                   ^^^
+...
+169 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: function `extract_model_alias` is never used
+  --> apps/gateway/src/inference/fast_model.rs:17:15
+   |
+17 | pub(crate) fn extract_model_alias(body: &[u8]) -> Option<String> {
+   |               ^^^^^^^^^^^^^^^^^^^
+
+warning: struct `LightweightInferenceRequest` is never constructed
+  --> apps/gateway/src/inference/fast_model.rs:26:19
+   |
+26 | pub(crate) struct LightweightInferenceRequest {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `try_from_body` and `into_full` are never used
+  --> apps/gateway/src/inference/fast_model.rs:35:19
+   |
+31 | impl LightweightInferenceRequest {
+   | -------------------------------- associated items in this implementation
+...
+35 |     pub(crate) fn try_from_body(body: Bytes) -> Option<Self> {
+   |                   ^^^^^^^^^^^^^
+...
+42 |     pub(crate) fn into_full(self) -> Result<super::OpenAiJsonRequest, super::OpenAiRequestError> {
+   |                   ^^^^^^^^^
+
+warning: struct `SseChunkAssembler` is never constructed
+  --> apps/gateway/src/inference/fast_model.rs:60:19
+   |
+60 | pub(crate) struct SseChunkAssembler {
+   |                   ^^^^^^^^^^^^^^^^^
+
+warning: associated items `new`, `feed`, and `remaining` are never used
+  --> apps/gateway/src/inference/fast_model.rs:65:19
+   |
+64 | impl SseChunkAssembler {
+   | ---------------------- associated items in this implementation
+65 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+71 |     pub(crate) fn feed(&mut self, chunk: &[u8]) -> Vec<Vec<u8>> {
+   |                   ^^^^
+...
+92 |     pub(crate) fn remaining(&self) -> &[u8] {
+   |                   ^^^^^^^^^
+
+warning: function `find_double_newline` is never used
+  --> apps/gateway/src/inference/fast_model.rs:97:4
+   |
+97 | fn find_double_newline(data: &[u8]) -> Option<usize> {
+   |    ^^^^^^^^^^^^^^^^^^^
+
+warning: method `estimate_token_reservation` is never used
+   --> apps/gateway/src/inference/openai_request.rs:297:19
+    |
+237 | impl OpenAiJsonRequest {
+    | ---------------------- method in this implementation
+...
+297 |     pub(crate) fn estimate_token_reservation(&self, profile: OpenAiRequestProfile) -> u64 {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `ProxyJsonField` is never used
+   --> apps/gateway/src/inference/openai_request.rs:575:6
+    |
+575 | enum ProxyJsonField {
+    |      ^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonFieldVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:580:8
+    |
+580 | struct ProxyJsonFieldVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadata` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:624:8
+    |
+624 | struct ProxyJsonMetadata {
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: struct `ProxyJsonMetadataVisitor` is never constructed
+   --> apps/gateway/src/inference/openai_request.rs:628:8
+    |
+628 | struct ProxyJsonMetadataVisitor;
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decision_inputs` is never used
+  --> apps/gateway/src/inference/routing.rs:53:15
+   |
+53 | pub(crate) fn decision_inputs(
+   |               ^^^^^^^^^^^^^^^
+
+warning: struct `SignedInCall` is never constructed
+  --> apps/gateway/src/inference/service_meter.rs:14:19
+   |
+14 | pub(crate) struct SignedInCall {
+   |                   ^^^^^^^^^^^^
+
+warning: struct `UsageFact` is never constructed
+  --> apps/gateway/src/inference/service_meter.rs:25:19
+   |
+25 | pub(crate) struct UsageFact {
+   |                   ^^^^^^^^^
+
+warning: enum `MeterError` is never used
+  --> apps/gateway/src/inference/service_meter.rs:34:17
+   |
+34 | pub(crate) enum MeterError {
+   |                 ^^^^^^^^^^
+
+warning: function `signed_in_catalog` is never used
+  --> apps/gateway/src/inference/service_meter.rs:53:15
+   |
+53 | pub(crate) fn signed_in_catalog() -> &'static [ModelStandard] {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `meter` is never used
+  --> apps/gateway/src/inference/service_meter.rs:57:15
+   |
+57 | pub(crate) fn meter(call: &SignedInCall) -> Result<UsageFact, MeterError> {
+   |               ^^^^^
+
+warning: function `normalize_supplier` is never used
+  --> apps/gateway/src/inference/service_meter.rs:72:4
+   |
+72 | fn normalize_supplier(value: &str) -> Result<String, MeterError> {
+   |    ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ServiceClass` is never used
+  --> apps/gateway/src/inference/standards.rs:10:17
+   |
+10 | pub(crate) enum ServiceClass {
+   |                 ^^^^^^^^^^^^
+
+warning: enum `ModelNamePlacement` is never used
+  --> apps/gateway/src/inference/standards.rs:18:17
+   |
+18 | pub(crate) enum ModelNamePlacement {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: enum `DecisionQuestionType` is never used
+  --> apps/gateway/src/inference/standards.rs:31:17
+   |
+31 | pub(crate) enum DecisionQuestionType {
+   |                 ^^^^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> apps/gateway/src/inference/standards.rs:41:25
+   |
+40 | impl DecisionQuestionType {
+   | ------------------------- method in this implementation
+41 |     pub(crate) const fn as_str(self) -> &'static str {
+   |                         ^^^^^^
+
+warning: struct `UnknownModelStandard` is never constructed
+  --> apps/gateway/src/inference/standards.rs:94:19
+   |
+94 | pub(crate) struct UnknownModelStandard {
+   |                   ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `DECISION_QUESTIONS` is never used
+   --> apps/gateway/src/inference/standards.rs:111:7
+    |
+111 | const DECISION_QUESTIONS: [DecisionQuestionType; 3] = [
+    |       ^^^^^^^^^^^^^^^^^^
+
+warning: associated items `as_str`, `class`, `parse`, `model_placement`, and `decision_questions` are never used
+   --> apps/gateway/src/inference/standards.rs:138:25
+    |
+117 | impl ModelStandard {
+    | ------------------ associated items in this implementation
+...
+138 |     pub(crate) const fn as_str(self) -> &'static str {
+    |                         ^^^^^^
+...
+160 |     pub(crate) const fn class(self) -> ServiceClass {
+    |                         ^^^^^
+...
+168 |     pub(crate) fn parse(value: &str) -> Result<Self, UnknownModelStandard> {
+    |                   ^^^^^
+...
+177 |     pub(crate) const fn model_placement(self) -> ModelNamePlacement {
+    |                         ^^^^^^^^^^^^^^^
+...
+197 |     pub(crate) const fn decision_questions(self) -> &'static [DecisionQuestionType] {
+    |                         ^^^^^^^^^^^^^^^^^^
+
+warning: function `expected_standards` is never used
+   --> apps/gateway/src/inference/standards.rs:371:4
+    |
+371 | fn expected_standards() -> String {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: associated function `new` is never used
+   --> apps/gateway/src/proxy/http_proxy.rs:956:12
+    |
+954 | impl ForwardedContext {
+    | --------------------- associated function in this implementation
+955 |     /// Create a new forwarding context.
+956 |     pub fn new(remote_addr: SocketAddr, proto: ForwardedProto) -> Self {
+    |            ^^^
+
+warning: method `record_response` is never used
+   --> apps/gateway/src/service/passive_health.rs:130:12
+    |
+ 83 | impl PassiveHealthCheck {
+    | ----------------------- method in this implementation
+...
+130 |     pub fn record_response(&self, backend: &Arc<Backend>, status_code: u16) {
+    |            ^^^^^^^^^^^^^^^
+
+warning: variable `baseUrl` should have a snake case name
+   --> apps/gateway/src/inference/console_catalog.rs:393:14
+    |
+393 | fn origin_of(baseUrl: &str) -> String {
+    |              ^^^^^^^ help: convert the identifier to snake case: `base_url`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+   Compiling aster-studio v0.1.11 (/Users/roylin/code/aster/apps/studio/src-tauri)
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: `aster-gateway` (lib) generated 47 warnings (run `cargo fix --lib -p aster-gateway` to apply 11 suggestions)
+warning: function `upsert_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:203:15
+    |
+203 | pub(crate) fn upsert_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `remove_instance_map` is never used
+   --> crates/boot/src/service_discovery/mod.rs:215:15
+    |
+215 | pub(crate) fn remove_instance_map(
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-boot` (lib) generated 2 warnings
+   Compiling screencapturekit v11.0.0
+   Compiling capture v0.3.13 (/Users/roylin/code/aster/crates/capture)
+warning: function `config_from_value` is never used
+   --> crates/capture/src/handoff.rs:667:4
+    |
+667 | fn config_from_value(value: serde_json::Value) -> Config {
+    |    ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `hex_status` is never used
+   --> crates/capture/src/main.rs:156:4
+    |
+156 | fn hex_status() {
+    |    ^^^^^^^^^^
+
+warning: function `mic_list` is never used
+   --> crates/capture/src/main.rs:213:4
+    |
+213 | fn mic_list() {
+    |    ^^^^^^^^
+
+warning: constant `SKILL` is never used
+   --> crates/capture/src/main.rs:666:7
+    |
+666 | const SKILL: &str = include_str!("../skills/capture/SKILL.md");
+    |       ^^^^^
+
+warning: `capture` (lib) generated 4 warnings
+warning: unused import: `runtime_client::RuntimeClient`
+  --> apps/studio/src-tauri/src/agent_plane/mod.rs:12:16
+   |
+12 | pub(crate) use runtime_client::RuntimeClient;
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `body`, `get`, `param`, and `post`
+ --> apps/studio/src-tauri/src/agent_plane/visual_mcp.rs:4:37
+  |
+4 | use aster_boot::{BootError, Result, body, controller, get, param, post};
+  |                                     ^^^^              ^^^  ^^^^^  ^^^^
+
+warning: unused import: `turns::computer_use_runtime_registered`
+   --> apps/studio/src-tauri/src/agent_plane/mod.rs:106:16
+    |
+106 | pub(crate) use turns::computer_use_runtime_registered;
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::fs`
+ --> apps/studio/src-tauri/src/providers.rs:7:5
+  |
+7 | use std::fs;
+  |     ^^^^^^^
+
+warning: variable does not need to be mutable
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:4037:13
+     |
+4037 |         let mut plugin_selection = super::plugin_selection::current(&self.config, &tools).await?;
+     |             ----^^^^^^^^^^^^^^^^
+     |             |
+     |             help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:1050:16
+     |
+1050 |         let Ok(mut plugin_selection) = super::plugin_selection::current(&self.config, &tools).await
+     |                ----^^^^^^^^^^^^^^^^
+     |                |
+     |                help: remove this `mut`
+
+warning: unused variable: `icon_path`
+    --> apps/studio/src-tauri/src/lib.rs:1038:5
+     |
+1038 |     icon_path: &Path,
+     |     ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_icon_path`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `claim_watchdog_slot` is never used
+   --> apps/studio/src-tauri/src/lib.rs:818:4
+    |
+818 | fn claim_watchdog_slot(armed: &AtomicBool) -> bool {
+    |    ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `personal_wiki` is never read
+   --> apps/studio/src-tauri/src/agent_plane/mod.rs:172:9
+    |
+155 | pub struct PlaneConfig {
+    |            ----------- field in this struct
+...
+172 |     pub personal_wiki: Option<PersonalWikiLookup>,
+    |         ^^^^^^^^^^^^^
+
+warning: method `resident_wiki` is never used
+   --> apps/studio/src-tauri/src/agent_plane/mod.rs:219:12
+    |
+180 | impl PlaneConfig {
+    | ---------------- method in this implementation
+...
+219 |     pub fn resident_wiki(&self) -> Option<PathBuf> {
+    |            ^^^^^^^^^^^^^
+
+warning: function `start` is never used
+   --> apps/studio/src-tauri/src/agent_plane/mod.rs:463:8
+    |
+463 | pub fn start(
+    |        ^^^^^
+
+warning: constant `RUNTIME_TRANSCRIPT_PAGE_SCHEMA` is never used
+  --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:16:18
+   |
+16 | pub(crate) const RUNTIME_TRANSCRIPT_PAGE_SCHEMA: &str = "aster.acp.session-transcript-page.v1";
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `RUNTIME_PREFIX_FORK_SCHEMA` is never used
+  --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:17:18
+   |
+17 | pub(crate) const RUNTIME_PREFIX_FORK_SCHEMA: &str = "aster.acp.session-prefix-fork.v1";
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `WORKSPACE_SEARCH_SCHEMA` is never used
+  --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:18:7
+   |
+18 | const WORKSPACE_SEARCH_SCHEMA: &str = "aster.acp.workspace-search.v1";
+   |       ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeWorkspaceSearch` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:22:19
+   |
+22 | pub(crate) struct RuntimeWorkspaceSearch {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeTranscriptPage` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:91:19
+   |
+91 | pub(crate) struct RuntimeTranscriptPage {
+   |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimePrefixForkReceipt` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:100:19
+    |
+100 | pub(crate) struct RuntimePrefixForkReceipt {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeSessionCatalogEntry` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:111:19
+    |
+111 | pub(crate) struct RuntimeSessionCatalogEntry {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeSessionCatalog` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:122:19
+    |
+122 | pub(crate) struct RuntimeSessionCatalog {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeSessionDeleteReceipt` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:130:19
+    |
+130 | pub(crate) struct RuntimeSessionDeleteReceipt {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `load_session`, `transcript_page`, `prefix_fork`, `session_catalog`, `delete_session`, and `workspace_search` are never used
+   --> apps/studio/src-tauri/src/agent_plane/runtime_client.rs:383:25
+    |
+303 | impl RuntimeClient {
+    | ------------------ methods in this implementation
+...
+383 |     pub(crate) async fn load_session(&self, params: Value) -> Result<NewSessionResponse, String> {
+    |                         ^^^^^^^^^^^^
+...
+388 |     pub(crate) async fn transcript_page(
+    |                         ^^^^^^^^^^^^^^^
+...
+420 |     pub(crate) async fn prefix_fork(
+    |                         ^^^^^^^^^^^
+...
+447 |     pub(crate) async fn session_catalog(
+    |                         ^^^^^^^^^^^^^^^
+...
+461 |     pub(crate) async fn delete_session(
+    |                         ^^^^^^^^^^^^^^
+...
+553 |     pub(crate) async fn workspace_search(
+    |                         ^^^^^^^^^^^^^^^^
+
+warning: methods `ensure_builtin_tobot` and `set_workspace` are never used
+    --> apps/studio/src-tauri/src/agent_plane/catalog.rs:709:12
+     |
+ 252 | impl SessionCatalog {
+     | ------------------- methods in this implementation
+...
+ 709 |     pub fn ensure_builtin_tobot(&self) -> Result<Session, PlaneError> {
+     |            ^^^^^^^^^^^^^^^^^^^^
+...
+1023 |     pub fn set_workspace(&self, id: &str, source: &Value) -> Result<Session, PlaneError> {
+     |            ^^^^^^^^^^^^^
+
+warning: constant `POLL_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:29:7
+   |
+29 | const POLL_LIMIT: usize = 100;
+   |       ^^^^^^^^^^
+
+warning: struct `SseEvent` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:838:19
+    |
+838 | pub(super) struct SseEvent {
+    |                   ^^^^^^^^
+
+warning: function `stream_agent_events` is never used
+   --> apps/studio/src-tauri/src/agent_plane/cloud_runtime.rs:845:21
+    |
+845 | pub(super) async fn stream_agent_events(
+    |                     ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LISTEN_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:22:7
+   |
+22 | const LISTEN_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^
+
+warning: constant `REQUEST_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:23:7
+   |
+23 | const REQUEST_LIMIT: Duration = Duration::from_secs(2);
+   |       ^^^^^^^^^^^^^
+
+warning: constant `PACKAGE_TURN_LIMIT` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:24:7
+   |
+24 | const PACKAGE_TURN_LIMIT: Duration = Duration::from_secs(5);
+   |       ^^^^^^^^^^^^^^^^^^
+
+warning: struct `PeerState` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:38:8
+   |
+38 | struct PeerState {
+   |        ^^^^^^^^^
+
+warning: struct `BuiltinPeer` is never constructed
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:42:12
+   |
+42 | pub struct BuiltinPeer {
+   |            ^^^^^^^^^^^
+
+warning: associated items `start`, `endpoint`, and `stop` are never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:49:18
+   |
+48 | impl BuiltinPeer {
+   | ---------------- associated items in this implementation
+49 |     pub async fn start() -> Result<Self, String> {
+   |                  ^^^^^
+...
+76 |     pub fn endpoint(&self) -> String {
+   |            ^^^^^^^^
+...
+80 |     pub async fn stop(mut self) {
+   |                  ^^^^
+
+warning: function `admit_command` is never used
+  --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:88:10
+   |
+88 | async fn admit_command(
+   |          ^^^^^^^^^^^^^
+
+warning: function `page_events` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:101:10
+    |
+101 | async fn page_events(
+    |          ^^^^^^^^^^^
+
+warning: function `admitted_prompt` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:114:4
+    |
+114 | fn admitted_prompt(body: &Value) -> Result<String, ()> {
+    |    ^^^^^^^^^^^^^^^
+
+warning: struct `PackageRun` is never constructed
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:186:12
+    |
+186 | pub struct PackageRun {
+    |            ^^^^^^^^^^
+
+warning: associated items `spawn`, `endpoint`, `stop`, and `finish` are never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:193:18
+    |
+192 | impl PackageRun {
+    | --------------- associated items in this implementation
+193 |     pub async fn spawn(program: &Path, args: &[String]) -> Result<Self, String> {
+    |                  ^^^^^
+...
+253 |     pub fn endpoint(&self) -> &str {
+    |            ^^^^^^^^
+...
+257 |     pub async fn stop(self) -> Result<(), String> {
+    |                  ^^^^
+...
+262 |     async fn finish(mut self) -> Result<String, String> {
+    |              ^^^^^^
+
+warning: function `listen_error` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:274:10
+    |
+274 | async fn listen_error(child: Child, stderr: JoinHandle<Vec<u8>>, error: &str) -> String {
+    |          ^^^^^^^^^^^^
+
+warning: function `stderr_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:279:10
+    |
+279 | async fn stderr_text(task: JoinHandle<Vec<u8>>) -> String {
+    |          ^^^^^^^^^^^
+
+warning: function `bounded_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:287:4
+    |
+287 | fn bounded_text(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^^^
+
+warning: function `with_diagnostic` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:293:4
+    |
+293 | fn with_diagnostic(error: String, stderr: &str) -> String {
+    |    ^^^^^^^^^^^^^^^
+
+warning: function `post_json` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:302:14
+    |
+302 | pub async fn post_json(endpoint: &str, path: &str, body: &Value) -> Result<Value, String> {
+    |              ^^^^^^^^^
+
+warning: function `exchange_turn` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:396:21
+    |
+396 | pub(super) async fn exchange_turn(endpoint: &str, body: &Value) -> Result<Vec<String>, String> {
+    |                     ^^^^^^^^^^^^^
+
+warning: function `package_turn_text` is never used
+   --> apps/studio/src-tauri/src/agent_plane/edge_runtime.rs:402:14
+    |
+402 | pub async fn package_turn_text(entry: &Path, body: &Value) -> Result<Vec<String>, String> {
+    |              ^^^^^^^^^^^^^^^^^
+
+warning: method `background_running` is never used
+   --> apps/studio/src-tauri/src/agent_plane/events.rs:277:19
+    |
+ 56 | impl EventHub {
+    | ------------- method in this implementation
+...
+277 |     pub(crate) fn background_running(&self, session_id: &str) -> bool {
+    |                   ^^^^^^^^^^^^^^^^^^
+
+warning: associated function `single` is never used
+   --> apps/studio/src-tauri/src/agent_plane/launcher.rs:426:12
+    |
+340 | impl LaunchGeneration {
+    | --------------------- associated function in this implementation
+...
+426 |     pub fn single(
+    |            ^^^^^^
+
+warning: function `render_config` is never used
+   --> apps/studio/src-tauri/src/agent_plane/launcher.rs:697:4
+    |
+697 | fn render_config(provider_id: &str, model_id: &str, credentials: &ProviderCredentials) -> String {
+    |    ^^^^^^^^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> apps/studio/src-tauri/src/agent_plane/store.rs:32:19
+   |
+31 | impl CoreBindingStatus {
+   | ---------------------- associated items in this implementation
+32 |     pub(super) fn parse(value: &str) -> io::Result<Self> {
+   |                   ^^^^^
+...
+43 |     pub(super) fn as_str(self) -> &'static str {
+   |                   ^^^^^^
+
+warning: fields `core_sessions` and `core_binding_error` are never read
+  --> apps/studio/src-tauri/src/agent_plane/store.rs:66:5
+   |
+61 | struct State {
+   |        ----- fields in this struct
+...
+66 |     core_sessions: HashMap<String, CoreSessionBinding>,
+   |     ^^^^^^^^^^^^^
+67 |     core_binding_error: Option<String>,
+   |     ^^^^^^^^^^^^^^^^^^
+
+warning: method `ticker_started` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tasks.rs:75:19
+   |
+33 | impl TaskService {
+   | ---------------- method in this implementation
+...
+75 |     pub(super) fn ticker_started(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^
+
+warning: function `recall_note` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:20:15
+   |
+20 | pub(crate) fn recall_note(origin: &str, slug: &str, query: &str) -> Option<String> {
+   |               ^^^^^^^^^^^
+
+warning: function `retain_exchange` is never used
+  --> apps/studio/src-tauri/src/agent_plane/tobot_memory.rs:39:15
+   |
+39 | pub(crate) fn retain_exchange(origin: &str, slug: &str, key: &str, user: &str, assistant: &str) {
+   |               ^^^^^^^^^^^^^^^
+
+warning: field `acp_model` is never read
+   --> apps/studio/src-tauri/src/agent_plane/turns.rs:237:5
+    |
+229 | pub(super) struct SessionRuntime {
+    |                   -------------- field in this struct
+...
+237 |     acp_model: String,
+    |     ^^^^^^^^^
+
+warning: method `respond_approval` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:2150:12
+     |
+ 696 | impl TurnService {
+     | ---------------- method in this implementation
+...
+2150 |     pub fn respond_approval(&self, approval_id: &str, approved: bool) -> bool {
+     |            ^^^^^^^^^^^^^^^^
+
+warning: enum `ComputerUseSettingsStatus` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:4874:17
+     |
+4874 | pub(crate) enum ComputerUseSettingsStatus {
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `settings_status` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:4884:19
+     |
+4883 | impl ComputerUseDirectory {
+     | ------------------------- method in this implementation
+4884 |     pub(crate) fn settings_status(&self) -> ComputerUseSettingsStatus {
+     |                   ^^^^^^^^^^^^^^^
+
+warning: function `computer_use_runtime_registered` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:4993:15
+     |
+4993 | pub(crate) fn computer_use_runtime_registered(tenant: &Path) -> bool {
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `computer_use_permitted` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:5001:4
+     |
+5001 | fn computer_use_permitted(config: &PlaneConfig) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `OfferedComputerUse` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:5132:17
+     |
+5132 | pub(super) enum OfferedComputerUse {
+     |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `run_offered_computer_use` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:5139:15
+     |
+5139 | pub(super) fn run_offered_computer_use(
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `run_computer_use_process` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:5212:4
+     |
+5212 | fn run_computer_use_process(entry: &Path, payload: &[u8]) -> Result<Vec<u8>, String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `INTERRUPTED_RUN` is never used
+    --> apps/studio/src-tauri/src/agent_plane/turns.rs:5444:18
+     |
+5444 | pub(super) const INTERRUPTED_RUN: &str = INTERRUPTED_EXHAUSTED;
+     |                  ^^^^^^^^^^^^^^^
+
+warning: field `name` is never read
+   --> apps/studio/src-tauri/src/authority.rs:190:5
+    |
+186 | pub struct StudioAuthority {
+    |            --------------- field in this struct
+...
+190 |     name: String,
+    |     ^^^^
+
+warning: method `name` is never used
+   --> apps/studio/src-tauri/src/authority.rs:398:12
+    |
+200 | impl StudioAuthority {
+    | -------------------- method in this implementation
+...
+398 |     pub fn name(&self) -> &str {
+    |            ^^^^
+
+warning: field `http` is never read
+  --> apps/studio/src-tauri/src/binary_tools.rs:51:5
+   |
+48 | struct BinaryState {
+   |        ----------- field in this struct
+...
+51 |     http: HttpSource,
+   |     ^^^^
+   |
+   = note: `BinaryState` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `installed_agent_entry` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:1495:15
+     |
+1495 | pub(crate) fn installed_agent_entry(caps: &Path, slug: &str) -> io::Result<PathBuf> {
+     |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `acp_session_servers` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2664:15
+     |
+2664 | pub(crate) fn acp_session_servers(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `installed_flow_specs` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2721:15
+     |
+2721 | pub(crate) fn installed_flow_specs(root: &Path) -> Vec<Value> {
+     |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `source_hash_ok` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:2741:4
+     |
+2741 | fn source_hash_ok(value: &str) -> bool {
+     |    ^^^^^^^^^^^^^^
+
+warning: function `validate_skill_md` is never used
+    --> apps/studio/src-tauri/src/capabilities.rs:3341:4
+     |
+3341 | fn validate_skill_md(path: &Path) -> io::Result<(String, String)> {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: method `bar_titles_after_app` is never used
+  --> apps/studio/src-tauri/src/desktop_settings/menu_labels.rs:63:12
+   |
+53 | impl MenuLabels {
+   | --------------- method in this implementation
+...
+63 |     pub fn bar_titles_after_app(&self) -> [&str; 5] {
+   |            ^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unavailable` is never constructed
+  --> apps/studio/src-tauri/src/folder_dialog.rs:56:5
+   |
+53 | pub enum DirectoryChoice {
+   |          --------------- variant in this enum
+...
+56 |     Unavailable,
+   |     ^^^^^^^^^^^
+
+warning: function `desktop_capabilities` is never used
+   --> apps/studio/src-tauri/src/host_family.rs:122:8
+    |
+122 | pub fn desktop_capabilities() -> serde_json::Value {
+    |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `new` is never used
+  --> apps/studio/src-tauri/src/knowledge_draft.rs:21:12
+   |
+20 | impl KnowledgeDrafts {
+   | -------------------- associated function in this implementation
+21 |     pub fn new(directory: PathBuf) -> Self {
+   |            ^^^
+
+warning: associated function `parse` is never used
+  --> apps/studio/src-tauri/src/knowledge_query.rs:28:20
+   |
+27 |         impl $name {
+   |         ---------- associated function in this implementation
+28 |             pub fn parse(value: &str) -> Result<Self, QueryFailure> {
+   |                    ^^^^^
+...
+35 | wire_enum!(KnowledgeQueryScope { Notes => "notes", Published => "published" });
+   | ------------------------------------------------------------------------------ in this macro invocation
+   |
+   = note: this warning originates in the macro `wire_enum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: associated items `parse` and `as_str` are never used
+  --> apps/studio/src-tauri/src/knowledge_query.rs:28:20
+   |
+27 |         impl $name {
+   |         ---------- associated items in this implementation
+28 |             pub fn parse(value: &str) -> Result<Self, QueryFailure> {
+   |                    ^^^^^
+...
+31 |             pub fn as_str(self) -> &'static str { match self { $(Self::$variant => $wire),+ } }
+   |                    ^^^^^^
+...
+36 | wire_enum!(FailureCode { Invalid => "invalid", Missing => "missing", Busy => "busy", Cancelled => "cancelled", Expired => "expired", IndexFailed => "index_failed", Failed => "failed" });
+   | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- in this macro invocation
+   |
+   = note: this warning originates in the macro `wire_enum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: associated items `parse` and `as_str` are never used
+  --> apps/studio/src-tauri/src/knowledge_query.rs:28:20
+   |
+27 |         impl $name {
+   |         ---------- associated items in this implementation
+28 |             pub fn parse(value: &str) -> Result<Self, QueryFailure> {
+   |                    ^^^^^
+...
+31 |             pub fn as_str(self) -> &'static str { match self { $(Self::$variant => $wire),+ } }
+   |                    ^^^^^^
+...
+37 | wire_enum!(IssueReason { Discovery => "discov...n => "publication", Metadata => "metadata" });
+   | ---------------------------------------------...--------------------------------------------- in this macro invocation
+   |
+   = note: this warning originates in the macro `wire_enum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: function `app_wiki_directory` is never used
+  --> apps/studio/src-tauri/src/local_assets.rs:44:8
+   |
+44 | pub fn app_wiki_directory(stored: &str, home: &Path) -> Option<PathBuf> {
+   |        ^^^^^^^^^^^^^^^^^^
+
+warning: function `stored_workspace_preference` is never used
+  --> apps/studio/src-tauri/src/local_assets.rs:64:8
+   |
+64 | pub fn stored_workspace_preference(slug: &str) -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `normalize_workspace` is never used
+  --> apps/studio/src-tauri/src/local_assets.rs:83:4
+   |
+83 | fn normalize_workspace(path: &Path) -> PathBuf {
+   |    ^^^^^^^^^^^^^^^^^^^
+
+warning: function `normalize_workspace_text` is never used
+  --> apps/studio/src-tauri/src/local_assets.rs:87:4
+   |
+87 | fn normalize_workspace_text(value: &str) -> String {
+   |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `is_absolute_workspace` is never used
+  --> apps/studio/src-tauri/src/local_assets.rs:98:4
+   |
+98 | fn is_absolute_workspace(value: &str) -> bool {
+   |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `drive_prefix` is never used
+   --> apps/studio/src-tauri/src/local_assets.rs:102:4
+    |
+102 | fn drive_prefix(value: &str) -> bool {
+    |    ^^^^^^^^^^^^
+
+warning: function `is_filesystem_root` is never used
+   --> apps/studio/src-tauri/src/local_assets.rs:113:4
+    |
+113 | fn is_filesystem_root(path: &Path) -> bool {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `studio_wiki_root` is never used
+   --> apps/studio/src-tauri/src/local_assets.rs:123:8
+    |
+123 | pub fn studio_wiki_root(body: &Value) -> Option<PathBuf> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: function `retrieve_passages` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:38:8
+   |
+38 | pub fn retrieve_passages(raw_root: &str, query: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `query_tokens` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:69:4
+   |
+69 | fn query_tokens(query: &str) -> Vec<String> {
+   |    ^^^^^^^^^^^^
+
+warning: function `collect_note_passages` is never used
+  --> apps/studio/src-tauri/src/local_documents.rs:81:4
+   |
+81 | fn collect_note_passages(
+   |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `as_str` and `parse` are never used
+   --> apps/studio/src-tauri/src/knowledge_rename_links.rs:374:12
+    |
+373 | impl BlockReason {
+    | ---------------- associated items in this implementation
+374 |     pub fn as_str(self) -> &'static str {
+    |            ^^^^^^
+...
+381 |     pub fn parse(value: &str) -> Option<Self> {
+    |            ^^^^^
+
+warning: associated items `as_str` and `parse` are never used
+   --> apps/studio/src-tauri/src/knowledge_rename_links.rs:399:12
+    |
+398 | impl ImpactError {
+    | ---------------- associated items in this implementation
+399 |     pub fn as_str(self) -> &'static str {
+    |            ^^^^^^
+...
+407 |     pub fn parse(value: &str) -> Option<Self> {
+    |            ^^^^^
+
+warning: associated items `as_str` and `parse` are never used
+  --> apps/studio/src-tauri/src/knowledge_move.rs:27:20
+   |
+26 |         impl $name {
+   |         ---------- associated items in this implementation
+27 |             pub fn as_str(self) -> &'static str { match self { $(Self::$variant => $wire),+ } }
+   |                    ^^^^^^
+28 |             pub fn parse(value: &str) -> Option<Self> { match value { $($wire => Some(Self::$variant),)+ _ => None } }
+   |                    ^^^^^
+...
+33 | wire_enum!(Phase { Preview => "preview", Applying => "applying", Attention => "attention", Complete => "complete", Cancelled => "cancelled" });
+   | ---------------------------------------------------------------------------------------------------------------------------------------------- in this macro invocation
+   |
+   = note: this warning originates in the macro `wire_enum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: associated items `as_str` and `parse` are never used
+  --> apps/studio/src-tauri/src/knowledge_move.rs:27:20
+   |
+26 |         impl $name {
+   |         ---------- associated items in this implementation
+27 |             pub fn as_str(self) -> &'static str { match self { $(Self::$variant => $wire),+ } }
+   |                    ^^^^^^
+28 |             pub fn parse(value: &str) -> Option<Self> { match value { $($wire => Some(Self::$variant),)+ _ => None } }
+   |                    ^^^^^
+...
+34 | wire_enum!(Side { Before => "before", After => "after" });
+   | --------------------------------------------------------- in this macro invocation
+   |
+   = note: this warning originates in the macro `wire_enum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: associated function `new` is never used
+   --> apps/studio/src-tauri/src/knowledge_move.rs:475:12
+    |
+474 | impl KnowledgeMoves {
+    | ------------------- associated function in this implementation
+475 |     pub fn new(directory: PathBuf) -> Self {
+    |            ^^^
+
+warning: methods `request` and `permit_exit` are never used
+  --> apps/studio/src-tauri/src/main_exit.rs:29:8
+   |
+19 | impl ExitGate {
+   | ------------- methods in this implementation
+...
+29 |     fn request(&self) -> Result<Uuid, &'static str> {
+   |        ^^^^^^^
+...
+47 |     pub fn permit_exit(&self) -> bool {
+   |            ^^^^^^^^^^^
+
+warning: function `ask` is never used
+  --> apps/studio/src-tauri/src/main_exit.rs:79:15
+   |
+79 | pub(crate) fn ask(app: &tauri::AppHandle) -> Result<(), String> {
+   |               ^^^
+
+warning: associated items `parse` and `as_str` are never used
+   --> apps/studio/src-tauri/src/local_documents/library.rs:130:12
+    |
+129 | impl Mutation {
+    | ------------- associated items in this implementation
+130 |     pub fn parse(value: &str) -> Result<Self, Failure> {
+    |            ^^^^^
+...
+138 |     pub fn as_str(self) -> &'static str {
+    |            ^^^^^^
+
+warning: variant `Unbalanced` is never constructed
+  --> apps/studio/src-tauri/src/agent_headless_config.rs:39:5
+   |
+31 | pub enum HeadlessConfigError {
+   |          ------------------- variant in this enum
+...
+39 |     Unbalanced,
+   |     ^^^^^^^^^^
+   |
+   = note: `HeadlessConfigError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: method `recover` is never used
+  --> apps/studio/src-tauri/src/capture/controller.rs:13:8
+   |
+ 6 | pub trait CaptureAdapter {
+   |           -------------- method in this trait
+...
+13 |     fn recover(&mut self, session: &RecordingSession) -> Result<(), RecordingError>;
+   |        ^^^^^^^
+
+warning: methods `start`, `attach`, `complete_attachment`, `export`, `complete_export`, and `recover` are never used
+   --> apps/studio/src-tauri/src/capture/controller.rs:100:12
+    |
+ 64 | impl<A: CaptureAdapter> RecordingController<A> {
+    | ---------------------------------------------- methods in this implementation
+...
+100 |     pub fn start(
+    |            ^^^^^
+...
+217 |     pub fn attach(&mut self, id: &str) -> Result<RecordingState, RecordingError> {
+    |            ^^^^^^
+...
+222 |     pub fn complete_attachment(&mut self, id: &str) -> Result<RecordingState, RecordingError> {
+    |            ^^^^^^^^^^^^^^^^^^^
+...
+229 |     pub fn export(&mut self, id: &str) -> Result<RecordingState, RecordingError> {
+    |            ^^^^^^
+...
+234 |     pub fn complete_export(&mut self, id: &str) -> Result<RecordingState, RecordingError> {
+    |            ^^^^^^^^^^^^^^^
+...
+239 |     pub fn recover(&mut self, id: &str) -> Result<String, RecordingError> {
+    |            ^^^^^^^
+
+warning: method `directory` is never used
+  --> apps/studio/src-tauri/src/capture/native.rs:40:12
+   |
+36 | impl NativeCaptureAdapter {
+   | ------------------------- method in this implementation
+...
+40 |     pub fn directory(&self) -> Option<&Path> {
+   |            ^^^^^^^^^
+
+warning: associated items `open_app`, `open_at`, `refresh_token`, `replace_token`, and `with_preference_scope` are never used
+   --> apps/studio/src-tauri/src/member_session.rs:92:12
+    |
+ 53 | impl MemberSessionStore {
+    | ----------------------- associated items in this implementation
+...
+ 92 |     pub fn open_app(root: &std::path::Path, app_id: &str) -> Self {
+    |            ^^^^^^^^
+...
+101 |     pub fn open_at(path: Option<PathBuf>) -> Self {
+    |            ^^^^^^^
+...
+144 |     pub fn refresh_token(&self) -> Option<String> {
+    |            ^^^^^^^^^^^^^
+...
+152 |     pub fn replace_token(&self, token: &str, refresh_token: Option<&str>) -> Result<(), u16> {
+    |            ^^^^^^^^^^^^^
+...
+358 |     pub(crate) fn with_preference_scope<T>(
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> apps/studio/src-tauri/src/model_accounting_usage.rs:18:12
+   |
+17 | impl UsageGroup {
+   | --------------- associated items in this implementation
+18 |     pub fn parse(value: &str) -> Result<Self, AccountingError> {
+   |            ^^^^^
+...
+29 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: function `is_notice_label` is never used
+  --> apps/studio/src-tauri/src/notice_window.rs:18:8
+   |
+18 | pub fn is_notice_label(label: &str) -> bool {
+   |        ^^^^^^^^^^^^^^^
+
+warning: function `save_origin` is never used
+  --> apps/studio/src-tauri/src/org_login.rs:88:8
+   |
+88 | pub fn save_origin(slug: &str, value: &str) -> Option<String> {
+   |        ^^^^^^^^^^^
+
+warning: function `refresh_member_token` is never used
+    --> apps/studio/src-tauri/src/org_login.rs:1189:8
+     |
+1189 | pub fn refresh_member_token(origin: &str, refresh_token: &str) -> Option<(String, Option<String>)> {
+     |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `member_token_state` is never used
+    --> apps/studio/src-tauri/src/org_login.rs:1217:8
+     |
+1217 | pub fn member_token_state(token: &str, origin: &str) -> Option<bool> {
+     |        ^^^^^^^^^^^^^^^^^^
+
+warning: function `search_paths` is never used
+   --> apps/studio/src-tauri/src/plugin_okf.rs:436:4
+    |
+436 | fn search_paths(dir: &Path, query: &str) -> io::Result<Vec<String>> {
+    |    ^^^^^^^^^^^^
+
+warning: function `first_chat_model_for_key` is never used
+    --> apps/studio/src-tauri/src/providers.rs:1636:15
+     |
+1636 | pub(crate) fn first_chat_model_for_key(key: &str) -> Option<String> {
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `session_scope_from` is never used
+    --> apps/studio/src-tauri/src/providers.rs:2142:4
+     |
+2142 | fn session_scope_from(
+     |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `session_slug_for` is never used
+    --> apps/studio/src-tauri/src/providers.rs:2151:4
+     |
+2151 | fn session_slug_for(brand: &str, instance: Option<&str>) -> Option<String> {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> apps/studio/src-tauri/src/providers_pricing.rs:58:8
+   |
+57 | impl ImageUnit {
+   | -------------- associated items in this implementation
+58 |     fn parse(value: &str) -> Result<Self, Fail> {
+   |        ^^^^^
+...
+66 |     fn as_str(&self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+   --> apps/studio/src-tauri/src/providers_control.rs:292:8
+    |
+291 | impl ModelFeature {
+    | ----------------- associated items in this implementation
+292 |     fn parse(value: &str) -> Result<Self, DispatchError> {
+    |        ^^^^^
+...
+296 |     fn as_str(self) -> &'static str {
+    |        ^^^^^^
+
+warning: fields `skill`, `ui`, `title`, and `steps` are never read
+  --> apps/studio/src-tauri/src/review_plugin.rs:82:9
+   |
+81 | pub struct ReconcileReport {
+   |            --------------- fields in this struct
+82 |     pub skill: bool,
+   |         ^^^^^
+83 |     pub ui: bool,
+   |         ^^
+84 |     pub title: String,
+   |         ^^^^^
+85 |     pub steps: Vec<&'static str>,
+   |         ^^^^^
+
+warning: function `review_facade_script` is never used
+  --> apps/studio/src-tauri/src/review_plugin.rs:97:8
+   |
+97 | pub fn review_facade_script() -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `cached_picker_http` is never used
+   --> apps/studio/src-tauri/src/review_plugin.rs:455:4
+    |
+455 | fn cached_picker_http() -> (u16, &'static str, &'static str, Vec<u8>) {
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: function `verified_picker` is never used
+   --> apps/studio/src-tauri/src/review_plugin.rs:479:8
+    |
+479 | pub fn verified_picker() -> Option<(PathBuf, String)> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: function `selected_development_slug` is never used
+   --> apps/studio/src-tauri/src/tenant.rs:237:4
+    |
+237 | fn selected_development_slug(raw: Option<&str>) -> io::Result<String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variants `Flatpak` and `AppImage` are never constructed
+  --> apps/studio/src-tauri/src/update_support.rs:13:5
+   |
+11 | pub(crate) enum InstallTarget {
+   |                 ------------- variants in this enum
+12 |     MacBundle(PathBuf),
+13 |     Flatpak { app_id: String },
+   |     ^^^^^^^
+14 |     AppImage(PathBuf),
+   |     ^^^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+   --> apps/studio/src-tauri/src/visual_feedback/mod.rs:169:12
+    |
+168 | impl EditorTool {
+    | --------------- associated items in this implementation
+169 |     pub fn parse(value: &str) -> Result<Self, String> {
+    |            ^^^^^
+...
+181 |     pub fn as_str(self) -> &'static str {
+    |            ^^^^^^
+
+warning: function `save_only_png` is never used
+   --> apps/studio/src-tauri/src/visual_feedback/mod.rs:616:4
+    |
+616 | fn save_only_png(document: &Document) -> Result<Vec<u8>, String> {
+    |    ^^^^^^^^^^^^^
+
+warning: function `stitch` is never used
+   --> apps/studio/src-tauri/src/visual_feedback/geometry.rs:385:15
+    |
+385 | pub(super) fn stitch(first: &RgbaImage, next: &RgbaImage) -> Result<RgbaImage, String> {
+    |               ^^^^^^
+
+warning: function `stitch_horizontal` is never used
+   --> apps/studio/src-tauri/src/visual_feedback/geometry.rs:410:15
+    |
+410 | pub(super) fn stitch_horizontal(first: &RgbaImage, next: &RgbaImage) -> Result<RgbaImage, String> {
+    |               ^^^^^^^^^^^^^^^^^
+
+warning: function `hit_window_drag` is never used
+  --> apps/studio/src-tauri/src/window_drag.rs:22:15
+   |
+22 | pub(crate) fn hit_window_drag(x: f64, y: f64, drag: &[CssRect], block: &[CssRect]) -> bool {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `hit_window_chrome` is never used
+  --> apps/studio/src-tauri/src/window_drag.rs:32:15
+   |
+32 | pub(crate) fn hit_window_chrome(
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `present_local_page` is never used
+   --> apps/studio/src-tauri/src/workspace_browser.rs:802:4
+    |
+802 | fn present_local_page<R: Runtime>(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-studio` (lib) generated 124 warnings (run `cargo fix --lib -p aster-studio` to apply 7 suggestions)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-studio` (bin "Studio") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 20.67s
+warning: the following packages contain code that will be rejected by a future version of Rust: block v0.1.6
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`

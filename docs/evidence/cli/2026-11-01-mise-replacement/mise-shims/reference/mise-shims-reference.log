@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 14, in <module>
+    from cli_mise_batch_install_reference import CONTRACTS, TIMEOUT_SECONDS
+  File "/Users/roylin/code/aster/tests/cli_mise_batch_install_reference.py", line 12, in <module>
+    import tomllib
+ModuleNotFoundError: No module named 'tomllib'

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "aster",
+    "exit": 0,
+    "identity": "aster-cli-pair-v1:e2527c32dfb554c2c99979240666b801af36356c:aarch64-apple-darwin",
+    "elapsedSeconds": 0.02,
+    "stderr": ""
+  },
+  {
+    "name": "aster-acp",
+    "exit": 0,
+    "identity": "aster-cli-pair-v1:e2527c32dfb554c2c99979240666b801af36356c:aarch64-apple-darwin",
+    "elapsedSeconds": 5.511,
+    "stderr": ""
+  }
+]

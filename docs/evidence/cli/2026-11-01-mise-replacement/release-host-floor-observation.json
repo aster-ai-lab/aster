@@ -1,0 +1,126 @@
+{
+  "capturedAtUtc": "2026-11-01T22:13:29.667454+00:00",
+  "repositories": {
+    "aster": {
+      "head": "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+      "dirtyEntries": 2323
+    },
+    "studio": {
+      "head": "a371b25465ca76f0561bf650f6c54407ef3c0ba3",
+      "dirtyEntries": 508
+    }
+  },
+  "developmentProcesses": [
+    "27566 81052    07:32:48 pnpm",
+    "63215 50987       02:39 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo",
+    "69749 69747       00:10 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo",
+    "69806 69749       00:08 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/rustc",
+    "83397 81052    13:14:39 pnpm"
+  ],
+  "checks": [
+    {
+      "name": "packages",
+      "argv": [
+        "gh",
+        "api",
+        "--method",
+        "GET",
+        "/orgs/aster-ai-lab/packages",
+        "-f",
+        "package_type=container",
+        "--paginate",
+        "--jq",
+        ".[] | {name,visibility}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"name\":\"plugins/operations/aster/aster-document\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-office\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-sandbox\",\"visibility\":\"private\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "catalog",
+      "argv": [
+        "gh",
+        "api",
+        "repos/aster-ai-lab/plugins/contents/registry/catalog",
+        "--jq",
+        "[.[] | .name]"
+      ],
+      "exitCode": 0,
+      "stdout": "[\"aster-document-0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b-darwin-arm64.json\",\"aster-document-0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2-darwin-arm64.json\",\"aster-office-0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613-darwin-arm64.json\",\"aster-office-0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c-darwin-arm64.json\",\"aster-sandbox-0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a-darwin-arm64.json\",\"aster-sandbox-0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819-darwin-arm64.json\"]\n",
+      "stderr": ""
+    },
+    {
+      "name": "releases",
+      "argv": [
+        "gh",
+        "api",
+        "repos/aster-ai-lab/aster/releases",
+        "--paginate",
+        "--jq",
+        ".[] | {tag_name,draft,prerelease,published_at,target_commitish}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T16:06:16Z\",\"tag_name\":\"v0.1.11\",\"target_commitish\":\"1639ebcaa109d1878eade6d0177df04ebc0a1918\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T11:52:55Z\",\"tag_name\":\"v0.1.10\",\"target_commitish\":\"main\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T21:35:14Z\",\"tag_name\":\"aster-cli-v0.1.7\",\"target_commitish\":\"ca162c96e9d4e4da4785bb1482d78084455a81d3\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T08:49:55Z\",\"tag_name\":\"aster-cli-v0.1.6\",\"target_commitish\":\"60a47ecb20d6488cd01b9b028b85d7f3e4290826\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-31T23:13:51Z\",\"tag_name\":\"aster-acp-v9.1.7\",\"target_commitish\":\"a7df8281e1865c14c807c54a1aceb6dc36ed876d\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-28T21:05:49Z\",\"tag_name\":\"desktop-stable\",\"target_commitish\":\"3185a21747df621c569ad4828103b53e685a8203\"}\n{\"draft\":false,\"prerelease\":false,\"published_at\":\"2026-10-28T23:02:51Z\",\"tag_name\":\"aster-cli-stable\",\"target_commitish\":\"f9bddc250b977a3d6eb311ffc7d2f8b36df6b95d\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "latest",
+      "argv": [
+        "gh",
+        "api",
+        "repos/aster-ai-lab/aster/releases/latest",
+        "--jq",
+        "{tag_name,draft,prerelease}"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"draft\":false,\"prerelease\":false,\"tag_name\":\"v0.1.11\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ci",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "aster-ai-lab/aster",
+        "--commit",
+        "4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79",
+        "--limit",
+        "20",
+        "--json",
+        "workflowName,status,conclusion,headSha,url"
+      ],
+      "exitCode": 0,
+      "stdout": "[{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143321\",\"workflowName\":\"Qualify aster\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143274\",\"workflowName\":\"Qualify aster-cli\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143188\",\"workflowName\":\"backend\"},{\"conclusion\":\"success\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143162\",\"workflowName\":\"Cross-platform text\"},{\"conclusion\":\"failure\",\"headSha\":\"4d5c8dfa32ff2c7a5239c47f6f13795fe65dbb79\",\"status\":\"completed\",\"url\":\"https://github.com/aster-ai-lab/aster/actions/runs/41331143189\",\"workflowName\":\"Rust\"}]\n",
+      "stderr": ""
+    },
+    {
+      "name": "governance",
+      "argv": [
+        "python3",
+        "tests/release_governance.py"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "E........\n======================================================================\nERROR: test_draft_and_prerelease_never_mutate_a_channel (__main__.CliChannelPublication) (draft=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 118, in test_draft_and_prerelease_never_mutate_a_channel\n    result, mutations = self.publish(**flags)\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 94, in publish\n    result = subprocess.run(\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 507, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1134, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1980, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1178, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['bash', '-c', 'set -euo pipefail\\nif [[ ! \"$VERSION\" =~ ^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$ ]]; then\\n  echo \"version must be x.y.z\" >&2\\n  exit 2\\nfi\\nrelease=\"aster-cli-v${VERSION}\"\\ntest \"$(gh release view \"$release\" --json isDraft --jq .isDraft)\" = false\\ntest \"$(gh release view \"$release\" --json isPrerelease --jq .isPrerelease)\" = false\\ngh release download \"$release\" --pattern latest.json --output latest.json --clobber\\npython3 - \"$VERSION\" latest.json <<\\'PY\\'\\nimport json\\nimport re\\nimport sys\\n\\nversion, path = sys.argv[1:]\\nwith open(path, encoding=\"utf-8\") as source:\\n    manifest = json.load(source)\\nif manifest.get(\"version\") != version or manifest.get(\"tag\") != f\"aster-cli-v{version}\":\\n    raise SystemExit(\"channel manifest identity mismatch\")\\nassets = manifest.get(\"assets\")\\nif not isinstance(assets, dict) or set(assets) != {\"macos\", \"linux\", \"windows\"}:\\n    raise SystemExit(\"channel manifest platform set mismatch\")\\nfor platform, extension in ((\"macos\", \"tar.gz\"), (\"linux\", \"tar.gz\"), (\"windows\", \"zip\")):\\n    entry = assets[platform]\\n    expected = f\"aster-cli-v{version}-{platform}.{extension}\"\\n    if entry.get(\"name\") != expected or not re.fullmatch(r\"[0-9a-f]{64}\", entry.get(\"sha256\", \"\")):\\n        raise SystemExit(f\"channel manifest asset mismatch: {platform}\")\\nPY\\nlatest_tag=\"$(gh api \"repos/${GH_REPO}/releases/latest\" --jq .tag_name)\"\\nif [[ \"$latest_tag\" != v[0-9]* ]]; then\\n  echo \"repository Latest is not an Aster desktop release: $latest_tag\" >&2\\n  exit 1\\nfi\\nif gh release view aster-cli-stable >/dev/null 2>&1; then\\n  gh release upload aster-cli-stable latest.json --clobber\\nelse\\n  built=\"$(gh api \"repos/${GH_REPO}/commits/${release}\" --jq .sha)\"\\n  gh release create aster-cli-stable latest.json \\\\\\n    --target \"$built\" \\\\\\n    --title \"Aster CLI stable channel\" \\\\\\n    --notes \"Rolling CLI channel. latest.json names the current versioned release.\" \\\\\\n    --latest=false\\nfi\\n# Pre-stable installers still resolve repository Latest. Keep their\\n# compatibility manifest current without coupling new clients to it.\\ngh release upload \"$latest_tag\" latest.json --clobber']' timed out after 10 seconds\n\n======================================================================\nERROR: test_draft_and_prerelease_never_mutate_a_channel (__main__.CliChannelPublication) (prerelease=True)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 118, in test_draft_and_prerelease_never_mutate_a_channel\n    result, mutations = self.publish(**flags)\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 94, in publish\n    result = subprocess.run(\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 507, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1134, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1980, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1178, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['bash', '-c', 'set -euo pipefail\\nif [[ ! \"$VERSION\" =~ ^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$ ]]; then\\n  echo \"version must be x.y.z\" >&2\\n  exit 2\\nfi\\nrelease=\"aster-cli-v${VERSION}\"\\ntest \"$(gh release view \"$release\" --json isDraft --jq .isDraft)\" = false\\ntest \"$(gh release view \"$release\" --json isPrerelease --jq .isPrerelease)\" = false\\ngh release download \"$release\" --pattern latest.json --output latest.json --clobber\\npython3 - \"$VERSION\" latest.json <<\\'PY\\'\\nimport json\\nimport re\\nimport sys\\n\\nversion, path = sys.argv[1:]\\nwith open(path, encoding=\"utf-8\") as source:\\n    manifest = json.load(source)\\nif manifest.get(\"version\") != version or manifest.get(\"tag\") != f\"aster-cli-v{version}\":\\n    raise SystemExit(\"channel manifest identity mismatch\")\\nassets = manifest.get(\"assets\")\\nif not isinstance(assets, dict) or set(assets) != {\"macos\", \"linux\", \"windows\"}:\\n    raise SystemExit(\"channel manifest platform set mismatch\")\\nfor platform, extension in ((\"macos\", \"tar.gz\"), (\"linux\", \"tar.gz\"), (\"windows\", \"zip\")):\\n    entry = assets[platform]\\n    expected = f\"aster-cli-v{version}-{platform}.{extension}\"\\n    if entry.get(\"name\") != expected or not re.fullmatch(r\"[0-9a-f]{64}\", entry.get(\"sha256\", \"\")):\\n        raise SystemExit(f\"channel manifest asset mismatch: {platform}\")\\nPY\\nlatest_tag=\"$(gh api \"repos/${GH_REPO}/releases/latest\" --jq .tag_name)\"\\nif [[ \"$latest_tag\" != v[0-9]* ]]; then\\n  echo \"repository Latest is not an Aster desktop release: $latest_tag\" >&2\\n  exit 1\\nfi\\nif gh release view aster-cli-stable >/dev/null 2>&1; then\\n  gh release upload aster-cli-stable latest.json --clobber\\nelse\\n  built=\"$(gh api \"repos/${GH_REPO}/commits/${release}\" --jq .sha)\"\\n  gh release create aster-cli-stable latest.json \\\\\\n    --target \"$built\" \\\\\\n    --title \"Aster CLI stable channel\" \\\\\\n    --notes \"Rolling CLI channel. latest.json names the current versioned release.\" \\\\\\n    --latest=false\\nfi\\n# Pre-stable installers still resolve repository Latest. Keep their\\n# compatibility manifest current without coupling new clients to it.\\ngh release upload \"$latest_tag\" latest.json --clobber']' timed out after 10 seconds\n\n======================================================================\nERROR: test_mismatched_manifest_never_mutates_a_channel (__main__.CliChannelPublication)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 125, in test_mismatched_manifest_never_mutates_a_channel\n    result, mutations = self.publish(manifest_body=body)\n  File \"/Users/roylin/code/aster/tests/release_governance.py\", line 94, in publish\n    result = subprocess.run(\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 507, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1134, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1980, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 1178, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['bash', '-c', 'set -euo pipefail\\nif [[ ! \"$VERSION\" =~ ^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$ ]]; then\\n  echo \"version must be x.y.z\" >&2\\n  exit 2\\nfi\\nrelease=\"aster-cli-v${VERSION}\"\\ntest \"$(gh release view \"$release\" --json isDraft --jq .isDraft)\" = false\\ntest \"$(gh release view \"$release\" --json isPrerelease --jq .isPrerelease)\" = false\\ngh release download \"$release\" --pattern latest.json --output latest.json --clobber\\npython3 - \"$VERSION\" latest.json <<\\'PY\\'\\nimport json\\nimport re\\nimport sys\\n\\nversion, path = sys.argv[1:]\\nwith open(path, encoding=\"utf-8\") as source:\\n    manifest = json.load(source)\\nif manifest.get(\"version\") != version or manifest.get(\"tag\") != f\"aster-cli-v{version}\":\\n    raise SystemExit(\"channel manifest identity mismatch\")\\nassets = manifest.get(\"assets\")\\nif not isinstance(assets, dict) or set(assets) != {\"macos\", \"linux\", \"windows\"}:\\n    raise SystemExit(\"channel manifest platform set mismatch\")\\nfor platform, extension in ((\"macos\", \"tar.gz\"), (\"linux\", \"tar.gz\"), (\"windows\", \"zip\")):\\n    entry = assets[platform]\\n    expected = f\"aster-cli-v{version}-{platform}.{extension}\"\\n    if entry.get(\"name\") != expected or not re.fullmatch(r\"[0-9a-f]{64}\", entry.get(\"sha256\", \"\")):\\n        raise SystemExit(f\"channel manifest asset mismatch: {platform}\")\\nPY\\nlatest_tag=\"$(gh api \"repos/${GH_REPO}/releases/latest\" --jq .tag_name)\"\\nif [[ \"$latest_tag\" != v[0-9]* ]]; then\\n  echo \"repository Latest is not an Aster desktop release: $latest_tag\" >&2\\n  exit 1\\nfi\\nif gh release view aster-cli-stable >/dev/null 2>&1; then\\n  gh release upload aster-cli-stable latest.json --clobber\\nelse\\n  built=\"$(gh api \"repos/${GH_REPO}/commits/${release}\" --jq .sha)\"\\n  gh release create aster-cli-stable latest.json \\\\\\n    --target \"$built\" \\\\\\n    --title \"Aster CLI stable channel\" \\\\\\n    --notes \"Rolling CLI channel. latest.json names the current versioned release.\" \\\\\\n    --latest=false\\nfi\\n# Pre-stable installers still resolve repository Latest. Keep their\\n# compatibility manifest current without coupling new clients to it.\\ngh release upload \"$latest_tag\" latest.json --clobber']' timed out after 10 seconds\n\n----------------------------------------------------------------------\nRan 10 tests in 39.730s\n\nFAILED (errors=3)\n"
+    },
+    {
+      "name": "root-format",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exitCode": 1,
+      "stdout": null,
+      "stderr": null
+    }
+  ],
+  "releaseCreatedByThisTask": false,
+  "allDevelopmentComplete": false,
+  "sourceFrozen": false,
+  "governanceSha256": "26138ea7752624cccb917313cbf888c7f98d63d2efd6fff18d684373f9b13cb8"
+}

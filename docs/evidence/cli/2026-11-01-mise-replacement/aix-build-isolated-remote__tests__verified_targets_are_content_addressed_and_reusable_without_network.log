@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'remote::tests::verified_targets_are_content_addressed_and_reusable_without_network' (71133339) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::verified_targets_are_content_addressed_and_reusable_without_network ... FAILED
+
+failures:
+
+failures:
+    remote::tests::verified_targets_are_content_addressed_and_reusable_without_network
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.00s
+

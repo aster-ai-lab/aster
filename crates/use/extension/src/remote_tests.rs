@@ -38,6 +38,71 @@ async fn tuf_refresh_verifies_metadata_without_downloading_targets() {
 }
 
 #[tokio::test]
+async fn metadata_refresh_waits_for_another_reader_then_verifies_the_signed_chain() {
+    let repository = TestRepository::new(extension_archive(PACKAGE_VERSION), 7, FUTURE);
+    let server = TestServer::start(repository.routes.clone());
+    let temp = tempfile::tempdir().unwrap();
+    let datastore = temp.path().join("registry 中文 with spaces");
+    tokio::fs::create_dir_all(&datastore).await.unwrap();
+    let trusted = trusted_registry(&server, &repository, datastore.clone());
+    let owner = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(datastore.join(".metadata.lock"))
+        .unwrap();
+    fs2::FileExt::lock_exclusive(&owner).unwrap();
+    let pending = refresh_remote_registry(&trusted);
+    tokio::pin!(pending);
+    tokio::select! {
+        result = &mut pending => panic!("refresh returned before the active metadata reader released its lock: {result:?}"),
+        _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {}
+    }
+    assert!(server.requests().is_empty());
+    drop(owner);
+    let metadata = tokio::time::timeout(std::time::Duration::from_secs(10), pending)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(metadata.targets_version, 7);
+    assert_eq!(metadata.package_targets, 1);
+}
+
+#[tokio::test]
+async fn metadata_lock_wait_is_bounded_and_cancellation_leaves_no_owner() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join(".metadata.lock");
+    let owner = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(&path)
+        .unwrap();
+    fs2::FileExt::lock_exclusive(&owner).unwrap();
+    assert!(tokio::time::timeout(
+        std::time::Duration::from_millis(100),
+        acquire_metadata_lock(temp.path())
+    )
+    .await
+    .is_err());
+    let error = acquire_metadata_lock(temp.path()).await.err().unwrap();
+    assert_eq!(error.code, "use.extension.registry_busy");
+    assert_eq!(error.details["timeoutMs"], 30_000);
+    drop(owner);
+    let guard = tokio::time::timeout(
+        std::time::Duration::from_secs(1),
+        acquire_metadata_lock(temp.path()),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    drop(guard);
+    assert!(acquire_metadata_lock(temp.path()).await.is_ok());
+}
+
+#[tokio::test]
 async fn caller_pinned_root_is_idempotent_and_never_downloaded() {
     let repository = TestRepository::new(extension_archive(PACKAGE_VERSION), 7, FUTURE);
     let root = repository

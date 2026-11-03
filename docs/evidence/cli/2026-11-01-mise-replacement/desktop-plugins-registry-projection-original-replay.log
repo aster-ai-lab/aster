@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'capabilities::registry::tests::catalogue_preserves_signed_identity_and_does_not_offer_unsupported_native_tools' (70671111) panicked at apps/studio/src-tauri/src/capabilities_registry_tests.rs:9:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capabilities::registry::tests::catalogue_preserves_signed_identity_and_does_not_offer_unsupported_native_tools ... FAILED
+
+failures:
+
+failures:
+    capabilities::registry::tests::catalogue_preserves_signed_identity_and_does_not_offer_unsupported_native_tools
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1509 filtered out; finished in 0.01s
+

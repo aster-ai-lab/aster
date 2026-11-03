@@ -1,0 +1,454 @@
+{
+  "schemaVersion": 1,
+  "observed": "2026-11-03",
+  "goalComplete": false,
+  "baseline": "specs/031-cli-mise-replacement/contracts/mise-baseline.json",
+  "originalInventory": "specs/031-cli-mise-replacement/contracts/legacy-plugin-inventory.json",
+  "families": [
+    {
+      "id": "C01",
+      "capability": "Core language tools and runtime layouts",
+      "baselineDocumentation": "https://mise.jdx.dev/dev-tools/",
+      "task": "T008",
+      "milestone": "M3",
+      "sourceOwner": "crates/use/tool-acquire/src/http.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Complete-archive SDK/CLI fixtures and genuine signed Node 20.11.0 stdlib/npm execution pass on macOS arm64; Node source builds/options and the other required core runtimes remain open",
+      "required": true
+    },
+    {
+      "id": "C02",
+      "capability": "Install/list/locate/uninstall/upgrade/prune",
+      "baselineDocumentation": "https://mise.jdx.dev/cli/",
+      "task": "T001/003/004",
+      "milestone": "M2",
+      "sourceOwner": "crates/use/tool-acquire/src/store.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Earlier install/use/list/locate/removal, actual TUI confirmation and damaged-identity witnesses remain retained. Current prune/upgrade and owning lint results are recorded in currentIncrement and the convergence evidence. Complete lifecycle, profile/stub/backend/platform qualification remains open.",
+      "required": true,
+      "currentIncrement": {
+        "evidence": "docs/evidence/cli/2026-11-03-convergence/OUTCOME.md",
+        "frozenPruneCasesPassed": 12,
+        "runningInterpretedDependencyReadPassed": true,
+        "nativeTrackingProcessCasesPassed": 8,
+        "fullFamilyPassed": false,
+        "frozenUpgradeCasesPassed": 12,
+        "upgradeFailurePreservesPreviousExecutable": true,
+        "installedActivationVerifiesCompleteMembership": true,
+        "newCliAndFinalGates": "Actual CLI upgrade case, 150 tool tests, 23 Pager owner tests, all-target Clippy and paired CLI/ACP build passed; full CLI acceptance incomplete: six retained timeouts and subsequent native compiler/startup stalls"
+      }
+    },
+    {
+      "id": "C03",
+      "capability": "Complete version requests and aliases",
+      "baselineDocumentation": "https://mise.jdx.dev/dev-tools/versions.html",
+      "task": "T004",
+      "milestone": "M2",
+      "sourceOwner": "crates/use/tool-acquire/src/version.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Ten frozen mise executions agree with actual Aster CLI bare/prefix/subtraction selection; npm dist-tag install/cache/lock tests pass. Native path/system selection and temporary overrides pass actual CLI comparisons against seven more pinned cases; 108 library/15 pager/18 CLI cases and the paired build pass. Reference execution, user aliases and other request modes remain incomplete",
+      "required": true
+    },
+    {
+      "id": "C04",
+      "capability": "Multiple versions, project selection, shims, stubs, sync",
+      "baselineDocumentation": "https://mise.jdx.dev/dev-tools/",
+      "task": "T003/004",
+      "milestone": "M2",
+      "sourceOwner": "crates/use/tool-acquire/src/store.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Ordered declarations and temporary overrides retain the earlier five/nine frozen native mise comparisons. Unix project dispatch now honors the current project, ordered command fallback and the bound store; reshim repairs all recorded-version commands and removes only obsolete owned scripts. Six additional native reference cases are frozen: five exact fixture comparisons pass, and a separate real uv 0.13.6 case proves missing-version auto-install. Final checks pass 139 tool cases/five ignored, 18 pager cases, all 32 sequential CLI cases and the explicitly invoked external case. The paired CLI/ACP build has matching identities and unchanged hashes across both regressions. Tool/CLI Clippy and root formatting pass; pager Clippy retains the same 42 diagnostics/39 prior locations outside the command module. Windows project dispatch, stubs, other synchronization and remaining modes are incomplete",
+      "required": true
+    },
+    {
+      "id": "C05",
+      "capability": "Lockfiles, locked/offline installs, verification/policy",
+      "baselineDocumentation": "https://mise.jdx.dev/dev-tools/mise-lock.html",
+      "task": "T004/008",
+      "milestone": "M2",
+      "sourceOwner": "crates/use/tool-acquire/src/env_lock.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "File locks pass library/CLI tests; v3 archive-lock library tests cover native links, modes, membership, source layout, and checksum refusal before publication. V4 locks now bind ordered multi-version declarations, verify every installation and pass actual offline locked CLI execution; v1/v2/v3 compatibility remains. Pre-resolved URLs, path/system locks and complete multi-platform/backend lock parity remain open",
+      "required": true
+    },
+    {
+      "id": "C06",
+      "capability": "All release/language/custom backends and registries",
+      "baselineDocumentation": "https://mise.jdx.dev/dev-tools/backends/",
+      "task": "T008",
+      "milestone": "M3",
+      "sourceOwner": "crates/use/tool-acquire/src/http.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Partial acquisition library, native archive contract and official signed Node prebuilt provider; full provider/registry implementation remains missing",
+      "required": true
+    },
+    {
+      "id": "C07",
+      "capability": "Tool/backend/environment/package-manager plugins, legacy plugins",
+      "baselineDocumentation": "https://mise.jdx.dev/plugins.html",
+      "task": "T008",
+      "milestone": "M1/M3/M4/M6/M7",
+      "sourceOwner": "crates/use/extension/src/lib.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Native AIX and domain/source preparation pass library/SDK CLI tests, Clippy and three actual CLI preparation/refusal cases; signed GHCR read/cache protocol passes focused tests. The macOS ARM64 desktop owner installs the maintained Box AIX, runs real Linux MicroVM commands with exits 0/17 from an offline fixture, and completes removal/final-lease retirement. Six focused and two final native cases, owning Clippy, root formatting and seven workspace checks pass for that witness. Official source publication, remaining original plugins/consumers and full mise plugin/legacy ABI behavior remain required",
+      "required": true
+    },
+    {
+      "id": "C08",
+      "capability": "Layered config, profiles, variables, templates, caches/directories",
+      "baselineDocumentation": "https://mise.jdx.dev/configuration.html",
+      "task": "T002/005",
+      "milestone": "M4",
+      "sourceOwner": "crates/use/tool-acquire/src/env_acl.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Bounded user/ancestor/nearest ACL merge and retained logical path roots pass library/pager/actual CLI tests; profiles/templates/directives remain incomplete",
+      "required": true
+    },
+    {
+      "id": "C09",
+      "capability": "Environment values, unset/default/required, files/source/PATH",
+      "baselineDocumentation": "https://mise.jdx.dev/environments/",
+      "task": "T005",
+      "milestone": "M4",
+      "sourceOwner": "crates/use/tool-acquire/src/env_acl.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Basic set/show/exec only",
+      "required": true
+    },
+    {
+      "id": "C10",
+      "capability": "Secrets, SOPS, fnox and age experimental values",
+      "baselineDocumentation": "https://mise.jdx.dev/secrets/",
+      "task": "T005",
+      "milestone": "M4",
+      "sourceOwner": "crates/use/tool-acquire/src/env_acl.rs",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C11",
+      "capability": "Shell activation/deactivation, aliases, hooks, virtualenv",
+      "baselineDocumentation": "https://mise.jdx.dev/shell-setup.html",
+      "task": "T005",
+      "milestone": "M4",
+      "sourceOwner": "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Static export only",
+      "required": true
+    },
+    {
+      "id": "C12",
+      "capability": "Named/file tasks, templates, argument CLI and task discovery",
+      "baselineDocumentation": "https://mise.jdx.dev/tasks/",
+      "task": "T006",
+      "milestone": "M5",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C13",
+      "capability": "Task dependency ordering, parallelism, output, exit/cancellation",
+      "baselineDocumentation": "https://mise.jdx.dev/tasks/",
+      "task": "T006",
+      "milestone": "M5",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C14",
+      "capability": "Incremental checks, local/remote artifact caches",
+      "baselineDocumentation": "https://mise.jdx.dev/tasks/caching.html",
+      "task": "T007",
+      "milestone": "M5",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C15",
+      "capability": "Watch and file-change task execution",
+      "baselineDocumentation": "https://mise.jdx.dev/cli/watch.html",
+      "task": "T007",
+      "milestone": "M5",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C16",
+      "capability": "Monorepo tasks, workspace/project graphs, telemetry",
+      "baselineDocumentation": "https://mise.jdx.dev/tasks/monorepo.html",
+      "task": "T007",
+      "milestone": "M5",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C17",
+      "capability": "Bootstrap, modules, host packages, package plugins",
+      "baselineDocumentation": "https://mise.jdx.dev/bootstrap.html",
+      "task": "T009",
+      "milestone": "M6",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C18",
+      "capability": "Accounts/files/services/firewall/Compose and platform state",
+      "baselineDocumentation": "https://mise.jdx.dev/bootstrap.html",
+      "task": "T009",
+      "milestone": "M6",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C19",
+      "capability": "Git repositories, remote hosts, SSH relay",
+      "baselineDocumentation": "https://mise.jdx.dev/bootstrap.html",
+      "task": "T009",
+      "milestone": "M6",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C20",
+      "capability": "Dotfiles, groups, partial edits, history, sync, encryption",
+      "baselineDocumentation": "https://mise.jdx.dev/dotfiles.html",
+      "task": "T010",
+      "milestone": "M6",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C21",
+      "capability": "Daemons, containers, readiness, ports/worktrees, sharing/cleanup",
+      "baselineDocumentation": "https://mise.jdx.dev/daemons.html",
+      "task": "T010",
+      "milestone": "M6",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    },
+    {
+      "id": "C22",
+      "capability": "Diagnostics, completion, docs/manpages/skills, self-management",
+      "baselineDocumentation": "https://mise.jdx.dev/cli/",
+      "task": "T011",
+      "milestone": "M8",
+      "sourceOwner": "crates/terminal/crates/codegen/aster-pager/src",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Aster-only surfaces exist; parity unverified",
+      "required": true
+    },
+    {
+      "id": "C23",
+      "capability": "MCP tools/resources for environment management",
+      "baselineDocumentation": "https://mise.jdx.dev/mcp.html",
+      "task": "T011",
+      "milestone": "M8",
+      "sourceOwner": "crates/code/core/src",
+      "implementation": "partial",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Existing Aster MCP client is not this server",
+      "required": true
+    },
+    {
+      "id": "C24",
+      "capability": "Native platform and final packaged CLI/ACP execution",
+      "baselineDocumentation": "https://mise.jdx.dev/",
+      "task": "T012",
+      "milestone": "M8",
+      "sourceOwner": ".github/workflows",
+      "implementation": "missing",
+      "verification": "incomplete",
+      "publication": "not_qualified",
+      "existingWitness": "Missing",
+      "required": true
+    }
+  ],
+  "milestones": {
+    "M0": {
+      "status": "in_progress",
+      "remaining": [
+        "Review all 690 source provenance entries into required leaf contracts",
+        "Freeze per-target performance budgets from existing workload results",
+        "Finish original application domains/licenses/target contracts"
+      ],
+      "completedInputs": [
+        "Exact original 35+14 identity ledger",
+        "35 actual native AIX builds",
+        "690 frozen source Git blob identities verified",
+        "7 dependency checks and root format passed",
+        "42 prior Pager Clippy errors repaired; owning all-target checks passed"
+      ]
+    },
+    "M1": {
+      "status": "in_progress",
+      "remaining": [
+        "Native Studio window installation/update/removal acceptance",
+        "Interrupted builtin runtime operation qualification",
+        "Exact ordinary-plugin update and permissions acceptance"
+      ],
+      "completedSlices": [
+        "Tenant job persistence",
+        "Restart recovery against actual publication/digests",
+        "Exact-release install/remove retries and shared installation overlay"
+      ]
+    },
+    "M2": {
+      "status": "in_progress",
+      "completedSlices": [
+        "Twelve frozen prune comparisons",
+        "Running-script dependency read after pruning",
+        "Twelve frozen upgrade comparisons in the production native owner",
+        "Bad-checksum refusal preserves the previous executable, pointer and declaration",
+        "Installed-version activation verifies full required membership"
+      ],
+      "next": [
+        "Resolve full native CLI acceptance without relaxing frozen inputs/timeouts; retain six unchanged isolated passes separately",
+        "Default old-version grace-period cleanup and automatic lock refresh",
+        "Remaining selectors, rollback variants, profile/stub and native-platform requirements"
+      ],
+      "fullMilestonePassed": false
+    },
+    "M3": {
+      "status": "open"
+    },
+    "M4": {
+      "status": "open"
+    },
+    "M5": {
+      "status": "open"
+    },
+    "M6": {
+      "status": "open"
+    },
+    "M7": {
+      "status": "open"
+    },
+    "M8": {
+      "status": "open"
+    }
+  },
+  "platformGates": [
+    {
+      "product": "cli/acp",
+      "platform": "macos",
+      "workflow": ".github/workflows/release-aster-cli.yml",
+      "acceptance": "native_execution_pending"
+    },
+    {
+      "product": "cli/acp",
+      "platform": "linux",
+      "workflow": ".github/workflows/release-aster-cli.yml",
+      "acceptance": "native_execution_pending"
+    },
+    {
+      "product": "cli/acp",
+      "platform": "windows",
+      "workflow": ".github/workflows/release-aster-cli.yml",
+      "acceptance": "native_execution_pending"
+    },
+    {
+      "product": "desktop",
+      "platform": "darwin-aarch64",
+      "workflow": ".github/workflows/release-aster-desktop.yml",
+      "acceptance": "signed_final_archive_and_native_gui_pending"
+    }
+  ],
+  "blockers": [
+    {
+      "gate": "native Studio GUI",
+      "owner": "M1/T008",
+      "prerequisite": "working native computer-use connection; previous connection failed",
+      "status": "unverified_this_run"
+    },
+    {
+      "gate": "required global type/format checks",
+      "owner": "M0/M8/T012",
+      "prerequisite": "resolve recorded failures without widening allowlists",
+      "status": "open"
+    },
+    {
+      "gate": "other native targets",
+      "owner": "M8/T012",
+      "prerequisite": "native Linux/Windows runners and applicable architectures",
+      "status": "open"
+    },
+    {
+      "gate": "release qualification",
+      "owner": "M8/T012",
+      "prerequisite": "clean source candidate, final archive execution/completeness and signing/notarization",
+      "status": "open"
+    },
+    {
+      "gate": "full native CLI acceptance",
+      "owner": "M0/M2/M8/T004/T012",
+      "status": "open",
+      "prerequisite": "resolve compiler/test startup stalls and obtain an unchanged full-suite pass; preserve six prior timeouts and separate isolated replays"
+    }
+  ]
+}

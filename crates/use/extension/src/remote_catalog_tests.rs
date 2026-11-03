@@ -8,7 +8,8 @@ use aster_use_core::{
 use sha2::{Digest, Sha256};
 
 use super::test_support::{
-    package_directory_archive, TestRepository, TestServer, TestTarget, EXPIRED, FUTURE,
+    extension_archive, package_directory_archive, TestRepository, TestServer, TestTarget, EXPIRED,
+    FUTURE,
 };
 use super::*;
 
@@ -597,6 +598,57 @@ async fn catalog_search_filters_sorts_and_paginates_deterministically() {
 }
 
 #[tokio::test]
+async fn consistent_snapshot_catalog_keeps_offline_pagination_and_rejects_damaged_versioned_metadata(
+) {
+    let target = host_target().unwrap();
+    let targets = ["0.1.1", "0.1.2"]
+        .into_iter()
+        .map(|version| {
+            let archive = extension_archive(version);
+            let package = TestRepository::with_package_version(archive.clone(), version, 9, FUTURE);
+            let metadata: serde_json::Value =
+                serde_json::from_slice(&package.routes["/metadata/targets.json"]).unwrap();
+            let custom =
+                metadata["signed"]["targets"][&package.target_name]["custom"]["aster"].clone();
+            TestTarget {
+                archive,
+                target_name: package.target_name,
+                custom: Some(custom),
+            }
+        })
+        .collect();
+    let repository = TestRepository::with_targets(targets, 9, FUTURE).with_consistent_snapshot();
+    let server = TestServer::start(repository.routes.clone());
+    let temp = tempfile::tempdir().unwrap();
+    let datastore = temp.path().join("缓存 with spaces");
+    let trusted = trusted_registry(&server, &repository, datastore.clone());
+    let host = PluginCatalogHost::new(&target, "0.3.0").unwrap();
+    let mut search = catalog_search("science", 1);
+    let refreshed = search_remote_plugins(&trusted, &host, &search)
+        .await
+        .unwrap();
+    assert_eq!(refreshed.plugins[0].record.version, "0.1.2");
+    search.cursor = refreshed.next_cursor;
+    assert!(search.cursor.is_some());
+    server.clear_requests();
+    let cached = search_cached_plugins(&trusted, &host, &search)
+        .await
+        .unwrap();
+    assert_eq!(cached.plugins[0].record.version, "0.1.1");
+    assert!(cached.next_cursor.is_none());
+    assert_eq!(cached.snapshot.source, PluginCatalogSnapshotSource::Cached);
+    assert!(server.requests().is_empty());
+
+    let targets = datastore.join("catalog-metadata").join("9.targets.json");
+    std::fs::write(&targets, b"damaged signed metadata").unwrap();
+    let error = search_cached_plugins(&trusted, &host, &search)
+        .await
+        .unwrap_err();
+    assert_eq!(error.code, "use.extension.catalog_cache_untrusted");
+    assert!(server.requests().is_empty());
+}
+
+#[tokio::test]
 async fn cached_search_reverifies_the_last_snapshot_without_network() {
     let target = host_target().unwrap();
     let repository = catalog_repository(
@@ -646,6 +698,93 @@ async fn cached_search_reverifies_the_last_snapshot_without_network() {
         .unwrap_err();
     assert_eq!(error.code, "use.extension.catalog_cache_changed");
     assert!(server.requests().is_empty());
+}
+
+#[tokio::test]
+async fn later_patch_host_floor_filters_the_signed_catalog_before_archive_download() {
+    use aster_use_core::{
+        CatalogArchive, CatalogPackage, PluginPermissionCeiling, PLUGIN_CATALOG_SCHEMA_V3,
+        PLUGIN_PERMISSION_SCHEMA,
+    };
+
+    let target = host_target().unwrap();
+    let archive = b"owned runtime archive".to_vec();
+    let permission_ceiling = PluginPermissionCeiling {
+        schema: PLUGIN_PERMISSION_SCHEMA.to_owned(),
+        surfaces: Vec::new(),
+    };
+    let record = PluginCatalogRecord {
+        schema: PLUGIN_CATALOG_SCHEMA_V3.to_owned(),
+        package_id: "acme/runtime".to_owned(),
+        display_name: "Owned Runtime".to_owned(),
+        description: "Runtime requiring the implementing host patch.".to_owned(),
+        publisher: "acme".to_owned(),
+        keywords: Vec::new(),
+        categories: Vec::new(),
+        version: "1.0.0".to_owned(),
+        channel: PluginReleaseChannel::Stable,
+        requires_use: ">=0.3.4, <0.4.0".to_owned(),
+        dependencies: Vec::new(),
+        target: target.clone(),
+        surfaces: vec![CatalogSurface {
+            kind: PackageSurfaceKind::Plugin,
+            id: "toolchain".to_owned(),
+            optional: false,
+            workload: None,
+            mcp_transport: None,
+            mcp_tool_count: None,
+            okf_bundle: None,
+            requires: Vec::new(),
+        }],
+        permission_ceiling_digest: permission_ceiling.descriptor_digest().unwrap(),
+        permission_ceiling,
+        planning: None,
+        archive: CatalogArchive {
+            target_name: format!("extensions/acme/runtime/1.0.0/stable/{target}/runtime.aix"),
+            length: archive.len() as u64,
+            sha256: format!("sha256:{:x}", Sha256::digest(&archive)),
+        },
+        package: CatalogPackage {
+            expanded_bytes: archive.len() as u64,
+            file_count: 1,
+            sha256: Some(format!("sha256:{}", "b".repeat(64))),
+            manifest_sha256: Some(format!("sha256:{}", "a".repeat(64))),
+        },
+        license: "MIT".to_owned(),
+        repository: "https://github.com/acme/runtime".to_owned(),
+        availability: CatalogAvailability::Available,
+    };
+    record.validate().unwrap();
+    let repository = TestRepository::with_target_metadata(
+        archive,
+        record.archive.target_name.clone(),
+        serde_json::to_value(record).unwrap(),
+        1,
+        FUTURE,
+    );
+    let server = TestServer::start(repository.routes.clone());
+    let temp = tempfile::tempdir().unwrap();
+    let trusted = trusted_registry(&server, &repository, temp.path().join("tuf"));
+    for (version, count) in [("0.3.3", 0), ("0.3.4", 1)] {
+        let host = PluginCatalogHost::new(&target, version).unwrap();
+        let page = search_remote_plugins(&trusted, &host, &catalog_search("runtime", 20))
+            .await
+            .unwrap();
+        assert_eq!(page.total_matches, count);
+        let inspection = inspect_remote_plugin(&trusted, &host, "acme/runtime", None, None).await;
+        if count == 0 {
+            assert_eq!(
+                inspection.unwrap_err().code,
+                "use.extension.catalog_package_incompatible"
+            );
+        } else {
+            inspection.unwrap();
+        }
+    }
+    assert!(server
+        .requests()
+        .iter()
+        .all(|request| !request.starts_with("/targets/")));
 }
 
 #[tokio::test]

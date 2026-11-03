@@ -1,0 +1,6 @@
+
+running 1 test
+test exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 23 filtered out; finished in 1.19s
+

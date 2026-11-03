@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 117, in <module>
+    main()
+    ~~~~^^
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 103, in main
+    result = invoke(command, root / cwd, success)
+  File "/Users/roylin/code/aster/tests/cli_mise_shims_reference.py", line 61, in invoke
+    result = subprocess.run(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                            capture_output=True, encoding="utf-8", timeout=TIMEOUT_SECONDS)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1991, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+OSError: [Errno 62] Too many levels of symbolic links: PosixPath('/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster shim mise 中文 7qv2mf7h/data/shims/fixture')

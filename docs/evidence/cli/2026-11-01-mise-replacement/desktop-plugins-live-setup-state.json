@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "instance": "fork1",
+  "pid": 25801,
+  "origin": "http://127.0.0.1:52325",
+  "method": "GET",
+  "path": "/api/plugins?kind=plugin&page=1&pageSize=24",
+  "status": 200,
+  "body": {
+    "items": [],
+    "total": 0,
+    "page": 1,
+    "pageSize": 24,
+    "categories": [],
+    "registryStatus": "not_configured"
+  },
+  "hostBuild": "just build-studio aster",
+  "launch": "just fork aster 4318",
+  "primaryInstanceRestarted": false,
+  "nativeGuiInteractionAccepted": false,
+  "officialRegistryPopulated": false,
+  "fullGoalComplete": false
+}

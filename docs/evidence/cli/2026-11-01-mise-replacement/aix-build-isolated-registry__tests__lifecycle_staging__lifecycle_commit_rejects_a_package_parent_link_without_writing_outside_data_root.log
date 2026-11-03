@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root' (71133088) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:140:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.01s
+

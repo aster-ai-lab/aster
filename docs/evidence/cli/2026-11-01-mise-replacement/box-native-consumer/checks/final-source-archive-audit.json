@@ -1,0 +1,43 @@
+{
+  "aixSha256": "370beff7b50aed22bfd4e28b579628747c76b90dbda9d21b8c0f12d1ba29b45e",
+  "aixLength": 26530058,
+  "allStagedFilesMatchArchive": true,
+  "allCanonicalFilesMatchStagedSource": true,
+  "members": [
+    {
+      "path": "LICENSE",
+      "sha256": "f01977376885dfe6b38a2ca0f4e14373b3dd248d6890fff7a382fe96b263c760",
+      "length": 1091
+    },
+    {
+      "path": "README.md",
+      "sha256": "0fc094ed01e6240139ad0c63fd89cd208b13c2131a7c2781cf7687c6f882a051",
+      "length": 2487
+    },
+    {
+      "path": "SOURCE.json",
+      "sha256": "639410d85eae074e1fb5780247f5bff88229c561a3f8568ad504a6d625b0830b",
+      "length": 2137
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "5adbbe4a9101198997b71cef038e773599237a5a32a4f46c159ad7d676eb6b78",
+      "length": 1485
+    },
+    {
+      "path": "aster-use-extension.acl",
+      "sha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
+      "length": 275
+    },
+    {
+      "path": "payload/aster-box-darwin-arm64.tar.gz",
+      "sha256": "73e341931c6d8e3171b114a1ccb3694895cb1fb3d949c96bbb3256f510d47ef7",
+      "length": 26582246
+    },
+    {
+      "path": "toolchain.acl",
+      "sha256": "04430990410c3efdf429c849dda1c4f5284b5bbe1a8f3254c4b70afeb6b254c7",
+      "length": 572
+    }
+  ]
+}

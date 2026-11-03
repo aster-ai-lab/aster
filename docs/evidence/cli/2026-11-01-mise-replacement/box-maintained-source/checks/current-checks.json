@@ -1,0 +1,28 @@
+[
+  {
+    "name": "recipe-current",
+    "argv": [
+      "python3",
+      "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.py",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/box-aix-candidate/aster-box-darwin-arm64.tar.gz",
+      "--aster-use-bin",
+      "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current",
+      "--out",
+      "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-final"
+    ],
+    "exitCode": 0,
+    "seconds": 6.0986723750000005
+  },
+  {
+    "name": "native-management",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-studio-native-tests",
+      "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+      "--ignored",
+      "--exact",
+      "--nocapture"
+    ],
+    "exitCode": 0,
+    "seconds": 8.348668708999998
+  }
+]

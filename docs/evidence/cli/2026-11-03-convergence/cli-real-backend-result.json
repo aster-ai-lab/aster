@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+    "--exact",
+    "project_shim_installs_its_missing_declared_version_from_the_real_backend",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "explicitVersion": "0.13.6",
+  "exit": 101
+}

@@ -1,0 +1,140 @@
+CASE exec_preserves_exit_codes_and_signal_termination
+
+running 1 test
+test exec_preserves_exit_codes_and_signal_termination ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 1.06s
+
+CASE offline_install_and_missing_lock_refuse_without_network
+
+running 1 test
+test offline_install_and_missing_lock_refuse_without_network ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.83s
+
+CASE exec_preserves_non_utf8_process_arguments
+
+running 1 test
+test exec_preserves_non_utf8_process_arguments ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.41s
+
+CASE nested_cli_environment_inherits_user_and_ancestor_values
+
+running 1 test
+test nested_cli_environment_inherits_user_and_ancestor_values ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 1.16s
+
+CASE an_explicit_package_command_override_preserves_native_arguments_and_exit_status
+
+running 1 test
+test an_explicit_package_command_override_preserves_native_arguments_and_exit_status ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.90s
+
+CASE closed_stdout_returns_an_io_error_without_panicking
+
+running 1 test
+test closed_stdout_returns_an_io_error_without_panicking ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.39s
+
+CASE missing_pin_refuses_before_starting_the_requested_process
+
+running 1 test
+test missing_pin_refuses_before_starting_the_requested_process ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.39s
+
+CASE invalid_variable_name_does_not_replace_the_project_file
+
+running 1 test
+test invalid_variable_name_does_not_replace_the_project_file ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.41s
+
+CASE failed_install_does_not_panic_or_replace_the_project_pin
+
+running 1 test
+test failed_install_does_not_panic_or_replace_the_project_pin ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.62s
+
+CASE package_commands_use_the_embedded_sdk_without_an_external_companion
+
+running 1 test
+test package_commands_use_the_embedded_sdk_without_an_external_companion ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 20.12s
+
+CASE exec_tool_overrides_use_the_argument_root_and_preserve_configuration
+
+running 1 test
+test exec_tool_overrides_use_the_argument_root_and_preserve_configuration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 2.72s
+
+CASE configured_path_and_system_requests_match_frozen_mise_context_results
+
+running 1 test
+test configured_path_and_system_requests_match_frozen_mise_context_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 18.96s
+
+CASE cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions
+
+running 1 test
+test cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 2.29s
+
+CASE cli_latest_can_execute_when_only_a_prerelease_is_installed
+
+running 1 test
+test cli_latest_can_execute_when_only_a_prerelease_is_installed ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.83s
+
+CASE cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints
+
+running 1 test
+test cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 2.81s
+
+CASE legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer
+
+running 1 test
+test legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 5.34s
+
+CASE cli_exec_and_which_select_project_versions_without_network_or_pointer_changes
+
+running 1 test
+test cli_exec_and_which_select_project_versions_without_network_or_pointer_changes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 4.01s
+
+CASE cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata
+
+running 1 test
+test cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 8.41s
+
+CASE unknown_shell_emits_no_activation_script
+
+running 1 test
+test unknown_shell_emits_no_activation_script ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.30s
+
+CASE path_use_persists_the_argument_root_and_system_use_does_not_create_receipts
+
+running 1 test
+test path_use_persists_the_argument_root_and_system_use_does_not_create_receipts ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.93s
+

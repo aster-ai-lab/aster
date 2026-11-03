@@ -1,0 +1,42 @@
+{
+  "hashes": {
+    "scripts/publish-aster-cli.sh": "4ac2b5132b0661b65bc9ae186fe75db276ab75ff541180e4ac7b8d17e3868539",
+    "tests/cli_release_workflow.py": "46c1c1f6f15348477ae9dad3f79069e4425137106bd811be2c371fb957d766ef",
+    ".github/workflows/release-aster-cli.yml": "2d8f3ac65dbf8e23433d43e2e9a75e44e92f68babbb43b9405d30427d9ff0cee"
+  },
+  "results": [
+    {
+      "test": "test_dirty_or_different_checkout_never_creates_or_uploads_a_release",
+      "argv": [
+        "python3",
+        "tests/cli_release_workflow.py",
+        "ReleaseAssembly.test_dirty_or_different_checkout_never_creates_or_uploads_a_release"
+      ],
+      "exitCode": 0,
+      "sourceUnchanged": true,
+      "fixtureDeadlineSeconds": 10
+    },
+    {
+      "test": "test_normal_and_reused_artifacts_require_branch_qualification_for_their_own_source",
+      "argv": [
+        "python3",
+        "tests/cli_release_workflow.py",
+        "ReleaseAssembly.test_normal_and_reused_artifacts_require_branch_qualification_for_their_own_source"
+      ],
+      "exitCode": 0,
+      "sourceUnchanged": true,
+      "fixtureDeadlineSeconds": 10
+    },
+    {
+      "test": "test_normal_build_qualifies_and_binds_the_draft_to_its_own_source",
+      "argv": [
+        "python3",
+        "tests/cli_release_workflow.py",
+        "ReleaseAssembly.test_normal_build_qualifies_and_binds_the_draft_to_its_own_source"
+      ],
+      "exitCode": 0,
+      "sourceUnchanged": true,
+      "fixtureDeadlineSeconds": 10
+    }
+  ]
+}

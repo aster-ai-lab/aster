@@ -1,0 +1,22 @@
+
+running 17 tests
+test unknown_shell_emits_no_activation_script ... ok
+test closed_stdout_returns_an_io_error_without_panicking ... ok
+test exec_preserves_non_utf8_process_arguments ... ok
+test missing_pin_refuses_before_starting_the_requested_process ... ok
+test invalid_variable_name_does_not_replace_the_project_file ... ok
+test exec_preserves_exit_codes_and_signal_termination ... ok
+test offline_install_and_missing_lock_refuse_without_network ... ok
+test failed_install_does_not_panic_or_replace_the_project_pin ... ok
+test nested_cli_environment_inherits_user_and_ancestor_values ... ok
+test path_use_persists_the_argument_root_and_system_use_does_not_create_receipts ... ok
+test cli_latest_can_execute_when_only_a_prerelease_is_installed ... ok
+test cli_lock_keeps_latest_reproducible_and_refuses_drift_or_missing_companions ... ok
+test cli_exec_and_which_use_native_archive_layouts_and_uninstall_removes_all_entrypoints ... ok
+test cli_exec_and_which_select_project_versions_without_network_or_pointer_changes ... ok
+test legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer ... ok
+test configured_path_and_system_requests_match_frozen_mise_context_results ... ok
+test cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 58.20s
+

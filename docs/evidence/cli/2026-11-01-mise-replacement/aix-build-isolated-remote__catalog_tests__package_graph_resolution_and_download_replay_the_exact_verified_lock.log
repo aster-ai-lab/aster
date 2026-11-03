@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock' (71133365) panicked at crates/use/extension/src/remote_catalog_tests.rs:365:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_target_invalid", message: "TUF target 'extensions/acme/knowledge/1.0.0/stable/darwin-arm64/acme-knowledge-1.0.0-darwin-arm64.tar.gz' has an invalid signed plugin catalog record: The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 212 filtered out; finished in 0.46s
+

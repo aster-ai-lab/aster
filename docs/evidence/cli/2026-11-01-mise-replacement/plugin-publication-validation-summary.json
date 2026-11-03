@@ -1,0 +1,91 @@
+{
+  "captured_at_utc": "2026-11-01T06:33:44.175217+00:00",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "full_goal_complete": false,
+  "published": false,
+  "checks": [
+    {
+      "log": "plugin-publication-tests.log",
+      "passed": 6,
+      "failed": 0,
+      "sha256": "fef49603042bb79b638fd5245bdeee26e8b505512df8814a601d041cca161ddc"
+    },
+    {
+      "log": "plugin-publication-oci-reader-tests.log",
+      "passed": 5,
+      "failed": 0,
+      "sha256": "8cf7e3d421fbf2f8f486510905873f41dc6e89d0a18f6569db3ea668cf5a7639"
+    },
+    {
+      "log": "plugin-publication-cli-tests.log",
+      "passed": 2,
+      "failed": 0,
+      "sha256": "087fc54b4991f9f72407c8ad69e9466f92cc04fe2a8a0f3e4dccff19836286a6"
+    }
+  ],
+  "library_and_sdk_cli_cases_passed": 13,
+  "native_cli_cases_passed": 3,
+  "sdk_build": {
+    "exit_code": 0,
+    "log": "plugin-publication-build.log"
+  },
+  "owning_clippy": {
+    "exit_code": 0,
+    "log": "plugin-publication-clippy.log",
+    "existing_warnings": [
+      "aster-runtime unused import RuntimeUnitSpec",
+      "extension validate_dependencies too many arguments"
+    ]
+  },
+  "dependencies": {
+    "passed": 7,
+    "log": "plugin-publication-dependencies.log"
+  },
+  "focused_format": {
+    "exit_code": 0,
+    "log": "plugin-publication-format-final.log"
+  },
+  "workspace_format": {
+    "exit_code": 1,
+    "distinct_paths": 779,
+    "log": "plugin-publication-workspace-format.log"
+  },
+  "pending_checks": [],
+  "native_cli_probe": {
+    "inputs": "plugin-publication-probe-inputs.json",
+    "result": "plugin-publication-cli-smoke.json",
+    "source_files": 14,
+    "source_bytes": 6262,
+    "deadline_seconds": 15,
+    "debug_cold_elapsed_ms": 2213,
+    "executed": true,
+    "release_efficiency_acceptance": false
+  },
+  "unchecked": [
+    "Actual reviewer/workflow authority",
+    "Production signing root",
+    "Remote domain repository publication",
+    "Actual GHCR package upload/install",
+    "Full SDK regressions",
+    "Final release/archive/native targets",
+    "Full mise capability parity and release efficiency"
+  ],
+  "source_sha256": {
+    "crates/use/extension/src/lib.rs": "89a2218d9d0c03f2262514a647607b3086b09a6b885713179d9ca8db686c2dab",
+    "crates/use/extension/src/source.rs": "e93d1fabc9f1a21f2246592b19c736db9648e29110073894b65bf3ccfaded7d4",
+    "crates/use/extension/src/publication.rs": "da6faf6d6c6b2b2e104269f5aad172f0729b9f1573fa55df075483a0fe92598e",
+    "crates/use/extension/src/publication/domains.rs": "dd1ba3aa3e1d9f012bce4e19b5cc204b8142efde340505ac253faa4ab5f84de2",
+    "crates/use/extension/src/publication/tests.rs": "97bececfb2aa4b7ea40dacb4d3cb80dbad0fd869bc8e316463b13121f1b6abab",
+    "crates/use/extension/src/remote.rs": "ed7e3e82f0cfb162504c59c6d03baca6012e4e3c1dc33a47ac10e7eaa34e30d5",
+    "crates/use/extension/src/remote/oci.rs": "448c3858188b9cd40ea61e21a1419ddefa9c9c08b855c4032332e89b58de592b",
+    "crates/use/extension/src/remote/oci/tests.rs": "c11a17c4c17a59b8f9a87e23ee55f78a120152f391c8ff70082f01090b82a416",
+    "crates/use/src/cli.rs": "5aa85e122027def3b6af182ba55766fa2385abc57c6ccd1b2444ce5b2a727697",
+    "crates/use/src/cli/registry.rs": "7433e3e38d4f3d00582ee6e1458cba4b60f8897279002964847eddbc8ef78c59",
+    "crates/use/src/cli/registry/aix_tests.rs": "e9327747325f71feaebbefd8a9164a11420cb0e7fdc4b0e1f5e2376f3f19226e",
+    "docs/trusted-plugins.md": "62371971bc98feac4a30a8acff5cd182cca5d89b6d8656c0d16d3b40d2a7bfce",
+    "specs/031-cli-mise-replacement/tasks.md": "ca4502dba1069a5efb1f77d1e1fe22a13e4c6caf7ca92740b775316715b42277"
+  }
+}

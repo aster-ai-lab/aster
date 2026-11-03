@@ -1,0 +1,31 @@
+{
+  "binary": "/Users/roylin/code/aster/target/debug/deps/aster_studio_lib-79b04d6534407590",
+  "binarySha256": "7d88d93ad462253e1815726c5ebac7eefb53462fa81bbc7a550545e20242f28e",
+  "results": [
+    {
+      "test": "capabilities::registry::installed::tests::a_legacy_slug_can_be_removed_by_its_bound_package_id_without_online_release_fields",
+      "exitCode": 101,
+      "binaryUnchanged": true
+    },
+    {
+      "test": "capabilities::registry::installed::tests::installed_catalogue_retains_names_filters_and_archive_identity_without_a_registry",
+      "exitCode": 101,
+      "binaryUnchanged": true
+    },
+    {
+      "test": "capabilities::registry::installed::tests::older_installs_use_declared_identity_without_inventing_archive_size_or_metadata",
+      "exitCode": 101,
+      "binaryUnchanged": true
+    },
+    {
+      "test": "capabilities::registry::installed::tests::retained_catalogue_must_match_the_actual_installed_archive",
+      "exitCode": 101,
+      "binaryUnchanged": true
+    },
+    {
+      "test": "capabilities::registry::installed::tests::withdrawn_publications_do_not_reappear_from_raw_files_or_retained_catalogue",
+      "exitCode": 101,
+      "binaryUnchanged": true
+    }
+  ]
+}

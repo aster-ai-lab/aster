@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+    "--no-auto-update",
+    "use",
+    "plugin",
+    "search",
+    "aster",
+    "--limit",
+    "50",
+    "--offline",
+    "--json"
+  ],
+  "exitCode": 1,
+  "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.catalog_cache_untrusted\",\n    \"message\": \"Cached TUF verification failed for registry 'official': Failed to fetch file:///Users/roylin/code/aster/.tmp/plugin-registry/published-official-consumption/isolated-sdk/state/remote-registries/official/sources/e54fbee741b9263b225e941e54a9485666c9e8bb2895b47cd1d943c97de2aeef/catalog-metadata/3.snapshot.json: Transport 'file not found' error fetching 'file:///Users/roylin/code/aster/.tmp/plugin-registry/published-official-consumption/isolated-sdk/state/remote-registries/official/sources/e54fbee741b9263b225e941e54a9485666c9e8bb2895b47cd1d943c97de2aeef/catalog-metadata/3.snapshot.json': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+  "stderr": "",
+  "deadlineSeconds": 60
+}

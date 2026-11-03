@@ -1,0 +1,211 @@
+{
+  "count": 41,
+  "allNativeOciBindingsVerified": true,
+  "records": [
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/bun/bun-1.4.4-darwin-arm64.aix",
+      "archiveSha256": "sha256:649335ef607187d46e8fec6fc65fcc761ccd6d2d90e53ded932916793ce2b38a",
+      "manifestSha256": "sha256:002587206b0bb6e9295291a1742c893b3151f00b5ac1d04a48f749b078243561"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/bun/bun-1.4.4-darwin-x86_64.aix",
+      "archiveSha256": "sha256:60ee3708c6efaa64370e07d6e7f78c7f0691a7660ea2d2908609f1219d9197f3",
+      "manifestSha256": "sha256:6612038e7c9c8f625d53a6b3e48be422b781e830306de733eed2a0c4f4e4db10"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/bun/bun-1.4.4-linux-arm64.aix",
+      "archiveSha256": "sha256:9d8dc6b81b842e86d7a4dd22f4497cc60c8dbd3a157040ce0bc7780357373e5a",
+      "manifestSha256": "sha256:89e82eb6a0d1350fed1aa3bb347b317265df0d9448766dd17abf17d22c33535b"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/bun/bun-1.4.4-linux-x86_64.aix",
+      "archiveSha256": "sha256:9309cd8332687f1e8c9012e5efb1b5c10d4278fcd2ea2c565e7a12243c917c46",
+      "manifestSha256": "sha256:dfe040ec7d1d360a1a47e3ae330310e9c91b9dd83ea17de3cfa1b868b9a83527"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/bun/bun-1.4.4-windows-x86_64.aix",
+      "archiveSha256": "sha256:8623dc2fe52d45481fb12dfeda6f1cc3b7fdcbecdc9ebf852fbb603038c95fa6",
+      "manifestSha256": "sha256:180985e46050879046334b5a4bc5007ef299679668685c3eec7f7d0430218387"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/fd/fd-10.5.0-darwin-arm64.aix",
+      "archiveSha256": "sha256:4e20fd0357d5aef16e1434cc555be7b038748be3a2c02c2089612387cbf46592",
+      "manifestSha256": "sha256:d040c63078a224b66e772073b5c62a6d5e8bc1ff01f4445aeaa85639bbd9236d"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/fd/fd-10.5.0-darwin-x86_64.aix",
+      "archiveSha256": "sha256:2fef8114722d1c5345a27b0a2aa2a22925e8abbc642061159c6e58c049415bbf",
+      "manifestSha256": "sha256:2a720b61ad0a0006cd63bc2babb71e44c103a0f86ed44d6fe499b45639f9da7d"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/fd/fd-10.5.0-linux-arm64.aix",
+      "archiveSha256": "sha256:54df6bf343fc28d50e5ba4356453c0dba1938c3b81c6bf4ab97186a80465c645",
+      "manifestSha256": "sha256:969bbd55d449951e9eea249df03321a75c316ddb9727ac32b5e1474ad518fa1e"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/fd/fd-10.5.0-linux-x86_64.aix",
+      "archiveSha256": "sha256:f682b16f5ecefffc04caacca82cc72f8d6dfb97bbf051d1bb21c31abadacdcc2",
+      "manifestSha256": "sha256:f3b6e5352248295e60a81d7edd87fe2d58459be040aa6c3b5fc9be645c714bc5"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/fd/fd-10.5.0-windows-x86_64.aix",
+      "archiveSha256": "sha256:b3b89be1caf747f27e5211d9f1fb590bb76b71a983890b54ea6cb8e29e364520",
+      "manifestSha256": "sha256:c1ec7ed0311d8e81fda339ea9eac754be14d4f28d31debcd5f7f823f286b693f"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/gh/gh-2.103.3-darwin-arm64.aix",
+      "archiveSha256": "sha256:3ef3f619fa9a3e105103e4a48492b53f679ee5196e9e3a84673143313c0cde59",
+      "manifestSha256": "sha256:67ad8ea44c94676b70c59e1d0b25dc16d3fe3942af2e2b9931422ca9184d1cde"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/gh/gh-2.103.3-darwin-x86_64.aix",
+      "archiveSha256": "sha256:dd15e7e49f4e791dd73b18779b1280658064bd9d29c5f47e0d77429a2b2c0cdf",
+      "manifestSha256": "sha256:f604c2491cfa31e02b4c21f7d701866248f827261b678a58dfedca5bf903f75d"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/gh/gh-2.103.3-linux-arm64.aix",
+      "archiveSha256": "sha256:f7000882552e472d2c436f0e3810a35a6d57350d5a7b40538b143e1a0f8e56a4",
+      "manifestSha256": "sha256:df49fe30d2eaf88e80afcc5410644e44f41fa98a85667ea7c26905177fbf90a7"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/gh/gh-2.103.3-linux-x86_64.aix",
+      "archiveSha256": "sha256:4e9e635496e5606b597023611c9c0b9841db21c9810a678e081ee386ae7a81ad",
+      "manifestSha256": "sha256:76b0d77deb82f45decbd9d33925472928dbf8ba0185a346371e73864ba9cd9e4"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/gh/gh-2.103.3-windows-x86_64.aix",
+      "archiveSha256": "sha256:987c3f8e152e5f0b1aaf2dcf304f1b40d0c0008e46800df0c8aa9706c20ea7a1",
+      "manifestSha256": "sha256:5c6bc037c6dc312cdc4a007df471b3e02936ada0216154faf2a6227affbb09a4"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/lark-cli/lark-cli-1.0.98-darwin-arm64.aix",
+      "archiveSha256": "sha256:5ca64bc8e93627aab6f4e9a86b03da08d35da2823e5b3b56cd4645aa29860fac",
+      "manifestSha256": "sha256:476077c3bb7fe4f9c6f8779422791146618bf1db7f139e42279d12ddfc174845"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/lark-cli/lark-cli-1.0.98-darwin-x86_64.aix",
+      "archiveSha256": "sha256:9d2d3db594e822f8f372465c5bc834dfd7ce5057659b1339162618cc63341357",
+      "manifestSha256": "sha256:6b8c8e91a4bbf2468d6c6ad80a1a9fb237727306f34ee9483433bf6ce9a75f79"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/lark-cli/lark-cli-1.0.98-linux-arm64.aix",
+      "archiveSha256": "sha256:7538e549cf2cd1c8449836fa7eddc3a051724c9cf4b5f50ebb3ba6b134a1331b",
+      "manifestSha256": "sha256:78f64ce8ba07aceb01b1729cfdefbb4d7f00e50384e0f8ceac11b787653c127d"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/lark-cli/lark-cli-1.0.98-linux-x86_64.aix",
+      "archiveSha256": "sha256:fc27e9a4a65863167e085800247ce8a9ac316742a4ef4afbfc9a2c330ff98fd4",
+      "manifestSha256": "sha256:965358bb6e6f9a41e097ded057c384f3a343f4a22dac077229689122099cb3b6"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/lark-cli/lark-cli-1.0.98-windows-x86_64.aix",
+      "archiveSha256": "sha256:de7c9763d793b794434cc570a798953c4a6673253bf0279019b4aff205e1578c",
+      "manifestSha256": "sha256:bf48bdb2826bd16b631094d082e116186bf26533fa4e643cf5cd687d1ac6e23b"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rg/rg-15.2.0-darwin-arm64.aix",
+      "archiveSha256": "sha256:f5fdf2cd48d13971d451bc249d4d25adca2325c16edcc610ff1044843562e4ff",
+      "manifestSha256": "sha256:093420b1f30a0139530f56c30c67a384c445ddb9b0bac60af5956e4da770c975"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rg/rg-15.2.0-darwin-x86_64.aix",
+      "archiveSha256": "sha256:b20031c820d2bb2ea7ede88d4a40b92a9db469a2a8e25dd275e0e650edc0fe49",
+      "manifestSha256": "sha256:73623e99880e6adea2a88966e5be97f2bfc4798ef934d32488b0c4c0cfb4292f"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rg/rg-15.2.0-linux-arm64.aix",
+      "archiveSha256": "sha256:9eee28f3b6be3b40fbfdf0ee958954611d67625b88b97b6728fe1aa95cb47a91",
+      "manifestSha256": "sha256:8777110d02f17ffd15d5f0d89f11cd5cb24736033bd11f152caa1328591e4cae"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rg/rg-15.2.0-linux-x86_64.aix",
+      "archiveSha256": "sha256:64218298cc963f94a85bd6a9139b52c5034e7af8a812031e8f5c610bcb2888ba",
+      "manifestSha256": "sha256:937a818a244d00a06cd08556ccd12718ef62926121f5e6c1cbb82ddc2464c247"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rg/rg-15.2.0-windows-x86_64.aix",
+      "archiveSha256": "sha256:3a8b4580a8cf19668c235be571ecd8264552047b2a11f9f16f2051015f8458f5",
+      "manifestSha256": "sha256:205aa57da3814cdfdf5f81f5c10adff3b5a021c85e8205aa6f8299a37b99274d"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rtk/rtk-1.1.0-darwin-arm64.aix",
+      "archiveSha256": "sha256:62d4de1e0022b730c87497a7d689d72a7940fed3ea75ad79628fa7e4b6978728",
+      "manifestSha256": "sha256:401d0d4be8bebda46e9e7c2aeb9724715525f0fc92107fb6a1b29b94a1a845ac"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rtk/rtk-1.1.0-darwin-x86_64.aix",
+      "archiveSha256": "sha256:f9c6be6e20bf20dfaefe4fae1157477dc48f1ff3d1d4038f3adaa724c84c68e5",
+      "manifestSha256": "sha256:9f2f67eada998d9b1bcb1f4f34768f1bc38823dbd5ec495467b2d1888528d035"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rtk/rtk-1.1.0-linux-arm64.aix",
+      "archiveSha256": "sha256:77857ac702a5a9f07851a7e37f48842939ae120c3ab4869a3a61b45d97439d59",
+      "manifestSha256": "sha256:c1b2420480e344696e7b1ea9155f2fd17a96feae2833a35be90d746f9c0a68cc"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rtk/rtk-1.1.0-linux-x86_64.aix",
+      "archiveSha256": "sha256:9933a3e49779ea7f8c7c5f3b3cc254f1306b509967d58e02f0376309b1312004",
+      "manifestSha256": "sha256:c14b69c874f9e522e563d86849c4b3e10ca460b3737f5e603aefc6b77fbf5718"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/rtk/rtk-1.1.0-windows-x86_64.aix",
+      "archiveSha256": "sha256:6f2084a067995ffb5ed9b5254d30b814828edd2d61a73f96f12c47b3bb5aea81",
+      "manifestSha256": "sha256:26ae2aa184a4a50e29661c8d73e8a8be110d0da53fa12e139433f39cf47853ef"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/uv/uv-0.13.6-darwin-arm64.aix",
+      "archiveSha256": "sha256:c9e86d376e9546ad52783554d08198f26ddb6e3fa0d3afd542cfa76f82ee0ba3",
+      "manifestSha256": "sha256:46f461f85e6151c05360b90bcd84a912e39599a856c4dee9b4d85273eee33b99"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/uv/uv-0.13.6-darwin-x86_64.aix",
+      "archiveSha256": "sha256:9a080b01ef902a7b5c24c89955cdc4d570149e97cef24e6cc0500cdfab13b048",
+      "manifestSha256": "sha256:256df98406bf91ad5b9d1e5b90eb019a37b91d3c9724e78f27d777522e1e644e"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/uv/uv-0.13.6-linux-arm64.aix",
+      "archiveSha256": "sha256:ae3dafa3e8fbe047adc6c0ff4eccc66c2922487f32f72be8d290e5adbf9ba0b6",
+      "manifestSha256": "sha256:227fed5be52210971b710f241b985603fdecdc1398223bf5b1cf52bf437334aa"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/uv/uv-0.13.6-linux-x86_64.aix",
+      "archiveSha256": "sha256:f3091cf52f25122b142e5423cdea8bed684fe2c597f9cbcdbf4697d81343c573",
+      "manifestSha256": "sha256:ab6e9484645d98eeeb11c66275057703a06421cab8cb00cd97cf4a6fd2f63bba"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/dependency-aix-candidates-v3/artifacts/uv/uv-0.13.6-windows-x86_64.aix",
+      "archiveSha256": "sha256:322ac89b9e01bb40dd90e9228e032c14d43ce12fcf5f171a890f177e4a8441d5",
+      "manifestSha256": "sha256:8cbc722d15fac4be5704cc6f09ecc6aa23256c1156ed1442629184ee78712a91"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v5/artifacts/ntn-0.23.25-darwin-arm64.aix",
+      "archiveSha256": "sha256:0cc69aa7c037b8b8c64b09ce0553c97326c4a2a63047d406bfb3fba4f9e09a31",
+      "manifestSha256": "sha256:577a82848d95ebf91c8a2a78bf38a6dc528c225ec5d017fcf8a386accf516f95"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v5/artifacts/ntn-0.23.25-darwin-x86_64.aix",
+      "archiveSha256": "sha256:97d0cf20898c7e07dc46c4259fec992f7935d268f8a988949c99a74b45ca7079",
+      "manifestSha256": "sha256:9203b5aad51e637de114defe3a130a20c1f46a813a9a30869d3692e79fe83ea5"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v5/artifacts/ntn-0.23.25-linux-arm64.aix",
+      "archiveSha256": "sha256:b5f687d0a5c2233196b540b7a7c77f2d980e74e730fe7ef1f3bbc077a7e071d6",
+      "manifestSha256": "sha256:84c35ad6b6eac8887a043ae7746b728d3afbeb4078403956d9c90f44a441058a"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v5/artifacts/ntn-0.23.25-linux-x86_64.aix",
+      "archiveSha256": "sha256:d70a981877c5d7e72ed0dea8d58d7d303a5ff523666285473fc1d0ddedd3e53b",
+      "manifestSha256": "sha256:fff014335b0ba3741185bb11ba27b744bac031d4dbb5a8bc20d946e5f34cde08"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v5/artifacts/ntn-0.23.25-windows-x86_64.aix",
+      "archiveSha256": "sha256:8ec712f57069683476b792aec8911b9f7b22afb0803031868b4f6428fd92c5d7",
+      "manifestSha256": "sha256:5e304505d2be6ff526533210529005a5ce81c46236d61450b374badf6a36b79f"
+    },
+    {
+      "archive": "/Users/roylin/code/aster/.tmp/plugin-registry/cua-aix-candidate-v3/artifacts/cua-0.9.0-darwin-arm64.aix",
+      "archiveSha256": "sha256:9f84309c9a1dc9630ee08eac9a6877639984c106572b508513eddbd01d30c664",
+      "manifestSha256": "sha256:053000ca91de8fd2b165c1c2aad9ecbb5616ed431d9d9f383992323d68780fe5"
+    }
+  ]
+}

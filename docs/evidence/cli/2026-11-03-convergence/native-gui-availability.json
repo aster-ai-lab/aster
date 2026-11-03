@@ -1,0 +1,9 @@
+{
+  "apps": [],
+  "browsers": [],
+  "errors": [
+    "Native apps: Error: Sky Computer Use native pipe startup failed",
+    "Browsers: Error: The browser access host is unavailable"
+  ],
+  "nativeGuiAccepted": false
+}

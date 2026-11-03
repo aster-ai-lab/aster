@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "data": {
+    "operation": "set-text",
+    "changed": true,
+    "path": "/body/p[1]",
+    "node": {
+      "path": "/body/p[1]",
+      "tag": "p",
+      "type": "paragraph",
+      "text": "Aster AIX Office verification",
+      "childCount": 1
+    },
+    "kind": "word",
+    "outputPath": "/Users/roylin/code/aster/.tmp/studio-plugin-chrome-followup/office-actual/Office 验证 space/report.docx",
+    "inPlace": true,
+    "revision": {
+      "archiveBytes": 2470,
+      "sha256": "006b2c8dcc32dba7e2f6839e8743c68fe1acd695958a174cef07335f95c81406"
+    }
+  }
+}

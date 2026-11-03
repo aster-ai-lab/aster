@@ -1,0 +1,9 @@
+extension "aster/ntn" {
+  schema_version = 3
+  version = "0.23.25"
+  route = "ntn"
+  requires_use = ">=0.3.4, <0.4.0"
+  actions = ["read"]
+  repository { url = "https://github.com/aster-ai-lab/plugins" }
+  plugin "toolchain" { entry = "toolchain.acl" optional = false }
+}

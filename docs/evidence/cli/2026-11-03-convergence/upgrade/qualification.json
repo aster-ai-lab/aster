@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "goalComplete": false,
+  "status": "targeted_checks_passed_full_acceptance_incomplete",
+  "host": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "toolchain": "1.97.1",
+    "profile": "dev/test"
+  },
+  "sourceSha256": {
+    "crates/use/tool-acquire/src/store.rs": "5284c681014409ed4c4455eeeb935398cdeaa45956230b4ff0067493c04f5710",
+    "crates/use/tool-acquire/src/store/tests.rs": "66440de2c4fd15103da439a7e9925733d6d7d8de29f1ab86a34ca4ca6a1a37b0",
+    "crates/use/tool-acquire/src/env_context.rs": "727ab1873cec6ef6738d318c2467d785d58c3aec2575b9b9f6c444bfecd83989",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "8a2a9ffa02969598566a15b16e1b621544b4f5e89ca6491dc69634f21d7d1778",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/upgrade.rs": "ce7b467e77238492871425496c376bf23585f021b539b98f2c850512b40d914f",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd/upgrade/tests.rs": "53a4388e7c7158484e1f0db400c9ed7a64a564147e767e01c5f83732764efd4c",
+    "apps/aster/tests/env_manager.rs": "3aa396c5b39d63a6eb71f020b498c403aa6097902c9377fb24c04a8794689fd2",
+    "docs/cli-environments.md": "70a7be43ae278946ff532c6c004a8024386c2ae70b649412b10afca748e74d51",
+    "tests/cli_mise_upgrade_reference.py": "3065812c65cd589dc95f620023b9be1d4a77f568b00d2bdce2f67fc25db4005a"
+  },
+  "artifactSha256": {
+    "upgrade-cli-before.json": "6a73320308424137317148805261c35a8b91b15cce2c30c7f7abb40f05834dd3",
+    "upgrade-tests-first.log": "fad418525937ab4af748f83e0222aea90e8896301691b6e07a1178ce1da5387a",
+    "upgrade-activation-tests.log": "867d0504f4aab07de78f8fc8f34f94130ec8062c932cfaba20792021220939de",
+    "upgrade-tool-suite.log": "af810190d19b719d0fe8020e709313c30efb22f701eb69989dc490af6f86d59a",
+    "upgrade-pager-suite.log": "e1d9227cd256d89804768ba800a2a4a0da73afdd64378958a810095f210ab5b2",
+    "upgrade-cli-suite.log": "5dc10dd82e153a596910cf96596ae7a983d53e7da1670763e9fdd5151fbb3276",
+    "upgrade-final-results.json": "a2eeb9b24a7322f0432c1cd86945714dc8628dbd3ae5bceada0d4bd8bbbf4435",
+    "upgrade-isolated-results.json": "90535db3ea4d10c2d5059ee60c67b54f6c17cd60f1abec6bced72cf65bdf54fb",
+    "upgrade-scoped-checks.json": "5bf6dc157c47dad49d4d92095df059837303875a486e0432638841bcb2ffa0e5",
+    "upgrade-format-check.log": "0fe77b7b906e2105342d9a5d179b324268a6b63977b73f2ecee0728e37e62b85",
+    "upgrade-dependencies.log": "049cf8d45e9d9f7e3f7c6bc405d5c06554571a64d3a8698b9043bf8d54c3920b",
+    "upgrade-startup-diagnostic.json": "92084e98da02669fc714f615fc05bf5d8ff25ecdd8015dc5c77826c9b43173a3",
+    "upgrade-cli-sample-result.json": "6d6c5cf45dc25666ce5158ce96147ae0ae29b168ff53bd54ed68cebdb182d2bd",
+    "fidelity-check.json": "15c017c1cb1faeb16e3346690fc2acd48de3a37e4ee4b8ca00cb324b962b56b5",
+    "upgrade-replay-exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin.log": "080e14cf251804d24fbe9aeb171ec3c366a3c76330e506a232f000011e62a2f7",
+    "upgrade-replay-exec_tool_overrides_use_the_argument_root_and_preserve_configuration.log": "bb2e1ca068309c176f50ee1d9907958577755bbe814418a7d3a7680279ee746d",
+    "upgrade-replay-legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer.log": "aeac9e1325c4a46695457cb83c0d093470ed0afb694797ba104365155d759ed4",
+    "upgrade-replay-multi_tool_uninstall_matches_the_five_frozen_native_mise_cases.log": "f4d81cc6a615e49fd07a2277e931a099809eb03b6e1de9492a4ba11d87531aa2",
+    "upgrade-replay-cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata.log": "3c4287aea5bd86d21875df889803ebf2ecf1b249a7608ec9dae97479f3430294",
+    "upgrade-replay-configured_path_and_system_requests_match_frozen_mise_context_results.log": "a3ef1fb7f0ba6e35aab761605a5d8c4f08e965c9771f24489e5dfe0b973676f1",
+    "upgrade-pager-final.log": "64736c6e22d657257d09bd44f14fba28fac4d92ac8f3694dec286c76c22d8c93",
+    "upgrade-clippy.log": "7627b308d720dd619aeae8d3464249e80588dc866f791e7032a4ce31989e1849",
+    "upgrade-paired-build.log": "b4777a2d7adff458986048ae533595cd6fa1779402c3fc09d08d66ef6b62c8cf",
+    "upgrade-remaining-results.json": "15af3f214981ae8e909c62ed6b90a6f02b0affeab752da996bc8c91de4c3e661",
+    "upgrade-paired-identities.json": "2a347323acecc87847babb95346ac4f803a019231bc379aa4b5573dc648ee656",
+    "upgrade-format-final.log": "318ae9a1a7520367fd726e68ad9d4da902f6529dcb11638cde613fbd2be30261",
+    "upgrade-startup-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-native-execution-block.json": "2f45e49aa2a006ef39ca5c85ba908c3bb0734b8debac4c42386c6b7b2484e581",
+    "upgrade-cli-qualified-direct.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-cli-qualified-direct.json": "135718a658370a0ab0ab4b0782b817ae7115c4accc5b510605bced478b3bd7fe",
+    "upgrade-scoped-check-2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-compiler-block.json": "ea3522c9bc8c552656526e2ada4de2b8e80bb44dc9788883ac6971fe4a488107",
+    "upgrade-scoped-check-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-scoped-check-0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-cli-qualified-retry.log": "3251677897c6c119034f817368a0bb8473827ba5622ca0e73eea716d0c4c61ae",
+    "upgrade-format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upgrade-startup-stdout.log": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "upgrade-cli-qualified-retry.json": "c4907dc20511aef69557d4e5400a4ce88052d039e91e1034c374a5018cb22c79"
+  },
+  "frozenUpgradeCases": 12,
+  "originalFrozenContractsUnchanged": 14,
+  "originalInventory": 49,
+  "capabilityFamilies": 24,
+  "limitations": [
+    "Full 24-family replacement and original 49-item consumer/publication migration remain incomplete",
+    "Default grace-period cleanup, automatic lock refresh and remaining lifecycle policies are not implemented",
+    "Full CLI acceptance is incomplete: retained six timeouts, compiler stall and test startup stall; unchanged isolated replays are separate",
+    "Actual uv 0.13.6 download test timed out",
+    "Native GUI, Linux/Windows, release efficiency and final-archive qualification remain open",
+    "Latest global format failed outside this increment; scoped format and whitespace checks passed; global web typing retains 286 outside errors"
+  ],
+  "latestPagerOwner": {
+    "passed": 23,
+    "failed": 0
+  },
+  "owningClippy": "passed",
+  "pairedBuild": "passed",
+  "pairedIdentities": [
+    {
+      "name": "aster",
+      "exit": 0,
+      "identity": "aster-cli-pair-v1:eed9ec26062c09762a0d0fbd9cbc59f1dec0bd36:aarch64-apple-darwin",
+      "stderr": "",
+      "elapsedSeconds": 17.69,
+      "sha256": "bf449c5dc3556f5efe5592bc846943618cde72dc5be5a6594bccdc85c58c16fb"
+    },
+    {
+      "name": "aster-acp",
+      "exit": 0,
+      "identity": "aster-cli-pair-v1:eed9ec26062c09762a0d0fbd9cbc59f1dec0bd36:aarch64-apple-darwin",
+      "stderr": "",
+      "elapsedSeconds": 6.109,
+      "sha256": "18f605856e19864d4ddf9d4558b705fa9cf9bd23bcca8a11ab99e77868fed3f2"
+    }
+  ],
+  "latestGlobalFormat": "failed: concurrent apps/aster/tests/tui_913_real_llm.rs, outside this increment",
+  "firstFullCliAttempt": {
+    "passed": 32,
+    "failed": 6,
+    "ignored": 1,
+    "result": "FAILED; six unchanged isolated replays passed, retained separately"
+  },
+  "compilerRetry": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "aster",
+      "--test",
+      "env_manager",
+      "--",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exit": -2,
+    "seconds": 720.686,
+    "result": null
+  },
+  "directFullCliRetry": {
+    "command": [
+      "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exit": -2,
+    "seconds": 250.424,
+    "result": null,
+    "before": {
+      "testSha256": "d8b8095c8075a1d46863bf14203e20ccf2b7f2740e4b325e0b002c29a6c99971",
+      "cliSha256": "bf449c5dc3556f5efe5592bc846943618cde72dc5be5a6594bccdc85c58c16fb",
+      "testSourceSha256": "3aa396c5b39d63a6eb71f020b498c403aa6097902c9377fb24c04a8794689fd2"
+    },
+    "after": {
+      "testSha256": "d8b8095c8075a1d46863bf14203e20ccf2b7f2740e4b325e0b002c29a6c99971",
+      "cliSha256": "bf449c5dc3556f5efe5592bc846943618cde72dc5be5a6594bccdc85c58c16fb",
+      "testSourceSha256": "3aa396c5b39d63a6eb71f020b498c403aa6097902c9377fb24c04a8794689fd2"
+    },
+    "unchanged": true
+  },
+  "isolatedReplays": {
+    "testSha256": "d8b8095c8075a1d46863bf14203e20ccf2b7f2740e4b325e0b002c29a6c99971",
+    "cliSha256": "28ca7b5960c017bd0b5167fac57aa7b6748419e9c8f307491b8218df31b531d1",
+    "cases": [
+      {
+        "name": "cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "cli_version_requests_match_frozen_mise_executions_and_lock_without_metadata",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 12.877
+      },
+      {
+        "name": "configured_path_and_system_requests_match_frozen_mise_context_results",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "configured_path_and_system_requests_match_frozen_mise_context_results",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 20.967
+      },
+      {
+        "name": "exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "exact_uninstall_keeps_other_versions_and_an_unrelated_project_pin",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 1.359
+      },
+      {
+        "name": "exec_tool_overrides_use_the_argument_root_and_preserve_configuration",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "exec_tool_overrides_use_the_argument_root_and_preserve_configuration",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 3.143
+      },
+      {
+        "name": "legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "legacy_v1_literal_requests_execute_the_pinned_tool_and_keep_the_current_pointer",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 4.422
+      },
+      {
+        "name": "multi_tool_uninstall_matches_the_five_frozen_native_mise_cases",
+        "command": [
+          "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043",
+          "--exact",
+          "multi_tool_uninstall_matches_the_five_frozen_native_mise_cases",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "exit": 0,
+        "seconds": 11.067
+      }
+    ],
+    "unchangedAfter": {
+      "testSha256": "d8b8095c8075a1d46863bf14203e20ccf2b7f2740e4b325e0b002c29a6c99971",
+      "cliSha256": "28ca7b5960c017bd0b5167fac57aa7b6748419e9c8f307491b8218df31b531d1"
+    }
+  },
+  "finalSourceAndBinaryHashesUnchanged": true
+}

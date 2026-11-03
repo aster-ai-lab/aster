@@ -1,0 +1,30 @@
+$ dotenv -e .env -- tsx scripts/i18n-check.ts
+Error: [renderer] 主模板 en-us.json 的键值未按字典序排序。
+    at checkCatalog (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:61:11)
+    at checkTranslations (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:89:3)
+    at main (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:94:5)
+    at <anonymous> (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:107:1)
+    at Object.<anonymous> (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:107:6)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object.transformer (/Users/roylin/code/aster/apps/studio/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:103
+    throw new Error(`检查未通过。请修复上面的 i18n 问题。`)
+          ^
+
+Error: 检查未通过。请修复上面的 i18n 问题。
+    at main (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:103:11)
+    at <anonymous> (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:107:1)
+    at Object.<anonymous> (/Users/roylin/code/aster/apps/studio/scripts/i18n-check.ts:107:6)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object.transformer (/Users/roylin/code/aster/apps/studio/node_modules/.pnpm/tsx@4.21.0/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:376:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:248:9)
+
+Node.js v26.8.1
+[ELIFECYCLE] Command failed with exit code 1.

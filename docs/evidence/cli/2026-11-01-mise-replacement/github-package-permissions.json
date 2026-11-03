@@ -1,0 +1,53 @@
+{
+  "checked_at_utc": "2026-11-01T05:53:11.578579+00:00",
+  "account": "ZhiXiao-Lin",
+  "host": "github.com",
+  "credential_storage": "GitHub CLI system keyring",
+  "requested_additional_scopes": [
+    "read:packages",
+    "write:packages",
+    "workflow"
+  ],
+  "granted_scope_checks": {
+    "write:packages": true,
+    "workflow": true
+  },
+  "package_read_query": {
+    "endpoint": "GET /orgs/aster-ai-lab/packages?package_type=container",
+    "http_success": true,
+    "accessible_container_package_count": 0,
+    "pagination": "all pages"
+  },
+  "plugin_repository": {
+    "full_name": "aster-ai-lab/plugins",
+    "permissions": {
+      "admin": true,
+      "maintain": true,
+      "pull": true,
+      "push": true,
+      "triage": true
+    }
+  },
+  "not_checked": [
+    "Actual OCI package push",
+    "Production signed artifact publication"
+  ],
+  "note": "OAuth scope normalization may omit read:packages from the printed list. The Packages read API was verified successfully after the refresh. Existing unrelated scopes were preserved.",
+  "reverified_at_utc": "2026-11-01T09:49:36.388536+00:00",
+  "latest_read_verification": {
+    "endpoint": "GET /orgs/aster-ai-lab/packages?package_type=container",
+    "http_success": true,
+    "pagination": "all pages",
+    "accessible_container_package_count": 0
+  },
+  "latest_plugin_repository": {
+    "full_name": "aster-ai-lab/plugins",
+    "permissions": {
+      "admin": true,
+      "maintain": true,
+      "pull": true,
+      "push": true,
+      "triage": true
+    }
+  }
+}

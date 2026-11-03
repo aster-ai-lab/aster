@@ -1,0 +1,92 @@
+{
+  "current_web_diagnostics": 241,
+  "prior_web_diagnostics": 241,
+  "added": [
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2339",
+      "message": "Property 'getClientRects' does not exist on type 'Range | Text'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2339",
+      "message": "Property 'getBoundingClientRect' does not exist on type 'Range | Text'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"model-1\"; name: string; }' to type 'Model' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchModelPicker.test.ts",
+      "code": "TS2352",
+      "message": "Conversion of type '({ id: \"codex::gpt-6-luna\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; } | { id: \"codex::gpt-5-terra\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; })[]' to type 'Model[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/home/__tests__/HomeComposerModelPopup.test.tsx",
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"lab::bare\"; providerId: string; name: string; supportsStreaming: true; isEnabled: true; isHidden: false; }' to type 'Model' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/settings/UsageSettings/orgUsage.ts",
+      "code": "TS2345",
+      "message": "Argument of type 'string' is not assignable to parameter of type '\"invalid\" | \"load\" | \"org\" | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/workInbox/workToBot.ts",
+      "code": "TS2345",
+      "message": "Argument of type 'WorkKind' is not assignable to parameter of type '\"notice\" | \"approval\" | \"leave\" | \"travel\" | \"expense\" | \"meeting\" | \"seal\" | \"join_request\"'.",
+      "count": 1
+    }
+  ],
+  "removed": [
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2339",
+      "message": "Property 'getClientRects' does not exist on type 'Text | Range'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2339",
+      "message": "Property 'getBoundingClientRect' does not exist on type 'Text | Range'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/composerModeHome.e2e.test.tsx",
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"model-1\"; name: string; }' to type '{ id: `${string}::${string}`; providerId: string; name: string; capabilities: (\"function-call\" | \"reasoning\" | \"image-recognition\" | \"image-generation\" | \"audio-recognition\" | \"audio-generation\" | ... 9 more ... | \"computer-use\")[]; ... 23 more ...; notes?: string | undefined; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/agents/__tests__/WorkbenchModelPicker.test.ts",
+      "code": "TS2352",
+      "message": "Conversion of type '({ id: \"codex::gpt-6-luna\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; } | { id: \"codex::gpt-5-terra\"; providerId: string; apiModelId: string; name: string; isEnabled: true; isHidden: false; capabilities: never[]; })[]' to type '{ id: `${string}::${string}`; providerId: string; name: string; capabilities: (\"function-call\" | \"reasoning\" | \"image-recognition\" | \"image-generation\" | \"audio-recognition\" | \"audio-generation\" | ... 9 more ... | \"computer-use\")[]; ... 23 more ...; notes?: string | undefined; }[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/home/__tests__/HomeComposerModelPopup.test.tsx",
+      "code": "TS2352",
+      "message": "Conversion of type '{ id: \"lab::bare\"; providerId: string; name: string; supportsStreaming: true; isEnabled: true; isHidden: false; }' to type '{ id: `${string}::${string}`; providerId: string; name: string; capabilities: (\"function-call\" | \"reasoning\" | \"image-recognition\" | \"image-generation\" | \"audio-recognition\" | \"audio-generation\" | ... 9 more ... | \"computer-use\")[]; ... 23 more ...; notes?: string | undefined; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/pages/settings/UsageSettings/orgUsage.ts",
+      "code": "TS2345",
+      "message": "Argument of type 'string' is not assignable to parameter of type '\"org\" | \"invalid\" | \"load\" | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "src/renderer/workInbox/workToBot.ts",
+      "code": "TS2345",
+      "message": "Argument of type 'WorkKind' is not assignable to parameter of type '\"leave\" | \"approval\" | \"notice\" | \"travel\" | \"expense\" | \"meeting\" | \"seal\" | \"join_request\"'.",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "packageId": "aster/ntn",
+  "version": "0.23.25",
+  "hostTargetContractSource": "crates/use/extension/src/remote.rs",
+  "hostTargetContractSha256": "ed7e3e82f0cfb162504c59c6d03baca6012e4e3c1dc33a47ac10e7eaa34e30d5",
+  "records": [
+    {
+      "sourceVariant": "darwin-arm64",
+      "catalogTarget": "darwin-arm64",
+      "aixFile": "ntn-0.23.25-darwin-arm64.aix",
+      "archiveSha256": "765904c8fd7ec1d4b5493a507d97c1aeca4065cb6fd5bcd3aa4f5dc8a061dd1c"
+    },
+    {
+      "sourceVariant": "darwin-x64",
+      "catalogTarget": "darwin-x86_64",
+      "aixFile": "ntn-0.23.25-darwin-x64.aix",
+      "archiveSha256": "dc44e2964b0a12e98129eba91ab97886531580788a8b215649591dd36feecf77"
+    },
+    {
+      "sourceVariant": "linux-arm64",
+      "catalogTarget": "linux-arm64",
+      "aixFile": "ntn-0.23.25-linux-arm64.aix",
+      "archiveSha256": "9db60de3efa6247db67257043adc61cf795f97c28a919821dbe0feb090016c4d"
+    },
+    {
+      "sourceVariant": "linux-x64",
+      "catalogTarget": "linux-x86_64",
+      "aixFile": "ntn-0.23.25-linux-x64.aix",
+      "archiveSha256": "1a6966c5f75ba08c9993216d45ad349e1a41463f1d85ed1ece1427fbc40743a9"
+    },
+    {
+      "sourceVariant": "windows-x64",
+      "catalogTarget": "windows-x86_64",
+      "aixFile": "ntn-0.23.25-windows-x64.aix",
+      "archiveSha256": "d1bff6cb98bd18d2a5597381c535cc4edd1ecef718e18992c481f55bbf21e636"
+    }
+  ],
+  "published": false
+}

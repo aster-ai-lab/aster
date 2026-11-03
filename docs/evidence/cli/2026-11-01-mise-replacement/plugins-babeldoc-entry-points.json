@@ -1,0 +1,11 @@
+{
+  "name": "babeldoc-stream",
+  "version": "0.6.4.post4",
+  "entryPoints": [
+    {
+      "name": "babeldoc-stream",
+      "value": "babeldoc.main:cli",
+      "group": "console_scripts"
+    }
+  ]
+}

@@ -45,9 +45,9 @@ Color is reserved for meaning inside a feature, not for navigation.
 - Shadows sit on floating cards, dialogs, and the settings overlay. Resting page sections stay flat.
 - Icons in rows are 16px Lucide outlines at stroke 1.7. The icon rail is the exception: its selected glyph is a
   black fill on a gray plate.
-- Light mode is the authored look of the work page, plugin cards, and settings. Dark values exist for the rail,
-  the segmented control, and the plugin search fill. Leave a surface in its light values until a dark design for
-  that surface exists.
+- Light mode is the default authored look. The plugin page and its configuration/progress surfaces also support
+  dark mode as specified in section 8. Dark values exist for the rail and segmented control. Leave other surfaces
+  in their light values until a dark design for those surfaces exists.
 
 ## 2. Color
 
@@ -652,32 +652,20 @@ it are the field control: height 36px, radius 8px, fill `#f5f5f5`, 13px.
 | Dialog | Width | Placement |
 | --- | --- | --- |
 | Create project | 320px | centered |
-| Project / task Wiki catalog | content area | fills the content card; icon rail stays visible |
+| Scoped project / task Wiki | content area | fills the content card; icon rail stays visible |
 | Task search | 420px | top, 14vh from the top, max height 70vh |
 
-The create title is 15px medium. Project and task More open the Workspace Wiki catalog, inside the shell
-content area above its isolated workspace layer. Its list header has one working close icon at the right,
-with no duplicate return-to-work action. A centered 24px medium title and a 36px search field lead into a three-column card grid;
-use two columns below 900px and one below 560px of content width. Cards are at least 148px tall, have a
-14px radius, a quiet neutral fill, 1px card border, 16px padding, 14px medium names and two lines of
-12px secondary text. The catalog has no creation card or creation button; original creation actions stay on the work page. No invented summaries, stars or Wiki timestamps.
-Unavailable Wiki state is explicit; existing object timestamps are labeled as project/task updates.
-Wiki status comes from the saved binding and publication owner for the current bounded page, without
-scanning source folders or starting generation. A saved generation says "Wiki available", not that
-live sources are current; its own timestamp is labeled as a Wiki update. Busy and unavailable differ
-from not generated.
-The title has no explanatory subtitle, and the grid has no explanatory footer.
-
-Both More actions stay visible for small and empty collections. Query the complete original collection
-before returning a bounded page (20 by default); tasks keep the inbox scope, with project tasks reached
-through their project. Show distinct loading, unavailable, empty and no-match states. Escape first clears
-search, then closes. The shared dialog owns keyboard focus; background work stays mounted and inert,
-its commands are suspended, and closing restores the trigger. Enter/leave fades in place and honors reduced
-motion. The independent task search stays a 420px top dialog at document z-index 220.
+The create title is 15px medium. Project and task groups have no More entry for a Wiki selection page.
+The project group shows all loaded projects in its existing scroll area, preserving source order rather than hiding a recent slice.
+Open a specific project's or task's Wiki from that object's action. Resolve the original record and its
+workspace before opening; a missing or mismatched record offers Retry without guessing another scope.
+The shared dialog owns keyboard focus; background work stays mounted and inert, its commands are
+suspended, and closing restores the trigger. Enter/leave fades in place and honors reduced motion.
+The independent task search stays a 420px top dialog at document z-index 220.
 
 Task history renders as soon as its saved session and messages are available. Model initialization or refusal never replaces history with a page-level skeleton. The composer area shows a compact loading or recovery state until the original runtime admits sending; unlinked historical sessions remain readable without a composer.
 
-Workspace cards open that object's Wiki detail in this same layer. The former Knowledge page is the
+Object actions open that object's Wiki detail in this same layer. The former Knowledge page is the
 workspace Wiki reader. Reuse the existing KnowledgePage, tree, search, editor/reader, graph and maintenance components directly; do not replace them with a second detail layout. Its root comes from the selected workspace, never the background task or global preference. Browsing an empty scoped vault must not create directories.
 The detail uses one 48px header row containing a truncated workspace name and inline path, original page actions, resource tabs and close. There is no additional overlay header, back button or workspace-open button; narrow windows hide the secondary path rather than wrap. Resource order is Analysis / Encyclopedia / Outputs / Memory / Board. Analysis opens by default and presents measured execution metrics, event filters, timeline playback and event details from the selected task's real messages; project scope selects one of its tasks before analysis. Outputs opens the selected folder's actual file tree. File editors reuse the shared workspace tabs, preserve open documents across resource switches, and guard unsaved closes. Selecting a file tab also selects its tree entry. File tabs use the same extension-specific document icons as the file tree; their context menu supports closing through the existing dirty guard, copying the path and revealing the file in the sidebar. Dialog content explicitly restores pointer events inside page-level portals so save/discard confirmations stay operable. Embedded Markdown omits the redundant read-only preview/line-count bar already covered by its host toolbar. Code save/download actions share the existing bottom status bar instead of reserving a second header row. Empty editor chrome never reserves height.
 Outputs, Encyclopedia and Memory share a mouse-draggable sidebar seam, a remembered 260px default, a 200px minimum and a maximum of 480px or 45% of the available content width. The seam is keyboard accessible and cleans up drag state on blur or exit. Encyclopedia tree rows match Outputs: 32px height, consistent indentation, document/folder icons and a quiet selected fill. Reader/tab action rows stay 40px tall without wrapping; long labels truncate. Memory opens with readable prose, explicit editing, compact time/type/tags and collapsed technical details. It has no redundant displayed/total counter.
@@ -808,7 +796,22 @@ strip shows only the pinned applets, then 添加. Escape, or a click on the empt
 
 ## 8. Plugin page
 
-White page. The header block is padding 24px horizontal and 16px vertical, with 16px between the title group and
+The catalogue hides built-in runtime plugins in both Market and Installed. Their checks, installation,
+retry and progress stay in the shared installation dialog. Show the actual inspection step and download
+bytes; phases without a measurable total use an indeterminate bar. Collapsing details keeps active
+progress visible. The search placeholder is “搜索关键词或插件名”.
+
+The page follows the selected light, dark or system theme. Use the shared semantic surface/foreground pairs;
+never pin light-only `--spec-*` colors or override `--background`, `--foreground` and `--border` on this page.
+In the desktop dark theme, the page is `--background` (`#111112`), cards are `--card` (`#171717`), readable ink is
+`--foreground` (`#f2f2f3`), quiet fields/selected rows use `--muted`/`--accent` (`#2c2c2c`), and separators use
+`--border` (`#2a2a2c`). Descriptions and versions use readable foreground at 80% opacity. Search, category states,
+card fallback artwork, quiet actions, configuration and progress dialogs follow those semantics too. Focus uses
+the theme's ring plus a visible foreground outline. Keep plugin-provided cover images and icon colors intact.
+Light mode retains the white page/card surfaces and the established dimensions. Do not maintain a second theme
+state in this page; changing the application theme must update it immediately.
+
+The header block is padding 24px horizontal and 16px vertical, with 16px between the title group and
 the body.
 
 Title row: 24px bold title on the left. On the right, the 220×30 search field, then an 8px gap, then the
@@ -823,7 +826,10 @@ vertical, gradient `radial-gradient(80% 130% at 100% 0%, #c5dcff 0%, #e4f0ff 42%
 22px semibold `#1a1a1a`, subtitle 14px `#8a8a8a`, then the quiet hero button. This gradient belongs to that hero.
 
 The collection heading is 18px semibold `#1a1a1a`. Cards are a 2-column grid with a 16px gap, becoming 4 columns
-from 1080px. Empty results are centered 14px muted text with 64px vertical padding.
+from 1080px. Category selection uses the shared neutral highlight and its reduced-motion behavior.
+Empty, filtered, unavailable-source and failed-load states use the unified centered inbox EmptyState,
+readable 14px copy and one action suited to the actual state. A refresh failure keeps already loaded cards
+visible with an inline retry. Reading the catalogue does not also raise a duplicate error toast.
 
 ## 9. Capabilities page
 
@@ -923,9 +929,15 @@ is 15px `#8a8a8a` with 4px above it. The content body uses 24px padding.
 
 ## 11. Window chrome
 
+Task workspace terminal sessions use the shared workspace tab strip, including new, select and close
+operations. Do not render a second terminal header inside the pane.
+
 These pages sit in the icon-rail frame.
 
 - The rail is 60px, canvas `#e6e6e6` (dark `#242424`), with no border on its right edge or bottom.
+- Native traffic lights fit inside the existing rail. Compact the controls rather than widening the rail
+  or adding a left content gutter. Keep their frames within the measured rail after resize, page zoom,
+  display-scale changes, and restoring a full-page overlay.
 - The content column insets 4px on the top, right, and bottom (`pt-1 pr-1 pb-1`) and has no left padding, so the
   gray beside a rail icon matches the gray on its other side.
 - The content card is radius 10px with a 0.5px border. On this window the outer corner is about 14px and the card

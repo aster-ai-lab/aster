@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "plugins/recipes/aster-box/darwin-arm64.py",
+    "/Users/roylin/code/aster/.tmp/plugin-registry/box-aix-candidate/aster-box-darwin-arm64.tar.gz",
+    "--aster-use-bin",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder",
+    "--out",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified"
+  ],
+  "exitCode": 1,
+  "builderSha256Before": "ce63d8dcb59d99750ec8793ce57ad22db081c83149bc91a63951c2981e663e69",
+  "builderSha256After": "ce63d8dcb59d99750ec8793ce57ad22db081c83149bc91a63951c2981e663e69"
+}

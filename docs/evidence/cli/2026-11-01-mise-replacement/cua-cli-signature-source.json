@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cua-cli-0.9.0-darwin-arm64.tar.gz",
+  "bundle": {
+    "browser_download_url": "https://github.com/trycua/cua/releases/download/cua-sdk-v0.9.0/cua-cli-0.9.0-darwin-arm64.tar.gz.sigstore.json",
+    "digest": "sha256:99c0f2024d271bacc9b044e00340320f6e5257e6145bbbe2ad9a224ff626cc00",
+    "id": 673172011,
+    "name": "cua-cli-0.9.0-darwin-arm64.tar.gz.sigstore.json",
+    "size": 8389
+  },
+  "bundleSourceBytesVerified": true,
+  "bundleEncoding": "legacy-cosign-blob",
+  "publisherSignatureVerified": false,
+  "githubSlsaLookup": {
+    "exitCode": 1,
+    "status": 404,
+    "report": "cua-gh-attestation-verification.json"
+  },
+  "expectedCertificateIdentity": "https://github.com/trycua/cua/.github/workflows/cd-cua-sdk.yml@refs/tags/cua-sdk-v0.9.0",
+  "expectedOidcIssuer": "https://token.actions.githubusercontent.com",
+  "identityPolicySource": "https://github.com/trycua/cua/blob/cua-sdk-v0.9.0/scripts/install/install.sh",
+  "remaining": "Verify the producer blob signature, certificate chain, identity and transparency evidence with the admitted verifier; a missing GitHub SLSA attestation does not verify or reject this separate bundle."
+}

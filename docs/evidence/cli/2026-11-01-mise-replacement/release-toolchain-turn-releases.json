@@ -1,0 +1,5 @@
+{
+  "exitCode": 0,
+  "stdout": "[{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-31T23:13:51Z\",\"tagName\":\"aster-acp-v9.1.7\"},{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-31T21:35:14Z\",\"tagName\":\"aster-cli-v0.1.7\"},{\"isDraft\":false,\"isLatest\":true,\"isPrerelease\":false,\"publishedAt\":\"2026-10-31T16:06:16Z\",\"tagName\":\"v0.1.11\"},{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-31T11:52:55Z\",\"tagName\":\"v0.1.10\"},{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-31T08:49:55Z\",\"tagName\":\"aster-cli-v0.1.6\"},{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-28T21:05:49Z\",\"tagName\":\"desktop-stable\"},{\"isDraft\":false,\"isLatest\":false,\"isPrerelease\":false,\"publishedAt\":\"2026-10-28T23:02:51Z\",\"tagName\":\"aster-cli-stable\"}]\n",
+  "stderr": ""
+}

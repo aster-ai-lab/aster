@@ -1,0 +1,569 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+    Checking sha2 v0.10.9
+    Checking tokio-util v0.7.19
+    Checking ring v0.17.14
+    Checking tempfile v3.27.0
+    Checking ff v0.13.1
+    Checking security-framework-sys v2.17.0
+    Checking crypto-bigint v0.5.5
+    Checking ahash v0.8.12
+    Checking tower v0.5.3
+    Checking uuid v1.26.1
+    Checking signature v2.2.0
+    Checking sha1 v0.10.7
+    Checking smoltcp v0.11.0
+    Checking lzma-sys v0.1.20
+    Checking xattr v1.6.1
+    Checking sysinfo v0.30.13
+    Checking prometheus v0.14.0
+    Checking rustls-webpki v0.103.16
+    Checking x509-parser v0.16.0
+    Checking aster-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+    Checking security-framework v2.11.1
+    Checking jwt v0.16.0
+    Checking xz2 v0.1.7
+    Checking aster-common v0.1.1 (/Users/roylin/code/aster/crates/common)
+    Checking group v0.13.0
+    Checking tungstenite v0.26.2
+    Checking tar v0.4.46
+    Checking aster-runtime v0.8.0 (/Users/roylin/code/aster/crates/runtime)
+    Checking rustls v0.23.46
+    Checking native-tls v0.2.13
+    Checking elliptic-curve v0.13.8
+    Checking jsonschema-value v0.48.5
+    Checking referencing v0.48.5
+    Checking h2 v0.4.20
+    Checking tokio-native-tls v0.3.1
+    Checking tokio-rustls v0.26.6
+    Checking tokio-tungstenite v0.26.2
+    Checking tower-http v0.6.11
+    Checking primeorder v0.13.6
+    Checking ecdsa v0.16.9
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Checking aster-box-core v3.2.7 (/Users/roylin/code/aster/crates/box/core)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo clippy --fix --lib -p aster-runtime -- --no-deps` to apply 1 suggestion)
+    Checking jsonschema v0.48.5
+    Checking p384 v0.13.1
+    Checking p256 v0.13.2
+    Checking hyper v1.12.0
+    Checking aster-box-netproxy v3.2.7 (/Users/roylin/code/aster/crates/box/netproxy)
+    Checking hyper-util v0.1.19
+    Checking rcgen v0.13.2
+    Checking hyper-rustls v0.27.2
+    Checking hyper-tls v0.6.0
+    Checking axum v0.8.4
+    Checking reqwest v0.12.28
+    Checking aster-oci-sdk v0.3.2 (/Users/roylin/code/aster/crates/oci-runtime/crates/sdk)
+    Checking oci-distribution v0.11.0
+    Checking aster-box-runtime v3.2.7 (/Users/roylin/code/aster/crates/box/runtime)
+warning: constant `TMPFS_MAGIC` is never used
+  --> crates/box/runtime/src/aster_runtime_driver/secret.rs:28:7
+   |
+28 | const TMPFS_MAGIC: libc::c_long = 0x0102_1994;
+   |       ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `validate_for` is never used
+   --> crates/box/runtime/src/local_execution/backend.rs:169:19
+    |
+157 | impl LocalExecutionOwnerFacts {
+    | ----------------------------- method in this implementation
+...
+169 |     pub(super) fn validate_for(
+    |                   ^^^^^^^^^^^^
+
+warning: function `retain_original_guard` is never used
+   --> crates/box/runtime/src/local_execution/lifecycle_lock.rs:141:15
+    |
+141 | pub(super) fn retain_original_guard(
+    |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Released` is never constructed
+   --> crates/box/runtime/src/local_execution/resources.rs:373:5
+    |
+370 | enum ResourceEffect {
+    |      -------------- variant in this enum
+...
+373 |     Released,
+    |     ^^^^^^^^
+    |
+    = note: `ResourceEffect` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: fields `name` and `effect` are never read
+   --> crates/box/runtime/src/local_execution/resources.rs:378:5
+    |
+377 | struct SelectedClaim {
+    |        ------------- fields in this struct
+378 |     name: String,
+    |     ^^^^
+379 |     effect: ResourceEffect,
+    |     ^^^^^^
+
+warning: fields `volumes`, `network`, and `prepared` are never read
+   --> crates/box/runtime/src/local_execution/resources.rs:383:5
+    |
+382 | struct SelectedResources {
+    |        ----------------- fields in this struct
+383 |     volumes: Vec<SelectedClaim>,
+    |     ^^^^^^^
+384 |     network: Option<SelectedClaim>,
+    |     ^^^^^^^
+385 |     snapshot: Option<(PathBuf, PathBuf, ResourceEffect)>,
+386 |     prepared: bool,
+    |     ^^^^^^^^
+
+warning: function `selected_resource_deadline` is never used
+   --> crates/box/runtime/src/local_execution/resources.rs:389:4
+    |
+389 | fn selected_resource_deadline(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `selected_empty`, `prepare_retained`, `remaining_rollback_known`, and `rollback_retained` are never used
+   --> crates/box/runtime/src/local_execution/resources.rs:402:19
+    |
+401 | impl ExecutionResourceGuard {
+    | --------------------------- associated items in this implementation
+402 |     pub(super) fn selected_empty(home: &Path, record: &BoxRecord) -> Self {
+    |                   ^^^^^^^^^^^^^^
+...
+419 |     pub(super) fn prepare_retained(
+    |                   ^^^^^^^^^^^^^^^^
+...
+540 |     pub(super) fn remaining_rollback_known(&self) -> bool {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+558 |     pub(super) fn rollback_retained(
+    |                   ^^^^^^^^^^^^^^^^^
+
+warning: variant `Unused` is never constructed
+  --> crates/box/runtime/src/local_execution/store.rs:57:5
+   |
+56 | pub(super) enum AdmissionState {
+   |                 -------------- variant in this enum
+57 |     Unused,
+   |     ^^^^^^
+
+warning: struct `OwnerReservation` is never constructed
+  --> crates/box/runtime/src/local_execution/store.rs:64:19
+   |
+64 | pub(super) struct OwnerReservation {
+   |                   ^^^^^^^^^^^^^^^^
+
+warning: variants `StartSelected`, `StopSelected`, and `ReconcileRetainedRemove` are never constructed
+  --> crates/box/runtime/src/local_execution/store.rs:76:5
+   |
+75 | enum OwnedLifecycleStage {
+   |      ------------------- variants in this enum
+76 |     StartSelected {
+   |     ^^^^^^^^^^^^^
+...
+82 |     StopSelected {
+   |     ^^^^^^^^^^^^
+...
+89 |     ReconcileRetainedRemove {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: field `completion` is never read
+  --> crates/box/runtime/src/local_execution/store.rs:98:5
+   |
+97 | pub struct OwnedLifecycleOutcome {
+   |            --------------------- field in this struct
+98 |     completion: OwnedLifecycleCompletion,
+   |     ^^^^^^^^^^
+
+warning: associated functions `start_selected`, `stop_selected`, and `reconcile_retained_remove` are never used
+   --> crates/box/runtime/src/local_execution/store.rs:114:19
+    |
+103 | impl OwnedLifecycleRequest {
+    | -------------------------- associated functions in this implementation
+...
+114 |     pub(super) fn start_selected(
+    |                   ^^^^^^^^^^^^^^
+...
+130 |     pub(super) fn stop_selected(
+    |                   ^^^^^^^^^^^^^
+...
+148 |     pub(super) fn reconcile_retained_remove(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `from_observed_reserved` is never used
+   --> crates/box/runtime/src/local_execution/store.rs:219:8
+    |
+218 | impl FreshOwnerAdmission {
+    | ------------------------ associated function in this implementation
+219 |     fn from_observed_reserved(
+    |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `reserve_for_owner_admission` is never used
+   --> crates/box/runtime/src/local_execution/store.rs:259:25
+    |
+256 | impl LocalExecutionManager {
+    | -------------------------- method in this implementation
+...
+259 |     pub(super) async fn reserve_for_owner_admission(
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ValidatedOwnedCall` is never constructed
+   --> crates/box/runtime/src/local_execution/store.rs:668:19
+    |
+668 | pub(super) struct ValidatedOwnedCall<'a> {
+    |                   ^^^^^^^^^^^^^^^^^^
+
+warning: associated items `new`, `validate`, and `stage` are never used
+   --> crates/box/runtime/src/local_execution/store.rs:687:19
+    |
+686 | impl<'a> ValidatedOwnedCall<'a> {
+    | ------------------------------- associated items in this implementation
+687 |     pub(super) fn new(
+    |                   ^^^
+...
+704 |     pub(super) fn validate(&self, binding: &OwnerBinding) -> ExecutionManagerResult<()> {
+    |                   ^^^^^^^^
+...
+711 |     pub(super) fn stage(
+    |                   ^^^^^
+
+warning: methods `deadline` and `validate_call` are never used
+   --> crates/box/runtime/src/local_execution/store.rs:738:19
+    |
+737 | impl OwnedStageBinding {
+    | ---------------------- methods in this implementation
+738 |     pub(super) fn deadline(&self) -> std::time::Instant {
+    |                   ^^^^^^^^
+...
+742 |     pub(super) fn validate_call(
+    |                   ^^^^^^^^^^^^^
+
+warning: field `vm` is never read
+  --> crates/box/runtime/src/local_execution/vm_backend.rs:44:5
+   |
+42 | pub(super) struct AdmittedVm {
+   |                   ---------- field in this struct
+43 |     binding: super::store::OwnerBinding,
+44 |     vm: SharedVm,
+   |     ^^
+
+warning: variants `StageMetadata`, `PrepareResources`, `RollbackResources`, `FinalizeVm`, and `CleanupAnonymousVolumes` are never constructed
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1619:5
+     |
+1618 | enum OwnedVmJobKind {
+     |      -------------- variants in this enum
+1619 |     StageMetadata,
+     |     ^^^^^^^^^^^^^
+1620 |     PrepareResources,
+     |     ^^^^^^^^^^^^^^^^
+1621 |     RollbackResources,
+     |     ^^^^^^^^^^^^^^^^^
+1622 |     FinalizeVm,
+     |     ^^^^^^^^^^
+1623 |     CleanupAnonymousVolumes,
+     |     ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `OwnedVmJobKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: associated items `as_str` and `parse` are never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1627:8
+     |
+1626 | impl OwnedVmJobKind {
+     | ------------------- associated items in this implementation
+1627 |     fn as_str(self) -> &'static str {
+     |        ^^^^^^
+...
+1636 |     fn parse(value: &str) -> ExecutionManagerResult<Self> {
+     |        ^^^^^
+
+warning: variants `Metadata`, `Prepare`, `Rollback`, `Finalize`, and `Anonymous` are never constructed
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1651:5
+     |
+1650 | enum OwnedVmJobOutput {
+     |      ---------------- variants in this enum
+1651 |     Metadata(aster_box_core::Result<()>),
+     |     ^^^^^^^^
+1652 |     Prepare(ExecutionManagerResult<()>),
+     |     ^^^^^^^
+1653 |     Rollback(ExecutionManagerResult<()>),
+     |     ^^^^^^^^
+1654 |     Finalize(aster_box_core::Result<()>),
+     |     ^^^^^^^^
+1655 |     Anonymous(aster_box_core::Result<()>),
+     |     ^^^^^^^^^
+
+warning: method `result` is never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1659:8
+     |
+1658 | impl OwnedVmJobOutput {
+     | --------------------- method in this implementation
+1659 |     fn result(&self) -> ExecutionManagerResult<()> {
+     |        ^^^^^^
+
+warning: variants `Running` and `Ready` are never constructed
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1678:5
+     |
+1676 | enum OwnedVmJobSlot {
+     |      -------------- variants in this enum
+1677 |     Idle,
+1678 |     Running {
+     |     ^^^^^^^
+...
+1683 |     Ready {
+     |     ^^^^^
+
+warning: fields `kind`, `binding`, and `result` are never read
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1692:5
+     |
+1691 | struct OwnedVmCompleted {
+     |        ---------------- fields in this struct
+1692 |     kind: OwnedVmJobKind,
+     |     ^^^^
+1693 |     binding: super::store::OwnedStageBinding,
+     |     ^^^^^^^
+1694 |     result: Result<OwnedVmJobOutput, tokio::task::JoinError>,
+     |     ^^^^^^
+
+warning: multiple fields are never read
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1698:5
+     |
+1697 | struct OwnedVmProgress {
+     |        --------------- fields in this struct
+1698 |     scope: crate::vm::OriginalVmScope,
+     |     ^^^^^
+1699 |     launch_record: BoxRecord,
+     |     ^^^^^^^^^^^^^
+1700 |     acquisition: crate::vm::OriginalAcquisition,
+     |     ^^^^^^^^^^^
+1701 |     resources: Option<Arc<std::sync::Mutex<ExecutionResourceGuard>>>,
+     |     ^^^^^^^^^
+1702 |     finalization: Option<Arc<std::sync::Mutex<crate::vm::OriginalVmFinalization>>>,
+     |     ^^^^^^^^^^^^
+1703 |     anonymous: Option<Arc<std::sync::Mutex<OwnedAnonymousCleanup>>>,
+     |     ^^^^^^^^^
+1704 |     job: OwnedVmJobSlot,
+     |     ^^^
+1705 |     completed: Vec<OwnedVmCompleted>,
+     |     ^^^^^^^^^
+1706 |     physical: Option<aster_box_core::Result<aster_box_core::vmm::VmExitConfirmation>>,
+     |     ^^^^^^^^
+1707 |     physical_budget: Option<aster_box_core::vmm::OwnedCloseBudget>,
+     |     ^^^^^^^^^^^^^^^
+1708 |     cleanup_budget: Option<aster_box_core::vmm::OwnedCleanupBudget>,
+     |     ^^^^^^^^^^^^^^
+
+warning: methods `validate_bound_settings`, `refresh_inactive_network`, `reconcile_ready`, `install`, and `poll_job` are never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1732:8
+     |
+1713 | impl OwnedVmProgress {
+     | -------------------- methods in this implementation
+...
+1732 |     fn validate_bound_settings(&self, record: &BoxRecord) -> ExecutionManagerResult<()> {
+     |        ^^^^^^^^^^^^^^^^^^^^^^^
+...
+1749 |     fn refresh_inactive_network(
+     |        ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+1789 |     fn reconcile_ready(
+     |        ^^^^^^^^^^^^^^^
+...
+1810 |     fn install(
+     |        ^^^^^^^
+...
+1913 |     async fn poll_job(
+     |              ^^^^^^^^
+
+warning: fields `home`, `owner`, `names`, and `unproved` are never read
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1960:5
+     |
+1959 | struct OwnedAnonymousCleanup {
+     |        --------------------- fields in this struct
+1960 |     home: PathBuf,
+     |     ^^^^
+1961 |     owner: String,
+     |     ^^^^^
+1962 |     names: Vec<(String, bool)>,
+     |     ^^^^^
+1963 |     unproved: bool,
+     |     ^^^^^^^^
+
+warning: method `run` is never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1966:8
+     |
+1965 | impl OwnedAnonymousCleanup {
+     | -------------------------- method in this implementation
+1966 |     fn run(
+     |        ^^^
+
+warning: enum `OwnedVmWork` is never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:1992:6
+     |
+1992 | enum OwnedVmWork {
+     |      ^^^^^^^^^^^
+
+warning: methods `remaining_known`, `validate_original`, `kind`, and `run` are never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:2003:8
+     |
+2002 | impl OwnedVmWork {
+     | ---------------- methods in this implementation
+2003 |     fn remaining_known(&self) -> ExecutionManagerResult<bool> {
+     |        ^^^^^^^^^^^^^^^
+...
+2032 |     fn validate_original(
+     |        ^^^^^^^^^^^^^^^^^
+...
+2067 |     fn kind(&self) -> OwnedVmJobKind {
+     |        ^^^^
+...
+2076 |     fn run(self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> OwnedVmJobOutput {
+     |        ^^^
+
+warning: function `require_job_time` is never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:2110:4
+     |
+2110 | fn require_job_time(budget: aster_box_core::vmm::OwnedCleanupBudget) -> aster_box_core::Result<()> {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: function `spawn_original_work` is never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:2129:4
+     |
+2129 | fn spawn_original_work(
+     |    ^^^^^^^^^^^^^^^^^^^
+
+warning: multiple methods are never used
+    --> crates/box/runtime/src/local_execution/vm_backend.rs:2186:8
+     |
+2185 | impl VmLocalExecutionBackend {
+     | ---------------------------- methods in this implementation
+2186 |     fn exact_original(
+     |        ^^^^^^^^^^^^^^
+...
+2203 |     fn recheck_original(
+     |        ^^^^^^^^^^^^^^^^
+...
+2216 |     async fn run_original_preparation(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+2278 |     async fn rollback_original_resources(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+2315 |     async fn boot_original_component(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^
+...
+2356 |     async fn close_original_component(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+2434 |     async fn cleanup_original_anonymous(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+2498 |     async fn finalize_original_component(
+     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `boot_original_owned` is never used
+  --> crates/box/runtime/src/vm/boot.rs:11:25
+   |
+ 5 | impl VmManager {
+   | -------------- method in this implementation
+...
+11 |     pub(crate) async fn boot_original_owned(
+   |                         ^^^^^^^^^^^^^^^^^^^
+
+warning: multiple fields are never read
+    --> crates/box/runtime/src/vm/lifecycle.rs:1137:5
+     |
+1136 | pub(crate) struct OriginalVmFinalization {
+     |                   ---------------------- fields in this struct
+1137 |     rootfs: Arc<dyn crate::rootfs::RootfsProvider>,
+     |     ^^^^^^
+1138 |     network: Option<Box<dyn crate::network::NetworkBackend>>,
+     |     ^^^^^^^
+1139 |     network_none: bool,
+     |     ^^^^^^^^^^^^
+1140 |     box_dir: PathBuf,
+     |     ^^^^^^^
+1141 |     socket_dir: PathBuf,
+     |     ^^^^^^^^^^
+1142 |     preserve_rootfs: bool,
+     |     ^^^^^^^^^^^^^^^
+1143 |     clean_handoff_required: bool,
+     |     ^^^^^^^^^^^^^^^^^^^^^^
+1144 |     steps: [FinalizationStep; 5],
+     |     ^^^^^
+
+warning: variants `Pending`, `Attempted`, `Complete`, and `Unproved` are never constructed
+    --> crates/box/runtime/src/vm/lifecycle.rs:1149:5
+     |
+1148 | enum FinalizationStep {
+     |      ---------------- variants in this enum
+1149 |     Pending,
+     |     ^^^^^^^
+1150 |     Attempted,
+     |     ^^^^^^^^^
+1151 |     Complete,
+     |     ^^^^^^^^
+1152 |     Unproved,
+     |     ^^^^^^^^
+     |
+     = note: `FinalizationStep` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+
+warning: methods `validate_preserve_rootfs`, `remaining_steps_known`, and `run` are never used
+    --> crates/box/runtime/src/vm/lifecycle.rs:1156:19
+     |
+1155 | impl OriginalVmFinalization {
+     | --------------------------- methods in this implementation
+1156 |     pub(crate) fn validate_preserve_rootfs(&self, preserve_rootfs: bool) -> Result<()> {
+     |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+1165 |     pub(crate) fn remaining_steps_known(&self) -> bool {
+     |                   ^^^^^^^^^^^^^^^^^^^^^
+...
+1174 |     pub(crate) fn run(&mut self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> Result<()> {
+     |                   ^^^
+
+warning: function `remove_original_directory` is never used
+    --> crates/box/runtime/src/vm/lifecycle.rs:1230:4
+     |
+1230 | fn remove_original_directory(path: &Path) -> Result<()> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `require_original_physical_time` is never used
+    --> crates/box/runtime/src/vm/lifecycle.rs:1238:4
+     |
+1238 | fn require_original_physical_time(budget: aster_box_core::vmm::OwnedCloseBudget) -> Result<()> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `close_original_owned` and `take_original_finalization` are never used
+    --> crates/box/runtime/src/vm/lifecycle.rs:1267:25
+     |
+1251 | impl VmManager {
+     | -------------- methods in this implementation
+...
+1267 |     pub(crate) async fn close_original_owned(
+     |                         ^^^^^^^^^^^^^^^^^^^^
+...
+1360 |     pub(crate) fn take_original_finalization(
+     |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-box-runtime` (lib) generated 41 warnings
+    Checking aster-box-sdk v3.2.7 (/Users/roylin/code/aster/crates/box/sdk)
+error: couldn't read `crates/box/sdk/src/bridge/../../../../sdk/bridge-protocol.json`: No such file or directory (os error 2)
+   --> crates/box/sdk/src/bridge/tests.rs:712:30
+    |
+712 |         serde_json::from_str(include_str!("../../../../sdk/bridge-protocol.json")).unwrap();
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `crates/box/sdk/src/bridge/../../../../sdk/bridge-operations.json`: No such file or directory (os error 2)
+   --> crates/box/sdk/src/bridge/tests.rs:731:30
+    |
+731 |         serde_json::from_str(include_str!("../../../../sdk/bridge-operations.json")).unwrap();
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `aster-box-sdk` (lib test) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

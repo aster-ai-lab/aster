@@ -1,0 +1,27 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on package cache
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster-use v0.3.3 (/Users/roylin/code/aster/crates/use)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.25s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use-2fd7808746c2f4d8)
+
+running 6 tests
+test cli::output::tests::rendering_suppressed_output_preserves_the_command_exit_code ... ok
+test cli::output::tests::a_closed_output_returns_an_io_error_without_panicking ... ok
+test cli::output::tests::non_utf8_command_text_returns_a_typed_encoding_error ... ok
+test cli::output::tests::embedded_help_uses_the_host_invocation_and_preserves_result_data ... ok
+test cli::output::tests::native_cli_errors_keep_the_machine_error_envelope ... ok
+test cli::output::tests::native_cli_output_uses_the_same_json_and_human_contract ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 328 filtered out; finished in 0.00s
+

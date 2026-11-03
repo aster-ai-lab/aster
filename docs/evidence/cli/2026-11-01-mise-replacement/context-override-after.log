@@ -1,0 +1,1 @@
+{"command": ["aster", "exec", "--offline", "--tool", "node@system", "--", "/bin/echo", "override-probe"], "exit": 0, "stdout": "override-probe\n", "stderr": "", "cli_sha256": "496b95f2d13f0a6dfcd4620fbeb5197b09348d2295374b8ee4f40af84f00f650"}

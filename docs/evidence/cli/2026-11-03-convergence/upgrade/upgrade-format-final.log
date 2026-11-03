@@ -1,0 +1,11 @@
+Diff in /Users/roylin/code/aster/apps/aster/tests/tui_913_real_llm.rs:704:
+     // chrome kept ❯. Either means the composer can accept a first turn.
+     let ready = pty.wait_for("Type a message", Duration::from_secs(45));
+     assert!(
+[31m-        ready.contains("Type a message") || ready.contains('\u{276f}') || ready.contains('\u{2192}'),
+(B[m[32m+        ready.contains("Type a message")
+(B[m[32m+            || ready.contains('\u{276f}')
+(B[m[32m+            || ready.contains('\u{2192}'),
+(B[m         "composer not ready\n{}",
+         pty.redact(&ready)
+     );

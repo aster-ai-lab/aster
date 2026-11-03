@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "-p",
+    "aster",
+    "-p",
+    "aster-acp",
+    "--bins"
+  ],
+  "status": "returned",
+  "sourceHashes": {
+    "crates/use/tool-acquire/src/env_acl.rs": "c60e9b87e471957a746189a84655fc104e731499c63071cc131b6ee1c68e4706",
+    "crates/use/tool-acquire/src/env_context.rs": "4daa40b81e439bdb04da53f899ff141920021739d7e7d8c7b29ea416f8320fe1",
+    "crates/use/tool-acquire/src/env_context/tests.rs": "1e2ae557f57b3f0f05fe7d67d3de5cfead3261a5e826a988d40e788dc939f816",
+    "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs": "b35905f27f8b12c94e3d843b45a04a4531fd3c854c84399e5c10b5eb45b2781a",
+    "apps/aster/tests/env_manager.rs": "80616b3b93c064afcf234056a86584592d9e76137556d84c599dca7475f55ab2",
+    "specs/031-cli-mise-replacement/contracts/mise-exec-multiversion-reference.json": "e19993e4c793867cff05d3045f41ab80f9a8c64a12d119195451c2ca626c4678",
+    "Cargo.lock": "3353ea91ea4abb84d53f6e86991e11ab3e2fdb33bc05aca1796afebead826ece"
+  },
+  "wrapperPid": 28898,
+  "log": ".tmp/mise-exec-multiversion-verified-pair.log",
+  "startedAtUnixSeconds": 1793625046.05757,
+  "cargoPid": 28899,
+  "exitCode": 0,
+  "elapsedSeconds": 24.509,
+  "sourcesUnchanged": true
+}

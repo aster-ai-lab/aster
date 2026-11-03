@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "bun"
+ spec = "github:oven-sh/bun"
+ version = "1.4.4"
+ executable = "bun"
+ platform = "x86_64-macos-"
+ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-darwin-x64-baseline.zip"
+ length = 43442607
+ sha256 = "d4a155adfbfd09155eb3ba05c9e3a544f39297d7a68616d3c7759f67ab5c47dc"
+ format = "zip"
+ prefix = ""
+ bin_dirs = ["bun-darwin-x64-baseline"]
+ executable_mode = "0755"
+ command "bun" { path = "bun-darwin-x64-baseline/bun" }
+}

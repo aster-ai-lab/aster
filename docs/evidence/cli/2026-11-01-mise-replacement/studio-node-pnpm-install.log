@@ -1,0 +1,513 @@
+Scope: all 11 workspace projects
+✓ Lockfile passes supply-chain policies (verified 17h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../.pnpm/koffi@3.1.1/node_modules/koffi install$ node ./cnoke.cjs -P . -D src/koffi --prebuild --release
+.../node_modules/msw postinstall: Done
+.../.pnpm/koffi@3.1.1/node_modules/koffi install: Done
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+.../node_modules/protobufjs postinstall: Done
+.../node_modules/node-pty install: [32m> Checking prebuilds...[0m
+.../node_modules/node-pty install: Done
+.../node_modules/node-pty postinstall$ node scripts/post-install.js
+.../node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+.../node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+.../node_modules/node-pty postinstall:   SKIPPED (not Windows)
+.../node_modules/node-pty postinstall: Done
+.../core-js@3.50.0/node_modules/core-js postinstall$ node -e "try{require('./postinstall')}catch(e){}"
+.../node_modules/@sentry/cli postinstall$ node ./scripts/install.js
+.../core-js@3.50.0/node_modules/core-js postinstall: Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: The project needs your help! Please consider supporting core-js:
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://opencollective.com/core-js 
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://patreon.com/zloirock 
+.../core-js@3.50.0/node_modules/core-js postinstall: > https://boosty.to/zloirock 
+.../core-js@3.50.0/node_modules/core-js postinstall: > bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz 
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: I highly recommend reading this: https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md 
+.../core-js@3.50.0/node_modules/core-js postinstall: 
+.../core-js@3.50.0/node_modules/core-js postinstall: Done
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../node_modules/@sentry/cli postinstall: Done
+.../node_modules/@parcel/watcher install: Done
+.../node_modules/unrs-resolver postinstall$ node postinstall.js
+.../node_modules/unrs-resolver postinstall: Done
+.../node_modules/@swc/core postinstall$ node postinstall.js
+.../.pnpm/koffi@3.1.4/node_modules/koffi install$ node ./cnoke.cjs -P . -D src/koffi --prebuild --release
+.../node_modules/@swc/core postinstall: Done
+.../.pnpm/koffi@3.1.4/node_modules/koffi install: Done
+.../node_modules/selection-hook install$ node-gyp-build
+.../node_modules/selection-hook install: Done
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall: Done
+.../node_modules/msw postinstall: Done
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall: Done
+Update available! 12.6.0 → 12.16.1.
+Changelog: https://pnpm.io/v/12.16.1
+To update, run: curl -fsSL https://get.pnpm.io/install.sh | sh -
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall$ node -e "import('./config/scripts/postinstall.js').catch(() => void 0)"
+.../node_modules/msw postinstall: Done
+.../node_modules/msw postinstall: Done
+. postinstall$ pnpm build:office && pnpm --filter @cherrystudio/dsh-bridge build && pnpm --filter @cherrystudio/remote-protocol build && pnpm --filter @cherrystudio/remote-transport build
+. postinstall: $ pnpm --filter @aster-ai-lab/office build
+. postinstall: $ bash scripts/build-office-kernel.sh && rslib
+. postinstall: warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+. postinstall: package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+. postinstall: workspace: /Users/roylin/code/aster/Cargo.toml
+. postinstall:     Finished `release` profile [optimized] target(s) in 0.59s
+. postinstall: Built /Users/roylin/code/aster/packages/office/generated/office-kernel.wasm
+. postinstall: Copied office kernel to /Users/roylin/code/aster/packages/office/dist/office-kernel.wasm
+. postinstall: Rslib v0.23.2
+. postinstall: 
+. postinstall: info    build started...
+. postinstall: start   generating declaration files... (library)
+. postinstall: ready   built in 0.65s (office-kernel-worker)
+. postinstall: ready   built in 0.80s (library)
+. postinstall: ready   declaration files generated in 12.2 s (library)
+. postinstall: 
+. postinstall: File (library)                                 Size         Gzip   
+. postinstall: dist/styles.js                                 0.00 kB      0.02 kB
+. postinstall: dist/file-import.js                            0.04 kB      0.06 kB
+. postinstall: dist/5654.js                                   0.21 kB      0.17 kB
+. postinstall: dist/8530.js                                   0.27 kB      0.22 kB
+. postinstall: dist/0~work-document-page-color.js             0.33 kB      0.25 kB
+. postinstall: dist/5173.js                                   0.34 kB      0.27 kB
+. postinstall: dist/0~work-spreadsheet-formula-support.js     0.39 kB      0.27 kB
+. postinstall: dist/0~rslib-runtime.js                        0.40 kB      0.26 kB
+. postinstall: dist/0~work-document-links.js                  0.40 kB      0.33 kB
+. postinstall: dist/0~work-markdown-file-io.js                0.52 kB      0.36 kB
+. postinstall: dist/0~work-presentation-visual-scale.js       0.59 kB      0.33 kB
+. postinstall: dist/9424.js                                   0.59 kB      0.36 kB
+. postinstall: dist/react.js                                  0.92 kB      0.41 kB
+. postinstall: dist/spreadsheet.js                            0.96 kB      0.57 kB
+. postinstall: dist/0~345.js                                  1.0 kB       0.51 kB
+. postinstall: dist/4909.js                                   1.6 kB       0.85 kB
+. postinstall: dist/4650.js                                   1.7 kB       0.77 kB
+. postinstall: dist/9356.js                                   2.1 kB       0.92 kB
+. postinstall: dist/6908.js                                   2.4 kB       1.0 kB
+. postinstall: dist/7060.js                                   2.6 kB       1.2 kB
+. postinstall: dist/0~3557.js                                 3.1 kB       1.3 kB
+. postinstall: dist/0~4980.js                                 3.4 kB       1.5 kB
+. postinstall: dist/6489.js                                   3.4 kB       1.9 kB
+. postinstall: dist/8281.js                                   3.9 kB       1.7 kB
+. postinstall: dist/0~work-document-import-worker-client.js   4.0 kB       1.6 kB
+. postinstall: dist/2591.js                                   4.0 kB       1.5 kB
+. postinstall: dist/0~1403.js                                 4.1 kB       1.6 kB
+. postinstall: dist/8465.js                                   4.1 kB       1.6 kB
+. postinstall: dist/index.js                                  4.2 kB       1.3 kB
+. postinstall: dist/0~pdf-page-organization-engine.js         4.7 kB       2.0 kB
+. postinstall: dist/0~work-spreadsheet-file-export.js         4.7 kB       2.3 kB
+. postinstall: dist/0~9445.js                                 4.7 kB       1.9 kB
+. postinstall: dist/vue.js                                    4.8 kB       1.2 kB
+. postinstall: dist/4281.js                                   5.0 kB       1.7 kB
+. postinstall: dist/6065.js                                   5.0 kB       2.3 kB
+. postinstall: dist/0~office-color-picker.js                  5.4 kB       2.2 kB
+. postinstall: dist/0~controlled-editor-composition.js        6.1 kB       1.6 kB
+. postinstall: dist/0~3789.js                                 6.4 kB       2.4 kB
+. postinstall: dist/1478.js                                   6.5 kB       1.7 kB
+. postinstall: dist/0~work-document-file-io.js                7.0 kB       2.9 kB
+. postinstall: dist/9787.js                                   7.1 kB       2.2 kB
+. postinstall: dist/web-component.js                          8.5 kB       2.0 kB
+. postinstall: dist/0~work-docx-large-document-import.js      9.9 kB       3.9 kB
+. postinstall: dist/0~5870.js                                 11.0 kB      3.5 kB
+. postinstall: dist/432.js                                    16.5 kB      5.7 kB
+. postinstall: dist/6723.js                                   17.6 kB      6.1 kB
+. postinstall: dist/5861.js                                   18.6 kB      5.4 kB
+. postinstall: dist/7176.js                                   19.6 kB      7.2 kB
+. postinstall: dist/4560.js                                   20.2 kB      6.3 kB
+. postinstall: dist/0~9073.js                                 21.0 kB      6.8 kB
+. postinstall: dist/1060.js                                   21.9 kB      7.5 kB
+. postinstall: dist/0~work-pptx-export.js                     22.4 kB      7.7 kB
+. postinstall: dist/0~4541.js                                 22.9 kB      6.2 kB
+. postinstall: dist/3818.js                                   23.5 kB      7.1 kB
+. postinstall: dist/3890.js                                   25.5 kB      6.5 kB
+. postinstall: dist/noto-sans-hebrew-regular.ttf              25.7 kB   
+. postinstall: dist/0~work-pptx-import.js                     26.9 kB      9.9 kB
+. postinstall: dist/8604.js                                   28.5 kB      10.6 kB
+. postinstall: dist/1578.js                                   30.0 kB      10.6 kB
+. postinstall: dist/5334.js                                   32.5 kB      10.4 kB
+. postinstall: dist/0~2562.js                                 32.7 kB      10.8 kB
+. postinstall: dist/0~work-spreadsheet-compatibility.js       35.5 kB      11.5 kB
+. postinstall: dist/0~6628.js                                 35.6 kB      11.1 kB
+. postinstall: dist/6282.js                                   39.3 kB      11.5 kB
+. postinstall: dist/7376.js                                   41.3 kB      13.0 kB
+. postinstall: dist/3296.js                                   42.0 kB      13.4 kB
+. postinstall: dist/9881.js                                   43.2 kB      13.5 kB
+. postinstall: dist/0~9457.js                                 45.3 kB      14.0 kB
+. postinstall: dist/0~markdown-editor.js                      56.5 kB      18.4 kB
+. postinstall: dist/0~7048.js                                 61.4 kB      18.1 kB
+. postinstall: dist/72.js                                     74.1 kB      20.4 kB
+. postinstall: dist/0~pdf-viewer.js                           77.7 kB      23.1 kB
+. postinstall: dist/6719.js                                   78.2 kB      24.8 kB
+. postinstall: dist/0~work-office-diagnostics.js              78.3 kB      22.2 kB
+. postinstall: dist/core.js                                   93.8 kB      23.9 kB
+. postinstall: dist/0~work-docx-import.js                     112.7 kB     32.1 kB
+. postinstall: dist/6401.js                                   114.7 kB     35.0 kB
+. postinstall: dist/noto-naskh-arabic-regular.ttf             134.0 kB  
+. postinstall: dist/1887.js                                   175.3 kB     50.3 kB
+. postinstall: dist/0~9303.js                                 178.0 kB     47.3 kB
+. postinstall: dist/0~presentation-editor.js                  186.9 kB     52.1 kB
+. postinstall: dist/0~work-docx-export.js                     280.9 kB     70.5 kB
+. postinstall: dist/4704.js                                   300.9 kB     79.0 kB
+. postinstall: dist/0~document-editor.js                      456.9 kB     118.5 kB
+. postinstall: dist/pptxgen.bundle.js                         460.9 kB     156.9 kB
+. postinstall: dist/2343.js                                   491.6 kB     107.8 kB
+. postinstall: dist/styles.css                                549.2 kB     78.5 kB
+. postinstall: dist/0~spreadsheet-editor.js                   597.6 kB     160.1 kB
+. postinstall: dist/noto-sans-regular.ttf                     629.0 kB  
+. postinstall: dist/office-kernel.wasm                        1487.4 kB    520.6 kB
+. postinstall: dist/pdfium.wasm                               4633.0 kB    2137.7 kB
+. postinstall: dist/noto-sans-hans-regular.otf                8364.6 kB 
+. postinstall: 
+. postinstall:                                       Total:   20510.4 kB   13220.5 kB
+. postinstall: 
+. postinstall: File (office-kernel-worker)                    Size        Gzip   
+. postinstall: dist/work-document-import.worker.js            23.9 kB     5.3 kB
+. postinstall: dist/work-spreadsheet-package-scan.worker.js   267.8 kB    43.2 kB
+. postinstall: dist/office-kernel.worker.js                   740.6 kB    101.1 kB
+. postinstall: dist/work-spreadsheet-import.worker.js         923.4 kB    164.1 kB
+. postinstall: dist/pdf-page-organization.worker.js           1038.6 kB   222.4 kB
+. postinstall: 
+. postinstall:                                       Total:   2994.4 kB   536.1 kB
+. postinstall: 
+. postinstall: $ tsdown
+. postinstall: ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+. postinstall: ℹ config file: /Users/roylin/code/aster/apps/studio/packages/dsh-bridge/tsdown.config.ts 
+. postinstall: ℹ entry: src/index.ts
+. postinstall: (node:13142) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/roylin/code/aster/apps/studio/packages/dsh-bridge/tsdown.config.ts?no-cache=439ac6d6-0112-41f6-b64b-2b006770e781 is not specified and it doesn't parse as CommonJS.
+. postinstall: Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+. postinstall: To eliminate this warning, add "type": "module" to /Users/roylin/code/aster/apps/studio/packages/dsh-bridge/package.json.
+. postinstall: (Use `node --trace-warnings ...` to show where the warning was created)
+. postinstall: ℹ entry: ../../node_modules/.pnpm/@deepseek-ai+dsh-session-persistence-jsonl@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepse_f9676c6edf39b37f98e9f24f1cedfd24/node_modules/@deepseek-ai/dsh-session-persistence-jsonl/lib/worker.cjs
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ entry: src/fork.ts, src/runtimeBin.ts, ../../node_modules/.pnpm/@deepseek-ai+cordis-plugin-timer@1.1.6_@deepseek-ai+cordis@4.0.4/node_modules/@deepseek-ai/cordis-plugin-timer/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-llm@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4/node_modules/@deepseek-ai/dsh-llm/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-scope@0._c9dee8deba3bd498ce58eb9c566c157f/node_modules/@deepseek-ai/dsh-session/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session-title@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-ag_1da7de527f72ef2da9758e82a3cb88d4/node_modules/@deepseek-ai/dsh-session-title/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-system-prompt@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-in_af0aba1f40fabd5fd7c0d5c00aaf1202/node_modules/@deepseek-ai/dsh-system-prompt/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tools@0.2.0-rc.2_c6e351a6a6cfd1c2a664558bffcd410d/node_modules/@deepseek-ai/dsh-tools/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-agent@0.2.0-rc.2_b872d4d836bb263e5b3a50782f98c977/node_modules/@deepseek-ai/dsh-agent/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-invariants@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4/node_modules/@deepseek-ai/dsh-invariants/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-scope@0._c9dee8deba3bd498ce58eb9c566c157f/node_modules/@deepseek-ai/dsh-session/lib/invariant.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-agent@0.2.0-rc.2_b872d4d836bb263e5b3a50782f98c977/node_modules/@deepseek-ai/dsh-agent/lib/invariant.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-scope@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-invariants_0d6b19188928ab894325adc32e18b0b5/node_modules/@deepseek-ai/dsh-scope/lib/invariant.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-agent-loop@0.2.0-rc.2_c47258f3b7a14cf357cbffd5a60d7454/node_modules/@deepseek-ai/dsh-agent-loop/lib/invariant.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-agent-loop@0.2.0-rc.2_c47258f3b7a14cf357cbffd5a60d7454/node_modules/@deepseek-ai/dsh-agent-loop/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-agent-instructions@0.2.0-rc.2_b10facd0757efe365b028d52ce71bd0c/node_modules/@deepseek-ai/dsh-agent-instructions/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-skill@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-llm@0.2.0-_6b20c032b48fd4a219cc83ccc4a6364a/node_modules/@deepseek-ai/dsh-skill/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-skill-filesystem@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh_eefa826e44e5ba08c9f57cb7c838a926/node_modules/@deepseek-ai/dsh-skill-filesystem/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-skill@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-agent_122a57821fae5b4f8c334ee1900dbe2d/node_modules/@deepseek-ai/dsh-tool-skill/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-bash@0.2.0-rc.2_a81b4c8620ddd39fcc15a08cf645b6a5/node_modules/@deepseek-ai/dsh-tool-bash/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-sdk-jsonrpc-server@0.2.0-rc.2_patch_hash=f67e1cdc0e72428a0d35362c37fd1_493570feff67b312fbc9cce18c992c44/node_modules/@deepseek-ai/dsh-sdk-jsonrpc-server/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-llm-pi-ai@0.2.0-rc.2_patch_hash=22e1bba3e6b5d2567a6c64821bc2310147b41f_a4eac0031f0447aed1dd284a686f8d0a/node_modules/@deepseek-ai/dsh-llm-pi-ai/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-llm-retry@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-agent@_2d7e4c121b9d64ad0423905c3e3a24b3/node_modules/@deepseek-ai/dsh-llm-retry/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-pwsh-local@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-shell_84e37917aa9b81f594f511af9aa962af/node_modules/@deepseek-ai/dsh-pwsh-local/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-pwsh-sandbox@0.2.0-rc.2_f09d2dde062c8a68c0f815c59b9c6d7b/node_modules/@deepseek-ai/dsh-pwsh-sandbox/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-sandbox-local@0.2.0-rc.2_patch_hash=8a2acc0e4ca1a7015dd7dedf825038230b_5c62f138e2029d746c6369ef2088102d/node_modules/@deepseek-ai/dsh-sandbox-local/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-sandbox-policy@0.2.0-rc.2_86f6fd7d6eb5d5ef0468bcbf88da8d4d/node_modules/@deepseek-ai/dsh-sandbox-policy/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-subprocess-local@0.2.0-rc.2_patch_hash=42e4f788a34f089a1aab3182210032a_2faeaf2a34a1113b706232fa6b87b32f/node_modules/@deepseek-ai/dsh-subprocess-local/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-bash-sandbox@0.2.0-rc.2_5c4e184a5185e49f67754de0226aff3f/node_modules/@deepseek-ai/dsh-bash-sandbox/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-user-approval@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-ag_59b6495f3d67c48b6302de68db6f8bcf/node_modules/@deepseek-ai/dsh-user-approval/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-attachment-local@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh_58cf973fdbcc4df9c13d6c49cb93a0e1/node_modules/@deepseek-ai/dsh-attachment-local/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-fs-local@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-fs@0.2._3e6262b8184005d75163080c226003cd/node_modules/@deepseek-ai/dsh-fs-local/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-fs@0.2.0-rc.2_0129df5845e069c9f27674fe3c47beeb/node_modules/@deepseek-ai/dsh-tool-fs/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-todo@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-agent@_1d1b2c35f044d72e04187cf249673c13/node_modules/@deepseek-ai/dsh-tool-todo/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-token-meter@0.2.0-rc.2_5cdec177a4a8ed12a2aa8efe24ff4cfe/node_modules/@deepseek-ai/dsh-token-meter/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session-projection@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+d_e66e51291f5c51f6f0f997e5743dbeb2/node_modules/@deepseek-ai/dsh-session-projection/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session-query@0.2.0-rc.2_6a987b66d7987cbf5afe510bf634c9f7/node_modules/@deepseek-ai/dsh-session-query/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-compaction-tool-result-pruner@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@de_e5279aa68de577c94c1862c6e4bf0065/node_modules/@deepseek-ai/dsh-compaction-tool-result-pruner/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-compaction-basic@0.2.0-rc.2_7f19000e3e3c35493f8f6e2bc433a218/node_modules/@deepseek-ai/dsh-compaction-basic/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-commands@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-agent@0_13d0b029b011830d2ed8d8cab1c57516/node_modules/@deepseek-ai/dsh-commands/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-command-compact@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-_1be73fcc3f07723c209cb4f615c29e2a/node_modules/@deepseek-ai/dsh-command-compact/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-command-goal@0.2.0-rc.2_4b46a4e5f05728b810c801750102d183/node_modules/@deepseek-ai/dsh-command-goal/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-goal@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-agent@0.2.0_3f92a22543add9ae60097fc4c932ebaa/node_modules/@deepseek-ai/dsh-goal/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-goal-round-driver@0.2.0-rc.2_95a583d913aaf9da283cd98c2121b4a4/node_modules/@deepseek-ai/dsh-goal-round-driver/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-goal@0.2.0-rc.2_90ce972b61a1aea4ddc2028eb67f7580/node_modules/@deepseek-ai/dsh-tool-goal/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-subagent@0.2.0-rc.2_be4e0df52cdab106a6f02fecb1ecacc2/node_modules/@deepseek-ai/dsh-subagent/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-subagent-spawn-in-process@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepse_0353e494e658ff82d4003d2fd8082fff/node_modules/@deepseek-ai/dsh-subagent-spawn-in-process/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-subagent-fork-in-process@0.2.0-rc.2_7fdbba4a5e65502e7ec3b398c062416d/node_modules/@deepseek-ai/dsh-subagent-fork-in-process/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-subagent-control@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-a_715d94586e1aff3cd8ffbeb14e316deb/node_modules/@deepseek-ai/dsh-tool-subagent-control/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-subagent-control@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-a_715d94586e1aff3cd8ffbeb14e316deb/node_modules/@deepseek-ai/dsh-tool-subagent-control/lib/types/list-agents.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-subagent@0.2.0-rc.2_1f3147e3392326602f069b11a2fca4e7/node_modules/@deepseek-ai/dsh-tool-subagent/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-user-questions@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepseek-ai+dsh-a_0032c014c3e5b69fbc2946d006d4e694/node_modules/@deepseek-ai/dsh-user-questions/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-plan-mode@0.2.0-rc.2_7585d9181a66a0f732bf6a1d4f23833d/node_modules/@deepseek-ai/dsh-plan-mode/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-session-persistence-jsonl@0.2.0-rc.2_@deepseek-ai+cordis@4.0.4_@deepse_f9676c6edf39b37f98e9f24f1cedfd24/node_modules/@deepseek-ai/dsh-session-persistence-jsonl/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-shell-env@0.2.0-rc.2_fd2c1833cbf9e77e2e0883d1574bbe75/node_modules/@deepseek-ai/dsh-shell-env/lib/index.js, ../../node_modules/.pnpm/@deepseek-ai+dsh-tool-pwsh@0.2.0-rc.2_a81b4c8620ddd39fcc15a08cf645b6a5/node_modules/@deepseek-ai/dsh-tool-pwsh/lib/index.js, src/plugin.ts
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: 
+. postinstall:  WARN  `external` is deprecated. Use `deps.neverBundle` instead.
+. postinstall: 
+. postinstall: 
+. postinstall:  WARN  `noExternal` is deprecated. Use `deps.alwaysBundle` instead.
+. postinstall: 
+. postinstall: ℹ Build start
+. postinstall: ℹ Cleaning 128 files
+. postinstall: 
+. postinstall:  WARN  TypeScript 7.0 does not yet have a stable API and is experimental. Some options will be unavailable.
+. postinstall: 
+. postinstall: ℹ Emit types with typescript@7.0.2
+. postinstall: ℹ [CJS] dist/index.cjs  4.14 kB │ gzip: 1.11 kB
+. postinstall: ℹ [CJS] 1 files, total: 4.14 kB
+. postinstall: ℹ Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+. postinstall: See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+. postinstall: Detected dependencies in bundle:
+. postinstall: - @deepseek-ai/dsh-session-persistence-jsonl
+. postinstall: ℹ [CJS] dist/runtime/worker.cjs  253.91 kB │ gzip: 70.06 kB
+. postinstall: ℹ [CJS] 1 files, total: 253.91 kB
+. postinstall: ✔ Build complete in 192ms
+. postinstall: ℹ [CJS] dist/index.d.cts  12.08 kB │ gzip: 3.52 kB
+. postinstall: ℹ [CJS] 1 files, total: 12.08 kB
+. postinstall: ✔ Build complete in 333ms
+. postinstall: ℹ [ESM] dist/index.mjs     3.83 kB │ gzip: 1.02 kB
+. postinstall: ℹ [ESM] dist/index.d.mts  12.08 kB │ gzip: 3.52 kB
+. postinstall: ℹ [ESM] 2 files, total: 15.91 kB
+. postinstall: ✔ Build complete in 333ms
+. postinstall: ℹ Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+. postinstall: See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+. postinstall: Detected dependencies in bundle:
+. postinstall: - @deepseek-ai/dsh-agent-instructions
+. postinstall: - @deepseek-ai/dsh-agent
+. postinstall: - @deepseek-ai/dsh-agent-loop
+. postinstall: - @deepseek-ai/dsh-attachment-local
+. postinstall: - @deepseek-ai/dsh-bash-local
+. postinstall: - @deepseek-ai/dsh-bash-sandbox
+. postinstall: - js-yaml
+. postinstall: - @deepseek-ai/cordis-plugin-loader
+. postinstall: - @deepseek-ai/cordis-plugin-group
+. postinstall: - semver
+. postinstall: - @deepseek-ai/dsh-app-boot
+. postinstall: - @deepseek-ai/dsh-command-compact
+. postinstall: - @deepseek-ai/dsh-command-goal
+. postinstall: - @deepseek-ai/dsh-commands
+. postinstall: - @deepseek-ai/dsh-compaction-basic
+. postinstall: - @deepseek-ai/dsh-compaction-tool-result-pruner
+. postinstall: - readdirp
+. postinstall: - chokidar
+. postinstall: - @deepseek-ai/dsh-fs-local
+. postinstall: - @deepseek-ai/dsh-goal-round-driver
+. postinstall: - @deepseek-ai/dsh-invariants
+. postinstall: - @earendil-works/pi-ai
+. postinstall: - @deepseek-ai/dsh-llm-pi-ai
+. postinstall: - @deepseek-ai/dsh-llm-retry
+. postinstall: - @deepseek-ai/dsh-plan-mode
+. postinstall: - @deepseek-ai/dsh-pwsh-sandbox
+. postinstall: - @deepseek-ai/node-addon-system
+. postinstall: - @deepseek-ai/dsh-sandbox-local
+. postinstall: - @deepseek-ai/dsh-sandbox-policy
+. postinstall: - @deepseek-ai/dsh-scope
+. postinstall: - @deepseek-ai/dsh-atomic-write
+. postinstall: - eventsource-parser
+. postinstall: - @deepseek-ai/dsh-anonymous-user-id
+. postinstall: - @deepseek-ai/dsh-llm-deepseek
+. postinstall: - @deepseek-ai/dsh-llm-deepseek-api-key
+. postinstall: - @deepseek-ai/dsh-sdk-jsonrpc-server
+. postinstall: - @deepseek-ai/dsh-session
+. postinstall: - @deepseek-ai/dsh-session-projection
+. postinstall: - @deepseek-ai/dsh-session-query
+. postinstall: - @deepseek-ai/dsh-shell-env
+. postinstall: - yaml
+. postinstall: - @deepseek-ai/dsh-skill-filesystem
+. postinstall: - @deepseek-ai/dsh-subagent-fork-in-process
+. postinstall: - @deepseek-ai/dsh-subagent-spawn-in-process
+. postinstall: - @deepseek-ai/dsh-subprocess-local
+. postinstall: - @deepseek-ai/dsh-subprocess
+. postinstall: - @deepseek-ai/dsh-win32-process
+. postinstall: - @deepseek-ai/cordis-plugin-timer
+. postinstall: - @deepseek-ai/dsh-token-meter
+. postinstall: - @deepseek-ai/dsh-tool-bash
+. postinstall: - @deepseek-ai/dsh-util-code-language
+. postinstall: - diff
+. postinstall: - @deepseek-ai/dsh-tool-fs
+. postinstall: - @deepseek-ai/dsh-tool-goal
+. postinstall: - @deepseek-ai/dsh-tool-pwsh
+. postinstall: - @deepseek-ai/dsh-tool-skill
+. postinstall: - @deepseek-ai/dsh-subagent
+. postinstall: - @deepseek-ai/dsh-tool-subagent-control
+. postinstall: - @deepseek-ai/dsh-tool-subagent
+. postinstall: - @deepseek-ai/dsh-tool-todo
+. postinstall: - @deepseek-ai/dsh-user-approval
+. postinstall: - ms
+. postinstall: - debug
+. postinstall: - has-flag
+. postinstall: - supports-color
+. postinstall: - agent-base
+. postinstall: - https-proxy-agent
+. postinstall: - web-streams-polyfill
+. postinstall: - fetch-blob
+. postinstall: - formdata-polyfill
+. postinstall: - node-domexception
+. postinstall: - retry
+. postinstall: - p-retry
+. postinstall: - extend
+. postinstall: - gaxios
+. postinstall: - bignumber.js
+. postinstall: - json-bigint
+. postinstall: - gcp-metadata
+. postinstall: - google-logging-utils
+. postinstall: - base64-js
+. postinstall: - google-auth-library
+. postinstall: - safe-buffer
+. postinstall: - ecdsa-sig-formatter
+. postinstall: - jws
+. postinstall: - buffer-equal-constant-time
+. postinstall: - jwa
+. postinstall: - ws
+. postinstall: - @google/genai
+. postinstall: - partial-json
+. postinstall: - @deepseek-ai/cosmokit
+. postinstall: - @deepseek-ai/dsh-session-persistence
+. postinstall: - @deepseek-ai/dsh-home-paths
+. postinstall: - @deepseek-ai/dsh-launch-environment
+. postinstall: - @deepseek-ai/dsh-credentials
+. postinstall: - @deepseek-ai/dsh-session-title
+. postinstall: - @deepseek-ai/dsh-system-prompt
+. postinstall: - @deepseek-ai/dsh-sandbox
+. postinstall: - @deepseek-ai/dsh-tools
+. postinstall: - @deepseek-ai/dsh-skill
+. postinstall: - @deepseek-ai/dsh-http-proxy
+. postinstall: - @deepseek-ai/cordis
+. postinstall: - @deepseek-ai/dsh-shell
+. postinstall: - @deepseek-ai/dsh-sdk-protocol
+. postinstall: - @deepseek-ai/dsh-attachment
+. postinstall: - @deepseek-ai/dsh-pwsh-local
+. postinstall: - @deepseek-ai/dsh-lazy-require
+. postinstall: - @deepseek-ai/dsh-fs
+. postinstall: - @deepseek-ai/dsh-compaction
+. postinstall: - @deepseek-ai/dsh-goal
+. postinstall: - @deepseek-ai/dsh-util-time
+. postinstall: - @deepseek-ai/dsh-chunked-list
+. postinstall: - @deepseek-ai/dsh-subagent-in-process-driver
+. postinstall: - @deepseek-ai/dsh-brand
+. postinstall: - @deepseek-ai/dsh-typert-protocol
+. postinstall: - @deepseek-ai/dsh-util-crypto
+. postinstall: - @deepseek-ai/dsh-llm
+. postinstall: - @deepseek-ai/dsh-user-questions
+. postinstall: - @deepseek-ai/dsh-util-values
+. postinstall: - @deepseek-ai/schemastery
+. postinstall: - @deepseek-ai/dsh-timeout
+. postinstall: - @deepseek-ai/dsh-session-format
+. postinstall: - @deepseek-ai/dsh-session-format-v0-to-v1
+. postinstall: - @deepseek-ai/dsh-session-format-v1-to-v2
+. postinstall: - @deepseek-ai/dsh-session-format-v2-to-v3
+. postinstall: - @deepseek-ai/dsh-session-format-v3-to-v4
+. postinstall: - @deepseek-ai/dsh-session-format-catalog
+. postinstall: - @deepseek-ai/dsh-session-persistence-jsonl
+. postinstall: - @deepseek-ai/dsh-compaction-image-offload
+. postinstall: - node-fetch
+. postinstall: - @anthropic-ai/sdk
+. postinstall: - @cherrystudio/openai
+. postinstall: - zod
+. postinstall: - @stablelib/base64
+. postinstall: - fast-sha256
+. postinstall: - standardwebhooks
+. postinstall: - data-uri-to-buffer
+. postinstall: ℹ [ESM] dist/runtime/llm-pi-ai.mjs                      795.31 kB │ gzip:  63.80 kB
+. postinstall: ℹ [ESM] dist/runtime/skill-filesystem.mjs               147.18 kB │ gzip:  45.91 kB
+. postinstall: ℹ [ESM] dist/runtime/bin.mjs                             96.38 kB │ gzip:  31.35 kB
+. postinstall: ℹ [ESM] dist/runtime/sdk-jsonrpc-server.mjs              59.52 kB │ gzip:  18.73 kB
+. postinstall: ℹ [ESM] dist/runtime/subprocess-local.mjs                52.96 kB │ gzip:  17.16 kB
+. postinstall: ℹ [ESM] dist/runtime/fs-local.mjs                        36.13 kB │ gzip:  12.32 kB
+. postinstall: ℹ [ESM] dist/runtime/agent-loop.mjs                      32.77 kB │ gzip:  10.36 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-fs.mjs                         31.84 kB │ gzip:  10.69 kB
+. postinstall: ℹ [ESM] dist/runtime/compaction-basic.mjs                21.95 kB │ gzip:   7.36 kB
+. postinstall: ℹ [ESM] dist/runtime/agent-instructions.mjs              20.24 kB │ gzip:   6.63 kB
+. postinstall: ℹ [ESM] dist/runtime/session-query.mjs                   19.68 kB │ gzip:   5.84 kB
+. postinstall: ℹ [ESM] dist/runtime/attachment-local.mjs                18.06 kB │ gzip:   5.91 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-subagent.mjs                   17.72 kB │ gzip:   5.71 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-pwsh.mjs                       14.32 kB │ gzip:   5.08 kB
+. postinstall: ℹ [ESM] dist/runtime/cherry-bridge.mjs                   13.96 kB │ gzip:   5.36 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-bash.mjs                       12.18 kB │ gzip:   4.55 kB
+. postinstall: ℹ [ESM] dist/runtime/token-meter.mjs                     11.08 kB │ gzip:   3.60 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-goal.mjs                        9.73 kB │ gzip:   3.24 kB
+. postinstall: ℹ [ESM] dist/runtime/sandbox-local.mjs                    8.58 kB │ gzip:   3.11 kB
+. postinstall: ℹ [ESM] dist/runtime/commands.mjs                         8.55 kB │ gzip:   3.11 kB
+. postinstall: ℹ [ESM] dist/runtime/plan-mode.mjs                        7.63 kB │ gzip:   2.96 kB
+. postinstall: ℹ [ESM] dist/runtime/goal-round-driver.mjs                7.14 kB │ gzip:   2.59 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-skill.mjs                       6.96 kB │ gzip:   2.54 kB
+. postinstall: ℹ [ESM] dist/runtime/bash-sandbox.mjs                     6.61 kB │ gzip:   2.57 kB
+. postinstall: ℹ [ESM] dist/runtime/session-projection.mjs               6.01 kB │ gzip:   2.04 kB
+. postinstall: ℹ [ESM] dist/runtime/command-goal.mjs                     3.62 kB │ gzip:   1.39 kB
+. postinstall: ℹ [ESM] dist/runtime/session-invariant.mjs                3.55 kB │ gzip:   1.38 kB
+. postinstall: ℹ [ESM] dist/runtime/llm-retry.mjs                        3.41 kB │ gzip:   1.52 kB
+. postinstall: ℹ [ESM] dist/runtime/compaction-tool-result-pruner.mjs    3.13 kB │ gzip:   1.36 kB
+. postinstall: ℹ [ESM] dist/runtime/fork.mjs                             3.05 kB │ gzip:   1.38 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-todo.mjs                        2.98 kB │ gzip:   1.32 kB
+. postinstall: ℹ [ESM] dist/runtime/user-approval.mjs                    2.85 kB │ gzip:   1.32 kB
+. postinstall: ℹ [ESM] dist/runtime/pwsh-sandbox.mjs                     2.80 kB │ gzip:   1.23 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-subagent-list-agents.mjs        2.51 kB │ gzip:   1.12 kB
+. postinstall: ℹ [ESM] dist/runtime/shell-env.mjs                        2.38 kB │ gzip:   1.03 kB
+. postinstall: ℹ [ESM] dist/runtime/sandbox-policy.mjs                   2.36 kB │ gzip:   1.07 kB
+. postinstall: ℹ [ESM] dist/runtime/llm.mjs                              2.13 kB │ gzip:   1.01 kB
+. postinstall: ℹ [ESM] dist/runtime/tool-subagent-control.mjs            2.03 kB │ gzip:   0.88 kB
+. postinstall: ℹ [ESM] dist/runtime/invariants.mjs                       2.00 kB │ gzip:   0.86 kB
+. postinstall: ℹ [ESM] dist/runtime/command-compact.mjs                  1.91 kB │ gzip:   0.91 kB
+. postinstall: ℹ [ESM] dist/runtime/timer.mjs                            1.90 kB │ gzip:   0.76 kB
+. postinstall: ℹ [ESM] dist/runtime/scope-invariant.mjs                  1.58 kB │ gzip:   0.69 kB
+. postinstall: ℹ [ESM] dist/runtime/agent-loop-invariant.mjs             1.46 kB │ gzip:   0.67 kB
+. postinstall: ℹ [ESM] dist/runtime/subagent.mjs                         0.89 kB │ gzip:   0.47 kB
+. postinstall: ℹ [ESM] dist/runtime/session.mjs                          0.83 kB │ gzip:   0.45 kB
+. postinstall: ℹ [ESM] dist/runtime/tools.mjs                            0.73 kB │ gzip:   0.39 kB
+. postinstall: ℹ [ESM] dist/runtime/subagent-fork-in-process.mjs         0.72 kB │ gzip:   0.46 kB
+. postinstall: ℹ [ESM] dist/runtime/subagent-spawn-in-process.mjs        0.52 kB │ gzip:   0.35 kB
+. postinstall: ℹ [ESM] dist/runtime/agent-invariant.mjs                  0.32 kB │ gzip:   0.24 kB
+. postinstall: ℹ [ESM] dist/runtime/session-title.mjs                    0.31 kB │ gzip:   0.19 kB
+. postinstall: ℹ [ESM] dist/runtime/system-prompt.mjs                    0.29 kB │ gzip:   0.20 kB
+. postinstall: ℹ [ESM] dist/runtime/goal.mjs                             0.28 kB │ gzip:   0.20 kB
+. postinstall: ℹ [ESM] dist/runtime/agent.mjs                            0.24 kB │ gzip:   0.18 kB
+. postinstall: ℹ [ESM] dist/runtime/skill.mjs                            0.23 kB │ gzip:   0.18 kB
+. postinstall: ℹ [ESM] dist/runtime/pwsh-local.mjs                       0.23 kB │ gzip:   0.18 kB
+. postinstall: ℹ [ESM] dist/runtime/user-questions.mjs                   0.18 kB │ gzip:   0.15 kB
+. postinstall: ℹ [ESM] dist/runtime/session-persistence-jsonl.mjs        0.08 kB │ gzip:   0.10 kB
+. postinstall: ℹ [ESM] dist/runtime/google-shared.mjs                  580.54 kB │ gzip: 127.81 kB
+. postinstall: ℹ [ESM] dist/runtime/lib9.mjs                           194.98 kB │ gzip:  51.65 kB
+. postinstall: ℹ [ESM] dist/runtime/sdk.mjs                            183.17 kB │ gzip:  46.84 kB
+. postinstall: ℹ [ESM] dist/runtime/openai.mjs                         100.81 kB │ gzip:  26.97 kB
+. postinstall: ℹ [ESM] dist/runtime/schemas.mjs                         71.71 kB │ gzip:  18.89 kB
+. postinstall: ℹ [ESM] dist/runtime/from.mjs                            65.77 kB │ gzip:  16.37 kB
+. postinstall: ℹ [ESM] dist/runtime/lib16.mjs                           58.58 kB │ gzip:  17.64 kB
+. postinstall: ℹ [ESM] dist/runtime/lib28.mjs                           49.57 kB │ gzip:  14.37 kB
+. postinstall: ℹ [ESM] dist/runtime/lib3.mjs                            40.65 kB │ gzip:  12.64 kB
+. postinstall: ℹ [ESM] dist/runtime/node3.mjs                           38.50 kB │ gzip:  12.54 kB
+. postinstall: ℹ [ESM] dist/runtime/lib8.mjs                            33.74 kB │ gzip:  10.10 kB
+. postinstall: ℹ [ESM] dist/runtime/lib2.mjs                            23.89 kB │ gzip:   8.16 kB
+. postinstall: ℹ [ESM] dist/runtime/openai-codex-responses.mjs          23.07 kB │ gzip:   8.41 kB
+. postinstall: ℹ [ESM] dist/runtime/openai-completions.mjs              22.93 kB │ gzip:   6.90 kB
+. postinstall: ℹ [ESM] dist/runtime/src.mjs                             19.84 kB │ gzip:   7.30 kB
+. postinstall: ℹ [ESM] dist/runtime/anthropic-messages.mjs              19.05 kB │ gzip:   6.28 kB
+. postinstall: ℹ [ESM] dist/runtime/lib27.mjs                           17.83 kB │ gzip:   5.27 kB
+. postinstall: ℹ [ESM] dist/runtime/models.mjs                          17.78 kB │ gzip:   5.56 kB
+. postinstall: ℹ [ESM] dist/runtime/dist.mjs                            17.71 kB │ gzip:   6.67 kB
+. postinstall: ℹ [ESM] dist/runtime/lib6.mjs                            12.91 kB │ gzip:   4.44 kB
+. postinstall: ℹ [ESM] dist/runtime/lib13.mjs                           12.70 kB │ gzip:   4.04 kB
+. postinstall: ℹ [ESM] dist/runtime/lib30.mjs                           12.30 kB │ gzip:   4.44 kB
+. postinstall: ℹ [ESM] dist/runtime/mistral-conversations.mjs           12.26 kB │ gzip:   4.52 kB
+. postinstall: ℹ [ESM] dist/runtime/openai-responses-shared.mjs         11.90 kB │ gzip:   3.62 kB
+. postinstall: ℹ [ESM] dist/runtime/lib18.mjs                           10.63 kB │ gzip:   3.30 kB
+. postinstall: ℹ [ESM] dist/runtime/transform-messages.mjs               9.00 kB │ gzip:   3.36 kB
+. postinstall: ℹ [ESM] dist/runtime/lib17.mjs                            7.66 kB │ gzip:   2.83 kB
+. postinstall: ℹ [ESM] dist/runtime/lib14.mjs                            7.42 kB │ gzip:   2.83 kB
+. postinstall: ℹ [ESM] dist/runtime/google-vertex.mjs                    6.80 kB │ gzip:   2.51 kB
+. postinstall: ℹ [ESM] dist/runtime/lib.mjs                              6.50 kB │ gzip:   2.48 kB
+. postinstall: ℹ [ESM] dist/runtime/openai-responses.mjs                 6.13 kB │ gzip:   2.35 kB
+. postinstall: ℹ [ESM] dist/runtime/lib23.mjs                            5.96 kB │ gzip:   2.46 kB
+. postinstall: ℹ [ESM] dist/runtime/google-generative-ai.mjs             5.85 kB │ gzip:   2.10 kB
+. postinstall: ℹ [ESM] dist/runtime/azure-openai-responses.mjs           5.18 kB │ gzip:   2.12 kB
+. postinstall: ℹ [ESM] dist/runtime/pi-messages.mjs                      5.11 kB │ gzip:   2.08 kB
+. postinstall: ℹ [ESM] dist/runtime/json-parse.mjs                       4.73 kB │ gzip:   1.91 kB
+. postinstall: ℹ [ESM] dist/runtime/multipart-parser.mjs                 4.41 kB │ gzip:   1.86 kB
+. postinstall: ℹ [ESM] dist/runtime/lib15.mjs                            4.00 kB │ gzip:   1.84 kB
+. postinstall: ℹ [ESM] dist/runtime/lib22.mjs                            3.73 kB │ gzip:   1.43 kB
+. postinstall: ℹ [ESM] dist/runtime/lib29.mjs                            3.54 kB │ gzip:   1.69 kB
+. postinstall: ℹ [ESM] dist/runtime/lib4.mjs                             3.29 kB │ gzip:   1.23 kB
+. postinstall: ℹ [ESM] dist/runtime/lib21.mjs                            3.16 kB │ gzip:   1.29 kB
+. postinstall: ℹ [ESM] dist/runtime/lib10.mjs                            3.12 kB │ gzip:   1.20 kB
+. postinstall: ℹ [ESM] dist/runtime/lib5.mjs                             2.64 kB │ gzip:   1.09 kB
+. postinstall: ℹ [ESM] dist/runtime/event-stream.mjs                     1.73 kB │ gzip:   0.75 kB
+. postinstall: ℹ [ESM] dist/runtime/message-projections.mjs              1.68 kB │ gzip:   0.78 kB
+. postinstall: ℹ [ESM] dist/runtime/lib26.mjs                            1.64 kB │ gzip:   0.78 kB
+. postinstall: ℹ [ESM] dist/runtime/error-body.mjs                       1.39 kB │ gzip:   0.58 kB
+. postinstall: ℹ [ESM] dist/runtime/lib7.mjs                             1.37 kB │ gzip:   0.63 kB
+. postinstall: ℹ [ESM] dist/runtime/provider-retry.mjs                   1.37 kB │ gzip:   0.69 kB
+. postinstall: ℹ [ESM] dist/runtime/lib12.mjs                            1.12 kB │ gzip:   0.59 kB
+. postinstall: ℹ [ESM] dist/runtime/rolldown-runtime.mjs                 0.88 kB │ gzip:   0.52 kB
+. postinstall: ℹ [ESM] dist/runtime/lib11.mjs                            0.85 kB │ gzip:   0.50 kB
+. postinstall: ℹ [ESM] dist/runtime/lib19.mjs                            0.75 kB │ gzip:   0.48 kB
+. postinstall: ℹ [ESM] dist/runtime/provider-env.mjs                     0.46 kB │ gzip:   0.34 kB
+. postinstall: ℹ [ESM] dist/runtime/lib25.mjs                            0.45 kB │ gzip:   0.29 kB
+. postinstall: ℹ [ESM] dist/runtime/lib20.mjs                            0.41 kB │ gzip:   0.28 kB
+. postinstall: ℹ [ESM] dist/runtime/github-copilot-headers.mjs           0.41 kB │ gzip:   0.27 kB
+. postinstall: ℹ [ESM] dist/runtime/hash.mjs                             0.34 kB │ gzip:   0.22 kB
+. postinstall: ℹ [ESM] dist/runtime/node2.mjs                            0.22 kB │ gzip:   0.13 kB
+. postinstall: ℹ [ESM] dist/runtime/headers.mjs                          0.22 kB │ gzip:   0.16 kB
+. postinstall: ℹ [ESM] dist/runtime/lib24.mjs                            0.12 kB │ gzip:   0.12 kB
+. postinstall: ℹ [ESM] dist/runtime/openai-prompt-cache.mjs              0.12 kB │ gzip:   0.12 kB
+. postinstall: ℹ [ESM] dist/runtime/node.mjs                             0.07 kB │ gzip:   0.07 kB
+. postinstall: ℹ [ESM] dist/runtime/brand.mjs                            0.04 kB │ gzip:   0.06 kB
+. postinstall: ℹ [ESM] 122 files, total: 3.28 MB
+. postinstall: ✔ Build complete in 488ms
+. postinstall: $ tsdown
+. postinstall: ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+. postinstall: ℹ config file: /Users/roylin/code/aster/apps/studio/packages/remote-protocol/tsdown.config.ts 
+. postinstall: ℹ entry: src/index.ts, src/agent.ts, src/configuration.ts, src/failure.ts
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ Build start
+. postinstall: ℹ Cleaning 10 files
+. postinstall: ℹ dist/agent.js               29.35 kB │ gzip:  6.46 kB
+. postinstall: ℹ dist/index.js                7.12 kB │ gzip:  2.41 kB
+. postinstall: ℹ dist/failure.js              1.35 kB │ gzip:  0.61 kB
+. postinstall: ℹ dist/configuration.js        0.94 kB │ gzip:  0.43 kB
+. postinstall: ℹ dist/errors-DraEu1WZ.js      1.31 kB │ gzip:  0.70 kB
+. postinstall: ℹ dist/agent.d.ts            177.93 kB │ gzip: 10.91 kB
+. postinstall: ℹ dist/index.d.ts             17.06 kB │ gzip:  2.43 kB
+. postinstall: ℹ dist/failure.d.ts            3.82 kB │ gzip:  0.83 kB
+. postinstall: ℹ dist/configuration.d.ts      2.86 kB │ gzip:  0.70 kB
+. postinstall: ℹ dist/values-PwquYDbQ.d.ts    0.16 kB │ gzip:  0.14 kB
+. postinstall: ℹ 10 files, total: 241.89 kB
+. postinstall: ✔ Build complete in 755ms
+. postinstall: $ tsdown
+. postinstall: ℹ tsdown v0.22.14 powered by rolldown v1.2.6
+. postinstall: ℹ config file: /Users/roylin/code/aster/apps/studio/packages/remote-transport/tsdown.config.ts 
+. postinstall: ℹ entry: src/index.ts
+. postinstall: ℹ tsconfig: tsconfig.json
+. postinstall: ℹ Build start
+. postinstall: ℹ Cleaning 2 files
+. postinstall: ℹ dist/index.js    9.16 kB │ gzip: 2.81 kB
+. postinstall: ℹ dist/index.d.ts  3.27 kB │ gzip: 1.10 kB
+. postinstall: ℹ 2 files, total: 12.43 kB
+. postinstall: ✔ Build complete in 495ms
+. postinstall: Done
+Done in 20.4s using pnpm v12.6.0

@@ -1,0 +1,186 @@
+{
+  "data": {
+    "assignmentGeneration": 1,
+    "capabilitiesDigest": "sha256:7afcbf8fec0c71beab115dfb8cc5eb8db28555dd87aadbf94b54c29e2426e700",
+    "packageId": "aster/aster-office",
+    "plan": {
+      "packageLock": {
+        "host": {
+          "target": "darwin-arm64",
+          "useVersion": "0.3.4"
+        },
+        "packages": [
+          {
+            "catalog": {
+              "provenance": {
+                "catalogRecordDigest": "sha256:306cbd519df968b5296c06aaacf92a8be18f6e00477b2688ffdc6a2037da781d",
+                "registryName": "aster-office-qualification",
+                "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+                "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+                "rootVersion": 1,
+                "snapshotVersion": 9,
+                "targetsVersion": 9,
+                "timestampVersion": 9
+              },
+              "record": {
+                "archive": {
+                  "length": 8272636,
+                  "sha256": "sha256:a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838",
+                  "targetName": "extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64/oci-ghcr-v1/cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176/aster-office.aix"
+                },
+                "availability": {
+                  "state": "available"
+                },
+                "categories": [
+                  "operations"
+                ],
+                "channel": "stable",
+                "description": "Pinned native runtime assets for Aster desktop.",
+                "displayName": "aster-office",
+                "keywords": [
+                  "desktop",
+                  "runtime"
+                ],
+                "license": "MIT",
+                "package": {
+                  "expandedBytes": 19725333,
+                  "fileCount": 5,
+                  "manifestSha256": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d",
+                  "sha256": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff"
+                },
+                "packageId": "aster/aster-office",
+                "permissionCeiling": {
+                  "schema": "aster.use.plugin-permissions.v1",
+                  "surfaces": []
+                },
+                "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+                "publisher": "aster",
+                "repository": "https://github.com/aster-ai-lab/plugins",
+                "requiresUse": ">=0.3.0, <0.4.0",
+                "schema": "aster.use.plugin-catalog.v3",
+                "surfaces": [
+                  {
+                    "id": "runtime",
+                    "kind": "plugin",
+                    "optional": false
+                  }
+                ],
+                "target": "darwin-arm64",
+                "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613"
+              }
+            },
+            "dependencies": []
+          }
+        ],
+        "rootPackageId": "aster/aster-office",
+        "schema": "aster.use.plugin-package-lock.v1"
+      },
+      "plan": {
+        "action": "install",
+        "authority": {
+          "actor": "user",
+          "confirmationRequired": false,
+          "decision": "allow",
+          "policyDigest": "sha256:bdf616165055710443822f62e5daa6dbb7daaa76cafd466632b787cd88c82bc2"
+        },
+        "componentId": "use/aster/aster-office",
+        "createdAtMs": 1793673924821,
+        "expiresAtMs": 1793677524821,
+        "impact": {
+          "downloadBytes": 8272636,
+          "drainRequired": false,
+          "installedBytesAfter": 19725333,
+          "reclaimedBytes": 0,
+          "retainedData": false
+        },
+        "operationId": "install:package-graph:bf887174bb19d951d3c4756c510e94d90891e7b74883f63baa877f63191fc0c3",
+        "packageId": "aster/aster-office",
+        "packageLockDigest": "sha256:bf887174bb19d951d3c4756c510e94d90891e7b74883f63baa877f63191fc0c3",
+        "packages": [
+          {
+            "after": {
+              "permissions": {
+                "schema": "aster.use.plugin-permissions.v1",
+                "surfaces": []
+              },
+              "release": {
+                "channel": "stable",
+                "manifestSha256": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d",
+                "packageId": "aster/aster-office",
+                "packageSha256": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff",
+                "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+                "surfaces": [
+                  {
+                    "id": "runtime",
+                    "kind": "plugin",
+                    "optional": false
+                  }
+                ],
+                "target": "darwin-arm64",
+                "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613"
+              }
+            },
+            "change": "add",
+            "packageId": "aster/aster-office",
+            "role": "root",
+            "source": {
+              "archive": {
+                "length": 8272636,
+                "sha256": "sha256:a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838",
+                "targetName": "extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64/oci-ghcr-v1/cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176/aster-office.aix"
+              },
+              "kind": "registry",
+              "provenance": {
+                "catalogRecordDigest": "sha256:306cbd519df968b5296c06aaacf92a8be18f6e00477b2688ffdc6a2037da781d",
+                "registryName": "aster-office-qualification",
+                "registryUrl": "https://raw.githubusercontent.com/aster-ai-lab/plugins/main/registry/",
+                "rootSha256": "sha256:e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b",
+                "rootVersion": 1,
+                "snapshotVersion": 9,
+                "targetsVersion": 9,
+                "timestampVersion": 9
+              }
+            },
+            "surfaces": [
+              {
+                "afterDigest": "sha256:41cd201a8d7c1a8aa469a0c6a5a3899211e75acae2a2df3b21ac3c5d91ed5ab3",
+                "change": "add",
+                "surface": {
+                  "id": "runtime",
+                  "kind": "plugin"
+                }
+              }
+            ]
+          }
+        ],
+        "providers": [],
+        "schema": "aster.use.plugin-operation-plan.v4",
+        "scope": {
+          "id": "office-qualification",
+          "kind": "user"
+        },
+        "secretChanges": [],
+        "state": {
+          "capabilityGeneration": 0,
+          "stateRevision": 1
+        },
+        "workspaceImpacts": []
+      },
+      "planDigest": "sha256:89c9edb30dfb39f2360fa3fe7527c75355871a67c02fa9e2fd5b444b43883295"
+    },
+    "replayed": false,
+    "requestId": "manager:c111c039682e251049049e95797a14f9a0c1a735d572caa0583d5ba835957345",
+    "schema": "aster.use.plugin-host-plan-result.v1",
+    "scope": {
+      "authorityId": "user:office-qualification",
+      "fenceDigest": "sha256:ca77efcea9662c63ece2b19809d29816580a764bb9f1ec88331b350108888d0a",
+      "fenceGeneration": 1,
+      "hostId": "host:aster-use-standalone",
+      "schema": "aster.use.plugin-managed-scope.v2",
+      "scopeId": "office-qualification",
+      "scopeKind": "user"
+    }
+  },
+  "ok": true,
+  "schemaVersion": 1
+}

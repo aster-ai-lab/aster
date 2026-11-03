@@ -1,0 +1,89 @@
+{
+  "capturedAtUtc": "2026-11-01T21:27:06.109122+00:00",
+  "sourceSha256": {
+    "crates/use/Cargo.toml": "56e5b72a6d6202df0ff9f8ffa07e40e248521f23d11721beb7ca1d9df8efdd11",
+    "crates/use/extension/Cargo.toml": "f4bcdb11b2af7d85b94e21763c29d9f2affacaf7a2521f7f8105654c4c2a3222",
+    "crates/use/extension/src/lib.rs": "f6b448366637bf613e6c49a4d97ca27b574423783908b18eb77229cb3ee0a3b2",
+    "crates/use/extension/src/plugin_manifest_tests.rs": "66bbc4dbe5755b41b6d4b837bf3a2be3b39e483646210498377016ef65fcb5b5",
+    "crates/use/extension/src/remote_catalog_tests.rs": "77f2b9f629e9b63e90dfffa509dfe73289e7f85aab7330f04e926c07e0e4d03e",
+    "crates/use/extension/src/host_floor_tests.rs": "9f07db049a03eb242d0e27a587452e81c76f783554635c741e4ae7264b38f801"
+  },
+  "checks": [
+    {
+      "name": "sdk-rebuild",
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster-use",
+        "--bin",
+        "aster-use"
+      ],
+      "exitCode": 0,
+      "seconds": 49.073752667,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "sdk-native-startup",
+      "argv": [
+        "/Users/roylin/code/aster/target/debug/aster-use",
+        "--help"
+      ],
+      "exitCode": 0,
+      "seconds": 2.339157915999998,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "prepare-dependency-aix.py",
+      "argv": [
+        "python3",
+        "/Users/roylin/code/aster/.tmp/plugin-registry/prepare-dependency-aix.py"
+      ],
+      "exitCode": 0,
+      "seconds": 3.4390590000000003,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "prepare-ntn-aix.py",
+      "argv": [
+        "python3",
+        "/Users/roylin/code/aster/.tmp/plugin-registry/prepare-ntn-aix.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.49511429100000015,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "prepare-cua-aix.py",
+      "argv": [
+        "python3",
+        "/Users/roylin/code/aster/.tmp/plugin-registry/prepare-cua-aix.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.08268999999999949,
+      "sourcesUnchanged": true
+    },
+    {
+      "name": "sdk-host-floor-tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-use-extension",
+        "--lib",
+        "--",
+        "plugin_manifest_tests",
+        "host_floor_tests",
+        "remote::catalog_tests::later_patch_host_floor",
+        "remote::catalog_tests::incompatible_expired",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exitCode": 101,
+      "seconds": 70.277986584,
+      "sourcesUnchanged": true
+    }
+  ]
+}

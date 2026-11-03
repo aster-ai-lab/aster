@@ -1,0 +1,17 @@
+toolchain {
+ schema_version = 1
+ name = "uv"
+ spec = "github:astral-sh/uv"
+ version = "0.13.6"
+ executable = "uv"
+ platform = "x86_64-linux-gnu"
+ url = "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-unknown-linux-gnu.tar.gz"
+ length = 16799024
+ sha256 = "f29c3e94ffabd7e6f3ba521dba169a9b7ec12100bf3257087f0f24f6123f3645"
+ format = "tar.gz"
+ prefix = ""
+ bin_dirs = ["uv-x86_64-unknown-linux-gnu"]
+ executable_mode = "0755"
+ command "uv" { path = "uv-x86_64-unknown-linux-gnu/uv" }
+ command "uvx" { path = "uv-x86_64-unknown-linux-gnu/uvx" }
+}

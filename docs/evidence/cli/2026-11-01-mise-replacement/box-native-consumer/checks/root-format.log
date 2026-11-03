@@ -1,0 +1,103 @@
+Diff in /Users/roylin/code/aster/crates/code/core/src/llm/metering.rs:254:
+         self.validate()?;
+         let mut maximum = 0.0_f64;
+         for prices in std::iter::once(&self.prices).chain(
+[31m-            self.input_token_tiers.iter()
+(B[m[32m+            self.input_token_tiers
+(B[m[32m+                .iter()
+(B[m                 .filter(|tier| tier.min_input_tokens <= input)
+[31m-                .map(|tier| &tier.prices)
+(B[m[32m+                .map(|tier| &tier.prices),
+(B[m         ) {
+             let mut input_rate = 0.0_f64;
+             if input > 0 {
+Diff in /Users/roylin/code/aster/crates/code/core/src/llm/metering.rs:263:
+[31m-                for rate in [prices.input_per_million_tokens, prices.cache_read_per_million_tokens, prices.cache_write_per_million_tokens] {
+(B[m[31m-                    let Some(rate) = rate else { return Ok(None); };
+(B[m[32m+                for rate in [
+(B[m[32m+                    prices.input_per_million_tokens,
+(B[m[32m+                    prices.cache_read_per_million_tokens,
+(B[m[32m+                    prices.cache_write_per_million_tokens,
+(B[m[32m+                ] {
+(B[m[32m+                    let Some(rate) = rate else {
+(B[m[32m+                        return Ok(None);
+(B[m[32m+                    };
+(B[m                     input_rate = input_rate.max(rate);
+                 }
+             }
+Diff in /Users/roylin/code/aster/crates/code/core/src/llm/metering.rs:268:
+[31m-            let output_rate = if output == 0 { 0.0 } else {
+(B[m[31m-                let Some(rate) = prices.output_per_million_tokens else { return Ok(None); };
+(B[m[32m+            let output_rate = if output == 0 {
+(B[m[32m+                0.0
+(B[m[32m+            } else {
+(B[m[32m+                let Some(rate) = prices.output_per_million_tokens else {
+(B[m[32m+                    return Ok(None);
+(B[m[32m+                };
+(B[m                 rate
+             };
+             let units = (input as f64 * input_rate + output as f64 * output_rate).ceil();
+Diff in /Users/roylin/code/aster/crates/code/core/src/llm/metering.rs:273:
+[31m-            ensure!(units.is_finite() && units < u64::MAX as f64, "cost bound overflow");
+(B[m[32m+            ensure!(
+(B[m[32m+                units.is_finite() && units < u64::MAX as f64,
+(B[m[32m+                "cost bound overflow"
+(B[m[32m+            );
+(B[m             maximum = maximum.max(units);
+         }
+[31m-        Ok(Some(CostBound { currency: self.currency, micro_units: maximum as u64 }))
+(B[m[32m+        Ok(Some(CostBound {
+(B[m[32m+            currency: self.currency,
+(B[m[32m+            micro_units: maximum as u64,
+(B[m[32m+        }))
+(B[m     }
+ }
+ 
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/providers.rs:560:
+         if patch.metadata.contains_key("chat") {
+             return Err(Fail::Bad("bad_request"));
+         }
+[31m-        if ["maxInputTokens", "maxOutputTokens", "contextWindow"].iter().any(|key| {
+(B[m[31m-            patch.metadata.get(*key).is_some_and(|value| !value.is_null() && !value.as_u64().is_some_and(|value| value > 0))
+(B[m[31m-        }) {
+(B[m[32m+        if ["maxInputTokens", "maxOutputTokens", "contextWindow"]
+(B[m[32m+            .iter()
+(B[m[32m+            .any(|key| {
+(B[m[32m+                patch.metadata.get(*key).is_some_and(|value| {
+(B[m[32m+                    !value.is_null() && !value.as_u64().is_some_and(|value| value > 0)
+(B[m[32m+                })
+(B[m[32m+            })
+(B[m[32m+        {
+(B[m             return Err(Fail::Bad("invalid_model_token_limit"));
+         }
+         if patch.metadata.get("apiModelId").is_some_and(|value| {
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_control.rs:175:
+                 pricing,
+                 reference_price: false,
+                 capabilities: ModelCapabilities {
+[31m-                    max_input_tokens: saved.models.iter().find(|model| model.id == model_id)
+(B[m[32m+                    max_input_tokens: saved
+(B[m[32m+                        .models
+(B[m[32m+                        .iter()
+(B[m[32m+                        .find(|model| model.id == model_id)
+(B[m                         .and_then(model_input_limit),
+                     ..Default::default()
+                 },
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/providers_control.rs:356:
+ }
+ 
+ fn model_input_limit(model: &SavedModel) -> Option<u64> {
+[31m-    ["maxInputTokens", "contextWindow"].iter()
+(B[m[31m-        .filter_map(|key| model.metadata.get(*key).and_then(Value::as_u64).filter(|value| *value > 0))
+(B[m[32m+    ["maxInputTokens", "contextWindow"]
+(B[m[32m+        .iter()
+(B[m[32m+        .filter_map(|key| {
+(B[m[32m+            model
+(B[m[32m+                .metadata
+(B[m[32m+                .get(*key)
+(B[m[32m+                .and_then(Value::as_u64)
+(B[m[32m+                .filter(|value| *value > 0)
+(B[m[32m+        })
+(B[m         .min()
+ }
+ 

@@ -1,0 +1,16 @@
+toolchain {
+ schema_version = 1
+ name = "bun"
+ spec = "github:oven-sh/bun"
+ version = "1.4.4"
+ executable = "bun"
+ platform = "aarch64-linux-gnu"
+ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-aarch64.zip"
+ length = 51644673
+ sha256 = "baa6bb36f51d6e58561e02bbea825038a9df454f673d6d776e8bbf86f8c7850e"
+ format = "zip"
+ prefix = ""
+ bin_dirs = ["bun-linux-aarch64"]
+ executable_mode = "0755"
+ command "bun" { path = "bun-linux-aarch64/bun" }
+}

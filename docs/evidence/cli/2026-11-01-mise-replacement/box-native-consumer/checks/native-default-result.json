@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/box-plugin-owner/studio-native-tests",
+    "capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable",
+    "--ignored",
+    "--exact",
+    "--nocapture"
+  ],
+  "exitCode": 0,
+  "seconds": 5.965691415942274,
+  "runnerSha256": "a6324a687934d1398cbfb09c36d263eb236b36900f3613b0353d8c9d4289e0f2",
+  "runnerUnchanged": true
+}

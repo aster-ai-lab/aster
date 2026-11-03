@@ -1,0 +1,117 @@
+[
+  {
+    "target": "darwin-arm64",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+      "--no-auto-update",
+      "use",
+      "registry",
+      "package",
+      "prepare",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-darwin-arm64.aix",
+      "--repository",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository",
+      "--domain",
+      "productivity",
+      "--output",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-darwin-arm64.oci.json",
+      "--json"
+    ],
+    "exitCode": 1,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"message\": \"Failed to read extension manifest '/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository/plugins/productivity/aster/ntn/aster-use-extension.acl': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+    "stderr": "",
+    "deadlineSeconds": 60
+  },
+  {
+    "target": "darwin-x64",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+      "--no-auto-update",
+      "use",
+      "registry",
+      "package",
+      "prepare",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-darwin-x64.aix",
+      "--repository",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository",
+      "--domain",
+      "productivity",
+      "--output",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-darwin-x64.oci.json",
+      "--json"
+    ],
+    "exitCode": 1,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"message\": \"Failed to read extension manifest '/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository/plugins/productivity/aster/ntn/aster-use-extension.acl': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+    "stderr": "",
+    "deadlineSeconds": 60
+  },
+  {
+    "target": "linux-arm64",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+      "--no-auto-update",
+      "use",
+      "registry",
+      "package",
+      "prepare",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-linux-arm64.aix",
+      "--repository",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository",
+      "--domain",
+      "productivity",
+      "--output",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-linux-arm64.oci.json",
+      "--json"
+    ],
+    "exitCode": 1,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"message\": \"Failed to read extension manifest '/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository/plugins/productivity/aster/ntn/aster-use-extension.acl': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+    "stderr": "",
+    "deadlineSeconds": 60
+  },
+  {
+    "target": "linux-x64",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+      "--no-auto-update",
+      "use",
+      "registry",
+      "package",
+      "prepare",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-linux-x64.aix",
+      "--repository",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository",
+      "--domain",
+      "productivity",
+      "--output",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-linux-x64.oci.json",
+      "--json"
+    ],
+    "exitCode": 1,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"message\": \"Failed to read extension manifest '/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository/plugins/productivity/aster/ntn/aster-use-extension.acl': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+    "stderr": "",
+    "deadlineSeconds": 60
+  },
+  {
+    "target": "windows-x64",
+    "argv": [
+      "/Users/roylin/code/aster/.tmp/plugin-registry/current-plugin-packages-v2/bin/aster",
+      "--no-auto-update",
+      "use",
+      "registry",
+      "package",
+      "prepare",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-windows-x64.aix",
+      "--repository",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository",
+      "--domain",
+      "productivity",
+      "--output",
+      "/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/artifacts/ntn-0.23.25-windows-x64.oci.json",
+      "--json"
+    ],
+    "exitCode": 1,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"message\": \"Failed to read extension manifest '/Users/roylin/code/aster/.tmp/plugin-registry/ntn-aix-candidate-v2/repository/plugins/productivity/aster/ntn/aster-use-extension.acl': No such file or directory (os error 2)\",\n    \"details\": {}\n  }\n}\n",
+    "stderr": "",
+    "deadlineSeconds": 60
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "at": 1793591805.261775,
+  "source_sha256": "49c4fb92e98a75a35b1842f079534381c431804494c406f10864bc9cba775bf7",
+  "reason": "Before first CLI compile/execution, replace the unrelated fixture declaration jq with the actually admitted catalog identity gh. No frozen reference input changed.",
+  "pipeline_commands": [
+    {
+      "name": "tool-clippy",
+      "status": "running",
+      "exit": null
+    }
+  ]
+}

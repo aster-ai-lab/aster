@@ -1,0 +1,66 @@
+{
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "bin": {
+    "ntn": "bin/ntn"
+  },
+  "cpu": [
+    "arm64",
+    "x64"
+  ],
+  "dist": {
+    "shasum": "8bcfb846f1e308a25d1f4d3e4cea3946111a0269",
+    "tarball": "https://registry.npmjs.org/ntn/-/ntn-0.23.25.tgz",
+    "fileCount": 10,
+    "integrity": "sha512-eUgMS0qEvLuXcAfrmi+YDXsTO+m9R27r/C0wJeyxYdBnFJWjqbVjuXP9rMgEhIFu6gAQL5f9JfqyelwzhNeh/g==",
+    "signatures": [
+      {
+        "sig": "MEQCIEKDQMYDll41bmuPyyR5QBV/H5djs5bDVKoptRa8JTg7AiB5ThNgAP/uWzIl8prAB9EGMpmCH4Bcp3TEIrVfR78b3Q==",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      },
+      {
+        "sig": "MEUCIGWqngJ984JM3o3ij6e1dDG8KQEJpaN3KrOQv9r54z7UAiEA9NG7wjrC4IA+1IUiutUr1idQA5ckQ88gEeyf1bPgWlg=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "unpackedSize": 75186718
+  },
+  "name": "ntn",
+  "gitHead": "831fb3ddcaea7fc27bced2011ec9c75069691880",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "node install.cjs install",
+    "preuninstall": "node install.cjs uninstall"
+  },
+  "_npmUser": {
+    "name": "GitHub Actions",
+    "email": "npm-oidc-no-reply@github.com",
+    "trustedPublisher": {
+      "id": "github",
+      "oidcConfigId": "eb2aa414-c093-468d-a48e-9355a555c3a9"
+    }
+  },
+  "_npmVersion": "11.21.1",
+  "description": "Notion CLI",
+  "directories": {},
+  "maintainers": [
+    {
+      "name": "jclem-ntn",
+      "email": "jclem@makenotion.com"
+    }
+  ],
+  "_nodeVersion": "25.9.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "_hasShrinkwrap": false,
+  "_npmOperationalInternal": {
+    "tmp": "tmp/ntn_0.23.25_1792627683521_0.15799331446246723",
+    "host": "s3://npm-registry-packages-npm-production"
+  },
+  "_id": "ntn@0.23.25",
+  "version": "0.23.25"
+}

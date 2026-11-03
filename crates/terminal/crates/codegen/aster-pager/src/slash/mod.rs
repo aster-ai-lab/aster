@@ -484,16 +484,19 @@ impl SlashController {
             .model_provider_tab
             .clone()
             .filter(|name| tabs.iter().any(|tab| tab == name))
-            .unwrap_or_else(|| {
+            .or_else(|| {
                 let index = commands::model::initial_provider_tab(models, &tabs);
-                tabs[index].clone()
+                tabs.get(index).cloned()
             });
+        let Some(active_name) = active_name else {
+            self.clear_model_provider_tabs();
+            return;
+        };
         let active = tabs.iter().position(|tab| tab == &active_name).unwrap_or(0);
-        self.model_provider_tab = Some(tabs[active].clone());
+        self.model_provider_tab = Some(active_name.clone());
         self.model_tab_labels = tabs;
         self.model_tab_active = active;
-        let provider = self.model_tab_labels[active].clone();
-        *items = commands::model::filter_model_items_for_provider(models, items, &provider, "");
+        *items = commands::model::filter_model_items_for_provider(models, items, &active_name, "");
     }
 
     /// Replace the MRU store with a shared one.

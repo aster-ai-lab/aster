@@ -1,0 +1,20 @@
+{
+  "observedAtUnixSeconds": 1793643046.177637,
+  "files": [
+    {
+      "path": "target/debug/aster",
+      "bytes": 902579992,
+      "sha256": "4c20889714efd1a979398e31dddf3f93d46ea3dfa3a282e30ff1852d0f47917e"
+    },
+    {
+      "path": "target/debug/aster-acp",
+      "bytes": 357909832,
+      "sha256": "d8391da5264d222689b3943931d4860795de838c051c7688c56c250cb7326e43"
+    },
+    {
+      "path": "target/debug/deps/env_manager-1f7217e7bdec0bca",
+      "bytes": 13331648,
+      "sha256": "896ac504d4d990655a47f48c7adaab620cc6c74ecb34491df74c397200958f3a"
+    }
+  ]
+}

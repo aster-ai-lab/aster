@@ -1,0 +1,5 @@
+{
+  "exitCode": 0,
+  "stdout": "{\"name\":\"plugins/operations/aster/aster-document\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-office\",\"visibility\":\"private\"}\n{\"name\":\"plugins/operations/aster/aster-sandbox\",\"visibility\":\"private\"}\n",
+  "stderr": ""
+}

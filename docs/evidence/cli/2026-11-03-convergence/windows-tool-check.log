@@ -1,0 +1,21 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+    Checking cfg-if v1.0.5
+   Compiling version_check v0.9.5
+    Checking typenum v1.20.1
+    Checking subtle v2.6.1
+    Checking const-oid v0.9.6
+   Compiling serde_core v1.0.229
+    Checking memchr v2.8.3
+   Compiling serde v1.0.229
+    Checking itoa v1.0.18
+    Checking smallvec v1.16.4
+    Checking cpufeatures v0.2.17
+    Checking base64ct v1.6.0
+    Checking bytes v1.12.1
+    Checking windows-link v0.2.1
+   Compiling zmij v1.0.23

@@ -287,7 +287,9 @@ impl CommandRegistry {
         {
             return false;
         }
-        let cmd = &self.commands[index];
+        let Some(cmd) = self.commands.get(index) else {
+            return false;
+        };
         self.backend_unavailable
             .contains(&cmd.name().to_lowercase())
             || cmd

@@ -1,0 +1,15 @@
+
+running 1 test
+
+thread 'capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable' (73061906) panicked at apps/studio/src-tauri/src/capabilities_toolchain_tests.rs:550:54:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable ... FAILED
+
+failures:
+
+failures:
+    capabilities::toolchain::tests::actual_dependency_aix_candidates_are_queryable_executable_and_removable
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1583 filtered out; finished in 20.53s
+

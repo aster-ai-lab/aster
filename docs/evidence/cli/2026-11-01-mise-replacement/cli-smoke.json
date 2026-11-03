@@ -1,0 +1,68 @@
+{
+  "result": "passed",
+  "binary": "/Users/roylin/code/aster/target/debug/aster",
+  "version": "aster 0.1.6 (022491d15d17)",
+  "host": "macOS arm64",
+  "checks": [
+    {
+      "check": "set user variable",
+      "exit": 0,
+      "stdout": "Set ASTER_USER_MARKER in /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-mise-replacement-smoke-740a409y/aster-home/env.acl.\n",
+      "stderr": ""
+    },
+    {
+      "check": "set ancestor variable",
+      "exit": 0,
+      "stdout": "Set ASTER_PROJECT_MARKER in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-mise-replacement-smoke-740a409y/项目 with spaces/.aster/env.acl.\n",
+      "stderr": ""
+    },
+    {
+      "check": "inherit user and ancestor values",
+      "exit": 0,
+      "stdout": "{\n  \"tools\": {},\n  \"vars\": {\n    \"ASTER_PROJECT_MARKER\": \"root\",\n    \"ASTER_USER_MARKER\": \"user\"\n  },\n  \"project\": \"/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-mise-replacement-smoke-740a409y/项目 with spaces/nested/.aster/env.acl\",\n  \"user\": \"/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-mise-replacement-smoke-740a409y/aster-home/env.acl\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "check": "execute inherited environment",
+      "exit": 0,
+      "stdout": "user:root",
+      "stderr": ""
+    },
+    {
+      "check": "install failure preserves declaration without panic",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Error: tool runtime is missing: uv\n"
+    },
+    {
+      "check": "invalid variable preserves declaration",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Error: invalid env acl: invalid environment variable name: 1INVALID\n"
+    },
+    {
+      "check": "unknown shell refuses without stdout",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Error: unsupported activation shell: unknown-shell; expected sh, bash, zsh, fish, or PowerShell\n"
+    },
+    {
+      "check": "set literal shell metacharacters",
+      "exit": 0,
+      "stdout": "Set ASTER_LITERAL in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-mise-replacement-smoke-740a409y/项目 with spaces/.aster/env.acl.\n",
+      "stderr": ""
+    },
+    {
+      "check": "activate quoted environment",
+      "exit": 0,
+      "stdout": "export PATH='/usr/bin:/bin'\nexport ASTER_LITERAL='a'\"'\"'b\\c\n$HOME $(printf must-stay-literal)'\nexport ASTER_PROJECT_MARKER='root'\nexport ASTER_USER_MARKER='user'\n",
+      "stderr": ""
+    },
+    {
+      "check": "activation value remains literal in real shell",
+      "exit": 0,
+      "stdout": "a'b\\c\n$HOME $(printf must-stay-literal)",
+      "stderr": ""
+    }
+  ]
+}

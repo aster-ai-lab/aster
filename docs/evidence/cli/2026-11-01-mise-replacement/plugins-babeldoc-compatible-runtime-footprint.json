@@ -1,0 +1,43 @@
+{
+  "capturedAtUtc": "2026-11-01T22:03:21.874823+00:00",
+  "platform": "darwin-arm64",
+  "python": {
+    "key": "cpython-3.12.14-macos-aarch64-none",
+    "version": "3.12.14",
+    "version_parts": {
+      "major": 3,
+      "minor": 12,
+      "patch": 14
+    },
+    "path": null,
+    "symlink": null,
+    "url": "https://releases.astral.sh/github/python-build-standalone/releases/download/20260901/cpython-3.12.14%2B20260901-aarch64-apple-darwin-install_only_stripped.tar.gz",
+    "os": "macos",
+    "variant": "default",
+    "implementation": "cpython",
+    "arch": "aarch64",
+    "libc": "none"
+  },
+  "files": 15270,
+  "symlinks": 9,
+  "treeEntries": 16989,
+  "expandedFileBytes": 786780922,
+  "archiveBytes": 294583079,
+  "archiveSha256": "57e2fa8525cc34f3c139b029b8dc3d622b873afb8e5194d159a89200bb5a1e72",
+  "requirementsSha256": "6cd27ee08f059342c6ab8edab200d5d98b6b9410d0ff958deeb21b2b13cde5ab",
+  "includesOwnedPythonRuntime": true,
+  "relocatedInterpreter": {
+    "prefix": "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-compatible-v2/owned-runtime/python",
+    "version": "3.12.14 (main, Sep  1 2026, 14:09:38) [Clang 22.1.3 ]"
+  },
+  "interpreterExecuted": true,
+  "babeldocCommandExecuted": true,
+  "versionCommand": [
+    "/Users/roylin/code/aster/.tmp/plugin-registry/babeldoc-compatible-v2/owned-runtime/bin/babeldoc-stream",
+    "--version"
+  ],
+  "versionOutput": "babeldoc-stream 0.6.4.post4",
+  "translationAccepted": false,
+  "aixBuilt": false,
+  "published": false
+}

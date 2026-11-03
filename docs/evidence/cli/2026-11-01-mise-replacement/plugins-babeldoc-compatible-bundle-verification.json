@@ -1,0 +1,23 @@
+{
+  "archiveSourceTreeMatches": true,
+  "regularFiles": 15270,
+  "symlinks": 9,
+  "treeEntries": 16989,
+  "expandedFileBytes": 786780922,
+  "dependencyChanges": {
+    "bitstring": {
+      "before": "bitstring==5.0.0",
+      "after": "bitstring==4.4.0"
+    },
+    "tibs": {
+      "before": "tibs==2.0.2",
+      "after": "tibs==0.5.7"
+    },
+    "bitarray": {
+      "before": null,
+      "after": "bitarray==3.12.3"
+    }
+  },
+  "allOtherResolvedVersionsUnchanged": true,
+  "aixBuilt": false
+}

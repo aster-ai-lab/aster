@@ -1,0 +1,157 @@
+{
+  "scope": "Requested Studio chrome, model picker, plugin installation and obsolete Wiki selector removal",
+  "workspace_head": "ebd364c740ae35343b3f421211798839ea2e303c",
+  "studio_head": "42d3a42d42693c889965ccbacd59c3afbacb1a25",
+  "shared_dirty_checkout": true,
+  "checks": {
+    "renderer": {
+      "exit_code": 1,
+      "passed": 304,
+      "failed": 2,
+      "files": 14,
+      "failed_tests": [
+        "TabRouter removes hidden routes from focus and the accessibility tree without unmounting them",
+        "TabRouter shows accessible loading feedback for a slow retarget and removes it at resolution"
+      ]
+    },
+    "before_change_tabrouter": {
+      "exit_code": 1,
+      "passed": 9,
+      "failed": 2,
+      "same_failure_names": true
+    },
+    "native": {
+      "exit_code": 0,
+      "passed": 22,
+      "failed": 0,
+      "features": [
+        "tenant-aster"
+      ],
+      "target": "aarch64-apple-darwin"
+    },
+    "clippy_all_targets": {
+      "exit_code": 0,
+      "existing_warnings_retained": true
+    },
+    "build_native": {
+      "exit_code": 0,
+      "profile": "debug"
+    },
+    "build_renderer": {
+      "exit_code": 0,
+      "seconds": 3.17,
+      "log": "renderer-delivery-build.log"
+    },
+    "oxlint": {
+      "exit_code": 0
+    },
+    "eslint": {
+      "exit_code": 0,
+      "warnings": 15
+    },
+    "i18n": {
+      "exit_code": 0,
+      "translations_checked": 25532
+    },
+    "format_changed_frontend": {
+      "exit_code": 0,
+      "files": 31
+    },
+    "cargo_fmt_all": {
+      "exit_code": 1,
+      "outside_changed_sources": [
+        "apps/studio/native/data-sqlite/src/main.rs"
+      ]
+    },
+    "global_web_typecheck": {
+      "exit_code": 2,
+      "errors": 285,
+      "errors_in_changed_sources": 0,
+      "fixture_type_errors_corrected": 4,
+      "log": "typecheck-delivery-web.log"
+    },
+    "gui": {
+      "completed": false,
+      "errors": [
+        "Native apps: Sky Computer Use native pipe startup failed",
+        "Browsers: The browser access host is unavailable"
+      ]
+    },
+    "published": false,
+    "user_app_restarted": false,
+    "sidebar_followup": {
+      "before_failed": 1,
+      "before_skipped": 105,
+      "after_passed": 106,
+      "after_failed": 0,
+      "lint_exit": 0,
+      "eslint_exit": 0,
+      "not_additive_to_combined_test_count": true
+    },
+    "actual_office": {
+      "isolated_profile": true,
+      "desktop_pin_exact": true,
+      "trusted_registry_install_ready": true,
+      "actual_commands_passed": 8,
+      "ooxml_archives_created_and_reopened": 3,
+      "persisted_edit_and_readback_verified": true,
+      "user_profile_modified": false
+    }
+  },
+  "source_sha256": {
+    "DESIGN.md": "c67e72986b8c789d6438089e356ee0630d116be18db32781215089ab2244f3e9",
+    "apps/studio/src/renderer/components/layout/trafficLights.ts": "e8e34586fffea9ee61a0da314dd3094bebd999e07dc46d54696e30f8ad0701c1",
+    "apps/studio/src/renderer/components/layout/AppShell.tsx": "1a6f581d4be9ec2c93bd8d0675a1c3ede6c8c96367c21c65c2cc0a84a9092c22",
+    "apps/studio/src/renderer/components/layout/TabRouter.tsx": "7d52b80ca95f3679ae39e67f5a74ab13e49a1b410bdfac6b65ef0c1b6e791590",
+    "apps/studio/src/renderer/components/layout/FirstRunRuntimeComponentsDialog.tsx": "ce67a025a28013a1775915c2c86a5594b35fed3a19af52208c27cd2263d2d2b3",
+    "apps/studio/src/renderer/components/layout/__tests__/AppShell.test.tsx": "c468aa2f06d0c5400bbdeedbee6ecef9fce9e2c5209f7ed3bf30c571b2a73d60",
+    "apps/studio/src/renderer/components/layout/__tests__/FirstRunRuntimeComponentsDialog.test.tsx": "a04b1125ad991ba4fc9f7868648d155ffc51cd8226d0d6e9187c3e9bf0a2d86c",
+    "apps/studio/src/renderer/components/command/__tests__/CommandProvider.test.tsx": "cf7bb800df41b9e22bce386d76f97a80729e61956ba23de8846f8e6552a6a62c",
+    "apps/studio/src/renderer/data/studioLocalProviderPlane.ts": "0232564491faf3e71bbb03292267f63271fd8bcb8e9e0927b1d6f7aa883a00c7",
+    "apps/studio/src/renderer/data/__tests__/studioLocalProviderPlane.test.ts": "166efa7dc25065844da8e7cea0975d0311941c9fc2ea8a83f66e4ef1acd6ac29",
+    "apps/studio/src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx": "0e9cf78b953603abaa7fa1bc63ad14a391ea5f5421b5e56c5165718b6023caf3",
+    "apps/studio/src/renderer/pages/agents/WorkbenchModelPicker.tsx": "b54ab27816a90912cdf05722ccdb4b016c14f96b4b63b64876e27101b51228db",
+    "apps/studio/src/renderer/pages/agents/WorkbenchTaskWorkspace.tsx": "0b0d8be4707fb9c3473524663306678cb3ad3cf756169351899911ecdd298c45",
+    "apps/studio/src/renderer/pages/agents/WorkbenchHome.tsx": "ad5842d8d71fd030677d6baa46fedc51ff76cba0e47efd85b4920047763f6a66",
+    "apps/studio/src/renderer/pages/agents/WorkspaceWikiCatalog.tsx": "f63f779e2a42019bc147eef0f8b9d030c036ecec56c241bac896296b16b55f75",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchHomeComposerExtras.test.tsx": "e9c488a6de9fbcbeade57fa3c6fb1ac4c8d5a665105a6b23f52481d6e05cce52",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchModelPicker.popup.test.tsx": "e29a0e6660d8da391d66330064aa63edd4d31b3c4640fe7b82b9b673d48607f6",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchTaskWorkspace.test.tsx": "c21eaaeb5d94a7f724d79878218fba5b43fe4ffbc274b389dd73ccc4dc2787aa",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchHome.test.tsx": "34cfa572655fc532503ef9d52a144b62e41dda27fcfe4326bd52cb448fc9c952",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkspaceWikiCatalog.test.tsx": "d6613b5ceca78ae138ade65dbacf6075b693ff042671bf4c6ac15e2370b4f6f9",
+    "apps/studio/src/renderer/pages/plugins/PluginStorePage.tsx": "1ada1ce4f775db2cb7cfb6e9b1558f86468ac6751a3d5b60ee5a70433d453ab2",
+    "apps/studio/src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx": "7488308861c0a43100a8fd33983fce3f64b02acf67042dbd0c8a0ea6f2519591",
+    "apps/studio/src/renderer/services/workspaceWikiSurfaceService.ts": "e1cc4ed9ff9e2dfca11aed97251be5101fab629b6de456060e64d9f48d4d1873",
+    "apps/studio/src/renderer/services/__tests__/workspaceWikiSurfaceService.test.ts": "47266543e978ab91b83b3274155b47f5630c92959f5cf049291ea347c2600d9d",
+    "apps/studio/src/renderer/windows/main/MainApp.tsx": "5cde115dcd6a3f475c174c745d7fba65b5d2d7f06ae2a774947ed5063fa250e5",
+    "apps/studio/src/renderer/windows/subWindow/SubWindowApp.tsx": "a19f3b2e83bdd6a7a562f7720d525ef4660b921ea2c2a0a2b23c562e5baed378",
+    "apps/studio/src/renderer/windows/subWindow/SubWindowAppShell.tsx": "22c24bf91dc0e313ec35cf9955e03174c9f9ca548f05070dd3ebb6a1453170d3",
+    "apps/studio/src/renderer/routes/__root.tsx": "eda2a26d1454a1c8d54313a079e494357f85854c5ada7478bb1999126e362a90",
+    "apps/studio/src/shared/ipc/schemas/runtimeComponents.ts": "7ea2d0dfd97629cb7c59f634e143da8dc356b1905d8da252cea0df60bdab33a4",
+    "apps/studio/tests/e2e/workbench-office/navigation-performance.spec.ts": "2103a10cb3f0793fb68c35585d5808310f2678139db216f2446021ed6c926094",
+    "apps/studio/src/renderer/pages/agents/__tests__/WorkbenchModelPicker.test.ts": "e77ad1237c3ab3997124c1995206d0481a03ab7967440dae59e82fd582cd0b73",
+    "apps/studio/tests/e2e/workbench-office/workbench-ui.spec.ts": "e941edc7c55627748ae8a15770f0d0181dc88de8c99b3788f65c5deb358355f5",
+    "apps/studio/src-tauri/src/lib.rs": "b5718b4d178f080c08e6a51da333aaddb6c2d4ada3aa1b016175945a910113e9",
+    "apps/studio/src-tauri/src/providers.rs": "ba228e71f6ac7fd9d1aeeb087f4cc4cc19d6893e2ff67e3242db03261a889491",
+    "apps/studio/src-tauri/src/providers_codex_inventory_tests.rs": "5c72ea26d94afd9b165beb040400d04f5a485f94bd006324b5e905b281bc7066",
+    "apps/studio/src-tauri/src/capabilities_registry.rs": "25ed58bdc12b6f53b13d7206b0cd9b57dcde4fc4d7a03f3ac199c3e860cfbc14",
+    "apps/studio/src-tauri/src/capabilities_registry_tests.rs": "525374745f237ebc6cef830aec355cf458325b5ef26743b7a9b248326892702d",
+    "apps/studio/src-tauri/src/traffic_lights_tests.rs": "9520784370fe83284172ed2d7e96a49c3d081475a3e49f7c7db4053e02e7d555",
+    "apps/studio/src-tauri/src/runtime_components.rs": "27ae5759985973bab9babc609ed7e42e60b435c4b137ce80b5ca6a6d4d6004e6",
+    "apps/studio/src-tauri/src/runtime_components_tests.rs": "0726b45749fe4314e1863635a7c5793af0fb957d689191700850795f53c4c376",
+    "apps/studio/src-tauri/src/runtime_components_cache_tests.rs": "7f516382f6772c9eafb0cbc7ff163d8a808392d9597c5418a30f05ef6fb19835",
+    "apps/studio/src-tauri/permissions/main-traffic-lights.toml": "d4e84efa8b7084baddffb57da2b58a0c1dea2d7e667d3d0c2b7998ebf5f75002",
+    "apps/studio/src-tauri/capabilities/default.json": "75a4d5246eaf550195656c2202511ab9079e6e6f09285735c48b2d09d1d86066",
+    "apps/studio/src-tauri/capabilities/renderer.json": "b7db804980e3865bea40873b43a11cf53fdd783458ce170171b3db4d72db3ac8",
+    "apps/studio/src/renderer/i18n/locales/en-us.json": "f58f87acac3ae4abe297d7f27cf57e44a72ccd2f076ca9436f8e783fccfe69f4",
+    "apps/studio/src/renderer/i18n/locales/zh-cn.json": "d6adeb89e85cd03691052e4c29fb31100f98b17c3c924b99020a0519d41f8901"
+  },
+  "deleted_sources": [
+    "apps/studio/src/renderer/components/devtools/DevPerformancePanel.tsx",
+    "apps/studio/src/renderer/components/devtools/DevPageProfiler.tsx",
+    "apps/studio/src/renderer/components/devtools/__tests__/DevPerformancePanel.test.tsx",
+    "apps/studio/src/renderer/services/pagePerformance.ts",
+    "apps/studio/src/renderer/services/__tests__/pagePerformance.test.ts",
+    "apps/studio/src/renderer/pages/agents/workspaceWikiCatalog.css"
+  ]
+}

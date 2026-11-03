@@ -1,0 +1,1005 @@
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "package_tests::admitted_package_fixture_contains_all_six_surface_kinds", "--nocapture"]}
+
+running 1 test
+
+thread 'package_tests::admitted_package_fixture_contains_all_six_surface_kinds' (62004996) panicked at crates/use/extension/src/package_tests.rs:337:52:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test package_tests::admitted_package_fixture_contains_all_six_surface_kinds ... FAILED
+
+failures:
+
+failures:
+    package_tests::admitted_package_fixture_contains_all_six_surface_kinds
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "package_tests::admitted_package_fixture_contains_all_six_surface_kinds", "exit_code": 101, "elapsed_seconds": 0.008}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed", "--nocapture"]}
+
+running 1 test
+
+thread 'package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed' (62005019) panicked at crates/use/extension/src/package_tests.rs:278:52:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d, concepts 4, files 7, bytes 2053; observed digest sha256:e37c0559f5c7838275dcc76644f87414160cb82f66e8b8fca6d7f2bc9bd3cdcd, concepts 4, files 7, bytes 2055.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed ... FAILED
+
+failures:
+
+failures:
+    package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "package_tests::complete_plugin_v3_okf_package_fixture_is_valid_and_content_addressed", "exit_code": 101, "elapsed_seconds": 0.007}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds", "--nocapture"]}
+
+running 1 test
+
+thread 'package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds' (62005027) panicked at crates/use/extension/src/package_tests.rs:236:51:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:bd85b0b63adb32bdf616384a619286af4c32401542655dd09e00450902ab478d, concepts 4, files 7, bytes 2053; observed digest sha256:e37c0559f5c7838275dcc76644f87414160cb82f66e8b8fca6d7f2bc9bd3cdcd, concepts 4, files 7, bytes 2055.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds ... FAILED
+
+failures:
+
+failures:
+    package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "package_tests::okf_package_validation_rechecks_exact_bundle_bytes_and_bounds", "exit_code": 101, "elapsed_seconds": 0.009}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed", "--nocapture"]}
+
+running 1 test
+
+thread 'package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed' (62005035) panicked at crates/use/extension/src/package_tests.rs:471:5:
+assertion `left == right` failed
+  left: "sha256:5eb64476fea4393e314173043f395cf9f5159e5b845dcac1d088980afbca4f67"
+ right: "sha256:9d62c4d2f9ee09a587d9e053fc44ae87134a032471b87a1ce5f149f3b3126987"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed ... FAILED
+
+failures:
+
+failures:
+    package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "package_tests::complete_plugin_v3_package_fixture_is_valid_and_content_addressed", "exit_code": 101, "elapsed_seconds": 0.008}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state' (62005039) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_generations::lifecycle_candidate_source_drift_leaves_no_retained_state", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed' (62005043) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_generations::lifecycle_moved_retained_receipt_fails_closed", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded' (62005050) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:161:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_generations::lifecycle_retained_generation_count_is_bounded", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed' (62005054) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_generations::lifecycle_retained_receipt_directory_link_fails_closed", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed' (62005058) panicked at crates/use/extension/src/registry_tests/lifecycle_generations.rs:21:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_generations::lifecycle_tampered_retained_receipt_fails_closed", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it' (62005062) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:88:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_staging::lifecycle_commit_rejects_an_abandoned_staging_link_without_following_it", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories' (62005066) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:15:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_staging::lifecycle_commit_reclaims_abandoned_physical_staging_directories", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root' (62005070) panicked at crates/use/extension/src/registry_tests/lifecycle_staging.rs:140:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root ... FAILED
+
+failures:
+
+failures:
+    registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::lifecycle_staging::lifecycle_commit_rejects_a_package_parent_link_without_writing_outside_data_root", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation' (62005074) panicked at crates/use/extension/src/registry_tests/cutover.rs:102:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation ... FAILED
+
+failures:
+
+failures:
+    registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::cutover::lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation", "exit_code": 101, "elapsed_seconds": 0.013}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation' (62005078) panicked at crates/use/extension/src/registry_tests/cutover.rs:230:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation ... FAILED
+
+failures:
+
+failures:
+    registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::cutover::graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutation", "exit_code": 101, "elapsed_seconds": 0.015}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts' (62005082) panicked at crates/use/extension/src/registry_tests/graph_cutover.rs:23:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts ... FAILED
+
+failures:
+
+failures:
+    registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::graph_cutover::lifecycle_graph_publication_is_one_cutover_and_recovers_partial_receipts", "exit_code": 101, "elapsed_seconds": 0.014}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover' (62005086) panicked at crates/use/extension/src/registry_tests/graph_cutover.rs:118:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover ... FAILED
+
+failures:
+
+failures:
+    registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::graph_cutover::lifecycle_graph_hide_returns_exact_stable_snapshot_evidence_in_one_cutover", "exit_code": 101, "elapsed_seconds": 0.014}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation' (62005091) panicked at crates/use/extension/src/registry_tests/cutover.rs:17:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation ... FAILED
+
+failures:
+
+failures:
+    registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::cutover::lifecycle_cutover_replays_original_evidence_after_unrelated_registry_mutation", "exit_code": 101, "elapsed_seconds": 0.015}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication' (62005095) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:720:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_generation_binding_fails_closed_without_observer_republication", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal' (62005099) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:773:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_commit_replay_defers_receipt_cutover_to_the_journal", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version' (62005103) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:1126:10:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "registry::tests::package_lifecycle::public_lifecycle_candidate_accepts_the_real_v3_host_version", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest' (62005107) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:667:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "registry::tests::package_lifecycle::verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal' (62005110) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:457:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_hide_drains_accepted_calls_before_exact_idempotent_removal", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set' (62005114) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set ... FAILED
+
+failures:
+
+failures:
+    registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::graph_cutover::lifecycle_graph_hide_revalidates_dependents_outside_the_reviewed_removal_set", "exit_code": 101, "elapsed_seconds": 0.017}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes' (62005118) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes ... FAILED
+
+failures:
+
+failures:
+    registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::graph_cutover::lifecycle_graph_transition_atomically_publishes_candidates_and_hides_removed_nodes", "exit_code": 101, "elapsed_seconds": 0.016}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover' (62005122) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:147:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_snapshot_cannot_steal_the_reviewed_atomic_cutover", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure' (62005126) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:305:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_receipt_persists_the_exact_selected_surface_closure", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence' (62005130) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:70:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_receipts_require_exact_selected_surface_evidence", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity' (62005134) panicked at crates/use/extension/src/remote/catalog/cache/file_transport/tests.rs:49:45:
+called `Result::unwrap()` on an `Err` value: Os { code: 92, kind: Uncategorized, message: "Illegal byte sequence" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity ... FAILED
+
+failures:
+
+failures:
+    remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog::cache::file_transport::tests::local_metadata_root_keeps_non_utf8_filesystem_identity", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover' (62005138) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:970:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_upgrade_candidate_can_roll_back_before_capability_cutover", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network' (62005144) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::cached_search_reverifies_the_last_snapshot_without_network", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound' (62005147) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::catalog_page_stays_below_the_serialized_output_bound", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically' (62005150) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::catalog_search_filters_sorts_and_paginates_deterministically", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download' (62005153) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::catalog_query_and_cursor_bounds_are_enforced_before_payload_download", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed' (62005156) panicked at crates/use/extension/src/remote_catalog_tests.rs:888:71:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::incompatible_expired_and_archive_drift_catalogs_fail_closed", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations' (62005159) panicked at crates/use/extension/src/registry_tests/cutover.rs:315:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations ... FAILED
+
+failures:
+
+failures:
+    registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::cutover::single_package_cutovers_reject_stale_publish_and_hide_generations", "exit_code": 101, "elapsed_seconds": 0.017}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance' (62005163) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:234:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_snapshot_does_not_reconcile_during_state_restore_maintenance", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record' (62005167) panicked at crates/use/extension/src/remote_catalog_tests.rs:244:69:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::presentation_index_rejects_a_digest_not_bound_to_the_catalog_record", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached' (62005170) panicked at crates/use/extension/src/remote_catalog_tests.rs:130:69:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::catalog_tests::signed_presentation_descriptor_and_media_are_verified_and_cached", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation' (62005173) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:822:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_upgrade_retains_routes_until_cutover_and_retires_the_exact_prior_generation", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest' (62005177) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:623:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::verified_catalog_dependencies_must_match_the_admitted_manifest", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::package_graph::tests::exact_root_version_remains_exact", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::package_graph::tests::exact_root_version_remains_exact' (62005181) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::package_graph::tests::exact_root_version_remains_exact ... FAILED
+
+failures:
+
+failures:
+    remote::package_graph::tests::exact_root_version_remains_exact
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::package_graph::tests::exact_root_version_remains_exact", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::package_graph::tests::invalid_root_version_requirement_fails_closed", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::package_graph::tests::invalid_root_version_requirement_fails_closed' (62005184) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::package_graph::tests::invalid_root_version_requirement_fails_closed ... FAILED
+
+failures:
+
+failures:
+    remote::package_graph::tests::invalid_root_version_requirement_fails_closed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::package_graph::tests::invalid_root_version_requirement_fails_closed", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::package_graph::tests::root_version_requirement_selects_the_highest_match", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::package_graph::tests::root_version_requirement_selects_the_highest_match' (62005187) panicked at crates/use/extension/src/remote/package_graph.rs:588:66:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::package_graph::tests::root_version_requirement_selects_the_highest_match ... FAILED
+
+failures:
+
+failures:
+    remote::package_graph::tests::root_version_requirement_selects_the_highest_match
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::package_graph::tests::root_version_requirement_selects_the_highest_match", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence' (62005190) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:15:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::registry_tuf_receipts_require_verified_catalog_evidence", "exit_code": 101, "elapsed_seconds": 0.01}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency' (62005194) panicked at crates/use/extension/src/registry_tests.rs:117:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_graph_requires_the_exact_published_retained_dependency", "exit_code": 101, "elapsed_seconds": 0.013}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions' (62005198) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:1032:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_graph_rollback_atomically_restores_replacements_and_discards_additions", "exit_code": 101, "elapsed_seconds": 0.015}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors' (62005202) panicked at crates/use/extension/src/registry_tests/snapshot_lease.rs:123:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors ... FAILED
+
+failures:
+
+failures:
+    registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::snapshot_lease::snapshot_lease_rejects_stale_and_digest_mismatched_cursors", "exit_code": 101, "elapsed_seconds": 0.011}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed' (62005214) panicked at crates/use/extension/src/registry_tests/package_lifecycle.rs:543:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed ... FAILED
+
+failures:
+
+failures:
+    registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::package_lifecycle::lifecycle_uninstall_rejects_a_dependency_until_dependents_are_removed", "exit_code": 101, "elapsed_seconds": 0.018}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download' (62005240) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download ... FAILED
+
+failures:
+
+failures:
+    remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::catalog_v3_rejects_planning_target_metadata_drift_before_download", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target' (62005256) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target ... FAILED
+
+failures:
+
+failures:
+    remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::catalog_v3_loads_only_the_exact_signed_planning_target", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::catalog_v3_static_package_has_no_planning_target_download", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::catalog_v3_static_package_has_no_planning_target_download' (62005270) panicked at crates/use/extension/src/remote_tests.rs:371:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::catalog_v3_static_package_has_no_planning_target_download ... FAILED
+
+failures:
+
+failures:
+    remote::tests::catalog_v3_static_package_has_no_planning_target_download
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::catalog_v3_static_package_has_no_planning_target_download", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::executable_archive_download_retains_its_verified_planning_bundle", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::executable_archive_download_retains_its_verified_planning_bundle' (62005292) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::executable_archive_download_retains_its_verified_planning_bundle ... FAILED
+
+failures:
+
+failures:
+    remote::tests::executable_archive_download_retains_its_verified_planning_bundle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::executable_archive_download_retains_its_verified_planning_bundle", "exit_code": 101, "elapsed_seconds": 0.007}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::verified_target_cache_enforces_entry_retention_during_commit", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::verified_target_cache_enforces_entry_retention_during_commit' (62005318) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::verified_target_cache_enforces_entry_retention_during_commit ... FAILED
+
+failures:
+
+failures:
+    remote::tests::verified_target_cache_enforces_entry_retention_during_commit
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::verified_target_cache_enforces_entry_retention_during_commit", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically", "--nocapture"]}
+
+running 1 test
+
+thread 'registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically' (62005329) panicked at crates/use/extension/src/registry_tests/snapshot_lease.rs:17:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.okf.contract_mismatch", message: "The inspected OKF bundle does not match the declared contract: expected digest sha256:355b6f00153630b082e60a0f7e0b67fbbb74b2a29067bca481f7eefecbb86c7a, concepts 1, files 2, bytes 427; observed digest sha256:adabda5e58c3ace789b8fff2c938bac2178c10f79407687784a2ef03b5b8252b, concepts 1, files 2, bytes 427.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically ... FAILED
+
+failures:
+
+failures:
+    registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.01s
+
+{"case": "registry::tests::snapshot_lease::snapshot_lease_pins_the_complete_published_generation_atomically", "exit_code": 101, "elapsed_seconds": 0.018}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::tests::verified_targets_are_content_addressed_and_reusable_without_network", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::tests::verified_targets_are_content_addressed_and_reusable_without_network' (62005349) panicked at crates/use/extension/src/remote_tests.rs:566:72:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.plugin.catalog_invalid", message: "The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::tests::verified_targets_are_content_addressed_and_reusable_without_network ... FAILED
+
+failures:
+
+failures:
+    remote::tests::verified_targets_are_content_addressed_and_reusable_without_network
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "remote::tests::verified_targets_are_content_addressed_and_reusable_without_network", "exit_code": 101, "elapsed_seconds": 0.006}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions", "--nocapture"]}
+
+running 1 test
+
+thread 'source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions' (62005356) panicked at crates/use/extension/src/source_aix_tests.rs:127:37:
+called `Result::unwrap()` on an `Err` value: Os { code: 17, kind: AlreadyExists, message: "File exists" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions ... FAILED
+
+failures:
+
+failures:
+    source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.00s
+
+{"case": "source::aix_tests::published_aix_inspection_refuses_directories_and_other_extensions", "exit_code": 101, "elapsed_seconds": 0.005}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download' (62005364) panicked at crates/use/extension/src/remote_catalog_tests.rs:90:10:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_untrusted", message: "TUF verification failed for registry 'fixture': Failed to fetch http://127.0.0.1:64567/metadata/targets.json: Transport 'other' error fetching 'http://127.0.0.1:64567/metadata/targets.json': Maximum size 3505 (specified by snapshot.json) exceeded", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.46s
+
+{"case": "remote::catalog_tests::complete_signed_fixture_is_searchable_and_inspectable_without_archive_download", "exit_code": 101, "elapsed_seconds": 0.461}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order' (62005491) panicked at crates/use/extension/src/remote_catalog_tests.rs:470:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_target_invalid", message: "TUF target 'extensions/acme/root/1.0.0/stable/darwin-arm64/acme-root-1.0.0-darwin-arm64.tar.gz' has an invalid signed plugin catalog record: The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.46s
+
+{"case": "remote::catalog_tests::package_graph_downloads_the_complete_dependency_closure_in_install_order", "exit_code": 101, "elapsed_seconds": 0.464}
+{"command": ["target/mise-replacement-checks/debug/deps/aster_use_extension-5f0b9e34b3bd8e02", "--exact", "remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock", "--nocapture"]}
+
+running 1 test
+
+thread 'remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock' (62005746) panicked at crates/use/extension/src/remote_catalog_tests.rs:365:6:
+called `Result::unwrap()` on an `Err` value: UseError { code: "use.extension.registry_target_invalid", message: "TUF target 'extensions/acme/knowledge/1.0.0/stable/darwin-arm64/acme-knowledge-1.0.0-darwin-arm64.tar.gz' has an invalid signed plugin catalog record: The catalog permission ceiling digest does not match its content.", suggestion: None, details: {} }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock ... FAILED
+
+failures:
+
+failures:
+    remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 197 filtered out; finished in 0.46s
+
+{"case": "remote::catalog_tests::package_graph_resolution_and_download_replay_the_exact_verified_lock", "exit_code": 101, "elapsed_seconds": 0.468}

@@ -1,0 +1,185 @@
+Diff in /Users/roylin/code/aster/crates/code/acp/src/office_file.rs:492:
+                                     if let Some(text) = cell.value.as_str() {
+                                         ensure_xml_safe_text(
+                                             text,
+[31m-                                            &format!(
+(B[m[31m-                                                "sheets[{index}].rows[{row}][{column}].value"
+(B[m[31m-                                            ),
+(B[m[32m+                                            &format!("sheets[{index}].rows[{row}][{column}].value"),
+(B[m                                         )?;
+                                     }
+                                     ensure_xml_safe_text(
+Diff in /Users/roylin/code/aster/crates/code/acp/src/office_file_tests.rs:455:
+         })
+         .unwrap();
+     assert_eq!(title.node_type, aster_office::OfficeNodeType::Placeholder);
+[31m-    assert_eq!(title.format.get("placeholderType").map(String::as_str), Some("title"));
+(B[m[32m+    assert_eq!(
+(B[m[32m+        title.format.get("placeholderType").map(String::as_str),
+(B[m[32m+        Some("title")
+(B[m[32m+    );
+(B[m     let cm = |node: &aster_office::DocumentNode, key: &str| {
+         node.format[key]
+             .trim_end_matches("cm")
+Diff in /Users/roylin/code/aster/crates/code/acp/src/office_file_tests.rs:751:
+     let document = NativeOfficeDocument::open(root.path().join("lines.docx"))
+         .await
+         .unwrap();
+[31m-    assert_eq!(document.get("/body/p[1]", 0).unwrap().text, "第一行\n第二行\t尾");
+(B[m[31m-    let document_xml = document
+(B[m[31m-        .package()
+(B[m[31m-        .xml_part("word/document.xml")
+(B[m[31m-        .unwrap();
+(B[m[32m+    assert_eq!(
+(B[m[32m+        document.get("/body/p[1]", 0).unwrap().text,
+(B[m[32m+        "第一行\n第二行\t尾"
+(B[m[32m+    );
+(B[m[32m+    let document_xml = document.package().xml_part("word/document.xml").unwrap();
+(B[m     let xml = std::str::from_utf8(document_xml.raw()).unwrap();
+     assert!(!xml.contains("<w:p/>"), "{xml}");
+     assert!(xml.contains("<w:br/>"), "{xml}");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/office_file_tests.rs:781:
+     let document = NativeOfficeDocument::open(root.path().join("wide.docx"))
+         .await
+         .unwrap();
+[31m-    let document_xml = document
+(B[m[31m-        .package()
+(B[m[31m-        .xml_part("word/document.xml")
+(B[m[31m-        .unwrap();
+(B[m[32m+    let document_xml = document.package().xml_part("word/document.xml").unwrap();
+(B[m     let xml = std::str::from_utf8(document_xml.raw()).unwrap();
+     assert_eq!(xml.matches("w:w=\"2340\"").count() >= 4, true, "{xml}");
+     assert!(!xml.contains("w:w=\"2400\""), "{xml}");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/office_file_tests.rs:805:
+         .unwrap();
+     let title = deck.get("/slide[1]/placeholder[title]", 0).unwrap();
+     assert_eq!(title.text, "标题");
+[31m-    let slide_part = deck
+(B[m[31m-        .package()
+(B[m[31m-        .xml_part("ppt/slides/slide1.xml")
+(B[m[31m-        .unwrap();
+(B[m[32m+    let slide_part = deck.package().xml_part("ppt/slides/slide1.xml").unwrap();
+(B[m     let slide_xml = std::str::from_utf8(slide_part.raw()).unwrap();
+     assert!(slide_xml.contains("type=\"title\""), "{slide_xml}");
+     assert!(slide_xml.contains("type=\"body\""), "{slide_xml}");
+Diff in /Users/roylin/code/aster/crates/code/acp/src/workspace_browser_tests.rs:60:
+     .expect("rejected without a host round trip")
+     .unwrap();
+     assert!(!output.success, "{}", output.content);
+[31m-    assert!(output.content.contains("does not exist"), "{}", output.content);
+(B[m[32m+    assert!(
+(B[m[32m+        output.content.contains("does not exist"),
+(B[m[32m+        "{}",
+(B[m[32m+        output.content
+(B[m[32m+    );
+(B[m     assert_eq!(output.metadata.unwrap()["reason"], "missing_file");
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/code/acp/src/workspace_browser_tests.rs:71:
+     std::fs::write(&page, "<p>hi</p>").unwrap();
+     let url = url::Url::from_file_path(&page).unwrap();
+     assert_eq!(super::missing_local_file(url.as_str()).await, None);
+[31m-    assert_eq!(super::missing_local_file("https://example.com/").await, None);
+(B[m[32m+    assert_eq!(
+(B[m[32m+        super::missing_local_file("https://example.com/").await,
+(B[m[32m+        None
+(B[m[32m+    );
+(B[m }
+ 
+Diff in /Users/roylin/code/aster/crates/code/core/src/llm/codex_login.rs:666:
+         }
+         for block in &message.content {
+             match block {
+[31m-                ContentBlock::GeminiState { .. } => {},
+(B[m[32m+                ContentBlock::GeminiState { .. } => {}
+(B[m                 ContentBlock::Text { text } => {
+                     let text_type = if message.role == "assistant" {
+                         "output_text"
+Diff in /Users/roylin/code/aster/crates/office/crates/core/src/editor/word.rs:975:
+ }
+ 
+ fn row_xml(columns: usize, width: u32) -> String {
+[31m-    let cells = (0..columns).map(|_| cell_xml("", width)).collect::<String>();
+(B[m[32m+    let cells = (0..columns)
+(B[m[32m+        .map(|_| cell_xml("", width))
+(B[m[32m+        .collect::<String>();
+(B[m     format!("<w:tr xmlns:w=\"{WORD_NAMESPACE}\">{cells}</w:tr>")
+ }
+ 
+Diff in /Users/roylin/code/aster/crates/office/crates/core/src/spreadsheet_formula/evaluate/function.rs:244:
+             digits_vec.push(b'0');
+         }
+         let round_index = integer.len() + keep;
+[31m-        let round_up = digits_vec.get(round_index).is_some_and(|digit| *digit >= b'5');
+(B[m[32m+        let round_up = digits_vec
+(B[m[32m+            .get(round_index)
+(B[m[32m+            .is_some_and(|digit| *digit >= b'5');
+(B[m         digits_vec.truncate(round_index);
+         if round_up {
+             bump_decimal_digits(&mut digits_vec);
+Diff in /Users/roylin/code/aster/crates/office/crates/core/src/spreadsheet_formula/evaluate/function.rs:271:
+     }
+     let mut digits_vec: Vec<u8> = integer.bytes().collect();
+     let round_index = digits_vec.len() - shift;
+[31m-    let round_up = digits_vec.get(round_index).is_some_and(|digit| *digit >= b'5');
+(B[m[32m+    let round_up = digits_vec
+(B[m[32m+        .get(round_index)
+(B[m[32m+        .is_some_and(|digit| *digit >= b'5');
+(B[m     for digit in &mut digits_vec[round_index..] {
+         *digit = b'0';
+     }
+Diff in /Users/roylin/code/aster/crates/office/crates/web-kernel/src/spreadsheet_calculation/functions.rs:782:
+             digits_vec.push(b'0');
+         }
+         let round_index = integer.len() + keep;
+[31m-        let round_up = digits_vec.get(round_index).is_some_and(|digit| *digit >= b'5');
+(B[m[32m+        let round_up = digits_vec
+(B[m[32m+            .get(round_index)
+(B[m[32m+            .is_some_and(|digit| *digit >= b'5');
+(B[m         digits_vec.truncate(round_index);
+         if round_up {
+             bump_decimal_digits(&mut digits_vec);
+Diff in /Users/roylin/code/aster/crates/office/crates/web-kernel/src/spreadsheet_calculation/functions.rs:807:
+     }
+     let mut digits_vec: Vec<u8> = integer.bytes().collect();
+     let round_index = digits_vec.len() - shift;
+[31m-    let round_up = digits_vec.get(round_index).is_some_and(|digit| *digit >= b'5');
+(B[m[32m+    let round_up = digits_vec
+(B[m[32m+        .get(round_index)
+(B[m[32m+        .is_some_and(|digit| *digit >= b'5');
+(B[m     for digit in &mut digits_vec[round_index..] {
+         *digit = b'0';
+     }
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/workspace_browser_open.rs:104:
+     if path.is_file() {
+         return Ok(());
+     }
+[31m-    Err(format!(
+(B[m[31m-        "local file does not exist: {}",
+(B[m[31m-        path.display()
+(B[m[31m-    ))
+(B[m[32m+    Err(format!("local file does not exist: {}", path.display()))
+(B[m }
+ 
+ #[cfg(test)]
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/workspace_browser_open.rs:173:
+ 
+     #[test]
+     fn open_request_refuses_a_missing_local_file() {
+[31m-        let missing = std::env::temp_dir().join(format!(
+(B[m[31m-            "aster-missing-browser-{}.html",
+(B[m[31m-            std::process::id()
+(B[m[31m-        ));
+(B[m[32m+        let missing =
+(B[m[32m+            std::env::temp_dir().join(format!("aster-missing-browser-{}.html", std::process::id()));
+(B[m         let _ = std::fs::remove_file(&missing);
+         let url = url::Url::from_file_path(&missing)
+             .expect("temp path is absolute")
+Diff in /Users/roylin/code/aster/apps/studio/src-tauri/src/desktop_settings/menu_labels_tests.rs:1:
+ #![cfg(test)]
+ 
+[31m-use super::{MenuLabels, HELP_DOCUMENTATION_URL};
+(B[m[32m+use super::{HELP_DOCUMENTATION_URL, MenuLabels};
+(B[m 
+ #[test]
+ fn native_menu_uses_the_same_catalog_as_the_renderer() {

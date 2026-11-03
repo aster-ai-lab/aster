@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder",
+    "registry",
+    "package",
+    "prepare",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified/aster-box-0.1.0-darwin-arm64.aix",
+    "--repository",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified/repository",
+    "--domain",
+    "operations",
+    "--catalog-metadata",
+    "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.json",
+    "--output",
+    "/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified/isolated-retry.oci.json",
+    "--json"
+  ],
+  "exitCode": 1,
+  "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"details\": {},\n    \"message\": \"Failed to resolve plugin source '/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified/repository/plugins/aster/aster-box': No such file or directory (os error 2)\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+  "stderr": ""
+}

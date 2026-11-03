@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/.tmp/box-plugin-vm-probe/runtime/aster-box/bin/aster-box",
+    "run",
+    "--rm",
+    "--no-stdin",
+    "--timeout",
+    "30",
+    "--network",
+    "none",
+    "--name",
+    "plugin-box-kernel-inspect",
+    "docker.io/library/alpine@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1",
+    "--",
+    "/bin/sh",
+    "-c",
+    "uname -r; cat /proc/version"
+  ],
+  "exitCode": 0,
+  "stdout": "Creating box plugin-box-kernel-inspect (5f7ca832fbd1)...\nBox plugin-box-kernel-inspect (5f7ca832fbd1) started. Press Ctrl-C to stop.\n6.12.76\nLinux version 6.12.76 (root@libkrunfw) (gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #1 SMP Tue Mar 10 13:28:56 CET 2026\nBox plugin-box-kernel-inspect exited and was removed.\n",
+  "stderr": "init.krun: setup_redirects ok\ninit.krun: execvp(/sbin/init) starting\n",
+  "timeoutSeconds": 120,
+  "seconds": 0.8618422079598531,
+  "inventoryExitCode": 0,
+  "inventoryStdout": "[]\n",
+  "cliSha256": "71608e215c8a93bc64574d64200b8edd6545575f4c3c09b6815fe4a49e645923",
+  "packageOwnerIntegrationClaimed": false
+}

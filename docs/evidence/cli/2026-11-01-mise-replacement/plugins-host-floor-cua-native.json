@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "packageId": "aster/cua",
+      "aixArchiveSha256": "sha256:9f84309c9a1dc9630ee08eac9a6877639984c106572b508513eddbd01d30c664",
+      "outputs": [
+        {
+          "command": "cua",
+          "stdout": "cua 0.9.0\n"
+        }
+      ]
+    }
+  ],
+  "installedCatalogueQueried": true,
+  "allRequestedVersionCommandsExecuted": true,
+  "allCandidatesRemoved": true,
+  "runtimeRetainedUntilLeaseRelease": true,
+  "permanentInstallation": false,
+  "trust": "explicit-local-candidates",
+  "officialRegistryPublicationAccepted": false,
+  "nativeGuiAccepted": false,
+  "nativeTarget": "aarch64-macos"
+}

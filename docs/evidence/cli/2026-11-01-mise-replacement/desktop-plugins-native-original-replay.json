@@ -1,0 +1,10 @@
+{
+  "binary": "/Users/roylin/code/aster/target/debug/deps/aster_studio_lib-e1e21bb124fecca8",
+  "sha256": "d6c97550a9e7f4f3832fd38dae20bb2641e6a19acb539bd8745d561ad68299f7",
+  "originalPassed": 3,
+  "originalFailed": 1,
+  "isolatedExitCode": 101,
+  "case": "capabilities::registry::tests::catalogue_preserves_signed_identity_and_does_not_offer_unsupported_native_tools",
+  "failure": "Existing borrowed catalog fixture rejected by permission ceiling digest validation.",
+  "frozenInputsChanged": false
+}

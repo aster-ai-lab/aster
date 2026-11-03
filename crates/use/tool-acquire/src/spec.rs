@@ -5,10 +5,31 @@ use crate::error::ToolAcquireError;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ToolBackend {
     Catalog,
+    Core(CoreRuntime),
     Github { owner: String, repo: String },
     Npm { package: String },
     Pipx { package: String },
     Aqua { owner: String, repo: String },
+}
+
+/// Native runtime providers admitted by this tool owner.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CoreRuntime {
+    Node,
+}
+
+impl CoreRuntime {
+    pub fn parse(value: &str) -> Result<Self, ToolAcquireError> {
+        match value {
+            "node" => Ok(Self::Node),
+            _ => Err(ToolAcquireError::InvalidSpec(format!("core:{value}"))),
+        }
+    }
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Node => "node",
+        }
+    }
 }
 
 /// One parsed install spec. `raw` is the string the host sent.
@@ -29,7 +50,7 @@ impl ToolSpec {
 }
 
 /// Parse a Studio tool spec. Accepted backends are catalog (no prefix),
-/// `github:`, `npm:`, `pipx:`, and `aqua:`.
+/// `core:node`, `github:`, `npm:`, `pipx:`, and `aqua:`.
 pub fn parse_tool_spec(raw: &str) -> Result<ToolSpec, ToolAcquireError> {
     if !is_tool_key(raw) {
         return Err(ToolAcquireError::InvalidSpec(raw.to_string()));
@@ -64,7 +85,14 @@ pub(crate) fn parse_tool_name(raw: &str) -> Result<(), ToolAcquireError> {
 
 /// A version that can be one directory name under the install root.
 pub(crate) fn parse_tool_version(raw: &str) -> Result<(), ToolAcquireError> {
-    if !is_tool_key(raw) || raw.contains('/') || raw.contains(':') || raw.contains('\\') {
+    if raw.is_empty()
+        || raw == "."
+        || raw.contains("..")
+        || !raw.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '@')
+        || !raw
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '@' | '_' | '.' | '-' | '+'))
+    {
         return Err(ToolAcquireError::InvalidVersion(raw.to_string()));
     }
     Ok(())
@@ -72,6 +100,7 @@ pub(crate) fn parse_tool_version(raw: &str) -> Result<(), ToolAcquireError> {
 
 fn parse_backend(backend: &str, rest: &str) -> Result<ToolBackend, ToolAcquireError> {
     match backend {
+        "core" => CoreRuntime::parse(rest).map(ToolBackend::Core),
         "github" => {
             let (owner, repo) = split_owner_repo(rest)?;
             Ok(ToolBackend::Github { owner, repo })

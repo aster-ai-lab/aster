@@ -1,0 +1,35 @@
+# Frozen feature families and acceptance witnesses
+
+Baseline: mise `v2026.10.25`, official documentation observed 2026-11-01.
+Every row remains required. Experimental capabilities retain that status but
+are not excluded from the user's full-replacement objective.
+
+| ID | Upstream capability | Source | Task | Current witness |
+| --- | --- | --- | --- | --- |
+| C01 | Core language tools and runtime layouts | https://mise.jdx.dev/dev-tools/ | T008 | Complete-archive SDK/CLI fixtures and genuine signed Node 20.11.0 stdlib/npm execution pass on macOS arm64; Node source builds/options and the other required core runtimes remain open |
+| C02 | Install/list/locate/uninstall/upgrade/prune | https://mise.jdx.dev/cli/ | T001/003/004 | Retained install/use/removal witnesses are joined by twelve frozen actual-CLI prune comparisons, a live interpreted dependency read, and twelve frozen upgrade comparisons in the production native owner. Bad-checksum upgrades preserve the previous executable/pointer/declaration; installed activation verifies complete membership. Parent-file updates and cross-project old-version protection pass. Owning final CLI/lint/build results are recorded in docs/evidence/cli/2026-11-03-convergence/OUTCOME.md. Default grace-period cleanup, automatic lock refresh, remaining lifecycle/backend/profile/stub and native-platform gates stay open |
+| C03 | Complete version requests and aliases | https://mise.jdx.dev/dev-tools/versions.html | T004 | Ten frozen mise executions agree with actual Aster CLI bare/prefix/subtraction selection; npm dist-tag install/cache/lock tests pass. Native path/system selection and temporary overrides pass actual CLI comparisons against seven more pinned cases; 108 library/15 pager/18 CLI cases and the paired build pass. Reference execution, user aliases and other request modes remain incomplete |
+| C04 | Multiple versions, project selection, shims, stubs, sync | https://mise.jdx.dev/dev-tools/ | T003/004 | Ordered declarations and temporary overrides retain the earlier five/nine frozen native mise comparisons. Unix project dispatch now honors the current project, ordered command fallback and the bound store; reshim repairs all recorded-version commands and removes only obsolete owned scripts. Six additional native reference cases are frozen: five exact fixture comparisons pass, and a separate real uv 0.13.6 case proves missing-version auto-install. Final checks pass 139 tool cases/five ignored, 18 pager cases, all 32 sequential CLI cases and the explicitly invoked external case. The paired CLI/ACP build has matching identities and unchanged hashes across both regressions. Tool/CLI Clippy and root formatting pass; pager Clippy retains the same 42 diagnostics/39 prior locations outside the command module. Windows project dispatch, stubs, other synchronization and remaining modes are incomplete |
+| C05 | Lockfiles, locked/offline installs, verification/policy | https://mise.jdx.dev/dev-tools/mise-lock.html | T004/008 | File locks pass library/CLI tests; v3 archive-lock library tests cover native links, modes, membership, source layout, and checksum refusal before publication. V4 locks now bind ordered multi-version declarations, verify every installation and pass actual offline locked CLI execution; v1/v2/v3 compatibility remains. Pre-resolved URLs, path/system locks and complete multi-platform/backend lock parity remain open |
+| C06 | All release/language/custom backends and registries | https://mise.jdx.dev/dev-tools/backends/ | T008 | Partial acquisition library, native archive contract and official signed Node prebuilt provider; full provider/registry implementation remains missing |
+| C07 | Tool/backend/environment/package-manager plugins, legacy plugins | https://mise.jdx.dev/plugins.html | T008 | Native AIX and domain/source preparation pass library/SDK CLI tests, Clippy and three actual CLI preparation/refusal cases; signed GHCR read/cache protocol passes focused tests. The macOS ARM64 desktop owner installs the maintained Box AIX, runs real Linux MicroVM commands with exits 0/17 from an offline fixture, and completes removal/final-lease retirement. Six focused and two final native cases, owning Clippy, root formatting and seven workspace checks pass for that witness. Official source publication, remaining original plugins/consumers and full mise plugin/legacy ABI behavior remain required |
+| C08 | Layered config, profiles, variables, templates, caches/directories | https://mise.jdx.dev/configuration.html | T002/005 | Bounded user/ancestor/nearest ACL merge and retained logical path roots pass library/pager/actual CLI tests; profiles/templates/directives remain incomplete |
+| C09 | Environment values, unset/default/required, files/source/PATH | https://mise.jdx.dev/environments/ | T005 | Basic set/show/exec only |
+| C10 | Secrets, SOPS, fnox and age experimental values | https://mise.jdx.dev/secrets/ | T005 | Missing |
+| C11 | Shell activation/deactivation, aliases, hooks, virtualenv | https://mise.jdx.dev/shell-setup.html | T005 | Static export only |
+| C12 | Named/file tasks, templates, argument CLI and task discovery | https://mise.jdx.dev/tasks/ | T006 | Missing |
+| C13 | Task dependency ordering, parallelism, output, exit/cancellation | https://mise.jdx.dev/tasks/ | T006 | Missing |
+| C14 | Incremental checks, local/remote artifact caches | https://mise.jdx.dev/tasks/caching.html | T007 | Missing |
+| C15 | Watch and file-change task execution | https://mise.jdx.dev/cli/watch.html | T007 | Missing |
+| C16 | Monorepo tasks, workspace/project graphs, telemetry | https://mise.jdx.dev/tasks/monorepo.html | T007 | Missing |
+| C17 | Bootstrap, modules, host packages, package plugins | https://mise.jdx.dev/bootstrap.html | T009 | Missing |
+| C18 | Accounts/files/services/firewall/Compose and platform state | https://mise.jdx.dev/bootstrap.html | T009 | Missing |
+| C19 | Git repositories, remote hosts, SSH relay | https://mise.jdx.dev/bootstrap.html | T009 | Missing |
+| C20 | Dotfiles, groups, partial edits, history, sync, encryption | https://mise.jdx.dev/dotfiles.html | T010 | Missing |
+| C21 | Daemons, containers, readiness, ports/worktrees, sharing/cleanup | https://mise.jdx.dev/daemons.html | T010 | Missing |
+| C22 | Diagnostics, completion, docs/manpages/skills, self-management | https://mise.jdx.dev/cli/ | T011 | Aster-only surfaces exist; parity unverified |
+| C23 | MCP tools/resources for environment management | https://mise.jdx.dev/mcp.html | T011 | Existing Aster MCP client is not this server |
+| C24 | Native platform and final packaged CLI/ACP execution | https://mise.jdx.dev/ | T012 | Missing |
+
+The machine-readable upstream path inventory expands these families. A family
+cannot pass while one of its required child capabilities lacks a witness.

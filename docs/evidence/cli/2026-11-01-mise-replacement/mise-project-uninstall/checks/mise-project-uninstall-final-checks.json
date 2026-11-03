@@ -1,0 +1,299 @@
+{
+  "status": "completed_with_known_pager_failure",
+  "startedAtUnixSeconds": 1793648300.642069,
+  "checks": [
+    {
+      "name": "tool-tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-tool-tests.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793648300.642504,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793648370.501915
+    },
+    {
+      "name": "tool-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-use-tool-acquire",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-tool-clippy.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793648370.502368,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793648381.3154309
+    },
+    {
+      "name": "pager-tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-pager",
+        "--lib",
+        "env_manager_cmd::tests",
+        "--",
+        "--test-threads=1"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-pager-tests.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793648381.315673,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793648620.701355
+    },
+    {
+      "name": "cli-test-build",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--test",
+        "env_manager",
+        "--no-run"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-cli-test-build.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793648620.701889,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793648853.017261
+    },
+    {
+      "name": "cli-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-cli-clippy.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793648853.01773,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793649059.8347101
+    },
+    {
+      "name": "pager-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-pager",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-pager-clippy.log",
+      "status": "known_existing_failure",
+      "startedAtUnixSeconds": 1793649059.83552,
+      "exitCode": 101,
+      "finishedAtUnixSeconds": 1793649151.809674,
+      "findings": [
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:146:9"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:147:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:148:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:149:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:150:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:150:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:151:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:151:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:152:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/acp/prefix_fork.rs:152:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/app/modals.rs:106:22"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/app/modals.rs:143:14"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/app/modals.rs:173:14"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/sessions_cmd.rs:248:9"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/slash/registry.rs:290:20"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs:492:17"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs:495:40"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/slash/mod.rs:498:24"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:462:18"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:466:13"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:467:16"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:471:38"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:484:13"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:812:28"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:818:52"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:831:24"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:940:38"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:943:35"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:956:34"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:967:17"
+        },
+        {
+          "diagnostic": "error: slicing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/document.rs:970:18"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs:286:28"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs:515:20"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs:562:21"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs:690:32"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/model_config/state.rs:691:17"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs:299:20"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs:306:39"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs:310:14"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/slash_dropdown.rs:355:62"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs:183:41"
+        },
+        {
+          "diagnostic": "error: indexing may panic",
+          "primaryLocation": "--> crates/terminal/crates/codegen/aster-pager/src/views/welcome/logo.rs:207:33"
+        }
+      ],
+      "samePriorLocations": true,
+      "newPrimaryLocations": []
+    },
+    {
+      "name": "paired-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp"
+      ],
+      "log": ".tmp/mise-project-uninstall-final-paired-build.log",
+      "status": "passed",
+      "startedAtUnixSeconds": 1793649151.81103,
+      "exitCode": 0,
+      "finishedAtUnixSeconds": 1793649374.4076118
+    }
+  ],
+  "finishedAtUnixSeconds": 1793649374.410784
+}

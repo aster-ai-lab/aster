@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster-use",
+    "plugin",
+    "search",
+    "aster",
+    "--limit",
+    "50",
+    "--json"
+  ],
+  "exitCode": 1,
+  "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.registry_oci_invalid\",\n    \"details\": {},\n    \"message\": \"The AIX OCI target requires domain, manifest SHA-256 and archive name.\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+  "stderr": "",
+  "sameProfile": true
+}

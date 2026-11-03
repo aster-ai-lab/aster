@@ -1,0 +1,25 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.32s
+     Running unittests src/lib.rs (target/mise-replacement-checks/debug/deps/aster_use_tool_acquire-2f2de0535b3675f2)
+
+running 11 tests
+test env_lock::tests::a_managed_lock_cannot_replace_a_context_dependent_request_or_a_different_prefix ... ok
+test env_lock::tests::lock_refuses_declaration_and_platform_drift ... ok
+test env_lock::tests::lock_refuses_linked_installation_files ... ok
+test env_lock::tests::v2_file_locks_remain_readable_after_archive_locks_are_added ... ok
+test env_lock::tests::malformed_paths_unknown_fields_duplicates_and_oversized_locks_refuse ... ok
+test env_lock::tests::legacy_manifest_is_not_inferred_from_an_unverified_directory ... ok
+test env_lock::tests::lock_round_trip_covers_companions_and_ancestor_discovery_without_secrets ... ok
+test env_lock::tests::locked_download_verifies_before_publication_and_preserves_previous_pointer_on_failure ... ok
+test env_lock::tests::legacy_v1_locks_remain_readable_after_resolved_selectors_are_added ... ok
+test env_lock::tests::locked_install_refuses_changed_missing_and_extra_files ... ok
+test env_lock::tests::legacy_v1_literal_operator_names_keep_their_exact_identity_through_locked_install ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 94 filtered out; finished in 1.13s
+

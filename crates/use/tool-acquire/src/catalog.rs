@@ -22,6 +22,12 @@ const CATALOG: &[CatalogTool] = &[
         pipx_extras: None,
     },
     CatalogTool {
+        name: "node",
+        spec: "core:node",
+        executable: "node",
+        pipx_extras: None,
+    },
+    CatalogTool {
         name: "fd",
         spec: "github:sharkdp/fd",
         executable: "fd",

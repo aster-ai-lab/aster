@@ -1,0 +1,34 @@
+{
+  "capturedAtUtc": "2026-11-02T02:52:52.199077+00:00",
+  "packages": [
+    {
+      "name": "plugins/operations/aster/aster-document",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/operations/aster/aster-office",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/operations/aster/aster-sandbox",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/aster/aster-document",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/aster/aster-office",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/aster/aster-sandbox",
+      "visibility": "private"
+    },
+    {
+      "name": "plugins/aster/aster-ocr",
+      "visibility": "private"
+    }
+  ],
+  "pluginRepositoryHead": "5ad4aabbbbb5358e8628adbdfb5cf1d6ebcddc6e"
+}

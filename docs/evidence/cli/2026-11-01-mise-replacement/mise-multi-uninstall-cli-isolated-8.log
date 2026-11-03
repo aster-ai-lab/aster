@@ -1,0 +1,6 @@
+
+running 1 test
+test configured_path_and_system_requests_match_frozen_mise_context_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 14.45s
+

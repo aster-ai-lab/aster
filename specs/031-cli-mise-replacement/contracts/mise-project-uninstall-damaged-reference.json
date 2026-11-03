@@ -1,0 +1,84 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "timeout_seconds": 25,
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+        "plugins",
+        "link",
+        "fixture",
+        "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged project 中文 z1gjf0ic/plugin"
+      ],
+      "status": "returned",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+        "install",
+        "fixture@1.0.0",
+        "fixture@2.0.0"
+      ],
+      "status": "returned",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise by @jdx – installing 2 tools\nmise ✓ fixture@2.0.0  1.2s\nmise ✓ fixture@1.0.0  1.3s\nmise ████████████████ 2/2 · installed 2 tools in 1.3s\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+        "trust",
+        "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged project 中文 z1gjf0ic/project/mise.toml"
+      ],
+      "status": "returned",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged project 中文 z1gjf0ic/project/mise.toml\n"
+    },
+    {
+      "argv": [
+        "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+        "uninstall",
+        "--project",
+        "--yes"
+      ],
+      "status": "returned",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise fixture@1.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged project 中文 z1gjf0ic/project/mise.toml\nmise by @jdx – removing 1 tool\nmise ✓ fixture@1.0.0  4ms\nmise ████████████████ 1/1 · removed 1 tool in 5ms\n"
+    },
+    {
+      "argv": [
+        "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster damaged project 中文 z1gjf0ic/data/installs/fixture/2.0.0/bin/fixture"
+      ],
+      "status": "returned",
+      "exit": 0,
+      "stdout": "2.0.0\n",
+      "stderr": ""
+    }
+  ],
+  "hook_sha256": {
+    "list-all": "9d3a0500ff54c97bf934aca74202725b640629027446f1eaa2a0577e5e606aff",
+    "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+  },
+  "before": {
+    "selected_directory_exists": true,
+    "selected_executable_exists": false
+  },
+  "exit": 0,
+  "retained_versions": [
+    "2.0.0"
+  ],
+  "retained_stdout": "2.0.0\n",
+  "declaration_unchanged": true
+}

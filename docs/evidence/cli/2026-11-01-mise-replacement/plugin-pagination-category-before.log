@@ -1,0 +1,402 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/vitePlugin.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/flowDesignerAlias.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/semanticId.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/scan.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (scripts/uiContract/transform.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:67644) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/local-build.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-local-build.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/about.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-about.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/conversation-entry.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/app/__tests__/-conversation-entry.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/search.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-search.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+Warning: Route file "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/provider.test.ts" does not export a Route. This file will not be included in the route tree.
+
+If this file is not intended to be a route, you can exclude it using one of these options:
+  1. Rename the file to "/Users/roylin/code/aster/apps/studio/src/renderer/routes/settings/__tests__/-provider.test.ts" (prefix with "-")
+  2. Use 'routeFileIgnorePattern' in your config to match this file
+
+Current configuration:
+  routeFileIgnorePrefix: "-"
+  routeFileIgnorePattern: undefined
+
+ RUN  v5.0.1 /Users/roylin/code/aster/apps/studio
+
+stderr | src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx > plugin store page > preserves the selected category when a search returns no matching category facets
+An update to PluginStorePage inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx > plugin store page > preserves the selected category when a search returns no matching category facets
+An update to PluginStorePage inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ |renderer| src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx (37 tests | 1 failed | 36 skipped) 620ms
+   ❯ plugin store page (37)
+     × preserves the selected category when a search returns no matching category facets 471ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |renderer| src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx > plugin store page > preserves the selected category when a search returns no matching category facets
+TestingLibraryElementError: Unable to find an accessible element with the role "heading" and name "capabilities.category.code"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "capabilities.tab.plugins":
+  [36m<h1[39m
+    [33mclass[39m=[32m"m-0 min-w-0 truncate text-[24px] leading-tight font-bold text-foreground"[39m
+  [36m/>[39m
+
+  Name "capabilities.category.all":
+  [36m<h2[39m
+    [33mclass[39m=[32m"m-0 text-[18px] font-semibold text-[#1a1a1a]"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "common.refresh":
+  [36m<button[39m
+    [33maria-label[39m=[32m"common.refresh"[39m
+    [33mclass[39m=[32m"grid size-[30px] place-items-center rounded-[8px] text-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#3f3f3f] disabled:opacity-60"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "common.clear":
+  [36m<button[39m
+    [33maria-label[39m=[32m"common.clear"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "plugins.tab.market":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "plugins.tab.installed":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "capabilities.category.all":
+  [36m<button[39m
+    [33maria-current[39m=[32m"page"[39m
+    [33mclass[39m=[32m"flex h-9 shrink-0 items-center gap-2.5 rounded-[8px] px-2.5 text-left text-[13px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#3f3f3f] focus-visible:ring-inset bg-[#f2f3f5] font-medium text-[#171717]"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "capabilities.category.featured":
+  [36m<button[39m
+    [33mclass[39m=[32m"flex h-9 shrink-0 items-center gap-2.5 rounded-[8px] px-2.5 text-left text-[13px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#3f3f3f] focus-visible:ring-inset text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  searchbox:
+
+  Name "capabilities.search_placeholder":
+  [36m<input[39m
+    [33maria-label[39m=[32m"capabilities.search_placeholder"[39m
+    [33mplaceholder[39m=[32m"capabilities.search_placeholder"[39m
+    [33mtype[39m=[32m"search"[39m
+    [33mvalue[39m=[32m"No matches"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"m-0 text-[15px] text-[#3f3f3f]"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  navigation:
+
+  Name "plugins.title":
+  [36m<nav[39m
+    [33maria-label[39m=[32m"plugins.title"[39m
+    [33mclass[39m=[32m"flex w-full min-w-0 shrink-0 flex-row gap-0.5 overflow-x-auto border-b border-[#efefef] bg-white px-3 pt-2 pb-4 @[640px]/plugins:w-[176px] @[640px]/plugins:flex-col @[640px]/plugins:overflow-x-hidden @[640px]/plugins:overflow-y-auto @[640px]/plugins:border-r @[640px]/plugins:border-b-0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  [36m<div[39m
+    [33mclass[39m=[32m"py-16 text-center text-sm text-foreground"[39m
+    [33mdata-ui[39m=[32m"plugins.plugin-store-page.status"[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"@container/plugins flex h-full min-h-0 w-full min-w-0 flex-1 flex-col bg-white"[39m
+      [33mdata-ui[39m=[32m"plugins.page"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"shrink-0 bg-white"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-col gap-4 px-6 pt-4 pb-4"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-col gap-2"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-4"[39m
+            [36m>[39m
+              [36m<h1[39m
+                [33mclass[39m=[32m"m-0 min-w-0 truncate text-[24px] leading-tight font-bold text-foreground"[39m
+              [36m>[39m
+                [0mcapabilities.tab.plugins[0m
+              [36m</h1>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex min-w-0 flex-wrap items-center gap-2"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"common.refresh"[39m
+                  [33mclass[39m=[32m"grid size-[30px] place-items-center rounded-[8px] text-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#3f3f3f] disabled:opacity-60"[39m
+                  [33mdisabled[39m=[32m""[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m"lucide lucide-refresh-cw size-4"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"24"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"24"[39m
+                    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+                    [36m/>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M21 3v5h-5"[39m
+                    [36m/>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+                    [36m/>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M8 16H3v5"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex h-[30px] min-w-0 items-center rounded-[8px] bg-[#f5f5f5] px-2.5 h-[30px] w-[220px] border-0 bg-[#f5f5f5] shadow-none has-[[data-slot=input-group-control]:focus-visible]:border-0 dark:bg-[#2c2c2c]"[39m
+                  [33mdata-slot[39m=[32m"input-group"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-label[39m=[32m"capabilities.search_placeholder"[39m
+                    [33mplaceholder[39m=[32m"capabilities.search_placeholder"[39m
+                    [33mtype[39m=[32m"search"[39m
+                    [33mvalue[39m=[32m"No matches"[39m
+                  [36m/>[39m
+                  [36m<button[39m
+                    [33maria-label[39m=[32m"common.clear"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33maria-label[39m=[32m"plugins.title"[39m
+                  [33mclass[39m=[32m"h-[30px]"[39m
+                  [33mdata-testid[39m=[32m"segmented-control"[39m
+                  [33mdata-value[39m=[32m"installed"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mplugins.tab.market[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mplugins.tab.installed[0m
+                  [36m</button>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"m-0 text-[15px] text-[#3f3f3f]"[39m
+            [36m>[39m
+              [0mcapabilities.subtitle.plugins[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex min-h-0 min-w-0 flex-1 flex-col @[640px]/plugins:flex-row"[39m
+      [36m>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"plugins.title"[39m
+          [33mclass[39m=[32m"flex w-full min-w-0 shrink-0 flex-row gap-0.5 overflow-x-auto border-b border-[#efefef] bg-white px-3 pt-2 pb-4 @[640px]/plugins:w-[176px] @[640px]/plugins:flex-col @[640px]/plugins:overflow-x-hidden @[640px]/plugins:overflow-y-auto @[640px]/plugins:border-r @[640px]/plugins:border-b-0"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+            [33mclass[39m=[32m"flex h-9 shrink-0 items-center gap-2.5 rounded-[8px] px-2.5 text-left text-[13px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#3f3f3f] focus-visible:ring-inset bg-[#f2f3f5] font-medium text-[#171717]"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-house size-4 shrink-0 text-current"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"truncate"[39m
+            [36m>[39m
+              [0mcapabilities.category.all[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"flex h-9 shrink-0 items-center gap-2.5 rounded-[8px] px-2.5 text-left text-[13px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#3f3f3f] focus-visible:ring-inset text-[#3f3f3f] hover:bg-[#f7f7f7] hover:text-[#171717]"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-star size-4 shrink-0 text-current"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"truncate"[39m
+            [36m>[39m
+              [0mcapabilities.category.featured[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"overflow-y-auto @container/catalog-grid min-h-0 min-w-0 flex-1"[39m
+          [33mdata-ui[39m=[32m"ui.scrollbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex min-h-full w-full flex-col px-6 pt-4 pb-6"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33mclass[39m=[32m"flex w-full flex-1 flex-col"[39m
+            [36m>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"m-0 text-[18px] font-semibold text-[#1a1a1a]"[39m
+              [36m>[39m
+                [0mcapabilities.category.all[0m
+              [36m</h2>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"py-16 text-center text-sm text-foreground"[39m
+                [33mdata-ui[39m=[32m"plugins.plugin-store-page.status"[39m
+                [33mrole[39m=[32m"status"[39m
+              [36m>[39m
+                [0mcommon.loading[0m
+              [36m</div>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/renderer/pages/plugins/__tests__/PluginStorePage.test.tsx:375:19
+    373|     await user.type(screen.getByRole('searchbox'), 'No matches')
+    374|     await screen.findByText('capabilities.no_results')
+    375|     expect(screen.getByRole('heading', { level: 2, name: 'capabilities…
+       |                   ^
+    376|     expect(calls().filter((call) => call.search.get('q') === 'No match…
+    377|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 36 skipped (37)
+   Start at  02:06:22
+   Duration  1.52s (tests 42%, transform 26%, import 19%, environment 10%, setup 2%)
+

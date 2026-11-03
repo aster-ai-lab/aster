@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/tests/cli_mise_multiversion_reference.py", line 134, in <module>
+    main()
+    ~~~~^^
+  File "/Users/roylin/code/aster/tests/cli_mise_multiversion_reference.py", line 119, in main
+    selected = Path(which.stdout.strip()).relative_to(installations.resolve())
+  File "/opt/homebrew/Cellar/python@3.13/3.13.15/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py", line 385, in relative_to
+    raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
+ValueError: '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise n7ihdyqv/0/data/installs/fixture/1.0.0/bin/fixture' is not in the subpath of '/private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster 多版本 mise n7ihdyqv/0/data/installs/fixture'

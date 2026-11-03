@@ -1,0 +1,126 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:145:26
+    |
+145 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:146:20
+    |
+146 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+   Compiling aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9m 56s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 4`
+     Running unittests src/lib.rs (target/debug/deps/aster_pager-a7172f03ea3dd945)
+
+running 12 tests
+test env_manager_cmd::tests::fish_values_escape_both_backslashes_and_single_quotes ... ok
+test env_manager_cmd::tests::split_tool_pin_defaults_latest ... ok
+test env_manager_cmd::tests::argument_debug_and_containing_commands_redact_values ... ok
+test env_manager_cmd::tests::unsupported_activation_shell_is_refused ... ok
+test env_manager_cmd::tests::empty_tool_declaration_does_not_create_an_http_source ... ok
+test env_manager_cmd::tests::missing_declared_pin_does_not_fall_back_to_an_unrelated_path ... ok
+test env_manager_cmd::tests::activation_bash_exports_path_and_vars ... ok
+test env_manager_cmd::tests::clap_accepts_tool_env_exec_activate_use ... ok
+test env_manager_cmd::tests::activation_preserves_shell_metacharacters_as_literal_variable_values ... ok
+test env_manager_cmd::tests::project_execution_uses_its_pin_after_another_version_is_installed ... ok
+test env_manager_cmd::tests::install_failure_returns_typed_error_without_panicking_in_async_context ... ok
+test env_manager_cmd::tests::exact_installed_pin_is_reused_without_a_download ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 10280 filtered out; finished in 13.65s
+

@@ -1,0 +1,42 @@
+{
+  "capturedAtUtc": "2026-11-01T18:15:20.565809+00:00",
+  "instance": "fork1",
+  "ownedPid": 73547,
+  "checks": [
+    {
+      "route": "/api/plugins?kind=plugin&page=1&pageSize=24",
+      "authenticated": true,
+      "status": 503,
+      "body": {
+        "error": "plugin_registry_unavailable"
+      }
+    },
+    {
+      "route": "/api/plugins?kind=plugin&installed=true&page=1&pageSize=24",
+      "authenticated": true,
+      "status": 200,
+      "body": {
+        "items": [],
+        "total": 0,
+        "page": 1,
+        "pageSize": 24,
+        "categories": []
+      }
+    },
+    {
+      "route": "/api/plugins?kind=plugin&installed=true",
+      "authenticated": false,
+      "status": 401,
+      "body": {
+        "error": "unauthorized"
+      }
+    }
+  ],
+  "isolatedSourceStore": "installed-offline-host-sdk: intentionally unsupported schema",
+  "userSourceConfigurationChanged": false,
+  "nativeGuiInteractionAccepted": false,
+  "ownedTestInstanceStopped": true,
+  "stopSignal": "SIGTERM",
+  "forkExitCode": 1,
+  "forkExitReason": "Owned test instance deliberately stopped with SIGTERM after all three HTTP checks."
+}

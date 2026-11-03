@@ -1,0 +1,17 @@
+{
+  "key": "cpython-3.12.14-macos-aarch64-none",
+  "version": "3.12.14",
+  "version_parts": {
+    "major": 3,
+    "minor": 12,
+    "patch": 14
+  },
+  "path": null,
+  "symlink": null,
+  "url": "https://releases.astral.sh/github/python-build-standalone/releases/download/20260901/cpython-3.12.14%2B20260901-aarch64-apple-darwin-install_only_stripped.tar.gz",
+  "os": "macos",
+  "variant": "default",
+  "implementation": "cpython",
+  "arch": "aarch64",
+  "libc": "none"
+}

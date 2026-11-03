@@ -1,0 +1,82 @@
+{
+  "profile": "dev/debug",
+  "inputs_sha256": "7c6679bbd3d32d542377f88c2b0ff13ebedf698d1a94466abe12ae358dc1f24a",
+  "deadline_seconds": 15,
+  "source_count": 14,
+  "source_bytes": 6262,
+  "cases": [
+    {
+      "name": "cold-native-preparation",
+      "command": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "use",
+        "registry",
+        "package",
+        "prepare",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/research.aix",
+        "--repository",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/插件源码 with spaces",
+        "--domain",
+        "knowledge",
+        "--output",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/manifest.json",
+        "--json"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_ms": 2213,
+      "stdout": "{\n  \"data\": {\n    \"aixPublication\": {\n      \"archiveLength\": 6305,\n      \"archiveSha256\": \"sha256:433e309ef38cf9b5716f6ade525353344839cc9cb3bdca3bc433e2dd540e323d\",\n      \"domain\": \"knowledge\",\n      \"manifestSha256\": \"sha256:1cc730ee8d93cdc02ce5766d6d49ab0720a220bf2c0af765130bed0da1c8d208\",\n      \"ociRepository\": \"ghcr.io/aster-ai-lab/plugins/knowledge/acme/research\",\n      \"owners\": [\n        \"fixture-maintainer\"\n      ],\n      \"package\": {\n        \"activityCount\": 2,\n        \"byteCount\": 6262,\n        \"componentId\": \"use/acme/research\",\n        \"fileCount\": 14,\n        \"packageId\": \"acme/research\",\n        \"packageSha256\": \"ea335d356908ed0884a7eaec955d45cb947092eccb48e845dba3f44c6bd87a3e\",\n        \"route\": \"research\",\n        \"schemaVersion\": 1,\n        \"surfaces\": [\n          \"tool\",\n          \"mcp\",\n          \"skill\",\n          \"ui\"\n        ],\n        \"version\": \"2.0.0\"\n      },\n      \"sourcePath\": \"/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/插件源码 with spaces/plugins/knowledge/acme/research\"\n    },\n    \"manifestPath\": \"/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/manifest.json\"\n  },\n  \"ok\": true,\n  \"schemaVersion\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "existing-output-refusal",
+      "command": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "use",
+        "registry",
+        "package",
+        "prepare",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/research.aix",
+        "--repository",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/插件源码 with spaces",
+        "--domain",
+        "knowledge",
+        "--output",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/manifest.json",
+        "--json"
+      ],
+      "exit_code": 1,
+      "timed_out": false,
+      "elapsed_ms": 157,
+      "stdout": "{\n  \"error\": {\n    \"code\": \"use.cli.io\",\n    \"details\": {},\n    \"message\": \"Failed to create new OCI manifest '/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/manifest.json': File exists (os error 17)\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "source-drift-refusal",
+      "command": [
+        "/Users/roylin/code/aster/target/debug/aster",
+        "use",
+        "registry",
+        "package",
+        "prepare",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/research.aix",
+        "--repository",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/插件源码 with spaces",
+        "--domain",
+        "knowledge",
+        "--output",
+        "/Users/roylin/code/aster/.tmp/mise-replacement/publication-probe/drift-manifest.json",
+        "--json"
+      ],
+      "exit_code": 1,
+      "timed_out": false,
+      "elapsed_ms": 149,
+      "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.publication_invalid\",\n    \"details\": {},\n    \"message\": \"The AIX archive must contain exactly the current domain plugin source files.\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
+      "stderr": ""
+    }
+  ],
+  "published": false,
+  "full_goal_complete": false,
+  "manifest_sha256": "1cc730ee8d93cdc02ce5766d6d49ab0720a220bf2c0af765130bed0da1c8d208",
+  "source_and_manifest_verified": true
+}
