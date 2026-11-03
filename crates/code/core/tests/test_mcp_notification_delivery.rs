@@ -31,16 +31,25 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if self.path.endswith("/health"):
             self.body({"ok":True})
             return
+        if self.path not in ("/mcp", "/mcp/sse"):
+            self.body({}, 404)
+            return
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.end_headers()
         self.wfile.flush()
+        if self.path == "/mcp/sse":
+            self.wfile.write(b"event: endpoint\r\ndata: /mcp/message?sessionId=owned\r\n\r\n")
+            self.wfile.flush()
         (root / "sse-ready").write_text("actual GET stream")
         while True:
             value = events.get()
             self.wfile.write(("data: " + json.dumps(value) + "\n\n").encode())
             self.wfile.flush()
     def do_POST(self):
+        if self.path not in ("/mcp", "/mcp/message?sessionId=owned"):
+            self.body({}, 404)
+            return
         size = int(self.headers.get("Content-Length", "0"))
         if size > 16384:
             self.body({}, 413)
@@ -66,7 +75,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
             result = {"content":[{"type":"text", "text":"http-progress-cache-913"}], "isError":False}
         else:
             result = {}
-        self.body({"jsonrpc":"2.0", "id":msg["id"], "result":result})
+        reply = {"jsonrpc":"2.0", "id":msg["id"], "result":result}
+        if self.path == "/mcp/message?sessionId=owned":
+            events.put(reply)
+            self.body({}, 202)
+        else:
+            self.body(reply)
 server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
 print(server.server_port, flush=True)
 server.serve_forever()
@@ -123,7 +137,7 @@ impl HttpPeer {
             )
         } else {
             Arc::new(
-                HttpSseTransport::connect(&self.url, HashMap::new())
+                HttpSseTransport::connect(format!("{}/sse", self.url), HashMap::new())
                     .await
                     .unwrap(),
             )

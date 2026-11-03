@@ -1,298 +1,347 @@
-//! HTTP+SSE Transport for MCP
-//!
-//! Implements MCP transport over HTTP (requests) and Server-Sent Events (notifications)
-//! for remote MCP server communication.
-//!
-//! ## Protocol
-//!
-//! - **Requests**: POST JSON-RPC to the server's HTTP endpoint
-//! - **Notifications (outbound)**: POST to the server's HTTP endpoint
-//! - **Notifications (inbound)**: Received via SSE stream from the server
-//! - **Reconnection**: Automatic reconnect with exponential backoff on SSE disconnect
+//! Legacy MCP HTTP+SSE transport. The configured URL receives SSE events;
+//! the server advertises the POST endpoint and returns JSON-RPC replies on SSE.
 
 use super::notifications::{NotificationReceiver, NotificationSender};
 use super::McpTransport;
 use crate::llm::http::build_reqwest_client;
 use crate::mcp::protocol::{JsonRpcNotification, JsonRpcRequest, JsonRpcResponse, McpNotification};
-use anyhow::{anyhow, Context, Result};
+use crate::sse::{data_field_value, take_sse_events_scanned, SseEventScan, Utf8StreamDecoder};
+use anyhow::{anyhow, bail, Context, Result};
 use async_trait::async_trait;
-use reqwest::Client;
+use futures::StreamExt;
+use reqwest::{Client, Url};
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, oneshot};
+use tokio_util::sync::CancellationToken;
 
-/// Default request timeout
 const DEFAULT_REQUEST_TIMEOUT_SECS: u64 = 60;
+const MAX_SSE_FRAME_BYTES: usize = 8 * 1024 * 1024;
 
-/// Default SSE reconnect base delay
-const DEFAULT_RECONNECT_BASE_MS: u64 = 500;
+#[derive(Default)]
+struct Session {
+    endpoint: Option<Url>,
+    pending: HashMap<u64, oneshot::Sender<JsonRpcResponse>>,
+}
 
-/// Maximum SSE reconnect delay
-const MAX_RECONNECT_DELAY_MS: u64 = 30_000;
+impl Session {
+    fn disconnect(&mut self) {
+        self.endpoint = None;
+        self.pending.clear();
+    }
+}
 
-/// HTTP+SSE transport for remote MCP servers
+struct PendingRequest<'a> {
+    session: &'a Mutex<Session>,
+    id: u64,
+}
+
+impl Drop for PendingRequest<'_> {
+    fn drop(&mut self) {
+        self.session
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .pending
+            .remove(&self.id);
+    }
+}
+
+struct ReaderSession(Arc<Mutex<Session>>);
+
+impl Drop for ReaderSession {
+    fn drop(&mut self) {
+        self.0
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .disconnect();
+    }
+}
+
+/// A remote MCP session with bounded requests and one owned SSE reader.
+/// Closing or dropping the transport stops the reader and pending requests.
+/// Interrupted requests are never replayed when the SSE connection reconnects.
 pub struct HttpSseTransport {
-    /// Base URL of the MCP server (e.g., "http://localhost:3000/mcp")
-    base_url: String,
-    /// HTTP client
     client: Client,
-    /// Custom headers (e.g., auth tokens) — retained for reconnection
-    #[allow(dead_code)]
-    headers: HashMap<String, String>,
-    /// Notification receiver (from SSE stream)
+    session: Arc<Mutex<Session>>,
     notification_rx: NotificationReceiver,
-    /// Connected flag (shared with SSE listener)
-    connected: Arc<AtomicBool>,
-    /// Request timeout
     request_timeout: Duration,
-    /// Abort handle for SSE listener task
-    sse_abort: Mutex<Option<tokio::task::AbortHandle>>,
+    closed: CancellationToken,
+    reader: Mutex<Option<tokio::task::JoinHandle<()>>>,
 }
 
 impl HttpSseTransport {
-    /// Connect to a remote MCP server via HTTP+SSE.
-    ///
-    /// - `base_url`: The server's HTTP endpoint (e.g., "http://localhost:3000/mcp")
-    /// - `headers`: Optional custom headers (e.g., `Authorization: Bearer ...`)
-    pub async fn connect(
-        base_url: impl Into<String>,
-        headers: HashMap<String, String>,
-    ) -> Result<Self> {
-        Self::connect_with_timeout(base_url, headers, DEFAULT_REQUEST_TIMEOUT_SECS).await
+    /// Connect to the exact configured SSE URL and await its advertised endpoint.
+    /// Invalid URLs/headers, HTTP failures and a missing endpoint return errors.
+    pub async fn connect(url: impl Into<String>, headers: HashMap<String, String>) -> Result<Self> {
+        Self::connect_with_timeout(url, headers, DEFAULT_REQUEST_TIMEOUT_SECS).await
     }
 
-    /// Connect with a custom request timeout.
+    /// Connect with a deadline in seconds for setup and each subsequent request.
     pub async fn connect_with_timeout(
-        base_url: impl Into<String>,
+        url: impl Into<String>,
         headers: HashMap<String, String>,
         request_timeout_secs: u64,
     ) -> Result<Self> {
-        let base_url = base_url.into().trim_end_matches('/').to_string();
-
-        // Build default headers
+        let url = Url::parse(&url.into()).context("Invalid MCP SSE URL")?;
+        if !matches!(url.scheme(), "http" | "https") || url.host_str().is_none() {
+            bail!("MCP SSE URL must use HTTP or HTTPS");
+        }
         let mut header_map = reqwest::header::HeaderMap::new();
         header_map.insert(
             reqwest::header::CONTENT_TYPE,
-            "application/json".parse().unwrap(),
+            reqwest::header::HeaderValue::from_static("application/json"),
         );
-        for (key, value) in &headers {
-            if let (Ok(name), Ok(val)) = (
-                reqwest::header::HeaderName::from_bytes(key.as_bytes()),
-                reqwest::header::HeaderValue::from_str(value),
-            ) {
-                header_map.insert(name, val);
-            }
+        for (key, value) in headers {
+            let name = reqwest::header::HeaderName::from_bytes(key.as_bytes())
+                .context("Invalid MCP header name")?;
+            let mut value = reqwest::header::HeaderValue::from_str(&value)
+                .context("Invalid MCP header value")?;
+            value.set_sensitive(true);
+            header_map.insert(name, value);
         }
-        let client = build_reqwest_client(
-            Some(Duration::from_secs(request_timeout_secs)),
-            Some(header_map),
-        )
-        .context("Failed to build HTTP client")?;
-
-        // Verify connectivity with a simple GET (optional, non-fatal)
-        let ping_url = format!("{}/health", base_url);
-        let reachable = client.get(&ping_url).send().await.is_ok();
-        if !reachable {
-            tracing::debug!(
-                url = %base_url,
-                "MCP server health check failed (non-fatal, will attempt SSE connection)"
-            );
-        }
-
-        // Create notification channel
+        let client = build_reqwest_client(None, Some(header_map))
+            .context("Failed to build MCP HTTP client")?;
+        let session = Arc::new(Mutex::new(Session::default()));
         let (notification_tx, notification_rx) = NotificationReceiver::channel(256);
-
-        // Spawn SSE listener
-        let sse_url = format!("{}/sse", base_url);
-        let sse_client = client.clone();
-        let connected = Arc::new(AtomicBool::new(true));
-        let sse_connected = Arc::clone(&connected);
-
-        let sse_handle = tokio::spawn(async move {
-            Self::sse_listener(sse_client, sse_url, notification_tx, sse_connected).await;
+        let (ready_tx, ready_rx) = oneshot::channel();
+        let reader_client = client.clone();
+        let reader_session = ReaderSession(Arc::clone(&session));
+        let reader = tokio::spawn(async move {
+            Self::listen(
+                reader_client,
+                url,
+                notification_tx,
+                reader_session,
+                ready_tx,
+            )
+            .await;
         });
-
-        Ok(Self {
-            base_url,
+        let transport = Self {
             client,
-            headers,
+            session,
             notification_rx,
-            connected,
             request_timeout: Duration::from_secs(request_timeout_secs),
-            sse_abort: Mutex::new(Some(sse_handle.abort_handle())),
-        })
+            closed: CancellationToken::new(),
+            reader: Mutex::new(Some(reader)),
+        };
+        tokio::time::timeout(transport.request_timeout, ready_rx)
+            .await
+            .context("MCP SSE connection timed out")?
+            .context("MCP SSE reader stopped before advertising an endpoint")??;
+        Ok(transport)
     }
 
-    /// SSE listener loop with automatic reconnection
-    async fn sse_listener(
+    async fn listen(
         client: Client,
-        url: String,
-        tx: NotificationSender,
-        connected: Arc<AtomicBool>,
+        url: Url,
+        notifications: NotificationSender,
+        session: ReaderSession,
+        ready: oneshot::Sender<Result<()>>,
     ) {
-        let mut reconnect_delay = DEFAULT_RECONNECT_BASE_MS;
-
+        let mut ready = Some(ready);
+        let mut delay_ms = 500;
         loop {
-            if !connected.load(Ordering::SeqCst) {
-                break;
-            }
-
-            tracing::debug!(url = %url, "Connecting to MCP SSE endpoint");
-
-            match client
-                .get(&url)
-                .header("Accept", "text/event-stream")
-                .send()
-                .await
+            let result =
+                Self::read_stream(&client, &url, &notifications, &session.0, &mut ready).await;
             {
-                Ok(response) if response.status().is_success() => {
-                    tracing::info!(url = %url, "Connected to MCP SSE endpoint");
-                    reconnect_delay = DEFAULT_RECONNECT_BASE_MS; // Reset on success
-
-                    // Read SSE stream line by line
-                    use futures::StreamExt;
-                    let mut stream = response.bytes_stream();
-                    let mut buffer = String::new();
-
-                    while let Some(chunk) = stream.next().await {
-                        if !connected.load(Ordering::SeqCst) {
-                            return;
-                        }
-
-                        match chunk {
-                            Ok(bytes) => {
-                                buffer.push_str(&String::from_utf8_lossy(&bytes));
-
-                                for event_text in crate::sse::take_sse_events(&mut buffer, false) {
-                                    if let Some(notification) = Self::parse_sse_event(&event_text) {
-                                        tx.send(notification).await;
-                                    }
-                                }
-                            }
-                            Err(e) => {
-                                tracing::warn!(error = %e, "SSE stream error");
-                                break;
-                            }
-                        }
-                    }
-
-                    for event_text in crate::sse::take_sse_events(&mut buffer, true) {
-                        if let Some(notification) = Self::parse_sse_event(&event_text) {
-                            tx.send(notification).await;
-                        }
-                    }
-
-                    tracing::debug!("SSE stream ended, will reconnect");
+                let mut session = session
+                    .0
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                if session.endpoint.is_some() {
+                    delay_ms = 500;
                 }
-                Ok(response) => {
-                    tracing::warn!(
-                        status = %response.status(),
-                        "SSE connection failed with status"
-                    );
-                }
-                Err(e) => {
-                    tracing::warn!(error = %e, "SSE connection failed");
-                }
+                session.disconnect();
             }
-
-            if !connected.load(Ordering::SeqCst) {
-                break;
+            if let Some(ready) = ready.take() {
+                let _ = ready.send(result.and_then(|()| {
+                    Err(anyhow!(
+                        "MCP SSE stream ended before advertising an endpoint"
+                    ))
+                }));
+                return;
             }
-
-            // Exponential backoff
-            tracing::debug!(delay_ms = reconnect_delay, "SSE reconnecting after delay");
-            tokio::time::sleep(Duration::from_millis(reconnect_delay)).await;
-            reconnect_delay = (reconnect_delay * 2).min(MAX_RECONNECT_DELAY_MS);
+            if let Err(error) = result {
+                tracing::warn!(error = %error, "MCP SSE connection interrupted");
+            }
+            tokio::time::sleep(Duration::from_millis(delay_ms)).await;
+            delay_ms = (delay_ms * 2).min(30_000);
         }
     }
 
-    /// Parse an SSE event into an MCP notification
-    fn parse_sse_event(event_text: &str) -> Option<McpNotification> {
-        let mut data = String::new();
+    async fn read_stream(
+        client: &Client,
+        url: &Url,
+        notifications: &NotificationSender,
+        session: &Mutex<Session>,
+        ready: &mut Option<oneshot::Sender<Result<()>>>,
+    ) -> Result<()> {
+        let response = client
+            .get(url.clone())
+            .header("Accept", "text/event-stream")
+            .send()
+            .await
+            .map_err(reqwest::Error::without_url)
+            .context("MCP SSE connection failed")?
+            .error_for_status()
+            .map_err(reqwest::Error::without_url)?;
+        let content_type = response
+            .headers()
+            .get(reqwest::header::CONTENT_TYPE)
+            .and_then(|value| value.to_str().ok())
+            .unwrap_or("");
+        if !content_type
+            .split(';')
+            .next()
+            .is_some_and(|value| value.trim().eq_ignore_ascii_case("text/event-stream"))
+        {
+            bail!("MCP SSE endpoint did not return an event stream");
+        }
+        let mut stream = response.bytes_stream();
+        let mut decoder = Utf8StreamDecoder::default();
+        let mut scan = SseEventScan::default();
+        let mut buffer = String::new();
+        while let Some(chunk) = stream.next().await {
+            let bytes = chunk.map_err(reqwest::Error::without_url)?;
+            if buffer
+                .len()
+                .saturating_add(decoder.pending_bytes())
+                .saturating_add(bytes.len())
+                > MAX_SSE_FRAME_BYTES
+            {
+                bail!("MCP SSE frame exceeds the size limit");
+            }
+            decoder
+                .push_to(&bytes, &mut buffer)
+                .context("Invalid MCP SSE UTF-8")?;
+            for event in take_sse_events_scanned(&mut buffer, &mut scan, false) {
+                Self::receive_event(&event, url, session, notifications, ready).await?;
+            }
+        }
+        decoder.finish().context("Incomplete MCP SSE UTF-8")?;
+        for event in take_sse_events_scanned(&mut buffer, &mut scan, true) {
+            Self::receive_event(&event, url, session, notifications, ready).await?;
+        }
+        Ok(())
+    }
 
-        for line in event_text.lines() {
-            if let Some(value) = crate::sse::data_field_value(line) {
-                if !data.is_empty() {
-                    data.push('\n');
+    async fn receive_event(
+        event: &str,
+        url: &Url,
+        session: &Mutex<Session>,
+        notifications: &NotificationSender,
+        ready: &mut Option<oneshot::Sender<Result<()>>>,
+    ) -> Result<()> {
+        let mut kind = "message";
+        let mut data = Vec::new();
+        for line in event.split(['\r', '\n']) {
+            if let Some(value) = line.strip_prefix("event:") {
+                kind = value.strip_prefix(' ').unwrap_or(value);
+            } else if let Some(value) = data_field_value(line) {
+                data.push(value);
+            }
+        }
+        let data = data.join("\n");
+        if kind == "endpoint" {
+            let endpoint = url.join(&data).context("Invalid MCP message endpoint")?;
+            if endpoint.origin() != url.origin() {
+                bail!("MCP message endpoint must have the SSE endpoint's origin");
+            }
+            session
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .endpoint = Some(endpoint);
+            if let Some(ready) = ready.take() {
+                let _ = ready.send(Ok(()));
+            }
+        } else if kind == "message" && !data.is_empty() {
+            let value: serde_json::Value =
+                serde_json::from_str(&data).context("Invalid MCP SSE JSON")?;
+            if value.get("method").is_some() {
+                if value.get("id").is_none() {
+                    let notification =
+                        serde_json::from_value(value).context("Invalid MCP notification")?;
+                    notifications
+                        .send(McpNotification::from_json_rpc(&notification))
+                        .await;
                 }
-                data.push_str(value);
+            } else {
+                let response: JsonRpcResponse =
+                    serde_json::from_value(value).context("Invalid MCP response")?;
+                let sender = response.id.and_then(|id| {
+                    session
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner)
+                        .pending
+                        .remove(&id)
+                });
+                if let Some(sender) = sender {
+                    let _ = sender.send(response);
+                }
             }
-            // Ignore "event:", "id:", "retry:" fields for now
         }
+        Ok(())
+    }
 
-        if data.is_empty() {
-            return None;
-        }
-
-        match serde_json::from_str::<JsonRpcNotification>(&data) {
-            Ok(notification) => Some(McpNotification::from_json_rpc(&notification)),
-            Err(e) => {
-                tracing::debug!(error = %e, data = %data, "Failed to parse SSE data as JSON-RPC notification");
-                None
-            }
-        }
+    async fn post(&self, endpoint: Url, message: &impl serde::Serialize) -> Result<()> {
+        self.client
+            .post(endpoint)
+            .json(message)
+            .send()
+            .await
+            .map_err(reqwest::Error::without_url)
+            .context("MCP HTTP POST failed")?
+            .error_for_status()
+            .map_err(reqwest::Error::without_url)?;
+        Ok(())
     }
 }
 
 #[async_trait]
 impl McpTransport for HttpSseTransport {
     async fn request(&self, request: JsonRpcRequest) -> Result<JsonRpcResponse> {
-        if !self.connected.load(Ordering::SeqCst) {
-            return Err(anyhow!("Transport not connected"));
+        let (sender, receiver) = oneshot::channel();
+        let endpoint = {
+            let mut session = self
+                .session
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            let endpoint = session
+                .endpoint
+                .clone()
+                .ok_or_else(|| anyhow!("MCP transport not connected"))?;
+            if session.pending.contains_key(&request.id) {
+                bail!("MCP request ID is already pending");
+            }
+            session.pending.insert(request.id, sender);
+            endpoint
+        };
+        let _pending = PendingRequest {
+            session: &self.session,
+            id: request.id,
+        };
+        tokio::select! {
+            _ = self.closed.cancelled() => Err(anyhow!("MCP transport closed")),
+            result = tokio::time::timeout(self.request_timeout, async {
+                self.post(endpoint, &request).await?;
+                receiver.await.context("MCP SSE disconnected before receiving a response")
+            }) => result.context("MCP request timed out")?,
         }
-
-        let url = format!("{}/message", self.base_url);
-        let body = serde_json::to_string(&request)?;
-
-        let response = self
-            .client
-            .post(&url)
-            .body(body)
-            .send()
-            .await
-            .with_context(|| format!("HTTP request to {} failed", url))?;
-
-        if !response.status().is_success() {
-            let status = response.status();
-            let body = response.text().await.unwrap_or_default();
-            return Err(anyhow!("MCP server returned HTTP {}: {}", status, body));
-        }
-
-        let json_response: JsonRpcResponse = response
-            .json()
-            .await
-            .context("Failed to parse JSON-RPC response")?;
-
-        Ok(json_response)
     }
 
     async fn notify(&self, notification: JsonRpcNotification) -> Result<()> {
-        if !self.connected.load(Ordering::SeqCst) {
-            return Err(anyhow!("Transport not connected"));
+        let endpoint = self
+            .session
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .endpoint
+            .clone()
+            .ok_or_else(|| anyhow!("MCP transport not connected"))?;
+        tokio::select! {
+            _ = self.closed.cancelled() => Err(anyhow!("MCP transport closed")),
+            result = tokio::time::timeout(self.request_timeout, self.post(endpoint, &notification)) => result.context("MCP notification timed out")?,
         }
-
-        let url = format!("{}/message", self.base_url);
-        let body = serde_json::to_string(&notification)?;
-
-        let response = self
-            .client
-            .post(&url)
-            .body(body)
-            .send()
-            .await
-            .with_context(|| format!("HTTP notification to {} failed", url))?;
-
-        if !response.status().is_success() {
-            let status = response.status();
-            tracing::warn!(
-                status = %status,
-                "MCP notification returned non-success status"
-            );
-        }
-
-        Ok(())
     }
 
     fn notifications(&self) -> mpsc::Receiver<McpNotification> {
@@ -303,215 +352,61 @@ impl McpTransport for HttpSseTransport {
         Some(self.notification_rx.tool_list_changes())
     }
 
-    async fn close(&self) -> Result<()> {
-        self.connected.store(false, Ordering::SeqCst);
-
-        // Abort SSE listener
-        let mut abort_guard = self
-            .sse_abort
+    fn start_close(&self) {
+        self.closed.cancel();
+        self.session
             .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        if let Some(handle) = abort_guard.take() {
-            handle.abort();
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .disconnect();
+        if let Some(reader) = self
+            .reader
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .as_ref()
+        {
+            reader.abort();
         }
+    }
 
+    async fn close(&self) -> Result<()> {
+        self.start_close();
+        let reader = self
+            .reader
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .take();
+        if let Some(reader) = reader {
+            let _ = reader.await;
+        }
         Ok(())
     }
 
     fn is_connected(&self) -> bool {
-        self.connected.load(Ordering::SeqCst)
+        !self.closed.is_cancelled()
+            && self
+                .session
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .endpoint
+                .is_some()
     }
 }
 
 impl Drop for HttpSseTransport {
     fn drop(&mut self) {
-        self.connected.store(false, Ordering::Release);
-        if let Some(handle) = self
-            .sse_abort
-            .get_mut()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .take()
-        {
-            handle.abort();
-        }
+        self.start_close();
     }
 }
 
 impl std::fmt::Debug for HttpSseTransport {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("HttpSseTransport")
-            .field("base_url", &self.base_url)
-            .field("connected", &self.connected.load(Ordering::Relaxed))
+            .field("connected", &self.is_connected())
             .field("request_timeout", &self.request_timeout)
-            .finish()
+            .finish_non_exhaustive()
     }
 }
-
-// ============================================================================
-// Tests
-// ============================================================================
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_sse_event_valid() {
-        let event = "data: {\"jsonrpc\":\"2.0\",\"method\":\"test\",\"params\":null}";
-        let result = HttpSseTransport::parse_sse_event(event);
-        assert!(result.is_some());
-    }
-
-    #[test]
-    fn test_parse_sse_event_multiline_data() {
-        // Multi-line data fields get concatenated with newlines
-        let event = "data: {\"jsonrpc\":\"2.0\",\ndata: \"method\":\"test\",\"params\":null}";
-        let result = HttpSseTransport::parse_sse_event(event);
-        // The concatenated string is: {"jsonrpc":"2.0",\n"method":"test","params":null}
-        // which is valid JSON (JSON allows whitespace including newlines)
-        // so this should parse successfully
-        assert!(result.is_some());
-    }
-
-    #[test]
-    fn test_parse_sse_event_empty() {
-        let result = HttpSseTransport::parse_sse_event("");
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_parse_sse_event_no_data() {
-        let event = "event: ping\nid: 123";
-        let result = HttpSseTransport::parse_sse_event(event);
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_parse_sse_event_invalid_json() {
-        let event = "data: not-json";
-        let result = HttpSseTransport::parse_sse_event(event);
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_parse_sse_event_with_event_field() {
-        let event = "event: notification\ndata: {\"jsonrpc\":\"2.0\",\"method\":\"update\",\"params\":null}";
-        let result = HttpSseTransport::parse_sse_event(event);
-        assert!(result.is_some());
-    }
-
-    #[test]
-    fn test_parse_sse_event_data_no_space() {
-        // "data:" with no space after colon
-        let event = "data:{\"jsonrpc\":\"2.0\",\"method\":\"test\",\"params\":null}";
-        let result = HttpSseTransport::parse_sse_event(event);
-        assert!(result.is_some());
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_connect_invalid_url() {
-        // Should succeed in creating transport (SSE connects lazily)
-        let result = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new()).await;
-        // Connection creation should succeed (SSE reconnects in background)
-        assert!(result.is_ok());
-        if let Ok(transport) = result {
-            assert!(transport.is_connected());
-            transport.close().await.unwrap();
-            assert!(!transport.is_connected());
-        }
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_close() {
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new())
-            .await
-            .unwrap();
-
-        assert!(transport.is_connected());
-        transport.close().await.unwrap();
-        assert!(!transport.is_connected());
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_double_close() {
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new())
-            .await
-            .unwrap();
-
-        transport.close().await.unwrap();
-        // Second close should not panic
-        transport.close().await.unwrap();
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_request_after_close() {
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new())
-            .await
-            .unwrap();
-
-        transport.close().await.unwrap();
-
-        let request = JsonRpcRequest::new(1, "test", None);
-        let result = transport.request(request).await;
-        assert!(result.is_err());
-        assert!(result.unwrap_err().to_string().contains("not connected"));
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_notify_after_close() {
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new())
-            .await
-            .unwrap();
-
-        transport.close().await.unwrap();
-
-        let notification = JsonRpcNotification::new("test", None);
-        let result = transport.notify(notification).await;
-        assert!(result.is_err());
-        assert!(result.unwrap_err().to_string().contains("not connected"));
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_custom_timeout() {
-        let transport =
-            HttpSseTransport::connect_with_timeout("http://127.0.0.1:1", HashMap::new(), 5)
-                .await
-                .unwrap();
-
-        assert_eq!(transport.request_timeout, Duration::from_secs(5));
-        transport.close().await.unwrap();
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_with_headers() {
-        let mut headers = HashMap::new();
-        headers.insert("Authorization".to_string(), "Bearer test-token".to_string());
-        headers.insert("X-Custom".to_string(), "value".to_string());
-
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", headers)
-            .await
-            .unwrap();
-
-        assert_eq!(transport.headers.len(), 2);
-        transport.close().await.unwrap();
-    }
-
-    #[tokio::test]
-    async fn test_http_sse_transport_debug() {
-        let transport = HttpSseTransport::connect("http://127.0.0.1:1", HashMap::new())
-            .await
-            .unwrap();
-
-        let debug = format!("{:?}", transport);
-        assert!(debug.contains("HttpSseTransport"));
-        assert!(debug.contains("127.0.0.1"));
-        transport.close().await.unwrap();
-    }
-
-    #[test]
-    fn test_default_constants() {
-        assert_eq!(DEFAULT_REQUEST_TIMEOUT_SECS, 60);
-        assert_eq!(DEFAULT_RECONNECT_BASE_MS, 500);
-        assert_eq!(MAX_RECONNECT_DELAY_MS, 30_000);
-    }
-}
+#[path = "http_sse_tests.rs"]
+mod tests;

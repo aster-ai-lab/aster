@@ -1,0 +1,167 @@
+{
+  "status": "passed_bounded_p0",
+  "date": "2026-11-03",
+  "platform": {
+    "os": "macOS 26.6.2",
+    "architecture": "arm64",
+    "rust": "1.97.1"
+  },
+  "production_fixes": [
+    "existing_provider_store_recovery_routes",
+    "legacy_mcp_sse_endpoint_and_rpc_reply_delivery",
+    "api_key_toggle_accessible_name"
+  ],
+  "checks": {
+    "renderer": {
+      "passed": 732,
+      "files": 82
+    },
+    "native_provider_and_model_control": {
+      "passed": 177,
+      "ignored": 1
+    },
+    "sse_unit": {
+      "passed": 6
+    },
+    "public_mcp_integration": {
+      "passed": 3
+    },
+    "accounting": {
+      "passed": 14
+    },
+    "sse_parser_selection": {
+      "passed": 15,
+      "includes_sse_unit": 6
+    },
+    "workspace_dependencies": {
+      "passed": 7
+    },
+    "connector_e2e": {
+      "passed": 1,
+      "attempt": 9,
+      "seconds": 47.7,
+      "native_acp": true,
+      "transports": [
+        "stdio",
+        "sse",
+        "streamable_http"
+      ],
+      "native_window_input": false
+    },
+    "real_provider_smoke": {
+      "passed": true,
+      "model": "codex::gpt-6.1-sol",
+      "reopened_ledger_records": 3,
+      "submission": "native_http"
+    },
+    "clippy_all_targets": {
+      "exit_code": 0,
+      "existing_warnings": true
+    },
+    "scoped_format_and_diff": {
+      "passed": true
+    },
+    "full_workspace_final_format": {
+      "passed": false,
+      "unrelated_path": "crates/code/acp/src/goal.rs:813"
+    },
+    "web_typecheck": {
+      "errors": 281,
+      "touched_file_errors": 0
+    },
+    "e2e_typecheck": {
+      "errors": 18,
+      "touched_file_errors": 0
+    },
+    "additional_real_coding": {
+      "passed": true,
+      "submission": "native_http",
+      "project_passed": 12,
+      "project_failed": 0,
+      "unchanged_external_acceptance": true,
+      "external_queries": 8,
+      "original_files_compared": 13,
+      "modified_files": [
+        "search.mjs",
+        "search.test.mjs",
+        "board/server.test.mjs"
+      ],
+      "original_failed_attempt": {
+        "passed": false,
+        "project_passed": 4,
+        "project_failed": 6,
+        "external_acceptance": false,
+        "native_process_exit_code": 0,
+        "interrupted": true
+      }
+    },
+    "native_input_send": {
+      "passed": true,
+      "submission": "native_window_composer",
+      "exact_response": "P0_NATIVE_INPUT_OK",
+      "terminal_status": "success"
+    },
+    "native_tool_stop": {
+      "passed": true,
+      "action": "native_pause_button",
+      "process_terminated": true,
+      "business_files_preserved": true,
+      "message_status": "paused"
+    },
+    "native_upstream_cancel": {
+      "passed": true,
+      "action": "native_pause_button",
+      "dispatched": true,
+      "attempts": 1,
+      "replayed": false,
+      "terminal_status": "cancelled",
+      "usage_complete": false,
+      "tokens": null,
+      "pricing": null,
+      "message_status": "paused"
+    },
+    "native_provider_ui": {
+      "passed": true,
+      "custom_provider_saved": true,
+      "protocol": "openai-chat-completions",
+      "wire_model_id": "json-render-cua",
+      "probe_status": "succeeded",
+      "probe_tokens": 2,
+      "settings_pane_reopened": true,
+      "manual_full_app_restart": false,
+      "process_reopen_covered_by_existing_native_store_tests": true
+    },
+    "native_usage_ui": {
+      "passed": true,
+      "reopened_ledger_attempts": 43,
+      "succeeded": 39,
+      "cancelled": 4,
+      "known_tokens": 902920,
+      "incomplete_usage": 4,
+      "unknown_cash_cost": 1,
+      "cash_cost_display": "—"
+    },
+    "source_fingerprints_after_acceptance": {
+      "changed": 0,
+      "files": 13
+    },
+    "cleanup": {
+      "passed": true,
+      "native_and_renderer_and_synthetic_model_stopped": true,
+      "trace_sealed": true,
+      "runtime_descriptor_removed": true
+    }
+  },
+  "remaining": [],
+  "private_evidence": "apps/studio/.studio/cache/p0-stability-e2e/",
+  "scope": "Three existing-owner production fixes, necessary callers/tests/fixtures, bounded P0 acceptance. No new harness, product page, dependency, commit or worktree.",
+  "not_claimed": [
+    "full_magpie_parity",
+    "whole_long_horizon_coding_campaign",
+    "manual_full_app_restart",
+    "all_native_window_file_task_submission",
+    "clean_workspace_typecheck_or_format",
+    "windows_linux_runtime",
+    "release_certification"
+  ]
+}
