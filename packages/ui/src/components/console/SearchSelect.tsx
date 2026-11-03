@@ -9,103 +9,104 @@ import {
   type KeyboardEvent,
   type CSSProperties,
   type ReactElement,
-  type ReactNode,
-} from 'react';
-import { createPortal } from 'react-dom';
-import { cn } from '../../lib/cn';
-import { menuCardClass, menuRowClass, menuRowSelectedClass } from '../../lib/menu-surface';
-import { usePortalContainer } from '../primitives/portal-container';
-import { usePopupDismissal } from '../primitives/popup-dismissal';
-import { SelectionHighlight } from '../primitives/selection-highlight';
+  type ReactNode
+} from 'react'
+import { createPortal } from 'react-dom'
+
+import { cn } from '../../lib/cn'
+import { menuCardClass, menuRowClass, menuRowSelectedClass } from '../../lib/menu-surface'
+import { usePopupDismissal } from '../primitives/popup-dismissal'
+import { PopupHighlight } from '../primitives/popup-highlight'
+import { usePortalContainer } from '../primitives/portal-container'
 
 function wheelDeltaY(event: WheelEvent, el: HTMLElement) {
-  if (event.deltaMode === 1) return event.deltaY * 16;
-  if (event.deltaMode === 2) return event.deltaY * el.clientHeight;
-  return event.deltaY;
+  if (event.deltaMode === 1) return event.deltaY * 16
+  if (event.deltaMode === 2) return event.deltaY * el.clientHeight
+  return event.deltaY
 }
 
 function revealOption(list: HTMLElement, option: HTMLElement) {
-  const delta = option.getBoundingClientRect().top - list.getBoundingClientRect().top;
+  const delta = option.getBoundingClientRect().top - list.getBoundingClientRect().top
   if (delta < 0) {
-    list.scrollTop += delta;
-    return;
+    list.scrollTop += delta
+    return
   }
-  const overflow = delta + option.offsetHeight - list.clientHeight;
-  if (overflow > 0) list.scrollTop += overflow;
+  const overflow = delta + option.offsetHeight - list.clientHeight
+  if (overflow > 0) list.scrollTop += overflow
 }
 
 export type SearchSelectOption = {
-  value: string;
-  label: string;
-  keywords?: string;
+  value: string
+  label: string
+  keywords?: string
   /** Optional leading mark (logo / avatar) shown in trigger and list. */
-  icon?: ReactNode;
-  disabled?: boolean;
-  group?: string;
-  meta?: string;
-  previewStyle?: CSSProperties;
-};
+  icon?: ReactNode
+  disabled?: boolean
+  group?: string
+  meta?: string
+  previewStyle?: CSSProperties
+}
 
-export type SearchSelectSize = 'sm' | 'md';
+export type SearchSelectSize = 'sm' | 'md'
 
 type SearchSelectBaseProps = {
-  options: SearchSelectOption[];
-  placeholder?: string;
-  searchPlaceholder?: string;
-  emptyText?: string;
-  className?: string;
-  panelClassName?: string;
+  options: SearchSelectOption[]
+  placeholder?: string
+  searchPlaceholder?: string
+  emptyText?: string
+  className?: string
+  panelClassName?: string
   /** Keep a single hover plate moving between options. */
-  glidingHighlight?: boolean;
+  glidingHighlight?: boolean
   /** Minimum width for menus with descriptive options, clamped to the viewport. */
-  minPanelWidth?: number;
-  portalContainer?: HTMLElement | ((trigger: HTMLElement) => HTMLElement);
-  disabled?: boolean;
+  minPanelWidth?: number
+  portalContainer?: HTMLElement | ((trigger: HTMLElement) => HTMLElement)
+  disabled?: boolean
   /** sm = compact toolbar / card header filters */
-  size?: SearchSelectSize;
+  size?: SearchSelectSize
   /** When false, omit the in-panel search field (short option lists). */
-  searchable?: boolean;
+  searchable?: boolean
   /**
    * Trailing debounce for the in-panel search filtering, in milliseconds.
    * 0 (default) filters on every keystroke.
    */
-  searchDebounceMs?: number;
+  searchDebounceMs?: number
   /** Show clear control when a value is selected. Default true. */
-  allowClear?: boolean;
-  id?: string;
+  allowClear?: boolean
+  id?: string
   /** Stable hook for tests and end-to-end runs, set on the root. */
-  'data-ui'?: string;
-  'aria-label'?: string;
-  'aria-invalid'?: boolean | 'true' | 'false';
-  'aria-describedby'?: string;
-  'aria-required'?: boolean;
-  'aria-keyshortcuts'?: string;
-  'data-autofocus'?: 'true';
-  role?: 'combobox';
-};
+  'data-ui'?: string
+  'aria-label'?: string
+  'aria-invalid'?: boolean | 'true' | 'false'
+  'aria-describedby'?: string
+  'aria-required'?: boolean
+  'aria-keyshortcuts'?: string
+  'data-autofocus'?: 'true'
+  role?: 'combobox'
+}
 
 export type SearchSelectProps = SearchSelectBaseProps & {
-  multiple?: false;
-  value: string;
-  onChange: (value: string) => void;
+  multiple?: false
+  value: string
+  onChange: (value: string) => void
   /** Value written on clear. Default ''. */
-  clearValue?: string;
-};
+  clearValue?: string
+}
 
 export type MultiSearchSelectProps = SearchSelectBaseProps & {
-  multiple: true;
-  value: readonly string[];
-  onChange: (value: string[]) => void;
-};
+  multiple: true
+  value: readonly string[]
+  onChange: (value: string[]) => void
+}
 
 /**
  * Searchable select — panel portaled to body so dialog overflow does not clip the list.
  * `multiple` keeps the panel open and toggles each option.
  */
-export function SearchSelect(props: SearchSelectProps): ReactElement;
-export function SearchSelect(props: MultiSearchSelectProps): ReactElement;
+export function SearchSelect(props: SearchSelectProps): ReactElement
+export function SearchSelect(props: MultiSearchSelectProps): ReactElement
 export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) {
-  const inheritedPortalContainer = usePortalContainer();
+  const inheritedPortalContainer = usePortalContainer()
   const {
     options,
     placeholder = 'Select…',
@@ -113,7 +114,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     emptyText = 'No results',
     className = '',
     panelClassName,
-    glidingHighlight = false,
+    glidingHighlight = true,
     minPanelWidth,
     portalContainer: portalTarget,
     disabled = false,
@@ -129,258 +130,268 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     'aria-required': ariaRequired,
     'aria-keyshortcuts': ariaKeyShortcuts,
     'data-autofocus': autofocus,
-    role,
-  } = props;
-  const multiple = props.multiple === true;
-  const clearValue = props.multiple ? '' : (props.clearValue ?? '');
+    role
+  } = props
+  const multiple = props.multiple === true
+  const clearValue = props.multiple ? '' : (props.clearValue ?? '')
   const selectedOptions = multiple
     ? options.filter((option) => props.value.includes(option.value))
-    : options.filter((option) => option.value === props.value);
-  const listId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
-  const dismissal = usePopupDismissal(panelRef, { open, onOpenChange: setOpen });
-  const [instantMotion, setInstantMotion] = useState(false);
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [active, setActive] = useState(0);
-  const pointerNavigation = useRef(false);
+    : options.filter((option) => option.value === props.value)
+  const listId = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false)
+  const dismissal = usePopupDismissal(panelRef, { open, onOpenChange: setOpen })
+  const [instantMotion, setInstantMotion] = useState(false)
+  const [query, setQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
+  const [active, setActive] = useState(0)
   const [coords, setCoords] = useState<{
-    top: number;
-    left: number;
-    width: number;
-    maxHeight: number;
-    side: 'top' | 'bottom';
-  } | null>(null);
-  const portalContainer = typeof portalTarget === 'function'
-    ? open && triggerRef.current ? portalTarget(triggerRef.current) : inheritedPortalContainer
-    : portalTarget ?? inheritedPortalContainer;
+    top: number
+    left: number
+    width: number
+    maxHeight: number
+    side: 'top' | 'bottom'
+  } | null>(null)
+  const portalContainer =
+    typeof portalTarget === 'function'
+      ? open && triggerRef.current
+        ? portalTarget(triggerRef.current)
+        : inheritedPortalContainer
+      : (portalTarget ?? inheritedPortalContainer)
 
-  const invalid = ariaInvalid === true || ariaInvalid === 'true';
-  const summary = selectedOptions.map((option) => option.label).join('、');
-  const isPlaceholder = selectedOptions.length === 0;
-  const debounceMs = Math.max(0, searchDebounceMs);
+  const invalid = ariaInvalid === true || ariaInvalid === 'true'
+  const summary = selectedOptions.map((option) => option.label).join('、')
+  const isPlaceholder = selectedOptions.length === 0
+  const debounceMs = Math.max(0, searchDebounceMs)
 
   useLayoutEffect(() => {
     if (!open) {
-      setInstantMotion(false);
-      return;
+      setInstantMotion(false)
+      return
     }
     // Inactive webviews can leave an entrance animation frozen at opacity zero.
     const settle = () => {
-      if (document.hidden || !document.hasFocus()) setInstantMotion(true);
-    };
-    settle();
-    window.addEventListener('blur', settle);
-    document.addEventListener('visibilitychange', settle);
+      if (document.hidden || !document.hasFocus()) setInstantMotion(true)
+    }
+    settle()
+    window.addEventListener('blur', settle)
+    document.addEventListener('visibilitychange', settle)
     return () => {
-      window.removeEventListener('blur', settle);
-      document.removeEventListener('visibilitychange', settle);
-    };
-  }, [open]);
+      window.removeEventListener('blur', settle)
+      document.removeEventListener('visibilitychange', settle)
+    }
+  }, [open])
 
   useEffect(() => {
-    if (debounceMs <= 0) return;
-    const timer = window.setTimeout(() => setDebouncedQuery(query), debounceMs);
-    return () => window.clearTimeout(timer);
-  }, [query, debounceMs]);
+    if (debounceMs <= 0) return
+    const timer = window.setTimeout(() => setDebouncedQuery(query), debounceMs)
+    return () => window.clearTimeout(timer)
+  }, [query, debounceMs])
 
-  const effectiveQuery = debounceMs > 0 ? debouncedQuery : query;
+  const effectiveQuery = debounceMs > 0 ? debouncedQuery : query
   const filtered = useMemo(() => {
-    if (!searchable) return options;
-    const q = effectiveQuery.trim().toLowerCase();
-    if (!q) return options;
+    if (!searchable) return options
+    const q = effectiveQuery.trim().toLowerCase()
+    if (!q) return options
     return options.filter((o) => {
-      const hay = `${o.label} ${o.keywords ?? ''} ${o.value}`.toLowerCase();
-      return hay.includes(q);
-    });
-  }, [options, effectiveQuery, searchable]);
+      const hay = `${o.label} ${o.keywords ?? ''} ${o.value}`.toLowerCase()
+      return hay.includes(q)
+    })
+  }, [options, effectiveQuery, searchable])
 
   function enabledIndex(from: number, direction: -1 | 1): number {
     for (let i = from; i >= 0 && i < filtered.length; i += direction) {
-      if (!filtered[i].disabled) return i;
+      if (!filtered[i].disabled) return i
     }
-    return -1;
+    return -1
   }
 
   useEffect(() => {
-    if (!open) return;
-    setActive((current) => filtered[current] && !filtered[current].disabled ? current : enabledIndex(0, 1));
-  }, [open, filtered]);
+    if (!open) return
+    setActive((current) => (filtered[current] && !filtered[current].disabled ? current : enabledIndex(0, 1)))
+  }, [open, filtered])
 
   function updatePosition() {
-    const el = rootRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    const el = rootRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
     const panelWidth = Math.min(
       Math.max(rect.width, size === 'sm' ? 10 * 16 : 12 * 16, minPanelWidth ?? 0),
-      Math.max(0, window.innerWidth - 16),
-    );
-    let left = rect.left;
-    left = Math.max(8, Math.min(left, window.innerWidth - panelWidth - 8));
-    const panelHeight = panelRef.current?.offsetHeight ?? 0;
-    const below = Math.max(0, window.innerHeight - rect.bottom - 6 - 8);
-    const above = Math.max(0, rect.top - 6 - 8);
-    const openAbove = panelHeight > below && above > below;
-    const maxHeight = openAbove ? above : below;
-    const top = openAbove ? rect.top - Math.min(panelHeight, maxHeight) - 6 : rect.bottom + 6;
+      Math.max(0, window.innerWidth - 16)
+    )
+    let left = rect.left
+    left = Math.max(8, Math.min(left, window.innerWidth - panelWidth - 8))
+    const panelHeight = panelRef.current?.offsetHeight ?? 0
+    const below = Math.max(0, window.innerHeight - rect.bottom - 6 - 8)
+    const above = Math.max(0, rect.top - 6 - 8)
+    const openAbove = panelHeight > below && above > below
+    const maxHeight = openAbove ? above : below
+    const top = openAbove ? rect.top - Math.min(panelHeight, maxHeight) - 6 : rect.bottom + 6
     // A dialog's transformed content is the containing block for its nested panel.
-    const parent = portalContainer?.getBoundingClientRect();
+    const parent = portalContainer?.getBoundingClientRect()
     setCoords({
       top: top - (parent?.top ?? 0) + (portalContainer?.scrollTop ?? 0),
       left: left - (parent?.left ?? 0) + (portalContainer?.scrollLeft ?? 0),
       width: panelWidth,
       maxHeight,
-      side: openAbove ? 'top' : 'bottom',
-    });
+      side: openAbove ? 'top' : 'bottom'
+    })
   }
 
   useLayoutEffect(() => {
     if (!open) {
-      setCoords(null);
-      return;
+      setCoords(null)
+      return
     }
-    updatePosition();
+    updatePosition()
     const onScroll = (event: Event) => {
-      const target = event.target;
-      if (target instanceof Node && panelRef.current?.contains(target)) return;
-      updatePosition();
-    };
-    window.addEventListener('resize', onScroll);
-    window.addEventListener('scroll', onScroll, true);
-    const observer = new ResizeObserver(updatePosition);
-    if (panelRef.current) observer.observe(panelRef.current);
+      const target = event.target
+      if (target instanceof Node && panelRef.current?.contains(target)) return
+      updatePosition()
+    }
+    window.addEventListener('resize', onScroll)
+    window.addEventListener('scroll', onScroll, true)
+    const observer = new ResizeObserver(updatePosition)
+    if (panelRef.current) observer.observe(panelRef.current)
     return () => {
-      window.removeEventListener('resize', onScroll);
-      window.removeEventListener('scroll', onScroll, true);
-      observer.disconnect();
-    };
-  }, [open, size, filtered.length, portalContainer, minPanelWidth]);
+      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('scroll', onScroll, true)
+      observer.disconnect()
+    }
+  }, [open, size, filtered.length, portalContainer, minPanelWidth])
 
   useLayoutEffect(() => {
-    if (!open) return;
-    const list = listRef.current;
-    const option = list?.querySelector<HTMLElement>('.ui-search-select__option.is-active');
-    if (!list || !option) return;
-    revealOption(list, option);
-  }, [open, active, filtered.length]);
+    if (!open) return
+    const list = listRef.current
+    const option = list?.querySelector<HTMLElement>('.ui-search-select__option.is-active')
+    if (!list || !option) return
+    revealOption(list, option)
+  }, [open, active, filtered.length])
 
   useEffect(() => {
-    const panel = panelRef.current;
-    const list = listRef.current;
-    if (!open || !panel || !list) return;
+    const panel = panelRef.current
+    const list = listRef.current
+    if (!open || !panel || !list) return
     // A modal dialog's scroll lock cancels wheel events on this body portal, so the dialog scroller moves instead.
     const onWheel = (event: WheelEvent) => {
-      if (list.scrollHeight <= list.clientHeight) return;
-      event.preventDefault();
-      event.stopPropagation();
-      list.scrollTop += wheelDeltaY(event, list);
-    };
-    panel.addEventListener('wheel', onWheel, { capture: true, passive: false });
-    return () => panel.removeEventListener('wheel', onWheel, { capture: true });
-  }, [open, filtered.length]);
+      if (list.scrollHeight <= list.clientHeight) return
+      event.preventDefault()
+      event.stopPropagation()
+      list.scrollTop += wheelDeltaY(event, list)
+    }
+    panel.addEventListener('wheel', onWheel, { capture: true, passive: false })
+    return () => panel.removeEventListener('wheel', onWheel, { capture: true })
+  }, [open, filtered.length])
 
   useEffect(() => {
-    if (!open) return;
-    if (!searchable) return;
-    const t = window.setTimeout(() => inputRef.current?.focus(), 0);
-    return () => window.clearTimeout(t);
-  }, [open, searchable]);
+    if (!open) return
+    if (!searchable) return
+    const t = window.setTimeout(() => inputRef.current?.focus(), 0)
+    return () => window.clearTimeout(t)
+  }, [open, searchable])
 
   function isChosen(value: string) {
-    return multiple ? props.value.includes(value) : props.value === value;
+    return multiple ? props.value.includes(value) : props.value === value
   }
 
   function pick(next: string) {
-    if (!options.some((option) => option.value === next && !option.disabled)) return;
+    if (!options.some((option) => option.value === next && !option.disabled)) return
     if (props.multiple) {
-      const current = props.value;
-      props.onChange(
-        current.includes(next) ? current.filter((id) => id !== next) : [...current, next],
-      );
-      return;
+      const current = props.value
+      props.onChange(current.includes(next) ? current.filter((id) => id !== next) : [...current, next])
+      return
     }
-    props.onChange(next);
-    setOpen(false);
-    triggerRef.current?.focus();
+    props.onChange(next)
+    setOpen(false)
+    triggerRef.current?.focus()
   }
 
   function clearSelection() {
-    if (props.multiple) props.onChange([]);
-    else props.onChange(clearValue);
+    if (props.multiple) props.onChange([])
+    else props.onChange(clearValue)
   }
 
   function openMenu(initialIndex?: number) {
-    setQuery('');
-    setDebouncedQuery('');
-    const selected = options.findIndex((option) => !option.disabled && isChosen(option.value));
-    setActive(initialIndex ?? (selected >= 0 ? selected : options.findIndex((option) => !option.disabled)));
-    setOpen(true);
+    setQuery('')
+    setDebouncedQuery('')
+    const selected = options.findIndex((option) => !option.disabled && isChosen(option.value))
+    setActive(initialIndex ?? (selected >= 0 ? selected : options.findIndex((option) => !option.disabled)))
+    setOpen(true)
   }
 
   function onKeyDown(e: KeyboardEvent) {
-    pointerNavigation.current = false;
-    if (e.nativeEvent.isComposing) return;
-    if (e.key.length === 1 && e.key.trim() && !e.altKey && !e.ctrlKey && !e.metaKey &&
-        (!open || e.currentTarget === triggerRef.current)) {
-      const items = open ? filtered : options;
-      const start = open ? active : items.findIndex((option) => isChosen(option.value));
+    if (e.nativeEvent.isComposing) return
+    if (
+      e.key.length === 1 &&
+      e.key.trim() &&
+      !e.altKey &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      (!open || e.currentTarget === triggerRef.current)
+    ) {
+      const items = open ? filtered : options
+      const start = open ? active : items.findIndex((option) => isChosen(option.value))
       for (let offset = 1; offset <= items.length; offset += 1) {
-        const index = (start + offset + items.length) % items.length;
-        const option = items[index];
-        if (!option.disabled && `${option.label} ${option.keywords ?? ''}`.toLocaleLowerCase()
-          .split(/\s+/).some((word) => word.startsWith(e.key.toLocaleLowerCase()))) {
-          e.preventDefault();
-          if (open) setActive(index);
-          else openMenu(index);
-          return;
+        const index = (start + offset + items.length) % items.length
+        const option = items[index]
+        if (
+          !option.disabled &&
+          `${option.label} ${option.keywords ?? ''}`
+            .toLocaleLowerCase()
+            .split(/\s+/)
+            .some((word) => word.startsWith(e.key.toLocaleLowerCase()))
+        ) {
+          e.preventDefault()
+          if (open) setActive(index)
+          else openMenu(index)
+          return
         }
       }
     }
     if (!open) {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openMenu();
+        e.preventDefault()
+        openMenu()
       }
-      return;
+      return
     }
     if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      setOpen(false);
-      triggerRef.current?.focus();
-      return;
+      e.preventDefault()
+      e.stopPropagation()
+      setOpen(false)
+      triggerRef.current?.focus()
+      return
     }
     if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const next = enabledIndex(active + 1, 1);
-      if (next >= 0) setActive(next);
-      return;
+      e.preventDefault()
+      const next = enabledIndex(active + 1, 1)
+      if (next >= 0) setActive(next)
+      return
     }
     if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const next = enabledIndex(active - 1, -1);
-      if (next >= 0) setActive(next);
-      return;
+      e.preventDefault()
+      const next = enabledIndex(active - 1, -1)
+      if (next >= 0) setActive(next)
+      return
     }
     if (e.key === 'Home' || e.key === 'End') {
-      e.preventDefault();
-      setActive(e.key === 'Home' ? enabledIndex(0, 1) : enabledIndex(filtered.length - 1, -1));
-      return;
+      e.preventDefault()
+      setActive(e.key === 'Home' ? enabledIndex(0, 1) : enabledIndex(filtered.length - 1, -1))
+      return
     }
     if (e.key === 'Tab') {
-      setOpen(false);
-      triggerRef.current?.focus();
-      return;
+      setOpen(false)
+      triggerRef.current?.focus()
+      return
     }
     if (e.key === 'Enter' || (e.key === ' ' && e.currentTarget === triggerRef.current)) {
-      e.preventDefault();
-      const opt = filtered[active];
-      if (opt) pick(opt.value);
+      e.preventDefault()
+      const opt = filtered[active]
+      if (opt) pick(opt.value)
     }
   }
 
@@ -392,7 +403,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
         size === 'sm' ? 'ui-search-select--sm w-auto min-w-[7.5rem]' : 'w-full',
         open && 'is-open',
         invalid && 'is-invalid',
-        className,
+        className
       )}
       data-ui={dataUi}
       data-size={size}
@@ -401,11 +412,10 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       onPointerDownCapture={dismissal.inside}
       onClickCapture={dismissal.inside}
       onBlur={(event) => {
-        const next = event.relatedTarget;
-        if (next instanceof Node && (rootRef.current?.contains(next) || panelRef.current?.contains(next))) return;
-        setOpen(false);
-      }}
-    >
+        const next = event.relatedTarget
+        if (next instanceof Node && (rootRef.current?.contains(next) || panelRef.current?.contains(next))) return
+        setOpen(false)
+      }}>
       <button
         ref={triggerRef}
         type="button"
@@ -418,7 +428,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
           'disabled:cursor-not-allowed disabled:opacity-40',
           size === 'sm' ? 'h-[30px] min-w-[7.5rem] rounded-[8px] ps-2.5 pe-2' : 'h-9 rounded-[8px] px-3',
           open && 'bg-[var(--color-control-fill-active)] ring-2 ring-inset ring-black/10',
-          invalid && 'border-[color:var(--color-error)]',
+          invalid && 'border-[color:var(--color-error)]'
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -432,20 +442,25 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
         data-autofocus={autofocus}
         data-selected-value={multiple ? undefined : props.value}
         disabled={disabled}
-        onClick={() => { if (!disabled) { if (open) setOpen(false); else openMenu(); } }}
-        onKeyDown={onKeyDown}
-      >
+        onClick={() => {
+          if (!disabled) {
+            if (open) setOpen(false)
+            else openMenu()
+          }
+        }}
+        onKeyDown={onKeyDown}>
         <span className="ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden">
           {!multiple && selectedOptions[0]?.icon ? (
-            <span className="ui-search-select__icon grid size-4 shrink-0 place-items-center overflow-hidden" aria-hidden>
+            <span
+              className="ui-search-select__icon grid size-4 shrink-0 place-items-center overflow-hidden"
+              aria-hidden>
               {selectedOptions[0].icon}
             </span>
           ) : null}
           <span
             className={cn('truncate', isPlaceholder && 'is-placeholder text-[var(--color-ink-faint)]')}
             title={isPlaceholder ? undefined : summary}
-            style={multiple ? undefined : selectedOptions[0]?.previewStyle}
-          >
+            style={multiple ? undefined : selectedOptions[0]?.previewStyle}>
             {isPlaceholder ? placeholder : summary}
           </span>
         </span>
@@ -457,29 +472,23 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
               className="inline-flex size-5 items-center justify-center rounded text-ink-faint hover:bg-surface hover:text-ink"
               aria-label="Clear"
               onMouseDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                e.preventDefault()
+                e.stopPropagation()
               }}
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                clearSelection();
-              }}
-            >
+                e.preventDefault()
+                e.stopPropagation()
+                clearSelection()
+              }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <path
-                  d="M3 3l6 6M9 3L3 9"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
+                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </span>
           ) : null}
           <svg
             className={cn(
               'ui-search-select__chevron shrink-0 text-[var(--color-ink-faint)] transition-transform',
-              open && 'rotate-180',
+              open && 'rotate-180'
             )}
             width={size === 'sm' ? 12 : 14}
             height={size === 'sm' ? 12 : 14}
@@ -487,8 +496,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
             fill="none"
             stroke="currentColor"
             strokeWidth="1.75"
-            aria-hidden
-          >
+            aria-hidden>
             <path d="m6 9 6 6 6-6" />
           </svg>
         </span>
@@ -497,15 +505,15 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
         ? createPortal(
             <div
               ref={dismissal.ref}
-              data-composer-popup={glidingHighlight ? '' : undefined}
+              data-popup-surface=""
               data-side={coords?.side}
               className={cn(
-                'ui-search-select__panel ui-search-select__panel--portal',
+                'arc ui-search-select__panel ui-search-select__panel--portal',
                 menuCardClass,
                 'grid gap-1 p-1.5',
                 coords && 'ui-search-select__panel--shown',
                 size === 'sm' && 'ui-search-select__panel--sm',
-                panelClassName,
+                panelClassName
               )}
               role="presentation"
               style={
@@ -522,17 +530,23 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                       gridTemplateRows: searchable ? 'auto minmax(0, 1fr)' : 'minmax(0, 1fr)',
                       zIndex: 240,
                       animation: instantMotion ? 'none' : undefined,
-                      transition: instantMotion ? 'none' : undefined,
+                      transition: instantMotion ? 'none' : undefined
                     }
-                  : { position: 'fixed', top: -9999, left: -9999, visibility: 'hidden', zIndex: 240 }
-              }
-            >
+                  : {
+                      position: 'fixed',
+                      top: -9999,
+                      left: -9999,
+                      visibility: 'hidden',
+                      zIndex: 240
+                    }
+              }>
+              {glidingHighlight && <PopupHighlight visible={open} />}
               {searchable ? (
                 <input
                   ref={inputRef}
                   className={cn(
                     'ui-search-select__search h-8 w-full rounded-[8px] border border-transparent bg-[var(--color-control-fill)] text-[13px] leading-none text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-faint)]',
-                    size === 'sm' ? 'px-2.5' : 'px-3',
+                    size === 'sm' ? 'px-2.5' : 'px-3'
                   )}
                   value={query}
                   placeholder={searchPlaceholder}
@@ -543,8 +557,8 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                   aria-label={ariaLabel}
                   aria-activedescendant={filtered[active] ? `${listId}-${active}` : undefined}
                   onChange={(e) => {
-                    setQuery(e.target.value);
-                    setActive(0);
+                    setQuery(e.target.value)
+                    setActive(0)
                   }}
                   onKeyDown={onKeyDown}
                 />
@@ -554,102 +568,94 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                 id={listId}
                 className={cn(
                   'ui-search-select__list m-0 min-h-0 list-none overflow-auto overscroll-contain p-0',
-                  size === 'sm' ? 'max-h-40' : 'max-h-48',
+                  size === 'sm' ? 'max-h-40' : 'max-h-48'
                 )}
                 role="listbox"
                 aria-label={ariaLabel}
-                aria-multiselectable={multiple || undefined}
-              >
+                aria-multiselectable={multiple || undefined}>
                 {filtered.length === 0 ? (
                   <li className="ui-search-select__empty px-2 py-2 text-[13px] text-[var(--color-ink-faint)]">
                     {emptyText}
                   </li>
                 ) : (
                   filtered.map((opt, i) => {
-                    const chosen = isChosen(opt.value);
+                    const chosen = isChosen(opt.value)
                     return (
-                    <Fragment key={opt.value}>
-                    {opt.group && filtered[i - 1]?.group !== opt.group ? (
-                      <li className="ui-search-select__group" role="presentation">{opt.group}</li>
-                    ) : null}
-                    {/* The option owns activation, including assistive technology clicks. */}
-                    <li
-                      id={`${listId}-${i}`}
-                      role="option"
-                      aria-label={opt.label}
-                      aria-selected={chosen}
-                      aria-disabled={opt.disabled || undefined}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => pick(opt.value)}
-                    >
-                      <button
-                        type="button"
-                        tabIndex={-1}
-                        disabled={opt.disabled}
-                        className={cn(
-                          'ui-search-select__option',
-                          glidingHighlight && 'relative isolate',
-                          'flex w-full cursor-pointer items-center border-0 bg-transparent text-left',
-                          menuRowClass,
-                          size === 'sm' ? 'min-h-8 gap-2 px-2' : 'min-h-9 gap-2.5 px-2.5',
-                          chosen && 'is-selected',
-                          i === active && 'is-active',
-                          i === active && !chosen && 'bg-[var(--color-surface-2)] text-[var(--color-ink)]',
-                          chosen && menuRowSelectedClass,
-                        )}
-                        style={glidingHighlight ? { backgroundColor: 'transparent' } : undefined}
-                        onMouseEnter={() => { pointerNavigation.current = true; if (!opt.disabled) setActive(i); }}
-                      >
-                        {glidingHighlight && i === active && !opt.disabled ? (
-                          <SelectionHighlight
-                            data-slot="search-select-hover-highlight"
-                            layoutId={`${listId}-hover${pointerNavigation.current ? '' : `-${active}`}`}
-                            style={{ backgroundColor: '#f2f3f5' }}
-                          />
+                      <Fragment key={opt.value}>
+                        {opt.group && filtered[i - 1]?.group !== opt.group ? (
+                          <li className="ui-search-select__group" role="presentation">
+                            {opt.group}
+                          </li>
                         ) : null}
-                        {multiple ? (
-                          <span
+                        {/* The option owns activation, including assistive technology clicks. */}
+                        <li
+                          id={`${listId}-${i}`}
+                          role="option"
+                          aria-label={opt.label}
+                          aria-selected={chosen}
+                          aria-disabled={opt.disabled || undefined}
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => pick(opt.value)}>
+                          <button
+                            type="button"
+                            tabIndex={-1}
+                            disabled={opt.disabled}
                             className={cn(
-                              'ui-search-select__check inline-flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-[color:var(--color-border)] bg-[var(--color-surface)] text-transparent',
-                              chosen && 'border-[color:var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-surface)]',
+                              'ui-search-select__option',
+                              'flex w-full cursor-pointer items-center border-0 bg-transparent text-left',
+                              menuRowClass,
+                              size === 'sm' ? 'min-h-8 gap-2 px-2' : 'min-h-9 gap-2.5 px-2.5',
+                              chosen && 'is-selected',
+                              i === active && 'is-active',
+                              i === active && !chosen && 'bg-[var(--color-surface-2)] text-[var(--color-ink)]',
+                              chosen && menuRowSelectedClass
                             )}
-                            aria-hidden
-                          >
-                            {chosen ? (
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path
-                                  d="M3.2 8.3 6.3 11.4 12.8 4.7"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                            data-popup-item-surface=""
+                            onMouseEnter={() => {
+                              if (!opt.disabled) setActive(i)
+                            }}>
+                            {multiple ? (
+                              <span
+                                className={cn(
+                                  'ui-search-select__check inline-flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-[color:var(--color-border)] bg-[var(--color-surface)] text-transparent',
+                                  chosen &&
+                                    'border-[color:var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-surface)]'
+                                )}
+                                aria-hidden>
+                                {chosen ? (
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path
+                                      d="M3.2 8.3 6.3 11.4 12.8 4.7"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                ) : null}
+                              </span>
+                            ) : opt.icon ? (
+                              <span
+                                className="ui-search-select__icon grid size-5 shrink-0 place-items-center overflow-hidden"
+                                aria-hidden>
+                                {opt.icon}
+                              </span>
                             ) : null}
-                          </span>
-                        ) : opt.icon ? (
-                          <span
-                            className="ui-search-select__icon grid size-5 shrink-0 place-items-center overflow-hidden"
-                            aria-hidden
-                          >
-                            {opt.icon}
-                          </span>
-                        ) : null}
-                        <span className="ui-search-select__option-label min-w-0 truncate" style={opt.previewStyle}>
-                          {opt.label}
-                        </span>
-                        {opt.meta ? <small className="ui-search-select__meta">{opt.meta}</small> : null}
-                      </button>
-                    </li>
-                    </Fragment>
-                    );
+                            <span className="ui-search-select__option-label min-w-0 truncate" style={opt.previewStyle}>
+                              {opt.label}
+                            </span>
+                            {opt.meta ? <small className="ui-search-select__meta">{opt.meta}</small> : null}
+                          </button>
+                        </li>
+                      </Fragment>
+                    )
                   })
                 )}
               </ul>
             </div>,
-            portalContainer ?? document.body,
+            portalContainer ?? document.body
           )
         : null}
     </div>
-  );
+  )
 }

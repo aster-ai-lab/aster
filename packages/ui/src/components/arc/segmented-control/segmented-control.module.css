@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /* The frame can shrink below its content inside flex and grid parents; the track then scrolls inside it. */
 .root { display: inline-flex; min-width: 0; max-width: 100%; flex-shrink: 1; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--surface-muted); }
 /* The track owns the stacking context so the gliding highlight passes under every label, not over earlier ones. */
@@ -18,4 +19,4 @@
 .root[data-size] { padding: 3px; gap: 2px; }
 .button[data-size] { min-height: 22px; gap: 6px; }
 .button[data-size][aria-checked="true"] { color: var(--foreground); }
-.button:disabled { opacity: .5; cursor: default; }
+.button:disabled { opacity: .4; cursor: default; }

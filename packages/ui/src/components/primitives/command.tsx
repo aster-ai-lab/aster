@@ -2,25 +2,23 @@ import { Command as CommandPrimitive } from 'cmdk'
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from './dialog'
 import { cn } from '../../lib/utils'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './dialog'
+import { PopupHighlight } from './popup-highlight'
 
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
   return (
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
+        'arc flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-panel,12px)] bg-popover text-[13px] text-popover-foreground',
         className
       )}
       {...props}
-    />
+      data-popup-surface="">
+      <PopupHighlight />
+      {props.children}
+    </CommandPrimitive>
   )
 }
 
@@ -65,7 +63,7 @@ function CommandInput({
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          'flex h-full min-h-0 w-full rounded-[8px] bg-transparent py-2 text-[13px] outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-40',
           className
         )}
         {...props}
@@ -116,7 +114,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
     <CommandPrimitive.Item
       data-slot="command-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-[8px] px-2 py-1.5 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-[var(--color-surface-2)] data-[selected=true]:text-[var(--color-ink)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+        "relative flex cursor-default items-center gap-2 rounded-[8px] px-2 py-1.5 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 data-[selected=true]:bg-[var(--color-surface-2)] data-[selected=true]:text-[var(--color-ink)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
         className
       )}
       {...props}

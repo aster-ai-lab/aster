@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 @layer components {
 .accordion { width: 100%; border-top: 1px solid var(--border); }
 .item { border-bottom: 1px solid var(--border); }

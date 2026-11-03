@@ -1,0 +1,404 @@
+{
+  "parentBase": "de834871a36dbf71416936e999de7b94c052b0d4",
+  "studioBase": "c82e5079f9b6f6fb27c21defa9a2bad88a939e2a",
+  "ui": [
+    {
+      "path": "packages/ui/src/styles/dialog-motion.css",
+      "sha256": "a884e00e7c5f44245f756fd824e24339467e9888c02d136b946ef93d877d0b75",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/styles/popup-motion.css",
+      "sha256": "e0910ccd23f318067ac3390a4892ff39feacd627d11d4cec65be8fedf98a8624",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/popup-dismissal.ts",
+      "sha256": "715bed0f35820499edff60532038f5473872d009b7750cc33cc56117e7c96c08",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/tabs.tsx",
+      "sha256": "1999e9f58999cc420726eb0d6c273e08b9ec8fb7c095027e67095528f1bd32bb",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/slider.tsx",
+      "sha256": "efd918678db534967309e3aabf5ada808663b93556342a59d8b90636be35edce",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/popover.tsx",
+      "sha256": "32319b252235a447389444af8fcd6c86b62c287ef1a3e3dd14052f0e28525f53",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/hover-card.tsx",
+      "sha256": "173aa613b2bf2a9fa5892c03bf8edf74e93d0f40c0a8090c824bbb9752aa8eea",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/label.tsx",
+      "sha256": "0b48b82bafcc83d270266595395d02b0eff1cf1a359cdedd7dcc73366a6ad9d9",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/accordion.tsx",
+      "sha256": "4ae723436b00a313e4dbdc864dc40e3e84a5fe0262a1d31becdefd66713c556f",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/drawer.tsx",
+      "sha256": "4673920e80b8c6d91d5b85d1e59ad4dd44e67d7b9afa2797e945c911ab9f822b",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/tooltip.tsx",
+      "sha256": "7af269089d30d6bbc1fee895afa8eaa0f74b05c72328859e8715b32f1481d109",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/segmented-control.tsx",
+      "sha256": "961f3dbb7956d6d4b73e34b5edf79addad9a3cb063fb0f8d83118f8d0ca4bf64",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/radio-group.tsx",
+      "sha256": "182250abbffb93c1f934ef346e31bec6993c2100099ff8a9b7d5e174356b1b84",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/command.tsx",
+      "sha256": "00a12198dde82c31f78f44f96f872dde1979d804edc6412bc97160cb7ba39f76",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/dialog.tsx",
+      "sha256": "961514343ac63072ad69afa774a7767e3dc1783ae9de502991b34f4b4aca6473",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/button.tsx",
+      "sha256": "117486a66508294b441f6c31130baf7604719738eaebdca2213218e51ac5334a",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/dropdown-menu.tsx",
+      "sha256": "87206efc990f21cbec0adf92118be0adf943ae78137316aaa799ceb0dd37005c",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/select.tsx",
+      "sha256": "838e0f5cc0e932871cd57569b1fcc1f3e417cee2a810a78bb634dd6dd4e409f5",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/input.tsx",
+      "sha256": "7275b47ce0218e71492ae46b2381d2af9ee40fb04260b9923013d27ac9fc85a3",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/context-menu.tsx",
+      "sha256": "5cc4e4d762e0849f70005d696aa5b079dbcafd6ba1222d56f70b435d88da0816",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/__tests__/button.test.tsx",
+      "sha256": "6f464b3e2073d833ed9cb4385e9ee4759afe78d018d15809a35d776327fa31e4",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/__tests__/arc-style.test.tsx",
+      "sha256": "40cfa1075f558a2c7e667f7797189c2f30fa34226952661d6dd0c3facff7fab6",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/foundation.css",
+      "sha256": "aaaa7e991e1b0bde7f219136e94b8aead6ff70d42c741c5fb7fbe77098787f68",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/tabs/tabs.module.css",
+      "sha256": "6e5243947235ee33dbef9fdcefe098e2cf7129ee812b30db10258f9d59c7bdae",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/tooltip/tooltip.module.css",
+      "sha256": "2d6a61a9dd48517ebf5205c63d0b4f67791457326eba9acc9bc78d1e8d6ffc97",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/radio/radio.module.css",
+      "sha256": "05b572dc212a78d45d16ad2ed1dde184516c171811e1def507c3126f84a94cf4",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/segmented-control/segmented-control.module.css",
+      "sha256": "0137186d1afc63519502194d0635e3c10616bddb02bc6869cd950e5ae8a91fad",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/progress/progress.module.css",
+      "sha256": "3d40926bc46a789570dd159b90266602bc2bee5405daaad1756a574ab57c21a7",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/input/input.module.css",
+      "sha256": "ae7e2689776677c797b7ec52f744e7abfe7939e1cc98f01ed337f13ee354f0b7",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/alert/alert.module.css",
+      "sha256": "6a2a7721919212f8e8df6fc59677e68506af83d9c05b4094ea9251df0bd60522",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/accordion/accordion.module.css",
+      "sha256": "2053e98aa11907286f4f2836889f127c27361c3dcbce88eb4b02c89ce5b9f8cf",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/skeleton/skeleton.module.css",
+      "sha256": "be88921a8f78e63faa192e2aeac4d423f1b933c50c12d077fe363f13da2d48fc",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/toast/toast.module.css",
+      "sha256": "f0f7e2e7af5e9f16906bcff80c8d8a0f70e4c91102e683c58fe7808d94cba4de",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/checkbox/checkbox.module.css",
+      "sha256": "2907bc6011677a2baa89d2914fce00170899091beaf3802c65176f0b2b1ec6c2",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/dropdown-menu/dropdown-menu.module.css",
+      "sha256": "ebf4409f82a70be1975c27f16e8b0af4f146fe72705ad3c1d1f2107032108859",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/slider/slider.module.css",
+      "sha256": "655e6f8129416871cad7ba967b8c05614de8b58ade8afeaa8a3df5ffd8342d02",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/context-menu/context-menu.module.css",
+      "sha256": "392cdebd7df68ba7f47116fdfc2b1daadd4b04592db48640781842c252062cf8",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/dialog/dialog.module.css",
+      "sha256": "c512a5521863ae339d16692b64a23ac7b802df1f67ad0a8dd1e6f93df3028d81",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/popover/popover.module.css",
+      "sha256": "ace5c12dce93ea6eac160d416c36cf7a38c300b2f6e1748ef0d0037dc4e3b7ff",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/textarea/textarea.module.css",
+      "sha256": "d6f1c66f9d6e4208fcb94feda9dfde697fbc9a3923a8ba7557dc67dac8fdb247",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/button/button.module.css",
+      "sha256": "0131dcf53cd61740fa53fc3f8678c164d480328adb79072001b7d050432f4ca6",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/button/button.tsx",
+      "sha256": "bd5c9d0d243b4f9fc81d78ad5e7b7407f593b4d9f36931633058fd5a08ff543f",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/avatar/avatar.module.css",
+      "sha256": "df1037d30c4518e7ed420f3980d3b4251edeb83d4f478d8a798eb5aaf84c386c",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/switch/switch.module.css",
+      "sha256": "1d3046ced263f2fd8b4ffd7bf61771973f052ae0dd471fca876e8adbce5a1f87",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/select/select.module.css",
+      "sha256": "97291783c2905fd7bec001535eb13542abb92d085e9b7ab01b2143e8c7eddebe",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/arc/badge/badge.module.css",
+      "sha256": "c3896c1c4c3b5ef6e20efde20f2072cb1be573816487f0a995db1d524cc22b7e",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/console/SearchSelect.tsx",
+      "sha256": "5c442e20a483ca9436603498b8a41334b789e397c8795ea1aafc4aa50833a636",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/console/__tests__/search-select.test.tsx",
+      "sha256": "306b3c42ae54cf8cb9ec0bdf45a8fdcf71d6e2727fef3050b9d4b4b236a2e3c8",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/components/primitives/popup-highlight.tsx",
+      "sha256": "1210cad0247d9544394c2d255d9015083dc13eb13b79a9fead53e236a7a19f4d",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/src/styles/popup-highlight.css",
+      "sha256": "18ecd9ba47c33044b49e09d1eeddd644eff99b218a6e2f85a6dfc39a11644fd1",
+      "deleted": false
+    },
+    {
+      "path": "packages/ui/stories/components/primitives/foundation.stories.tsx",
+      "sha256": "1fa54f65c285a8feda4748e76050eadd651c7ba002ef1692fa13d445f4942293",
+      "deleted": false
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "7851171131d658da611a8578a7ff942e40c0bc3098a5e34763ad52ab28ebd0a9",
+      "deleted": false
+    }
+  ],
+  "studio": [
+    {
+      "path": "src/renderer/components/ModelSelector/ModelSelectorRow.tsx",
+      "sha256": "a91e5cdf87943ac988d45b5db4223514b84c78ad3a1d958295f3c72e5d20b62c",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/PromptOptimizeButton.tsx",
+      "sha256": "3d7f55ad455cde16a93be56810fe08e2ff3d390b56a4ffeac475b7f10446008b",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/QuickPanel/QuickPanelView.tsx",
+      "sha256": "2c1b426fec4e26169afdebc1f82c72b7798969be75e945611e9b6fade713774b",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/QuickPanel/list.tsx",
+      "sha256": "d24928f97eebe84577754f78394badec3e4afc28cd82033575ba49ecdfa510c4",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/AgentParameterForm.tsx",
+      "sha256": "f42f6d7ca02bf13f18c3e3815b66eb8afe22515a39403c29814b82c4af88f4e6",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/ComposerPopupMotion.tsx",
+      "sha256": null,
+      "deleted": true
+    },
+    {
+      "path": "src/renderer/components/composer/composer-popup-motion.css",
+      "sha256": null,
+      "deleted": true
+    },
+    {
+      "path": "src/renderer/components/composer/recording/ComposerRecordingControl.tsx",
+      "sha256": "d92dab30dbad3218454fec8ca67104f5ae2fde6de5136e430ba3d6dd1a8b662c",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/screenshot/VisualFeedbackEditor.tsx",
+      "sha256": "4ecd41f5a51e8511924d05959f2e637fb5cb35c9fc25eb95ad9ee4a5161a94b0",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/screenshot/VisualPinWindow.tsx",
+      "sha256": "d81025fbc417394766b09a8dd290127d48c3c5950266f2862b7609e089f39bb0",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/tokenView/ComposerToken.tsx",
+      "sha256": "1dcfea3d01d7b0a475264d6ad122e623526e4d8da80eba6d9486611ba6347dff",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/variants/SelectedModelsTrigger.tsx",
+      "sha256": "db95cef92449aac2f648ae9c1a0ca1be3af20fd286f89c347661f920af6cbfd8",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/components/composer/variants/shared/ComposerToolbarShortcuts.tsx",
+      "sha256": "c02980161b227388e1ff15f6afda7dd0e2edaa8bcd0cf3e13afd3ecec5de0556",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchGoalChip.tsx",
+      "sha256": "198b40656bf678c888b7a71e0075c4fff35c6ff3821c154f504863f2ffec256c",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchHomeComposerExtras.tsx",
+      "sha256": "cad824f7066001936b53e65b665b055262102f00ec9db767b9e6cba44a695183",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchModelPicker.tsx",
+      "sha256": "0aa09b7c8a13cb0e50113061da82d432b5ba0cb062189beaf0c6633db9b5d921",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchPermissionPicker.tsx",
+      "sha256": "62f8b72e7d312fe161185e8399329e364288c8150913e9f6b768aff28b5d7695",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchProjectPicker.tsx",
+      "sha256": "fc0687a5f97d9096e3918d968b87a13751c753e411c6c0794cd861346bde32cc",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchScopePicker.tsx",
+      "sha256": "d9a70739cb522b1893aeb89cfe4645cf3c8aa43d4d2aa9b6656a1b1afc13539b",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/WorkbenchWorkspaceFiles.tsx",
+      "sha256": "c88e0fe39b3cc0b5ca6470330772ac39c114e10c451e7b186aa0cbed8569d0da",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/homeComposerMode.tsx",
+      "sha256": "e87a8e5106098c8715e62d2e5325dd47c57b930818721ab48df09689a037b0a9",
+      "deleted": false
+    },
+    {
+      "path": "src/renderer/pages/agents/modelPickerFloating.tsx",
+      "sha256": "cd5d6b34aa73889d7271d031ca9b3f1e003a1ccb2b41cd978899bcc682158611",
+      "deleted": false
+    },
+    {
+      "path": "tests/e2e/composer-audit/popup-motion.spec.ts",
+      "sha256": "eee0bb3b98e18692d1571601daff83624f313a2b4b8a25a8d304ae405ae73889",
+      "deleted": false
+    },
+    {
+      "path": "tests/e2e/arc-foundation-harness/index.html",
+      "sha256": "63b1b42555ea72b84995aa89ac648a191ecc7940e0887b73cc3b65f1ec1ac0a6",
+      "deleted": false
+    },
+    {
+      "path": "tests/e2e/arc-foundation-harness/main.tsx",
+      "sha256": "5dc8ed6bb241d8e8dde86c88a81794a5ab7bf503a819e589a6bf5eb437b36add",
+      "deleted": false
+    },
+    {
+      "path": "tests/e2e/composer-audit/arc-foundation.spec.ts",
+      "sha256": "b339217d3f2ab714a9c6ad54630e5777c6a495f61ca0633d6ce64f428681323a",
+      "deleted": false
+    },
+    {
+      "path": "tests/e2e/composer-audit/permission-picker-motion.spec.ts",
+      "sha256": "d681b23fe4ad77db7986886b240fa99280903cfacd19a8c2b63bdf88ccbd85a7",
+      "deleted": false
+    }
+  ],
+  "studioCommit": "cac1ae81d75a2a9d0ffe66fea6873a33310e2a1f"
+}

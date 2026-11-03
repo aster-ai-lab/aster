@@ -1,13 +1,13 @@
 import * as React from 'react'
 
-import arcInput from '../arc/input/input.module.css'
-
 import { cn } from '../../lib/utils'
+
+import arcInput from '../arc/input/input.module.css'
 
 type InputSize = 'sm' | 'md'
 
 interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'> {
-  /** Control height: 36px (`sm`) or 44px (`md`, default). */
+  /** Control height: 30px (`sm`) or 36px (`md`, default). */
   size?: InputSize
   /** Show a clear affordance when the field has a value; fires onChange with an empty value. */
   allowClear?: boolean
@@ -17,8 +17,8 @@ interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'> {
 
 function Input({ className, type, size = 'md', allowClear, onClear, value, onChange, ref, ...props }: InputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [uncontrolledHasValue, setUncontrolledHasValue] = React.useState(() =>
-    props.defaultValue !== undefined && String(props.defaultValue) !== ''
+  const [uncontrolledHasValue, setUncontrolledHasValue] = React.useState(
+    () => props.defaultValue !== undefined && String(props.defaultValue) !== ''
   )
   const controlled = value !== undefined
   const hasValue = controlled ? value !== null && String(value) !== '' : uncontrolledHasValue
@@ -77,8 +77,7 @@ function Input({ className, type, size = 'md', allowClear, onClear, value, onCha
               if (view && setter) node.dispatchEvent(new view.Event('input', { bubbles: true }))
             }
             onClear?.()
-          }}
-        >
+          }}>
           <svg viewBox="0 0 14 14" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.7">
             <path d="M3 3l8 8M11 3l-8 8" strokeLinecap="round" />
           </svg>

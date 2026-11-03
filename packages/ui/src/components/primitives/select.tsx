@@ -3,11 +3,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import * as React from 'react'
 
-import arcSelect from '../arc/select/select.module.css'
-
 import { cn } from '../../lib/utils'
-
+import { PopupHighlight } from './popup-highlight'
 import { usePortalContainer } from './portal-container'
+
+import arcSelect from '../arc/select/select.module.css'
 
 type SelectContextValue = {
   contentElement: HTMLElement | null
@@ -36,7 +36,8 @@ const selectTriggerVariants = cva(
   {
     variants: {
       state: {
-        default: 'focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10',
+        default:
+          'focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black/10',
         error: 'border border-destructive!',
         disabled: 'pointer-events-none cursor-not-allowed opacity-50'
       },
@@ -103,7 +104,8 @@ function SelectTrigger({
     size?: 'sm' | 'default'
   }) {
   const selectContext = React.use(SelectContext)
-  const invalid = props['aria-invalid'] !== undefined && props['aria-invalid'] !== false && props['aria-invalid'] !== 'false'
+  const invalid =
+    props['aria-invalid'] !== undefined && props['aria-invalid'] !== false && props['aria-invalid'] !== 'false'
   const state = props.disabled ? 'disabled' : invalid ? 'error' : 'default'
   const handleRef = React.useCallback(
     (node: HTMLButtonElement | null) => {
@@ -216,7 +218,8 @@ function SelectContent({
         )}
         position={position}
         align={align}
-        {...props}>
+        {...props}
+        data-popup-surface="">
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           className={cn(
@@ -224,6 +227,7 @@ function SelectContent({
             position === 'popper' &&
               'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1'
           )}>
+          <PopupHighlight />
           {children}
         </SelectPrimitive.Viewport>
         <SelectScrollDownButton />

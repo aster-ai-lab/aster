@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 .root { display: flex; width: 100%; min-width: 0; align-items: flex-start; gap: var(--space-4); }
 /* A calm, finite pulse: each block dims a beat after the one above it, then rests after about 20 seconds. */
 .avatar, .line { display: block; flex: 0 0 auto; border-radius: var(--radius-control); background: color-mix(in oklab, var(--border-strong) 38%, var(--surface)); animation: skeleton-pulse 1.8s var(--ease-in-out) calc(var(--index, 0) * 90ms) 11 both; }

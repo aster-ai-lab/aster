@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /*
  * Anchored popups rise at most 0.5rem on the CSS translate property.
  * Do not animate transform or filter. transform replaces the popper
@@ -8,11 +9,13 @@
   from {
     opacity: 0;
     translate: 0 -0.5rem;
+    scale: 0.97;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -20,11 +23,13 @@
   from {
     opacity: 0;
     translate: 0 0.5rem;
+    scale: 0.97;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -32,11 +37,13 @@
   from {
     opacity: 0;
     translate: -0.5rem 0;
+    scale: 0.97;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -44,11 +51,13 @@
   from {
     opacity: 0;
     translate: 0.5rem 0;
+    scale: 0.97;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -56,11 +65,13 @@
   from {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 
   to {
     opacity: 0;
     translate: 0 -0.5rem;
+    scale: 0.97;
   }
 }
 
@@ -68,11 +79,13 @@
   from {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 
   to {
     opacity: 0;
     translate: 0 0.5rem;
+    scale: 0.97;
   }
 }
 
@@ -80,11 +93,13 @@
   from {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 
   to {
     opacity: 0;
     translate: -0.5rem 0;
+    scale: 0.97;
   }
 }
 
@@ -92,11 +107,13 @@
   from {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 
   to {
     opacity: 0;
     translate: 0.5rem 0;
+    scale: 0.97;
   }
 }
 
@@ -313,7 +330,8 @@
     [data-slot='drawer-content'],
     .ui-search-select__panel--shown,
     .aster-popup-rise {
-      animation: none;
+      animation: none !important;
+      transition: none !important;
     }
   }
 }

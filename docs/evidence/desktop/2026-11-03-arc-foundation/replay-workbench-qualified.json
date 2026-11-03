@@ -1,0 +1,896 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/26.8.1/bin/node",
+      "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/node_modules/@playwright/test/cli.js",
+      "test",
+      "-c",
+      "playwright.composer-audit.config.ts",
+      "popup-motion.spec.ts",
+      "permission-picker-motion.spec.ts",
+      "--project",
+      "chromium",
+      "--project",
+      "webkit",
+      "--reporter=json"
+    ],
+    "configFile": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/playwright.composer-audit.config.ts",
+    "rootDir": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "permission-picker-motion.spec.ts",
+      "file": "permission-picker-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "keeps every mode readable and selectable through consecutive animated changes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3505,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:11.809Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-922096b3b8ab8aa427a5",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 18,
+          "column": 5
+        },
+        {
+          "title": "keyboard selection and interrupted opening leave the picker usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1742,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:15.440Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-515c0912024b702688f5",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 49,
+          "column": 5
+        },
+        {
+          "title": "reduced motion reveals the same choices immediately in a narrow window",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1518,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:17.188Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-04da4863d25ffed58fe2",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 73,
+          "column": 5
+        },
+        {
+          "title": "keeps every mode readable and selectable through consecutive animated changes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4781,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:13.322Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-37ab90d41c73d0a166c5",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 18,
+          "column": 5
+        },
+        {
+          "title": "keyboard selection and interrupted opening leave the picker usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2101,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:18.605Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-07a4a15b2f7e4c00771d",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 49,
+          "column": 5
+        },
+        {
+          "title": "reduced motion reveals the same choices immediately in a narrow window",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1975,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:20.712Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "200c838f401fd46fa0d1-85d0e6034156736c5714",
+          "file": "permission-picker-motion.spec.ts",
+          "line": 73,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "popup-motion.spec.ts",
+      "file": "popup-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "permission hover glides without choosing a mode or losing the draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3171,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:18.720Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-fcc8c82c60779cf7c4eb",
+          "file": "popup-motion.spec.ts",
+          "line": 55,
+          "column": 5
+        },
+        {
+          "title": "options popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21548,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-menu=\"options\"]').first()\nExpected: \u001b[32m\"\"\u001b[39m\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-menu=\"options\"]').first()\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-menu=\"options\"]').first()\nExpected: \u001b[32m\"\"\u001b[39m\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-menu=\"options\"]').first()\u001b[22m\n\n    at sharedEntrance (/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:33:23)\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:99:11",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 23,
+                      "line": 33
+                    },
+                    "snippet": "  31 |\n  32 | async function sharedEntrance(popup: Locator) {\n> 33 |   await expect(popup).toHaveAttribute('data-popup-surface', '')\n     |                       ^\n  34 |   const duration = await popup.evaluate((node) => {\n  35 |     const style = getComputedStyle(node)\n  36 |     return Math.max("
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 23,
+                        "line": 33
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-workbench-menu=\"options\"]').first()\nExpected: \u001b[32m\"\"\u001b[39m\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-workbench-menu=\"options\"]').first()\u001b[22m\n\n\n  31 |\n  32 | async function sharedEntrance(popup: Locator) {\n> 33 |   await expect(popup).toHaveAttribute('data-popup-surface', '')\n     |                       ^\n  34 |   const duration = await popup.evaluate((node) => {\n  35 |     const style = getComputedStyle(node)\n  36 |     return Math.max(\n    at sharedEntrance (/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:33:23)\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:99:11"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:21.897Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-options-popup-026b8-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-options-popup-026b8-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 23,
+                    "line": 33
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-ba2e08396e539bce23bb",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "model popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21373,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:89:27",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 27,
+                      "line": 89
+                    },
+                    "snippet": "  87 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  88 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 89 |     await trigger.first().click()\n     |                           ^\n  90 |     const selector =\n  91 |       kind === 'options'\n  92 |         ? '[data-workbench-menu=\"options\"]'"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 27,
+                        "line": 89
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\n\n  87 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  88 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 89 |     await trigger.first().click()\n     |                           ^\n  90 |     const selector =\n  91 |       kind === 'options'\n  92 |         ? '[data-workbench-menu=\"options\"]'\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:89:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:57:43.802Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-chromium/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 27,
+                    "line": 89
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-d34e60732d81c8132d6c",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "scope popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1894,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:05.787Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-c1349bc2855b1adba34a",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "optimize popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1905,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:07.874Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a291f8ca98f085717393",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "slash candidates share pointer feedback and keep keyboard focus in the editor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1926,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:09.784Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-62778530f72b29171ad9",
+          "file": "popup-motion.spec.ts",
+          "line": 116,
+          "column": 5
+        },
+        {
+          "title": "reduced motion keeps the popup and its choices immediately usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1207,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:11.716Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-a9c32f34caffec9bc71b",
+          "file": "popup-motion.spec.ts",
+          "line": 134,
+          "column": 5
+        },
+        {
+          "title": "permission hover glides without choosing a mode or losing the draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3492,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:22.701Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-eba08c456a77c16cdbb0",
+          "file": "popup-motion.spec.ts",
+          "line": 55,
+          "column": 5
+        },
+        {
+          "title": "options popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2102,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:26.199Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-1e20ab7b90fb37a5965b",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "model popup shares the entrance and item highlight",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21395,
+                  "error": {
+                    "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n",
+                    "stack": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:89:27",
+                    "location": {
+                      "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                      "column": 27,
+                      "line": 89
+                    },
+                    "snippet": "  87 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  88 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 89 |     await trigger.first().click()\n     |                           ^\n  90 |     const selector =\n  91 |       kind === 'options'\n  92 |         ? '[data-workbench-menu=\"options\"]'"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                        "column": 27,
+                        "line": 89
+                      },
+                      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^选择模型/ }).first()\u001b[22m\n\n\n  87 |             ? page.getByRole('button', { name: /^任务范围:/ })\n  88 |             : page.getByRole('button', { name: '优化提示词', exact: true })\n> 89 |     await trigger.first().click()\n     |                           ^\n  90 |     const selector =\n  91 |       kind === 'options'\n  92 |         ? '[data-workbench-menu=\"options\"]'\n    at /Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts:89:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:28.306Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-webkit/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/test-results/composer-audit/popup-motion-model-popup-s-f3842-entrance-and-item-highlight-webkit/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/roylin/code/aster/work/arc-foundation-replay-20261103/apps/studio/tests/e2e/composer-audit/popup-motion.spec.ts",
+                    "column": 27,
+                    "line": 89
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-690d4a628571fb9ddcc2",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "scope popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2880,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:50.067Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-9e830961e3b8e74f7800",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "optimize popup shares the entrance and item highlight",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2584,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:53.376Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-f519b46ffa7c859ed1f6",
+          "file": "popup-motion.spec.ts",
+          "line": 78,
+          "column": 7
+        },
+        {
+          "title": "slash candidates share pointer feedback and keep keyboard focus in the editor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2548,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:55.968Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-91550d8e9620dd215f22",
+          "file": "popup-motion.spec.ts",
+          "line": 116,
+          "column": 5
+        },
+        {
+          "title": "reduced motion keeps the popup and its choices immediately usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1754,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T23:58:58.523Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "19fb2b049458ae8bf079-8a0e68aa2397c2ec656e",
+          "file": "popup-motion.spec.ts",
+          "line": 134,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T23:57:11.446Z",
+    "duration": 108888.602,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

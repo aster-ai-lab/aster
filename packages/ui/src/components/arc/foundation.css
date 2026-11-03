@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /*
  * Arc UI foundation tokens, scoped to `.arc` so they never leak into the host app.
  * Source: uiarc.dev arc-foundation, adapted:
@@ -22,9 +23,9 @@
   --neutral-11: oklch(15% 0 0);
   --surface: var(--background);
   --surface-raised: var(--popover, var(--background));
-  --surface-muted: color-mix(in oklab, var(--foreground) 4%, var(--background));
-  --text-secondary: color-mix(in oklab, var(--foreground) 75%, transparent);
-  --text-muted: color-mix(in oklab, var(--foreground) 55%, transparent);
+  --surface-muted: var(--color-surface-2, color-mix(in oklab, var(--foreground) 4%, var(--background)));
+  --text-secondary: var(--color-ink-muted, color-mix(in oklab, var(--foreground) 75%, transparent));
+  --text-muted: var(--color-ink-faint, color-mix(in oklab, var(--foreground) 55%, transparent));
   --border-strong: color-mix(in oklab, var(--foreground) 20%, transparent);
   --border-subtle: color-mix(in oklab, var(--foreground) 8%, transparent);
   --arc-accent: var(--primary);
@@ -51,11 +52,11 @@
   --tone-green: oklch(50% 0.12 162);
   --success: var(--tone-green);
   --warning: var(--tone-amber);
-  --danger: var(--destructive);
+  --danger: var(--color-danger-text, var(--destructive));
   --info: var(--tone-sky);
-  --shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.035);
+  --shadow-resting: var(--shadow-quiet, 0 1px 2px oklch(0% 0 0 / 0.035));
   --shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.065);
-  --shadow-floating: 0 20px 48px oklch(0% 0 0 / 0.105);
+  --shadow-floating: var(--shadow-elevated, 0 12px 32px oklch(0% 0 0 / 0.12));
   --arc-gradient-from: oklch(90% 0.045 300);
   --arc-gradient-to: oklch(92% 0.045 65);
   --arc-gradient: linear-gradient(100deg, var(--arc-gradient-from), var(--arc-gradient-to));
@@ -75,15 +76,15 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  --radius-control: 0.5rem;
-  --radius-panel: 0.5rem;
-  --radius-surface: 0.5rem;
+  --radius-control: var(--spec-radius-row, 0.5rem);
+  --radius-panel: var(--spec-radius-dialog, 0.75rem);
+  --radius-surface: var(--spec-radius-dialog, 0.75rem);
   --radius-pill: 9999px;
-  --control-height-sm: 2.25rem;
-  --control-height-md: 2.75rem;
-  --control-height-lg: 3.125rem;
+  --control-height-sm: var(--control-h-sm, 1.875rem);
+  --control-height-md: var(--control-h, 2.25rem);
+  --control-height-lg: 2.5rem;
   --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
+  --text-sm: 0.8125rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
   --text-xl: 1.375rem;
@@ -105,10 +106,10 @@
     0.9882, 0.9902, 0.992, 0.9934, 0.9946, 0.9955, 0.9963, 1
   );
   --duration-instant: 120ms;
-  --duration-fast: 160ms;
+  --duration-fast: 120ms;
   --duration-standard: 240ms;
   --duration-considered: 480ms;
-  --duration-spring: 580ms;
+  --duration-spring: 420ms;
   --focus-outline: var(--foreground);
   --focus-outline-width: 2px;
   --focus-outline-offset: 2px;

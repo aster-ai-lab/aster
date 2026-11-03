@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /* Arc messages: toasts ride the raised surface with a floating shadow; the pill inverts with the theme. */
 .card { border-radius: var(--radius-control); border: 1px solid var(--border-subtle); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
 .iconWell { border-radius: 0.5rem; background: var(--surface-muted); }

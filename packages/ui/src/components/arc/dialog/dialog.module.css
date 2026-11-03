@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 .overlay { position: fixed; inset: 0; z-index: 50; background: oklch(10% 0 0 / .46); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
 /* Centered with auto margins (like a native modal dialog) so transform stays free for the entrance spring. */
 .content { position: fixed; z-index: 51; inset: 0; width: min(calc(100vw - var(--space-8)), 440px); height: fit-content; max-height: calc(100vh - var(--space-8)); max-height: calc(100dvh - var(--space-8)); margin: auto; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-surface); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
@@ -37,5 +38,5 @@
 
 /* Aster adaptation: skin only — Aster's dialog keeps its own centered positioning and width scale. */
 @layer components {
-  .surface { border: 1px solid var(--border); border-radius: var(--radius-surface); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
+  .surface { font-size: var(--text-sm); line-height: var(--leading-body); border: 1px solid var(--border); border-radius: var(--radius-surface); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
 }

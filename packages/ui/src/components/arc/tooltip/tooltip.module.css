@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 @layer components {
 .tooltip { --tooltip-y: 3px; z-index: 90; max-width: 15rem; padding: var(--space-3) var(--space-4); border: 1px solid color-mix(in oklab, var(--background) 14%, var(--foreground)); border-radius: var(--radius-control); background: var(--foreground); color: var(--background); box-shadow: var(--shadow-raised); font-size: var(--text-sm); font-weight: 400; line-height: var(--leading-body); transform-origin: var(--radix-tooltip-content-transform-origin); transition: opacity var(--duration-fast) var(--ease-enter), transform var(--duration-fast) var(--ease-enter); }
 .tooltip[data-side="bottom"] { --tooltip-y: -3px; }

@@ -1,3 +1,4 @@
+import '../../styles/popup-motion.css'
 import {
   Arrow as RadixArrow,
   Content as RadixContent,

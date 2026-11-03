@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /* Set --slider-thumb and --slider-track to resize. The track is inset by half a thumb, so a thumb at either limit stays inside the box. */
 .root { --slider-thumb: 22px; --slider-track: 6px; display: grid; width: 100%; min-width: 0; color: var(--foreground); font-size: var(--text-sm); line-height: var(--leading-body); letter-spacing: var(--tracking-body); user-select: none; -webkit-user-select: none; }
 .header { display: flex; min-width: 0; align-items: baseline; justify-content: space-between; gap: var(--space-4); }

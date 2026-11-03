@@ -1,4 +1,7 @@
-'use client'
+import { PopupHighlight } from './popup-highlight'
+
+import arcPopover from '../arc/popover/popover.module.css'
+;('use client')
 
 import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
 import * as React from 'react'
@@ -58,11 +61,16 @@ function HoverCardContent({
         className={cn(
           // no-drag punches the popup's area out of any titlebar drag region it overlaps,
           // so hover/click reach the items instead of the window-drag hit test (Electron).
-          'z-[80] w-80 origin-(--radix-hover-card-content-transform-origin) rounded-lg border-[0.5px] bg-popover p-4 text-popover-foreground shadow-lg outline-hidden [-webkit-app-region:no-drag]',
+          'arc',
+          arcPopover.surface,
+          'z-[240] w-80 origin-(--radix-hover-card-content-transform-origin) p-4 text-[13px] outline-hidden [-webkit-app-region:no-drag]',
           className
         )}
         {...props}
-      />
+        data-popup-surface="">
+        <PopupHighlight />
+        {props.children}
+      </HoverCardPrimitive.Content>
     </HoverCardPrimitive.Portal>
   )
 }

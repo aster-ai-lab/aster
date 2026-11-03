@@ -64,8 +64,8 @@ export function usePopupDismissal(
         return
       }
       insideReactTree.current = false
-      // React portals belong to their parent popup even when their DOM nodes do not.
-      queueMicrotask(() => {
+      // Native dispatch can checkpoint microtasks before React captures a portal event.
+      window.setTimeout(() => {
         const node = content.current
         if (!mounted || !node || insideReactTree.current) return
         const target = event.target

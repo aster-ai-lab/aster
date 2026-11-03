@@ -44,6 +44,28 @@ describe('Button', () => {
     }
   )
 
+  it('blocks a loading link without losing its label or focus target', async () => {
+    const click = vi.fn()
+    const user = userEvent.setup()
+    render(<Button href="#blocked" loading loadingIcon={<span>Pending</span>} onClick={click}>Open file</Button>)
+    const link = screen.getByRole('link', { name: 'Open file' })
+    expect(link).toHaveAttribute('aria-disabled', 'true')
+    expect(link).toHaveAttribute('aria-busy', 'true')
+    await user.click(link)
+    expect(click).not.toHaveBeenCalled()
+  })
+
+  it('blocks the child action of an aria-disabled slotted link', async () => {
+    const click = vi.fn()
+    const user = userEvent.setup()
+    render(<Button asChild aria-disabled><a href="#blocked" onClick={click}>Unavailable link</a></Button>)
+    const link = screen.getByRole('link', { name: 'Unavailable link' })
+    await user.tab()
+    expect(link).toHaveFocus()
+    await user.keyboard('{Enter}')
+    expect(click).not.toHaveBeenCalled()
+  })
+
   it('uses the navbar spinner size for icon-navbar loading buttons', () => {
     render(
       <Button loading size="icon-navbar" aria-label="Refresh">

@@ -1,13 +1,14 @@
-'use client'
+import { PopupHighlight } from './popup-highlight'
+;('use client')
 
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 import * as React from 'react'
 
-import arcPopover from '../arc/popover/popover.module.css'
-
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
+
+import arcPopover from '../arc/popover/popover.module.css'
 
 function Popover({ open, defaultOpen, onOpenChange, ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   const state = usePopupState({ open, defaultOpen, onOpenChange })
@@ -68,7 +69,10 @@ function PopoverContent({
           className
         )}
         {...props}
-      />
+        data-popup-surface="">
+        <PopupHighlight />
+        {props.children}
+      </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   )
 }

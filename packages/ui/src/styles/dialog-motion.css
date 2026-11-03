@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 /*
  * Dialogs stay where they rest.
  * Animate opacity and the scale property only. Animating transform replaces

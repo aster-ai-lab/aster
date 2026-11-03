@@ -2,10 +2,10 @@ import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { cva } from 'class-variance-authority'
 import * as React from 'react'
 
-import arcTabs from '../arc/tabs/tabs.module.css'
-
 import { cn } from '../../lib/utils'
 import { SelectionHighlight } from './selection-highlight'
+
+import arcTabs from '../arc/tabs/tabs.module.css'
 
 const TabsContext = React.createContext<{
   variant?: 'default' | 'line' | 'underline' | 'workflow'
@@ -101,7 +101,7 @@ function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimi
 const tabsTriggerVariants = cva(
   [
     'inline-flex items-center justify-center text-sm font-medium whitespace-nowrap',
-    'disabled:pointer-events-none disabled:opacity-50',
+    'disabled:pointer-events-none disabled:opacity-40',
     'relative isolate motion-safe:transition-colors motion-safe:duration-150 outline-none',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4'
   ],
@@ -184,7 +184,9 @@ function TabsTrigger({ className, children, value, ...props }: React.ComponentPr
       data-slot="tabs-trigger"
       value={value}
       className={cn(
-        isDefault ? cn('arc', arcTabs.trigger, 'flex-1 gap-1.5 [&_svg:not([class*="size-"])]:size-4') : tabsTriggerVariants({ variant, orientation }),
+        isDefault
+          ? cn('arc', arcTabs.trigger, 'flex-1 gap-1.5 [&_svg:not([class*="size-"])]:size-4')
+          : tabsTriggerVariants({ variant, orientation }),
         className
       )}
       {...props}>

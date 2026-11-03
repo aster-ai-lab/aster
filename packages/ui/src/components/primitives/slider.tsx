@@ -2,9 +2,9 @@ import * as SliderPrimitive from '@radix-ui/react-slider'
 import { cva } from 'class-variance-authority'
 import * as React from 'react'
 
-import arcSlider from '../arc/slider/slider.module.css'
-
 import { cn } from '../../lib/utils'
+
+import arcSlider from '../arc/slider/slider.module.css'
 
 type SliderMark = {
   value: number
@@ -73,17 +73,18 @@ function Slider({
         onValueChange?.(newValues)
       }}
       className={cn(
-        'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col',
+        'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-40 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col',
         !marks?.length && className
       )}
       {...props}>
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        data-size={size ?? 'md'}
-        className={cn('arc', arcSlider.track)}>
+      <SliderPrimitive.Track data-slot="slider-track" data-size={size ?? 'md'} className={cn('arc', arcSlider.track)}>
         <SliderPrimitive.Range
           data-slot="slider-range"
-          className={cn('arc', arcSlider.fill, 'data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full')}
+          className={cn(
+            'arc',
+            arcSlider.fill,
+            'data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'
+          )}
         />
       </SliderPrimitive.Track>
       {localValues.map((val, index) => (
@@ -93,7 +94,12 @@ function Slider({
           key={index}
           aria-label={getThumbAriaLabel?.(index)}
           aria-valuetext={getThumbAriaValueText?.(val, index)}
-          className={cn('arc', arcSlider.thumb, 'shrink-0 disabled:pointer-events-none disabled:opacity-50', showValueLabel && 'group')}>
+          className={cn(
+            'arc',
+            arcSlider.thumb,
+            'shrink-0 disabled:pointer-events-none disabled:opacity-40',
+            showValueLabel && 'group'
+          )}>
           {showValueLabel && (
             <span
               data-slot="slider-value-label"

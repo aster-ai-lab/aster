@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 @layer components {
 .target { display: block; outline: none; }
 /* Motion scales the menu from the pointer (transform-origin is set inline) and fades it out faster than it arrives. */
@@ -17,7 +18,7 @@
 @keyframes context-item-in { from { opacity: 0; transform: translateY(-2px); } }
 @media (prefers-reduced-motion: reduce) { .item, .highlight { animation: none; transition: none; } }
 
-/* Aster adaptation: the primitive renders Radix items without Arc's gliding highlight layer. */
+/* Aster's primitive supplies the shared hover plate and keeps this Arc item skin. */
 .menuSurface { padding: 5px; border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); }
 .item[data-highlighted] { background: var(--surface-muted); }
 

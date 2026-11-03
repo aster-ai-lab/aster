@@ -1,3 +1,4 @@
+import '../../styles/dialog-motion.css'
 import { composeEventHandlers } from '@radix-ui/primitive'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
@@ -188,7 +189,7 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('text-lg leading-none font-semibold', className)}
+      className={cn('text-[14px] leading-5 font-medium', className)}
       {...props}
     />
   )

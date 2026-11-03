@@ -4,8 +4,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { SearchSelect } from '../SearchSelect'
 import { PortalContainerProvider } from '../../primitives/portal-container'
+import { SearchSelect } from '../SearchSelect'
 
 const options = [
   { value: 'alpha', label: 'Alpha' },
@@ -16,31 +16,52 @@ const options = [
 describe('SearchSelect editor choices', () => {
   it('moves its hover plate without changing the selected value or highlighting a disabled option', () => {
     const change = vi.fn()
-    render(<SearchSelect glidingHighlight searchable={false} allowClear={false} options={[
-      { value: 'alpha', label: 'Alpha' },
-      { value: 'beta', label: 'Beta' },
-      { value: 'gamma', label: 'Gamma', disabled: true }
-    ]} value="alpha" onChange={change} />)
+    render(
+      <SearchSelect
+        glidingHighlight
+        searchable={false}
+        allowClear={false}
+        options={[
+          { value: 'alpha', label: 'Alpha' },
+          { value: 'beta', label: 'Beta' },
+          { value: 'gamma', label: 'Gamma', disabled: true }
+        ]}
+        value="alpha"
+        onChange={change}
+      />
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Alpha' }))
     const beta = screen.getByRole('option', { name: 'Beta' })
     fireEvent.mouseEnter(beta.querySelector('button')!)
     // The plate is a maintained visual slot; selection remains the owner's value.
-    expect(beta.querySelector('[data-slot="search-select-hover-highlight"]')).toBeInTheDocument()
+    expect(
+      screen.getByRole('listbox').closest('[data-popup-surface]')?.querySelector('[data-slot="popup-highlight"]')
+    ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Alpha' })).toHaveAttribute('aria-selected', 'true')
     expect(change).not.toHaveBeenCalled()
     fireEvent.mouseEnter(screen.getByRole('option', { name: 'Gamma' }).querySelector('button')!)
-    expect(beta.querySelector('[data-slot="search-select-hover-highlight"]')).toBeInTheDocument()
+    expect(
+      screen.getByRole('listbox').closest('[data-popup-surface]')?.querySelector('[data-slot="popup-highlight"]')
+    ).toBeInTheDocument()
     fireEvent.click(beta)
     expect(change).toHaveBeenCalledExactlyOnceWith('beta')
   })
 
   it('skips disabled options for keyboard activation and refuses their pointer activation', () => {
     const change = vi.fn()
-    render(<SearchSelect searchable={false} allowClear={false} options={[
-      { value: 'alpha', label: 'Alpha' },
-      { value: 'beta', label: 'Beta', disabled: true },
-      { value: 'gamma', label: 'Gamma' }
-    ]} value="alpha" onChange={change} />)
+    render(
+      <SearchSelect
+        searchable={false}
+        allowClear={false}
+        options={[
+          { value: 'alpha', label: 'Alpha' },
+          { value: 'beta', label: 'Beta', disabled: true },
+          { value: 'gamma', label: 'Gamma' }
+        ]}
+        value="alpha"
+        onChange={change}
+      />
+    )
     const trigger = screen.getByRole('button', { name: 'Alpha' })
     fireEvent.click(trigger)
     fireEvent.click(screen.getByRole('option', { name: 'Beta' }))
@@ -63,13 +84,23 @@ describe('SearchSelect editor choices', () => {
   })
 
   it('shows grouped font previews and option metadata', () => {
-    render(<SearchSelect searchable={false} allowClear={false} options={[
-      { value: 'serif', label: 'Serif', group: 'Fonts', meta: 'Installed', previewStyle: { fontFamily: 'serif' } }
-    ]} value="serif" onChange={vi.fn()} />)
+    render(
+      <SearchSelect
+        searchable={false}
+        allowClear={false}
+        options={[
+          { value: 'serif', label: 'Serif', group: 'Fonts', meta: 'Installed', previewStyle: { fontFamily: 'serif' } }
+        ]}
+        value="serif"
+        onChange={vi.fn()}
+      />
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Serif' }))
     expect(screen.getByText('Fonts')).toBeInTheDocument()
     expect(screen.getByText('Installed')).toBeInTheDocument()
-    expect(screen.getByRole('option').querySelector('.ui-search-select__option-label')).toHaveStyle({ fontFamily: 'serif' })
+    expect(screen.getByRole('option').querySelector('.ui-search-select__option-label')).toHaveStyle({
+      fontFamily: 'serif'
+    })
   })
 })
 
@@ -83,7 +114,10 @@ describe('SearchSelect popup anchoring', () => {
       render(<SearchSelect searchable={false} options={options} value="alpha" onChange={vi.fn()} minPanelWidth={288} />)
       const trigger = screen.getByRole('button', { name: 'Alpha' })
       vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
-        left: 700, top: 100, bottom: 132, width: 100
+        left: 700,
+        top: 100,
+        bottom: 132,
+        width: 100
       } as DOMRect)
       fireEvent.click(trigger)
       expect(screen.getByRole('presentation')).toHaveStyle({ width: `${expectedWidth}px`, left: `${expectedLeft}px` })
@@ -97,35 +131,43 @@ describe('SearchSelect popup anchoring', () => {
     { viewport: 600, top: 550, bottom: 580, expectedTop: 404, maxHeight: 536 },
     { viewport: 600, top: 390, bottom: 420, expectedTop: 426, maxHeight: 166 },
     { viewport: 200, top: 70, bottom: 100, expectedTop: 106, maxHeight: 86 }
-  ])('anchors the menu at trigger top $top in viewport $viewport', ({ viewport, top, bottom, expectedTop, maxHeight }) => {
-    vi.stubGlobal('innerHeight', viewport)
-    const height = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
-      return this.getAttribute('role') === 'presentation' ? 140 : 0
-    })
-    try {
-      render(
-        <SearchSelect
-          size="sm"
-          searchable={false}
-          aria-label="Rows per page"
-          options={[10, 20, 50, 100].map(value => ({ value: String(value), label: `${value} / page` }))}
-          value="20"
-          onChange={vi.fn()}
-        />
-      )
-      const trigger = screen.getByRole('button', { name: 'Rows per page' })
-      vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
-        left: 340, top, bottom, width: 120
-      } as DOMRect)
-      fireEvent.click(trigger)
-      const panel = screen.getByRole('presentation')
-      expect(panel).toHaveStyle({ top: `${expectedTop}px`, left: '340px', maxHeight: `${maxHeight}px` })
-      expect(screen.getByRole('option', { name: '100 / page' })).toBeInTheDocument()
-    } finally {
-      height.mockRestore()
-      vi.unstubAllGlobals()
+  ])(
+    'anchors the menu at trigger top $top in viewport $viewport',
+    ({ viewport, top, bottom, expectedTop, maxHeight }) => {
+      vi.stubGlobal('innerHeight', viewport)
+      const height = vi
+        .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+        .mockImplementation(function (this: HTMLElement) {
+          return this.getAttribute('role') === 'presentation' ? 140 : 0
+        })
+      try {
+        render(
+          <SearchSelect
+            size="sm"
+            searchable={false}
+            aria-label="Rows per page"
+            options={[10, 20, 50, 100].map((value) => ({ value: String(value), label: `${value} / page` }))}
+            value="20"
+            onChange={vi.fn()}
+          />
+        )
+        const trigger = screen.getByRole('button', { name: 'Rows per page' })
+        vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
+          left: 340,
+          top,
+          bottom,
+          width: 120
+        } as DOMRect)
+        fireEvent.click(trigger)
+        const panel = screen.getByRole('presentation')
+        expect(panel).toHaveStyle({ top: `${expectedTop}px`, left: '340px', maxHeight: `${maxHeight}px` })
+        expect(screen.getByRole('option', { name: '100 / page' })).toBeInTheDocument()
+      } finally {
+        height.mockRestore()
+        vi.unstubAllGlobals()
+      }
     }
-  })
+  )
 })
 
 afterEach(() => {
@@ -195,7 +237,10 @@ describe('SearchSelect menu scroll', () => {
     )
     const trigger = screen.getByRole('button', { name: 'Language' })
     vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
-      left: 340, top: 180, bottom: 216, width: 160
+      left: 340,
+      top: 180,
+      bottom: 216,
+      width: 160
     } as DOMRect)
     fireEvent.click(trigger)
     const panel = container.querySelector<HTMLElement>('.ui-search-select__panel')!
@@ -241,10 +286,17 @@ describe('SearchSelect menu card', () => {
   it('closes on the first outside press even when the target stops propagation', async () => {
     const user = userEvent.setup()
     const clicked = vi.fn()
-    render(<>
-      <SearchSelect searchable={false} options={options} value="beta" onChange={vi.fn()} aria-label="Status" />
-      <button onPointerDown={event => event.stopPropagation()} onMouseDown={event => event.stopPropagation()} onClick={clicked}>Outside</button>
-    </>)
+    render(
+      <>
+        <SearchSelect searchable={false} options={options} value="beta" onChange={vi.fn()} aria-label="Status" />
+        <button
+          onPointerDown={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={clicked}>
+          Outside
+        </button>
+      </>
+    )
     await user.click(screen.getByRole('button', { name: 'Status' }))
     expect(screen.getByRole('listbox')).toBeVisible()
     await user.click(screen.getByRole('button', { name: 'Outside' }))
@@ -348,9 +400,7 @@ describe('SearchSelect option activation', () => {
 describe('SearchSelect keyboard', () => {
   it('opens on the chosen option, walks Home and End, and returns focus to the trigger', () => {
     const onChange = vi.fn()
-    render(
-      <SearchSelect options={options} value="beta" onChange={onChange} aria-label="Status" searchable={false} />
-    )
+    render(<SearchSelect options={options} value="beta" onChange={onChange} aria-label="Status" searchable={false} />)
     const trigger = screen.getByRole('button', { name: 'Status' })
     trigger.focus()
     fireEvent.keyDown(trigger, { key: 'ArrowUp' })

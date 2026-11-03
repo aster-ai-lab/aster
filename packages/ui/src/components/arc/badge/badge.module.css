@@ -1,3 +1,4 @@
+@layer properties, theme, base, components, utilities, app;
 @layer components {
 /*
  * One formula tints every tone and colour from the shared --tone-* family, so they read as one set in both themes:

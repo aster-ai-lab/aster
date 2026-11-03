@@ -2,9 +2,9 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 
-import arcRadio from '../arc/radio/radio.module.css'
-
 import { cn } from '../../lib/utils'
+
+import arcRadio from '../arc/radio/radio.module.css'
 
 const radioGroupItemVariants = cva(
   cn(
@@ -12,7 +12,7 @@ const radioGroupItemVariants = cva(
     'data-[state=checked]:border-2 data-[state=checked]:border-foreground',
     'focus-visible:border-foreground',
     'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-    'disabled:cursor-not-allowed disabled:opacity-50'
+    'disabled:cursor-not-allowed disabled:opacity-40'
   ),
   {
     variants: {

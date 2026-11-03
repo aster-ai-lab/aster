@@ -1,8 +1,9 @@
+@layer properties, theme, base, components, utilities, app;
 /* Arc radio: the checked fill carries the glyph dot, which pops in on the snappy curve. */
 .item { display: grid; place-items: center; border: 1px solid var(--border-strong); background: transparent; color: var(--control-glyph); cursor: pointer; transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
 @media (hover: hover) and (pointer: fine) { .item:hover:not(:disabled):not([data-state='checked']) { border-color: var(--foreground); } }
 .item[data-state='checked'] { border-color: var(--control-on); background: var(--control-on); }
-.item:disabled { cursor: not-allowed; opacity: .5; }
+.item:disabled { cursor: not-allowed; opacity: .4; }
 .dot { width: 45%; height: 45%; border-radius: var(--radius-pill); background: currentColor; animation: dot-in var(--duration-standard) var(--ease-standard); }
 @keyframes dot-in { from { scale: 0; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .item { transition: none; } .dot { animation: none; } }

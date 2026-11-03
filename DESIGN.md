@@ -174,6 +174,19 @@ dialog placement and authority rules. Arc is a behavior reference, not a second 
 bulk-install components. Public examples with simulated events are not a production data source. Reusing
 licensed source requires the corresponding rights; reading a public preview does not provide that source.
 
+#### Arc foundation consistency
+
+The shared Arc foundation retains Aster's compact scale: 30px quiet/toolbar controls, 36px form controls,
+40px large actions, 13px labels, 8px control/row radii and 12px floating surfaces. Native buttons, links,
+slotted actions and custom loading glyphs share the same variant skin. Interaction state and owner callbacks
+are independent of the paint mechanism. The semantic danger text role paints destructive outlined actions.
+
+Declare `properties, theme, base, components, utilities, app` before component CSS can load, including when
+an individual component loads before Tailwind. Preflight must not reset an already skinned control. Shared
+menus, pickers and command lists use one measured pointer plate; keyboard movement is immediate. Filtering
+removes stale geometry; scrolling retargets to the actual visible item. Portal children remain inside their
+logical popup for dismissal, even when native event dispatch checkpoints microtasks before React capture.
+
 #### Emotional purpose
 
 | Moment | What the person needs | Aster's response |
@@ -450,7 +463,7 @@ scale, dark mode and the motion rules, and it differs per platform.
 - **Panel.** The menu card: white elevated surface, 1px hairline, radius 12px, `shadow-elevated`, 6px padding,
   2–4px row gap, 6px from the trigger. It is at least as wide as the trigger, opens below and flips above when
   the viewport has no room, and scrolls inside at 160px (`sm`) / 192px (form) / 280px (shell). It portals or
-  uses fixed positioning so a scrolling panel or dialog never clips it. It enters with a 150ms fade and 97%
+  uses fixed positioning so a scrolling panel or dialog never clips it. It enters with a 160ms fade and 97%
   scale; reduced motion removes the animation.
 - **Rows.** 32px (`sm`) or 36px tall, radius 8px, 13px. Hover and the keyboard-active row use the hover fill;
   the chosen row is medium weight on the selected fill (or carries a trailing check). A disabled row is

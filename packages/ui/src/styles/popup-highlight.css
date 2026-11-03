@@ -1,0 +1,65 @@
+@layer properties, theme, base, components, utilities, app;
+@layer components {
+  [data-popup-surface] {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .popup-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    border-radius: var(--radius-control, 8px);
+    background: var(--surface-muted, var(--color-surface-2, #f7f7f7));
+    pointer-events: none;
+  }
+
+  .popup-highlight[data-tone='danger'] {
+    background: color-mix(in oklab, var(--destructive) 10%, var(--popover, white));
+  }
+
+  [data-popup-surface]
+    :is(
+      [role='option'],
+      [role='menuitem'],
+      [role='menuitemradio'],
+      [role='menuitemcheckbox'],
+      [data-popup-item],
+      [data-option-id]
+    ) {
+    position: relative;
+    z-index: 1;
+    transition:
+      background-color 120ms ease-out,
+      color 120ms ease-out;
+  }
+
+  /* Checked indicators retain selection while one plate owns hover paint. */
+  [data-popup-surface][data-popup-highlight]
+    :is(
+      [role='option'],
+      [role='menuitem'],
+      [role='menuitemradio'],
+      [role='menuitemcheckbox'],
+      [data-popup-item],
+      [data-option-id],
+      [data-popup-item-surface]
+    ) {
+    background-color: transparent !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-popup-surface]
+      :is(
+        [role='option'],
+        [role='menuitem'],
+        [role='menuitemradio'],
+        [role='menuitemcheckbox'],
+        [data-popup-item],
+        [data-option-id]
+      ) {
+      transition: none !important;
+    }
+  }
+}

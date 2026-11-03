@@ -4,59 +4,46 @@ import { Loader } from 'lucide-react'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
+import { cn } from '../../lib/utils'
 import { Button as ArcButton } from '../arc/button/button'
 
-import { cn } from '../../lib/utils'
+import arcButton from '../arc/button/button.module.css'
 
 const buttonVariants = cva(
   cn(
-    'inline-flex items-center justify-center gap-2 whitespace-nowrap',
-    'rounded-md font-normal motion-safe:transition-[background-color,color,border-color,box-shadow,opacity] motion-safe:duration-150 active:opacity-80',
+    'arc',
+    arcButton.button,
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-normal shrink-0 outline-none',
+    'active:opacity-80',
     'disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
-    "shrink-0 outline-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-    'data-[busy=true]:cursor-progress data-[busy=true]:opacity-100',
-    'shadow-none'
+    "aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    'data-[busy=true]:cursor-progress data-[busy=true]:opacity-100'
   ),
   {
     variants: {
       variant: {
-        default:
-          'bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
-        /** Console-kit aliases of the filled default action. */
-        primary:
-          'bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
-        accent:
-          'bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
-        destructive: 'bg-destructive text-white hover:bg-destructive-hover focus-visible:bg-destructive-hover',
-        outline:
-          'border border-[#e5e5e5] bg-white text-[#171717] shadow-none hover:bg-[#fafafa] focus-visible:border-[#e5e5e5] focus-visible:bg-[#fafafa] dark:border-[#2f2f33] dark:bg-[#171717] dark:text-[#f5f5f5] dark:hover:bg-[#232326] dark:focus-visible:border-[#2f2f33] dark:focus-visible:bg-[#232326]',
-        secondary:
-          'bg-[#f5f5f5] text-[#171717] shadow-none hover:bg-[#ececec] focus-visible:bg-[#ececec] dark:bg-[#2c2c2c] dark:text-[#f5f5f5] dark:hover:bg-[#343434] dark:focus-visible:bg-[#343434]',
-        /** Dialog primary action style: same color hierarchy as default, with the 8px control radius. */
-        emphasis:
-          'bg-neutral-900 text-white shadow-none hover:bg-neutral-800 focus-visible:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 dark:focus-visible:bg-neutral-200',
-        ghost:
-          'text-[#171717] shadow-none hover:bg-[#f5f5f5] hover:text-[#171717] focus-visible:bg-[#f5f5f5] focus-visible:text-[#171717] dark:text-[#f5f5f5] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5] dark:focus-visible:bg-[#2c2c2c] dark:focus-visible:text-[#f5f5f5]',
-        link: 'text-neutral-900 underline-offset-4 hover:text-neutral-700 hover:underline focus-visible:text-neutral-700 focus-visible:underline dark:text-neutral-100 dark:hover:text-neutral-300 dark:focus-visible:text-neutral-300'
+        default: arcButton.primary,
+        primary: arcButton.primary,
+        accent: arcButton.primary,
+        emphasis: arcButton.primary,
+        destructive: arcButton.danger,
+        outline: arcButton.secondary,
+        secondary: cn(arcButton.secondary, arcButton.tonal),
+        ghost: arcButton.ghost,
+        link: 'border-transparent bg-transparent text-foreground underline-offset-4 hover:underline focus-visible:underline'
       },
       size: {
-        default: 'min-h-7.5 gap-1.5 px-2.5 text-[13px]',
-        /** 36px confirm height with 13px label (DESIGN.md §6 filled button). */
-        md: 'min-h-9 gap-2 px-3.5 text-[13px]',
-        /** 30px quiet height, 13px label (DESIGN.md §6). */
-        sm: 'min-h-7.5 gap-1.5 px-2.5 text-[13px]',
-        lg: 'min-h-9 px-4 text-sm',
-        icon: 'size-9',
-        'icon-sm': 'size-7',
-        'icon-lg': 'size-10',
-        /** Navbar / toolbar icon button: 30px box, 18px icon (8px radius from base). */
-        'icon-navbar': 'size-[30px] [&_svg]:!size-[18px]'
+        default: arcButton.sm,
+        sm: arcButton.sm,
+        md: arcButton.md,
+        lg: arcButton.lg,
+        icon: arcButton.icon,
+        'icon-sm': arcButton['icon-sm'],
+        'icon-lg': arcButton['icon-lg'],
+        'icon-navbar': arcButton['icon-navbar']
       }
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default'
-    }
+    defaultVariants: { variant: 'default', size: 'default' }
   }
 )
 
@@ -108,12 +95,20 @@ function Button({
 
   const arcVariant = arcVariants[variant ?? 'default']
   const arcSize = arcSizes[size ?? 'default']
-  if (arcVariant && arcSize && !asChild && to === undefined && href === undefined && loadingIcon === undefined && loadingIconClassName === undefined) {
+  if (
+    arcVariant &&
+    arcSize &&
+    !asChild &&
+    to === undefined &&
+    href === undefined &&
+    loadingIcon === undefined &&
+    loadingIconClassName === undefined
+  ) {
     return (
       <ArcButton
         data-slot="button"
         data-variant={variant ?? 'default'}
-        className={className}
+        className={buttonVariants({ variant, size, className })}
         variant={arcVariant}
         size={arcSize}
         loading={loading ?? false}
@@ -130,14 +125,23 @@ function Button({
       data-slot="button"
       data-variant={variant ?? 'default'}
       className={cn(buttonVariants({ variant, size, className }))}
-      disabled={disabled || loading}
+      disabled={to === undefined && href === undefined ? disabled || loading : undefined}
+      aria-disabled={disabled || loading ? true : props['aria-disabled']}
       aria-busy={loading || undefined}
       data-busy={loading || undefined}
       {...(to !== undefined ? { to } : {})}
       {...(href !== undefined ? { href } : {})}
       {...props}
+      onClickCapture={(event: React.MouseEvent<HTMLButtonElement>) => {
+        if (disabled || loading || props['aria-disabled'] === true || props['aria-disabled'] === 'true') {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+        props.onClickCapture?.(event)
+      }}
       onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-        if (!asChild && to === undefined && href === undefined && (props['aria-disabled'] === true || props['aria-disabled'] === 'true')) {
+        if (disabled || loading || props['aria-disabled'] === true || props['aria-disabled'] === 'true') {
           event.preventDefault()
           event.stopPropagation()
           return
@@ -152,7 +156,7 @@ function Button({
           <span
             data-slot="button-label"
             className={cn(
-              'inline-flex items-center justify-center gap-[inherit] motion-safe:transition-opacity motion-safe:duration-150',
+              'inline-flex items-center justify-center gap-[inherit] motion-safe:transition-opacity motion-safe:duration-[160ms]',
               loading && 'opacity-0'
             )}>
             {children}
@@ -161,7 +165,7 @@ function Button({
             <span
               aria-hidden="true"
               data-slot="button-pending"
-              className="pointer-events-none absolute inset-0 inline-flex items-center justify-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-150">
+              className="pointer-events-none absolute inset-0 inline-flex items-center justify-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-[160ms]">
               {spinnerElement}
             </span>
           )}

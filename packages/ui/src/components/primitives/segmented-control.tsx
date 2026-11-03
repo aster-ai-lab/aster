@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-import arcSegmented from '../arc/segmented-control/segmented-control.module.css'
-
 import { cn } from '../../lib/utils'
 import { SelectionHighlight } from './selection-highlight'
+
+import arcSegmented from '../arc/segmented-control/segmented-control.module.css'
 
 export interface SegmentedControlOption<TValue extends string = string> {
   value: TValue
@@ -94,7 +94,7 @@ function SegmentedControl<TValue extends string = string>({
         'arc',
         arcSegmented.root,
         'relative isolate inline-flex items-center',
-        disabled && 'pointer-events-none opacity-50',
+        disabled && 'pointer-events-none opacity-40',
         className
       )}
       {...props}>
@@ -119,10 +119,14 @@ function SegmentedControl<TValue extends string = string>({
             className={cn(
               'arc',
               arcSegmented.button,
-              'relative inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150 disabled:pointer-events-none disabled:opacity-50'
+              'relative inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150 disabled:pointer-events-none disabled:opacity-40'
             )}>
             {selected && (
-              <SelectionHighlight data-slot="segmented-control-indicator" layoutId={highlightId} className={arcSegmented.selection} />
+              <SelectionHighlight
+                data-slot="segmented-control-indicator"
+                layoutId={highlightId}
+                className={arcSegmented.selection}
+              />
             )}
             <span className={arcSegmented.label}>{option.label}</span>
           </button>

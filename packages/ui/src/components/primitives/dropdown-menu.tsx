@@ -2,11 +2,12 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
-import arcDropdown from '../arc/dropdown-menu/dropdown-menu.module.css'
-
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
+import { PopupHighlight } from './popup-highlight'
 import { usePortalContainer } from './portal-container'
+
+import arcDropdown from '../arc/dropdown-menu/dropdown-menu.module.css'
 
 function DropdownMenu({
   open,
@@ -102,7 +103,10 @@ function DropdownMenuContent({
           className
         )}
         {...props}
-      />
+        data-popup-surface="">
+        <PopupHighlight />
+        {props.children}
+      </DropdownMenuPrimitive.Content>
     </DropdownMenuPortal>
   )
 }
@@ -128,7 +132,7 @@ function DropdownMenuItem({
       className={cn(
         'arc',
         arcDropdown.item,
-        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4 data-[variant=destructive]:[&_svg:not([class*="text-"])]:text-destructive!',
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4 data-[variant=destructive]:[&_svg:not([class*="text-"])]:text-destructive!',
         className
       )}
       {...props}
@@ -148,7 +152,7 @@ function DropdownMenuCheckboxItem({
       className={cn(
         'arc',
         arcDropdown.item,
-        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       checked={checked}
@@ -178,7 +182,7 @@ function DropdownMenuRadioItem({
       className={cn(
         'arc',
         arcDropdown.item,
-        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       {...props}>
@@ -248,7 +252,7 @@ function DropdownMenuSubTrigger({
       className={cn(
         'arc',
         arcDropdown.item,
-        'relative flex cursor-default items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[state=open]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
+        'relative flex cursor-default items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[inset]:pl-8 data-[state=open]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
         className
       )}
       {...props}>
@@ -273,7 +277,10 @@ function DropdownMenuSubContent({
           className
         )}
         {...props}
-      />
+        data-popup-surface="">
+        <PopupHighlight />
+        {props.children}
+      </DropdownMenuPrimitive.SubContent>
     </DropdownMenuPortal>
   )
 }

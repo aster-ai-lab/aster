@@ -1,10 +1,11 @@
+@layer properties, theme, base, components, utilities, app;
 @layer components {
 /* Press scale is driven by Motion (whileTap) alone, so transform never gets a CSS transition here. */
-.button { position: relative; display: inline-flex; height: var(--control-height-md); align-items: center; justify-content: center; gap: var(--space-2); border: 1px solid transparent; border-radius: var(--radius-control); padding: 0 var(--space-4); font: inherit; font-size: var(--text-sm); font-weight: 500; line-height: var(--leading-body); white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard); }
+.button { position: relative; display: inline-flex; height: var(--control-height-md); align-items: center; justify-content: center; gap: var(--space-2); border: 1px solid transparent; border-radius: var(--radius-control); padding: 0 var(--space-4); font: inherit; font-size: var(--text-sm); font-weight: 400; line-height: var(--leading-body); white-space: nowrap; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard); }
 /* Preserve the host button icon sizing while allowing explicitly sized icons. */
 .button svg { flex-shrink: 0; pointer-events: none; }
 .button svg:not([class*="size-"]):not(.lucide-custom) { width: 1rem; height: 1rem; }
-.button:disabled { cursor: not-allowed; opacity: .52; }
+.button:disabled { cursor: not-allowed; opacity: .4; }
 .button[aria-busy="true"] { cursor: progress; }
 /* Anchors of floating layers never scale: Radix opens on pointerdown and would measure a shrunken trigger. */
 .button:is([aria-haspopup]:not([aria-haspopup="false"]), [data-state], [role="combobox"]) { transform: none !important; }
@@ -33,7 +34,7 @@
 .primary:active:not(:disabled) { opacity: .84; }
 .secondary:active:not(:disabled), .ghost:active:not(:disabled) { color: var(--foreground); background: var(--surface-muted); }
 .danger:active:not(:disabled) { border-color: var(--danger); background: var(--surface-muted); }
-.button[aria-disabled="true"], .button[aria-disabled="true"]:hover, .button[aria-disabled="true"]:active { cursor: not-allowed; opacity: .5; box-shadow: none; }
+.button[aria-disabled="true"], .button[aria-disabled="true"]:hover, .button[aria-disabled="true"]:active { cursor: not-allowed; opacity: .4; box-shadow: none; }
 .sm { height: var(--control-height-sm); padding-inline: var(--space-3); font-size: var(--text-sm); }
 .md { height: var(--control-height-md); }
 .lg { height: var(--control-height-lg); padding-inline: var(--space-5); font-size: var(--text-sm); }
@@ -49,5 +50,16 @@
 .loadingLabel { opacity: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .button { transition: none; } .labelSlot { transition: opacity var(--duration-instant) linear; } .spinner { animation: none; } }
+
+
+.tonal { border-color: transparent; background: var(--color-control-fill, var(--surface-muted)); }
+.tonal:active:not(:disabled) { background: var(--color-control-fill-active, var(--surface-muted)); }
+@media (hover: hover) and (pointer: fine) {
+  .tonal:hover:not(:disabled) { background: var(--color-control-fill-hover, var(--surface-muted)); }
+}
+
+/* Anchors keep the caller's label/chevron distribution instead of shrink-wrapping it. */
+.labelSlot[data-popup-anchor] { flex: 1; min-width: 0; justify-content: inherit; }
+.labelSlot[data-popup-anchor] .labelContent, .labelSlot[data-popup-anchor] .labelPhase { width: 100%; min-width: 0; justify-content: inherit; }
 
 }

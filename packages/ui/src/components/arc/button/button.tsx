@@ -85,18 +85,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const reduceMotion = useReducedMotion() ?? false;
   // Aster keeps controls stationary under the pointer for precise desktop interaction.
   const stablePress = typeof document !== "undefined" && document.documentElement.dataset.tenant === "aster";
+  const popup = props["aria-haspopup"];
+  const anchorsLayer = (popup !== undefined && popup !== false && popup !== "false") || props.role === "combobox" || (props as Record<string, unknown>)["data-state"] !== undefined;
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const contentRef = useRef<HTMLSpanElement>(null);
   const key = labelKey(children);
-  const width = useMorphWidth(contentRef, key, reduceMotion, !size.startsWith("icon"));
+  const width = useMorphWidth(contentRef, key, reduceMotion, !size.startsWith("icon") && !anchorsLayer);
   const setRefs = useCallback((node: HTMLButtonElement | null) => {
     buttonRef.current = node;
     if (typeof ref === "function") ref(node); else if (ref) ref.current = node;
   }, [ref]);
   // A trigger that anchors a menu, popover, or dialog keeps its rect still while pressed, so the layer never measures a scaled anchor.
   // Radix triggers (asChild) pass aria-haspopup or data-state through; the stylesheet repeats the guard.
-  const popup = props["aria-haspopup"];
-  const anchorsLayer = (popup !== undefined && popup !== false && popup !== "false") || props.role === "combobox" || (props as Record<string, unknown>)["data-state"] !== undefined;
   const inert = disabled || loading || props["aria-disabled"] === true || props["aria-disabled"] === "true";
   const classes = ["arc", styles.button, styles[variant], styles[size], className].filter(Boolean).join(" ");
 
@@ -126,7 +126,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       <AnimatePresence initial={false}>
         {loading ? <motion.span key="loader" data-slot="button-pending" className={styles.loader} aria-hidden="true" initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .6 }} animate={{ opacity: 1, scale: 1 }} exit={reduceMotion ? fadeOut : { ...iconOut, scale: .8 }} transition={reduceMotion ? { duration: 0 } : iconEnter}><span className={styles.spinner} /></motion.span> : null}
       </AnimatePresence>
-      <motion.span className={[styles.labelSlot, loading ? styles.loadingLabel : ""].filter(Boolean).join(" ")} style={{ width }}>
+      <motion.span className={[styles.labelSlot, loading ? styles.loadingLabel : ""].filter(Boolean).join(" ")} data-popup-anchor={anchorsLayer || undefined} style={{ width: anchorsLayer ? "100%" : width }}>
         <span ref={contentRef} data-slot="button-label" className={styles.labelContent}>
           <AnimatePresence mode="popLayout" initial={false}>
             <LabelPhase key={key} icon={!/\S/.test(key.replace(/<[^>]*>/g, ""))} reduced={reduceMotion}>{children}</LabelPhase>

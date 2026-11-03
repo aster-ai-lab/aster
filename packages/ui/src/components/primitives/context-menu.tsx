@@ -1,15 +1,16 @@
-'use client'
+import { PopupHighlight } from './popup-highlight'
+;('use client')
 
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 import * as React from 'react'
 
-import arcContext from '../arc/context-menu/context-menu.module.css'
-
 import { cn } from '../../lib/utils'
 import { PopupDismissContext, usePopupDismissal, usePopupState } from './popup-dismissal'
 import { usePortalContainer } from './portal-container'
+
+import arcContext from '../arc/context-menu/context-menu.module.css'
 
 /* ─── Style variants ──────────────────────────────────────────────────────── */
 
@@ -25,14 +26,13 @@ const menuSubContentStyles = cn(
   arcContext.menuSurface,
   'z-[240] min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden text-[13px] [-webkit-app-region:no-drag]'
 )
-const menuItemSvgStyles =
-  '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4'
+const menuItemSvgStyles = '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4'
 
 const menuItemVariants = cva(
   cn(
     'relative flex cursor-default items-center gap-2 rounded-[8px] px-2 py-1.5 text-[13px] text-[var(--color-ink-muted)] outline-hidden select-none',
     'focus:bg-[var(--color-surface-2)] focus:text-[var(--color-ink)]',
-    'data-disabled:pointer-events-none data-disabled:opacity-50',
+    'data-disabled:pointer-events-none data-disabled:opacity-40',
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     "[&_svg:not([class*='text-'])]:text-muted-foreground"
   ),
@@ -198,7 +198,7 @@ function ContextMenuSubTrigger({
       className={cn(
         'arc',
         arcContext.item,
-        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[state=open]:text-foreground',
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[inset]:pl-8 data-[state=open]:text-foreground',
         menuItemSvgStyles,
         className
       )}
@@ -225,7 +225,10 @@ function ContextMenuSubContent({
         stopOpeningPointerUp(event, pointerUpGuard)
       }}
       {...props}
-    />
+      data-popup-surface="">
+      <PopupHighlight />
+      {props.children}
+    </ContextMenuPrimitive.SubContent>
   )
 }
 
@@ -270,7 +273,10 @@ function ContextMenuContent({
           stopOpeningPointerUp(event, pointerUpGuard)
         }}
         {...props}
-      />
+        data-popup-surface="">
+        <PopupHighlight />
+        {props.children}
+      </ContextMenuPrimitive.Content>
     </ContextMenuPrimitive.Portal>
   )
 }
@@ -289,7 +295,7 @@ function ContextMenuItem({
       className={cn(
         'arc',
         arcContext.item,
-        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8',
+        'relative flex items-center gap-2 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[inset]:pl-8',
         'data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:[&_svg:not([class*="text-"])]:text-destructive!',
         menuItemSvgStyles,
         className
@@ -311,7 +317,7 @@ function ContextMenuCheckboxItem({
       className={cn(
         'arc',
         arcContext.item,
-        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40',
         menuItemSvgStyles,
         className
       )}
@@ -338,7 +344,7 @@ function ContextMenuRadioItem({
       className={cn(
         'arc',
         arcContext.item,
-        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex items-center gap-2 pr-2 pl-8 text-[13px] data-[disabled]:pointer-events-none data-[disabled]:opacity-40',
         menuItemSvgStyles,
         className
       )}
