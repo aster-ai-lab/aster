@@ -24,6 +24,9 @@ How to use, configure, and operate Aster Code.
 
 Contracts, designs, test plans, and the qualification gates they define.
 
+Current TUI integration and acceptance are defined in the
+[Core/ACP integration plan](../../../specs/023-tui-core-acp-full-e2e/plan.md).
+
 - [Aster Code Capability Verification and Performance Contract](CAPABILITY_VERIFICATION.md)
 - [Historical upstream capability integrated-use ledger](CAPABILITY_INTEGRATED_USE_LEDGER.md)
 - [Cloud / Box Harness Conformance Checklist](CLOUD_HARNESS_CONFORMANCE.md)
@@ -44,7 +47,6 @@ Contracts, designs, test plans, and the qualification gates they define.
 - [Scoped Capability Architecture](SCOPED_CAPABILITY_ARCHITECTURE.md)
 - [SDK API Design Contract](SDK_API_DESIGN.md)
 - [Aster Code SDK capability matrix](SDK_CAPABILITY_MATRIX.md)
-- [Aster Code TUI 端到端测试方案](TUI_E2E_SCHEME.md)
 - [Typed System-1 Decision E2E Plan](TYPED_DECISION_E2E_PLAN.md)
 - [Historical upstream 9.0.0 roadmap](V9_0_0_COMPLETION_ROADMAP.md)
 - [Workspace Retrieval Backends](WORKSPACE_RETRIEVAL_BACKENDS.md)
@@ -59,11 +61,14 @@ Contracts, designs, test plans, and the qualification gates they define.
 
 Release contracts, procedures, and per-release notes.
 
+Product tags, build boundaries, release gates, and retention follow the
+[repository release governance](../../../docs/release-governance.md).
+
 - [Agent Release Contract](AGENT_RELEASE_CONTRACT.md)
-- [Release cadence](RELEASE_CADENCE.md)
 - [Release profiles (KRN-10)](RELEASE_PROFILES.md)
 - [Historical upstream 9.1.3 candidate disposition](RELEASE_9.1.3.md)
 - [9.1.4 release candidate](RELEASE_9.1.4.md)
 - [9.1.5 / Aster CLI 0.1.3](RELEASE_9.1.5.md)
 - [9.1.6 release candidate](RELEASE_9.1.6.md)
+- [9.1.7 release candidate](RELEASE_9.1.7.md)
 - [Historical upstream 9.1.3 test contract](TEST_PLAN_9.1.3.md)

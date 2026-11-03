@@ -108,37 +108,25 @@ does not prescribe a reviewer prompt, rubric, or decision token.
 
 ## Native command lifetime on macOS
 
-Code's `NativeBashSandbox::exec` and legacy `exec_command` refuse all macOS
-commands before native execution with `native_process_lifetime_unqualified`.
-The resolved dependency is `aster-sandbox` 0.2.1 at git revision
-`2b8687892bbb4a5e3d6e74fca42949a3f186d236`; the unused local 0.2.2 patch is
-not the running backend. Native background admission is also refused. There
-is no command exception, configurable opt-out or automatic ProcessHost/host
-escalation after an execution refusal. Successful construction, policy access
-or a trusted probe does not establish descendant lifetime qualification.
+Core depends on the local [`aster-cmd-sandbox` crate](../../sandbox/Cargo.toml).
+The direct `NativeBashSandbox` adapter refuses macOS command execution with
+`native_process_lifetime_unqualified` because it cannot contain descendants.
 
-`HC-NATIVE-CLOSE1` has qualified macOS refusal evidence: direct adapter and
-no-fallback pins, background/foreground refusal branches and the native
-integration refusal case passed. The mandatory native live test remains
-discoverable and fails its unsupported preflight before configuration/provider
-initialization. That failure is retained; it is not a live-support pass. See
-the [refusal evidence](../../../docs/evidence/code-harness/20261010-native-lifetime-refusal/OUTCOME.md).
-Final combined verification remains pending.
+For macOS ARM64 sessions with the deny-network posture,
+[`select_default_local_sandbox`](../core/src/agent_api/session_sandbox.rs)
+first discovers the installed OCI Host companions and selects
+[`OciBashSandbox`](../core/src/sandbox/oci.rs). Missing companions leave native
+execution refused. This VM backend does not serve a mediated-network request.
+Explicit host execution and host-supplied SDK sandboxes have separate authority
+and do not establish isolated execution.
 
-An Auxiliary capability profile, logical timeout/cancellation or dropped
-executor future does not establish OS descendant settlement. Hosts must prove
-their actual execution boundary; this Code adapter guard does not protect
-arbitrary direct upstream `NativeSandbox` callers. Native macOS support under
-`HC-BG-EXEC1` and native execution/live acceptance under `HC-ACCEPT1` remain
-blocked. Linux/Windows posture is unchanged and is not newly qualified here.
-
-Supported execution needs a separate Box-owned integration with pinned actual
-class/backend/artifacts and resource-generation ownership. It must prove
-teardown, no runnable descendants and no late writes after success, timeout,
-cancellation and host crash/restart, while preserving filesystem/network and
-receipt boundaries. Box installation or a process-group kill alone is
-insufficient. The [future containment contract](../../../specs/008-code-native-lifetime-refusal/contracts/native-lifetime.md)
-is a dependency, not implemented or qualified Box/VM support.
+An Auxiliary capability profile, logical timeout, or dropped future does not
+prove that descendants have stopped. Hosts must verify teardown and absence of
+late writes after success, timeout, cancellation, and restart at their actual
+execution boundary. The final CLI archive must pass the installed-archive
+[`cli_sandbox_smoke.py`](../../../tests/cli_sandbox_smoke.py) gate required by
+[release governance](../../../docs/release-governance.md). This manual does not
+qualify an artifact or a platform.
 
 ## Boundary supervision
 
@@ -305,5 +293,5 @@ produced and validated all nine machine-readable performance reports; the
 hosted [Code CI run `33847689080`](https://github.com/aster-ai-lab/Code/actions/runs/33847689080)
 then passed the strict release gate, including rustdoc, Clippy, feature-gated
 tests, convergence, packaged SDK, hermetic, and cross-platform checks. These
-are tracked as `EVAL-PROTO1` and `EVAL-GA1` in
-[`ROADMAP.md`](../ROADMAP.md).
+were upstream `EVAL-PROTO1` and `EVAL-GA1` observations; they do not qualify the
+current workspace or its release artifacts.

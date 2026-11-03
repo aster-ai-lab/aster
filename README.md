@@ -7,79 +7,107 @@
 
   <h1>Aster</h1>
 
-  <p><strong>从模型提案，到可验证的任务交付。</strong></p>
-  <p>Rust 编写的智能体执行内核与终端编程工具</p>
-  <p>受控执行 · 事实日志 · 验证依据 · Rust 嵌入</p>
+  <p><strong>终端、桌面与可嵌入的 Agent 执行内核</strong></p>
+  <p>连接模型、工具和工作区，保留执行过程与验证结果。</p>
 
   <p>
     <a href="https://aster-ai-lab.github.io/aster/">下载官网</a> ·
     <a href="#快速开始">快速开始</a> ·
-    <a href="#运行机制">运行机制</a> ·
-    <a href="#当前限制">当前限制</a> ·
+    <a href="#项目架构">项目架构</a> ·
+    <a href="#执行与恢复">执行与恢复</a> ·
     <a href="#参与开发">参与开发</a>
   </p>
 </div>
 
 ---
 
-Aster 连接你配置的模型，在真实项目中读取文件、修改代码并调用工具。
-权限策略约束执行，事实日志记录过程，验证证据约束任务何时可以完成。
-你可以直接使用 Aster CLI，也可以把内核嵌入自己的 Rust 应用。
+Aster 在终端和桌面工作区中执行任务，也提供可嵌入 Rust 应用的 Harness。
+它连接你配置的模型，读取文件、修改代码并调用工具。
+工具权限、执行记录和完成检查由内核管理。
 
-## 从目标到可验证结果
-
-在项目目录启动 Aster，输入你的目标，例如：
+在项目中输入目标：
 
 ```text
 修复配置解析的边界错误，只修改相关文件。
-先说明计划，再完成修改并运行相关测试。
+完成修改后运行相关测试。
 最后列出改动、验证结果和仍未解决的问题。
 ```
 
-完成编程任务，需要把模型的建议接入实际执行，并保留可检查的结果：
-
-| 关键问题 | Aster 的处理方式 |
+| 使用方式 | 入口 |
 | --- | --- |
-| 哪些操作可以执行？ | 工具调用先经过权限判定，需要确认时等待用户回答。 |
-| 执行过什么、结果如何？ | 模型、工具和控制事件写入同一份事实日志。 |
-| 修改是否满足完成条件？ | 内核检查对应本次修改的验证报告，或宿主显式豁免，再判定能否完成。 |
+| 终端编程 | Aster CLI：交互、会话恢复、项目工具与环境管理。 |
+| 桌面工作区 | Studio：任务交互、文件预览，以及 Office、浏览器和屏幕采集。 |
+| Rust 嵌入 | Core：通过 `AgentSession` 调用执行、事件和恢复接口。 |
 
-## 先看一张图
+## 项目架构
 
-你提出目标，界面接收输入。
-ACP 转接协议，Core 调用模型与受控工具。
-原始记录保留执行依据，完成检查决定何时结束。
-自己的 Rust 应用也支持直接接入 Core。
+终端与桌面的 Agent Plane 通过 ACP 调用执行内核。
+Rust 宿主可以直接调用 Core。
+下图表示主要依赖，具体能力由宿主配置和授权决定。
 
-[![Aster 职责总览：用户、界面、ACP、Core、模型与工作区](assets/readme/aster-overview.svg)](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/)
+```mermaid
+flowchart TB
+    Terminal[终端] --> ACP[ACP]
+    Desktop[桌面] --> ACP
+    Rust[Rust 宿主] --> Core[执行内核]
+    ACP --> Core
+    Core --> Models[模型接口]
+    Core --> Tools[工具扩展]
+    Core --> Data[数据与上下文]
+    Tools --> Execution[沙箱与工作区]
+```
 
-点击图示进入[原理漫游](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/)。
-文档图示使用 [Pele](https://pele.run/) 渲染，支持分步聚焦和完整视图。
-源码漫游使用 Code Hike 高亮本版真实代码，并保留行号。
-GitHub README 显示同一份图示数据生成的静态版本。
+| 组件 | 职责 | 源码 |
+| --- | --- | --- |
+| 终端 | 输入、显示、会话管理与 ACP 进程启动。 | [CLI](apps/aster) · [Terminal](crates/terminal) |
+| 桌面宿主 | 桌面交互、租户隔离、文件与工具集成。 | [Studio](apps/studio) |
+| 协议适配 | 会话请求、事件、审批、取消与恢复。 | [ACP](crates/code/acp) |
+| 执行内核 | Session / Run、组件装配、权限、预算与完成检查。 | [Core](crates/code/core) · [Effect](crates/effect) |
+| 模型网关 | 可选的模型路由、流量准入、健康检查和流式转发。 | [Gateway](apps/gateway) |
+| 执行环境 | 沙箱策略、进程约束、虚拟机与客体执行。 | [Sandbox](crates/sandbox) · [OCI Runtime](crates/oci-runtime) · [Box](crates/box) |
+| 数据与上下文 | 持久记忆、工作区检索与知识数据。 | [Memory](crates/memory) · [Search](crates/search) · [Vec](crates/vec) · [OKF](crates/okf) |
+| 工作区工具 | 文档编辑、浏览器操作与屏幕采集。 | [Office](packages/office) · [Browser](crates/browser) · [Capture](crates/capture) |
+
+模型可直接配置为远端 API，也可经模型网关访问。
+MCP、Skill 和宿主工具通过 Core 的扩展入口接入。
+Studio 的独立模型调用由对应宿主管理结果检查。
+
+Cloud、API 和边缘服务承担可选的服务端职责。
+它们使用各自的 Cargo 工作区；产品代码与嵌入式模型网关使用根工作区。
+边缘服务的范围见 [Control-plane](apps/control-plane/README.md)。
+
+多 Harness 的统一适配、共享运行时与授权域见
+[协作架构设计](docs/architecture/harness-gateway.md)。
+该方案目前处于设计阶段，尚未编码和联调。
 
 ## 快速开始
 
 ### 1. 下载 CLI
 
-从 [官网最新安装包](https://aster-ai-lab.github.io/aster/#download)下载对应系统的归档。安装脚本默认发现最新 CLI 版本，也支持指定版本并校验 SHA-256。
-下面的可复现示例安装 CLI v0.1.4：
+从[官网](https://aster-ai-lab.github.io/aster/#download)选择对应系统的安装包。
+macOS / Linux 也可通过脚本安装稳定通道中的 CLI：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin" --version 0.1.4
+curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
 ```
 
-Windows 使用 [install.ps1](https://github.com/aster-ai-lab/aster/blob/main/scripts/install.ps1)，并传入 `-Version 0.1.4`。
+Windows PowerShell：
+
+```powershell
+irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\aster-install.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\aster-install.ps1" -Prefix "$env:LOCALAPPDATA\Aster\bin"
+```
+
+脚本校验归档的 SHA-256。
+固定版本时，分别使用 `--version X.Y.Z` 或 `-Version X.Y.Z`。
 
 > [!IMPORTANT]
-> 发布包由 `aster` 与 `aster-acp` 组成，请始终将两个程序放在同一目录并成对更新。Windows 对应两个 `.exe` 文件。CLI 默认启动同目录的 ACP 伴随进程，需要指定其他位置时可设置 `ASTER_ACP_AGENT_BIN`。
+> `aster` 与 `aster-acp` 必须放在同一目录并成对更新。
+> macOS 还需要完整的 `sandbox/` 组件，请安装完整归档。
+> 指定其他 ACP 位置时，可设置 `ASTER_ACP_AGENT_BIN`。
 
-Linux 归档分为两个 glibc 世代：
-
-- `linux`：需要 glibc 2.32 及以上。
-- `kylin`：面向 glibc 2.31 的 x86_64 构建。示例系统：银河麒麟 V10 SP1、Ubuntu 20.04、Debian 11。
-
-安装脚本会按本机 glibc 自动选择，`aster update` 使用同一规则。当前发布为未签名构建。
+当前 Linux 构建统一使用 x86_64、glibc 2.31 基线。
+平台构建与发布条件见[发布规范](docs/release-governance.md)。
 
 ### 2. 配置模型
 
@@ -101,13 +129,13 @@ providers "openai" {
 
 ### 3. 启动项目
 
-在解压目录执行，并将项目路径替换为实际路径。
+使用上述安装目录，并将项目路径替换为实际路径。
 
 macOS / Linux：
 
 ```sh
 export OPENAI_API_KEY="你的 API 密钥"
-./aster --cwd /path/to/project
+"$HOME/.local/bin/aster" --cwd /path/to/project
 ```
 
 Windows PowerShell：
@@ -115,116 +143,91 @@ Windows PowerShell：
 ```powershell
 $env:OPENAI_API_KEY = "你的 API 密钥"
 $env:ASTER_CONFIG = Join-Path $HOME '.aster/config.acl'
-.\aster.exe --cwd C:\path\to\project
+& "$env:LOCALAPPDATA\Aster\bin\aster.exe" --cwd C:\path\to\project
 ```
 
-需要在任意目录使用 `aster` 时，将两个程序所在目录加入 `PATH`。
+将安装目录加入 `PATH` 后，可直接运行 `aster`。
+项目工具版本与环境变量的配置见[环境管理](docs/cli-environments.md)。
 
 ### 更新
 
-从 v0.1.2 起，已安装的 CLI 支持自我更新：
-
 ```bash
+aster update --check
 aster update
 ```
 
-更新通道会从仓库 manifest（`latest.json`）发现版本，校验归档摘要，再原子安装成对的 `aster` 与 `aster-acp`。
-
-- `aster update --check`：只检查可用版本，不修改安装。
-- `aster update --version X.Y.Z`：安装指定版本。
-- v0.1.1 的旧安装不包含该通道，请先使用安装脚本重装一次。
-- 手动更新时，请一起替换同目录的两个程序。
+更新器从 CLI 通道读取版本并校验归档摘要。
+指定版本可运行 `aster update --version X.Y.Z`。
+手动更新时，也需要一起替换两个程序和所需的沙箱组件。
 
 ### 卸载
 
-删除 `aster` 与 `aster-acp` 两个程序即可。`~/.aster` 中的本地配置与数据可保留。
+删除安装的 `aster` 与 `aster-acp`。macOS 还需删除安装器放在同目录的 `sandbox/`。`~/.aster` 中的本地配置与数据可保留。
 
-## 运行机制
+## 执行与恢复
 
-Harness 负责把模型调用接入一个受控的任务过程。
-Aster 的 **Meta Harness** 支持组合系统指令、工具、预算、压缩和调度组件。
-Rust 宿主选择组合，内核维持权限与完成条件。
+Core 的 **Meta Harness** 将系统指令、工具、预算、压缩和推理装配为执行图。
+Rust 宿主可以替换或增加组件，权限与完成检查始终由内核保留。
 
-### 受控执行循环
+| 环节 | 约束 |
+| --- | --- |
+| 执行 | 模型提出工具调用，权限策略先判定；需要授权时等待对应回答。 |
+| 记录 | 执行事实追加到 Fact Log，运行决策和恢复以日志为准。 |
+| 查询 | RunStore 提供状态查询，事件流通知进度；记忆和检索有独立存储。 |
+| 完成 | 修改需要绑定当前效果摘要的验证证据或宿主豁免，并结清所属资源。 |
+| 恢复 | 日志重放恢复控制状态；结果不明的外部操作需要先核实。 |
+| 长期目标 | 每个切片执行一个 Run，再检查预算、等待条件和交付证据。 |
 
-模型提出下一步，权限策略决定工具能否执行。
-结果进入同一份事实日志，后续动作依据日志推进。
-需要确认或补充信息时，运行等待对应回答。
-计时器不能代替用户授权。
+Skills 提供操作说明，MCP 和动态工具提供调用能力。
+任何扩展都不能自行扩大权限。
+完成一次运行也不代表整个目标已经验收。
 
-![Aster 受控执行循环：模型提案、权限判定、工具执行、事实日志和完成门禁](assets/readme/task-control-loop.svg)
-
-### Meta Harness 可组合性
-
-默认装配列表为 `system + tools + budget + compact + infer`。
-列表顺序是装配顺序，不是固定调用顺序。运行时根据日志状态和动作 key 选择下一步。
-宿主可以注册 Rust 组件或提供完整组件树，但不能关闭 Core 的权限与完成门禁。
-
-![Aster Meta Harness 可组合拆解图：组件插槽、爆炸分层、Moore 组件、组合配方和单一事实日志](assets/readme/meta-harness-assembly.svg)
-
-### 扩展入口
-
-提示槽、上下文、Skills、工具、Hooks 和宿主组件承担不同职责，并通过原有会话进入执行过程。
-Skills 提供操作说明，MCP 和动态工具提供实际调用能力。任何扩展都不能自行放宽权限。
-
-![Aster 扩展入口：提示、上下文、技能、工具、Hook 和宿主组件的信任边界](assets/readme/extension-surfaces.svg)
-
-### 验证、资源收尾与恢复
-
-发生修改后，完成判定核对当前摘要的验证证据或明确豁免。
-宿主还要等待所属 Run 的资源收尾。
-事实重放恢复控制状态。
-结果不明的外部副作用需要单独核实，再决定是否重试。
-
-![Aster 验证与恢复：修改摘要、完成门禁、资源寿命、会话恢复和未决外部操作](assets/readme/verification-recovery.svg)
-
-### 长期目标如何分轮完成
-
-目标保存原始要求与计划。
-一次切片执行一个原始 Run。
-下一轮先检查等待、预算和期限。
-全部步骤与效果结清后，目标才支持完成。
-
-[![长期目标：定义、接受计划、tick、执行切片、接受证据与全局完成](assets/readme/durable-goal.svg)](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/long-running/)
-
-进一步阅读：
-
-- [系统提示词源码漫游](https://aster-ai-lab.github.io/aster/docs/code/9.1.6/internals/system-prompts/)：默认文本、宿主插槽与执行约束。
-- [ACP 协议原理](https://aster-ai-lab.github.io/aster/docs/acp/9.1.6/internals/)：请求、事件、确认与无人值守。
-- [Meta Harness](crates/code/manual/META_HARNESS.md)：组件组合与 Rust 嵌入接口。
-- [持续工程与目标](crates/code/manual/DURABLE_ENGINEERING.md)：长期目标、预算和等待条件。
-- [持久记忆](crates/code/manual/DURABLE_MEMORY.md)：记忆隔离、修订与激活边界。
+机制细节见 [Meta Harness](crates/code/manual/META_HARNESS.md)、
+[持续工程与目标](crates/code/manual/DURABLE_ENGINEERING.md)和
+[持久记忆](crates/code/manual/DURABLE_MEMORY.md)。
 
 ## 当前限制
 
 - 需要自行配置可用的模型服务及相应凭据。
-- macOS 原生 Shell 工具目前仍会因 `native_process_lifetime_unqualified` 被拒绝。依赖 Shell 的完整编程流程尚未通过平台资格验证。详见[验证记录](docs/validation.md)。
+- macOS ARM64 的默认隔离命令在 Linux 虚拟机中执行，需要完整沙箱组件。本机安装的工具不会自动出现在客体中。
+- 缺少沙箱组件时，macOS 本机原生沙箱仍拒绝执行。发布前须从最终归档完成[沙箱执行验收](tests/cli_sandbox_smoke.py)。
 - 指定项目目录不等于隔离所有本机进程。实际执行边界由宿主策略和沙箱共同决定。
-- 本页的运行机制说明对应当前源码。已发布版本的能力以对应发布说明为准。
+- 可选功能按宿主、构建特性和授权启用。已发布版本的能力以对应发布说明为准。
 
 ## 参与开发
 
-源码构建需要固定 Rust 工具链及仓库内私有组件的读取权限。
-准备方式、构建约定和检查要求见 [仓库约定](AGENTS.md)与[开发规范](docs/development-standards.md)。
+使用仓库固定的 Rust 工具链，从根目录构建。
+Cargo 命令执行前需初始化私有 Studio 子模块：
 
-桌面开发运行 `just dev`（Aster）或 `just dev:toyou`（ToWork），保留进程即可使用前端热更新。
-原生开发缓存分别位于 `target/studio/aster` 和 `target/studio/toyou`，与普通 Cargo 检查、测试的构建锁分开。
-首次使用各自的目录需要建立缓存。显式指定 `CARGO_TARGET_DIR` 时仍使用指定目录。
-开发构建会自动使用 PATH 中已有的 `sccache`，并保留显式设置的 `RUSTC_WRAPPER`。设置为空可停用。
+```bash
+git submodule update --init -- apps/studio
+just build
+just code --cwd /path/to/project
+```
 
-已完成对应租户的原生构建、且开发服务器仍在运行时，可用 `just fork toyou 4319` 打开隔离副窗口而不执行 Cargo。
-Rust 修改仍需重新构建。性能测量与限制见[构建和启动验收记录](docs/evidence/desktop/2026-10-26-build-speed/OUTCOME.md)。
+`just build` 构建 CLI 与 ACP，并在 macOS ARM64 上准备沙箱组件。
+桌面构建还需前端依赖和平台工具，准备步骤见 [Studio 说明](apps/studio/README.md)。
 
-| 修改方向 | 源码入口 |
+| 开发任务 | 命令或入口 |
 | --- | --- |
-| CLI 启动与参数 | [apps/aster](apps/aster) |
-| ACP 会话与宿主协议 | [crates/code/acp](crates/code/acp) |
-| Harness、权限与完成判定 | [crates/code/core](crates/code/core) |
-| 组件、效果执行与事实重放 | [crates/effect](crates/effect) |
+| 构建桌面及配套程序 | `just build-studio` |
+| 桌面开发与热更新 | `just dev` |
+| 指定桌面租户 | `just dev toyou` |
+| 检查边缘服务工作区 | `cargo check --locked --manifest-path apps/control-plane/Cargo.toml --workspace` |
+| 共享界面与编辑器 | [UI](packages/ui) · [Office](packages/office) · [Form](packages/form) |
+| 官网与文档 | [Web](apps/web) |
 
-[验证记录](docs/validation.md)说明已检查的范围与已知限制。
-报告缺陷请提交到 [Issues](https://github.com/aster-ai-lab/aster/issues)，
-附操作系统、复现步骤、预期结果及去除凭据后的日志。
+Studio 默认租户为 `aster`，租户身份、数据和更新包分别管理。
+桌面开发缓存位于 `target/studio/<tenant>`。
+`apps/api`、`apps/cloud` 和 `apps/control-plane` 不属于根 Cargo 工作区。
+
+开发前阅读[仓库约定](AGENTS.md)、[开发规范](docs/development-standards.md)与
+[设计规范](DESIGN.md)。构建和发布遵循[发布规范](docs/release-governance.md)。
+当前接口与版本说明见[手册索引](crates/code/manual/README.md)。
+历史验证范围见[验证记录](docs/validation.md)。
+
+报告缺陷请提交到 [Issues](https://github.com/aster-ai-lab/aster/issues)。
+请附操作系统、复现步骤、预期结果及去除凭据后的日志。
 
 ## 许可证
 

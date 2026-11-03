@@ -1,5 +1,8 @@
 # Aster Code TUI 全功能端到端测试计划
 
+本目录保留 2026-10-12 的用例与源码快照。当前集成和验收按
+[Core/ACP 集成计划](../../../../../specs/023-tui-core-acp-full-e2e/plan.md)执行；本目录的命令和源码指纹不代表当前版本。
+
 日期：2026-10-12。对象：产品启动链 **`aster code → aster-tui → aster-acp → Code Core`**，以及这一启动链实际开放的工具与宿主能力。当前仓库候选为 9.1.3。**本交付是规划，不是执行报告，也不是发布资格证明。**
 
 目的：证明用户可以持续完成编码任务，并在拒绝、故障、取消、重启后获得准确的状态。针对“每个 turn 都报错”，首先证明已知未执行的拒绝不会污染下一轮，同时真实未知副作用仍保持 fail closed。
@@ -23,7 +26,9 @@
 
 [选定用例执行状态](execution-status.md)另记真实运行结果。最新请求终结驱动使用同一冻结候选，完整十条真实 LLM 门禁连续三次 **10/10**；四次编码请求分别绑定独立 Run，部分检查实际退出 1，后两次获得绑定当前效果的 Verified。此前 8/2、9/1 和 SOLO 结果分别保留。此结果只覆盖选定门禁；计划目录的 PLANNED 状态不充当执行通过率，完整 P0、1,020 条目录及平台/模型矩阵尚未通过。
 
-后续已用实际 Aster Test ACL 引擎执行直接 Bash/background 拒绝后恢复，各连续三次通过；任务文件变体仍有省略所需工具调用的失败，单独保留。见 [ACL 引擎证据](../../../../../docs/evidence/code-harness/20261012-tui-acl-native-refusal/OUTCOME.md)。RT10-03/04/05 的真实故障场景继续开放，篡改证据副本不算这些场景已执行。
+原计划记载：通过实际 Aster Test ACL 引擎执行直接 Bash/background 拒绝后恢复，各连续 3 次通过。任务文件变体仍有省略所需工具调用的失败。上游记录为 `docs/evidence/code-harness/20261012-tui-acl-native-refusal/OUTCOME.md`，未导入本仓库。
+
+RT10-03/04/05 的真实故障场景继续开放。篡改证据副本不算这些场景已执行。
 
 实际启动观察发现欢迎页还有独立分发入口。已把 worktree 菜单五例归入 TL23、旧设置导入菜单五例归入 GT27，并新增本地 Changelog 五例 UI16，共补充 15 例。Resume、Quit 和反馈提示也已映射到原功能。它们均保持 PLANNED；启动视口只证明入口显示，不证明功能通过。Changelog 的合法 Aster 数据来源和导入入口的条件可达性仍需核实。
 
@@ -174,7 +179,7 @@ flowchart LR
 
 先用官方 CLI `check` 验证 ACL，再 `run --tui-executable <固定候选> --tui-working-directory <绝对夹具目录> --json`；其他参数以本次 runner `--help` 为准。尚未观察的模态/快捷键流程先探索和固定，不从本计划猜坐标生成脚本。独立 artifact/receipt oracle 用现有 Rust/Python 辅助检查器或受控外层 runner 实现，不能假造 ACL 不存在的断言语法。
 
-已有 `acp/tests/shipped_tui_e2e.rs`、`tui_913_hermetic.rs`、`tui_913_real_llm.rs` 和 [现有 TUI 方案](../../TUI_E2E_SCHEME.md)是复用起点，不是本次 1,020 例已实现的证明。老目录中的版本、工具链、live early-return 描述可能已过期；以当前源码和本次结果为准。Rust 使用仓库规定的 1.97.1。
+已有 `acp/tests/shipped_tui_e2e.rs`、`tui_913_hermetic.rs`、`tui_913_real_llm.rs` 是当时的复用起点，不是本次 1,020 例已实现的证明。当前套件和执行方式见上面的集成计划。
 
 实现时保留 sibling test 文件布局；不修改 fail-closed、ratchet 或权限边界来让测试过。全套失败后，每个不同失败必须用同一冻结测试二进制 SOLO 重跑，再归因产品、规范或基础设施。提交按文件/自有 hunk，保留证据和 ROADMAP 同提交；不提交共享树他人工作。
 
@@ -184,4 +189,9 @@ flowchart LR
 
 仍需实现并执行：1,020 例 ACL/PTY 场景及夹具、运行时能力快照采集、全部 artifact oracle、各平台/真实 adapter 矩阵、缺陷闭环和发布证书。规划检查本身不证明产品行为，也不据此关闭 GitHub issues 或发布版本。
 
-可复用的 P0 基线另见 [native 拒绝后同会话恢复证据](../../../../../docs/evidence/code-harness/20261012-tui-native-refusal-recovery/OUTCOME.md)：当前选定构建的真实 LLM + PTY 两轮测试通过，第一轮 bash 拒绝、第二轮读取成功，Unknown=0；收据家族 50/50。后续 [十轮真实 LLM 恢复证据](../../../../../docs/evidence/code-harness/20261012-plan-heavy-ten-turn-recovery/OUTCOME.md)已通过两次。它们不等于本目录 1,020 条场景已落地。macOS native 执行资格、旧会话 Unknown 结算及完整矩阵仍开放。
+原计划还引用了以下上游记录，均未导入本仓库：
+
+- `docs/evidence/code-harness/20261012-tui-native-refusal-recovery/OUTCOME.md`：记载真实 LLM + PTY 的 2 轮测试通过。第 1 轮 bash 拒绝，第 2 轮读取成功，Unknown=0；收据家族 50/50。
+- `docs/evidence/code-harness/20261012-plan-heavy-ten-turn-recovery/OUTCOME.md`：记载 10 轮真实 LLM 恢复测试通过 2 次。
+
+这些记录不能证明本目录 1,020 条场景已实现。原计划中的 macOS native 执行资格、旧会话 Unknown 结算及完整矩阵仍开放。当前验收状态见本页开头的集成计划。

@@ -5,8 +5,8 @@ component tree over one immutable fact log. Governance (permission projection
 and completion-gate enrollment) stays Core-owned and non-bypassable.
 
 Related: [HARNESS_CONVERGENCE.md](HARNESS_CONVERGENCE.md),
-[ADR-003](../../use/docs/adr-003-native-code-harness-boundary.md) (addendum),
-`aster-effect` `compose` module, first-principles gate **F31**.
+the [`aster-effect` compose module](../../effect/src/compose.rs),
+first-principles gate **F31**.
 
 ## Positioning
 
