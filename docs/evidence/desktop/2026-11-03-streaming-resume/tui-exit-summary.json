@@ -1,0 +1,85 @@
+{
+  "sessionId": "a8d2c73e-4ec4-47b4-a500-47b0a1d2ac4a",
+  "originalTail": {
+    "lastModelTurn": 564,
+    "lastPreparedTool": 565,
+    "matchingToolResultPresent": false
+  },
+  "originalExit": [
+    {
+      "ts": "2026-11-03T00:23:27.514Z",
+      "src": "aster-pager",
+      "pid": 44877,
+      "ver": "9.1.4",
+      "lvl": "info",
+      "msg": "teardown.kitty_pop_fence",
+      "ctx": {
+        "decision": "run",
+        "outcome": "replied",
+        "residue_bytes": 0,
+        "duration_ms": 39,
+        "reader_join": "joined"
+      }
+    },
+    {
+      "ts": "2026-11-03T00:23:27.515Z",
+      "src": "aster-pager",
+      "pid": 44877,
+      "ver": "9.1.4",
+      "lvl": "info",
+      "msg": "session_end.worker_join",
+      "ctx": {
+        "elapsed_ms": 0,
+        "outcome": "failed",
+        "notice_shown": false
+      }
+    }
+  ],
+  "memorySamples": {
+    "count": 174,
+    "peakRssMiB": 83.53125,
+    "lastRssMiB": 69.46875,
+    "peakFootprintMiB": 52.54767608642578
+  },
+  "resumeProbe": {
+    "exitCode": 0,
+    "forcedTermination": false,
+    "durationSeconds": 10.05,
+    "sentOnlyQuit": true
+  },
+  "resumeExit": [
+    {
+      "ts": "2026-11-03T00:43:44.344Z",
+      "src": "aster-pager",
+      "pid": 16829,
+      "ver": "9.1.4",
+      "lvl": "info",
+      "msg": "teardown.kitty_pop_fence",
+      "ctx": {
+        "decision": "run",
+        "outcome": "replied",
+        "residue_bytes": 0,
+        "duration_ms": 0,
+        "reader_join": "joined"
+      }
+    },
+    {
+      "ts": "2026-11-03T00:43:44.356Z",
+      "src": "aster-pager",
+      "pid": 16829,
+      "ver": "9.1.4",
+      "lvl": "info",
+      "msg": "session_end.worker_join",
+      "ctx": {
+        "elapsed_ms": 10,
+        "outcome": "joined",
+        "notice_shown": false
+      }
+    }
+  ],
+  "limitations": [
+    "Original stderr and worker error detail are unavailable.",
+    "No model request or interrupted tool was replayed.",
+    "Sampled memory does not establish the cause of exit or exclude a transient spike."
+  ]
+}

@@ -124,6 +124,7 @@ export interface MarkdownCoreProps {
   /** Animation config forwarded to Streamdown's built-in `animated` prop. */
   animated?: AnimateOptions | false
   mode: 'static' | 'streaming'
+  isAnimating?: boolean
   /** Repair half-typed markdown at the tail (only meaningful in streaming mode). */
   parseIncompleteMarkdown?: boolean
   parseMarkdownIntoBlocksFn?: (source: string) => string[]
@@ -144,6 +145,7 @@ export function MarkdownCore({
   extraRemarkPlugins,
   animated,
   mode,
+  isAnimating = false,
   parseIncompleteMarkdown,
   parseMarkdownIntoBlocksFn,
   className,
@@ -233,7 +235,7 @@ export function MarkdownCore({
           normalizeHtmlIndentation
           remarkRehypeOptions={remarkRehypeOptions}
           animated={animated || undefined}
-          isAnimating={!!animated && mode === 'streaming'}>
+          isAnimating={isAnimating}>
           {children}
         </Streamdown>
       </div>

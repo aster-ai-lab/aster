@@ -8,9 +8,10 @@
  * emits for the *unrevealed* tail.
  */
 
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { JSX } from 'react'
+import { flushSync } from 'react-dom'
 import type { ExtraProps } from 'streamdown'
 import { describe, expect, it } from 'vitest'
 
@@ -18,6 +19,25 @@ import { useMarkdownBlockContext } from '../context'
 import { StreamingMarkdown } from '../streaming-markdown'
 
 describe('StreamingMarkdown', () => {
+  it('commits each active code chunk without waiting for another transition', () => {
+    const { container, rerender } = render(
+      <StreamingMarkdown id="active-code" animated={false}>
+        {'```ts\nconst first = 1\n'}
+      </StreamingMarkdown>
+    )
+    act(() => {
+      // eslint-disable-next-line @eslint-react/dom/no-flush-sync -- Check the committed chunk before deferred work can mask the regression.
+      flushSync(() =>
+        rerender(
+          <StreamingMarkdown id="active-code" animated={false}>
+            {'```ts\nconst first = 1\nconst second = 2\n'}
+          </StreamingMarkdown>
+        )
+      )
+      expect(container.querySelector('pre')?.textContent).toContain('const second = 2')
+    })
+  })
+
   it('renders streaming content with animate spans wrapping unrevealed text', () => {
     const { container } = render(<StreamingMarkdown id="s1">{'Hello world'}</StreamingMarkdown>)
     const animateSpans = container.querySelectorAll('[data-sd-animate]')

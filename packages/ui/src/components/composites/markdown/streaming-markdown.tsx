@@ -17,6 +17,8 @@ export interface StreamingMarkdownProps {
   className?: string
   footnoteLabel?: string
   animated?: false | AnimateOptions
+  /** Whether source is still arriving. Set false when a streamed message settles. */
+  isAnimating?: boolean
   parseIncompleteMarkdown?: boolean
   /** Keep custom syntax intact when splitting the stream into renderable blocks. */
   parseMarkdownIntoBlocksFn?: (source: string) => string[]
@@ -41,6 +43,7 @@ export function StreamingMarkdown({
   className,
   footnoteLabel,
   animated,
+  isAnimating = true,
   parseIncompleteMarkdown = true,
   parseMarkdownIntoBlocksFn,
   preserveFileLinkHrefs
@@ -56,6 +59,7 @@ export function StreamingMarkdown({
     <MarkdownCore
       id={id}
       mode="streaming"
+      isAnimating={isAnimating}
       parseIncompleteMarkdown={parseIncompleteMarkdown}
       parseMarkdownIntoBlocksFn={parseMarkdownIntoBlocksFn}
       components={components}
