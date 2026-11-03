@@ -1,0 +1,70 @@
+COMMAND   PID USER   FD   TYPE             DEVICE  SIZE/OFF                NODE NAME
+rustc   92267 lyon  cwd    DIR               1,18      1472           122879941 /Users/roylin/code/aster
+rustc   92267 lyon  txt    REG               1,18    412504             7045428 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/rustc
+rustc   92267 lyon  txt    REG               1,18   2562000 1152921500312573255 /usr/lib/dyld
+rustc   92267 lyon  txt    REG               1,18      5934             7006911 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_std_workspace_core-33392671269ff5ce.rmeta
+rustc   92267 lyon  txt    REG               1,18     19885             7006890 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libunwind-14811642c31e6d65.rmeta
+rustc   92267 lyon  txt    REG               1,18      2163             7006882 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_std_workspace_alloc-41e7c80f3999d6d2.rmeta
+rustc   92267 lyon  txt    REG               1,18     20394             7006888 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libadler2-e301200719ff9954.rmeta
+rustc   92267 lyon  txt    REG               1,18      5501             7006898 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcfg_if-76fc71a3e7dd9258.rmeta
+rustc   92267 lyon  txt    REG               1,18      7080             7006912 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libpanic_unwind-318bd5df624c647f.rmeta
+rustc   92267 lyon  txt    REG               1,18     19450           236320500 /Users/roylin/code/aster/target/debug/deps/libfutures-4d9d3a2ca265f6a8.rmeta
+rustc   92267 lyon  txt    REG               1,18     31080           215461391 /Users/roylin/code/aster/target/debug/deps/libfutures_sink-2794ffecc6922cf8.rmeta
+rustc   92267 lyon  txt    REG               1,18      8470           215460950 /Users/roylin/code/aster/target/debug/deps/libequivalent-e374df33e725d6f4.rmeta
+rustc   92267 lyon  txt    REG               1,18     38371           215464593 /Users/roylin/code/aster/target/debug/deps/libderive_more-018b7c737bf21423.rmeta
+rustc   92267 lyon  txt    REG               1,18     26574           215464435 /Users/roylin/code/aster/target/debug/deps/libref_cast-5317e550a3ff5906.rmeta
+rustc   92267 lyon  txt    REG               1,18 207258056             7045395 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/librustc_driver-e03ed1db822dfa4c.dylib
+rustc   92267 lyon  txt    REG               1,18   8383534             7006892 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libstd-4f24f0876fd27385.rmeta
+rustc   92267 lyon  txt    REG               1,18  62154696             7006900 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcore-df38416008f914c9.rmeta
+rustc   92267 lyon  txt    REG               1,18   7405153             7006896 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/liballoc-4eb19a7bc969a107.rmeta
+rustc   92267 lyon  txt    REG               1,18   1956478             7006910 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcompiler_builtins-bdac9431717ff6fa.rmeta
+rustc   92267 lyon  txt    REG               1,18   2304149             7006884 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/liblibc-293d73a1e0e75853.rmeta
+rustc   92267 lyon  txt    REG               1,18    124916             7006880 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libminiz_oxide-8fcacb3898ca8581.rmeta
+rustc   92267 lyon  txt    REG               1,18   1717930             7006893 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libhashbrown-3de76a5eb3c6e1f5.rmeta
+rustc   92267 lyon  txt    REG               1,18    279940             7006881 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libstd_detect-f1f33e12f7edffd1.rmeta
+rustc   92267 lyon  txt    REG               1,18     90876             7006887 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_demangle-ebd8fec938ab09d3.rmeta
+rustc   92267 lyon  txt    REG               1,18    470671             7006899 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libaddr2line-3a3056fe7fb9d8c8.rmeta
+rustc   92267 lyon  txt    REG               1,18   5319672             7006877 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libgimli-a2a8080f78417d10.rmeta
+rustc   92267 lyon  txt    REG               1,18   8476487             7006878 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libobject-e4e7c834d92d30c0.rmeta
+rustc   92267 lyon  txt    REG               1,18   1180904             7006894 /Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libmemchr-152d1ba531042646.rmeta
+rustc   92267 lyon  txt    REG               1,18     29323           215468783 /Users/roylin/code/aster/target/debug/deps/libdyn_clone-c245b7f308ade382.rmeta
+rustc   92267 lyon  txt    REG               1,18    954842           236389542 /Users/roylin/code/aster/target/debug/deps/libagent_client_protocol-574833256bad2378.rmeta
+rustc   92267 lyon  txt    REG               1,18     61135           215461086 /Users/roylin/code/aster/target/debug/deps/libfutures_core-8adadb7b9121aea2.rmeta
+rustc   92267 lyon  txt    REG               1,18   5928679           236309441 /Users/roylin/code/aster/target/debug/deps/libfutures_util-5e1b0abb90958a52.rmeta
+rustc   92267 lyon  txt    REG               1,18   2732656           217382797 /Users/roylin/code/aster/target/debug/deps/libfutures_macro-3283405df2eeced9.dylib
+rustc   92267 lyon  txt    REG               1,18     92713           215461626 /Users/roylin/code/aster/target/debug/deps/libfutures_task-e678c83f7916a945.rmeta
+rustc   92267 lyon  txt    REG               1,18     94242           215460669 /Users/roylin/code/aster/target/debug/deps/libpin_project_lite-781c2e7450f94e1b.rmeta
+rustc   92267 lyon  txt    REG               1,18    254323           215461582 /Users/roylin/code/aster/target/debug/deps/libfutures_channel-18914e57f1332275.rmeta
+rustc   92267 lyon  txt    REG               1,18    143174           215461636 /Users/roylin/code/aster/target/debug/deps/libslab-81c2c2b5e3f68636.rmeta
+rustc   92267 lyon  txt    REG               1,18     67505           215461608 /Users/roylin/code/aster/target/debug/deps/libfutures_io-a33e92f58323ba11.rmeta
+rustc   92267 lyon  txt    REG               1,18   1118969           215460773 /Users/roylin/code/aster/target/debug/deps/libmemchr-ff3d76ecf08f2945.rmeta
+rustc   92267 lyon  txt    REG               1,18     56047           236314251 /Users/roylin/code/aster/target/debug/deps/libfutures_executor-f49dfcdc45e441fb.rmeta
+rustc   92267 lyon  txt    REG               1,18    100354           215460962 /Users/roylin/code/aster/target/debug/deps/libfoldhash-d458bb3422411b72.rmeta
+rustc   92267 lyon  txt    REG               1,18    663060           215460964 /Users/roylin/code/aster/target/debug/deps/liballocator_api2-3426a6d06b678696.rmeta
+rustc   92267 lyon  txt    REG               1,18     60412           215460652 /Users/roylin/code/aster/target/debug/deps/libitoa-b7de7598345b52e3.rmeta
+rustc   92267 lyon  txt    REG               1,18  10220855           236384433 /Users/roylin/code/aster/target/debug/deps/libagent_client_protocol_schema-80759a91882a875d.rmeta
+rustc   92267 lyon  txt    REG               1,18   5040704           215463263 /Users/roylin/code/aster/target/debug/deps/libderive_more_impl-a9429319fcdf96e3.dylib
+rustc   92267 lyon  txt    REG               1,18   1207689           236374441 /Users/roylin/code/aster/target/debug/deps/libschemars-8c6c02580c12bcda.rmeta
+rustc   92267 lyon  txt    REG               1,18   1886139           236309082 /Users/roylin/code/aster/target/debug/deps/libserde_json-a2a0d66c0a9bfece.rmeta
+rustc   92267 lyon  txt    REG               1,18   1263806           215461383 /Users/roylin/code/aster/target/debug/deps/libindexmap-cfa7cbda7ff18016.rmeta
+rustc   92267 lyon  txt    REG               1,18    152574           215461149 /Users/roylin/code/aster/target/debug/deps/libzmij-dea0acb2a03c37f9.rmeta
+rustc   92267 lyon  txt    REG               1,18     28677           215465149 /Users/roylin/code/aster/target/debug/deps/libstrum-0fe2eb47d94b9ee6.rmeta
+rustc   92267 lyon  txt    REG               1,18   4772509           215461075 /Users/roylin/code/aster/target/debug/deps/libserde_core-5506bf75ffa27c70.rmeta
+rustc   92267 lyon  txt    REG               1,18   1339188           215461124 /Users/roylin/code/aster/target/debug/deps/libhashbrown-8fa5c7f9119e5a91.rmeta
+rustc   92267 lyon  txt    REG               1,18   4437520           217432551 /Users/roylin/code/aster/target/debug/deps/libschemars_derive-98d6eea9a3a76de7.dylib
+rustc   92267 lyon  txt    REG               1,18   2553152           215462490 /Users/roylin/code/aster/target/debug/deps/libref_cast_impl-2cc4fe5df0225f0c.dylib
+rustc   92267 lyon  txt    REG               1,18    827305           217431283 /Users/roylin/code/aster/target/debug/deps/libserde-c3492e1b8e1db47b.rmeta
+rustc   92267 lyon  txt    REG               1,18    440790           215463399 /Users/roylin/code/aster/target/debug/deps/libanyhow-03d363a4996c5c32.rmeta
+rustc   92267 lyon  txt    REG               1,18   4401328           215507871 /Users/roylin/code/aster/target/debug/deps/libserde_derive-a177f33e3fe65a6b.dylib
+rustc   92267 lyon  txt    REG               1,18   4125856           215463993 /Users/roylin/code/aster/target/debug/deps/libstrum_macros-ba3a219ad91ac3df.dylib
+rustc   92267 lyon  txt    REG               1,18   3730592           215507823 /Users/roylin/code/aster/target/debug/deps/libasync_trait-aa5bd025cafd26b4.dylib
+rustc   92267 lyon    0r   CHR                3,2       0t0                 336 /dev/null
+rustc   92267 lyon    1   PIPE 0xe3d3b5f232677d96     16384                     ->0x7a0e525ffcb8737c
+rustc   92267 lyon    2   PIPE  0xa0d25ea219588d8     16384                     ->0xda6bf0146133fa9f
+rustc   92267 lyon    3   PIPE 0x6e124291e01966f9     16384                     ->0x862a74a8b840dd7a
+rustc   92267 lyon    4   PIPE 0x6e124291e01966f9     16384                     ->0x862a74a8b840dd7a
+rustc   92267 lyon    5   PIPE 0x862a74a8b840dd7a     16384                     ->0x6e124291e01966f9
+rustc   92267 lyon    6   PIPE 0x862a74a8b840dd7a     16384                     ->0x6e124291e01966f9
+rustc   92267 lyon    7u   REG               1,18         0           237576258 /Users/roylin/code/aster/target/debug/incremental/aster_acp-1hjbp9nk1lgsr/s-hntab7f6xd-1wujvx4.lock
+rustc   92267 lyon    8u   REG               1,18    196714           237576260 /Users/roylin/code/aster/target/debug/incremental/aster_acp-1hjbp9nk1lgsr/s-hntab7f6xd-1wujvx4-working/dep-graph.part.bin
+rustc   92267 lyon    9r   REG               1,18   3730592           215507823 /Users/roylin/code/aster/target/debug/deps/libasync_trait-aa5bd025cafd26b4.dylib

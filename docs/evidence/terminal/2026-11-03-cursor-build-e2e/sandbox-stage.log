@@ -1,0 +1,29 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+    Blocking waiting for file lock on build directory
+   Compiling aster-oci-agent-protocol v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/agent-protocol)
+   Compiling aster-oci-runtime v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/runtime)
+   Compiling aster-oci-krun v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/krun)
+   Compiling aster-oci-cli v0.3.6 (/Users/roylin/code/aster/crates/oci-runtime/crates/cli)
+    Finished `release` profile [optimized] target(s) in 7m 56s
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::new`: unsound due to lack of I/O safety; use `AsyncFd::register` instead (see https://github.com/tokio-rs/tokio/pull/8587)
+  --> crates/oci-runtime/crates/agent/src/executor/terminal.rs:70:35
+   |
+70 |         let descriptor = AsyncFd::new(self.master).map_err(|error| {
+   |                                   ^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: `aster-oci-agent` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 1.91s
+system image: 54e079b98f9c9645717de0ea974327b9790e7f9bfdb204527093cefa1ba1c91e
+compressed archive: 6993fefcc3168febe06ddd0d9671bc54be0c7548e17c0fec7a97c0cbeabb068a
+manifest: 8cfd5c89bfa33725a877b8fefde2293c1e1fd73cfd01dfe7ba332c1e59f7bd6c
+/Users/roylin/code/aster/target/release/studio-resources/agent/tmph9s5yjkv/sandbox/aster-oci-krun-shim: replacing existing signature

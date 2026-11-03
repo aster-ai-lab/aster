@@ -1,0 +1,6 @@
+platform=macos
+release=aster-cli-v0.1.8
+asset=/Users/roylin/code/aster/target/cursor-build-e2e-20261103/aster-cli-v0.1.8-macos.tar.gz
+installed Aster v0.1.8 into /Users/roylin/code/aster/target/cursor-build-e2e-20261103/installed
+aster=/Users/roylin/code/aster/target/cursor-build-e2e-20261103/installed/aster
+aster-acp=/Users/roylin/code/aster/target/cursor-build-e2e-20261103/installed/aster-acp

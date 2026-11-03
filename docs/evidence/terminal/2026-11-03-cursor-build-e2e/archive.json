@@ -1,0 +1,23 @@
+{
+  "archive": "target/cursor-build-e2e-20261103/aster-cli-v0.1.8-macos.tar.gz",
+  "sha256": "362726bafac6c4c44b75e835d482e5580dbd863c86a5dfb2c379d6bdecd8f5a8",
+  "size_bytes": 164255003,
+  "members": [
+    "BUILD_ID",
+    "SHA256SUMS",
+    "aster",
+    "aster-acp",
+    "sandbox/aster-oci",
+    "sandbox/aster-oci-krun-runtime/libkrun.1.17.0.dylib",
+    "sandbox/aster-oci-krun-runtime/libkrunfw.5.dylib",
+    "sandbox/aster-oci-krun-shim",
+    "sandbox/aster-oci-system.ext4",
+    "sandbox/bundle/config.json",
+    "sandbox/bundle/rootfs.tar",
+    "sandbox/manifest.json",
+    "sandbox/system-image.json"
+  ],
+  "member_count": 13,
+  "verified_payload_checksums": 11,
+  "build_id": "aster-cli-pair-v1:f45e03b0eb32abec36e5f5bbcfb3f2a148ae93c7:aarch64-apple-darwin"
+}

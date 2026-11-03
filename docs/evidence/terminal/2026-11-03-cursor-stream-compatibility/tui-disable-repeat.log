@@ -1,0 +1,17 @@
+
+running 1 test
+test disable_leaves_cursor_out_and_launch_still_works ... 
+thread 'disable_leaves_cursor_out_and_launch_still_works' (82538742) panicked at crates/code/acp/tests/cursor_account_tui_e2e.rs:537:9:
+assertion `left == right` failed: unexpected workspace index namespace
+  left: ["sessions", "index"]
+ right: ["index"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    disable_leaves_cursor_out_and_launch_still_works
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 2.27s
+

@@ -843,13 +843,24 @@ fn live_cursor_model_id() -> String {
 #[test]
 #[ignore = "one live Cursor TUI turn; spends account quota"]
 fn live_tui_turn_returns_assistant_text() {
+    live_tui_turn(&live_cursor_model_id());
+}
+
+#[test]
+#[ignore = "two live Cursor native-MCP TUI turns; spends account quota"]
+fn live_native_tui_auto_and_composer_return_assistant_text() {
+    for model in ["auto", "composer-2.5"] {
+        live_tui_turn(model);
+    }
+}
+
+fn live_tui_turn(model_id: &str) {
     let home = std::env::var("HOME").expect("HOME");
     let root = tempfile::tempdir().expect("temp");
     let workspace = root.path().join("workspace");
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(workspace.join("sentinel.txt"), SENTINEL_BYTES).unwrap();
     let config = root.path().join("config.acl");
-    let model_id = live_cursor_model_id();
     std::fs::write(
         &config,
         format!("import_accounts = [\"cursor\"]\ndefault_model = \"cursor/{model_id}\"\n"),

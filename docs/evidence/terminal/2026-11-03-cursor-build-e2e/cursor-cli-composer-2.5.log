@@ -1,0 +1,4 @@
+Reading `input.txt`, then writing it to `output.txt` and verifying with `cmp`.
+Writing `input.txt` to `output.txt`, then verifying with `cmp`.
+Reading `output.txt`, then running the verification command.
+cursor-delivery-3bffec97-e6fb-4a9f-900a-2e5c119c1ddf verified

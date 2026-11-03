@@ -1,0 +1,27 @@
+
+running 1 test
+test disable_leaves_cursor_out_and_launch_still_works ... 
+thread 'disable_leaves_cursor_out_and_launch_still_works' (82482367) panicked at crates/code/acp/tests/cursor_account_tui_e2e.rs:710:5:
+timed out waiting for "mock/m1"
+Couldn't start Aster: startup timed out after 30s.
+
+  The longest step was waiting for the agent to respond. Start Aster again.
+  On a slow machine or network filesystem, a larger startup budget can help.
+  Set it with the command below.
+
+  Mode:    local agent
+  Version: 0.1.8 (4c786649191d)
+  Steps:   config_load=1ms, acp_initialize=30.0s+
+  Try:     ASTER_CONNECT_TIMEOUT_SECS=60 aster
+  Log:     /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmp75YguM/
+           aster-home/logs/unified.jsonl
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    disable_leaves_cursor_out_and_launch_still_works
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 45.05s
+

@@ -1,0 +1,11 @@
+{
+  "scripts/package-aster-cli.sh": "8f99927dd58b98b89d2b0a31c0da6feab86da935c22bb26bef15ad130f43c6f0",
+  "scripts/install.sh": "d881ec89348d4e8d13f652f9295cd77d3dd3e4c7187a4305a27af70692297863",
+  "scripts/aster_sandbox.py": "574ede860f35aedfe994a26b722a3a3f87f4d64d72bde9297adb4d654714d2fa",
+  "apps/studio/scripts/sandbox_assets.py": "baeb9d3e214b490b43ae16d87b084de43274d5268b7621600dec47a6c81a3ea1",
+  "tests/cli_sandbox_smoke.py": "18d5caf4290ba9d3eddb414c22b1b2193bb5f1c93adbf7545b499431555cab97",
+  "Cargo.lock": "6f48e2c46bee2bfe3856eaaa465053a453ecd54fa2216cb45d30785fb2e4c0d3",
+  "Cargo.toml": "1d35b191251905a03167da438010700df0fd53a7443b39b537713f2c745baa8b",
+  "apps/aster/Cargo.toml": "41897962c469e4951d39bf2effa78c915f9c467bde1ba94f76d0e9a968cb7177",
+  "crates/code/acp/Cargo.toml": "78d2ac0ec21db98499ead1e4810e72178c5842f714267230e1e87068bfa6fbc7"
+}

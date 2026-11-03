@@ -1,0 +1,23 @@
+{
+  "read_prompt": "Use read to read input.txt. In your final answer print its single line followed by a space and completed. Do not write files, run commands or delegate.",
+  "pong_prompt": "Reply with the one word obtained by joining p and ong. Do not use tools.",
+  "timeouts_seconds": {
+    "ready": 45,
+    "read": 240,
+    "pong": 90
+  },
+  "cases": [
+    {
+      "model": "cursor/auto",
+      "passed": true,
+      "displayed_file_line": "cursor-tui-173539fc-7ebe-4fcd-adb7-09280e35ace7 completed",
+      "pong": true
+    },
+    {
+      "model": "cursor/composer-2.5",
+      "passed": true,
+      "displayed_file_line": "cursor-tui-fe4e4016-cedd-4448-a254-59c1e04a2db8 completed",
+      "pong": true
+    }
+  ]
+}

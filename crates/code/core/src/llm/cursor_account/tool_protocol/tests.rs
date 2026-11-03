@@ -11,6 +11,29 @@ fn tools() -> Vec<ToolDefinition> {
 }
 
 #[test]
+fn only_complete_documents_allow_a_quiet_completion_before_the_step_ends() {
+    for partial in [
+        "``",
+        "```j",
+        "```json\r",
+        "{\"text\":",
+        "{\"text\":\"hello",
+        "```json\n{\"text\":\"Done\",\"tool_calls\":[]}",
+    ] {
+        assert!(!complete_document(partial));
+        assert!(message(partial, &tools()).is_err());
+    }
+    for finished in [
+        "ordinary prose",
+        "{invalid}",
+        "```json\n{\"text\":\"Done\",\"tool_calls\":[]}\n```\nextra prose",
+    ] {
+        assert!(!complete_document(finished));
+    }
+    assert!(complete_document("{\"text\":\"Done\",\"tool_calls\":[]}"));
+}
+
+#[test]
 fn transcript_preserves_calls_results_errors_without_internal_trust_fields() {
     let definitions = tools();
     let call = message(
@@ -86,10 +109,13 @@ fn final_answers_and_plain_text_without_tools_remain_text() {
 #[test]
 fn accepts_an_entire_fenced_document_but_never_extracts_json_from_prose() {
     for fence in ["```json", "```"] {
-        let document = format!("{fence}\n{{\"text\":\"Done\",\"tool_calls\":[]}}\n```");
-        assert_eq!(message(&document, &tools()).unwrap().text(), "Done");
-        assert!(message(&format!("Example:\n{document}"), &tools()).is_err());
-        assert!(message(&format!("{document}\nextra prose"), &tools()).is_err());
+        for newline in ["\n", "\r\n"] {
+            let document =
+                format!("{fence}{newline}{{\"text\":\"Done\",\"tool_calls\":[]}}{newline}```");
+            assert_eq!(message(&document, &tools()).unwrap().text(), "Done");
+            assert!(message(&format!("Example:\n{document}"), &tools()).is_err());
+            assert!(message(&format!("{document}\nextra prose"), &tools()).is_err());
+        }
     }
 }
 
@@ -116,9 +142,10 @@ fn refuses_missing_input_and_an_oversized_call_batch() {
 #[test]
 fn native_cursor_execution_fails_closed_without_retry_or_execution() {
     let payload = br#"{"execServerMessage":{"shell":{"command":"secret-payload"}}}"#.as_slice();
-    let super::super::FrameControl::Failed(error) =
-        super::super::apply_payload(payload, &mut String::new())
-    else {
+    let super::super::FrameControl::Failed(error) = super::super::apply_payload(
+        &serde_json::from_slice(payload).unwrap(),
+        &mut String::new(),
+    ) else {
         panic!("native execution was not refused")
     };
     assert!(error

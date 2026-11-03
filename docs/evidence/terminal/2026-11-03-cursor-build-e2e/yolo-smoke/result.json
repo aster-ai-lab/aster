@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "archive": "aster-cli-v0.1.8-macos.tar.gz",
+  "sha256": "362726bafac6c4c44b75e835d482e5580dbd863c86a5dfb2c379d6bdecd8f5a8",
+  "mode": "yolo",
+  "exit_code": 0,
+  "events": [
+    {
+      "kind": "tool_call",
+      "command": "printf 'ASTER_RELEASE_SANDBOX_OK\\n'; uname -s; cat release-input.txt"
+    },
+    {
+      "kind": "tool_result",
+      "output": "Tool exit code: 0\nCaptured stdout (65 UTF-8 bytes):\nASTER_RELEASE_SANDBOX_OK\nDarwin\n7955ede5bef19f6c1b90adf7d14ea20a\n\nCaptured stderr (0 UTF-8 bytes):\n"
+    },
+    {
+      "kind": "memory"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "read_prompt": "Use read to read input.txt. In your final answer print its single line followed by a space and completed. Do not write files, run commands or delegate.",
+  "pong_prompt": "Reply with the one word obtained by joining p and ong. Do not use tools.",
+  "timeouts_seconds": {
+    "ready": 45,
+    "read": 240,
+    "pong": 90
+  },
+  "cases": [
+    {
+      "model": "cursor/auto",
+      "passed": true,
+      "displayed_file_line": "cursor-tui-6a1eacea-9ea9-4e46-8d60-b70336e8f5c5 completed",
+      "pong": true,
+      "cleanup_error": "Command '['/Users/roylin/code/aster/target/cursor-build-e2e-20261103/installed/aster', '--cwd', '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-cursor-pty-qm5fvqy8/workspace \u7a7a\u683c']' timed out after 10 seconds"
+    },
+    {
+      "model": "cursor/composer-2.5",
+      "passed": true,
+      "displayed_file_line": "cursor-tui-ab0bdd7a-d051-4fdc-9b64-8a86c145e758 completed",
+      "pong": true,
+      "cleanup_error": "Command '['/Users/roylin/code/aster/target/cursor-build-e2e-20261103/installed/aster', '--cwd', '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-cursor-pty-00mcz483/workspace \u7a7a\u683c']' timed out after 10 seconds"
+    }
+  ]
+}

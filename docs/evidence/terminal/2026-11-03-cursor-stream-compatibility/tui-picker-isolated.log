@@ -1,0 +1,17 @@
+
+running 1 test
+test picker_shows_the_cursor_account_and_a_turn_returns_stub_text ... 
+thread 'picker_shows_the_cursor_account_and_a_turn_returns_stub_text' (82490532) panicked at crates/code/acp/tests/cursor_account_tui_e2e.rs:537:9:
+assertion `left == right` failed: unexpected workspace index namespace
+  left: ["memory", "sessions", "index"]
+ right: ["index"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    picker_shows_the_cursor_account_and_a_turn_returns_stub_text
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 1.93s
+

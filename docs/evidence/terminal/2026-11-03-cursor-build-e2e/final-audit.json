@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "archive_unchanged": true,
+  "installed_payloads_verified": 11,
+  "results": {
+    "sandbox-smoke/result.json": true,
+    "yolo-smoke/result.json": true,
+    "cursor-cli-results.json": 2,
+    "installed-tui-results.json": 2
+  },
+  "source_changes_since_initial_snapshot": [
+    "crates/code/acp/tests/cursor_account_tui_e2e.rs"
+  ],
+  "source_change_reason": "temporary equivalent Rust PTY test addition removed; direct installed-artifact PTY acceptance retained"
+}

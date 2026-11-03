@@ -3,7 +3,8 @@
 //! Speaks Connect `AgentService/Run` on the account endpoint
 //! (`https://api2.cursor.sh`, or the provider base URL). The session bearer
 //! is the `Authorization` header. This client does not launch `agent` or
-//! `cursor-agent`, and it does not execute `execServerMessage`.
+//! `cursor-agent`. Native MCP requests become governed Aster tool calls;
+//! Cursor's built-in tools are never executed.
 //!
 //! `Run` uses a duplex HTTP/2 stream: acknowledge conversation blobs in
 //! bounded, request-local memory while Aster alone executes presented tools.
@@ -19,11 +20,15 @@
 //! id unchanged.
 
 mod context;
+mod error;
 mod kv;
+mod mcp;
 mod tool_protocol;
 
 use super::http::{HttpClient, StreamingHttpResponse};
-use super::types::{LlmResponse, LlmResponseMeta, Message, TokenUsage};
+use super::types::{
+    ContentBlock, LlmResponse, LlmResponseMeta, Message, TokenUsage, ToolDefinition,
+};
 use super::{LlmClient, StreamEvent};
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
@@ -47,6 +52,7 @@ const QUIET_AFTER_TEXT: Duration = Duration::from_millis(2_500);
 
 static MESSAGE_IDS: AtomicU64 = AtomicU64::new(1);
 
+#[derive(Clone)]
 pub(crate) struct CursorAccountClient {
     api_key: String,
     model: String,
@@ -54,7 +60,8 @@ pub(crate) struct CursorAccountClient {
     headers: HashMap<String, String>,
     http: Arc<dyn HttpClient>,
     /// `GetUsableModels` alias map. `None` until a successful lookup.
-    catalog: Mutex<Option<HashMap<String, String>>>,
+    catalog: Arc<Mutex<Option<HashMap<String, String>>>>,
+    generation_timeout: Duration,
 }
 
 impl CursorAccountClient {
@@ -65,7 +72,8 @@ impl CursorAccountClient {
             base_url: DEFAULT_ENDPOINT.to_string(),
             headers: HashMap::new(),
             http: super::http::default_http_client(),
-            catalog: Mutex::new(None),
+            catalog: Arc::new(Mutex::new(None)),
+            generation_timeout: GENERATION_DEADLINE,
         }
     }
 
@@ -227,7 +235,9 @@ impl CursorAccountClient {
         if cancel_token.is_cancelled() {
             return Err(anyhow!("cursor account request was cancelled"));
         }
-        let body = connect_envelope(&run_request_json(&model, &prompt));
+        let cancel_token = cancel_token.child_token();
+        let _cancel_on_drop = cancel_token.clone().drop_guard();
+        let body = connect_envelope(&run_request_json(&model, &prompt, tools));
         let owned_headers = self.request_headers();
         let header_refs: Vec<(&str, &str)> = owned_headers
             .iter()
@@ -238,11 +248,22 @@ impl CursorAccountClient {
             .http
             .post_bytes_duplex(&url, header_refs, &body, reply_rx, cancel_token.clone())
             .await?;
-        let text = read_assistant_text(response, &self.api_key, cancel_token, replies).await?;
-        if text.trim().is_empty() {
-            return Err(anyhow!("cursor account returned no assistant text"));
-        }
-        let message = tool_protocol::message(&text, tools)?;
+        let output = read_run_response(
+            response,
+            &self.api_key,
+            cancel_token,
+            replies,
+            tools,
+            self.generation_timeout,
+        )
+        .await?;
+        let mut message = if output.calls.is_empty() {
+            tool_protocol::response(&output.text, tools)?
+        } else {
+            tool_protocol::message(&output.text, &[])?
+        };
+        message.content.extend(output.calls);
+        message.reasoning_content = (!output.reasoning.is_empty()).then_some(output.reasoning);
         let stop_reason = if message.tool_calls().is_empty() {
             "end_turn"
         } else {
@@ -250,7 +271,7 @@ impl CursorAccountClient {
         };
         Ok(LlmResponse {
             message,
-            usage: TokenUsage::default(),
+            usage: output.usage,
             stop_reason: Some(stop_reason.to_string()),
             token_logprobs: Vec::new(),
             meta: Some(LlmResponseMeta {
@@ -280,7 +301,7 @@ fn next_id() -> String {
     format!("aster-{}", MESSAGE_IDS.fetch_add(1, Ordering::Relaxed))
 }
 
-fn run_request_json(model: &str, prompt: &str) -> Vec<u8> {
+fn run_request_json(model: &str, prompt: &str, tools: &[ToolDefinition]) -> Vec<u8> {
     let body = json!({
         "runRequest": {
             "action": {
@@ -296,7 +317,8 @@ fn run_request_json(model: &str, prompt: &str) -> Vec<u8> {
             "modelDetails": { "modelId": model },
             "requestedModel": { "modelId": model },
             "conversationId": next_id(),
-            "conversationState": {}
+            "conversationState": {},
+            "mcpTools": {"mcpTools":mcp::definitions(tools)}
         }
     });
     serde_json::to_vec(&body).unwrap_or_default()
@@ -396,14 +418,7 @@ fn pop_frame(buf: &mut Vec<u8>) -> Result<Option<(bool, Vec<u8>)>> {
     Ok(Some((flags & 0x02 != 0, payload)))
 }
 
-fn apply_payload(payload: &[u8], text: &mut String) -> FrameControl {
-    let Ok(value) = serde_json::from_slice::<Value>(payload) else {
-        return FrameControl::Continue;
-    };
-    if let Some(error) = value.get("error") {
-        let code = error.get("code").and_then(Value::as_str).unwrap_or("error");
-        return FrameControl::Failed(anyhow!("cursor account error: {code}"));
-    }
+fn apply_payload(value: &Value, text: &mut String) -> FrameControl {
     if value.get("execServerMessage").is_some() {
         return FrameControl::Failed(anyhow!(super::NonRetryableLlmError::new(
             "Cursor requested its native tools instead of an Aster tool response; select another Cursor model"
@@ -432,34 +447,70 @@ fn apply_payload(payload: &[u8], text: &mut String) -> FrameControl {
     }
 }
 
-async fn read_assistant_text(
+#[derive(Debug, Default)]
+struct RunOutput {
+    text: String,
+    reasoning: String,
+    calls: Vec<ContentBlock>,
+    usage: TokenUsage,
+    expected_calls: Option<u64>,
+}
+
+async fn read_run_response(
     response: StreamingHttpResponse,
     secret: &str,
     cancel_token: CancellationToken,
     replies: mpsc::Sender<Vec<u8>>,
-) -> Result<String> {
+    tools: &[ToolDefinition],
+    generation_timeout: Duration,
+) -> Result<RunOutput> {
     if !(200..300).contains(&response.status) {
+        let message = redact(&response.error_body, secret);
+        if matches!(response.status, 400..=404) {
+            return Err(anyhow!(super::NonRetryableLlmError::from_status(
+                "cursor",
+                response.status,
+                message
+            )));
+        }
         return Err(anyhow!(
             "cursor account endpoint returned HTTP {} ({})",
             response.status,
-            redact(&response.error_body, secret)
+            message
         ));
     }
     let mut stream = response.byte_stream;
     let mut buf = Vec::new();
-    let mut text = String::new();
+    let mut output = RunOutput::default();
     let mut last_text: Option<Instant> = None;
     let mut blobs = kv::Store::default();
-    let deadline = Instant::now() + GENERATION_DEADLINE;
+    let mut thinking = false;
+    let mut pending_tools = false;
+    let mut step_completed = false;
+    let mut call_bytes = 0usize;
+    let deadline = Instant::now() + generation_timeout;
     loop {
-        if quiet_gap_elapsed(&text, last_text) {
-            return finish_text(text);
+        if quiet_gap_elapsed(&output.text, last_text) {
+            if !buf.is_empty()
+                || thinking
+                || pending_tools
+                || !tools.is_empty()
+                    && !step_completed
+                    && !tool_protocol::complete_document(&output.text)
+            {
+                // A pause inside a frame, reasoning, or a tool request is not completion.
+                last_text = Some(Instant::now());
+            } else {
+                return finish_output(output);
+            }
         }
         let remaining = deadline.saturating_duration_since(Instant::now());
         if remaining.is_zero() {
-            break;
+            return Err(anyhow!(
+                "cursor account generation timed out before completion"
+            ));
         }
-        let wait = next_wait(&text, last_text, remaining);
+        let wait = next_wait(&output.text, last_text, remaining);
         let next = tokio::select! {
             biased;
             _ = cancel_token.cancelled() => {
@@ -468,13 +519,8 @@ async fn read_assistant_text(
             item = tokio::time::timeout(wait, stream.next()) => item,
         };
         let chunk = match next {
-            Err(_) => {
-                if !text.trim().is_empty() {
-                    return finish_text(text);
-                }
-                break;
-            }
-            Ok(None) => break,
+            Err(_) => continue,
+            Ok(None) => return Err(anyhow!("cursor account stream ended before completion")),
             Ok(Some(Err(error))) => return Err(error),
             Ok(Some(Ok(chunk))) => chunk,
         };
@@ -483,9 +529,56 @@ async fn read_assistant_text(
             match pop_frame(&mut buf)? {
                 None => break,
                 Some((end, payload)) => {
+                    let value: Value = serde_json::from_slice(&payload)
+                        .map_err(|_| anyhow!("cursor account sent an invalid JSON frame"))?;
+                    if !value.is_object() {
+                        return Err(anyhow!("cursor account sent an invalid message frame"));
+                    }
+                    if let Some(error) = value.get("error").filter(|error| !error.is_null()) {
+                        return Err(error::connect(error, secret));
+                    }
+                    if end
+                        && value.as_object().is_some_and(|value| {
+                            value
+                                .keys()
+                                .any(|key| !matches!(key.as_str(), "error" | "metadata"))
+                        })
+                    {
+                        return Err(anyhow!("Cursor sent an invalid Connect terminal frame"));
+                    }
+                    tracing::debug!(
+                        end,
+                        bytes = payload.len(),
+                        text_delta = value.pointer("/interactionUpdate/textDelta").is_some(),
+                        thinking_delta =
+                            value.pointer("/interactionUpdate/thinkingDelta").is_some(),
+                        tool_batch = value
+                            .pointer("/interactionUpdate/toolRequestsListed")
+                            .is_some(),
+                        native_call = value.pointer("/execServerMessage/mcpArgs").is_some(),
+                        tool_catalog = value
+                            .pointer("/execServerMessage/mcpStateExecArgs")
+                            .is_some(),
+                        "Cursor response frame"
+                    );
+                    if let Some(call) = mcp::tool_call(&value, tools)? {
+                        call_bytes = call_bytes.saturating_add(payload.len());
+                        if output.calls.len() >= 64 || call_bytes > MAX_FRAME_BYTES {
+                            return Err(anyhow!("cursor account requested too many Aster tools"));
+                        }
+                        output.calls.push(call);
+                        pending_tools = true;
+                        if output.expected_calls == Some(output.calls.len() as u64) {
+                            return finish_output(output);
+                        }
+                        continue;
+                    }
                     let reply = match blobs.reply(&payload)? {
                         Some(reply) => Some(reply),
-                        None => context::reply(&payload)?,
+                        None => match mcp::state_reply(&value, tools)? {
+                            Some(reply) => Some(reply),
+                            None => context::reply(&payload)?,
+                        },
                     };
                     if let Some(reply) = reply {
                         tokio::select! {
@@ -497,30 +590,83 @@ async fn read_assistant_text(
                         }
                         continue;
                     }
-                    let before = text.len();
-                    let control = apply_payload(&payload, &mut text);
-                    if text.len() > MAX_FRAME_BYTES {
+                    if value.get("interactionQuery").is_some() {
+                        return Err(anyhow!(super::NonRetryableLlmError::new("Cursor requested a native interaction instead of a presented Aster tool")));
+                    }
+                    if let Some(update) = value.get("interactionUpdate") {
+                        if update.get("stepStarted").is_some() {
+                            step_completed = false;
+                            output.expected_calls = None;
+                        }
+                        if update.get("stepCompleted").is_some() {
+                            step_completed = true;
+                        }
+                        if let Some(piece) = update
+                            .pointer("/thinkingDelta/text")
+                            .and_then(Value::as_str)
+                        {
+                            output.reasoning.push_str(piece);
+                            thinking = true;
+                        }
+                        if update.get("thinkingCompleted").is_some() {
+                            thinking = false;
+                        }
+                        if update.get("partialToolCall").is_some()
+                            || update.get("toolCallStarted").is_some()
+                        {
+                            pending_tools = true;
+                        }
+                        if update.get("toolCallCompleted").is_some() && output.calls.is_empty() {
+                            pending_tools = false;
+                            output.expected_calls = None;
+                        }
+                        if let Some(listed) = update.get("toolRequestsListed") {
+                            let count = listed
+                                .get("callCount")
+                                .map_or(Some(0), Value::as_u64)
+                                .filter(|count| *count <= 64)
+                                .ok_or_else(|| {
+                                    anyhow!("Cursor sent an invalid Aster tool batch count")
+                                })?;
+                            // The listing can precede the native execution messages.
+                            output.expected_calls = Some(count);
+                            if !output.calls.is_empty() && count == output.calls.len() as u64 {
+                                return finish_output(output);
+                            }
+                        }
+                        if let Some(usage) = update.get("turnEnded") {
+                            output.usage = token_usage(usage)?;
+                        }
+                    }
+                    let before = output.text.len();
+                    let control = apply_payload(&value, &mut output.text);
+                    if output
+                        .text
+                        .len()
+                        .saturating_add(output.reasoning.len())
+                        .saturating_add(call_bytes)
+                        > MAX_FRAME_BYTES
+                    {
                         return Err(anyhow!(
                             "cursor account assistant text exceeds the read bound"
                         ));
                     }
                     match control {
                         FrameControl::Continue if end => {
-                            return finish_text(text);
+                            return finish_output(output);
                         }
                         FrameControl::Continue => {
-                            if text.len() > before {
+                            if output.text.len() > before {
                                 last_text = Some(Instant::now());
                             }
                         }
-                        FrameControl::Done => return finish_text(text),
+                        FrameControl::Done => return finish_output(output),
                         FrameControl::Failed(error) => return Err(error),
                     }
                 }
             }
         }
     }
-    finish_text(text)
 }
 
 fn quiet_gap_elapsed(text: &str, last_text: Option<Instant>) -> bool {
@@ -542,12 +688,55 @@ fn next_wait(text: &str, last_text: Option<Instant>, remaining: Duration) -> Dur
     QUIET_AFTER_TEXT.saturating_sub(at.elapsed()).min(remaining)
 }
 
-fn finish_text(text: String) -> Result<String> {
-    if text.trim().is_empty() {
+fn finish_output(output: RunOutput) -> Result<RunOutput> {
+    if !output.calls.is_empty()
+        && output
+            .expected_calls
+            .is_some_and(|count| count != output.calls.len() as u64)
+    {
+        return Err(anyhow!("Cursor ended an incomplete Aster tool batch"));
+    }
+    if output.text.trim().is_empty() && output.calls.is_empty() {
         Err(anyhow!("cursor account returned no assistant text"))
     } else {
-        Ok(text)
+        Ok(output)
     }
+}
+
+fn token_usage(value: &Value) -> Result<TokenUsage> {
+    if !value.is_object() {
+        return Err(anyhow!("Cursor sent an invalid turn completion"));
+    }
+    let count = |field: &str| -> Result<Option<usize>> {
+        value
+            .get(field)
+            .map(|value| {
+                value
+                    .as_u64()
+                    .or_else(|| value.as_str().and_then(|text| text.parse::<u64>().ok()))
+                    .and_then(|count| usize::try_from(count).ok())
+                    .ok_or_else(|| anyhow!("Cursor sent an invalid token count"))
+            })
+            .transpose()
+    };
+    let prompt_tokens = count("inputTokens")?.unwrap_or_default();
+    let completion_tokens = count("outputTokens")?.unwrap_or_default();
+    let cache_read_tokens = count("cacheReadTokens")?;
+    let cache_write_tokens = count("cacheWriteTokens")?;
+    cache_read_tokens
+        .unwrap_or_default()
+        .checked_add(cache_write_tokens.unwrap_or_default())
+        .filter(|cached| *cached <= prompt_tokens)
+        .ok_or_else(|| anyhow!("Cursor sent inconsistent cached token counts"))?;
+    Ok(TokenUsage {
+        prompt_tokens,
+        completion_tokens,
+        total_tokens: prompt_tokens
+            .checked_add(completion_tokens)
+            .ok_or_else(|| anyhow!("Cursor token counts overflowed"))?,
+        cache_read_tokens,
+        cache_write_tokens,
+    })
 }
 
 fn redact(body: &str, secret: &str) -> String {
@@ -559,6 +748,11 @@ fn redact(body: &str, secret: &str) -> String {
 
 #[async_trait]
 impl LlmClient for CursorAccountClient {
+    fn with_active_generation_timeout(&self, timeout: Duration) -> Option<Arc<dyn LlmClient>> {
+        let mut client = self.clone();
+        client.generation_timeout = timeout;
+        Some(Arc::new(client))
+    }
     async fn complete(
         &self,
         messages: &[Message],
@@ -578,12 +772,19 @@ impl LlmClient for CursorAccountClient {
     ) -> Result<mpsc::Receiver<StreamEvent>> {
         let response = self.perform(messages, system, tools, cancel_token).await?;
         let (tx, rx) = mpsc::channel(4);
+        if let Some(reasoning) = &response.message.reasoning_content {
+            let _ = tx.try_send(StreamEvent::ReasoningDelta(reasoning.clone()));
+        }
         let text = response.text();
         let _ = tx.try_send(StreamEvent::TextDelta(text));
         let _ = tx.try_send(StreamEvent::Done(response));
         Ok(rx)
     }
 }
+
+#[cfg(test)]
+#[path = "cursor_account/stream_tests.rs"]
+mod stream_tests;
 
 #[cfg(test)]
 mod tests {
