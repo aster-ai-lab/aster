@@ -78,12 +78,16 @@ impl crate::agent::TurnEngine {
         super::fact_compact_keep_tokens(self.config.max_context_tokens)
     }
 
-    pub(crate) fn duplicate_tool_threshold(&self) -> u32 {
-        self.config.duplicate_tool_call_threshold
+    pub(crate) fn fact_compaction_budget(&self) -> crate::compaction::CompactionBudget {
+        crate::compaction::CompactionBudget::for_auto_compaction(
+            self.config.max_context_tokens,
+            self.config.auto_compact_threshold,
+            0,
+        )
     }
 
-    pub(crate) fn context_window_tokens(&self) -> usize {
-        self.config.max_context_tokens
+    pub(crate) fn duplicate_tool_threshold(&self) -> u32 {
+        self.config.duplicate_tool_call_threshold
     }
 
     pub(crate) fn skill_restriction_denial(&self, name: &str) -> Option<(String, String)> {

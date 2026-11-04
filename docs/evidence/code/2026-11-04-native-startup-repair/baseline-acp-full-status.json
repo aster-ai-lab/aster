@@ -1,0 +1,27 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--target-dir",
+    "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+    "--config",
+    "profile.test.package.sha2.opt-level=3",
+    "-p",
+    "aster-acp",
+    "--lib",
+    "--",
+    "--test-threads=1"
+  ],
+  "exitCode": 0,
+  "seconds": 132.635879625,
+  "sourceBefore": {
+    "crates/code/acp/src/plugin_selection.rs": "9477cf76bafd477afae59ae3db3c6d367795ed1e22c2edc74c732e3f4b0c8803",
+    "crates/code/acp/src/plugin_selection_tests.rs": "b7e6b6bf620773edd9156a723a4f33543abafb57f11b8ecbfe9f166b8ac5d01b",
+    "crates/code/acp/src/plugin_tools.rs": "38d0cd86b569249f2a15f68e0c2c63dd19021e31bda8ebe351e02d299a7c549f",
+    "crates/code/core/src/tools/process.rs": "cdbb085b6494b8161e4fbacde84dd2bbd95c747f6028a6264a5d0e37837c9ab1",
+    "crates/code/acp/tests/long_horizon/fixture.rs": "6f0174c19fe7b5167f8cd63312ea2f1456b92d9948c61bb5edf2d4ceb8c9573a",
+    "crates/code/acp/tests/long_horizon/fixture_tests.rs": "635af2425685d2d225af7c88749345f63f24af3831ba138f48f23ecfd8f8c509"
+  }
+}

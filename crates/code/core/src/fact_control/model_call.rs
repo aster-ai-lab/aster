@@ -136,13 +136,6 @@ pub(super) async fn model_response(
     host_cancel: tokio_util::sync::CancellationToken,
     original_model: Option<crate::agent_api::OriginalModelCallPort>,
 ) -> Result<crate::llm::LlmResponse, ActorError> {
-    let tools = match surface.as_ref() {
-        Some(surface) => surface
-            .agent
-            .present_fact_turn_tools(&tools, &messages)
-            .map_err(model_error)?,
-        None => tools,
-    };
     if let Some(original) = original_model {
         let surface = surface.as_ref().ok_or_else(|| {
             ActorError::Defect("original model requires its original parent surface".into())

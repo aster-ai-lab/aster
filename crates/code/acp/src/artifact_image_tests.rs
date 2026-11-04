@@ -99,3 +99,13 @@ fn macos_system_fallback_renders_distinct_chinese_glyphs() {
         "Chinese glyphs must not become identical missing-glyph boxes"
     );
 }
+
+#[test]
+fn invalid_svg_dimensions_name_the_attribute_and_allowed_forms() {
+    let error = render_png(r#"<svg xmlns="http://www.w3.org/2000/svg" width="cm" height="10"/>"#)
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("width"), "{error}");
+    assert!(error.contains("px") || error.contains("number"), "{error}");
+    assert!(!error.contains("invalid float literal"), "{error}");
+}

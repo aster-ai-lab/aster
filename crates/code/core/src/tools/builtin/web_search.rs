@@ -59,8 +59,8 @@ const ENGINE_CATALOG_DESCRIPTION: &str =
      and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and aster (named only; \
      they are not in the default cascade), \
      g / google (Google, headless), baidu (Baidu, headless), bing_browser (Bing, headless), \
-     brave_browser (Brave, headless). The default headless backend is Moli; Chrome and \
-     Lightpanda remain explicit compatibility backends.";
+     brave_browser (Brave, headless). The default headless backend is Moli; Chrome \
+     remains an explicit compatibility backend.";
 
 #[cfg(not(feature = "headless-search"))]
 const ENGINE_CATALOG_DESCRIPTION: &str =
@@ -103,7 +103,7 @@ fn effective_headless_config(
     configured: Option<&HeadlessConfig>,
     proxy_url: Option<&str>,
 ) -> HeadlessConfig {
-    // Moli is the product default. Legacy managed Chrome/Lightpanda discovery
+    // Moli is the product default. Managed Chrome discovery
     // is still available through an explicit backend in ACL; it must not
     // silently replace the bundled/downloadable default.
     let mut config = configured.cloned().unwrap_or_default();
@@ -336,6 +336,18 @@ fn headless_runtime(
     };
     if !needed {
         return (browser, None);
+    }
+    if config.backend == BrowserBackend::Lightpanda {
+        return (
+            browser,
+            Some(
+                futures::future::ready(Err(
+                    crate::search_runtime::LIGHTPANDA_UNSUPPORTED.to_owned()
+                ))
+                .boxed()
+                .shared(),
+            ),
+        );
     }
     let max_tabs = Some(config.max_tabs);
     if !config.backend.is_moli() {

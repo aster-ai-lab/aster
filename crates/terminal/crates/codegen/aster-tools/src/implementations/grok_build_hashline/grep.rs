@@ -337,7 +337,10 @@ mod tests {
     fn tool_metadata() {
         use crate::types::tool_metadata::ToolMetadata;
         let tool = HashlineGrepTool;
-        assert_eq!(aster_tool_runtime::Tool::id(&tool).as_str(), "hashline_grep");
+        assert_eq!(
+            aster_tool_runtime::Tool::id(&tool).as_str(),
+            "hashline_grep"
+        );
         assert_eq!(ToolMetadata::kind(&tool), ToolKind::Search);
         assert!(aster_tool_runtime::Tool::capabilities(&tool).is_read_only);
         assert!(matches!(

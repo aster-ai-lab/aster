@@ -15,10 +15,7 @@ fn grok_home_override_path_helpers() {
         aster_pager::util::pager_toml_path(),
         grok_home.join("pager.toml")
     );
-    assert_eq!(
-        aster_pager::util::display_grok_home_prefix(),
-        "$GROK_HOME"
-    );
+    assert_eq!(aster_pager::util::display_grok_home_prefix(), "$GROK_HOME");
     assert_eq!(
         aster_pager::util::display_user_grok_path("config.toml"),
         "$GROK_HOME/config.toml"

@@ -6,9 +6,9 @@ use super::{ExtResult, parse_params, to_ext_response};
 use crate::agent::MvpAgent;
 use crate::bundle::{self, BundleManifest};
 use crate::remote::{FetchedBundle, fetch_bundle};
-use aster_tools::implementations::skills::discovery::extract_first_paragraph;
 use agent_client_protocol as acp;
 use anyhow::Context;
+use aster_tools::implementations::skills::discovery::extract_first_paragraph;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::time::Duration;
@@ -404,8 +404,7 @@ mod tests {
     }
     fn test_auth_manager() -> Arc<aster_login::AuthManager> {
         let dir = tempfile::tempdir().unwrap();
-        let mgr =
-            aster_login::AuthManager::new(dir.path(), aster_login::GrokComConfig::default());
+        let mgr = aster_login::AuthManager::new(dir.path(), aster_login::GrokComConfig::default());
         mgr.hot_swap(test_auth());
         std::mem::forget(dir);
         Arc::new(mgr)

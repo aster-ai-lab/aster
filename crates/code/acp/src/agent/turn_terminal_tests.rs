@@ -4,6 +4,205 @@ use super::*;
 use std::future::Future;
 
 #[tokio::test]
+async fn text_chunks_distinguish_model_generation_from_controller_output() {
+    use tokio::io::AsyncBufReadExt;
+    use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let root = tempfile::tempdir().unwrap();
+            let agent = AsterCodeAgent::new(tests::test_launch(Some(root.path().join("sessions"))));
+            let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+                .await
+                .unwrap();
+            let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
+                .session
+                .clone();
+            let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
+            let (read, write) = tokio::io::split(agent_end);
+            let (connection, io) = acp::AgentSideConnection::new(
+                AsterCodeAgent::new(tests::test_launch(None)),
+                write.compat_write(),
+                read.compat(),
+                |future| {
+                    tokio::task::spawn_local(future);
+                },
+            );
+            let transport = tokio::task::spawn_local(io);
+            agent.set_client(Rc::new(connection));
+            let publish = async {
+                agent
+                    .emit_text(&opened.session_id, "controller 甲", false)
+                    .await;
+                agent
+                    .handle_event(
+                        &opened.session_id,
+                        &session,
+                        &mut TurnState::default(),
+                        AgentEvent::TextDelta {
+                            text: "model 乙".into(),
+                        },
+                    )
+                    .await;
+                let mut buffered = end();
+                if let AgentEvent::End { ref mut text, .. } = buffered {
+                    *text = "buffered 丙".into();
+                }
+                agent
+                    .handle_event(
+                        &opened.session_id,
+                        &session,
+                        &mut TurnState::default(),
+                        buffered,
+                    )
+                    .await;
+            };
+            let observe = async {
+                let mut reader = tokio::io::BufReader::new(client_end);
+                let mut chunks = Vec::new();
+                while chunks.len() < 3 {
+                    let mut line = String::new();
+                    assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
+                    let value: serde_json::Value = serde_json::from_str(&line).unwrap();
+                    let update = &value["params"]["update"];
+                    if update["sessionUpdate"] == "agent_message_chunk" {
+                        chunks.push(update.clone());
+                    }
+                }
+                chunks
+            };
+            let ((), chunks) = tokio::time::timeout(std::time::Duration::from_secs(2), async {
+                tokio::join!(publish, observe)
+            })
+            .await
+            .unwrap();
+            assert_eq!(chunks[0]["content"]["text"], "controller 甲");
+            assert_eq!(chunks[0]["_meta"]["asterGenerationDelta"], false);
+            assert_eq!(chunks[1]["content"]["text"], "model 乙");
+            assert_eq!(chunks[1]["_meta"]["asterGenerationDelta"], true);
+            assert_eq!(chunks[2]["content"]["text"], "buffered 丙");
+            assert_eq!(chunks[2]["_meta"]["asterGenerationDelta"], false);
+            transport.abort();
+        })
+        .await;
+}
+
+#[tokio::test]
+async fn permission_denial_closes_each_tool_row_once() {
+    use tokio::io::AsyncBufReadExt;
+    use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let root = tempfile::tempdir().unwrap();
+            let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+            launch.workspace = root.path().to_owned();
+            let agent = AsterCodeAgent::new(launch);
+            let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+                .await
+                .unwrap();
+            let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
+                .session
+                .clone();
+            let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
+            let (read, write) = tokio::io::split(agent_end);
+            let (connection, io) = acp::AgentSideConnection::new(
+                AsterCodeAgent::new(tests::test_launch(None)),
+                write.compat_write(),
+                read.compat(),
+                |future| {
+                    tokio::task::spawn_local(future);
+                },
+            );
+            let transport = tokio::task::spawn_local(io);
+            agent.set_client(Rc::new(connection));
+            let publish = async {
+                let mut state = TurnState::default();
+                for (id, announced) in [("unannounced", false), ("announced", true)] {
+                    let args = serde_json::json!({"file_path":"source 甲.txt"});
+                    if announced {
+                        agent
+                            .handle_event(
+                                &opened.session_id,
+                                &session,
+                                &mut state,
+                                AgentEvent::ToolExecutionStart {
+                                    id: id.into(),
+                                    name: "read".into(),
+                                    args: args.clone(),
+                                },
+                            )
+                            .await;
+                    }
+                    agent
+                        .handle_event(
+                            &opened.session_id,
+                            &session,
+                            &mut state,
+                            AgentEvent::PermissionDenied {
+                                tool_id: id.into(),
+                                tool_name: "read".into(),
+                                args,
+                                reason: "controlled refusal".into(),
+                            },
+                        )
+                        .await;
+                }
+                agent
+                    .emit_text(&opened.session_id, "all tool rows closed", false)
+                    .await;
+            };
+            let observe = async {
+                let mut reader = tokio::io::BufReader::new(client_end);
+                let mut updates = Vec::new();
+                loop {
+                    let mut line = String::new();
+                    assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
+                    let value: serde_json::Value = serde_json::from_str(&line).unwrap();
+                    let update = &value["params"]["update"];
+                    if update["sessionUpdate"] == "agent_message_chunk" {
+                        break;
+                    }
+                    if update["toolCallId"].is_string() {
+                        updates.push(update.clone());
+                    }
+                }
+                updates
+            };
+            let ((), updates) = tokio::time::timeout(std::time::Duration::from_secs(2), async {
+                tokio::join!(publish, observe)
+            })
+            .await
+            .unwrap();
+            for id in ["unannounced", "announced"] {
+                let rows: Vec<_> = updates
+                    .iter()
+                    .filter(|row| row["toolCallId"] == id)
+                    .collect();
+                assert_eq!(
+                    rows.iter()
+                        .filter(|row| row["sessionUpdate"] == "tool_call")
+                        .count(),
+                    1,
+                    "{id}: no duplicate opening row"
+                );
+                assert_eq!(
+                    rows.iter()
+                        .filter(|row| row["sessionUpdate"] == "tool_call_update"
+                            && row["status"] == "failed")
+                        .count(),
+                    1
+                );
+                assert_eq!(rows.last().unwrap()["status"], "failed");
+            }
+            session.close().await;
+            transport.abort();
+            let _ = transport.await;
+        })
+        .await;
+}
+
+#[tokio::test]
 async fn send_now_cancels_before_waiting_for_the_active_turn_permit() {
     for send_now in [None, Some(false), Some(true)] {
         let root = tempfile::tempdir().unwrap();
@@ -186,6 +385,14 @@ async fn send_now_announces_the_running_prompt_before_its_text() {
 }
 
 async fn drain(events: Vec<AgentEvent>, cancelled: bool) -> acp::Result<acp::PromptResponse> {
+    drain_with_channel_lifetime(events, cancelled, false).await
+}
+
+async fn drain_with_channel_lifetime(
+    events: Vec<AgentEvent>,
+    cancelled: bool,
+    keep_sender: bool,
+) -> acp::Result<acp::PromptResponse> {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
@@ -212,25 +419,50 @@ async fn drain(events: Vec<AgentEvent>, cancelled: bool) -> acp::Result<acp::Pro
     for event in events {
         sender.send(event).await.unwrap();
     }
-    drop(sender);
+    let _retained_sender = keep_sender.then_some(sender);
     let permit = Arc::new(tokio::sync::Mutex::new(())).lock_owned().await;
-    let result = agent
-        .drain_turn(
-            &opened.session_id,
-            &session,
-            aster_core::AgentRunStream {
-                run: None,
-                events: receiver,
-                worker: tokio::spawn(async {}),
-            },
-            None,
-            1,
-            permit,
-            None,
-        )
-        .await;
+    let draining = agent.drain_turn(
+        &opened.session_id,
+        &session,
+        aster_core::AgentRunStream {
+            run: None,
+            events: receiver,
+            worker: tokio::spawn(async {}),
+        },
+        None,
+        1,
+        permit,
+        None,
+    );
+    let result = if keep_sender {
+        tokio::time::timeout(std::time::Duration::from_secs(1), draining)
+            .await
+            .expect("the original worker's result must not wait for a background sender")
+    } else {
+        draining.await
+    };
     session.close().await;
     result
+}
+
+#[tokio::test]
+async fn completed_worker_returns_even_when_a_background_sender_stays_open() {
+    assert_eq!(
+        drain_with_channel_lifetime(vec![end()], false, true)
+            .await
+            .unwrap()
+            .stop_reason,
+        acp::StopReason::EndTurn
+    );
+    let error = drain_with_channel_lifetime(Vec::new(), false, true)
+        .await
+        .unwrap_err();
+    assert!(error
+        .data
+        .unwrap()
+        .as_str()
+        .unwrap()
+        .contains("without a terminal event"));
 }
 
 fn end() -> AgentEvent {
@@ -283,6 +515,25 @@ async fn an_explicit_terminal_preserves_success_failure_and_cancellation() {
         drain(Vec::new(), true).await.unwrap().stop_reason,
         acp::StopReason::Cancelled
     );
+}
+
+#[tokio::test]
+async fn a_core_failure_after_visible_text_preserves_its_original_reason() {
+    let reason = "goal.evidence_stale: source changed before terminal settlement";
+    let error = drain(
+        vec![
+            AgentEvent::TextDelta {
+                text: "Partial: the edits are ready for verification.".into(),
+            },
+            AgentEvent::Error {
+                message: reason.into(),
+            },
+        ],
+        false,
+    )
+    .await
+    .unwrap_err();
+    assert_eq!(error.data.unwrap(), reason);
 }
 
 #[tokio::test]
@@ -369,6 +620,232 @@ async fn cancellation_after_event_eof_returns_while_retaining_the_live_worker_pe
         .await
         .expect("the worker returned and released its retained permit");
     session.close().await;
+}
+
+#[tokio::test]
+async fn cancelled_prompt_forwards_a_child_terminal_that_arrives_after_the_response() {
+    assert_late_child_terminal(true, true).await;
+}
+
+#[tokio::test]
+async fn cancelled_prompt_observes_a_child_terminal_after_the_event_stream_closes() {
+    assert_late_child_terminal(false, true).await;
+}
+
+#[tokio::test]
+async fn completed_prompt_keeps_observing_its_live_child_after_the_response() {
+    assert_late_child_terminal(true, false).await;
+    assert_late_child_terminal(false, false).await;
+}
+
+async fn assert_late_child_terminal(via_event: bool, parent_cancelled: bool) {
+    use tokio::io::AsyncBufReadExt;
+    use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let root = tempfile::tempdir().unwrap();
+            let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+            launch.workspace = root.path().to_owned();
+            let agent = AsterCodeAgent::new(launch);
+            let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+                .await
+                .unwrap();
+            let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
+                .session
+                .clone();
+            let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
+            let (read, write) = tokio::io::split(agent_end);
+            let (connection, io) = acp::AgentSideConnection::new(
+                AsterCodeAgent::new(tests::test_launch(None)),
+                write.compat_write(),
+                read.compat(),
+                |future| {
+                    tokio::task::spawn_local(future);
+                },
+            );
+            let transport = tokio::task::spawn_local(io);
+            agent.set_client(Rc::new(connection));
+            let start = AgentEvent::SubagentStart {
+                task_id: "late-child".into(),
+                session_id: "late-child".into(),
+                parent_session_id: opened.session_id.0.to_string(),
+                agent: "general".into(),
+                description: "Late cleanup".into(),
+                started_ms: 100,
+            };
+            let tracker = session.subagent_tracker();
+            tracker.record_event(&start).await;
+            let token = tokio_util::sync::CancellationToken::new();
+            tracker
+                .register_canceller("late-child", token.clone())
+                .await;
+            let background = AgentEvent::SubagentProgress {
+                task_id: "late-child".into(),
+                session_id: "late-child".into(),
+                status: "started".into(),
+                metadata: serde_json::json!({"background":true}),
+            };
+            let mut state = TurnState::default();
+            if parent_cancelled {
+                agent
+                    .handle_event(&opened.session_id, &session, &mut state, start.clone())
+                    .await;
+                agent
+                    .handle_event(&opened.session_id, &session, &mut state, background.clone())
+                    .await;
+                acp::Agent::cancel(
+                    &agent,
+                    acp::CancelNotification::new(opened.session_id.clone()),
+                )
+                .await
+                .unwrap();
+                assert!(token.is_cancelled());
+            }
+            let (sender, events) = tokio::sync::mpsc::channel(3);
+            if !parent_cancelled {
+                sender.send(start).await.unwrap();
+                sender.send(background).await.unwrap();
+                sender.send(end()).await.unwrap();
+            }
+            let sender = via_event.then_some(sender);
+            let (release, waiting) = tokio::sync::oneshot::channel::<()>();
+            let worker = tokio::spawn(async move {
+                waiting.await.unwrap();
+                let end = AgentEvent::SubagentEnd {
+                    task_id: "late-child".into(),
+                    session_id: "late-child".into(),
+                    agent: "general".into(),
+                    success: !parent_cancelled,
+                    output: if parent_cancelled {
+                        "cancelled"
+                    } else {
+                        "done"
+                    }
+                    .into(),
+                    finished_ms: 700,
+                };
+                for _ in 0..6 {
+                    tracker
+                        .record_event(&AgentEvent::SubagentProgress {
+                            task_id: "late-child".into(),
+                            session_id: "late-child".into(),
+                            status: "tool_completed".into(),
+                            metadata: serde_json::json!({"tool":"read","exit_code":0}),
+                        })
+                        .await;
+                }
+                tracker
+                    .record_event(&AgentEvent::SubagentProgress {
+                        task_id: "late-child".into(),
+                        session_id: "late-child".into(),
+                        status: "turn_completed".into(),
+                        metadata: serde_json::json!({"turn":7,"total_tokens":123}),
+                    })
+                    .await;
+                tracker.record_event(&end).await;
+                if let Some(sender) = sender {
+                    sender
+                        .send(end)
+                        .await
+                        .expect("the terminal receiver survives the prompt");
+                }
+            });
+            let lock = Arc::new(tokio::sync::Mutex::new(()));
+            let responding = async {
+                if parent_cancelled {
+                    agent
+                        .leave_cancelled_turn(
+                            &opened.session_id,
+                            &session,
+                            &mut state,
+                            events,
+                            worker,
+                            lock.lock_owned().await,
+                        )
+                        .await
+                } else {
+                    drop(worker);
+                    agent
+                        .drain_turn(
+                            &opened.session_id,
+                            &session,
+                            aster_core::AgentRunStream {
+                                run: None,
+                                events,
+                                worker: tokio::spawn(async {}),
+                            },
+                            None,
+                            1,
+                            lock.lock_owned().await,
+                            None,
+                        )
+                        .await
+                }
+            };
+            let response = tokio::time::timeout(std::time::Duration::from_secs(1), responding)
+                .await
+                .expect("Stop returns before child cleanup")
+                .unwrap();
+            assert_eq!(
+                response.stop_reason,
+                if parent_cancelled {
+                    acp::StopReason::Cancelled
+                } else {
+                    acp::StopReason::EndTurn
+                }
+            );
+            assert!(session
+                .subagent_task("late-child")
+                .await
+                .unwrap()
+                .finished_ms
+                .is_none());
+            release.send(()).unwrap();
+            let mut reader = tokio::io::BufReader::new(client_end);
+            let finished = tokio::time::timeout(std::time::Duration::from_secs(2), async {
+                let mut observed_background = false;
+                loop {
+                    let mut line = String::new();
+                    assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
+                    let message: serde_json::Value = serde_json::from_str(&line).unwrap();
+                    let update = &message["params"]["update"];
+                    if update["sessionUpdate"] == "subagent_progress"
+                        && message["params"]["_meta"]["subagentBackground"] == true
+                    {
+                        observed_background = true;
+                    }
+                    if update["sessionUpdate"] == "subagent_finished" {
+                        assert!(
+                            observed_background,
+                            "actual ACP wire must carry the typed background flag"
+                        );
+                        break update.clone();
+                    }
+                }
+            })
+            .await
+            .expect("late terminal reaches the actual ACP connection");
+            assert_eq!(finished["subagent_id"], "late-child");
+            assert_eq!(
+                finished["status"],
+                if parent_cancelled {
+                    "stopped"
+                } else {
+                    "completed"
+                }
+            );
+            assert_eq!(finished["completedAt"], 700);
+            assert_eq!(finished["duration_ms"], 600);
+            assert_eq!(finished["tool_calls"], 6);
+            assert_eq!(finished["turns"], 7);
+            assert_eq!(finished["tokens_used"], 123);
+
+            assert!(finished["error"].is_null());
+            session.close().await;
+            transport.abort();
+        })
+        .await;
 }
 
 async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {

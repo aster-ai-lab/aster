@@ -231,10 +231,7 @@ fn suspend_reset_requires_open_incident_and_real_drift() {
 }
 
 /// Hard-expired OIDC manager (nothing wire-valid) for pace tests; tempdir must outlive it.
-fn expired_manager_for_pace() -> (
-    tempfile::TempDir,
-    std::sync::Arc<aster_login::AuthManager>,
-) {
+fn expired_manager_for_pace() -> (tempfile::TempDir, std::sync::Arc<aster_login::AuthManager>) {
     let dir = tempfile::tempdir().expect("tempdir");
     let am = std::sync::Arc::new(aster_login::AuthManager::new(
         dir.path(),

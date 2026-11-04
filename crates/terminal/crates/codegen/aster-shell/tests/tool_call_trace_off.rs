@@ -80,8 +80,7 @@ async fn disabled_trace_export_stays_silent_while_product_posts() {
         false,
     );
     let output = aster_shell::session::grep_output(-1);
-    let event =
-        aster_shell::session::complete_projected_call(span, INVOCATION, &output, "success");
+    let event = aster_shell::session::complete_projected_call(span, INVOCATION, &output, "success");
     aster_telemetry::session_ctx::log_event_now(event).await;
     aster_telemetry::otel_layer::shutdown_otel();
     traces

@@ -448,7 +448,8 @@ async fn completion_fallback_appends_after_retained_queue() {
     await_with_timeout(local.run_until(async {
         let (actor, _) = await_with_timeout(super::super::support::build_actor()).await;
         let task = super::super::support::running_task_stub("running");
-        let binding = aster_message_delivery_core::TurnBinding::new("running".to_owned(), task.epoch);
+        let binding =
+            aster_message_delivery_core::TurnBinding::new("running".to_owned(), task.epoch);
         {
             let mut state = await_with_timeout(actor.state.lock()).await;
             state
@@ -659,8 +660,9 @@ async fn unresolved_persistence_barrier_does_not_block_hard_teardown() {
             .expect("barrier was enqueued");
 
         await_with_timeout(
-            actor
-                .settle_all_parent_messages(aster_message_delivery_core::TerminalCause::HardTeardown),
+            actor.settle_all_parent_messages(
+                aster_message_delivery_core::TerminalCause::HardTeardown,
+            ),
         )
         .await;
         let state = actor.state.lock().await;
@@ -797,9 +799,8 @@ async fn delivered_message_is_durable_in_updates_and_chat_history_before_shutdow
     let local = tokio::task::LocalSet::new();
     await_with_timeout(local.run_until(async {
         let session_dir = tempfile::tempdir().expect("session dir");
-        let sampling_client =
-            crate::sampling::Client::new(aster_sampler::SamplerConfig::default())
-                .expect("sampling client");
+        let sampling_client = crate::sampling::Client::new(aster_sampler::SamplerConfig::default())
+            .expect("sampling client");
         let info = crate::session::info::Info {
             id: acp::SessionId::new("parent-message-durable"),
             cwd: "/tmp".to_owned(),

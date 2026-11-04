@@ -1156,8 +1156,8 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
     let mut current = root.to_path_buf();
     match fs::symlink_metadata(&current).await {
         Ok(metadata)
-            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata) && metadata.is_dir() => {
-        }
+            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                && metadata.is_dir() => {}
         Ok(_) => return Err(store_invalid("The Plugin Host state root is invalid.")),
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
         Err(error) => {

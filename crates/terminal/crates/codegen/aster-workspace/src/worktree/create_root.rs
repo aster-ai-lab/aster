@@ -4,8 +4,8 @@
 
 use std::path::{Path, PathBuf};
 
-use aster_fast_worktree::{NfsStatusView, NfsWorktreeClient};
 use anyhow::Context;
+use aster_fast_worktree::{NfsStatusView, NfsWorktreeClient};
 
 /// Dest-layout root and optional source identity when libgit2 is skipped.
 #[derive(Debug, Clone)]

@@ -129,7 +129,9 @@ async fn fanout_observer_forwards_committed_events_to_each_observer() {
     assert_eq!(aster_events.len(), stored.len());
     assert_eq!(aster_events.first().unwrap().key, "flow.run.created");
     assert_eq!(aster_events.last().unwrap().key, "flow.run.completed");
-    assert!(aster_events.iter().all(|event| event.run_id == "fanout-run"));
+    assert!(aster_events
+        .iter()
+        .all(|event| event.run_id == "fanout-run"));
 }
 
 #[tokio::test]

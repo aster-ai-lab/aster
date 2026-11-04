@@ -223,7 +223,8 @@ impl BackupDirectoryLock {
                         lock_path.display()
                     ))
                 })?;
-                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                    || !metadata.is_file()
                 {
                     return Err(retention_error(
                         "use.okf.knowledge_backup_retention_directory_invalid",

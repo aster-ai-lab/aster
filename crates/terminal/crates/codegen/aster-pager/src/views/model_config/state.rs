@@ -6,6 +6,7 @@
 use std::collections::HashMap;
 
 use aster_acl::Block;
+use aster_core::config::AccountImport;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::document::{ConfigDraft, ModelDraft, ProviderDraft};
@@ -19,6 +20,7 @@ pub(crate) enum Focus {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum DetailField {
+    ImportAccount(AccountImport),
     ProviderId,
     BaseUrl,
     ApiKey,
@@ -69,14 +71,14 @@ impl ModelConfigState {
         Self::from_draft(ConfigDraft::load_default())
     }
 
-    /// First-run page: show the default provider's key so it can be replaced.
+    /// First-run page: start with account opt-in, keeping API key setup below.
     pub(crate) fn load_for_first_run() -> Self {
         let mut state = Self::load_default();
-        state.focus_setup_key();
+        state.focus_setup();
         state
     }
 
-    fn focus_setup_key(&mut self) {
+    fn focus_setup(&mut self) {
         let provider = self
             .draft
             .default_model
@@ -91,12 +93,10 @@ impl ModelConfigState {
         {
             self.provider_index = index;
         }
-        if self.selected_provider().is_some() {
-            self.focus = Focus::Detail;
-            self.focus_field(DetailField::ApiKey);
-            self.reveal_key = true;
-            self.status = "Replace the API key, then save.".to_string();
-        }
+        self.focus = Focus::Detail;
+        self.focus_field(DetailField::ImportAccount(AccountImport::Codex));
+        self.status =
+            "Space selects signed-in accounts. Or enter an API key, then save.".to_string();
     }
 
     pub(crate) fn from_draft(draft: ConfigDraft) -> Self {
@@ -133,7 +133,11 @@ impl ModelConfigState {
     }
 
     pub(crate) fn detail_fields(&self) -> Vec<DetailField> {
-        let mut fields = Vec::new();
+        let mut fields = vec![
+            DetailField::ImportAccount(AccountImport::Codex),
+            DetailField::ImportAccount(AccountImport::Cursor),
+            DetailField::ImportAccount(AccountImport::Grok),
+        ];
         if let Some(provider) = self.selected_provider() {
             fields.push(DetailField::ProviderId);
             fields.push(DetailField::BaseUrl);
@@ -193,7 +197,7 @@ impl ModelConfigState {
             KeyCode::Enter => self.activate(),
             KeyCode::Char('a') => self.add_current(),
             KeyCode::Char('x') => self.remove_current(),
-            KeyCode::Char(' ') => self.toggle_tools(),
+            KeyCode::Char(' ') => self.toggle_current(),
             KeyCode::Char('s') => self.save(),
             KeyCode::Char('u') => self.reload(),
             KeyCode::Char('[') => self.cycle_default(-1),
@@ -299,6 +303,9 @@ impl ModelConfigState {
         let Some(field) = self.current_field() else {
             return ModelConfigOutcome::Unchanged;
         };
+        if matches!(field, DetailField::ImportAccount(_)) {
+            return self.toggle_current();
+        }
         if matches!(field, DetailField::AddModel) {
             self.add_model();
             return ModelConfigOutcome::Changed;
@@ -421,7 +428,20 @@ impl ModelConfigState {
         ModelConfigOutcome::Changed
     }
 
-    fn toggle_tools(&mut self) -> ModelConfigOutcome {
+    fn toggle_current(&mut self) -> ModelConfigOutcome {
+        if self.focus != Focus::Detail {
+            return ModelConfigOutcome::Unchanged;
+        }
+        if let Some(DetailField::ImportAccount(import)) = self.current_field() {
+            if self.draft.import_accounts.contains(&import) {
+                self.draft.import_accounts.retain(|item| *item != import);
+            } else {
+                self.draft.import_accounts.push(import);
+            }
+            self.status =
+                "Save and restart to import models from the selected accounts.".to_string();
+            return ModelConfigOutcome::Changed;
+        }
         let Some(
             DetailField::ModelSummary(index)
             | DetailField::ModelId(index)
@@ -451,11 +471,11 @@ impl ModelConfigState {
     }
 
     fn save(&mut self) -> ModelConfigOutcome {
-        let path = self.draft.path.clone();
         match self.draft.save() {
             Ok(()) => {
                 self.editing = None;
-                self.status = format!("Saved {}. Restart aster to use it", path.display());
+                self.status =
+                    "Saved. Restart aster, then use /model to choose a model.".to_string();
             }
             Err(error) => self.status = error,
         }
@@ -578,7 +598,9 @@ impl ModelConfigState {
             DetailField::ProviderId => self.commit_provider_id(text),
             DetailField::BaseUrl => self.commit_provider_text(text, false),
             DetailField::ApiKey => self.commit_provider_text(text, true),
-            DetailField::ModelSummary(_) | DetailField::AddModel => {}
+            DetailField::ImportAccount(_)
+            | DetailField::ModelSummary(_)
+            | DetailField::AddModel => {}
             DetailField::ModelId(index) => self.commit_model_id(index, text),
             DetailField::ModelName(index) => self.commit_model_name(index, text),
             DetailField::ModelBaseUrl(index) => self.commit_model_connection(index, text, false),
@@ -814,7 +836,7 @@ impl ModelConfigState {
             self.focus_field(DetailField::AddModel);
             self.status = "This provider has no models yet. Press a to add one.".to_string();
         } else {
-            self.status = "Add a provider first".to_string();
+            self.focus_setup();
         }
     }
 
@@ -829,6 +851,7 @@ impl ModelConfigState {
     pub(crate) fn field_text(&self, field: DetailField) -> Option<String> {
         let provider = self.selected_provider();
         Some(match field {
+            DetailField::ImportAccount(import) => import.as_str().to_string(),
             DetailField::ProviderId => provider?.id.clone(),
             DetailField::BaseUrl => provider?.base_url.clone(),
             DetailField::ApiKey => provider?.api_key.clone(),
@@ -906,6 +929,10 @@ impl ModelConfigState {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "state/account_import_tests.rs"]
+mod account_import_tests;
 
 fn model_index(field: DetailField) -> Option<usize> {
     match field {

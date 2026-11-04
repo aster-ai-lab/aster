@@ -13,11 +13,11 @@ use crate::session::goal_planner::{
 };
 use crate::session::goal_role_tools::RoleToolNames;
 use aster_session_events::EventWriter;
+use aster_tool_types::SubagentCapabilityMode;
 use aster_tools::implementations::grok_build::task::backend::ChannelBackend;
 use aster_tools::implementations::grok_build::task::types::{
     SubagentOwner, SubagentRequest, SubagentRuntimeOverrides,
 };
-use aster_tool_types::SubagentCapabilityMode;
 use std::path::Path;
 use std::sync::Arc;
 
@@ -605,10 +605,10 @@ mod tests {
 
     #[tokio::test]
     async fn channel_spawner_request_is_harness_internal_and_read_only() {
+        use aster_tool_types::SubagentCapabilityMode;
         use aster_tools::implementations::grok_build::task::types::{
             SubagentEvent, SubagentResult,
         };
-        use aster_tool_types::SubagentCapabilityMode;
 
         let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
         let spawner = ChannelSpawner {

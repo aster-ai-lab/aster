@@ -126,7 +126,11 @@ impl CrashBeforeChildCreationStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeChildCreationStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -755,7 +759,10 @@ impl FlowRuntime for ChildResolvedBesideOpenTimerRuntime {
         unreachable!("child workflow tests do not execute steps")
     }
 
-    async fn run_update(&self, _invocation: aster_flow::UpdateInvocation) -> aster_flow::Result<Value> {
+    async fn run_update(
+        &self,
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -828,7 +835,11 @@ impl CrashAfterChildWorkflowResolvedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterChildWorkflowResolvedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

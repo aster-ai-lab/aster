@@ -483,7 +483,8 @@ impl OpenIdConnectAuthArgs {
             .iter()
             .map(|scope| quote!(#scope.to_string()))
             .collect::<Vec<_>>();
-        let mut security_scheme = quote!(::aster_boot::OpenApiSecurityScheme::open_id_connect(#url));
+        let mut security_scheme =
+            quote!(::aster_boot::OpenApiSecurityScheme::open_id_connect(#url));
 
         if let Some(description) = &self.description {
             security_scheme = quote!((#security_scheme).with_description(#description));

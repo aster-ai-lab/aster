@@ -188,7 +188,11 @@ fn bundled_git_prepend_respects_the_policy_base_env() {
     };
     let mut cmd = tokio::process::Command::new("true");
     install_policy_base_env(&mut cmd, Some(&inherit_none));
-    aster_tty_utils::prepend_child_path(cmd.as_std_mut(), dir, aster_tty_utils::PathBase::ExplicitOnly);
+    aster_tty_utils::prepend_child_path(
+        cmd.as_std_mut(),
+        dir,
+        aster_tty_utils::PathBase::ExplicitOnly,
+    );
     assert_eq!(child_path(&cmd), None, "inherit=none must not grow a PATH");
 
     let mut set = HashMap::new();
@@ -200,7 +204,11 @@ fn bundled_git_prepend_respects_the_policy_base_env() {
     };
     let mut cmd = tokio::process::Command::new("true");
     install_policy_base_env(&mut cmd, Some(&with_path));
-    aster_tty_utils::prepend_child_path(cmd.as_std_mut(), dir, aster_tty_utils::PathBase::ExplicitOnly);
+    aster_tty_utils::prepend_child_path(
+        cmd.as_std_mut(),
+        dir,
+        aster_tty_utils::PathBase::ExplicitOnly,
+    );
     assert_eq!(
         child_path(&cmd).flatten().unwrap(),
         OsStr::new(&format!("/mingit/cmd{sep}/policy/bin"))

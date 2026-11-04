@@ -109,7 +109,11 @@ impl CrashBeforeParentResolutionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeParentResolutionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

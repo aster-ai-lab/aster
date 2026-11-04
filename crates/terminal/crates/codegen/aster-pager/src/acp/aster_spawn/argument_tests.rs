@@ -34,5 +34,9 @@ fn both_stdio_entry_points_forward_the_same_model_effort_workspace_and_acl() {
     config.reasoning_effort_override = None;
     config.models.default_reasoning_effort =
         Some(aster_shell::sampling::types::ReasoningEffort::Low);
-    assert_eq!(super::sidecar_arguments(&config, cwd, None, None)[1], "low");
+    let inherited = super::sidecar_arguments(&config, cwd, None, None);
+    assert_eq!(
+        inherited,
+        ["--cwd", "workspace with spaces"].map(OsString::from)
+    );
 }

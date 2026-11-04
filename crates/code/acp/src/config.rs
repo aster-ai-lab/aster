@@ -331,7 +331,7 @@ fn admit_workspace_layer(
 }
 
 const FIRST_RUN_ACL: &str = "\
-# 首次启动生成。把 api_key 换成你的密钥，然后保存。
+# 首次启动生成。可在 Models 弹窗勾选已登录的 Codex、Cursor、Grok 账号，或填写 api_key 后保存。
 # 默认模型是 deepseek/deepseek-flash。只用智谱时，把 default_model 改成 zhipu/glm-5.3。
 # 智谱编码套餐把 base_url 改成 https://open.bigmodel.cn/api/coding/paas/v4
 default_model = \"deepseek/deepseek-flash\"

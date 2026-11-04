@@ -1,0 +1,322 @@
+[
+  {
+    "name": "current-core-default",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 167.634509583,
+    "results": [
+      "test result: ok. 202 passed; 0 failed; 0 ignored; 0 measured; 5724 filtered out; finished in 7.78s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-core-minimal",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--no-default-features",
+      "--features",
+      "minimal",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 122.16808125,
+    "results": [
+      "test result: ok. 202 passed; 0 failed; 0 ignored; 0 measured; 5565 filtered out; finished in 7.59s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-core-cli-json",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--features",
+      "serde_json/preserve_order",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 10.337136625000028,
+    "results": [
+      "test result: ok. 202 passed; 0 failed; 0 ignored; 0 measured; 5724 filtered out; finished in 8.80s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-core-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--all-targets",
+      "--no-deps",
+      "--features",
+      "serde_json/preserve_order"
+    ],
+    "exitCode": 0,
+    "seconds": 83.80405991699996,
+    "results": [],
+    "failureTail": []
+  },
+  {
+    "name": "current-format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 26.030864208000025,
+    "results": [],
+    "failureTail": []
+  },
+  {
+    "name": "current-workspace",
+    "command": [
+      "cargo",
+      "check",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "--workspace",
+      "--all-targets"
+    ],
+    "exitCode": 0,
+    "seconds": 78.02465149999995,
+    "results": [],
+    "failureTail": []
+  },
+  {
+    "name": "current-diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.8955024170000456,
+    "results": [],
+    "failureTail": []
+  },
+  {
+    "name": "current-paired-build",
+    "command": [
+      "python3",
+      "docs/evidence/code/2026-11-02-summary-input-retention/build.py",
+      "retained-budget-20261104-root-12a-current-config-1",
+      "docs/evidence/code/2026-11-02-summary-input-retention/retained-budget-20261104-root-12a-current-config-1-qualification-preregistration.json"
+    ],
+    "exitCode": 0,
+    "seconds": 240.78435941699996,
+    "results": [],
+    "failureTail": []
+  },
+  {
+    "name": "current-acp-full",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/aster-acp-unit",
+      "--test-threads=1"
+    ],
+    "exitCode": 101,
+    "seconds": 113.80020687499996,
+    "results": [
+      "test result: FAILED. 505 passed; 1 failed; 10 ignored; 0 measured; 0 filtered out; finished in 110.71s"
+    ],
+    "failureTail": [
+      "test wiki_search::tests::workspace_search_wiki_uses_only_the_current_owned_publication ... ok",
+      "test workspace_browser::tests::a_missing_local_file_is_rejected_before_the_host_is_called ... ok",
+      "test workspace_browser::tests::admits_http_https_and_file_urls_like_the_studio_pane ... ok",
+      "test workspace_browser::tests::an_existing_local_file_passes_the_existence_check ... ok",
+      "test workspace_browser::tests::rejects_blank_credentialed_and_script_urls ... ok",
+      "test workspace_browser::tests::tool_name_is_stable_for_host_admission ... ok",
+      "",
+      "failures:",
+      "",
+      "---- plugin_selection::tests::cancelled_native_harness_run_stops_descendants_before_releasing_retired_bytes stdout ----",
+      "",
+      "thread 'plugin_selection::tests::cancelled_native_harness_run_stops_descendants_before_releasing_retired_bytes' (89004651) panicked at crates/code/acp/src/plugin_selection_tests.rs:76:6:",
+      "native executable was not reached by the actual Harness Run: Elapsed(())",
+      "",
+      "",
+      "failures:",
+      "    plugin_selection::tests::cancelled_native_harness_run_stops_descendants_before_releasing_retired_bytes",
+      "",
+      "test result: FAILED. 505 passed; 1 failed; 10 ignored; 0 measured; 0 filtered out; finished in 110.71s",
+      ""
+    ]
+  },
+  {
+    "name": "current-cursor-tui",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/cursor_account_tui_e2e",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exitCode": 0,
+    "seconds": 6.690624875000026,
+    "results": [
+      "test result: ok. 4 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 4.67s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-holdout-selfcheck",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/deloop_generalization_real_llm",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 0.9852288749999616,
+    "results": [
+      "test result: ok. 50 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.24s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-feed-selfcheck",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/deloop_real_llm",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 1.0962107080000578,
+    "results": [
+      "test result: ok. 50 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.29s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-wire",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/acp_conformance_stdio",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exitCode": 0,
+    "seconds": 41.36214479199998,
+    "results": [
+      "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 40.92s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-shipped-wire",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/shipped_tui_e2e",
+      "shipped_agent_session_wire",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 11.193952041999978,
+    "results": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 7.96s"
+    ],
+    "failureTail": []
+  },
+  {
+    "name": "current-shipped-pty",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/shipped_tui_e2e",
+      "shipped_tui_launch_resume_and_visible_commands",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 84.25706408300005,
+    "results": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 84.25s"
+    ],
+    "failureTail": []
+  }
+]

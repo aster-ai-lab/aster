@@ -211,7 +211,7 @@ impl Tool for ParallelTaskTool {
         let agents = self.executor.visible_agents();
         ToolDefinition {
             name: self.name().to_string(),
-            description: delegation_tool_description(self.description(), &agents),
+            description: self.description().to_string(),
             parameters: parallel_params::parallel_task_params_schema_for_agents(&agents),
         }
     }

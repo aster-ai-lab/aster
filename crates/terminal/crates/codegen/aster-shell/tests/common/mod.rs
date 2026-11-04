@@ -308,9 +308,7 @@ pub fn block_on<F: std::future::Future>(fut: F) -> F::Output {
 }
 
 #[allow(dead_code)]
-pub async fn start_seeded_mock(
-    home: &std::path::Path,
-) -> aster_test_support::MockInferenceServer {
+pub async fn start_seeded_mock(home: &std::path::Path) -> aster_test_support::MockInferenceServer {
     let server = aster_test_support::MockInferenceServer::start()
         .await
         .expect("start mock server");

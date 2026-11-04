@@ -1,4 +1,6 @@
-use aster_form_core::{evaluate_bytes, EVALUATE_REQUEST_API_VERSION, EVALUATE_RESPONSE_API_VERSION};
+use aster_form_core::{
+    evaluate_bytes, EVALUATE_REQUEST_API_VERSION, EVALUATE_RESPONSE_API_VERSION,
+};
 
 fn request(api_version: &str) -> Vec<u8> {
     format!(

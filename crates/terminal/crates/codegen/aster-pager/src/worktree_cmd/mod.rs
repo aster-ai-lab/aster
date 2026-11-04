@@ -1,11 +1,11 @@
 mod display;
+use agent_client_protocol as acp;
+use anyhow::{Result, bail};
 use aster_acp_lib::acp_send;
-use aster_shell::agent::config::Config as AgentConfig;
 use aster_fast_worktree::WorktreeRecord;
 /// Reuse the agent's own report types rather than copies, so a field added there cannot go missing here.
 pub use aster_fast_worktree::{DbStats, GcReport, KeptWorktree, RebuildReport};
-use agent_client_protocol as acp;
-use anyhow::{Result, bail};
+use aster_shell::agent::config::Config as AgentConfig;
 use clap::Subcommand;
 use std::io::Write;
 use tokio_util::sync::CancellationToken;

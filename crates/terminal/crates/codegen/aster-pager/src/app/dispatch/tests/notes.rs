@@ -2247,10 +2247,7 @@ fn terminal_feedback_outcomes_take_parked_consent_and_upload_only_remote_success
             true,
         ),
         (aster_shell::session::FeedbackOutcome::LocalOnly, false),
-        (
-            aster_shell::session::FeedbackOutcome::OutcomeUnknown,
-            false,
-        ),
+        (aster_shell::session::FeedbackOutcome::OutcomeUnknown, false),
     ] {
         let mut app = test_app_with_agent();
         let origin = park_send_this_session(&mut app, "terminal outcome");

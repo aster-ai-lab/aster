@@ -2592,7 +2592,8 @@ mod tests {
 
         let tool = GrepTool;
         let mut stream =
-            aster_tool_runtime::Tool::execute(&tool, test_ctx(resources.into_shared()), input).await;
+            aster_tool_runtime::Tool::execute(&tool, test_ctx(resources.into_shared()), input)
+                .await;
 
         let mut deltas = String::new();
         let mut terminal: Option<Result<GrepSearchOutput, aster_tool_runtime::ToolError>> = None;

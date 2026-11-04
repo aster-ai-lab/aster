@@ -337,7 +337,8 @@ async fn notify_session_title_unpinned(agent: &MvpAgent, session_id: acp::Sessio
         meta: Some(title_is_unpinned_meta()),
     };
     if let Ok(params) = serde_json::value::to_raw_value(&notification) {
-        let ext_notification = acp::ExtNotification::new("aster/session_notification", params.into());
+        let ext_notification =
+            acp::ExtNotification::new("aster/session_notification", params.into());
         let _ = agent.gateway.ext_notification(ext_notification).await;
     }
 
@@ -358,7 +359,8 @@ async fn notify_session_title(agent: &MvpAgent, session_id: acp::SessionId, titl
         crate::session::summary::SessionTitleNotificationKind::Manual,
     );
     if let Ok(params) = serde_json::value::to_raw_value(&notification) {
-        let ext_notification = acp::ExtNotification::new("aster/session_notification", params.into());
+        let ext_notification =
+            acp::ExtNotification::new("aster/session_notification", params.into());
         let _ = agent.gateway.ext_notification(ext_notification).await;
     }
 

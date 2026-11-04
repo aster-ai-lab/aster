@@ -16,6 +16,7 @@ const JSON_VERSION: u16 = 4;
 const MIN_READABLE_VERSION: u16 = 3;
 const HEADER_LEN: usize = 4 + 2 + 4 + 4;
 const MAX_WAL_FRAME_BYTES: usize = 64 * 1024 * 1024;
+pub(super) const MAX_ENCODED_FRAME_BYTES: u64 = (MAX_WAL_FRAME_BYTES + HEADER_LEN) as u64;
 
 #[cfg(test)]
 pub(crate) use crate::storage_ceilings::DEFAULT_WAL_REPLAY_BYTES as MAX_WAL_REPLAY_BYTES;
@@ -87,6 +88,7 @@ pub fn append(
         sequence,
         committed_bytes,
         record,
+        MAX_WAL_REPLAY_BYTES,
         sync,
         &FaultInjector::default(),
     )
@@ -97,11 +99,10 @@ pub(super) fn append_with_faults(
     sequence: u64,
     committed_bytes: u64,
     record: &WalRecord,
+    max_replay_bytes: u64,
     sync: bool,
     faults: &FaultInjector,
 ) -> Result<u64> {
-    fs::create_dir_all(root.join("wal"))
-        .map_err(|e| Error::internal(format!("create WAL directory: {e}")))?;
     let payload = encode_record(record)?;
     if payload.len() > MAX_WAL_FRAME_BYTES {
         return Err(Error::resource_exhausted(format!(
@@ -110,6 +111,16 @@ pub(super) fn append_with_faults(
     }
     let payload_len = u32::try_from(payload.len())
         .map_err(|_| Error::resource_exhausted("WAL record exceeds 4 GiB"))?;
+    let frame_bytes = u64::try_from(HEADER_LEN + payload.len())
+        .map_err(|_| Error::resource_exhausted("WAL frame size exceeds this platform"))?;
+    let next_bytes = committed_bytes
+        .checked_add(frame_bytes)
+        .ok_or_else(|| Error::resource_exhausted("WAL replay byte count overflows u64"))?;
+    if next_bytes > max_replay_bytes {
+        return Err(Error::resource_exhausted(format!(
+            "WAL append would require {next_bytes} bytes, exceeding the {max_replay_bytes}-byte recovery limit"
+        )));
+    }
     let checksum = crc32fast::hash(&payload);
     let mut header = [0_u8; HEADER_LEN];
     header[..4].copy_from_slice(MAGIC);
@@ -117,6 +128,8 @@ pub(super) fn append_with_faults(
     header[6..10].copy_from_slice(&payload_len.to_le_bytes());
     header[10..14].copy_from_slice(&checksum.to_le_bytes());
 
+    fs::create_dir_all(root.join("wal"))
+        .map_err(|e| Error::internal(format!("create WAL directory: {e}")))?;
     let mut file = OpenOptions::new()
         .create(true)
         .truncate(false)
@@ -151,8 +164,7 @@ pub(super) fn append_with_faults(
             .map_err(|e| Error::internal(format!("sync WAL segment: {e}")))?;
         faults.hit(FaultPoint::WalSynced)?;
     }
-    u64::try_from(HEADER_LEN + payload.len())
-        .map_err(|_| Error::resource_exhausted("WAL frame size exceeds this platform"))
+    Ok(frame_bytes)
 }
 
 /// Replays committed records in the inclusive sequence range. Bytes beyond

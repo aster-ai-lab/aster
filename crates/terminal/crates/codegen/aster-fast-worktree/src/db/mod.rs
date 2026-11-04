@@ -8,8 +8,8 @@ mod schema;
 
 use std::path::{Path, PathBuf};
 
-use aster_sqlite_journal::{BUSY_RETRY_BUDGET, JournalMode};
 use anyhow::{Context, Result};
+use aster_sqlite_journal::{BUSY_RETRY_BUDGET, JournalMode};
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 

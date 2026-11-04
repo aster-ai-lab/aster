@@ -25,6 +25,9 @@ pub(crate) use derived_file::{PositionedFile, RandomAccessReader};
 pub(crate) use fault::StallGate;
 pub use wal::WalOperation;
 
+// Bound snapshot replay and ancestor pruning while preserving per-write durability.
+const FULL_SNAPSHOT_INTERVAL: u64 = 32;
+
 /// Open storage state. The lock is held for the lifetime of the collection.
 #[derive(Debug)]
 pub(crate) struct StorageHandle {
@@ -170,6 +173,7 @@ impl StorageHandle {
             self.manifest.wal_active_seq,
             self.manifest.wal_bytes_since_checkpoint,
             &record,
+            self.ceilings.max_wal_replay_bytes(),
             sync,
             &self.faults,
         )?;
@@ -289,7 +293,10 @@ impl StorageHandle {
             {
                 return Ok(None);
             }
-            if !previous_docs.is_empty() && previous_schema.digest() == schema.digest() {
+            if generation % FULL_SNAPSHOT_INTERVAL != 0
+                && !previous_docs.is_empty()
+                && previous_schema.digest() == schema.digest()
+            {
                 return Ok(Some(snapshot::write_delta_with_faults(
                     &self.root,
                     schema,
@@ -318,12 +325,20 @@ impl StorageHandle {
     }
 
     pub fn should_checkpoint(&self, config: &ConfigBuilder) -> bool {
+        // Leave room for one admitted frame even if its checkpoint later fails.
+        // shortcut: small replay ceilings checkpoint each write; preflight frames if batching is needed.
+        let replay_trigger = self
+            .ceilings
+            .max_wal_replay_bytes()
+            .saturating_sub(wal::MAX_ENCODED_FRAME_BYTES)
+            .max(1);
         config
             .wal_max_ops
             .is_some_and(|v| self.manifest.wal_ops_since_checkpoint >= v)
             || config
                 .wal_max_bytes
                 .is_some_and(|v| self.manifest.wal_bytes_since_checkpoint >= v)
+            || self.manifest.wal_bytes_since_checkpoint >= replay_trigger
     }
 
     pub(crate) fn read_index_cache(&self) -> Result<Option<Vec<u8>>> {
@@ -491,9 +506,13 @@ fn apply_operation(
 }
 
 #[cfg(test)]
+mod checkpoint_chain_tests;
+#[cfg(test)]
 mod fault_tests;
 #[cfg(test)]
 mod recovery_fuzz_tests;
+#[cfg(test)]
+mod replay_admission_tests;
 #[cfg(test)]
 mod test_support;
 #[cfg(test)]

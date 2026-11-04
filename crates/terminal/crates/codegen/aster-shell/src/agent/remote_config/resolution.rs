@@ -4,8 +4,8 @@ use globset::{Glob, GlobSet, GlobSetBuilder};
 use indexmap::IndexMap;
 
 use crate::agent::config::{self, ModelEntry};
-use aster_sampling_types::ReasoningEffort;
 use agent_client_protocol as acp;
+use aster_sampling_types::ReasoningEffort;
 
 /// Map a model id (catalog key or routing slug) to its catalog key.
 pub(crate) fn resolve_catalog_key(

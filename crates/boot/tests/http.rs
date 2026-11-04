@@ -77,11 +77,13 @@ fn built_in_request_value_pipes_parse_and_default_values() {
         .unwrap(),
         TestCatKind::Tabby
     );
-    assert!(aster_boot::transform_request_value::<String, TestCatKind, _>(
-        "calico".to_string(),
-        ParseEnumPipe,
-    )
-    .is_err());
+    assert!(
+        aster_boot::transform_request_value::<String, TestCatKind, _>(
+            "calico".to_string(),
+            ParseEnumPipe,
+        )
+        .is_err()
+    );
     assert_eq!(
         aster_boot::transform_request_value::<String, String, _>(
             " 550e8400-e29b-41d4-a716-446655440000 ".to_string(),

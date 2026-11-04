@@ -3,6 +3,20 @@ use std::collections::VecDeque;
 
 struct RepeatedCalls(std::sync::Mutex<VecDeque<aster_effect::ModelDecision>>);
 
+#[derive(Debug)]
+struct DenyingInputHook(PathBuf);
+
+#[async_trait::async_trait]
+impl crate::hooks::HookExecutor for DenyingInputHook {
+    async fn fire(&self, event: &crate::hooks::HookEvent) -> crate::hooks::HookResult {
+        if matches!(event, crate::hooks::HookEvent::PreToolUse(_)) {
+            std::fs::write(&self.0, b"original hook effect").unwrap();
+            return crate::hooks::HookResult::block("controlled input-hook refusal");
+        }
+        crate::hooks::HookResult::Continue(None)
+    }
+}
+
 impl aster_effect::Completion for RepeatedCalls {
     fn complete(
         &self,
@@ -116,11 +130,70 @@ async fn scheduler_refusal_keeps_the_original_denying_authority() {
         .unwrap();
     let result = execute_prepared(tools, prepared).await;
     assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
-    assert!(result
-        .output
-        .as_str()
-        .unwrap()
-        .contains("tool_effect_effective_arguments_unapproved"));
+    assert!(result.output.as_str().unwrap().contains("policy_denied"));
     assert_eq!(executions.load(Ordering::SeqCst), 0);
     assert_eq!(hooks.load(Ordering::SeqCst), 0);
+}
+
+#[tokio::test]
+async fn scheduled_hook_refusal_preserves_the_canary_and_blocks_completion_evidence() {
+    let root = tempfile::tempdir().unwrap();
+    let (base, executions) = executor_tools(root.path());
+    let canary = root.path().join("hook-effect.txt");
+    let mut tools = base.as_ref().clone();
+    tools.agent = Some(crate::agent::AgentLoop::new(
+        Arc::new(crate::agent::tests::MockLlmClient::new(Vec::new())),
+        Arc::clone(&tools.executor),
+        tools.context.clone(),
+        crate::agent::AgentConfig {
+            hook_engine: Some(Arc::new(DenyingInputHook(canary.clone()))),
+            ..Default::default()
+        },
+    ));
+    let services = Arc::new(CodingServices {
+        completion: Arc::new(RepeatedCalls(std::sync::Mutex::new(VecDeque::from([
+            aster_effect::ModelDecision::Tool {
+                call: request("hook-refused", json!({"write":true})).call,
+                also: vec![],
+            },
+            aster_effect::ModelDecision::Text {
+                text: "model narrative".into(),
+            },
+        ])))),
+        tools: Arc::new(tools),
+        compactor: Arc::new(NoCompaction),
+    });
+    let settled = aster_effect::ingest_coding(
+        &aster_effect::coding_actor(
+            aster_effect::HarnessConfig::new(16, usize::MAX, 64, 1, vec![], vec![])
+                .unwrap()
+                .with_duplicate_threshold(3),
+        ),
+        &aster_effect::MemoryLog::new(),
+        services,
+        "hook-refusal",
+        aster_effect::message_fact("start", "Perform the admitted action."),
+        64,
+    )
+    .await
+    .unwrap();
+    assert!(settled.view.schema_error.is_none());
+    assert_eq!(std::fs::read(canary).unwrap(), b"original hook effect");
+    assert_eq!(executions.load(Ordering::SeqCst), 0);
+    let result: ToolExecutionResultV1 = serde_json::from_value(
+        settled
+            .log
+            .iter()
+            .find(|fact| fact.kind == "tool.result")
+            .unwrap()
+            .payload["receipt"]
+            .clone(),
+    )
+    .unwrap();
+    assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
+    assert_eq!(
+        result.effects.completeness,
+        ToolObservationCompleteness::Incomplete
+    );
+    assert!(!fold_cache_evidence(&settled.log).unresolved.is_empty());
 }

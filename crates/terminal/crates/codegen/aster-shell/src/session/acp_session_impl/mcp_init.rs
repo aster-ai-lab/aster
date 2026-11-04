@@ -395,14 +395,12 @@ impl InitPass {
             ) >= 1,
             "McpServerConnected must stamp a self-inclusive count"
         );
-        aster_telemetry::session_ctx::log_event(
-            aster_telemetry::events::McpServerConnected {
-                server_name: server.clone(),
-                tool_count,
-                transport: transport_kind,
-                duration_ms: elapsed.as_millis() as u64,
-            },
-        );
+        aster_telemetry::session_ctx::log_event(aster_telemetry::events::McpServerConnected {
+            server_name: server.clone(),
+            tool_count,
+            transport: transport_kind,
+            duration_ms: elapsed.as_millis() as u64,
+        });
         self.events
             .emit(aster_session_events::Event::McpServerConnected {
                 server_name: server.clone(),

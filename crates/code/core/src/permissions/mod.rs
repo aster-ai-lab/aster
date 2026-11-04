@@ -78,6 +78,15 @@ pub trait PermissionChecker: Send + Sync {
 
     /// Check whether a tool invocation is allowed, denied, or requires confirmation.
     fn check(&self, tool_name: &str, args: &serde_json::Value) -> PermissionDecision;
+
+    /// Stable denial code when [`Self::check`] returns [`PermissionDecision::Deny`].
+    ///
+    /// Callers surface this in refusal diagnostics. The default keeps the
+    /// generic host-checker label so existing checkers stay source-compatible.
+    fn denial_code(&self, tool_name: &str, args: &serde_json::Value) -> Option<&'static str> {
+        let _ = (tool_name, args);
+        None
+    }
 }
 
 /// Permission decision result

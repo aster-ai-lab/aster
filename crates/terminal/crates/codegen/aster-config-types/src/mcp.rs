@@ -1,7 +1,7 @@
 //! MCP server configuration value types, extracted from aster-shell so crates the shell depends on can use them.
 
-use aster_mcp::oauth_config::McpOAuthConfig;
 use agent_client_protocol as acp;
+use aster_mcp::oauth_config::McpOAuthConfig;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

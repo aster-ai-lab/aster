@@ -1,6 +1,7 @@
 //! The stage is a data-carrying enum: [`ElicitationStage::Form`] and [`ElicitationStage::UrlConsent`] own the pending ACP responder.
 //! [`ElicitationStage::UrlWaiting`] exists only after the response was sent, so the stage itself encodes whether the card still owes a response.
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpResult;
 use aster_tools::mcp_elicitation::{
     ElicitFieldKind, ElicitFieldSpec, ElicitFieldValue, MAX_ELICIT_DESC_CHARS,
@@ -8,7 +9,6 @@ use aster_tools::mcp_elicitation::{
     MAX_ELICIT_TITLE_CHARS, MAX_ELICIT_URL_CHARS, McpElicitExtRequest, McpElicitExtResponse,
     McpElicitModeFields, parse_form_schema, take_chars, validate_form,
 };
-use agent_client_protocol as acp;
 
 use crate::views::prompt_widget::StashedPrompt;
 

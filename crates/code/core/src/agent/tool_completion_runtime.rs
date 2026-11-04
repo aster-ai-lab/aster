@@ -4,6 +4,7 @@ use super::AgentEvent;
 #[cfg(test)]
 use super::AgentLoop;
 use crate::llm::ToolCall;
+use crate::verification::VerificationReport;
 use std::time::Instant;
 use tokio::sync::mpsc;
 
@@ -374,11 +375,6 @@ impl crate::agent::TurnEngine {
         normalized: &NormalizedToolResult,
         allow_synthesis: bool,
     ) {
-        if normalized.exit_code != 0 || state.mutations.is_empty() {
-            return;
-        }
-        let mutation_paths: Vec<String> = state.mutations.paths().map(str::to_string).collect();
-        let digest = state.mutations.digest().to_string();
         let shell_command = normalized
             .metadata
             .as_ref()
@@ -398,6 +394,37 @@ impl crate::agent::TurnEngine {
         let Some(command) = shell_command else {
             return;
         };
+        if state.mutations.is_empty() {
+            if allow_synthesis && tool_call.name.eq_ignore_ascii_case("bash") {
+                if let Some(contract) = self.config.verification_contracts.iter().find(|contract| {
+                    contract.validate().is_ok() && command.trim() == contract.command.trim()
+                }) {
+                    // An executed read-only suite is evidence, never a binding for later writes.
+                    state.verification_reports.push(VerificationReport::new(
+                        format!("shell:contract:{}", contract.id),
+                        vec![crate::verification::VerificationCheck::required(
+                            format!("contract_verify:{}", contract.id),
+                            "contract_verify",
+                            format!(
+                                "Host contract `{}` ran with exit {} without workspace mutations",
+                                contract.command, normalized.exit_code
+                            ),
+                        )
+                        .with_status(if normalized.exit_code == 0 {
+                            crate::verification::VerificationStatus::Passed
+                        } else {
+                            crate::verification::VerificationStatus::Failed
+                        })],
+                    ));
+                }
+            }
+            return;
+        }
+        if normalized.exit_code != 0 {
+            return;
+        }
+        let mutation_paths: Vec<String> = state.mutations.paths().map(str::to_string).collect();
+        let digest = state.mutations.digest().to_string();
         if allow_synthesis
             && tool_call.name.eq_ignore_ascii_case("bash")
             && self.config.verification_contracts.is_empty()

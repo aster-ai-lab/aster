@@ -76,7 +76,10 @@ impl Module for CookieFeatureModule {
         "cookie-feature"
     }
 
-    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(
+        &self,
+        _module_ref: &aster_boot::ModuleRef,
+    ) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(CookieController).controller()?])
     }
 }

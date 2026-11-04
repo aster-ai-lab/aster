@@ -13,7 +13,10 @@ pub fn service_spec(unit_id: &str) -> RuntimeUnitSpec {
         generation: 1,
         class: RuntimeUnitClass::Service,
         artifact: ArtifactRef {
-            uri: format!("oci://registry.example/aster/fault@sha256:{}", "a".repeat(64)),
+            uri: format!(
+                "oci://registry.example/aster/fault@sha256:{}",
+                "a".repeat(64)
+            ),
             digest: format!("sha256:{}", "a".repeat(64)),
             media_type: IMAGE_MEDIA_TYPE.into(),
         },

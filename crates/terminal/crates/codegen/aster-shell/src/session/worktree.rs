@@ -3,10 +3,10 @@
 //! Those functions depend on shell-specific infrastructure (persistence, auth, registry client, storage client, session restore).
 use crate::session::worktree_cleanup::cleanup_worktree_on_failure;
 use crate::util::config::WorktreeType as ShellWorktreeType;
+use anyhow::{Context, Result};
 use aster_telemetry::region;
 use aster_telemetry::region::Parent;
 pub use aster_workspace::worktree::*;
-use anyhow::{Context, Result};
 use std::path::Path;
 const WORKTREE_LOG: &str = "aster_worktree";
 impl From<ShellWorktreeType> for WorktreeType {
@@ -339,9 +339,7 @@ async fn resume_local_session_in_worktree(
                 is_jj,
                 registry_client.is_some(),
             ) {
-                aster_workspace::session::git::warn_registry_disabled_restore(
-                    resolved_session_id,
-                );
+                aster_workspace::session::git::warn_registry_disabled_restore(resolved_session_id);
             }
             let info = crate::session::info::Info {
                 id: agent_client_protocol::SessionId::new(resolved_session_id.to_owned()),

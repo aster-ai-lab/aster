@@ -14,12 +14,9 @@ impl Tool for EditTool {
     }
 
     fn description(&self) -> &str {
-        "Edit a file by replacing exact strings. Pass old_string/new_string for one replacement, \
-         or an `edits` array to change several places in the same file in ONE call: every entry is \
-         validated in memory first and the whole call is atomic, so one call per file costs one \
-         model round trip instead of one per hunk. The old_string must be unique in the file \
-         unless replace_all is true. LF and CRLF match each other, and the file keeps its own line \
-         ending. Mixed or CR-only endings are refused."
+        "Replace exact strings using old_string/new_string or one atomic ordered edits array \
+         per file. Every entry is validated before writing; old_string must be unique unless \
+         replace_all. LF/CRLF match and retain the file's endings; mixed/CR-only endings are refused."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -29,29 +26,27 @@ impl Tool for EditTool {
             "properties": {
                 "file_path": {
                     "type": "string",
-                    "description": "Required. Path to the file to edit. Always provide this exact field name: 'file_path'."
+                    "description": "File path."
                 },
                 "edits": {
                     "type": "array",
                     "minItems": 1,
-                    "description": "Several replacements for this one file, applied in order and atomically. \
-                     Use this instead of one call per hunk when a change touches more than one place. \
-                     Mutually exclusive with old_string/new_string.",
+                    "description": "Ordered atomic same-file replacements; mutually exclusive with old_string/new_string.",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
                             "old_string": {
                                 "type": "string",
-                                "description": "The exact string to replace. It must be unique unless replace_all=true."
+                                "description": "Exact match; unique unless replace_all=true."
                             },
                             "new_string": {
                                 "type": "string",
-                                "description": "The replacement string. Empty deletes the match."
+                                "description": "Replacement; empty deletes the match."
                             },
                             "replace_all": {
                                 "type": "boolean",
-                                "description": "Replace every occurrence of this entry. Default: false."
+                                "description": "Replace every occurrence for this entry; default false."
                             }
                         },
                         "required": ["old_string", "new_string"]
@@ -59,29 +54,29 @@ impl Tool for EditTool {
                 },
                 "old_string": {
                     "type": "string",
-                    "description": "Required for a single replacement (omit when edits is used). The exact string to replace; unique unless replace_all=true."
+                    "description": "Single-edit match; required unless edits is used. Unique unless replace_all=true."
                 },
                 "new_string": {
                     "type": "string",
-                    "description": "Required for a single replacement (omit when edits is used). The replacement string."
+                    "description": "Single-edit replacement; required unless edits is used."
                 },
                 "replace_all": {
                     "type": "boolean",
-                    "description": "Optional. Replace all occurrences. Default: false."
+                    "description": "Replace every occurrence; default false."
                 },
                 "dry_run": {
                     "type": "boolean",
-                    "description": "Optional. Preview the exact diff and replacement count without writing. Default: false."
+                    "description": "Preview exact diff/count without writing; default false."
                 },
                 "max_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Optional safety ceiling for the whole call. Reject the edit before writing when it would replace more occurrences."
+                    "description": "Reject before writing if the whole-call replacement count exceeds this ceiling."
                 },
                 "expected_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Optional compare guard for the whole call. Reject the edit before writing unless the observed replacement count is exactly this value."
+                    "description": "Reject before writing unless the whole-call replacement count equals this value."
                 }
             },
             "required": ["file_path"],
@@ -187,7 +182,7 @@ impl Tool for EditTool {
                             "{label}old_string found {count} times in {display_path}. Use replace_all=true to replace all occurrences, or provide a more specific string."
                         ),
                         crate::text::LineEndingEditError::Unsafe => format!(
-                            "{label}Refusing to edit {display_path}: the file or the replacement mixes LF and CRLF, or a match would split a CRLF pair. Normalize the file to one line ending and retry."
+                            "{label}Refusing to edit {display_path}: the file or the replacement mixes LF and CRLF, uses CR-only endings, or a match would split a CRLF pair. Normalize the file to one line ending and retry."
                         ),
                     };
                     return Ok(ToolOutput::error(message));

@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use super::*;
 
+mod recover_public;
 mod source_carry;
 mod source_guard;
 
@@ -30,7 +31,12 @@ impl crate::llm::LlmClient for RecordingCompactClient {
         self.prompts.lock().expect("prompts").push(rendered);
         Ok(LlmResponse {
             message: Message::assistant(&self.summary),
-            usage: TokenUsage::default(),
+            usage: TokenUsage {
+                prompt_tokens: 17,
+                completion_tokens: 3,
+                total_tokens: 20,
+                ..Default::default()
+            },
             stop_reason: None,
             token_logprobs: Vec::new(),
             meta: None,
@@ -114,11 +120,16 @@ async fn compact_conversation_writes_a_summary_fact() {
     finish_stream(&session, "remember the auth bug in login.rs").await;
     finish_stream(&session, "the fix belongs in the session middleware").await;
     let before = client.prompts.lock().expect("prompts").len();
+    let usage_before = session.recorded_usage_tokens();
 
     session
         .compact_conversation(Some("auth"))
         .await
         .expect("compact");
+    assert_eq!(
+        session.recorded_usage_tokens(),
+        (usage_before.0 + 17, usage_before.1 + 3, usage_before.2 + 20)
+    );
 
     let prompts = client.prompts.lock().expect("prompts");
     let focus_prompt = prompts.get(before).expect("compaction called the model");

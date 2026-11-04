@@ -597,7 +597,21 @@ pub(crate) fn insert_child(
 }
 
 pub(crate) fn escape_text(value: &str) -> String {
-    quick_xml::escape::escape(value).into_owned()
+    let sanitized = sanitize_xml_text(value);
+    quick_xml::escape::escape(sanitized.as_ref()).into_owned()
+}
+
+/// XML 1.0 Char production: #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
+/// [#x10000-#x10FFFF]. Illegal scalars are dropped so OOXML parts stay well-formed.
+pub(crate) fn sanitize_xml_text(value: &str) -> std::borrow::Cow<'_, str> {
+    if value.chars().all(is_xml_1_0_char) {
+        return std::borrow::Cow::Borrowed(value);
+    }
+    std::borrow::Cow::Owned(value.chars().filter(|ch| is_xml_1_0_char(*ch)).collect())
+}
+
+pub(crate) fn is_xml_1_0_char(value: char) -> bool {
+    matches!(value as u32, 0x9 | 0xA | 0xD | 0x20..=0xD7FF | 0xE000..=0xFFFD | 0x10000..=0x10FFFF)
 }
 
 fn indexed_element(

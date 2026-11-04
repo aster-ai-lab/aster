@@ -311,8 +311,7 @@ struct SoakRunner {
 
 impl ChildRunner for SoakRunner {
     type Control = SoakControl;
-    type RootControl =
-        aster_tools::implementations::grok_build::task::root_control::NoRootControl;
+    type RootControl = aster_tools::implementations::grok_build::task::root_control::NoRootControl;
     type CompletionData = ();
     type RunFuture = LocalBoxFuture<ChildRunOutput<()>>;
     type ValidateFuture = LocalBoxFuture<SubagentValidateTypeOutcome>;

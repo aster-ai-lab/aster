@@ -9,8 +9,7 @@ fn product_help_and_version_use_aster() {
         ("--version", version.as_str()),
     ] {
         let output = Command::new(
-            std::env::var_os("ASTER_TUI_BIN")
-                .unwrap_or_else(|| env!("CARGO_BIN_EXE_aster").into()),
+            std::env::var_os("ASTER_TUI_BIN").unwrap_or_else(|| env!("CARGO_BIN_EXE_aster").into()),
         )
         .arg(arg)
         .output()

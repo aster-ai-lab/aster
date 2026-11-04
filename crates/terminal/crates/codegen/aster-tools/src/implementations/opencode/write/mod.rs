@@ -251,9 +251,10 @@ mod tests {
             file_path: tmp.path().join("new.txt").to_string_lossy().into_owned(),
             content: "hello\nworld\n".to_string(),
         };
-        let result = aster_tool_runtime::Tool::run(&tool, test_ctx(shared_resources.clone()), input)
-            .await
-            .unwrap();
+        let result =
+            aster_tool_runtime::Tool::run(&tool, test_ctx(shared_resources.clone()), input)
+                .await
+                .unwrap();
 
         match &result {
             SearchReplaceOutput::EditsApplied(applied) => {

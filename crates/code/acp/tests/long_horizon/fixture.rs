@@ -22,8 +22,8 @@ const INPUT: &str = "pub fn quantity(text: &str) -> Result<u32, &'static str> { 
 const CALC: &str = "pub fn total(quantity: u32, unit_cents: u32, tax_bps: u32) -> Result<u64, &'static str> { let net = u64::from(quantity) * u64::from(unit_cents); Ok(net + net * u64::from(tax_bps) / 10000) }\n";
 const DISPLAY: &str =
     "pub fn money(cents: u64) -> String { format!(\"{}.{:01}\", cents / 100, cents % 100) }\n";
-pub const LOCAL_CHECK: &str =
-    "rustc --edition=2021 --test lib.rs -o checks && ./checks && test -s CHANGELOG.md";
+pub use super::artifact::digest;
+pub use super::config::RUST_LOCAL_CHECK as LOCAL_CHECK;
 const REQUIREMENTS: &str = r#"Repair the three public Rust modules without changing their public signatures.
 input::quantity trims whitespace, accepts decimal integers from 1 to 1_000_000 inclusive, and returns Err("invalid quantity") for everything else.
 calc::total accepts quantity and unit_cents in 1..=1_000_000 and tax_bps in 0..=10_000. Invalid arguments return Err("invalid amount"). Valid totals use integer cents and round tax to the nearest cent, with half cents rounded up. Do not use floating point.
@@ -40,6 +40,79 @@ pub const ARTIFACTS: [&str; 7] = [
     "notes.txt",
     "CHANGELOG.md",
 ];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u64)]
+pub enum FixtureSeed {
+    Original = 2401,
+    Bounds = 2402,
+    Rounding = 2403,
+    Whitespace = 2404,
+    Amount = 2405,
+}
+
+impl FixtureSeed {
+    pub const ALL: [Self; 5] = [
+        Self::Original,
+        Self::Bounds,
+        Self::Rounding,
+        Self::Whitespace,
+        Self::Amount,
+    ];
+
+    pub fn number(self) -> u64 {
+        self as u64
+    }
+
+    pub fn from_environment() -> Result<Self, &'static str> {
+        match std::env::var("ASTER_LH_FIXTURE_SEED") {
+            Ok(value) => value.parse(),
+            Err(std::env::VarError::NotPresent) => Ok(Self::Original),
+            Err(std::env::VarError::NotUnicode(_)) => Err("fixture seed must be UTF-8"),
+        }
+    }
+
+    fn sources(self) -> (&'static str, &'static str, &'static str) {
+        match self {
+            Self::Original => (INPUT, CALC, DISPLAY),
+            Self::Bounds => (
+                "pub fn quantity(text:&str)->Result<u32,&'static str>{text.trim().parse::<u32>().ok().filter(|n|(1..1_000_000).contains(n)).ok_or(\"invalid quantity\")}\n",
+                "pub fn total(q:u32,p:u32,r:u32)->Result<u64,&'static str>{let n=u64::from(q)*u64::from(p);Ok(n*(10_000+u64::from(r))/10_000)}\n",
+                "pub fn money(c:u64)->String{format!(\"{}.{:02}\",c/1000,c%100)}\n",
+            ),
+            Self::Rounding => (
+                "pub fn quantity(text:&str)->Result<u32,&'static str>{text.trim().parse::<i64>().ok().and_then(|n|u32::try_from(n).ok()).ok_or(\"invalid quantity\")}\n",
+                "pub fn total(q:u32,p:u32,r:u32)->Result<u64,&'static str>{if q==0||p==0{return Err(\"invalid amount\");}let n=u64::from(q)*u64::from(p);Ok(n+(n*u64::from(r)+4999)/10000)}\n",
+                "pub fn money(c:u64)->String{format!(\"{}.{:02}\",c/100,c%10)}\n",
+            ),
+            Self::Whitespace => (
+                "pub fn quantity(text:&str)->Result<u32,&'static str>{text.parse::<u32>().ok().filter(|n|(1..=1_000_000).contains(n)).ok_or(\"invalid quantity\")}\n",
+                "pub fn total(q:u32,p:u32,r:u32)->Result<u64,&'static str>{let n=u64::from(q)*u64::from(p);Ok(n+n*u64::from(r/10000))}\n",
+                "pub fn money(c:u64)->String{format!(\"{}.{:03}\",c/100,c%100)}\n",
+            ),
+            Self::Amount => (
+                "pub fn quantity(text:&str)->Result<u32,&'static str>{text.trim().parse::<u32>().ok().filter(|n|(1..1_000_000).contains(n)).ok_or(\"invalid quantity\")}\n",
+                "pub fn total(q:u32,p:u32,r:u32)->Result<u64,&'static str>{Ok(u64::from(q)*u64::from(p)+u64::from(r))}\n",
+                "pub fn money(c:u64)->String{format!(\"{}.{:02}\",c/100,(c%100)/10)}\n",
+            ),
+        }
+    }
+}
+
+impl std::str::FromStr for FixtureSeed {
+    type Err = &'static str;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value.parse::<u64>() {
+            Ok(2401) => Ok(Self::Original),
+            Ok(2402) => Ok(Self::Bounds),
+            Ok(2403) => Ok(Self::Rounding),
+            Ok(2404) => Ok(Self::Whitespace),
+            Ok(2405) => Ok(Self::Amount),
+            _ => Err("fixture seed must be one of 2401, 2402, 2403, 2404, 2405"),
+        }
+    }
+}
 
 pub struct Fixture {
     pub workspace: PathBuf,
@@ -79,21 +152,6 @@ fn checker_source(library: &Path) -> String {
     )
 }
 
-pub fn digest(path: &Path) -> std::io::Result<String> {
-    use std::io::Read;
-    let mut file = std::fs::File::open(path)?;
-    let mut digest = Sha256::new();
-    let mut bytes = [0; 64 * 1024];
-    loop {
-        let count = file.read(&mut bytes)?;
-        if count == 0 {
-            break;
-        }
-        digest.update(&bytes[..count]);
-    }
-    Ok(format!("{:x}", digest.finalize()))
-}
-
 pub fn tests_passed(output: &str, names: &[&str]) -> bool {
     output
         .lines()
@@ -107,15 +165,21 @@ pub fn tests_passed(output: &str, names: &[&str]) -> bool {
 
 impl Fixture {
     pub fn create(root: &Path) -> std::io::Result<Self> {
+        Self::create_seeded(root, FixtureSeed::Original)
+    }
+
+    pub fn create_seeded(root: &Path, seed: FixtureSeed) -> std::io::Result<Self> {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::FixtureSetup);
         let workspace = root.join("workspace");
         let state = root.join("oracle");
         std::fs::create_dir_all(&workspace)?;
         std::fs::create_dir_all(&state)?;
+        let (input, calc, display) = seed.sources();
         for (name, text) in [
             ("lib.rs", LIB),
-            ("input.rs", INPUT),
-            ("calc.rs", CALC),
-            ("display.rs", DISPLAY),
+            ("input.rs", input),
+            ("calc.rs", calc),
+            ("display.rs", display),
             ("README.md", REQUIREMENTS),
             (
                 "notes.txt",
@@ -151,6 +215,7 @@ impl Fixture {
 
     /// Only trusted, static C0 fixture sources may execute on the test host.
     pub async fn check(&self) -> Result<Oracle, &'static str> {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::Oracle);
         let binary = self.state.join("acceptance");
         let mut command = tokio::process::Command::new("rustc");
         command
@@ -227,6 +292,7 @@ impl Fixture {
     /// Called only after the ACP owner is reaped, or before it is started.
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     pub async fn check_in_guest(&self, assets: &Path) -> Result<Oracle, String> {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::Oracle);
         use aster_core::sandbox::oci::{OciBashSandbox, OciSandboxAssets};
         use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
         let snapshot = tempfile::tempdir_in(&self.state).map_err(|_| "oracle_snapshot")?;
@@ -316,3 +382,20 @@ impl Fixture {
 
 #[path = "fixture_tests.rs"]
 mod tests;
+
+#[test]
+fn registered_original_prompt_and_guest_checker_bytes_remain_fixed() {
+    let root = tempfile::tempdir().unwrap();
+    let fixture = Fixture::create(root.path()).unwrap();
+    assert_eq!(
+        format!("{:x}", Sha256::digest(fixture.request().as_bytes())),
+        "5cca9d0a6f31b32c9a33b8d69944640bbc372c6857f7578dfc3c872af857c45f"
+    );
+    assert_eq!(
+        format!(
+            "{:x}",
+            Sha256::digest(checker_source(Path::new("/workspace/lib.rs")).as_bytes())
+        ),
+        "d049fb30fc849d7d83628cd629ca3a997180c346b3f95174840ef0d51544f749"
+    );
+}

@@ -346,7 +346,7 @@ serde = {version = "1", features = [
     "derive",
     "rc",
 ]}
-serde_json = {version = "1", features = ["float_roundtrip"]}
+serde_json = {version = "1", features = ["float_roundtrip", "preserve_order"]}
 thiserror = {version = "1"}
 tokio = {version = "1", features = [
     "rt",

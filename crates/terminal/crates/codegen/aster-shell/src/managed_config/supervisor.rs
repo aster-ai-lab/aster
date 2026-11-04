@@ -508,10 +508,7 @@ pub async fn ensure_managed_policy_present(
     aster_telemetry::startup::enter(aster_telemetry::startup::StartupPhase::ManagedPolicy);
     let has_deployment_key = store::resolve_deployment_key().is_some();
     let signed_in_team = store::team_principal_signed_in();
-    aster_telemetry::startup::set_auth_mode(policy::auth_mode(
-        has_deployment_key,
-        &signed_in_team,
-    ));
+    aster_telemetry::startup::set_auth_mode(policy::auth_mode(has_deployment_key, &signed_in_team));
     // A parked refresh applies here, pre-sandbox, before staleness is judged; it gates
     // itself (fetch-disabled or unverifiable discards, missing principal self-refuses).
     store::apply_staged_managed_config();

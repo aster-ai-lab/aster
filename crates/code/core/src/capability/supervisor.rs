@@ -200,12 +200,12 @@ impl Drop for SupervisorInner {
 
 /// Owns every asynchronous task, child scope, reversible effect, and exact
 /// upstream generation lease for one capability scope.
-pub(super) struct EffectSupervisor {
+pub(crate) struct EffectSupervisor {
     inner: Arc<SupervisorInner>,
 }
 
 impl EffectSupervisor {
-    pub(super) fn new(
+    pub(crate) fn new(
         scope_id: impl Into<String>,
         cancellation: CancellationToken,
         policy: ScopeClosePolicy,
@@ -281,7 +281,7 @@ impl EffectSupervisor {
         Ok(())
     }
 
-    pub(super) fn spawn_task<F>(
+    pub(crate) fn spawn_task<F>(
         &self,
         name: impl Into<String>,
         task: F,
@@ -354,7 +354,7 @@ impl EffectSupervisor {
         }
     }
 
-    pub(super) async fn close(&self) -> Result<ScopeCloseReport, CapabilityScopeError> {
+    pub(crate) async fn close(&self) -> Result<ScopeCloseReport, CapabilityScopeError> {
         let runtime = tokio::runtime::Handle::try_current()
             .map_err(|_| CapabilityScopeError::TokioRuntimeUnavailable)?;
 

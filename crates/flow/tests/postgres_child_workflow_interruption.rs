@@ -104,7 +104,11 @@ struct CrashDuringMapRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringMapRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -148,7 +152,11 @@ struct CrashDuringBatchRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringBatchRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -189,7 +197,11 @@ struct CrashBeforeParentResolutionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeParentResolutionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

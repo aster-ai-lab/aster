@@ -1,5 +1,6 @@
 //! Source-authorized MCP loading and immutable dispatch payloads.
 
+use agent_client_protocol as acp;
 use aster_tools::{
     implementations::use_tool::{
         InlineMcpInvocation, UseToolInput, parse_arguments_file, validate_mcp_target,
@@ -10,7 +11,6 @@ use aster_tools::{
     },
 };
 use aster_workspace::permission::{AccessKind, Decision, PermissionRequest};
-use agent_client_protocol as acp;
 use serde_json::Value;
 use std::{
     io,
@@ -418,8 +418,7 @@ impl SessionActor {
         }
         let operation_start = tokio::time::Instant::now();
         let resolved = tokio::time::timeout(FILE_OPERATION_TIMEOUT, async {
-            let (physical, _) =
-                aster_tools::util::read_policy::resolve_read_path(&logical).await;
+            let (physical, _) = aster_tools::util::read_policy::resolve_read_path(&logical).await;
             aster_tools::util::read_policy::validate_read_paths(
                 &resources,
                 &logical,

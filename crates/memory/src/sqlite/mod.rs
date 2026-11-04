@@ -27,12 +27,12 @@ pub mod schema;
 mod vector;
 
 use crate::{
-    memories_are_store_duplicates, memory_is_prune_protected, merge_duplicate_memory_item,
-    normalize_item_for_store, MemoryItem, MemoryStore, MemoryType, PrunePolicy, RelevanceConfig,
+    memories_are_store_duplicates, merge_duplicate_memory_item, normalize_item_for_store,
+    MemoryItem, MemoryStore, MemoryType, PrunePolicy, RelevanceConfig, ValidatedPrunePolicy,
 };
 use anyhow::{Context, Result};
 use async_trait::async_trait;
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, SubsecRound, TimeZone, Utc};
 use rusqlite::{params, Connection};
 use std::{
     path::{Path, PathBuf},
@@ -206,8 +206,7 @@ impl MemoryStore for SqliteMemoryStore {
                 )?;
                 let existing_items: Vec<MemoryItem> = stmt
                     .query_map([], row_to_item)?
-                    .filter_map(|row| row.ok())
-                    .collect();
+                    .collect::<rusqlite::Result<_>>()?;
                 if let Some(existing) = existing_items
                     .into_iter()
                     .find(|existing| memories_are_store_duplicates(existing, &item))
@@ -229,7 +228,10 @@ impl MemoryStore for SqliteMemoryStore {
 
         if append_markdown {
             if let Err(e) = markdown::append(&self.base_dir, &stored).await {
-                eprintln!("[aster-memory] markdown write failed for {}: {e}", stored.id);
+                eprintln!(
+                    "[aster-memory] markdown write failed for {}: {e}",
+                    stored.id
+                );
             }
         }
 
@@ -238,7 +240,8 @@ impl MemoryStore for SqliteMemoryStore {
 
     async fn retrieve(&self, id: &str) -> Result<Option<MemoryItem>> {
         let id = id.to_string();
-        let now_ms = Utc::now().timestamp_millis();
+        let now = Utc::now().trunc_subsecs(3);
+        let now_ms = now.timestamp_millis();
 
         self.with_conn(move |c| {
             let result = c.query_row(
@@ -258,11 +261,14 @@ impl MemoryStore for SqliteMemoryStore {
                         params![now_ms, item.id],
                     );
                     item.access_count += 1;
-                    item.last_accessed = Some(ms_to_dt(now_ms));
+                    item.last_accessed = Some(now);
                     Ok(Some(item))
                 }
                 Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
-                Err(e) => Err(anyhow::anyhow!("retrieve({id}): {e}")),
+                Err(error) => {
+                    let message = format!("retrieve({id}): {error}");
+                    Err(anyhow::Error::new(error).context(message))
+                }
             }
         })
         .await
@@ -282,48 +288,40 @@ impl MemoryStore for SqliteMemoryStore {
                  LIMIT ?2",
             )?;
             let items = stmt
-                .query_map(params![query, limit as i64], |row| Ok(row_to_item(row)))?
-                .filter_map(|r| r.ok())
-                .filter_map(|r| r.ok())
-                .collect();
+                .query_map(params![query, limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
             Ok(items)
         })
         .await
     }
 
     async fn search_by_tags(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
-        if tags.is_empty() {
+        if tags.is_empty() || limit == 0 {
             return Ok(Vec::new());
         }
 
-        // Build a query that requires all tags to appear in the JSON array.
-        // SQLite's json_each() lets us do set membership without extensions.
-        let conn = self.conn.clone();
         let tags_owned: Vec<String> = tags.to_vec();
-        tokio::task::spawn_blocking(move || -> Result<Vec<MemoryItem>> {
-            let c = conn
-                .lock()
-                .map_err(|_| anyhow::anyhow!("sqlite lock poisoned"))?;
-
-            // Retrieve all then filter in Rust (simpler than dynamic SQL, fast
-            // enough for typical memory store sizes).
+        self.with_conn(move |c| {
             let mut stmt = c.prepare(
                 "SELECT id, content, timestamp_ms, importance, tags, memory_type,
                         metadata, access_count, last_accessed_ms
                  FROM memories
                  ORDER BY timestamp_ms DESC",
             )?;
-            let items: Vec<MemoryItem> = stmt
-                .query_map([], |row| Ok(row_to_item(row)))?
-                .filter_map(|r| r.ok())
-                .filter_map(|r| r.ok())
-                .filter(|item| tags_owned.iter().any(|t| item.tags.contains(t)))
-                .take(limit)
-                .collect();
+            let rows = stmt.query_map([], row_to_item)?;
+            let mut items = Vec::new();
+            for row in rows {
+                let item = row?;
+                if tags_owned.iter().any(|tag| item.tags.contains(tag)) {
+                    items.push(item);
+                    if items.len() == limit {
+                        break;
+                    }
+                }
+            }
             Ok(items)
         })
         .await
-        .context("spawn_blocking panicked")?
     }
 
     async fn get_recent(&self, limit: usize) -> Result<Vec<MemoryItem>> {
@@ -336,10 +334,8 @@ impl MemoryStore for SqliteMemoryStore {
                  LIMIT ?1",
             )?;
             let items = stmt
-                .query_map(params![limit as i64], |row| Ok(row_to_item(row)))?
-                .filter_map(|r| r.ok())
-                .filter_map(|r| r.ok())
-                .collect();
+                .query_map(params![limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
             Ok(items)
         })
         .await
@@ -356,10 +352,8 @@ impl MemoryStore for SqliteMemoryStore {
                  LIMIT ?2",
             )?;
             let items = stmt
-                .query_map(params![threshold, limit as i64], |row| Ok(row_to_item(row)))?
-                .filter_map(|r| r.ok())
-                .filter_map(|r| r.ok())
-                .collect();
+                .query_map(params![threshold, limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
             Ok(items)
         })
         .await
@@ -394,63 +388,21 @@ impl MemoryStore for SqliteMemoryStore {
     }
 
     async fn prune(&self, policy: &PrunePolicy) -> Result<usize> {
-        let cutoff_ms = (chrono::Utc::now() - chrono::Duration::days(policy.max_age_days as i64))
-            .timestamp_millis();
-        let min_importance = policy.min_importance_to_keep;
-        let max_items = policy.max_items;
-        let now = chrono::Utc::now();
-
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now().trunc_subsecs(3))?;
         self.with_conn(move |c| {
             let mut stmt = c.prepare(
                 "SELECT id, content, timestamp_ms, importance, tags, memory_type,
                         metadata, access_count, last_accessed_ms
                  FROM memories",
             )?;
-            let mut items: Vec<MemoryItem> = stmt
+            let items = stmt
                 .query_map([], row_to_item)?
-                .filter_map(|row| row.ok())
-                .collect();
-
-            let mut delete_ids: Vec<String> = items
-                .iter()
-                .filter(|item| {
-                    !memory_is_prune_protected(item)
-                        && item.timestamp.timestamp_millis() < cutoff_ms
-                        && item.importance < min_importance
-                })
-                .map(|item| item.id.clone())
-                .collect();
-
-            items.retain(|item| !delete_ids.contains(&item.id));
-
-            if max_items > 0 && items.len() > max_items {
-                let protected_count = items
-                    .iter()
-                    .filter(|item| memory_is_prune_protected(item))
-                    .count();
-                let unprotected_to_keep = max_items.saturating_sub(protected_count);
-                let mut unprotected: Vec<MemoryItem> = items
-                    .into_iter()
-                    .filter(|item| !memory_is_prune_protected(item))
-                    .collect();
-                unprotected.sort_by(|a, b| {
-                    b.relevance_score_at(now, &RelevanceConfig::default())
-                        .partial_cmp(&a.relevance_score_at(now, &RelevanceConfig::default()))
-                        .unwrap_or(std::cmp::Ordering::Equal)
-                });
-                delete_ids.extend(
-                    unprotected
-                        .into_iter()
-                        .skip(unprotected_to_keep)
-                        .map(|item| item.id),
-                );
-            }
-
-            let deleted = delete_ids.len();
+                .collect::<rusqlite::Result<Vec<_>>>()?;
+            let delete_ids = policy.select(&items)?;
+            let mut deleted = 0;
             for id in delete_ids {
-                c.execute("DELETE FROM memories WHERE id = ?1", params![id])?;
+                deleted += c.execute("DELETE FROM memories WHERE id = ?1", params![id])?;
             }
-
             Ok(deleted)
         })
         .await
@@ -497,12 +449,20 @@ fn row_to_item(row: &rusqlite::Row<'_>) -> rusqlite::Result<MemoryItem> {
     let access_count: u32 = row.get(7)?;
     let last_acc_ms: Option<i64> = row.get(8)?;
 
-    let tags: Vec<String> = serde_json::from_str(&tags_json).unwrap_or_default();
-    let metadata: std::collections::HashMap<String, String> =
-        serde_json::from_str(&meta_json).unwrap_or_default();
-    let memory_type = str_to_memory_type(&mtype_str);
-    let timestamp = ms_to_dt(ts_ms);
-    let last_accessed = last_acc_ms.map(ms_to_dt);
+    let tags: Vec<String> = serde_json::from_str(&tags_json).map_err(|error| {
+        rusqlite::Error::FromSqlConversionFailure(4, rusqlite::types::Type::Text, Box::new(error))
+    })?;
+    let metadata: std::collections::HashMap<String, String> = serde_json::from_str(&meta_json)
+        .map_err(|error| {
+            rusqlite::Error::FromSqlConversionFailure(
+                6,
+                rusqlite::types::Type::Text,
+                Box::new(error),
+            )
+        })?;
+    let memory_type = str_to_memory_type(&mtype_str)?;
+    let timestamp = ms_to_dt(ts_ms, 2)?;
+    let last_accessed = last_acc_ms.map(|ms| ms_to_dt(ms, 8)).transpose()?;
     let content_lower = content.to_lowercase();
 
     Ok(MemoryItem {
@@ -519,10 +479,17 @@ fn row_to_item(row: &rusqlite::Row<'_>) -> rusqlite::Result<MemoryItem> {
     })
 }
 
-fn ms_to_dt(ms: i64) -> DateTime<Utc> {
-    Utc.timestamp_millis_opt(ms)
-        .single()
-        .unwrap_or_else(Utc::now)
+fn ms_to_dt(ms: i64, column: usize) -> rusqlite::Result<DateTime<Utc>> {
+    Utc.timestamp_millis_opt(ms).single().ok_or_else(|| {
+        rusqlite::Error::FromSqlConversionFailure(
+            column,
+            rusqlite::types::Type::Integer,
+            Box::new(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "memory timestamp exceeds the supported datetime range",
+            )),
+        )
+    })
 }
 
 fn memory_type_to_str(t: &MemoryType) -> &'static str {
@@ -534,17 +501,30 @@ fn memory_type_to_str(t: &MemoryType) -> &'static str {
     }
 }
 
-fn str_to_memory_type(s: &str) -> MemoryType {
+fn str_to_memory_type(s: &str) -> rusqlite::Result<MemoryType> {
     match s {
-        "episodic" => MemoryType::Episodic,
-        "semantic" => MemoryType::Semantic,
-        "procedural" => MemoryType::Procedural,
-        "working" => MemoryType::Working,
-        _ => MemoryType::Episodic,
+        "episodic" => Ok(MemoryType::Episodic),
+        "semantic" => Ok(MemoryType::Semantic),
+        "procedural" => Ok(MemoryType::Procedural),
+        "working" => Ok(MemoryType::Working),
+        _ => Err(rusqlite::Error::FromSqlConversionFailure(
+            5,
+            rusqlite::types::Type::Text,
+            Box::new(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "memory kind must be episodic, semantic, procedural or working",
+            )),
+        )),
     }
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod retention_tests;
+
+#[cfg(test)]
+mod read_error_tests;
 
 #[cfg(test)]
 mod tests {

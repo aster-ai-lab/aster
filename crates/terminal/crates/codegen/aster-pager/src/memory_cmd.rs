@@ -1,8 +1,8 @@
 use std::io::Write;
 use std::path::PathBuf;
 
-use aster_shell::session::memory::storage::MemoryStorage;
 use anyhow::Result;
+use aster_shell::session::memory::storage::MemoryStorage;
 use clap::Subcommand;
 
 #[derive(Debug, clap::Args, Clone)]

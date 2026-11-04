@@ -176,11 +176,12 @@ impl crate::agent::TurnEngine {
         session_id: &str,
         cancel: &CancellationToken,
     ) {
-        let Some(ticket) = self.admit_fact_memory_extraction(prompt, response, session_id, cancel)
+        let Some(mut ticket) =
+            self.admit_fact_memory_extraction(prompt, response, session_id, cancel)
         else {
             return;
         };
-        self.finish_admitted_fact_extraction(prompt, response, session_id, cancel, ticket)
+        self.finish_admitted_fact_extraction(prompt, response, session_id, cancel, &mut ticket)
             .await;
     }
 
@@ -190,7 +191,7 @@ impl crate::agent::TurnEngine {
         response: &str,
         session_id: &str,
         cancel: &CancellationToken,
-        ticket: crate::memory::MemoryExtractionTicket,
+        ticket: &mut crate::memory::MemoryExtractionTicket,
     ) {
         let snapshot = MemoryExtractionSnapshot {
             messages: vec![Message::user(prompt), Message::assistant(response)],
@@ -233,7 +234,7 @@ impl crate::agent::TurnEngine {
         if !should_attempt_llm_memory_extraction(&snapshot, prompt, response) {
             return;
         }
-        let ticket = memory.enqueue_llm_extraction(session_id);
+        let mut ticket = memory.enqueue_llm_extraction(session_id);
 
         if event_tx.is_some() {
             let agent = self.clone();
@@ -260,7 +261,7 @@ impl crate::agent::TurnEngine {
                             event_tx: &no_events,
                             cancel_token: &extract_cancel,
                         },
-                        ticket,
+                        &mut ticket,
                     )
                     .await;
             });
@@ -276,7 +277,7 @@ impl crate::agent::TurnEngine {
                 event_tx,
                 cancel_token,
             },
-            ticket,
+            &mut ticket,
         )
         .await;
     }
@@ -284,7 +285,7 @@ impl crate::agent::TurnEngine {
     async fn extract_turn_memories_with_llm(
         &self,
         extraction: TurnMemoryExtraction<'_>,
-        ticket: crate::memory::MemoryExtractionTicket,
+        ticket: &mut crate::memory::MemoryExtractionTicket,
     ) {
         let TurnMemoryExtraction {
             snapshot,

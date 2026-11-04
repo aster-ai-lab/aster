@@ -55,3 +55,6 @@ __pycache__/
 /apps/web/dist/
 /apps/web/.astro/
 
+# Mutable aster-vec index state from package-local development runs.
+/crates/code/core/manifest.json
+/crates/code/core/segments/

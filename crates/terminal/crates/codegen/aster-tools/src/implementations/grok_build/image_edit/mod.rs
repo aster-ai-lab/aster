@@ -118,7 +118,9 @@ async fn resolve_to_data_url(value: &str) -> Result<String, aster_tool_runtime::
 
     let raw_bytes = if value.starts_with("data:image/") {
         let comma = value.find(',').ok_or_else(|| {
-            aster_tool_runtime::ToolError::invalid_arguments("malformed data URL in image reference")
+            aster_tool_runtime::ToolError::invalid_arguments(
+                "malformed data URL in image reference",
+            )
         })?;
         let Some(header) = value.get(..comma) else {
             return Err(aster_tool_runtime::ToolError::invalid_arguments(

@@ -23,6 +23,9 @@ pub mod repository;
 /// admission, embedding generation, lifecycle, and result fusion.
 pub mod vector;
 
+mod retention;
+pub use retention::{MemoryRetentionError, ValidatedPrunePolicy};
+
 pub use vector::{
     InMemoryVectorIndex, VectorBudgetResource, VectorIndex, VectorIndexDescriptor,
     VectorIndexError, VectorIndexObservation, VectorIndexStatus, VectorMetric,
@@ -232,7 +235,9 @@ fn normalize_item_for_store(mut item: MemoryItem) -> MemoryItem {
     item
 }
 
-fn memory_content_fingerprint(content: &str) -> Option<String> {
+/// Stable case/whitespace-normalized content identity used by [`MemoryItem`].
+/// Very short fragments return `None` so they remain distinct observations.
+pub fn memory_content_fingerprint(content: &str) -> Option<String> {
     let fingerprint = content
         .split_whitespace()
         .collect::<Vec<_>>()
@@ -757,52 +762,11 @@ impl MemoryStore for InMemoryStore {
     }
 
     async fn prune(&self, policy: &PrunePolicy) -> anyhow::Result<usize> {
-        let now = Utc::now();
-        let cutoff = now - chrono::Duration::days(policy.max_age_days as i64);
-        let min_importance = policy.min_importance_to_keep;
-
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now())?;
         let mut items = self.items.write().await;
+        let delete_ids: std::collections::HashSet<_> = policy.select(&items)?.into_iter().collect();
         let before = items.len();
-
-        // Phase 1: remove items that are old and below the importance threshold,
-        // unless they have explicit curation/provenance protection.
-        items.retain(|item| {
-            memory_is_prune_protected(item)
-                || item.importance >= min_importance
-                || item.timestamp >= cutoff
-        });
-
-        // Phase 2: if still over the cap, keep protected memories first and then
-        // the highest-relevance unprotected items.
-        if policy.max_items > 0 && items.len() > policy.max_items {
-            let config = RelevanceConfig::default();
-            let protected_count = items
-                .iter()
-                .filter(|item| memory_is_prune_protected(item))
-                .count();
-            let unprotected_to_keep = policy.max_items.saturating_sub(protected_count);
-            let mut unprotected_seen = 0usize;
-            items.sort_by(|a, b| {
-                memory_is_prune_protected(b)
-                    .cmp(&memory_is_prune_protected(a))
-                    .then_with(|| {
-                        b.relevance_score_at(now, &config)
-                            .partial_cmp(&a.relevance_score_at(now, &config))
-                            .unwrap_or(std::cmp::Ordering::Equal)
-                    })
-            });
-            items.retain(|item| {
-                if memory_is_prune_protected(item) {
-                    true
-                } else if unprotected_seen < unprotected_to_keep {
-                    unprotected_seen += 1;
-                    true
-                } else {
-                    false
-                }
-            });
-        }
-
+        items.retain(|item| !delete_ids.contains(&item.id));
         Ok(before - items.len())
     }
 }
@@ -1262,75 +1226,18 @@ impl MemoryStore for FileMemoryStore {
     }
 
     async fn prune(&self, policy: &PrunePolicy) -> anyhow::Result<usize> {
-        let now = Utc::now();
-        let cutoff = now - chrono::Duration::days(policy.max_age_days as i64);
-        let min_importance = policy.min_importance_to_keep;
-
-        // Phase 1: collect IDs that are old and low-importance, unless the full
-        // item carries curation/provenance protection.
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now())?;
         let mut items = Vec::new();
         for entry in self.current_index().await {
             if let Some(item) = self.load_item_without_access(&entry.id).await? {
                 items.push(item);
             }
         }
-        let phase1_ids: Vec<String> = items
-            .iter()
-            .filter(|item| {
-                !memory_is_prune_protected(item)
-                    && item.importance < min_importance
-                    && item.timestamp < cutoff
-            })
-            .map(|item| item.id.clone())
-            .collect();
-        let mut deleted = phase1_ids.len();
-        for id in &phase1_ids {
+        let delete_ids = policy.select(&items)?;
+        for id in &delete_ids {
             self.delete(id).await?;
         }
-
-        // Phase 2: enforce max_items cap by removing lowest-relevance
-        // unprotected items. Protected items are hard-exempt, so the store may
-        // remain above the cap if the user pinned more memories than the cap.
-        if policy.max_items > 0 {
-            let config = RelevanceConfig::default();
-            let phase2_ids: Vec<String> = {
-                let mut remaining = Vec::new();
-                for entry in self.current_index().await {
-                    if let Some(item) = self.load_item_without_access(&entry.id).await? {
-                        remaining.push(item);
-                    }
-                }
-                if remaining.len() <= policy.max_items {
-                    Vec::new()
-                } else {
-                    let protected_count = remaining
-                        .iter()
-                        .filter(|item| memory_is_prune_protected(item))
-                        .count();
-                    let unprotected_to_keep = policy.max_items.saturating_sub(protected_count);
-                    let mut unprotected: Vec<MemoryItem> = remaining
-                        .into_iter()
-                        .filter(|item| !memory_is_prune_protected(item))
-                        .collect();
-                    unprotected.sort_by(|a, b| {
-                        b.relevance_score_at(now, &config)
-                            .partial_cmp(&a.relevance_score_at(now, &config))
-                            .unwrap_or(std::cmp::Ordering::Equal)
-                    });
-                    unprotected
-                        .into_iter()
-                        .skip(unprotected_to_keep)
-                        .map(|item| item.id)
-                        .collect()
-                }
-            };
-            deleted += phase2_ids.len();
-            for id in &phase2_ids {
-                self.delete(id).await?;
-            }
-        }
-
-        Ok(deleted)
+        Ok(delete_ids.len())
     }
 }
 

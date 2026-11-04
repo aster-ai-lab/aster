@@ -207,34 +207,34 @@ impl Tool for ProgramTool {
             "properties": {
                 "type": {
                     "type": "string",
-                    "description": "Required. Program kind. Only \"script\" is supported.",
+                    "description": "Program kind; script only.",
                     "enum": [ProgramKind::Script.as_str()]
                 },
                 "inputs": {
                     "type": "object",
-                    "description": "JSON inputs passed to a script as its second argument, or the declared parameters of a named template."
+                    "description": "Script second argument, or declared template parameters."
                 },
                 "language": {
                     "type": "string",
-                    "description": "Script language. Only JavaScript is supported.",
+                    "description": "JavaScript only.",
                     "enum": ["javascript"]
                 },
                 "source": {
                     "type": "string",
-                    "description": "Inline JavaScript source defining async function run(ctx, inputs)."
+                    "description": "Inline JavaScript defining async function run(ctx, inputs)."
                 },
                 "path": {
                     "type": "string",
-                    "description": "Workspace-relative path to a .js or .mjs script defining async function run(ctx, inputs). Used when source is omitted."
+                    "description": "Workspace-relative .js/.mjs defining async function run(ctx, inputs); used when source is omitted."
                 },
                 "allowed_tools": {
                     "type": "array",
-                    "description": "Tool names the script may call through ctx. Defaults to all registered tools except program, dynamic_workflow, and the legacy parallel_task alias.",
+                    "description": "Callable ctx tools; default all registered except program, dynamic_workflow and legacy parallel_task.",
                     "items": { "type": "string" }
                 },
                 "limits": {
                     "type": "object",
-                    "description": "Optional timeoutMs, maxToolCalls, and maxOutputBytes.",
+                    "description": "timeoutMs, maxToolCalls, maxOutputBytes.",
                     "additionalProperties": false,
                     "properties": {
                         "timeoutMs": { "type": "integer", "minimum": 1 },
@@ -246,9 +246,9 @@ impl Tool for ProgramTool {
             "required": ["type"]
         });
         if !self.catalog.list().is_empty() {
-            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"Required. Choose script for JavaScript source/path, or template for a registered name.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
+            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"script: JavaScript source/path; template: registered name.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
             schema["properties"]["name"] = serde_json::json!({
-                "type":"string", "description":"Exact registered template name. Required for type=template.",
+                "type":"string", "description":"Exact registered name; required for template.",
                 "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
             });
             let mut variants = vec![
@@ -810,7 +810,25 @@ const __asterTools = Object.freeze(new Proxy({{}}, {{
   }},
 }}));
 
-const __asterReadArgs = (path, options = {{}}) => ({{ ...(options ?? {{}}), file_path: path }});
+const __asterIsPlainObject = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+const __asterReadArgs = (pathOrArgs, options = {{}}) => {{
+  // Schema-shaped {{ file_path, ... }} (or {{ args: {{ file_path }} }}) matches a
+  // direct tool call; keep the positional (path, options) form for older scripts.
+  if (__asterIsPlainObject(pathOrArgs)) {{
+    if (typeof pathOrArgs.file_path === "string") {{
+      return {{ ...(options ?? {{}}), ...pathOrArgs }};
+    }}
+    if (__asterIsPlainObject(pathOrArgs.args) && typeof pathOrArgs.args.file_path === "string") {{
+      return {{ ...(options ?? {{}}), ...pathOrArgs.args }};
+    }}
+    throw new TypeError("ctx.read expects a path string or {{ file_path }} object");
+  }}
+  if (typeof pathOrArgs !== "string") {{
+    throw new TypeError("ctx.read expects a path string or {{ file_path }} object");
+  }}
+  return {{ ...(options ?? {{}}), file_path: pathOrArgs }};
+}};
 const __asterLegacySearchArgs = (mode, query, options = {{}}) => {{
   const args = {{ ...(options ?? {{}}), mode, query }};
   if (Object.prototype.hasOwnProperty.call(args, "glob")) {{
@@ -823,6 +841,31 @@ const __asterLegacySearchArgs = (mode, query, options = {{}}) => {{
   }}
   return args;
 }};
+const __asterBashResult = (result) => {{
+  const exitCode = result?.metadata?.exit_code;
+  if (typeof exitCode === "number" && exitCode !== 0) {{
+    const error = new Error(result.output || `bash exited with code ${{exitCode}}`);
+    error.name = "BashExitError";
+    error.exitCode = exitCode;
+    error.output = result.output ?? "";
+    error.result = result;
+    throw error;
+  }}
+  if (result && result.success === false) {{
+    const error = new Error(result.output || "bash failed");
+    error.name = "BashExitError";
+    error.exitCode = typeof exitCode === "number" ? exitCode : null;
+    error.output = result.output ?? "";
+    error.result = result;
+    throw error;
+  }}
+  const output = result?.output ?? "";
+  return Object.assign(String(output), {{
+    output,
+    exitCode: typeof exitCode === "number" ? exitCode : 0,
+    result,
+  }});
+}};
 const __asterCtx = Object.freeze({{
   tool: __asterCallTool,
   tools: __asterTools,
@@ -833,10 +876,18 @@ const __asterCtx = Object.freeze({{
   bm25: (query, options = {{}}) => __asterCallTool("search", __asterLegacySearchArgs("bm25", query, options)).then((r) => r.output),
   glob: (query, options = {{}}) => __asterCallTool("search", {{ ...options, mode: "glob", query }}).then((r) => r.output),
   ls: (path = ".") => __asterCallTool("ls", {{ path }}).then((r) => r.output),
-  bash: (command) => __asterCallTool("bash", {{ command }}).then((r) => r.output),
+  bash: (commandOrArgs) => {{
+    const args = typeof commandOrArgs === "string"
+      ? {{ command: commandOrArgs }}
+      : (__asterIsPlainObject(commandOrArgs) ? commandOrArgs : null);
+    if (!args || typeof args.command !== "string") {{
+      return Promise.reject(new TypeError("ctx.bash expects a command string or {{ command }} object"));
+    }}
+    return __asterCallTool("bash", args).then(__asterBashResult);
+  }},
   git: (args = {{}}) => __asterCallTool("git", args),
   webSearch: (params) => __asterCallTool("web_search", params),
-  verify: (args) => __asterCallTool("bash", args),
+  verify: (args) => __asterCallTool("bash", args).then(__asterBashResult),
 }});
 
 Object.defineProperty(globalThis, "__asterCtx", {{ value: __asterCtx, configurable: false }});

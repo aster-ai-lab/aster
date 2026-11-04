@@ -162,6 +162,7 @@ impl agent_client_protocol::Client for Host {
 
 #[tokio::test]
 async fn search_wiki_cross_workspace_round_trip_uses_the_original_acp_transport_and_index() {
+    let phases = crate::test_support::PhaseTrace::new();
     tokio::task::LocalSet::new()
         .run_until(async {
             let origin = tempfile::tempdir().unwrap();
@@ -291,4 +292,10 @@ async fn search_wiki_cross_workspace_round_trip_uses_the_original_acp_transport_
             }
         })
         .await;
+    phases.assert_host_search(
+        "aster/wiki/search-workspaces",
+        "origin-session",
+        &[true, true, true],
+        &["workspaceanswer42marker"],
+    );
 }

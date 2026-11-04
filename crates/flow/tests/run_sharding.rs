@@ -263,7 +263,10 @@ async fn composed_sharded_linked_run_check_does_not_require_unbounded_list() {
                 .await
         }
 
-        async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
+        async fn list(
+            &self,
+            _run_id: &str,
+        ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
             Err(aster_flow::FlowError::Store(
                 "unbounded history read is not allowed for linked-run checks".into(),
             ))
@@ -273,11 +276,16 @@ async fn composed_sharded_linked_run_check_does_not_require_unbounded_list() {
             self.inner.list_run_ids().await
         }
 
-        async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
+        async fn latest_event(
+            &self,
+            run_id: &str,
+        ) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
             self.inner.latest_event(run_id).await
         }
 
-        async fn list_active_hooks(&self) -> aster_flow::Result<Vec<aster_flow::ActiveHookSnapshot>> {
+        async fn list_active_hooks(
+            &self,
+        ) -> aster_flow::Result<Vec<aster_flow::ActiveHookSnapshot>> {
             Ok(Vec::new())
         }
 

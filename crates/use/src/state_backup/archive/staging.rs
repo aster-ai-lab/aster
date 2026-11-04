@@ -85,7 +85,8 @@ pub(super) fn ensure_candidate_root(root: &Path) -> UseResult<()> {
     }
     match std::fs::symlink_metadata(root) {
         Ok(metadata)
-            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata) && metadata.is_dir() =>
+            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                && metadata.is_dir() =>
         {
             Ok(())
         }

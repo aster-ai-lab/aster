@@ -16,8 +16,8 @@ use std::sync::Arc;
 use std::sync::mpsc::{self, Receiver};
 use std::time::{Duration, Instant};
 
-use aster_tty_utils::{ProcessGroup, git_command, git_command_locking, global_process_scope};
 use anyhow::{Context, Result, bail};
+use aster_tty_utils::{ProcessGroup, git_command, git_command_locking, global_process_scope};
 use wait_timeout::ChildExt;
 
 /// Shared wall-clock budget for head and base targeted fetches.

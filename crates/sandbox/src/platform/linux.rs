@@ -294,7 +294,8 @@ fn configure_base_arguments(
 fn overlay_mounts_supported(bwrap: &Path) -> bool {
     static SUPPORTED: OnceLock<bool> = OnceLock::new();
     *SUPPORTED.get_or_init(|| {
-        let probe = std::env::temp_dir().join(format!("aster-overlay-probe-{}", std::process::id()));
+        let probe =
+            std::env::temp_dir().join(format!("aster-overlay-probe-{}", std::process::id()));
         if std::fs::create_dir_all(&probe).is_err() {
             return false;
         }

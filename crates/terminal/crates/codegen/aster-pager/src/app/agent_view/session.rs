@@ -194,6 +194,7 @@ impl AgentView {
             modal_buttons: Vec::new(),
             modal_hovered_key: None,
             context_state: None,
+            usage_meter: Default::default(),
             status_context: None,
             last_status_line_size: None,
             chat_kind: false,
@@ -1065,6 +1066,9 @@ impl AgentView {
     ) -> Option<crate::acp::tracker::TurnActivity> {
         use crate::acp::tracker::{TurnActivity, WaitingReason};
         use crate::app::agent::AgentState;
+        if self.send_now_awaiting_current() {
+            return Some(TurnActivity::Waiting(WaitingReason::PromptAck));
+        }
         if let Some(activity) = self.session.turn_activity() {
             return Some(activity);
         }

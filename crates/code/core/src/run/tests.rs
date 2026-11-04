@@ -97,6 +97,64 @@ async fn package_binding_is_exact_idempotent_and_pre_observation_only() {
 }
 
 #[tokio::test]
+async fn planning_end_advances_the_run_without_reopening_a_terminal() {
+    let store = InMemoryRunStore::new();
+    let run = store
+        .create_run("session-1", "execute the accepted plan")
+        .await;
+    store
+        .record_event(
+            &run.id,
+            AgentEvent::PlanningStart {
+                prompt: run.prompt.clone(),
+            },
+        )
+        .await
+        .unwrap();
+    store
+        .record_event(&run.id, AgentEvent::TurnStart { turn: 1 })
+        .await
+        .unwrap();
+    assert_eq!(
+        store.snapshot(&run.id).await.unwrap().status,
+        RunStatus::Planning
+    );
+
+    let mut plan = crate::planning::ExecutionPlan::new(
+        "execute the accepted plan",
+        crate::planning::Complexity::Simple,
+    );
+    plan.upsert_step(crate::planning::Task::new(
+        "verify",
+        "Verify current output",
+    ));
+    let finished_planning = AgentEvent::PlanningEnd {
+        estimated_steps: 1,
+        plan,
+    };
+    store
+        .record_event(&run.id, finished_planning.clone())
+        .await
+        .unwrap();
+    assert_eq!(
+        store.snapshot(&run.id).await.unwrap().status,
+        RunStatus::Executing
+    );
+
+    store
+        .mark_failed(&run.id, "verification failed")
+        .await
+        .unwrap();
+    store
+        .record_event(&run.id, finished_planning)
+        .await
+        .unwrap();
+    let snapshot = store.snapshot(&run.id).await.unwrap();
+    assert_eq!(snapshot.status, RunStatus::Failed);
+    assert_eq!(snapshot.error.as_deref(), Some("verification failed"));
+}
+
+#[tokio::test]
 async fn event_observation_keeps_snapshot_and_page_in_one_generation() {
     let store = InMemoryRunStore::new();
     let run = store.create_run("session-1", "observe exactly").await;

@@ -4,9 +4,7 @@
 use std::time::Duration;
 
 use aster_telemetry::external::IdentityAttrs;
-use aster_test_support::{
-    MockOtelServer, OtelMetricData, OtelNumber, OtelSignal, OtelTemporality,
-};
+use aster_test_support::{MockOtelServer, OtelMetricData, OtelNumber, OtelSignal, OtelTemporality};
 use serde_json::Value;
 
 const CANARY_MODEL: &str = "sk-CANARYabcdefghij1234567890";

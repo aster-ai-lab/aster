@@ -11,12 +11,12 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use agent_client_protocol as acp;
+use aster_tool_types::{KillTaskOutput, TaskOutputOutput};
 use aster_tools::types::output::{
     ApplyPatchOutput, CodexGrepFilesOutput, ListDirOutput, MCPOutputDetails, ReadFileOutput,
     SearchReplaceEditContextInformation, SearchReplaceEditDetail, SearchReplaceOutput, ToolOutput,
 };
-use aster_tool_types::{KillTaskOutput, TaskOutputOutput};
-use agent_client_protocol as acp;
 
 /// Rewrites real worktree paths to display paths in serialized output.
 /// In forked sessions, tools produce output containing the worktree directory.
@@ -591,12 +591,12 @@ pub(crate) fn acp_tool_update(
         }
         ToolOutput::ExitPlanMode(exit) => {
             let message = match exit {
-                aster_tools::types::output::ExitPlanModeOutput::PlanReady {
-                    message, ..
-                } => message.clone(),
-                aster_tools::types::output::ExitPlanModeOutput::EmptyPlan {
-                    message, ..
-                } => message.clone(),
+                aster_tools::types::output::ExitPlanModeOutput::PlanReady { message, .. } => {
+                    message.clone()
+                }
+                aster_tools::types::output::ExitPlanModeOutput::EmptyPlan { message, .. } => {
+                    message.clone()
+                }
             };
             Some(acp::ToolCallUpdate::new(
                 acp::ToolCallId::new(Arc::from(tool_call_id)),
@@ -833,9 +833,7 @@ mod tests {
     #[test]
     fn test_turn_end_plan_cleanup_preserves_semantics_and_priority() {
         use crate::tools::todo::plan_entry_from_todo_item;
-        use aster_tools::implementations::grok_build::todo::{
-            TodoItem, TodoPriority, TodoStatus,
-        };
+        use aster_tools::implementations::grok_build::todo::{TodoItem, TodoPriority, TodoStatus};
 
         // Simulate a mixed todo list at turn end.
         let items = [
@@ -908,16 +906,12 @@ mod tests {
     fn test_acp_plan_update_todo() {
         let output = ToolOutput::Todo(TodoWriteOutput::TodosUpdated(TodoWriteSuccess {
             summary_for_prompt: "tasks".to_string(),
-            todos: vec![
-                aster_tools::implementations::grok_build::todo::TodoItem {
-                    content: "Task 1".to_string(),
-                    priority:
-                        aster_tools::implementations::grok_build::todo::TodoPriority::Medium,
-                    status:
-                        aster_tools::implementations::grok_build::todo::TodoStatus::Completed,
-                    meta: None,
-                },
-            ],
+            todos: vec![aster_tools::implementations::grok_build::todo::TodoItem {
+                content: "Task 1".to_string(),
+                priority: aster_tools::implementations::grok_build::todo::TodoPriority::Medium,
+                status: aster_tools::implementations::grok_build::todo::TodoStatus::Completed,
+                meta: None,
+            }],
             state: aster_tools::implementations::grok_build::todo::TodoState::default(),
         }));
         let plan = acp_plan_update(&output).unwrap();

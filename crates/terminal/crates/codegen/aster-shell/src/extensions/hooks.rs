@@ -1,9 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
+use agent_client_protocol as acp;
 use aster_hooks::event::{HookEventEnvelope, HookEventName};
 use aster_hooks::matcher::HookMatcher;
 use aster_hooks_plugins_types::{HookEvent, HookHandlerType, HookInfo};
-use agent_client_protocol as acp;
 use serde::Deserialize;
 
 use crate::agent::MvpAgent;
@@ -218,9 +218,7 @@ fn parse_hook_group(event: HookEventName, value: &serde_json::Value) -> Option<C
         .map(|s| std::time::Duration::from_secs_f64(s.min(MAX_HOOK_TIMEOUT_SECS)));
     let matcher = match group.matcher.as_deref() {
         None | Some("") | Some("*") => None,
-        Some(pattern)
-            if event.traits().matcher == aster_hooks::event::MatcherPolicy::Ignored =>
-        {
+        Some(pattern) if event.traits().matcher == aster_hooks::event::MatcherPolicy::Ignored => {
             tracing::warn!(%event, pattern, "matcher on a {event} hook group is ignored (this event always fires)");
             None
         }

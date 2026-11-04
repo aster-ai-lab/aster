@@ -1247,9 +1247,9 @@ mod tests {
     #[test]
     fn write_scoped_access_respects_edit_deny_and_not_read_allow() {
         use crate::permission::rules::parse_permission_rule;
+        use aster_tool_types::TaskToolInput;
         use aster_tools::implementations::opencode::edit::EditInput;
         use aster_tools::types::ToolInput;
-        use aster_tool_types::TaskToolInput;
 
         let edit = AccessKind::from(&ToolInput::from(EditInput {
             file_path: "/tmp/denied.txt".into(),

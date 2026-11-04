@@ -22,7 +22,7 @@ use aster_core::{
     SessionOptions, SystemPromptSlots,
 };
 use serde_json::{json, Value};
-use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
+use support::layer_c_model::load_pinned_layer_c_config;
 
 #[derive(Debug, Default)]
 struct RewritingReadHook {
@@ -47,7 +47,10 @@ const CONFORMANCE_GUIDELINES: &str = "This is a deterministic integration test. 
 
 async fn real_agent() -> (Agent, String) {
     let config = load_pinned_layer_c_config();
-    let model = pinned_layer_c_model(&config);
+    let model = config
+        .default_model
+        .clone()
+        .expect("config loader resolves a declared model route");
     eprintln!("[extensibility-real] model={model}");
     (
         Agent::from_config(config)

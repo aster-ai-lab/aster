@@ -2106,6 +2106,7 @@ fn external_auth_provider_keeps_billing_off_after_auth_meta() {
 #[test]
 fn apply_aster_slash_gate_hides_unsupported_builtins() {
     let mut app = test_app();
+    let configured_auto_gate = app.auto_mode_gate;
     advertise_media_tools(&mut app);
     // Ensure plan/view-plan are visible before the gate.
     assert!(
@@ -2164,7 +2165,7 @@ fn apply_aster_slash_gate_hides_unsupported_builtins() {
     assert!(reg.get("login").is_none());
     assert!(reg.get("logout").is_none());
     assert!(reg.get("rewind").is_none());
-    assert!(!app.auto_mode_gate);
+    assert_eq!(app.auto_mode_gate, configured_auto_gate);
     // Every still-visible builtin must be on the aster effective allowlist (or a debug/easter egg).
     for cmd in crate::slash::commands::builtin_commands() {
         let name = cmd.name();
@@ -7300,9 +7301,7 @@ fn install_question_overlay(
     n_questions: usize,
 ) {
     use crate::views::question_view::QuestionViewState;
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     let questions: Vec<Question> = (0..n_questions)
         .map(|i| Question {
             question: format!("Q{i}?"),

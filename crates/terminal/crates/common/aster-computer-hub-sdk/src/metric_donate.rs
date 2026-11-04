@@ -13,8 +13,8 @@
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 
-use aster_tool_protocol::{MAX_DONATION_BYTES, MAX_METRICS_PER_DONATION};
 use arc_swap::ArcSwapOption;
+use aster_tool_protocol::{MAX_DONATION_BYTES, MAX_METRICS_PER_DONATION};
 use base64::Engine as _;
 use opentelemetry_proto::tonic::collector::metrics::v1::ExportMetricsServiceRequest;
 use opentelemetry_proto::tonic::common::v1::KeyValue;

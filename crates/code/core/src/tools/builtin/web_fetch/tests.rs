@@ -502,7 +502,16 @@ async fn a_multi_page_fetch_retains_the_full_text_for_read_and_grep() {
     assert_eq!(store.get(&uri).unwrap().content, page);
     assert_eq!(retain_full_text(&ctx, &page, &range, 0), Some(uri.clone()));
 
-    let grep = crate::tools::artifact_view::grep(&ctx, &uri, "NEEDLE", false, 0, 10);
+    let grep = crate::tools::artifact_view::grep(
+        &ctx,
+        &uri,
+        "NEEDLE",
+        false,
+        0,
+        crate::tools::builtin::grep::GrepOutputMode::Content,
+        crate::tools::pagination::PageRequest::parse(&serde_json::json!({"limit":10}), 200, 1_000)
+            .unwrap(),
+    );
     assert!(grep.success, "{}", grep.content);
     assert!(grep.content.contains("3001"), "{}", grep.content);
     let read = crate::tools::artifact_view::read_page(&ctx, &uri, 2999, 5, 0);

@@ -4,13 +4,13 @@
 use std::sync::{Arc, Mutex, MutexGuard, OnceLock};
 use std::time::Duration;
 
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_acp_lib::{
     AcpAgentGatewayReceiver as GatewayReceiver, AcpAgentGatewaySender as GatewaySender,
     LineBufferedRead,
 };
 use aster_shell::agent::config::Config as AgentConfig;
 use aster_shell::agent::mvp_agent::MvpAgent;
-use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::json;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
@@ -369,10 +369,8 @@ where
 
 /// [`run_agent_test`] with a custom `/v1/models` catalog.
 #[allow(dead_code)]
-pub fn run_agent_test_with_models<F, Fut>(
-    models: Vec<aster_test_support::MockModelEntry>,
-    body: F,
-) where
+pub fn run_agent_test_with_models<F, Fut>(models: Vec<aster_test_support::MockModelEntry>, body: F)
+where
     F: FnOnce(std::path::PathBuf, std::rc::Rc<aster_test_support::MockInferenceServer>) -> Fut,
     Fut: std::future::Future<Output = ()>,
 {
@@ -388,7 +386,9 @@ pub fn run_agent_test_with_models<F, Fut>(
         .expect("mock runtime");
     let server = std::rc::Rc::new(
         mock_rt
-            .block_on(aster_test_support::MockInferenceServer::start_with_models(models))
+            .block_on(aster_test_support::MockInferenceServer::start_with_models(
+                models,
+            ))
             .expect("mock server"),
     );
     let grok_home = tempfile::TempDir::new().expect("grok home");

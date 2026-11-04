@@ -2,14 +2,14 @@ use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 
+use agent_client_protocol as acp;
+use agent_client_protocol::Client as _;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_mcp::elicitation::{
     ElicitationInbox, ElicitationJob, cancel_result, elicit_result_from_wire,
 };
 use aster_mcp::wire::MCP_ELICIT;
 use aster_tools::mcp_elicitation::{McpElicitExtRequest, McpElicitExtResponse};
-use agent_client_protocol as acp;
-use agent_client_protocol::Client as _;
 
 use crate::session::pending_interaction::{
     PendingInteractionGuard, PendingInteractions, PendingKind,

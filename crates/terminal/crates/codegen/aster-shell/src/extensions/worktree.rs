@@ -1,7 +1,7 @@
 //! Handler for aster/git/worktree/* extension methods.
 
-use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use agent_client_protocol as acp;
+use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 
 use crate::extensions::agent_runtime::AgentRuntime;
 use crate::extensions::worktree_seed;
@@ -472,10 +472,7 @@ pub async fn handle(
         }
         "aster/git/worktree/db/stats" => {
             let result = ops
-                .dispatch(
-                    &aster_workspace::workspace_ops::WorktreeDbStatsReq {},
-                    None,
-                )
+                .dispatch(&aster_workspace::workspace_ops::WorktreeDbStatsReq {}, None)
                 .await
                 .map_err(|e| acp::Error::internal_error().data(e.to_string()))?;
             to_response(Ok(result))
@@ -492,10 +489,7 @@ pub async fn handle(
         }
         "aster/git/worktree/db/path" => {
             let result = ops
-                .dispatch(
-                    &aster_workspace::workspace_ops::WorktreeDbPathReq {},
-                    None,
-                )
+                .dispatch(&aster_workspace::workspace_ops::WorktreeDbPathReq {}, None)
                 .await
                 .map_err(|e| acp::Error::internal_error().data(e.to_string()))?;
             to_response(Ok(result))

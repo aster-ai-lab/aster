@@ -337,8 +337,7 @@ pub(crate) async fn spawn_session_actor(
     is_chat_kind: bool,
     spawn_ctx: Option<aster_telemetry::subagent_spawn::SpawnPhaseContext>,
     sampling_gate: Option<Arc<tokio::sync::Semaphore>>,
-) -> Result<(SessionInitResult, tokio::sync::oneshot::Receiver<()>), aster_agent::AgentBuildError>
-{
+) -> Result<(SessionInitResult, tokio::sync::oneshot::Receiver<()>), aster_agent::AgentBuildError> {
     if max_turns == Some(0) {
         return Err(aster_agent::AgentBuildError::InvalidConfig(
             "max_turns must be greater than 0".to_string(),
@@ -1363,9 +1362,7 @@ pub(crate) async fn spawn_session_actor(
         let scheduler_handle_for_handle = {
             let toolset = agent.tool_bridge().toolset();
             let res = toolset.resources.lock().await;
-            res.get::<
-                    aster_tools::implementations::grok_build::scheduler::types::SchedulerHandle,
-                >()
+            res.get::<aster_tools::implementations::grok_build::scheduler::types::SchedulerHandle>()
                 .cloned()
         };
         let toolset = agent.tool_bridge().toolset();
@@ -2269,11 +2266,11 @@ pub(crate) async fn spawn_session_actor(
         );
     }
     {
+        use agent_client_protocol::Client as _;
         use aster_tools::implementations::grok_build::ask_user_question::{
             AskUserQuestionExtRequest, AskUserQuestionExtResponse, UserQuestionError,
             UserQuestionResponse,
         };
-        use agent_client_protocol::Client as _;
         let gateway = session.notifications.gateway.clone();
         let session_id = session.session_info.id.clone();
         let current_prompt_mode = session.current_prompt_mode.clone();
@@ -2636,9 +2633,8 @@ pub(crate) async fn spawn_session_on_thread(
     sampling_gate: Option<Arc<tokio::sync::Semaphore>>,
     spawn_trace: Option<aster_telemetry::startup::SpawnTraceContext>,
 ) -> Result<(SessionInitResult, SessionThread), acp::Error> {
-    let (init_tx, init_rx) = tokio::sync::oneshot::channel::<
-        Result<SessionInitResult, aster_agent::AgentBuildError>,
-    >();
+    let (init_tx, init_rx) =
+        tokio::sync::oneshot::channel::<Result<SessionInitResult, aster_agent::AgentBuildError>>();
     let sid = session_info.id.0.to_string();
     let sid_prefix = match sid.get(..sid.len().min(8)) {
         Some(prefix) => prefix,

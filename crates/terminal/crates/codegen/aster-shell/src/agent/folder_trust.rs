@@ -24,8 +24,8 @@ use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 
-use aster_workspace::trust::{is_unsafe_trust_root, workspace_key};
 use agent_client_protocol as acp;
+use aster_workspace::trust::{is_unsafe_trust_root, workspace_key};
 use parking_lot::Mutex;
 
 // Decision-side (scan/decide/prompt/store) lives in `aster-workspace` (client crate)

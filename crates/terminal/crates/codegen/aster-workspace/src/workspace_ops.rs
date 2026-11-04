@@ -17,6 +17,7 @@ use crate::error::{WorkspaceError, WorkspaceResult};
 use crate::file_system::ContentSearchRequest;
 use crate::handle::WorkspaceHandle;
 use crate::worktree::{ApplyWorktreeRequest, CreateWorktreeRequest, RemoveWorktreeRequest};
+use aster_computer_hub_sdk::ToolHarness;
 use aster_tools::types::output::ToolRunResult;
 use aster_tools::types::resources::SessionFolder;
 use aster_workspace_client::{WorkspaceClient, is_transport_fatal};
@@ -66,7 +67,6 @@ pub use aster_workspace_types::rpc::worktree::{
     WorktreeGcReq, WorktreeListReq, WorktreeSalvageReq, WorktreeShowReq,
 };
 pub use aster_workspace_types::rpc::{RpcActivityClass, WorkspaceRpc};
-use aster_computer_hub_sdk::ToolHarness;
 use async_trait::async_trait;
 use base64::Engine;
 use serde::de::DeserializeOwned;
@@ -1759,7 +1759,8 @@ impl WorkspaceOps {
         session_id: Option<&str>,
     ) -> Result<ToolRunResult, aster_tool_runtime::ToolError> {
         let mut ctx = aster_tool_runtime::ToolCallContext::default();
-        ctx.call_id = aster_tool_protocol::ToolCallId::new(call_id.to_owned()).unwrap_or(ctx.call_id);
+        ctx.call_id =
+            aster_tool_protocol::ToolCallId::new(call_id.to_owned()).unwrap_or(ctx.call_id);
         self.call_tool_with_context(name, args, session_id, ctx)
             .await
     }
@@ -2039,9 +2040,8 @@ mod tests {
             unreachable!("for_test builds a local handle");
         };
         let sid = "sess-teardown";
-        let toolset = std::sync::Arc::new(
-            aster_tools::registry::types::FinalizedToolset::empty_for_test(),
-        );
+        let toolset =
+            std::sync::Arc::new(aster_tools::registry::types::FinalizedToolset::empty_for_test());
         let weak = std::sync::Arc::downgrade(&toolset);
         ops.bind_local_session(
             sid,

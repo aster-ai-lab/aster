@@ -8,11 +8,11 @@ use std::rc::Rc;
 use std::sync::Arc;
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
-use aster_workspace::file_system::{CodebaseIndexManager, FileIndex, WalkOptions};
 use aster_fsnotify::{FsEvent, FsEventKind};
 use aster_hunk_tracker::HunkTrackerHandle;
-use agent_client_protocol as acp;
+use aster_workspace::file_system::{CodebaseIndexManager, FileIndex, WalkOptions};
 use tokio::sync::mpsc;
 use tokio::time::sleep_until;
 
@@ -156,8 +156,12 @@ fn parse_diff_name_status_line(
     let path = parts.next()?;
 
     match status.chars().next()? {
-        'A' => Some(aster_codebase_graph::FileEvent::created(repo_root.join(path))),
-        'D' => Some(aster_codebase_graph::FileEvent::removed(repo_root.join(path))),
+        'A' => Some(aster_codebase_graph::FileEvent::created(
+            repo_root.join(path),
+        )),
+        'D' => Some(aster_codebase_graph::FileEvent::removed(
+            repo_root.join(path),
+        )),
         'R' | 'C' => {
             let new_path = parts.next()?;
             Some(aster_codebase_graph::FileEvent::renamed(
@@ -563,8 +567,7 @@ impl FsWatchPlan {
         });
 
         let hunk = (caps.hunk_tracking && deps.hunk_tracking_enabled).then(|| {
-            let git_root =
-                aster_workspace::session::git::find_git_root_from_path(&deps.cwd).ok();
+            let git_root = aster_workspace::session::git::find_git_root_from_path(&deps.cwd).ok();
             HunkTracking {
                 handle: deps.hunk_tracker,
                 cwd: deps.cwd.clone(),

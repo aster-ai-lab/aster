@@ -21,7 +21,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: aster-cli-v0.1.6
+  group: aster-cli-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -40,6 +40,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Require successful branch qualification for the tagged commit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -48,6 +53,11 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
+          version="$(cargo read-manifest --manifest-path apps/aster/Cargo.toml | python3 -c 'import json, sys; print(json.load(sys.stdin)["version"])')"
+          if [[ "$RELEASE_TAG" != "aster-cli-v${version}" ]]; then
+            echo "release tag $RELEASE_TAG does not match CLI $version" >&2
+            exit 1
+          fi
           successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
           if [[ "$successful_runs" -eq 0 ]]; then
             echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge Aster CLI qualification run" >&2
@@ -66,13 +76,14 @@ jobs:
         include:
           - os: macos-latest
             platform: macos
-            asset: aster-cli-v0.1.6-macos.tar.gz
+            extension: tar.gz
           - os: windows-latest
             platform: windows
-            asset: aster-cli-v0.1.6-windows.zip
+            extension: zip
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
+      CLI_ASSET_NAME: ${{ github.ref_name }}-${{ matrix.platform }}.${{ matrix.extension }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned desktop sources
@@ -120,15 +131,15 @@ jobs:
           else
             bin_dir="target/release"
           fi
-          bash scripts/package-aster-cli.sh "${{ matrix.platform }}" "$bin_dir" "${{ matrix.asset }}"
+          bash scripts/package-aster-cli.sh "${{ matrix.platform }}" "$bin_dir" "$CLI_ASSET_NAME"
       - name: Verify Windows pair installation and rollback
         if: runner.os == 'Windows'
         shell: pwsh
-        run: ./tests/cli_pair_delivery.ps1 -Archive "${{ matrix.asset }}"
+        run: ./tests/cli_pair_delivery.ps1 -Archive "${{ env.CLI_ASSET_NAME }}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-${{ matrix.platform }}
-          path: ${{ matrix.asset }}
+          path: ${{ env.CLI_ASSET_NAME }}
           if-no-files-found: error
 
   # One Linux archive covers the supported glibc 2.31 baseline and newer loaders.
@@ -144,6 +155,7 @@ jobs:
       CARGO_BUILD_JOBS: "2"
       CARGO_TERM_COLOR: always
       DEBIAN_FRONTEND: noninteractive
+      CLI_ASSET_NAME: ${{ github.ref_name }}-linux.tar.gz
     steps:
       - name: Install container build tools
         run: |
@@ -201,11 +213,11 @@ jobs:
           set -euo pipefail
           . "$HOME/.cargo/env"
           bin_dir="${CARGO_TARGET_DIR:-target}/release"
-          bash scripts/package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.6-linux.tar.gz"
+          bash scripts/package-aster-cli.sh linux "$bin_dir" "$CLI_ASSET_NAME"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-linux
-          path: aster-cli-v0.1.6-linux.tar.gz
+          path: ${{ env.CLI_ASSET_NAME }}
           if-no-files-found: error
 
   publish:
@@ -219,6 +231,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Install release verification tools
         run: brew install coreutils
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -228,7 +244,7 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Assemble draft aster-cli v0.1.6
+      - name: Assemble draft aster-cli
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

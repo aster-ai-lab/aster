@@ -295,6 +295,15 @@ impl Collection {
                 .storage
                 .lock()
                 .map_err(|_| Error::internal("storage lock poisoned"))?;
+            // A shrinking mutation can repair a snapshot that exceeds its ceiling.
+            match maybe_checkpoint(&mut storage, current, config) {
+                Ok(())
+                | Err(Error {
+                    code: ErrorCode::ResourceExhausted,
+                    ..
+                }) => {}
+                Err(error) => return Err(error),
+            }
             storage.append(revision, operation, config)?;
         }
         let mut state = self

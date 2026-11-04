@@ -120,6 +120,7 @@ async fn confirmed_usage_is_saved_before_waiting_for_host_input() {
 struct SnapshotConfirmation {
     enabled: Arc<AtomicBool>,
     frozen: Option<bool>,
+    approved: bool,
     requests: Arc<AtomicUsize>,
     snapshots: Arc<AtomicUsize>,
 }
@@ -152,8 +153,8 @@ impl ConfirmationProvider for SnapshotConfirmation {
         let (sender, receiver) = oneshot::channel();
         sender
             .send(ConfirmationResponse {
-                approved: true,
-                reason: Some("controlled approval".into()),
+                approved: self.approved,
+                reason: Some("controlled host decision".into()),
             })
             .unwrap();
         receiver
@@ -258,6 +259,7 @@ async fn owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mo
                 .with_confirmation_manager(Arc::new(SnapshotConfirmation {
                     enabled: enabled.clone(),
                     frozen: None,
+                    approved: true,
                     requests: requests.clone(),
                     snapshots: snapshots.clone(),
                 }))
@@ -313,4 +315,95 @@ async fn owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mo
         .unwrap();
     assert_eq!(result.payload["receipt"]["outcome"], "succeeded");
     assert!(sent.unwrap().is_ok());
+}
+
+#[tokio::test]
+async fn a_rejected_fact_confirmation_publishes_a_terminal_without_executing() {
+    let workspace = tempfile::tempdir().unwrap();
+    let agent = crate::Agent::from_config(test_config()).await.unwrap();
+    let executions = Arc::new(AtomicUsize::new(0));
+    let requests = Arc::new(AtomicUsize::new(0));
+    let session = agent
+        .build_session(
+            workspace.path().to_str().unwrap().to_owned(),
+            Arc::new(ScriptedClient {
+                seen: Default::default(),
+                responses: std::sync::Mutex::new(vec![tool_response(
+                    "rejected-probe",
+                    "confirmation_probe",
+                    json!({}),
+                )]),
+            }),
+            &crate::SessionOptions::new()
+                .with_session_id("rejected-confirmation-terminal")
+                .with_confirmation_manager(Arc::new(SnapshotConfirmation {
+                    enabled: Arc::new(AtomicBool::new(true)),
+                    frozen: None,
+                    approved: false,
+                    requests: requests.clone(),
+                    snapshots: Default::default(),
+                }))
+                .with_permission_policy(crate::permissions::PermissionPolicy::new())
+                .with_planning_mode(crate::PlanningMode::Disabled)
+                .with_auto_delegation_enabled(false)
+                .with_continuation(false),
+        )
+        .unwrap();
+    session
+        .register_dynamic_tool(Arc::new(ConfirmationProbe(executions.clone())))
+        .unwrap();
+    let (mut receiver, worker) = session
+        .stream("Request the controlled probe.", None)
+        .await
+        .unwrap();
+    let events = tokio::time::timeout(std::time::Duration::from_secs(15), async {
+        let mut events = Vec::new();
+        while let Some(event) = receiver.recv().await {
+            events.push(event);
+        }
+        worker.await.unwrap();
+        events
+    })
+    .await
+    .unwrap();
+    let facts = read_workspace_facts(workspace.path(), session.session_id()).unwrap();
+    session.close().await;
+    agent.close().await;
+    assert_eq!(requests.load(Ordering::SeqCst), 1);
+    assert_eq!(executions.load(Ordering::SeqCst), 0);
+    assert!(!facts
+        .iter()
+        .any(|fact| fact.kind == "tool.prepared" || fact.kind == "tool.result"));
+    let (required, rejected_id) = events
+        .iter()
+        .enumerate()
+        .find_map(|(index, event)| match event {
+            crate::AgentEvent::ConfirmationRequired {
+                tool_id, tool_name, ..
+            } if tool_name == "confirmation_probe" => Some((index, tool_id)),
+            _ => None,
+        })
+        .expect("the real confirmation must be announced");
+    let terminal: Vec<_> = events
+        .iter()
+        .enumerate()
+        .filter(|(_, event)| {
+            matches!(event,
+                crate::AgentEvent::PermissionDenied { tool_id, .. } if tool_id == rejected_id
+            )
+        })
+        .collect();
+    assert_eq!(
+        terminal.len(),
+        1,
+        "every announced rejected call needs exactly one terminal permission event"
+    );
+    assert!(required < terminal[0].0);
+    assert!(events
+        .iter()
+        .skip(terminal[0].0 + 1)
+        .any(|event| matches!(event, crate::AgentEvent::End { .. })));
+    assert!(!events.iter().any(|event| matches!(event,
+        crate::AgentEvent::ToolExecutionStart { id, .. } if id == rejected_id
+    )));
 }

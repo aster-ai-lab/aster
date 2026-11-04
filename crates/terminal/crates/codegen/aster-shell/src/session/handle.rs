@@ -3,10 +3,10 @@
 //! Callers hold a `SessionHandle` and send `SessionCommand` messages via the internal channel.
 use super::commands::SessionCommand;
 use super::persistence::{LocalFeedbackEntry, PersistenceMsg};
-use aster_sampling_types::ReasoningEffort;
+use agent_client_protocol as acp;
 use aster_file_utils::queue::UploadQueue;
 use aster_hunk_tracker::HunkTrackerHandle;
-use agent_client_protocol as acp;
+use aster_sampling_types::ReasoningEffort;
 use std::collections::{HashMap, HashSet};
 use tokio::sync::{mpsc, oneshot};
 /// Coarse lifecycle state of a session as known to the leader/agent.
@@ -144,12 +144,10 @@ pub struct SessionHandle {
     /// Typed workspace operations handle (agent sessions use local ops).
     pub workspace_ops: aster_workspace::WorkspaceOps,
     /// Subagents inherit the parent's backend so background tasks and monitors survive the subagent's exit.
-    pub terminal_backend:
-        Option<std::sync::Arc<dyn aster_tools::computer::types::TerminalBackend>>,
+    pub terminal_backend: Option<std::sync::Arc<dyn aster_tools::computer::types::TerminalBackend>>,
     /// Notification handle for this session's tool bridge.
     /// Subagents use this to reparent surviving tasks' notification handles on exit so events route to the parent's notification bridge.
-    pub tools_notification_handle:
-        Option<aster_tools::notification::types::ToolNotificationHandle>,
+    pub tools_notification_handle: Option<aster_tools::notification::types::ToolNotificationHandle>,
     /// Subagents inherit the parent's handle so scheduled tasks survive the subagent's exit.
     pub scheduler_handle:
         Option<aster_tools::implementations::grok_build::scheduler::types::SchedulerHandle>,

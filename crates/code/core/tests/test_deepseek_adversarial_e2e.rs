@@ -523,7 +523,7 @@ fn assert_workspace_contains_only(workspace: &Path, expected: &[&str]) {
         .filter_map(|entry| {
             let entry = entry.expect("read cancellation workspace entry");
             let name = entry.file_name().to_string_lossy().into_owned();
-            // Code/session private roots (`.aster`, `.aster`) and VCS state
+            // Code/session private roots (`.aster`) and VCS state
             // are created by workspace services / default security — not shell
             // side effects. The cancellation gate only cares about user-visible
             // artifacts from the cancellable command.

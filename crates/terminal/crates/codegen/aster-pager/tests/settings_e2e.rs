@@ -1746,9 +1746,7 @@ fn render_with_filter_active_and_small_viewport_clamps_scroll() {
         height: 12,
     };
     let mut buf = Buffer::empty(area);
-    aster_pager::views::settings_modal::render_settings_modal(
-        &mut buf, area, &mut s, false, None,
-    );
+    aster_pager::views::settings_modal::render_settings_modal(&mut buf, area, &mut s, false, None);
     let visible = s.filtered_indices().len();
     assert!(
         s.scroll_offset <= visible.saturating_sub(1).max(0),
@@ -1777,9 +1775,7 @@ fn render_no_matches_placeholder_includes_query() {
         height: 30,
     };
     let mut buf = Buffer::empty(area);
-    aster_pager::views::settings_modal::render_settings_modal(
-        &mut buf, area, &mut s, false, None,
-    );
+    aster_pager::views::settings_modal::render_settings_modal(&mut buf, area, &mut s, false, None);
     // Scan all cells for the substring "No matches" and "xyzzy".
     let mut all_text = String::new();
     for y in 0..area.height {
@@ -2007,9 +2003,7 @@ fn defaults_round_trip_through_registry() {
     aster_pager::appearance::cache::set_follow_up_behavior(
         aster_pager::appearance::FollowUpBehavior::Queue,
     );
-    aster_pager::appearance::cache::set_scroll_mode(
-        aster_pager::appearance::ScrollMode::Auto,
-    );
+    aster_pager::appearance::cache::set_scroll_mode(aster_pager::appearance::ScrollMode::Auto);
     aster_pager::appearance::cache::set_invert_scroll(false);
     // 3 = the registry default shown while the profile is in charge.
     aster_pager::appearance::cache::set_scroll_lines(3);

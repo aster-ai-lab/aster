@@ -5,6 +5,76 @@ use acp::Client as _;
 use tokio::io::{AsyncBufReadExt, BufReader};
 
 #[test]
+fn timing_observes_live_terminals_and_skips_replayed_execution() {
+    let root = tempfile::tempdir().unwrap();
+    let guard = timing::Guard::open(root.path()).unwrap();
+    let mut capture = Capture::default();
+    let update = |kind: &str, replay: bool| {
+        serde_json::json!({
+        "sessionId":"timing-session-private-id",
+        "update":{"sessionUpdate":kind,"subagent_id":"timing-child-private-id","description":"private-task-content"},
+        "_meta":{"isReplay":replay},
+    }).to_string()
+    };
+    for kind in [
+        "auto_compact_started",
+        "subagent_spawned",
+        "auto_compact_completed",
+        "subagent_finished",
+    ] {
+        capture.time_session_update(&update(kind, true));
+    }
+    assert!(capture.timing_compactions.is_empty() && capture.timing_subagents.is_empty());
+    capture.time_tool("timing-tool-private-id", &acp::ToolCallStatus::Pending);
+    capture.time_tool("timing-tool-private-id", &acp::ToolCallStatus::InProgress);
+    assert_eq!(capture.timing_tools.len(), 1);
+    capture.time_tool("timing-tool-private-id", &acp::ToolCallStatus::Failed);
+    for kind in ["auto_compact_started", "subagent_spawned"] {
+        capture.time_session_update(&update(kind, false));
+    }
+    assert_eq!(capture.timing_compactions.len(), 1);
+    assert_eq!(capture.timing_subagents.len(), 1);
+    for kind in ["auto_compact_completed", "subagent_finished"] {
+        capture.time_session_update(&update(kind, false));
+    }
+    assert!(capture.timing_compactions.is_empty() && capture.timing_subagents.is_empty());
+    capture.time_tool("terminal-without-start", &acp::ToolCallStatus::Completed);
+    capture.time_tool("unsettled", &acp::ToolCallStatus::InProgress);
+    drop(capture);
+    drop(guard);
+    let text = std::fs::read_to_string(root.path().join("phase-timing.jsonl")).unwrap();
+    for secret in [
+        "timing-session-private-id",
+        "timing-child-private-id",
+        "timing-tool-private-id",
+        "private-task-content",
+    ] {
+        assert!(!text.contains(secret));
+    }
+    let rows: Vec<Value> = text
+        .lines()
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    for phase in ["tool", "compaction", "subagent"] {
+        let id = match phase {
+            "tool" => "timing-tool-private-id",
+            "compaction" => "timing-session-private-id",
+            _ => "timing-child-private-id",
+        };
+        let subject = serde_json::to_value(timing::opaque_id(id)).unwrap();
+        let relevant: Vec<_> = rows
+            .iter()
+            .filter(|row| row["phase"] == phase && row["subject"] == subject)
+            .collect();
+        assert_eq!(relevant.len(), 2, "one begin and terminal for {phase}");
+        assert_eq!(relevant[0]["event"], "begin");
+        assert_eq!(relevant[1]["event"], "end");
+    }
+    assert!(rows.iter().any(|row| row["phase"] == "tool_missing_start"));
+    assert!(rows.iter().any(|row| row["phase"] == "tool_unfinished"));
+}
+
+#[test]
 fn undeclared_or_invalid_sandbox_assets_cannot_be_inherited() {
     let root = tempfile::tempdir().unwrap();
     assert!(qualified_assets(root.path(), None).unwrap().is_none());

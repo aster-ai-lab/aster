@@ -1395,7 +1395,9 @@ fn reordered_yjs_updates_survive_restart_and_converge() {
         .apply_update(Update::decode_v1(&exported.update).unwrap())
         .unwrap();
     let transaction = peer.transact();
-    let source = transaction.get_text("aster.office.markdown.source").unwrap();
+    let source = transaction
+        .get_text("aster.office.markdown.source")
+        .unwrap();
     assert_eq!(source.get_string(&transaction), "AB");
 }
 
@@ -1592,7 +1594,9 @@ fn compacted_event_history_returns_a_complete_reset_update() {
         .apply_update(Update::decode_v1(&reset.update).unwrap())
         .unwrap();
     let transaction = peer.transact();
-    let source = transaction.get_text("aster.office.markdown.source").unwrap();
+    let source = transaction
+        .get_text("aster.office.markdown.source")
+        .unwrap();
     assert_eq!(source.get_string(&transaction), "# Shared\n\nYjs to Yrs.");
 }
 

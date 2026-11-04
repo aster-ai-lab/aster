@@ -4,6 +4,9 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
+use aster_fast_worktree::{
+    ArmSkip, GroveHardFail, GroveSkip, NfsWorktreeClient, NfsWorktreeOpts, WorktreeReport,
+};
 use aster_telemetry::events::{
     CloneCancellationDisposition, CloneDaemonCapabilityClass, CloneFallbackReason, CloneOutcome,
     CloneStrategy, CloneTransport, RedirectEvent, WorktreeEnded, WorktreeLifecycle,
@@ -11,9 +14,6 @@ use aster_telemetry::events::{
 use aster_telemetry::session_ctx::log_event;
 use aster_workspace_types::rpc::worktree::{
     StrategyReport, WorktreeType, is_grove_resolved, transport_for_resolved,
-};
-use aster_fast_worktree::{
-    ArmSkip, GroveHardFail, GroveSkip, NfsWorktreeClient, NfsWorktreeOpts, WorktreeReport,
 };
 
 /// Budget for one whole drain. The fetch gets all of it and the ack gets what

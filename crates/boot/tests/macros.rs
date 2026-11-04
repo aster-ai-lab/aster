@@ -1645,12 +1645,14 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
         "extracted-raw:provider-request:provider-controller-test:/macro-cats/extracted-raw/raw-details",
     );
 
-    let extracted_body =
-        BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats/adopted/adoptions")
-            .with_json(&MacroCreateCatDto {
-                name: "Nori".to_string(),
-            })
-            .unwrap();
+    let extracted_body = BootRequest::new(
+        aster_boot::HttpMethod::Post,
+        "/macro-cats/adopted/adoptions",
+    )
+    .with_json(&MacroCreateCatDto {
+        name: "Nori".to_string(),
+    })
+    .unwrap();
     let adopted = app.call(extracted_body).await.unwrap();
     assert_eq!(adopted.status(), 201);
     assert_eq!(
@@ -1723,8 +1725,11 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let extracted_events = app
         .call(
-            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/provider-sse/events")
-                .with_header("accept", "text/event-stream"),
+            BootRequest::new(
+                aster_boot::HttpMethod::Get,
+                "/macro-cats/provider-sse/events",
+            )
+            .with_header("accept", "text/event-stream"),
         )
         .await
         .unwrap();
@@ -1902,8 +1907,11 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let piped = app
         .call(
-            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=7")
-                .with_header("x-cat-kind", "tabby"),
+            BootRequest::new(
+                aster_boot::HttpMethod::Get,
+                "/macro-cats/pipe/cat_42?page=7",
+            )
+            .with_header("x-cat-kind", "tabby"),
         )
         .await
         .unwrap();
@@ -1943,8 +1951,11 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_piped_page = app
         .call(
-            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=0")
-                .with_header("x-cat-kind", "tabby"),
+            BootRequest::new(
+                aster_boot::HttpMethod::Get,
+                "/macro-cats/pipe/cat_42?page=0",
+            )
+            .with_header("x-cat-kind", "tabby"),
         )
         .await
         .unwrap_err();
@@ -2424,7 +2435,8 @@ async fn macros_register_injectable_services_and_controller_routes() {
         json!({ "$ref": "#/components/schemas/MacroCatDto" })
     );
     assert_eq!(
-        import_operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]["example"],
+        import_operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]
+            ["example"],
         json!({ "id": "imported", "name": "Milo" })
     );
     assert_eq!(
@@ -2806,7 +2818,10 @@ async fn module_macro_registers_route_prefixes() {
     assert_eq!(app.routes()[0].path(), "/api/dogs/{id}");
 
     let response = app
-        .call(BootRequest::new(aster_boot::HttpMethod::Get, "/api/dogs/42"))
+        .call(BootRequest::new(
+            aster_boot::HttpMethod::Get,
+            "/api/dogs/42",
+        ))
         .await
         .unwrap();
     assert_eq!(

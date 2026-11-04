@@ -612,9 +612,11 @@ pub fn filter_skills(skills: Vec<SkillInfo>, ignore_paths: &[String]) -> Vec<Ski
 /// Format a skill for prompt injection (if body is populated).
 /// Injects plain markdown body — no XML envelope.
 pub(crate) fn format_skill_for_injection(skill: &SkillInfo) -> Option<String> {
-    skill.body.as_ref().filter(|b| !b.is_empty()).map(|body| {
-        aster_tools::implementations::skills::skill::build_skill_message(skill, body)
-    })
+    skill
+        .body
+        .as_ref()
+        .filter(|b| !b.is_empty())
+        .map(|body| aster_tools::implementations::skills::skill::build_skill_message(skill, body))
 }
 
 /// Format multiple skills for prompt injection.

@@ -260,6 +260,16 @@ pub trait ToolRunner: Send + Sync + 'static {
 
 pub trait Compactor: Send + Sync {
     fn compact(&self, messages: &[String]) -> BoxFuture<Result<String, ActorError>>;
+
+    /// Summarize the prefix while reserving space for the unchanged tail.
+    /// Existing adapters continue to receive only the prefix.
+    fn compact_with_tail(
+        &self,
+        messages: &[String],
+        _kept: &[String],
+    ) -> BoxFuture<Result<String, ActorError>> {
+        self.compact(messages)
+    }
 }
 
 #[derive(Clone)]
@@ -1030,7 +1040,27 @@ fn split_compact_tail(messages: &[String], keep_tokens: usize) -> (Vec<String>, 
         start_unit = previous;
     }
     let start = units[start_unit].0;
-    (messages[..start].to_vec(), messages[start..].to_vec())
+    // A large observation can be compacted while its public progress still fits.
+    let mut retained = vec![false; start];
+    for (index, line) in messages[..start].iter().enumerate().rev() {
+        if line.starts_with("assistant\n") && !line.starts_with(RECORD_PREFIX) {
+            let extra = estimate_tokens(line);
+            if used.saturating_add(extra) <= keep_tokens {
+                retained[index] = true;
+                used = used.saturating_add(extra);
+            }
+        }
+    }
+    let mut prefix = Vec::new();
+    let mut kept = Vec::new();
+    for (index, line) in messages.iter().enumerate() {
+        if index >= start || retained[index] {
+            kept.push(line.clone());
+        } else {
+            prefix.push(line.clone());
+        }
+    }
+    (prefix, kept)
 }
 
 fn duplicate_nudge(
@@ -1444,7 +1474,7 @@ fn transitions_of(
                         tokio::select! {
                             biased;
                             _ = cancel.cancelled() => Err(Exit::Interrupt),
-                            summary = services.compactor.compact(&to_summarize) => {
+                            summary = services.compactor.compact_with_tail(&to_summarize, &kept) => {
                                 let summary = summary?;
                                 let carry = carry.map_err(|error| Exit::Die(error.to_string()))?;
                                 Ok(vec![NewFact {

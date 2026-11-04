@@ -126,7 +126,10 @@ impl FlowEventStore for IndexedScheduleStore {
         Err(FlowError::Store("global history scan is forbidden".into()))
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(
+        &self,
+        now: DateTime<Utc>,
+    ) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         self.due_queries.fetch_add(1, Ordering::SeqCst);
         let mut wakeups = self
             .wakeups
@@ -171,7 +174,11 @@ struct CountingScheduleStore {
 
 #[async_trait]
 impl FlowEventStore for CountingScheduleStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -194,7 +201,10 @@ impl FlowEventStore for CountingScheduleStore {
         self.inner.list_run_ids().await
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(
+        &self,
+        now: DateTime<Utc>,
+    ) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         self.due_queries.fetch_add(1, Ordering::SeqCst);
         self.inner.list_due_wakeups(now).await
     }
@@ -330,7 +340,11 @@ struct BoundedScheduleStore {
 
 #[async_trait]
 impl FlowEventStore for BoundedScheduleStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

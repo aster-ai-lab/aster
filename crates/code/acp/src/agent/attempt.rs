@@ -53,6 +53,7 @@ impl AsterCodeAgent {
         let immediate_deadline = remaining.is_some_and(|duration| duration.is_zero());
         let mut deadline = remaining.map(|duration| Box::pin(tokio::time::sleep(duration)));
         let mut deadline_exceeded = immediate_deadline;
+        let mut worker_result = None;
         if immediate_deadline {
             tracing::warn!("run deadline reached before event delivery; cancelling the core run");
             session.cancel().await;
@@ -66,7 +67,7 @@ impl AsterCodeAgent {
                         session_id,
                         session,
                         &mut state,
-                        &mut rx,
+                        rx,
                         join,
                         turn_permit,
                     )
@@ -99,30 +100,37 @@ impl AsterCodeAgent {
                         None => break,
                     }
                 }
+                result = &mut join => {
+                    worker_result = Some(result);
+                    break;
+                }
             }
         }
         let events_drained = drain_started.elapsed();
-        // A worker that died without emitting a terminal event closed the
-        // channel above; the join result is the only remaining evidence.
-        let joined = loop {
-            let notified = self.turn_cancel.notified();
-            if self.turn_was_cancelled(&session_key, generation).await {
-                return AttemptDrive::Cancelled(
-                    self.leave_cancelled_turn(
-                        session_id,
-                        session,
-                        &mut state,
-                        &mut rx,
-                        join,
-                        turn_permit,
-                    )
-                    .await,
-                );
-            }
-            tokio::select! {
-                biased;
-                _ = notified => continue,
-                result = &mut join => break result,
+        // Background children can retain event senders after the original worker exits.
+        let joined = if let Some(result) = worker_result {
+            result
+        } else {
+            loop {
+                let notified = self.turn_cancel.notified();
+                if self.turn_was_cancelled(&session_key, generation).await {
+                    return AttemptDrive::Cancelled(
+                        self.leave_cancelled_turn(
+                            session_id,
+                            session,
+                            &mut state,
+                            rx,
+                            join,
+                            turn_permit,
+                        )
+                        .await,
+                    );
+                }
+                tokio::select! {
+                    biased;
+                    _ = notified => continue,
+                    result = &mut join => break result,
+                }
             }
         };
         let join_failure = joined.err().map(worker_join_failure);
@@ -134,6 +142,22 @@ impl AsterCodeAgent {
             );
         }
         settle_attempt_state(&mut state, join_failure.as_deref());
+        if !state.subagent_started_ms.is_empty() {
+            let tracked_session = self
+                .sessions
+                .lock()
+                .await
+                .get(&session_key)
+                .map(|live| Arc::clone(&live.session));
+            if let Some(session) = tracked_session {
+                let child_state = TurnState {
+                    subagent_started_ms: std::mem::take(&mut state.subagent_started_ms),
+                    child_progress: std::mem::take(&mut state.child_progress),
+                    ..TurnState::default()
+                };
+                self.continue_subagent_events(session_id.clone(), session, child_state, rx);
+            }
+        }
         AttemptDrive::Ended(AttemptCompletion {
             state,
             join_failure,

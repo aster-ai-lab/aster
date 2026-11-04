@@ -35,7 +35,10 @@ pub struct LocalFileFlowTaskQueue {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 struct LocalFileQueuedTask {
-    #[serde(rename = "aster_flow_partition_key", alias = "kense_flow_partition_key")]
+    #[serde(
+        rename = "aster_flow_partition_key",
+        alias = "kense_flow_partition_key"
+    )]
     partition_key: String,
     task: FlowTask,
 }

@@ -448,13 +448,14 @@ impl RlTrajectoryRecorderInner {
     fn capture_message(&self, message: &Message) -> Value {
         json!({
             "role": message.role,
-            "content": message.content.iter().map(|block| self.capture_content_block(block)).collect::<Vec<_>>(),
+            "content": message.content.iter().filter_map(|block| self.capture_content_block(block)).collect::<Vec<_>>(),
             "reasoning_content": message.reasoning_content.as_ref().map(|s| self.capture_text(s)),
         })
     }
 
-    fn capture_content_block(&self, block: &ContentBlock) -> Value {
-        match block {
+    fn capture_content_block(&self, block: &ContentBlock) -> Option<Value> {
+        Some(match block {
+            ContentBlock::GeminiState { .. } => return None,
             ContentBlock::Text { text } => json!({
                 "type": "text",
                 "text": self.capture_text(text),
@@ -483,7 +484,7 @@ impl RlTrajectoryRecorderInner {
                 "content": self.capture_text(&content.as_text()),
                 "is_error": is_error,
             }),
-        }
+        })
     }
 
     fn capture_text(&self, text: &str) -> CapturedText {

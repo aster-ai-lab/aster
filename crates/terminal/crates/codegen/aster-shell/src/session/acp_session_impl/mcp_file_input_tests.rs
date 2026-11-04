@@ -123,10 +123,11 @@ async fn fixture(
     let (persistence, _persist_rx) = tokio::sync::mpsc::unbounded_channel();
     let mut actor = create_test_actor(0, 256_000, 85, gateway, persistence).await;
     actor.hook_resolved_workspace_root = "/tmp".to_owned();
-    *actor.agent.borrow_mut() = test_agent_with_tools(vec![
-        aster_tools::registry::types::ToolConfig::for_tool::<UseTool>(),
-    ])
-    .await;
+    *actor.agent.borrow_mut() =
+        test_agent_with_tools(vec![aster_tools::registry::types::ToolConfig::for_tool::<
+            UseTool,
+        >()])
+        .await;
     let fs = Arc::new(CountingFs {
         files: MockFs::new(),
         reads: AtomicUsize::new(0),
@@ -172,9 +173,7 @@ fn install_client_hooks(actor: &SessionActor, events: &[aster_hooks::event::Hook
         actor.client_hooks.borrow_mut().insert(
             *event,
             vec![crate::extensions::hooks::ClientHookGroup {
-                matcher: Some(
-                    aster_hooks::matcher::HookMatcher::new("fixture__update").unwrap(),
-                ),
+                matcher: Some(aster_hooks::matcher::HookMatcher::new("fixture__update").unwrap()),
                 callback_ids: vec!["fixture-hook".to_owned()],
                 timeout: None,
             }],
@@ -314,11 +313,10 @@ async fn file_advertisement_requires_host_preparation_and_bounded_filesystem() {
                 fields.working_directory = dir.path().to_path_buf();
                 fields.bridge_state_path = dir.path().join("tool_state.json");
                 if case == "delegated" {
-                    fields.fs_backend =
-                        Arc::new(aster_workspace::file_system::AcpFsAdapter::new(
-                            actor.notifications.gateway.clone(),
-                            actor.session_info.id.clone(),
-                        ));
+                    fields.fs_backend = Arc::new(aster_workspace::file_system::AcpFsAdapter::new(
+                        actor.notifications.gateway.clone(),
+                        actor.session_info.id.clone(),
+                    ));
                 }
                 let mut config = ToolConfig::for_tool::<UseTool>();
                 if case != "default" {
@@ -889,8 +887,7 @@ async fn approval_preview_preserves_arguments_and_obeys_remaining_budget() {
                     let text = preview.get("tool_input").unwrap().as_str().unwrap();
                     assert!(text.ends_with(" [truncated]"));
                     assert!(
-                        text.len()
-                            <= aster_hooks::event::MAX_PAYLOAD_SIZE + " [truncated]".len()
+                        text.len() <= aster_hooks::event::MAX_PAYLOAD_SIZE + " [truncated]".len()
                     );
                 }
                 let ToolInput::UseTool(UseToolInput::Inline(input)) = input else {
@@ -1196,15 +1193,13 @@ async fn real_auth_retry_uses_one_read_and_post_hook_snapshot() {
                     &self,
                     _: aster_login::refresh::RefreshReason,
                 ) -> aster_login::refresh::RefreshOutcome {
-                    aster_login::refresh::RefreshOutcome::Success(Box::new(
-                        aster_login::GrokAuth {
-                            key: "fixture-refreshed".into(),
-                            expires_at: Some(
-                                chrono::DateTime::from_timestamp(4_102_444_800, 0).unwrap(),
-                            ),
-                            ..aster_login::GrokAuth::test_default()
-                        },
-                    ))
+                    aster_login::refresh::RefreshOutcome::Success(Box::new(aster_login::GrokAuth {
+                        key: "fixture-refreshed".into(),
+                        expires_at: Some(
+                            chrono::DateTime::from_timestamp(4_102_444_800, 0).unwrap(),
+                        ),
+                        ..aster_login::GrokAuth::test_default()
+                    }))
                 }
             }
             auth.set_refresher(Arc::new(Refresh));

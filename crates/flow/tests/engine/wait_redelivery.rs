@@ -16,7 +16,11 @@ impl CoordinatedDueStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedDueStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -39,7 +43,10 @@ impl FlowEventStore for CoordinatedDueStore {
         self.inner.list_run_ids().await
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(
+        &self,
+        now: DateTime<Utc>,
+    ) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         let due = self.inner.list_due_wakeups(now).await?;
         if !due.is_empty() {
             self.scan_barrier.wait().await;

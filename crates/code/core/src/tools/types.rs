@@ -256,6 +256,9 @@ pub struct ToolContext {
     /// `FileLog` handle over the same directory would race duplicate seqs.
     /// Absent on plain host-direct contexts, which have no Run to own.
     pub(crate) fact_log: Option<Arc<aster_effect::FileLog>>,
+    pub(crate) fact_invocation: Option<aster_effect::ToolInvocationIdentityV1>,
+    pub(crate) background_admission:
+        Option<Arc<crate::agent_api::background_tasks::BackgroundAdmission>>,
     /// Private evidence owned by one prepared invocation, never tool metadata.
     pub(crate) native_artifact_verifications:
         Option<Arc<Mutex<crate::harness_loop::MutationLedger>>>,
@@ -427,6 +430,8 @@ impl ToolContext {
             artifact_store: None,
             result_budget_bytes: None,
             fact_log: None,
+            fact_invocation: None,
+            background_admission: None,
             native_artifact_verifications: None,
             run_permission_checker: None,
             run_confirmation_manager: None,

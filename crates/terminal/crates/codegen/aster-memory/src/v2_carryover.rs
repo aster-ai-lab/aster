@@ -9,8 +9,8 @@ use std::collections::HashSet;
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
 
-use aster_tools::util::truncate_str;
 use aster_sqlite_journal::JournalMode;
+use aster_tools::util::truncate_str;
 use rusqlite::{OptionalExtension as _, params};
 
 use crate::storage::slugify;

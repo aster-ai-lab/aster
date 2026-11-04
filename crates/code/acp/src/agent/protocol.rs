@@ -6,17 +6,32 @@ impl acp::Agent for AsterCodeAgent {
         &self,
         args: acp::InitializeRequest,
     ) -> acp::Result<acp::InitializeResponse> {
+        let started = std::time::Instant::now();
         let rules = initialize_rules_from_meta(args.meta.as_ref())?;
         let permissions = ClientPermissionRules::from_meta(args.meta.as_ref())?;
+        let terminal_markdown = match args
+            .meta
+            .as_ref()
+            .and_then(|meta| meta.get("aster/terminalMarkdown"))
+        {
+            None => false,
+            Some(serde_json::Value::Bool(value)) => *value,
+            Some(_) => {
+                return Err(
+                    acp::Error::invalid_params().data("aster/terminalMarkdown must be a boolean")
+                )
+            }
+        };
         *self.client_rules.borrow_mut() = rules;
         *self.client_permissions.borrow_mut() = permissions;
+        self.client_terminal_markdown.set(terminal_markdown);
         self.client_reads_files
             .set(args.client_capabilities.fs.read_text_file);
         let cwd = self.launch.workspace.to_string_lossy().to_string();
         let current = self.model_id.lock().await.clone();
         let effort_token = self.effort.lock().await.map(|limits| limits.token);
         let model_state = self.model_state_with(&current, effort_token);
-        Ok(acp::InitializeResponse::new(acp::ProtocolVersion::V1)
+        let response = acp::InitializeResponse::new(acp::ProtocolVersion::V1)
             .agent_capabilities(
                 acp::AgentCapabilities::new()
                     .load_session(true)
@@ -41,7 +56,14 @@ impl acp::Agent for AsterCodeAgent {
                 })
                 .as_object()
                 .cloned(),
-            ))
+            );
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "initialize",
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
+        Ok(response)
     }
 
     async fn authenticate(
@@ -55,6 +77,7 @@ impl acp::Agent for AsterCodeAgent {
         &self,
         args: acp::NewSessionRequest,
     ) -> acp::Result<acp::NewSessionResponse> {
+        let started = std::time::Instant::now();
         let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
         let mut host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
             .map_err(|error| acp::Error::invalid_params().data(error))?;
@@ -154,6 +177,7 @@ impl acp::Agent for AsterCodeAgent {
         };
         let available_commands = commands::session_commands(&live.session)?;
         let tooling = session_tooling_projection(&live.session).await;
+        let usage_session = Arc::clone(&live.session);
         // A session may be resumed before its first turn triggers auto-save.
         if let Err(error) = live.session.save().await {
             live.session.close().await;
@@ -170,12 +194,19 @@ impl acp::Agent for AsterCodeAgent {
         let config_options = Self::model_config_options(&models);
         self.announce_commands(&session_id, available_commands);
         self.announce_tooling(&session_id, tooling);
-        Ok(
-            acp::NewSessionResponse::new(acp::SessionId::new(session_id))
-                .modes(modes)
-                .models(models)
-                .config_options(config_options),
-        )
+        self.announce_session_usage(&session_id, &usage_session);
+        let response = acp::NewSessionResponse::new(acp::SessionId::new(session_id))
+            .modes(modes)
+            .models(models)
+            .config_options(config_options);
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "new_session",
+            session_id = %response.session_id,
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
+        Ok(response)
     }
 
     async fn load_session(
@@ -272,6 +303,7 @@ impl acp::Agent for AsterCodeAgent {
         };
         let available_commands = commands::session_commands(&live.session)?;
         let tooling = session_tooling_projection(&live.session).await;
+        let usage_session = Arc::clone(&live.session);
         self.sessions.lock().await.insert(session_id.clone(), live);
         loading.ready();
         if let Some(goal) = goal {
@@ -293,6 +325,7 @@ impl acp::Agent for AsterCodeAgent {
         let config_options = Self::model_config_options(&models);
         self.announce_commands(&session_id, available_commands);
         self.announce_tooling(&session_id, tooling);
+        self.announce_session_usage(&session_id, &usage_session);
         Ok(acp::LoadSessionResponse::new()
             .modes(modes)
             .models(models)
@@ -538,10 +571,10 @@ impl acp::Agent for AsterCodeAgent {
                 .lock()
                 .unwrap_or_else(|p| p.into_inner()) = client_prompt_id.clone();
         }
-        if send_now {
+        {
             let client = self.client.borrow().clone();
             if let (Some(prompt_id), Some(client)) = (client_prompt_id.as_deref(), client) {
-                // The pager adopts a send-now turn from the running queue identity
+                // The pager adopts a queued turn from the running queue identity
                 // before accepting its deltas; the prompt response alone is too late.
                 let params = serde_json::value::to_raw_value(&serde_json::json!({
                     "sessionId": session_key,
@@ -582,7 +615,14 @@ impl acp::Agent for AsterCodeAgent {
                     unattended,
                 )
                 .await;
-            return self.finish_prompt(&session_key, generation, response).await;
+            return self
+                .finish_prompt(
+                    &session_key,
+                    generation,
+                    client_prompt_id.as_deref(),
+                    response,
+                )
+                .await;
         }
         let turn = crate::host_context::turn_context_from_meta(args.meta.as_ref());
         let observation = crate::run_observation::Binding::from_meta(args.meta.as_ref());
@@ -601,7 +641,7 @@ impl acp::Agent for AsterCodeAgent {
             let result = self.handle_inspection_command(&session, command).await;
             let response = match result {
                 Ok(text) => {
-                    self.emit_text(&args.session_id, &text).await;
+                    self.emit_text(&args.session_id, &text, false).await;
                     Ok(acp::PromptResponse::new(acp::StopReason::EndTurn))
                 }
                 Err(error) => Err(error),
@@ -667,8 +707,22 @@ impl acp::Agent for AsterCodeAgent {
                 _ => {}
             }
         }
+        self.emit_xai_session_update(
+            &args.session_id,
+            serde_json::json!({
+                "sessionUpdate":"model_info",
+                "sessionTotalTokens":session.recorded_usage_tokens().2
+            }),
+        )
+        .await;
         tracing::info!(target: "perf_probe", "prompt_return");
-        self.finish_prompt(&session_key, generation, response).await
+        self.finish_prompt(
+            &session_key,
+            generation,
+            client_prompt_id.as_deref(),
+            response,
+        )
+        .await
     }
 
     async fn ext_method(&self, args: acp::ExtRequest) -> acp::Result<acp::ExtResponse> {
@@ -696,6 +750,17 @@ impl acp::Agent for AsterCodeAgent {
             sessions.get(&session_key).map(|live| live.session.clone())
         };
         if let Some(session) = session {
+            let cancel_subagents = args
+                .meta
+                .as_ref()
+                .and_then(|meta| meta.get("cancelSubagents"))
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(true);
+            if cancel_subagents {
+                for task in session.pending_subagent_tasks().await {
+                    session.cancel_subagent_task(&task.task_id).await;
+                }
+            }
             let _ = session.cancel().await;
         }
         self.turn_cancel.notify_waiters();

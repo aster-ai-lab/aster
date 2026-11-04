@@ -4,6 +4,17 @@ use super::*;
 use serde_json::json;
 
 #[test]
+fn native_system_instructions_contribute_only_sizes_and_hashes() {
+    let body = json!({"system":"synthetic-private-system", "messages":[{"role":"user","content":"public fixture"}], "tools":[]});
+    let summary = RequestSummary::capture(1, &body);
+    assert!(summary.role_bytes[&Role::System] > 0);
+    assert_ne!(summary.system_sha256, hash(b"[]"));
+    assert!(!serde_json::to_string(&summary)
+        .unwrap()
+        .contains("synthetic-private-system"));
+}
+
+#[test]
 fn observations_retain_sizes_and_prefix_hashes_without_prompt_or_secret_text() {
     let system = format!("{}private-prompt-sentinel", "a".repeat(17000));
     let original = json!({"messages":[{"role":"system","content":system},{"role":"user","content":"private-user-sentinel"},{"role":"assistant","reasoning_content":"private-thought-sentinel"},{"role":"tool","content":"private-tool-output"}],"tools":[{"type":"function","function":{"name":"private-schema-sentinel"}}]});
@@ -55,4 +66,30 @@ fn unknown_roles_and_missing_messages_are_explicitly_incomplete_and_never_export
     assert!(!missing.shape_complete);
     assert_eq!(missing.message_bytes, 0);
     assert_eq!(missing.tool_schema_bytes, 0);
+}
+
+#[test]
+fn generation_measurements_record_limits_and_hash_options_without_storing_their_text() {
+    let first = serde_json::json!({"system":"stable policy","messages":[{"role":"user","content":"one"}],"max_tokens":4096,"thinking":{"type":"enabled"},"reasoning_effort":"low"});
+    let before = RequestSummary::capture(1, &first);
+    assert_eq!(before.output_token_limit, Some(4096));
+    let mut next = first.clone();
+    next["messages"][0]["content"] = serde_json::json!("two");
+    let after = RequestSummary::capture(2, &next);
+    assert_eq!(
+        before.generation_options_sha256,
+        after.generation_options_sha256
+    );
+    assert_eq!(before.system_sha256, after.system_sha256);
+    next["reasoning_effort"] = serde_json::json!("private-option-text");
+    let changed = RequestSummary::capture(3, &next);
+    assert_ne!(
+        before.generation_options_sha256,
+        changed.generation_options_sha256
+    );
+    assert!(!serde_json::to_string(&changed)
+        .unwrap()
+        .contains("private-option"));
+    next["max_tokens"] = serde_json::json!("4096");
+    assert_eq!(RequestSummary::capture(4, &next).output_token_limit, None);
 }

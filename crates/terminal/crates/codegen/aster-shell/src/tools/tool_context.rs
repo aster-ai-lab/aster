@@ -3,13 +3,13 @@
 //! The session actor needs it for non-tool operations (ACP communication, git, rewind, etc.).
 //! Tool execution goes through the ToolBridge, which has its own SessionContext from aster-tools.
 use crate::terminal::AsyncTerminalRunner;
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
+use aster_hunk_tracker::HunkTrackerHandle;
 use aster_paths::AbsPathBuf;
+use aster_tty_utils::ProcessScope;
 use aster_workspace::file_system::{AsyncFileSystem, AsyncFsWrapper};
 use aster_workspace::session::file_state::FileStateHandle;
-use aster_hunk_tracker::HunkTrackerHandle;
-use aster_tty_utils::ProcessScope;
-use agent_client_protocol as acp;
 use std::collections::HashMap;
 use std::sync::Arc;
 #[derive(Debug, Clone, Default)]
@@ -178,9 +178,9 @@ impl Drop for BlockingWaitGuard {
 pub(crate) fn subagent_foreground_wait(
     state: Arc<BlockingWaitState>,
 ) -> aster_tools::implementations::grok_build::task::types::SubagentForegroundWait {
-    aster_tools::implementations::grok_build::task::types::SubagentForegroundWait::new(
-        move || Box::new(BlockingWaitGuard::enter(Arc::clone(&state))),
-    )
+    aster_tools::implementations::grok_build::task::types::SubagentForegroundWait::new(move || {
+        Box::new(BlockingWaitGuard::enter(Arc::clone(&state)))
+    })
 }
 /// Session-level context. NOT used for tool execution (bridge handles that).
 #[derive(Clone)]
@@ -208,9 +208,8 @@ pub struct ToolContext {
             aster_tools::implementations::grok_build::task::types::SubagentEvent,
         >,
     >,
-    pub subagent_coordinator_sender: Option<
-        aster_tools::implementations::grok_build::task::backend::SubagentCoordinatorSender,
-    >,
+    pub subagent_coordinator_sender:
+        Option<aster_tools::implementations::grok_build::task::backend::SubagentCoordinatorSender>,
     /// Shared LSP runtime, cloned cheaply (Arc) from parent to child.
     pub lsp: Option<Arc<dyn aster_tools::implementations::lsp::LspBackend>>,
     /// LSP server names captured at session creation (not updated mid-session).
@@ -225,8 +224,7 @@ pub struct ToolContext {
         Option<aster_tools::implementations::grok_build::monitor::types::MonitorEventBuffer>,
     pub task_completion_reservations:
         Option<aster_tools::reminders::task_completion::TaskCompletionReservations>,
-    pub task_wake_suppressed:
-        Option<aster_tools::reminders::task_completion::TaskWakeSuppressed>,
+    pub task_wake_suppressed: Option<aster_tools::reminders::task_completion::TaskWakeSuppressed>,
     /// Channel for requesting trace uploads for synthetic auto-wake turns.
     pub(crate) synthetic_trace_tx:
         Option<tokio::sync::mpsc::UnboundedSender<crate::upload::turn::SyntheticTurnTraceRequest>>,
@@ -401,9 +399,9 @@ mod output_budget_tests {
 mod tests {
     use super::BlockingWaitState;
     use crate::{terminal::AsyncTerminalRunner, tools::ToolContext};
+    use aster_hunk_tracker::HunkTrackerHandle;
     use aster_paths::AbsPathBuf;
     use aster_workspace::file_system::{AsyncFileSystem, AsyncFsWrapper};
-    use aster_hunk_tracker::HunkTrackerHandle;
     use std::collections::HashMap;
     use std::sync::Arc;
     impl ToolContext {

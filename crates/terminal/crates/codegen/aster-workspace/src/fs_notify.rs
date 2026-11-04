@@ -7,9 +7,9 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use aster_workspace_types::WorkspaceEvent;
 use aster_codebase_graph::{FileEvent, FileEventKind, IndexManagerHandle};
 use aster_fsnotify::{FsConfig, FsEvent, FsEventKind};
+use aster_workspace_types::WorkspaceEvent;
 use tokio::sync::broadcast;
 use tokio_util::task::AbortOnDropHandle;
 
@@ -157,8 +157,12 @@ fn parse_diff_name_status_line(
     let path = parts.next()?;
 
     match status.chars().next()? {
-        'A' => Some(aster_codebase_graph::FileEvent::created(repo_root.join(path))),
-        'D' => Some(aster_codebase_graph::FileEvent::removed(repo_root.join(path))),
+        'A' => Some(aster_codebase_graph::FileEvent::created(
+            repo_root.join(path),
+        )),
+        'D' => Some(aster_codebase_graph::FileEvent::removed(
+            repo_root.join(path),
+        )),
         'R' | 'C' => {
             let new_path = parts.next()?;
             Some(aster_codebase_graph::FileEvent::renamed(

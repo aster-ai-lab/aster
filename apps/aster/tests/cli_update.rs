@@ -254,22 +254,29 @@ fn capture_pipe(
     )
 }
 
-fn capture_terminal(program: &Path, home: &Path, release: &Path) -> (i32, String) {
+fn capture_terminal(
+    program: &Path,
+    home: &Path,
+    release: &Path,
+    columns: u16,
+    term: &str,
+    args: &[&str],
+) -> (i32, String) {
     let system = portable_pty::native_pty_system();
     let pair = system
         .openpty(portable_pty::PtySize {
             rows: 40,
-            cols: 120,
+            cols: columns,
             pixel_width: 0,
             pixel_height: 0,
         })
         .expect("pty");
     let mut command = portable_pty::CommandBuilder::new(program);
-    command.arg("update");
+    command.args(args);
     command.env_clear();
     command.env("HOME", home);
     command.env("PATH", "/usr/bin:/bin:/usr/local/bin");
-    command.env("TERM", "xterm-256color");
+    command.env("TERM", term);
     command.env("ASTER_RELEASE_BASE", release);
     command.env("COPYFILE_DISABLE", "1");
     command.cwd(home);
@@ -337,53 +344,49 @@ fn strip_ansi(text: &str) -> String {
     out
 }
 
-fn fetching_fills(text: &str) -> Vec<usize> {
-    strip_ansi(text)
-        .lines()
-        .filter(|line| line.contains("fetching"))
-        .map(|line| line.chars().filter(|ch| *ch == '=').count())
-        .collect()
-}
-
-/// ascii.rest 0.4.0 `progress-bar` frames at one shared fill.
-/// Styles and the 48×11 layout are `src/pieces/progress-bar.ts`. The piece's
-/// own clock is not used: every bar shows the same received-byte fraction.
-const PROGRESS_BAR_EMPTY: &str = "                                                \n  fetching  [>                         ]    0%  \n                                                \n  unpacking ▕                          ▏    0%  \n                                                \n  indexing  [..........................]    0%  \n                                                \n  building  ░ ░ ░ ░ ░ ░ ░ ░ ░ ░ ░ ░ ░ ░     0%  \n                                                \n  linking   ────────────────────────────    0%  \n                                                ";
-const PROGRESS_BAR_FULL: &str = "                                                \n  fetching  [==========================]  100%  \n                                                \n  unpacking ▕██████████████████████████▏  100%  \n                                                \n  indexing  [##########################]  100%  \n                                                \n  building  █ █ █ █ █ █ █ █ █ █ █ █ █ █   100%  \n                                                \n  linking   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━  100%  \n                                                ";
-
 fn assert_progress(text: &str) {
-    // A PTY records the piece with CRLF. The frame itself is the 48-column text.
-    let plain = strip_ansi(text).replace('\r', "");
-    assert!(
-        plain.contains(PROGRESS_BAR_EMPTY),
-        "missing the ascii.rest progress-bar frame at 0%\n{plain}"
-    );
-    assert!(
-        plain.contains(PROGRESS_BAR_FULL),
-        "missing the ascii.rest progress-bar frame at 100%\n{plain}"
-    );
-    for label in ["fetching", "unpacking", "indexing", "building", "linking"] {
+    let plain = strip_ansi(text);
+    let mut previous = 0;
+    for phase in [
+        "Checking for updates...",
+        "Downloading",
+        "Verifying archive...",
+        "Extracting...",
+        "Verifying components...",
+        "Installing...",
+        "installed Aster",
+    ] {
+        let position = plain
+            .find(phase)
+            .unwrap_or_else(|| panic!("missing {phase}\n{plain}"));
         assert!(
-            plain.contains(label),
-            "missing progress-bar label {label}\n{plain}"
+            position >= previous,
+            "phase {phase} appeared out of order\n{plain}"
+        );
+        previous = position;
+    }
+    let percentages: Vec<u32> = plain
+        .split('\r')
+        .filter(|frame| frame.starts_with("Downloading"))
+        .filter_map(|frame| {
+            frame
+                .split_whitespace()
+                .find_map(|word| word.strip_suffix('%')?.parse().ok())
+        })
+        .collect();
+    assert_eq!(percentages.first(), Some(&0), "{plain}");
+    assert_eq!(percentages.last(), Some(&100), "{plain}");
+    assert!(
+        percentages.windows(2).all(|pair| pair[0] <= pair[1]),
+        "{percentages:?}"
+    );
+    for old_label in ["fetching", "unpacking", "indexing", "building", "linking"] {
+        assert!(
+            !plain.contains(old_label),
+            "obsolete label {old_label}\n{plain}"
         );
     }
-    assert!(plain.contains('█'), "missing block style\n{plain}");
-    assert!(plain.contains('#'), "missing hash style\n{plain}");
-    assert!(plain.contains('━'), "missing rule style\n{plain}");
-    let fills = fetching_fills(text);
-    assert!(
-        fills.len() >= 2,
-        "expected successive progress-bar frames, got {fills:?}\n{plain}"
-    );
-    assert!(
-        fills.windows(2).all(|pair| pair[0] <= pair[1]),
-        "progress-bar fill went backwards: {fills:?}"
-    );
-    assert!(
-        fills.first().copied().unwrap_or(0) < fills.last().copied().unwrap_or(0),
-        "progress-bar fill did not grow: {fills:?}"
-    );
+    assert!(!text.contains("\x1b[11A"), "{text}");
     assert!(!plain.to_ascii_lowercase().contains("press any key"));
     assert!(plain.contains(NEW_ID), "{plain}");
     assert!(
@@ -438,10 +441,28 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
         write_pair(&install, OLD_ID, true, false);
         let old_aster = fs::read(install.join("aster")).expect("old aster");
         let old_acp = fs::read(install.join("aster-acp")).expect("old acp");
-        let (code, text) = capture_terminal(&install.join("aster"), &home, &assets);
+        let columns = if index == 0 { 120 } else { 40 };
+        let (code, text) = capture_terminal(
+            &install.join("aster"),
+            &home,
+            &assets,
+            columns,
+            "xterm-256color",
+            &["update"],
+        );
         println!("CAPTURE install-{index}\n{text}");
         assert_eq!(code, 0, "{text}");
         assert_progress(&text);
+        let plain = strip_ansi(&text);
+        for frame in plain
+            .split('\r')
+            .filter(|frame| frame.starts_with("Downloading") && !frame.contains('\n'))
+        {
+            assert!(
+                frame.len() < usize::from(columns),
+                "wrapped download line: {frame}"
+            );
+        }
         assert_eq!(
             snapshot(&home),
             before_home,
@@ -456,10 +477,7 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
             fs::read(bins.join("aster-acp")).expect("fixture acp")
         );
         assert_ne!(fs::read(install.join("aster")).expect("new"), old_aster);
-        assert_ne!(
-            fs::read(install.join("aster-acp")).expect("new"),
-            old_acp
-        );
+        assert_ne!(fs::read(install.join("aster-acp")).expect("new"), old_acp);
         assert_eq!(build_id(&install.join("aster")), NEW_ID);
         assert_eq!(build_id(&install.join("aster-acp")), NEW_ID);
         let names: Vec<_> = fs::read_dir(&install)
@@ -488,6 +506,47 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
 }
 
 #[test]
+fn shipped_update_dumb_terminal_uses_plain_stage_lines() {
+    let root = temp_root("dumb");
+    let home = prepare_home(&root);
+    let bins = root.join("bins");
+    write_pair(&bins, NEW_ID, true, true);
+    let assets = root.join("assets");
+    package(&bins, &assets, FIXTURE_VERSION);
+    let install = root.join("install");
+    write_pair(&install, OLD_ID, true, false);
+    let (code, text) = capture_terminal(
+        &install.join("aster"),
+        &home,
+        &assets,
+        40,
+        "dumb",
+        &["update"],
+    );
+    assert_eq!(code, 0, "{text}");
+    assert!(!text.contains('\u{1b}'), "{text}");
+    assert!(!text.contains('%'), "{text}");
+    for stage in [
+        "Checking for updates...",
+        "Downloading...",
+        "Verifying archive...",
+        "Extracting...",
+        "Verifying components...",
+        "Installing...",
+    ] {
+        assert!(text.contains(stage), "missing {stage}: {text}");
+    }
+    assert_eq!(
+        fs::read(install.join("aster")).unwrap(),
+        fs::read(bins.join("aster")).unwrap()
+    );
+    assert_eq!(
+        fs::read(install.join("aster-acp")).unwrap(),
+        fs::read(bins.join("aster-acp")).unwrap()
+    );
+}
+
+#[test]
 fn shipped_update_check_and_current_leave_bytes() {
     let root = temp_root("check");
     let home = prepare_home(&root);
@@ -500,6 +559,19 @@ fn shipped_update_check_and_current_leave_bytes() {
     write_pair(&install, OLD_ID, true, false);
     let aster_before = fs::read(install.join("aster")).expect("aster");
     let acp_before = fs::read(install.join("aster-acp")).expect("acp");
+
+    let (tty_code, tty_json) = capture_terminal(
+        &install.join("aster"),
+        &home,
+        &assets,
+        120,
+        "xterm-256color",
+        &["update", "--check", "--json"],
+    );
+    assert_eq!(tty_code, 0, "{tty_json}");
+    assert!(!tty_json.contains('\u{1b}'), "{tty_json}");
+    let status: serde_json::Value = serde_json::from_str(&tty_json).expect("terminal JSON");
+    assert_eq!(status["updateAvailable"], true);
 
     let (code, stdout, stderr) = capture_pipe(
         &install.join("aster"),
@@ -1088,4 +1160,24 @@ fn shipped_update_rejects_a_channel_checksum_mismatch() {
     assert_eq!(build_id(&install.join("aster")), OLD_ID);
     assert_eq!(build_id(&install.join("aster-acp")), OLD_ID);
     assert_eq!(snapshot(&home), before_home);
+
+    let (tty_code, tty_output) = capture_terminal(
+        &install.join("aster"),
+        &home,
+        &assets,
+        120,
+        "xterm-256color",
+        &["update"],
+    );
+    assert_ne!(tty_code, 0, "{tty_output}");
+    let plain = strip_ansi(&tty_output);
+    assert!(
+        plain.find("100%").unwrap() < plain.find("Verifying archive...").unwrap(),
+        "{plain}"
+    );
+    assert!(plain.contains("channel checksum mismatch"), "{plain}");
+    assert!(!plain.contains("Installing..."), "{plain}");
+    assert!(!plain.contains("installed Aster"), "{plain}");
+    assert_eq!(fs::read(install.join("aster")).unwrap(), aster_before);
+    assert_eq!(fs::read(install.join("aster-acp")).unwrap(), acp_before);
 }

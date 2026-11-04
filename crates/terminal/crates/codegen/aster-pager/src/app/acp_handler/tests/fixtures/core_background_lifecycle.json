@@ -1,0 +1,57 @@
+[
+  {
+    "sessionId": "7673ca23-7339-4699-852c-e5ed17c78c43",
+    "update": {
+      "sessionUpdate": "subagent_spawned",
+      "subagent_id": "task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "parent_session_id": "7673ca23-7339-4699-852c-e5ed17c78c43",
+      "child_session_id": "task-run-task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "subagent_type": "explore",
+      "description": "Follow alpha.txt JSON chain",
+      "startedAt": 1793557798010
+    },
+    "_meta": {
+      "promptId": "5a854c0a-f4ed-49b5-9842-8a069149471c",
+      "outputLanguage": "en"
+    }
+  },
+  {
+    "sessionId": "7673ca23-7339-4699-852c-e5ed17c78c43",
+    "update": {
+      "sessionUpdate": "subagent_progress",
+      "subagent_id": "task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "parent_session_id": "7673ca23-7339-4699-852c-e5ed17c78c43",
+      "child_session_id": "task-run-task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "duration_ms": 1,
+      "turn_count": 0,
+      "tool_call_count": 0,
+      "tokens_used": 0,
+      "context_window_tokens": 128000,
+      "context_usage_pct": 0,
+      "tools_used": [],
+      "error_count": 0
+    },
+    "_meta": {
+      "promptId": "5a854c0a-f4ed-49b5-9842-8a069149471c",
+      "outputLanguage": "en",
+      "subagentBackground": true
+    }
+  },
+  {
+    "sessionId": "7673ca23-7339-4699-852c-e5ed17c78c43",
+    "update": {
+      "sessionUpdate": "subagent_finished",
+      "subagent_id": "task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "child_session_id": "task-run-task-76d0caad-a840-4a5f-b1f9-a7fae2401381",
+      "status": "completed",
+      "tool_calls": 6,
+      "turns": 7,
+      "duration_ms": 27426,
+      "tokens_used": 7542,
+      "will_wake": false,
+      "output": "{\"result\":\"ALPHA-485046233c8c468a95507b7159d01c6b\"}",
+      "completedAt": 1793557825436
+    },
+    "_meta": {}
+  }
+]

@@ -31,6 +31,53 @@ fn contract() -> VerificationContractV1 {
     VerificationContractV1::new("host-frozen-suite", SUITE, [SOURCE]).unwrap()
 }
 
+#[tokio::test]
+async fn an_exact_read_only_suite_reports_its_result_without_mutation_authority() {
+    let workspace = tempfile::tempdir().unwrap();
+    let engine = agent(workspace.path(), vec![contract()]);
+    for (code, status) in [
+        (0, VerificationStatus::Passed),
+        (1, VerificationStatus::Failed),
+    ] {
+        let mut ledger = MutationLedger::default();
+        let mut reports = Vec::new();
+        let mut metadata = Some(json!({"command": SUITE}));
+        record(
+            &engine,
+            SUITE,
+            code,
+            &mut metadata,
+            &mut ledger,
+            &mut reports,
+        )
+        .await;
+        assert_eq!(reports.len(), 1);
+        assert_eq!(reports[0].status, status);
+        assert_eq!(reports[0].effect_digest, None);
+        assert_eq!(replay_report(&metadata), reports);
+        let changed = observed_bytes(workspace.path());
+        assert!(matches!(
+            crate::harness_loop::decide_completion(&changed, &reports, &[], false),
+            CompletionGate::Incomplete { .. }
+        ));
+    }
+    for command in ["python other.py", "python -m unittest; echo $? "] {
+        let mut ledger = MutationLedger::default();
+        let mut reports = Vec::new();
+        let mut metadata = Some(json!({"command": command}));
+        record(
+            &engine,
+            command,
+            0,
+            &mut metadata,
+            &mut ledger,
+            &mut reports,
+        )
+        .await;
+        assert!(reports.is_empty());
+    }
+}
+
 fn observed_bytes(root: &Path) -> MutationLedger {
     std::fs::write(root.join(SOURCE), BYTES).unwrap();
     let mut ledger = MutationLedger::default();

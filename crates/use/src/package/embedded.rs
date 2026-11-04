@@ -254,7 +254,8 @@ pub(super) async fn acquire_capability_lease(
     if state.desired != aster_use_core::PluginDesiredState::Enabled
         || !matches!(
             state.observed,
-            aster_use_core::PluginObservedState::Ready | aster_use_core::PluginObservedState::Degraded
+            aster_use_core::PluginObservedState::Ready
+                | aster_use_core::PluginObservedState::Degraded
         )
     {
         return Ok(None);

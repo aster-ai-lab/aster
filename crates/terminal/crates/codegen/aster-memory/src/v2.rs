@@ -8,8 +8,8 @@ use std::collections::BTreeSet;
 use std::io::{Read as _, Write as _};
 use std::path::{Path, PathBuf};
 
-use aster_tools::util::truncate_str;
 use aster_sqlite_journal::JournalMode;
+use aster_tools::util::truncate_str;
 use rusqlite::params;
 
 const STATE_SCHEMA_VERSION: &str = "1";

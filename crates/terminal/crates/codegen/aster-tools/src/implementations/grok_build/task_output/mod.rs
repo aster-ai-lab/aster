@@ -794,15 +794,17 @@ impl crate::types::tool_metadata::ToolMetadata for TaskOutputTool {
         // renders it context-aware from the finalized toolset. This static
         // fallback mirrors the default aster-build toolset.
         static DESC: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
-            aster_tool_types::build_task_output_description(&aster_tool_types::TaskOutputToolNaming {
-                monitor_tool: Some("monitor"),
-                read_tool: Some("read_file"),
-                bash_background_param: Some("is_background"),
-                subagent_background_param: Some("run_in_background"),
-                task_ids_param: "task_ids",
-                timeout_ms_param: "timeout_ms",
-                task_id_param: "task_id",
-            })
+            aster_tool_types::build_task_output_description(
+                &aster_tool_types::TaskOutputToolNaming {
+                    monitor_tool: Some("monitor"),
+                    read_tool: Some("read_file"),
+                    bash_background_param: Some("is_background"),
+                    subagent_background_param: Some("run_in_background"),
+                    task_ids_param: "task_ids",
+                    timeout_ms_param: "timeout_ms",
+                    task_id_param: "task_id",
+                },
+            )
         });
         &DESC
     }

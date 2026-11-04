@@ -13,6 +13,9 @@ fn summary(config: &CodeConfig) -> Value {
         "models": config.list_models().into_iter()
             .map(|(provider, model)| format!("{}/{}", provider.name, model.id))
             .collect::<Vec<_>>(),
+        "protocols": config.providers.iter()
+            .map(|provider| (provider.name.clone(), provider.resolved_protocol().as_str()))
+            .collect::<std::collections::BTreeMap<_, _>>(),
         "explicit_account_imports": config.import_accounts.iter()
             .map(|account| account.as_str()).collect::<Vec<_>>(),
         "persistent_state_overrides": {
@@ -25,6 +28,44 @@ fn summary(config: &CodeConfig) -> Value {
         "provider_requests": 0,
         "agent_created": false,
     })
+}
+
+fn safe_failure_details(error: &anyhow::Error) -> Value {
+    let io = error
+        .chain()
+        .find_map(|cause| cause.downcast_ref::<std::io::Error>());
+    let retry = error.downcast_ref::<aster_core::llm::RetryExhaustedError>();
+    let terminal = error.downcast_ref::<aster_core::llm::NonRetryableLlmError>();
+    let core = error.downcast_ref::<aster_core::error::CodeError>();
+    json!({
+        "connection_refused": io.is_some_and(|error| error.kind() == std::io::ErrorKind::ConnectionRefused),
+        "io_kind": io.map(|error| format!("{:?}", error.kind())),
+        "retry_attempts": retry.map(aster_core::llm::RetryExhaustedError::attempts),
+        "retry_status": retry.map(aster_core::llm::RetryExhaustedError::status_code),
+        "terminal_status": terminal.and_then(aster_core::llm::NonRetryableLlmError::status),
+        "core_code": core.map(aster_core::error::CodeError::runtime_code),
+    })
+}
+
+#[test]
+fn failure_diagnostics_preserve_categories_without_exporting_payloads() {
+    let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
+        "fixture",
+        401,
+        "synthetic-secret",
+    ))
+    .context("private synthetic-secret context");
+    let details = safe_failure_details(&error);
+    assert_eq!(details["terminal_status"], 401);
+    assert!(!details.to_string().contains("synthetic-secret"));
+    let refused = safe_failure_details(
+        &std::io::Error::new(std::io::ErrorKind::ConnectionRefused, "synthetic-secret").into(),
+    );
+    assert_eq!(refused["connection_refused"], true);
+    assert!(!refused.to_string().contains("synthetic-secret"));
+    assert!(
+        safe_failure_details(&anyhow::anyhow!("synthetic-secret"))["terminal_status"].is_null()
+    );
 }
 
 #[test]
@@ -138,6 +179,7 @@ async fn selected_real_provider_health_without_account_or_session_activation() {
         }
         Ok(Err(error)) => {
             report["protocol_valid"] = false.into();
+            report["failure_details"] = safe_failure_details(&error);
             report["terminal_http_status"] = error
                 .downcast_ref::<NonRetryableLlmError>()
                 .and_then(NonRetryableLlmError::status)
@@ -153,4 +195,88 @@ async fn selected_real_provider_health_without_account_or_session_activation() {
             panic!("provider health probe exceeded its deadline");
         }
     }
+}
+
+#[path = "long_horizon/upstream.rs"]
+mod upstream;
+
+#[tokio::test]
+#[ignore = "one bounded native provider usage probe; explicit trusted config/model only; no Agent or tools"]
+async fn inspect_native_stream_usage_without_exporting_response_text() {
+    let path =
+        PathBuf::from(std::env::var_os("ASTER_CONFIG_FILE").expect("explicit trusted config"));
+    let selected = std::env::var("ASTER_LIVE_MODEL").expect("explicit model");
+    let (provider, model) = selected.split_once('/').expect("provider/model");
+    let config = CodeConfig::from_file(&path).unwrap_or_else(|_| panic!("trusted config refused"));
+    let route =
+        upstream::provider_route(config.llm_config(provider, model).expect("declared model"))
+            .await
+            .unwrap_or_else(|_| panic!("native route refused"));
+    assert_eq!(route.protocol, upstream::Protocol::Anthropic);
+    use aster_core::llm::{http::ReqwestHttpClient, HttpClient};
+    let client = ReqwestHttpClient::without_redirects().expect("bounded probe client");
+    let headers = route
+        .headers
+        .iter()
+        .map(|(name, value)| (name.as_str(), value.as_str()))
+        .collect();
+    let body = json!({"model":route.model,"max_tokens":64,"stream":true,
+        "messages":[{"role":"user","content":"Reply PONG."}]});
+    let bytes = tokio::time::timeout(std::time::Duration::from_secs(120), async {
+        let mut response = client
+            .post_streaming(
+                &route.endpoint,
+                headers,
+                &body,
+                tokio_util::sync::CancellationToken::new(),
+            )
+            .await
+            .unwrap_or_else(|_| panic!("native probe transport failed"));
+        assert_eq!(response.status, 200, "probe upstream status");
+        let mut bytes = Vec::new();
+        while let Some(chunk) =
+            std::future::poll_fn(|cx| response.byte_stream.as_mut().poll_next(cx)).await
+        {
+            let chunk = chunk.unwrap_or_else(|_| panic!("native probe body failed"));
+            assert!(bytes.len() + chunk.len() <= 65536, "probe body bound");
+            bytes.extend_from_slice(&chunk);
+        }
+        bytes
+    })
+    .await
+    .expect("native probe deadline");
+    let source = std::str::from_utf8(&bytes).expect("native SSE UTF-8");
+    let mut counters = Vec::new();
+    for data in source.lines().filter_map(|line| line.strip_prefix("data:")) {
+        let Ok(event) = serde_json::from_str::<Value>(data.trim()) else {
+            continue;
+        };
+        let usage = event
+            .get("usage")
+            .or_else(|| event.pointer("/message/usage"));
+        if let Some(usage) = usage {
+            let reported: serde_json::Map<String, Value> = [
+                "input_tokens",
+                "output_tokens",
+                "cache_read_input_tokens",
+                "cache_creation_input_tokens",
+                "total_tokens",
+            ]
+            .into_iter()
+            .filter_map(|key| {
+                usage
+                    .get(key)
+                    .filter(|v| v.is_u64())
+                    .map(|v| (key.into(), v.clone()))
+            })
+            .collect();
+            counters
+                .push(json!({"event":event.get("type").and_then(Value::as_str),"usage":reported}));
+        }
+    }
+    assert!(!counters.is_empty(), "provider must report usage");
+    println!(
+        "NATIVE_STREAM_USAGE {}",
+        json!({"model":selected,"requests":1,"output_limit":64,"events":counters,"response_text_exported":false})
+    );
 }

@@ -2162,9 +2162,11 @@ fn delete_remote_session_clears_modal_and_welcome_content_hits() {
         1,
         "optimism must not mutate committed state"
     );
-    assert!(app.workspace_membership.removal_pending_for_test(
-        &aster_dashboard_store::SessionId::new("remote-only").unwrap()
-    ));
+    assert!(
+        app.workspace_membership.removal_pending_for_test(
+            &aster_dashboard_store::SessionId::new("remote-only").unwrap()
+        )
+    );
     assert!(
         !app.workspace_membership.removal_suppressed_for_test(
             &aster_dashboard_store::SessionId::new("remote-only").unwrap()

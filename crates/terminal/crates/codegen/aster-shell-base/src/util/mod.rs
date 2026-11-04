@@ -383,7 +383,9 @@ mod tests {
     use super::*;
     #[test]
     fn test_is_cli_chat_proxy_url_accepts_proxy_subpath() {
-        assert!(is_cli_chat_proxy_url("https://api.aster/v1/chat/completions"));
+        assert!(is_cli_chat_proxy_url(
+            "https://api.aster/v1/chat/completions"
+        ));
     }
     #[test]
     fn test_is_cli_chat_proxy_url_rejects_public_api() {
@@ -407,7 +409,9 @@ mod tests {
         assert!(is_aster_api_url("https://api.aster/v1/chat/completions"));
         assert!(!is_aster_api_url("https://api.openai.com/v1"));
         assert!(!is_aster_api_url("https://api.anthropic.com/v1"));
-        assert!(!is_aster_api_url("https://generativelanguage.googleapis.com"));
+        assert!(!is_aster_api_url(
+            "https://generativelanguage.googleapis.com"
+        ));
         assert!(!is_aster_api_url("https://api.aster.evil.example/v1"));
         assert!(!is_aster_api_url("https://evil-x.ai.attacker.com/v1"));
         assert!(!is_aster_api_url("https://prefixx.ai/v1"));

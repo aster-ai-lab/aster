@@ -1,8 +1,8 @@
 use crate::session::user_message::user_query;
+use agent_client_protocol::{self as acp, ImageContent};
 use aster_workspace::file_system::{
     FileReference, render_embedded_resource, render_file_reference,
 };
-use agent_client_protocol::{self as acp, ImageContent};
 use serde::Deserialize;
 use std::ops::Range;
 use std::path::PathBuf;

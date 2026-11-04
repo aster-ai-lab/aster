@@ -84,6 +84,34 @@ pub(crate) fn preserve_newline_style<'a>(
     }
 }
 
+/// Rewrite an appended chunk into `existing`'s newline style so the join does
+/// not mix endings. Unlike [`preserve_newline_style`], the chunk may be a
+/// fragment: a CRLF file takes every bare LF as CRLF, including a leading LF
+/// that completes a `\r` ending `existing`, and the chunk may end in a bare CR.
+pub(crate) fn append_newline_style<'a>(
+    existing: &str,
+    chunk: &'a str,
+) -> std::borrow::Cow<'a, str> {
+    let settled = existing.strip_suffix('\r').unwrap_or(existing);
+    if classify_newlines(settled) != NewlineClass::Uniform(NewlineStyle::Crlf) {
+        return preserve_newline_style(existing, chunk);
+    }
+    let mut after_cr = existing.ends_with('\r');
+    let mut out = String::with_capacity(chunk.len());
+    for ch in chunk.chars() {
+        if ch == '\n' && !after_cr {
+            out.push('\r');
+        }
+        out.push(ch);
+        after_cr = ch == '\r';
+    }
+    if out.len() == chunk.len() {
+        std::borrow::Cow::Borrowed(chunk)
+    } else {
+        std::borrow::Cow::Owned(out)
+    }
+}
+
 /// Apply `old_string` -> `new_string`, treating LF and CRLF as the same break.
 ///
 /// An exact byte match wins, except a match that starts or ends inside a
@@ -268,8 +296,8 @@ fn splice(haystack: &str, spans: &[(usize, usize)], replacement: &str) -> String
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_line_ending_edit, classify_newlines, preserve_newline_style, truncate_utf8,
-        LineEndingEditError, NewlineClass, NewlineStyle,
+        append_newline_style, apply_line_ending_edit, classify_newlines, preserve_newline_style,
+        truncate_utf8, LineEndingEditError, NewlineClass, NewlineStyle,
     };
 
     #[test]
@@ -380,5 +408,28 @@ mod tests {
         );
         assert_eq!(preserve_newline_style("a\nb\r\n", "a\nc\n"), "a\nc\n");
         assert_eq!(preserve_newline_style("a\r\nb\r\n", "hello"), "hello");
+    }
+
+    #[test]
+    fn append_newline_style_extends_a_crlf_file_without_mixing() {
+        assert_eq!(append_newline_style("a\r\nb\r\n", "c\nd\n"), "c\r\nd\r\n");
+        assert_eq!(append_newline_style("a\r\n", "c\r\nd\n"), "c\r\nd\r\n");
+        assert_eq!(append_newline_style("a\r\n", "tail"), "tail");
+        assert_eq!(append_newline_style("a\r\n", "ünï\nčx\n"), "ünï\r\nčx\r\n");
+    }
+
+    #[test]
+    fn append_newline_style_handles_a_crlf_pair_split_across_chunks() {
+        assert_eq!(append_newline_style("a\r\nb\r", "\nc\n"), "\nc\r\n");
+        assert_eq!(append_newline_style("a\r\n", "b\r"), "b\r");
+    }
+
+    #[test]
+    fn append_newline_style_leaves_other_files_to_whole_text_rules() {
+        assert_eq!(append_newline_style("a\nb\n", "c\r\nd\r\n"), "c\nd\n");
+        assert_eq!(append_newline_style("a\nb\n", "c\n"), "c\n");
+        assert_eq!(append_newline_style("one line", "c\nd\n"), "c\nd\n");
+        assert_eq!(append_newline_style("", "c\nd\n"), "c\nd\n");
+        assert_eq!(append_newline_style("a\nb\r\n", "c\n"), "c\n");
     }
 }

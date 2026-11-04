@@ -724,7 +724,8 @@ mod tests {
         let media = vec![dir.path().join("images/1.jpg")];
 
         assert!(
-            local_link_to_file_target("https://github.com/aster-ai-lab/aster", &media, None).is_none()
+            local_link_to_file_target("https://github.com/aster-ai-lab/aster", &media, None)
+                .is_none()
         );
         assert!(local_link_to_file_target("mailto:a@b.c", &media, None).is_none());
         assert!(local_link_to_file_target("#section", &media, None).is_none());

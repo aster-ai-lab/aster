@@ -5850,6 +5850,34 @@ mod nested_tool_governance_tests {
         }
     }
 
+    struct BlockedEffectTool {
+        calls: Arc<AtomicUsize>,
+    }
+
+    #[async_trait]
+    impl Tool for BlockedEffectTool {
+        fn name(&self) -> &str {
+            "blocked_effect"
+        }
+
+        fn description(&self) -> &str {
+            "Records a nested member that permission must deny"
+        }
+
+        fn parameters(&self) -> serde_json::Value {
+            serde_json::json!({"type": "object", "additionalProperties": false})
+        }
+
+        async fn execute(
+            &self,
+            _args: &serde_json::Value,
+            _ctx: &ToolContext,
+        ) -> anyhow::Result<ToolOutput> {
+            self.calls.fetch_add(1, Ordering::SeqCst);
+            Ok(ToolOutput::success("blocked-effect-ran"))
+        }
+    }
+
     struct DelegatedSideEffectTool {
         calls: Arc<AtomicUsize>,
     }
@@ -6275,6 +6303,76 @@ mod nested_tool_governance_tests {
             .unwrap();
 
         assert_eq!(calls.load(Ordering::SeqCst), 0);
+    }
+
+    #[tokio::test]
+    async fn batch_keeps_allowed_members_when_one_nested_tool_is_denied() {
+        let allowed_calls = Arc::new(AtomicUsize::new(0));
+        let denied_calls = Arc::new(AtomicUsize::new(0));
+        let hermetic_root = crate::test_support::hermetic_workspace();
+        let client = Arc::new(MockLlmClient::new(vec![
+            MockLlmClient::tool_call_response(
+                "batch-partial",
+                "batch",
+                serde_json::json!({
+                    "invocations": [
+                        {"id": "ok", "tool": "side_effect", "args": {}},
+                        {"id": "blocked", "tool": "blocked_effect", "args": {}}
+                    ]
+                }),
+            ),
+            MockLlmClient::text_response("done"),
+        ]));
+        let executor = Arc::new(ToolExecutor::new(hermetic_root.display().to_string()));
+        executor.register_dynamic_tool(Arc::new(SideEffectTool {
+            calls: Arc::clone(&allowed_calls),
+        }));
+        executor.register_dynamic_tool(Arc::new(BlockedEffectTool {
+            calls: Arc::clone(&denied_calls),
+        }));
+        let agent = AgentLoop::new(
+            client,
+            executor,
+            ToolContext::new(hermetic_root.clone()),
+            AgentConfig {
+                permission_checker: Some(Arc::new(TargetPermission {
+                    target: "blocked_effect",
+                    decision: PermissionDecision::Deny,
+                })),
+                ..Default::default()
+            },
+        );
+
+        let outcome = agent
+            .execute_with_session(&[], "run batch", Some("nested-partial"), None, None)
+            .await
+            .unwrap();
+
+        assert_eq!(allowed_calls.load(Ordering::SeqCst), 1);
+        assert_eq!(denied_calls.load(Ordering::SeqCst), 0);
+        let batch_output = outcome
+            .messages
+            .iter()
+            .flat_map(|message| message.content.iter())
+            .filter_map(|block| match block {
+                crate::llm::ContentBlock::ToolResult { content, .. } => Some(content.as_text()),
+                _ => None,
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
+        assert!(
+            batch_output.contains("side-effect-ok"),
+            "allowed member result must be kept: {batch_output}"
+        );
+        assert!(
+            batch_output.contains("blocked_effect") && batch_output.contains("Permission denied"),
+            "denied member must be named: {batch_output}"
+        );
+        assert!(
+            batch_output.contains("Retry only failed indices")
+                || batch_output.contains("partial_failure"),
+            "batch must report partial failure: {batch_output}"
+        );
     }
 
     #[tokio::test]

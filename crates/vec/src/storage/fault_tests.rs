@@ -3,6 +3,7 @@ use super::test_support::{doc, schema};
 use super::{snapshot, wal, StorageHandle, WalOperation};
 use crate::config::{ConfigBuilder, Durability};
 use crate::error::ErrorCode;
+use crate::storage_ceilings::StorageCeilings;
 use tempfile::tempdir;
 
 const APPEND_FAULT_POINTS: [FaultPoint; 8] = [
@@ -191,5 +192,64 @@ fn checkpoint_recovers_at_every_snapshot_manifest_and_prune_boundary() {
         ) {
             assert!(!old_snapshot.exists(), "point={point:?}");
         }
+    }
+}
+
+#[test]
+fn periodic_full_checkpoint_recovers_at_every_existing_fault_boundary() {
+    for point in CHECKPOINT_FAULT_POINTS {
+        let temporary = tempdir().unwrap();
+        let root = temporary.path().join("checkpoint-history");
+        let schema = schema();
+        let config = ConfigBuilder::default().durability(Durability::Always);
+        let mut storage =
+            StorageHandle::create(&root, &schema, false, StorageCeilings::default()).unwrap();
+        let mut expected = Vec::new();
+        for revision in 1..=31 {
+            let item = doc(&format!("doc-{revision:03}"));
+            storage
+                .append(
+                    revision,
+                    WalOperation::Insert {
+                        docs: vec![item.clone()],
+                    },
+                    &config,
+                )
+                .unwrap();
+            expected.push(item);
+            if revision < 31 {
+                storage
+                    .checkpoint(&schema, &expected, revision, true)
+                    .unwrap();
+            }
+        }
+        assert_eq!(storage.manifest.generation, 31);
+        storage.arm_fault(point);
+        let result = storage.checkpoint(&schema, &expected, 31, true);
+        if is_prune_fault(point) {
+            result.expect("post-commit cleanup is best effort");
+        } else {
+            assert_eq!(
+                result.unwrap_err().code,
+                ErrorCode::Unavailable,
+                "{point:?}"
+            );
+        }
+        assert!(storage.fault_fired(point), "{point:?}");
+        drop(storage);
+        let (recovered, loaded_schema, loaded) =
+            StorageHandle::open(&root, false, StorageCeilings::default()).unwrap();
+        assert_eq!(loaded_schema, schema, "{point:?}");
+        assert_eq!(loaded, expected, "{point:?}");
+        assert_eq!(recovered.manifest.revision, 31, "{point:?}");
+        assert_eq!(
+            recovered.manifest.generation,
+            if manifest_was_published(point) {
+                32
+            } else {
+                31
+            },
+            "{point:?}"
+        );
     }
 }

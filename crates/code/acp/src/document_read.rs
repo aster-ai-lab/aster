@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::path::{Component, Path, PathBuf};
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use agent_client_protocol::{AgentSideConnection, Client, ExtRequest};
 use anyhow::{Context, Result};
@@ -438,7 +438,7 @@ impl DocumentBridge {
 
     pub(crate) async fn search_workspace_wikis(
         &self,
-        access: WorkspaceOperationAccess,
+        ctx: &ToolContext,
         session: &str,
         query: &str,
         scope: &str,
@@ -446,7 +446,7 @@ impl DocumentBridge {
     ) -> Result<Value> {
         self.search_saved_workspaces(
             "aster/wiki/search-workspaces",
-            access,
+            ctx,
             session,
             query,
             scope,
@@ -457,7 +457,7 @@ impl DocumentBridge {
 
     pub(crate) async fn search_workspace_memories(
         &self,
-        access: WorkspaceOperationAccess,
+        ctx: &ToolContext,
         session: &str,
         query: &str,
         scope: &str,
@@ -465,7 +465,7 @@ impl DocumentBridge {
     ) -> Result<Value> {
         self.search_saved_workspaces(
             "aster/memory/search-workspaces",
-            access,
+            ctx,
             session,
             query,
             scope,
@@ -477,16 +477,21 @@ impl DocumentBridge {
     async fn search_saved_workspaces(
         &self,
         method: &'static str,
-        access: WorkspaceOperationAccess,
+        ctx: &ToolContext,
         session: &str,
         query: &str,
         scope: &str,
         cursor: Option<&str>,
     ) -> Result<Value> {
+        let access = ctx.workspace_operation(WorkspaceOperation::Read)?;
+        let run_instance_id = ctx.capability_run_instance_id()?;
         let cancellation = access.cancellation()?;
+        let started = Instant::now();
+        let mut scope_id = None;
+        let mut response_bytes = None;
         let (reply, result) = oneshot::channel();
         let work = async {
-            access.check()?;
+            scope_id = Some(access.check()?.scope_id().clone());
             self.sender.send(Call {access:Some(access.clone()),kind:CallKind::Ext {
                 method,
                 params:json!({"sessionId":session,"query":query,"scope":scope,"cursor":cursor}),
@@ -499,17 +504,34 @@ impl DocumentBridge {
                 anyhow::bail!("invalid workspace search response")
             };
             access.check()?;
+            let bytes = serde_json::to_vec(&value)?.len();
+            response_bytes = Some(bytes);
             anyhow::ensure!(
-                serde_json::to_vec(&value)?.len() <= TEXT_LIMIT,
+                bytes <= TEXT_LIMIT,
                 "workspace search response exceeds 64 KiB"
             );
             Ok(value)
         };
-        tokio::select! {
+        let response = tokio::select! {
             biased;
-            _=cancellation.cancelled()=>anyhow::bail!("workspace search cancelled"),
-            value=tokio::time::timeout(CALL_TIMEOUT,work)=>value.context("workspace search timed out")?,
-        }
+            _ = cancellation.cancelled() => Err(anyhow::anyhow!("workspace search cancelled")),
+            value = tokio::time::timeout(CALL_TIMEOUT, work) => {
+                value.context("workspace search timed out").and_then(std::convert::identity)
+            },
+        };
+        tracing::debug!(
+            target: "aster_acp::retrieval_phase",
+            phase = "host_workspace_search",
+            session_id = session,
+            run_instance_id = %run_instance_id,
+            scope_id = scope_id.as_ref().map(|id| id.as_str()),
+            method,
+            elapsed_ms = started.elapsed().as_secs_f64() * 1000.0,
+            success = response.is_ok(),
+            response_bytes,
+            "ACP phase completed"
+        );
+        response
     }
 }
 

@@ -1,5 +1,6 @@
 use super::{direct_origin, read_projection};
 use aster_telemetry::events::{ReadLimitKind, ReadSkillMatch};
+use aster_tool_runtime::Tool;
 use aster_tools::implementations::grok_build::ReadFileTool;
 use aster_tools::types::source_summary::{
     CapApplicability, CapDisposition, ReadDetail, ReadLimitSlot, ReadRole, ToolSourceDetail,
@@ -7,7 +8,6 @@ use aster_tools::types::source_summary::{
 };
 use aster_tools::types::tool::ToolNamespace;
 use aster_tools::types::tool_call_origin::InvocationSource;
-use aster_tool_runtime::Tool;
 
 #[test]
 fn system_origin_leaves_the_model_absent_unless_it_is_known() {

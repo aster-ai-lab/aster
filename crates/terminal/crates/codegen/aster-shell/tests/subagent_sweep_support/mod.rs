@@ -5,6 +5,7 @@
 
 use std::time::{Duration, Instant};
 
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_shell::waterfall;
 use aster_test_support::mock_server::LogEntry;
 use aster_test_support::{
@@ -12,7 +13,6 @@ use aster_test_support::{
     ScriptedResponse, SseEvent,
 };
 use aster_test_utils::env::env_usize;
-use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::{Value, json};
 use tempfile::TempDir;
 

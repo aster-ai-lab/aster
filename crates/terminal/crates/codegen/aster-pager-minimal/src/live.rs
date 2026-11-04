@@ -620,9 +620,8 @@ fn render_config_status_line(
         });
     }
     if let Some(display) = frame.display() {
-        let _ = aster_pager::views::status_line::render_status_line(
-            buf, area, display, padding, theme,
-        );
+        let _ =
+            aster_pager::views::status_line::render_status_line(buf, area, display, padding, theme);
     }
 }
 /// Idle status: `minimal · [/fullscreen to go back ·] /help`, plus the auto-set note.

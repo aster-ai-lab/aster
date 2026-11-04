@@ -52,7 +52,7 @@ pub enum Command {
     Exec(crate::env_manager_cmd::ExecArgs),
     /// Print shell activation for managed tools and env vars
     Activate(crate::env_manager_cmd::ActivateArgs),
-    /// Forward to the `aster-use` package manager binary
+    /// Manage packages, plugins and registry sources
     Use(crate::env_manager_cmd::UseForwardArgs),
     /// Manage cross-session memory
     Memory(crate::memory_cmd::MemoryArgs),
@@ -997,10 +997,7 @@ impl PagerArgs {
         }
         match self.resume_target() {
             ResumeTarget::SessionId(id) => {
-                aster_shell::session::persistence::resumed_session_sandbox_profile(
-                    Some(&id),
-                    cwd,
-                )
+                aster_shell::session::persistence::resumed_session_sandbox_profile(Some(&id), cwd)
             }
             ResumeTarget::MostRecentForCwd => {
                 aster_shell::session::persistence::resolve_recent_session_sandbox_profile(

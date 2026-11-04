@@ -105,7 +105,10 @@ async fn default_append_validated_pages_history_instead_of_unbounded_list() {
                 run_id,
                 2 + index as u64,
                 FlowEvent::RunProgressRecorded {
-                    progress: aster_flow::WorkflowProgress::new(format!("pad-{index}"), index as u64),
+                    progress: aster_flow::WorkflowProgress::new(
+                        format!("pad-{index}"),
+                        index as u64,
+                    ),
                 },
             )
             .await

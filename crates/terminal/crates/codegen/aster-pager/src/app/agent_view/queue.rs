@@ -132,6 +132,10 @@ impl AgentView {
         self.expect_send_now_cancel
             .as_deref()
             .is_some_and(|id| self.session.current_prompt_id.as_deref() != Some(id))
+            || self.send_now_painted_blocks.keys().any(|id| {
+                self.session.current_prompt_id.as_deref() != Some(id.as_str())
+                    && !self.is_send_now_awaiting_interjection_claim(id)
+            })
     }
 
     /// Clear both send-now expectations (failure, interactive cancel, or reload).

@@ -43,3 +43,6 @@ mod selection_tests;
 #[cfg(test)]
 #[path = "mcp_entry_tests.rs"]
 mod mcp_entry_tests;
+
+#[cfg(test)]
+mod owned_tests;

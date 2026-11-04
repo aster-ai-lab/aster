@@ -3015,7 +3015,9 @@ mod extensions_action_target_tests {
     fn row_scoped_keys_stay_silent_when_the_list_has_no_rows() {
         let mut no_plugins = ExtensionsModalState::new(ExtensionsTab::Plugins);
         no_plugins.plugins_data =
-            TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse { plugins: vec![] });
+            TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse {
+                plugins: vec![],
+            });
         let mut all_filtered_out = ExtensionsModalState::new(ExtensionsTab::Plugins);
         all_filtered_out.plugins_data =
             TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse {
@@ -3025,7 +3027,9 @@ mod extensions_action_target_tests {
         let marketplace = |sources| {
             let mut modal = ExtensionsModalState::new(ExtensionsTab::Marketplace);
             modal.marketplace_data =
-                TabDataState::Loaded(aster_hooks_plugins_types::MarketplaceListResponse { sources });
+                TabDataState::Loaded(aster_hooks_plugins_types::MarketplaceListResponse {
+                    sources,
+                });
             modal
         };
         let source = |error: Option<&str>| aster_hooks_plugins_types::MarketplaceScanResult {
@@ -4356,9 +4360,10 @@ mod extensions_modal_confirmation_tests {
         mcp.picker_state.selected = 0;
 
         let mut plugins = ExtensionsModalState::new(ExtensionsTab::Plugins);
-        plugins.plugins_data = TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse {
-            plugins: vec![plugin_info("my-plugin")],
-        });
+        plugins.plugins_data =
+            TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse {
+                plugins: vec![plugin_info("my-plugin")],
+            });
         plugins.entry_data_indices = vec![Some(0)];
         plugins.entry_group_keys = vec![None];
         plugins.picker_state.selected = 0;
@@ -4444,9 +4449,11 @@ mod extensions_modal_confirmation_tests {
                 modal: hooks,
                 button: ButtonAction::RemoveSelectedHook,
                 message_sub: format!("Remove hook source \"{hook_label}\"?"),
-                expected: ConfirmationAction::Hooks(aster_hooks_plugins_types::HooksAction::Remove {
-                    path: source.into(),
-                }),
+                expected: ConfirmationAction::Hooks(
+                    aster_hooks_plugins_types::HooksAction::Remove {
+                        path: source.into(),
+                    },
+                ),
                 row: 0,
             },
         ]

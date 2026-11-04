@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use aster_file_utils::storage_client::StorageClient;
 use anyhow::{Result, bail};
+use aster_file_utils::storage_client::StorageClient;
 
 use crate::agent::session_registry_client::{SessionRecord, SessionRegistryClient};
 

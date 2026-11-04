@@ -120,6 +120,9 @@ pub enum ProviderProtocol {
     Codex,
     /// OpenAI Responses API (non-account).
     OpenaiResponses,
+    /// Explicit native Gemini GenerateContent and model-addressed SSE.
+    /// Legacy provider nicknames retain their previous default protocol.
+    Gemini,
 }
 
 impl ProviderProtocol {
@@ -131,8 +134,9 @@ impl ProviderProtocol {
             "cursor" => Ok(Self::Cursor),
             "codex" => Ok(Self::Codex),
             "openai-responses" => Ok(Self::OpenaiResponses),
+            "gemini" => Ok(Self::Gemini),
             other => Err(format!(
-                "unknown provider protocol {other:?} (closed set: openai, anthropic, glm, kimi, cursor, codex, openai-responses)"
+                "unknown provider protocol {other:?} (closed set: openai, anthropic, glm, kimi, cursor, codex, openai-responses, gemini)"
             )),
         }
     }
@@ -145,6 +149,7 @@ impl ProviderProtocol {
             Self::Cursor => "cursor",
             Self::Codex => "codex",
             Self::OpenaiResponses => "openai-responses",
+            Self::Gemini => "gemini",
         }
     }
 

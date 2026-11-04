@@ -1,13 +1,12 @@
 use super::context::RecallCandidate;
 use super::semantic::SemanticRecallCandidate;
 use super::DurableMemoryRecallChannel;
-use std::collections::BTreeMap;
-
-const RRF_K: f32 = 60.0;
+use crate::rank_fusion::RankFusion;
 
 pub(super) fn fuse_lexical_semantic(
     lexical: Vec<RecallCandidate>,
     semantic: Vec<SemanticRecallCandidate>,
+    linear: bool,
 ) -> Vec<RecallCandidate> {
     if semantic.is_empty() {
         return lexical;
@@ -24,67 +23,56 @@ pub(super) fn fuse_lexical_semantic(
             .collect();
     }
 
-    struct FusionEntry {
-        candidate: RecallCandidate,
-        reciprocal_rank: f32,
-        lexical: bool,
-        semantic: bool,
-    }
-
-    let mut entries = BTreeMap::<String, FusionEntry>::new();
+    let mut fusion = RankFusion::<_, _, f32>::new();
     for (index, candidate) in lexical.into_iter().enumerate() {
-        let contribution = reciprocal_rank(index);
-        entries.insert(
+        fusion.add_with_score(
             candidate.node.id.clone(),
-            FusionEntry {
-                candidate,
-                reciprocal_rank: contribution,
-                lexical: true,
-                semantic: false,
-            },
+            DurableMemoryRecallChannel::Lexical,
+            index + 1,
+            linear.then_some(candidate.score),
+            candidate,
+            |_, _| {},
         );
     }
     for (index, semantic) in semantic.into_iter().enumerate() {
-        let contribution = reciprocal_rank(index);
-        match entries.get_mut(&semantic.node.id) {
-            Some(entry) => {
-                entry.reciprocal_rank += contribution;
-                entry.semantic = true;
+        fusion.add_with_score(
+            semantic.node.id.clone(),
+            DurableMemoryRecallChannel::Semantic,
+            index + 1,
+            linear.then_some(semantic.score),
+            RecallCandidate {
+                node: semantic.node,
+                score: semantic.score,
+                channel: DurableMemoryRecallChannel::Semantic,
+                related_from: None,
+            },
+            |current, later| {
                 // Semantic candidates were re-read from the repository after
                 // lexical search, so prefer that later verified revision.
-                entry.candidate.node = semantic.node;
-            }
-            None => {
-                entries.insert(
-                    semantic.node.id.clone(),
-                    FusionEntry {
-                        candidate: RecallCandidate {
-                            node: semantic.node,
-                            score: semantic.score,
-                            channel: DurableMemoryRecallChannel::Semantic,
-                            related_from: None,
-                        },
-                        reciprocal_rank: contribution,
-                        lexical: false,
-                        semantic: true,
-                    },
-                );
-            }
-        }
+                current.node = later.node;
+            },
+        );
     }
-    let maximum = entries
+    let maximum = fusion
         .values()
-        .map(|entry| entry.reciprocal_rank)
+        .map(|entry| entry.score())
         .max_by(f32::total_cmp)
         .unwrap_or(1.0);
-    let mut fused = entries
-        .into_values()
-        .map(|entry| {
-            let mut candidate = entry.candidate;
-            candidate.score = (entry.reciprocal_rank / maximum).clamp(0.0, 1.0);
-            candidate.channel = if entry.lexical && entry.semantic {
+    let mut fused = fusion
+        .into_entries()
+        .map(|(_, entry)| {
+            let score = entry.score();
+            let lexical = entry.rank(DurableMemoryRecallChannel::Lexical).is_some();
+            let semantic = entry.rank(DurableMemoryRecallChannel::Semantic).is_some();
+            let (mut candidate, _) = entry.into_parts();
+            candidate.score = if maximum > 0.0 {
+                (score / maximum).clamp(0.0, 1.0)
+            } else {
+                0.0
+            };
+            candidate.channel = if lexical && semantic {
                 DurableMemoryRecallChannel::Hybrid
-            } else if entry.lexical {
+            } else if lexical {
                 DurableMemoryRecallChannel::Lexical
             } else {
                 DurableMemoryRecallChannel::Semantic
@@ -106,6 +94,6 @@ pub(super) fn fuse_lexical_semantic(
     fused
 }
 
-fn reciprocal_rank(index: usize) -> f32 {
-    1.0 / (RRF_K + index as f32 + 1.0)
-}
+#[cfg(test)]
+#[path = "fusion_tests.rs"]
+mod tests;

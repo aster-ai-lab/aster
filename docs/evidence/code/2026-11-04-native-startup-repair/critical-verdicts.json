@@ -1,0 +1,37 @@
+[
+  {
+    "case": "holdout",
+    "result": "docs/evidence/code/2026-11-02-summary-input-retention/independent8k-20261104-native-followup-1-live/deloop-independent-records-b2873446-212d-4a4f-88c2-97be813e4298/result.json",
+    "pass": true,
+    "artifactCorrect": true,
+    "versions": 5,
+    "reads": 5,
+    "compactions": 3,
+    "boundVerifiedOutcome": true,
+    "toolsTerminal": true,
+    "elapsedMs": 325185,
+    "upstreamCalls": 17,
+    "transportFailures": 0,
+    "protectedResponseFailures": 0,
+    "outputLimit": 8192
+  },
+  {
+    "case": "feed",
+    "result": "docs/evidence/code/2026-11-02-summary-input-retention/independent8k-20261104-native-followup-1-live/deloop-changing-feed-6a10830f-abf1-4374-b672-95b0955fa61e/result.json",
+    "pass": false,
+    "artifactCorrect": false,
+    "versions": 7,
+    "reads": 7,
+    "compactions": 8,
+    "boundVerifiedOutcome": false,
+    "toolsTerminal": true,
+    "elapsedMs": 600066,
+    "upstreamCalls": 21,
+    "transportFailures": 0,
+    "protectedResponseFailures": 0,
+    "outputLimit": 8192,
+    "failure": {
+      "Err": "prompt_timeout"
+    }
+  }
+]

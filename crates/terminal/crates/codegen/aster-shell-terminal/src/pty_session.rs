@@ -825,8 +825,8 @@ mod tests {
     use std::rc::Rc;
     use std::time::Duration;
 
-    use aster_acp_lib::acp_gateway;
     use agent_client_protocol as acp;
+    use aster_acp_lib::acp_gateway;
 
     type RecordedNotifications = Rc<RefCell<Vec<(String, serde_json::Value)>>>;
 

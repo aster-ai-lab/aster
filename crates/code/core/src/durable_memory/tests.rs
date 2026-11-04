@@ -767,6 +767,7 @@ fn fuse_lexical_semantic_covers_empty_semantic_lexical_and_hybrid() {
             related_from: None,
         }],
         Vec::new(),
+        false,
     );
     assert_eq!(lexical_only.len(), 1);
     assert_eq!(lexical_only[0].channel, DurableMemoryRecallChannel::Lexical);
@@ -777,6 +778,7 @@ fn fuse_lexical_semantic_covers_empty_semantic_lexical_and_hybrid() {
             node: node("sem-1", 2),
             score: 0.8,
         }],
+        false,
     );
     assert_eq!(semantic_only.len(), 1);
     assert_eq!(
@@ -795,6 +797,7 @@ fn fuse_lexical_semantic_covers_empty_semantic_lexical_and_hybrid() {
             node: node("shared", 3),
             score: 0.95,
         }],
+        false,
     );
     assert_eq!(hybrid.len(), 1);
     assert_eq!(hybrid[0].channel, DurableMemoryRecallChannel::Hybrid);

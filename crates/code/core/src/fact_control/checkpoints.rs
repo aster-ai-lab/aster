@@ -130,6 +130,15 @@ pub(super) fn checkpoint_messages_from_facts(facts: &[aster_effect::Fact]) -> Ve
         .iter()
         .rposition(|fact| fact.kind == "compaction.done")
         .map_or(0, |index| index + 1);
+    transcript_messages_from(facts, start)
+}
+
+/// Original observations only; compaction summaries are derived views.
+pub(crate) fn original_public_transcript_from_facts(facts: &[aster_effect::Fact]) -> String {
+    crate::compaction::public_compaction_transcript(&transcript_messages_from(facts, 0))
+}
+
+fn transcript_messages_from(facts: &[aster_effect::Fact], start: usize) -> Vec<Message> {
     let mut messages = compaction_transcript_from_facts(&facts[..start]);
     for (index, fact) in facts.iter().enumerate().skip(start) {
         let message = match fact.kind.as_str() {

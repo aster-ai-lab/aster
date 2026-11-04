@@ -1,6 +1,36 @@
 #![cfg(test)]
 use super::*;
 
+#[test]
+fn native_options_require_strong_wal_acknowledgements() {
+    let options = memory_collection_options().unwrap();
+    assert_eq!(options.durability(), Some(Durability::Always));
+}
+
+#[test]
+fn rrf_ties_use_the_documented_first_channel_rank() {
+    for _ in 0..64 {
+        let hits = rrf_merge(
+            vec![("lexical-first".into(), 0.7)],
+            vec![("semantic-first".into(), 0.9)],
+            1,
+        );
+        assert_eq!(hits.len(), 1);
+        assert_eq!(hits[0].0, "lexical-first");
+    }
+}
+
+#[test]
+fn rrf_counts_each_id_once_per_channel() {
+    let hits = rrf_merge(
+        vec![("repeated".into(), 0.7), ("repeated".into(), 0.6)],
+        vec![("other".into(), 0.9)],
+        2,
+    );
+    assert_eq!(hits.len(), 2);
+    assert_eq!(hits[0].1, hits[1].1);
+}
+
 #[tokio::test]
 async fn lazy_store_opens_on_first_search_and_imports_legacy_json_once() {
     let root = tempfile::tempdir().unwrap();
@@ -232,8 +262,8 @@ async fn concurrent_lazy_first_use_shares_one_open_and_retries_a_failed_open() {
     assert_eq!(left.unwrap().unwrap(), 1);
     assert_eq!(right.unwrap().unwrap(), 1);
     assert!(Arc::ptr_eq(
-        first.store.get().unwrap(),
-        second.store.get().unwrap()
+        first.store.get().unwrap().0.as_ref().unwrap(),
+        second.store.get().unwrap().0.as_ref().unwrap()
     ));
     assert!(memory_dir.join("items.imported").is_dir());
     assert!(!legacy_items.exists());

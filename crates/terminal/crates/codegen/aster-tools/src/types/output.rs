@@ -1200,7 +1200,9 @@ impl aster_tool_runtime::ToolOutput for ToolOutput {
     fn chat_completion_output(&self) -> Option<aster_tool_runtime::ToolChatCompletionResponse> {
         match self {
             Self::Bash(bash) => aster_tool_runtime::ToolOutput::chat_completion_output(bash),
-            Self::SearchReplace(edit) => aster_tool_runtime::ToolOutput::chat_completion_output(edit),
+            Self::SearchReplace(edit) => {
+                aster_tool_runtime::ToolOutput::chat_completion_output(edit)
+            }
             _ => None,
         }
     }
@@ -2987,7 +2989,8 @@ mod tests {
             0,
             false,
         );
-        let dropped = aster_tool_runtime::TypedToolOutput::from_value(typed.tool_id, expected_value);
+        let dropped =
+            aster_tool_runtime::TypedToolOutput::from_value(typed.tool_id, expected_value);
         assert!(dropped.chat_completion_output.is_none());
     }
     #[test]

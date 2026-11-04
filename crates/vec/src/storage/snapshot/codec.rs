@@ -24,11 +24,12 @@ pub(super) fn encode_binary_snapshot(
 ) -> Result<Vec<u8>, rmp_serde::encode::Error> {
     let mut encoded = Vec::with_capacity(docs.len());
     docs.for_each(&mut |doc| encoded.push(BorrowedDoc::from_doc(doc)));
+    let schema = schema.canonicalized();
     let snapshot = BorrowedSnapshot {
         format_version,
         generation,
         revision,
-        schema,
+        schema: &schema,
         docs: &encoded,
     };
     rmp_serde::to_vec(&snapshot)
@@ -221,7 +222,7 @@ impl DeltaSnapshot {
             format_version,
             generation,
             revision,
-            schema: schema.clone(),
+            schema: schema.canonicalized(),
             base_generation,
             base_checksum,
             removed,

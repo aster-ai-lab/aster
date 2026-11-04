@@ -2,8 +2,8 @@
 
 use std::path::{Path, PathBuf};
 
-use aster_shell::session::persistence::list_recent_summaries;
 use aster_file_utils::workspace_classifier::is_project_dir;
+use aster_shell::session::persistence::list_recent_summaries;
 use chrono::{DateTime, Utc};
 
 pub async fn collect_recent_dirs(limit: usize) -> Vec<(PathBuf, DateTime<Utc>)> {

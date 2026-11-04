@@ -316,7 +316,10 @@ fn for_session_builds_only_for_aster_issuer() {
         oidc_issuer: Some(ASTER_OAUTH2_ISSUER.to_string()),
         ..test_auth("ext-bearer")
     };
-    assert!(external_aster.is_aster_auth(), "precondition: is_aster_auth");
+    assert!(
+        external_aster.is_aster_auth(),
+        "precondition: is_aster_auth"
+    );
     assert!(builds(&external_aster));
     assert!(!builds(&GrokAuth {
         key: String::new(),

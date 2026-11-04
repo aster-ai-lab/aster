@@ -95,10 +95,7 @@ impl SessionCreatePrefetch {
         Self {
             cwd: PathBuf::new(),
             scan: TrustScan::skipped(),
-            plugin_handle: aster_agent::plugins::SharedPluginRegistryHandle::new(
-                None,
-                Vec::new(),
-            ),
+            plugin_handle: aster_agent::plugins::SharedPluginRegistryHandle::new(None, Vec::new()),
             session_plugin_dirs: Vec::new(),
             reconciled: Some(true),
             plugins: PrefetchSlot::ready(plugin_registry),
@@ -153,10 +150,7 @@ impl SessionCreatePrefetch {
         Self {
             cwd: PathBuf::new(),
             scan,
-            plugin_handle: aster_agent::plugins::SharedPluginRegistryHandle::new(
-                None,
-                Vec::new(),
-            ),
+            plugin_handle: aster_agent::plugins::SharedPluginRegistryHandle::new(None, Vec::new()),
             session_plugin_dirs: Vec::new(),
             reconciled: Some(true),
             plugins: PrefetchSlot::spawn(plugins),

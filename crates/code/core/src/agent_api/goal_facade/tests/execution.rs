@@ -15,7 +15,9 @@ mod cumulative;
 mod deadline;
 mod evidence;
 mod feedback;
+mod language;
 mod novelty;
+mod planning;
 mod recovery_limits;
 mod refusal;
 mod review_binding;
@@ -30,6 +32,7 @@ struct GoalClient {
     calls: AtomicUsize,
     stall_at: AtomicUsize,
     inputs: Mutex<Vec<String>>,
+    systems: Mutex<Vec<String>>,
     scripted: Mutex<std::collections::VecDeque<LlmResponse>>,
     before_response: Mutex<Option<ResponseHook>>,
 }
@@ -43,6 +46,10 @@ impl LlmClient for GoalClient {
         _: &[ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         let call = self.calls.fetch_add(1, Ordering::SeqCst) + 1;
+        self.systems
+            .lock()
+            .unwrap()
+            .push(system.unwrap_or_default().to_owned());
         if let Some(hook) = self.before_response.lock().unwrap().as_ref() {
             hook(call);
         }

@@ -388,7 +388,9 @@ async fn failing_provider_surfaces_errors_and_metrics() {
             _filter: Option<&str>,
             _limit: usize,
         ) -> aster_event::Result<Vec<Event>> {
-            Err(aster_event::EventError::Provider("history down".to_string()))
+            Err(aster_event::EventError::Provider(
+                "history down".to_string(),
+            ))
         }
         async fn unsubscribe(&self, _name: &str) -> aster_event::Result<()> {
             Ok(())

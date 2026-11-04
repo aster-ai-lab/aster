@@ -12,6 +12,81 @@ fn agent_ref(app: &AppView, id: AgentId) -> &AgentView {
     agent
 }
 
+#[test]
+fn send_now_feedback_survives_the_previous_response_and_repeated_handoffs() {
+    use crate::acp::tracker::{TurnActivity, WaitingReason};
+    use crate::scrollback::render::ScratchBuffer;
+    use ratatui::{buffer::Buffer, layout::Rect};
+
+    for count in [1, 2] {
+        let mut app = test_app_with_agent();
+        let id = AgentId(0);
+        dispatch(Action::SendPrompt("first".into()), &mut app);
+        app.agents.get_mut(&id).unwrap().front_message_committed = true;
+        let mut prompts = Vec::new();
+        for index in 0..count {
+            let effects = dispatch(
+                Action::SendPromptNow {
+                    text: format!("follow-up-{index}"),
+                    images: vec![],
+                    image_notice: None,
+                },
+                &mut app,
+            );
+            let [Effect::SendPromptNow { prompt_id, .. }] = effects.as_slice() else {
+                panic!("send-now must dispatch once: {effects:?}");
+            };
+            prompts.push(prompt_id.clone());
+        }
+        dispatch(cancelled_prompt_response(id, None), &mut app);
+        assert!(agent_ref(&app, id).session.state.is_idle());
+        assert!(agent_ref(&app, id).expect_send_now_cancel.is_none());
+        assert!(agent_ref(&app, id).send_now_awaiting_current());
+        assert!(
+            app.needs_animation(),
+            "the pending status and elapsed timer must keep updating"
+        );
+        let agent = app.agents.get_mut(&id).unwrap();
+        assert_eq!(
+            agent.resolve_turn_activity(),
+            Some(TurnActivity::Waiting(WaitingReason::PromptAck))
+        );
+        let area = Rect::new(0, 0, 120, 35);
+        let mut buffer = Buffer::empty(area);
+        agent.draw(
+            area,
+            &mut buffer,
+            &crate::actions::ActionRegistry::defaults(),
+            &mut ScratchBuffer::new(),
+            None,
+            false,
+            crate::app::agent_view::BannerSlotParams::none(),
+            false,
+            &mut Vec::new(),
+            crate::app::agent_view::AppRenderParams::default(),
+        );
+        let text: String = buffer.content.iter().map(|cell| cell.symbol()).collect();
+        assert!(
+            text.contains("Waiting for the agent to accept the prompt"),
+            "{text}"
+        );
+        for (index, prompt_id) in prompts.into_iter().enumerate() {
+            crate::app::dispatch::queue::apply_turn_start_shim(
+                agent,
+                prompt_id,
+                Some(format!("follow-up-{index}")),
+                "prompt",
+                None,
+            );
+            assert_eq!(agent.send_now_awaiting_current(), index + 1 < count);
+        }
+        assert_eq!(
+            agent.resolve_turn_activity(),
+            Some(TurnActivity::Waiting(WaitingReason::Model))
+        );
+    }
+}
+
 /// Sending a prompt is a submit: it retires the active ephemeral tip.
 #[test]
 fn send_prompt_clears_active_ephemeral_tip() {
@@ -3722,9 +3797,7 @@ fn submit_question_answers_cancel_clears_local_modal_and_restores_prompt() {
     // (b) restore the stashed prompt text and cursor
     // (c) return InputOutcome::Changed (no Action) and silently drop the directive carried by LocalQuestionKind::Fork.
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
 
     let mut app = fork_test_app();
     let id = AgentId(0);

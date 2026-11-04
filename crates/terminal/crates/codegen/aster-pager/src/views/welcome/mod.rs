@@ -797,6 +797,7 @@ pub fn render_welcome(
             let menu = [("l", login_text.as_str()), ("q", "Quit")];
             let msg = error.as_deref().map(|e| (e, theme.accent_error));
             let info = PromptInfo {
+                telemetry: None,
                 model_name: params.model_name,
                 flags: params.flags,
                 multiline: false,
@@ -2233,6 +2234,7 @@ fn render_welcome_done(
             None => (None, false),
         };
         let usage_info = PromptInfo {
+            telemetry: None,
             model_name: p.model_name,
             flags: p.flags,
             multiline: false,
@@ -4170,7 +4172,9 @@ mod tests {
         );
         // A param whose name merely ends in `user_code` must not be matched.
         assert_eq!(
-            extract_user_code("https://github.com/aster-ai-lab/aster/d?foo_user_code=BAD&user_code=GOOD"),
+            extract_user_code(
+                "https://github.com/aster-ai-lab/aster/d?foo_user_code=BAD&user_code=GOOD"
+            ),
             Some("GOOD"),
         );
         // No code param, empty code, and unexpected characters all yield None.

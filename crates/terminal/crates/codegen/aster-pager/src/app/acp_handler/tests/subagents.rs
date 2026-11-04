@@ -2353,3 +2353,38 @@
             assert_eq!(Some(target), block.child_session_id(), "{sender} -> {target}");
         }
     }
+
+    #[test]
+    fn core_background_progress_marks_the_child_and_renders_its_completion() {
+        let mut app=make_app_with_agent("sess-core-background");
+        assert!(handle(make_ext_session_notification("sess-core-background",test_subagent_spawned("sess-core-background","child-core-background")),&mut app));
+        let progress=acp::ExtNotification::new("aster/session_notification",serde_json::value::to_raw_value(&serde_json::json!({
+            "sessionId":"sess-core-background","update":test_subagent_progress("sess-core-background","child-core-background"),"_meta":{"subagentBackground":true}
+        })).unwrap().into());
+        assert!(handle_ext_notification(&progress,&mut app));
+        assert!(app.agents.get(&AgentId(0)).unwrap().subagent_sessions["child-core-background"].attempt.is_background);
+        assert!(handle(make_ext_session_notification("sess-core-background",test_subagent_finished("child-core-background")),&mut app));
+        let root=app.agents.get(&AgentId(0)).unwrap();
+        assert!((0..root.scrollback.len()).any(|i| matches!(root.scrollback.entry(i).map(|e|&e.block),Some(RenderBlock::Subagent(s)) if s.child_session_id=="child-core-background" && matches!(s.kind,crate::scrollback::blocks::SubagentBlockKind::Completed{..}))));
+    }
+
+    #[test]
+    fn captured_core_background_packets_reach_the_visible_terminal() {
+        let packets:Vec<serde_json::Value>=serde_json::from_str(include_str!("fixtures/core_background_lifecycle.json")).unwrap();
+        let session=packets[0]["sessionId"].as_str().unwrap();
+        let child=packets[0]["update"]["child_session_id"].as_str().unwrap();
+        let mut app=make_app_with_agent(session);
+        app.is_api_key_auth=true;
+        app.agents.get_mut(&AgentId(0)).unwrap().session.current_prompt_id=packets[0]["_meta"]["promptId"].as_str().map(str::to_owned);
+        for (index,params) in packets.iter().enumerate() {
+            let _:SessionNotification=serde_json::from_value(params.clone()).unwrap();
+            let notification=acp::ExtNotification::new("aster/session_notification",serde_json::value::to_raw_value(params).unwrap().into());
+            assert!(handle_ext_notification(&notification,&mut app),"captured packet {index}");
+            if index==1 {
+                assert!(app.agents.get(&AgentId(0)).unwrap().subagent_sessions[child].attempt.is_background);
+                app.agents.get_mut(&AgentId(0)).unwrap().session.current_prompt_id=None;
+            }
+        }
+        let root=app.agents.get(&AgentId(0)).unwrap();
+        assert!((0..root.scrollback.len()).any(|i| matches!(root.scrollback.entry(i).map(|e|&e.block),Some(RenderBlock::Subagent(s)) if s.child_session_id==child && matches!(s.kind,crate::scrollback::blocks::SubagentBlockKind::Completed{..}))));
+    }

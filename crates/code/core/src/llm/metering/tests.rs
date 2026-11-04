@@ -2,6 +2,71 @@
 
 use super::*;
 
+#[test]
+fn cost_bounds_cover_cache_splits_and_every_reachable_price_tier() {
+    let mut price = pricing(Currency::Usd, 0.3);
+    price.input_token_tiers = vec![
+        InputPriceTier {
+            min_input_tokens: 4,
+            prices: TokenPrices {
+                input_per_million_tokens: Some(2.0),
+                output_per_million_tokens: Some(3.0),
+                cache_read_per_million_tokens: Some(4.0),
+                cache_write_per_million_tokens: Some(5.0),
+            },
+        },
+        InputPriceTier {
+            min_input_tokens: 8,
+            prices: price.prices.clone(),
+        },
+    ];
+    let bound = price.upper_bound(20, 5).unwrap().unwrap();
+    assert_eq!(bound.currency, Currency::Usd);
+    for input in 0..=20 {
+        for read in 0..=input {
+            for write in 0..=input - read {
+                let mut observed = record("request", "attempt", AttemptStatus::Succeeded);
+                observed.pricing = Some(price.clone());
+                observed.usage = ObservedTokens::from_reported(
+                    Some(input),
+                    Some(5),
+                    Some(read),
+                    Some(write),
+                    InputAccounting::IncludesCache,
+                )
+                .unwrap();
+                let measured = crate::budget::local::BudgetResource::Cost {
+                    currency: Currency::Usd,
+                }
+                .measured_units(&observed)
+                .unwrap()
+                .unwrap();
+                assert!(
+                    bound.micro_units >= measured,
+                    "input={input} read={read} write={write}"
+                );
+            }
+        }
+    }
+    assert!(bound.micro_units >= 235);
+}
+
+#[test]
+fn unknown_prices_zero_lanes_and_bound_overflow_remain_distinct() {
+    let mut price = pricing(Currency::Cny, 1.0);
+    price.prices.cache_write_per_million_tokens = None;
+    assert!(price.upper_bound(1, 1).unwrap().is_none());
+    assert_eq!(price.upper_bound(0, 0).unwrap().unwrap().micro_units, 0);
+    assert_eq!(
+        price.upper_bound(0, 1).unwrap().unwrap().currency,
+        Currency::Cny
+    );
+    price.prices.output_per_million_tokens = Some(f64::MAX);
+    assert!(price.upper_bound(0, u64::MAX).is_err());
+    price.prices.output_per_million_tokens = Some(-1.0);
+    assert!(price.upper_bound(0, 1).is_err());
+}
+
 fn pricing(currency: Currency, input: f64) -> PricingSnapshot {
     PricingSnapshot {
         currency,

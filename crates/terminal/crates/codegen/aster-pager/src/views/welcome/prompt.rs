@@ -105,6 +105,7 @@ mod tests {
         let mut buf = Buffer::empty(area);
         let mut prompt = PromptWidget::new();
         let info = PromptInfo {
+            telemetry: None,
             model_name: "test",
             flags: &[],
             multiline: false,
@@ -154,6 +155,7 @@ mod tests {
         let mut buf = Buffer::empty(area);
         let mut prompt = PromptWidget::new();
         let info = PromptInfo {
+            telemetry: None,
             model_name: "kimi/K3.1 Pro (max)",
             flags: &[],
             multiline: false,
@@ -173,7 +175,11 @@ mod tests {
         let inner_x = area.x + inset;
         let top_cell = buf.cell((inner_x + 2, area.y)).expect("top pad");
         if crate::glyphs::upper_half_block().is_some() {
-            assert_eq!(top_cell.symbol(), "\u{2580}", "top pad is a half-block halo");
+            assert_eq!(
+                top_cell.symbol(),
+                "\u{2580}",
+                "top pad is a half-block halo"
+            );
             assert_eq!(top_cell.bg, theme.bg_light);
         } else {
             assert_eq!(top_cell.bg, theme.bg_light, "legacy full-cell top pad");
@@ -212,10 +218,7 @@ mod tests {
             lead_at < ph,
             "→ must sit left of the placeholder, got {draft:?}"
         );
-        assert!(
-            ph >= 1,
-            "side pad + → before placeholder, got {draft:?}"
-        );
+        assert!(ph >= 1, "side pad + → before placeholder, got {draft:?}");
 
         let status_y = area.y + 3;
         let status = (0..area.width)

@@ -7,6 +7,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use aster_acl::{Block, Document, Value, generate_acl, parse_acl};
+use aster_core::config::AccountImport;
 
 #[derive(Debug, Clone)]
 pub(crate) struct OriginalValue {
@@ -48,6 +49,8 @@ pub(crate) struct ConfigDraft {
     pub path: PathBuf,
     pub source: String,
     pub providers: Vec<ProviderDraft>,
+    pub import_accounts: Vec<AccountImport>,
+    pub import_accounts_saved: Vec<AccountImport>,
     pub default_model: String,
     pub default_model_saved: String,
     pub thinking_budget: String,
@@ -83,6 +86,9 @@ impl ConfigDraft {
     }
 
     pub(crate) fn save(&mut self) -> Result<(), String> {
+        if let Some(error) = &self.load_error {
+            return Err(format!("Could not read config: {error}"));
+        }
         validate(self)?;
         let text = rewrite(&self.source, self)?;
         if let Some(parent) = self.path.parent() {
@@ -100,6 +106,8 @@ impl ConfigDraft {
             path,
             source: String::new(),
             providers: Vec::new(),
+            import_accounts: Vec::new(),
+            import_accounts_saved: Vec::new(),
             default_model: String::new(),
             default_model_saved: String::new(),
             thinking_budget: String::new(),
@@ -175,6 +183,8 @@ fn parse_draft(path: &Path, source: &str) -> Result<ConfigDraft, String> {
             path: path.to_path_buf(),
             source: source.to_string(),
             providers: Vec::new(),
+            import_accounts: Vec::new(),
+            import_accounts_saved: Vec::new(),
             default_model: String::new(),
             default_model_saved: String::new(),
             thinking_budget: String::new(),
@@ -186,12 +196,27 @@ fn parse_draft(path: &Path, source: &str) -> Result<ConfigDraft, String> {
     }
     let document = parse_acl(source).map_err(|error| error.to_string())?;
     let mut providers = Vec::new();
+    let mut import_accounts = Vec::new();
     let mut default_model = String::new();
     let mut thinking_budget = String::new();
     let mut timeout_seconds = String::new();
     for block in &document.blocks {
         match block.name.as_str() {
             "providers" => providers.push(provider_from_block(block)),
+            "import_accounts" => {
+                let Some(Value::List(items)) = block.attributes.get("import_accounts") else {
+                    return Err("import_accounts must be a list of source names".to_string());
+                };
+                for item in items {
+                    let Value::String(name) = item else {
+                        return Err("import_accounts must contain string literals".to_string());
+                    };
+                    let import = AccountImport::parse(name)?;
+                    if !import_accounts.contains(&import) {
+                        import_accounts.push(import);
+                    }
+                }
+            }
             "default_model" | "defaultModel" => {
                 if let Some(value) = string_attr(block, &["default_model", "defaultModel"]) {
                     default_model = value;
@@ -225,6 +250,8 @@ fn parse_draft(path: &Path, source: &str) -> Result<ConfigDraft, String> {
         path: path.to_path_buf(),
         source: source.to_string(),
         providers,
+        import_accounts_saved: import_accounts.clone(),
+        import_accounts,
         default_model: default_model.clone(),
         default_model_saved: default_model,
         thinking_budget: thinking_budget.clone(),
@@ -319,19 +346,26 @@ fn validate(draft: &ConfigDraft) -> Result<(), String> {
         if provider_id.is_empty() || model_id.is_empty() {
             return Err("Choose a default provider and a default model".to_string());
         }
-        let Some(provider) = draft
-            .providers
+        // Account imports replace same-named providers; launch validates their catalog.
+        if !draft
+            .import_accounts
             .iter()
-            .find(|provider| provider.id == provider_id)
-        else {
-            return Err(format!(
-                "Default provider `{provider_id}` is not in the list"
-            ));
-        };
-        if !provider.models.iter().any(|model| model.id == model_id) {
-            return Err(format!(
-                "Default model `{model_id}` is not under `{provider_id}`"
-            ));
+            .any(|import| import.as_str() == provider_id)
+        {
+            let Some(provider) = draft
+                .providers
+                .iter()
+                .find(|provider| provider.id == provider_id)
+            else {
+                return Err(format!(
+                    "Default provider `{provider_id}` is not in the list"
+                ));
+            };
+            if !provider.models.iter().any(|model| model.id == model_id) {
+                return Err(format!(
+                    "Default model `{model_id}` is not under `{provider_id}`"
+                ));
+            }
         }
     }
     if !draft.thinking_budget.trim().is_empty() {
@@ -357,11 +391,25 @@ fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {
     let mut replaced_default = false;
     let mut replaced_thinking = false;
     let mut replaced_timeout = false;
+    let mut replaced_imports = false;
+    let imports_dirty = draft.import_accounts != draft.import_accounts_saved;
     let default_dirty = draft.default_model != draft.default_model_saved;
     let thinking_dirty = draft.thinking_budget != draft.thinking_budget_saved;
     let timeout_dirty = draft.timeout_seconds != draft.timeout_seconds_saved;
 
     for entry in &entries {
+        if entry.name == "import_accounts" {
+            if imports_dirty {
+                let replacement = if replaced_imports {
+                    String::new()
+                } else {
+                    replaced_imports = true;
+                    render_import_accounts(&draft.import_accounts)
+                };
+                edits.push((entry.start, entry.end, replacement));
+            }
+            continue;
+        }
         if is_default_model(&entry.name) {
             if default_dirty {
                 let replacement = if replaced_default {
@@ -421,6 +469,9 @@ fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {
     }
 
     let mut output = apply_edits(source, edits);
+    if imports_dirty && !replaced_imports {
+        output = append_entry(&output, &render_import_accounts(&draft.import_accounts));
+    }
     for (used, provider) in used.iter().zip(&draft.providers) {
         if !used {
             output = append_entry(&output, &render_provider(provider));
@@ -436,6 +487,18 @@ fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {
         output = append_entry(&output, &render_timeout(&draft.timeout_seconds)?);
     }
     Ok(normalize_final_newline(output))
+}
+
+fn render_import_accounts(imports: &[AccountImport]) -> String {
+    render_assignment(
+        "import_accounts",
+        Value::List(
+            imports
+                .iter()
+                .map(|import| Value::String(import.as_str().to_string()))
+                .collect(),
+        ),
+    )
 }
 
 fn render_provider(provider: &ProviderDraft) -> String {

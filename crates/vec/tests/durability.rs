@@ -340,3 +340,75 @@ fn format_two_is_rejected_before_vector_payloads_can_be_reinterpreted() {
     let error = Collection::open(path, None).expect_err("format 2 must fail closed");
     assert_eq!(error.code, ErrorCode::NotSupported);
 }
+
+#[test]
+fn failed_checkpoint_can_retry_before_appending_again_under_a_small_replay_ceiling() {
+    let temporary = tempdir().unwrap();
+    let directory = temporary.path().join("checkpoint retry");
+    let ceilings = aster_vec::StorageCeilings::new()
+        .try_with_max_wal_replay_bytes(2048)
+        .unwrap();
+    let mut options = CollectionOptions::default();
+    options
+        .set_durability(aster_vec::Durability::Always)
+        .unwrap();
+    options.set_storage_ceilings(ceilings).unwrap();
+    options.set_wal_checkpoint_thresholds(128, 1).unwrap();
+    let collection =
+        Collection::create(directory.to_str().unwrap(), &test_schema(), Some(&options)).unwrap();
+    let collision = directory
+        .join("segments")
+        .join("snapshot-00000000000000000002.bin");
+    std::fs::create_dir(&collision).unwrap();
+    let item = test_doc("retry", &"x".repeat(1200));
+    let error = collection.insert(&[&item]).unwrap_err();
+    assert_eq!(error.code, ErrorCode::InternalError);
+    assert_eq!(collection.count().unwrap(), 1);
+    assert!(collection.stats().unwrap().wal_bytes_since_checkpoint <= 2048);
+    std::fs::remove_dir(collision).unwrap();
+    assert_eq!(collection.upsert(&[&item]).unwrap().success_count, 1);
+    assert_eq!(collection.stats().unwrap().wal_ops_since_checkpoint, 0);
+    drop(collection);
+    let reopened = Collection::open(directory.to_str().unwrap(), Some(&options)).unwrap();
+    let actual = reopened.fetch(&["retry"]).unwrap();
+    assert_eq!(actual.len(), 1);
+    assert_eq!(
+        actual[0].get_string("title").unwrap(),
+        Some("x".repeat(1200))
+    );
+}
+
+#[test]
+fn deletion_can_recover_a_snapshot_that_exceeds_its_ceiling() {
+    let temporary = tempdir().unwrap();
+    let directory = temporary.path().join("snapshot recovery");
+    let ceilings = aster_vec::StorageCeilings::new()
+        .try_with_max_snapshot_bytes(512)
+        .unwrap()
+        .try_with_max_wal_replay_bytes(2048)
+        .unwrap();
+    let mut options = CollectionOptions::default();
+    options
+        .set_durability(aster_vec::Durability::Always)
+        .unwrap();
+    options.set_storage_ceilings(ceilings).unwrap();
+    options.set_wal_checkpoint_thresholds(128, 1).unwrap();
+    let collection =
+        Collection::create(directory.to_str().unwrap(), &test_schema(), Some(&options)).unwrap();
+    let item = test_doc("oversized-snapshot", &"x".repeat(1200));
+    let error = collection.insert(&[&item]).unwrap_err();
+    assert_eq!(error.code, ErrorCode::ResourceExhausted);
+    assert_eq!(collection.count().unwrap(), 1);
+    assert_eq!(
+        collection
+            .delete(&["oversized-snapshot"])
+            .unwrap()
+            .success_count,
+        1
+    );
+    assert_eq!(collection.count().unwrap(), 0);
+    assert_eq!(collection.stats().unwrap().wal_ops_since_checkpoint, 0);
+    drop(collection);
+    let reopened = Collection::open(directory.to_str().unwrap(), Some(&options)).unwrap();
+    assert_eq!(reopened.count().unwrap(), 0);
+}

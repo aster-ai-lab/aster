@@ -264,6 +264,7 @@ fn run_runtime() -> Result<()> {
 }
 
 async fn run() -> Result<()> {
+    let startup_started = std::time::Instant::now();
     use tracing_subscriber::layer::{Layer as _, SubscriberExt};
     use tracing_subscriber::util::SubscriberInitExt;
     // stderr stays at the quiet default (warn); the daily file layer runs at
@@ -300,11 +301,20 @@ async fn run() -> Result<()> {
         std::env::set_var("ASTER_DEFAULT_MODEL", model);
     }
     let load_config = || {
-        load_launch_config_with_imports(
+        let started = std::time::Instant::now();
+        let loaded = load_launch_config_with_imports(
             args.cwd.clone(),
             args.config.clone(),
             &args.import_accounts,
-        )
+        );
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "config_load",
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            success = loaded.is_ok(),
+            "ACP phase completed"
+        );
+        loaded
     };
     // Refuse an invalid workspace layer before a first-run template can mask it.
     let (mut launch, mut admission) = match load_config() {
@@ -377,6 +387,12 @@ async fn run() -> Result<()> {
         tokio::task::spawn_local(fut);
     });
     agent.set_client(Rc::new(conn));
+    tracing::info!(
+        target: "aster_acp::retrieval_phase",
+        phase = "stdio_ready",
+        elapsed_ms = startup_started.elapsed().as_secs_f64() * 1_000.0,
+        "ACP phase completed"
+    );
     let result = io_task.await;
     agent.stop_document_bridge();
     result.context("ACP stdio I/O")?;

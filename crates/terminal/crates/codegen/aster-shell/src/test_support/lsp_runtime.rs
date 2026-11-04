@@ -1,6 +1,6 @@
 use crate::agent::subagent::SubagentSpawnContext;
-use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use agent_client_protocol as acp;
+use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -41,9 +41,9 @@ pub(crate) fn ctx_with_toggle(toggle: HashMap<String, bool>) -> SubagentSpawnCon
         subagent_event_tx: tx,
         hunk_tracker_handle: aster_hunk_tracker::HunkTrackerHandle::noop(),
         hunk_tracking_enabled: false,
-        fs: Arc::new(aster_workspace::file_system::LocalFs::new(
-            PathBuf::from("/tmp"),
-        )),
+        fs: Arc::new(aster_workspace::file_system::LocalFs::new(PathBuf::from(
+            "/tmp",
+        ))),
         terminal: Arc::new(crate::terminal::TerminalRunner::new(
             Arc::new(test_gateway()),
             acp::SessionId::new("test"),

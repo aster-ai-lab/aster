@@ -3,6 +3,9 @@
 
 #[path = "support/binaries.rs"]
 mod binaries;
+#[path = "support/tui_readiness.rs"]
+mod tui_readiness;
+use tui_readiness::is_input_frame;
 
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
@@ -766,6 +769,12 @@ async fn e_edit() {
                     .map(|body| message_excerpt(body))
                     .unwrap_or_default()
             );
+            assert!(
+                observed.contains("host_checker_denied")
+                    && observed.contains("arguments_changed=false")
+                    && observed.contains("execution_started=false"),
+                "the original permission refusal must survive ACP projection: {observed}"
+            );
             drop(state);
             assert_eq!(std::fs::read(&outside).expect("outside"), b"keep-outside");
             assert_eq!(
@@ -975,13 +984,11 @@ impl PtySession {
     fn wait_for_frame(&mut self, timeout: Duration) -> String {
         let deadline = Instant::now() + timeout;
         let mut last = String::new();
-        let mut stable_since: Option<Instant> = None;
         let mut welcome_since: Option<Instant> = None;
         while Instant::now() < deadline {
             self.drain();
             let screen = self.parser.screen().contents();
-            let visible: String = screen.chars().filter(|ch| !ch.is_whitespace()).collect();
-            if visible.len() > 12 && screen.contains("Aster") && screen.contains('❯') {
+            if is_input_frame(&screen) {
                 if welcome_since.is_some_and(|start| start.elapsed() > Duration::from_millis(200)) {
                     return screen;
                 }
@@ -989,19 +996,7 @@ impl PtySession {
             } else {
                 welcome_since = None;
             }
-            if visible.len() > 12 {
-                if screen == last {
-                    if stable_since
-                        .is_some_and(|start| start.elapsed() > Duration::from_millis(500))
-                    {
-                        return screen;
-                    }
-                    stable_since.get_or_insert_with(Instant::now);
-                } else {
-                    stable_since = Some(Instant::now());
-                    last = screen;
-                }
-            }
+            last = screen;
             std::thread::sleep(Duration::from_millis(40));
         }
         panic!("timed out waiting for a product frame\n{last}")

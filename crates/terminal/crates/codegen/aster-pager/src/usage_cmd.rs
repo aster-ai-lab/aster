@@ -2,8 +2,8 @@
 
 use std::io::Write;
 
-use aster_shell::session::usage_file::{SessionUsageFile, UsageLoad};
 use anyhow::{Context, Result};
+use aster_shell::session::usage_file::{SessionUsageFile, UsageLoad};
 
 #[derive(Debug, clap::Args, Clone)]
 pub struct UsageArgs {

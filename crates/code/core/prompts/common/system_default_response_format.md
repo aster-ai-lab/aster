@@ -1,12 +1,8 @@
 ## Response Format
 
-- During work: keep progress notes brief and useful.
-- On completion: lead with the outcome, then summarize key changes and exact
-  verification evidence. Distinguish complete, partial, blocked, and
-  unverified results; mention the next safe action when work remains.
-- When presenting search results or other list data, use standard Markdown
-  lists with one item per line and full Markdown links. Do not collapse an
-  enumeration into a prose paragraph. Preserve source order and facts, and
-  identify sources that were unavailable.
-- Do not re-print source or private chain-of-thought. Reference files by path
-  and report observable decisions and evidence.
+- During work, preserve essential results across compaction; omit private reasoning.
+- Close in the user's language, including automated continuations. Lead with the useful outcome, decisive checks, unverified work and the next action. Keep simple tasks brief.
+- A finished run is not an accepted goal. State missing acceptance evidence and how to obtain it.
+- Omit repeated status, unchanged checks, internal IDs, revisions and decision codes unless needed or requested.
+- For lists, use standard Markdown lists and full links; preserve source order, facts and unavailable sources.
+- Reference files by path; do not re-print source or private chain-of-thought.

@@ -33,7 +33,15 @@ pub(crate) async fn assess_goal_step(
         )?
     };
     let Some((prepared, reports, evidence)) = prepared else {
-        return Ok((None, Default::default(), None));
+        let feedback = goal.ready_steps().first().map(|step| {
+            crate::goal_control::GoalStepFeedback {
+                step_id: step.id.clone(),
+                remaining_criteria: vec![
+                    "Admissible settled receipts and fresh independent verification for this stage are not established. A completion claim or successful read alone cannot accept the stage. Use the admitted verifier for its current deliverable; this feedback grants no execution permission or waiver.".into(),
+                ],
+            }
+        });
+        return Ok((None, Default::default(), feedback));
     };
     let workspace = surface.agent.tool_context_handle().workspace.clone();
     if !crate::verification::should_emit_goal_achieved_for_workspace(
@@ -235,7 +243,7 @@ pub(crate) fn evidence_for_goal_step(
     continuation: Option<&crate::goal_control::ContinuationSource>,
 ) -> Option<(Vec<VerificationReport>, String, bool)> {
     let start = facts.iter().position(|fact| fact.seq == run_sequence)?;
-    let mut debt = receipts::fold_cache_evidence(&facts[start..]);
+    let debt = receipts::fold_cache_evidence(&facts[start..]);
     if debt.integrity_invalid
         || !debt.unresolved.is_empty()
         || !debt.background_results.is_empty()
@@ -245,7 +253,7 @@ pub(crate) fn evidence_for_goal_step(
     }
     let mut ledger = crate::harness_loop::MutationLedger::default();
     ledger.bind_goal_continuation(continuation);
-    let mut reports = Vec::new();
+    let mut current_reports: Vec<(&str, VerificationReport)> = Vec::new();
     let mut capability = None;
     for (tool, result) in &debt.results {
         let admission = result.identity.admission.as_ref()?;
@@ -257,11 +265,33 @@ pub(crate) fn evidence_for_goal_step(
         }
         capability = Some(admission.capability_binding_digest.as_str());
         ledger.observe_tool_receipt(tool, result);
-        if result.outcome == aster_effect::ToolExecutionOutcome::Succeeded {
-            let output = result.output.as_str().and_then(decode_fact_tool_result)?;
-            crate::agent::AgentLoop::collect_verification_report(&mut reports, &output.metadata);
+        if let Some(output) = result.output.as_str().and_then(decode_fact_tool_result) {
+            let mut current = Vec::new();
+            crate::agent::AgentLoop::collect_verification_report(&mut current, &output.metadata);
+            for report in current.into_iter().filter(|report| {
+                result.outcome == aster_effect::ToolExecutionOutcome::Succeeded
+                    || report.status != crate::verification::VerificationStatus::Passed
+            }) {
+                // Only the same admitted producer and check set can supersede a report.
+                current_reports.retain(|(producer, prior)| {
+                    *producer != tool.as_str()
+                        || prior.subject != report.subject
+                        || !prior
+                            .checks
+                            .iter()
+                            .map(|check| &check.id)
+                            .eq(report.checks.iter().map(|check| &check.id))
+                });
+                current_reports.push((tool.as_str(), report));
+            }
+        } else if result.outcome == aster_effect::ToolExecutionOutcome::Succeeded {
+            return None;
         }
     }
+    let mut reports = current_reports
+        .into_iter()
+        .map(|(_, report)| report)
+        .collect::<Vec<_>>();
     if let Some(report) = attestation {
         if ledger.is_empty() || report.effect_digest.as_deref() != Some(ledger.digest()) {
             return None;
@@ -282,28 +312,65 @@ pub(crate) fn evidence_for_goal_step(
     {
         return None;
     }
-    // Internal metering hashes remain in the bound log, outside model context.
-    for (_, result) in &mut debt.results {
-        if let Some(mut envelope) = result.output.as_str().and_then(decode_fact_tool_result) {
-            if envelope.observation_digest.take().is_some() {
-                result.output = serde_json::to_string(&envelope).ok()?.into();
-            }
-        }
-    }
+    // Full receipt identities were checked above and stay in the immutable source cut.
+    let observations = debt
+        .results
+        .iter()
+        .map(|(tool, result)| goal_tool_observation(tool, result))
+        .collect::<Option<Vec<_>>>()?;
     let evidence = match attestation {
         Some(report) => serde_json::to_string(&serde_json::json!({
-            "tool_receipts": debt.results, "completion_attestation": report,
+            "tool_receipts": observations, "completion_attestation": report,
         })),
-        None => serde_json::to_string(&debt.results),
+        None => serde_json::to_string(&observations),
     }
     .ok()?;
-    // shortcut: refuse evidence above 32 KiB until bounded source selection is qualified.
-    if evidence.len() > 32 * 1024 {
+    // shortcut: refuse evidence above 64 KiB until bounded source selection is qualified.
+    if evidence.len() > 64 * 1024 {
         return None;
     }
     // The legacy admission projection retains this original receipt meaning;
     // current progress is separately derived from settled identity changes.
     Some((reports, evidence, !ledger.is_empty()))
+}
+
+fn goal_tool_observation(
+    tool: &str,
+    result: &aster_effect::ToolExecutionResultV1,
+) -> Option<serde_json::Value> {
+    let mut projection = None;
+    let output = if let Some(mut envelope) =
+        result.output.as_str().and_then(decode_fact_tool_result)
+    {
+        envelope.observation_digest = None;
+        if let Some(metadata) = envelope
+            .metadata
+            .as_mut()
+            .and_then(serde_json::Value::as_object_mut)
+        {
+            if let Some(evidence) = metadata.remove("aster_tool_result_evidence") {
+                if evidence["loss_mode"] != "none" {
+                    projection = Some(serde_json::json!({
+                        "loss_mode":evidence["loss_mode"], "original_bytes":evidence["original_bytes"],
+                        "projected_bytes":evidence["projected_bytes"], "content_ref":evidence["content_ref"],
+                    }));
+                }
+            }
+            metadata.remove(crate::tools::TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY);
+        }
+        serde_json::to_value(envelope).ok()?
+    } else {
+        result.output.clone()
+    };
+    let mut observation = serde_json::json!({
+        "tool":tool, "tool_call_id":result.identity.tool_call_id,
+        "turn":result.identity.turn, "outcome":result.outcome,
+        "exit_code":result.exit_code, "effects":result.effects, "output":output,
+    });
+    if let Some(projection) = projection {
+        observation["output_projection"] = projection;
+    }
+    Some(observation)
 }
 
 /// Progress is an actual identity change in this slice's original receipts,

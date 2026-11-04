@@ -796,6 +796,7 @@ async fn configured_immutable_content_adapter_retains_original_without_local_cop
     let adapter_port: Arc<dyn ImmutableContentAdapter> = adapter.clone();
     let session = ImmutableContentAdapterSession::new(binding.clone(), adapter_port).unwrap();
     let executor = ToolExecutor::new_with_immutable_content_adapter("/tmp".to_string(), session);
+    assert!(executor.model_readable_artifact_store().is_none());
     executor
         .registry()
         .set_tool_result_transform_policy(ToolResultTransformPolicyV1::context_efficient())

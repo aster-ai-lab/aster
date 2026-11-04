@@ -173,7 +173,10 @@ fn a_link_with_nothing_to_paint_is_dropped() {
 
     let notice = ConsentNotice::try_from_remote(&gate).expect("valid");
 
-    assert_eq!(notice.links, vec!["https://github.com/aster-ai-lab/aster/b"]);
+    assert_eq!(
+        notice.links,
+        vec!["https://github.com/aster-ai-lab/aster/b"]
+    );
     // The surviving link takes index 0, so the dropped one leaves no gap for a key to fall into.
     assert_eq!(
         notice.segments,

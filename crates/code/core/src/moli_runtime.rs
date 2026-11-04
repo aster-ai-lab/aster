@@ -204,7 +204,7 @@ async fn ensure_moli_from(
         managed
     else {
         return Err(anyhow::anyhow!(
-            "Moli has no prebuilt asset for this target; use an explicit Chrome/Lightpanda backend or provide ASTER_MOLI_EXECUTABLE"
+            "Moli has no prebuilt asset for this target; use an explicit Chrome backend or provide ASTER_MOLI_EXECUTABLE"
         ));
     };
 

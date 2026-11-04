@@ -1,11 +1,11 @@
 mod support;
 
 use aster_search::providers::{
-    AsterAuth, AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
-    CredentialSource, DeepSeekConfig, DeepSeekProvider, DoubaoConfig, DoubaoProvider,
-    FirecrawlCategory, FirecrawlConfig, FirecrawlProvider, FirecrawlSource, ProviderRequest,
-    SearchProvider, TencentConfig, TencentProvider, TinyFishConfig, TinyFishDomainType,
-    TinyFishProvider,
+    AliyunConfig, AliyunProvider, AsterAuth, AsterConfig, AsterProvider, BochaConfig,
+    BochaProvider, CredentialSource, DeepSeekConfig, DeepSeekProvider, DoubaoConfig,
+    DoubaoProvider, FirecrawlCategory, FirecrawlConfig, FirecrawlProvider, FirecrawlSource,
+    ProviderRequest, SearchProvider, TencentConfig, TencentProvider, TinyFishConfig,
+    TinyFishDomainType, TinyFishProvider,
 };
 use aster_search::TimeRange;
 use serde_json::Value;
@@ -418,7 +418,10 @@ async fn aster_posts_web_search_and_redacts_the_key() {
     assert!(body.get("categories").is_none());
     assert!(body.get("country").is_none());
     assert!(body.get("tbs").is_none());
-    assert_eq!(server.requests()[0].header("x-api-key"), Some("aster-secret"));
+    assert_eq!(
+        server.requests()[0].header("x-api-key"),
+        Some("aster-secret")
+    );
     assert!(server.requests()[0].header("authorization").is_none());
 
     let quota = provider.search(&request("rust")).await.unwrap_err();

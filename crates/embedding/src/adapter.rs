@@ -12,20 +12,44 @@ use aster_core::{
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
 use async_trait::async_trait;
+use sha2::{Digest, Sha256};
 use tokio_util::sync::CancellationToken;
 
+use crate::assets;
 use crate::provider::StaticEmbeddingProvider;
 
 pub struct LightTierProvider {
     inner: StaticEmbeddingProvider,
+    revision: String,
+}
+
+impl std::fmt::Debug for LightTierProvider {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("LightTierProvider")
+            .field("descriptor", &self.descriptor())
+            .finish_non_exhaustive()
+    }
 }
 
 impl LightTierProvider {
     /// Load the light tier from embedded assets. A digest drift or a decode
     /// failure refuses with the named reason.
     pub fn load() -> Result<Self, String> {
+        let inner = StaticEmbeddingProvider::from_embedded()?;
+        let mut revision = Sha256::new();
+        revision.update(b"aster.embedding.light-provider.v1\0");
+        for digest in [
+            assets::MODEL_SHA256,
+            assets::TOKENIZER_SHA256,
+            assets::CONFIG_SHA256,
+        ] {
+            revision.update(digest.as_bytes());
+            revision.update(b"\0");
+        }
         Ok(Self {
-            inner: StaticEmbeddingProvider::from_embedded()?,
+            inner,
+            revision: format!("sha256:{:x}", revision.finalize()),
         })
     }
 }
@@ -36,7 +60,7 @@ impl EmbeddingProvider for LightTierProvider {
         EmbeddingProviderDescriptor {
             provider: "light".into(),
             model: self.inner.id().into(),
-            revision: None,
+            revision: Some(self.revision.clone()),
             dimension: self.inner.dimension(),
             normalization: EmbeddingNormalization::Unit,
         }
@@ -71,30 +95,5 @@ impl EmbeddingProvider for LightTierProvider {
 }
 
 #[cfg(test)]
-mod adapter_tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn the_adapter_serves_a_batch_through_the_core_trait() {
-        let provider = LightTierProvider::load().expect("embedded assets load");
-        let inputs = vec![
-            aster_core::EmbeddingInput::new("a", "parse the config"),
-            aster_core::EmbeddingInput::new("b", "hello"),
-        ];
-        let request = EmbeddingBatchRequest::new(inputs);
-        let response = provider
-            .embed(request, CancellationToken::new())
-            .await
-            .expect("light tier serves the batch");
-        assert_eq!(response.vectors.len(), 2);
-        assert_eq!(response.vectors[0].id.as_ref(), "a");
-        assert_eq!(
-            response.vectors[0].values.len(),
-            provider.descriptor().dimension
-        );
-        assert_eq!(
-            response.descriptor.normalization,
-            EmbeddingNormalization::Unit
-        );
-    }
-}
+#[path = "adapter_tests.rs"]
+mod adapter_tests;

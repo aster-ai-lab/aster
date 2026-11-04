@@ -178,6 +178,9 @@ pub fn open_path(path: &std::path::Path) -> bool {
     }
     #[cfg(all(not(test), target_os = "windows"))]
     {
+        if let Some(url) = html_preview_url(path) {
+            return spawn_url_opener(url.as_str());
+        }
         reveal_in_explorer(path)
     }
     #[cfg(all(not(test), not(target_os = "windows")))]
@@ -190,6 +193,15 @@ pub fn open_path(path: &std::path::Path) -> bool {
             }
         }
     }
+}
+
+#[cfg(any(test, target_os = "windows"))]
+fn html_preview_url(path: &std::path::Path) -> Option<url::Url> {
+    let extension = path.extension()?.to_str()?;
+    if !extension.eq_ignore_ascii_case("html") && !extension.eq_ignore_ascii_case("htm") {
+        return None;
+    }
+    url::Url::from_file_path(path).ok()
 }
 
 /// `raw_arg` keeps Explorer's `/select,"<path>"` quoting; no `cmd`, so `%` in urlencoded paths is not expanded.
@@ -298,6 +310,19 @@ pub fn ensure_query_param(url: &str, key: &str, value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn html_preview_preserves_the_file_path_and_keeps_other_files_on_the_existing_route() {
+        let root = tempfile::tempdir().unwrap();
+        for name in ["卡片 with spaces.HTML", "preview 100% & name.htm"] {
+            let path = root.path().join(name);
+            let url = html_preview_url(&path).unwrap();
+            assert_eq!(url.scheme(), "file");
+            assert_eq!(url.to_file_path().unwrap(), path);
+        }
+        assert!(html_preview_url(&root.path().join("source.txt")).is_none());
+        assert!(html_preview_url(std::path::Path::new("relative.html")).is_none());
+    }
 
     #[test]
     fn open_path_command_passes_path_as_a_single_arg() {

@@ -618,6 +618,86 @@ fn program_read_text_uses_range_metadata_not_content_heuristics() {
 }
 
 #[tokio::test]
+async fn program_tool_ctx_read_accepts_schema_shaped_named_args() {
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::write(dir.path().join("notes.txt"), "alpha\nbeta\n").unwrap();
+    let executor = crate::tools::ToolExecutor::new(dir.path().to_string_lossy().to_string());
+    let tool = ProgramTool::new(Arc::clone(executor.registry()));
+
+    let output = tool
+        .execute(
+            &serde_json::json!({
+                "type": "script",
+                "source": r#"
+                        async function run(ctx) {
+                            const named = await ctx.read({ file_path: "notes.txt", offset: 1, limit: 1 });
+                            const nested = await ctx.read({ args: { file_path: "notes.txt", offset: 0, limit: 1 } });
+                            return { named: named.output, nested: nested.output };
+                        }
+                    "#,
+                "allowed_tools": ["read"]
+            }),
+            &ToolContext::new(dir.path().to_path_buf()),
+        )
+        .await
+        .unwrap();
+
+    assert!(output.success, "{}", output.content);
+    let metadata = output.metadata.unwrap();
+    let named = metadata["script_result"]["named"].as_str().unwrap();
+    assert!(named.contains("beta"), "{named}");
+    assert!(!named.contains("alpha"), "{named}");
+    let nested = metadata["script_result"]["nested"].as_str().unwrap();
+    assert!(nested.contains("alpha"), "{nested}");
+}
+
+#[tokio::test]
+async fn program_tool_ctx_bash_surfaces_exit_code() {
+    let dir = tempfile::tempdir().unwrap();
+    let executor = crate::tools::ToolExecutor::new(dir.path().to_string_lossy().to_string());
+    let tool = ProgramTool::new(Arc::clone(executor.registry()));
+
+    let output = tool
+        .execute(
+            &serde_json::json!({
+                "type": "script",
+                "source": r#"
+                        async function run(ctx) {
+                            const ok = await ctx.bash("printf hi");
+                            let failed = null;
+                            try {
+                                await ctx.bash("exit 3");
+                            } catch (error) {
+                                failed = {
+                                    name: error.name,
+                                    exitCode: error.exitCode,
+                                    output: error.output,
+                                    message: String(error.message || error),
+                                };
+                            }
+                            return {
+                                okText: String(ok),
+                                okExit: ok.exitCode,
+                                failed,
+                            };
+                        }
+                    "#,
+                "allowed_tools": ["bash"]
+            }),
+            &ToolContext::new(dir.path().to_path_buf()),
+        )
+        .await
+        .unwrap();
+
+    assert!(output.success, "{}", output.content);
+    let metadata = output.metadata.unwrap();
+    assert_eq!(metadata["script_result"]["okText"], "hi");
+    assert_eq!(metadata["script_result"]["okExit"], 0);
+    assert_eq!(metadata["script_result"]["failed"]["exitCode"], 3);
+    assert_eq!(metadata["script_result"]["failed"]["name"], "BashExitError");
+}
+
+#[tokio::test]
 async fn program_tool_exposes_ctx_tools_proxy_for_named_tools() {
     let registry = Arc::new(ToolRegistry::new(PathBuf::from("/tmp")));
     registry.register(Arc::new(EchoTool));

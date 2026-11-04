@@ -1,5 +1,5 @@
-use aster_sampling_types::{ReasoningEffort, ReasoningEffortOption, effort_label};
 use agent_client_protocol as acp;
+use aster_sampling_types::{ReasoningEffort, ReasoningEffortOption, effort_label};
 use serde::Serialize;
 
 use crate::session::unified_list::SessionKind;
@@ -285,7 +285,10 @@ mod tests {
         let v = serde_json::to_value(&detail).expect("serialize");
         assert_eq!(v.get("sessionId").and_then(|x| x.as_str()), Some("sess-1"));
         assert_eq!(v.get("kind").and_then(|x| x.as_str()), Some("build"));
-        assert_eq!(v.get("cwd").and_then(|x| x.as_str()), Some("/Users/me/aster"));
+        assert_eq!(
+            v.get("cwd").and_then(|x| x.as_str()),
+            Some("/Users/me/aster")
+        );
         assert_eq!(
             v.get("currentModelId").and_then(|x| x.as_str()),
             Some("grok-build")

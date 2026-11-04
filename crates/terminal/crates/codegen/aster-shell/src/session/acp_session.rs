@@ -53,6 +53,8 @@ use crate::session::user_message::construct_user_message_minimal;
 use crate::session::user_message::extract_user_query;
 use crate::terminal::TerminalRunRequest;
 use crate::tools::ToolContext;
+use agent_client_protocol as acp;
+use agent_client_protocol::ContentBlock;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_agent::AgentDefinition;
 use aster_agent::prompt::agents_md::LEGACY_AGENTS_MD_REMINDER_PREFIX;
@@ -72,8 +74,6 @@ use aster_workspace::permission::{
     AccessKind, ClientType, Decision, HookAsk, PermissionEvent, PermissionHandle, PermissionRequest,
 };
 use aster_workspace::session::file_state::{FileStateHandle, FileStateTracker};
-use agent_client_protocol as acp;
-use agent_client_protocol::ContentBlock;
 use parking_lot::Mutex;
 use serde_json::json;
 use std::collections::{HashMap, VecDeque};
@@ -487,7 +487,9 @@ impl aster_tools::types::resources::ManagedGatewayToolCaller for ShellManagedGat
             .await
             .ok()
             .or_else(|| self.auth_manager.current_or_expired().map(|a| a.key))
-            .ok_or_else(|| aster_tool_runtime::ToolError::unauthorized("no auth token available"))?;
+            .ok_or_else(|| {
+                aster_tool_runtime::ToolError::unauthorized("no auth token available")
+            })?;
         let response = crate::session::managed_mcp::call_gateway_tool(
             &self.proxy_base_url,
             &auth_key,
@@ -516,8 +518,9 @@ fn managed_gateway_error_to_tool_error(
             } else if status == reqwest::StatusCode::FORBIDDEN {
                 aster_tool_runtime::ToolError::permission_denied(detail)
             } else {
-                let tool_id = aster_tool_protocol::ToolId::new(caller)
-                    .unwrap_or_else(|_| aster_tool_protocol::ToolId::new("use_tool").expect("valid"));
+                let tool_id = aster_tool_protocol::ToolId::new(caller).unwrap_or_else(|_| {
+                    aster_tool_protocol::ToolId::new("use_tool").expect("valid")
+                });
                 aster_tool_runtime::ToolError::execution(tool_id, detail)
             };
             match err.details.as_mut() {
@@ -570,7 +573,10 @@ mod managed_gateway_error_tests {
     #[test]
     fn forbidden_status_maps_to_permission_denied_and_carries_status() {
         let err = managed_gateway_error_to_tool_error(status_error(403, "denied"), "use_tool");
-        assert_eq!(err.kind, aster_tool_runtime::ToolErrorKind::PermissionDenied);
+        assert_eq!(
+            err.kind,
+            aster_tool_runtime::ToolErrorKind::PermissionDenied
+        );
         let details = err.details.as_ref().unwrap();
         assert_eq!(
             details.get(HTTP_STATUS_DETAILS_KEY),
@@ -1053,8 +1059,7 @@ pub(crate) struct SessionActor {
     /// Loaded at session startup; can be updated mid-session via `/plugins reload`.
     /// `None` when no plugin registry was supplied at spawn time.
     /// Wrapped in `RefCell` for mid-session reload from `&self` methods.
-    pub(crate) hook_registry:
-        std::cell::RefCell<Option<Arc<aster_hooks::discovery::HookRegistry>>>,
+    pub(crate) hook_registry: std::cell::RefCell<Option<Arc<aster_hooks::discovery::HookRegistry>>>,
     /// Disabled-hooks snapshot every dispatch filters on, so the actor never reads the file mid-turn.
     /// Loaded at spawn and refreshed by hook reload and enable/disable; another session's toggle lands here at the next reload.
     pub(crate) hook_disabled: std::cell::RefCell<Arc<aster_hooks::trust::DisabledHooks>>,
@@ -1136,9 +1141,8 @@ pub(crate) struct SessionActor {
     /// A server-confirmed image strip awaiting proof that the stripped retry helped.
     /// URLs are buffered by request id on `ImagesStripped`.
     /// They persist to stored history only when that request's `Completed` arrives, and drop on `Failed`.
-    pub(crate) pending_image_strip: parking_lot::Mutex<
-        std::collections::HashMap<aster_sampler::RequestId, PendingImageStrip>,
-    >,
+    pub(crate) pending_image_strip:
+        parking_lot::Mutex<std::collections::HashMap<aster_sampler::RequestId, PendingImageStrip>>,
     /// Serializes durable image-strip writes with conversation rewinds.
     pub(crate) image_strip_rewrite_barrier: ImageStripRewriteBarrier,
     /// Handle to the per-session `aster-sampler` actor.
@@ -1229,7 +1233,10 @@ impl SessionActor {
         skip_all,
         fields(session_id = %self.session_info.id.0, turn_number = payload.turn_number)
     )]
-    async fn send_after_turn_event(&self, payload: aster_tool_protocol::turn_hook::AfterTurnPayload) {
+    async fn send_after_turn_event(
+        &self,
+        payload: aster_tool_protocol::turn_hook::AfterTurnPayload,
+    ) {
         self.workspace_ops
             .on_after_turn(&self.session_id_string(), &payload)
             .await;
@@ -1279,9 +1286,7 @@ impl SessionActor {
         &self,
         tool_names: &[String],
     ) -> slash_commands::CommandAvailability {
-        use aster_tools::implementations::memory::{
-            MEMORY_GET_TOOL_NAME, MEMORY_SEARCH_TOOL_NAME,
-        };
+        use aster_tools::implementations::memory::{MEMORY_GET_TOOL_NAME, MEMORY_SEARCH_TOOL_NAME};
         let can_read_memory = self
             .memory
             .mode()
@@ -1300,9 +1305,9 @@ impl SessionActor {
             memory_configured: !self.memory.process_disabled
                 && (self.memory.backend_params.is_some()
                     || self.memory.configured_storage.is_some()),
-            scheduler: tool_names.iter().any(|n| {
-                n == aster_tools::implementations::grok_build::SCHEDULER_CREATE_TOOL_NAME
-            }),
+            scheduler: tool_names
+                .iter()
+                .any(|n| n == aster_tools::implementations::grok_build::SCHEDULER_CREATE_TOOL_NAME),
             hooks: self.hook_registry.borrow().is_some(),
             plugins: self.plugin_registry.borrow().is_some(),
             goal,

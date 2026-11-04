@@ -4,9 +4,9 @@
 use std::path::Path;
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::{AcpAgentTx, acp_send};
 use aster_shell::util::config as cli_config;
-use agent_client_protocol as acp;
 
 use crate::headless::reducer::McpServer;
 use crate::views::mcps_modal::{

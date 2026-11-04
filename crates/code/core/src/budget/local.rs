@@ -1,7 +1,7 @@
 //! Local budget rules; the host owns durable reservations and settlement.
 
 use anyhow::{bail, ensure, Context, Result};
-use chrono::{Datelike, FixedOffset, NaiveDate, TimeZone, Utc};
+use chrono::{Datelike, Days, FixedOffset, NaiveDate, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::llm::metering::{Currency, InvocationRecord, InvocationStart};
@@ -58,6 +58,7 @@ impl BudgetScope {
 #[serde(rename_all = "snake_case")]
 pub enum BudgetPeriod {
     Daily,
+    Weekly,
     Monthly,
 }
 
@@ -65,6 +66,7 @@ impl BudgetPeriod {
     pub fn parse(value: &str) -> Result<Self> {
         match value {
             "daily" => Ok(Self::Daily),
+            "weekly" => Ok(Self::Weekly),
             "monthly" => Ok(Self::Monthly),
             _ => bail!("unknown local budget period: {value}"),
         }
@@ -73,6 +75,7 @@ impl BudgetPeriod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Daily => "daily",
+            Self::Weekly => "weekly",
             Self::Monthly => "monthly",
         }
     }
@@ -226,6 +229,17 @@ impl LocalBudget {
                 day,
                 day.succ_opt().context("local budget calendar overflow")?,
             ),
+            BudgetPeriod::Weekly => {
+                let first = day
+                    .checked_sub_days(Days::new(u64::from(day.weekday().num_days_from_monday())))
+                    .context("local budget calendar overflow")?;
+                (
+                    first,
+                    first
+                        .checked_add_days(Days::new(7))
+                        .context("local budget calendar overflow")?,
+                )
+            }
             BudgetPeriod::Monthly => {
                 let first = day.with_day(1).context("invalid local budget month")?;
                 let (year, month) = if day.month() == 12 {

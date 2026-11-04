@@ -3,6 +3,48 @@
 use super::*;
 
 #[test]
+fn public_handoff_evidence_is_bounded_and_omits_private_model_fields() {
+    let root = tempfile::tempdir().unwrap();
+    let fact = |seq, kind: &str, payload| aster_effect::Fact {
+        seq,
+        kind: kind.into(),
+        key: String::new(),
+        cause: None,
+        payload,
+    };
+    let private = "SYNTHETIC-PRIVATE-CONTINUATION";
+    let facts = [
+        fact(1, "model.turn", serde_json::json!({"reasoning":private})),
+        fact(
+            2,
+            "compaction.done",
+            serde_json::json!({"summary":"Exact public state Ω", "kept":["tool\npublic observation"],"reasoning":private}),
+        ),
+        fact(
+            3,
+            "compaction.done",
+            serde_json::json!({"summary":"z".repeat(3*1024*1024),"kept":[]}),
+        ),
+        fact(
+            4,
+            "compaction.done",
+            serde_json::json!({"summary":"Later public state", "kept":[]}),
+        ),
+    ];
+    write_public_compaction_evidence(root.path(), &facts).unwrap();
+    let bytes = std::fs::read(root.path().join("public-compaction-handoffs.json")).unwrap();
+    assert!(bytes.len() <= 2 * 1024 * 1024);
+    assert!(!String::from_utf8_lossy(&bytes).contains(private));
+    let value: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(value["omitted_entries"], 1);
+    assert_eq!(value["entries"].as_array().unwrap().len(), 2);
+    assert_eq!(value["entries"][0]["seq"], 2);
+    assert_eq!(value["entries"][0]["summary"], "Exact public state Ω");
+    assert_eq!(value["entries"][0]["kept"][0], "tool\npublic observation");
+    assert_eq!(value["entries"][1]["seq"], 4);
+}
+
+#[test]
 fn bounded_artifacts_refuse_directories_oversize_and_traversal() {
     let root = tempfile::tempdir().unwrap();
     std::fs::write(root.path().join("valid"), b"current bytes").unwrap();

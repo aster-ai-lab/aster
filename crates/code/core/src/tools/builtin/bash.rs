@@ -537,7 +537,7 @@ impl Tool for BashTool {
     }
 
     fn description(&self) -> &str {
-        "Execute a shell command in the workspace using the Bash execution target in <env>. Its OS/shell can differ from the host. Use for running commands, installing packages, and running tests."
+        "Execute a workspace command using the Bash execution target in <env>. Its OS/shell can differ from the host. Use for commands, package installation, and tests."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -547,36 +547,36 @@ impl Tool for BashTool {
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "Required. The exact shell command to execute. Always provide this exact field name: 'command'. Use the OS/shell of the execution target in <env>; require_escalated uses the separately described workspace command runner only after exact-invocation authorization."
+                    "description": "Exact command for the execution target OS/shell in <env>. require_escalated selects the workspace command runner only after exact-invocation authorization."
                 },
                 "timeout": {
                     "type": "integer",
-                    "description": "Optional. Timeout in milliseconds. Default: 120000. Values below 1000 are clamped to 1000 to avoid accidental immediate timeouts."
+                    "description": "Milliseconds; default 120000, clamped minimum 1000."
                 },
                 "sandbox_permissions": {
                     "type": "string",
                     "enum": ["use_default", "require_escalated", "request_network_grant"],
                     "default": "use_default",
-                    "description": "Execution boundary. Omit or use 'use_default' for the configured workspace sandbox; this fails closed when no sandbox is installed. Use 'require_escalated' only after a sandbox denial when host execution is necessary; interactive hosts must authorize that request. Use 'request_network_grant' after a network denial: it asks the user to allow exactly one origin (network_grant.host/port) inside the sandbox and then runs the command sandboxed."
+                    "description": "use_default (or omit): configured sandbox; fail closed if absent. require_escalated: necessary host execution after sandbox denial and interactive host approval. request_network_grant: after network denial, ask permission for exactly network_grant.host/port, then run sandboxed."
                 },
                 "justification": {
                     "type": "string",
-                    "description": "Required with sandbox_permissions='require_escalated'. Briefly explain why the command cannot run inside the workspace sandbox."
+                    "description": "With require_escalated, explain why the workspace sandbox cannot run the command."
                 },
                 "network_grant": {
                     "type": "object",
                     "properties": {
                         "host": {
                             "type": "string",
-                            "description": "Exact host to allow (no wildcards). Grant semantics never alias localhost with 127.0.0.1."
+                            "description": "Exact host, no wildcards. localhost and 127.0.0.1 never alias."
                         },
                         "port": {
                             "type": "integer",
-                            "description": "Optional port pin. Omit to allow any port on the host."
+                            "description": "Omit for any port on the host; otherwise pin this port."
                         }
                     },
                     "required": ["host"],
-                    "description": "Required with sandbox_permissions='request_network_grant'. The user must authorize this exact origin."
+                    "description": "Required with request_network_grant; the user must authorize this exact origin."
                 }
             },
             "required": ["command"],

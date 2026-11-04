@@ -64,6 +64,7 @@ pub(crate) async fn hybrid_search(
     ),
     WorkspaceRetrievalError,
 > {
+    let catalog_started = std::time::Instant::now();
     let lifetime = runtime
         .map(WorkspaceRetrievalRuntime::child_lifetime)
         .unwrap_or_else(|| cancellation.child_token());
@@ -92,8 +93,17 @@ pub(crate) async fn hybrid_search(
         }
     }
     let snapshot = catalog.snapshot()?;
+    tracing::debug!(
+        target: "aster_core::retrieval_phase",
+        phase = "catalog_admission",
+        source_revision = snapshot.source_revision(),
+        catalog_revision = snapshot.revision(),
+        elapsed_ms = catalog_started.elapsed().as_secs_f64() * 1_000.0,
+        "retrieval phase completed"
+    );
 
     let lexical_request = request.lexical_request();
+    let lexical_started = std::time::Instant::now();
     let native = if let Some(index) = persistent {
         let request = lexical_request.clone();
         let snapshot = snapshot.clone();
@@ -117,6 +127,14 @@ pub(crate) async fn hybrid_search(
         Err(super::WorkspaceIndexError::InvalidQuery(_)) => None,
         Err(error) => return Err(error.into()),
     };
+    tracing::debug!(
+        target: "aster_core::retrieval_phase",
+        phase = "lexical_query",
+        source_revision = snapshot.source_revision(),
+        catalog_revision = snapshot.revision(),
+        elapsed_ms = lexical_started.elapsed().as_secs_f64() * 1_000.0,
+        "retrieval phase completed"
+    );
 
     let semantic_request = request.semantic_request();
     let query_lifetime = lifetime.child_token();
@@ -143,6 +161,7 @@ pub(crate) async fn hybrid_search(
         &request,
         query_lifetime.child_token(),
     );
+    let channels_started = std::time::Instant::now();
     let operations = async { tokio::join!(exact_call, semantic_call, structural_call) };
     tokio::pin!(operations);
     let (exact, semantic, structural) = tokio::select! {
@@ -160,6 +179,13 @@ pub(crate) async fn hybrid_search(
     let exact_count = exact.len();
     let semantic = semantic?;
     let structural = structural?;
+    tracing::debug!(
+        target: "aster_core::retrieval_phase",
+        phase = "candidate_channels",
+        source_revision = snapshot.source_revision(),
+        elapsed_ms = channels_started.elapsed().as_secs_f64() * 1_000.0,
+        "retrieval phase completed"
+    );
 
     if !catalog_revision_matches(&catalog.snapshot()?, &snapshot) {
         return Ok((
@@ -250,8 +276,16 @@ pub(crate) async fn hybrid_search(
         .limit
         .saturating_mul(VERIFICATION_OVERFETCH)
         .min(MAX_RESULTS.saturating_mul(VERIFICATION_OVERFETCH));
+    let rerank_started = std::time::Instant::now();
     let fused = fuse_candidates(candidates);
     let reranked = rerank_fused_candidates(fused, verification_limit, rerank_options);
+    tracing::debug!(
+        target: "aster_core::retrieval_phase",
+        phase = "fusion_rerank",
+        source_revision = snapshot.source_revision(),
+        elapsed_ms = rerank_started.elapsed().as_secs_f64() * 1_000.0,
+        "retrieval phase completed"
+    );
     let rerank_status = reranked.status;
     let (hits, verification_filtered, verification_truncated) = retain_verified(
         reranked.hits,

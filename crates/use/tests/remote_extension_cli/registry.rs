@@ -32,7 +32,9 @@ fn github_registry_source_cli_persists_the_canonical_https_identity() {
     assert_eq!(source["rootSha256"], "a".repeat(64));
 
     let acl = std::fs::read_to_string(home.join("state/registries.acl")).unwrap();
-    assert!(acl.contains("https://raw.githubusercontent.com/aster-ai-lab/Use-Registry/main/registry/"));
+    assert!(
+        acl.contains("https://raw.githubusercontent.com/aster-ai-lab/Use-Registry/main/registry/")
+    );
     assert!(!acl.contains("github ="));
 }
 

@@ -11,6 +11,7 @@
 pub mod acp_command;
 pub mod command;
 pub mod commands;
+mod highlight;
 pub mod matcher;
 pub(crate) mod mid_text_hoist;
 pub mod mode_support;
@@ -274,8 +275,10 @@ pub struct SlashSnapshot {
     pub command_recognized: bool,
     /// Mid-text inline completion ghost text (for `/` tokens not at position 0).
     pub inline_ghost: Option<InlineGhost>,
-    /// Byte ranges of recognized mid-text `/command` tokens (for teal highlighting).
+    /// Byte ranges of execution-eligible mid-text `/command` tokens.
     pub recognized_tokens: Vec<Range<usize>>,
+    /// Visual command mentions, independent of mid-text execution eligibility.
+    pub syntax_tokens: Vec<Range<usize>>,
 }
 
 /// Ghost text state for a mid-text `/command` token under the cursor.
@@ -287,7 +290,7 @@ pub struct InlineGhost {
     pub token_range: Range<usize>,
     /// The full command name to insert on Tab accept (without `/`).
     pub full_name: String,
-    /// Teal the typed prefix. False for mid-text completions that would not run or mention.
+    /// Highlight the typed prefix. False for mid-text completions that would not run or mention.
     pub highlight: bool,
 }
 
@@ -667,6 +670,36 @@ impl SlashController {
 
     /// Recompute the snapshot from prompt text and cursor position.
     pub fn refresh(&mut self, slash: &SlashState, text: &str, cursor: usize, models: &ModelState) {
+        self.refresh_completion(slash, text, cursor, models);
+        slash.update(|snapshot| {
+            snapshot.syntax_tokens = highlight::token_ranges(text, |name| {
+                self.registry.get_for_dispatch(name).is_some()
+            });
+        });
+    }
+
+    pub(crate) fn highlight_scrollback(
+        &self,
+        buf: &mut ratatui::buffer::Buffer,
+        model: &crate::scrollback::text_selection::ResolvedSelectionModel,
+        dim_from: Option<usize>,
+    ) {
+        highlight::paint_scrollback(
+            buf,
+            model,
+            crate::theme::Theme::current().accent_verify,
+            dim_from,
+            |name| self.registry.get_for_dispatch(name).is_some(),
+        );
+    }
+
+    fn refresh_completion(
+        &mut self,
+        slash: &SlashState,
+        text: &str,
+        cursor: usize,
+        models: &ModelState,
+    ) {
         let previous = slash.snapshot();
         let inline_tokens = scan_inline_slash_tokens(text, cursor);
         let leading = analyze_input(text, cursor);
@@ -719,6 +752,7 @@ impl SlashController {
             command_recognized: false,
             inline_ghost: None,
             recognized_tokens: Vec::new(),
+            syntax_tokens: Vec::new(),
         };
 
         // Cursor inside the command token opens the command menu even when args follow, same as mid-text tokens. The two
@@ -825,6 +859,7 @@ impl SlashController {
                     command_recognized: is_recognized,
                     inline_ghost: None,
                     recognized_tokens: Vec::new(),
+                    syntax_tokens: Vec::new(),
                 }
             }
         };
@@ -870,6 +905,7 @@ impl SlashController {
             command_recognized: is_recognized,
             inline_ghost: None,
             recognized_tokens: Vec::new(),
+            syntax_tokens: Vec::new(),
         };
 
         let Some(command) = is_recognized

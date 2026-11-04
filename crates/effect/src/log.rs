@@ -329,8 +329,8 @@ impl FileLog {
             return Ok(0);
         }
         let prefix = &opened.facts[..retained];
-        if prefix.iter().any(|fact| fact.kind == "compaction.pruned")
-            && !prefix.iter().any(|fact| fact.kind == "compaction.done")
+        if prefix.iter().any(|fact| fact.kind == PRUNED_KIND)
+            && !prefix.iter().any(|fact| fact.kind == ANCHOR_KIND)
         {
             return Err(storage_error(
                 "cannot rewind into history already compacted away at the byte limit",
@@ -355,6 +355,7 @@ impl FileLog {
         Ok(removed)
     }
 
+    #[cfg(test)]
     fn rewrite_compacted(
         &self,
         thread_id: &str,
@@ -362,10 +363,19 @@ impl FileLog {
         retained: &[Fact],
     ) -> Result<(), ActorError> {
         let bytes = encode_facts(retained, MAX_LOG_BYTES, false)?;
+        self.replace_log(thread_id, opened, &bytes)
+    }
+
+    fn replace_log(
+        &self,
+        thread_id: &str,
+        opened: &OpenedLog,
+        bytes: &[u8],
+    ) -> Result<(), ActorError> {
         let tmp = Self::tmp_name(thread_id);
         let mut file = self.create_new(&tmp)?;
         let rewrite = (|| {
-            file.write_all(&bytes).map_err(storage_error)?;
+            file.write_all(bytes).map_err(storage_error)?;
             file.sync_all().map_err(storage_error)?;
             self.check_current(thread_id, opened)?;
             self.dir
@@ -376,6 +386,28 @@ impl FileLog {
             let _ = self.dir.remove_file(&tmp);
         }
         rewrite
+    }
+
+    /// Replace transcript facts that a compaction summary covers with
+    /// tombstones, but only when `added` then fits. A log that still cannot
+    /// take `added` stays untouched, so the caller never keeps tombstones
+    /// whose summary was not written.
+    fn make_room(
+        &self,
+        thread_id: &str,
+        opened: &OpenedLog,
+        added: &[Fact],
+    ) -> Result<OpenedLog, ActorError> {
+        let full = |reason: &str| byte_limit_diagnostic(&opened.facts, added, reason);
+        let retained = compacted_prefix(&opened.facts, added).ok_or_else(|| {
+            full("no transcript covered by a compaction summary is left to prune")
+        })?;
+        let bytes = encode_facts(&retained, MAX_LOG_BYTES, false)?;
+        encode_facts(added, MAX_LOG_BYTES - bytes.len() as u64, false)
+            .map_err(|_| full("pruning every summarized fact still leaves too little room"))?;
+        self.replace_log(thread_id, opened, &bytes)?;
+        self.read_opened(thread_id, true)?
+            .ok_or_else(|| storage_error("fact log disappeared during compaction"))
     }
 }
 
@@ -406,7 +438,7 @@ impl LogStore for FileLog {
             .unwrap_or_else(|poison| poison.into_inner());
         let _writer = self.prepare_writer_fence(thread_id)?;
         let mut opened = self.read_opened(thread_id, true)?;
-        let mut current = opened
+        let current = opened
             .as_ref()
             .map(|opened| opened.facts.clone())
             .unwrap_or_default();
@@ -418,42 +450,33 @@ impl LogStore for FileLog {
             return Err(storage_error("fact log fact-count limit exceeded"));
         }
         let added = next[current.len()..].to_vec();
-        let mut compacted = false;
-        let bytes = loop {
+        let attempt = |opened: &Option<OpenedLog>| {
             let length = opened
                 .as_ref()
                 .map(|opened| opened.metadata.len())
                 .unwrap_or(0);
             let needs_separator = opened.as_ref().is_some_and(|opened| opened.needs_separator);
-            match encode_facts(&added, MAX_LOG_BYTES - length, needs_separator) {
-                Ok(bytes) => break bytes,
-                Err(error) if compacted || !is_byte_limit_error(&error) => return Err(error),
-                Err(error) => {
-                    let Some(opened_log) = opened.as_ref() else {
-                        return Err(error);
-                    };
-                    let Some(retained) = compacted_message_prefix(&opened_log.facts) else {
-                        return Err(error);
-                    };
-                    let retained_bytes = encode_facts(&retained, MAX_LOG_BYTES, false)?;
-                    // A refused append must leave its original history intact.
-                    encode_facts(&added, MAX_LOG_BYTES - retained_bytes.len() as u64, false)?;
-                    self.rewrite_compacted(thread_id, opened_log, &retained)?;
-                    opened = self.read_opened(thread_id, true)?;
-                    current = opened
-                        .as_ref()
-                        .map(|opened| opened.facts.clone())
-                        .unwrap_or_default();
-                    next = current
-                        .iter()
-                        .cloned()
-                        .chain(added.iter().cloned())
-                        .collect();
-                    if next.len() > MAX_LOG_FACTS {
-                        return Err(storage_error("fact log fact-count limit exceeded"));
-                    }
-                    compacted = true;
+            encode_facts(&added, MAX_LOG_BYTES - length, needs_separator)
+        };
+        let bytes = match attempt(&opened) {
+            Ok(bytes) => bytes,
+            Err(error) if !is_byte_limit_error(&error) => return Err(error),
+            Err(error) => {
+                let Some(full) = opened.as_ref() else {
+                    return Err(error);
+                };
+                let compacted = self.make_room(thread_id, full, &added)?;
+                opened = Some(compacted);
+                next = opened
+                    .iter()
+                    .flat_map(|opened| opened.facts.iter())
+                    .chain(added.iter())
+                    .cloned()
+                    .collect();
+                if next.len() > MAX_LOG_FACTS {
+                    return Err(storage_error("fact log fact-count limit exceeded"));
                 }
+                attempt(&opened)?
             }
         };
         let mut file = match opened {
@@ -472,34 +495,44 @@ impl LogStore for FileLog {
     }
 }
 
-/// Replace model-visible messages already covered by the latest compaction
-/// summary with tiny tombstones. Superseded summaries and preparations are
-/// covered too; the newest summary carries their scheduler state for replay.
-/// Seq, key and other evidence stay in place.
-fn compacted_message_prefix(facts: &[Fact]) -> Option<Vec<Fact>> {
-    let anchor = facts
-        .iter()
-        .rposition(|fact| fact.kind == "compaction.done")?;
+const ANCHOR_KIND: &str = "compaction.done";
+const PRUNED_KIND: &str = "compaction.pruned";
+const BYTE_LIMIT: &str = "fact log byte limit exceeded";
+
+/// Transcript facts the coding fold replays only to rebuild what a compaction
+/// summary already carries. `tool.prepared` holds a workspace baseline per
+/// tool call, and every superseded summary repeats its kept tail, so these
+/// dominate a long run. Evidence of other kinds is never pruned.
+const SUMMARIZED_KINDS: [&str; 6] = [
+    "user.message",
+    "model.turn",
+    "tool.prepared",
+    "tool.result",
+    "question.answered",
+    ANCHOR_KIND,
+];
+
+/// Replace the facts covered by the latest compaction summary with tombstones.
+/// The summary is the latest one in the log, or the one in `incoming`.
+/// Seq, key, cause and every other fact stay in place, so replay still sees a
+/// contiguous log with no duplicated identities. The coding fold treats the
+/// tombstoned span as opaque and restores its counters from the summary.
+fn compacted_prefix(facts: &[Fact], incoming: &[Fact]) -> Option<Vec<Fact>> {
+    let anchor = if incoming.iter().any(|fact| fact.kind == ANCHOR_KIND) {
+        facts.len()
+    } else {
+        facts.iter().rposition(|fact| fact.kind == ANCHOR_KIND)?
+    };
     let mut pruned = false;
     let retained = facts
         .iter()
         .enumerate()
         .map(|(index, fact)| {
-            if index < anchor
-                && matches!(
-                    fact.kind.as_str(),
-                    "user.message"
-                        | "model.turn"
-                        | "tool.prepared"
-                        | "tool.result"
-                        | "question.answered"
-                        | "compaction.done"
-                )
-            {
+            if index < anchor && SUMMARIZED_KINDS.contains(&fact.kind.as_str()) {
                 pruned = true;
                 Fact {
                     seq: fact.seq,
-                    kind: "compaction.pruned".into(),
+                    kind: PRUNED_KIND.into(),
                     key: fact.key.clone(),
                     cause: fact.cause.clone(),
                     payload: serde_json::json!({}),
@@ -513,7 +546,31 @@ fn compacted_message_prefix(facts: &[Fact]) -> Option<Vec<Fact>> {
 }
 
 fn is_byte_limit_error(error: &ActorError) -> bool {
-    matches!(error, ActorError::Schema(message) if message == "fact log byte limit exceeded")
+    matches!(error, ActorError::Schema(message) if message == BYTE_LIMIT)
+}
+
+/// The log cannot take `added` even after pruning. Name what fills it so the
+/// operator can tell a runaway producer from an uncompacted run.
+fn byte_limit_diagnostic(facts: &[Fact], added: &[Fact], reason: &str) -> ActorError {
+    let mut by_kind: HashMap<&str, u64> = HashMap::new();
+    for fact in facts {
+        let size = serde_json::to_vec(fact)
+            .map(|bytes| bytes.len())
+            .unwrap_or(0);
+        *by_kind.entry(fact.kind.as_str()).or_default() += size as u64 + 1;
+    }
+    let largest = by_kind
+        .iter()
+        .max_by_key(|(kind, bytes)| (**bytes, std::cmp::Reverse(**kind)))
+        .map(|(kind, bytes)| format!("{kind} {bytes} bytes"))
+        .unwrap_or_else(|| "none".into());
+    let added_bytes = encode_facts(added, u64::MAX, false).map(|bytes| bytes.len());
+    storage_error(format!(
+        "{BYTE_LIMIT}: {reason} (limit {MAX_LOG_BYTES} bytes, {} facts, appending {} facts / {} bytes, largest kind: {largest})",
+        facts.len(),
+        added.len(),
+        added_bytes.unwrap_or(0),
+    ))
 }
 
 fn validate_regular(metadata: &Metadata) -> Result<(), ActorError> {
@@ -521,7 +578,7 @@ fn validate_regular(metadata: &Metadata) -> Result<(), ActorError> {
         return Err(storage_error("fact log must be a single-link regular file"));
     }
     if metadata.len() > MAX_LOG_BYTES {
-        return Err(storage_error("fact log byte limit exceeded"));
+        return Err(storage_error(BYTE_LIMIT));
     }
     Ok(())
 }
@@ -546,7 +603,7 @@ struct BoundedBuffer {
 impl Write for BoundedBuffer {
     fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
         if bytes.len() as u64 > self.remaining {
-            return Err(io::Error::other("fact log byte limit exceeded"));
+            return Err(io::Error::other(BYTE_LIMIT));
         }
         self.bytes.extend_from_slice(bytes);
         self.remaining -= bytes.len() as u64;

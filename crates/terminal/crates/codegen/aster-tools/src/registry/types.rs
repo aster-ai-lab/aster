@@ -1802,7 +1802,8 @@ impl FinalizedToolset {
         ctx.extensions.insert(
             crate::types::resources::InvokingToolParamNames::from_reverse_params(&reverse_params),
         );
-        ctx.extensions.remove::<aster_tool_runtime::BehaviorVersion>();
+        ctx.extensions
+            .remove::<aster_tool_runtime::BehaviorVersion>();
         if let Some(version) = contract_version {
             ctx.extensions
                 .insert(aster_tool_runtime::BehaviorVersion(version));
@@ -3479,9 +3480,11 @@ mod tests {
             _input: serde_json::Value,
         ) -> aster_tool_runtime::ToolStream<String> {
             Box::pin(futures::stream::iter(vec![
-                aster_tool_runtime::ToolStreamItem::Progress(aster_tool_runtime::ToolProgress::Text {
-                    text: "progress-1".into(),
-                }),
+                aster_tool_runtime::ToolStreamItem::Progress(
+                    aster_tool_runtime::ToolProgress::Text {
+                        text: "progress-1".into(),
+                    },
+                ),
                 aster_tool_runtime::ToolStreamItem::Terminal(Ok("terminal-value".to_string())),
             ]))
         }

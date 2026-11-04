@@ -355,7 +355,10 @@ mod tests {
 
     fn artifact() -> ArtifactRef {
         ArtifactRef {
-            uri: format!("oci://registry.example/aster/demo@sha256:{}", "a".repeat(64)),
+            uri: format!(
+                "oci://registry.example/aster/demo@sha256:{}",
+                "a".repeat(64)
+            ),
             digest: format!("sha256:{}", "a".repeat(64)),
             media_type: "application/vnd.oci.image.manifest.v1+json".into(),
         }

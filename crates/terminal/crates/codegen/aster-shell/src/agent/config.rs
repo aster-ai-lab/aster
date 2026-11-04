@@ -4,6 +4,7 @@ use crate::agent::model_providers::{
 };
 use crate::remote::DEFAULT_CONTEXT_WINDOW;
 use crate::{config::StorageMode, sampling::ApiBackend, tools::config::ShellToolsetConfig};
+use agent_client_protocol as acp;
 use aster_agent::prompt::skills::SkillsConfig;
 use aster_login::{AuthManager, GrokComConfig, OidcAuthConfig};
 use aster_sampler::{AuthScheme, SamplerConfig};
@@ -15,7 +16,6 @@ use aster_sampling_types::{
 use aster_tools::types::compat::{
     COMPAT_CELLS, CompatConfig, CompatConfigToml, CompatRemoteKey, CompatSurface, CompatVendor,
 };
-use agent_client_protocol as acp;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -871,9 +871,7 @@ impl PluginsConfig {
             }
         }
     }
-    pub(crate) fn to_discovery_config(
-        &self,
-    ) -> aster_agent::plugins::discovery::DiscoveryConfig {
+    pub(crate) fn to_discovery_config(&self) -> aster_agent::plugins::discovery::DiscoveryConfig {
         aster_agent::plugins::discovery::DiscoveryConfig {
             cli_plugin_dirs: self.cli_plugin_dirs.clone(),
             config_paths: self.paths.iter().map(std::path::PathBuf::from).collect(),
@@ -1672,8 +1670,7 @@ impl Default for Config {
             subagents_limit_behavior: Default::default(),
             workflow_max_concurrent_agents:
                 crate::session::workflow::host_service::DEFAULT_WORKFLOW_MAX_CONCURRENT_AGENTS,
-            media_gen_batch_limits: aster_tools::media_gen_limits::MediaGenBatchLimits::default(
-            ),
+            media_gen_batch_limits: aster_tools::media_gen_limits::MediaGenBatchLimits::default(),
             subagent_model_overrides: std::collections::HashMap::new(),
             subagent_toggle: std::collections::HashMap::new(),
             subagent_roles: std::collections::HashMap::new(),
@@ -5392,7 +5389,7 @@ impl ModelSwitchIncompatibleAgentError {
 /// Shell loads the requirements here and hands auth the parsed value.
 fn force_login_team_from_requirements() -> Option<aster_login::ForceLoginTeam> {
     aster_login::force_login_team_from_requirements_value(
-        &crate::config::load_merged_requirements()?,
+        &crate::config::load_merged_requirements()?
     )
 }
 #[cfg(test)]

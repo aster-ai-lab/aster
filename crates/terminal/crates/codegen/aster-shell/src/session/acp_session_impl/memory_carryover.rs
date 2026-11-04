@@ -40,12 +40,7 @@ pub(crate) async fn carry_over_legacy_memory_into_v2(
         let source = legacy_memory_file(legacy_root, scope, &workspace_dir_name);
         let access = access.clone();
         let result = tokio::task::spawn_blocking(move || {
-            carry_over_legacy_memory(
-                &scope_dir,
-                &source,
-                &access,
-                &aster_memory::SystemV2Clock,
-            )
+            carry_over_legacy_memory(&scope_dir, &source, &access, &aster_memory::SystemV2Clock)
         })
         .await
         .map_err(|join_error| join_error.to_string())

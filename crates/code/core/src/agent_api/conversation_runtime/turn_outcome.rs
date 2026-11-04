@@ -4,6 +4,20 @@ pub(super) async fn settle_owned_capability_run(
     pinned: &OwnedPinnedFact,
     outcome: std::result::Result<AgentResult, anyhow::Error>,
 ) -> std::result::Result<AgentResult, anyhow::Error> {
+    if outcome
+        .as_ref()
+        .map_or(true, |result| result.forced_stop.is_some())
+    {
+        if let Some(admission) = pinned.parts.surface.as_ref().and_then(|surface| {
+            surface
+                .agent
+                .tool_context_handle()
+                .background_admission
+                .clone()
+        }) {
+            admission.cancel();
+        }
+    }
     let cancelled_before_cleanup = pinned
         .parts
         .surface
@@ -54,12 +68,21 @@ pub(super) async fn apply_capability_close(
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .clone();
         let observation_cancel = tokio_util::sync::CancellationToken::new();
+        let live = surface
+            .agent
+            .tool_context_handle()
+            .background_admission
+            .as_ref()
+            .map(|admission| admission.live())
+            .unwrap_or_default();
+        let deferred = ledger.deferred_background_children(&live);
         let incomplete = tokio::time::timeout(
             std::time::Duration::from_secs(5),
-            crate::harness_loop::absorb_open_workspace_children(
+            crate::harness_loop::absorb_workspace_children_except(
                 &mut ledger,
                 parts.workspace.as_path(),
                 &observation_cancel,
+                &deferred,
             ),
         )
         .await
@@ -181,6 +204,32 @@ pub(super) fn gate_result(
 /// Close a settled run through the completion gate of its surface.
 pub(crate) fn gate_surface_result(
     surface: &crate::fact_control::SessionSurface,
+    result: AgentResult,
+    goal_attestation: Option<&[crate::verification::VerificationReport]>,
+) -> std::result::Result<AgentResult, anyhow::Error> {
+    // The gate can fail after parent Run close; stop that parent's background group too.
+    let guard = surface
+        .run_id
+        .as_ref()
+        .and_then(|_| {
+            surface
+                .agent
+                .tool_context_handle()
+                .background_admission
+                .clone()
+        })
+        .map(|admission| admission.cancellation().drop_guard());
+    let outcome = checked_surface_result(surface, result, goal_attestation);
+    if outcome.is_ok() {
+        if let Some(guard) = guard {
+            guard.disarm();
+        }
+    }
+    outcome
+}
+
+fn checked_surface_result(
+    surface: &crate::fact_control::SessionSurface,
     mut result: AgentResult,
     goal_attestation: Option<&[crate::verification::VerificationReport]>,
 ) -> std::result::Result<AgentResult, anyhow::Error> {
@@ -208,6 +257,30 @@ pub(crate) fn gate_surface_result(
         *lock = reports.clone();
     }
     result.verification_reports = reports.clone();
+    let forced_stop = result.forced_stop;
+    if forced_stop.is_none() && goal_attestation.is_none() && surface.goal_tick.is_none() {
+        let live = surface
+            .agent
+            .tool_context_handle()
+            .background_admission
+            .as_ref()
+            .map(|admission| admission.live())
+            .unwrap_or_default();
+        let deferred = ledger.deferred_background_children(&live);
+        if !deferred.is_empty()
+            && matches!(
+                surface.agent.decide_fact_completion_gate(
+                    &ledger.without_background_children(&deferred),
+                    &reports
+                ),
+                crate::harness_loop::CompletionGate::Allow(_)
+            )
+        {
+            crate::fact_control::append_turn_yielded_fact(surface, &deferred)?;
+            result.completion = crate::harness_loop::CompletionTerminal::Narrative;
+            return Ok(result);
+        }
+    }
     match surface.agent.decide_fact_completion_gate(&ledger, &reports) {
         crate::harness_loop::CompletionGate::Allow(terminal) => {
             // The run closed accountable: mark the log position so the next
@@ -225,6 +298,14 @@ pub(crate) fn gate_surface_result(
             }
         }
     }
+    .map_err(|error| match forced_stop {
+        Some(reason) => {
+            // Preserve the gate's diagnostic prefix and both typed causes.
+            let diagnostic = format!("{error}; forced_stop={reason}");
+            error.context(reason).context(diagnostic)
+        }
+        None => error,
+    })
 }
 
 pub(super) fn agent_result(

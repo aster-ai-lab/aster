@@ -6,6 +6,7 @@ pub(crate) const MAX_PLAN_FILE_BYTES: usize = 256 * 1024;
 pub mod aster_spawn;
 pub mod leader_bridge;
 pub mod meta;
+pub(crate) mod model_preferences;
 pub mod model_state;
 pub(crate) mod prefix_fork;
 
@@ -23,10 +24,15 @@ pub(crate) use version_mismatch::{is_version_mismatch_banner, version_mismatch_b
 /// TUI dispatch, headless dispatch, and the session-load ACP barrier all share this list.
 /// A new method thus cannot be handled in one path and classified `Unrelated` in another.
 pub(crate) fn is_session_update_ext_method(method: &str) -> bool {
-    matches!(method, "aster/session_notification" | "aster/session/update")
+    matches!(
+        method,
+        "aster/session_notification" | "aster/session/update"
+    )
 }
 use crate::app::effects::{SessionRpcError, acp_send_bounded};
 use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
+use agent_client_protocol as acp;
+use anyhow::Result;
 use aster_acp_lib::{AcpAgentTx, AcpClientRx};
 use aster_shell::agent::auth_method::AuthMethodKind;
 use aster_shell::agent::config::Config as AgentConfig;
@@ -35,11 +41,7 @@ use aster_telemetry::process_info::{
     Entrypoint, Interactivity, LeaderMode, ProcessIdentity, set_identity,
 };
 use aster_telemetry::startup;
-pub use aster_telemetry::startup::{
-    AgentKind, Owner, StartupOutcome, StartupPhase, StartupTimer,
-};
-use agent_client_protocol as acp;
-use anyhow::Result;
+pub use aster_telemetry::startup::{AgentKind, Owner, StartupOutcome, StartupPhase, StartupTimer};
 pub use model_state::ModelState;
 use std::io::Write;
 use tokio_util::sync::CancellationToken;
@@ -234,7 +236,7 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
     });
     // Product path: forked pager UI + aster-core ACP agent subprocess.
     // No sidecar fails closed. The legacy shell is not a fallback.
-    // The prompt model is the ACL `default_model` the child loads. TOML
+    // The prompt model and effort are the ACL defaults the child loads. TOML
     // theme and key bindings stay on this process and are not passed as
     // `--model`. An inherited `ASTER_DEFAULT_MODEL` still applies inside the child.
     let cwd = std::env::current_dir().ok();
@@ -387,6 +389,7 @@ fn build_initialize_meta(flags: &ConnectFlags, target: CapabilityTarget) -> serd
     let mut meta = serde_json::json!({
         "clientType": client_type,
         "clientVersion": PAGER_CLIENT_VERSION,
+        "aster/terminalMarkdown": true,
     });
     if let Some(obj) = meta.as_object_mut() {
         if let Some(spo) = &flags.system_prompt_override {
@@ -1068,6 +1071,7 @@ mod tests {
             ..Default::default()
         };
         let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
+        assert_eq!(meta["aster/terminalMarkdown"], true);
         assert_eq!(
             meta.get("rules").and_then(|v| v.as_str()),
             Some("Always reply in French.")

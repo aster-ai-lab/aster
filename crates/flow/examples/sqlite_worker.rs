@@ -55,7 +55,8 @@ impl FlowRuntime for ReminderRuntime {
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
-    let root = std::env::temp_dir().join(format!("aster-flow-sqlite-worker-{}", std::process::id()));
+    let root =
+        std::env::temp_dir().join(format!("aster-flow-sqlite-worker-{}", std::process::id()));
     let db_path = root.join("flow.db");
     let task_root = root.join("tasks");
     let _ = tokio::fs::remove_dir_all(&root).await;

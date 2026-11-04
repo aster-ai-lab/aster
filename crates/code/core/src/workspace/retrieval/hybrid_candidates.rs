@@ -23,7 +23,7 @@ pub(crate) struct ValidatedHybridRequest {
     query: String,
     path: Option<WorkspacePath>,
     include_source: Option<String>,
-    include: Option<glob::Pattern>,
+    include: Option<crate::workspace::BraceGlob>,
     pub(super) limit: usize,
 }
 
@@ -54,7 +54,7 @@ impl ValidatedHybridRequest {
             .map(|pattern| {
                 crate::workspace::validate_relative_pattern(pattern, "hybrid include pattern")
                     .map_err(|error| WorkspaceRetrievalError::InvalidQuery(error.to_string()))?;
-                glob::Pattern::new(pattern)
+                crate::workspace::BraceGlob::new(pattern)
                     .map_err(|error| WorkspaceRetrievalError::InvalidQuery(error.to_string()))
             })
             .transpose()?;
@@ -305,7 +305,7 @@ fn path_matches(path: &str, base: Option<&WorkspacePath>) -> bool {
     })
 }
 
-fn include_matches(path: &str, include: Option<&glob::Pattern>) -> bool {
+fn include_matches(path: &str, include: Option<&crate::workspace::BraceGlob>) -> bool {
     include.is_none_or(|include| {
         let path = std::path::Path::new(path);
         include.matches_path(path)

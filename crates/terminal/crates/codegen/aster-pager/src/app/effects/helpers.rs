@@ -1193,7 +1193,7 @@ pub(crate) async fn persist_setting(
             let SettingValue::String(s) = value else {
                 return Err(kind_mismatch("default_model", "String", &value));
             };
-            aster_shell::util::config::set_default_model(s)
+            crate::acp::model_preferences::persist(Some(s), None)
                 .await
                 .map_err(|e| e.to_string())
         }

@@ -48,7 +48,8 @@ async fn headless_auth_keeps_advertised_noninteractive_methods_and_refuses_brows
         ));
         let expected = id.to_string();
         let answer = tokio::spawn(async move {
-            let aster_acp_lib::AcpAgentMessage::Authenticate(args) = rx.recv().await.unwrap() else {
+            let aster_acp_lib::AcpAgentMessage::Authenticate(args) = rx.recv().await.unwrap()
+            else {
                 panic!("expected authenticate");
             };
             assert_eq!(args.request.method_id.0.as_ref(), expected);
@@ -866,8 +867,8 @@ fn parse_json_schema_rejects_non_objects_and_invalid_json() {
 
 #[tokio::test]
 async fn handler_answers_ext_method_instead_of_dropping() {
-    use aster_tools::implementations::grok_build::ask_user_question::AskUserQuestionExtResponse;
     use agent_client_protocol as acp;
+    use aster_tools::implementations::grok_build::ask_user_question::AskUserQuestionExtResponse;
     let raw = serde_json::value::to_raw_value(&serde_json::json!({})).unwrap();
     let (tx, mut rx) = tokio::sync::oneshot::channel();
     let msg = aster_acp_lib::AcpClientMessage::ExtMethod(aster_acp_lib::AcpArgs {

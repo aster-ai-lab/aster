@@ -530,9 +530,7 @@ pub fn build_default_otel_layer_config() -> aster_telemetry::otel_layer::OtelLay
 /// Sync this principal's config now rather than waiting for the background tick.
 /// Stay quiet about absence or failure during login; confirm only when config was actually applied.
 /// Driven by the login callers here so auth does not reach into managed config.
-pub async fn apply_post_login_config(
-    authenticated: aster_login::GrokAuth,
-) -> anyhow::Result<()> {
+pub async fn apply_post_login_config(authenticated: aster_login::GrokAuth) -> anyhow::Result<()> {
     let outcome = crate::managed_config::post_login_sync(Some(authenticated)).await;
     match outcome {
         crate::managed_config::ManagedConfigSync::Updated { is_team: true } => {

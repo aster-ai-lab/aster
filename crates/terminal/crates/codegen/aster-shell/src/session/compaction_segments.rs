@@ -8,8 +8,8 @@ use crate::extensions::notification::CompactionSegmentFile;
 use crate::session::persistence::PersistenceMsg;
 use aster_chat_state::CompactionMode;
 use aster_chat_state::compaction_utils::format_compact_summary;
-use aster_sampling_types::ConversationItem;
 use aster_compaction_transcript::COMPACTION_DIR;
+use aster_sampling_types::ConversationItem;
 impl SessionActor {
     /// Persist the per-segment store (`Segments` only; no-op for `Summary` and `Transcript`).
     /// Queues a write on the persistence channel; storage assigns the index and renders the markdown.

@@ -2,8 +2,8 @@
 
 use std::sync::Arc;
 
-use aster_login::{AuthManager, GrokComConfig};
 use anyhow::{Context, Result, bail};
+use aster_login::{AuthManager, GrokComConfig};
 use serde::de::DeserializeOwned;
 
 // Re-export sandbox API types from cli-chat-proxy-types for convenience.

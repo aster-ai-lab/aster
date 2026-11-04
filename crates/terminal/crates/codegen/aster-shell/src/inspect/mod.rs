@@ -939,9 +939,7 @@ async fn list_skills(
         .collect()
 }
 
-fn slash_name_counts(
-    skills: &[aster_agent::prompt::skills::SkillInfo],
-) -> HashMap<String, usize> {
+fn slash_name_counts(skills: &[aster_agent::prompt::skills::SkillInfo]) -> HashMap<String, usize> {
     let mut counts: HashMap<String, usize> = HashMap::new();
     for skill in skills.iter().filter(|s| s.user_invocable && s.enabled) {
         *counts.entry(skill.name.to_lowercase()).or_default() += 1;
@@ -2340,7 +2338,8 @@ mod tests {
     fn requirements_lock_reports_always_approve_enforced() {
         let lock = aster_workspace::permission::resolution::YoloPolicyLock {
             source_label: "/etc/grok/requirements.toml".to_string(),
-            reason: aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode,
+            reason:
+                aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode,
         };
         let PermissionPolicyReport {
             enforced,
@@ -2372,7 +2371,8 @@ mod tests {
     fn mdm_pin_attributes_enforced_row_to_mdm_layer() {
         let lock = aster_workspace::permission::resolution::YoloPolicyLock {
             source_label: crate::config::MDM_REQUIREMENTS_SOURCE.to_string(),
-            reason: aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode,
+            reason:
+                aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode,
         };
 
         let PermissionPolicyReport {

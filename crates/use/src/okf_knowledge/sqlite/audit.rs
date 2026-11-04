@@ -10,7 +10,8 @@ use super::projection::{
 };
 use super::storage::{self, OkfKnowledgeStorageUsage};
 
-pub const OKF_KNOWLEDGE_INTEGRITY_REPORT_SCHEMA: &str = "aster.use.okf-knowledge-integrity-report.v1";
+pub const OKF_KNOWLEDGE_INTEGRITY_REPORT_SCHEMA: &str =
+    "aster.use.okf-knowledge-integrity-report.v1";
 pub const OKF_KNOWLEDGE_SEARCH_INDEX_REPAIR_SCHEMA: &str =
     "aster.use.okf-knowledge-search-index-repair.v1";
 
@@ -341,6 +342,7 @@ fn validate_search_index(
 }
 
 fn search_index_error(message: impl Into<String>) -> UseError {
-    UseError::new("use.okf.knowledge_search_index_invalid", message)
-        .with_suggestion("Run 'aster-use knowledge repair-search-index --yes' for this exact scope.")
+    UseError::new("use.okf.knowledge_search_index_invalid", message).with_suggestion(
+        "Run 'aster-use knowledge repair-search-index --yes' for this exact scope.",
+    )
 }

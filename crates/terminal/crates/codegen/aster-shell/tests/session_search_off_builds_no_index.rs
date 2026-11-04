@@ -1,12 +1,10 @@
 //! Its own binary: the aster home resolves once per process.
 
+use agent_client_protocol as acp;
 use aster_shell::session::info::Info;
-use aster_shell::session::storage::search::{
-    IndexDecision, SessionSearchRequest, execute_search,
-};
+use aster_shell::session::storage::search::{IndexDecision, SessionSearchRequest, execute_search};
 use aster_shell::session::storage::{JsonlStorageAdapter, StorageAdapter};
 use aster_test_support::EnvGuard;
-use agent_client_protocol as acp;
 
 #[tokio::test]
 async fn saved_session_is_neither_indexed_nor_found_with_search_off() {

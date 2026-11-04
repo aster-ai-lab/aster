@@ -790,6 +790,13 @@ impl ToolExecutor {
         self.registry.artifact_store()
     }
 
+    pub(crate) fn model_readable_artifact_store(&self) -> Option<ArtifactStore> {
+        self.registry
+            .immutable_content_adapter()
+            .is_none()
+            .then(|| self.artifact_store())
+    }
+
     /// Replace the sink used for compact execution trace events.
     pub fn set_trace_sink(&self, sink: Arc<dyn crate::trace::TraceSink>) {
         self.registry.set_trace_sink(sink);

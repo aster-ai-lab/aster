@@ -1,0 +1,140 @@
+[
+  {
+    "name": "acp-full",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp-unit",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 111.512987917,
+    "results": [
+      "test result: ok. 506 passed; 0 failed; 10 ignored; 0 measured; 0 filtered out; finished in 108.67s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "holdout-selfchecks",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/deloop_generalization_real_llm",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 0.5097980830000068,
+    "results": [
+      "test result: ok. 51 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.16s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "feed-selfchecks",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/deloop_real_llm",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 0.5199398750000057,
+    "results": [
+      "test result: ok. 51 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.18s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "long-horizon-selfchecks",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/long_horizon_real_llm",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 17.10633829199999,
+    "results": [
+      "test result: ok. 62 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out; finished in 15.89s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "cursor-tui",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/cursor_account_tui_e2e",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 8.070426249999997,
+    "results": [
+      "test result: ok. 4 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 6.28s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "wire",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/acp_conformance_stdio",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 36.948343166,
+    "results": [
+      "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 36.36s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "shipped-wire",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/shipped_tui_e2e",
+      "shipped_agent_session_wire",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": {
+      "ASTER_TUI_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "ASTER_ACP_BIN": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "ASTER_LH_CANDIDATE_MANIFEST": "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-pair.json",
+      "ASTER_LH_OUTPUT_TOKENS": "8192"
+    },
+    "exitCode": 0,
+    "seconds": 10.977256959000016,
+    "results": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 7.64s"
+    ],
+    "tail": []
+  }
+]

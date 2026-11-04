@@ -4972,10 +4972,7 @@
 
     #[test]
     #[serial_test::serial]
-    fn teal_highlighting_on_second_line() {
-        // Asserts the full-TUI accent color
-        // The slash highlight reads the global `embedded` flag (monochrome when set)
-        // Pin it off and serialize against the modal_window embedded test that toggles it
+    fn purple_highlighting_on_second_line() {
         crate::views::modal_window::set_embedded(false);
         let mut pw = PromptWidget::new();
         pw.textarea.insert_str("hello\n/model");
@@ -4993,16 +4990,41 @@
         let token_text = buf_text_at(&buf, 0, 6, 1);
         assert_eq!(token_text, "/model", "token should render on row 1");
 
-        // When the theme has color support, also verify teal foreground.
+        // When the theme has color support, also verify purple foreground.
         let theme = crate::theme::Theme::current();
-        if theme.accent_skill != ratatui::style::Color::Reset {
+        if theme.accent_verify != ratatui::style::Color::Reset {
             for x in 0..6u16 {
                 let cell = buf.cell((x, 1)).expect("cell exists");
                 assert_eq!(
-                    cell.fg, theme.accent_skill,
-                    "col {x} on row 1 should be teal, got {:?}",
+                    cell.fg, theme.accent_verify,
+                    "col {x} on row 1 should be purple, got {:?}",
                     cell.fg
                 );
+            }
+        }
+    }
+
+    #[test]
+    fn slash_syntax_colors_registered_mentions_without_coloring_paths() {
+        let mut pw = PromptWidget::new();
+        let text = "use `/model` /exit /model/file https://a/model /unknown";
+        pw.textarea.insert_str(text);
+        pw.slash_controller.refresh(&pw.slash_state, text, text.len(), &crate::acp::model_state::ModelState::default());
+        let area = Rect::new(0, 0, 80, 3);
+        let mut buf = Buffer::empty(area);
+        pw.draw(&mut buf, area, None, &ghost_test_style(), None, None);
+        let theme = crate::theme::Theme::current();
+        for token in ["/model`", "/exit"] {
+            let start = text.find(token).unwrap();
+            let len = token.trim_end_matches('`').len();
+            for x in start..start + len {
+                assert_eq!(buf.cell((x as u16, 0)).unwrap().fg, theme.accent_verify);
+            }
+        }
+        if theme.text_primary != theme.accent_verify {
+            for token in ["/model/file", "https://a/model", "/unknown"] {
+                let x = text.find(token).unwrap() as u16;
+                assert_ne!(buf.cell((x, 0)).unwrap().fg, theme.accent_verify, "{token}");
             }
         }
     }
@@ -5467,4 +5489,32 @@
         let event = pw.handle_key(&KeyEvent::new(KeyCode::Enter, KeyModifiers::SUPER));
         assert_eq!(event, PromptEvent::Edited);
         assert_eq!(pw.textarea.text(), "hello\n");
+    }
+
+
+    #[test]
+    fn session_telemetry_uses_the_left_footer_without_overwriting_model_or_mode() {
+        let _guard = crate::theme::cache::pin_theme();
+        let theme = Theme::current();
+        let pw = PromptWidget::new();
+        let flags = [PromptFlag { text: "yolo", color: None, bold: false }];
+        let info = PromptInfo {
+            telemetry: Some("Σ 24.6k tokens · ≈38.2 tok/s"),
+            model_name: "glm-02/glm-5.3 (max)",
+            flags: &flags,
+            ..Default::default()
+        };
+        for width in [100, 35, 10] {
+            let area = Rect::new(0, 0, width, 1);
+            let mut buf = Buffer::empty(area);
+            pw.render_info_line(&mut buf, area, &info, theme.bg_base, &theme, true, true);
+            let row = buf_text_at(&buf, 0, width, 0);
+            if width == 100 {
+                assert!(row.starts_with("Σ 24.6k tokens · ≈38.2 tok/s"), "{row}");
+                assert!(row.trim_end().ends_with("yolo"), "{row}");
+                assert!(row.contains("glm-02/glm-5.3 (max)"), "{row}");
+            } else {
+                assert!(!row.contains("Σ"), "narrow footer keeps the existing model caption: {row}");
+            }
+        }
     }

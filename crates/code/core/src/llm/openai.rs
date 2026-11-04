@@ -706,6 +706,7 @@ impl LlmClient for OpenAiClient {
         system: Option<&str>,
         tools: &[ToolDefinition],
     ) -> Result<LlmResponse> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_request(self.build_chat_request(messages, system, tools, None))
             .await
     }
@@ -717,6 +718,7 @@ impl LlmClient for OpenAiClient {
         tools: &[ToolDefinition],
         directive: &structured::StructuredDirective,
     ) -> Result<LlmResponse> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_request(self.build_chat_request(messages, system, tools, Some(directive)))
             .await
     }
@@ -736,6 +738,7 @@ impl LlmClient for OpenAiClient {
         tools: &[ToolDefinition],
         cancel_token: tokio_util::sync::CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_streaming(
             self.build_chat_request(messages, system, tools, None),
             cancel_token,
@@ -751,6 +754,7 @@ impl LlmClient for OpenAiClient {
         directive: &structured::StructuredDirective,
         cancel_token: tokio_util::sync::CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_streaming(
             self.build_chat_request(messages, system, tools, Some(directive)),
             cancel_token,

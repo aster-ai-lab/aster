@@ -350,13 +350,11 @@ pub async fn handle(
             })
             .await
             {
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::SkillAdded {
-                        added_count: 0,
-                        total_skills: 0,
-                        success: false,
-                    },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::SkillAdded {
+                    added_count: 0,
+                    total_skills: 0,
+                    success: false,
+                });
                 log_harness_changed(&changed, HarnessChangeOp::Added, false);
                 return super::to_ext_response(Err::<SkillsAddResponse, _>(anyhow::anyhow!(
                     "Failed to save config: {e}"
@@ -406,9 +404,9 @@ pub async fn handle(
             })
             .await
             {
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::SkillRemoved { success: false },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::SkillRemoved {
+                    success: false,
+                });
                 log_harness_changed(&changed, HarnessChangeOp::Removed, false);
                 return super::to_ext_response(Err::<SkillsRemoveResponse, _>(anyhow::anyhow!(
                     "Failed to save config: {e}"

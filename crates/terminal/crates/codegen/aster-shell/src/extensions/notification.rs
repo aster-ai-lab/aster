@@ -1,5 +1,5 @@
-use aster_tools::types::TaskSnapshot;
 use agent_client_protocol as acp;
+use aster_tools::types::TaskSnapshot;
 
 use crate::session::feedback::FeedbackRequest as FeedbackRequestData;
 
@@ -499,6 +499,15 @@ pub const MODEL_FAMILY_SWITCH_COMPACT_BANNER: &str = "Switching model. Compactin
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case", tag = "sessionUpdate")]
 pub enum SessionUpdate {
+    /// Provider accounting and measured generation timing from Aster Core.
+    ModelInfo {
+        #[serde(default, rename = "sessionTotalTokens")]
+        session_total_tokens: Option<u64>,
+        #[serde(default, rename = "measuredOutputTokens")]
+        measured_output_tokens: Option<u64>,
+        #[serde(default, rename = "generationDurationMs")]
+        generation_duration_ms: Option<u64>,
+    },
     /// A diff review request containing one or more file diffs for user review.
     DiffReview {
         /// The diff content to be reviewed.

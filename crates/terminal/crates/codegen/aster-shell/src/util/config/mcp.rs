@@ -1,7 +1,7 @@
-use aster_agent::prompt::skills::SkillsConfig;
-use aster_tools::types::compat::{CompatConfig, CompatConfigToml};
 use agent_client_protocol as acp;
 use anyhow::Result;
+use aster_agent::prompt::skills::SkillsConfig;
+use aster_tools::types::compat::{CompatConfig, CompatConfigToml};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -1068,8 +1068,7 @@ pub async fn delete_mcp_server_config_at(
     })
     .await?;
 
-    if wrote
-        && let Ok(mut cred_store) = aster_mcp::credentials::McpCredentialStore::load_default()
+    if wrote && let Ok(mut cred_store) = aster_mcp::credentials::McpCredentialStore::load_default()
     {
         let removed = cred_store.remove_by_server_name(server_name);
         if removed > 0 {

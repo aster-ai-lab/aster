@@ -1057,8 +1057,12 @@ mod tests {
         let handle = tokio::spawn({
             let shared = shared.clone();
             async move {
-                aster_tool_runtime::Tool::run(&tool, test_ctx_with_call_id(shared, "tc-short"), input)
-                    .await
+                aster_tool_runtime::Tool::run(
+                    &tool,
+                    test_ctx_with_call_id(shared, "tc-short"),
+                    input,
+                )
+                .await
             }
         });
 

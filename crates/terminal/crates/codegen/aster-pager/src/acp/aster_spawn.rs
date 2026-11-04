@@ -10,9 +10,9 @@ use tokio::process::Command;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::{AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels};
 use aster_shell::util::grok_home::grok_home;
-use agent_client_protocol as acp;
 
 use super::spawn::{SpawnedAgent, boot_auth_manager};
 use aster_shell::agent::config::Config as AgentConfig;
@@ -146,27 +146,46 @@ fn spawn_bridge(
                 let gateway_task = tokio::task::spawn_local(gw_rx.run());
                 tokio::task::yield_now().await;
 
-                let outcome = tokio::select! {
+                // Prefer cancel over transport/exit so intentional teardown is not a failure.
+                // The pager cancels before dropping client channels; both can race.
+                let stop = tokio::select! {
                     biased;
-                    _ = bridge_cancel.cancelled() => Ok(()),
-                    result = &mut io_task => match result {
-                        Ok(Ok(())) => Err(anyhow!("Aster Code ACP transport closed")),
-                        Ok(Err(error)) => Err(anyhow::Error::new(error)),
-                        Err(error) => Err(anyhow::Error::new(error).context("ACP transport task")),
-                    },
-                    status = child.wait() => match status {
-                        Ok(status) => Err(anyhow!("Aster Code ACP exited: {status}")),
-                        Err(error) => Err(anyhow::Error::new(error).context("wait for ACP agent")),
-                    },
+                    () = bridge_cancel.cancelled() => BridgeStop::Cancelled,
+                    result = &mut io_task => BridgeStop::Failed(match result {
+                        Ok(Ok(())) => anyhow!("Aster Code ACP transport closed"),
+                        Ok(Err(error)) => anyhow::Error::new(error),
+                        Err(error) => anyhow::Error::new(error).context("ACP transport task"),
+                    }),
+                    status = child.wait() => BridgeStop::Failed(match status {
+                        Ok(status) => anyhow!("Aster Code ACP exited: {status}"),
+                        Err(error) => anyhow::Error::new(error).context("wait for ACP agent"),
+                    }),
                 };
                 stderr_task.abort();
                 io_task.abort();
                 gateway_task.abort();
-                child.kill().await.context("stop and reap ACP agent")?;
-                outcome
+                // Cancel and unexpected-exit paths both need a reap; a gone child is fine.
+                if let Err(error) = child.kill().await {
+                    tracing::debug!(%error, "ACP child already gone during bridge teardown");
+                }
+                match stop {
+                    BridgeStop::Cancelled => Ok(()),
+                    BridgeStop::Failed(error) if bridge_cancel.is_cancelled() => {
+                        // Channel drop closed stdio in the same wakeup as cancel.
+                        tracing::debug!(%error, "ACP bridge stop overlapped cancel; treating as clean");
+                        Ok(())
+                    }
+                    BridgeStop::Failed(error) => Err(error),
+                }
             })
         })
         .context("failed to start aster ACP bridge thread")
+}
+
+/// Why the ACP bridge select finished.
+enum BridgeStop {
+    Cancelled,
+    Failed(anyhow::Error),
 }
 
 /// The sentence the interactive pager returns when no sidecar executable is configured.
@@ -205,16 +224,11 @@ fn sidecar_arguments(
     model: Option<&str>,
     acl: Option<&std::ffi::OsStr>,
 ) -> Vec<std::ffi::OsString> {
-    let effort = config
-        .reasoning_effort_override
-        .or(config.models.default_reasoning_effort)
-        .unwrap_or(aster_shell::sampling::types::ReasoningEffort::Medium);
-    let mut args = vec![
-        "--reasoning-effort".into(),
-        effort.to_string().into(),
-        "--cwd".into(),
-        cwd.as_os_str().to_owned(),
-    ];
+    let mut args = Vec::new();
+    if let Some(effort) = config.reasoning_effort_override {
+        args.extend(["--reasoning-effort".into(), effort.to_string().into()]);
+    }
+    args.extend(["--cwd".into(), cwd.as_os_str().to_owned()]);
     if let Some(model) = model {
         args.extend(["--model".into(), model.into()]);
     }

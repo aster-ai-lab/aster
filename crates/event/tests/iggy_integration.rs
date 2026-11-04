@@ -52,7 +52,9 @@
 //! | 32 | concurrent publishes all land | `concurrent_publish` |
 
 use aster_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
-use aster_event::{DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions};
+use aster_event::{
+    DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions,
+};
 
 /// Try to connect to Iggy. Returns None if server is unavailable.
 async fn try_iggy_provider(stream_suffix: &str) -> Option<IggyProvider> {

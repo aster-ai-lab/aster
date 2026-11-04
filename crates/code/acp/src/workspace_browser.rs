@@ -144,6 +144,12 @@ impl Tool for OpenWorkspaceBrowserTool {
                 })));
             }
         };
+        if let Some(reason) = missing_local_file(&url).await {
+            return Ok(ToolOutput::error(reason).with_metadata(json!({
+                "ok": false,
+                "reason": "missing_file",
+            })));
+        }
         let value = open_on_host(&self.bridge, &self.session, &url).await?;
         if value.get("ok") != Some(&Value::Bool(true)) {
             let reason = value
@@ -159,6 +165,21 @@ impl Tool for OpenWorkspaceBrowserTool {
             .unwrap_or(url.as_str())
             .to_owned();
         Ok(ToolOutput::success(format!("opened {opened}")).with_metadata(value))
+    }
+}
+
+/// A file URL that names nothing must not report a page the user never saw.
+async fn missing_local_file(admitted: &str) -> Option<String> {
+    let parsed = url::Url::parse(admitted).ok()?;
+    if parsed.scheme() != "file" {
+        return None;
+    }
+    let Ok(path) = parsed.to_file_path() else {
+        return Some("file url must name a local path".to_owned());
+    };
+    match tokio::fs::try_exists(&path).await {
+        Ok(true) => None,
+        _ => Some(format!("file does not exist: {}", path.display())),
     }
 }
 

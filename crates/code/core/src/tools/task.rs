@@ -24,6 +24,8 @@ use crate::orchestration::{AgentExecutor, AgentStepSpec, StepOutcome, ToolSource
 use crate::subagent::{AgentDefinition, AgentRegistry};
 use crate::tools::types::{Tool, ToolContext, ToolOutput};
 use anyhow::{Context, Result};
+
+pub(crate) mod background_settlement;
 use async_trait::async_trait;
 use futures::FutureExt;
 use serde::{Deserialize, Serialize};
@@ -53,7 +55,7 @@ const MAX_TASK_SOURCE_CANDIDATES: usize = MAX_TASK_SOURCE_ANCHORS * 4;
 const MAX_TASK_SOURCE_TOOL_BYTES: usize = 64;
 const MAX_TASK_SOURCE_VALUE_BYTES: usize = 4 * 1024;
 const MAX_PARALLEL_TASK_SOURCE_ANCHORS: usize = MAX_TASK_SOURCE_ANCHORS;
-const TASK_TOOL_DESCRIPTION: &str = "Delegate one or more bounded tasks to specialized child runs. Pass one item for a focused child run or multiple INDEPENDENT items for concurrent fan-out. A single item may run in the background; multi-item calls are collected by the parent. By default any failed child makes a multi-item call fail; evidence-gathering callers may set allow_partial_failure=true. Choose canonical worker names from the live agent catalog. Custom agents from agent_dirs and .aster/agents are supported; .claude/agents is read for compatibility.";
+const TASK_TOOL_DESCRIPTION: &str = "Delegate one bounded child or independent tasks concurrently. Background supports one item; multiple items are collected by the parent. Any child failure fails the group by default; allow_partial_failure permits partial success. Use canonical live-catalog names. Custom agents: agent_dirs or .aster/agents; .claude/agents remains compatible.";
 
 /// Task tool parameters
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -134,6 +136,7 @@ struct ScopedTaskExecution<'a> {
     parent_cancellation: Option<&'a CancellationToken>,
     admitted_capability_subtask: Option<crate::capability::AgentCapabilitySubtask>,
     parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+    terminal_persistence: Option<&'a crate::agent_api::SessionPersistenceContext>,
 }
 
 /// Coordinates terminal lifecycle events for one bounded parallel fan-out.
@@ -278,9 +281,9 @@ pub struct TaskExecutor {
     /// owner admission. This is metadata only; the scheduler remains the
     /// single live reservation authority.
     provider_quota: Option<crate::task_scheduler::TaskSchedulerQuota>,
-    /// Shared provider admission for foreground child runs. Background runs
-    /// already hold `provider_quota` on their outer scheduler lease and use a
-    /// local child gate to avoid recursively reserving that same dimension.
+    /// Shared provider admission for model-invoked foreground child runs.
+    /// Background children reserve this dimension per generation; scheduled
+    /// host foreground steps retain it on their outer scheduler lease.
     provider_admission: Option<crate::llm::ModelGenerationAdmission>,
 }
 
@@ -544,6 +547,7 @@ impl TaskExecutor {
             cancel_token,
             None,
             None,
+            None,
         )
         .await
     }
@@ -589,6 +593,7 @@ impl TaskExecutor {
                 parent_cancellation,
                 admitted_capability_subtask: None,
                 parallel_lifecycle: None,
+                terminal_persistence: None,
             },
         )
         .await
@@ -616,6 +621,7 @@ impl TaskExecutor {
                 parent_cancellation: self.parent_cancellation.as_ref(),
                 admitted_capability_subtask: None,
                 parallel_lifecycle: None,
+                terminal_persistence: None,
             },
         )
         .await
@@ -634,6 +640,7 @@ impl TaskExecutor {
             parent_cancellation,
             admitted_capability_subtask,
             parallel_lifecycle,
+            terminal_persistence,
         } = execution;
         let was_promoted = admitted_capability_subtask.is_some();
         if !was_promoted && parent_cancellation.is_some_and(CancellationToken::is_cancelled) {
@@ -669,13 +676,17 @@ impl TaskExecutor {
                 cancel_token,
                 capability_runtime,
                 parallel_lifecycle,
+                terminal_persistence,
             )
             .await;
         let close = close_capability_subtask(capability_subtask.as_ref()).await;
         settle_delegated_execution(execution, close)
     }
 
-    #[allow(clippy::too_many_arguments)]
+    #[expect(
+        clippy::too_many_arguments,
+        reason = "preserves the admitted child scope through execution and cleanup"
+    )]
     async fn execute_with_task_id_in_scope(
         &self,
         task_id: String,
@@ -686,6 +697,7 @@ impl TaskExecutor {
         cancel_token: CancellationToken,
         capability_runtime: Option<crate::capability::AgentCapabilityRuntime>,
         parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+        terminal_persistence: Option<&crate::agent_api::SessionPersistenceContext>,
     ) -> Result<TaskResult> {
         // Register the canceller immediately for BOTH modes: an Interrupt
         // aimed at a foreground task must reach it while it still waits on
@@ -708,6 +720,7 @@ impl TaskExecutor {
             cancel_token,
             capability_runtime,
             parallel_lifecycle,
+            terminal_persistence,
         ))
         .await;
         if result.is_err() {
@@ -718,7 +731,10 @@ impl TaskExecutor {
         result
     }
 
-    #[allow(clippy::too_many_arguments)]
+    #[expect(
+        clippy::too_many_arguments,
+        reason = "preserves the admitted child scope through execution and cleanup"
+    )]
     async fn execute_registered_task_in_scope(
         &self,
         task_id: String,
@@ -729,6 +745,7 @@ impl TaskExecutor {
         cancel_token: CancellationToken,
         capability_runtime: Option<crate::capability::AgentCapabilityRuntime>,
         parallel_lifecycle: Option<Arc<ParallelTaskLifecycle>>,
+        terminal_persistence: Option<&crate::agent_api::SessionPersistenceContext>,
     ) -> Result<TaskResult> {
         let execution_identity =
             if (params.background || self.schedule_foreground) && self.task_scheduler.is_some() {
@@ -788,7 +805,8 @@ impl TaskExecutor {
                     if let Some(quota) = admission_quota.as_ref() {
                         quotas.push(quota.clone());
                     }
-                    if let Some(quota) = self.provider_quota.as_ref() {
+                    if let Some(quota) = self.provider_quota.as_ref().filter(|_| !params.background)
+                    {
                         if !quotas
                             .iter()
                             .any(|candidate| candidate.identity == quota.identity)
@@ -1035,7 +1053,24 @@ impl TaskExecutor {
             tool_context,
             child_config,
         );
-        if !params.background && !self.schedule_foreground {
+        if params.background {
+            if let (Some(scheduler), Some(pool)) = (
+                &self.task_scheduler,
+                self.llm_client.model_generation_pool(),
+            ) {
+                // A tool or host-input wait must not monopolize the parent's provider capacity.
+                let admission = crate::llm::ModelGenerationAdmission::new(
+                    self.llm_client.model_generation_concurrency(),
+                )
+                .with_model_generation_pool(
+                    Arc::clone(scheduler),
+                    pool,
+                    crate::task_scheduler::TaskPriority::Background,
+                    "background-child-model-generation",
+                )?;
+                agent_loop = agent_loop.with_model_generation_admission(admission);
+            }
+        } else if !self.schedule_foreground {
             if let Some(admission) = &self.provider_admission {
                 agent_loop = agent_loop.with_model_generation_admission(admission.clone());
             }
@@ -1047,39 +1082,18 @@ impl TaskExecutor {
         // Always observe the child event stream so successful source tool calls
         // survive in TaskResult metadata even when nobody subscribed to live
         // progress. Forward the same events when a parent broadcast exists.
-        let (mpsc_tx, mut mpsc_rx) = tokio::sync::mpsc::channel(100);
-        let broadcast_tx = event_tx.clone();
-        let progress_task_id = task_id.clone();
-        let progress_session_id = session_id.clone();
-        let child_event_forwarder = tokio::spawn(async move {
-            let mut source_anchors = Vec::new();
-            let mut seen_source_anchors = std::collections::HashSet::new();
-            let mut scanned_source_candidates = 0usize;
-            while let Some(event) = mpsc_rx.recv().await {
-                let event = source_security_provider
-                    .as_deref()
-                    .map(|provider| crate::security::sanitize_agent_event(provider, &event))
-                    .unwrap_or(event);
-                collect_tool_source_anchors(
-                    &event,
-                    &source_context,
-                    &mut source_anchors,
-                    &mut seen_source_anchors,
-                    &mut scanned_source_candidates,
-                );
-                if let Some(ref broadcast_tx) = broadcast_tx {
-                    if let Some(progress) = synthesize_subagent_progress(
-                        &event,
-                        &progress_task_id,
-                        &progress_session_id,
-                    ) {
-                        let _ = broadcast_tx.send(progress);
-                    }
-                    let _ = broadcast_tx.send(event);
-                }
-            }
-            source_anchors
-        });
+        let (mpsc_tx, mpsc_rx) = tokio::sync::mpsc::channel(100);
+        let (complete_events, events_complete) = tokio::sync::oneshot::channel();
+        let child_event_forwarder = tokio::spawn(forward_task_events(
+            mpsc_rx,
+            source_context,
+            source_security_provider,
+            event_tx.clone(),
+            self.subagent_tracker.clone(),
+            task_id.clone(),
+            session_id.clone(),
+            events_complete,
+        ));
         let child_event_tx = Some(mpsc_tx);
         let child_llm_event_tx = child_event_tx.clone();
 
@@ -1243,6 +1257,7 @@ impl TaskExecutor {
         // stale child deltas or progress events.
         drop(child_event_tx);
         drop(child_llm_event_tx);
+        let _ = complete_events.send(());
         if TEST_FORCE_EVENT_BRIDGE_JOIN_FAILURE.swap(false, Ordering::SeqCst) {
             child_event_forwarder.abort();
         }
@@ -1263,6 +1278,9 @@ impl TaskExecutor {
             finished_ms: epoch_ms(),
         };
         if let Some(ref tracker) = self.subagent_tracker {
+            if !success && cancel_token.is_cancelled() {
+                tracker.cancel(&task_id).await;
+            }
             // The tracker is authoritative even when a background child
             // finishes after the parent run's event forwarder has closed.
             if success {
@@ -1272,6 +1290,10 @@ impl TaskExecutor {
             }
             tracker.record_event(&end_event).await;
             tracker.clear_canceller(&task_id).await;
+        }
+        // A host may exit as soon as it observes this terminal event.
+        if let Some(persistence) = terminal_persistence {
+            Box::pin(persistence.auto_save_if_enabled()).await;
         }
         if let Some(ref tx) = event_tx {
             let _ = tx.send(end_event);
@@ -1315,6 +1337,7 @@ impl TaskExecutor {
             event_tx,
             parent_session_id,
             parent_cancellation,
+            None,
         )
         .task_id
     }
@@ -1326,6 +1349,7 @@ impl TaskExecutor {
         event_tx: Option<broadcast::Sender<AgentEvent>>,
         parent_session_id: Option<String>,
         parent_cancellation: Option<CancellationToken>,
+        fact_context: Option<(ToolContext, background_settlement::BackgroundChildBinding)>,
     ) -> BackgroundLaunch {
         let task_id = if task_id.trim().is_empty() {
             format!("task-{}", uuid::Uuid::new_v4())
@@ -1352,6 +1376,15 @@ impl TaskExecutor {
             .map(|provider| crate::security::sanitize_agent_event(provider, &start_event))
             .unwrap_or(start_event);
 
+        let background_progress = AgentEvent::SubagentProgress {
+            task_id: task_id.clone(),
+            session_id: failure_session_id.clone(),
+            status: "started".into(),
+            metadata: serde_json::json!({
+                "background": true,
+                (crate::subagent_task_tracker::TASK_PROGRESS_EVENT_ID): uuid::Uuid::new_v4().to_string(),
+            }),
+        };
         if let Some(ref tx) = event_tx {
             let _ = tx.send(start_event.clone());
         }
@@ -1394,6 +1427,9 @@ impl TaskExecutor {
         };
 
         let task_id_for_spawn = task_id.clone();
+        if let Some(ref tx) = event_tx {
+            let _ = tx.send(background_progress.clone());
+        }
         let task_id_for_log = task_id.clone();
         let admission_failure_task_id = task_id.clone();
         let admission_failure_session_id = failure_session_id.clone();
@@ -1406,6 +1442,7 @@ impl TaskExecutor {
             let mut workspace_child = crate::porcelain::WorkspaceChildGuard::new(&observed_task_id);
             if let Some(ref tracker) = self.subagent_tracker {
                 tracker.record_event(&start_event).await;
+                tracker.record_event(&background_progress).await;
             }
             let failure_event_tx = event_tx.clone();
             let child_session_id = failure_session_id.clone();
@@ -1420,6 +1457,7 @@ impl TaskExecutor {
                         parent_cancellation: parent_cancellation.as_ref(),
                         admitted_capability_subtask,
                         parallel_lifecycle: None,
+                        terminal_persistence: None,
                     },
                 )
                 .await
@@ -1445,8 +1483,27 @@ impl TaskExecutor {
                 }
                 tracing::error!("Background task {} failed: {}", task_id_for_log, error);
             }
-            crate::porcelain::settle_workspace_child_guard(&mut workspace_child, &workspace_root)
+            if let Some((context, binding)) = fact_context {
+                let effects = crate::porcelain::observe_workspace_child_settlement(
+                    &observed_task_id,
+                    &workspace_root,
+                )
                 .await;
+                background_settlement::retain(context, binding, effects.clone()).await?;
+                workspace_child.settle_paths(
+                    effects
+                        .changes
+                        .iter()
+                        .map(|change| change.path.clone())
+                        .collect(),
+                );
+            } else {
+                crate::porcelain::settle_workspace_child_guard(
+                    &mut workspace_child,
+                    &workspace_root,
+                )
+                .await;
+            }
             let paths = crate::porcelain::peek_settled_workspace_child(&observed_task_id)
                 .unwrap_or_default();
             adopt_dirtied_paths(
@@ -1455,6 +1512,7 @@ impl TaskExecutor {
                 &workspace_root,
                 &paths,
             );
+            Ok(())
         };
         let mut running = true;
         if let Some(run) = capability_run {
@@ -1465,11 +1523,7 @@ impl TaskExecutor {
                     scope_id: "forced-background-spawn-failure".to_string(),
                 })
             } else {
-                run.spawn_task(task_name, async move {
-                    background.await;
-                    Ok(())
-                })
-                .map(|_| ())
+                run.spawn_task(task_name, background).map(|_| ())
             };
             if let Err(error) = spawn_result {
                 // Admission races with Run close fail closed: no detached
@@ -1495,7 +1549,11 @@ impl TaskExecutor {
                 running = false;
             }
         } else {
-            tokio::spawn(background);
+            tokio::spawn(async move {
+                if let Err(error) = background.await {
+                    tracing::error!(%error, "Background subagent settlement failed");
+                }
+            });
         }
 
         BackgroundLaunch { task_id, running }
@@ -1614,21 +1672,6 @@ fn agent_catalog_entries(agents: &[AgentDefinition]) -> Vec<AgentCatalogEntry> {
     entries
 }
 
-fn agent_catalog_text(agents: &[AgentDefinition]) -> String {
-    agent_catalog_entries(agents)
-        .into_iter()
-        .map(|entry| format!("{}: {}", entry.name, entry.description))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-fn delegation_tool_description(base: &str, agents: &[AgentDefinition]) -> String {
-    format!(
-        "{base}\n\nAvailable agents (live catalog; use canonical names):\n{}",
-        agent_catalog_text(agents)
-    )
-}
-
 pub(super) fn task_agent_parameter_schema(agents: &[AgentDefinition]) -> serde_json::Value {
     let entries = agent_catalog_entries(agents);
     let examples = entries
@@ -1643,7 +1686,7 @@ pub(super) fn task_agent_parameter_schema(agents: &[AgentDefinition]) -> serde_j
     serde_json::json!({
         "type": "string",
         "description": format!(
-            "Required. Canonical agent type to use. Always provide this exact field name: 'agent'. Live agent catalog:\n{catalog}"
+            "Canonical name from the live agent catalog:\n{catalog}"
         ),
         "examples": examples
     })
@@ -1699,14 +1742,14 @@ pub(super) fn task_item_params_schema_for_agents(
             "description".to_string(),
             serde_json::json!({
                 "type": "string",
-                "description": "Required. Short task label for display and tracking. Always provide this exact field name: 'description'."
+                "description": "Short display/tracking label."
             }),
         ),
         (
             "prompt".to_string(),
             serde_json::json!({
                 "type": "string",
-                "description": "Required. Detailed instruction for the delegated child run. Always provide this exact field name: 'prompt'."
+                "description": "Detailed child-run instructions."
             }),
         ),
         (
@@ -1714,14 +1757,14 @@ pub(super) fn task_item_params_schema_for_agents(
             serde_json::json!({
                 "type": "integer",
                 "minimum": 1,
-                "description": "Optional. Maximum number of steps for this task."
+                "description": "Task step limit."
             }),
         ),
         (
             "output_schema".to_string(),
             serde_json::json!({
                 "type": "object",
-                "description": "Optional. JSON Schema object the delegated result must satisfy. When provided, the child output is coerced into a validated structured object and returned in metadata."
+                "description": "JSON Schema for the child result; a coerced, validated object returns in metadata."
             }),
         ),
     ]);
@@ -1730,7 +1773,7 @@ pub(super) fn task_item_params_schema_for_agents(
             "background".to_string(),
             serde_json::json!({
                 "type": "boolean",
-                "description": "Optional. Run this task in the background. Only valid when the outer tasks array contains one item. Default: false.",
+                "description": "Run in background; only a single-item outer tasks array supports this. Default false.",
                 "default": false
             }),
         );
@@ -1762,15 +1805,42 @@ impl TaskTool {
 
         if params.background {
             let task_id = format!("task-{}", uuid::Uuid::new_v4());
+            let binding =
+                background_settlement::BackgroundChildBinding::from_context(ctx, &task_id)?;
             crate::porcelain::reserve_workspace_child(&task_id);
             crate::porcelain::begin_workspace_child(&task_id, ctx.workspace.as_path()).await;
-            let launch = executor.execute_background_with_parent_cancellation(
-                task_id.clone(),
-                params,
-                ctx.agent_event_tx.clone(),
-                ctx.session_id.clone(),
-                Some(parent_cancellation),
-            );
+            let launch = if let Some(admission) = &ctx.background_admission {
+                match background_settlement::start(
+                    executor,
+                    params,
+                    ctx,
+                    binding.clone(),
+                    task_id.clone(),
+                    admission,
+                )
+                .await
+                {
+                    Ok(launch) => launch,
+                    Err(error) => {
+                        crate::porcelain::settle_workspace_child(&task_id, &ctx.workspace).await;
+                        crate::porcelain::take_settled_workspace_child(&task_id);
+                        return Ok(ToolOutput::error(format!(
+                            "Background task admission failed: {error:#}"
+                        )));
+                    }
+                }
+            } else {
+                executor.execute_background_with_parent_cancellation(
+                    task_id.clone(),
+                    params,
+                    ctx.agent_event_tx.clone(),
+                    ctx.session_id.clone(),
+                    Some(parent_cancellation),
+                    binding
+                        .as_ref()
+                        .map(|binding| (ctx.clone(), binding.clone())),
+                )
+            };
             if !launch.running {
                 crate::porcelain::settle_workspace_child(&launch.task_id, ctx.workspace.as_path())
                     .await;
@@ -1783,6 +1853,7 @@ impl TaskTool {
             .with_metadata(serde_json::json!({
                 "task_id": task_id,
                 "workspace_child": task_id,
+                "background_subagent": binding,
             })));
         }
 
@@ -1850,7 +1921,7 @@ impl Tool for TaskTool {
         let agents = self.executor.visible_agents();
         ToolDefinition {
             name: self.name().to_string(),
-            description: delegation_tool_description(self.description(), &agents),
+            description: self.description().to_string(),
             parameters: task_model_params_schema_for_agents(&agents),
         }
     }

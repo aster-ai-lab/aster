@@ -3,11 +3,11 @@
 
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::{AcpAgentTx, AcpClientMessageBox, acp_send};
 use aster_telemetry::events::{
     PromptAckDisposition, PromptAckPromptKind, PromptAckSurface, PromptAckTimeoutFired,
 };
-use agent_client_protocol as acp;
 
 use crate::app::prompt_ack::{AckSignal, PromptAckDeadlines, queue_changed_acks};
 

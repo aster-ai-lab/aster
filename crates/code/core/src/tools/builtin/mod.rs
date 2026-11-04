@@ -15,7 +15,7 @@ mod edit;
 mod generate_object;
 pub(crate) mod git;
 mod glob_tool;
-mod grep;
+pub(super) mod grep;
 mod hybrid_search;
 mod ls;
 mod patch;
@@ -25,6 +25,7 @@ mod search;
 mod search_fallback;
 mod search_snippet;
 mod semantic_search;
+mod task_control;
 mod update_plan;
 mod web_fetch;
 mod web_search;
@@ -323,6 +324,12 @@ fn register_task_internal(
         executor = executor.with_parent_context(ctx);
     }
     if let Some(tracker) = subagent_tracker {
+        registry.register_builtin(Arc::new(task_control::TaskControlTool::Output(Arc::clone(
+            &tracker,
+        ))));
+        registry.register_builtin(Arc::new(task_control::TaskControlTool::Stop(Arc::clone(
+            &tracker,
+        ))));
         executor = executor.with_subagent_tracker(tracker);
     }
     if let Some(task_scheduler) = task_scheduler {

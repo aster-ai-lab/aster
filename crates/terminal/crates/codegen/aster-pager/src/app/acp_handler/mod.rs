@@ -16,6 +16,7 @@ use crate::views::permission_view::{
     McpScope, McpScopeState, PermissionFocus, PermissionViewState, SubagentInfo,
 };
 use crate::views::plan_approval_view::PlanReviewSource;
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpClientMessage;
 use aster_shell::extensions::notification::{
     SessionNotification, SessionUpdate as AsterSessionUpdate, is_reauthable_failure,
@@ -23,7 +24,6 @@ use aster_shell::extensions::notification::{
 use aster_shell::tools::todo::todo_item_from_plan_entry;
 use aster_tools::notification::ScheduledTaskRemovedReason;
 use aster_workspace::permission::bash_command_splitting::BashCommandHighlights;
-use agent_client_protocol as acp;
 use std::collections::hash_map::Entry;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -274,6 +274,13 @@ fn handle_inner(msg: AcpClientMessage, app: &mut AppView) -> bool {
                         !meta.is_replay && !agent.session.loading_replay
                     } else if let acp::SessionUpdate::UsageUpdate(ref usage) = notif.request.update
                     {
+                        if !meta.is_replay {
+                            agent.usage_meter.observe(
+                                &notif.request.update,
+                                meta.prompt_id.as_deref(),
+                                std::time::Instant::now(),
+                            );
+                        }
                         agent.apply_context_used(usage.used, usage.size);
                         advance_reconnect_cursor(agent, &mut meta);
                         is_active
@@ -364,6 +371,13 @@ fn handle_inner(msg: AcpClientMessage, app: &mut AppView) -> bool {
                         }
                         let had_activity_before = agent.session.tracker.activity().is_some();
                         let update = notif.request.update;
+                        if !meta.is_replay {
+                            agent.usage_meter.observe(
+                                &update,
+                                meta.prompt_id.as_deref(),
+                                std::time::Instant::now(),
+                            );
+                        }
                         let (is_visible_kind, is_bash) = if meta.is_replay {
                             (
                                 crate::acp::tracker::is_agent_output_update(&update),
@@ -491,6 +505,13 @@ fn handle_inner(msg: AcpClientMessage, app: &mut AppView) -> bool {
                                     meta.is_replay,
                                 );
                             if apply {
+                                if !meta.is_replay {
+                                    child_view.usage_meter.observe(
+                                        &notif.request.update,
+                                        meta.prompt_id.as_deref(),
+                                        std::time::Instant::now(),
+                                    );
+                                }
                                 if is_live {
                                     if let Some(ts) = meta.turn_start_ms {
                                         let named = meta

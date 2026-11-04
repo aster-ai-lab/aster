@@ -64,7 +64,7 @@ impl Theme {
 
             accent_plan: GOLD,
 
-            accent_verify: PINE,
+            accent_verify: IRIS,
 
             accent_remember: PINE,
 

@@ -115,7 +115,24 @@ impl AsterCodeAgent {
         let mut budget = HostAdmissionBudget::default();
         let mut turn_permit = turn_permit;
         let mut goal_tick = if unattended.goal_continuation {
-            Some(crate::goal::bind_task_goal(session, task).context("bind the task goal")?)
+            let remaining = std::time::Duration::from_millis(
+                unattended
+                    .max_execution_ms
+                    .saturating_sub(progress.duration_ms()),
+            );
+            if remaining.is_zero() {
+                return Err(ExecutionDeadline.into());
+            }
+            let tick = tokio::select! {
+                biased;
+                _ = self.wait_for_turn_cancel(session_id.0.as_ref(), generation) => {
+                    return Ok(Some(Ok(acp::PromptResponse::new(acp::StopReason::Cancelled))));
+                }
+                result = tokio::time::timeout(remaining, crate::goal::bind_task_goal(session, task)) => {
+                    result.map_err(|_| ExecutionDeadline)?.context("bind the task goal")?
+                }
+            };
+            Some(tick)
         } else {
             None
         };

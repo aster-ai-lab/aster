@@ -2327,14 +2327,14 @@ pub(crate) fn execute(
             let model_id_str = model_id.0.to_string();
             tasks
                 .spawn(async move {
-                    let result = aster_shell::util::config::persist_models_default(
+                    let result = crate::acp::model_preferences::persist(
                             Some(model_id_str),
                             reasoning_effort,
                         )
                         .await
                         .map_err(|e| e.to_string());
                     if let Err(ref e) = result {
-                        tracing::warn!("failed to save default model preference: {e}");
+                        tracing::warn!(error = %e, "failed to save default model preference");
                     }
                     TaskResult::PreferredModelPersisted {
                         result,

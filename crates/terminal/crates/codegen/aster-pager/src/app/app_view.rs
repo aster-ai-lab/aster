@@ -17,8 +17,8 @@ use crate::render::draw::CursorState;
 use crate::scrollback::render::ScratchBuffer;
 use crate::views::prompt_widget::PromptWidget;
 use crate::views::welcome::WelcomePromptFocus;
-use aster_acp_lib::AcpAgentTx;
 use agent_client_protocol as acp;
+use aster_acp_lib::AcpAgentTx;
 use crossterm::event::{Event, KeyCode, KeyEventKind, MouseButton, MouseEventKind};
 use indexmap::IndexMap;
 use std::path::PathBuf;
@@ -179,8 +179,7 @@ impl WorktreeMode {
     }
     /// Same as [`Self::resolve_from_hints`], for merged effective config (`toml::Value`).
     pub fn resolve_from_hints_value(hints: Option<&toml::Value>) -> (Self, Self) {
-        let (new_session, fork) =
-            aster_shell::util::config::WorktreeHintMode::resolve_pair(hints);
+        let (new_session, fork) = aster_shell::util::config::WorktreeHintMode::resolve_pair(hints);
         (new_session.into(), fork.into())
     }
     fn resolve_from_hint_strings(get_str: impl Fn(&str) -> Option<Self>) -> (Self, Self) {
@@ -1298,10 +1297,7 @@ enum UnconsumedInputScope {
 impl AppView {
     /// Finishes startup if this view still holds the obligation; does nothing after.
     pub(crate) fn finish_startup(&mut self, outcome: aster_telemetry::startup::StartupOutcome) {
-        aster_telemetry::startup::PendingStartup::finish_held(
-            &mut self.pending_startup,
-            outcome,
-        );
+        aster_telemetry::startup::PendingStartup::finish_held(&mut self.pending_startup, outcome);
     }
     /// Releases the obligation without recording; does nothing after finish.
     pub(crate) fn abandon_startup(&mut self) {
@@ -1907,8 +1903,6 @@ impl AppView {
         self.sharing_enabled = false;
         // Voice STT / dictation has no aster-acp backing — hide `/voice` and settings rows.
         self.apply_voice_mode_enabled(false);
-        // Auto permission mode is shell LLM-classifier only — keep ask / yolo.
-        self.auto_mode_gate = false;
         self.sync_permission_mode_slash_gate();
         // Rebuild open settings so coding-data / Grok-only rows drop.
         for agent in self.agents.values_mut() {
@@ -3377,8 +3371,7 @@ struct WelcomeInputCtx<'a> {
     /// Mirrors the render's `session_picker_loading` param: the spinner-only picker still owns input (Esc must dismiss it, not hit the hidden menu).
     sp_loading: bool,
     sp_state: &'a mut crate::views::picker::PickerState,
-    sp_content_results:
-        &'a Option<Vec<aster_shell::extensions::session_search::SearchSessionHit>>,
+    sp_content_results: &'a Option<Vec<aster_shell::extensions::session_search::SearchSessionHit>>,
     sp_content_loading: bool,
     /// The query `sp_entries` were server-fetched with (see [`crate::views::session_picker::effective_filter_query`]).
     sp_entries_query: &'a Option<String>,
@@ -6039,6 +6032,7 @@ impl AppView {
                     || agent.resize_preview_needs_tick()
                     || agent.acp_synced_generation != agent.session.available_commands_generation
                     || !agent.session.state.is_idle()
+                    || agent.send_now_awaiting_current()
                     || agent.wake_turn_active()
                     || agent.session.loading_replay
                     || agent.session_starting_since.is_some()

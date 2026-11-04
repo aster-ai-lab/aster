@@ -60,14 +60,10 @@ impl Tool for BatchTool {
     }
 
     fn description(&self) -> &str {
-        "Execute a bounded set of tool calls in one turn. Put independent calls in the same \
-         step to run them concurrently; use a later step when it depends on an earlier result. \
-         To bind an earlier result, set an argument value to an object whose only key is the \
-         literal string \"$ref\" and whose value is a path such as \"files.output_lines.0\" \
-         (the earlier invocation's id, then a result path). Do not use JSON Schema fragment \
-         URIs. Example shape: step 1 search with id \"files\", step 2 read with \
-         args.file_path = {\"$ref\":\"files.output_lines.0\"}. Each invocation specifies a \
-         tool name and its arguments."
+        "Run independent same-step calls concurrently; put dependencies in later steps. \
+         Bind an earlier result with the single-key argument object \
+         {\"$ref\":\"files.output_lines.0\"} (invocation id plus result path), not a JSON Schema \
+         fragment URI. Each call supplies a tool and args."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -82,29 +78,29 @@ impl Tool for BatchTool {
             "properties": {
                 "invocations": {
                     "type": "array",
-                    "description": "List of tool calls to execute. Same-step calls run concurrently; later steps may bind earlier results via {\"$ref\":\"<id>.<path>\"} argument values (documented in the tool description, not as JSON Schema $ref).",
+                    "description": "Calls grouped by step; later steps may bind earlier results as described above.",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
                             "id": {
                                 "type": "string",
-                                "description": "Optional caller-defined result correlation ID."
+                                "description": "Caller-defined result correlation ID."
                             },
                             "tool": {
                                 "type": "string",
-                                "description": "Required. Name of the tool to call."
+                                "description": "Tool name."
                             },
                             "args": {
                                 "type": "object",
-                                "description": "Required. Arguments to pass to the tool as a JSON object. Values may be plain JSON or a single-key object {\"$ref\":\"<earlier-id>.<path>\"} that binds an earlier step result (application reference, not JSON Schema)."
+                                "description": "Argument object; values may be JSON or a single-key $ref binding to an earlier step."
                             },
                             "step": {
                                 "type": "integer",
                                 "minimum": 1,
                                 "maximum": MAX_BATCH_STEPS,
                                 "default": 1,
-                                "description": "Optional dependency group. Same-step calls do not see each other's results; a later step may use a previous result reference."
+                                "description": "Dependency group; same-step calls see no peer results. Later steps may bind earlier results."
                             }
                         },
                         "required": ["tool", "args"]
@@ -116,7 +112,7 @@ impl Tool for BatchTool {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_BATCH_CONCURRENCY,
-                    "description": "Maximum concurrent calls. Default 8; maximum 16. Mutating or non-idempotent tools are automatically serialized."
+                    "description": "Concurrency; default 8, max 16. Mutating/non-idempotent calls serialize."
                 }
             },
             "required": ["invocations"]

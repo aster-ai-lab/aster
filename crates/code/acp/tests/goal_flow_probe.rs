@@ -170,13 +170,13 @@ async fn goal_commands_flow_end_to_end() {
             run_turn(&client_conn, &session_id, "/goal status")
                 .await
                 .expect("status turn");
-            assert_eventually_contains(&recording, "Durable goal active:", "status").await;
+            assert_eventually_contains(&recording, "Goal not complete yet.", "status").await;
 
             // 3. /goal pause reports paused.
             run_turn(&client_conn, &session_id, "/goal pause")
                 .await
                 .expect("pause turn");
-            assert_eventually_contains(&recording, "Durable goal paused:", "pause").await;
+            assert_eventually_contains(&recording, "Goal paused.", "pause").await;
 
             // 4. /goal resume restarts inference toward the goal.
             run_turn(&client_conn, &session_id, "/goal resume")
@@ -462,7 +462,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
                 !lowered.contains("internal error") && !lowered.contains("no balance"),
                 "resume failed before a slice decision:\n{text}"
             );
-            let slices = text.matches("Goal slice").count();
+            let slices = admitted_slices(&workspace, &session_id);
             let state = ext(
                 &client_conn,
                 "aster/goal/state",
@@ -470,14 +470,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             )
             .await;
             let goal_state = state["definition"]["state"].as_str().unwrap_or("");
-            let tick = text
-                .lines()
-                .find(|line| {
-                    let line = line.to_ascii_lowercase();
-                    line.contains("durable goal tick:") || line.contains("durable goal finished")
-                })
-                .unwrap_or("")
-                .trim();
+            let tick = state["tick"].as_str().unwrap_or("");
             println!(
                 "GOALHORIZON model={QWEN_FLASH} slices={slices} state={goal_state} tick={tick}"
             );
@@ -487,7 +480,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             );
             if goal_state == "active" {
                 assert!(
-                    tick.to_ascii_lowercase().contains("durable goal tick:"),
+                    matches!(tick, "budget_exhausted" | "needs_input"),
                     "an active goal must stop on a tick decision after the slice cap\n{text}"
                 );
             }
@@ -509,6 +502,17 @@ async fn ext(
     .unwrap_or_else(|error| panic!("{method}: {error:?}"));
     serde_json::from_str(response.0.get())
         .unwrap_or_else(|error| panic!("{method} json: {error}; body={}", response.0.get()))
+}
+
+fn admitted_slices(workspace: &std::path::Path, session: &acp::SessionId) -> usize {
+    let thread = aster_core::fact_control::thread_for_session(session.0.as_ref());
+    aster_core::fact_control::read_workspace_facts(workspace, &thread)
+        .expect("original goal facts")
+        .iter()
+        .filter(|fact| {
+            fact.kind == aster_core::goal_control::GoalFactKindV1::SliceAdmitted.as_str()
+        })
+        .count()
 }
 
 fn goal_ref(kind: &str, operation_id: &str, view: &serde_json::Value) -> serde_json::Value {
@@ -556,7 +560,7 @@ async fn default_engineering_and_goal_continuation_reach_the_live_model() {
             tokio::task::spawn_local(agent_io);
             acp::Agent::initialize(&client_conn, acp::InitializeRequest::new(acp::ProtocolVersion::LATEST))
                 .await.expect("initialize");
-            let created = acp::Agent::new_session(&client_conn, acp::NewSessionRequest::new(workspace))
+            let created = acp::Agent::new_session(&client_conn, acp::NewSessionRequest::new(workspace.clone()))
                 .await.expect("new session without metadata");
 
             async fn goal_state(client: &acp::ClientSideConnection, session: &acp::SessionId) -> serde_json::Value {
@@ -576,7 +580,7 @@ async fn default_engineering_and_goal_continuation_reach_the_live_model() {
             assert_eq!(response.stop_reason, acp::StopReason::EndTurn);
             let state = goal_state(&client_conn, &created.session_id).await;
             let text = recording.streamed_text();
-            let slices = text.matches("Goal slice").count();
+            let slices = admitted_slices(&workspace, &created.session_id);
             let goal_state = state["definition"]["state"].as_str().expect("bound goal");
             assert!(slices >= 2 || goal_state == "completed", "default continuation must reach a decision: {text}");
             assert!(!text.to_ascii_lowercase().contains("internal error"), "{text}");

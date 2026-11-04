@@ -26,10 +26,10 @@ use std::rc::Rc;
 use std::sync::Arc;
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_mcp::servers::{
     McpClientEvent, McpClientEventKind, McpServerName, McpState, mcp_server_name, mcp_transport_str,
 };
-use agent_client_protocol as acp;
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex as TokioMutex;
 use tokio::sync::mpsc::UnboundedReceiver;

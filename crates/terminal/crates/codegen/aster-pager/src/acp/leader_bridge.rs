@@ -12,12 +12,12 @@ use tokio::sync::{Mutex as TokioMutex, mpsc};
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::{
     AcpClientChannel, AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels,
 };
 pub use aster_shell::leader::ConnectionStatus;
 use aster_shell::leader::{LeaderConnection, LeaderReconnector, ReconnectPolicy};
-use agent_client_protocol as acp;
 
 const MAX_BUF: usize = 8 * 1024 * 1024;
 

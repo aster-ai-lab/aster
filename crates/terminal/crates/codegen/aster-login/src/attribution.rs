@@ -243,11 +243,7 @@ pub fn record_auth_401(
     // Sink 1 -- local file (~/.aster/logs/unified.jsonl) + scrubbed tracing event
     // The local file is reliable but only ships to GCS on OIDC refresh failure (auth/refresh.rs::spawn_diagnostic_upload)
     // By itself it does not show the steady-state 401 population; Sink 2 below provides that
-    aster_telemetry::unified_log::warn(
-        "auth 401 attribution",
-        session_id,
-        Some(payload.clone()),
-    );
+    aster_telemetry::unified_log::warn("auth 401 attribution", session_id, Some(payload.clone()));
 
     // Sink 2: discrete OTel span exported via OTLP (util/otel_layer.rs) The schema fields below become OTel span attributes under `attributes.custom.<name>` per the tracing-opentelemetry bridge
     // The OTel layer attaches plain events to the currently-entered span only So a `tracing::warn!` from a `spawn_blocking` closure (idle-resume model refresh) or a background sync task is silently dropped

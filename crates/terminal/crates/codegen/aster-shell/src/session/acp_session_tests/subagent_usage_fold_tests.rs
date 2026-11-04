@@ -391,9 +391,7 @@ async fn snapshot_ors_ledger_incomplete_even_when_reply_complete() {
 }
 
 fn scripted_outstanding_responder(
-    replies: Vec<
-        aster_tools::implementations::grok_build::task::types::SubagentOutstandingReply,
-    >,
+    replies: Vec<aster_tools::implementations::grok_build::task::types::SubagentOutstandingReply>,
 ) -> tokio::sync::mpsc::UnboundedSender<
     aster_tools::implementations::grok_build::task::types::SubagentEvent,
 > {

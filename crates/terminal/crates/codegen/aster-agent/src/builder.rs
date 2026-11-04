@@ -156,9 +156,7 @@ fn sole_enabled_allowlist_entry<'a>(
     }
     found
 }
-fn task_lifecycle_satisfier(
-    tool_config: &aster_tools::registry::types::ToolServerConfig,
-) -> bool {
+fn task_lifecycle_satisfier(tool_config: &aster_tools::registry::types::ToolServerConfig) -> bool {
     use aster_tools::types::tool::ToolNamespace;
     let has = |ns: ToolNamespace, id: &str, needs_bg: bool| {
         let fq = format!("{ns}:{id}");
@@ -595,10 +593,7 @@ impl AgentBuilder {
         self
     }
     /// Threaded into startup discovery and the dynamic-discovery seeds (`SkillManager` / `AgentsMdTracker`).
-    pub fn with_compat_config(
-        mut self,
-        compat: aster_tools::types::compat::CompatConfig,
-    ) -> Self {
+    pub fn with_compat_config(mut self, compat: aster_tools::types::compat::CompatConfig) -> Self {
         self.compat = compat;
         self
     }
@@ -789,9 +784,9 @@ impl AgentBuilder {
                 tool_config
                     .tools
                     .push((&aster_tools::implementations::grok_build::ImageToVideoTool).into());
-                tool_config.tools.push(
-                    (&aster_tools::implementations::grok_build::ReferenceToVideoTool).into(),
-                );
+                tool_config
+                    .tools
+                    .push((&aster_tools::implementations::grok_build::ReferenceToVideoTool).into());
             }
             let has_write_tool = tool_config
                 .tools
@@ -852,8 +847,7 @@ impl AgentBuilder {
                 aster_tools::implementations::grok_build::SendFeedbackTool,
             >()
             .id;
-            let feedback_name =
-                aster_tools::implementations::grok_build::SEND_FEEDBACK_TOOL_NAME;
+            let feedback_name = aster_tools::implementations::grok_build::SEND_FEEDBACK_TOOL_NAME;
             tool_config.tools.retain(|tool| {
                 !matches!(
                     tool.kind,
@@ -1372,13 +1366,14 @@ impl AgentBuilder {
     }
 }
 /// CLI naming for the shared [`aster_tool_types::build_task_description`] builder.
-const TASK_TOOL_NAMING: aster_tool_types::TaskToolNaming<'static> = aster_tool_types::TaskToolNaming {
-    task_tool: "${{ tools.by_kind.task }}",
-    run_in_background_param: "${{ params.task.run_in_background }}",
-    resume_from_param: "${{ params.task.resume_from }}",
-    background_retrieval_tool: "${{ tools.by_kind.background_task_action }}",
-    isolation_param: "${{ params.task.isolation }}",
-};
+const TASK_TOOL_NAMING: aster_tool_types::TaskToolNaming<'static> =
+    aster_tool_types::TaskToolNaming {
+        task_tool: "${{ tools.by_kind.task }}",
+        run_in_background_param: "${{ params.task.run_in_background }}",
+        resume_from_param: "${{ params.task.resume_from }}",
+        background_retrieval_tool: "${{ tools.by_kind.background_task_action }}",
+        isolation_param: "${{ params.task.isolation }}",
+    };
 /// Child sessions get a concise description that discourages recursive delegation.
 const CHILD_TASK_DESCRIPTION: &str = "\
 Launch a sub-agent to handle a specific sub-task. Use this only when \n\
@@ -1467,14 +1462,13 @@ mod tests {
     #[tokio::test]
     async fn memory_v2_access_sets_prompt_roots_from_policy() {
         use aster_tools::computer::local::LocalTerminalBackend;
-        let access = aster_tools::types::memory_v2::MemoryV2AccessResource(Arc::new(
-            TestMemoryV2Access {
+        let access =
+            aster_tools::types::memory_v2::MemoryV2AccessResource(Arc::new(TestMemoryV2Access {
                 roots: [
                     PathBuf::from("/memory/global"),
                     PathBuf::from("/memory/workspace"),
                 ],
-            },
-        ));
+            }));
         let builder = AgentBuilder::new(
             std::env::temp_dir(),
             Arc::new(LocalTerminalBackend::new()),
@@ -1642,10 +1636,9 @@ mod tests {
         use aster_tools::computer::local::LocalTerminalBackend;
         let mut definition = crate::config::AgentDefinition::default_grok_build();
         definition.inject_default_tools = false;
-        definition.tool_config.tools =
-            vec![aster_tools::registry::types::ToolConfig::for_tool::<
-                aster_tools::implementations::grok_build::SendSubagentMessageTool,
-            >()];
+        definition.tool_config.tools = vec![aster_tools::registry::types::ToolConfig::for_tool::<
+            aster_tools::implementations::grok_build::SendSubagentMessageTool,
+        >()];
         let build = |enabled| {
             AgentBuilder::new(
                 std::env::temp_dir(),
@@ -2096,8 +2089,7 @@ mod tests {
         use aster_tools::notification::ToolNotificationHandle;
         use aster_tools::registry::types::ToolConfig;
         let feedback_id =
-            ToolConfig::for_tool::<aster_tools::implementations::grok_build::SendFeedbackTool>()
-                .id;
+            ToolConfig::for_tool::<aster_tools::implementations::grok_build::SendFeedbackTool>().id;
         let mut kindless_feedback_id = crate::config::AgentDefinition::default_grok_build();
         kindless_feedback_id.tool_config.tools = vec![ToolConfig::from_id(&feedback_id)];
         kindless_feedback_id.inject_default_tools = false;
@@ -2581,8 +2573,7 @@ mod tests {
         }
         let bash = disabled
             .tool_bridge()
-            .read_resource::<Params<aster_tools::implementations::grok_build::bash::BashParams>>(
-            )
+            .read_resource::<Params<aster_tools::implementations::grok_build::bash::BashParams>>()
             .await
             .expect("bash params");
         assert!(bash.0.enabled_background);

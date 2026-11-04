@@ -1622,7 +1622,8 @@ fn open_leader_log(log_path: &Path) -> std::io::Result<std::fs::File> {
 }
 /// Fallback leader RUST_LOG when neither GROK_LEADER_LOG nor RUST_LOG is set.
 /// `aster_gateway` carries the bridge diagnostics that moved out of `aster_shell`.
-const LEADER_DEFAULT_LOG_DIRECTIVES: &str = "aster_shell=info,aster_gateway=info,aster_login=info,aster_acp_lib=warn,aster_mcp=warn";
+const LEADER_DEFAULT_LOG_DIRECTIVES: &str =
+    "aster_shell=info,aster_gateway=info,aster_login=info,aster_acp_lib=warn,aster_mcp=warn";
 fn spawn_leader_subprocess(env_urls: &LeaderEnvUrls) -> Result<u32, ConnectionError> {
     let exe = resolve_exe_for_spawn()?;
     let mut cmd = Command::new(exe);

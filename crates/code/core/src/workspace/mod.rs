@@ -57,7 +57,7 @@ pub use path::VirtualPathResolver;
 use path::{
     default_path_input, has_windows_path_prefix, normalize_relative_path, pathbuf_to_workspace_path,
 };
-pub(crate) use path::{escape_control_chars_for_display, validate_relative_pattern};
+pub(crate) use path::{escape_control_chars_for_display, validate_relative_pattern, BraceGlob};
 pub use read_overlay::{
     WorkspaceReadOverlay, WorkspaceReadOverlayError, WorkspaceReadOverlayErrorKind,
     WorkspaceReadOverlaySnapshot,

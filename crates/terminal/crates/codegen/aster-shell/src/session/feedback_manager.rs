@@ -2059,8 +2059,7 @@ mod author_identity_tests {
     async fn env_var_identity_reaches_the_wire_end_to_end() {
         let _email =
             aster_test_support::env::EnvGuard::set("GROK_TEST_WORK_EMAIL", "ada@corp.example");
-        let _name =
-            aster_test_support::env::EnvGuard::set("GROK_TEST_WORK_NAME", "Ada Lovelace");
+        let _name = aster_test_support::env::EnvGuard::set("GROK_TEST_WORK_NAME", "Ada Lovelace");
 
         // The loader expands `$VAR` at load, exactly as a trusted config tier ships it.
         let mut value = toml::from_str::<toml::Value>(

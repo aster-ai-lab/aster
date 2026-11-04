@@ -6,7 +6,9 @@ use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use aster_search::{CircuitBreaker, CircuitSnapshot, CircuitState, EngineOutcomeKind, SearchResults};
+use aster_search::{
+    CircuitBreaker, CircuitSnapshot, CircuitState, EngineOutcomeKind, SearchResults,
+};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument as _;
 
 const MAX_QUERY_BYTES: usize = 16 * 1024;
 const MAX_RESULTS: usize = 100;
@@ -105,10 +106,17 @@ impl WorkspaceRetrievalRuntime {
 
         let query_cancellation = runtime_cancellation.child_token();
         let _query_cancellation_guard = query_cancellation.clone().drop_guard();
-        let query_call = self.executor.embed(
-            vec![EmbeddingInput::new(QUERY_ID, request.query.clone())],
-            query_cancellation.clone(),
-        );
+        let query_call = self
+            .executor
+            .embed(
+                vec![EmbeddingInput::new(QUERY_ID, request.query.clone())],
+                query_cancellation.clone(),
+            )
+            .instrument(tracing::debug_span!(
+                target: "aster_core::retrieval_phase",
+                "semantic_embedding",
+                kind = "query"
+            ));
         tokio::pin!(query_call);
         let query_result = tokio::select! {
             biased;

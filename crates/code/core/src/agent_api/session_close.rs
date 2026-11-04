@@ -46,6 +46,7 @@ pub(crate) struct SessionCloseHandle {
     #[cfg(test)]
     pub(crate) run_store: Arc<InMemoryRunStore>,
     pub(crate) subagent_tasks: Arc<InMemorySubagentTaskTracker>,
+    pub(crate) background_tasks: Arc<super::background_tasks::BackgroundTasks>,
     pub(crate) confirmation_manager: Option<Arc<dyn ConfirmationProvider>>,
     pub(crate) hook_executor: Option<Arc<dyn HookExecutor>>,
     pub(crate) started_at: std::time::Instant,
@@ -235,6 +236,9 @@ impl SessionCloseHandle {
             let _ = original.request_session_close().await;
         }
         self.session_cancel.cancel();
+        if let Err(error) = self.background_tasks.close().await {
+            tracing::warn!(session_id = %self.session_id, %error, "Background Session close failed");
+        }
 
         // The runtime derives its token from `session_cancel`, then performs a
         // bounded join and releases the complete vector allocation graph.

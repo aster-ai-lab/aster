@@ -105,9 +105,10 @@ fn assess_batch(
         };
         let child = assess_tool_at_depth(tool, tool_args, workspace, depth + 1);
         reasons.extend(child.reasons.iter().copied());
+        let child_level = batch_member_level_for_aggregation(&child);
         if highest
             .as_ref()
-            .is_none_or(|current| child.level > current.level)
+            .is_none_or(|current| child_level > batch_member_level_for_aggregation(current))
         {
             highest = Some(child);
         }
@@ -117,7 +118,7 @@ fn assess_batch(
         return malformed_batch_assessment();
     };
     ToolRiskAssessment::new(
-        highest.level,
+        batch_member_level_for_aggregation(&highest),
         ToolRiskDimensions::new(
             ToolRiskType::Composite,
             OperationTarget::Multiple,
@@ -127,6 +128,25 @@ fn assess_batch(
         ),
         reasons,
     )
+}
+
+/// Member-local path denials are enforced on the nested call. Promoting them to
+/// a batch-level Critical Deny would veto every sibling and hide the member.
+fn batch_member_level_for_aggregation(child: &ToolRiskAssessment) -> ToolRiskLevel {
+    if child.level == ToolRiskLevel::Critical
+        && !child
+            .reasons
+            .contains(&ToolRiskReason::CatastrophicOperation)
+        && child.reasons.iter().any(|reason| {
+            matches!(
+                reason,
+                ToolRiskReason::WorkspaceBoundaryEscape | ToolRiskReason::SymlinkBoundaryEscape
+            )
+        })
+    {
+        return ToolRiskLevel::Routine;
+    }
+    child.level
 }
 
 fn malformed_batch_assessment() -> ToolRiskAssessment {

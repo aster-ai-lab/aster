@@ -285,7 +285,11 @@ async fn native_backend_starts_and_writes_only_ordinary_workspace_content() {
     std::fs::create_dir_all(workspace.path().join(".git")).unwrap();
     std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
     std::fs::write(workspace.path().join(".git/config"), "original-git").unwrap();
-    std::fs::write(workspace.path().join(".aster/policy.acl"), "original-policy").unwrap();
+    std::fs::write(
+        workspace.path().join(".aster/policy.acl"),
+        "original-policy",
+    )
+    .unwrap();
     std::fs::write(workspace.path().join(".env"), "workspace-secret").unwrap();
     let sandbox = create_test_sandbox(workspace.path());
 

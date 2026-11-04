@@ -292,10 +292,7 @@ fn cmd_list(json: bool, available: bool) -> Result<()> {
 }
 
 fn installed_plugins(
-    repos: &[(
-        &str,
-        &aster_agent::plugins::install_registry::InstalledRepo,
-    )],
+    repos: &[(&str, &aster_agent::plugins::install_registry::InstalledRepo)],
 ) -> Vec<PluginEntry> {
     repos
         .iter()
@@ -403,8 +400,7 @@ fn log_plugin_installed(
 }
 
 fn cmd_install(source: &str, trust: bool) -> Result<()> {
-    if let Some(mref) = aster_plugin_marketplace::install_resolve::parse_marketplace_ref(source)
-    {
+    if let Some(mref) = aster_plugin_marketplace::install_resolve::parse_marketplace_ref(source) {
         return cmd_install_marketplace(source, &mref, trust);
     }
 
@@ -516,12 +512,10 @@ fn cmd_install_marketplace(
 fn cmd_uninstall(name: &str, confirm: bool, keep_data: bool) -> Result<()> {
     match plugin::uninstall_plugin(name, confirm, keep_data) {
         Ok(outcome) => {
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::PluginUninstalled {
-                    confirmed: true,
-                    success: true,
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::PluginUninstalled {
+                confirmed: true,
+                success: true,
+            });
             let suffix = if keep_data { " (data preserved)" } else { "" };
             println!(
                 "Uninstalled {} plugin(s): {}{suffix}",
@@ -1261,12 +1255,9 @@ mod tests {
             },
         };
 
-        let cache_dir = aster_plugin_marketplace::git::sync_source_cache(
-            &url,
-            Some("main"),
-            cache_root.path(),
-        )
-        .unwrap();
+        let cache_dir =
+            aster_plugin_marketplace::git::sync_source_cache(&url, Some("main"), cache_root.path())
+                .unwrap();
         let first_head = current_head(&cache_dir);
         add_commit(remote.path(), "second.txt", "second");
 

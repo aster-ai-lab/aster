@@ -660,12 +660,11 @@ async fn parent_skill_lookup_matches_advertised_gated_collision_and_skill_only_l
             let skill_dir = tempfile::tempdir().unwrap();
             let skill_path = skill_dir.path().join("SKILL.md");
             std::fs::write(&skill_path, "goal skill body for $ARGUMENTS").unwrap();
-            *actor.agent.borrow_mut() = test_agent_with_tools(vec![
-                aster_tools::registry::types::ToolConfig::for_tool::<
+            *actor.agent.borrow_mut() =
+                test_agent_with_tools(vec![aster_tools::registry::types::ToolConfig::for_tool::<
                     aster_tools::implementations::opencode::OpenCodeSkillTool,
-                >(),
-            ])
-            .await;
+                >()])
+                .await;
             actor
                 .tool_bridge_handle()
                 .seed_skill_discovery(

@@ -1142,3 +1142,54 @@
         assert_eq!(app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry")).last_applied_event_seq, Some(8));
     }
 
+    #[test]
+    fn model_accounting_restores_session_total_and_measured_speed_without_changing_context() {
+        let mut app = make_app_with_agent("sess-1");
+        let params = serde_json::json!({
+            "sessionId":"sess-1",
+            "update":{"sessionUpdate":"model_info","sessionTotalTokens":24600,
+                "measuredOutputTokens":80,"generationDurationMs":4000}
+        });
+        let notif = acp::ExtNotification::new(
+            "aster/session_notification",
+            std::sync::Arc::from(serde_json::value::to_raw_value(&params).unwrap()),
+        );
+        assert!(handle_ext_notification(&notif, &mut app));
+        let agent = test_agent(&app, AgentId(0));
+        assert_eq!(
+            agent.usage_meter.caption(std::time::Instant::now(), false),
+            "Σ 24.6k tokens · 20.0 tok/s"
+        );
+        assert!(
+            agent.context_state.is_none(),
+            "cumulative usage is not context occupancy"
+        );
+    }
+
+    #[test]
+    fn switching_models_keeps_the_session_usage_meter() {
+        let mut app = make_app_with_agent("sess-1");
+        app.agents
+            .get_mut(&AgentId(0))
+            .unwrap()
+            .usage_meter
+            .reconcile(Some(24600), Some(80), Some(4000));
+        for model in ["glm-01/glm-5.3", "deepseek/deepseek-flash", "kimi/k3.1-pro"] {
+            let update = AsterSessionUpdate::ModelChanged {
+                model_id: model.into(),
+                reasoning_effort: None,
+            };
+            let params = serde_json::json!({"sessionId":"sess-1","update":update});
+            let notif = acp::ExtNotification::new(
+                "aster/session_notification",
+                std::sync::Arc::from(serde_json::value::to_raw_value(&params).unwrap()),
+            );
+            handle_ext_notification(&notif, &mut app);
+            assert_eq!(
+                test_agent(&app, AgentId(0))
+                    .usage_meter
+                    .caption(std::time::Instant::now(), false),
+                "Σ 24.6k tokens · 20.0 tok/s"
+            );
+        }
+    }

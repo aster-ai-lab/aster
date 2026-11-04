@@ -303,8 +303,7 @@ pub(super) fn handle_auth_complete(
         && *current_seq == request_seq
     {
         if let Some(meta_val) = meta.as_ref()
-            && let Ok(auth_meta) =
-                serde_json::from_value::<aster_login::AuthMeta>(meta_val.clone())
+            && let Ok(auth_meta) = serde_json::from_value::<aster_login::AuthMeta>(meta_val.clone())
         {
             app.apply_auth_meta(&auth_meta);
         }

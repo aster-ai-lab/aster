@@ -456,7 +456,8 @@ mod tests {
         assert!(
             items
                 .iter()
-                .any(|i| i.display.starts_with("Aster Code 4.5") && i.insert_text == "Aster Code 4.5")
+                .any(|i| i.display.starts_with("Aster Code 4.5")
+                    && i.insert_text == "Aster Code 4.5")
         );
         assert!(
             items

@@ -1224,6 +1224,43 @@ fn task_tool_exposes_one_compact_model_schema_and_hides_parallel_alias() {
 }
 
 #[test]
+fn live_agent_catalog_is_complete_without_a_second_description_copy() {
+    let workspace = tempfile::tempdir().unwrap();
+    let registry = test_registry_with_text_worker();
+    registry.register(AgentDefinition::new(
+        "worker_値",
+        "Keep opaque catalog details 値🙂",
+    ));
+    let executor = Arc::new(TaskExecutor::new(
+        registry,
+        Arc::new(StaticLlmClient::new("done")),
+        workspace.path().to_string_lossy().to_string(),
+    ));
+    let agents = executor.visible_agents();
+    let task = TaskTool::new(Arc::clone(&executor));
+    let parallel = ParallelTaskTool::new(executor);
+    for tool in [&task as &dyn Tool, &parallel as &dyn Tool] {
+        let definition = tool.definition();
+        assert_eq!(
+            definition.parameters["properties"]["tasks"]["items"]["properties"]["agent"],
+            task_agent_parameter_schema(&agents),
+        );
+        let catalog = definition.parameters["properties"]["tasks"]["items"]["properties"]["agent"]
+            ["description"]
+            .as_str()
+            .unwrap();
+        for entry in agent_catalog_entries(&agents) {
+            let entry = format!("{}: {}", entry.name, entry.description);
+            assert!(catalog.contains(&entry));
+            assert!(
+                !definition.description.contains(&entry),
+                "the complete live catalog already belongs to the agent parameter"
+            );
+        }
+    }
+}
+
+#[test]
 fn test_parallel_task_params_debug() {
     let params = ParallelTaskParams {
         tasks: vec![TaskParams {
@@ -3099,6 +3136,11 @@ async fn background_task_updates_shared_tracker_without_an_event_receiver() {
                     "read",
                     serde_json::json!({"file_path": "source.md"}),
                 ),
+                MockLlmClient::tool_call_response(
+                    "read-source-again",
+                    "read",
+                    serde_json::json!({"file_path":"source.md"}),
+                ),
                 MockLlmClient::text_response("background result"),
             ])),
             workspace.path().to_string_lossy().to_string(),
@@ -3146,6 +3188,38 @@ async fn background_task_updates_shared_tracker_without_an_event_receiver() {
     assert_eq!(snapshot.status, SubagentStatus::Completed);
     assert_eq!(snapshot.success, Some(true));
     assert_eq!(snapshot.output.as_deref(), Some("background result"));
+    assert_eq!(
+        snapshot
+            .progress
+            .iter()
+            .filter(|p| p.status == "tool_completed")
+            .count(),
+        2
+    );
+    assert_eq!(
+        snapshot
+            .progress
+            .iter()
+            .filter(|p| p.status == "turn_completed")
+            .count(),
+        3
+    );
+    for entry in &snapshot.progress {
+        let event = AgentEvent::SubagentProgress {
+            task_id: task_id.clone(),
+            session_id: snapshot.child_session_id.clone(),
+            status: entry.status.clone(),
+            metadata: entry.metadata.clone(),
+        };
+        tracker.record_event(&event).await;
+        tracker.record_event(&event).await;
+    }
+    assert_eq!(
+        tracker.get(&task_id).await.unwrap().progress.len(),
+        snapshot.progress.len(),
+        "forwarding a recorded event must not duplicate progress"
+    );
+
     assert_eq!(
         snapshot.source_anchors,
         vec![ToolSourceAnchor {
@@ -7070,6 +7144,50 @@ async fn cancelled_child_execution_error_reports_cancelled_by_caller() {
 }
 
 #[tokio::test]
+async fn completed_child_event_bridge_drains_without_waiting_for_retained_senders() {
+    let workspace = tempfile::tempdir().unwrap();
+    let (sender, receiver) = tokio::sync::mpsc::channel(2);
+    let retained = sender.clone();
+    let (parent, mut received) = broadcast::channel(4);
+    let (completed, completion) = tokio::sync::oneshot::channel();
+    sender
+        .send(AgentEvent::TextDelta {
+            text: "first".into(),
+        })
+        .await
+        .unwrap();
+    sender
+        .send(AgentEvent::TextDelta {
+            text: "last".into(),
+        })
+        .await
+        .unwrap();
+    let bridge = tokio::spawn(forward_task_events(
+        receiver,
+        ToolContext::new(workspace.path().to_path_buf()),
+        None,
+        Some(parent),
+        None,
+        "child".into(),
+        "child-session".into(),
+        completion,
+    ));
+    completed.send(()).unwrap();
+    let anchors = tokio::time::timeout(Duration::from_secs(1), bridge)
+        .await
+        .expect("completed work must not wait for sender lifetimes")
+        .unwrap();
+    assert!(anchors.is_empty());
+    assert!(retained.is_closed());
+    assert!(
+        matches!(received.try_recv().unwrap(), AgentEvent::TextDelta { text } if text == "first")
+    );
+    assert!(
+        matches!(received.try_recv().unwrap(), AgentEvent::TextDelta { text } if text == "last")
+    );
+}
+
+#[tokio::test]
 async fn event_bridge_join_failure_is_warned_and_task_still_completes() {
     let workspace = tempfile::tempdir().unwrap();
     let executor = TaskExecutor::new(
@@ -7153,6 +7271,7 @@ async fn background_capability_admission_failure_emits_terminal_event() {
         Some(event_tx),
         Some("parent-session".to_string()),
         None,
+        None,
     );
     assert!(!launch.running);
     let end = event_rx
@@ -7233,6 +7352,7 @@ async fn background_spawn_failure_after_admission_emits_terminal_event() {
         Some(event_tx),
         Some("parent-session".to_string()),
         None,
+        None,
     );
     assert!(!launch.running);
     let mut saw_failure = false;
@@ -7288,6 +7408,9 @@ impl LlmClient for NotifyThenFailClient {
 
 #[path = "delegation_soak.rs"]
 mod delegation_soak;
+
+#[path = "tests/provider_fairness.rs"]
+mod provider_fairness;
 
 #[tokio::test]
 async fn foreground_task_is_cancellable_while_waiting_on_the_scheduler_lease() {

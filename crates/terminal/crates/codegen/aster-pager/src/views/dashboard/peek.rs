@@ -369,6 +369,7 @@ fn paint_peek_config_badge(
         return;
     }
     let info = PromptInfo {
+        telemetry: None,
         model_name: &model_label,
         flags: &flags,
         multiline,

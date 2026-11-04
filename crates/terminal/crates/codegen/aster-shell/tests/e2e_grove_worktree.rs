@@ -16,8 +16,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
-use aster_shell::util::config::{ENV_WORKTREE_TYPE, RemoteSettings};
 use acp_harness::{AutoApproveClient, connect_and_auth_with_remote, ext_method, run_agent_test};
+use aster_shell::util::config::{ENV_WORKTREE_TYPE, RemoteSettings};
 use serde_json::{Value, json};
 use tempfile::TempDir;
 

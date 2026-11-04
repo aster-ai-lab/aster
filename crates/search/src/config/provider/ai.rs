@@ -3,9 +3,9 @@
 use aster_acl::ast::Block;
 
 use crate::providers::{
-    AsterAuth, AsterConfig, AliyunConfig, AliyunEngineType, BochaConfig, DeepSeekConfig, DoubaoConfig,
-    FirecrawlCategory, FirecrawlConfig, FirecrawlSource, TencentConfig, TencentIndustry,
-    TinyFishConfig, TinyFishDomainType,
+    AliyunConfig, AliyunEngineType, AsterAuth, AsterConfig, BochaConfig, DeepSeekConfig,
+    DoubaoConfig, FirecrawlCategory, FirecrawlConfig, FirecrawlSource, TencentConfig,
+    TencentIndustry, TinyFishConfig, TinyFishDomainType,
 };
 use crate::Result;
 

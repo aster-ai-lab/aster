@@ -12,6 +12,8 @@ use std::collections::{HashMap, VecDeque};
 use tokio::sync::RwLock;
 use tokio_util::sync::CancellationToken;
 
+pub(crate) const TASK_PROGRESS_EVENT_ID: &str = "aster_task_progress_event_id";
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
@@ -53,6 +55,7 @@ pub struct SubagentTaskSnapshot {
 #[derive(Debug, Default)]
 pub struct InMemorySubagentTaskTracker {
     tasks: RwLock<HashMap<String, SubagentTaskSnapshot>>,
+    changed: tokio::sync::watch::Sender<()>,
     cancellers: RwLock<HashMap<String, CancellationToken>>,
     /// FIFO queue of task_ids that have transitioned to a terminal
     /// state (Completed / Failed / Cancelled). Used to evict the
@@ -74,6 +77,7 @@ impl InMemorySubagentTaskTracker {
     pub fn with_max_terminal_tasks(max: usize) -> Self {
         Self {
             tasks: RwLock::new(HashMap::new()),
+            changed: Default::default(),
             cancellers: RwLock::new(HashMap::new()),
             terminal_order: RwLock::new(VecDeque::new()),
             max_terminal_tasks: Some(max),
@@ -151,6 +155,7 @@ impl InMemorySubagentTaskTracker {
                 };
                 if transitioned {
                     self.mark_terminal_and_evict(task_id).await;
+                    self.changed.send_replace(());
                 }
                 true
             }
@@ -224,6 +229,21 @@ impl InMemorySubagentTaskTracker {
                         source_anchors: Vec::new(),
                         progress: Vec::new(),
                     });
+                // The child records before broadcast; the parent can deliver it again.
+                if let Some(id) = metadata
+                    .get(TASK_PROGRESS_EVENT_ID)
+                    .and_then(|v| v.as_str())
+                {
+                    if entry.progress.iter().any(|progress| {
+                        progress
+                            .metadata
+                            .get(TASK_PROGRESS_EVENT_ID)
+                            .and_then(|v| v.as_str())
+                            == Some(id)
+                    }) {
+                        return;
+                    }
+                }
                 entry.updated_ms = now;
                 entry.progress.push(SubagentProgressEntry {
                     timestamp_ms: now,
@@ -292,7 +312,44 @@ impl InMemorySubagentTaskTracker {
                     self.mark_terminal_and_evict(task_id).await;
                 }
             }
-            _ => {}
+            _ => return,
+        }
+        self.changed.send_replace(());
+    }
+
+    pub(crate) async fn wait_for_parent(
+        &self,
+        parent: &str,
+        task_id: &str,
+        timeout: std::time::Duration,
+        cancellation: &CancellationToken,
+    ) -> anyhow::Result<Option<SubagentTaskSnapshot>> {
+        let mut changed = self.changed.subscribe();
+        let wait = async {
+            loop {
+                let task = self
+                    .get(task_id)
+                    .await
+                    .filter(|task| task.parent_session_id == parent);
+                if task
+                    .as_ref()
+                    .is_none_or(|task| task.status != SubagentStatus::Running)
+                {
+                    return Ok(task);
+                }
+                tokio::select! {
+                    biased;
+                    _ = cancellation.cancelled() => anyhow::bail!("task output wait cancelled"),
+                    _ = changed.changed() => {}
+                }
+            }
+        };
+        match tokio::time::timeout(timeout, wait).await {
+            Ok(result) => result,
+            Err(_) => Ok(self
+                .get(task_id)
+                .await
+                .filter(|task| task.parent_session_id == parent)),
         }
     }
 
@@ -357,6 +414,7 @@ impl InMemorySubagentTaskTracker {
         *self.tasks.write().await = map;
         // Cancellers reference live tokens — invalidate the lot.
         self.cancellers.write().await.clear();
+        self.changed.send_replace(());
     }
 }
 

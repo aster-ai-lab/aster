@@ -19,7 +19,11 @@ impl CoordinatedWaitCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedWaitCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

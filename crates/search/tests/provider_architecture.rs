@@ -7,7 +7,7 @@
 mod support;
 
 use aster_search::providers::{
-    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, AnySearchProvider, BochaConfig,
+    AliyunConfig, AliyunProvider, AnySearchProvider, AsterConfig, AsterProvider, BochaConfig,
     BochaProvider, BuiltinProvider, CredentialSource, DeepSeekConfig, DeepSeekProvider,
     DoubaoConfig, DoubaoProvider, FirecrawlConfig, FirecrawlProvider, ProviderEngine,
     ProviderReadiness, ProviderRequest, SearchProvider, TavilyProvider, TencentConfig,

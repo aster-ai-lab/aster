@@ -5,6 +5,9 @@
 
 #![cfg(test)]
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -290,11 +293,11 @@ import_accounts = ["cursor"]
         path.push(':');
         path.push_str(&parent.to_string_lossy());
     }
-    let acp = env!("CARGO_BIN_EXE_aster-acp");
+    let acp = binaries::acp_binary();
     let aster_home = root.path().join("aster-home");
     std::fs::create_dir_all(&aster_home).unwrap();
     let mut env = vec![
-        ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp),
         ("ASTER_HOME".into(), aster_home.display().to_string()),
         ("ASTER_CONFIG".into(), config.display().to_string()),
         ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
@@ -519,38 +522,28 @@ fn assert_workspace_untouched(fixture: &Fixture) {
     // Session records and the retrieval index are created before the model turn.
     let mut names: Vec<_> = std::fs::read_dir(&fixture.workspace)
         .unwrap()
-        .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned())
+        .map(|entry| entry.unwrap().file_name())
         .collect();
     names.sort();
-    names.retain(|name| name != ".aster" && name != ".aster");
+    names.retain(|name| name != ".aster");
     assert_eq!(
         names,
-        vec!["sentinel.txt".to_string()],
+        vec![std::ffi::OsString::from("sentinel.txt")],
         "the turn wrote a file at the workspace root"
     );
-    let index = fixture.workspace.join(".aster");
-    if index.is_dir() {
-        let names: Vec<_> = std::fs::read_dir(index)
-            .unwrap()
-            .map(|entry| entry.unwrap().file_name())
-            .collect();
-        assert_eq!(
-            names,
-            [std::ffi::OsString::from("index")],
-            "unexpected workspace index namespace"
-        );
-    }
     let product = fixture.workspace.join(".aster");
-    if product.is_dir() {
-        let mut children: Vec<_> = std::fs::read_dir(&product)
-            .unwrap()
-            .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned())
-            .collect();
-        children.sort();
-        for name in &children {
+    if product.exists() {
+        assert!(product.is_dir(), "product state root is not a directory");
+        for entry in std::fs::read_dir(&product).unwrap() {
+            let entry = entry.unwrap();
+            let name = entry.file_name();
             assert!(
-                name == "sessions" || name == "effect-log" || name == "memory",
-                "unexpected workspace path .aster/{name}"
+                name == "index" || name == "sessions" || name == "effect-log" || name == "memory",
+                "unexpected workspace path .aster/{name:?}"
+            );
+            assert!(
+                entry.file_type().unwrap().is_dir(),
+                "product state entry is not a directory: {name:?}"
             );
         }
     }
@@ -603,17 +596,35 @@ fn tree_contains_secret(root: &Path) -> bool {
 fn workspace_guard_accepts_the_index_and_rejects_artifacts_and_credentials() {
     for (path, contents) in [
         ("unexpected.txt", "unexpected"),
+        ("unexpected 空格.txt", "unexpected"),
+        ("sentinel.txt", "changed"),
         (".aster/unexpected.txt", "unexpected"),
         (".aster/index/credential.txt", BEARER),
+        (".aster/memory/identity.txt", EMAIL),
     ] {
         let fixture = prepare(Login::Absent, None);
-        std::fs::create_dir_all(fixture.workspace.join(".aster/index")).unwrap();
+        for name in ["index", "sessions", "effect-log", "memory"] {
+            std::fs::create_dir_all(fixture.workspace.join(".aster").join(name)).unwrap();
+        }
         assert_workspace_untouched(&fixture);
         std::fs::write(fixture.workspace.join(path), contents).unwrap();
         assert!(
             std::panic::catch_unwind(|| assert_workspace_untouched(&fixture)).is_err(),
             "workspace guard accepted {path}"
         );
+    }
+    for path in [
+        ".aster",
+        ".aster/index",
+        ".aster/sessions",
+        ".aster/effect-log",
+        ".aster/memory",
+    ] {
+        let fixture = prepare(Login::Absent, None);
+        let path = fixture.workspace.join(path);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(&path, "unexpected file").unwrap();
+        assert!(std::panic::catch_unwind(|| assert_workspace_untouched(&fixture)).is_err());
     }
 }
 
@@ -867,11 +878,11 @@ fn live_tui_turn(model_id: &str) {
     )
     .unwrap();
     let path = std::env::var("PATH").unwrap_or_default();
-    let acp = env!("CARGO_BIN_EXE_aster-acp");
+    let acp = binaries::acp_binary();
     let aster_home = root.path().join("aster-home");
     std::fs::create_dir_all(&aster_home).unwrap();
     let env = vec![
-        ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp),
         ("ASTER_HOME".into(), aster_home.display().to_string()),
         ("ASTER_CONFIG".into(), config.display().to_string()),
         ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),

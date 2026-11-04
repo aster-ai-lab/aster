@@ -155,15 +155,23 @@ impl<'a> ToolSafetyGate<'a> {
         }
 
         match self.permission_decision(input.tool_name, input.args) {
-            PermissionDecision::Deny => ToolGateDecision::Deny {
-                output: format!(
-                    "Permission denied: Tool '{}' is blocked by permission policy.",
-                    input.tool_name
-                ),
-                event_reason: "Blocked by deny rule in permission policy".to_string(),
-                reason: ToolGateDenial::PermissionDeny,
-                error_kind: None,
-            },
+            PermissionDecision::Deny => {
+                let detail = self
+                    .config
+                    .permission_checker
+                    .as_ref()
+                    .and_then(|checker| checker.denial_code(input.tool_name, input.args))
+                    .unwrap_or("permission_policy");
+                ToolGateDecision::Deny {
+                    output: format!(
+                        "Permission denied: Tool '{}' is blocked ({detail}).",
+                        input.tool_name
+                    ),
+                    event_reason: format!("Blocked by permission policy ({detail})"),
+                    reason: ToolGateDenial::PermissionDeny,
+                    error_kind: None,
+                }
+            }
             PermissionDecision::Allow if input.tool_requires_confirmation => {
                 self.confirmation_decision(input.tool_name, input.args, true)
                     .await

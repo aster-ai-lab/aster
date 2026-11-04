@@ -195,9 +195,19 @@ impl WorkspaceCatalogReconciler {
             let source_revision = snapshot.version;
             async move {
                 let path = WorkspacePath::from_normalized(manifest.path.clone());
+                let read_started = std::time::Instant::now();
                 let result = file_system.read_text(&path).await;
                 match result {
                     Ok(content) => {
+                        tracing::debug!(
+                            target: "aster_core::retrieval_phase",
+                            phase = "catalog_read",
+                            source_revision,
+                            read_bytes = content.len(),
+                            success = true,
+                            elapsed_ms = read_started.elapsed().as_secs_f64() * 1_000.0,
+                            "retrieval phase completed"
+                        );
                         if let Some(previous) = previous
                             .filter(|previous| previous.content_digest == digest_content(&content))
                         {
@@ -207,15 +217,35 @@ impl WorkspaceCatalogReconciler {
                             );
                         }
                         let build_manifest = manifest.clone();
+                        let queued = std::time::Instant::now();
+                        let span = tracing::Span::current();
                         let built = tokio::task::spawn_blocking(move || {
-                            CatalogFile::build(
+                            let _entered = span.enter();
+                            tracing::debug!(
+                                target: "aster_core::retrieval_phase",
+                                phase = "catalog_build_queue",
+                                source_revision,
+                                elapsed_ms = queued.elapsed().as_secs_f64() * 1_000.0,
+                                "retrieval phase completed"
+                            );
+                            let started = std::time::Instant::now();
+                            let built = CatalogFile::build(
                                 build_manifest,
                                 source_revision,
                                 &content,
                                 chunking,
                                 &chunking_strategy,
                                 lexical_engine,
-                            )
+                            );
+                            tracing::debug!(
+                                target: "aster_core::retrieval_phase",
+                                phase = "catalog_build_compute",
+                                source_revision,
+                                success = built.is_ok(),
+                                elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+                                "retrieval phase completed"
+                            );
+                            built
                         })
                         .await;
                         let result = match built {
@@ -228,6 +258,14 @@ impl WorkspaceCatalogReconciler {
                         (manifest, result)
                     }
                     Err(error) => {
+                        tracing::debug!(
+                            target: "aster_core::retrieval_phase",
+                            phase = "catalog_read",
+                            source_revision,
+                            success = false,
+                            elapsed_ms = read_started.elapsed().as_secs_f64() * 1_000.0,
+                            "retrieval phase completed"
+                        );
                         let path = manifest.path.clone();
                         (
                             manifest,

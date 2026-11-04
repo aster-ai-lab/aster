@@ -10,6 +10,8 @@ use sha2::{Digest, Sha256};
 pub const DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1: &str =
     "aster.code.memory.semantic-recall-binding.v1";
 pub const DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1: &str = "aster.code.memory.hybrid.rrf-k60.v1";
+pub const DURABLE_MEMORY_SEMANTIC_LINEAR_FUSION_PROFILE_V1: &str =
+    "aster.code.memory.hybrid.linear-unit.v1";
 
 const EXECUTION_POLICY_DIGEST_DOMAIN: &str = "aster.code.memory.semantic-embedding-execution.v1";
 const SERVING_GENERATION_DIGEST_DOMAIN: &str = "aster.code.memory.semantic-serving-generation.v1";
@@ -22,6 +24,8 @@ const MAX_SEMANTIC_EMBEDDING_DIMENSION: usize = 65_536;
 pub struct DurableMemorySemanticRecallPolicy {
     candidate_limit: usize,
     min_score: f32,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    linear_fusion: bool,
 }
 
 impl DurableMemorySemanticRecallPolicy {
@@ -32,6 +36,7 @@ impl DurableMemorySemanticRecallPolicy {
         let policy = Self {
             candidate_limit,
             min_score,
+            linear_fusion: false,
         };
         policy.validate()?;
         Ok(policy)
@@ -43,6 +48,26 @@ impl DurableMemorySemanticRecallPolicy {
 
     pub fn min_score(self) -> f32 {
         self.min_score
+    }
+
+    /// Sum unit lexical/semantic scores before the existing max normalization.
+    /// Repository lexical totals must be finite and in [0, 1]; invalid totals
+    /// fail recall. The default remains the persisted RRF k=60 profile.
+    pub fn with_linear_fusion(mut self) -> Self {
+        self.linear_fusion = true;
+        self
+    }
+
+    pub(crate) fn linear_fusion(self) -> bool {
+        self.linear_fusion
+    }
+
+    fn fusion_profile(self) -> &'static str {
+        if self.linear_fusion {
+            DURABLE_MEMORY_SEMANTIC_LINEAR_FUSION_PROFILE_V1
+        } else {
+            DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1
+        }
     }
 
     pub(crate) fn validate(self) -> Result<(), DurableMemorySemanticError> {
@@ -90,7 +115,7 @@ impl DurableMemorySemanticBindingV1 {
             embedding_execution_digest: execution_policy_digest(embedding_config)?,
             vector_index,
             policy,
-            fusion_profile: DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1.to_string(),
+            fusion_profile: policy.fusion_profile().to_string(),
         };
         binding.validate()?;
         Ok(binding)
@@ -201,8 +226,11 @@ impl DurableMemorySemanticBindingV1 {
             ));
         }
         self.policy.validate()?;
-        if self.fusion_profile != DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1 {
-            return Err(invalid("binding.fusionProfile", "is unsupported"));
+        if self.fusion_profile != self.policy.fusion_profile() {
+            return Err(invalid(
+                "binding.fusionProfile",
+                "does not match the policy",
+            ));
         }
         Ok(())
     }
@@ -337,3 +365,7 @@ pub(crate) fn invalid(
         reason: reason.into(),
     }
 }
+
+#[cfg(test)]
+#[path = "semantic_binding_tests.rs"]
+mod tests;

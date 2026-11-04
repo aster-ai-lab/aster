@@ -10,6 +10,8 @@
 
 #[path = "support/binaries.rs"]
 mod binaries;
+#[path = "support/tui_readiness.rs"]
+mod tui_readiness;
 
 #[path = "../../../../apps/aster/tests/support/python.rs"]
 mod python;
@@ -34,7 +36,7 @@ const MODEL_ID: &str = "mock/gpt";
 mod retrieval;
 const COMPACT_SUMMARY: &str = "COMPACT-SUMMARY-7f3a";
 const DURABLE_TOKEN: &str = "DURABLE-TOKEN-42";
-const GOAL_OBJECTIVE: &str = "pty-goal-7b2e";
+const GOAL_OBJECTIVE: &str = "准备好测试工作区 pty-goal-7b2e";
 const WIRE_TEST: &str = "shipped_agent_session_wire";
 const PTY_TEST: &str = "shipped_tui_launch_resume_and_visible_commands";
 const NATIVE_FORM: &str = r#"{"root":"root","elements":{"root":{"type":"Card","props":{"title":"Aster form"},"children":["name","amount","ready","submit"]},"name":{"type":"Input","props":{"label":"Name","type":"text","required":true,"value":{"$bindState":"/form/name"}}},"amount":{"type":"Input","props":{"label":"Amount","type":"number","min":1,"max":5,"value":{"$bindState":"/form/amount"}}},"ready":{"type":"Checkbox","props":{"label":"Ready","required":true,"checked":{"$bindState":"/form/ready"}}},"submit":{"type":"Button","props":{"action":"submit","label":"Continue"}}},"state":{"form":{"name":"","amount":3,"ready":false}}}"#;
@@ -229,8 +231,14 @@ fn decide(raw: &str, state: &mut MockState) -> String {
     // The classifier call carries the user text and a tool named
     // emit_pre_analysis. Answer it before the oracle arms, or that tool
     // call consumes the write/bash reply the product turn still needs.
-    if raw.contains("emit_pre_analysis") || raw.contains("You are a pre-analysis assistant") {
-        return reply_text(&pre_analysis_object(), streaming);
+    if raw.contains("emit_pre_analysis")
+        || raw.contains("You are a pre-analysis assistant")
+        || raw.contains("You plan a durable Goal.")
+    {
+        return reply_text(
+            &pre_analysis_object(raw.contains("execution_plan.stages")),
+            streaming,
+        );
     }
     let tools = has_tools(&parsed);
     if let Some(response) = retrieval::response(&parsed, state, streaming) {
@@ -400,9 +408,9 @@ fn budget_number(body: &str, marker: &str) -> Option<u64> {
     digits.parse().ok()
 }
 
-fn pre_analysis_object() -> String {
+fn pre_analysis_object(stage_plan: bool) -> String {
     // Empty optimized_input keeps the original user sentence on the product turn.
-    serde_json::json!({
+    let mut value = serde_json::json!({
         "intent": "GeneralPurpose",
         "requires_planning": false,
         "goal": {
@@ -420,8 +428,31 @@ fn pre_analysis_object() -> String {
             "required_tools": []
         },
         "optimized_input": ""
-    })
-    .to_string()
+    });
+    if stage_plan {
+        let plan = value["execution_plan"].as_object_mut().unwrap();
+        let stages = plan.remove("steps").unwrap();
+        plan.insert("stages".into(), stages);
+    }
+    value.to_string()
+}
+
+#[test]
+fn pre_analysis_fixture_keeps_goal_stages_and_ordinary_steps_distinct() {
+    for stage_plan in [false, true] {
+        let value: serde_json::Value =
+            serde_json::from_str(&pre_analysis_object(stage_plan)).unwrap();
+        let (present, absent) = if stage_plan {
+            ("stages", "steps")
+        } else {
+            ("steps", "stages")
+        };
+        assert_eq!(
+            value["execution_plan"][present].as_array().unwrap().len(),
+            1
+        );
+        assert!(value["execution_plan"][absent].is_null());
+    }
 }
 
 fn reply_text(text: &str, streaming: bool) -> String {
@@ -442,7 +473,8 @@ fn reply_text(text: &str, streaming: bool) -> String {
         "choices": [{ "delta": { "content": text } }]
     });
     let done = serde_json::json!({
-        "choices": [{ "delta": {}, "finish_reason": "stop" }]
+        "choices": [{ "delta": {}, "finish_reason": "stop" }],
+        "usage": { "prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2 }
     });
     format!("data: {chunk}\n\ndata: {done}\n\ndata: [DONE]\n\n")
 }
@@ -483,7 +515,8 @@ fn reply_tool(name: &str, args: &str, state: &mut MockState, streaming: bool) ->
         }]
     });
     let done = serde_json::json!({
-        "choices": [{ "delta": {}, "finish_reason": "tool_calls" }]
+        "choices": [{ "delta": {}, "finish_reason": "tool_calls" }],
+        "usage": { "prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2 }
     });
     format!("data: {chunk}\n\ndata: {done}\n\ndata: [DONE]\n\n")
 }
@@ -1200,6 +1233,17 @@ async fn shipped_agent_session_wire() {
             oracle(WIRE_TEST, "cancel-no-late-file", "stop=Cancelled");
 
             // Compact appends compaction.done and the next turn keeps the summary.
+            let message_bytes = |bodies: &[String]| {
+                bodies
+                    .iter()
+                    .rev()
+                    .map(|body| serde_json::from_str::<serde_json::Value>(body).unwrap())
+                    .find(has_tools)
+                    .expect("an actual request with tools")
+                    ["messages"]
+                    .to_string()
+                    .len()
+            };
             let compact_session = acp::Agent::new_session(
                 agent.conn.as_ref(),
                 acp::NewSessionRequest::new(workspace.clone()),
@@ -1214,6 +1258,7 @@ async fn shipped_agent_session_wire() {
                         .expect("seed");
                 assert_eq!(response.stop_reason, acp::StopReason::EndTurn);
             }
+            let before_compaction_bytes = message_bytes(&state.lock().expect("mock").bodies);
             let params = serde_json::value::to_raw_value(&serde_json::json!({
                 "sessionId": compact_session.0.as_ref(),
             }))
@@ -1243,6 +1288,14 @@ async fn shipped_agent_session_wire() {
                 "next turn dropped the compaction summary"
             );
             oracle(WIRE_TEST, "compact-summary-kept", COMPACT_SUMMARY);
+            oracle(
+                WIRE_TEST,
+                "compact-tool-request-message-bytes",
+                &format!(
+                    "before={before_compaction_bytes} after={} scope=last-request-with-tools token-count=unmeasured",
+                    message_bytes(&after)
+                ),
+            );
 
             // status / pause / clear do not start a model turn. set stores the objective.
             let goal_session = acp::Agent::new_session(
@@ -1826,15 +1879,11 @@ impl PtySession {
     fn wait_for_frame(&mut self, timeout: Duration) -> String {
         let deadline = Instant::now() + timeout;
         let mut last = String::new();
-        let mut stable_since: Option<Instant> = None;
         let mut welcome_since: Option<Instant> = None;
         while Instant::now() < deadline {
             self.drain();
             let screen = self.parser.screen().contents();
-            let visible: String = screen.chars().filter(|ch| !ch.is_whitespace()).collect();
-            // The welcome star keeps moving, so a byte-identical frame never
-            // lasts 500ms. Aster plus the composer is a finished product frame.
-            if visible.len() > 12 && screen.contains("Aster") && screen.contains('❯') {
+            if tui_readiness::is_input_frame(&screen) {
                 if welcome_since.is_some_and(|start| start.elapsed() > Duration::from_millis(200)) {
                     return screen;
                 }
@@ -1842,19 +1891,7 @@ impl PtySession {
             } else {
                 welcome_since = None;
             }
-            if visible.len() > 12 {
-                if screen == last {
-                    if stable_since
-                        .is_some_and(|start| start.elapsed() > Duration::from_millis(500))
-                    {
-                        return screen;
-                    }
-                    stable_since.get_or_insert_with(Instant::now);
-                } else {
-                    stable_since = Some(Instant::now());
-                    last = screen;
-                }
-            }
+            last = screen;
             std::thread::sleep(Duration::from_millis(40));
         }
         panic!("timed out waiting for a product frame\n{last}")
@@ -2443,41 +2480,21 @@ fn exercise_marker_navigation(
     pty.pump(Duration::from_millis(200));
     pty.focus_composer();
 
-    // Bash asks while the posture is still Ask. /yolo would persist into the
-    // shared grok home and the later tour would skip Allow once.
+    // One scoped host approval covers this exact execution request.
     let before_expand = state.lock().expect("mock").bodies.len();
     pty.type_text("EXPAND-ORACLE");
     pty.enter();
-    let allow_expand = pty.wait_for("Yes, proceed", Duration::from_secs(20));
+    let allow_expand = pty.wait_for("Yes, run on host", Duration::from_secs(20));
     assert!(
-        allow_expand.contains("Yes, proceed"),
-        "expand bash did not ask\n{allow_expand}"
+        allow_expand.contains("Allow Execute?") && allow_expand.contains("Ctrl+o:yolo"),
+        "execution approval must own the keyboard\n{allow_expand}"
     );
-    pty.write_bytes(b"1");
-    let escalation_deadline = Instant::now() + Duration::from_secs(20);
-    let escalation = loop {
-        let screen = pty.pump(Duration::from_millis(40));
-        let requests: Vec<serde_json::Value> = std::fs::read_to_string(&trace)
-            .unwrap_or_default()
-            .lines()
-            .filter_map(|line| serde_json::from_str(line).ok())
-            .filter(|event: &serde_json::Value| event["kind"] == "permission-request")
-            .collect();
-        if requests.len() == 2
-            && screen.contains("Allow Execute?")
-            && screen.contains("Ctrl+o:yolo")
-        {
-            assert_ne!(requests[0]["rpc_id"], requests[1]["rpc_id"]);
-            break screen;
-        }
-        assert!(
-            Instant::now() < escalation_deadline,
-            "second execution approval did not arrive\n{screen}"
-        );
-    };
     assert!(
-        escalation.contains("Ctrl+o:yolo"),
-        "execution approval must own the keyboard\n{escalation}"
+        !log_text(cwd)
+            .lines()
+            .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+            .any(|fact| fact["type"] == "tool.result"),
+        "execution must stay parked until approval"
     );
     pty.write_bytes(b"1");
     let expand_deadline = Instant::now() + Duration::from_secs(25);
@@ -2492,6 +2509,20 @@ fn exercise_marker_navigation(
         "expand bash did not finish\n{}",
         pty.screen()
     );
+    let requests: Vec<serde_json::Value> = std::fs::read_to_string(&trace)
+        .expect("approval trace")
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("trace record"))
+        .filter(|event: &serde_json::Value| event["kind"] == "permission-request")
+        .collect();
+    assert_eq!(
+        requests.len(),
+        1,
+        "one scoped request must settle the original call"
+    );
+    assert!(requests
+        .first()
+        .is_some_and(|request| !request["rpc_id"].is_null()));
     let receipt = log_text(cwd)
         .lines()
         .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
@@ -3035,9 +3066,9 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text("/goal status");
     pty.enter();
-    let goal = pty.wait_for("No durable goal is set.", Duration::from_secs(8));
+    let goal = pty.wait_for("No goal is set.", Duration::from_secs(8));
     assert!(
-        goal.contains("No durable goal is set."),
+        goal.contains("No goal is set."),
         "goal status did not report the empty objective\n{goal}"
     );
     assert_eq!(
@@ -3066,13 +3097,23 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.enter();
     let created = wait_goal_fact(&mut pty, &workspace, "aster.goal.created");
     assert!(created.to_string().contains(GOAL_OBJECTIVE));
-    let stopped = pty.wait_for("Durable goal tick: needs_input", Duration::from_secs(30));
-    assert!(
-        stopped.contains("Durable goal tick: needs_input"),
-        "{stopped}"
-    );
+    let stopped = pty.wait_for("需要你的输入后才能继续。", Duration::from_secs(30));
+    assert!(stopped.contains("需要你的输入后才能继续。"), "{stopped}");
     let first_goal_body = wait_body(&state, GOAL_OBJECTIVE, Duration::from_secs(5));
     assert!(first_goal_body.contains("Engineering discipline"));
+    assert!(first_goal_body.contains("Use zh-CN only"));
+    assert!(stopped.contains("目标尚未完成"), "{stopped}");
+    assert!(stopped.contains("已完成 0/1 项。"), "{stopped}");
+    for internal in ["Durable goal", "acp-tick-", "Plan r1", "needs_input"] {
+        assert!(!stopped.contains(internal), "{stopped}");
+    }
+    assert!(!stopped.contains("目标已完成"), "{stopped}");
+    assert_eq!(
+        stopped.matches("需要你的输入后才能继续。").count(),
+        1,
+        "{stopped}"
+    );
+    assert!(!log_text(&workspace).contains("aster.goal.completed"));
     oracle(
         PTY_TEST,
         "goal-set",
@@ -3084,8 +3125,8 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.type_text("/goal pause");
     pty.enter();
     wait_goal_fact(&mut pty, &workspace, "aster.goal.paused");
-    let paused = pty.wait_for("Durable goal paused:", Duration::from_secs(8));
-    assert!(paused.contains(GOAL_OBJECTIVE), "{paused}");
+    let paused = pty.wait_for("目标已暂停", Duration::from_secs(8));
+    assert!(paused.contains("已完成 0/1 项。"), "{paused}");
     assert_eq!(
         state.lock().expect("mock").bodies.len(),
         bodies_before_pause
@@ -3100,11 +3141,8 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.type_text("/goal resume");
     pty.enter();
     wait_goal_fact(&mut pty, &workspace, "aster.goal.resumed");
-    let resumed = pty.wait_for("Durable goal tick: needs_input", Duration::from_secs(8));
-    assert!(
-        resumed.contains("Durable goal tick: needs_input"),
-        "{resumed}"
-    );
+    let resumed = pty.wait_for("需要你的输入后才能继续。", Duration::from_secs(8));
+    assert!(resumed.contains("需要你的输入后才能继续。"), "{resumed}");
     assert_eq!(
         state.lock().expect("mock").bodies.len(),
         bodies_before_pause,
@@ -3120,8 +3158,8 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.type_text("/goal clear");
     pty.enter();
     wait_goal_fact(&mut pty, &workspace, "aster.goal.cancelled");
-    let cleared = pty.wait_for("Durable goal cancelled:", Duration::from_secs(8));
-    assert!(cleared.contains(GOAL_OBJECTIVE), "{cleared}");
+    let cleared = pty.wait_for("目标已取消", Duration::from_secs(8));
+    assert!(cleared.contains("已完成 0/1 项。"), "{cleared}");
     assert_eq!(
         state.lock().expect("mock").bodies.len(),
         bodies_before_pause
@@ -3511,19 +3549,18 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         "escape cleared the model command\n{armed}"
     );
     pty.enter();
-    let config_path = grok_home.join("config.toml");
     let model_deadline = Instant::now() + Duration::from_secs(6);
-    let mut persisted = String::new();
+    let mut persisted = acl_default_model(&config);
     while Instant::now() < model_deadline {
-        persisted = std::fs::read_to_string(&config_path).unwrap_or_default();
-        if persisted.contains("mock/alt") {
+        persisted = acl_default_model(&config);
+        if persisted == "mock/alt" {
             break;
         }
         pty.pump(Duration::from_millis(150));
     }
-    assert!(
-        persisted.contains("mock/alt"),
-        "model did not persist the selected catalog id\n{persisted}"
+    assert_eq!(
+        persisted, "mock/alt",
+        "model did not persist the selected catalog id"
     );
     oracle(PTY_TEST, "model", "mock/alt");
 
@@ -4121,14 +4158,14 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
     assert_eq!(accepted["plan_accepted"], true);
     let status = slash(agent, id, "/goal status").await;
     assert!(
-        status.contains("Durable goal active")
-            && status.contains("Plan r1 accepted: 0/1 steps done")
-            && status.contains("Next: advance"),
+        status.contains("Goal in progress.")
+            && status.contains("Completed 0 of 1 steps.")
+            && status.contains("Next: Write the exact release code"),
         "{status}"
     );
     let paused = slash(agent, id, "/goal pause").await;
     assert!(
-        paused.contains("Durable goal paused") && paused.contains("Next: paused"),
+        paused.contains("Goal paused.") && paused.contains("Use /goal resume to continue."),
         "{paused}"
     );
     assert_eq!(goal_state(agent, id).await["definition"]["state"], "paused");
@@ -4214,8 +4251,8 @@ fn shipped_bound_goal_real_llm() {
     pty.write_bytes(b"\x15");
     pty.type_text("/goal status");
     pty.enter();
-    let status = pty.wait_for("Durable goal paused", Duration::from_secs(30));
-    assert!(status.contains("0/1 steps done"), "{status}");
+    let status = pty.wait_for("Goal paused.", Duration::from_secs(30));
+    assert!(status.contains("Completed 0 of 1 steps."), "{status}");
     oracle(REAL_GOAL_TEST, "pager-reopen-status", "paused 0/1");
     let slice_started = Instant::now();
     pty.write_bytes(b"\x15");
@@ -4225,15 +4262,14 @@ fn shipped_bound_goal_real_llm() {
     let mut screen = String::new();
     while Instant::now() < deadline {
         screen = pty.pump(Duration::from_millis(500));
-        if screen.contains("Durable goal completed") {
+        if screen.contains("Goal complete.") {
             break;
         }
         if screen.contains("Yes, proceed") {
             pty.write_bytes(b"1");
         }
     }
-    assert!(screen.contains("Durable goal completed"), "{screen}");
-    assert!(screen.contains("1/1 steps done"), "{screen}");
+    assert!(screen.contains("Goal complete."), "{screen}");
     let report = std::fs::read_to_string(workspace.join("report.txt")).expect("report.txt");
     assert_eq!(report.trim(), code, "{screen}");
     let slice_ms = slice_started.elapsed().as_millis();
@@ -4261,7 +4297,7 @@ fn shipped_bound_goal_real_llm() {
         assert_eq!(before["definition"]["plan"]["steps"][0]["status"], "completed");
         let resumed = slash(&agent, &id, "/goal resume").await;
         assert!(
-            resumed.contains("Durable goal completed") && !resumed.contains("Goal slice"),
+            resumed.contains("Goal complete.") && !resumed.contains("Goal slice"),
             "{resumed}"
         );
         assert_eq!(
@@ -4288,7 +4324,7 @@ fn shipped_bound_goal_real_llm() {
         .await;
         assert_eq!(created["state"], "active");
         let cleared = slash(&agent, &other, "/goal clear").await;
-        assert!(cleared.contains("Durable goal cancelled"), "{cleared}");
+        assert!(cleared.contains("Goal cancelled."), "{cleared}");
         oracle(REAL_GOAL_TEST, "stdio-clear", "active→cancelled");
         eprintln!(
             "BOUND-GOAL-REAL model={REAL_GOAL_MODEL} total_ms={} slice_ms={slice_ms} session_info={info}",

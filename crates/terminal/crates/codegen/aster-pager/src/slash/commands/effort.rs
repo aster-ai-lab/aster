@@ -77,8 +77,8 @@ mod tests {
     use super::*;
     use crate::acp::model_state::ModelState;
     use crate::slash::commands::effort_levels::EFFORT_LEVELS;
-    use aster_shell::sampling::types::ReasoningEffort;
     use agent_client_protocol as acp;
+    use aster_shell::sampling::types::ReasoningEffort;
     use std::sync::Arc;
 
     fn model_with_reasoning(id: &str, name: &str) -> (acp::ModelId, acp::ModelInfo) {
@@ -417,7 +417,8 @@ mod tests {
             }
             other => panic!("expected SwitchModel, got {other:?}"),
         }
-        match crate::slash::commands::model::ModelCommand.run(&mut ctx, "Aster Code 4.7 Extra High") {
+        match crate::slash::commands::model::ModelCommand.run(&mut ctx, "Aster Code 4.7 Extra High")
+        {
             CommandResult::Action(Action::SwitchModel { model_id, effort }) => {
                 assert_eq!(model_id.0.as_ref(), "grok-4.7");
                 assert_eq!(effort, Some(ReasoningEffort::Xhigh));

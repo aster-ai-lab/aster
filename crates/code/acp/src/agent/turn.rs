@@ -79,7 +79,7 @@ impl AsterCodeAgent {
                     state.saw_text = true;
                 }
                 state.delta_text.push_str(&text);
-                self.emit_text(session_id, &text).await;
+                self.emit_text(session_id, &text, true).await;
             }
             AgentEvent::ReasoningDelta { text } => {
                 self.emit_thought(session_id, &text).await;
@@ -176,6 +176,7 @@ impl AsterCodeAgent {
                     self.emit_text(
                         session_id,
                         &format!("confirm {tool_name} failed: {error}\n"),
+                        false,
                     )
                     .await;
                 }
@@ -234,28 +235,25 @@ impl AsterCodeAgent {
             }
             AgentEvent::SubagentEnd {
                 task_id,
-                session_id: child_session_id,
-                output,
+                session_id: child_id,
                 success,
+                output,
                 finished_ms,
                 ..
             } => {
-                let started_ms = state
-                    .subagent_started_ms
-                    .remove(&task_id)
-                    .unwrap_or(finished_ms);
-                let progress = state.child_progress.remove(&task_id).unwrap_or_default();
-                self.emit_subagent_end(
-                    session_id,
+                let update = super::emit::observed_subagent_end(
+                    session,
+                    state,
                     &task_id,
-                    &child_session_id,
+                    &child_id,
                     success,
                     &output,
-                    started_ms,
                     finished_ms,
-                    &progress,
                 )
                 .await;
+                self.emit_xai_session_update(session_id, update).await;
+                state.subagent_started_ms.remove(&task_id);
+                state.child_progress.remove(&task_id);
             }
             AgentEvent::TurnEnd { usage, .. } => {
                 state.model_calls = state.model_calls.saturating_add(1);
@@ -274,11 +272,9 @@ impl AsterCodeAgent {
                     .last_turn_usage
                     .take()
                     .unwrap_or_else(|| usage.clone());
-                self.emit_xai_session_update(
-                    session_id,
-                    model_info_payload(&usage, &final_turn_usage, meta.as_ref()),
-                )
-                .await;
+                let mut info = model_info_payload(&usage, &final_turn_usage, meta.as_ref());
+                info["sessionTotalTokens"] = serde_json::json!(session.recorded_usage_tokens().2);
+                self.emit_xai_session_update(session_id, info).await;
                 state.end_usage = Some(usage);
                 state.end_text = Some(text.clone());
                 state.end_outcome = Some(turn_outcome_payload(
@@ -296,7 +292,7 @@ impl AsterCodeAgent {
                     }
                 });
                 if should_emit_end_text(state.saw_text, &text) {
-                    self.emit_text(session_id, &text).await;
+                    self.emit_text(session_id, &text, false).await;
                 }
             }
             AgentEvent::Error { message } => {
@@ -310,7 +306,12 @@ impl AsterCodeAgent {
                 let used = snapshot.reported_prompt_tokens as u64;
                 let size = session.context_window_tokens() as u64;
                 if used > 0 && size > 0 {
-                    let update = usage_update(&snapshot, size, &session.durable_transcript());
+                    let update = usage_update(
+                        &snapshot,
+                        size,
+                        &session.durable_transcript(),
+                        session.recorded_usage_tokens().2,
+                    );
                     self.emit(acp::SessionNotification::new(
                         session_id.clone(),
                         acp::SessionUpdate::UsageUpdate(update),
@@ -348,8 +349,10 @@ impl AsterCodeAgent {
                 args: tool_args,
                 reason,
             } => {
-                self.emit_tool_call(session_id, &tool_id, &tool_name, Some(&tool_args))
-                    .await;
+                if state.painted_tools.insert(tool_id.clone()) {
+                    self.emit_tool_call(session_id, &tool_id, &tool_name, Some(&tool_args))
+                        .await;
+                }
                 self.emit_tool_call_completed(
                     session_id,
                     &tool_id,
@@ -406,6 +409,7 @@ impl AsterCodeAgent {
                     self.emit_text(
                         session_id,
                         &format!("\nquestion {question_id}: {question}\n"),
+                        false,
                     )
                     .await;
                 }
@@ -571,19 +575,18 @@ impl AsterCodeAgent {
                 .turn_was_cancelled(session_id.0.as_ref(), generation)
                 .await
         {
-            if let Some((goal, total_steps, duration_ms)) = state.achieved_goal.take() {
+            if let Some((_goal, total_steps, duration_ms)) = state.achieved_goal.take() {
                 match crate::goal::retire_achieved_durable_goal(session, governing_goal.as_ref())
                     .await
                 {
                     Ok(true) => {
                         self.goals.lock().await.remove(session_id.0.as_ref());
+                        tracing::debug!(total_steps, duration_ms, "Goal completed");
                         let reply = match self.goal_language(session_id).await {
-                            crate::goal::GoalLanguage::Chinese => "\n目标已完成并清除。\n".into(),
-                            crate::goal::GoalLanguage::English => format!(
-                                "\ngoal achieved and cleared ({total_steps} steps, {duration_ms} ms): {goal}\n"
-                            ),
+                            crate::goal::GoalLanguage::Chinese => "\n目标已完成。\n",
+                            crate::goal::GoalLanguage::English => "\nGoal complete.\n",
                         };
-                        self.emit_text(session_id, &reply).await;
+                        self.emit_text(session_id, reply, false).await;
                     }
                     Ok(false) => {}
                     Err(error) => state.turn_failure = Some(error.to_string()),
@@ -675,7 +678,7 @@ impl AsterCodeAgent {
         session_id: &acp::SessionId,
         session: &AgentSession,
         state: &mut TurnState,
-        rx: &mut tokio::sync::mpsc::Receiver<AgentEvent>,
+        mut rx: tokio::sync::mpsc::Receiver<AgentEvent>,
         join: JoinHandle<()>,
         turn_permit: OwnedMutexGuard<()>,
     ) -> acp::Result<acp::PromptResponse> {
@@ -716,6 +719,15 @@ impl AsterCodeAgent {
         }
         self.settle_public_join(join, turn_permit).await;
         self.close_run_observation(state).await;
+        let tracked_session = self
+            .sessions
+            .lock()
+            .await
+            .get(session_id.0.as_ref())
+            .map(|live| Arc::clone(&live.session));
+        if let Some(session) = tracked_session {
+            self.continue_subagent_events(session_id.clone(), session, std::mem::take(state), rx);
+        }
         tracing::info!(target: "perf_probe", "turn_cancel_return");
         Ok(acp::PromptResponse::new(acp::StopReason::Cancelled))
     }
@@ -743,6 +755,7 @@ impl AsterCodeAgent {
         &self,
         session_key: &str,
         generation: u64,
+        prompt_id: Option<&str>,
         response: acp::Result<acp::PromptResponse>,
     ) -> acp::Result<acp::PromptResponse> {
         let elapsed = {
@@ -770,8 +783,19 @@ impl AsterCodeAgent {
             .get(session_key)
             .copied()
             == Some(generation);
+        let mut response = if cancelled {
+            Ok(acp::PromptResponse::new(acp::StopReason::Cancelled))
+        } else {
+            response
+        };
+        if let (Ok(reply), Some(prompt_id)) = (&mut response, prompt_id) {
+            reply
+                .meta
+                .get_or_insert_with(acp::Meta::new)
+                .insert("promptId".into(), prompt_id.into());
+        }
         if cancelled {
-            return Ok(acp::PromptResponse::new(acp::StopReason::Cancelled));
+            return response;
         }
         // WC-NOTIFY1: the completion signal the agent itself can emit —
         // a terminal bell on stderr when the configured floor elapsed.
@@ -933,12 +957,17 @@ fn usage_update(
     snapshot: &aster_core::harness_evidence::ModelUsageSnapshotV1,
     size: u64,
     transcript: &[aster_core::Message],
+    session_total_tokens: u64,
 ) -> acp::UsageUpdate {
     // The wire struct has no output/cache fields, so the complete accounting
     // rides _meta. Context composition is explicitly an estimate, not billing.
     let mut update = acp::UsageUpdate::new(snapshot.reported_prompt_tokens as u64, size);
     let estimated_user_tokens = estimated_user_message_tokens(transcript);
     update.meta = Some(serde_json::Map::from_iter([
+        (
+            "sessionTotalTokens".to_string(),
+            serde_json::json!(session_total_tokens),
+        ),
         (
             "completionTokens".to_string(),
             serde_json::json!(snapshot.reported_completion_tokens),
@@ -1035,11 +1064,13 @@ mod usage_meta_tests {
             aster_core::Message::user("你好"),
             aster_core::Message::user_wire("runtime steering is not a user bubble"),
         ];
-        let wire = serde_json::to_value(usage_update(&snapshot(), 32_768, &transcript)).unwrap();
+        let wire =
+            serde_json::to_value(usage_update(&snapshot(), 32_768, &transcript, 1_300)).unwrap();
         assert_eq!(wire["used"], 90);
         assert_eq!(wire["size"], 32_768);
         assert_eq!(wire["_meta"]["completionTokens"], 40);
         assert_eq!(wire["_meta"]["totalTokens"], 130);
+        assert_eq!(wire["_meta"]["sessionTotalTokens"], 1_300);
         assert_eq!(wire["_meta"]["cacheReadTokens"], 10);
         assert_eq!(wire["_meta"]["cacheWriteTokens"], 5);
         assert_eq!(wire["_meta"]["callSequence"], 7);

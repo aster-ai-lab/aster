@@ -1,0 +1,110 @@
+[
+  {
+    "member": "aster",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "aster-acp",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster-acp"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "aster-acp-unit",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster-acp-unit"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "acp_conformance_stdio",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/acp_conformance_stdio"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "cursor_account_tui_e2e",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/cursor_account_tui_e2e"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "deloop_generalization_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/deloop_generalization_real_llm"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "deloop_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/deloop_real_llm"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "long_horizon_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/long_horizon_real_llm"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  },
+  {
+    "member": "shipped_tui_e2e",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "--verbose=2",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/shipped_tui_e2e"
+    ],
+    "exitCode": 0,
+    "digestUnchanged": true
+  }
+]

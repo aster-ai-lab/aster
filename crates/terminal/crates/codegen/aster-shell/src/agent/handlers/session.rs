@@ -32,7 +32,9 @@ pub(crate) async fn handle(
         "aster/session/close" => handle_session_close(agent, args).await,
         "aster/session/list" => handle_session_list(agent, args).await,
         "aster/sessions/list" => handle_roster_list(agent, args).await,
-        m if m.starts_with("aster/session_summaries/") => handle_session_summaries(agent, args).await,
+        m if m.starts_with("aster/session_summaries/") => {
+            handle_session_summaries(agent, args).await
+        }
         _ => Err(acp::Error::method_not_found()),
     }
 }

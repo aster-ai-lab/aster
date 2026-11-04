@@ -19,13 +19,22 @@ pub(super) async fn extract_admitted_memory(
     parts: &FactSession,
     prompt: &str,
     mapped: &std::result::Result<AgentResult, anyhow::Error>,
-    ticket: crate::memory::MemoryExtractionTicket,
+    mut ticket: crate::memory::MemoryExtractionTicket,
+    save_usage: bool,
 ) {
     let Ok(result) = mapped else {
         return;
     };
     let Some(surface) = parts.surface.as_ref() else {
         return;
+    };
+    let previous_usage = if save_usage {
+        surface
+            .persistence
+            .as_ref()
+            .map(|persistence| (persistence, persistence.usage_total()))
+    } else {
+        None
     };
     surface
         .agent
@@ -34,9 +43,15 @@ pub(super) async fn extract_admitted_memory(
             &result.text,
             &surface.session_id,
             &surface.cancel,
-            ticket,
+            &mut ticket,
         )
         .await;
+    if let Some((persistence, previous)) = previous_usage {
+        if persistence.usage_total() != previous {
+            // A reported call still counts when later retention is cancelled.
+            persistence.auto_save_if_enabled().await;
+        }
+    }
 }
 
 /// Drain the recall telemetry the actor parked on the surface and emit it

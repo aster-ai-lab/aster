@@ -7,10 +7,14 @@ use aster_core::goal_control::{
 };
 use aster_core::workspace::WorkspaceServices;
 
+mod planning;
+mod presentation;
+
 #[tokio::test]
 async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts() {
     let root = tempfile::tempdir().unwrap();
-    let mut launch = test_launch(Some(root.path().join("sessions")));
+    let (mut launch, provider) =
+        planning::launch(root.path().join("sessions"), planning::SIMPLE_PLAN).await;
     launch.workspace = root.path().into();
     let host = AsterCodeAgent::new(launch);
     let id = host
@@ -23,7 +27,10 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
         let live = &sessions[id.0.as_ref()];
         (live.session.clone(), live.turn_queue.clone())
     };
-    crate::goal::bind_task_goal(&session, "Read this synthetic workspace.").unwrap();
+    crate::goal::bind_task_goal(&session, "Read this synthetic workspace.")
+        .await
+        .unwrap();
+    provider.await.unwrap();
     let thread = aster_core::fact_control::thread_for_session(session.session_id());
     let before = aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     let permit = queue.acquire_owned().await.unwrap();
@@ -87,7 +94,8 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
 async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
     for disabled in [false, true] {
         let root = tempfile::tempdir().unwrap();
-        let mut launch = test_launch(Some(root.path().join("store")));
+        let (mut launch, provider) =
+            planning::launch(root.path().join("store"), planning::SIMPLE_PLAN).await;
         launch.workspace = root.path().into();
         if disabled {
             let mut policy =
@@ -120,6 +128,7 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
         .unwrap()
         .unwrap();
         assert!(reply.tick);
+        provider.await.unwrap();
         let view = session.goal_definition().unwrap().unwrap();
         assert_eq!(view.goal.description, "Explicit user outcome");
         assert!(view.plan_accepted);
@@ -146,7 +155,9 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
     use crate::goal::{apply_bound_goal, GoalLanguage, GoalOp};
 
     let root = tempfile::tempdir().unwrap();
-    let host = AsterCodeAgent::new(test_launch(Some(root.path().join("store"))));
+    let (launch, provider) =
+        planning::launch(root.path().join("store"), planning::SIMPLE_PLAN).await;
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -155,15 +166,18 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
     let session = host.sessions.lock().await[&id.0.to_string()]
         .session
         .clone();
-    let objective = "Complete every requirement in instruction.md";
+    let objective = "完成 instruction.md 中的全部要求";
     let language = GoalLanguage::from_host(Some("zh-CN"));
     let created = apply_bound_goal(&session, &GoalOp::Set(objective.into()), language)
         .await
         .unwrap()
         .unwrap();
+    provider.await.unwrap();
+    let planning_usage = session.recorded_usage_tokens();
+    assert_eq!(planning_usage, (11, 7, 18));
     assert_eq!(
         created.reply,
-        "目标进行中\n计划：已完成 0/1 项\n正在继续执行。"
+        "目标进行中\n已完成 0/1 项。\n下一步：Complete the explicit task"
     );
     assert!(!created.reply.contains(objective));
     assert_eq!(
@@ -177,7 +191,7 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
         .unwrap();
     assert_eq!(
         paused.reply,
-        "目标已暂停\n计划：已完成 0/1 项\n已暂停，可发送 /goal resume 继续。"
+        "目标已暂停\n已完成 0/1 项。\n发送 /goal resume 可继续执行。"
     );
     assert!(!paused.tick);
     let cleared = apply_bound_goal(&session, &GoalOp::Clear, language)
@@ -186,10 +200,14 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
         .unwrap();
     assert_eq!(
         cleared.reply,
-        "目标已取消\n计划：已完成 0/1 项\n可新建会话开始其他任务。"
+        "目标已取消\n已完成 0/1 项。\n可新建会话开始其他任务。"
     );
     assert!(!cleared.reply.contains("目标已完成"));
-    assert_eq!(session.recorded_usage_tokens(), (0, 0, 0));
+    assert_eq!(
+        session.recorded_usage_tokens(),
+        planning_usage,
+        "pause and clear do not make additional model calls"
+    );
     session.close().await;
 }
 
@@ -434,13 +452,14 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
 
 #[tokio::test]
 async fn bound_goal_clear_uses_original_facts_and_keeps_legacy_source_after_acp_reload() {
-    prove_bound_clear(false).await;
+    // Keep the multi-host journey off the test thread's stack.
+    Box::pin(prove_bound_clear(false)).await;
 }
 
 #[tokio::test]
 #[ignore = "requires ASTER_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
 async fn bound_goal_clear_retains_real_model_history_through_acp_reload() {
-    prove_bound_clear(true).await;
+    Box::pin(prove_bound_clear(true)).await;
 }
 
 async fn prove_bound_clear(real_model: bool) {

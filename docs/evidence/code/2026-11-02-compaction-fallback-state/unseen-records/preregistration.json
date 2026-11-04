@@ -1,0 +1,27 @@
+{
+  "status": "FROZEN AFTER GENERIC R14 FIX; before any model attempt on these records",
+  "at": "2026-11-01T23:20:36.776436+00:00",
+  "contextTokens": 24576,
+  "outputTokens": 4096,
+  "requests": 40,
+  "promptSeconds": 600,
+  "workflowSeconds": 1800,
+  "versions": 5,
+  "recordsPerVersion": 37,
+  "selectedPerVersion": 4,
+  "correctness": "exact parsed JSON equality, source order, protected bytes; expected.json never supplied to model",
+  "purpose": "Fresh opaque records/selection positions with unchanged original task/contract/oracle/caps; test held-out data after generic state-boundary fixes. Original regression cases remain unchanged. No task-specific production selection logic.",
+  "sampling": "One first attempt per frozen candidate; no outcome-driven reroll. No tuning to these data after the first model attempt.",
+  "inputs": {
+    "revision-2.jsonl": "e5a80418899a9908e4cdf19b7456bcf2f4752ac3f92bfb9046fa348c3372ab7d",
+    "expected.json": "be30f49559679576ca35bac2972b02c8d1c315486c7a5a7e2144771fe7acb7b7",
+    "revision-4.jsonl": "1d97e0e35f22774252f0efb4f851a150cd4d0c88c08ec5bd3acd7038c1434dc7",
+    "notes.txt": "bf44739e2af741cbf32335040c56dacbc62a4e8fc9862a28989a04207d5c95da",
+    "revision-3.jsonl": "68ec530a8e5ef259e6db909b287898e96349959a2a41dcb921d0e86229c5669b",
+    "revision-1.jsonl": "b9ce8b587ac8c130751ffc339d6bfda42657fa54280f529c127faee5e90629a0",
+    "revision-5.jsonl": "81c3f8adeb1665e587645e78912972853bdd7b7bf5f5e030f8b5b40a9f079de7",
+    "CONTRACT.md": "d1e26ced36a47c5573057afb17e10d2e79f044ad2f29c7c19d9025998331bd6d",
+    "request.txt": "69afa868af3ad0762372750edbaa05193a9049780383cbb503b3d8f3f61d6637"
+  },
+  "seed": "r14-generic-boundary-fix-unseen-records-2026-11-02"
+}

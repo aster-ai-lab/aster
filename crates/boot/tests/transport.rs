@@ -1332,7 +1332,10 @@ fn nats_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.url(), "nats://127.0.0.1:4222");
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_subject(), "aster.boot.test.requests");
+    assert_eq!(
+        client.options().request_subject(),
+        "aster.boot.test.requests"
+    );
     assert_eq!(client.options().event_subject(), "aster.boot.test.events");
     assert_eq!(client.options().queue_group(), Some("workers"));
 }
@@ -1437,7 +1440,10 @@ fn redis_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.url(), "redis://127.0.0.1/");
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_channel(), "aster.boot.test.requests");
+    assert_eq!(
+        client.options().request_channel(),
+        "aster.boot.test.requests"
+    );
     assert_eq!(client.options().event_channel(), "aster.boot.test.events");
     assert_eq!(
         client.options().reply_channel_prefix(),

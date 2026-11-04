@@ -62,7 +62,9 @@ async fn dispatch_local_mcp(
     ctx: aster_tool_runtime::ToolCallContext,
 ) -> Result<ToolOutput, aster_tool_runtime::ToolError> {
     let tool_id = aster_tool_protocol::ToolId::new(tool_name).map_err(|_| {
-        aster_tool_runtime::ToolError::invalid_arguments(format!("invalid tool name: '{tool_name}'"))
+        aster_tool_runtime::ToolError::invalid_arguments(format!(
+            "invalid tool name: '{tool_name}'"
+        ))
     })?;
     let typed = dispatch.0.call_terminal(tool_id, tool_input, ctx).await?;
     serde_json::from_value(typed.value)

@@ -1,6 +1,47 @@
 #![cfg_attr(rustfmt, rustfmt::skip)]
     use super::*;
 
+    #[test]
+    fn ordinary_prompt_start_removes_its_queue_echo_and_completion_does_not_resend() {
+        use crate::app::actions::{Action, Effect, TaskResult};
+        use crate::app::dispatch::dispatch;
+
+        for start_notice in [true, false] {
+        let mut app = make_app_with_agent("sess-1");
+        let id = AgentId(0);
+        app.push_optimistic_prompt_echo("sess-1", "ordinary-1", "original request", "prompt");
+        if start_notice {
+            handle_queue_changed(&queue_changed_running("sess-1", &[], Some("ordinary-1")), &mut app);
+            assert!(test_agent(&app, id).shared_queue.is_empty());
+        } else {
+            app.agents.get_mut(&id).unwrap().begin_local_turn("ordinary-1");
+        }
+        assert!(test_agent(&app, id).session.pending_prompts.is_empty());
+
+        let (tx, _rx) = tokio::sync::oneshot::channel();
+        handle(AcpClientMessage::SessionNotification(aster_acp_lib::AcpArgs {
+            request: acp::SessionNotification::new(acp::SessionId::new("sess-1"),
+                acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(
+                    acp::ContentBlock::Text(acp::TextContent::new("finished answer")))))
+                .meta(serde_json::json!({"promptId":"ordinary-1"}).as_object().cloned()),
+            response_tx: tx,
+        }), &mut app);
+        assert_eq!(test_agent(&app, id).resolve_turn_activity(), Some(crate::acp::tracker::TurnActivity::Responding));
+        let effects = dispatch(Action::TaskComplete(TaskResult::PromptResponse {
+            agent_id: id,
+            result: Ok(acp::PromptResponse::new(acp::StopReason::EndTurn)),
+            http_status: None,
+            prompt_id: Some("ordinary-1".into()),
+        }), &mut app);
+        let agent = test_agent(&app, id);
+        assert!(agent.session.state.is_idle());
+        assert!(agent.resolve_turn_activity().is_none());
+        assert!(agent.shared_queue.is_empty());
+        assert!(agent.session.pending_prompts.is_empty());
+        assert!(!effects.iter().any(|effect| matches!(effect, Effect::SendPrompt { .. } | Effect::SendPromptNow { .. } | Effect::SendPromptBlocks { .. })));
+        }
+    }
+
     /// The pager reconciles the authoritative shared prompt queue from the `aster/queue/changed` broadcast, and an empty broadcast clears it.
     #[test]
     fn queue_changed_reconciles_shared_queue() {

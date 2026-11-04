@@ -1,0 +1,53 @@
+{
+  "buildId": "aster-cli-pair-v1:55ad0e75dfc6f70f2b5f373390711c7926ef3c28:aarch64-apple-darwin",
+  "members": {
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster",
+      "sha256": "02822502219ba6afcc09a5d9946fe6899bbddf9c21a2f0862a74f96eb604bbab",
+      "bytes": 899099480
+    },
+    "aster-acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp",
+      "sha256": "7e78a81a0e7580d8a06897d198d5af21d13dc325c6fe1155be2a0ffe032daeef",
+      "bytes": 355117512
+    },
+    "aster-acp-unit": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/aster-acp-unit",
+      "sha256": "070ea4913a7c6037ea2b24be954c99ee6d6aff9ecb7722b41c932298e24aa328",
+      "bytes": 387664216
+    },
+    "acp_conformance_stdio": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/acp_conformance_stdio",
+      "sha256": "864c487cf54fd26940ecacbf6c37e446ea7a66ea199695cfc39b679801cdc078",
+      "bytes": 6399672
+    },
+    "cursor_account_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/cursor_account_tui_e2e",
+      "sha256": "d372febecac8172fd82b0674e2ea29b6a06d75157e768b0f75935bf0fd981dc8",
+      "bytes": 218419464
+    },
+    "deloop_generalization_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/deloop_generalization_real_llm",
+      "sha256": "4bf4bc69eb20e9349a26128764be65536975b57fa399508aceefc59ebb359058",
+      "bytes": 42967104
+    },
+    "deloop_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/deloop_real_llm",
+      "sha256": "cb75add890c4e3e130214d3f7bc87397d5a272483e8a2e7ad765c995ca45f4fb",
+      "bytes": 43172720
+    },
+    "long_horizon_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/long_horizon_real_llm",
+      "sha256": "da857ef65a8c555e6311fe8b83ec6ef0a8d9492641d8d3f93e1bc4503e890b2e",
+      "bytes": 67073816
+    },
+    "shipped_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-fixed-prefix-budget-20261104-current-config-1-bd5296f1-2945-4488-bc2c-4ded2280cc47/shipped_tui_e2e",
+      "sha256": "5f5e69ceb69a064073f3896bd09089c2aad18bf04101599db28af0d6c0651162",
+      "bytes": 18815648
+    }
+  },
+  "configSha256": "a9d012ceb29efa37dd92f7d4e435521929ed2430da5b192640dfd2769574b01c",
+  "sourceNamespace": "fixed-prefix-budget-20261104-current-config-1-after-build-namespace.json",
+  "scope": "Exact CLI source namespace and frozen binaries, no source drift during build; host/model/cache variation still remains."
+}

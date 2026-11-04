@@ -1,0 +1,100 @@
+{
+  "at": "2026-11-04T03:11:09.215755+00:00",
+  "model": "glm-01/glm-5.3",
+  "configSha256": "a9d012ceb29efa37dd92f7d4e435521929ed2430da5b192640dfd2769574b01c",
+  "scope": "Allocate the existing summary fraction after fixed prompt and mandatory tail reservation; original trigger, context, output ceilings, tasks and grading unchanged.",
+  "originalCases": [
+    "holdout",
+    "feed"
+  ],
+  "firstAttemptsOnly": true,
+  "criticalLimits": "Original independent24576/feed16384 context,8192 output,40 requests,600s prompt/1800s outer; independent 8k cohort, never original4k acceptance.",
+  "supplementaryWhenBothPass": [
+    [
+      "unseen-records",
+      "/Users/roylin/code/aster/docs/evidence/code/2026-11-02-compaction-fallback-state/unseen-records"
+    ],
+    [
+      "native",
+      2401
+    ],
+    [
+      "rust",
+      2401
+    ],
+    [
+      "rust",
+      2402
+    ],
+    [
+      "rust",
+      2403
+    ],
+    [
+      "rust",
+      2404
+    ],
+    [
+      "rust",
+      2405
+    ]
+  ],
+  "policy": "Run actual-function red/green and connected Core default/minimal/CLI JSON tests, owning clippy and ACP controls first. Freeze paired CLI/ACP and original critical/supplementary runners in one unchanged source interval. Run the original holdout then original feed once each, with unchanged original task prompts, inputs, GLM model/options/caps/graders. Both must pass before the same seven supplementary cases; otherwise all seven remain NOT RUN. Keep unknown billing unknown. Fixed-input historical N=1 comparisons are descriptive, not isolated causal AB.",
+  "compilerAssets": "/Users/roylin/code/aster/target/qualification/tui-current-compiler-runtime-c78de45d",
+  "source": {
+    "crates/code/core/prompts/common/system_default_response_format.md": "611b94764ef75f08f995fa439deb8a1114f13d44564ce5f64c110c86216d7be5",
+    "crates/code/core/src/fact_control/batch_history_tests.rs": "e77b6dd593a9ae090abe73514cf6f5b6e4da731711b67ef8aba5663b7da101ec",
+    "crates/code/core/src/fact_control/compaction.rs": "f7d1cda3ba8d95b95f73310cb45248094320664d9f135d15b43219df13a8462d",
+    "crates/code/acp/tests/cursor_account_tui_e2e.rs": "50d69d5cec0ec45515f45e689d1347ae3f8d0700c876bf4015bd5586a5d4f43a",
+    "crates/code/core/src/fact_control/compaction_budget_tests.rs": "0bf16f9532726518736d373de83334601980909427d168f29b6545d99c964b28",
+    "crates/code/core/src/compaction/source.rs": "92ac8c74ffa399319950291505d077e9134aebee05008ef59986ddbeefb3bacf",
+    "crates/code/core/src/fact_control/history_seed.rs": "58962fc5e5b58d573902274350f27e59ffcfb5fae7813504901ca713e4ff3336",
+    "crates/effect/src/coding.rs": "2e738063657a34e649b2aa2d0005112551ae5aebee70686a764ebf26ac55b82e",
+    "crates/code/acp/src/goal.rs": "ae622cc0a3b7f923463b5a39edd0ee68f3bb56b6888f702fccf7f01ed15cc25d",
+    "crates/code/core/src/agent_api/goal_facade.rs": "3e9b37083316fe9f6ffc5b2f0ce8ff0e6901e8a378ed5fd859df43e6485611c8",
+    "Cargo.lock": "6f48e2c46bee2bfe3856eaaa465053a453ecd54fa2216cb45d30785fb2e4c0d3",
+    "crates/code/core/src/agent_api/tests/fact_log/convergence.rs": "6a978c0722c9995ab8ca16b67eab6e85e91e3b36e72be1538c203d883b79b2e7",
+    "crates/code/core/src/fact_control.rs": "78b9448b934244906d0e1959c19c72535b5a2faf72bc2ebb2342f64e4caa4593",
+    "crates/effect/src/coding/conversation_history_tests.rs": "fb9579b0585651903fa6a41a22b0f18a90286d3bdfc601db9543b8228bc1088d",
+    "crates/code/acp/src/agent/goal_ext.rs": "4876a8cff0c92b55593fc84e5fcb5800333db4d0927fa7cc60eb1a530cd04df2",
+    "apps/aster/Cargo.toml": "41897962c469e4951d39bf2effa78c915f9c467bde1ba94f76d0e9a968cb7177",
+    "crates/code/core/prompts/common/runtime_contract.md": "572a13287bf8b60b10c0cfa131331c39026a62c75499f28b19aa723c3908b84c"
+  },
+  "integrationSourceSha256": null,
+  "freshInputRegistrationSha256": "07d7fe723f2f7f5493808dd4b1ba72ca1f1a485aae755280ba494a485baee3eb",
+  "initialSource": {
+    "crates/code/core/src/compaction.rs": "f7085a720d89144108dfefbb1730976a1e149c79fd4f43a5b6dbc6b57639b3f3",
+    "crates/code/core/src/compaction/tests.rs": "7d32745f2522b77bb646ca17d01376fec3d1f4d2439460494944272210d89c80"
+  },
+  "boundaryFollowup": null,
+  "priorEvidence": "docs/evidence/code/2026-11-02-compaction-fallback-state/candidate-4-inputs.json",
+  "publicOnlyInputEvidence": "docs/evidence/code/2026-11-02-summary-input-retention/investigation.json",
+  "toolSchemaAndSourceConfounds": "Current pair includes earlier TUI/Core changes. Critical task/grade source remains byte-identical; shared relay adds only a passive getter, unused by these cases, and TUI main changed separately. Neither file is modified by R15.",
+  "configurationReRegistration": {
+    "at": "2026-11-03T03:07:23.043771+00:00",
+    "authorization": "User explicitly selected \u6309\u5f53\u524d\u914d\u7f6e\u65b0\u5f00\u4e00\u8f6e after config drift audit; no original live task started for root3.",
+    "parentRegistration": "qualification-preregistration.json",
+    "parentRegistrationSha256": "b0e2b764b7391dac9b9355fb0bd86003868f1710a1f72b53e21f2cb2e2019019",
+    "parentConfigSha256": "476b5d3aac696be64cdd6860842ccd9257618a5f4a6430826d4c1ef34b7e3445",
+    "sourceBuildId": "aster-cli-pair-v1:5caafa7ad71c86cdabacae50644c141b226602e4:aarch64-apple-darwin",
+    "claimLimit": "New configuration cohort; preserve old results, no cross-configuration performance or causal comparison. Same original model, task, inputs, grades, context/output/request/deadline limits."
+  },
+  "sourceVariantRegistration": {
+    "label": "fixed-prefix-budget-20261104-current-config-1",
+    "sourceHash": "55ad0e75dfc6f70f2b5f373390711c7926ef3c28",
+    "expectedBuildId": "aster-cli-pair-v1:55ad0e75dfc6f70f2b5f373390711c7926ef3c28:aarch64-apple-darwin",
+    "parentRegistration": "docs/evidence/code/2026-11-02-summary-input-retention/public-prose-20261104-current-config-1-qualification-preregistration.json",
+    "parentRegistrationSha256": "0cf2f46c5cda920d4ced4491ffd72bda00dbc6729a927f34cd2fc5c4a89da506",
+    "changedPaths": [
+      "crates/code/core/src/compaction.rs",
+      "crates/code/core/src/compaction/tests.rs",
+      "crates/code/core/src/fact_control/compaction_budget_tests.rs"
+    ],
+    "firstAttemptOnly": true,
+    "sevenSupplementaryGatedOnTwoCriticalPasses": true,
+    "authorization": "docs/evidence/code/2026-11-04-release-8k-qualification/AUTHORIZATION.json",
+    "purpose": "Qualify the shared fixed-context allocation repair with a retained pre-fix0/1 regression and final-source connected checks; preserve both prior8k failed cohorts and all original4k failures. No unchanged reroll or causal performance claim."
+  },
+  "paidModelAttempts": true,
+  "outputTokenLimit": 8192
+}

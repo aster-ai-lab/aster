@@ -191,10 +191,7 @@ impl SessionRegistryClient {
         &self,
         builder: RequestBuilder,
         op: &'static str,
-    ) -> Result<(
-        reqwest::Response,
-        Option<aster_auth::StampedBearerSuffix>,
-    )> {
+    ) -> Result<(reqwest::Response, Option<aster_auth::StampedBearerSuffix>)> {
         let builder = aster_otel::inject_trace_context_into_request(builder);
         let request = builder.build().context(op)?;
         aster_auth::execute_with_stamp(&self.client, request)

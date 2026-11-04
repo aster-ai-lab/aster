@@ -11,11 +11,11 @@
 
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender;
 use aster_mcp::acp_transport::AcpReverseInvoker;
 use aster_mcp::servers::AcpServerEntry;
 use aster_mcp::wire;
-use agent_client_protocol as acp;
 
 /// Each entry deserializes directly into the canonical type, so serde checks the `serverId` wire field rather than hand-reading it.
 /// Entries missing `name`/`serverId` are skipped with a warning.

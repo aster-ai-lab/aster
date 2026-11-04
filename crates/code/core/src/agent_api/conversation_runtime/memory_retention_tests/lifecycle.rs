@@ -27,7 +27,7 @@ async fn blocking_send_awaits_original_extraction_and_accounts_usage_in_both_sto
             },
         )
         .await;
-        let call = start(&fixture.session, Route::Blocking);
+        let call = start(&fixture, Route::Blocking);
         fixture.client.extraction.wait().await;
         assert_pending_ticket(&fixture.session).await;
         assert!(
@@ -82,7 +82,7 @@ async fn actual_session_extraction_budget_deny_has_no_provider_retry_in_both_sto
                 },
             )
             .await;
-            let result = join(start(&fixture.session, route)).await;
+            let result = join(start(&fixture, route)).await;
             result.assert_success();
             fixture.drain().await;
             fixture.assert_calls(1, 0, 0);
@@ -130,7 +130,7 @@ async fn actual_session_original_cancel_before_store_refuses_in_both_stores() {
             )
             .await;
             let original = fixture.original_cancel();
-            let call = start(&fixture.session, route);
+            let call = start(&fixture, route);
             fixture.boundary.pre_store.wait().await;
             assert!(fixture.client.extraction_returned.load(Ordering::SeqCst));
             assert_pending_ticket(&fixture.session).await;
@@ -182,7 +182,7 @@ async fn actual_session_entered_store_results_remain_truthful_in_both_stores() {
                 )
                 .await;
                 let original = fixture.original_cancel();
-                let call = start(&fixture.session, route);
+                let call = start(&fixture, route);
                 fixture.boundary.entered_store.wait().await;
                 assert_pending_ticket(&fixture.session).await;
                 fixture.assert_calls(1, 1, 1);
@@ -267,7 +267,7 @@ async fn actual_session_close_timeout_uses_original_five_second_drain_in_both_st
             )
             .await;
             let original = fixture.original_cancel();
-            let mut call = Some(start(&fixture.session, route));
+            let mut call = Some(start(&fixture, route));
             fixture.client.extraction.wait().await;
             assert_pending_ticket(&fixture.session).await;
             fixture.assert_calls(1, 1, 0);
@@ -416,7 +416,7 @@ async fn actual_session_failed_empty_disabled_turns_admit_no_extraction_in_both_
                     },
                 )
                 .await;
-                let result = join(start(&fixture.session, route)).await;
+                let result = join(start(&fixture, route)).await;
                 fixture.drain().await;
                 fixture.assert_calls(1, 0, 0);
                 fixture.guard.assert_checks(1, 0);
@@ -579,5 +579,122 @@ async fn supplemental_original_facade_parts_match_and_aux_keep_guard_usage_in_bo
             assert_eq!(fixture.guard.records().len(), 1);
             fixture.session.close().await;
         }
+    }
+}
+
+#[tokio::test]
+async fn reported_main_and_late_extraction_usage_is_auto_saved_without_changing_run_usage() {
+    for kind in STORES {
+        for route in ROUTES {
+            let fixture = Fixture::new(
+                kind,
+                MainReply::Success,
+                false,
+                false,
+                false,
+                StoreOutcome::Ack,
+                FixturePolicy {
+                    disabled: false,
+                    deny: false,
+                },
+            )
+            .await;
+            join(start(&fixture, route)).await.assert_success();
+            fixture.drain().await;
+            assert_eq!(fixture.session.recorded_usage_tokens(), (28, 20, 48));
+            assert_eq!(
+                fixture.guard.records(),
+                vec![
+                    (SESSION_ID.to_owned(), record_tuple(&main_usage())),
+                    (SESSION_ID.to_owned(), record_tuple(&extraction_usage())),
+                ]
+            );
+            let reopened_store: Arc<dyn crate::store::SessionStore> = match kind {
+                StoreKind::Memory => fixture.session.session_store.as_ref().unwrap().clone(),
+                StoreKind::File => Arc::new(
+                    crate::store::FileSessionStore::new(fixture.workspace.path().join("sessions"))
+                        .await
+                        .unwrap(),
+                ),
+            };
+            let saved = reopened_store
+                .load_snapshot(SESSION_ID)
+                .await
+                .unwrap()
+                .unwrap();
+            assert_eq!(
+                record_tuple(&saved.session.total_usage),
+                (28, 20, 48, None, None)
+            );
+            let ends: Vec<_> = saved.run_records[0]
+                .events
+                .iter()
+                .filter_map(|record| {
+                    if let AgentEvent::End { usage, .. } = &record.event {
+                        Some(usage)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            assert_eq!(ends.len(), 1);
+            assert_eq!(record_tuple(ends[0]), record_tuple(&main_usage()));
+            fixture.session.close().await;
+            let next_agent = crate::Agent::from_config(crate::agent_api::tests::test_config())
+                .await
+                .unwrap();
+            let resumed = next_agent
+                .resume_session_async(
+                    SESSION_ID,
+                    crate::SessionOptions::new()
+                        .with_session_store(reopened_store)
+                        .with_llm_client(fixture.client.clone())
+                        .with_memory(fixture.boundary.clone())
+                        .with_budget_guard(fixture.guard.clone()),
+                )
+                .await
+                .unwrap();
+            assert_eq!(resumed.recorded_usage_tokens(), (28, 20, 48));
+            assert_eq!(resumed.subscribe_usage().borrow().total_tokens, 48);
+            fixture.assert_calls(1, 1, 1);
+            resumed.close().await;
+            next_agent.close().await;
+        }
+    }
+}
+
+#[tokio::test]
+async fn usage_subscription_observes_late_memory_after_stream_end_without_retaining_events() {
+    for kind in STORES {
+        let fixture = Fixture::new(
+            kind,
+            MainReply::Success,
+            true,
+            false,
+            false,
+            StoreOutcome::Ack,
+            FixturePolicy {
+                disabled: false,
+                deny: false,
+            },
+        )
+        .await;
+        let mut updates = fixture.session.subscribe_usage();
+        assert_eq!(usage_tuple(&updates.borrow_and_update()), (0, 0, 0));
+        join(start(&fixture, Route::Stream)).await.assert_success();
+        fixture.client.extraction.wait().await;
+        tokio::time::timeout(Duration::from_secs(1), updates.changed())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(usage_tuple(&updates.borrow_and_update()), (17, 13, 30));
+        fixture.client.extraction.release.add_permits(1);
+        tokio::time::timeout(Duration::from_secs(1), updates.changed())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(usage_tuple(&updates.borrow_and_update()), (28, 20, 48));
+        fixture.drain().await;
+        fixture.session.close().await;
     }
 }

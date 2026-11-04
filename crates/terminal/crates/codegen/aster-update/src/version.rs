@@ -289,9 +289,8 @@ pub async fn fetch_gcs_version_from_base(channel: &str, base_url: &str) -> Resul
 
 async fn fetch_gcs_channel_pointer(channel: &str, base_url: &str) -> Result<String> {
     let url = format!("{}/{}", base_url, channel);
-    let client = aster_extra_ca::build_reqwest_client(|builder| {
-        builder.timeout(Duration::from_secs(15))
-    })?;
+    let client =
+        aster_extra_ca::build_reqwest_client(|builder| builder.timeout(Duration::from_secs(15)))?;
 
     let max_retries: u32 = 3;
     let mut last_err = None;
@@ -546,7 +545,9 @@ mod tests {
         // Prefix-check bypass vectors.
         assert!(!is_loopback_base("http://127.0.0.1:9@evil.com"));
         assert!(!is_loopback_base("http://localhost.evil.com:80"));
-        assert!(!is_loopback_base("https://github.com/aster-ai-lab/aster/cli"));
+        assert!(!is_loopback_base(
+            "https://github.com/aster-ai-lab/aster/cli"
+        ));
         assert!(!is_loopback_base("http://192.168.1.1:80"));
         assert!(!is_loopback_base(""));
     }

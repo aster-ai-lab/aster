@@ -1,7 +1,7 @@
+use agent_client_protocol as acp;
 use aster_tools::implementations::grok_build::{
     IMAGE_GEN_TOOL_NAME, IMAGINE_COMMAND_NAME, imagine_instruction, imagine_usage_message,
 };
-use agent_client_protocol as acp;
 
 use crate::slash::command::{CommandExecCtx, CommandResult, SlashCommand, slash_meta};
 

@@ -107,7 +107,7 @@ impl Tool for SearchMemoryTool {
         let value = self
             .bridge
             .search_workspace_memories(
-                ctx.workspace_operation(aster_core::capability::WorkspaceOperation::Read)?,
+                ctx,
                 &self.session,
                 query,
                 scope.as_str(),

@@ -825,6 +825,9 @@ fn apply_event_to_snapshot(run: &mut RunSnapshot, event: &AgentEvent) {
         AgentEvent::PlanningStart { .. } => {
             run.status = RunStatus::Planning;
         }
+        AgentEvent::PlanningEnd { .. } => {
+            run.status = RunStatus::Executing;
+        }
         AgentEvent::StepStart { .. }
         | AgentEvent::ToolStart { .. }
         | AgentEvent::ToolExecutionStart { .. }

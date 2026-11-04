@@ -244,7 +244,8 @@ mod tests {
 
         // interject without id yields None (can't target an entry)
         assert!(
-            parse_queue_edit_command("aster/queue/interject", &serde_json::json!({}), None).is_none()
+            parse_queue_edit_command("aster/queue/interject", &serde_json::json!({}), None)
+                .is_none()
         );
 
         // hold_edit / release_edit: id only (combine-hold while the client edits).
@@ -260,7 +261,8 @@ mod tests {
 
         // hold_edit / release_edit without id yields None (can't target an entry)
         assert!(
-            parse_queue_edit_command("aster/queue/hold_edit", &serde_json::json!({}), None).is_none()
+            parse_queue_edit_command("aster/queue/hold_edit", &serde_json::json!({}), None)
+                .is_none()
         );
         assert!(
             parse_queue_edit_command("aster/queue/release_edit", &serde_json::json!({}), None)

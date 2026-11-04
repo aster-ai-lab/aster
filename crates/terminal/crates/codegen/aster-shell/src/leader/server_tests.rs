@@ -1593,8 +1593,7 @@ fn extract_auto_mode_change_explicit_flag_wins() {
 /// Branch 2: with no explicit flag, derive from `permission_mode`.
 #[test]
 fn extract_auto_mode_change_derives_from_permission_mode() {
-    let payload =
-        r#"{"jsonrpc":"2.0","method":"aster/yolo_mode_changed","params":{"permission_mode":"auto"}}"#;
+    let payload = r#"{"jsonrpc":"2.0","method":"aster/yolo_mode_changed","params":{"permission_mode":"auto"}}"#;
     assert_eq!(extract_auto_mode_change(&pv(payload)), Some(true));
 
     for mode in ["ask", "yolo", "default"] {

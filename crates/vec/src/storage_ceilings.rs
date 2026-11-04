@@ -111,7 +111,7 @@ impl StorageCeilings {
         Ok(self)
     }
 
-    /// Caps committed WAL bytes replayed during open/recovery.
+    /// Caps committed WAL bytes during append and open/recovery.
     pub fn try_with_max_wal_replay_bytes(mut self, limit: u64) -> Result<Self> {
         self.wal_replay_bytes = positive_limit(limit, "max_wal_replay_bytes")?;
         Ok(self)

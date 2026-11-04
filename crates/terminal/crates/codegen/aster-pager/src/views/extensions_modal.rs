@@ -129,7 +129,9 @@ fn hook_group_sort_key<'a>(source_dir: &'a str, meta: &HookSourceMeta) -> HookGr
     }
 }
 
-fn is_official_marketplace_source(source: &aster_hooks_plugins_types::MarketplaceScanResult) -> bool {
+fn is_official_marketplace_source(
+    source: &aster_hooks_plugins_types::MarketplaceScanResult,
+) -> bool {
     source.source_name == aster_plugin_marketplace::OFFICIAL_SOURCE_NAME
         || aster_plugin_marketplace::is_official_source_url(&source.source_url_or_path)
 }
@@ -4663,7 +4665,9 @@ mod tests {
             &std::collections::HashSet::new(),
         );
         assert!(
-            rows.labels.iter().any(|l| l.starts_with("Managed by Aster")),
+            rows.labels
+                .iter()
+                .any(|l| l.starts_with("Managed by Aster")),
             "managed section header must appear"
         );
         assert!(
@@ -5386,7 +5390,10 @@ mod tests {
         assert!(StatusFilter::Disabled.matches(false));
     }
 
-    fn make_plugin_with_enabled(name: &str, enabled: bool) -> aster_hooks_plugins_types::PluginInfo {
+    fn make_plugin_with_enabled(
+        name: &str,
+        enabled: bool,
+    ) -> aster_hooks_plugins_types::PluginInfo {
         let mut p = make_plugin(name);
         p.enabled = enabled;
         p
@@ -7866,20 +7873,16 @@ mod tests {
     fn skills_groups_then_az_by_label() {
         let mut project_z = make_skill("zzz-proj", "project skill");
         project_z.scope = aster_tools::implementations::skills::types::SkillScope::Local;
-        project_z.config_source = Some(
-            aster_tools::types::config_source::ConfigSource::Project {
-                path: std::path::PathBuf::from("/repo/.grok/skills/zzz"),
-            },
-        );
+        project_z.config_source = Some(aster_tools::types::config_source::ConfigSource::Project {
+            path: std::path::PathBuf::from("/repo/.grok/skills/zzz"),
+        });
         project_z.display_name = Some("zeta-proj".into());
 
         let mut project_a = make_skill("aaa-proj", "other project");
         project_a.scope = aster_tools::implementations::skills::types::SkillScope::Repo;
-        project_a.config_source = Some(
-            aster_tools::types::config_source::ConfigSource::Project {
-                path: std::path::PathBuf::from("/repo/.grok/skills/aaa"),
-            },
-        );
+        project_a.config_source = Some(aster_tools::types::config_source::ConfigSource::Project {
+            path: std::path::PathBuf::from("/repo/.grok/skills/aaa"),
+        });
         project_a.display_name = Some("alpha-proj".into());
 
         let mut user_a = make_skill("user-alpha", "user a");

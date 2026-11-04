@@ -1,0 +1,76 @@
+{
+  "expected": "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+  "observed": [
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+    "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin"
+  ],
+  "testerEmbeddedIds": {
+    "deloop_real_llm": [
+      "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin"
+    ],
+    "deloop_generalization_real_llm": [
+      "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin"
+    ],
+    "long_horizon_real_llm": [
+      "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin"
+    ],
+    "acp_conformance_stdio": [
+      "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin"
+    ],
+    "shipped_tui_e2e": [],
+    "cursor_account_tui_e2e": [],
+    "aster-acp-unit": []
+  },
+  "ptyIdentity": "PTY/Cursor/unit runners use the same unchanged source interval and frozen executable digests; any embedded ID must match",
+  "members": {
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/aster",
+      "sha256": "76a1f52473f740468a53b067d0a4552ad3e72782fd0b7276d7600bacd2df474e",
+      "bytes": 899099496
+    },
+    "aster-acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/aster-acp",
+      "sha256": "f169e9ad9404de6ef78bffcb4af7f79477c2b60979f5c84a7aedc8cc6d329a2a",
+      "bytes": 355117560
+    },
+    "aster-acp-unit": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/aster-acp-unit",
+      "sha256": "63dd1294e6cc26baba012b5041598d1fc75348f81563ba4c7f8f60c6bdcfe3ec",
+      "bytes": 387680776
+    },
+    "acp_conformance_stdio": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/acp_conformance_stdio",
+      "sha256": "28f26e46291895a47600c101b2b81c1855512cadfee8141ee27aaf5765159e9e",
+      "bytes": 6399288
+    },
+    "cursor_account_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/cursor_account_tui_e2e",
+      "sha256": "3cf810738c5f9c51654d62ad4a893d8c000b850351eb5b94a03a19c5beb68ac8",
+      "bytes": 218419480
+    },
+    "deloop_generalization_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/deloop_generalization_real_llm",
+      "sha256": "1cbe440b17031c8f60b2d7f628041b5d3551203ac502f32df02b542237824d68",
+      "bytes": 42967120
+    },
+    "deloop_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/deloop_real_llm",
+      "sha256": "53409b485abbbae232fffce9bb7024ad6a42554899dff81daae2e5d475197daf",
+      "bytes": 43172736
+    },
+    "long_horizon_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/long_horizon_real_llm",
+      "sha256": "d6a722bbcad139930c53799d1a7d88af6e6f48974f4c3a0bd6652e8258835bd6",
+      "bytes": 67073832
+    },
+    "shipped_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/shipped_tui_e2e",
+      "sha256": "ac1e14dc95650d8aa16682847254c94594cc8b4c6ac8c75ca784b0ce26380626",
+      "bytes": 18815616
+    }
+  }
+}

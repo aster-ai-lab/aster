@@ -23,8 +23,9 @@ impl MigrationLedger for SqliteExecutor {
     async fn applied_migrations(&self) -> Result<Vec<AppliedMigration>, Self::Error> {
         self.connection
             .call(|connection| {
-                let mut statement = connection
-                    .prepare("select version, checksum from aster_orm_migrations order by version")?;
+                let mut statement = connection.prepare(
+                    "select version, checksum from aster_orm_migrations order by version",
+                )?;
                 let applied = statement
                     .query_map([], |row| {
                         Ok(AppliedMigration {
@@ -95,8 +96,8 @@ fn migrate(
     migrations: &[PreparedMigration],
 ) -> rusqlite::Result<Result<MigrationReport, MigrationFailure>> {
     connection.execute_batch(CREATE_TABLE)?;
-    let mut statement =
-        connection.prepare("select version, checksum from aster_orm_migrations order by version")?;
+    let mut statement = connection
+        .prepare("select version, checksum from aster_orm_migrations order by version")?;
     let applied = statement
         .query_map([], |row| {
             Ok(AppliedMigration {

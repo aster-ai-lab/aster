@@ -258,7 +258,8 @@ fn remove_candidates_blocking(
             Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
             Err(error) => return Err(filesystem_io("inspect restore candidate root", root, error)),
             Ok(metadata) => {
-                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                    || !metadata.is_dir()
                 {
                     return Err(filesystem_invalid(
                         "A restore candidate root is not an owned directory.",
@@ -413,7 +414,8 @@ fn validate_directory_chain(root: &Path, directory: &Path) -> UseResult<()> {
     }
     let root_metadata = std::fs::symlink_metadata(root)
         .map_err(|error| filesystem_io("inspect restore candidate root", root, error))?;
-    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir()
+    {
         return Err(filesystem_invalid(
             "A restore candidate root is not an owned directory.",
         ));

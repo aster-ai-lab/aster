@@ -7,6 +7,7 @@ use aster_telemetry::events::{
     ReadLimitKind, ReadProfile, ReadSelection, ReadSkillMatch, ReadSkillSource, ToolOutputLimit,
     ToolSourceReason, ToolSourceStatus,
 };
+use aster_tool_runtime::Tool;
 use aster_tools::implementations::grok_build::ReadFileTool;
 use aster_tools::implementations::skills::types::SkillScope;
 use aster_tools::types::source_summary::{
@@ -14,7 +15,6 @@ use aster_tools::types::source_summary::{
 };
 use aster_tools::types::tool::ToolNamespace;
 use aster_tools::types::tool_call_origin::ToolCallOrigin;
-use aster_tool_runtime::Tool;
 
 use super::tool_call::SourceProjection;
 
@@ -63,9 +63,7 @@ pub(crate) fn invocation_source(origin: Option<&ToolCallOrigin>) -> Option<Invoc
         aster_tools::types::tool_call_origin::InvocationSource::UserDirect => {
             InvocationSource::UserDirect
         }
-        aster_tools::types::tool_call_origin::InvocationSource::System => {
-            InvocationSource::System
-        }
+        aster_tools::types::tool_call_origin::InvocationSource::System => InvocationSource::System,
     })
 }
 
@@ -200,9 +198,7 @@ fn map_reason(reason: ReadReason) -> ToolSourceReason {
     }
 }
 
-fn map_output_limit(
-    limit: aster_tools::types::source_summary::ToolOutputLimit,
-) -> ToolOutputLimit {
+fn map_output_limit(limit: aster_tools::types::source_summary::ToolOutputLimit) -> ToolOutputLimit {
     match limit {
         aster_tools::types::source_summary::ToolOutputLimit::Unobserved => {
             ToolOutputLimit::Unobserved

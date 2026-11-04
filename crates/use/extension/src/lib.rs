@@ -140,8 +140,9 @@ pub use studio_contract::{
 pub use surface_files::{
     inspect_agent_surface_file, inspect_flow_surface_file, inspect_mcp_surface_files,
     inspect_plugin_surface_file, inspect_skill_surface_file, inspect_tool_surface_files,
-    inspect_ui_surface_files, list_ui_package_assets, load_okf_bundle_files, ui_asset_media,
-    PluginSurfaceFileEvidence, UiPackageAsset,
+    inspect_ui_package_inventory, inspect_ui_surface_files, list_ui_package_assets,
+    load_okf_bundle_files, ui_asset_media, PluginSurfaceFileEvidence, UiPackageAsset,
+    UiPackageInventory,
 };
 pub use workbench_commands::{
     PluginKeybinding, PluginPackageCommand, PluginUiCommand, PluginUiMenu, PluginUiMenuLocation,

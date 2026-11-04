@@ -368,7 +368,7 @@ fn rust_verification_is_exact_and_scoped_to_the_declared_workspace() {
 #[tokio::test]
 async fn upstream_route_uses_the_existing_adapter_without_sending_a_request() {
     use aster_core::llm::LlmConfig;
-    let route = upstream::openai_route(
+    let route = upstream::provider_route(
         LlmConfig::new("deepseek", "fixture-model", "host-memory-sentinel")
             .with_base_url("http://127.0.0.1:1/api/paas/v4")
             .with_headers(
@@ -398,12 +398,108 @@ async fn upstream_route_uses_the_existing_adapter_without_sending_a_request() {
 async fn an_unsupported_provider_is_not_silently_reinterpreted_by_the_relay() {
     use aster_core::llm::LlmConfig;
     assert!(
-        upstream::openai_route(LlmConfig::new("anthropic", "fixture-model", "fixture"))
+        upstream::provider_route(LlmConfig::new("codex", "fixture-model", "fixture"))
             .await
             .is_err()
     );
     let mut config =
         LlmConfig::new("deepseek", "fixture-model", "fixture").with_base_url("http://127.0.0.1:1");
     config.session_id_header = Some("X-Session".into());
-    assert!(upstream::openai_route(config).await.is_err());
+    assert!(upstream::provider_route(config).await.is_err());
+}
+
+#[tokio::test]
+async fn relay_admission_uses_the_declared_protocol_instead_of_the_provider_name() {
+    use aster_core::config::ProviderProtocol;
+    use aster_core::llm::LlmConfig;
+    for provider in ["kimi", "custom-work-account"] {
+        let config = LlmConfig::new(provider, "fixture-model", "synthetic-secret")
+            .with_base_url("http://127.0.0.1:1/v1");
+        let route = upstream::provider_route(config).await.unwrap();
+        assert_eq!(route.endpoint, "http://127.0.0.1:1/v1/chat/completions");
+    }
+    let mut config = LlmConfig::new("openai", "fixture-model", "synthetic-secret")
+        .with_base_url("http://127.0.0.1:1/v1");
+    config.protocol = ProviderProtocol::OpenaiResponses;
+    assert!(upstream::provider_route(config).await.is_err());
+}
+
+#[tokio::test]
+async fn native_messages_route_uses_the_core_adapter_without_network_or_account_imports() {
+    use aster_core::config::ProviderProtocol;
+    use aster_core::llm::LlmConfig;
+    let mut config = LlmConfig::new("glm-01", "glm-5.3", "synthetic-secret")
+        .with_base_url("http://127.0.0.1:1/api/anthropic");
+    config.protocol = ProviderProtocol::Anthropic;
+    let route = upstream::provider_route(config).await.unwrap();
+    assert_eq!(route.protocol, upstream::Protocol::Anthropic);
+    assert_eq!(
+        route.endpoint,
+        "http://127.0.0.1:1/api/anthropic/v1/messages"
+    );
+    assert!(
+        route
+            .headers
+            .iter()
+            .any(|(name, value)| name.eq_ignore_ascii_case("x-api-key")
+                && value == "synthetic-secret")
+    );
+}
+
+#[test]
+fn isolated_relay_acl_preserves_an_explicit_protocol_on_a_custom_account_name() {
+    use aster_core::config::{CodeConfig, ProviderProtocol};
+    let source = CodeConfig::from_acl(
+        r#"providers "anthropic" { protocol = "openai" models "fixture-model" {} }"#,
+    )
+    .unwrap();
+    let state = tempfile::tempdir().unwrap();
+    let acl = config::isolated_acl(
+        &source.providers[0],
+        &source.providers[0].models[0],
+        "http://127.0.0.1:1/v1/chat/completions",
+        state.path(),
+        0,
+    )
+    .unwrap();
+    let isolated = CodeConfig::from_acl(&acl).unwrap();
+    assert_eq!(isolated.providers[0].name, "anthropic");
+    assert_eq!(
+        isolated.providers[0].protocol,
+        Some(ProviderProtocol::Openai)
+    );
+    assert!(isolated.import_accounts.is_empty());
+}
+
+#[test]
+fn isolated_native_messages_acl_uses_the_exact_loopback_base() {
+    use aster_core::config::{CodeConfig, ProviderProtocol};
+    let source = CodeConfig::from_acl(
+        r#"
+providers "glm-01" {
+  protocol = "anthropic"
+  models "glm-5.3" {}
+}
+"#,
+    )
+    .unwrap();
+    let state = tempfile::tempdir().unwrap();
+    let acl = config::isolated_acl(
+        &source.providers[0],
+        &source.providers[0].models[0],
+        "http://127.0.0.1:12345/v1/messages",
+        state.path(),
+        0,
+    )
+    .unwrap();
+    let isolated = CodeConfig::from_acl(&acl).unwrap();
+    assert_eq!(
+        isolated.providers[0].protocol,
+        Some(ProviderProtocol::Anthropic)
+    );
+    assert_eq!(
+        isolated.providers[0].base_url.as_deref(),
+        Some("http://127.0.0.1:12345")
+    );
+    assert!(isolated.import_accounts.is_empty());
 }

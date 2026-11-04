@@ -16,11 +16,14 @@ use crate::{NativeOfficePackage, OpcPackageModel, RelationshipSource, Relationsh
 mod auto_filter;
 mod conditional_formatting;
 mod data_validation;
+mod display;
 mod named_range;
 mod sort_state;
 mod style;
 mod table;
 mod view;
+
+pub(super) use display::format_number_display;
 
 use style::{read_differential_formats, read_styles};
 

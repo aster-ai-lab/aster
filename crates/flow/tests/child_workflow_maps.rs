@@ -181,7 +181,10 @@ async fn map_command_is_idempotent_and_rejects_plan_drift() {
             Ok(context.complete(json!({ "ordinal": context.input()["ordinal"] })))
         }
 
-        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
+        async fn run_step(
+            &self,
+            _invocation: aster_flow::StepInvocation,
+        ) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -245,7 +248,10 @@ async fn map_rejects_plan_drift_on_redrive() {
             Ok(context.map_child_workflows(MAP_ID, plan, 1))
         }
 
-        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
+        async fn run_step(
+            &self,
+            _invocation: aster_flow::StepInvocation,
+        ) -> aster_flow::Result<Value> {
             unreachable!()
         }
 
@@ -311,7 +317,10 @@ async fn map_rejects_oversized_plans_and_invalid_concurrency() {
             }
         }
 
-        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
+        async fn run_step(
+            &self,
+            _invocation: aster_flow::StepInvocation,
+        ) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -358,7 +367,11 @@ impl CrashDuringMapRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringMapRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -521,7 +534,10 @@ async fn map_completion_wakes_parent_while_another_timer_is_open() {
             ))
         }
 
-        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
+        async fn run_step(
+            &self,
+            _invocation: aster_flow::StepInvocation,
+        ) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -592,7 +608,11 @@ impl CrashAfterChildWorkflowMapCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterChildWorkflowMapCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -651,7 +671,10 @@ async fn map_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
             ))
         }
 
-        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
+        async fn run_step(
+            &self,
+            _invocation: aster_flow::StepInvocation,
+        ) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }

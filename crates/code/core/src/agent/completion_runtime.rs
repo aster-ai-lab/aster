@@ -146,10 +146,22 @@ impl crate::agent::TurnEngine {
         if state.next_turn_is_verifier && state.verifier_spent {
             state.next_turn_is_verifier = false;
         }
-        let child_unobserved = crate::harness_loop::absorb_open_workspace_children(
+        if force_terminal {
+            if let Some(admission) = &memory_task_context.background_admission {
+                admission.cancel();
+            }
+        }
+        let live = memory_task_context
+            .background_admission
+            .as_ref()
+            .map(|admission| admission.live())
+            .unwrap_or_default();
+        let deferred = state.mutations.deferred_background_children(&live);
+        let child_unobserved = crate::harness_loop::absorb_workspace_children_except(
             &mut state.mutations,
             memory_task_context.workspace.as_path(),
             cancel_token,
+            &deferred,
         )
         .await;
         let unseen = state
@@ -174,8 +186,9 @@ impl crate::agent::TurnEngine {
             return CompletionFlow::Continue;
         }
         self.merge_completion_attestor(&state.mutations, &mut state.verification_reports);
+        let completion_projection = state.mutations.without_background_children(&deferred);
         let gate = crate::harness_loop::decide_with_contracts(
-            &state.mutations,
+            &completion_projection,
             &state.verification_reports,
             &self.config.completion_waivers,
             !force_terminal
@@ -241,7 +254,11 @@ impl crate::agent::TurnEngine {
 
         CompletionFlow::Finished {
             text: final_text,
-            completion,
+            completion: if deferred.is_empty() {
+                completion
+            } else {
+                crate::harness_loop::CompletionTerminal::Narrative
+            },
             run_admission: admission,
         }
     }

@@ -462,7 +462,10 @@ mod tests {
 
     #[test]
     fn composer_lead_arrow_is_two_columns() {
-        assert_eq!(composer_lead_arrow().width(), COMPOSER_LEAD_ARROW_WIDTH as usize);
+        assert_eq!(
+            composer_lead_arrow().width(),
+            COMPOSER_LEAD_ARROW_WIDTH as usize
+        );
         assert_eq!("\u{2192} ".width(), 2);
         assert_eq!("> ".width(), 2);
     }

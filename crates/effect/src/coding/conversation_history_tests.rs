@@ -141,6 +141,36 @@ fn compact_tail_keeps_one_adjacent_pair_and_drops_the_earlier_pair() {
 }
 
 #[test]
+fn compact_tail_uses_remaining_budget_for_public_prose_across_a_large_tool_result() {
+    let checkpoint = "assistant\nObserved opaque value ξ-7a93; verification remains pending.";
+    let messages = vec![
+        "user\nPreserve the original observations.".to_string(),
+        checkpoint.to_string(),
+        "assistant\ntool read\n{\"file_path\":\"earlier.txt\"}".to_string(),
+        format!("tool\n{}", "large original observation\n".repeat(1_000)),
+        "assistant\nInspect the remaining requirement.".to_string(),
+        "assistant\ntool read\n{\"file_path\":\"requirements.txt\"}".to_string(),
+        "tool\nOriginal requirements.".to_string(),
+    ];
+    let keep_tokens = messages[4..]
+        .iter()
+        .map(|line| estimate_tokens(line))
+        .sum::<usize>()
+        + estimate_tokens(checkpoint);
+    let original = messages.clone();
+    let (prefix, kept) = split_compact_tail(&messages, keep_tokens);
+    assert!(kept.iter().any(|line| line == checkpoint));
+    assert_eq!(kept, [&messages[1..2], &messages[4..]].concat());
+    assert_eq!(prefix, [&messages[..1], &messages[2..4]].concat());
+    assert!(kept.iter().map(|line| estimate_tokens(line)).sum::<usize>() <= keep_tokens);
+    assert_eq!(messages, original);
+
+    let (prefix, kept) = split_compact_tail(&messages, keep_tokens - estimate_tokens(checkpoint));
+    assert_eq!(kept, messages[4..]);
+    assert_eq!(prefix, messages[..4]);
+}
+
+#[test]
 fn compact_tail_keeps_a_short_result_run_together() {
     let region = [
         "assistant\ntool read\n{\"file_path\":\"a.rs\"}".to_string(),

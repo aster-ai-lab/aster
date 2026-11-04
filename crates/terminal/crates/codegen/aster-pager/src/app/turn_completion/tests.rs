@@ -628,9 +628,7 @@ fn saving_unrelated_row_keeps_hold_and_reopens_card() {
 #[test]
 fn deferred_card_reopens_when_other_question_closes() {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
 
     let mut agent = running_viewer("p1");
     stash_in_flight(&mut agent);
@@ -908,7 +906,7 @@ fn viewer_finalize_stop_reason_to_marker_mapping() {
         "rate_limit must not push a marker on a viewer"
     );
 
-    // An unknown or other reason renders Turn completed (the catch-all)
+    // A model limit remains visible when finalizing through the viewer.
     let mut agent = running_viewer("p1");
     let _ = finalize_turn_from_terminal(
         &mut agent,
@@ -919,10 +917,15 @@ fn viewer_finalize_stop_reason_to_marker_mapping() {
             ..Default::default()
         },
     );
-    assert!(matches!(
-        last_session_event(&agent.scrollback),
-        Some(SessionEvent::TurnCompleted { .. })
-    ));
+    match last_session_event(&agent.scrollback) {
+        Some(SessionEvent::TurnFailed { error, .. }) => {
+            assert_eq!(
+                error,
+                "Request failed: The response reached the model output limit. Try sending again."
+            );
+        }
+        other => panic!("expected TurnFailed, got {other:?}"),
+    }
 }
 
 #[test]
@@ -1416,17 +1419,35 @@ fn classifier_completed_without_elapsed_is_none() {
 }
 
 #[test]
-fn classifier_refusal_max_tokens_max_requests_unknown_are_completed() {
-    for stop in [
-        TurnStopReason::Refusal,
-        TurnStopReason::MaxTokens,
-        TurnStopReason::MaxTurnRequests,
-        TurnStopReason::Unknown,
+fn classifier_refusal_limits_and_unknown_preserve_the_stop_reason() {
+    for (stop, reason) in [
+        (TurnStopReason::Refusal, "The model refused the request."),
+        (
+            TurnStopReason::MaxTokens,
+            "The response reached the model output limit.",
+        ),
+        (
+            TurnStopReason::MaxTurnRequests,
+            "The turn reached its tool request limit.",
+        ),
+        (
+            TurnStopReason::Unknown,
+            "The turn ended without a recognized stop reason.",
+        ),
     ] {
-        assert!(matches!(
-            terminal_marker(base_input(stop)),
-            Some(SessionEvent::TurnCompleted { .. })
-        ));
+        let Some(SessionEvent::TurnFailed { error, elapsed }) = terminal_marker(base_input(stop))
+        else {
+            panic!("{stop:?} must not appear as a completed turn");
+        };
+        assert!(error.contains(reason), "missing stop reason: {error}");
+        assert_eq!(elapsed, Some(std::time::Duration::from_secs(1)));
+        let Some(SessionEvent::TurnFailed { error, .. }) = terminal_marker(TerminalMarkerInput {
+            agent_result: Some("Original interruption detail"),
+            ..base_input(stop)
+        }) else {
+            panic!("{stop:?} must preserve its original detail");
+        };
+        assert!(error.contains("Original interruption detail"));
     }
 }
 

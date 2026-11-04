@@ -219,8 +219,9 @@ fn reference_creation_requires_a_matching_paused_source_stack() {
 
 #[test]
 fn hardware_vm_checkpoint_pairs_and_guest_arch_follow_the_shared_contract() {
-    let artifact = RuntimeArtifact::new("aster-oci-runtime", "0.1.0", digest('a').to_string(), None)
-        .expect("runtime artifact");
+    let artifact =
+        RuntimeArtifact::new("aster-oci-runtime", "0.1.0", digest('a').to_string(), None)
+            .expect("runtime artifact");
     let format = CheckpointFormat::new("vm-snapshot", 1).expect("checkpoint format");
     let accepted = [
         (

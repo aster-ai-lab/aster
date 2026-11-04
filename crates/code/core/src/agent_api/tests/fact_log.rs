@@ -15,6 +15,7 @@ use tokio_util::sync::CancellationToken;
 
 mod child_policy;
 mod confirmation_snapshot;
+mod convergence;
 mod durable_read;
 mod durable_source;
 mod execution_target;

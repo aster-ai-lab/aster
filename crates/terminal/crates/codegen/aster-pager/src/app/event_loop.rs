@@ -16,9 +16,9 @@ use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
 use crate::render::draw::{EscapeWriter, WriterDrain, WriterEvent};
 use crate::theme::system_appearance::{self, SystemAppearanceWatcher};
 use crate::theme::{Theme, ThemeKind, cache as theme_cache};
-use aster_acp_lib::{AcpClientMessage, acp_send};
 use agent_client_protocol as acp;
 use anyhow::Context as _;
+use aster_acp_lib::{AcpClientMessage, acp_send};
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use std::time::Duration;
 use tokio::task::JoinSet;
@@ -333,10 +333,7 @@ fn reconnect_restore_outcome(
 /// Compute the folder-trust verdict for the session cwd and seed [`AppView::trust_state`].
 /// Pager-side mirror of the agent's resolve.
 /// Reads the local store, scans for repo-local code-exec config, and runs the pure [`decide`](aster_workspace::folder_trust::decide) precedence.
-fn seed_trust_state(
-    app: &mut AppView,
-    remote: Option<&aster_shell::util::config::RemoteSettings>,
-) {
+fn seed_trust_state(app: &mut AppView, remote: Option<&aster_shell::util::config::RemoteSettings>) {
     use aster_workspace::folder_trust::{
         TrustOutcome, decide, decide_inputs_with_interactive, feature_enabled,
     };
@@ -1193,13 +1190,11 @@ pub(crate) async fn run(
                 .as_ref()
                 .and_then(|s| s.privacy_banner_reshow_days)
         });
-    app.privacy_banner_acked = aster_shell::config::load_from_disk()
-        .ok()
-        .and_then(|root| {
-            aster_shell::util::config::load_config_from_toml(&root)
-                .privacy
-                .privacy_banner_acked
-        });
+    app.privacy_banner_acked = aster_shell::config::load_from_disk().ok().and_then(|root| {
+        aster_shell::util::config::load_config_from_toml(&root)
+            .privacy
+            .privacy_banner_acked
+    });
     app.plugin_cta_enabled = aster_config::env_bool("GROK_PLUGIN_CTA")
         .or_else(|| remote_settings.as_ref().and_then(|s| s.plugin_cta))
         .unwrap_or(false);
@@ -1310,9 +1305,10 @@ pub(crate) async fn run(
             Err(e) => tracing::warn!("failed to deserialize auth_meta: {e}"),
         }
     } else {
-        app.is_api_key_auth = app.auth_methods.iter().any(|m| {
-            m.id().0.as_ref() == aster_shell::agent::auth_method::ASTER_API_KEY_METHOD_ID
-        });
+        app.is_api_key_auth = app
+            .auth_methods
+            .iter()
+            .any(|m| m.id().0.as_ref() == aster_shell::agent::auth_method::ASTER_API_KEY_METHOD_ID);
         if !app.consumer_account() {
             app.usage_visible = false;
             app.sync_billing_surface_to_agents();
@@ -1647,6 +1643,9 @@ pub(crate) async fn run(
     *reader_thread = ReaderThread::spawn(input_tx, input_paused.clone(), reader_parked.clone());
     let mut acp_rx = connection.rx;
     let connection_cancel = connection.cancel;
+    // Declared after `app` / `acp_rx` so reverse drop order cancels the bridge
+    // before those client channels close (avoids false `worker_join` failures).
+    let _bridge_shutdown = crate::acp::spawn::BridgeShutdownCancel(connection_cancel.clone());
     let mut leader_status_rx = connection.leader_status_rx;
     let mut tasks: JoinSet<TaskResult> = JoinSet::new();
     let mut session_load_barrier = SessionLoadBarrier::new();

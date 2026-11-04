@@ -235,6 +235,28 @@ impl WorkspaceTextReader for OverlayTextReader {
             Err(error) => Err(error.into()),
         }
     }
+
+    async fn read_text_range_with_terminators(
+        &self,
+        path: &WorkspacePath,
+        offset: usize,
+        limit: usize,
+    ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
+        match self.overlay.read_text_result(path).await {
+            Ok(Some(content)) => Ok(Some(WorkspaceTextRange::from_text_with_terminators(
+                &content, offset, limit,
+            ))),
+            Ok(None) => {
+                self.read_backend_range_with_terminators(path, offset, limit)
+                    .await
+            }
+            Err(error) if error.kind().allows_backend_fallback() => {
+                self.read_backend_range_with_terminators(path, offset, limit)
+                    .await
+            }
+            Err(error) => Err(error.into()),
+        }
+    }
 }
 
 impl OverlayTextReader {
@@ -253,17 +275,12 @@ impl OverlayTextReader {
         }
     }
 
-    async fn read_text_range_with_terminators(
+    async fn read_backend_range_with_terminators(
         &self,
         path: &WorkspacePath,
         offset: usize,
         limit: usize,
     ) -> WorkspaceResult<Option<WorkspaceTextRange>> {
-        if let Some(content) = self.overlay.read_text(path).await {
-            return Ok(Some(WorkspaceTextRange::from_text_with_terminators(
-                &content, offset, limit,
-            )));
-        }
         match &self.inner {
             Some(reader) => {
                 reader

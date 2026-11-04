@@ -1046,10 +1046,7 @@ fn prefetched_entry_provider_config_comes_from_trusted_tables_only() {
         None,
         "an unusable provider fails closed"
     );
-    assert_eq!(
-        provider.config,
-        aster_login::AuthProviderConfig::default()
-    );
+    assert_eq!(provider.config, aster_login::AuthProviderConfig::default());
     let mut cfg = Config::default();
     cfg.auth_providers.insert(
         "cache-smuggle-test".to_string(),
@@ -1575,7 +1572,13 @@ fn enforce_disable_api_key_auth_blocks_first_party_only() {
 #[test]
 fn try_resolve_model_credentials_swaps_first_party_own_key_under_kill_switch() {
     use aster_chat_state::AuthType;
-    let entry = test_model_entry("m", "https://api.aster/v1", Some("aster-model-key"), None, None);
+    let entry = test_model_entry(
+        "m",
+        "https://api.aster/v1",
+        Some("aster-model-key"),
+        None,
+        None,
+    );
     let mut creds = resolve_credentials(&entry, Some("session-jwt"));
     assert_eq!(
         creds.auth_type,

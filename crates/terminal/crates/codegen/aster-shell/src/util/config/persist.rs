@@ -1,8 +1,8 @@
 use super::load::load_config_from_toml;
 use super::mcp::{Config, user_config_path};
+use anyhow::Result;
 use aster_agent::prompt::skills::SkillsConfig;
 use aster_config::fs_atomic::BoundDest;
-use anyhow::Result;
 use std::path::Path;
 use toml::Value as TomlValue;
 use toml::map::Map as TomlMap;

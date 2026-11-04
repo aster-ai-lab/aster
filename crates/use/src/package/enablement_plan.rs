@@ -20,7 +20,8 @@ use super::plan::{
 };
 use super::{package_manager_error, PackageAuthorizationProvider, PackageManager};
 
-pub const PACKAGE_ENABLEMENT_PLAN_RESULT_SCHEMA: &str = "aster.use.package-enablement-plan-result.v1";
+pub const PACKAGE_ENABLEMENT_PLAN_RESULT_SCHEMA: &str =
+    "aster.use.package-enablement-plan-result.v1";
 
 /// Provider-neutral evidence for one exact installed enablement transition.
 ///

@@ -378,7 +378,14 @@ impl Fixture {
             ..crate::memory::MemoryConfig::default()
         });
         let agent = crate::Agent::from_config(config).await.unwrap();
-        let session_store = Arc::new(crate::store::MemorySessionStore::new());
+        let session_store: Arc<dyn crate::store::SessionStore> = match kind {
+            StoreKind::Memory => Arc::new(crate::store::MemorySessionStore::new()),
+            StoreKind::File => Arc::new(
+                crate::store::FileSessionStore::new(workspace.path().join("sessions"))
+                    .await
+                    .unwrap(),
+            ),
+        };
         let options = crate::SessionOptions::new()
             .with_session_id(SESSION_ID)
             .with_planning_mode(crate::prompts::PlanningMode::Disabled)
@@ -502,6 +509,7 @@ pub(super) struct CallOutcome {
     pub events: Vec<AgentEvent>,
     pub run_id: Option<String>,
     route: Route,
+    reported_usage: TokenUsage,
     persisted: Option<crate::store::SessionSnapshotV1>,
     workspace: String,
     original_cancelled: bool,
@@ -551,16 +559,21 @@ impl CallOutcome {
             }
         }
 
-        // Read by the caller after the original returned worker joined. Only
-        // TurnFinish/checkpoint auto-save writes this original SessionStore;
-        // the fixture never constructs or saves an expected snapshot.
+        // Read after the original worker joined. Streaming memory can save
+        // later; the fixture never constructs or saves an expected snapshot.
         let persisted = self.persisted.as_ref().unwrap();
         assert_eq!(persisted.session.id, SESSION_ID);
         assert_eq!(persisted.session.config.workspace, self.workspace);
-        assert_eq!(
-            record_tuple(&persisted.session.total_usage),
-            record_tuple(&main_usage())
-        );
+        let saved_usage = record_tuple(&persisted.session.total_usage);
+        if matches!(self.route, Route::Stream) {
+            assert!([
+                record_tuple(&main_usage()),
+                record_tuple(&self.reported_usage)
+            ]
+            .contains(&saved_usage));
+        } else {
+            assert_eq!(saved_usage, record_tuple(&self.reported_usage));
+        }
         assert_eq!(persisted.run_records.len(), 1, "{self:?}");
         let record = &persisted.run_records[0];
         assert_eq!(record.snapshot.session_id, SESSION_ID);
@@ -608,8 +621,9 @@ impl CallOutcome {
 // This is the test caller, not another production executor. It retains the
 // actual Session and awaits the returned actual worker. It proves no caller-
 // Drop/last-Session ownership or public RunHandle cancellation guarantee.
-pub(super) fn start(session: &Arc<AgentSession>, route: Route) -> JoinHandle<CallOutcome> {
-    let session = session.clone();
+pub(super) fn start(fixture: &Fixture, route: Route) -> JoinHandle<CallOutcome> {
+    let session = fixture.session.clone();
+    let guard = fixture.guard.clone();
     tokio::spawn(async move {
         let (result, events, run_id) = match route {
             Route::Blocking => (
@@ -684,11 +698,30 @@ pub(super) fn start(session: &Arc<AgentSession>, route: Route) -> JoinHandle<Cal
             .load_snapshot(SESSION_ID)
             .await
             .unwrap();
+        let records = guard.records.lock().unwrap().clone();
+        let reported_usage = TokenUsage {
+            prompt_tokens: records.iter().map(|(_, usage)| usage.prompt_tokens).sum(),
+            completion_tokens: records
+                .iter()
+                .map(|(_, usage)| usage.completion_tokens)
+                .sum(),
+            total_tokens: records.iter().map(|(_, usage)| usage.total_tokens).sum(),
+            ..Default::default()
+        };
+        assert_eq!(
+            session.recorded_usage_tokens(),
+            (
+                reported_usage.prompt_tokens as u64,
+                reported_usage.completion_tokens as u64,
+                reported_usage.total_tokens as u64
+            )
+        );
         CallOutcome {
             result,
             events,
             run_id,
             route,
+            reported_usage,
             persisted,
             workspace: session.workspace.to_str().unwrap().to_owned(),
             original_cancelled: session.session_cancel_token().is_cancelled(),

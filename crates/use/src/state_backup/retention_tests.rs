@@ -43,7 +43,9 @@ async fn retention_removes_oldest_only_after_exact_plan_confirmation() {
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_retention_plan_mismatch");
-    assert!(backup_directory.join("001.aster-use-state-backup").is_file());
+    assert!(backup_directory
+        .join("001.aster-use-state-backup")
+        .is_file());
 
     let plan = manager
         .plan_backup_retention(&backup_directory, policy)
@@ -60,14 +62,21 @@ async fn retention_removes_oldest_only_after_exact_plan_confirmation() {
         .apply_backup_retention(&backup_directory, policy, plan.descriptor_digest().unwrap())
         .await
         .unwrap();
-    assert_eq!(result.schema, ASTER_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA);
+    assert_eq!(
+        result.schema,
+        ASTER_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA
+    );
     assert!(result.changed);
     assert_eq!(result.removed, plan.remove);
     assert_eq!(result.retained_backup_count, 2);
     assert!(!backup_directory.join("001.aster-use-state-backup").exists());
     assert!(!backup_directory.join("002.aster-use-state-backup").exists());
-    assert!(backup_directory.join("003.aster-use-state-backup").is_file());
-    assert!(backup_directory.join("004.aster-use-state-backup").is_file());
+    assert!(backup_directory
+        .join("003.aster-use-state-backup")
+        .is_file());
+    assert!(backup_directory
+        .join("004.aster-use-state-backup")
+        .is_file());
 }
 
 #[tokio::test]
@@ -104,8 +113,12 @@ async fn retention_policy_is_bounded_and_preserves_two_verified_backups() {
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_retention_policy_unsatisfied");
-    assert!(backup_directory.join("001.aster-use-state-backup").is_file());
-    assert!(backup_directory.join("002.aster-use-state-backup").is_file());
+    assert!(backup_directory
+        .join("001.aster-use-state-backup")
+        .is_file());
+    assert!(backup_directory
+        .join("002.aster-use-state-backup")
+        .is_file());
 }
 
 #[tokio::test]

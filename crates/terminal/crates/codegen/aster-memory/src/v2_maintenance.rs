@@ -7,8 +7,8 @@
 use std::io::Read as _;
 use std::path::{Component, Path, PathBuf};
 
-use aster_tools::types::memory_v2::MemoryV2Access as _;
 use aster_sqlite_journal::JournalMode;
+use aster_tools::types::memory_v2::MemoryV2Access as _;
 use rusqlite::{OptionalExtension as _, TransactionBehavior, params};
 
 use crate::storage::MemoryStorage;

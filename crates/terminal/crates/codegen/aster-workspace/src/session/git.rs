@@ -1,6 +1,7 @@
 //! Git operations: CLI for simple actions (stage, commit, push); git2 for structured data (status, diffs).
 #![allow(dead_code)]
 pub use crate::restore_fetch::git_object_exists;
+use anyhow::Result;
 pub use aster_workspace_types::rpc::git::{
     ChangeType, CheckoutCommitResponse, CommitData, CommitOutcome, CommitResult, DiscardScope,
     GitBranchEntry, GitBranchListData, GitCommitReq, GitDiffsData, GitEnsureBindingResult,
@@ -8,7 +9,6 @@ pub use aster_workspace_types::rpc::git::{
     GitPushResult, GitReadFile, GitReadFilesData, GitStatusData, GitSyncBaseOutcome,
     GitSyncBaseResult, PushStatus, StageData, VcsKind,
 };
-use anyhow::Result;
 use git2::{DiffOptions, Reference, Repository, StatusOptions};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeSet, HashMap, HashSet};

@@ -5,6 +5,48 @@ use agent_client_protocol::{self as acp, Agent as _};
 use aster_core::{sandbox::SandboxNetworkMode, CodeConfig};
 
 #[tokio::test]
+async fn terminal_html_artifact_guidance_requires_the_explicit_client_capability() {
+    let root = tempfile::tempdir().unwrap();
+    for capability in [None, Some(false), Some(true)] {
+        let agent = AsterCodeAgent::new(super::tests::test_launch(None));
+        let meta = capability.map(|value| {
+            [("aster/terminalMarkdown".into(), value.into())]
+                .into_iter()
+                .collect()
+        });
+        agent
+            .initialize(acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(meta))
+            .await
+            .unwrap();
+        let setup = SessionSetup {
+            workspace: root.path().into(),
+            model_id: "fixture/model",
+            effort: None,
+            host: Default::default(),
+            components: &[],
+            mcp_servers: Vec::new(),
+        };
+        let options = agent
+            .session_options_for("terminal", &setup, &root.path().join("store"))
+            .await
+            .unwrap();
+        let prompt = options.prompt_slots.unwrap().build();
+        assert_eq!(
+            prompt.contains(super::TERMINAL_MARKDOWN_PRESENTATION),
+            capability == Some(true)
+        );
+    }
+    let agent = AsterCodeAgent::new(super::tests::test_launch(None));
+    let meta = [("aster/terminalMarkdown".into(), serde_json::json!("true"))]
+        .into_iter()
+        .collect();
+    assert!(agent
+        .initialize(acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(meta)))
+        .await
+        .is_err());
+}
+
+#[tokio::test]
 async fn knowledge_compile_modes_keep_the_candidate_only_ceiling() {
     use serde_json::json;
     let directory = tempfile::tempdir().unwrap();

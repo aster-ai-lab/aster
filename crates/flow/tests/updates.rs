@@ -188,7 +188,11 @@ impl CrashBeforeRunCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRunCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -297,7 +301,11 @@ impl CrashAfterUpdateAppliedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterUpdateAppliedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

@@ -1,6 +1,7 @@
 use aster_flow::{
-    AsterFlowEventBridge, FanoutFlowEventObserver, FlowEngine, FlowRuntime, InMemoryAsterFlowEventSink,
-    InMemoryFlowEventObserver, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
+    AsterFlowEventBridge, FanoutFlowEventObserver, FlowEngine, FlowRuntime,
+    InMemoryAsterFlowEventSink, InMemoryFlowEventObserver, RuntimeCommand, StepInvocation,
+    WorkflowInvocation, WorkflowSpec,
 };
 use async_trait::async_trait;
 use serde_json::json;
@@ -50,7 +51,11 @@ async fn main() -> aster_flow::Result<()> {
     let spec = WorkflowSpec::rust_embedded("examples.observer-fanout", "0.1.0", "examples", "main");
 
     let run_id = engine
-        .start_with_id("observer-fanout-demo", spec, json!({ "topic": "Aster Flow" }))
+        .start_with_id(
+            "observer-fanout-demo",
+            spec,
+            json!({ "topic": "Aster Flow" }),
+        )
         .await?;
     let snapshot = engine.snapshot(&run_id).await?;
     let raw_events = raw_observer.events().await;

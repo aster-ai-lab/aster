@@ -12,7 +12,8 @@ pub(crate) use aster_interjection_core::{
 };
 
 /// Shell instantiation of the shared entry type: images are ACP content.
-pub(crate) type PendingInterjection = aster_interjection_core::PendingInterjection<acp::ImageContent>;
+pub(crate) type PendingInterjection =
+    aster_interjection_core::PendingInterjection<acp::ImageContent>;
 
 /// Prompt-id prefix for interjections that missed their turn and were converted into standalone prompt turns.
 /// The prefix keeps the turn's user echo persist-only.
@@ -271,23 +272,19 @@ impl SessionActor {
         // Those attribute the turn, which this skill did not start
         // `SkillDispatched` still carries `plugin_source`, so dispatch counts stay complete
         for sk in &parsed {
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::SlashCommandUsed {
-                    command: sk.name.clone(),
-                    args_provided: !sk.args.is_empty(),
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::SlashCommandUsed {
+                command: sk.name.clone(),
+                args_provided: !sk.args.is_empty(),
+            });
             let skill_source =
                 crate::session::telemetry::skill_source(sk.scope, sk.plugin_name.as_deref());
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::SkillDispatched {
-                    skill_name: sk.name.clone(),
-                    plugin_source: sk.plugin_name.clone(),
-                    trigger: aster_telemetry::events::SkillTrigger::SlashCommand,
-                    skill_source: Some(skill_source.to_owned()),
-                    skill_origin: sk.origin.clone(),
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::SkillDispatched {
+                skill_name: sk.name.clone(),
+                plugin_source: sk.plugin_name.clone(),
+                trigger: aster_telemetry::events::SkillTrigger::SlashCommand,
+                skill_source: Some(skill_source.to_owned()),
+                skill_origin: sk.origin.clone(),
+            });
         }
         slash_commands::build_skill_information_for_refs(
             &parsed,

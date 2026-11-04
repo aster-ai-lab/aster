@@ -72,6 +72,15 @@ struct Host(mpsc::UnboundedSender<Value>);
 
 #[async_trait::async_trait(?Send)]
 impl acp::Client for Host {
+    async fn ext_notification(&self, notification: acp::ExtNotification) -> acp::Result<()> {
+        if notification.method.as_ref() == "aster/session_notification" {
+            self.0
+                .send(serde_json::from_str(notification.params.get()).unwrap())
+                .unwrap();
+        }
+        Ok(())
+    }
+
     async fn request_permission(
         &self,
         _: acp::RequestPermissionRequest,
@@ -202,6 +211,54 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
                 .clone();
             assert!(Arc::ptr_eq(&current_session, &session));
             assert_eq!(current_session.plan_snapshot().await.unwrap().len(), 6);
+            for (index, status) in ["completed", "cancelled", "running"]
+                .into_iter()
+                .enumerate()
+            {
+                let task_id = format!("replay-{status}");
+                let child = format!("task-run-{task_id}");
+                let tracker = current_session.subagent_tracker();
+                tracker
+                    .record_event(&aster_core::AgentEvent::SubagentStart {
+                        task_id: task_id.clone(),
+                        session_id: child.clone(),
+                        parent_session_id: core_session_id.clone(),
+                        agent: "explore".into(),
+                        description: status.into(),
+                        started_ms: 1000 + index as u64,
+                    })
+                    .await;
+                tracker
+                    .record_event(&aster_core::AgentEvent::SubagentProgress {
+                        task_id: task_id.clone(),
+                        session_id: child.clone(),
+                        status: "started".into(),
+                        metadata: json!({"background":true}),
+                    })
+                    .await;
+                if status != "running" {
+                    if status == "cancelled" {
+                        tracker
+                            .record_event(&aster_core::AgentEvent::SubagentProgress {
+                                task_id: task_id.clone(),
+                                session_id: child.clone(),
+                                status: "cancelled".into(),
+                                metadata: json!({"disposition":"cancelled"}),
+                            })
+                            .await;
+                    }
+                    tracker
+                        .record_event(&aster_core::AgentEvent::SubagentEnd {
+                            task_id,
+                            session_id: child,
+                            agent: "explore".into(),
+                            output: status.into(),
+                            success: status == "completed",
+                            finished_ms: 2000 + index as u64,
+                        })
+                        .await;
+                }
+            }
             current_session.save().await.unwrap();
             let saved = timeout(Duration::from_secs(5), async {
                 loop {
@@ -295,6 +352,25 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
                     .as_str()
                     .unwrap_or_else(|| entry["status"].as_str().unwrap());
                 assert_eq!(actual, status);
+            }
+            for (task, status) in [
+                ("replay-completed", "completed"),
+                ("replay-cancelled", "stopped"),
+            ] {
+                for kind in ["subagent_spawned", "subagent_progress", "subagent_finished"] {
+                    let packet = timeout(Duration::from_secs(1), packets.recv())
+                        .await
+                        .expect("saved terminal child lifecycle is replayed")
+                        .unwrap();
+                    assert_eq!(packet["update"]["sessionUpdate"], kind);
+                    assert_eq!(packet["update"]["subagent_id"], task);
+                    assert_eq!(packet["_meta"]["isReplay"], true);
+                    assert_eq!(packet["_meta"]["subagentBackground"], true);
+                    assert!(packet["_meta"]["entryId"].as_str().is_some());
+                    if kind == "subagent_finished" {
+                        assert_eq!(packet["update"]["status"], status);
+                    }
+                }
             }
             assert!(timeout(Duration::from_millis(50), packets.recv())
                 .await

@@ -6,8 +6,8 @@ use crate::app::agent::AgentId;
 use crate::app::app_view::{ActiveView, AppView};
 use crate::scrollback::block::{BlockContent, RenderBlock};
 use crate::scrollback::blocks::ToolCallBlock;
-use aster_telemetry::session_ctx::log_event;
 use agent_client_protocol as acp;
+use aster_telemetry::session_ctx::log_event;
 
 /// Copy the selected block's content to the system clipboard.
 ///

@@ -592,7 +592,8 @@ impl ExtensionRegistry {
         cutover_request: Option<&ExtensionLifecycleCutoverRequest>,
     ) -> UseResult<ExtensionLifecycleGraphPublication> {
         if identities.is_empty() && removed.is_empty()
-            || identities.len().saturating_add(removed.len()) > aster_use_core::MAX_PLUGIN_PLAN_ITEMS
+            || identities.len().saturating_add(removed.len())
+                > aster_use_core::MAX_PLUGIN_PLAN_ITEMS
         {
             return Err(lifecycle_state_error(
                 "A package-graph publication must contain a bounded non-empty closure.",

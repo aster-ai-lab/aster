@@ -1,0 +1,52 @@
+{
+  "at": "2026-11-04T01:40:45.153567+00:00",
+  "label": "independent8k-20261104-native-followup-1",
+  "sourceHash": "60b0b21e6353e17026ee86454696167e145bea19",
+  "memberCount": 9,
+  "finalRuntimeGatesPassed": true,
+  "sourceUnchanged": true,
+  "configSha256": "a9d012ceb29efa37dd92f7d4e435521929ed2430da5b192640dfd2769574b01c",
+  "outputTokenLimit": 8192,
+  "attemptsPerCase": 1,
+  "originalOtherLimitsUnchanged": true,
+  "priorNativeFlakinessRetained": true,
+  "baselineComparison": null,
+  "authorizedBudgetPatches": [
+    {
+      "path": "crates/code/acp/tests/long_horizon/live.rs",
+      "matchesAuthorizedPatch": true,
+      "sha256": "c646816d67c9f07c4c069dc2959eaa2e92232aa26d679ed31aba21ac4e4f1339"
+    },
+    {
+      "path": "crates/code/acp/tests/long_horizon_real_llm.rs",
+      "matchesAuthorizedPatch": true,
+      "sha256": "be988ddb295df24cca94915c9d9e5c59d0cba76217bbd673c17b27205a254e2f"
+    },
+    {
+      "path": "docs/evidence/code/2026-11-02-summary-input-retention/supplementary.py",
+      "matchesAuthorizedPatch": true,
+      "sha256": "295f83d55c5442453384b90c2e73795695977492ce082b1dd0e25861df5e3659"
+    },
+    {
+      "path": "crates/code/acp/tests/deloop_generalization_real_llm.rs",
+      "matchesAuthorizedPatch": true,
+      "sha256": "63b20482e9b19fef09dcfeba158fb05926752f6c148e69ebb217fdd430c0c628"
+    },
+    {
+      "path": "docs/evidence/code/2026-11-02-summary-input-retention/live.py",
+      "matchesAuthorizedPatch": true,
+      "sha256": "9c22765744fd1cc522d18027f33ef0e145958c8cd715bbeb70b5167841f4f4c3"
+    },
+    {
+      "path": "crates/code/acp/tests/deloop_real_llm.rs",
+      "matchesAuthorizedPatch": true,
+      "sha256": "bf152ca33014de3f971903fc9bdc957d500eeba8ef6d5714aef9ce961bcf796a"
+    }
+  ],
+  "staticChecks": {
+    "coreProfiles": "bounded-status.json",
+    "acpClippy": "bounded-status.json",
+    "studioClippyFormatWorkspace": "studio-fixture-status.json",
+    "contracts": "release-contract-status.json"
+  }
+}

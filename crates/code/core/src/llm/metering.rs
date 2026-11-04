@@ -246,6 +246,47 @@ impl PricingSnapshot {
         ensure!(amount.is_finite(), "estimated cost overflow");
         Ok(Some(amount))
     }
+
+    /// Reserve each input price lane conservatively when the cache split is unknown.
+    /// Missing rates retain an unknown bound; zero token lanes need no rate.
+    /// Reachable tiers are considered independently, including decreasing prices.
+    /// Returns an error for invalid prices or an unrepresentable currency bound.
+    pub fn upper_bound(&self, input: u64, output: u64) -> Result<Option<CostBound>> {
+        self.validate()?;
+        let mut maximum = 0.0_f64;
+        for prices in std::iter::once(&self.prices).chain(
+            self.input_token_tiers
+                .iter()
+                .filter(|tier| tier.min_input_tokens <= input)
+                .map(|tier| &tier.prices),
+        ) {
+            let mut amount = 0.0;
+            for (tokens, rate) in [
+                (input, prices.input_per_million_tokens),
+                (output, prices.output_per_million_tokens),
+                (input, prices.cache_read_per_million_tokens),
+                (input, prices.cache_write_per_million_tokens),
+            ] {
+                if tokens == 0 {
+                    continue;
+                }
+                let Some(rate) = rate else {
+                    return Ok(None);
+                };
+                amount += (tokens as f64 / 1_000_000.0) * rate;
+            }
+            let units = (amount * 1_000_000.0).ceil();
+            ensure!(
+                units.is_finite() && units < u64::MAX as f64,
+                "cost bound overflow"
+            );
+            maximum = maximum.max(units);
+        }
+        Ok(Some(CostBound {
+            currency: self.currency,
+            micro_units: maximum as u64,
+        }))
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]

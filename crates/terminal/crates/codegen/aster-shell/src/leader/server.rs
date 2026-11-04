@@ -23,10 +23,10 @@ use crate::cpu_profile::{
 };
 use crate::leader::cursor_worker::{self, CursorWorkerControl};
 use crate::leader::roster_merge::ExternalRoster;
+use agent_client_protocol::AGENT_METHOD_NAMES;
+use aster_computer_hub_sdk::{AuthCredential, AuthIdentity, AuthProvider};
 use aster_login::AuthManager;
 use aster_workspace::WorkspaceHandle;
-use aster_computer_hub_sdk::{AuthCredential, AuthIdentity, AuthProvider};
-use agent_client_protocol::AGENT_METHOD_NAMES;
 use kanal::{AsyncReceiver, AsyncSender};
 use parking_lot::Mutex;
 use tokio::sync::{mpsc, watch};

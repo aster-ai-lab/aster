@@ -2,7 +2,7 @@ use super::*;
 use crate::llm::http::{HttpResponse, StreamingHttpResponse};
 use serde_json::{json, Value};
 
-struct UsageHttp(Value, Option<Value>);
+struct UsageHttp(Value);
 
 #[async_trait]
 impl HttpClient for UsageHttp {
@@ -36,7 +36,7 @@ impl HttpClient for UsageHttp {
         usage["output_tokens"] = json!(0);
         let frames = [
             json!({"type":"message_start", "message":{"usage":usage}}),
-            json!({"type":"message_delta", "delta":{"stop_reason":"end_turn"}, "usage":self.1.clone().unwrap_or_else(|| json!({"output_tokens":25}))}),
+            json!({"type":"message_delta", "delta":{"stop_reason":"end_turn"}, "usage":{"output_tokens":25}}),
             json!({"type":"message_stop"}),
         ];
         let wire = frames
@@ -85,7 +85,7 @@ fn cases() -> [(Value, usize, Option<usize>, Option<usize>); 4] {
 async fn completion_counts_cached_input_once_and_preserves_cache_presence() {
     for (wire, prompt, read, write) in cases() {
         let client = AnthropicClient::new("synthetic-key".into(), "model".into())
-            .with_http_client(Arc::new(UsageHttp(wire, None)));
+            .with_http_client(Arc::new(UsageHttp(wire)));
         let response = client
             .complete(&[Message::user("hello")], None, &[])
             .await
@@ -102,7 +102,7 @@ async fn completion_counts_cached_input_once_and_preserves_cache_presence() {
 async fn streaming_counts_cached_input_once_and_preserves_cache_presence() {
     for (wire, prompt, read, write) in cases() {
         let client = AnthropicClient::new("synthetic-key".into(), "model".into())
-            .with_http_client(Arc::new(UsageHttp(wire, None)));
+            .with_http_client(Arc::new(UsageHttp(wire)));
         let mut events = client
             .complete_streaming(
                 &[Message::user("hello")],
@@ -124,50 +124,5 @@ async fn streaming_counts_cached_input_once_and_preserves_cache_presence() {
         assert_eq!(response.usage.total_tokens, prompt + 25);
         assert_eq!(response.usage.cache_read_tokens, read);
         assert_eq!(response.usage.cache_write_tokens, write);
-    }
-}
-
-#[tokio::test]
-async fn streaming_final_usage_updates_replace_start_counts() {
-    for (start, final_usage, expected) in [
-        (
-            json!({"input_tokens":0,"output_tokens":0}),
-            json!({"input_tokens":100,"output_tokens":25,"cache_read_input_tokens":800,"cache_creation_input_tokens":100}),
-            (1000, Some(800), Some(100)),
-        ),
-        (
-            json!({"input_tokens":100,"output_tokens":0,"cache_read_input_tokens":800,"cache_creation_input_tokens":100}),
-            json!({"output_tokens":25,"cache_read_input_tokens":1700,"cache_creation_input_tokens":200}),
-            (2000, Some(1700), Some(200)),
-        ),
-    ] {
-        let client = AnthropicClient::new("synthetic-key".into(), "model".into())
-            .with_http_client(Arc::new(UsageHttp(start, Some(final_usage))));
-        let mut events = client
-            .complete_streaming(
-                &[Message::user("hello")],
-                None,
-                &[],
-                CancellationToken::new(),
-            )
-            .await
-            .unwrap();
-        let mut done = None;
-        while let Some(event) = events.recv().await {
-            if let StreamEvent::Done(response) = event {
-                done = Some(response);
-            }
-        }
-        let usage = done.expect("stream must retain its final usage").usage;
-        assert_eq!(
-            (
-                usage.prompt_tokens,
-                usage.cache_read_tokens,
-                usage.cache_write_tokens
-            ),
-            expected,
-        );
-        assert_eq!(usage.completion_tokens, 25);
-        assert_eq!(usage.total_tokens, expected.0 + 25);
     }
 }

@@ -8,8 +8,8 @@
 //! Resident sessions go through `SessionCommand::RepairHistory` (serialized with session activity, rejected mid-turn).
 //! Non-resident sessions are repaired on disk via the atomic `replace_chat_history`.
 
-use aster_chat_state::compaction_utils::HistoryRepairReport;
 use agent_client_protocol as acp;
+use aster_chat_state::compaction_utils::HistoryRepairReport;
 use serde::{Deserialize, Serialize};
 use tokio::sync::oneshot;
 

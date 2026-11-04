@@ -1,6 +1,7 @@
 #![cfg(test)]
 
-use super::upstream::Route;
+use super::artifact::timing::{self, Phase, Subject};
+use super::upstream::{Protocol, Route};
 use aster_core::llm::{http::ReqwestHttpClient, HttpClient};
 use serde::Serialize;
 use serde_json::Value;
@@ -28,6 +29,7 @@ use rejection::Reason;
 
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct Stats {
+    pub protocol: Protocol,
     pub listener_closed: bool,
     // One single-hop HTTP dispatch; TCP connection attempts are not counted.
     pub upstream_calls: usize,
@@ -77,6 +79,7 @@ impl Relay {
         max_requests: usize,
         output_tokens: u64,
     ) -> Result<Self, String> {
+        let _timing = timing::span(Phase::RelayStart);
         if max_requests == 0 || output_tokens == 0 {
             return Err("relay budgets must be positive".into());
         }
@@ -87,12 +90,22 @@ impl Relay {
         let listener = TcpListener::bind("127.0.0.1:0")
             .await
             .map_err(|_| "could not bind owned loopback relay")?;
-        let endpoint = format!("http://{}{PATH}", listener.local_addr().unwrap());
+        let endpoint = format!(
+            "http://{}{}",
+            listener.local_addr().unwrap(),
+            route.protocol.path()
+        );
         let key = uuid::Uuid::new_v4().to_string();
-        let authorization = format!("Bearer {key}");
+        let authorization = match route.protocol {
+            Protocol::Openai => format!("Bearer {key}"),
+            Protocol::Anthropic => key.clone(),
+        };
         let cancel = CancellationToken::new();
         let stopping = cancel.clone();
-        let stats = Arc::new(Mutex::new(Stats::default()));
+        let stats = Arc::new(Mutex::new(Stats {
+            protocol: route.protocol,
+            ..Stats::default()
+        }));
         let observations = stats.clone();
         let route = Arc::new(route);
         let worker = tokio::spawn(async move {
@@ -142,7 +155,12 @@ impl Relay {
         &self.key
     }
 
+    pub fn upstream_calls(&self) -> usize {
+        self.stats.lock().unwrap().upstream_calls
+    }
+
     pub async fn close(mut self) -> Result<Stats, String> {
+        let _timing = timing::span(Phase::RelayClose);
         self.cancel.cancel();
         let mut worker = self.worker.take().ok_or("relay already closed")?;
         match tokio::time::timeout(Duration::from_secs(5), &mut worker).await {
@@ -180,6 +198,7 @@ fn credential_matches(left: &[u8], right: &[u8]) -> bool {
 pub(super) async fn read_request(
     socket: &mut TcpStream,
     expected_authorization: &str,
+    protocol: Protocol,
 ) -> Result<Value, Reason> {
     let mut bytes = Vec::new();
     let mut chunk = [0; 4096];
@@ -208,7 +227,7 @@ pub(super) async fn read_request(
     }
     let headers = std::str::from_utf8(&bytes[..split]).map_err(|_| Reason::Framing)?;
     let mut lines = headers.split("\r\n");
-    if lines.next() != Some("POST /v1/chat/completions HTTP/1.1") {
+    if lines.next() != Some(format!("POST {} HTTP/1.1", protocol.path()).as_str()) {
         return Err(Reason::Target);
     }
     let mut length = None;
@@ -223,7 +242,7 @@ pub(super) async fn read_request(
                 }
                 length = Some(value.parse::<usize>().map_err(|_| Reason::Framing)?);
             }
-            "authorization" => {
+            name if name == protocol.credential_header() => {
                 if authorization.is_some() {
                     return Err(Reason::Framing);
                 }
@@ -269,6 +288,7 @@ async fn reply_with_retry(
     body: &[u8],
     retry_after: Option<&str>,
 ) {
+    let _timing = timing::span(Phase::RelayReply);
     let retry = retry_after
         .filter(|value| value.len() <= 1024 && value.bytes().all(|byte| (32..127).contains(&byte)))
         .map(|value| format!("Retry-After: {value}\r\n"))
@@ -299,7 +319,8 @@ async fn serve(
     cancel: CancellationToken,
     http: Arc<dyn HttpClient>,
 ) {
-    let body = match read_request(&mut socket, &authorization).await {
+    let admission_timing = timing::span(Phase::IncomingRequest);
+    let body = match read_request(&mut socket, &authorization, route.protocol).await {
         Ok(body) => body,
         Err(reason) => {
             stats.lock().unwrap().reject(reason);
@@ -354,15 +375,20 @@ async fn serve(
         .await;
         return;
     };
+    drop(admission_timing);
+    let _request_timing = timing::span_for(Phase::ModelRequest, Some(Subject::Request(sequence)));
     let headers = route
         .headers
         .iter()
         .map(|(key, value)| (key.as_str(), value.as_str()))
         .collect();
     if body.get("stream").and_then(Value::as_bool) == Some(true) {
+        let headers_timing =
+            timing::span_for(Phase::ModelHeaders, Some(Subject::Request(sequence)));
         let response = http
             .post_streaming(&route.endpoint, headers, &body, cancel.clone())
             .await;
+        drop(headers_timing);
         let Ok(mut response) = response else {
             stats.lock().unwrap().transport_failures += 1;
             reply(
@@ -398,7 +424,11 @@ async fn serve(
             } else {
                 stats.lock().unwrap().responses.insert(
                     sequence,
-                    usage::Observation::json(response.status, response.error_body.as_bytes()),
+                    usage::Observation::native_json(
+                        route.protocol,
+                        response.status,
+                        response.error_body.as_bytes(),
+                    ),
                 );
                 reply_with_retry(
                     &mut socket,
@@ -429,11 +459,17 @@ async fn serve(
             .saturating_sub(1);
         let mut pending = Vec::new();
         let mut total = 0_usize;
-        let mut observed_usage = usage::Sse::default();
+        let mut observed_usage = usage::Sse::for_protocol(route.protocol);
+        let _stream_timing = timing::span_for(Phase::ModelStream, Some(Subject::Request(sequence)));
+        let mut first_byte = true;
         while let Some(chunk) = poll_fn(|cx| response.byte_stream.as_mut().poll_next(cx)).await {
             let Ok(chunk) = chunk else {
                 return;
             };
+            if first_byte && !chunk.is_empty() {
+                timing::point(Phase::ModelFirstByte, Some(Subject::Request(sequence)));
+                first_byte = false;
+            }
             total = total.saturating_add(chunk.len());
             if total > RESPONSE_LIMIT {
                 return;
@@ -464,6 +500,10 @@ async fn serve(
     } else {
         match http.post(&route.endpoint, headers, &body, cancel).await {
             Ok(response) => {
+                timing::point(
+                    Phase::ModelBufferedResponse,
+                    Some(Subject::Request(sequence)),
+                );
                 *stats
                     .lock()
                     .unwrap()
@@ -490,7 +530,11 @@ async fn serve(
                 } else {
                     stats.lock().unwrap().responses.insert(
                         sequence,
-                        usage::Observation::json(response.status, response.body.as_bytes()),
+                        usage::Observation::native_json(
+                            route.protocol,
+                            response.status,
+                            response.body.as_bytes(),
+                        ),
                     );
                     stats.lock().unwrap().response_bytes += response.body.len();
                     reply_with_retry(

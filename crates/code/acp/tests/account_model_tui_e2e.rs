@@ -389,6 +389,42 @@ fn assert_config_clean(fixture: &Fixture) {
 }
 
 #[test]
+fn selected_model_and_effort_survive_a_new_tui_process_in_another_workspace() {
+    let fixture = prepare("");
+    let source = std::fs::read_to_string(&fixture.config).unwrap();
+    std::fs::write(
+        &fixture.config,
+        source.replace(
+            "models \"m1\" { }",
+            "models \"m1\" { }\n  models \"m2\" { }",
+        ),
+    )
+    .unwrap();
+    let env = as_refs(&fixture.env);
+    let mut first = open_pty(&tui_binary(), &fixture.workspace, &env);
+    wait_ready(&mut first, "mock/m1 (high)", Duration::from_secs(45));
+    first.write_bytes(b"\x1b[200~/model mock/m2 low\x1b[201~");
+    first.enter();
+    first.wait_for("mock/m2 (low)", Duration::from_secs(15));
+    first.quit();
+    drop(first);
+
+    let saved = std::fs::read_to_string(&fixture.config).unwrap();
+    let config = aster_core::CodeConfig::from_acl(&saved).unwrap();
+    assert_eq!(config.default_model.as_deref(), Some("mock/m2"));
+    assert_eq!(
+        config.reasoning_effort,
+        Some(aster_core::config::ReasoningEffort::Low)
+    );
+    let second_workspace = fixture._root.path().join("another workspace 中文");
+    std::fs::create_dir_all(&second_workspace).unwrap();
+    let mut second = open_pty(&tui_binary(), &second_workspace, &env);
+    wait_ready(&mut second, "mock/m2 (low)", Duration::from_secs(45));
+    second.quit();
+    assert_eq!(std::fs::read_to_string(&fixture.config).unwrap(), saved);
+}
+
+#[test]
 fn codex_models_list_filter_and_switch() {
     let fixture = prepare("\"codex\"");
     let codex_home = write_codex_home(fixture._root.path(), FUTURE_JWT);

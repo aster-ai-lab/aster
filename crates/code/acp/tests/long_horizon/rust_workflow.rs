@@ -11,6 +11,8 @@ use std::time::Instant;
 
 pub struct RustRun {
     pub work: Result<String, &'static str>,
+    pub session_id: Option<acp::SessionId>,
+    pub goal_state: Option<Value>,
     pub oracle: Result<Oracle, String>,
     pub cleanup: Result<(), &'static str>,
     pub events: Vec<Value>,
@@ -63,10 +65,38 @@ impl RustRun {
         assets: &Path,
         deadline: std::time::Duration,
     ) -> Self {
+        Self::execute_request(driver, fixture, assets, deadline, fixture.request(), false).await
+    }
+
+    pub async fn execute_goal(
+        driver: Driver,
+        fixture: &Fixture,
+        assets: &Path,
+        deadline: std::time::Duration,
+    ) -> Self {
+        let request = format!("/goal Complete the following task in at least two dependency-ordered stages. Accept each stage only with its current evidence. Preserve every requirement below.\n\n{}", fixture.request());
+        Self::execute_request(driver, fixture, assets, deadline, &request, true).await
+    }
+
+    async fn execute_request(
+        driver: Driver,
+        fixture: &Fixture,
+        assets: &Path,
+        deadline: std::time::Duration,
+        request: &str,
+        observe_goal: bool,
+    ) -> Self {
         let started = Instant::now();
+        let mut session_id = None;
+        let mut goal_state = None;
         let work = tokio::time::timeout(deadline, async {
             let session = driver.open(&fixture.workspace, None).await?;
-            driver.prompt(&session, fixture.request()).await
+            session_id = Some(session.clone());
+            let result = driver.prompt(&session, request).await;
+            if observe_goal {
+                goal_state = Some(driver.goal_state(&session).await?);
+            }
+            result
         })
         .await
         .unwrap_or(Err("workflow_deadline"));
@@ -96,6 +126,8 @@ impl RustRun {
         let wire_checks = wire_checks(&events);
         Self {
             work,
+            session_id,
+            goal_state,
             oracle,
             cleanup,
             events,
@@ -132,6 +164,7 @@ impl RustRun {
         qualification_pass: bool,
         metadata: Value,
     ) {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::ResultWrite);
         let workflow_pass = self.passed();
         std::fs::write(
             output.join("wire-notifications.json"),
@@ -155,6 +188,8 @@ fn retained_workflow_does_not_hide_an_outer_identity_failure() {
     std::fs::create_dir(&output).unwrap();
     let mut run = RustRun {
         work: Ok("controlled fixture".into()),
+        session_id: None,
+        goal_state: None,
         oracle: Ok(Oracle {
             correct: true,
             compile_ok: true,

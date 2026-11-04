@@ -1,0 +1,14 @@
+{
+  "schema": "aster.code.lh.candidate.v1",
+  "build_id": "aster-cli-pair-v1:3b78de62a5032c928ec4e58e9ce5a6aad16cb614:aarch64-apple-darwin",
+  "aster": {
+    "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/aster",
+    "sha256": "76a1f52473f740468a53b067d0a4552ad3e72782fd0b7276d7600bacd2df474e",
+    "bytes": 899099496
+  },
+  "acp": {
+    "path": "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/aster-acp",
+    "sha256": "f169e9ad9404de6ef78bffcb4af7f79477c2b60979f5c84a7aedc8cc6d329a2a",
+    "bytes": 355117560
+  }
+}

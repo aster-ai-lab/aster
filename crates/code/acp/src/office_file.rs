@@ -141,10 +141,20 @@ impl Tool for OfficeFileTool {
             "properties": {
                 "file_path": {"type": "string", "description": "New workspace path, with an extension matching kind. Parent directories must already exist."},
                 "kind": {"type": "string", "enum": ["docx", "xlsx", "pptx", "png"]},
-                "blocks": {"type": "array", "minItems": 1, "maxItems": 1000, "description": "Required only for docx. Ordered paragraphs and rectangular tables; at most 10000 table cells total.", "items": {"oneOf": [
-                    {"type": "object", "additionalProperties": false, "properties": {"type": {"const": "paragraph"}, "text": {"type": "string"}}, "required": ["type", "text"]},
-                    {"type": "object", "additionalProperties": false, "properties": {"type": {"const": "table"}, "rows": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "array", "minItems": 1, "maxItems": 63, "items": {"type": "string"}}}}, "required": ["type", "rows"]}
-                ]}},
+                "blocks": {"type": "array", "minItems": 1, "maxItems": 1000, "description": "Required only for docx. Ordered paragraphs and rectangular tables; at most 10000 table cells total. Tables need 1..1000 rectangular rows of 1..63 string cells.", "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["type"],
+                    "properties": {
+                        "type": {"type": "string", "enum": ["paragraph", "table"]},
+                        "text": {"type": "string"},
+                        "rows": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "array", "minItems": 1, "maxItems": 63, "items": {"type": "string"}}}
+                    },
+                    "allOf": [
+                        {"if": {"properties": {"type": {"const": "paragraph"}}, "required": ["type"]}, "then": {"required": ["text"], "not": {"required": ["rows"]}}},
+                        {"if": {"properties": {"type": {"const": "table"}}, "required": ["type"]}, "then": {"required": ["rows"], "not": {"required": ["text"]}}}
+                    ]
+                }},
                 "sheets": {"type": "array", "minItems": 1, "maxItems": 32, "description": "Required only for xlsx; at most 10000 total cells.", "items": {
                     "type": "object", "additionalProperties": false,
                     "properties": {"name": {"type": "string"}, "rows": {"type": "array", "maxItems": 1000, "items": {"type": "array", "maxItems": 100, "items": {"oneOf": [
@@ -372,20 +382,38 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                 "docx requires 1 to 1000 blocks"
             );
             let mut total = 0usize;
-            for block in blocks {
+            for (block_index, block) in blocks.iter().enumerate() {
                 ensure!(!ctx.is_cancelled(), "office_file cancelled");
                 match block {
                     Block::Paragraph { text } => {
+                        ensure_xml_safe_text(text, &format!("blocks[{block_index}].text"))?;
                         editor.add_paragraph("/body", text)?;
                     }
                     Block::Table { rows } => {
                         let columns = rows.first().map_or(0, Vec::len);
                         ensure!(
-                            (1..=1000).contains(&rows.len())
-                                && (1..=63).contains(&columns)
-                                && rows.iter().all(|row| row.len() == columns),
-                            "docx tables require 1 to 1000 rectangular rows of 1 to 63 cells"
+                            !rows.is_empty(),
+                            "blocks[{block_index}] table rows must contain at least 1 row"
                         );
+                        ensure!(
+                            (1..=63).contains(&columns),
+                            "blocks[{block_index}] table exceeds 63 columns (got {columns})"
+                        );
+                        ensure!(
+                            (1..=1000).contains(&rows.len())
+                                && rows.iter().all(|row| row.len() == columns),
+                            "blocks[{block_index}] docx tables require 1 to 1000 rectangular rows of 1 to 63 cells"
+                        );
+                        for (row_index, row) in rows.iter().enumerate() {
+                            for (column_index, text) in row.iter().enumerate() {
+                                ensure_xml_safe_text(
+                                    text,
+                                    &format!(
+                                        "blocks[{block_index}].rows[{row_index}][{column_index}]"
+                                    ),
+                                )?;
+                            }
+                        }
                         total += rows.len() * columns;
                         ensure!(total <= MAX_CELLS, "document exceeds 10000 table cells");
                         let path = editor.add_table("/body", rows.len(), columns)?;
@@ -440,6 +468,18 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                         let (value, number_format) = if value.is_object() {
                             match serde_json::from_value::<ExtendedCell>(value.clone())? {
                                 ExtendedCell::Formula(cell) => {
+                                    ensure_xml_safe_text(
+                                        &cell.formula,
+                                        &format!("sheets[{index}].rows[{row}][{column}].formula"),
+                                    )?;
+                                    if let Some(format) = &cell.number_format {
+                                        ensure_xml_safe_text(
+                                            format,
+                                            &format!(
+                                                "sheets[{index}].rows[{row}][{column}].number_format"
+                                            ),
+                                        )?;
+                                    }
                                     formula_count += 1;
                                     (
                                         Some(SpreadsheetCellValue::Formula {
@@ -449,10 +489,28 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                                     )
                                 }
                                 ExtendedCell::Formatted(cell) => {
+                                    if let Some(text) = cell.value.as_str() {
+                                        ensure_xml_safe_text(
+                                            text,
+                                            &format!("sheets[{index}].rows[{row}][{column}].value"),
+                                        )?;
+                                    }
+                                    ensure_xml_safe_text(
+                                        &cell.number_format,
+                                        &format!(
+                                            "sheets[{index}].rows[{row}][{column}].number_format"
+                                        ),
+                                    )?;
                                     (scalar_value(&cell.value)?, Some(cell.number_format))
                                 }
                             }
                         } else {
+                            if let Some(text) = value.as_str() {
+                                ensure_xml_safe_text(
+                                    text,
+                                    &format!("sheets[{index}].rows[{row}][{column}]"),
+                                )?;
+                            }
                             (scalar_value(value)?, None)
                         };
                         if let Some(value) = value {
@@ -516,11 +574,15 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                     !slide.title.trim().is_empty() && slide.title.chars().count() <= 40,
                     "slide title must contain 1 to 40 characters"
                 );
+                ensure_xml_safe_text(&slide.title, "slides[].title")?;
                 ensure!(
                     slide.body.len() <= 3
                         && slide.body.iter().all(|text| text.chars().count() <= 100),
                     "slide body supports up to 3 blocks of 100 characters"
                 );
+                for text in &slide.body {
+                    ensure_xml_safe_text(text, "slides[].body")?;
+                }
                 let path = editor.add_slide("/", &slide.title)?;
                 if let Some(chart) = &slide.chart {
                     ensure!(
@@ -531,6 +593,7 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
                         !chart.alt_text.trim().is_empty() && chart.alt_text.chars().count() <= 1000,
                         "chart alt_text must contain 1 to 1000 characters"
                     );
+                    ensure_xml_safe_text(&chart.alt_text, "slides[].chart.alt_text")?;
                     let png = render_svg_png(&chart.svg)?;
                     let size = NativeOfficeImage::inspect_bytes(&png)?;
                     let scale = (1000.0 / f64::from(size.width_px))
@@ -562,6 +625,21 @@ async fn build_office(input: &Input, ctx: &ToolContext) -> Result<(Vec<u8>, Stri
         "artifact exceeds 20 MiB"
     );
     Ok((bytes, readback))
+}
+
+fn ensure_xml_safe_text(text: &str, location: &str) -> Result<()> {
+    ensure!(
+        text.chars().all(is_xml_1_0_char),
+        "{location} contains characters that are illegal in XML 1.0; remove control characters such as U+0001 or U+FFFF before publishing"
+    );
+    Ok(())
+}
+
+fn is_xml_1_0_char(value: char) -> bool {
+    matches!(
+        value as u32,
+        0x9 | 0xA | 0xD | 0x20..=0xD7FF | 0xE000..=0xFFFD | 0x10000..=0x10FFFF
+    )
 }
 
 fn scalar_value(value: &Value) -> Result<Option<SpreadsheetCellValue>> {

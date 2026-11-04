@@ -16,12 +16,23 @@ pub const REPAIRS: [(&str, &str); 4] = [
     ("CHANGELOG.md", "Repair quantity bounds, integer tax rounding, and cent formatting.\n"),
 ];
 
+#[derive(Default, Clone, Copy, serde::Serialize)]
+pub enum VerificationPlacement {
+    #[default]
+    System,
+    ToolResult,
+}
+
 #[derive(Default, Clone, serde::Serialize)]
 pub struct Observations {
     pub requests: usize,
     pub main_steps: usize,
     pub auxiliary_requests: usize,
     pub repair_masked_check: bool,
+    pub verification_placement: VerificationPlacement,
+    pub staged_goal: bool,
+    pub goal_judgments: usize,
+    pub worker_failed: bool,
     pub saw_exact_contract_advice: bool,
     pub saw_initial_exit_code: bool,
     pub initial_exit_code: Option<i32>,
@@ -39,6 +50,16 @@ fn tool(id: &str, name: &str, args: Value) -> Value {
 }
 
 fn original_check_exit_code(request: &Value) -> Option<i32> {
+    tool_result_for_command(request, super::fixture::LOCAL_CHECK)?["content"]
+        .as_str()?
+        .split_once('\n')?
+        .0
+        .strip_prefix("Tool exit code: ")?
+        .parse()
+        .ok()
+}
+
+fn tool_result_for_command<'a>(request: &'a Value, command: &str) -> Option<&'a Value> {
     let messages = request["messages"].as_array()?;
     for (index, message) in messages.iter().enumerate() {
         if message["role"] != "assistant" {
@@ -49,7 +70,7 @@ fn original_check_exit_code(request: &Value) -> Option<i32> {
                 continue;
             }
             let args: Value = serde_json::from_str(call["function"]["arguments"].as_str()?).ok()?;
-            if args["command"] != super::fixture::LOCAL_CHECK {
+            if args["command"] != command {
                 continue;
             }
             let id = call["id"].as_str()?;
@@ -58,13 +79,7 @@ fn original_check_exit_code(request: &Value) -> Option<i32> {
                 .take_while(|item| item["role"] == "tool")
             {
                 if result["tool_call_id"] == id {
-                    return result["content"]
-                        .as_str()?
-                        .split_once('\n')?
-                        .0
-                        .strip_prefix("Tool exit code: ")?
-                        .parse()
-                        .ok();
+                    return Some(result);
                 }
             }
         }
@@ -85,7 +100,14 @@ fn decide(request: &Value, observations: &mut Observations) -> Result<Value, Str
         .collect();
     if !definitions.contains(&"write") {
         observations.auxiliary_requests += 1;
-        let analysis = json!({"intent":"general","requires_planning":false,"goal":{"description":"Repair the supplied Rust fixture","success_criteria":["All required tests pass"]},"execution_plan":{"complexity":"Simple","steps":[],"required_tools":[]},"optimized_input":"Read README.md and complete the requested repair, preserving protected files."});
+        let analysis = if observations.staged_goal {
+            json!({"intent":"plan","requires_planning":true,"goal":{"description":"Repair the supplied Rust fixture","success_criteria":["All required tests pass"]},"execution_plan":{"complexity":"Medium","stages":[
+                {"id":"repair","description":"Read README.md, run the baseline, repair the requested modules and CHANGELOG.md, and verify the current changes with the admitted exact command.","success_criteria":"The exact local check passes on the repaired current files; protected files remain unchanged."},
+                {"id":"verify","description":"Run the admitted exact check again on current files and report the final result.","dependencies":["repair"],"success_criteria":"Fresh exact verification passes and the final result is reported."}
+            ],"required_tools":["read","write","bash"]},"optimized_input":"Repair and independently verify the requested current files."})
+        } else {
+            json!({"intent":"general","requires_planning":false,"goal":{"description":"Repair the supplied Rust fixture","success_criteria":["All required tests pass"]},"execution_plan":{"complexity":"Simple","steps":[],"required_tools":[]},"optimized_input":"Read README.md and complete the requested repair, preserving protected files."})
+        };
         if definitions.contains(&"emit_pre_analysis") {
             return Ok(
                 json!({"role":"assistant","tool_calls":[tool("pre-analysis", "emit_pre_analysis", analysis)]}),
@@ -93,6 +115,25 @@ fn decide(request: &Value, observations: &mut Observations) -> Result<Value, Str
         }
         if request["response_format"]["json_schema"]["name"] == "pre_analysis" {
             return Ok(json!({"role":"assistant","content":analysis.to_string()}));
+        }
+        if observations.staged_goal {
+            if observations.main_steps == 0 {
+                return Ok(json!({"role":"assistant","content":analysis.to_string()}));
+            }
+            let judgment = json!({"achieved":true,"progress":1.0,"remaining_criteria":[]});
+            if definitions.contains(&"emit_goal_achievement") {
+                observations.goal_judgments += 1;
+                return Ok(
+                    json!({"role":"assistant","tool_calls":[tool("judge-current","emit_goal_achievement",judgment)]}),
+                );
+            }
+            if request["response_format"]["json_schema"]["name"] == "goal_achievement"
+                || (observations.main_steps == 5 && observations.goal_judgments == 0)
+                || (observations.main_steps == 7 && observations.goal_judgments == 1)
+            {
+                observations.goal_judgments += 1;
+                return Ok(json!({"role":"assistant","content":judgment.to_string()}));
+            }
         }
         return Ok(json!({"role":"assistant","content":"{\"items\":[]}"}));
     }
@@ -139,19 +180,43 @@ fn decide(request: &Value, observations: &mut Observations) -> Result<Value, Str
             json!({"command":super::fixture::LOCAL_CHECK,"timeout":30000}),
         )],
         4 if observations.repair_masked_check => {
+            let masked_command = format!("{}; echo exit=$?", super::fixture::LOCAL_CHECK);
+            let masked_result = tool_result_for_command(request, &masked_command);
             observations.saw_exact_contract_advice = request["messages"]
                 .as_array()
                 .into_iter()
                 .flatten()
                 .any(|message| {
-                    message["role"] == "system"
-                        && message["content"].as_str().is_some_and(|text| {
-                            text.contains("Admitted exact commands covering current changes")
-                                && text.contains(super::fixture::LOCAL_CHECK)
-                        })
+                    (match observations.verification_placement {
+                        VerificationPlacement::System => message["role"] == "system",
+                        VerificationPlacement::ToolResult => {
+                            masked_result == Some(message)
+                                && message["content"]
+                                    .as_str()
+                                    .is_some_and(|text| text.contains("[host verification state]"))
+                        }
+                    }) && message["content"].as_str().is_some_and(|text| {
+                        text.contains("Admitted exact commands covering current changes")
+                            && text.contains(super::fixture::LOCAL_CHECK)
+                    })
                 });
             if !observations.saw_exact_contract_advice {
-                return Err("scripted_exact_contract_guidance_missing".into());
+                let frames: Vec<_> = request["messages"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|message| {
+                        let content = message["content"].as_str().unwrap_or_default();
+                        json!({"role":message["role"],
+                            "host_marker":content.contains("[host verification state]"),
+                            "advice":content.contains("Admitted exact commands covering current changes"),
+                            "command":content.contains(super::fixture::LOCAL_CHECK)})
+                    })
+                    .collect();
+                return Err(format!(
+                    "scripted_exact_contract_guidance_missing: {}",
+                    json!({"matched_masked_result":masked_result.is_some(),"frames":frames})
+                ));
             }
             vec![tool(
                 "repaired-exact-check",
@@ -159,7 +224,12 @@ fn decide(request: &Value, observations: &mut Observations) -> Result<Value, Str
                 json!({"command":super::fixture::LOCAL_CHECK,"timeout":30000}),
             )]
         }
-        4 | 5 if step == 4 || observations.repair_masked_check => {
+        5 if observations.staged_goal => vec![tool(
+            "verify-next-stage",
+            "bash",
+            json!({"command":super::fixture::LOCAL_CHECK,"timeout":30000}),
+        )],
+        4 | 5 | 6 if step == 4 || observations.repair_masked_check || observations.staged_goal => {
             return Ok(
                 json!({"role":"assistant","content":"Repaired input.rs, calc.rs and display.rs, added CHANGELOG.md, and ran the exact local check successfully. Protected files were preserved."}),
             )
@@ -249,7 +319,11 @@ fn initial_check_refuses_unbound_foreign_or_masked_result_frames() {
 }
 
 impl Scripted {
-    pub async fn start(repair_masked_check: bool) -> Self {
+    pub async fn start(
+        repair_masked_check: bool,
+        verification_placement: VerificationPlacement,
+        staged_goal: bool,
+    ) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let endpoint = format!(
             "http://{}/v1/chat/completions",
@@ -259,6 +333,8 @@ impl Scripted {
         let stopping = cancel.clone();
         let observations = Arc::new(Mutex::new(Observations {
             repair_masked_check,
+            verification_placement,
+            staged_goal,
             ..Observations::default()
         }));
         let shared = observations.clone();
@@ -266,9 +342,13 @@ impl Scripted {
             loop {
                 let (mut socket, _) = tokio::select! { _ = stopping.cancelled() => break, accepted = listener.accept() => accepted.unwrap() };
                 let exchange = async {
-                    let request = super::relay::read_request(&mut socket, &format!("Bearer {KEY}"))
-                        .await
-                        .map_err(|_| "scripted_request_refused".to_owned())?;
+                    let request = super::relay::read_request(
+                        &mut socket,
+                        &format!("Bearer {KEY}"),
+                        super::upstream::Protocol::Openai,
+                    )
+                    .await
+                    .map_err(|_| "scripted_request_refused".to_owned())?;
                     let message = decide(&request, &mut shared.lock().unwrap())?;
                     let streaming = request["stream"] == true;
                     let body = response(message, streaming);
@@ -301,14 +381,14 @@ impl Scripted {
 
     pub async fn close(mut self) -> Observations {
         self.cancel.cancel();
-        tokio::time::timeout(
+        let joined = tokio::time::timeout(
             std::time::Duration::from_secs(5),
             self.worker.take().unwrap(),
         )
-        .await
-        .unwrap()
-        .unwrap();
-        self.observations.lock().unwrap().clone()
+        .await;
+        let mut observations = self.observations.lock().unwrap().clone();
+        observations.worker_failed = !matches!(joined, Ok(Ok(())));
+        observations
     }
 }
 
@@ -404,4 +484,123 @@ fn masked_check_repair_requires_real_advice_before_the_exact_check() {
     .unwrap();
     assert_eq!(args["command"], super::fixture::LOCAL_CHECK);
     assert!(state.saw_exact_contract_advice);
+}
+
+#[test]
+fn tool_result_hint_requires_the_original_tool_and_exact_host_diagnostic() {
+    let original = json!({"model":MODEL,"messages":[
+        {"role":"assistant","tool_calls":[tool("host-issued-opaque-id","bash",json!({"command":format!("{}; echo exit=$?",super::fixture::LOCAL_CHECK)}))]},
+        {"role":"tool","tool_call_id":"host-issued-opaque-id",
+        "content":format!("[host verification state]\nAdmitted exact commands covering current changes: {}",super::fixture::LOCAL_CHECK)
+    }],"tools":[{"function":{"name":"write"}},{"function":{"name":"bash"}}]});
+    for (field, value) in [
+        ("role", "user"),
+        ("tool_call_id", "unrelated-tool"),
+        (
+            "content",
+            "Admitted exact commands covering current changes",
+        ),
+    ] {
+        let mut request = original.clone();
+        request["messages"][1][field] = value.into();
+        let mut state = Observations {
+            repair_masked_check: true,
+            main_steps: 4,
+            verification_placement: VerificationPlacement::ToolResult,
+            ..Observations::default()
+        };
+        assert!(decide(&request, &mut state).is_err());
+    }
+    let mut legacy = Observations {
+        repair_masked_check: true,
+        main_steps: 4,
+        ..Observations::default()
+    };
+    assert!(decide(&original, &mut legacy).is_err());
+    let mut state = Observations {
+        repair_masked_check: true,
+        main_steps: 4,
+        verification_placement: VerificationPlacement::ToolResult,
+        ..Observations::default()
+    };
+    let reply = decide(&original, &mut state).unwrap();
+    let args: Value = serde_json::from_str(
+        reply["tool_calls"][0]["function"]["arguments"]
+            .as_str()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(args["command"], super::fixture::LOCAL_CHECK);
+    assert!(state.saw_exact_contract_advice);
+}
+
+#[test]
+fn staged_goal_uses_typed_judgments_and_fresh_verification_in_the_next_run() {
+    let mut state = Observations {
+        staged_goal: true,
+        ..Observations::default()
+    };
+    let request = json!({"model":MODEL,"tools":[{"function":{"name":"emit_pre_analysis"}}]});
+    let reply = decide(&request, &mut state).unwrap();
+    let analysis: Value = serde_json::from_str(
+        reply["tool_calls"][0]["function"]["arguments"]
+            .as_str()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        analysis["execution_plan"]["stages"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(
+        analysis["execution_plan"]["stages"][1]["dependencies"],
+        json!(["repair"])
+    );
+    state.main_steps = 5;
+    let request = json!({"model":MODEL,"tools":[{"function":{"name":"emit_goal_achievement"}}]});
+    let reply = decide(&request, &mut state).unwrap();
+    let judgment: Value = serde_json::from_str(
+        reply["tool_calls"][0]["function"]["arguments"]
+            .as_str()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(judgment["achieved"], true);
+    state.main_steps = 5;
+    let request =
+        json!({"model":MODEL,"tools":[{"function":{"name":"write"}},{"function":{"name":"bash"}}]});
+    let reply = decide(&request, &mut state).unwrap();
+    let args: Value = serde_json::from_str(
+        reply["tool_calls"][0]["function"]["arguments"]
+            .as_str()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(args["command"], super::fixture::LOCAL_CHECK);
+    assert!(decide(&request, &mut state).unwrap()["content"].is_string());
+    assert!(decide(&request, &mut state).is_err());
+}
+
+#[test]
+fn staged_goal_json_prompt_fallback_keeps_planning_judgment_and_memory_distinct() {
+    let mut state = Observations {
+        staged_goal: true,
+        ..Observations::default()
+    };
+    let request = json!({"model":MODEL});
+    let reply = decide(&request, &mut state).unwrap();
+    let analysis: Value = serde_json::from_str(reply["content"].as_str().unwrap()).unwrap();
+    assert_eq!(analysis["requires_planning"], true);
+    for step in [5, 7] {
+        state.main_steps = step;
+        let reply = decide(&request, &mut state).unwrap();
+        let judgment: Value = serde_json::from_str(reply["content"].as_str().unwrap()).unwrap();
+        assert_eq!(judgment["achieved"], true);
+        let reply = decide(&request, &mut state).unwrap();
+        assert_eq!(reply["content"], "{\"items\":[]}");
+    }
+    assert_eq!(state.goal_judgments, 2);
 }

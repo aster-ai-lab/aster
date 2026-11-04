@@ -40,6 +40,7 @@ mod agent_bootstrap;
 mod agent_facade;
 mod agent_loop_runtime;
 mod agent_sessions;
+pub(crate) mod background_tasks;
 mod capabilities;
 mod capability_facade;
 mod command_runtime;
@@ -715,6 +716,7 @@ pub struct AgentSession {
     run_store: Arc<crate::run::InMemoryRunStore>,
     /// Materialized view of delegated subagent task lifecycle, populated from runtime events.
     subagent_tasks: Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>,
+    background_tasks: Arc<background_tasks::BackgroundTasks>,
     /// Currently executing tools observed from runtime events.
     active_tools: Arc<tokio::sync::RwLock<HashMap<String, ActiveToolState>>>,
     /// Compact execution traces for this session.

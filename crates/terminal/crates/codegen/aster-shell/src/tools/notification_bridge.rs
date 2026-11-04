@@ -3,12 +3,12 @@ use crate::session::commands::SessionCommand;
 use crate::session::commands::{NotificationPriority, NotificationSource};
 use crate::session::persistence::{DurableAppendError, PersistenceHandle, PersistenceMsg};
 use crate::tools::task_completed_frame;
+use agent_client_protocol::{self as acp, Client as _};
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
+use aster_hunk_tracker::HunkTrackerHandle;
 use aster_tools::notification::types::{ToolNotification, ToolNotificationHandle};
 use aster_tools::types::output::{BashOutput, ToolOutput};
 use aster_workspace::session::file_state::FileStateTracker;
-use aster_hunk_tracker::HunkTrackerHandle;
-use agent_client_protocol::{self as acp, Client as _};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -379,8 +379,7 @@ async fn handle_notification(
         }
         ToolNotification::SubagentCompleted(_) => {}
         ToolNotification::TaskCompleted(task_snapshot) => {
-            let is_monitor =
-                task_snapshot.kind == aster_tools::computer::types::TaskKind::Monitor;
+            let is_monitor = task_snapshot.kind == aster_tools::computer::types::TaskKind::Monitor;
             let task_id = task_snapshot.task_id.clone();
             let goal_loop_active = config
                 .goal_loop_active

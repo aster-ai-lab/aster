@@ -11,14 +11,14 @@ use crate::config::{MemoryConfig, SessionContextFactory};
 use crate::file_system::{AsyncFsWrapper, LocalFs};
 use crate::hub::{HubConfig, HubHandle};
 use crate::session::file_state::FileStateTracker;
+use aster_computer_hub_mcp_adapter::McpBridgeHandle;
+use aster_hunk_tracker::HunkTrackerHandle;
 use aster_mcp::servers::McpState;
+use aster_tool_protocol::ToolId;
+use aster_tool_runtime::WorkspaceViewerContext;
 use aster_tools::notification::AcknowledgedToolNotification;
 use aster_tools::notification::types::ToolNotificationHandle;
 use aster_tools::registry::types::{FinalizedToolset, ToolConfig, ToolServerConfig};
-use aster_computer_hub_mcp_adapter::McpBridgeHandle;
-use aster_hunk_tracker::HunkTrackerHandle;
-use aster_tool_protocol::ToolId;
-use aster_tool_runtime::WorkspaceViewerContext;
 use parking_lot::RwLock;
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
@@ -955,11 +955,11 @@ impl WorkspaceShared {
                         &sid,
                         SwapAction::Applied,
                     );
-                    let _ =
-                        self.events
-                            .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
-                                session_id: sid,
-                            });
+                    let _ = self
+                        .events
+                        .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
+                            session_id: sid,
+                        });
                     rebuilt += 1;
                 }
                 Err(e) => {

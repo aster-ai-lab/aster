@@ -65,6 +65,112 @@ pub(crate) fn validate_relative_pattern(pattern: &str, label: &str) -> Result<()
     Ok(())
 }
 
+const MAX_BRACE_EXPANSIONS: usize = 256;
+
+/// A glob that also accepts `{a,b}` alternation, which `glob::Pattern` treats
+/// as literal text. Each alternative is a separate `glob::Pattern`.
+#[derive(Debug, Clone)]
+pub(crate) struct BraceGlob {
+    expansions: Vec<String>,
+    patterns: Vec<glob::Pattern>,
+}
+
+impl BraceGlob {
+    pub(crate) fn new(pattern: &str) -> Result<Self> {
+        let expansions = expand_braces(pattern);
+        if expansions.len() > MAX_BRACE_EXPANSIONS {
+            bail!(
+                "glob pattern '{pattern}' expands to more than {MAX_BRACE_EXPANSIONS} alternatives"
+            );
+        }
+        let patterns = expansions
+            .iter()
+            .map(|expansion| glob::Pattern::new(expansion))
+            .collect::<std::result::Result<_, _>>()
+            .map_err(|error| anyhow::anyhow!("{error}"))?;
+        Ok(Self {
+            expansions,
+            patterns,
+        })
+    }
+
+    /// The brace-free patterns, for walkers that only understand `glob` syntax.
+    pub(crate) fn expansions(&self) -> &[String] {
+        &self.expansions
+    }
+
+    pub(crate) fn matches(&self, text: &str) -> bool {
+        self.patterns.iter().any(|pattern| pattern.matches(text))
+    }
+
+    pub(crate) fn matches_path(&self, path: &Path) -> bool {
+        self.patterns
+            .iter()
+            .any(|pattern| pattern.matches_path(path))
+    }
+}
+
+/// Expands the first balanced `{a,b}` group recursively. An unbalanced brace
+/// stays literal. Output stops growing once it passes the expansion limit.
+fn expand_braces(pattern: &str) -> Vec<String> {
+    let Some((open, close)) = first_brace_group(pattern) else {
+        return vec![pattern.to_string()];
+    };
+    let (head, tail) = (&pattern[..open], &pattern[close + 1..]);
+    let mut out = Vec::new();
+    for alternative in split_top_level_commas(&pattern[open + 1..close]) {
+        for expanded in expand_braces(&format!("{head}{alternative}{tail}")) {
+            out.push(expanded);
+            if out.len() > MAX_BRACE_EXPANSIONS {
+                return out;
+            }
+        }
+    }
+    out
+}
+
+fn first_brace_group(pattern: &str) -> Option<(usize, usize)> {
+    let mut depth = 0usize;
+    let mut open = 0;
+    for (index, byte) in pattern.bytes().enumerate() {
+        match byte {
+            b'{' => {
+                if depth == 0 {
+                    open = index;
+                }
+                depth += 1;
+            }
+            b'}' if depth > 0 => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some((open, index));
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+fn split_top_level_commas(body: &str) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut depth = 0usize;
+    let mut start = 0;
+    for (index, byte) in body.bytes().enumerate() {
+        match byte {
+            b'{' => depth += 1,
+            b'}' => depth = depth.saturating_sub(1),
+            b',' if depth == 0 => {
+                parts.push(&body[start..index]);
+                start = index + 1;
+            }
+            _ => {}
+        }
+    }
+    parts.push(&body[start..]);
+    parts
+}
+
 pub(super) fn normalize_relative_path(path: &Path) -> Result<PathBuf> {
     let mut out = PathBuf::new();
     for component in path.components() {
@@ -100,3 +206,7 @@ pub(crate) fn escape_control_chars_for_display(path: &str) -> String {
     }
     escaped
 }
+
+#[cfg(test)]
+#[path = "path_brace_tests.rs"]
+mod brace_tests;

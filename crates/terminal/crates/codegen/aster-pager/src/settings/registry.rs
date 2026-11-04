@@ -2,13 +2,13 @@
 //!
 //! See the module-level docs in `mod.rs` for the architectural rationale.
 
+use agent_client_protocol as acp;
 use aster_shell::agent::config::{
     ConfigSource, Feature, FeatureConfigLayers, FeatureSources, Resolved, UiConfig,
 };
 use aster_shell::config::EffectiveConfigLayers;
 use aster_shell::util::config::{DISPLAY_REFRESH_DEFAULT_AUTO_CADENCE_ENABLED, RemoteSettings};
 use aster_tools::implementations::grok_build::ask_user_question;
-use agent_client_protocol as acp;
 
 /// Stable identity for a setting. We deliberately do NOT use a `SettingId` enum: enum renames would ripple through
 /// call sites.
@@ -1454,10 +1454,8 @@ mod tests {
         }
         assert!(saw_auto, "settings must offer System (auto)");
 
-        let crate_codes: HashSet<&str> = aster_voice::STT_LANGUAGES
-            .iter()
-            .map(|l| l.code)
-            .collect();
+        let crate_codes: HashSet<&str> =
+            aster_voice::STT_LANGUAGES.iter().map(|l| l.code).collect();
         assert_eq!(
             setting_codes, crate_codes,
             "settings concrete languages must match aster_voice::STT_LANGUAGES exactly"

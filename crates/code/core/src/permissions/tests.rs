@@ -1,6 +1,66 @@
 use super::*;
 use serde_json::json;
 
+#[cfg(unix)]
+#[tokio::test]
+async fn workspace_read_follows_internal_instruction_links_but_refuses_escapes() {
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::os::unix::fs::symlink;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let directory = workspace.path().join("项目 with spaces");
+    std::fs::create_dir(&directory).unwrap();
+    std::fs::write(directory.join("CLAUDE.md"), "project instructions\n").unwrap();
+    symlink("CLAUDE.md", directory.join("AGENTS.md")).unwrap();
+    let outside = tempfile::tempdir().unwrap();
+    std::fs::write(outside.path().join("secret.txt"), "outside bytes").unwrap();
+    symlink(
+        outside.path().join("secret.txt"),
+        directory.join("outside.md"),
+    )
+    .unwrap();
+    symlink("missing.md", directory.join("broken.md")).unwrap();
+    symlink("cycle.md", directory.join("cycle.md")).unwrap();
+    let inside = json!({"file_path":"项目 with spaces/AGENTS.md"});
+    for mode in ["default", "plan", "auto", "force"] {
+        let guardrail = InteractiveToolGuardrail::for_mode(mode)
+            .unwrap()
+            .with_workspace(workspace.path());
+        assert_eq!(guardrail.check("read", &inside), PermissionDecision::Allow);
+        assert_eq!(
+            guardrail.check(
+                "read",
+                &json!({"files":[{"path":"项目 with spaces/AGENTS.md"}]})
+            ),
+            PermissionDecision::Allow
+        );
+        assert_eq!(
+            guardrail.check(
+                "batch",
+                &json!({"invocations":[{"tool":"read","args":inside}]})
+            ),
+            PermissionDecision::Allow
+        );
+        for path in [
+            "项目 with spaces/outside.md",
+            "项目 with spaces/broken.md",
+            "项目 with spaces/cycle.md",
+        ] {
+            assert_eq!(
+                guardrail.check("read", &json!({"file_path":path})),
+                PermissionDecision::Deny,
+                "{mode}: {path}"
+            );
+        }
+        assert_eq!(guardrail.check("write", &inside), PermissionDecision::Deny);
+    }
+    let context = ToolContext::new(workspace.path().to_path_buf());
+    let output = ReadTool.execute(&inside, &context).await.unwrap();
+    assert!(output.success, "{}", output.content);
+    assert!(output.content.contains("project instructions"));
+}
+
 #[test]
 fn output_check_is_a_closed_read_only_tool_in_interactive_modes() {
     let args = json!({"action":"text_length","text":"报告，2 秒"});
@@ -955,20 +1015,30 @@ fn interactive_guardrail_denies_paths_through_existing_symlinks() {
         ("read", json!({"file_path": "escape/secret.txt"})),
         ("write", json!({"file_path": "escape/new.txt"})),
         ("ls", json!({"path": "escape"})),
-        (
-            "batch",
-            json!({"invocations": [
-                {"tool": "read", "args": {"file_path": "README.md"}},
-                {"tool": "write", "args": {"file_path": "escape/new.txt"}}
-            ]}),
-        ),
     ] {
         assert_eq!(
             guardrail.check(tool, &args),
             PermissionDecision::Deny,
             "{tool} must not traverse a workspace symlink"
         );
+        assert_eq!(
+            guardrail.denial_code(tool, &args),
+            Some("symlink_boundary_escape"),
+            "{tool} must name the symlink boundary"
+        );
     }
+    // One escaping member must not veto the outer batch; nested writes still deny.
+    assert_ne!(
+        guardrail.check(
+            "batch",
+            &json!({"invocations": [
+                {"tool": "read", "args": {"file_path": "README.md"}},
+                {"tool": "write", "args": {"file_path": "escape/new.txt"}}
+            ]}),
+        ),
+        PermissionDecision::Deny,
+        "batch must keep successful members when one path crosses a symlink"
+    );
     assert_eq!(
         guardrail.check("bash", &json!({"command": "cat escape/secret.txt"})),
         PermissionDecision::Deny,
@@ -1866,6 +1936,8 @@ fn workspace_symlink_escape_is_critical_for_read_and_batch() {
         guardrail.check("read", &json!({"file_path": "link.txt"})),
         PermissionDecision::Deny
     );
+    // The outer batch is admitted so a rejected member cannot veto siblings;
+    // the nested read still denies through the same symlink boundary.
     assert_eq!(
         guardrail.check(
             "batch",
@@ -1876,6 +1948,46 @@ fn workspace_symlink_escape_is_critical_for_read_and_batch() {
                 }]
             }),
         ),
+        PermissionDecision::Allow
+    );
+    assert_eq!(
+        guardrail.denial_code("read", &json!({"file_path": "link.txt"})),
+        Some("symlink_boundary_escape")
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn batch_keeps_admitted_members_when_one_path_escapes_the_workspace() {
+    let workspace = tempfile::tempdir().unwrap();
+    std::fs::write(workspace.path().join("ok.txt"), "ok\n").unwrap();
+    let guardrail = InteractiveToolGuardrail::for_mode("force")
+        .unwrap()
+        .with_workspace(workspace.path());
+    let outside = workspace.path().join("..").join("outside-secret.txt");
+    let batch = json!({
+        "invocations": [
+            {"tool": "read", "args": {"file_path": "ok.txt"}},
+            {"tool": "search", "args": {"path": outside.to_string_lossy(), "query": "secret"}}
+        ]
+    });
+    assert_ne!(
+        guardrail.check("batch", &batch),
+        PermissionDecision::Deny,
+        "one out-of-workspace member must not deny the whole batch"
+    );
+    assert_eq!(
+        guardrail.check(
+            "search",
+            &json!({"path": outside.to_string_lossy(), "query": "secret"})
+        ),
         PermissionDecision::Deny
+    );
+    assert_eq!(
+        guardrail.denial_code(
+            "search",
+            &json!({"path": outside.to_string_lossy(), "query": "secret"})
+        ),
+        Some("workspace_boundary_escape")
     );
 }

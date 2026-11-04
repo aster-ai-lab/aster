@@ -45,8 +45,10 @@ impl FlowRuntime for GreetingRuntime {
 #[cfg(feature = "sqlite")]
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> aster_flow::Result<()> {
-    let db_path =
-        std::env::temp_dir().join(format!("aster-flow-sqlite-example-{}.db", std::process::id()));
+    let db_path = std::env::temp_dir().join(format!(
+        "aster-flow-sqlite-example-{}.db",
+        std::process::id()
+    ));
     let _ = tokio::fs::remove_file(&db_path).await;
     let url = format!("sqlite://{}", db_path.display());
 

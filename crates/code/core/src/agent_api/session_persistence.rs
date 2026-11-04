@@ -227,6 +227,12 @@ impl SessionPersistenceContext {
             || current.cache_write_tokens != saved.cache_write_tokens
     }
 
+    pub(super) fn usage_total(&self) -> usize {
+        read_or_recover(&self.persistence_state)
+            .total_usage
+            .total_tokens
+    }
+
     pub(crate) async fn save(&self) -> Result<()> {
         let store = match &self.session_store {
             Some(store) => store,
@@ -363,7 +369,7 @@ impl SessionPersistenceContext {
             .or_else(|| self.package_binding.clone())
     }
 
-    pub(super) async fn auto_save_if_enabled(&self) {
+    pub(crate) async fn auto_save_if_enabled(&self) {
         if self.auto_save {
             if let Err(e) = self.save().await {
                 tracing::warn!("Auto-save failed for session {}: {}", self.session_id, e);

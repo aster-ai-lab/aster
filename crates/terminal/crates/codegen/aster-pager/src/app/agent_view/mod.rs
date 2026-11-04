@@ -879,6 +879,7 @@ pub struct AgentView {
     pub(crate) modal_hovered_key: Option<char>,
     /// Cached server-reported context state.
     pub context_state: Option<aster_shell::session::ContextInfo>,
+    pub(crate) usage_meter: crate::app::usage_meter::UsageMeter,
     pub status_context: Option<aster_status_line::StatusLineContext>,
     /// Held across a frame that clamps the row away, so a script keeps the size
     /// it last painted at.
@@ -1627,8 +1628,7 @@ fn translate_local_submit(
             if id == Some(super::dispatch::CREDIT_LIMIT_RETRY_OPTION_ID) {
                 aster_telemetry::session_ctx::log_event(
                     aster_telemetry::events::CreditLimitUpsellClicked {
-                        surface:
-                            aster_telemetry::events::CreditLimitUpsellSurface::QuestionModal,
+                        surface: aster_telemetry::events::CreditLimitUpsellSurface::QuestionModal,
                         choice: aster_telemetry::events::CreditLimitChoice::RetryLastPrompt,
                     },
                 );
@@ -1935,8 +1935,7 @@ fn is_hash_key(key: &KeyEvent) -> bool {
 }
 /// Check `[features] remember_mode` in config.toml. Defaults to `false`.
 fn remember_mode_enabled() -> bool {
-    let path =
-        aster_tools::util::grok_home::grok_home().join(aster_config::USER_CONFIG_FILENAME);
+    let path = aster_tools::util::grok_home::grok_home().join(aster_config::USER_CONFIG_FILENAME);
     let Some(doc) = crate::config_toml_edit::read_config_document_for_edit(&path) else {
         return false;
     };

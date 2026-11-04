@@ -1,6 +1,6 @@
 [package]
 name = "aster-core"
-version = "9.1.7"
+version = "9.1.8"
 edition = "2021"
 authors = ["Aster Team"]
 license = "MIT"
@@ -30,6 +30,10 @@ required-features = ["aster-vec-fts"]
 
 [[example]]
 name = "workspace_persistent_index_production"
+required-features = ["aster-vec-fts"]
+
+[[example]]
+name = "memory_retention_benchmark"
 required-features = ["aster-vec-fts"]
 
 [[example]]
@@ -236,12 +240,11 @@ durable-memory-sqlite = ["aster-durable-memory/sqlite"]
 dm-prod1-host = ["dep:redis"]
 # Enable browser-backed search plus managed browser lifecycle
 # APIs. Moli is the runtime default and is downloaded on first headless use when
-# no packaged or user-provided executable is available; Chrome/Chromium and
-# Lightpanda remain selectable through configuration. HTTP/RSS and native API
+# no packaged or user-provided executable is available; Chrome/Chromium remains
+# selectable through configuration. HTTP/RSS and native API
 # search remain available when default features are disabled.
 headless-search = [
     "aster-search/moli",
-    "aster-search/lightpanda",
     "dep:zip",
     "dep:flate2",
     "dep:tar",

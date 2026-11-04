@@ -3,6 +3,50 @@
 use super::*;
 
 #[test]
+fn information_identity_includes_images_and_exit_outcomes_but_rejects_incomplete_results() {
+    let prepared = preparation("observation-payload");
+    let mut result =
+        result_without_execution(&prepared, ToolExecutionOutcome::Succeeded, "same".into())
+            .unwrap();
+    result.exit_code = Some(0);
+    let image = |byte| crate::llm::Attachment::new(vec![byte], "image/png");
+    result.output = runner_result_value("same", false, &[image(1)], 0, None, None);
+    let first = super::super::novelty::information_identity(
+        "read",
+        &result,
+        &prepared.effective_args_digest,
+    )
+    .unwrap();
+    result.output = runner_result_value("same", false, &[image(2)], 0, None, None);
+    let second = super::super::novelty::information_identity(
+        "read",
+        &result,
+        &prepared.effective_args_digest,
+    )
+    .unwrap();
+    assert_ne!(first, second);
+    result.outcome = ToolExecutionOutcome::Failed;
+    result.exit_code = Some(1);
+    assert_ne!(
+        second,
+        super::super::novelty::information_identity(
+            "read",
+            &result,
+            &prepared.effective_args_digest
+        )
+        .unwrap()
+    );
+    result.effects = ToolEffectObservationV1::incomplete("missing original observation");
+    assert!(super::super::novelty::information_identity(
+        "read",
+        &result,
+        &prepared.effective_args_digest
+    )
+    .unwrap()
+    .is_none());
+}
+
+#[test]
 fn private_observation_meter_does_not_change_the_model_tool_message() {
     let digest = crate::content_digest::digest_bytes("test", b"original");
     let plain = runner_result_value("original", false, &[], 0, None, None);

@@ -7,9 +7,9 @@
 use std::collections::HashSet;
 use std::path::Path;
 
+use agent_client_protocol as acp;
 use aster_agent::config::{AgentDefinition, McpServerRef};
 use aster_tools::types::compat::CompatConfig;
-use agent_client_protocol as acp;
 use serde::Deserialize;
 
 use crate::session::mcp_servers::mcp_server_name;

@@ -6,6 +6,311 @@ use tokio::sync::mpsc;
 struct RecordingSummaryClient {
     prompts: Mutex<Vec<String>>,
     systems: Mutex<Vec<Option<String>>>,
+    stop_reason: &'static str,
+}
+
+#[tokio::test]
+async fn mandatory_goal_echo_cannot_displace_fitting_observed_state_in_either_summary_path() {
+    use crate::agent::tests::MockLlmClient;
+
+    let goal = "Preserve opaque identifiers Ω/値🙂 and every original acceptance condition. "
+        .repeat(80)
+        .trim_end()
+        .to_string();
+    let short = "Observed checkpoint ξ: 481516; validation remains pending.".to_string();
+    let full = (0..24)
+        .map(|index| format!("Observed value {index:02}: opaque-値🙂-{index}; check pending.\n"))
+        .collect::<String>()
+        .trim_end()
+        .to_string();
+    for state in [short, full] {
+        let response = format!("## Goal\n{goal}\n\n## Current State\n{state}");
+        let client: Arc<dyn LlmClient> = Arc::new(MockLlmClient::new(vec![
+            MockLlmClient::text_response(&response),
+            MockLlmClient::text_response(&response),
+        ]));
+        let messages = vec![Message::user(&goal), Message::assistant(&state)];
+        let budget = CompactionBudget::for_auto_compaction(16_384, 0.8, 16_384);
+        assert!(goal.len() > budget.summary_token_limit() * 4);
+        assert!(state.len() < budget.summary_token_limit() * 3);
+        let native = compact_messages("goal-echo", &messages, &client, budget, None, None, None)
+            .await
+            .unwrap()
+            .unwrap()
+            .summary;
+        let folded = summarize_folded_prefix(
+            client.as_ref(),
+            &[format!("user\n{goal}"), format!("assistant\n{state}")],
+            budget,
+            None,
+        )
+        .await
+        .unwrap();
+        let outcomes = [("native", native), ("folded", folded)];
+        for (_, summary) in &outcomes {
+            assert!(
+                summary.contains(&goal),
+                "the original goal remains exact outside the body budget"
+            );
+            assert_eq!(summary.matches("## Goal").count(), 1);
+        }
+        let missing = outcomes
+            .iter()
+            .filter_map(|(name, summary)| (!summary.contains(&state)).then_some(*name))
+            .collect::<Vec<_>>();
+        assert!(
+            missing.is_empty(),
+            "a removable goal echo displaced fitting observed state: {missing:?}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn recovery_metadata_never_becomes_a_goal_or_accumulates_across_handoffs() {
+    let goal = "Preserve the literal `## Compaction source` 値🙂 exactly.";
+    let store = crate::tools::ArtifactStore::new();
+    let carried = crate::compaction_carry::obligations_from_messages(&[Message::user(goal)]);
+    let mut summary = crate::compaction_carry::seal_summary("", &carried);
+    for index in 0..6 {
+        let source =
+            CompactionSource::prepare(Some(&store), format!("Original observation {index}"))
+                .await
+                .unwrap()
+                .unwrap();
+        source.attach(&mut summary).await.unwrap();
+        let folded = vec![format!(
+            "user\n{}{}",
+            crate::prompts::CONTEXT_SUMMARY_PREFIX,
+            summary
+        )];
+        let carried = crate::compaction_carry::obligations_from_folded(&folded);
+        assert_eq!(
+            carried.active_goal.as_deref(),
+            Some(goal),
+            "framework metadata must not be promoted to the user goal"
+        );
+        assert_eq!(
+            summary
+                .matches(crate::tools::FULL_OUTPUT_ARTIFACT_MARKER)
+                .count(),
+            1,
+            "only the current recovery reference belongs in the handoff"
+        );
+        summary = crate::compaction_carry::seal_summary(&folded.join("\n"), &carried);
+    }
+}
+
+#[tokio::test]
+async fn source_reference_replacement_preserves_following_public_text() {
+    for following in [
+        " Same-line public observation Ω-72c1.",
+        "\n\nassistant\nObserved opaque value Ω-42f8; the final check remains pending.",
+        "\n\n## Current State\nObserved opaque value 値🙂-72bc.\n\nKeep this paragraph.",
+    ] {
+        let store = crate::tools::ArtifactStore::new();
+        let old = CompactionSource::prepare(Some(&store), "earlier public input".into())
+            .await
+            .unwrap()
+            .unwrap();
+        let mut summary = "## Goal\nKeep the original task.".to_string();
+        old.attach(&mut summary).await.unwrap();
+        let old_uri = store.artifacts()[0].artifact_uri.clone();
+        summary.push_str(following);
+        let replacement = CompactionSource::prepare(Some(&store), "later public input".into())
+            .await
+            .unwrap()
+            .unwrap();
+        replacement.attach(&mut summary).await.unwrap();
+        assert!(
+            summary.contains(following),
+            "replacing framework metadata deleted following public text: {following:?}"
+        );
+        assert!(!summary.contains(&old_uri));
+        assert_eq!(
+            summary
+                .matches(crate::tools::FULL_OUTPUT_ARTIFACT_MARKER)
+                .count(),
+            1
+        );
+    }
+}
+
+#[tokio::test]
+async fn truncated_source_notice_cannot_consume_following_public_text() {
+    let store = crate::tools::ArtifactStore::new();
+    let original = format!(
+        "## Goal\nKeep the original task.\n\n{PUBLIC_SOURCE_HEADER}\n{}aster://tool-output/compaction/truncated\n\nassistant\nObserved [opaque Ω-14c9] checkpoint; verification remains pending.",
+        crate::tools::FULL_OUTPUT_ARTIFACT_MARKER
+    );
+    let mut summary = original.clone();
+    let replacement = CompactionSource::prepare(Some(&store), "later public input".into())
+        .await
+        .unwrap()
+        .unwrap();
+    replacement.attach(&mut summary).await.unwrap();
+    assert!(
+        summary.starts_with(&original),
+        "an incomplete metadata line must not consume later public text"
+    );
+    assert!(summary.contains(&store.artifacts()[0].artifact_uri));
+}
+
+#[tokio::test]
+async fn public_compaction_source_preserves_observations_without_private_continuation() {
+    let root = tempfile::tempdir().unwrap();
+    let executor = crate::tools::ToolExecutor::new(root.path().display().to_string());
+    let store = executor.artifact_store();
+    let client: Arc<dyn LlmClient> = Arc::new(RecordingSummaryClient {
+        prompts: Mutex::new(vec![]),
+        systems: Mutex::new(vec![]),
+        stop_reason: "end_turn",
+    });
+    let token = "Exact observed value 値🙂-983af04";
+    let private = "SYNTHETIC-PRIVATE-CONTINUATION";
+    let mut old = Message::assistant("Original observation follows.");
+    old.reasoning_content = Some(private.into());
+    let mut messages = vec![Message::user("Continue the original task."), old];
+    messages.push(make_tool_result_msg(
+        "old",
+        &format!("{token}\n{}", "old data\n".repeat(2500)),
+    ));
+    for index in 0..8 {
+        messages.push(make_tool_result_msg(
+            &format!("later-{index}"),
+            &"later data\n".repeat(3000),
+        ));
+    }
+    messages.extend((0..10).map(|_| Message::user("Later ordinary context.")));
+    let compacted = compact_messages(
+        "public-source",
+        &messages,
+        &client,
+        CompactionBudget::for_auto_compaction(8_192, 0.8, 0),
+        None,
+        None,
+        CompactionSource::from_messages(Some(&store), &messages)
+            .await
+            .unwrap(),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert!(!compacted.summary.contains(token));
+    let artifacts = store.artifacts();
+    assert_eq!(artifacts.len(), 1);
+    assert!(artifacts[0].content.contains(token));
+    assert!(!artifacts[0].content.contains(private));
+    assert!(compacted.summary.contains(&artifacts[0].artifact_uri));
+    let read = executor
+        .registry()
+        .execute(
+            "read",
+            &serde_json::json!({"file_path":artifacts[0].artifact_uri}),
+        )
+        .await
+        .unwrap();
+    assert_eq!(read.exit_code, 0);
+    assert!(read.output.contains(token));
+}
+
+#[tokio::test]
+async fn public_compaction_source_keeps_existing_limits_and_lossless_fast_path() {
+    use crate::tools::{ArtifactStore, ArtifactStoreLimits};
+    assert!(CompactionSource::prepare(None, "public input".into())
+        .await
+        .unwrap()
+        .is_none());
+    for limits in [
+        ArtifactStoreLimits {
+            max_artifacts: 0,
+            max_bytes: 100,
+        },
+        ArtifactStoreLimits {
+            max_artifacts: 2,
+            max_bytes: 4,
+        },
+    ] {
+        let store = ArtifactStore::with_limits(limits);
+        assert!(
+            CompactionSource::prepare(Some(&store), "public input".into())
+                .await
+                .unwrap()
+                .is_none()
+        );
+        assert!(store.is_empty());
+    }
+    let store = ArtifactStore::new();
+    let original = CompactionSource::prepare(Some(&store), "exact input".into())
+        .await
+        .unwrap()
+        .unwrap();
+    let mut lossless = "summary containing exact input unchanged".into();
+    original.attach(&mut lossless).await.unwrap();
+    assert!(store.is_empty());
+    assert_eq!(lossless, "summary containing exact input unchanged");
+}
+
+#[tokio::test]
+async fn an_evicted_compaction_source_is_never_advertised_as_readable() {
+    use crate::tools::{ArtifactStore, ArtifactStoreLimits, ToolArtifact};
+    let store = ArtifactStore::with_limits(ArtifactStoreLimits {
+        max_artifacts: 2,
+        max_bytes: 80,
+    });
+    let pinned = "aster://tool-output/existing/pinned";
+    store.put(ToolArtifact {
+        artifact_id: "pinned".into(),
+        artifact_uri: pinned.into(),
+        tool_name: "existing".into(),
+        content: "p".repeat(60),
+        original_bytes: 60,
+        shown_bytes: 60,
+    });
+    store.pin_uris([pinned]);
+    let original = CompactionSource::prepare(Some(&store), "public ".repeat(6))
+        .await
+        .unwrap()
+        .unwrap();
+    let previous = format!(
+        "general summary\n\n{PUBLIC_SOURCE_HEADER}\n{}{}]",
+        crate::tools::FULL_OUTPUT_ARTIFACT_MARKER,
+        pinned
+    );
+    let mut summary = previous.clone();
+    original.attach(&mut summary).await.unwrap();
+    assert_eq!(summary, previous);
+    assert_eq!(store.len(), 1);
+    assert!(store.get(pinned).is_some());
+}
+
+#[tokio::test]
+async fn a_tiny_compaction_budget_keeps_the_summary_without_an_unusable_source_notice() {
+    let store = crate::tools::ArtifactStore::new();
+    let client: Arc<dyn LlmClient> = Arc::new(RecordingSummaryClient {
+        prompts: Mutex::new(vec![]),
+        systems: Mutex::new(vec![]),
+        stop_reason: "end_turn",
+    });
+    let messages = vec![
+        Message::user("original scope"),
+        Message::assistant("observed opaque data"),
+    ];
+    let compacted = compact_messages(
+        "tiny",
+        &messages,
+        &client,
+        CompactionBudget::for_auto_compaction(128, 0.8, 0),
+        None,
+        None,
+        CompactionSource::from_messages(Some(&store), &messages)
+            .await
+            .unwrap(),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert!(compacted.summary.contains("durable compact summary"));
+    assert!(store.is_empty());
 }
 
 #[async_trait::async_trait]
@@ -30,7 +335,7 @@ impl LlmClient for RecordingSummaryClient {
         Ok(LlmResponse {
             message: Message::assistant("durable compact summary"),
             usage: TokenUsage::default(),
-            stop_reason: Some("stop".to_string()),
+            stop_reason: Some(self.stop_reason.to_string()),
             token_logprobs: Vec::new(),
             meta: None,
         })
@@ -52,6 +357,7 @@ async fn folded_prefix_summary_is_model_text_and_prunes_old_tool_output() {
     let client = Arc::new(RecordingSummaryClient {
         prompts: Mutex::new(Vec::new()),
         systems: Mutex::new(Vec::new()),
+        stop_reason: "stop",
     });
     let huge = "x".repeat(80_000);
     let lines = vec![
@@ -59,9 +365,14 @@ async fn folded_prefix_summary_is_model_text_and_prunes_old_tool_output() {
         format!("tool\n{huge}"),
         "tool\nrecent-output".to_string(),
     ];
-    let summary = summarize_folded_prefix(client.as_ref(), &lines, 8_000, None)
-        .await
-        .expect("summary");
+    let summary = summarize_folded_prefix(
+        client.as_ref(),
+        &lines,
+        CompactionBudget::for_auto_compaction(8_000, 0.8, 0),
+        None,
+    )
+    .await
+    .expect("summary");
     assert!(summary.contains("durable compact summary"));
     assert!(summary.contains("ship the parser"));
     assert!(!summary.contains("[earlier transcript compacted]"));
@@ -69,6 +380,106 @@ async fn folded_prefix_summary_is_model_text_and_prunes_old_tool_output() {
     assert!(prompt.contains("[output pruned"));
     assert!(prompt.contains("recent-output"));
     assert!(!prompt.contains(&huge));
+}
+
+#[tokio::test]
+async fn summary_request_folded_keeps_fitting_observations_before_condensing() {
+    for window in [1_024, 4_096, 16_384, 65_536] {
+        let client = RecordingSummaryClient {
+            prompts: Mutex::new(Vec::new()),
+            systems: Mutex::new(Vec::new()),
+            stop_reason: "end_turn",
+        };
+        let observation = format!(
+            "{}OPAQUE-OBSERVATION-74bc{}",
+            "x".repeat(window),
+            "y".repeat(window)
+        );
+        let lines = vec![
+            "user\nPreserve the observed values.".into(),
+            format!("tool\n{observation}"),
+        ];
+        summarize_folded_prefix(
+            &client,
+            &lines,
+            CompactionBudget::for_auto_compaction(window, 0.8, 0),
+            None,
+        )
+        .await
+        .unwrap();
+        assert!(
+            client.prompts.lock().unwrap()[0].contains(&observation),
+            "a no-tools summary request must see the fitting observation: window={window}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn summary_request_native_keeps_fitting_observations_before_condensing() {
+    for window in [1_024, 4_096, 16_384, 65_536] {
+        let client = Arc::new(RecordingSummaryClient {
+            prompts: Mutex::new(Vec::new()),
+            systems: Mutex::new(Vec::new()),
+            stop_reason: "end_turn",
+        });
+        let llm: Arc<dyn LlmClient> = client.clone();
+        let observation = format!(
+            "{}OPAQUE-OBSERVATION-81da{}",
+            "x".repeat(window),
+            "y".repeat(window)
+        );
+        let messages = vec![
+            Message::user("Preserve the observed values."),
+            make_tool_use_msg("observation"),
+            make_tool_result_msg("observation", &observation),
+            Message::assistant("Continue with the observed values."),
+        ];
+        compact_messages(
+            "summary-input",
+            &messages,
+            &llm,
+            CompactionBudget::for_auto_compaction(window, 0.8, 0),
+            None,
+            None,
+            None,
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        assert!(
+            client.prompts.lock().unwrap()[0].contains(&observation),
+            "active-tail pruning must not erase the summarizer's fitting evidence: window={window}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn summary_request_folded_bounds_non_tool_text_and_preserves_both_ends() {
+    let client = RecordingSummaryClient {
+        prompts: Mutex::new(Vec::new()),
+        systems: Mutex::new(Vec::new()),
+        stop_reason: "end_turn",
+    };
+    let lines = vec![format!(
+        "assistant\nHEAD-FACT-91bd{}TAIL-FACT-b205",
+        "汉字🙂".repeat(20_000)
+    )];
+    summarize_folded_prefix(
+        &client,
+        &lines,
+        CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
+        None,
+    )
+    .await
+    .unwrap();
+    let prompt = &client.prompts.lock().unwrap()[0];
+    assert!(
+        prompt.len() < 16_384,
+        "unbounded summary request: {} bytes",
+        prompt.len()
+    );
+    assert!(prompt.contains("HEAD-FACT-91bd"));
+    assert!(prompt.contains("TAIL-FACT-b205"));
 }
 
 // -- should_auto_compact tests --
@@ -386,6 +797,7 @@ async fn compact_summary_input_preserves_tool_calls_and_results() {
     let client = Arc::new(RecordingSummaryClient {
         prompts: Mutex::new(Vec::new()),
         systems: Mutex::new(Vec::new()),
+        stop_reason: "stop",
     });
     let llm_client: Arc<dyn LlmClient> = client.clone();
 
@@ -394,6 +806,7 @@ async fn compact_summary_input_preserves_tool_calls_and_results() {
         &messages,
         &llm_client,
         CompactionBudget::for_auto_compaction(128_000, 0.85, 0),
+        None,
         None,
         None,
     )
@@ -485,6 +898,7 @@ async fn rolling_compaction_reinserts_goal_when_model_drops_it() {
         &messages,
         &llm_client,
         CompactionBudget::for_auto_compaction(128_000, 0.85, 0),
+        None,
         None,
         None,
     )
@@ -589,6 +1003,7 @@ async fn compaction_carries_revision_constraint_and_open_step() {
         CompactionBudget::for_auto_compaction(128_000, 0.85, 0),
         None,
         None,
+        None,
     )
     .await
     .unwrap()
@@ -658,9 +1073,14 @@ async fn compaction_carries_revision_constraint_and_open_step() {
     let folded_client = Arc::new(DroppingSummarizer {
         prompts: Mutex::new(Vec::new()),
     });
-    let folded_summary = summarize_folded_prefix(folded_client.as_ref(), &folded, 8_000, None)
-        .await
-        .expect("folded summary");
+    let folded_summary = summarize_folded_prefix(
+        folded_client.as_ref(),
+        &folded,
+        CompactionBudget::for_auto_compaction(8_000, 0.8, 0),
+        None,
+    )
+    .await
+    .expect("folded summary");
     let folded_context =
         crate::compaction_carry::next_turn_context(STANDING, std::slice::from_ref(&folded_summary));
     assert!(folded_context.starts_with(STANDING));
@@ -785,6 +1205,7 @@ async fn compaction_carries_revision_constraint_and_open_step() {
         CompactionBudget::for_auto_compaction(128_000, 0.85, 0),
         None,
         None,
+        None,
     )
     .await
     .expect("compact")
@@ -841,6 +1262,7 @@ async fn compaction_carries_revision_constraint_and_open_step() {
         &kept_transcript,
         &kept_llm,
         CompactionBudget::for_auto_compaction(128_000, 0.85, 0),
+        None,
         None,
         None,
     )
@@ -907,9 +1329,37 @@ fn extract_pinned_goal_prefers_prior_summary_goal() {
 fn auto_compaction_budget_targets_a_safe_post_compaction_watermark() {
     let budget = CompactionBudget::for_auto_compaction(200_000, 0.85, 10_000);
 
-    assert_eq!(budget.target_context_tokens, 102_000);
-    assert_eq!(budget.message_token_limit, 92_000);
+    assert_eq!(budget.target_context_tokens, 106_000);
+    assert_eq!(budget.message_token_limit, 96_000);
     assert!(budget.target_context_tokens < 170_000);
+
+    let crowded = CompactionBudget::for_auto_compaction(24_576, 0.85, 14_000);
+    assert!(crowded.message_token_limit > 2_000);
+    assert!(crowded.target_context_tokens < 20_889);
+    assert_eq!(
+        crowded.target_context_tokens,
+        14_000 + crowded.message_token_limit
+    );
+    let restored = crowded
+        .with_fixed_prompt_tokens(18_000)
+        .with_fixed_prompt_tokens(14_000);
+    assert_eq!(restored.message_token_limit, crowded.message_token_limit);
+    assert_eq!(
+        restored.target_context_tokens,
+        crowded.target_context_tokens
+    );
+}
+
+#[test]
+fn reserving_more_fixed_context_cannot_increase_the_summary_allowance() {
+    let budget = CompactionBudget::for_auto_compaction(24_576, 0.85, 0);
+    let mut previous = budget.message_token_limit;
+    for fixed in 0..=24_576 {
+        let current = budget.with_fixed_prompt_tokens(fixed);
+        assert!(current.message_token_limit <= previous, "fixed={fixed}");
+        assert!(current.target_context_tokens <= budget.max_context_tokens);
+        previous = current.message_token_limit;
+    }
 }
 
 #[tokio::test]
@@ -925,11 +1375,12 @@ async fn compacted_history_is_trimmed_to_the_token_budget() {
     let client = Arc::new(RecordingSummaryClient {
         prompts: Mutex::new(Vec::new()),
         systems: Mutex::new(Vec::new()),
+        stop_reason: "stop",
     });
     let llm_client: Arc<dyn LlmClient> = client;
     let budget = CompactionBudget::for_auto_compaction(100_000, 0.85, 5_000);
 
-    let compacted = compact_messages("bounded", &messages, &llm_client, budget, None, None)
+    let compacted = compact_messages("bounded", &messages, &llm_client, budget, None, None, None)
         .await
         .unwrap()
         .expect("history should compact");
@@ -965,14 +1416,23 @@ async fn compacted_history_keeps_an_unresolved_tool_call() {
     let client = Arc::new(RecordingSummaryClient {
         prompts: Mutex::new(Vec::new()),
         systems: Mutex::new(Vec::new()),
+        stop_reason: "stop",
     });
     let llm_client: Arc<dyn LlmClient> = client;
     let budget = CompactionBudget::for_auto_compaction(20_000, 0.85, 4_000);
 
-    let compacted = compact_messages("pending-tool", &messages, &llm_client, budget, None, None)
-        .await
-        .unwrap()
-        .expect("history should compact");
+    let compacted = compact_messages(
+        "pending-tool",
+        &messages,
+        &llm_client,
+        budget,
+        None,
+        None,
+        None,
+    )
+    .await
+    .unwrap()
+    .expect("history should compact");
 
     assert!(compacted.messages.iter().any(|message| {
         message
@@ -990,4 +1450,51 @@ fn test_constants() {
     assert!(KEEP_RECENT_MESSAGES > 0);
     assert!(MIN_MESSAGES_FOR_COMPACTION >= 2);
     assert!(TOOL_OUTPUT_PROTECT_TOKENS > 0);
+}
+
+#[tokio::test]
+async fn truncated_compaction_is_rejected_by_both_summary_paths() {
+    for stop in ["length", "max_tokens"] {
+        let client = Arc::new(RecordingSummaryClient {
+            prompts: Mutex::new(Vec::new()),
+            systems: Mutex::new(Vec::new()),
+            stop_reason: stop,
+        });
+        let lines = vec!["user\nPreserve the observed values and finish the report.".into()];
+        let folded_error = summarize_folded_prefix(
+            client.as_ref(),
+            &lines,
+            CompactionBudget::for_auto_compaction(16_384, 0.8, 0),
+            None,
+        )
+        .await
+        .expect_err("nonempty truncated output is not a reliable handoff");
+        assert_eq!(
+            folded_error.downcast_ref::<crate::harness_loop::ForcedStop>(),
+            Some(&crate::harness_loop::ForcedStop::ResponseTruncated)
+        );
+        let messages = vec![
+            Message::user("Preserve observed values."),
+            Message::assistant("Still working."),
+        ];
+        let llm_client: Arc<dyn LlmClient> = client;
+        let outcome = compact_messages(
+            "truncated-summary",
+            &messages,
+            &llm_client,
+            CompactionBudget::for_auto_compaction(16_384, 0.8, 1_000),
+            None,
+            None,
+            None,
+        )
+        .await;
+        let error = match outcome {
+            Err(error) => error,
+            Ok(_) => panic!("message compaction also rejects truncated output"),
+        };
+        assert_eq!(
+            error.downcast_ref::<crate::harness_loop::ForcedStop>(),
+            Some(&crate::harness_loop::ForcedStop::ResponseTruncated)
+        );
+    }
 }

@@ -8,9 +8,9 @@
 use super::agent::AgentId;
 use crate::app::status_line::StatusLineRun;
 use crate::scrollback::entry::EntryId;
+use agent_client_protocol as acp;
 use aster_shell::sampling::types::ReasoningEffort;
 use aster_shell::session::unified_list::SessionKind;
-use agent_client_protocol as acp;
 /// Typed error for model switch failures.
 /// Replaces the raw `String` in `TaskResult::SwitchModelComplete` so dispatch can match on the variant instead of parsing strings.
 #[derive(Debug, Clone)]

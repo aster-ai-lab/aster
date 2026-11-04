@@ -1119,11 +1119,9 @@ fn compiled_input_provenance_lists_required_files() {
         HARNESS_INPUT_PATHS
             .contains(&"crates/codegen/aster-fast-worktree/src/bin/worktree_lifecycle_bench.rs")
     );
-    assert!(
-        HARNESS_INPUT_PATHS.contains(
-            &"crates/codegen/aster-fast-worktree/src/bin/worktree_lifecycle_bench/runtime.rs"
-        )
-    );
+    assert!(HARNESS_INPUT_PATHS.contains(
+        &"crates/codegen/aster-fast-worktree/src/bin/worktree_lifecycle_bench/runtime.rs"
+    ));
     assert!(HARNESS_INPUT_PATHS.contains(&"crates/codegen/aster-fast-worktree/Cargo.toml"));
     assert!(HARNESS_INPUT_PATHS.contains(&"crates/codegen/aster-fast-worktree/BUILD.bazel"));
     assert!(HARNESS_INPUT_PATHS.contains(&"Cargo.lock"));

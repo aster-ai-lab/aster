@@ -14,7 +14,7 @@ const MAX_GREP_SOURCE_ANCHORS: usize = 64;
 const MAX_GREP_FALLBACK_CANDIDATES: usize = MAX_GREP_SOURCE_ANCHORS * 4;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum GrepOutputMode {
+pub(crate) enum GrepOutputMode {
     Content,
     FilesWithMatches,
     Count,
@@ -22,7 +22,7 @@ enum GrepOutputMode {
 }
 
 impl GrepOutputMode {
-    fn parse(args: &serde_json::Value) -> std::result::Result<Self, String> {
+    pub(crate) fn parse(args: &serde_json::Value) -> std::result::Result<Self, String> {
         match args
             .get("output_mode")
             .and_then(serde_json::Value::as_str)
@@ -39,7 +39,7 @@ impl GrepOutputMode {
         }
     }
 
-    fn as_str(self) -> &'static str {
+    pub(crate) fn as_str(self) -> &'static str {
         match self {
             Self::Content => "content",
             Self::FilesWithMatches => "files_with_matches",
@@ -48,12 +48,12 @@ impl GrepOutputMode {
         }
     }
 
-    fn paginated(self) -> bool {
+    pub(crate) fn paginated(self) -> bool {
         matches!(self, Self::Content | Self::FilesWithMatches | Self::Count)
     }
 }
 
-fn has_non_neutral_page_controls(args: &serde_json::Value) -> bool {
+pub(crate) fn has_non_neutral_page_controls(args: &serde_json::Value) -> bool {
     let limit_is_non_neutral = match args.get("limit") {
         None | Some(serde_json::Value::Null) => false,
         Some(value) => value.as_u64() != Some(DEFAULT_PAGE_LIMIT as u64),
@@ -621,7 +621,7 @@ fn path_matches_grep_request(path: &WorkspacePath, request: &WorkspaceGrepReques
     let Some(glob) = request.glob.as_deref() else {
         return true;
     };
-    let Ok(pattern) = glob::Pattern::new(glob) else {
+    let Ok(pattern) = crate::workspace::BraceGlob::new(glob) else {
         return false;
     };
     if glob.contains('/') {

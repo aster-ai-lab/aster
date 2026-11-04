@@ -346,7 +346,10 @@ async fn activate_file(source: &Path, destination: &Path) -> UseResult<()> {
     let destination_path = destination.to_path_buf();
     let error_destination = destination_path.clone();
     tokio::task::spawn_blocking(move || {
-        aster_use_extension::rename_path_with_windows_retry_blocking(&source_path, &destination_path)
+        aster_use_extension::rename_path_with_windows_retry_blocking(
+            &source_path,
+            &destination_path,
+        )
     })
     .await
     .map_err(|error| {

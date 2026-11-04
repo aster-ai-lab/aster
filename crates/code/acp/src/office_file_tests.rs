@@ -447,8 +447,18 @@ async fn presentation_embeds_a_real_png_chart_below_the_title_inside_the_slide()
     let title = slide
         .children
         .iter()
-        .find(|node| node.node_type == aster_office::OfficeNodeType::Shape)
+        .find(|node| {
+            matches!(
+                node.node_type,
+                aster_office::OfficeNodeType::Shape | aster_office::OfficeNodeType::Placeholder
+            )
+        })
         .unwrap();
+    assert_eq!(title.node_type, aster_office::OfficeNodeType::Placeholder);
+    assert_eq!(
+        title.format.get("placeholderType").map(String::as_str),
+        Some("title")
+    );
     let cm = |node: &aster_office::DocumentNode, key: &str| {
         node.format[key]
             .trim_end_matches("cm")
@@ -549,7 +559,12 @@ async fn native_presentation_contains_all_requested_slides_and_saved_text() {
     let mut boxes: Vec<(i64, i64)> = slide
         .children
         .iter()
-        .filter(|node| node.node_type == aster_office::OfficeNodeType::Shape)
+        .filter(|node| {
+            matches!(
+                node.node_type,
+                aster_office::OfficeNodeType::Shape | aster_office::OfficeNodeType::Placeholder
+            )
+        })
         .map(|node| {
             let y = (node.format["y"]
                 .trim_end_matches("cm")
@@ -567,11 +582,20 @@ async fn native_presentation_contains_all_requested_slides_and_saved_text() {
         })
         .collect();
     boxes.sort_unstable();
-    assert_eq!(boxes.len(), 4);
+    // Title placeholder + one body placeholder per body line.
+    assert_eq!(boxes.len(), 4, "{boxes:?}");
     assert!(boxes
         .iter()
         .all(|&(top, bottom)| top >= 0 && bottom <= 190_500));
     assert!(boxes.windows(2).all(|pair| pair[0].1 <= pair[1].0));
+    let slide_part = document
+        .package()
+        .xml_part("ppt/slides/slide1.xml")
+        .unwrap();
+    let slide_xml = std::str::from_utf8(slide_part.raw()).unwrap();
+    assert!(slide_xml.contains("type=\"title\""), "{slide_xml}");
+    assert!(slide_xml.contains("type=\"body\""), "{slide_xml}");
+    assert!(!slide_xml.contains("txBox=\"1\""), "{slide_xml}");
 }
 
 #[tokio::test]
@@ -691,4 +715,127 @@ fn columns_and_explicit_tool_denies_keep_their_contract() {
         || panic!("denied tool must not execute"),
     );
     assert_eq!(result, Err("deny"));
+}
+
+#[tokio::test]
+async fn docx_rejects_illegal_xml_chars_and_emits_breaks_without_leading_blank() {
+    let root = tempfile::tempdir().unwrap();
+    let ctx = context(root.path());
+    let illegal = execute(
+        &json!({
+            "file_path": "bad.docx",
+            "kind": "docx",
+            "blocks": [{"type": "paragraph", "text": "x\u{0001}y"}]
+        }),
+        &ctx,
+    )
+    .await
+    .unwrap();
+    assert!(!illegal.success, "{}", illegal.content);
+    assert!(
+        illegal.content.contains("illegal in XML 1.0"),
+        "{}",
+        illegal.content
+    );
+    assert!(!root.path().join("bad.docx").exists());
+
+    let output = execute(
+        &json!({
+            "file_path": "lines.docx",
+            "kind": "docx",
+            "blocks": [{"type": "paragraph", "text": "第一行\n第二行\t尾"}]
+        }),
+        &ctx,
+    )
+    .await
+    .unwrap();
+    assert!(output.success, "{}", output.content);
+    assert_eq!(output.metadata.as_ref().unwrap()["validated"], true);
+    let document = NativeOfficeDocument::open(root.path().join("lines.docx"))
+        .await
+        .unwrap();
+    assert_eq!(
+        document.get("/body/p[1]", 0).unwrap().text,
+        "第一行\n第二行\t尾"
+    );
+    let document_xml = document.package().xml_part("word/document.xml").unwrap();
+    let xml = std::str::from_utf8(document_xml.raw()).unwrap();
+    assert!(!xml.contains("<w:p/>"), "{xml}");
+    assert!(xml.contains("<w:br/>"), "{xml}");
+    assert!(xml.contains("xml:space=\"preserve\""), "{xml}");
+    assert!(!xml.contains('\u{0001}'));
+}
+
+#[tokio::test]
+async fn table_columns_fit_page_content_width_and_pptx_uses_placeholders() {
+    let root = tempfile::tempdir().unwrap();
+    let ctx = context(root.path());
+    let docx = execute(
+        &json!({
+            "file_path": "wide.docx",
+            "kind": "docx",
+            "blocks": [{"type": "table", "rows": [vec!["a"; 4], vec!["b"; 4]]}]
+        }),
+        &ctx,
+    )
+    .await
+    .unwrap();
+    assert!(docx.success, "{}", docx.content);
+    let document = NativeOfficeDocument::open(root.path().join("wide.docx"))
+        .await
+        .unwrap();
+    let document_xml = document.package().xml_part("word/document.xml").unwrap();
+    let xml = std::str::from_utf8(document_xml.raw()).unwrap();
+    assert_eq!(xml.matches("w:w=\"2340\"").count() >= 4, true, "{xml}");
+    assert!(!xml.contains("w:w=\"2400\""), "{xml}");
+
+    let pptx = execute(
+        &json!({
+            "file_path": "deck.pptx",
+            "kind": "pptx",
+            "slides": [{"title": "标题", "body": ["正文一块"]}]
+        }),
+        &ctx,
+    )
+    .await
+    .unwrap();
+    assert!(pptx.success, "{}", pptx.content);
+    let deck = NativeOfficeDocument::open(root.path().join("deck.pptx"))
+        .await
+        .unwrap();
+    let title = deck.get("/slide[1]/placeholder[title]", 0).unwrap();
+    assert_eq!(title.text, "标题");
+    let slide_part = deck.package().xml_part("ppt/slides/slide1.xml").unwrap();
+    let slide_xml = std::str::from_utf8(slide_part.raw()).unwrap();
+    assert!(slide_xml.contains("type=\"title\""), "{slide_xml}");
+    assert!(slide_xml.contains("type=\"body\""), "{slide_xml}");
+    assert!(!slide_xml.contains("txBox=\"1\""), "{slide_xml}");
+}
+
+#[tokio::test]
+async fn workbook_round_matches_excel_half_up_on_decimal_midpoints() {
+    let root = tempfile::tempdir().unwrap();
+    let output = execute(
+        &json!({
+            "file_path": "round.xlsx",
+            "kind": "xlsx",
+            "sheets": [{"name": "Sheet1", "rows": [[
+                {"formula": "ROUND(1.005,2)"},
+                {"formula": "ROUND(2.005,2)"},
+                {"formula": "ROUND(1.015,2)"},
+                {"formula": "ROUND(5.005,2)"}
+            ]]}]
+        }),
+        &context(root.path()),
+    )
+    .await
+    .unwrap();
+    assert!(output.success, "{}", output.content);
+    let document = NativeOfficeDocument::open(root.path().join("round.xlsx"))
+        .await
+        .unwrap();
+    assert_eq!(document.get("/Sheet1/A1", 0).unwrap().text, "1.01");
+    assert_eq!(document.get("/Sheet1/B1", 0).unwrap().text, "2.01");
+    assert_eq!(document.get("/Sheet1/C1", 0).unwrap().text, "1.02");
+    assert_eq!(document.get("/Sheet1/D1", 0).unwrap().text, "5.01");
 }

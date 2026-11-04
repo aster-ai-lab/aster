@@ -1,7 +1,7 @@
 //! Registry for providers shipped with `aster-search`.
 
 use super::{
-    AsterProvider, AliyunProvider, AnySearchProvider, BochaProvider, DeepSeekProvider,
+    AliyunProvider, AnySearchProvider, AsterProvider, BochaProvider, DeepSeekProvider,
     DoubaoProvider, FirecrawlProvider, ProviderEngine, TavilyProvider, TencentProvider,
     TinyFishProvider,
 };

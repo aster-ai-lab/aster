@@ -1,0 +1,11 @@
+{
+  "label": "fixed-prefix-budget-20261104-current-config-1",
+  "registration": "docs/evidence/code/2026-11-02-summary-input-retention/fixed-prefix-budget-20261104-current-config-1-qualification-preregistration.json",
+  "sourceHash": "55ad0e75dfc6f70f2b5f373390711c7926ef3c28",
+  "parentSourceHash": "3b78de62a5032c928ec4e58e9ce5a6aad16cb614",
+  "changedPaths": [
+    "crates/code/core/src/compaction.rs",
+    "crates/code/core/src/compaction/tests.rs",
+    "crates/code/core/src/fact_control/compaction_budget_tests.rs"
+  ]
+}

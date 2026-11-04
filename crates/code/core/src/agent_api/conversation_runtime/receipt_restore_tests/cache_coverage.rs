@@ -921,3 +921,69 @@ async fn completion_gate_to_host_retains_typed_reconciliation() {
     );
     fixture.pinned.close().await;
 }
+
+#[tokio::test]
+async fn truncated_completion_preserves_the_stop_and_the_original_gate_debt() {
+    for unresolved in [false, true] {
+        let fixture = CacheCoverageFixture::new().await;
+        let surface = fixture.pinned.parts.surface.as_ref().unwrap();
+        surface
+            .ledger
+            .lock()
+            .unwrap()
+            .observe_tool_receipt(&fixture.write.tool_name, &fixture.written);
+        if unresolved {
+            surface
+                .ledger
+                .lock()
+                .unwrap()
+                .restore_unresolved_tool_effects(
+                    std::collections::BTreeSet::from(["exact-unresolved".to_string()]),
+                    &Default::default(),
+                );
+        }
+        let digest = surface.ledger.lock().unwrap().digest().to_string();
+        let result = AgentResult {
+            text: "partial output".into(),
+            messages: vec![],
+            usage: Default::default(),
+            tool_calls_count: 1,
+            verification_reports: vec![],
+            completion: crate::harness_loop::CompletionTerminal::Narrative,
+            forced_stop: Some(crate::harness_loop::ForcedStop::ResponseTruncated),
+            run_admission: "ordinary".into(),
+        };
+        let error = gate_surface_result(surface, result, None)
+            .expect_err("a truncated unverified run must fail");
+        assert_eq!(
+            error.downcast_ref::<crate::harness_loop::ForcedStop>(),
+            Some(&crate::harness_loop::ForcedStop::ResponseTruncated)
+        );
+        assert!(error.to_string().contains("response_truncated"));
+        if unresolved {
+            assert!(error
+                .downcast_ref::<crate::harness_loop::ToolEffectUnresolved>()
+                .is_some());
+            assert!(matches!(
+                AgentEvent::execution_error(&error),
+                AgentEvent::ToolEffectUnresolved { .. }
+            ));
+            assert!(error.to_string().starts_with("tool_effect_unresolved:"));
+        } else {
+            let AgentEvent::Error { message } = AgentEvent::execution_error(&error) else {
+                panic!("failed gate stays an error");
+            };
+            assert!(message.starts_with("completion gate: workspace mutation "));
+            assert!(message.contains("response_truncated"));
+        }
+        assert_eq!(surface.ledger.lock().unwrap().digest(), digest);
+        assert!(!crate::fact_control::read_workspace_facts(
+            fixture.workspace.path(),
+            fixture.session.session_id()
+        )
+        .unwrap()
+        .iter()
+        .any(|fact| fact.kind == "turn.complete"));
+        fixture.pinned.close().await;
+    }
+}

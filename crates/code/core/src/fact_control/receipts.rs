@@ -1,5 +1,6 @@
 //! Tool receipts are projections of the actor's existing immutable log.
 
+use super::tool_results::evaluate_run_permission;
 use super::*;
 
 mod cache_proof;
@@ -89,6 +90,7 @@ pub(super) async fn prepare_tools_with_refusal(
         .validate_arguments(&request.call.name, &request.call.args)
         .err();
     let mut hook_evaluated = false;
+    let mut input_hook_ran = false;
     let mut denial = tools
         .agent
         .as_ref()
@@ -104,17 +106,17 @@ pub(super) async fn prepare_tools_with_refusal(
             let _delta = guard.settle_prior_turns(request.identity.turn as u64);
         }
     }
-    let original_permission = run_permission(
+    let original_evaluation = evaluate_run_permission(
         &tools.permission,
         tools.checker.as_deref(),
         tools.agent.as_ref(),
         &request.call.name,
         &request.call.args,
     );
-    if original_permission == PermissionDecision::Deny {
+    let original_permission = original_evaluation.decision();
+    if let Some(reason) = original_evaluation.denial_reason() {
         denial = Some(format!(
-            "Permission denied: Tool '{}' is blocked by permission policy.",
-            request.call.name
+            "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed=false; execution_started=false; next_action=inspect the original denying authority"
         ));
     }
     // A host backend may be unavailable before execution starts. Freeze that
@@ -197,6 +199,7 @@ pub(super) async fn prepare_tools_with_refusal(
         if let Some(agent) = &tools.agent {
             let session = tools.context.session_id.clone().unwrap_or_default();
             hook_evaluated = true;
+            input_hook_ran = agent.hook_executor().is_some();
             let decision = agent
                 .fire_pre_tool_use(&session, &request.call.name, &request.call.args, Vec::new())
                 .await;
@@ -221,7 +224,6 @@ pub(super) async fn prepare_tools_with_refusal(
             .validate_arguments(&request.call.name, &request.call.args)
             .err();
     }
-    let mut availability_rejected_after_hook = false;
     if denial.is_none()
         && argument_error.is_none()
         && (hook_evaluated || effective_digest != original_digest)
@@ -231,18 +233,18 @@ pub(super) async fn prepare_tools_with_refusal(
                 tool.validate_execution_available(&request.call.args, &tools.context)
             {
                 denial = Some(error.to_string());
-                availability_rejected_after_hook = hook_evaluated;
                 execution_unavailable = true;
             }
         }
     }
-    let effective_permission = run_permission(
+    let effective_evaluation = evaluate_run_permission(
         &tools.permission,
         tools.checker.as_deref(),
         tools.agent.as_ref(),
         &request.call.name,
         &request.call.args,
     );
+    let effective_permission = effective_evaluation.decision();
     let read_only = tools
         .executor
         .registry()
@@ -282,14 +284,44 @@ pub(super) async fn prepare_tools_with_refusal(
     } else {
         false
     };
-    // Keep a pre-spawn refusal. Replacing it with "unapproved" would hide
-    // that the command cannot start, and the body still does not run.
-    if !execution_unavailable
-        && (effective_permission == PermissionDecision::Deny
-            || (effective_permission == PermissionDecision::Ask
-                && (effective_digest != original_digest || unconfirmed_ask)))
-    {
-        denial = Some("tool_effect_effective_arguments_unapproved: resolved input is not approved by the frozen permission policy".into());
+    // Keep pre-spawn and other established refusals. Preserve the legacy code
+    // for permission failures, but never infer argument rewriting from a Deny.
+    let arguments_changed = effective_digest != original_digest;
+    let permission_refusal = original_evaluation
+        .denial_reason()
+        .or_else(|| effective_evaluation.denial_reason())
+        .or_else(|| {
+            if effective_permission != PermissionDecision::Ask {
+                None
+            } else if arguments_changed {
+                Some("rewritten_arguments_require_confirmation")
+            } else if unconfirmed_ask {
+                Some("confirmation_required")
+            } else {
+                None
+            }
+        });
+    if !execution_unavailable {
+        if let Some(reason) = permission_refusal {
+            if denial.is_none() || original_permission == PermissionDecision::Deny {
+                let next_action = if original_permission != PermissionDecision::Deny
+                    && effective_permission == PermissionDecision::Ask
+                {
+                    "obtain approval for this exact effective invocation"
+                } else if original_evaluation
+                    == super::tool_results::PermissionEvaluation::ChildConfirmationUnavailable
+                    || effective_evaluation
+                        == super::tool_results::PermissionEvaluation::ChildConfirmationUnavailable
+                {
+                    "request a host-supported approval route for the child"
+                } else {
+                    "inspect the denying authority; do not retry without changed authorization"
+                };
+                denial = Some(format!(
+                    "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed={arguments_changed}; execution_started=false; next_action={next_action}"
+                ));
+            }
+        }
     }
     if let Some(run_id) = &tools.run_id {
         let checkpoint_binding = tools
@@ -352,8 +384,24 @@ pub(super) async fn prepare_tools_with_refusal(
             .map(crate::porcelain::Watch::receipt_baseline),
     };
     prepared.validate()?;
-    let hook_effects_unobserved =
-        (hook_evaluated && argument_error.is_some()) || availability_rejected_after_hook;
+    if !execution_unavailable {
+        if let Some(reason) = permission_refusal {
+            tracing::warn!(
+                tool_id = %request.call.id,
+                tool_name = %request.call.name,
+                identity = ?prepared.identity,
+                reason,
+                stage = "effective_permission",
+                confirmation_approved = request.call.needs_confirmation,
+                confirmation_required = unconfirmed_ask,
+                ?original_permission,
+                ?effective_permission,
+                arguments_changed,
+                execution_started = false,
+                "tool permission refused before execution"
+            );
+        }
+    }
     // Permission, skill and hook refusals remain final even if input also
     // violates the schema. Schema rejection never suppresses a denial event.
     let rejection = if let Some(output) = denial {
@@ -389,18 +437,7 @@ pub(super) async fn prepare_tools_with_refusal(
         None
     };
     if let Some((outcome, output)) = rejection {
-        let mut result = result_without_execution(&prepared, outcome, output)?;
-        if hook_effects_unobserved {
-            // The tool body did not run, but an already evaluated input hook
-            // is not an independently observed zero-effect boundary.
-            result.effects = ToolEffectObservationV1::incomplete(
-                "tool_effect_observation_incomplete: input hook ran before effective invocation was rejected",
-            );
-            result
-                .effects
-                .unresolved_external_operations
-                .push(prepared.identity.key()?);
-        }
+        let result = result_after_input_hook(&prepared, outcome, output, input_hook_ran)?;
         return Ok(PreparedToolExecution {
             prepared,
             execute: Effect::succeed(result),
@@ -411,11 +448,13 @@ pub(super) async fn prepare_tools_with_refusal(
             prepared,
             ToolExecutionOutcome::Cancelled,
             "cancelled before tool execution".into(),
+            input_hook_ran,
         );
     }
     let mut executor = tools.as_ref().clone();
     executor.pre_tool_hook_resolved = true;
     executor.context = executor.context.with_native_artifact_verifications();
+    executor.context.fact_invocation = Some(prepared.identity.clone());
     let executor = Arc::new(executor);
     let execution_prepared = prepared.clone();
     let consumed = Arc::new(AtomicBool::new(false));
@@ -433,10 +472,11 @@ pub(super) async fn prepare_tools_with_refusal(
                 .map_err(Exit::Fail);
             }
             if cancel.is_cancelled() {
-                return result_without_execution(
+                return result_after_input_hook(
                     &prepared,
                     ToolExecutionOutcome::Cancelled,
                     "cancelled before tool execution".into(),
+                    input_hook_ran,
                 )
                 .map_err(Exit::Fail);
             }
@@ -448,8 +488,8 @@ pub(super) async fn prepare_tools_with_refusal(
                         .has_uncertain_tool_invocations()
                 })
             {
-                return result_without_execution(&prepared, ToolExecutionOutcome::Denied,
-                    "tool_effect_unresolved: an earlier call became uncertain after batch preparation".into())
+                return result_after_input_hook(&prepared, ToolExecutionOutcome::Denied,
+                    "tool_effect_unresolved: an earlier call became uncertain after batch preparation".into(), input_hook_ran)
                     .map_err(Exit::Fail);
             }
             // A batch is prepared durably before any call executes. Its
@@ -697,12 +737,33 @@ fn terminal_without_execution(
     prepared: ToolPreparedV1,
     outcome: ToolExecutionOutcome,
     output: String,
+    hook_evaluated: bool,
 ) -> Result<PreparedToolExecution, ActorError> {
-    let result = result_without_execution(&prepared, outcome, output)?;
+    let result = result_after_input_hook(&prepared, outcome, output, hook_evaluated)?;
     Ok(PreparedToolExecution {
         prepared,
         execute: Effect::succeed(result),
     })
+}
+
+fn result_after_input_hook(
+    prepared: &ToolPreparedV1,
+    outcome: ToolExecutionOutcome,
+    output: String,
+    hook_evaluated: bool,
+) -> Result<ToolExecutionResultV1, ActorError> {
+    let mut result = result_without_execution(prepared, outcome, output)?;
+    if hook_evaluated {
+        // Not entering the tool body does not prove that its input hook was pure.
+        result.effects = ToolEffectObservationV1::incomplete(
+            "tool_effect_observation_incomplete: input hook ran before effective invocation stopped",
+        );
+        result
+            .effects
+            .unresolved_external_operations
+            .push(prepared.identity.key()?);
+    }
+    Ok(result)
 }
 
 fn result_without_execution(
@@ -1067,17 +1128,24 @@ fn fold_receipts(facts: &[aster_effect::Fact], include_covered: bool) -> Receipt
                                 .iter()
                                 .filter(|key| key.starts_with("workspace-child:"))
                             {
-                                let binding =
-                                    child
-                                        .strip_prefix("workspace-child:")
-                                        .and_then(|id| bindings.get(id))
-                                        .cloned()
-                                        .flatten()
-                                        .filter(|(source, _)| {
+                                let binding = child
+                                    .strip_prefix("workspace-child:")
+                                    .and_then(|id| bindings.get(id))
+                                    .cloned()
+                                    .flatten()
+                                    .filter(|binding| match binding {
+                                        WorkspaceChildBinding::Process(source, _) => {
                                             result.identity.admission.as_ref().is_some_and(
                                                 |admission| admission.run_id == *source,
                                             )
-                                        });
+                                        }
+                                        WorkspaceChildBinding::Subagent(binding) => binding.admits(
+                                            &key,
+                                            child
+                                                .strip_prefix("workspace-child:")
+                                                .unwrap_or_default(),
+                                        ),
+                                    });
                                 if child_bindings
                                     .get(child)
                                     .is_some_and(|previous| previous != &binding)
@@ -1224,7 +1292,9 @@ fn fold_receipts(facts: &[aster_effect::Fact], include_covered: bool) -> Receipt
                     }
                 }
             }
-            "background.output" if fact.payload["event"] == "exited" => {
+            kind if (kind == "background.output" && fact.payload["event"] == "exited")
+                || kind == "subagent.settled" =>
+            {
                 let id = fact
                     .payload
                     .get("workspace_child")
@@ -1260,22 +1330,38 @@ fn fold_receipts(facts: &[aster_effect::Fact], include_covered: bool) -> Receipt
                         && observation.is_some()
                         && paths_match
                         && fact.payload.get("task_id").and_then(|value| value.as_str()) == Some(id)
-                        && background_terminal_fields_valid(&fact.payload);
+                        && if kind == "subagent.settled" {
+                            fact.payload.get("background_subagent").and_then(|value| serde_json::from_value::<crate::tools::task::background_settlement::BackgroundChildBinding>(value.clone()).ok()).is_some()
+                                && fact.payload.get("child_log_cut").is_some_and(|cut| {
+                                    cut.get("seq").and_then(serde_json::Value::as_u64).is_some_and(|seq| seq > 0)
+                                        && cut.get("digest").and_then(serde_json::Value::as_str).is_some_and(|digest| digest.len() == 64 && digest.bytes().all(|byte| byte.is_ascii_hexdigit()))
+                                })
+                        } else {
+                            background_terminal_fields_valid(&fact.payload)
+                        };
                     if !evidence_valid {
                         debt.invalidate_evidence(format!("background-evidence:{id}"));
                     }
                     let complete = evidence_valid
-                        && background_terminal_settled(&fact.payload)
+                        && if kind == "subagent.settled" {
+                            observation.as_ref().is_some_and(|effects| {
+                                effects.completeness == ToolObservationCompleteness::Complete
+                                    && effects.unresolved_external_operations.is_empty()
+                            })
+                        } else {
+                            background_terminal_settled(&fact.payload)
+                        }
                         && observation.is_some()
                         && paths_match
                         && fact.payload.get("task_id").and_then(|value| value.as_str()) == Some(id);
                     if evidence_valid {
-                        let binding = fact
-                            .payload
-                            .get("source_run")
-                            .and_then(|value| value.as_str())
-                            .zip(fact.payload.get("run").and_then(|value| value.as_str()))
-                            .map(|(source, effect)| (source.to_string(), effect.to_string()));
+                        let binding = workspace_child_bindings(
+                            "subagent-settlement",
+                            Some(&fact.payload),
+                            Some(id),
+                        )
+                        .remove(id)
+                        .flatten();
                         let child = format!("workspace-child:{id}");
                         if background_bindings
                             .get(&child)
@@ -1528,12 +1614,18 @@ fn model_position(key: &str) -> Option<(u64, u64)> {
 #[cfg(test)]
 mod tests;
 
+#[derive(Clone, PartialEq, Eq)]
+enum WorkspaceChildBinding {
+    Process(String, String),
+    Subagent(crate::tools::task::background_settlement::BackgroundChildBinding),
+}
+
 // Batch nesting is refused at admission; only its bounded direct results are evidence.
 fn workspace_child_bindings(
     tool: &str,
     metadata: Option<&serde_json::Value>,
     root_child: Option<&str>,
-) -> std::collections::BTreeMap<String, Option<(String, String)>> {
+) -> std::collections::BTreeMap<String, Option<WorkspaceChildBinding>> {
     let mut bindings = std::collections::BTreeMap::new();
     let nested = metadata
         .filter(|_| tool == "batch")
@@ -1561,16 +1653,25 @@ fn workspace_child_bindings(
             continue;
         };
         let binding = value
-            .get("source_run")
-            .and_then(serde_json::Value::as_str)
-            .filter(|source| !source.is_empty())
-            .zip(
+            .get("background_subagent")
+            .filter(|value| !value.is_null())
+            .and_then(|value| serde_json::from_value(value.clone()).ok())
+            .map(WorkspaceChildBinding::Subagent)
+            .or_else(|| {
                 value
-                    .get("run")
+                    .get("source_run")
                     .and_then(serde_json::Value::as_str)
-                    .filter(|run| !run.is_empty()),
-            )
-            .map(|(source, run)| (source.to_owned(), run.to_owned()));
+                    .filter(|source| !source.is_empty())
+                    .zip(
+                        value
+                            .get("run")
+                            .and_then(serde_json::Value::as_str)
+                            .filter(|run| !run.is_empty()),
+                    )
+                    .map(|(source, run)| {
+                        WorkspaceChildBinding::Process(source.to_owned(), run.to_owned())
+                    })
+            });
         bindings
             .entry(id.to_owned())
             .and_modify(|prior| {

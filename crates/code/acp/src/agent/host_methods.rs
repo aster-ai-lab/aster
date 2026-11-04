@@ -6,6 +6,7 @@
 //! not ACP protocol.
 
 use super::*;
+use tracing::Instrument as _;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum HostMethod {
@@ -411,13 +412,30 @@ impl AsterCodeAgent {
             (Arc::clone(&live.session), live.workspace.clone())
         };
         workspace_scope::canonical_workspace(&workspace, Some(&request.cwd))?;
+        let started = std::time::Instant::now();
         let result = session
             .governed_tool(
                 "search",
                 serde_json::json!({"mode":"hybrid","query":request.query,"limit":8}),
             )
+            .instrument(tracing::info_span!(
+                target: "aster_acp::retrieval_phase",
+                "workspace_search",
+                session_id = request.session_id.as_str(),
+                operation_id = request.operation_id.as_str()
+            ))
             .await
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            .map_err(|error| acp::Error::internal_error().data(error.to_string()));
+        tracing::debug!(
+            target: "aster_acp::retrieval_phase",
+            phase = "workspace_search",
+            session_id = request.session_id.as_str(),
+            operation_id = request.operation_id.as_str(),
+            success = result.as_ref().is_ok_and(|output| output.exit_code == 0),
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "retrieval phase completed"
+        );
+        let result = result?;
         if result.exit_code != 0 {
             return Err(acp::Error::invalid_params().data(result.output));
         }

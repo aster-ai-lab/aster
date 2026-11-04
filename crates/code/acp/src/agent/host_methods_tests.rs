@@ -127,7 +127,7 @@ struct WireFixture {
 }
 
 async fn wire_fixture() -> WireFixture {
-    wire_fixture_with_policy(None).await
+    Box::pin(wire_fixture_with_policy(None)).await
 }
 
 async fn wire_fixture_with_policy(work_policy: Option<aster_core::WorkPolicyV1>) -> WireFixture {
@@ -191,6 +191,62 @@ async fn ext(host: &AsterCodeAgent, method: &str, params: Value) -> acp::Result<
         .ext_method(acp::ExtRequest::new(method, raw.into()))
         .await?;
     Ok(serde_json::from_str(response.0.get()).unwrap())
+}
+
+#[tokio::test]
+async fn queued_plain_prompt_announces_start_before_the_first_model_output() {
+    use std::future::Future;
+    use tokio::io::AsyncBufReadExt;
+    use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+    tokio::task::LocalSet::new().run_until(async {
+        let fixture = wire_fixture().await;
+        let calls_before = fixture.model.calls.load(Ordering::SeqCst);
+        fixture.model.block_third.store(true, Ordering::SeqCst);
+        let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
+        let (read, write) = tokio::io::split(agent_end);
+        let (connection, io) = acp::AgentSideConnection::new(
+            AsterCodeAgent::new(test_launch(None)), write.compat_write(), read.compat(),
+            |future| { tokio::task::spawn_local(future); },
+        );
+        let transport = tokio::task::spawn_local(io);
+        fixture.host.set_client(Rc::new(connection));
+        let queue = fixture.host.sessions.lock().await[&fixture.session_id].turn_queue.clone();
+        let previous = queue.acquire_owned().await.unwrap();
+        let request = acp::PromptRequest::new(acp::SessionId::new(fixture.session_id.clone()),
+            vec![acp::ContentBlock::Text(acp::TextContent::new("follow-up"))])
+            .meta(json!({"promptId":"queued-plain"}).as_object().cloned());
+        let mut prompt = Box::pin(fixture.host.prompt(request));
+        assert!(std::future::poll_fn(|cx| std::task::Poll::Ready(prompt.as_mut().poll(cx).is_pending())).await);
+        assert_eq!(fixture.model.calls.load(Ordering::SeqCst), calls_before);
+        drop(previous);
+        let mut reader = tokio::io::BufReader::new(client_end);
+        let started = async {
+            loop {
+                let mut line = String::new();
+                assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
+                let message: Value = serde_json::from_str(&line).unwrap();
+                if message["method"] == "_aster/queue/changed" || message["method"] == "aster/queue/changed" {
+                    assert_eq!(message["params"]["runningPromptId"], "queued-plain");
+                    break;
+                }
+            }
+        };
+        tokio::select! {
+            result = &mut prompt => panic!("the model has not been released: {result:?}"),
+            result = tokio::time::timeout(std::time::Duration::from_secs(2), started) => result.expect("queued start must reach the client before model output"),
+        }
+        tokio::select! {
+            result = &mut prompt => panic!("the model has not been released: {result:?}"),
+            _ = fixture.model.started.notified() => {},
+        }
+        fixture.model.block_third.store(false, Ordering::SeqCst);
+        fixture.model.release.send(()).unwrap();
+        let response = tokio::time::timeout(std::time::Duration::from_secs(3), prompt).await.unwrap().unwrap();
+        assert_eq!(response.meta.as_ref().unwrap()["promptId"], "queued-plain");
+        fixture.source.close().await;
+        transport.abort();
+    }).await;
 }
 
 fn page_params(fixture: &WireFixture, limit: usize, cursor: Value) -> Value {
@@ -748,6 +804,67 @@ fn memory_extraction_snapshots_keep_terminal_outcomes_and_scope_private() {
         assert_eq!(value["error"].is_string(), expected == "error");
         assert!(!value.to_string().contains("private-core-session"));
     }
+}
+
+#[tokio::test]
+async fn session_cancel_honors_the_subagent_scope() {
+    let fixture = wire_fixture().await;
+    let tracker = fixture.source.subagent_tracker();
+    let token = tokio_util::sync::CancellationToken::new();
+    tracker
+        .record_event(&AgentEvent::SubagentStart {
+            task_id: "scoped-child".into(),
+            session_id: "scoped-child".into(),
+            parent_session_id: fixture.session_id.clone(),
+            agent: "general".into(),
+            description: "Cancellation scope".into(),
+            started_ms: 1,
+        })
+        .await;
+    tracker
+        .register_canceller("scoped-child", token.clone())
+        .await;
+    fixture
+        .host
+        .cancel(acp::CancelNotification::new(acp::SessionId::new("other")))
+        .await
+        .unwrap();
+    assert!(!token.is_cancelled());
+    fixture
+        .host
+        .cancel(
+            acp::CancelNotification::new(acp::SessionId::new(fixture.session_id.clone())).meta(
+                json!({"cancelSubagents": false})
+                    .as_object()
+                    .unwrap()
+                    .clone(),
+            ),
+        )
+        .await
+        .unwrap();
+    assert!(!token.is_cancelled());
+    fixture
+        .host
+        .cancel(
+            acp::CancelNotification::new(acp::SessionId::new(fixture.session_id.clone())).meta(
+                json!({"cancelSubagents": true})
+                    .as_object()
+                    .unwrap()
+                    .clone(),
+            ),
+        )
+        .await
+        .unwrap();
+    assert!(token.is_cancelled());
+    assert!(
+        tracker
+            .get("scoped-child")
+            .await
+            .unwrap()
+            .finished_ms
+            .is_none(),
+        "a cancellation request must not claim the worker has finished"
+    );
 }
 
 #[tokio::test]

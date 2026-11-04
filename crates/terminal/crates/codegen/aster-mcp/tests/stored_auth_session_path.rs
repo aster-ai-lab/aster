@@ -1,10 +1,10 @@
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
+use agent_client_protocol as acp;
 use aster_mcp::credentials::McpCredentialStore;
 use aster_mcp::rmcp;
 use aster_mcp::servers::{McpOauthDiscovery, McpSpawnCtx, OauthInteractivity, start_mcp_server};
-use agent_client_protocol as acp;
 use axum::body::Body;
 use axum::http::{StatusCode, header};
 use axum::response::IntoResponse;

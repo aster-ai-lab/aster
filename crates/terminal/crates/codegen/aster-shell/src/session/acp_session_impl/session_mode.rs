@@ -63,24 +63,22 @@ impl SessionActor {
             if entered && turn_in_flight {
                 self.activate_plan_mode_mid_turn().await;
             }
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::PlanModeToggled {
-                    enabled: true,
-                    trigger: aster_telemetry::events::PlanModeTrigger::User,
-                    turn_in_flight,
-                    was_previously_active: !entered,
-                    from_mode: Some(if entered {
-                        if self.permissions.is_yolo_mode() {
-                            "bypass_permissions"
-                        } else {
-                            "default"
-                        }
-                        .to_owned()
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::PlanModeToggled {
+                enabled: true,
+                trigger: aster_telemetry::events::PlanModeTrigger::User,
+                turn_in_flight,
+                was_previously_active: !entered,
+                from_mode: Some(if entered {
+                    if self.permissions.is_yolo_mode() {
+                        "bypass_permissions"
                     } else {
-                        "plan".to_owned()
-                    }),
-                },
-            );
+                        "default"
+                    }
+                    .to_owned()
+                } else {
+                    "plan".to_owned()
+                }),
+            });
             if entered {
                 aster_telemetry::event_span!(
                     "session.permission_mode_changed",
@@ -108,15 +106,13 @@ impl SessionActor {
                 turn_in_flight,
                 "Plan mode toggled OFF"
             );
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::PlanModeToggled {
-                    enabled: false,
-                    trigger: aster_telemetry::events::PlanModeTrigger::User,
-                    turn_in_flight,
-                    was_previously_active: true,
-                    from_mode: Some("plan".into()),
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::PlanModeToggled {
+                enabled: false,
+                trigger: aster_telemetry::events::PlanModeTrigger::User,
+                turn_in_flight,
+                was_previously_active: true,
+                from_mode: Some("plan".into()),
+            });
             aster_telemetry::event_span!(
                 "session.permission_mode_changed",
                 from_mode = "plan",

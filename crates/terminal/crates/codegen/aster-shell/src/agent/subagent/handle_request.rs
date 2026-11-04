@@ -27,9 +27,7 @@ use aster_tools::implementations::grok_build::task::types::SubagentCapabilityMod
 use aster_tools::implementations::{grok_build, opencode};
 use aster_tools::types::tool::ToolKind;
 static SUBAGENTS_ACTIVE: aster_telemetry::activity::ActivityGauge =
-    aster_telemetry::activity::ActivityGauge::work(
-        aster_telemetry::activity::SUBAGENTS_ACTIVE_KEY,
-    );
+    aster_telemetry::activity::ActivityGauge::work(aster_telemetry::activity::SUBAGENTS_ACTIVE_KEY);
 /// Bounds each parent-side await in the child completion path. The parent's biased select polls its event channels ahead of `cmd_rx`, so a busy turn can starve `cmd_rx` and park a completed child (leaking its session thread, fs watchers, and fds) forever.
 pub(super) const PARENT_ACK_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
 /// `PARENT_ACK_TIMEOUT`-bounded acks in the completion path: usage fold,

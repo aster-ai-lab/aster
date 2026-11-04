@@ -152,7 +152,7 @@ fn message_compaction_preserves_evidence_and_reopens_sequence_gaps() {
             .unwrap();
     }
     let opened = log.read_opened("thread-1", false).unwrap().unwrap();
-    let retained = compacted_message_prefix(&opened.facts).unwrap();
+    let retained = compacted_prefix(&opened.facts, &[]).unwrap();
     log.rewrite_compacted("thread-1", &opened, &retained)
         .unwrap();
     drop(opened);
@@ -297,15 +297,80 @@ fn byte_limit_prunes_prepared_tool_calls_and_superseded_summaries() {
 }
 
 #[test]
-fn byte_limit_keeps_the_log_when_pruning_cannot_make_room() {
+fn byte_limit_uses_a_summary_arriving_with_the_append() {
     let dir = tempfile::tempdir().unwrap();
     let log = FileLog::open(dir.path()).unwrap();
+    for index in 0..15 {
+        log.append(
+            "thread-1",
+            &[blob_fact(
+                "tool.result",
+                &format!("result-{index}"),
+                1024 * 1024,
+            )],
+            None,
+        )
+        .unwrap();
+    }
+    // The summary arrives with an append that needs room; pruning uses the
+    // incoming compaction.done as the anchor over the already-written prefix.
     log.append(
         "thread-1",
-        &[typed_fact("user.message", "preserve-if-full")],
+        &[
+            typed_fact("compaction.done", "compaction"),
+            blob_fact("user.message", "after", 2 * 1024 * 1024),
+        ],
         None,
     )
     .unwrap();
+    let facts = log.read("thread-1").unwrap();
+    assert_eq!(facts.last().unwrap().kind, "user.message");
+    assert!(facts.iter().any(|fact| fact.kind == "compaction.done"));
+    assert_eq!(facts[0].kind, "compaction.pruned");
+}
+
+#[test]
+fn byte_limit_without_a_summary_fails_with_a_diagnostic_and_keeps_the_log() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
+    for index in 0..15 {
+        log.append(
+            "thread-1",
+            &[blob_fact(
+                "tool.result",
+                &format!("result-{index}"),
+                1024 * 1024,
+            )],
+            None,
+        )
+        .unwrap();
+    }
+    let before = std::fs::read(dir.path().join("thread-1.jsonl")).unwrap();
+    let error = log
+        .append(
+            "thread-1",
+            &[blob_fact("tool.result", "overflow", 2 * 1024 * 1024)],
+            None,
+        )
+        .unwrap_err();
+    let ActorError::Schema(message) = error else {
+        panic!("expected a schema error");
+    };
+    assert!(
+        message.starts_with("fact log byte limit exceeded: "),
+        "{message}"
+    );
+    assert!(message.contains("largest kind: tool.result"), "{message}");
+    assert_eq!(
+        std::fs::read(dir.path().join("thread-1.jsonl")).unwrap(),
+        before
+    );
+}
+
+#[test]
+fn byte_limit_keeps_the_log_when_pruning_cannot_make_room() {
+    let dir = tempfile::tempdir().unwrap();
+    let log = FileLog::open(dir.path()).unwrap();
     log.append(
         "thread-1",
         &[typed_fact("compaction.done", "compaction")],
@@ -338,9 +403,9 @@ fn byte_limit_keeps_the_log_when_pruning_cannot_make_room() {
             None
         )
         .is_err());
-    assert!(
-        std::fs::read(dir.path().join("thread-1.jsonl")).unwrap() == before,
-        "a refused append must preserve the original log bytes"
+    assert_eq!(
+        std::fs::read(dir.path().join("thread-1.jsonl")).unwrap(),
+        before
     );
 }
 
@@ -357,7 +422,7 @@ fn rewind_cannot_cut_into_compacted_history() {
             .unwrap();
     }
     let opened = log.read_opened("thread-1", false).unwrap().unwrap();
-    let retained = compacted_message_prefix(&opened.facts).unwrap();
+    let retained = compacted_prefix(&opened.facts, &[]).unwrap();
     log.rewrite_compacted("thread-1", &opened, &retained)
         .unwrap();
     drop(opened);

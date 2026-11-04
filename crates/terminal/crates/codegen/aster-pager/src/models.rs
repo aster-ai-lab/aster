@@ -1,8 +1,8 @@
 //! `aster models` subcommand.
 
+use anyhow::Result;
 use aster_shell::agent::config::Config as AgentConfig;
 use aster_shell::cli_models::{AuthStatus, list_models};
-use anyhow::Result;
 use tokio_util::sync::CancellationToken;
 
 use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};

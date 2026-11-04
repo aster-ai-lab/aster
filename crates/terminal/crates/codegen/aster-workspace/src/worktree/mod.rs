@@ -9,11 +9,11 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::sync::{Arc, Mutex, OnceLock};
 
+use anyhow::{Context, Result};
+use aster_fast_worktree::{BtrfsDelegate, IgnoredFilesMode, WorkingTreeMode, WorktreeBuilder};
 use aster_telemetry::events::{CloneCancellationDisposition, CloneOutcome, WorktreeLifecycle};
 use aster_telemetry::region;
 use aster_telemetry::region::Parent;
-use aster_fast_worktree::{BtrfsDelegate, IgnoredFilesMode, WorkingTreeMode, WorktreeBuilder};
-use anyhow::{Context, Result};
 use git2::{DiffOptions, Oid, Repository};
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex as TokioMutex;
@@ -1633,7 +1633,11 @@ pub async fn snapshot_subagent_worktree(
             let message = format!("subagent worktree snapshot {ref_name}");
             // Capture into the worktree's git, then make it durable in the source repo (and verify) so it survives the worktree's deletion
             aster_fast_worktree::snapshot_worktree_to_ref(&worktree_path, &ref_name, &message)?;
-            aster_fast_worktree::transfer_snapshot_to_repo(&worktree_path, &source_repo, &ref_name)?;
+            aster_fast_worktree::transfer_snapshot_to_repo(
+                &worktree_path,
+                &source_repo,
+                &ref_name,
+            )?;
             Ok(ref_name)
         })
     })
@@ -1650,7 +1654,9 @@ pub async fn remove_subagent_worktree(worktree_path: &Path) -> Result<()> {
     let delegate = btrfs_delegate_from_env();
     let span = tracing::Span::current();
     tokio::task::spawn_blocking(move || {
-        span.in_scope(|| aster_fast_worktree::remove_worktree_with_delegate(&worktree_path, delegate))
+        span.in_scope(|| {
+            aster_fast_worktree::remove_worktree_with_delegate(&worktree_path, delegate)
+        })
     })
     .await
     .map_err(|e| anyhow::anyhow!("remove_subagent_worktree task failed: {e}"))??;

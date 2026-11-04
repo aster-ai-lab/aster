@@ -4,8 +4,8 @@
 use crate::remote::chat_models_client::{
     ChatModelsClient, ChatModelsError, ListModesResponse, Mode,
 };
-use aster_login::AuthManager;
 use agent_client_protocol as acp;
+use aster_login::AuthManager;
 use parking_lot::RwLock;
 use std::sync::Arc;
 use std::time::{Duration, Instant};

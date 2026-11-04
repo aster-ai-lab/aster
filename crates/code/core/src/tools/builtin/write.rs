@@ -14,7 +14,7 @@ impl Tool for WriteTool {
     }
 
     fn description(&self) -> &str {
-        "Write content to a file. Overwrite is the default. Large generated files can be written in bounded chunks by overwriting the first chunk, then appending later chunks with an expected byte offset for safe retries."
+        "Write a file (default overwrite), or append bounded chunks after the first write with expected_offset for safe retries."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -24,22 +24,22 @@ impl Tool for WriteTool {
             "properties": {
                 "file_path": {
                     "type": "string",
-                    "description": "Required. Path to the file to write. Always provide this exact field name: 'file_path'."
+                    "description": "File path."
                 },
                 "content": {
                     "type": "string",
-                    "description": "Required. Content for this write. In overwrite mode this is the full replacement or first chunk; in append mode this is the next chunk. Always provide this exact field name: 'content'."
+                    "description": "Full replacement/first chunk for overwrite; next chunk for append."
                 },
                 "mode": {
                     "type": "string",
                     "enum": ["overwrite", "append"],
                     "default": "overwrite",
-                    "description": "Optional. 'overwrite' replaces the file and remains the default. 'append' adds one chunk and requires expected_offset."
+                    "description": "overwrite replaces the file (default); append adds a chunk and requires expected_offset."
                 },
                 "expected_offset": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Required in append mode. Expected current file size in UTF-8 bytes. A matching already-applied chunk is treated as a successful idempotent retry; any other mismatch is rejected. Providers that materialize optional integer fields may send 0 in overwrite mode; that compatibility value is ignored."
+                    "description": "Append requires the stored UTF-8 byte size. Chunks adopt existing line endings; continue from the reported size. Matching already-applied chunks retry successfully; other mismatches fail. Overwrite may omit this or send neutral 0 (ignored)."
                 }
             },
             "required": ["file_path", "content"],
@@ -138,6 +138,12 @@ impl Tool for WriteTool {
                 }
             };
 
+            // The chunk joins the file in the file's newline style, so a retry
+            // is judged against the prefix it was appended to.
+            let content = match current.get(..expected_offset) {
+                Some(prefix) => crate::text::append_newline_style(prefix, content),
+                None => std::borrow::Cow::Borrowed(content),
+            };
             let resulting_size = match expected_offset.checked_add(content.len()) {
                 Some(size) => size,
                 None => {
@@ -170,7 +176,7 @@ impl Tool for WriteTool {
                 )));
             }
 
-            current.push_str(content);
+            current.push_str(&content);
             let newly_acquired = match begin_write_claim(ctx, file_path) {
                 Ok(acquired) => acquired,
                 Err(output) => return Ok(output),
@@ -225,7 +231,7 @@ impl Tool for WriteTool {
         let path_for_write = workspace_path.clone();
         // An LF body from the model must not flip an existing CRLF file to LF,
         // and a CRLF body must not flip an LF file. Mixed endings are written
-        // unchanged. Append stays a raw byte protocol.
+        // unchanged. Append adapts its chunk the same way, and reports stored bytes.
         let content_for_write = match before_content.as_deref() {
             Some(existing) => crate::text::preserve_newline_style(existing, content).into_owned(),
             None => content.to_string(),
@@ -526,6 +532,122 @@ mod tests {
 
         let content = std::fs::read_to_string(temp.path().join("large.txt")).unwrap();
         assert_eq!(content, expected);
+    }
+
+    #[tokio::test]
+    async fn append_onto_a_crlf_file_keeps_it_editable() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("win.txt");
+        std::fs::write(&path, "alpha\r\nbeta\r\n").unwrap();
+        let tool = WriteTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("write-append-crlf");
+
+        let result = tool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "win.txt",
+                    "content": "gamma\ndelta\n",
+                    "mode": "append",
+                    "expected_offset": 13
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(result.success, "{}", result.content);
+        let expected = "alpha\r\nbeta\r\ngamma\r\ndelta\r\n";
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), expected);
+        let metadata = result.metadata.expect("append metadata");
+        assert_eq!(metadata["appended_bytes"], 14);
+        assert_eq!(metadata["resulting_size"], expected.len());
+
+        let edited = crate::tools::builtin::edit::EditTool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "win.txt",
+                    "old_string": "delta",
+                    "new_string": "omega"
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+        assert!(edited.success, "{}", edited.content);
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "alpha\r\nbeta\r\ngamma\r\nomega\r\n"
+        );
+        crate::external_observation::release_session("write-append-crlf");
+    }
+
+    #[tokio::test]
+    async fn crlf_append_retry_is_idempotent_and_chunks_may_split_a_pair() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("win.txt");
+        std::fs::write(&path, "a\r\n").unwrap();
+        let tool = WriteTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("write-append-retry");
+        let append = |content: &str, offset: usize| {
+            serde_json::json!({
+                "file_path": "win.txt",
+                "content": content,
+                "mode": "append",
+                "expected_offset": offset
+            })
+        };
+
+        let first = append("b\nc\n", 3);
+        assert!(tool.execute(&first, &ctx).await.unwrap().success);
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "a\r\nb\r\nc\r\n");
+
+        let retry = tool.execute(&first, &ctx).await.unwrap();
+        assert!(retry.success, "{}", retry.content);
+        assert!(
+            retry.content.contains("already applied"),
+            "{}",
+            retry.content
+        );
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "a\r\nb\r\nc\r\n");
+
+        assert!(tool.execute(&append("d\r", 9), &ctx).await.unwrap().success);
+        assert!(
+            tool.execute(&append("\ne\n", 11), &ctx)
+                .await
+                .unwrap()
+                .success
+        );
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "a\r\nb\r\nc\r\nd\r\ne\r\n"
+        );
+        crate::external_observation::release_session("write-append-retry");
+    }
+
+    #[tokio::test]
+    async fn append_onto_an_lf_file_stays_lf() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("unix.txt");
+        std::fs::write(&path, "a\nb\n").unwrap();
+        let tool = WriteTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("write-append-lf");
+
+        let result = tool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "unix.txt",
+                    "content": "c\r\nd\r\n",
+                    "mode": "append",
+                    "expected_offset": 4
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(result.success, "{}", result.content);
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "a\nb\nc\nd\n");
+        crate::external_observation::release_session("write-append-lf");
     }
 
     #[tokio::test]

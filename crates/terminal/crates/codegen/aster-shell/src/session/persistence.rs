@@ -34,9 +34,9 @@ use crate::session::storage::{JsonlStorageAdapter, StorageAdapter};
 use crate::session::visibility::ClassifiedSessionKind;
 use crate::tools::todo::TodoState;
 use crate::util::grok_home::grok_home;
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_sampling_types::ReasoningEffort;
-use agent_client_protocol as acp;
 
 use crate::extensions::notification::{
     DISK_FULL_ERROR_TYPE, DISK_FULL_USER_MESSAGE, RetryState,

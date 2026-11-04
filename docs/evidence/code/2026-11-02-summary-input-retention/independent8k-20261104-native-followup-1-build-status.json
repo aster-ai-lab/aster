@@ -1,0 +1,55 @@
+[
+  {
+    "name": "pair-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "-p",
+      "aster",
+      "-p",
+      "aster-acp",
+      "--bins"
+    ],
+    "exitCode": 0,
+    "seconds": 143.94009250000002,
+    "at": "2026-11-04T01:33:59.190034+00:00"
+  },
+  {
+    "name": "live-tests-build",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-acp",
+      "--lib",
+      "--test",
+      "deloop_real_llm",
+      "--test",
+      "deloop_generalization_real_llm",
+      "--test",
+      "long_horizon_real_llm",
+      "--test",
+      "acp_conformance_stdio",
+      "--test",
+      "shipped_tui_e2e",
+      "--test",
+      "cursor_account_tui_e2e",
+      "--no-run"
+    ],
+    "exitCode": 0,
+    "seconds": 5.552920749999998,
+    "at": "2026-11-04T01:34:04.743484+00:00"
+  }
+]

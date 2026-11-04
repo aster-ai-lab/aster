@@ -31,7 +31,7 @@ impl Tool for GitTool {
     }
 
     fn description(&self) -> &str {
-        "Execute Git operations for the current workspace. Supports: status, log, branch, checkout, diff, stash, remote, and worktree management."
+        "Git operations in the current workspace."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -44,16 +44,16 @@ impl Tool for GitTool {
                     "enum": [
                         "status", "log", "branch", "checkout", "diff", "stash", "remote", "worktree"
                     ],
-                    "description": "Required. Git command to execute."
+                    "description": "Git command."
                 },
                 "subcommand": {
                     "type": "string",
                     "enum": ["list", "create", "remove"],
-                    "description": "Worktree subcommand. Defaults to list."
+                    "description": "Worktree subcommand; default list."
                 },
                 "name": {
                     "type": "string",
-                    "description": "Branch name for branch/checkout/worktree operations."
+                    "description": "Branch name for branch/checkout/worktree."
                 },
                 "path": {
                     "type": "string",
@@ -61,41 +61,41 @@ impl Tool for GitTool {
                 },
                 "ref": {
                     "type": "string",
-                    "description": "Reference (branch, tag, commit) for checkout."
+                    "description": "Checkout ref (branch/tag/commit)."
                 },
                 "force": {
                     "type": "boolean",
-                    "description": "Force checkout/create even if it loses changes."
+                    "description": "Force checkout/create; may lose changes."
                 },
                 "target": {
                     "type": "string",
-                    "description": "Target ref for diff (e.g., HEAD~1, main). If omitted, diffs working tree."
+                    "description": "Diff target ref; omit for working-tree diff."
                 },
                 "max_count": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Deprecated alias for limit when command=log."
+                    "description": "Deprecated log-only alias for limit."
                 },
                 "limit": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_GIT_PAGE_LIMIT,
-                    "description": "Maximum list or log entries to return. Defaults to 10 for log and 50 for other list commands; maximum 200."
+                    "description": "Entries per page; default 10 (log), 50 (other lists), max 200."
                 },
                 "cursor": {
                     "type": "string",
-                    "description": "Opaque continuation cursor returned by a previous log, branch, stash, remote, or worktree list call."
+                    "description": "Exact prior cursor for log/branch/stash/remote/worktree lists."
                 },
                 "byte_offset": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Byte offset for continuing a diff response."
+                    "description": "Byte offset for the next diff page."
                 },
                 "max_bytes": {
                     "type": "integer",
                     "minimum": MIN_DIFF_BYTES,
                     "maximum": MAX_OUTPUT_SIZE,
-                    "description": "Maximum UTF-8 bytes returned by diff. Default 65536; maximum 102400."
+                    "description": "Diff UTF-8 byte limit; default 65536, max 102400."
                 },
                 "message": {
                     "type": "string",
@@ -103,19 +103,19 @@ impl Tool for GitTool {
                 },
                 "include_untracked": {
                     "type": "boolean",
-                    "description": "Include untracked files in stash (default false)."
+                    "description": "Stash untracked files; default false."
                 },
                 "remote_name": {
                     "type": "string",
-                    "description": "Remote name (reserved for provider-specific filtering)."
+                    "description": "Remote name; reserved for provider-specific filtering."
                 },
                 "new_branch": {
                     "type": "boolean",
-                    "description": "Create a new branch for worktree (default true)."
+                    "description": "Create worktree branch; default true."
                 },
                 "base": {
                     "type": "string",
-                    "description": "Base ref for new branch (default HEAD)."
+                    "description": "New-branch base ref; default HEAD."
                 }
             },
             "required": ["command"],

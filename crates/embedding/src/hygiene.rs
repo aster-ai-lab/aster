@@ -233,6 +233,10 @@ mod hygiene_tests {
     }
 
     #[test]
+    #[expect(
+        clippy::approx_constant,
+        reason = "Keep the original near-orthogonal fixture angle unchanged"
+    )]
     fn orthogonal_text_quarantines_as_an_outlier() {
         let mut state = ClusterState::new();
         state.admit(entry("a", unit(0.0), "code search"));

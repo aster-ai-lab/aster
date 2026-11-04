@@ -41,6 +41,8 @@ impl Role {
 pub struct RequestSummary {
     pub sequence: usize,
     pub serialized_request_bytes: usize,
+    pub output_token_limit: Option<u64>,
+    pub generation_options_sha256: String,
     pub messages: usize,
     pub message_bytes: usize,
     pub role_bytes: BTreeMap<Role, usize>,
@@ -77,11 +79,20 @@ impl RequestSummary {
                 None => shape_complete = false,
             }
         }
+        if let Some(native_system) = body.get("system").filter(|value| !value.is_null()) {
+            *role_bytes.entry(Role::System).or_default() += native_system.to_string().len();
+            system.push(native_system);
+        }
         let system = serde_json::to_vec(&system).expect("JSON values serialize");
         let tools = body.get("tools").map(Value::to_string).unwrap_or_default();
         Self {
             sequence,
             serialized_request_bytes: body.to_string().len(),
+            output_token_limit: body.get("max_tokens").or_else(|| body.get("max_completion_tokens")).and_then(Value::as_u64),
+            generation_options_sha256: hash(serde_json::json!({
+                "thinking":body.get("thinking"), "reasoning_effort":body.get("reasoning_effort"),
+                "output_config":body.get("output_config"), "temperature":body.get("temperature")
+            }).to_string().as_bytes()),
             messages: messages.map_or(0, Vec::len),
             message_bytes: body
                 .get("messages")

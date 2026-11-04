@@ -1,11 +1,11 @@
 //! Marketplace browsing and install endpoints for the pager modal.
 //! Scanning and install logic live in the `aster-plugin-marketplace` crate.
 
+use agent_client_protocol as acp;
 use aster_hooks_plugins_types::{
     MarketplaceAction, MarketplaceActionRequest, MarketplaceListResponse, MarketplacePluginEntry,
     MarketplaceScanResult,
 };
-use agent_client_protocol as acp;
 
 use crate::agent::MvpAgent;
 use crate::plugin::add_marketplace_source;
@@ -449,8 +449,8 @@ fn uninstall_locked(
     source_url_or_path: &str,
     plugin_relative_path: &str,
 ) -> aster_hooks_plugins_types::ActionOutcome {
-    use aster_plugin_marketplace::installer;
     use aster_hooks_plugins_types::{ActionOutcome, OutcomeStatus};
+    use aster_plugin_marketplace::installer;
 
     let _registry_lock = match crate::plugin::acquire::lock_install_registry() {
         Ok(lock) => lock,
@@ -824,7 +824,9 @@ async fn handle_add_source(url: &str) -> aster_hooks_plugins_types::ActionOutcom
 
 /// Remove a marketplace source from `~/.aster/config.toml` and uninstall all
 /// plugins that were installed from it.
-async fn handle_remove_source(source_url_or_path: &str) -> aster_hooks_plugins_types::ActionOutcome {
+async fn handle_remove_source(
+    source_url_or_path: &str,
+) -> aster_hooks_plugins_types::ActionOutcome {
     let src = source_url_or_path.to_string();
     // Guard (SAVE_LOCK + init flock) held across the whole blocking read-modify-write so a
     // concurrent auto-register can't re-add the source mid-removal.
@@ -975,9 +977,7 @@ pub(crate) fn purge_default_skills_installs(grok_home: &std::path::Path) {
     let install_dir =
         aster_agent::plugins::install_registry::InstallRegistry::resolve_install_dir();
     purge_default_skills_installs_impl(grok_home, &install_dir, || {
-        aster_agent::plugins::install_registry::InstallRegistry::try_load_from(
-            install_dir.clone(),
-        )
+        aster_agent::plugins::install_registry::InstallRegistry::try_load_from(install_dir.clone())
     });
 }
 
@@ -1344,10 +1344,7 @@ mod official_source_tests {
         let Some(source) = sources.first() else {
             panic!("expected one source: {sources:?}");
         };
-        assert_eq!(
-            source.name,
-            aster_plugin_marketplace::OFFICIAL_SOURCE_NAME
-        );
+        assert_eq!(source.name, aster_plugin_marketplace::OFFICIAL_SOURCE_NAME);
         assert!(matches!(
             &source.kind,
             aster_plugin_marketplace::SourceKind::Git { url, .. }

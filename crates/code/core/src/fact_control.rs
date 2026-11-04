@@ -25,8 +25,12 @@ pub(crate) use tool_results::execution_permission;
 
 const THREAD: &str = "thread-1";
 
+#[cfg(test)]
+mod batch_history_tests;
 mod checkpoints;
 mod compaction;
+#[cfg(test)]
+mod compaction_budget_tests;
 mod executor_tools;
 mod fact_reads;
 mod goal_evidence;
@@ -39,6 +43,7 @@ mod tool_batch;
 mod tool_results;
 mod turn_facts;
 
+pub(crate) use checkpoints::original_public_transcript_from_facts;
 #[cfg(test)]
 use compaction::compact_handoff;
 use compaction::{bounded_summary, SessionCompact, UsageStamp};
@@ -90,9 +95,9 @@ use turn_facts::{
     surface_fact_log, surface_thread_facts,
 };
 pub(crate) use turn_facts::{
-    append_turn_complete_fact, has_unsettled_effects, replay_unsettled_mutations,
-    restore_checkpoint_mutation_cache, settle_terminal_run_controls, unsettled_mutation_paths,
-    CheckpointMutationCacheCoverage,
+    append_turn_complete_fact, append_turn_yielded_fact, has_unsettled_effects,
+    replay_unsettled_mutations, restore_checkpoint_mutation_cache, settle_terminal_run_controls,
+    unsettled_mutation_paths, CheckpointMutationCacheCoverage,
 };
 
 /// Thread id for one session. Valid ids are kept so two sessions in one
@@ -301,8 +306,11 @@ pub struct LiveCompletion {
     cached_system: Arc<Mutex<Option<String>>>,
     cached_prompt: Arc<Mutex<Option<Arc<PreparedPrompt>>>>,
     prompt_tokens: Arc<AtomicU64>,
+    fixed_prompt_tokens: Arc<AtomicU64>,
     standing_system: Option<String>,
     goal_context: Option<String>,
+    /// A generated tick is not a new user-language choice.
+    goal_user_text: Option<String>,
     checkpoint: Option<CheckpointState>,
     checkpoint_attempted_seq: Arc<AtomicU64>,
     original_model: Option<crate::agent_api::OriginalModelCallPort>,
@@ -331,8 +339,10 @@ impl LiveCompletion {
                 cached_system: Arc::new(Mutex::new(None)),
                 cached_prompt: Arc::new(Mutex::new(None)),
                 prompt_tokens: Arc::new(AtomicU64::new(0)),
+                fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
                 standing_system: None,
                 goal_context: None,
+                goal_user_text: None,
                 checkpoint: None,
                 checkpoint_attempted_seq: Arc::new(AtomicU64::new(0)),
                 original_model: None,
@@ -391,8 +401,10 @@ impl Completion for LiveCompletion {
         let system_slot = Arc::clone(&self.cached_system);
         let prompt_slot = Arc::clone(&self.cached_prompt);
         let prompt_tokens = Arc::clone(&self.prompt_tokens);
+        let fixed_prompt_tokens = Arc::clone(&self.fixed_prompt_tokens);
         let standing_system = self.standing_system.clone();
         let goal_context = self.goal_context.clone();
+        let goal_user_text = self.goal_user_text.clone();
         let checkpoint = self.checkpoint.clone();
         let checkpoint_attempted_seq = Arc::clone(&self.checkpoint_attempted_seq);
         let original_model = self.original_model.clone();
@@ -551,7 +563,7 @@ impl Completion for LiveCompletion {
                     _ => components,
                 });
             }
-            if let Some(surface) = &surface {
+            let verification_gate = if let Some(surface) = &surface {
                 let ledger = surface
                     .ledger
                     .lock()
@@ -563,7 +575,7 @@ impl Completion for LiveCompletion {
                     .unwrap_or_else(std::sync::PoisonError::into_inner)
                     .clone();
                 let agent = surface.agent.clone();
-                // A host preview may read disk and can finish after caller cancellation.
+                // A host attestor may read disk; its callback can outlive caller cancellation.
                 let gate = tokio::task::spawn_blocking(move || {
                     agent.fact_model_verification_gate(&ledger, &reports)
                 })
@@ -572,12 +584,10 @@ impl Completion for LiveCompletion {
                     key: "model-input-verification".into(),
                     message: error.to_string(),
                 })?;
-                if let Some(context) = crate::harness_loop::model_verification_context(gate) {
-                    let system = system.get_or_insert_with(String::new);
-                    system.push_str("\n\n");
-                    system.push_str(&context);
-                }
-            }
+                Some(gate)
+            } else {
+                None
+            };
             if !request.summary.is_empty() {
                 if let Some(surface) = &surface {
                     if let Some(sender) = &surface.events {
@@ -664,14 +674,17 @@ impl Completion for LiveCompletion {
                 })
                 .transpose()?
                 .unwrap_or_default();
-            let mut recorded = recorded_calls.into_iter();
             let tool_records = scheduler_tool_record_indexes(&folded);
+            let tool_prose =
+                history_seed::scheduler_tool_prose_indexes(&folded, &tool_records, &recorded_calls);
+            let mut recorded = recorded_calls.into_iter();
             let mut messages = Vec::new();
+            let mut previous_tool_response = None;
             for (index, text) in folded.iter().enumerate() {
                 // The result line below restores this call as a structured
                 // tool_use. Sending the scheduler record as prose makes the
                 // model echo `tool <name>` and end the turn.
-                if tool_records.contains(&index) {
+                if tool_records.contains(&index) || tool_prose.contains(&index) {
                     continue;
                 }
                 let (role, body) = split_folded_message(text);
@@ -684,12 +697,15 @@ impl Completion for LiveCompletion {
                     body
                 };
                 if role == "tool" || role == "tool-error" {
-                    messages.extend(recorded_tool_messages(
+                    recorded_tool_messages(
                         &mut recorded,
+                        &mut messages,
+                        &mut previous_tool_response,
                         &body,
                         role == "tool-error",
-                    )?);
+                    )?;
                 } else {
+                    previous_tool_response = None;
                     let images = if text.starts_with("user\n") {
                         images_for_user_line(index, summary_offset, kept_len, &mut user_images)
                     } else {
@@ -702,6 +718,9 @@ impl Completion for LiveCompletion {
                 return Err(ActorError::Schema(
                     "tool history has calls absent from the folded transcript".into(),
                 ));
+            }
+            if let Some(gate) = verification_gate {
+                tool_results::apply_verification_context(&mut messages, &mut system, gate);
             }
             if let Some(surface) = &surface {
                 apply_run_controls(surface, &mut messages).await?;
@@ -725,7 +744,9 @@ impl Completion for LiveCompletion {
             // The standing system prompt is cached on the first call. Restate
             // the latest user script on every call, and do not write it back
             // into the cache.
-            let user_text = latest_user_text(&request.messages);
+            let user_text = goal_user_text
+                .clone()
+                .unwrap_or_else(|| latest_user_text(&request.messages));
             let published = surface
                 .as_ref()
                 .and_then(|surface| surface.agent.tool_context_handle().reply_language());
@@ -733,12 +754,13 @@ impl Completion for LiveCompletion {
                 system.take(),
                 &user_text,
                 published.as_deref(),
-                surface.as_ref().is_some_and(|surface| {
-                    surface
-                        .agent
-                        .tool_context_handle()
-                        .preserves_parent_reply_language()
-                }),
+                goal_user_text.is_some()
+                    || surface.as_ref().is_some_and(|surface| {
+                        surface
+                            .agent
+                            .tool_context_handle()
+                            .preserves_parent_reply_language()
+                    }),
             );
             system = next_system;
             if let (Some(language), Some(surface)) = (&turn_language, surface.as_ref()) {
@@ -772,6 +794,17 @@ impl Completion for LiveCompletion {
                         .fire_generate_start(&surface.session_id, &prompt, &system, &tools)
                         .await;
                 }
+                let tools = match surface.as_ref() {
+                    Some(surface) => surface
+                        .agent
+                        .present_fact_turn_tools(&tools, &messages)
+                        .map_err(model_error)?,
+                    None => tools,
+                };
+                fixed_prompt_tokens.store(
+                    crate::llm::estimate_prompt_tokens(&[], system.as_deref(), &tools) as u64,
+                    Ordering::SeqCst,
+                );
                 model_response(
                     Arc::clone(&client),
                     messages.clone(),
@@ -1439,6 +1472,11 @@ impl FactRun {
                 crate::goal_control::render_run_context(goal, run_id).map_err(anyhow::Error::from)
             })
             .transpose()?;
+        if surface.goal_tick.is_some() {
+            completion.goal_user_text = current_goal
+                .as_ref()
+                .map(|goal| goal.goal.description.clone());
+        }
         let durable_source =
             crate::store::SessionFactSourceV1::from_facts(session_id, &shared_log.read(&thread)?)?;
         let checkpoint = surface.checkpoint.map(|checkpoint| CheckpointState {
@@ -1452,6 +1490,7 @@ impl FactRun {
         });
         let completion = completion.with_checkpoint(checkpoint.clone());
         let execution_started = Some(completion.started_at);
+        let fixed_prompt_tokens = Arc::clone(&completion.fixed_prompt_tokens);
         let prompt_tokens = Arc::new(AtomicU64::new(0));
         let completion = Arc::new(UsageStamp {
             inner: Arc::new(completion),
@@ -1459,9 +1498,12 @@ impl FactRun {
         });
         let compactor = Arc::new(SessionCompact {
             client: Arc::clone(&client),
+            history: (Arc::clone(&shared_log), thread.clone()),
             source: durable_source,
+            artifacts: executor.model_readable_artifact_store(),
             events: surface.events.clone(),
-            window_tokens: agent.context_window_tokens() as u64,
+            budget: agent.fact_compaction_budget(),
+            fixed_prompt_tokens,
             prompt_tokens,
         });
         let mut run = Self::open_with_optional_step_limit(

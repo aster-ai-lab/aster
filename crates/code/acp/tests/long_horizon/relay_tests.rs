@@ -7,6 +7,7 @@ const UPSTREAM_KEY: &str = "fixture-upstream-private-value";
 const MODEL: &str = "fixture-model";
 
 struct Fake {
+    protocol: Protocol,
     endpoint: String,
     calls: Arc<AtomicUsize>,
     worker: JoinHandle<()>,
@@ -14,8 +15,22 @@ struct Fake {
 
 impl Fake {
     async fn start(status: u16, body: &[u8], sse: bool, retry_after: Option<&str>) -> Self {
+        Self::start_protocol(Protocol::Openai, status, body, sse, retry_after).await
+    }
+
+    async fn start_protocol(
+        protocol: Protocol,
+        status: u16,
+        body: &[u8],
+        sse: bool,
+        retry_after: Option<&str>,
+    ) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
-        let endpoint = format!("http://{}{PATH}", listener.local_addr().unwrap());
+        let endpoint = format!(
+            "http://{}{}",
+            listener.local_addr().unwrap(),
+            protocol.path()
+        );
         let calls = Arc::new(AtomicUsize::new(0));
         let count = calls.clone();
         let body = body.to_vec();
@@ -23,9 +38,16 @@ impl Fake {
         let worker = tokio::spawn(async move {
             loop {
                 let (mut stream, _) = listener.accept().await.unwrap();
-                let request = read_request(&mut stream, &format!("Bearer {UPSTREAM_KEY}"))
-                    .await
-                    .unwrap();
+                let request = read_request(
+                    &mut stream,
+                    &match protocol {
+                        Protocol::Openai => format!("Bearer {UPSTREAM_KEY}"),
+                        Protocol::Anthropic => UPSTREAM_KEY.into(),
+                    },
+                    protocol,
+                )
+                .await
+                .unwrap();
                 assert_eq!(request["model"], MODEL);
                 count.fetch_add(1, Ordering::SeqCst);
                 let content_type = if sse {
@@ -44,6 +66,7 @@ impl Fake {
             }
         });
         Self {
+            protocol,
             endpoint,
             calls,
             worker,
@@ -52,8 +75,15 @@ impl Fake {
 
     fn route(&self) -> Route {
         Route {
+            protocol: self.protocol,
             endpoint: self.endpoint.clone(),
-            headers: vec![("Authorization".into(), format!("Bearer {UPSTREAM_KEY}"))],
+            headers: vec![(
+                self.protocol.credential_header().into(),
+                match self.protocol {
+                    Protocol::Openai => format!("Bearer {UPSTREAM_KEY}"),
+                    Protocol::Anthropic => UPSTREAM_KEY.into(),
+                },
+            )],
             model: MODEL.into(),
             protected_values: vec![UPSTREAM_KEY.as_bytes().to_vec()],
         }
@@ -133,6 +163,66 @@ async fn exact_model_round_trip_and_request_budget_are_enforced() {
 }
 
 #[tokio::test]
+async fn native_messages_json_and_sse_keep_bytes_credentials_and_budgets_bound() {
+    let json = br#"{"id":"fixture","type":"message","role":"assistant","content":[{"type":"text","text":"pong"}],"stop_reason":"end_turn","usage":{"input_tokens":2,"output_tokens":1}}"#;
+    let sse = b"event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"usage\":{\"input_tokens\":2,\"output_tokens\":0}}}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"usage\":{\"output_tokens\":1}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\n";
+    for (data, streaming) in [(json.as_slice(), false), (sse.as_slice(), true)] {
+        let fake = Fake::start_protocol(Protocol::Anthropic, 200, data, streaming, None).await;
+        let relay = Relay::start(fake.route(), 1, 512).await.unwrap();
+        let payload = body(streaming).to_string();
+        let wrong_header = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Length: {}\r\n\r\n{payload}", relay.key(), payload.len());
+        assert_eq!(
+            status(&request(relay.endpoint(), wrong_header.as_bytes()).await),
+            401
+        );
+        assert_eq!(fake.calls.load(Ordering::SeqCst), 0);
+        let native = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{payload}", relay.key(), payload.len());
+        let response = request(relay.endpoint(), native.as_bytes()).await;
+        assert_eq!(status(&response), 200);
+        assert!(response.ends_with(data));
+        assert!(!response
+            .windows(UPSTREAM_KEY.len())
+            .any(|part| part == UPSTREAM_KEY.as_bytes()));
+        let exhausted = request(relay.endpoint(), native.as_bytes()).await;
+        assert_eq!(status(&exhausted), 429);
+        let stats = relay.close().await.unwrap();
+        assert_eq!(stats.protocol, Protocol::Anthropic);
+        assert_eq!(stats.upstream_calls, 1);
+        assert_eq!(fake.calls.load(Ordering::SeqCst), 1);
+        assert_eq!(
+            stats.verified_token_total(),
+            if streaming { None } else { Some(3) },
+            "the unchanged SSE fixture lacks a delta object; only complete numeric observations qualify"
+        );
+    }
+}
+
+#[tokio::test]
+async fn the_actual_core_messages_client_completes_through_the_owned_relay() {
+    use aster_core::config::ProviderProtocol;
+    use aster_core::llm::{create_client_with_config, LlmConfig, Message};
+    let response = br#"{"id":"fixture","type":"message","role":"assistant","content":[{"type":"text","text":"pong"}],"stop_reason":"end_turn","usage":{"input_tokens":2,"output_tokens":1}}"#;
+    let fake = Fake::start_protocol(Protocol::Anthropic, 200, response, false, None).await;
+    let relay = Relay::start(fake.route(), 1, 512).await.unwrap();
+    let url = url::Url::parse(relay.endpoint()).unwrap();
+    let mut config = LlmConfig::new("glm-01", MODEL, relay.key())
+        .with_base_url(url.origin().ascii_serialization());
+    config.protocol = ProviderProtocol::Anthropic;
+    config.max_tokens = Some(512);
+    let client = create_client_with_config(config);
+    let answer = client
+        .complete(&[Message::user("fixture")], None, &[])
+        .await
+        .unwrap();
+    assert_eq!(answer.text(), "pong");
+    let stats = relay.close().await.unwrap();
+    assert_eq!(stats.upstream_calls, 1);
+    assert!(stats.listener_closed);
+    assert_eq!(stats.verified_token_total(), Some(3));
+    assert_eq!(stats.responses[&1].stop_reason.as_deref(), Some("end_turn"));
+}
+
+#[tokio::test]
 async fn an_upstream_redirect_cannot_escape_the_admitted_endpoint_or_request_budget() {
     for streaming in [false, true] {
         let destination = TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -143,7 +233,12 @@ async fn an_upstream_redirect_cannot_escape_the_admitted_endpoint_or_request_bud
             loop {
                 let (mut socket, _) = destination.accept().await.unwrap();
                 calls.fetch_add(1, Ordering::SeqCst);
-                let _ = read_request(&mut socket, &format!("Bearer {UPSTREAM_KEY}")).await;
+                let _ = read_request(
+                    &mut socket,
+                    &format!("Bearer {UPSTREAM_KEY}"),
+                    Protocol::Openai,
+                )
+                .await;
                 socket
                     .write_all(
                         b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}",
@@ -153,6 +248,7 @@ async fn an_upstream_redirect_cannot_escape_the_admitted_endpoint_or_request_bud
             }
         });
         let destination = Fake {
+            protocol: Protocol::Openai,
             endpoint: destination_endpoint,
             calls: destination_calls,
             worker,
@@ -165,14 +261,19 @@ async fn an_upstream_redirect_cannot_escape_the_admitted_endpoint_or_request_bud
         let worker = tokio::spawn(async move {
             loop {
                 let (mut socket, _) = source.accept().await.unwrap();
-                read_request(&mut socket, &format!("Bearer {UPSTREAM_KEY}"))
-                    .await
-                    .unwrap();
+                read_request(
+                    &mut socket,
+                    &format!("Bearer {UPSTREAM_KEY}"),
+                    Protocol::Openai,
+                )
+                .await
+                .unwrap();
                 calls.fetch_add(1, Ordering::SeqCst);
                 socket.write_all(format!("HTTP/1.1 307 Temporary Redirect\r\nLocation: {target}\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{{}}").as_bytes()).await.unwrap();
             }
         });
         let source = Fake {
+            protocol: Protocol::Openai,
             endpoint,
             calls: source_calls,
             worker,
@@ -442,9 +543,13 @@ async fn closing_the_owner_cancels_an_admitted_pending_upstream_request() {
     let (closed, upstream_eof) = tokio::sync::oneshot::channel();
     let worker = tokio::spawn(async move {
         let (mut socket, _) = listener.accept().await.unwrap();
-        read_request(&mut socket, &format!("Bearer {UPSTREAM_KEY}"))
-            .await
-            .unwrap();
+        read_request(
+            &mut socket,
+            &format!("Bearer {UPSTREAM_KEY}"),
+            Protocol::Openai,
+        )
+        .await
+        .unwrap();
         ready.send(()).unwrap();
         let mut byte = [0];
         let count = tokio::time::timeout(Duration::from_secs(5), socket.read(&mut byte))
@@ -454,6 +559,7 @@ async fn closing_the_owner_cancels_an_admitted_pending_upstream_request() {
         closed.send(count).unwrap();
     });
     let fake = Fake {
+        protocol: Protocol::Openai,
         endpoint,
         calls: Arc::new(AtomicUsize::new(0)),
         worker,
@@ -490,4 +596,24 @@ async fn a_stream_cannot_echo_actual_upstream_credentials() {
     let response = request(relay.endpoint(), &frame(relay.key(), PATH, &body(true))).await;
     assert!(!String::from_utf8_lossy(&response).contains(UPSTREAM_KEY));
     assert_eq!(relay.close().await.unwrap().protected_response_failures, 1);
+}
+
+#[tokio::test]
+async fn native_messages_stream_forwards_original_bytes_and_observes_final_usage() {
+    let payload = b"data: {\"type\":\"message_start\",\"message\":{\"usage\":{\"input_tokens\":2,\"output_tokens\":0}}}\n\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"max_tokens\"},\"usage\":{\"output_tokens\":5}}\n\ndata: {\"type\":\"message_stop\"}\n\n";
+    let fake = Fake::start_protocol(Protocol::Anthropic, 200, payload, true, None).await;
+    let relay = Relay::start(fake.route(), 1, 512).await.unwrap();
+    let body = body(true).to_string();
+    let frame = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{body}",relay.key(),body.len());
+    let response = request(relay.endpoint(), frame.as_bytes()).await;
+    assert_eq!(status(&response), 200);
+    assert!(response.ends_with(payload));
+    let stats = relay.close().await.unwrap();
+    assert_eq!(stats.upstream_calls, 1);
+    assert_eq!(stats.verified_token_total(), Some(7));
+    assert_eq!(
+        stats.responses[&1].stop_reason.as_deref(),
+        Some("max_tokens")
+    );
+    assert_eq!(stats.requests[0].output_token_limit, Some(512));
 }

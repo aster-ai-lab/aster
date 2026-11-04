@@ -1,0 +1,34 @@
+[
+  {
+    "case": "feed",
+    "result": "docs/evidence/code/2026-11-02-summary-input-retention/public-prose-20261104-current-config-1-live/deloop-changing-feed-a5b658ed-de6f-41b3-bcff-b02956b87d29/result.json",
+    "pass": false,
+    "artifactCorrect": false,
+    "versions": 7,
+    "reads": 7,
+    "compactions": 8,
+    "elapsedMs": 600072,
+    "upstreamCalls": 19,
+    "transportFailures": 0,
+    "protectedResponseFailures": 0,
+    "failure": {
+      "Err": "prompt_timeout"
+    }
+  },
+  {
+    "case": "holdout",
+    "result": "docs/evidence/code/2026-11-02-summary-input-retention/public-prose-20261104-current-config-1-live/deloop-independent-records-d4a3bad5-8492-4ba4-a138-e2213fabc70e/result.json",
+    "pass": false,
+    "artifactCorrect": false,
+    "versions": 5,
+    "reads": 5,
+    "compactions": 6,
+    "elapsedMs": 600074,
+    "upstreamCalls": 22,
+    "transportFailures": 0,
+    "protectedResponseFailures": 0,
+    "failure": {
+      "Err": "prompt_timeout"
+    }
+  }
+]

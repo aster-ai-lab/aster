@@ -143,9 +143,8 @@ pub(crate) struct AgentRebuildSpec {
     pub attribution_callback: Option<aster_tools::SharedAttributionCallback>,
     pub tool_params_json: ResolvedToolParamsJson,
     pub subagent_event_tx: Option<UnboundedSender<SubagentEvent>>,
-    pub subagent_coordinator_sender: Option<
-        aster_tools::implementations::grok_build::task::backend::SubagentCoordinatorSender,
-    >,
+    pub subagent_coordinator_sender:
+        Option<aster_tools::implementations::grok_build::task::backend::SubagentCoordinatorSender>,
     pub agent_message_sender: Option<AgentMessageSender>,
     pub monitor_event_buffer: Option<MonitorEventBuffer>,
     pub user_question_tx: UnboundedSender<UserQuestionRequest>,

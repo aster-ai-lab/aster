@@ -1,8 +1,5 @@
 //! Anthropic Claude LLM client
 
-#[cfg(test)]
-mod usage_tests;
-
 use super::http::{default_http_client, normalize_base_url, HttpClient};
 use super::structured;
 use super::types::*;
@@ -417,7 +414,7 @@ impl AnthropicClient {
                     transcript_text: None,
                     transcript_visibility: Default::default(),
                 },
-                usage: parsed.usage.token_usage()?,
+                usage: parsed.usage.token_usage(),
                 stop_reason: Some(parsed.stop_reason),
                 token_logprobs: Vec::new(),
                 meta: Some(LlmResponseMeta {
@@ -474,6 +471,7 @@ impl LlmClient for AnthropicClient {
         system: Option<&str>,
         tools: &[ToolDefinition],
     ) -> Result<LlmResponse> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_request(self.build_request(messages, system, tools))
             .await
     }
@@ -485,6 +483,7 @@ impl LlmClient for AnthropicClient {
         tools: &[ToolDefinition],
         directive: &structured::StructuredDirective,
     ) -> Result<LlmResponse> {
+        super::gemini::refuse_foreign_state(messages)?;
         let mut request_body = self.build_request(messages, system, tools);
         self.apply_directive(&mut request_body, directive);
         self.send_request(request_body).await
@@ -505,6 +504,7 @@ impl LlmClient for AnthropicClient {
         tools: &[ToolDefinition],
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::gemini::refuse_foreign_state(messages)?;
         self.send_streaming(self.build_request(messages, system, tools), cancel_token)
             .await
     }
@@ -517,6 +517,7 @@ impl LlmClient for AnthropicClient {
         directive: &structured::StructuredDirective,
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::gemini::refuse_foreign_state(messages)?;
         let mut request_body = self.build_request(messages, system, tools);
         self.apply_directive(&mut request_body, directive);
         self.send_streaming(request_body, cancel_token).await
@@ -801,13 +802,7 @@ impl AnthropicClient {
                                             usage.output_tokens = msg_usage.output_tokens;
                                         }
                                         AnthropicStreamEvent::MessageStop => {
-                                            let usage = match usage.token_usage() {
-                                                Ok(usage) => usage,
-                                                Err(error) => {
-                                                    tracing::error!(%error, "invalid Anthropic token usage");
-                                                    return;
-                                                }
-                                            };
+                                            let usage = usage.token_usage();
                                             if !text_content.is_empty() {
                                                 content_blocks.push(ContentBlock::Text {
                                                     text: std::mem::take(&mut text_content),
@@ -907,32 +902,25 @@ pub(crate) struct AnthropicUsage {
 }
 
 impl AnthropicUsage {
-    fn token_usage(&self) -> Result<TokenUsage> {
-        use super::metering::{InputAccounting, ObservedTokens};
-
-        // Messages input_tokens excludes cached input; OpenAI-style prompt_tokens includes it.
-        let observed = ObservedTokens::from_reported(
-            Some(self.input_tokens as u64),
-            Some(self.output_tokens as u64),
-            Some(self.cache_read_input_tokens.unwrap_or(0) as u64),
-            Some(self.cache_creation_input_tokens.unwrap_or(0) as u64),
-            InputAccounting::ExcludesCache,
-        )?;
-        Ok(TokenUsage {
-            prompt_tokens: observed
-                .input_tokens
-                .context("missing normalized input tokens")?
-                .try_into()?,
+    fn token_usage(&self) -> TokenUsage {
+        // Messages reports cache buckets separately; SDK input totals include them once.
+        let prompt_tokens = self
+            .input_tokens
+            .saturating_add(self.cache_read_input_tokens.unwrap_or(0))
+            .saturating_add(self.cache_creation_input_tokens.unwrap_or(0));
+        TokenUsage {
+            prompt_tokens,
             completion_tokens: self.output_tokens,
-            total_tokens: observed
-                .total_tokens()?
-                .context("missing normalized total tokens")?
-                .try_into()?,
+            total_tokens: prompt_tokens.saturating_add(self.output_tokens),
             cache_read_tokens: self.cache_read_input_tokens,
             cache_write_tokens: self.cache_creation_input_tokens,
-        })
+        }
     }
 }
+
+#[cfg(test)]
+#[path = "anthropic_usage_tests.rs"]
+mod usage_tests;
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]

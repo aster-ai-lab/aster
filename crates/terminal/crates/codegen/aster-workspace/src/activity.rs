@@ -17,8 +17,8 @@ use std::sync::atomic::{AtomicBool, AtomicU8, AtomicU32, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Instant;
 
-use aster_session_events::{Event, EventWriter, ToolCompletedSource, ToolOutcome};
 use aster_file_utils::queue::UploadQueueStats;
+use aster_session_events::{Event, EventWriter, ToolCompletedSource, ToolOutcome};
 use aster_tool_protocol::{IdleWithholdReason, ToolServerLifecycleStatus, ToolServerStatusPayload};
 use dashmap::DashMap;
 

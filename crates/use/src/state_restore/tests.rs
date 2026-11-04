@@ -668,7 +668,9 @@ fn snapshot_regular_files(root: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
             let entry = entry.unwrap();
             let path = entry.path();
             let metadata = std::fs::symlink_metadata(&path).unwrap();
-            assert!(!aster_use_core::metadata_is_link_or_reparse_point(&metadata));
+            assert!(!aster_use_core::metadata_is_link_or_reparse_point(
+                &metadata
+            ));
             if metadata.is_dir() {
                 stack.push(path);
             } else if metadata.is_file() {

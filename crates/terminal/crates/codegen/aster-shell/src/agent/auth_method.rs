@@ -19,7 +19,8 @@ pub(crate) fn new_shared_auth_method_id(initial: Option<acp::AuthMethodId>) -> S
 // (auth needs them without pulling in shell's `ModelEntry`); re-exported here so
 // `crate::agent::auth_method::{ASTER_API_KEY_ENV_VAR, ..}` call sites keep resolving.
 pub use aster_login::auth_method::{
-    ASTER_API_KEY_ENV_VAR, LEGACY_ASTER_API_KEY_ENV_VAR, has_aster_api_key_env, read_aster_api_key_env,
+    ASTER_API_KEY_ENV_VAR, LEGACY_ASTER_API_KEY_ENV_VAR, has_aster_api_key_env,
+    read_aster_api_key_env,
 };
 
 /// Whether `aster.api_key` should be advertised (and pushed FIRST) when building the `auth_methods` list at `initialize()` time.
@@ -606,7 +607,10 @@ mod tests {
         };
         let built = build_auth_methods(inputs);
 
-        assert_eq!(first_kind(&built.methods), Some(AuthMethodKind::AsterApiKey));
+        assert_eq!(
+            first_kind(&built.methods),
+            Some(AuthMethodKind::AsterApiKey)
+        );
         assert!(
             built
                 .methods
@@ -741,7 +745,10 @@ mod tests {
             has_external_api_key,
             ..default_inputs()
         });
-        assert_eq!(first_kind(&built.methods), Some(AuthMethodKind::AsterApiKey));
+        assert_eq!(
+            first_kind(&built.methods),
+            Some(AuthMethodKind::AsterApiKey)
+        );
     }
 
     /// Admin kill switch (`disable_api_key_auth`): the predicate must return false even when credentials are available everywhere.

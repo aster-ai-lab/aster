@@ -1,7 +1,7 @@
 use super::persist::update_config;
 use crate::agent::config::Feature;
-use aster_config::fs_atomic::BoundDest;
 use anyhow::{Context, Result};
+use aster_config::fs_atomic::BoundDest;
 use std::path::Path;
 use std::sync::atomic::{AtomicU8, AtomicU64, Ordering};
 use std::time::UNIX_EPOCH;

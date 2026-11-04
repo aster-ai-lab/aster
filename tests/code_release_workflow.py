@@ -62,7 +62,7 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
 
 
 class QualificationGate(unittest.TestCase):
-    def qualify(self, workflow, *, count=1, expected_sha=None):
+    def qualify(self, workflow, *, count=1, expected_sha=None, release_tag=None):
         script = workflow_script(workflow, "Require successful branch qualification for the tagged commit")
         qualifier = "qualify-aster-cli.yml" if workflow == "release-aster-cli.yml" else "qualify-code.yml"
         source = "a" * 40
@@ -76,11 +76,18 @@ test "$2" = "$EXPECTED_URL"
 printf '%s\\n' "$QUALIFIED_COUNT"
 ''')
             gh.chmod(0o755)
+            cargo = commands / "cargo"
+            cargo.write_text('''#!/bin/sh
+test "$*" = 'read-manifest --manifest-path apps/aster/Cargo.toml' || exit 93
+printf '%s\\n' '{"version":"0.1.6"}'
+''')
+            cargo.chmod(0o755)
             env = os.environ.copy()
             env.update({
                 "PATH": directory + os.pathsep + env["PATH"],
                 "GH_REPO": "fixture/aster", "GH_TOKEN": "test",
-                "RELEASE_SHA": source, "RELEASE_TAG": "fixture-tag",
+                "RELEASE_SHA": source,
+                "RELEASE_TAG": release_tag or ("aster-cli-v0.1.6" if workflow == "release-aster-cli.yml" else "fixture-tag"),
                 "QUALIFIED_COUNT": str(count),
                 "EXPECTED_URL": f"repos/fixture/aster/actions/workflows/{qualifier}/runs?head_sha={expected_sha or source}&event=push&status=completed&per_page=100",
             })
@@ -95,6 +102,11 @@ printf '%s\\n' "$QUALIFIED_COUNT"
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("no successful pre-merge", result.stderr)
                 self.assertNotEqual(self.qualify(workflow, expected_sha="b" * 40).returncode, 0)
+
+    def test_cli_tag_must_match_the_source_version_before_building(self):
+        result = self.qualify("release-aster-cli.yml", release_tag="aster-cli-v0.1.7")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("does not match CLI 0.1.6", result.stderr)
 
 
 class CodePublication(unittest.TestCase):

@@ -2,6 +2,9 @@
 
 mod index_contract;
 
+#[cfg(test)]
+pub(crate) mod digest_tests;
+
 use crate::error::{Error, Result};
 use crate::types::{DataType, IndexType, MetricType, QuantizeType};
 use serde::{Deserialize, Serialize};
@@ -765,7 +768,38 @@ impl CollectionSchema {
         }
         Ok(())
     }
+    /// Stable identity ignoring JSON object order while retaining field and array order.
     pub fn digest(&self) -> String {
+        self.canonicalized().encoded_digest()
+    }
+
+    pub(crate) fn canonicalized(&self) -> Self {
+        let mut schema = self.clone();
+        for index in schema
+            .fields
+            .iter_mut()
+            .filter_map(|field| field.index_params.as_mut())
+            .chain(
+                schema
+                    .vectors
+                    .iter_mut()
+                    .filter_map(|vector| vector.index_params.as_mut()),
+            )
+        {
+            index.params.sort_keys();
+            for value in index.params.values_mut() {
+                value.sort_all_objects();
+            }
+        }
+        schema
+    }
+
+    pub(crate) fn matches_digest(&self, expected: &str) -> bool {
+        // Preserve encoded object order while decoding legacy noncanonical snapshots.
+        self.digest() == expected || self.encoded_digest() == expected
+    }
+
+    fn encoded_digest(&self) -> String {
         let bytes = serde_json::to_vec(self).unwrap_or_default();
         format!("{:08x}", crc32fast::hash(&bytes))
     }

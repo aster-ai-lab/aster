@@ -156,7 +156,7 @@ impl Tool for OutputCheckTool {
     }
 
     fn description(&self) -> &str {
-        "Check text length, percentage changes, date spans or every adjacent sequence change in process, without Bash. text_length counts Unicode characters including punctuation/whitespace, non-whitespace characters, and whitespace-delimited words. percentage_change uses (current-previous)/abs(previous)*100, returns full numeric values and signed prose rounded to at most 2 decimals with ASCII signs (+10%, -50%); explicit user precision still takes precedence. date_span requires exact YYYY-MM-DD dates and explicit elapsed or inclusive endpoint counting; reversed dates are refused. sequence_changes returns every adjacent difference and every decrease with zero-based indices; missing values leave the complete-sequence conclusion unknown. record_provenance compares source and output records by key and reports missing, unexpected, duplicate and changed records; allow_derived_keys is only for task-authorized derived records. Missing values and zero baselines are never converted to zero changes. These measurements do not establish business meaning or resolve conflicting user requirements; compare every final claim with its source and counting rule."
+        "Check text length, percentage changes, date spans or every adjacent sequence change in process, without Bash. text_length counts Unicode extended grapheme clusters (user-perceived characters, so ZWJ emoji sequences count as 1) including punctuation/whitespace, non-whitespace clusters, and whitespace-delimited words. percentage_change uses (current-previous)/abs(previous)*100, returns full numeric values and signed prose rounded to at most 2 decimals with ASCII signs (+10%, -50%); explicit user precision still takes precedence. date_span requires exact YYYY-MM-DD dates and explicit elapsed or inclusive endpoint counting; reversed dates are refused. sequence_changes returns every adjacent difference and every decrease with zero-based indices; missing values leave the complete-sequence conclusion unknown. record_provenance compares source and output records by key and reports missing, unexpected, duplicate and changed records; allow_derived_keys is only for task-authorized derived records. Missing values and zero baselines are never converted to zero changes. These measurements do not establish business meaning or resolve conflicting user requirements; compare every final claim with its source and counting rule."
     }
 
     fn parameters(&self) -> Value {
@@ -202,7 +202,11 @@ impl Tool for OutputCheckTool {
         };
         let result = match check {
             Check::TextLength { text } => {
-                if text.len() > 128 * 1024 || text.chars().count() > 32768 {
+                if text.len() > 128 * 1024
+                    || unicode_segmentation::UnicodeSegmentation::graphemes(text.as_str(), true)
+                        .count()
+                        > 32768
+                {
                     return Ok(ToolOutput::error(
                         "text exceeds the 32768-character input limit",
                     ));

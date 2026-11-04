@@ -407,7 +407,9 @@ mod tests {
     fn display_user_grok_path_joins_relative() {
         let path = display_user_grok_path(aster_config::USER_CONFIG_FILENAME);
         assert!(path.ends_with("/config.toml") || path.ends_with("\\config.toml"));
-        assert!(path.contains(".aster") || path.contains("$GROK_HOME") || path.contains("$ASTER_HOME"));
+        assert!(
+            path.contains(".aster") || path.contains("$GROK_HOME") || path.contains("$ASTER_HOME")
+        );
     }
 
     #[test]

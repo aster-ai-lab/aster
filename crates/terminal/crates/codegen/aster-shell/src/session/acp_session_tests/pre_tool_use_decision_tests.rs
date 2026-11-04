@@ -2,9 +2,9 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender;
 use aster_tools::registry::types::ToolConfig;
-use agent_client_protocol as acp;
 
 use super::support::*;
 use super::*;

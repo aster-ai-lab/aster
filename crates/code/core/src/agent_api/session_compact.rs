@@ -64,6 +64,25 @@ impl AgentSession {
             &None,
             &cancellation,
         );
+        let artifacts = self.tool_executor.model_readable_artifact_store();
+        let original = match artifacts.as_ref() {
+            Some(store) => {
+                let text = tokio::task::spawn_blocking(move || {
+                    crate::fact_control::original_public_transcript_from_facts(&facts)
+                })
+                .await
+                .map_err(|error| {
+                    CodeError::Session(format!("compaction source projection failed: {error}"))
+                })?;
+                if text.is_empty() {
+                    crate::compaction::CompactionSource::from_messages(Some(store), &messages).await
+                } else {
+                    crate::compaction::CompactionSource::prepare(Some(store), text).await
+                }
+                .map_err(|error| CodeError::Session(format!("{error:#}")))?
+            }
+            None => None,
+        };
         let compacted = crate::compaction::compact_messages(
             &self.session_id,
             &messages,
@@ -71,6 +90,7 @@ impl AgentSession {
             budget,
             focus,
             source.as_ref(),
+            original,
         )
         .await
         .map_err(|error| CodeError::Session(format!("{error:#}")))?;

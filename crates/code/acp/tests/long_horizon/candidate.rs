@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+use super::artifact::timing::{self, Phase};
 use cap_fs_ext::{FollowSymlinks, OpenOptionsFollowExt, OpenOptionsSyncExt};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -16,6 +17,7 @@ pub struct Member {
 
 impl Member {
     fn open(&self) -> Result<std::fs::File, &'static str> {
+        let _timing = timing::span(Phase::CandidateMemberOpen);
         if !self.path.is_absolute()
             || self.bytes == 0
             || self.bytes.checked_add(1).is_none()
@@ -43,6 +45,7 @@ impl Member {
     }
 
     pub fn verify(&self) -> Result<(), &'static str> {
+        let _timing = timing::span(Phase::CandidateMemberDigest);
         let mut file = self.open()?.take(self.bytes + 1);
         let mut hash = Sha256::new();
         let mut bytes = [0; 64 * 1024];
@@ -62,6 +65,7 @@ impl Member {
     }
 
     fn copy_to(&self, path: PathBuf) -> Result<(), &'static str> {
+        let _timing = timing::span(Phase::CandidateMemberCopy);
         let source = self.open()?;
         let permissions = source
             .metadata()
@@ -97,6 +101,7 @@ pub struct Candidate {
 
 impl Candidate {
     pub fn load(path: &Path, expected: &str) -> Result<Self, &'static str> {
+        let _timing = timing::span(Phase::CandidateLoad);
         if !path.is_absolute() {
             return Err("candidate_manifest_path");
         }

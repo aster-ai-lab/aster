@@ -1,0 +1,1459 @@
+{
+  "schema_version": 1,
+  "ranking_unit": "source-id",
+  "description": "Synthetic source-level relevance fixture. One short source document is one graded evidence unit. Frozen before optimization; host/memory queries require their actual owning services.",
+  "provenance": "Synthetic documents and relevance labels authored together before any qualification run; no production or user data. This is an engineering regression fixture, not a real-world relevance estimate.",
+  "normalization": "A unique returned source ID counts once, at its first rank. Workspace IDs are exact relative source paths. Memory IDs come from the actual memory owner. Source IDs come from the actual host source binding. No gold-dependent rank selection. Invalid content digest, snippet bounds or source text is an attribution failure. Negative queries report candidates separately; they cannot establish relevant evidence.",
+  "primary_paths": {
+    "C0": "workspace:hybrid:model-free",
+    "C1": "workspace:hybrid:bundled-semantic",
+    "H1-wiki": "search_wiki",
+    "H1-memory": "search_memory",
+    "H1-source": "search_sources:Fast"
+  },
+  "output_limits": {
+    "workspace_hits": 8,
+    "host_hits": 12,
+    "host_bytes": 49152
+  },
+  "documents": [
+    {
+      "id": "symbol/purge_expired_sessions.rs",
+      "owner": "workspace",
+      "path": "symbol/purge_expired_sessions.rs",
+      "content": "/// Remove expired login sessions from the session cache.\npub fn purge_expired_sessions() {}\n",
+      "sha256": "43d89a5484efd3f2e338e16eac709dcd1e2bd2d3270d824e363642640b224402"
+    },
+    {
+      "id": "symbol/retry_payment_capture.rs",
+      "owner": "workspace",
+      "path": "symbol/retry_payment_capture.rs",
+      "content": "/// Retry a temporary payment capture failure with the same payment identifier.\npub fn retry_payment_capture() {}\n",
+      "sha256": "c4b2299274c4b0a5cb3443a647b293266085cd680801000cab62813eae7bcbed"
+    },
+    {
+      "id": "symbol/read_workspace_manifest.rs",
+      "owner": "workspace",
+      "path": "symbol/read_workspace_manifest.rs",
+      "content": "/// Read the saved workspace manifest and return its file entries.\npub fn read_workspace_manifest() {}\n",
+      "sha256": "95bfdb773a537e50f127e1ee0a36f9066fbeb8a2c38db696a0897bf95ef8294a"
+    },
+    {
+      "id": "symbol/cancel_background_job.rs",
+      "owner": "workspace",
+      "path": "symbol/cancel_background_job.rs",
+      "content": "/// Cancel a running background job and retain its terminal receipt.\npub fn cancel_background_job() {}\n",
+      "sha256": "0f33872d39eb2720d1f4688f1fb1571da71d528c0c9935f1e34309d75f747580"
+    },
+    {
+      "id": "symbol/decode_event_frame.rs",
+      "owner": "workspace",
+      "path": "symbol/decode_event_frame.rs",
+      "content": "/// Decode one UTF-8 JSON event frame from the protocol byte stream.\npub fn decode_event_frame() {}\n",
+      "sha256": "a8094140b5cee422dc2bbf62f8822093ab1bf1ada64a0d1578e993185bad4e62"
+    },
+    {
+      "id": "symbol/atomic_replace_snapshot.rs",
+      "owner": "workspace",
+      "path": "symbol/atomic_replace_snapshot.rs",
+      "content": "/// Flush a temporary snapshot and atomically rename it over the published snapshot.\npub fn atomic_replace_snapshot() {}\n",
+      "sha256": "f6deec82fb085829d79dd41eecd2da7c5a51bc144908c5f53a656d4df6b9e049"
+    },
+    {
+      "id": "symbol/validate_upload_size.rs",
+      "owner": "workspace",
+      "path": "symbol/validate_upload_size.rs",
+      "content": "/// Refuse an upload whose bytes exceed the configured input limit.\npub fn validate_upload_size() {}\n",
+      "sha256": "0303a0149ab7458d7abefdf91dc995439d1e7b7809f70fd860164980304a00b6"
+    },
+    {
+      "id": "symbol/normalize_relative_path.rs",
+      "owner": "workspace",
+      "path": "symbol/normalize_relative_path.rs",
+      "content": "/// Validate a relative path and refuse parent traversal outside the workspace.\npub fn normalize_relative_path() {}\n",
+      "sha256": "e369163825e168e388b7ab5597a18c5b3ee0a914c56820e5ead512cc360fbcd5"
+    },
+    {
+      "id": "symbol/reopen_search_collection.rs",
+      "owner": "workspace",
+      "path": "symbol/reopen_search_collection.rs",
+      "content": "/// Open the existing search collection without losing its saved generation.\npub fn reopen_search_collection() {}\n",
+      "sha256": "7e720ce3de4221de21d90b9bdd97c528c382c5ac9aa105de79e733814bff2f0f"
+    },
+    {
+      "id": "symbol/format_compiler_diagnostic.rs",
+      "owner": "workspace",
+      "path": "symbol/format_compiler_diagnostic.rs",
+      "content": "/// Render a compiler diagnostic with its source file, line and column.\npub fn format_compiler_diagnostic() {}\n",
+      "sha256": "1decd02dc34b4ab895f0aeaa2c225d691488337a5bf3ad4bc555cb1440b328d8"
+    },
+    {
+      "id": "behavior/settings.md",
+      "owner": "workspace",
+      "path": "behavior/settings.md",
+      "content": "The settings reader opens the configuration file, parses options, and validates required settings before startup.\n",
+      "sha256": "b171f957cbb3dfb7362c5294a2404b80ee03084a2b762d90e59fa230e545a025"
+    },
+    {
+      "id": "behavior/deduplicate_payment.md",
+      "owner": "workspace",
+      "path": "behavior/deduplicate_payment.md",
+      "content": "The payment handler stores an idempotency key for each purchase. A repeated request returns the saved charge receipt instead of another charge.\n",
+      "sha256": "1cb978c627fba20998cdb0a40a1415b5d9d945778b3847f11c1554cebda5d9eb"
+    },
+    {
+      "id": "behavior/durable_save.md",
+      "owner": "workspace",
+      "path": "behavior/durable_save.md",
+      "content": "The snapshot writer writes a temporary file, flushes all bytes, then renames it atomically over the previous snapshot. The original stays readable until replacement.\n",
+      "sha256": "b9c72aa31fc8cff700eae39865206b7a66bef24674a04b24000dde40b9760f63"
+    },
+    {
+      "id": "behavior/bounded_retry.md",
+      "owner": "workspace",
+      "path": "behavior/bounded_retry.md",
+      "content": "The service client retries temporary failures with exponential backoff. A maximum attempt count and request deadline bound all retries.\n",
+      "sha256": "4edee1c22934ca6ffd359f811bf68ec85f623e151699c58be610f5f7926b99ea"
+    },
+    {
+      "id": "behavior/batch_updates.md",
+      "owner": "workspace",
+      "path": "behavior/batch_updates.md",
+      "content": "The workbook writer groups cell mutations into one batch and starts the native processor once. Each cell retains its declared value type.\n",
+      "sha256": "95624107fe5454b1e75caf8cc69a6612cd1d1ee12989b8d358b944c82c5de8fd"
+    },
+    {
+      "id": "behavior/cancel_work.md",
+      "owner": "workspace",
+      "path": "behavior/cancel_work.md",
+      "content": "The task owner cancels the operation token. The publisher checks that token and the current generation before publishing a worker result.\n",
+      "sha256": "c0b8472d40177d2317c29060fe576c52382ceb17db40d473c51994166ddfe448"
+    },
+    {
+      "id": "behavior/cache_extraction.md",
+      "owner": "workspace",
+      "path": "behavior/cache_extraction.md",
+      "content": "The document processor caches extracted text by source digest, extractor version, and page range. A changed source or extractor invalidates the projection.\n",
+      "sha256": "7f3e215f6e33fe79de6999de8618bb73c4dcf5af92802373fba2b5dfa656700d"
+    },
+    {
+      "id": "behavior/keep_source_current.md",
+      "owner": "workspace",
+      "path": "behavior/keep_source_current.md",
+      "content": "Before returning a passage, the reader reloads the current source and verifies its content digest against the indexed source generation.\n",
+      "sha256": "983a8c952b5fb6a94b70c1922d2c3fa2d15cb9af50b3aeb8f290d2ecffada4cb"
+    },
+    {
+      "id": "behavior/read_pages.md",
+      "owner": "workspace",
+      "path": "behavior/read_pages.md",
+      "content": "The PDF reader returns a bounded page range and a next_page value. Follow next_page until it is null before claiming complete coverage.\n",
+      "sha256": "8a7d2901116133304e9b1a2c9291f101da99db0677e8b100eac35eff5cc168dc"
+    },
+    {
+      "id": "behavior/cancel_cleanup.md",
+      "owner": "workspace",
+      "path": "behavior/cancel_cleanup.md",
+      "content": "The foreground prompt may return cancelled while the native worker is still settling. The owner keeps its worker permit until computation finishes and releases resources.\n",
+      "sha256": "de1ea2b5529fabcddf0c5b17b0ea914c826a391f3ef4c4efee091f820d7be2d6"
+    },
+    {
+      "id": "architecture/permission_owner.md",
+      "owner": "workspace",
+      "path": "architecture/permission_owner.md",
+      "content": "The governed tool executor evaluates admitted permission policy. Prompt text describes the task but does not grant tool access.\n",
+      "sha256": "a737a574cb2db727b29a9e9bc7bfd988d66c9d3ae293029d0518c972ef822b89"
+    },
+    {
+      "id": "architecture/document_owner.md",
+      "owner": "workspace",
+      "path": "architecture/document_owner.md",
+      "content": "The desktop host owns the ingestion queue, OCR processor and source catalog. The agent reaches them through an admitted document bridge.\n",
+      "sha256": "7ee1202050609ca357a9f0c6830d5f2ee58363358f63a38c5e4d2a083ff4c2aa"
+    },
+    {
+      "id": "architecture/source_catalog.md",
+      "owner": "workspace",
+      "path": "architecture/source_catalog.md",
+      "content": "The workspace manifest and chunk catalog own current source revisions. Lexical and vector indexes are derived projections of that same source catalog.\n",
+      "sha256": "3e54e18ae8dc35314e4425faf1509c45b576d0be8cedd835d6de358ef122216f"
+    },
+    {
+      "id": "architecture/memory_owner.md",
+      "owner": "workspace",
+      "path": "architecture/memory_owner.md",
+      "content": "The memory store owns record identity, revision, retention and deletion. Semantic vectors are rebuildable projections, not a second authoritative memory database.\n",
+      "sha256": "98d5afaa024b85b46d9ebc9716a45293bb120a95a616555281f575c4585c0750"
+    },
+    {
+      "id": "architecture/transport_boundary.md",
+      "owner": "workspace",
+      "path": "architecture/transport_boundary.md",
+      "content": "The ACP document bridge routes admitted operations to the host. It preserves session and run identity, timeout, cancellation and source attribution.\n",
+      "sha256": "7d2922cf09777ec485964a95920e0397e6bcafc5f490633e6f25cc4e87455d86"
+    },
+    {
+      "id": "architecture/search_fusion.md",
+      "owner": "workspace",
+      "path": "architecture/search_fusion.md",
+      "content": "The workspace hybrid query pipeline combines exact, lexical, structural and semantic candidates using reciprocal rank fusion before source verification.\n",
+      "sha256": "a300caa8fce512ed94eacfe0db2d51f9f768bc0875a0758c769c564da0670369"
+    },
+    {
+      "id": "architecture/tenant_scope.md",
+      "owner": "workspace",
+      "path": "architecture/tenant_scope.md",
+      "content": "The host session catalog resolves profile-scoped task bindings and workspace roots. The model supplies a query and typed scope, not arbitrary filesystem roots.\n",
+      "sha256": "c0c62165de1913c7d63e1c55c03f5db9923972aad18c7bf3416f76ebf9512a6d"
+    },
+    {
+      "id": "architecture/embedding_contract.md",
+      "owner": "workspace",
+      "path": "architecture/embedding_contract.md",
+      "content": "The EmbeddingProvider contract accepts typed input batches and returns vectors bound to those input identifiers. Hosts inject providers; Core owns bounded execution.\n",
+      "sha256": "63d30c71521276097f16f9be77ba317400309ea58ab69ad0e8cb385fd9d1e91e"
+    },
+    {
+      "id": "architecture/index_lifecycle.md",
+      "owner": "workspace",
+      "path": "architecture/index_lifecycle.md",
+      "content": "The workspace manifest watcher feeds the catalog coordinator. Its persistent index owner applies changed source generations and publishes the lexical projection.\n",
+      "sha256": "3ad0295ce0503787d5bbd5f552c7b63c9d5f3e3cee583a16209795f95e85a9f4"
+    },
+    {
+      "id": "architecture/ui_role.md",
+      "owner": "workspace",
+      "path": "architecture/ui_role.md",
+      "content": "The terminal or desktop view consumes ACP events and displays actual progress and source citations. It does not build a parallel retrieval database.\n",
+      "sha256": "73757b8ccbd638b23ed5ff2767abe2896217b627ffd8e5f31acc536aa45c08f3"
+    },
+    {
+      "id": "cjk/config.md",
+      "owner": "workspace",
+      "path": "cjk/config.md",
+      "content": "配置加载器从磁盘读取应用配置，解析设置，并检查必填项。无效配置明确报告错误，不继续使用猜测值。\n",
+      "sha256": "c2b46c6d8c943b40d10331e775231cf69f013cfb4496161f9b2f0ea5dee2c379"
+    },
+    {
+      "id": "cjk/snapshot.md",
+      "owner": "workspace",
+      "path": "cjk/snapshot.md",
+      "content": "快照写入器先写临时文件并刷新数据，再原子替换原快照。替换成功前，旧快照始终保持可读。\n",
+      "sha256": "85bf17e4c4c2dc2dcb39e2f7ec392c1d3abab67fadecfb6dda9d374e969cbc8b"
+    },
+    {
+      "id": "cjk/duplicate_charge.md",
+      "owner": "workspace",
+      "path": "cjk/duplicate_charge.md",
+      "content": "支付处理器为购买请求保存幂等标识。同一标识的重试直接返回已有扣款凭证，不创建第二笔扣款。\n",
+      "sha256": "944bdb99b320ffc5f3372570642957c1d8ce49689b1b458c16fcb60c0395f911"
+    },
+    {
+      "id": "cjk/document_cache.md",
+      "owner": "workspace",
+      "path": "cjk/document_cache.md",
+      "content": "文档缓存以源文件摘要、解析器版本和页范围为身份。内容或解析器变化时，旧提取结果失效。\n",
+      "sha256": "8f2a16856d5ecf28da7223bd6530a081c4317d9689ccdd17e296c0f21d6ed7e9"
+    },
+    {
+      "id": "cjk/cancel.md",
+      "owner": "workspace",
+      "path": "cjk/cancel.md",
+      "content": "任务所有者发出取消信号。发布前核对取消状态和来源代数，旧任务的迟到结果不会覆盖新结果。\n",
+      "sha256": "4f9862d401ddb6ce800ad567d5b03f3d661ad679d6756fd3e1734bb8dddfe57b"
+    },
+    {
+      "id": "cjk/memory.md",
+      "owner": "workspace",
+      "path": "cjk/memory.md",
+      "content": "记忆存储负责记录标识、版本、删除和保留策略。语义索引只是可重建的派生投影，不能成为另一份权威记录。\n",
+      "sha256": "f295134dc2daab2d8506bf5ab9e7907db917b8b591c248d521a2401c6fd782a7"
+    },
+    {
+      "id": "cjk/pdf.md",
+      "owner": "workspace",
+      "path": "cjk/pdf.md",
+      "content": "PDF 读取器返回限定页范围和 next_page。必须继续读取，直到 next_page 为空，才能声称覆盖完整文档。\n",
+      "sha256": "65a62821a0a091a7a19825b6cbd4ddb2a3c48ab1d622f814e1ede9aea383ae8f"
+    },
+    {
+      "id": "cjk/workspace.md",
+      "owner": "workspace",
+      "path": "cjk/workspace.md",
+      "content": "宿主根据用户配置和任务绑定解析工作区目录。模型只提交查询和声明的范围，不能任意提供文件系统根目录。\n",
+      "sha256": "b63c40c7a23d83aae2a3f51b6e38f15164d0322f1cc5498224f3ace0e2b28ebf"
+    },
+    {
+      "id": "cjk/cold_index.md",
+      "owner": "workspace",
+      "path": "cjk/cold_index.md",
+      "content": "结果区分索引就绪、正在构建和部分覆盖。尚未处理的来源报告 pending，不能把未完成的覆盖说成没有匹配。\n",
+      "sha256": "48470918139373f568884b4546125d833e367e8d95943e023e05d0ed9fde34da"
+    },
+    {
+      "id": "cjk/batch.md",
+      "owner": "workspace",
+      "path": "cjk/batch.md",
+      "content": "表格写入器把多个单元格修改组成批次，调用一次原生处理器。单元格类型、公式和位置保持不变。\n",
+      "sha256": "e77a50448e3eccedc3ff0e04a904eac71e36ff4804acadbdeb50f59d6e9940a1"
+    },
+    {
+      "id": "memory_toolchain",
+      "owner": "memory",
+      "path": "memory/toolchain.md",
+      "content": "Project memory: keep Rust 1.97.1 pinned for reproducible builds. Do not replace the project toolchain with a newer local installation.\n",
+      "sha256": "9f6f648c76b9e5d59f62d78ebb2bea56da16e09ee56869406bddaa9e252698ac"
+    },
+    {
+      "id": "memory_language",
+      "owner": "memory",
+      "path": "memory/language.md",
+      "content": "Project memory: use concise Chinese for technical explanations and name the concrete outcome before implementation details.\n",
+      "sha256": "81666f515fbc0c95885234bb08a4610a7d49c28e1957bb6aeec5a45474162044"
+    },
+    {
+      "id": "memory_local_dependencies",
+      "owner": "memory",
+      "path": "memory/local_dependencies.md",
+      "content": "Project memory: internal Aster crates resolve through local path dependencies, including optional dependencies.\n",
+      "sha256": "b8c5c8f5e9011f9c5938568f7ee24a47c4fb21e48ec3e948d48631e3a021e370"
+    },
+    {
+      "id": "memory_configuration",
+      "owner": "memory",
+      "path": "memory/configuration.md",
+      "content": "Project memory: product configuration stays ACL and is parsed by aster-acl. New settings do not add another configuration language.\n",
+      "sha256": "c8f614fd842f76e6c5cc75814bc20cca8a10f2249ce0aebd522375f5f670393d"
+    },
+    {
+      "id": "memory_evidence",
+      "owner": "memory",
+      "path": "memory/evidence.md",
+      "content": "Project memory: acceptance evidence belongs under docs/evidence with commands, counts, source identities and explicit coverage limits.\n",
+      "sha256": "3f3b25c2509dbad6bac54e81dd5c686b313c4bdc62f4b0482c7e4c05c068d0b9"
+    },
+    {
+      "id": "memory_worktree",
+      "owner": "memory",
+      "path": "memory/worktree.md",
+      "content": "Project memory: work in the current checkout. A Git worktree requires explicit user permission for the current task.\n",
+      "sha256": "b0a5568a44db96e90574a5cba511d38b543b62dd34cc0c90c5c61a8f05874133"
+    },
+    {
+      "id": "memory_host_ownership",
+      "owner": "memory",
+      "path": "memory/host_ownership.md",
+      "content": "Project memory: the host keeps source libraries, ingestion jobs, OCR resources and their lifecycle. ACP exposes admitted calls to their owners.\n",
+      "sha256": "9cfe25ff037e1dad1bb73c68aeb35c90945c210a0dd3f4bafa46d7b94d20af09"
+    },
+    {
+      "id": "memory_grader",
+      "owner": "memory",
+      "path": "memory/grader.md",
+      "content": "Project memory: keep frozen inputs, prompts, models, timeouts and graders fixed. Failure does not permit weakening the evaluator.\n",
+      "sha256": "ed0eb21db3d1f9da0fb704d964454a2433186d69e4a3df00d6767aa0e9d8714d"
+    },
+    {
+      "id": "memory_native_tests",
+      "owner": "memory",
+      "path": "memory/native_tests.md",
+      "content": "Project memory: test affected behavior on native Windows, Linux and macOS. Cross-compilation alone proves compilation.\n",
+      "sha256": "08d72ca5c9d28630a3b2ff4295dbf5f604a3bec3bb1373a8728c269377456d49"
+    },
+    {
+      "id": "memory_privacy",
+      "owner": "memory",
+      "path": "memory/privacy.md",
+      "content": "Project memory: use disposable synthetic workspaces and synthetic credentials. Do not import real account tokens or personal document collections.\n",
+      "sha256": "0719b765766359cde0f4cedc3ed6fc795bc593d01a635252d07892ebd484277e"
+    },
+    {
+      "id": "sources/quarterly.md",
+      "owner": "source",
+      "path": "sources/quarterly.md",
+      "content": "Quarterly note: the warehouse migration milestone is October 18. The export schema remains compatible during migration.\n",
+      "sha256": "5f924be9be3eb2b7226771b71716ec063a8067f4c92f7703f3945856ec485091"
+    },
+    {
+      "id": "sources/incident.md",
+      "owner": "source",
+      "path": "sources/incident.md",
+      "content": "Incident review: checkout failures were caused by an exhausted database connection pool. Removing duplicate connections restored service.\n",
+      "sha256": "f9b28ae675d39fb79835c742fcba051d239390f0c21635d5cb6429e0d7708dd6"
+    },
+    {
+      "id": "sources/handbook.md",
+      "owner": "source",
+      "path": "sources/handbook.md",
+      "content": "Knowledge handbook: replacing an existing published page requires review bound to the exact candidate bytes and current source revisions.\n",
+      "sha256": "2a38a6b1cba4ee443fa5d78df74d061db0a8805c717dbac769c8782e520d4fec"
+    },
+    {
+      "id": "sources/calibration.md",
+      "owner": "source",
+      "path": "sources/calibration.md",
+      "content": "Laboratory worksheet: the reference pressure sensor was calibrated at 101.325 kilopascals and a temperature of 23 degrees Celsius.\n",
+      "sha256": "faf227588247a27ef97a97b697777caa78f6f1c5d4c3378273148d59c0711d85"
+    },
+    {
+      "id": "sources/research.md",
+      "owner": "source",
+      "path": "sources/research.md",
+      "content": "Storage memo: retain audit snapshots for 180 days. Derived search indexes can be rebuilt from authoritative records.\n",
+      "sha256": "051ce4cc897806748ed265b1543e3242a903ac74c276689dbc7f3803b485d4ab"
+    },
+    {
+      "id": "sources/workshop.md",
+      "owner": "source",
+      "path": "sources/workshop.md",
+      "content": "Setup workshop: press Space to toggle an account checkbox, then save configuration. The selection takes effect after restarting the terminal.\n",
+      "sha256": "b4b7be887496fd64d0e9e3e6796d7f6b88cbf7ab4e136898b944e2fdfbaf07b1"
+    }
+  ],
+  "queries": [
+    {
+      "id": "symbol-purge_expired_sessions",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "purge_expired_sessions",
+      "grades": {
+        "symbol/purge_expired_sessions.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/purge_expired_sessions.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn purge_expired_sessions"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-retry_payment_capture",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "retry_payment_capture",
+      "grades": {
+        "symbol/retry_payment_capture.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/retry_payment_capture.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn retry_payment_capture"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-read_workspace_manifest",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "read_workspace_manifest",
+      "grades": {
+        "symbol/read_workspace_manifest.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/read_workspace_manifest.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn read_workspace_manifest"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-cancel_background_job",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "cancel_background_job",
+      "grades": {
+        "symbol/cancel_background_job.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/cancel_background_job.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn cancel_background_job"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-decode_event_frame",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "decode_event_frame",
+      "grades": {
+        "symbol/decode_event_frame.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/decode_event_frame.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn decode_event_frame"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-atomic_replace_snapshot",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "atomic_replace_snapshot",
+      "grades": {
+        "symbol/atomic_replace_snapshot.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/atomic_replace_snapshot.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn atomic_replace_snapshot"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-validate_upload_size",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "validate_upload_size",
+      "grades": {
+        "symbol/validate_upload_size.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/validate_upload_size.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn validate_upload_size"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-normalize_relative_path",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "normalize_relative_path",
+      "grades": {
+        "symbol/normalize_relative_path.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/normalize_relative_path.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn normalize_relative_path"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-reopen_search_collection",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "reopen_search_collection",
+      "grades": {
+        "symbol/reopen_search_collection.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/reopen_search_collection.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn reopen_search_collection"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "symbol-format_compiler_diagnostic",
+      "category": "symbol",
+      "owner": "workspace",
+      "query": "format_compiler_diagnostic",
+      "grades": {
+        "symbol/format_compiler_diagnostic.rs": 3
+      },
+      "evidence": [
+        {
+          "source_id": "symbol/format_compiler_diagnostic.rs",
+          "start_line": 2,
+          "end_line": 2,
+          "quote": "pub fn format_compiler_diagnostic"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-settings",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How are application configuration options loaded from disk?",
+      "grades": {
+        "behavior/settings.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/settings.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "validates required settings"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-deduplicate_payment",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How do we stop the same purchase from charging the customer twice?",
+      "grades": {
+        "behavior/deduplicate_payment.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/deduplicate_payment.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "returns the saved charge receipt"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-durable_save",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How can saving a snapshot avoid a half-written file after interruption?",
+      "grades": {
+        "behavior/durable_save.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/durable_save.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "renames it atomically"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-bounded_retry",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How are temporary service failures retried without an endless loop?",
+      "grades": {
+        "behavior/bounded_retry.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/bounded_retry.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "maximum attempt count"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-batch_updates",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How do spreadsheet edits avoid starting a process for every cell?",
+      "grades": {
+        "behavior/batch_updates.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/batch_updates.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "groups cell mutations into one batch"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-cancel_work",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How does stopping a task prevent a late computation from publishing?",
+      "grades": {
+        "behavior/cancel_work.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/cancel_work.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "current generation before publishing"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-cache_extraction",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How do repeated reads avoid extracting the same document again?",
+      "grades": {
+        "behavior/cache_extraction.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/cache_extraction.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "source digest, extractor version"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-keep_source_current",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How does search avoid citing text changed after indexing?",
+      "grades": {
+        "behavior/keep_source_current.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/keep_source_current.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "verifies its content digest"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-read_pages",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How can a caller read a long PDF without silently omitting later pages?",
+      "grades": {
+        "behavior/read_pages.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/read_pages.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "until it is null"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "behavior-cancel_cleanup",
+      "category": "behavior",
+      "owner": "workspace",
+      "query": "How is cancellation response separated from actual resource cleanup?",
+      "grades": {
+        "behavior/cancel_cleanup.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "behavior/cancel_cleanup.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "keeps its worker permit"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-permission_owner",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Which layer decides whether a tool invocation is permitted?",
+      "grades": {
+        "architecture/permission_owner.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/permission_owner.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "governed tool executor"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-document_owner",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who owns document ingestion and OCR resources?",
+      "grades": {
+        "architecture/document_owner.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/document_owner.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "desktop host owns"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-source_catalog",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who is authoritative for the current workspace file generation?",
+      "grades": {
+        "architecture/source_catalog.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/source_catalog.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "manifest and chunk catalog"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-memory_owner",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who owns durable memory records and their lifecycle?",
+      "grades": {
+        "architecture/memory_owner.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/memory_owner.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "memory store owns"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-transport_boundary",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Where are agent requests routed to host document services?",
+      "grades": {
+        "architecture/transport_boundary.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/transport_boundary.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "ACP document bridge"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-search_fusion",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who combines keyword, symbol and semantic search candidates?",
+      "grades": {
+        "architecture/search_fusion.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/search_fusion.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "workspace hybrid query pipeline"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-tenant_scope",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who resolves profile and workspace scope for saved knowledge?",
+      "grades": {
+        "architecture/tenant_scope.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/tenant_scope.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "host session catalog"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-embedding_contract",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Which interface accepts an embedding provider supplied by a host?",
+      "grades": {
+        "architecture/embedding_contract.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/embedding_contract.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "EmbeddingProvider contract"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-index_lifecycle",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who follows filesystem changes and updates the lexical projection?",
+      "grades": {
+        "architecture/index_lifecycle.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/index_lifecycle.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "workspace manifest watcher"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "architecture-ui_role",
+      "category": "architecture",
+      "owner": "workspace",
+      "query": "Who displays retrieval progress and source citations?",
+      "grades": {
+        "architecture/ui_role.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "architecture/ui_role.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "terminal or desktop view"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-config",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "在哪里读取并校验应用配置？",
+      "grades": {
+        "cjk/config.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/config.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "配置加载器"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-snapshot",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "怎样避免中断保存后留下半份快照？",
+      "grades": {
+        "cjk/snapshot.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/snapshot.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "原子替换原快照"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-duplicate_charge",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "重复提交购买请求时如何避免重复扣款？",
+      "grades": {
+        "cjk/duplicate_charge.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/duplicate_charge.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "返回已有扣款凭证"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-document_cache",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "反复读取相同文档怎样避免重复解析？",
+      "grades": {
+        "cjk/document_cache.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/document_cache.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "源文件摘要、解析器版本和页范围"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-cancel",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "停止任务后怎样阻止旧结果发布？",
+      "grades": {
+        "cjk/cancel.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/cancel.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "核对取消状态和来源代数"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-memory",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "记忆语义索引是否保存另一份权威记录？",
+      "grades": {
+        "cjk/memory.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/memory.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "可重建的派生投影"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-pdf",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "读长 PDF 怎样确认没有漏掉后续页面？",
+      "grades": {
+        "cjk/pdf.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/pdf.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "直到 next_page 为空"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-workspace",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "跨工作区查询由谁确定能读取哪些目录？",
+      "grades": {
+        "cjk/workspace.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/workspace.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "宿主根据用户配置和任务绑定"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-cold_index",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "索引正在构建时如何表示搜索覆盖情况？",
+      "grades": {
+        "cjk/cold_index.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/cold_index.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "尚未处理的来源报告 pending"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "cjk-batch",
+      "category": "cjk",
+      "owner": "workspace",
+      "query": "大量表格修改怎样减少进程启动开销？",
+      "grades": {
+        "cjk/batch.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "cjk/batch.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "调用一次原生处理器"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-toolchain",
+      "category": "memory",
+      "owner": "memory",
+      "query": "Which compiler version should remain pinned?",
+      "grades": {
+        "memory_toolchain": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_toolchain",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "Rust 1.97.1"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-language",
+      "category": "memory",
+      "owner": "memory",
+      "query": "What language does the maintainer prefer for technical explanations?",
+      "grades": {
+        "memory_language": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_language",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "concise Chinese"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-local_dependencies",
+      "category": "memory",
+      "owner": "memory",
+      "query": "How should internal Aster libraries be resolved?",
+      "grades": {
+        "memory_local_dependencies": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_local_dependencies",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "local path dependencies"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-configuration",
+      "category": "memory",
+      "owner": "memory",
+      "query": "Which format should new product settings use?",
+      "grades": {
+        "memory_configuration": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_configuration",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "parsed by aster-acl"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-evidence",
+      "category": "memory",
+      "owner": "memory",
+      "query": "Where should acceptance logs be kept?",
+      "grades": {
+        "memory_evidence": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_evidence",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "under docs/evidence"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-worktree",
+      "category": "memory",
+      "owner": "memory",
+      "query": "What is the rule for creating another checkout?",
+      "grades": {
+        "memory_worktree": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_worktree",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "explicit user permission"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-host_ownership",
+      "category": "memory",
+      "owner": "memory",
+      "query": "Who should own personal libraries and OCR workers?",
+      "grades": {
+        "memory_host_ownership": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_host_ownership",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "host keeps source libraries"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-grader",
+      "category": "memory",
+      "owner": "memory",
+      "query": "What must stay unchanged when evaluating a repair?",
+      "grades": {
+        "memory_grader": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_grader",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "graders fixed"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-native_tests",
+      "category": "memory",
+      "owner": "memory",
+      "query": "How should native compatibility claims be checked?",
+      "grades": {
+        "memory_native_tests": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_native_tests",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "Cross-compilation alone proves compilation"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "memory-privacy",
+      "category": "memory",
+      "owner": "memory",
+      "query": "What data should end-to-end fixtures avoid importing?",
+      "grades": {
+        "memory_privacy": 3
+      },
+      "evidence": [
+        {
+          "source_id": "memory_privacy",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "disposable synthetic workspaces"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-quarterly",
+      "category": "sources",
+      "owner": "source",
+      "query": "What is the warehouse migration milestone?",
+      "grades": {
+        "sources/quarterly.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/quarterly.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "October 18"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-incident",
+      "category": "sources",
+      "owner": "source",
+      "query": "What caused the checkout incident?",
+      "grades": {
+        "sources/incident.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/incident.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "exhausted database connection pool"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-handbook",
+      "category": "sources",
+      "owner": "source",
+      "query": "How should replacement of an existing knowledge page be handled?",
+      "grades": {
+        "sources/handbook.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/handbook.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "requires review"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-calibration",
+      "category": "sources",
+      "owner": "source",
+      "query": "What was the laboratory sensor calibration reading?",
+      "grades": {
+        "sources/calibration.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/calibration.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "101.325 kilopascals"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-research",
+      "category": "sources",
+      "owner": "source",
+      "query": "What retention interval was selected for audit snapshots?",
+      "grades": {
+        "sources/research.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/research.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "180 days"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-workshop",
+      "category": "sources",
+      "owner": "source",
+      "query": "Which key toggles account checkboxes during setup?",
+      "grades": {
+        "sources/workshop.md": 3
+      },
+      "evidence": [
+        {
+          "source_id": "sources/workshop.md",
+          "start_line": 1,
+          "end_line": 1,
+          "quote": "press Space"
+        }
+      ],
+      "negative": false
+    },
+    {
+      "id": "sources-negative-astronomy",
+      "category": "sources",
+      "owner": "source",
+      "query": "What is the orbital period of the moon Europa?",
+      "grades": {},
+      "evidence": [],
+      "negative": true
+    },
+    {
+      "id": "sources-negative-marine",
+      "category": "sources",
+      "owner": "source",
+      "query": "Which shark species appeared in the coral reef survey?",
+      "grades": {},
+      "evidence": [],
+      "negative": true
+    },
+    {
+      "id": "sources-negative-music",
+      "category": "sources",
+      "owner": "source",
+      "query": "What is the third movement tempo of the symphony?",
+      "grades": {},
+      "evidence": [],
+      "negative": true
+    },
+    {
+      "id": "sources-negative-botany",
+      "category": "sources",
+      "owner": "source",
+      "query": "Which orchid variety was catalogued in the rainforest expedition?",
+      "grades": {},
+      "evidence": [],
+      "negative": true
+    }
+  ]
+}

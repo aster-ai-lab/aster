@@ -44,6 +44,17 @@ impl Utf8StreamDecoder {
     pub(crate) fn finish(&self) -> Result<(), std::str::Utf8Error> {
         std::str::from_utf8(&self.pending).map(|_| ())
     }
+
+    pub(crate) fn pending_bytes(&self) -> usize {
+        self.pending.len()
+    }
+}
+
+#[derive(Debug, Default)]
+pub(crate) struct SseEventScan {
+    index: usize,
+    line_start: usize,
+    event_start: usize,
 }
 
 /// Remove every complete SSE event from the front of `buffer`.
@@ -52,49 +63,36 @@ impl Utf8StreamDecoder {
 /// spec-shaped frame `data: ...\r\n\r\n` is one event. Searching for the two
 /// bytes `\n\n` misses that frame: the newlines are separated by `\r`.
 ///
-/// A trailing CR stays in `buffer` unless `eof` is set, because the next chunk
-/// may complete a CRLF pair. Callers pass `eof` only after the stream has
-/// ended.
+/// A trailing CR on a nonempty line waits for a possible LF. A blank CR line
+/// already ends the event; a later LF is an empty line. `eof` flushes a final CR.
 pub(crate) fn take_sse_events(buffer: &mut String, eof: bool) -> Vec<String> {
-    let mut events = Vec::new();
-    while let Some((event, consumed)) = next_sse_event(buffer, false) {
-        let event = event.to_string();
-        buffer.drain(..consumed);
-        if !event.is_empty() {
-            events.push(event);
-        }
-    }
-    if eof {
-        if let Some((event, consumed)) = next_sse_event(buffer, true) {
-            let event = event.to_string();
-            buffer.drain(..consumed);
-            if !event.is_empty() {
-                events.push(event);
-            }
-        }
-    }
-    events
+    take_sse_events_scanned(buffer, &mut SseEventScan::default(), eof)
 }
 
-/// One complete event and the byte index just past its blank-line delimiter.
-fn next_sse_event(buffer: &str, eof: bool) -> Option<(&str, usize)> {
+/// Retain the scan position across chunks and compact the buffer once per batch.
+/// Callers may only append between calls; this function owns buffer removal.
+pub(crate) fn take_sse_events_scanned(
+    buffer: &mut String,
+    scan: &mut SseEventScan,
+    eof: bool,
+) -> Vec<String> {
+    let mut events = Vec::new();
     let bytes = buffer.as_bytes();
-    let mut index = 0usize;
-    while index < bytes.len() {
-        let line_start = index;
-        while index < bytes.len() && bytes[index] != b'\n' && bytes[index] != b'\r' {
-            index += 1;
+    while scan.index < bytes.len() {
+        while scan.index < bytes.len() && bytes[scan.index] != b'\n' && bytes[scan.index] != b'\r' {
+            scan.index += 1;
         }
-        if index == bytes.len() {
-            return None;
+        if scan.index == bytes.len() {
+            break;
         }
-        let ending_len = if bytes[index] == b'\r' {
-            if index + 1 == bytes.len() {
-                if !eof {
-                    return None;
+        let blank = scan.index == scan.line_start;
+        let ending_len = if bytes[scan.index] == b'\r' {
+            if scan.index + 1 == bytes.len() {
+                if !eof && !blank {
+                    break;
                 }
                 1
-            } else if bytes[index + 1] == b'\n' {
+            } else if bytes[scan.index + 1] == b'\n' {
                 2
             } else {
                 1
@@ -102,13 +100,21 @@ fn next_sse_event(buffer: &str, eof: bool) -> Option<(&str, usize)> {
         } else {
             1
         };
-        let blank = index == line_start;
-        index += ending_len;
+        scan.index += ending_len;
         if blank {
-            return Some((&buffer[..line_start], index));
+            if scan.line_start > scan.event_start {
+                events.push(buffer[scan.event_start..scan.line_start].to_owned());
+            }
+            scan.event_start = scan.index;
         }
+        scan.line_start = scan.index;
     }
-    None
+    let consumed = scan.event_start;
+    buffer.drain(..consumed);
+    scan.index -= consumed;
+    scan.line_start -= consumed;
+    scan.event_start = 0;
+    events
 }
 
 /// Return the value of an SSE `data:` field.
@@ -121,97 +127,5 @@ pub(crate) fn data_field_value(line: &str) -> Option<&str> {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn take_sse_events_accepts_crlf_tools_list() {
-        let frame = "event: message\r\ndata: {\"jsonrpc\":\"2.0\",\"id\":7,\"result\":{\"tools\":[{\"name\":\"lookup\"}]}}\r\n\r\n";
-        let mut buffer = frame.to_string();
-        let events = take_sse_events(&mut buffer, false);
-        assert!(buffer.is_empty(), "the CRLF frame is one complete event");
-        assert_eq!(events.len(), 1);
-        let mut data = String::new();
-        for line in events[0].lines() {
-            if let Some(value) = data_field_value(line) {
-                data.push_str(value);
-            }
-        }
-        assert_eq!(
-            data,
-            "{\"jsonrpc\":\"2.0\",\"id\":7,\"result\":{\"tools\":[{\"name\":\"lookup\"}]}}"
-        );
-        assert!(!data.contains('\r'));
-    }
-
-    #[test]
-    fn take_sse_events_keeps_lf_frames_and_a_split_crlf_pair() {
-        let mut buffer = "data: {\"ok\":true}\n\n".to_string();
-        assert_eq!(take_sse_events(&mut buffer, false).len(), 1);
-        assert!(buffer.is_empty());
-
-        let mut split = "data: {\"ok\":true}\r".to_string();
-        assert!(
-            take_sse_events(&mut split, false).is_empty(),
-            "a trailing CR may be the start of CRLF"
-        );
-        assert!(split.ends_with('\r'));
-        split.push_str("\n\r\n");
-        let events = take_sse_events(&mut split, false);
-        assert_eq!(events.len(), 1);
-        assert!(split.is_empty());
-        assert_eq!(
-            events[0].lines().find_map(data_field_value),
-            Some("{\"ok\":true}")
-        );
-    }
-
-    #[test]
-    fn take_sse_events_skips_a_crlf_blank_line_without_stalling() {
-        let mut buffer = "\r\n\r\ndata: {\"ok\":true}\r\n\r\n".to_string();
-        let events = take_sse_events(&mut buffer, false);
-        assert_eq!(events.len(), 1);
-        assert!(buffer.is_empty());
-    }
-
-    #[test]
-    fn data_field_value_accepts_optional_space() {
-        assert_eq!(
-            data_field_value("data: {\"ok\":true}"),
-            Some("{\"ok\":true}")
-        );
-        assert_eq!(
-            data_field_value("data:{\"ok\":true}"),
-            Some("{\"ok\":true}")
-        );
-        assert_eq!(data_field_value("data: [DONE]"), Some("[DONE]"));
-        assert_eq!(data_field_value("data:[DONE]"), Some("[DONE]"));
-    }
-
-    #[test]
-    fn data_field_value_ignores_non_data_fields() {
-        assert_eq!(data_field_value("event: message"), None);
-        assert_eq!(data_field_value("id: 1"), None);
-    }
-
-    #[test]
-    fn utf8_stream_decoder_preserves_code_points_split_at_every_byte() {
-        let input = "data: {\"title\":\"维护治理\"}\n\n";
-        let mut decoder = Utf8StreamDecoder::default();
-        let mut output = String::new();
-
-        for byte in input.as_bytes() {
-            decoder.push_to(&[*byte], &mut output).unwrap();
-        }
-
-        decoder.finish().unwrap();
-        assert_eq!(output, input);
-        assert!(!output.contains('\u{fffd}'));
-    }
-
-    #[test]
-    fn utf8_stream_decoder_rejects_invalid_bytes() {
-        let mut decoder = Utf8StreamDecoder::default();
-        assert!(decoder.push_to(&[0xff], &mut String::new()).is_err());
-    }
-}
+#[path = "sse_tests.rs"]
+mod tests;

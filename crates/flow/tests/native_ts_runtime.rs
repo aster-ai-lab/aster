@@ -635,7 +635,12 @@ exec sleep 30
         let cache_dir = dir.path().join("cache");
 
         write_fake_compiler(&compiler, &compile_log);
-        write_runtime_source(&entrypoint, &request_log, "first", "aster.flow.native_ts.v1");
+        write_runtime_source(
+            &entrypoint,
+            &request_log,
+            "first",
+            "aster.flow.native_ts.v1",
+        );
 
         let runtime = Arc::new(NativeTsRuntime::new(NativeTsRuntimeConfig::new(
             &compiler,
@@ -667,7 +672,12 @@ exec sleep 30
         assert_eq!(request["payload"]["run_id"], second_run_id);
         assert_eq!(request["sourceHash"].as_str().unwrap().len(), 64);
 
-        write_runtime_source(&entrypoint, &request_log, "second", "aster.flow.native_ts.v1");
+        write_runtime_source(
+            &entrypoint,
+            &request_log,
+            "second",
+            "aster.flow.native_ts.v1",
+        );
 
         let third_run_id = engine.start(spec, json!({ "n": 3 })).await.unwrap();
         let third = engine.snapshot(&third_run_id).await.unwrap();

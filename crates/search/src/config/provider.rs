@@ -3,7 +3,7 @@
 use aster_acl::ast::Block;
 
 use crate::providers::{
-    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, AnySearchConfig, AnySearchProvider,
+    AliyunConfig, AliyunProvider, AnySearchConfig, AnySearchProvider, AsterConfig, AsterProvider,
     BochaConfig, BochaProvider, BuiltinProvider, DeepSeekConfig, DeepSeekProvider, DoubaoConfig,
     DoubaoProvider, FirecrawlConfig, FirecrawlProvider, ProviderEngine, TavilyConfig,
     TavilyProvider, TencentConfig, TencentProvider, TinyFishConfig, TinyFishProvider,

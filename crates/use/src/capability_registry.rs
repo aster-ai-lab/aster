@@ -568,7 +568,9 @@ async fn project_ui_root(
     Vec<ManagedAsset>,
 )> {
     const MAX_UI_ROOT_FILE_BYTES: u64 = 8 * 1024 * 1024;
-    let listed = aster_use_extension::list_ui_package_assets(surface, package_root).await?;
+    let inventory =
+        aster_use_extension::inspect_ui_package_inventory(surface, package_root).await?;
+    let listed = inventory.web_assets();
     let mut styles = Vec::new();
     let mut scripts = Vec::new();
     let mut assets = Vec::with_capacity(listed.len());
@@ -1350,6 +1352,10 @@ fn installed_plugin_plan_evidence_from_snapshot(
 #[path = "capability_registry_planner_tests.rs"]
 mod planner_tests;
 
+#[cfg(all(test, feature = "extensions"))]
+#[path = "capability_registry_ui_inventory_tests.rs"]
+mod ui_inventory_tests;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1673,7 +1679,8 @@ extension "acme/workflow" {
             .await
             .unwrap();
         tokio::fs::write(&path, b"# Guide\n").await.unwrap();
-        let manifest = aster_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
+        let manifest =
+            aster_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
         let mut extension = installed_extension(manifest, temp.path().to_path_buf(), true);
         extension.receipt.package_sha256 = Some("a".repeat(64));
         extension.receipt.lifecycle_generation = Some(7);

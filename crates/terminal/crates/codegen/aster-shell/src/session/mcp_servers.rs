@@ -13,9 +13,9 @@ pub use aster_mcp::servers::{
 use std::collections::HashMap;
 use std::path::Path;
 
+use agent_client_protocol as acp;
 use aster_mcp::oauth_config::{McpOAuthConfig, McpOAuthConfigMap};
 use aster_mcp::servers as inner;
-use agent_client_protocol as acp;
 
 fn resolve_overrides(
     server_name: &str,

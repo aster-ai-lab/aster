@@ -215,6 +215,51 @@ async fn calculation_covers_the_closed_scalar_function_registry() {
     );
 }
 
+
+#[tokio::test]
+async fn calculation_round_matches_excel_half_up_on_decimal_midpoints() {
+    let temp = tempfile::tempdir().unwrap();
+    let mut editor = NativeOfficeEditor::create(temp.path().join("round.xlsx"))
+        .await
+        .unwrap();
+    for (path, expression) in [
+        ("/Sheet1/A1", "ROUND(1.005,2)"),
+        ("/Sheet1/A2", "ROUND(2.005,2)"),
+        ("/Sheet1/A3", "ROUND(1.015,2)"),
+        ("/Sheet1/A4", "ROUND(5.005,2)"),
+        ("/Sheet1/A5", "ROUND(6.005,2)"),
+        ("/Sheet1/A6", "ROUND(-1.005,2)"),
+    ] {
+        editor.set_cell_value(path, formula(expression)).unwrap();
+    }
+    let calculation = editor
+        .snapshot()
+        .unwrap()
+        .calculate_spreadsheet_formulas()
+        .unwrap();
+    let values = calculation
+        .cells
+        .iter()
+        .map(|cell| (cell.cell.path(), cell.value.clone()))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    for (path, expected) in [
+        ("/Sheet1/A1", "1.01"),
+        ("/Sheet1/A2", "2.01"),
+        ("/Sheet1/A3", "1.02"),
+        ("/Sheet1/A4", "5.01"),
+        ("/Sheet1/A5", "6.01"),
+        ("/Sheet1/A6", "-1.01"),
+    ] {
+        assert_eq!(
+            values[path],
+            SpreadsheetFormulaValue::Number {
+                value: expected.into()
+            },
+            "{path}"
+        );
+    }
+}
+
 #[tokio::test]
 async fn calculation_plans_dynamic_array_spills_and_detects_obstructions() {
     let temp = tempfile::tempdir().unwrap();

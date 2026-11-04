@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-04T02:29:58.424951+00:00",
+  "label": "public-prose-20261104-current-config-1",
+  "sourceHash": "3b78de62a5032c928ec4e58e9ce5a6aad16cb614",
+  "memberCount": 9,
+  "finalRuntimeGatesPassed": true,
+  "sourceUnchanged": true,
+  "criticalSourcesUnchanged": true,
+  "configSha256": "a9d012ceb29efa37dd92f7d4e435521929ed2430da5b192640dfd2769574b01c",
+  "outputTokenLimit": 8192,
+  "attemptsPerCase": 1,
+  "originalOtherLimitsUnchanged": true,
+  "baselineComparison": null,
+  "productionFixRedGreen": "red-status.json; effect-green-status.json; budget-controls-status.json",
+  "owningChecks": "checks-status.json",
+  "priorNativeFlakinessRetained": true,
+  "parent8kFailureRetained": "../2026-11-04-native-startup-repair/critical-verdicts.json"
+}

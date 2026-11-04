@@ -219,7 +219,8 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
             continue;
         };
         let identity = serde_json::to_value(&prepared.identity).ok()?;
-        let preparation_digest = digest_json("aster.code.tool-prepared-digest.v1", &prepared).ok()?;
+        let preparation_digest =
+            digest_json("aster.code.tool-prepared-digest.v1", &prepared).ok()?;
         for result in rows.iter().filter(|result| {
             result["type"] == "tool.result"
                 && result["seq"]

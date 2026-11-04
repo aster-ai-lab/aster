@@ -1692,9 +1692,7 @@ impl SessionActor {
         purpose: DrainPurpose,
         extra: Vec<aster_tools::implementations::grok_build::update_goal::UpdateGoalEnvelope>,
     ) {
-        use aster_tools::implementations::grok_build::update_goal::{
-            RejectReason, UpdateGoalAck,
-        };
+        use aster_tools::implementations::grok_build::update_goal::{RejectReason, UpdateGoalAck};
         if !self.goal_harness_enabled() {
             let reject = || UpdateGoalAck::Rejected {
                 reason: RejectReason::HarnessDisabled,

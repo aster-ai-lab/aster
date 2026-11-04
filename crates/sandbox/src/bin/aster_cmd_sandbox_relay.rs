@@ -3,8 +3,8 @@
 //! Run inside the guest (or on the host for local tests):
 //!   aster-sandbox-relay --unix /path/to/mediator.sock [--listen 127.0.0.1:24731]
 
-use aster_cmd_sandbox::{default_guest_relay_addr, TcpUnixRelay};
 use anyhow::{bail, Context, Result};
+use aster_cmd_sandbox::{default_guest_relay_addr, TcpUnixRelay};
 use std::env;
 use std::net::SocketAddr;
 use std::path::PathBuf;

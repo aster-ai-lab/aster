@@ -29,9 +29,7 @@ pub(crate) fn record_degraded_start(
     );
 }
 
-pub(crate) fn degraded_log_level(
-    profile: LaunchProfile,
-) -> aster_telemetry::unified_log::LogLevel {
+pub(crate) fn degraded_log_level(profile: LaunchProfile) -> aster_telemetry::unified_log::LogLevel {
     use aster_telemetry::unified_log::LogLevel;
     match profile {
         LaunchProfile::Managed => LogLevel::Warn,

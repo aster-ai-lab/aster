@@ -39,7 +39,10 @@ impl FlowRuntime for ScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
@@ -120,7 +123,10 @@ impl FlowRuntime for SelectScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
@@ -189,7 +195,10 @@ impl FlowRuntime for SignalSelectScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
@@ -308,7 +317,11 @@ impl CrashBeforeScopeDriveStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeScopeDriveStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -416,7 +429,10 @@ impl FlowRuntime for ScopeCancelBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         unreachable!("scope-beside-wait runtime does not schedule steps")
     }
 
@@ -504,7 +520,10 @@ impl FlowRuntime for WorkflowCancelScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-cancel-beside-wait runtime does not schedule steps")
     }
 
@@ -532,7 +551,11 @@ impl CrashAfterWorkflowScopeCancelledStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeCancelledStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -662,7 +685,10 @@ impl FlowRuntime for WorkflowCompleteScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-complete-beside-wait runtime does not schedule steps")
     }
 
@@ -690,7 +716,11 @@ impl CrashAfterWorkflowScopeCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -813,7 +843,10 @@ impl FlowRuntime for WorkflowOpenScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-open-beside-wait runtime does not schedule steps")
     }
 
@@ -841,7 +874,11 @@ impl CrashAfterWorkflowScopeOpenedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeOpenedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

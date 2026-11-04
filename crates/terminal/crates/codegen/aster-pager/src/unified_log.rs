@@ -5,11 +5,11 @@
 
 use std::sync::{Mutex, OnceLock};
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentTx;
 use aster_telemetry::unified_log::{
     ClientLogEntry, LOG_METHOD, LogLevel, LogNotificationParams, LogSource,
 };
-use agent_client_protocol as acp;
 use tokio::runtime::Handle;
 
 static ACP_TX: OnceLock<AcpAgentTx> = OnceLock::new();

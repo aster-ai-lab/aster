@@ -122,7 +122,10 @@ async fn storage_and_join_failures_are_execution_errors() {
         .await
         .unwrap_err();
     let join_error = map_append_result(Err(join_error)).unwrap_err();
-    assert_eq!(join_error.kind, aster_tool_runtime::ToolErrorKind::Execution);
+    assert_eq!(
+        join_error.kind,
+        aster_tool_runtime::ToolErrorKind::Execution
+    );
     assert!(!join_error.detail.contains(SUCCESS_MESSAGE));
 }
 

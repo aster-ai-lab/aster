@@ -2098,9 +2098,7 @@ mod question_no_freeform_tests {
     use crate::app::agent_view::AgentView;
     use crate::views::prompt_widget::StashedPrompt;
     use crate::views::question_view::{QuestionFocus, QuestionSelection, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     use crossterm::event::{
         KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
     };
@@ -2469,9 +2467,7 @@ mod question_answer_focus_tests {
     use crate::app::app_view::InputOutcome;
     use crate::views::prompt_widget::StashedPrompt;
     use crate::views::question_view::{QuestionFocus, QuestionSelection, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
     fn question(prompt: &str, labels: &[&str]) -> Question {
         Question {

@@ -523,6 +523,7 @@ impl TaskExecutor {
                     parent_cancellation,
                     admitted_capability_subtask: None,
                     parallel_lifecycle,
+                    terminal_persistence: None,
                 },
             )
             .await

@@ -1,0 +1,13 @@
+{
+  "scope": [
+    "crates/code/core/src/fact_control/compaction.rs",
+    "crates/code/core/src/fact_control/compaction_budget_tests.rs"
+  ],
+  "hypothesis": "Retained receipt-only metadata incorrectly consumes provider-visible tail budget; identical decoded observations must reserve identical context while original facts/private continuation remain intact.",
+  "controls": "Original 4096-output ACL/model/task/input/request/context/timeout/grader cohort remains unchanged; no new model attempt until a meaningful source fix passes focused and owning checks.",
+  "proposedChange": "Estimate retained tool context through existing message_from_folded_tool and shared token estimator; leave persisted prefix/tail and model/terminal contracts intact.",
+  "before": {
+    "crates/code/core/src/fact_control/compaction.rs": "5f0c23e8a984620db20da5b08438941dc10af2ae0dc706d0f72d10ee0facb0af",
+    "crates/code/core/src/fact_control/compaction_budget_tests.rs": "1cd8ae4b322a5e09f99a83051191499acdf24426a4a1e4d00fb9b832c66fff9f"
+  }
+}

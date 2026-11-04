@@ -837,10 +837,8 @@ fn parse_capabilities_reasoning_efforts(
     caps: &serde_json::Map<String, serde_json::Value>,
 ) -> Option<(Vec<aster_sampling_types::ReasoningEffortOption>, bool)> {
     let arr = caps.get("reasoning_effort")?.as_array()?;
-    let mut options = aster_sampling_types::parse_reasoning_effort_options(
-        arr,
-        "capabilities.reasoning_effort",
-    );
+    let mut options =
+        aster_sampling_types::parse_reasoning_effort_options(arr, "capabilities.reasoning_effort");
     let mut marked = false;
     if let Some(default) = caps
         .get("default_reasoning_effort")

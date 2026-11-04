@@ -1,5 +1,67 @@
 use super::*;
 
+#[expect(
+    clippy::too_many_arguments,
+    reason = "the child bridge needs both observation destinations"
+)]
+pub(super) async fn forward_task_events(
+    mut events: tokio::sync::mpsc::Receiver<AgentEvent>,
+    context: ToolContext,
+    security: Option<Arc<dyn crate::security::SecurityProvider>>,
+    parent: Option<broadcast::Sender<AgentEvent>>,
+    tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
+    task_id: String,
+    session_id: String,
+    mut completed: tokio::sync::oneshot::Receiver<()>,
+) -> Vec<ToolSourceAnchor> {
+    let mut source_anchors = Vec::new();
+    let mut seen = HashSet::new();
+    let mut scanned = 0;
+    let mut closing = false;
+    loop {
+        let event = tokio::select! {
+            biased;
+            _ = &mut completed, if !closing => {
+                // Drain queued events after the child finishes, without waiting for retained sender clones.
+                events.close();
+                closing = true;
+                continue;
+            }
+            event = events.recv() => match event {
+                Some(event) => event,
+                None => break,
+            }
+        };
+        let event = security
+            .as_deref()
+            .map(|provider| crate::security::sanitize_agent_event(provider, &event))
+            .unwrap_or(event);
+        collect_tool_source_anchors(
+            &event,
+            &context,
+            &mut source_anchors,
+            &mut seen,
+            &mut scanned,
+        );
+        if let Some(mut progress) = synthesize_subagent_progress(&event, &task_id, &session_id) {
+            if let AgentEvent::SubagentProgress { metadata, .. } = &mut progress {
+                metadata[crate::subagent_task_tracker::TASK_PROGRESS_EVENT_ID] =
+                    serde_json::json!(uuid::Uuid::new_v4().to_string());
+            }
+            if let Some(tracker) = &tracker {
+                tracker.record_event(&progress).await;
+            }
+            if let Some(parent) = &parent {
+                let _ = parent.send(progress);
+            }
+        }
+        if let Some(parent) = &parent {
+            let _ = parent.send(event);
+        }
+    }
+    source_anchors
+}
+
 pub(super) fn compact_task_output(output: &str) -> (String, bool) {
     if output.len() <= TASK_OUTPUT_CONTEXT_LIMIT {
         return (output.to_string(), false);

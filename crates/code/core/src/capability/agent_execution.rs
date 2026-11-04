@@ -131,6 +131,10 @@ impl AgentCapabilityTurn {
 }
 
 impl AgentToolCapabilityContext {
+    pub(crate) fn ensure_active(&self) -> Result<(), CapabilityScopeError> {
+        self.foreground.cancellation().map(|_| ())
+    }
+
     pub(crate) fn authorizes_projection(
         &self,
         id: &super::CapabilityId,
@@ -208,6 +212,15 @@ impl AgentToolCapabilityContext {
 }
 
 impl AgentCapabilitySubtask {
+    pub(crate) fn from_background_run(
+        run: &CapabilityScope<Run>,
+        task_id: &str,
+    ) -> Result<Self, CapabilityScopeError> {
+        let scope = run.handle().subtask_inheriting(task_id)?;
+        let runtime = AgentCapabilityRuntime::from_subtask(&scope, run.handle());
+        Ok(Self { scope, runtime })
+    }
+
     pub(crate) fn cancellation(&self) -> CancellationToken {
         self.scope.cancellation()
     }

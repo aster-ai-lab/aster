@@ -107,6 +107,19 @@ pub struct SpawnedAgent {
     pub auth_manager: std::sync::Arc<AuthManager>,
 }
 
+/// Cancels the ACP bridge when the event-loop scope ends.
+///
+/// Must drop before the pager's client channels: dropping those closes the child's
+/// stdio and would otherwise look like an unexpected bridge failure (`worker_join`
+/// `failed` with `elapsed_ms: 0`) on every clean quit.
+pub struct BridgeShutdownCancel(pub CancellationToken);
+
+impl Drop for BridgeShutdownCancel {
+    fn drop(&mut self) {
+        self.0.cancel();
+    }
+}
+
 /// The single teardown mechanism for an in-process agent: cancels the worker and joins it on drop, so session
 /// actors always get. Scope-end drop is the default; the TUI is the one caller that drops it explicitly, because
 /// the join has to happen before background processes are reaped.
@@ -198,12 +211,17 @@ fn join_agent_thread(handle: thread::JoinHandle<Result<()>>, timeout: Duration) 
     let outcome_label: &'static str = (&outcome).into();
     let elapsed_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX);
     aster_telemetry::session_end::record_join(&span, outcome_label, elapsed_ms, notice_shown);
+    let error = match &outcome {
+        JoinOutcome::Failed(error) | JoinOutcome::Panicked(error) => Some(error.as_str()),
+        JoinOutcome::Joined | JoinOutcome::TimedOut | JoinOutcome::HelperLost => None,
+    };
     crate::unified_log::write_direct_info(
         "session_end.worker_join",
         Some(serde_json::json!({
             "elapsed_ms": elapsed_ms,
             "outcome": outcome_label,
             "notice_shown": notice_shown,
+            "error": error,
         })),
     );
     outcome
@@ -419,6 +437,14 @@ mod tests {
             join_agent_thread(handle, Duration::from_secs(5)),
             JoinOutcome::Failed("flush failed".to_string())
         );
+    }
+
+    #[test]
+    fn bridge_shutdown_cancel_fires_on_drop() {
+        let token = CancellationToken::new();
+        assert!(!token.is_cancelled());
+        drop(BridgeShutdownCancel(token.clone()));
+        assert!(token.is_cancelled());
     }
 
     /// The timeout branch the built-binary e2e cannot reach: a wedged worker

@@ -164,6 +164,19 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
             .unwrap();
     }
     let current = session.goal_definition().unwrap().unwrap();
+    if tool == Some("read") {
+        let settled = facts
+            .iter()
+            .rev()
+            .find(|fact| fact.kind == "aster.goal.slice.settled")
+            .unwrap();
+        let feedback = &settled.payload["body"]["feedback"];
+        assert_eq!(feedback["step_id"], "inspect");
+        assert!(!feedback["remaining_criteria"]
+            .as_array()
+            .unwrap()
+            .is_empty());
+    }
     assert_eq!(current.binding, original.binding);
     assert_eq!(current.state, GoalState::Active);
     assert!(current

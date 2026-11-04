@@ -564,7 +564,7 @@ pub(super) async fn settle_owned_fact(
     pinned.parts.retire_fact_host_events();
     let publication = if mode == run_admission::ExecutionMode::Blocking && !ordinary {
         if let Some(ticket) = admitted {
-            extract_admitted_memory(&pinned.parts, &prompt, &mapped, ticket).await;
+            extract_admitted_memory(&pinned.parts, &prompt, &mapped, ticket, false).await;
         }
         let publication = pinned
             .finish
@@ -604,7 +604,7 @@ pub(super) async fn settle_owned_fact(
         let parts = pinned.parts;
         tokio::spawn(async move {
             if let Some(ticket) = admitted {
-                extract_admitted_memory(&parts, &prompt, &mapped, ticket).await;
+                extract_admitted_memory(&parts, &prompt, &mapped, ticket, true).await;
             }
         });
         pinned.cleanup.finish_owned(&original).await?;
@@ -637,7 +637,7 @@ pub(super) async fn settle_owned_fact(
             surface.events.take();
         }
         if let Some(ticket) = admitted {
-            extract_admitted_memory(&pinned.parts, &prompt, &mapped, ticket).await;
+            extract_admitted_memory(&pinned.parts, &prompt, &mapped, ticket, true).await;
         }
         drop(pinned.parts);
         publication

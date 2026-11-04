@@ -59,6 +59,18 @@ pub(crate) async fn settle_host_input(
             break;
         }
         settled = run.confirm(&pending.tool_call_id, approved).await?;
+        if !approved {
+            emit_interactive_host_event(
+                surface,
+                AgentEvent::PermissionDenied {
+                    tool_id: pending.tool_call_id,
+                    tool_name: pending.name,
+                    args: pending.args,
+                    reason: "Tool execution was rejected by the host confirmation.".into(),
+                },
+            )
+            .await;
+        }
     }
     while settled.view.phase == aster_effect::CodingPhase::Question {
         let Some(pending) = settled.view.pending_question.clone() else {

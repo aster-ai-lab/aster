@@ -3,8 +3,8 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
-use aster_acp_lib::AcpAgentMessage;
 use agent_client_protocol as acp;
+use aster_acp_lib::AcpAgentMessage;
 
 use super::resolve_mcp_servers_until;
 use crate::views::mcps_modal::{McpsListResponse, McpsServerEntry, McpsServerSession};
@@ -60,7 +60,9 @@ enum McpListReply {
     Hang,
 }
 
-fn spawn_mcp_list_agent(replies: Vec<McpListReply>) -> (aster_acp_lib::AcpAgentTx, Arc<AtomicUsize>) {
+fn spawn_mcp_list_agent(
+    replies: Vec<McpListReply>,
+) -> (aster_acp_lib::AcpAgentTx, Arc<AtomicUsize>) {
     let calls = Arc::new(AtomicUsize::new(0));
     let calls_task = Arc::clone(&calls);
     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();

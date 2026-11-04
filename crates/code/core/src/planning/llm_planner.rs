@@ -43,7 +43,7 @@ pub struct LlmPlanner;
 #[derive(Debug, Deserialize)]
 struct PlanResponse {
     goal: String,
-    complexity: String,
+    complexity: Complexity,
     steps: Vec<StepResponse>,
     #[serde(default)]
     required_tools: Vec<String>,
@@ -86,7 +86,7 @@ struct PreAnalysisResponse {
 
 #[derive(Debug, Deserialize)]
 struct PreAnalysisPlan {
-    complexity: String,
+    complexity: Complexity,
     steps: Vec<StepResponse>,
     #[serde(default)]
     required_tools: Vec<String>,
@@ -237,14 +237,76 @@ impl LlmPlanner {
         prompt: &str,
         language: Option<&str>,
     ) -> Result<PreAnalysis> {
-        let system = planning_system_prompt(crate::prompts::PRE_ANALYSIS_SYSTEM, language);
+        Self::pre_analyze_with_step_limit(
+            llm,
+            prompt,
+            language,
+            5,
+            crate::prompts::PRE_ANALYSIS_SYSTEM,
+            false,
+        )
+        .await
+    }
+
+    pub(crate) async fn pre_analyze_goal(
+        llm: &Arc<dyn LlmClient>,
+        prompt: &str,
+        language: Option<&str>,
+    ) -> Result<PreAnalysis> {
+        Self::pre_analyze_with_step_limit(
+            llm,
+            prompt,
+            language,
+            64,
+            include_str!("../../prompts/planning/goal_pre_analysis_system.md"),
+            true,
+        )
+        .await
+    }
+
+    async fn pre_analyze_with_step_limit(
+        llm: &Arc<dyn LlmClient>,
+        prompt: &str,
+        language: Option<&str>,
+        step_limit: usize,
+        system_prompt: &str,
+        goal_stages: bool,
+    ) -> Result<PreAnalysis> {
+        let system = planning_system_prompt(system_prompt, language);
+        let mut schema = Self::pre_analysis_schema();
+        if goal_stages {
+            let plan = &mut schema["properties"]["execution_plan"];
+            // pre_analysis_schema constructs this literal object and its steps property.
+            let properties = plan["properties"]
+                .as_object_mut()
+                .expect("the literal plan schema has object properties");
+            let mut stages = properties
+                .remove("steps")
+                .expect("the literal plan schema defines steps");
+            stages["description"] =
+                "Complete independently accepted stages, never the tool actions within a stage"
+                    .into();
+            stages["items"]["required"] =
+                serde_json::json!(["id", "description", "success_criteria"]);
+            stages["items"]["properties"]
+                .as_object_mut()
+                .expect("the literal task schema has object properties")
+                .remove("tool");
+            properties.insert("stages".into(), stages);
+            plan["required"] = serde_json::json!(["complexity", "stages"]);
+        }
+        let unit = if goal_stages {
+            "acceptance stages"
+        } else {
+            "execution steps"
+        };
         let req = StructuredRequest {
             prompt: format!(
                 "Analyze this user request and return a compact pre-analysis object. \
-                 Use at most 5 execution steps.\n\nUser request:\n{prompt}"
+                 Use at most {step_limit} {unit}. Preserve authorized stage order.\n\nUser request:\n{prompt}"
             ),
             system: Some(system),
-            schema: Self::pre_analysis_schema(),
+            schema,
             schema_name: "pre_analysis".to_string(),
             schema_description: Some(
                 "Intent, goal, plan, and optimized input for an agent turn".to_string(),
@@ -253,9 +315,21 @@ impl LlmPlanner {
             max_repair_attempts: 2,
         };
 
-        let result = generate_blocking(&**llm, &req)
+        let mut result = generate_blocking(&**llm, &req)
             .await
             .context("LLM pre-analysis structured generation failed")?;
+
+        if goal_stages {
+            let plan = result
+                .object
+                .get_mut("execution_plan")
+                .and_then(serde_json::Value::as_object_mut)
+                .context("Goal planning response has no plan object")?;
+            let stages = plan
+                .remove("stages")
+                .context("Goal planning response has no acceptance stages")?;
+            plan.insert("steps".into(), stages);
+        }
 
         Self::pre_analysis_from_value(result.object, prompt)
             .context("Failed to parse pre-analysis JSON from LLM response")
@@ -286,15 +360,7 @@ impl LlmPlanner {
         let goal =
             AgentGoal::new(goal_description.clone()).with_criteria(parsed.goal.success_criteria);
 
-        let complexity = match parsed.execution_plan.complexity.as_str() {
-            "Simple" => Complexity::Simple,
-            "Medium" => Complexity::Medium,
-            "Complex" => Complexity::Complex,
-            "VeryComplex" => Complexity::VeryComplex,
-            _ => Complexity::Medium,
-        };
-
-        let mut plan = ExecutionPlan::new(goal_description, complexity);
+        let mut plan = ExecutionPlan::new(goal_description, parsed.execution_plan.complexity);
         let mut seen_ids = std::collections::HashSet::new();
         for step_resp in parsed.execution_plan.steps {
             let id = claim_step_id(&mut seen_ids, step_resp.id)?;
@@ -349,7 +415,10 @@ impl LlmPlanner {
                     "type": "object",
                     "required": ["complexity", "steps"],
                     "properties": {
-                        "complexity": { "type": "string" },
+                        "complexity": {
+                            "type": "string",
+                            "enum": ["Simple", "Medium", "Complex", "VeryComplex"]
+                        },
                         "steps": {
                             "type": "array",
                             "items": {
@@ -416,15 +485,7 @@ impl LlmPlanner {
         let parsed: PlanResponse = Self::parse_json_lenient(text)
             .context("Failed to parse plan JSON from LLM response")?;
 
-        let complexity = match parsed.complexity.as_str() {
-            "Simple" => Complexity::Simple,
-            "Medium" => Complexity::Medium,
-            "Complex" => Complexity::Complex,
-            "VeryComplex" => Complexity::VeryComplex,
-            _ => Complexity::Medium,
-        };
-
-        let mut plan = ExecutionPlan::new(parsed.goal, complexity);
+        let mut plan = ExecutionPlan::new(parsed.goal, parsed.complexity);
         let mut seen_ids = std::collections::HashSet::new();
 
         for step_resp in parsed.steps {
@@ -578,8 +639,7 @@ mod tests {
     fn test_parse_plan_response_unknown_complexity() {
         let json =
             r#"{"goal": "Test", "complexity": "Unknown", "steps": [], "required_tools": []}"#;
-        let plan = LlmPlanner::parse_plan_response(json).unwrap();
-        assert_eq!(plan.complexity, Complexity::Medium); // falls back to Medium
+        assert!(LlmPlanner::parse_plan_response(json).is_err());
     }
 
     #[test]

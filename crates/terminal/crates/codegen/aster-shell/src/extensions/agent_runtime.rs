@@ -6,9 +6,9 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_login::AuthManager;
-use agent_client_protocol as acp;
 
 use crate::agent::session_registry_client::SessionRegistryClient;
 use crate::extensions::code_nav::CodeNavEligibility;

@@ -162,10 +162,14 @@ impl DurableMemorySession {
         let query = MemoryQuery::new(self.namespace().clone())
             .with_text(text)
             .with_limit(policy.max_results());
-        let lexical = self
-            .repository()
-            .query(query)
-            .await?
+        let result = self.repository().query(query).await?;
+        let linear = self
+            .semantic_recall()
+            .is_some_and(|semantic| semantic.binding().policy().linear_fusion());
+        if linear {
+            validate_linear_lexical_scores(result.hits.iter().map(|hit| hit.score.total))?;
+        }
+        let lexical = result
             .hits
             .into_iter()
             .filter(|hit| hit.score.total >= policy.min_lexical_score())
@@ -197,7 +201,7 @@ impl DurableMemorySession {
             },
             None => Vec::new(),
         };
-        let mut candidates = fuse_lexical_semantic(lexical, semantic);
+        let mut candidates = fuse_lexical_semantic(lexical, semantic, linear);
         if policy.max_related_lookups() == 0 {
             candidates.truncate(policy.max_results());
             return Ok(candidates);
@@ -318,6 +322,21 @@ impl DurableMemorySession {
             .sum();
         admitted.len()
     }
+}
+
+pub(super) fn validate_linear_lexical_scores(
+    scores: impl IntoIterator<Item = f32>,
+) -> Result<(), MemoryRepositoryError> {
+    if scores
+        .into_iter()
+        .any(|score| !score.is_finite() || !(0.0..=1.0).contains(&score))
+    {
+        return Err(super::invalid(
+            "recall.lexicalScore",
+            "linear unit-score fusion requires finite repository totals between 0 and 1",
+        ));
+    }
+    Ok(())
 }
 
 pub(crate) fn durable_memory_context_id(

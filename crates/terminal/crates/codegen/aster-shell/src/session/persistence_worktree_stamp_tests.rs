@@ -1,5 +1,5 @@
-use aster_test_support::EnvGuard;
 use agent_client_protocol as acp;
+use aster_test_support::EnvGuard;
 use serial_test::serial;
 
 use super::{
@@ -102,7 +102,8 @@ async fn new_with_explicit_dir_stores_requested_identity() {
     let _env = EnvGuard::set("GROK_HOME", home.path());
     let target_dir = home.path().join("child-session");
     let agent_id =
-        aster_message_delivery_core::AgentId::from_uuid_v7(uuid::Uuid::now_v7().to_string()).unwrap();
+        aster_message_delivery_core::AgentId::from_uuid_v7(uuid::Uuid::now_v7().to_string())
+            .unwrap();
     let attempt_id = aster_message_delivery_core::AttemptId::mint(0x11);
     let persistence = new_with_explicit_dir(
         &Info {

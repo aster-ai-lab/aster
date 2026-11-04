@@ -330,3 +330,42 @@ async fn typed_observation_credit_replays_and_missing_credit_stays_unknown() {
         .payload["informationIdentity"] = json!("unvalidated observation");
     assert!(replay(&old_facts).schema_error.is_some());
 }
+
+#[tokio::test]
+async fn long_fresh_observation_trajectories_deliver_every_observation() {
+    for count in [50, 200, 500] {
+        for compact in [false, true] {
+            let started = std::time::Instant::now();
+            let (preparations, executions, compactions, facts) = tokio::time::timeout(
+                std::time::Duration::from_secs(15 * 60),
+                observations_count(true, compact, count),
+            )
+            .await
+            .unwrap();
+            assert_eq!(preparations, count as usize);
+            assert_eq!(executions, count as usize);
+            let requests = facts
+                .iter()
+                .filter(|fact| fact.kind == "model.turn")
+                .count();
+            assert_eq!(requests, count as usize + 1);
+            assert_eq!(compactions > 0, compact);
+            let outcomes: Vec<_> = facts
+                .iter()
+                .filter(|fact| fact.kind == "tool.result")
+                .map(|fact| fact.payload["receipt"]["output"].clone())
+                .collect();
+            assert_eq!(
+                outcomes,
+                (0..count).map(|index| json!(index)).collect::<Vec<_>>()
+            );
+            eprintln!(
+                "CONVERGENCE_MEASUREMENT {}",
+                json!({"observations":count,"compact":compact,
+                "modelRequests":requests,"preparations":preparations,"executions":executions,
+                "compactions":compactions,"elapsedMillis":started.elapsed().as_millis(),
+                "providerUsage":null,"billedCost":null,"result":"complete"})
+            );
+        }
+    }
+}

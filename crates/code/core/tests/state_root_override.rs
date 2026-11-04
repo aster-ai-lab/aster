@@ -66,19 +66,24 @@ fn an_override_keeps_harness_state_out_of_the_workspace() {
     assert!(page.sessions.iter().any(|entry| entry.id == ID));
 
     std::fs::write(workspace.join("main.py"), "print('graded')\n").unwrap();
+    #[cfg(feature = "grep-trigram")]
     assert!(
         aster_core::workspace::TrigramGrepCandidateIndex::default_index_dir(workspace)
             .starts_with(state.join("indexes"))
     );
-    let runtime = tokio::runtime::Runtime::new().unwrap();
-    let _entered = runtime.enter();
-    let services =
-        aster_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace).unwrap();
-    assert!(services.persistent_index().is_some());
-    assert!(
-        std::fs::read_dir(state.join("indexes")).unwrap().count() == 1,
-        "the aster-vec index lands under the state root"
-    );
+    #[cfg(feature = "aster-vec-fts")]
+    {
+        let runtime = tokio::runtime::Runtime::new().unwrap();
+        let _entered = runtime.enter();
+        let services =
+            aster_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace)
+                .unwrap();
+        assert!(services.persistent_index().is_some());
+        assert!(
+            std::fs::read_dir(state.join("indexes")).unwrap().count() == 1,
+            "the aster-vec index lands under the state root"
+        );
+    }
 
     assert!(
         !workspace.join(".aster").exists(),

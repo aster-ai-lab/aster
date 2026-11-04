@@ -1,0 +1,210 @@
+[
+  {
+    "name": "core-default",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 145.500609042,
+    "results": [
+      "test result: ok. 203 passed; 0 failed; 0 ignored; 0 measured; 5724 filtered out; finished in 7.26s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "core-minimal",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--no-default-features",
+      "--features",
+      "minimal",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 116.99420133299998,
+    "results": [
+      "test result: ok. 203 passed; 0 failed; 0 ignored; 0 measured; 5565 filtered out; finished in 6.81s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "core-cli-json",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.test.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--lib",
+      "--features",
+      "serde_json/preserve_order",
+      "--",
+      "tool_history_tests",
+      "batch_history_tests",
+      "convergence",
+      "verification_metadata_tests",
+      "compaction::tests",
+      "compaction_budget_tests",
+      "compaction_carry",
+      "agent_api::tests::compact",
+      "truncated_completion_preserves",
+      "prompts::tests",
+      "final_delivery",
+      "confirmation_snapshot",
+      "completion_attestor",
+      "agent_api::goal_facade::tests::execution::feedback",
+      "--test-threads=1"
+    ],
+    "exitCode": 0,
+    "seconds": 8.218598125000028,
+    "results": [
+      "test result: ok. 203 passed; 0 failed; 0 ignored; 0 measured; 5724 filtered out; finished in 7.47s"
+    ],
+    "tail": []
+  },
+  {
+    "name": "effect-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "-p",
+      "aster-effect",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exitCode": 0,
+    "seconds": 2.8336311670000214,
+    "results": [],
+    "tail": []
+  },
+  {
+    "name": "core-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "-p",
+      "aster-core",
+      "--all-targets",
+      "--no-deps",
+      "--features",
+      "serde_json/preserve_order"
+    ],
+    "exitCode": 0,
+    "seconds": 83.20860591599995,
+    "results": [],
+    "tail": []
+  },
+  {
+    "name": "format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 26.501271374999988,
+    "results": [],
+    "tail": []
+  },
+  {
+    "name": "workspace",
+    "command": [
+      "cargo",
+      "check",
+      "--locked",
+      "--offline",
+      "--target-dir",
+      "target/qualification/capacity-build-464359e5-e38f-44f5-81d2-b02797d264c5",
+      "--config",
+      "profile.dev.package.sha2.opt-level=3",
+      "--workspace",
+      "--all-targets"
+    ],
+    "exitCode": 0,
+    "seconds": 166.86572933300005,
+    "results": [],
+    "tail": []
+  },
+  {
+    "name": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.31894850000003316,
+    "results": [],
+    "tail": []
+  }
+]

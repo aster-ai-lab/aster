@@ -10,6 +10,7 @@
 use std::sync::Mutex;
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_compaction::{
     CompactionPrompt, CompactionSampleError, CompactionSampler, FullReplaceAttemptOutcome,
     FullReplaceObserver, LlmCompactionOutput,
@@ -17,7 +18,6 @@ use aster_compaction::{
 use aster_sampler::SamplerConfig as SamplingConfig;
 use aster_sampling_types::{ConversationItem, HostedTool, ToolSpec};
 use aster_telemetry::events::{CompactionRetryDegraded, CompactionTrigger};
-use agent_client_protocol as acp;
 use async_trait::async_trait;
 
 use aster_chat_state::compaction_utils::{

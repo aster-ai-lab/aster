@@ -7,14 +7,17 @@
 //! alongside as typed fields; vector (semantic) retrieval slots into the same
 //! collection once an embedding source is wired.
 //!
-//! This module intentionally depends only on `aster-vec` (already optional in
-//! core behind `aster-vec-fts`) so the memory layer and the workspace lexical
-//! index share one engine and one operational model.
+//! Primary records and full-text search use `aster-vec`. Semantic recall shares
+//! the caller-owned vector primitives used by typed memory and workspace retrieval.
 
-use anyhow::{anyhow, Result};
-use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType};
+use anyhow::{anyhow, Context as _, Result};
+use aster_durable_memory::vector::{
+    InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord, VectorSearchRequest,
+};
+use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType, ValidatedPrunePolicy};
 use aster_vec::{
-    Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, SearchQuery,
+    Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
+    IndexParams, SearchQuery,
 };
 use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
@@ -22,13 +25,21 @@ use std::sync::{Arc, OnceLock, Weak};
 
 pub mod management;
 
+mod hygiene;
+use hygiene::MemoryHygiene;
+
 static ENGINE_INIT: OnceLock<Result<(), String>> = OnceLock::new();
 
 fn ensure_initialized() -> Result<(), String> {
-    // `aster_vec::initialize` is idempotent; always call it so the cold path
-    // stays reachable under the process-wide OnceLock.
+    // The embedding host owns process-wide I/O and storage defaults.
     ENGINE_INIT
-        .get_or_init(|| aster_vec::initialize(None).map_err(|error| error.to_string()))
+        .get_or_init(|| {
+            if aster_vec::is_initialized() {
+                Ok(())
+            } else {
+                aster_vec::initialize(None).map_err(|error| error.to_string())
+            }
+        })
         .clone()
 }
 
@@ -42,6 +53,10 @@ fn is_collection_lock_held(error: &aster_vec::Error) -> bool {
     let text = error.to_string();
     text.contains("collection is locked by another process")
 }
+
+#[derive(Debug, thiserror::Error)]
+#[error("memory collection is locked by another Aster session; recall is skipped without stalling the first token (#17)")]
+struct MemoryCollectionBusy(#[source] std::io::Error);
 
 /// Fast refusal when a live peer holds the collection's exclusive lock.
 /// Uses the engine's own lock file directly so the check precedes the
@@ -62,18 +77,22 @@ fn probe_collection_lock(root: &Path) -> Result<()> {
             drop(file); // probe only; the real open takes it for the lifetime
             Ok(())
         }
-        Err(_) => Err(anyhow!(
-            "memory collection is locked by another Aster session; \
-             recall is skipped without stalling the first token (#17)"
-        )),
+        Err(error) => Err(MemoryCollectionBusy(error).into()),
     }
 }
 
-/// Open with a shared (read-only) lock so concurrent readers coexist./// Open with a shared (read-only) lock so concurrent readers coexist.
+/// Open with a shared (read-only) lock so concurrent readers coexist.
 fn open_read_only(collection_path: &str) -> Result<Collection> {
-    let mut options = aster_vec::CollectionOptions::new().map_err(display_error)?;
-    options.set_read_only(true).map_err(display_error)?;
-    Collection::open(collection_path, Some(&options)).map_err(display_error)
+    let mut options = memory_collection_options()?;
+    options.set_read_only(true)?;
+    Ok(Collection::open(collection_path, Some(&options))?)
+}
+
+fn memory_collection_options() -> Result<CollectionOptions> {
+    let mut options = CollectionOptions::new()?;
+    options.set_durability(Durability::Always)?;
+    options.set_wal_checkpoint_thresholds(128, 8 * 1024 * 1024)?;
+    Ok(options)
 }
 
 /// One durable memory record as stored in the aster-vec collection.
@@ -95,23 +114,6 @@ impl VecMemoryStore {
     pub fn record_count(&self) -> Result<usize> {
         self.collection.count().map_err(display_error)
     }
-
-    /// True when the exact text digest is already known — a write is a
-    /// duplicate and is skipped. Callers absorb the digest on every real
-    /// insert so the guard stays complete without a collection re-scan.
-    fn admit_digest(&self, digest: [u8; 32]) -> bool {
-        match self.hygiene.lock() {
-            Ok(mut known) => {
-                if known.contains(&digest) {
-                    false
-                } else {
-                    known.push(digest);
-                    true
-                }
-            }
-            Err(_) => true, // poisoned lock admits — the engine insert still holds its own contract
-        }
-    }
 }
 
 /// One vector per input text (specs/013 P3+P5 wiring seam). The host
@@ -124,20 +126,16 @@ pub trait SemanticEmbed: Send + Sync {
 pub struct VecMemoryStore {
     collection: Collection,
     path: PathBuf,
-    /// The in-tree light-tier provider for semantic recall (specs/013 P3+P5).
-    /// Loaded once on store open; None keeps FTS-only recall.
+    /// Host-injected embedding callback for this store generation.
     semantic: Option<Arc<dyn SemanticEmbed>>,
-    /// The linear vector index for semantic recall (exact; small-N default).
-    vectors: std::sync::Mutex<Vec<(String, Vec<f32>)>>,
-    /// Write-time exact-duplicate guard (specs/013 P3 wiring).
-    hygiene: std::sync::Mutex<Vec<[u8; 32]>>,
+    semantic_index: std::sync::Mutex<Option<InMemoryVectorIndex>>,
     /// Set when an existing collection already has one non-null fp32
     /// `embedding` column. Inserts fill it with zeros and recall stays FTS.
     embedding_dimension: Option<usize>,
     /// True when the exclusive lock was held by a live peer and the store
     /// opened with a shared (read-only) lock instead (#17).
     read_only: bool,
-    mutation: std::sync::Mutex<()>,
+    mutation: std::sync::Mutex<MemoryHygiene>,
     /// Same-process exclusion. The engine file lock does not stop a second open here.
     /// Held so `Drop` releases the directory; the field itself is not read.
     _open_lease: OpenLease,
@@ -171,6 +169,7 @@ fn register_open_directory(path: PathBuf) -> Result<OpenLease> {
 
 const COLLECTION_NAME: &str = "durable_memory";
 const CONTENT_FIELD: &str = "content";
+const SEMANTIC_SOURCE_ID: &str = "aster.memory.legacy.id";
 
 fn memory_schema() -> Result<CollectionSchema> {
     let mut content =
@@ -193,20 +192,14 @@ fn memory_schema() -> Result<CollectionSchema> {
 }
 
 fn record_to_doc(record: &MemoryRecord) -> Result<Doc> {
-    let mut doc = Doc::new().map_err(display_error)?;
+    let mut doc = Doc::new()?;
     doc.set_pk(&record.id);
-    doc.add_string(CONTENT_FIELD, &record.content)
-        .map_err(display_error)?;
-    doc.add_string("tags", &record.tags.join(" "))
-        .map_err(display_error)?;
-    doc.add_f32("importance", record.importance)
-        .map_err(display_error)?;
-    doc.add_string("memory_type", &record.memory_type)
-        .map_err(display_error)?;
-    doc.add_string("timestamp", &record.timestamp)
-        .map_err(display_error)?;
-    doc.add_string("meta", &record.meta)
-        .map_err(display_error)?;
+    doc.add_string(CONTENT_FIELD, &record.content)?;
+    doc.add_string("tags", &record.tags.join(" "))?;
+    doc.add_f32("importance", record.importance)?;
+    doc.add_string("memory_type", &record.memory_type)?;
+    doc.add_string("timestamp", &record.timestamp)?;
+    doc.add_string("meta", &record.meta)?;
     Ok(doc)
 }
 
@@ -266,7 +259,7 @@ impl VecMemoryStore {
         fs_err_create_dir_all(root)?;
         let canonical = root
             .canonicalize()
-            .map_err(|error| anyhow!("canonicalize memory root {}: {error}", root.display()))?;
+            .with_context(|| format!("canonicalize memory root {}", root.display()))?;
         // Register before opening. A refused second open must not close a file
         // descriptor that would release the first store's engine lock.
         let open_lease = register_open_directory(canonical)?;
@@ -274,9 +267,10 @@ impl VecMemoryStore {
         let collection_path = collection_path
             .to_str()
             .ok_or_else(|| anyhow!("memory collection path is not UTF-8"))?;
+        let options = memory_collection_options()?;
         let (collection, embedding_dimension, read_only) =
             if collection_path_exists(collection_path) {
-                match Collection::open(collection_path, None) {
+                match Collection::open(collection_path, Some(&options)) {
                     Ok(collection) => {
                         let embedding_dimension = accepted_embedding_dimension(&collection)?;
                         (collection, embedding_dimension, false)
@@ -286,11 +280,11 @@ impl VecMemoryStore {
                         let embedding_dimension = accepted_embedding_dimension(&read_only)?;
                         (read_only, embedding_dimension, true)
                     }
-                    Err(error) => return Err(display_error(error)),
+                    Err(error) => return Err(error.into()),
                 }
             } else {
                 let schema = memory_schema()?;
-                match Collection::create_and_open(collection_path, &schema, None) {
+                match Collection::create_and_open(collection_path, &schema, Some(&options)) {
                     Ok(collection) => (collection, None, false),
                     // Both sessions raced the create; the winner holds the
                     // exclusive lock and made the collection exist — read it.
@@ -299,75 +293,109 @@ impl VecMemoryStore {
                         let embedding_dimension = accepted_embedding_dimension(&read_only)?;
                         (read_only, embedding_dimension, true)
                     }
-                    Err(error) => return Err(display_error(error)),
+                    Err(error) => return Err(error.into()),
                 }
             };
-        // The light tier loads from compile-time bytes (32 MB, pure Rust,
-        // no ONNX); failure keeps the store on FTS-only recall.
+        let hygiene = MemoryHygiene::load(&collection)?;
         let semantic: Option<Arc<dyn SemanticEmbed>> = None;
         Ok(Self {
             collection,
             path: collection_path.into(),
             semantic,
-            vectors: std::sync::Mutex::new(Vec::new()),
-            hygiene: std::sync::Mutex::new(Vec::new()),
+            semantic_index: std::sync::Mutex::new(None),
             embedding_dimension,
             read_only,
-            mutation: std::sync::Mutex::new(()),
+            mutation: std::sync::Mutex::new(hygiene),
             _open_lease: open_lease,
         })
     }
 
     /// Insert or replace one memory record by id.
     pub fn put(&self, record: &MemoryRecord) -> Result<()> {
-        let _mutation = self
+        let mut hygiene = self
             .mutation
             .lock()
             .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
-        if self.read_only {
-            return Err(anyhow!(
-                "memory store is read-only: another Aster session holds the collection lock; \
-                 the write is skipped and can be retried in an exclusive session"
-            ));
-        }
-        // Write-time hygiene (specs/013 P3): an exact text duplicate of a
-        // known memory is skipped rather than re-stored — the caller sees a
-        // successful no-op, the same dedup contract ClusterState pins.
-        let digest = <sha2::Sha256 as sha2::Digest>::digest(record.content.trim().as_bytes());
-        let known = <[u8; 32]>::from(digest);
-        if !self.admit_digest(known) {
-            tracing::debug!(
-                id = %record.id,
-                "memory write skipped: exact text duplicate of an existing record"
-            );
-            return Ok(());
-        }
-        // Semantic recall (specs/013 P3+P5): embed the content on write
-        // and append to the linear index so recall can do cosine.
-        if let Some(provider) = &self.semantic {
-            if let Some(vector) = provider.embed(&record.content) {
-                if let Ok(mut index) = self.vectors.lock() {
-                    index.retain(|(id, _)| id != &record.id);
-                    index.push((record.id.clone(), vector.clone()));
+        self.ensure_writable()?;
+        hygiene.ensure_current(&self.collection)?;
+        // Raw SDK writes retain their exact-content successful no-op policy.
+        if hygiene.exact_duplicate(&record.content).is_some() {
+            tracing::debug!(id = %record.id, "memory write skipped: exact text duplicate");
+            let existing =
+                self.collection
+                    .fetch_with_options(&[&record.id], Some(&[CONTENT_FIELD]), false)?;
+            if let Some(document) = existing.first() {
+                if let Some(content) = document.get_string(CONTENT_FIELD)? {
+                    self.update_semantic(&record.id, Some(&content));
                 }
             }
+            return Ok(());
         }
+        self.commit_record(record, &mut hygiene)
+    }
+
+    fn ensure_writable(&self) -> Result<()> {
+        if self.read_only {
+            return Err(aster_vec::Error::permission_denied(
+                "memory store is read-only: another Aster session holds the collection lock; \
+                 the write is skipped and can be retried in an exclusive session",
+            )
+            .into());
+        }
+        Ok(())
+    }
+
+    fn commit_record(&self, record: &MemoryRecord, hygiene: &mut MemoryHygiene) -> Result<()> {
+        let existing =
+            self.collection
+                .fetch_with_options(&[&record.id], Some(&[CONTENT_FIELD]), false)?;
+        let old_content = existing
+            .first()
+            .map(|document| document.get_string(CONTENT_FIELD))
+            .transpose()?
+            .flatten();
         let mut doc = record_to_doc(record)?;
         if let Some(dimension) = self.embedding_dimension {
             let zeros = vec![0.0_f32; dimension];
-            doc.add_vector_f32("embedding", &zeros)
-                .map_err(display_error)?;
+            doc.add_vector_f32("embedding", &zeros)?;
         }
         let references = [&doc];
-        let result = self.collection.insert(&references).map_err(display_error)?;
-        if result.error_count != 0 {
-            return Err(anyhow!(
-                "aster-vec memory insert rejected {} document(s)",
-                result.error_count
-            ));
+        hygiene.invalidate();
+        let result = self.collection.upsert(&references)?;
+        if let Some(rejected) = result.results.into_iter().find(|result| !result.success) {
+            return Err(aster_vec::Error::new(rejected.code, rejected.message).into());
         }
-        self.collection.flush().map_err(display_error)?;
+        if let Some(content) = old_content {
+            hygiene.forget(&record.id, &content);
+        }
+        hygiene.remember(&record.id, &record.content);
+        hygiene.finish();
+        self.update_semantic(&record.id, Some(&record.content));
         Ok(())
+    }
+
+    fn store_and_return_blocking(&self, mut item: MemoryItem) -> Result<MemoryItem> {
+        let mut hygiene = self
+            .mutation
+            .lock()
+            .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
+        self.ensure_writable()?;
+        hygiene.ensure_current(&self.collection)?;
+        item.content_lower = item.content.to_lowercase();
+        if self
+            .collection
+            .fetch_with_options(&[&item.id], Some(&[]), false)?
+            .is_empty()
+        {
+            if let Some(id) = hygiene.durable_duplicate(&item.content) {
+                let canonical = self.retrieve_blocking(id)?.ok_or_else(|| {
+                    aster_vec::Error::internal("memory duplicate lookup lost its primary record")
+                })?;
+                item = canonical.merge_duplicate(item);
+            }
+        }
+        self.commit_record(&item_to_record(&item)?, &mut hygiene)?;
+        Ok(item)
     }
 
     /// Full-text recall: rank memory records by FTS relevance to `query`.
@@ -400,45 +428,93 @@ impl VecMemoryStore {
         Ok(rrf_merge(fts_hits, semantic_hits, limit))
     }
 
-    /// Cosine recall against the in-memory vector index. The light tier
-    /// embeds the query; the LinearBackend (exact scan) finds the top-k.
+    /// Cosine recall through the shared, bounded exact index.
     fn semantic_recall(&self, query: &str, limit: usize) -> Vec<(String, f32)> {
         let Some(provider) = &self.semantic else {
             return Vec::new();
         };
-        let Ok(index) = self.vectors.lock() else {
+        let index = match self.semantic_index.lock() {
+            Ok(slot) => slot.clone(),
+            Err(_) => {
+                tracing::warn!("Legacy memory semantic index lock is poisoned");
+                return Vec::new();
+            }
+        };
+        let Some(index) = index else {
             return Vec::new();
         };
-        if index.is_empty() {
+        if index.status().record_count == 0 {
             return Vec::new();
         }
         let Some(query_vector) = provider.embed(query) else {
             return Vec::new();
         };
-        let mut scored: Vec<(String, f64)> = index
-            .iter()
-            .map(|(id, vector)| {
-                (
-                    id.clone(),
-                    (1.0 - query_vector
-                        .iter()
-                        .zip(vector)
-                        .map(|(a, b)| a * b)
-                        .sum::<f32>()) as f64,
-                )
-            })
-            .collect();
-        scored.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
-        scored
-            .into_iter()
-            .take(limit)
-            .map(|(id, distance)| (id, (1.0 - distance) as f32))
-            .collect()
+        match index.search_blocking(VectorSearchRequest::new(query_vector, limit)) {
+            Ok(result) => result
+                .hits
+                .into_iter()
+                .filter_map(|hit| {
+                    hit.labels
+                        .get(SEMANTIC_SOURCE_ID)
+                        .cloned()
+                        .map(|id| (id, hit.score))
+                })
+                .collect(),
+            Err(_) => {
+                tracing::warn!("Legacy memory semantic query was rejected by the shared index");
+                Vec::new()
+            }
+        }
+    }
+
+    fn update_semantic(&self, id: &str, content: Option<&str>) {
+        let Some(provider) = &self.semantic else {
+            return;
+        };
+        let embedding = content.and_then(|text| provider.embed(text));
+        // Fixed delimiters preserve valid legacy IDs whose edges contain whitespace.
+        let partition = format!("legacy:{id}:");
+        let result: Result<()> = (|| {
+            let mut slot = self
+                .semantic_index
+                .lock()
+                .map_err(|_| anyhow!("memory semantic index lock is poisoned"))?;
+            let index = match slot.as_ref() {
+                Some(index) => index.clone(),
+                None => {
+                    let Some(vector) = embedding.as_ref() else {
+                        return Ok(());
+                    };
+                    InMemoryVectorIndex::new(VectorIndexDescriptor::new(vector.len()))?
+                }
+            };
+            let mutation = match embedding {
+                Some(vector) => index.replace_partition_blocking(
+                    &partition,
+                    vec![VectorRecord::new(&partition, vector).with_label(SEMANTIC_SOURCE_ID, id)],
+                ),
+                None => index.remove_partition_blocking(&partition),
+            };
+            if let Err(error) = mutation {
+                // A rejected replacement must not retain a vector for the previous body.
+                index.remove_partition_blocking(&partition)?;
+                return Err(error.into());
+            }
+            *slot = Some(index);
+            Ok(())
+        })();
+        if result.is_err() {
+            tracing::warn!(
+                "Legacy memory semantic update was rejected; lexical recall remains available"
+            );
+        }
     }
 
     /// Inject a semantic embedding provider. Call once after `open`;
-    /// existing entries are embedded on the next `put`.
+    /// The previous derived generation is discarded; existing entries are
+    /// embedded on their next successful `put` (including a content no-op).
     pub fn set_semantic_provider(&mut self, provider: Arc<dyn SemanticEmbed>) {
+        self.semantic_index = std::sync::Mutex::new(None);
         self.semantic = Some(provider);
     }
 
@@ -487,8 +563,9 @@ impl VecMemoryStore {
             if existing.contains(item.id.as_str()) {
                 continue;
             }
-            self.put(&item_to_record(&item)?)?;
-            existing.insert(item.id);
+            let id = item.id.clone();
+            self.store_and_return_blocking(item)?;
+            existing.insert(id);
             imported += 1;
         }
         if !complete {
@@ -502,9 +579,35 @@ impl VecMemoryStore {
 }
 
 /// Opens the durable aster-vec collection on the first memory operation.
+///
+/// Operations require a Tokio runtime and run synchronous engine work on its
+/// blocking pool. Cancelling an await does not abort an already running write;
+/// that worker retains the collection until it finishes.
 pub struct LazyFileMemoryStore {
     directory: PathBuf,
-    store: tokio::sync::OnceCell<Arc<VecMemoryStore>>,
+    store: tokio::sync::OnceCell<SharedMemoryStore>,
+}
+
+#[derive(Clone)]
+struct SharedMemoryStore(Option<Arc<VecMemoryStore>>);
+
+impl SharedMemoryStore {
+    fn get(&self) -> &VecMemoryStore {
+        // Constructed with Some; only exclusive Drop takes it out.
+        self.0.as_deref().expect("live shared memory handle")
+    }
+}
+
+impl Drop for SharedMemoryStore {
+    fn drop(&mut self) {
+        let store = self.0.take();
+        // A dead Weak must not race the previous engine/lease destructor.
+        // Workers retain this same release protocol after an await is cancelled.
+        let _registry = SHARED_STORES
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        drop(store);
+    }
 }
 
 // Lazy session adapters share one engine handle in this process. Weak entries
@@ -522,38 +625,64 @@ impl LazyFileMemoryStore {
         }
     }
 
-    async fn inner(&self) -> Result<&VecMemoryStore> {
-        let directory = self.directory.clone();
+    async fn inner(&self, runtime: &tokio::runtime::Handle) -> Result<&SharedMemoryStore> {
         self.store
-            .get_or_try_init(|| async move { Self::shared(&directory) })
-            .await
-            .map(Arc::as_ref)
-            .map_err(|error| {
-                anyhow!(
-                    "failed to initialize aster-vec Memory store at {}: {error:#}",
-                    self.directory.display()
-                )
+            .get_or_try_init(|| async {
+                let directory = self.directory.clone();
+                let span = tracing::Span::current();
+                runtime
+                    .spawn_blocking(move || {
+                        let _entered = span.enter();
+                        Self::shared(&directory)
+                    })
+                    .await
+                    .context("memory initialization worker failed")?
+                    .map_err(|error| {
+                        let message = format!(
+                            "failed to initialize aster-vec Memory store at {}: {error:#}",
+                            self.directory.display(),
+                        );
+                        error.context(message)
+                    })
             })
+            .await
     }
 
-    fn shared(directory: &Path) -> Result<Arc<VecMemoryStore>> {
+    async fn with_store<T: Send + 'static>(
+        &self,
+        operation: impl FnOnce(&VecMemoryStore) -> T + Send + 'static,
+    ) -> Result<T> {
+        let runtime = tokio::runtime::Handle::try_current()
+            .context("lazy memory operations require a Tokio runtime")?;
+        let store = self.inner(&runtime).await?.clone();
+        let span = tracing::Span::current();
+        runtime
+            .spawn_blocking(move || {
+                let _entered = span.enter();
+                operation(store.get())
+            })
+            .await
+            .context("memory operation worker failed")
+    }
+
+    fn shared(directory: &Path) -> Result<SharedMemoryStore> {
         fs_err_create_dir_all(directory)?;
-        let canonical = directory.canonicalize().map_err(|error| {
-            anyhow!("canonicalize memory root {}: {error}", directory.display())
-        })?;
+        let canonical = directory
+            .canonicalize()
+            .with_context(|| format!("canonicalize memory root {}", directory.display()))?;
         let mut stores = SHARED_STORES
             .lock()
             .map_err(|_| anyhow!("shared memory registry is poisoned"))?;
         stores.retain(|_, store| store.strong_count() > 0);
         if let Some(store) = stores.get(&canonical).and_then(Weak::upgrade) {
-            return Ok(store);
+            return Ok(SharedMemoryStore(Some(store)));
         }
         // Open and import are synchronous. Publish only after both finish so
         // simultaneous first use cannot open or import the same collection twice.
         // No synchronous registry guard is held across an await.
         let store = Arc::new(Self::open_and_import(&canonical)?);
         stores.insert(canonical, Arc::downgrade(&store));
-        Ok(store)
+        Ok(SharedMemoryStore(Some(store)))
     }
 
     fn open_and_import(directory: &Path) -> Result<VecMemoryStore> {
@@ -592,73 +721,71 @@ impl LazyFileMemoryStore {
     }
 }
 
-impl Drop for LazyFileMemoryStore {
-    fn drop(&mut self) {
-        let Some(store) = self.store.take() else {
-            return;
-        };
-        // All owned shared handles stay in lazy cells. Serialize the last
-        // release with upgrade/open, including the engine and lease destructor;
-        // a dead Weak must never race an otherwise still-open collection.
-        let _registry = SHARED_STORES
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        drop(store);
-    }
-}
-
 #[async_trait::async_trait]
 impl MemoryStore for LazyFileMemoryStore {
     async fn store(&self, item: MemoryItem) -> Result<()> {
-        MemoryStore::store(self.inner().await?, item).await
+        self.store_and_return(item).await.map(|_| ())
     }
 
     async fn store_and_return(&self, item: MemoryItem) -> Result<MemoryItem> {
-        MemoryStore::store_and_return(self.inner().await?, item).await
+        self.with_store(move |store| store.store_and_return_blocking(item))
+            .await?
     }
 
     async fn retrieve(&self, id: &str) -> Result<Option<MemoryItem>> {
-        MemoryStore::retrieve(self.inner().await?, id).await
+        let id = id.to_owned();
+        self.with_store(move |store| store.retrieve_blocking(&id))
+            .await?
     }
 
     async fn search(&self, query: &str, limit: usize) -> Result<Vec<MemoryItem>> {
-        MemoryStore::search(self.inner().await?, query, limit).await
+        let query = query.to_owned();
+        self.with_store(move |store| store.search_blocking(&query, limit))
+            .await?
     }
 
     async fn search_by_tags(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
-        MemoryStore::search_by_tags(self.inner().await?, tags, limit).await
+        let tags = tags.to_owned();
+        self.with_store(move |store| store.search_by_tags_blocking(&tags, limit))
+            .await?
     }
 
     async fn get_recent(&self, limit: usize) -> Result<Vec<MemoryItem>> {
-        MemoryStore::get_recent(self.inner().await?, limit).await
+        self.with_store(move |store| store.get_recent_blocking(limit))
+            .await?
     }
 
     async fn get_important(&self, threshold: f32, limit: usize) -> Result<Vec<MemoryItem>> {
-        MemoryStore::get_important(self.inner().await?, threshold, limit).await
+        self.with_store(move |store| store.get_important_blocking(threshold, limit))
+            .await?
     }
 
     async fn delete(&self, id: &str) -> Result<()> {
-        MemoryStore::delete(self.inner().await?, id).await
+        let id = id.to_owned();
+        self.with_store(move |store| store.delete_blocking(&id))
+            .await?
     }
 
     async fn clear(&self) -> Result<()> {
-        MemoryStore::clear(self.inner().await?).await
+        self.with_store(VecMemoryStore::clear_blocking).await?
     }
 
     async fn count(&self) -> Result<usize> {
-        MemoryStore::count(self.inner().await?).await
+        self.with_store(VecMemoryStore::record_count).await?
     }
 
     async fn prune(&self, policy: &aster_durable_memory::PrunePolicy) -> Result<usize> {
-        MemoryStore::prune(self.inner().await?, policy).await
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now())?;
+        self.with_store(move |store| store.prune_blocking(&policy))
+            .await?
     }
 }
 
 fn fs_err_create_dir_all(root: &Path) -> Result<()> {
     std::fs::create_dir_all(root)
-        .map_err(|error| anyhow!("create memory root {}: {error}", root.display()))?;
+        .with_context(|| format!("create memory root {}", root.display()))?;
     crate::secure_state::restrict_state_dir(root)
-        .map_err(|error| anyhow!("restrict memory root {}: {error}", root.display()))
+        .with_context(|| format!("restrict memory root {}", root.display()))
 }
 
 #[cfg(windows)]
@@ -674,6 +801,22 @@ fn collection_path_exists(path: &str) -> bool {
 #[cfg(test)]
 mod tests;
 
+#[cfg(test)]
+mod async_tests;
+
+#[cfg(test)]
+mod wal_tests;
+
+#[cfg(test)]
+mod canonical_tests;
+
+#[cfg(test)]
+mod canonical_lifecycle_tests;
+
+#[cfg(test)]
+#[path = "durable_memory_vec/semantic_tests.rs"]
+mod semantic_tests;
+
 /// Metadata that rides with a record but does not need to be queryable.
 #[derive(serde::Serialize, serde::Deserialize, Default)]
 struct RecordMeta {
@@ -683,6 +826,8 @@ struct RecordMeta {
     access_count: u32,
     #[serde(default)]
     last_accessed: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    tags: Option<Vec<String>>,
 }
 
 fn memory_type_to_string(memory_type: &MemoryType) -> Result<String> {
@@ -726,10 +871,11 @@ fn doc_to_item(document: &Doc) -> Result<MemoryItem> {
     let memory_type = memory_type_from_string(&memory_type).unwrap_or(MemoryType::Semantic);
     Ok(MemoryItem {
         id,
+        content_lower: content.to_lowercase(),
         content,
         timestamp,
         importance,
-        tags: tags.split_whitespace().map(str::to_owned).collect(),
+        tags: decode_stored_tags(meta.tags, &tags),
         memory_type,
         metadata: meta.metadata,
         access_count: meta.access_count,
@@ -738,7 +884,6 @@ fn doc_to_item(document: &Doc) -> Result<MemoryItem> {
                 .map(|parsed| parsed.with_timezone(&Utc))
                 .ok()
         }),
-        content_lower: String::new(),
     })
 }
 
@@ -747,6 +892,11 @@ fn item_to_record(item: &MemoryItem) -> Result<MemoryRecord> {
         metadata: item.metadata.clone(),
         access_count: item.access_count,
         last_accessed: item.last_accessed.map(|stamp| stamp.to_rfc3339()),
+        tags: item
+            .tags
+            .iter()
+            .any(|tag| tag.is_empty() || tag.chars().any(char::is_whitespace))
+            .then(|| item.tags.clone()),
     };
     Ok(MemoryRecord {
         id: item.id.clone(),
@@ -759,23 +909,51 @@ fn item_to_record(item: &MemoryItem) -> Result<MemoryRecord> {
     })
 }
 
-#[async_trait::async_trait]
-impl MemoryStore for VecMemoryStore {
-    async fn store(&self, item: MemoryItem) -> Result<()> {
-        self.put(&item_to_record(&item)?)
-    }
+fn decode_stored_tags(exact: Option<Vec<String>>, legacy: &str) -> Vec<String> {
+    exact.unwrap_or_else(|| legacy.split_whitespace().map(str::to_owned).collect())
+}
 
-    async fn retrieve(&self, id: &str) -> Result<Option<MemoryItem>> {
-        for document in self.collection.iter().map_err(display_error)? {
-            let document = document.map_err(display_error)?;
-            if memory_id(&document)?.as_str() == id {
-                return Ok(Some(doc_to_item(&document)?));
-            }
+impl VecMemoryStore {
+    fn prune_blocking(&self, policy: &ValidatedPrunePolicy) -> Result<usize> {
+        let mut hygiene = self
+            .mutation
+            .lock()
+            .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
+        if self.read_only {
+            return Err(aster_vec::Error::permission_denied("memory owner is read-only").into());
         }
-        Ok(None)
+        let started = std::time::Instant::now();
+        let mut items = Vec::new();
+        for document in self.collection.iter()? {
+            items.push(doc_to_item(&document?)?);
+        }
+        let read_elapsed = started.elapsed();
+        let started = std::time::Instant::now();
+        let delete_ids = policy.select(&items)?;
+        let selection_elapsed = started.elapsed();
+        let started = std::time::Instant::now();
+        let ids: Vec<_> = delete_ids.iter().map(String::as_str).collect();
+        self.delete_records(&ids, &mut hygiene)?;
+        tracing::debug!(
+            target: "aster_core::memory_retention",
+            records = items.len(), deleted = delete_ids.len(), delete_batches = usize::from(!delete_ids.is_empty()),
+            read_ms = read_elapsed.as_secs_f64() * 1_000.0,
+            selection_ms = selection_elapsed.as_secs_f64() * 1_000.0,
+            deletion_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "native memory retention completed"
+        );
+        Ok(delete_ids.len())
     }
 
-    async fn search(&self, query: &str, limit: usize) -> Result<Vec<MemoryItem>> {
+    fn retrieve_blocking(&self, id: &str) -> Result<Option<MemoryItem>> {
+        self.collection
+            .fetch_with_options(&[id], None, false)?
+            .first()
+            .map(doc_to_item)
+            .transpose()
+    }
+
+    fn search_blocking(&self, query: &str, limit: usize) -> Result<Vec<MemoryItem>> {
         let hits = self.recall(query, limit)?;
         if hits.is_empty() {
             return Ok(Vec::new());
@@ -803,7 +981,7 @@ impl MemoryStore for VecMemoryStore {
         Ok(items)
     }
 
-    async fn search_by_tags(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
+    fn search_by_tags_blocking(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
         if tags.is_empty() {
             return Ok(Vec::new());
         }
@@ -822,7 +1000,7 @@ impl MemoryStore for VecMemoryStore {
         Ok(items)
     }
 
-    async fn get_recent(&self, limit: usize) -> Result<Vec<MemoryItem>> {
+    fn get_recent_blocking(&self, limit: usize) -> Result<Vec<MemoryItem>> {
         let mut items = Vec::new();
         for document in self.collection.iter().map_err(display_error)? {
             items.push(doc_to_item(&document.map_err(display_error)?)?);
@@ -832,7 +1010,7 @@ impl MemoryStore for VecMemoryStore {
         Ok(items)
     }
 
-    async fn get_important(&self, threshold: f32, limit: usize) -> Result<Vec<MemoryItem>> {
+    fn get_important_blocking(&self, threshold: f32, limit: usize) -> Result<Vec<MemoryItem>> {
         let mut items = Vec::new();
         for document in self.collection.iter().map_err(display_error)? {
             let item = doc_to_item(&document.map_err(display_error)?)?;
@@ -850,16 +1028,16 @@ impl MemoryStore for VecMemoryStore {
         Ok(items)
     }
 
-    async fn delete(&self, id: &str) -> Result<()> {
-        let _mutation = self
+    fn delete_blocking(&self, id: &str) -> Result<()> {
+        let mut hygiene = self
             .mutation
             .lock()
             .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
-        self.delete_record(id)
+        self.delete_record(id, &mut hygiene)
     }
 
-    async fn clear(&self) -> Result<()> {
-        let _mutation = self
+    fn clear_blocking(&self) -> Result<()> {
+        let mut hygiene = self
             .mutation
             .lock()
             .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
@@ -868,30 +1046,66 @@ impl MemoryStore for VecMemoryStore {
             ids.push(memory_id(&document.map_err(display_error)?)?);
         }
         if ids.is_empty() {
+            hygiene.clear();
             return Ok(());
         }
         let refs = ids.iter().map(String::as_str).collect::<Vec<_>>();
-        let result = self.collection.delete(&refs).map_err(display_error)?;
-        if result.error_count != 0 {
-            return Err(anyhow!(
-                "aster-vec memory clear rejected {} document(s)",
-                result.error_count
-            ));
-        }
-        self.hygiene
+        hygiene.invalidate();
+        self.commit_delete(&refs)?;
+        hygiene.clear();
+        *self
+            .semantic_index
             .lock()
-            .map_err(|_| anyhow!("memory hygiene lock is poisoned"))?
-            .clear();
-        self.vectors
-            .lock()
-            .map_err(|_| anyhow!("memory vectors lock is poisoned"))?
-            .clear();
-        self.collection.flush().map_err(display_error)?;
+            .map_err(|_| anyhow!("memory semantic index lock is poisoned"))? = None;
         Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl MemoryStore for VecMemoryStore {
+    async fn store(&self, item: MemoryItem) -> Result<()> {
+        self.store_and_return_blocking(item).map(|_| ())
+    }
+
+    async fn store_and_return(&self, item: MemoryItem) -> Result<MemoryItem> {
+        self.store_and_return_blocking(item)
+    }
+
+    async fn retrieve(&self, id: &str) -> Result<Option<MemoryItem>> {
+        self.retrieve_blocking(id)
+    }
+
+    async fn search(&self, query: &str, limit: usize) -> Result<Vec<MemoryItem>> {
+        self.search_blocking(query, limit)
+    }
+
+    async fn search_by_tags(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
+        self.search_by_tags_blocking(tags, limit)
+    }
+
+    async fn get_recent(&self, limit: usize) -> Result<Vec<MemoryItem>> {
+        self.get_recent_blocking(limit)
+    }
+
+    async fn get_important(&self, threshold: f32, limit: usize) -> Result<Vec<MemoryItem>> {
+        self.get_important_blocking(threshold, limit)
+    }
+
+    async fn delete(&self, id: &str) -> Result<()> {
+        self.delete_blocking(id)
+    }
+
+    async fn clear(&self) -> Result<()> {
+        self.clear_blocking()
     }
 
     async fn count(&self) -> Result<usize> {
         self.record_count()
+    }
+
+    async fn prune(&self, policy: &aster_durable_memory::PrunePolicy) -> Result<usize> {
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now())?;
+        self.prune_blocking(&policy)
     }
 }
 
@@ -959,21 +1173,33 @@ fn rrf_merge(
     semantic: Vec<(String, f32)>,
     limit: usize,
 ) -> Vec<(String, f32)> {
-    use std::collections::HashMap;
-    const K: f64 = 60.0;
-    let mut scores: HashMap<String, (f64, usize)> = HashMap::new();
-    for (rank, (id, _score)) in fts.iter().enumerate() {
-        scores.entry(id.clone()).or_insert((0.0, rank)).0 += 1.0 / (K + rank as f64 + 1.0);
+    let mut fusion = crate::rank_fusion::RankFusion::<_, _, f64>::new();
+    for (rank, (id, _)) in fts.into_iter().enumerate() {
+        fusion.add(id, 0_u8, rank + 1, (), |_, _| {});
     }
-    for (rank, (id, _score)) in semantic.iter().enumerate() {
-        let entry = scores.entry(id.clone()).or_insert((0.0, rank));
-        entry.0 += 1.0 / (K + rank as f64 + 1.0);
+    for (rank, (id, _)) in semantic.into_iter().enumerate() {
+        fusion.add(id, 1_u8, rank + 1, (), |_, _| {});
     }
-    let mut merged: Vec<(String, f32)> = scores
-        .into_iter()
-        .map(|(id, (score, tie))| (id, score as f32))
-        .collect();
-    merged.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+    let mut merged = fusion
+        .into_entries()
+        .map(|(id, entry)| {
+            let first = entry.rank(0).map_or(usize::MAX, |rank| rank.get());
+            let second = entry.rank(1).map_or(usize::MAX, |rank| rank.get());
+            (id, entry.score() as f32, first, second)
+        })
+        .collect::<Vec<_>>();
+    merged.sort_by(
+        |(id, score, first, second), (other_id, other_score, other_first, other_second)| {
+            other_score
+                .total_cmp(score)
+                .then_with(|| first.cmp(other_first))
+                .then_with(|| second.cmp(other_second))
+                .then_with(|| id.cmp(other_id))
+        },
+    );
     merged.truncate(limit);
     merged
+        .into_iter()
+        .map(|(id, score, _, _)| (id, score))
+        .collect()
 }

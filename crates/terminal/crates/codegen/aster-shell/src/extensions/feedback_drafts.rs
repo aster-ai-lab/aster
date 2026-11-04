@@ -1,9 +1,9 @@
 //! `aster/feedback/drafts/*` extension handlers over a session's `FeedbackDraftStore`.
 
+use agent_client_protocol as acp;
 use aster_feedback::{DeleteOutcome, FeedbackDraftStore, FeedbackStoreError, UpdateOutcome};
 use aster_telemetry::events::{FeedbackDraftOp, FeedbackDraftOpError, FeedbackDraftOpKind};
 use aster_telemetry::session_ctx::log_event_dual;
-use agent_client_protocol as acp;
 
 use super::{ExtResult, parse_params};
 use crate::agent::MvpAgent;
@@ -30,8 +30,12 @@ pub async fn answer(
     match args.method.as_ref() {
         "aster/feedback/drafts/list" => list_feedback_drafts(args, store, telemetry_enabled).await,
         "aster/feedback/drafts/get" => get_feedback_draft(args, store, telemetry_enabled).await,
-        "aster/feedback/drafts/delete" => delete_feedback_draft(args, store, telemetry_enabled).await,
-        "aster/feedback/drafts/update" => update_feedback_draft(args, store, telemetry_enabled).await,
+        "aster/feedback/drafts/delete" => {
+            delete_feedback_draft(args, store, telemetry_enabled).await
+        }
+        "aster/feedback/drafts/update" => {
+            update_feedback_draft(args, store, telemetry_enabled).await
+        }
         _ => Err(acp::Error::method_not_found()),
     }
 }

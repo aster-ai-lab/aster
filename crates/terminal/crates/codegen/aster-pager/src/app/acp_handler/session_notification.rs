@@ -337,6 +337,18 @@ pub(super) fn handle_session_notification_with_origin(
     let mut pending_finish_for_spawn = None;
     let root_session_id: &str = session_notif.session_id.0.as_ref();
     let changed = match session_notif.update {
+        AsterSessionUpdate::ModelInfo {
+            session_total_tokens,
+            measured_output_tokens,
+            generation_duration_ms,
+        } => {
+            agent.usage_meter.reconcile(
+                session_total_tokens,
+                measured_output_tokens,
+                generation_duration_ms,
+            );
+            true
+        }
         ref update @ (AsterSessionUpdate::AutoCompactStarted { .. }
         | AsterSessionUpdate::AutoCompactCompleted { .. }
         | AsterSessionUpdate::AutoCompactFailed { .. }
@@ -772,6 +784,9 @@ pub(super) fn handle_session_notification_with_origin(
             ..
         } => {
             if let Some(info) = agent.subagent_sessions.get_mut(&child_session_id) {
+                if let Some(background) = meta.subagent_background {
+                    info.attempt.is_background = background;
+                }
                 info.attempt.duration_ms = Some(duration_ms);
                 info.attempt.turn_count = Some(turn_count);
                 info.attempt.tool_call_count = Some(tool_call_count);
@@ -1023,7 +1038,9 @@ pub(super) fn handle_session_notification_with_origin(
                 use crate::views::extensions_modal::TabDataState;
                 modal.seed_plugin_groups_once(&plugins);
                 modal.plugins_data =
-                    TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse { plugins });
+                    TabDataState::Loaded(aster_hooks_plugins_types::PluginsListResponse {
+                        plugins,
+                    });
                 if !matches!(modal.skills_data, TabDataState::Loading) {
                     modal.skills_data = TabDataState::Loading;
                     plugins_changed_needs_skills_refetch = true;
@@ -1041,9 +1058,7 @@ pub(super) fn handle_session_notification_with_origin(
             match title_is_manual {
                 Some(true) => {
                     if let Some(clean) =
-                        aster_shell::session::persistence::sanitize_and_cap_title(
-                            &session_summary,
-                        )
+                        aster_shell::session::persistence::sanitize_and_cap_title(&session_summary)
                     {
                         agent.display_name = Some(clean.clone());
                         agent.generated_session_title = Some(clean);
@@ -1226,7 +1241,9 @@ pub(super) fn handle_session_notification_with_origin(
             });
             true
         }
-        update @ AsterSessionUpdate::WorkflowUpdated { .. } => ingest_workflow_update(agent, update),
+        update @ AsterSessionUpdate::WorkflowUpdated { .. } => {
+            ingest_workflow_update(agent, update)
+        }
         AsterSessionUpdate::GoalUpdated {
             goal_id,
             objective,
@@ -1500,6 +1517,22 @@ pub(super) fn handle_child_session_notification(
     meta: Option<&serde_json::Value>,
 ) -> bool {
     let parsed_meta = NotificationMeta::from_json(meta.and_then(|v| v.as_object()));
+    if let AsterSessionUpdate::ModelInfo {
+        session_total_tokens,
+        measured_output_tokens,
+        generation_duration_ms,
+    } = &update
+    {
+        let Some(child) = agent.child_view_for_live_update_mut(child_sid) else {
+            return false;
+        };
+        child.usage_meter.reconcile(
+            *session_total_tokens,
+            *measured_output_tokens,
+            *generation_duration_ms,
+        );
+        return true;
+    }
     if !parsed_meta.is_replay
         && let Some(language) = parsed_meta.output_language
         && let Some(child_view) = agent.child_view_for_live_update_mut(child_sid)
@@ -1524,8 +1557,9 @@ pub(super) fn handle_child_session_notification(
             {
                 info.attempt.tokens_used = Some(tokens_after);
                 if let Some(cw) = info.attempt.context_window_tokens.filter(|&cw| cw > 0) {
-                    info.attempt.context_usage_pct =
-                        Some(aster_token_estimation::usage_percentage_u8(tokens_after, cw));
+                    info.attempt.context_usage_pct = Some(
+                        aster_token_estimation::usage_percentage_u8(tokens_after, cw),
+                    );
                 }
             }
             changed
@@ -1865,17 +1899,15 @@ pub(super) fn apply_retry_state(
             session.set_retry_activity(None);
             session.rate_limited = *rate_limited;
             if *rate_limited {
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::RateLimitHit {
-                        model_id: session
-                            .models
-                            .current
-                            .as_ref()
-                            .map(|m| m.0.to_string())
-                            .unwrap_or_default(),
-                        attempts: *attempts,
-                    },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::RateLimitHit {
+                    model_id: session
+                        .models
+                        .current
+                        .as_ref()
+                        .map(|m| m.0.to_string())
+                        .unwrap_or_default(),
+                    attempts: *attempts,
+                });
             }
             is_credit_limit = super::super::dispatch::is_credit_limit_error(None, reason);
             let is_free_usage = *rate_limited

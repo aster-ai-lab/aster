@@ -638,17 +638,6 @@ impl crate::agent::TurnEngine {
         // not mutate the live state until summary generation succeeds. A
         // provider failure or timeout must never turn an in-memory failure
         // into irreversible loss of tool evidence.
-        let (compaction_input, pruned_tool_outputs) = match crate::compaction::prune_tool_outputs(
-            &state.messages,
-            compaction_budget.target_context_tokens,
-        ) {
-            Some(pruned) => (pruned, true),
-            None => (state.messages.clone(), false),
-        };
-        if pruned_tool_outputs {
-            tracing::info!("Tool output pruning prepared for compaction");
-        }
-
         let provider_timeout_ms = self
             .config
             .llm_api_timeout_ms
@@ -667,6 +656,7 @@ impl crate::agent::TurnEngine {
         }
         let compaction_client =
             self.scoped_llm_client_for_parts(session_id, event_tx, cancel_token);
+        let artifacts = self.tool_executor.model_readable_artifact_store();
         let compact_result = tokio::select! {
             _ = cancel_token.cancelled() => {
                 tracing::warn!("Auto-compact cancelled before summary generation completed");
@@ -674,14 +664,21 @@ impl crate::agent::TurnEngine {
             }
             result = tokio::time::timeout(
                 Duration::from_millis(timeout_ms),
-                crate::compaction::compact_messages(
-                    session_id.unwrap_or(""),
-                    &compaction_input,
-                    &compaction_client,
-                    compaction_budget,
-                    None,
-                    self.config.durable_source.as_ref(),
-                ),
+                async {
+                    let original = crate::compaction::CompactionSource::from_messages(
+                        artifacts.as_ref(),
+                        &state.messages,
+                    ).await?;
+                    crate::compaction::compact_messages(
+                        session_id.unwrap_or(""),
+                        &state.messages,
+                        &compaction_client,
+                        compaction_budget,
+                        None,
+                        self.config.durable_source.as_ref(),
+                        original,
+                    ).await
+                },
             ) => {
                 match result {
                     Ok(Ok(compacted)) => compacted,

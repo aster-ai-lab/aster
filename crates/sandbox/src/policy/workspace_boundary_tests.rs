@@ -35,7 +35,9 @@ fn snapshot_preserves_nested_credentials_package_aliases_and_control_write_excep
     for control in [".git", ".aster", ".agents"] {
         assert!(snapshot.deny_write.contains(&root.join(control)));
     }
-    assert!(snapshot.write_exceptions.contains(&root.join(".aster/loops")));
+    assert!(snapshot
+        .write_exceptions
+        .contains(&root.join(".aster/loops")));
     assert!(!snapshot
         .deny_read
         .iter()

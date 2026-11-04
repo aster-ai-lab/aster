@@ -21,11 +21,7 @@ impl ProcessLimits {
     }
 
     pub(crate) fn log(&self) {
-        aster_telemetry::unified_log::info(
-            "process resource limits",
-            None,
-            Some(self.to_json()),
-        );
+        aster_telemetry::unified_log::info("process resource limits", None, Some(self.to_json()));
     }
 
     fn to_json(&self) -> serde_json::Value {

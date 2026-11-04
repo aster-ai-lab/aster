@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 
 const EVENT_LIMIT: usize = 64 * 1024;
 
+#[path = "usage_messages.rs"]
+mod messages;
+
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum State {
@@ -40,6 +43,7 @@ pub struct Counts {
     pub completion_tokens: u64,
     pub total_tokens: u64,
     pub cache_read_tokens: Option<u64>,
+    pub cache_write_tokens: Option<u64>,
     pub cache_miss_tokens: Option<u64>,
     pub reasoning_tokens: Option<u64>,
 }
@@ -49,6 +53,8 @@ pub struct Observation {
     pub http_status: Option<u16>,
     pub state: State,
     pub usage: Option<Counts>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stop_reason: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -134,12 +140,20 @@ fn counts(bytes: &[u8]) -> Result<Option<Counts>, ()> {
         completion_tokens: usage.completion_tokens,
         total_tokens: usage.total_tokens,
         cache_read_tokens,
+        cache_write_tokens: None,
         cache_miss_tokens: miss,
         reasoning_tokens,
     }))
 }
 
 impl Observation {
+    pub fn native_json(protocol: super::Protocol, status: u16, bytes: &[u8]) -> Self {
+        match protocol {
+            super::Protocol::Openai => Self::json(status, bytes),
+            super::Protocol::Anthropic => messages::json(status, bytes),
+        }
+    }
+
     pub fn json(status: u16, bytes: &[u8]) -> Self {
         let (state, usage) = match counts(bytes) {
             Ok(Some(usage)) => (State::Present, Some(usage)),
@@ -150,6 +164,7 @@ impl Observation {
             http_status: Some(status),
             state,
             usage,
+            stop_reason: None,
         }
     }
 }
@@ -157,6 +172,8 @@ impl Observation {
 // This bounded observer never changes transport bytes or repairs a provider frame.
 #[derive(Default)]
 pub struct Sse {
+    protocol: super::Protocol,
+    messages: messages::Stream,
     line: Vec<u8>,
     event: Vec<u8>,
     usage: Option<Counts>,
@@ -165,6 +182,13 @@ pub struct Sse {
 }
 
 impl Sse {
+    pub fn for_protocol(protocol: super::Protocol) -> Self {
+        Self {
+            protocol,
+            ..Self::default()
+        }
+    }
+
     pub fn feed(&mut self, bytes: &[u8]) {
         if self.invalid {
             return;
@@ -199,6 +223,11 @@ impl Sse {
             let data = self.event.trim_ascii();
             if self.done {
                 self.invalid = true;
+            } else if self.protocol == super::Protocol::Anthropic {
+                match self.messages.observe(data) {
+                    Ok(done) => self.done = done,
+                    Err(()) => self.invalid = true,
+                }
             } else if data == b"[DONE]" {
                 self.done = true;
             } else {
@@ -234,7 +263,13 @@ impl Sse {
         }
     }
 
-    pub fn finish(self, status: u16) -> Observation {
+    pub fn finish(mut self, status: u16) -> Observation {
+        if self.protocol == super::Protocol::Anthropic {
+            match self.messages.counts() {
+                Ok(usage) => self.usage = usage,
+                Err(()) => self.invalid = true,
+            }
+        }
         let state = if self.invalid {
             State::Invalid
         } else if !self.done || !self.line.is_empty() || !self.event.is_empty() {
@@ -249,6 +284,11 @@ impl Sse {
             state,
             usage: if state == State::Present {
                 self.usage
+            } else {
+                None
+            },
+            stop_reason: if matches!(state, State::Present | State::Missing) {
+                self.messages.stop_reason
             } else {
                 None
             },

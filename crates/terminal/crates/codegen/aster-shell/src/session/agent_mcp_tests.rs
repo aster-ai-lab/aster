@@ -1,6 +1,6 @@
+use agent_client_protocol as acp;
 use aster_agent::config::{AgentDefinition, AgentScope, McpServerRef};
 use aster_tools::types::compat::CompatConfig;
-use agent_client_protocol as acp;
 
 use super::{
     RematerializeParams, apply_agent_mcp_overlay, materialize_agent_mcp_servers,

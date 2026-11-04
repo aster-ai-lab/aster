@@ -1,7 +1,9 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use aster_use_core::{PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScopeKind, PluginSurfaceRef};
+use aster_use_core::{
+    PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScopeKind, PluginSurfaceRef,
+};
 use aster_use_extension::{
     load_okf_bundle_files, ExtensionLifecycleIdentity, ExtensionLifecyclePackage,
 };
@@ -48,7 +50,9 @@ async fn restore_plan_binds_backup_live_database_and_complete_authority() {
 #[tokio::test]
 async fn restore_plan_recovers_missing_binding_from_independent_authority() {
     let missing_binding = RestoreFixture::without_binding().await;
-    let backup = missing_binding.root.join("missing-binding.aster-okf-backup");
+    let backup = missing_binding
+        .root
+        .join("missing-binding.aster-okf-backup");
     missing_binding
         .adapter
         .backup(&missing_binding.scope, &backup)

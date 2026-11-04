@@ -3136,6 +3136,69 @@ mod extra_llm_tests2 {
         assert_eq!(converted[1]["role"], "assistant");
         assert_eq!(converted[2]["role"], "user");
     }
+
+    #[tokio::test]
+    async fn native_stream_usage_keeps_start_cache_and_final_input_corrections() {
+        let cases = [
+            (
+                serde_json::json!({"input_tokens":0,"output_tokens":0}),
+                serde_json::json!({"input_tokens":123,"output_tokens":7,"cache_read_input_tokens":9,"cache_creation_input_tokens":11}),
+                (143, 150, Some(9), Some(11)),
+            ),
+            (
+                serde_json::json!({"input_tokens":100,"output_tokens":0,"cache_read_input_tokens":9,"cache_creation_input_tokens":11}),
+                serde_json::json!({"output_tokens":7}),
+                (120, 127, Some(9), Some(11)),
+            ),
+            (
+                serde_json::json!({"input_tokens":100,"output_tokens":0,"cache_read_input_tokens":9,"cache_creation_input_tokens":11}),
+                serde_json::json!({"input_tokens":0,"output_tokens":7,"cache_read_input_tokens":0,"cache_creation_input_tokens":0}),
+                (0, 7, Some(0), Some(0)),
+            ),
+        ];
+        for (start, end, expected) in cases {
+            let events = [
+                serde_json::json!({"type":"message_start","message":{"id":"fixture","type":"message","model":"fixture","usage":start}}),
+                serde_json::json!({"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ok"}}),
+                serde_json::json!({"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":end}),
+                serde_json::json!({"type":"message_stop"}),
+            ];
+            let chunks = events
+                .into_iter()
+                .map(|event| Bytes::from(format!("data: {event}\n\n")))
+                .collect();
+            let client = AnthropicClient::new("synthetic-key".into(), "fixture".into())
+                .with_http_client(Arc::new(MockStreamingHttpClient { chunks }));
+            let mut rx = client
+                .complete_streaming(
+                    &[Message::user("fixture")],
+                    None,
+                    &[],
+                    CancellationToken::new(),
+                )
+                .await
+                .unwrap();
+            let mut done = None;
+            while let Some(event) = rx.recv().await {
+                if let StreamEvent::Done(response) = event {
+                    done = Some(response);
+                }
+            }
+            let response = done.expect("actual Messages stream completion");
+            assert_eq!(response.text(), "ok");
+            let usage = response.usage;
+            assert_eq!(
+                (
+                    usage.prompt_tokens,
+                    usage.total_tokens,
+                    usage.cache_read_tokens,
+                    usage.cache_write_tokens
+                ),
+                expected
+            );
+            assert_eq!(usage.completion_tokens, 7);
+        }
+    }
 }
 #[cfg(test)]
 mod extra_llm_tests3 {

@@ -210,9 +210,13 @@ async fn answer_lists_drafts_and_refuses_an_unknown_method() {
         Some(1)
     );
 
-    let unknown = answer(&drafts_request("aster/feedback/drafts/rename"), store, false)
-        .await
-        .expect_err("an unknown drafts method is refused");
+    let unknown = answer(
+        &drafts_request("aster/feedback/drafts/rename"),
+        store,
+        false,
+    )
+    .await
+    .expect_err("an unknown drafts method is refused");
     assert_eq!(unknown.code, acp::Error::method_not_found().code);
 }
 

@@ -15,9 +15,9 @@
 //! the vendor wire field stays inside that module. Optional-auth and MCP
 //! codecs stay off this shell.
 
-mod aster;
 mod aliyun;
 mod anysearch;
+mod aster;
 mod bocha;
 mod builtin;
 mod credential;
@@ -34,9 +34,9 @@ mod tavily;
 mod tencent;
 mod tinyfish;
 
-pub use aster::{AsterAuth, AsterConfig, AsterProvider};
 pub use aliyun::{AliyunConfig, AliyunEngineType, AliyunProvider};
 pub use anysearch::{AnySearchConfig, AnySearchDomain, AnySearchProvider, AnySearchSubDomain};
+pub use aster::{AsterAuth, AsterConfig, AsterProvider};
 pub use bocha::{BochaConfig, BochaProvider};
 pub use builtin::BuiltinProvider;
 pub use credential::{CredentialSource, ProviderAuthentication, ProviderReadiness};

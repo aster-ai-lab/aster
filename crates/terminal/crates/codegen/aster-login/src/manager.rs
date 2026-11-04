@@ -1131,11 +1131,7 @@ impl AuthManager {
             DiskAuthState::FileMissing
             | DiskAuthState::EntryMissing
             | DiskAuthState::Unreadable => {
-                aster_telemetry::unified_log::warn(
-                    "auth disk state: entry lost",
-                    None,
-                    Some(ctx),
-                );
+                aster_telemetry::unified_log::warn("auth disk state: entry lost", None, Some(ctx));
             }
         }
     }

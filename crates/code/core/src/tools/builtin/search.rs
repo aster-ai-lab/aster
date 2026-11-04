@@ -155,11 +155,10 @@ impl SearchTool {
     }
 
     fn mode_schema_description(&self) -> String {
-        let listed = describe_modes(&self.modes());
         if self.modes().contains(&"bm25") {
-            format!("{listed} A bm25 request may use the durable local index automatically.")
+            "Select a listed mode; bm25 may automatically use the durable local index.".into()
         } else {
-            listed
+            "Select a listed mode.".into()
         }
     }
 
@@ -343,25 +342,25 @@ impl Tool for SearchTool {
                 },
                 "path": {
                     "type": "string",
-                    "description": "Optional. Workspace-relative directory or file to search, or an aster://tool-output/... artifact URI (grep mode only). Default: workspace root."
+                    "description": "Workspace-relative directory/file, or aster://tool-output/... URI (grep only); default workspace root."
                 },
                 "include": {
                     "type": "string",
-                    "description": "Optional. Glob pattern used to filter candidate files, for example '*.rs' or '*.{ts,tsx}'."
+                    "description": "Candidate-file glob, e.g. '*.rs' or '*.{ts,tsx}'."
                 },
                 "context": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Optional for grep/bm25. Context lines around a match. BM25 defaults to 2 and allows at most 8."
+                    "description": "grep/bm25 context lines; BM25 default 2, max 8."
                 },
                 "case_sensitive": {
                     "type": "boolean",
-                    "description": "Optional for grep. Whether matching is case-sensitive. Default: true."
+                    "description": "grep case sensitivity; default true."
                 },
                 "output_mode": {
                     "type": "string",
                     "enum": grep_output_modes,
-                    "description": "Optional for grep. content returns paginated matches with context (default); files_with_matches and count paginate files; summary returns totals."
+                    "description": "grep: content (default) pages matches with context; files_with_matches/count page files; summary returns totals."
                 },
                 "limit": {
                     "type": "integer",
@@ -371,12 +370,12 @@ impl Tool for SearchTool {
                 },
                 "cursor": {
                     "type": "string",
-                    "description": "Optional for glob and paginated grep. Copy the exact opaque cursor from the previous result."
+                    "description": "Exact prior opaque cursor for glob/paginated grep."
                 },
                 "sort": {
                     "type": "string",
                     "enum": ["path", "backend"],
-                    "description": "Optional for glob. backend (default) preserves backend order; path applies lexical ordering before pagination."
+                    "description": "glob: backend preserves backend order (default); path sorts lexically before paging."
                 }
             },
             "required": ["mode", "query"],
@@ -435,7 +434,13 @@ async fn widen_literal_grep(
     let Some(query) = args.get("query").and_then(serde_json::Value::as_str) else {
         return exact;
     };
-    if !exact.success
+    // Fuzzy hits are rendered lines; they cannot honor a count or file list.
+    let content_mode = args
+        .get("output_mode")
+        .and_then(serde_json::Value::as_str)
+        .is_none_or(|mode| mode == "content");
+    if !content_mode
+        || !exact.success
         || !super::search_fallback::is_literal_query(query)
         || !super::search_fallback::grep_is_empty(&exact.content, matching_lines(&exact))
     {
@@ -543,11 +548,22 @@ fn artifact_grep(
     else {
         return ToolOutput::error("query parameter is required");
     };
-    let count = |name: &str, default: usize| {
-        args.get(name)
-            .and_then(serde_json::Value::as_u64)
-            .and_then(|value| usize::try_from(value).ok())
-            .unwrap_or(default)
+    let output_mode = match super::grep::GrepOutputMode::parse(args) {
+        Ok(mode) => mode,
+        Err(error) => return ToolOutput::error(error),
+    };
+    if !output_mode.paginated() && super::grep::has_non_neutral_page_controls(args) {
+        return ToolOutput::error(
+            "non-default limit and non-empty cursor are supported only with output_mode='content', 'files_with_matches' or 'count'",
+        );
+    }
+    let page = match crate::tools::pagination::PageRequest::parse(
+        args,
+        crate::tools::pagination::DEFAULT_PAGE_LIMIT,
+        MAX_PAGE_LIMIT,
+    ) {
+        Ok(page) => page,
+        Err(error) => return ToolOutput::error(error),
     };
     let case_insensitive = args
         .get("case_sensitive")
@@ -558,8 +574,12 @@ fn artifact_grep(
         uri,
         query,
         case_insensitive,
-        count("context", 0),
-        count("limit", crate::tools::artifact_view::DEFAULT_GREP_MATCHES),
+        args.get("context")
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|value| usize::try_from(value).ok())
+            .unwrap_or(0),
+        output_mode,
+        page,
     )
 }
 
@@ -599,10 +619,7 @@ fn query_schema_description(modes: &[&str]) -> String {
     if modes.is_empty() {
         return "Required. No search mode is available in this session.".to_string();
     }
-    format!(
-        "Required. Query text for the selected mode. Available modes: {}.",
-        modes.join(", ")
-    )
+    "Query for the selected mode.".into()
 }
 
 fn limit_schema_description(modes: &[&str]) -> String {
@@ -612,11 +629,11 @@ fn limit_schema_description(modes: &[&str]) -> String {
         .filter(|mode| matches!(*mode, "bm25" | "semantic" | "hybrid"))
         .collect::<Vec<_>>();
     if ranked.is_empty() {
-        return "Optional. Maximum matches with context for grep content, or files for glob/grep files_with_matches/count (default 200, maximum 1000). Not used by grep summary."
+        return "grep content matches with context, or glob/grep files/count files: default 200, max 1000. Unused by grep summary."
             .to_string();
     }
     format!(
-        "Optional. Maximum matches with context for grep content, or files for glob/grep files_with_matches/count (default 200, maximum 1000), or result count for {} (default 10, maximum 25). Not used by grep summary.",
+        "grep content matches with context, or glob/grep files/count files: default 200, max 1000; {} results: default 10, max 25. Unused by grep summary.",
         ranked.join("/")
     )
 }
@@ -644,6 +661,10 @@ fn with_search_mode(mut output: ToolOutput, mode: SearchMode) -> ToolOutput {
     }
     output
 }
+
+#[cfg(test)]
+#[path = "search_brace_tests.rs"]
+mod brace_tests;
 
 #[cfg(test)]
 mod tests {

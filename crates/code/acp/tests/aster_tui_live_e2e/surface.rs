@@ -87,7 +87,7 @@ pub(super) fn tour() {
     }
     for (command, needle) in [
         ("/doctor", "terminal"),
-        ("/goal status", "No durable goal is set."),
+        ("/goal status", "No goal is set."),
         ("/compact", "Nothing to compact yet."),
         ("/help", "Commands"),
         ("/settings", "Space toggle"),

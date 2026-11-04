@@ -40,8 +40,7 @@ fn followup_composer_pads_arrow_inside_fill_with_status_on_page() {
     let mut agent = test_fixtures::make_agent();
     // Session-bound so the follow-up composer (not welcome) paints.
     agent.session.session_id = Some(agent_client_protocol::SessionId::new("composer-layout"));
-    agent.session.models.current =
-        Some(agent_client_protocol::ModelId::new("kimi/K3.1 Pro"));
+    agent.session.models.current = Some(agent_client_protocol::ModelId::new("kimi/K3.1 Pro"));
     agent.session.yolo_mode = true;
 
     let buf = draw(&mut agent, 100, 36);
@@ -84,10 +83,7 @@ fn followup_composer_pads_arrow_inside_fill_with_status_on_page() {
         Some(theme.bg_light),
         "draft row must be elevated fill"
     );
-    assert!(
-        draft_y > 0,
-        "draft must sit below an inner top pad row"
-    );
+    assert!(draft_y > 0, "draft must sit below an inner top pad row");
     let top_pad = buf.cell((ta.x, draft_y - 1)).expect("top pad");
     if crate::glyphs::upper_half_block().is_some() {
         assert_eq!(top_pad.symbol(), "\u{2580}", "top pad is a half-block halo");

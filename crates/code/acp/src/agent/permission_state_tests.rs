@@ -266,14 +266,16 @@ async fn stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity() {
         *live.active_prompt_id.lock().unwrap() = Some("new-prompt".into());
         *live.turn_started.lock().unwrap() = Some(std::time::Instant::now());
     }
-    agent
+    let response = agent
         .finish_prompt(
             id.0.as_ref(),
             1,
+            Some("old-prompt"),
             Ok(acp::PromptResponse::new(acp::StopReason::EndTurn)),
         )
         .await
         .unwrap();
+    assert_eq!(response.meta.as_ref().unwrap()["promptId"], "old-prompt");
     let sessions = agent.sessions.lock().await;
     let live = sessions.get(id.0.as_ref()).unwrap();
     assert_eq!(

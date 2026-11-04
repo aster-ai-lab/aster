@@ -15,6 +15,7 @@ mod execution_availability;
 mod heredoc_approval;
 mod native_artifact_scope;
 mod novel_information;
+mod permission_diagnostics;
 mod pre_spawn;
 mod progress;
 mod readonly_effect;

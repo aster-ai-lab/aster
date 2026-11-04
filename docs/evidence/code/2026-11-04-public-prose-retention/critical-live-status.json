@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "docs/evidence/code/2026-11-02-summary-input-retention/live.py",
+    "public-prose-20261104-current-config-1",
+    "",
+    "docs/evidence/code/2026-11-02-summary-input-retention/public-prose-20261104-current-config-1-qualification-preregistration.json"
+  ],
+  "exitCode": 1,
+  "seconds": 1235.920438083,
+  "cohort": "independent8192-public-prose-retention",
+  "sourceHash": "3b78de62a5032c928ec4e58e9ce5a6aad16cb614"
+}

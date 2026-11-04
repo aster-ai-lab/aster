@@ -40,7 +40,10 @@ async fn event_to_cloudevent_preserves_the_envelope() {
         ce.extensions.get("astercategory"),
         Some(&serde_json::json!("market"))
     );
-    assert_eq!(ce.extensions.get("asterversion"), Some(&serde_json::json!(3)));
+    assert_eq!(
+        ce.extensions.get("asterversion"),
+        Some(&serde_json::json!(3))
+    );
 
     let _ = event.metadata; // metadata themselves are not required in CE form
 }

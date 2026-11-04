@@ -92,8 +92,9 @@ fn scanner_strips_escapes_and_records_link_columns() {
 
 #[test]
 fn link_on_the_second_line_is_measured_from_that_line() {
-    let text =
-        SanitizedText::new("first\nsee \x1b]8;;https://github.com/aster-ai-lab/aster\x07aster\x1b]8;;\x07");
+    let text = SanitizedText::new(
+        "first\nsee \x1b]8;;https://github.com/aster-ai-lab/aster\x07aster\x1b]8;;\x07",
+    );
     let Some(link) = text.links.first() else {
         panic!("expected a link: {:?}", text.links);
     };

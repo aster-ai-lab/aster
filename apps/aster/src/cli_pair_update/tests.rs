@@ -1,6 +1,24 @@
 use super::{Version, asset_name_for, channel_for, parse_manifest};
 
 #[test]
+fn download_progress_reports_bytes_and_never_invents_an_unknown_percentage() {
+    use std::time::Duration;
+    let mib = 1024 * 1024;
+    let known = super::render_download(84 * mib, Some(200 * mib), Duration::from_secs(10), 119);
+    assert!(known.starts_with("Downloading ["), "{known}");
+    assert!(known.contains("42%  84.0/200.0 MiB  8.4 MiB/s"), "{known}");
+    let unknown = super::render_download(84 * mib, None, Duration::from_secs(10), 119);
+    assert_eq!(unknown, "Downloading 84.0 MiB  8.4 MiB/s");
+    for total in [None, Some(0), Some(200 * mib)] {
+        for width in [0, 1, 10, 19, 39, 79, 119] {
+            let frame = super::render_download(84 * mib, total, Duration::ZERO, width);
+            assert!(frame.len() <= width, "{width}: {frame}");
+            assert!(!frame.contains(['\n', '\r', '\u{1b}']), "{frame}");
+        }
+    }
+}
+
+#[test]
 fn channel_manifest_reads_are_bounded_before_allocating_the_whole_input() {
     use std::io::{self, Read};
     let limit = super::MAX_MANIFEST as usize;

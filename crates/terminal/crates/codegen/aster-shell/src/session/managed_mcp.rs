@@ -18,10 +18,10 @@ pub use aster_shell_session_support::managed_mcp::*;
 
 use std::collections::HashMap;
 
+use agent_client_protocol as acp;
 use aster_workspace::permission::resolution::{
     McpBlockReason, McpSubject, McpVerdict, PolicySubjectOrigin,
 };
-use agent_client_protocol as acp;
 
 /// Vendor kill-switch attribution key: normalized URL for Http/Sse (a client re-forwards the same endpoint under any display name), name for Stdio.
 /// Only for [`admit_client_mcp_servers`]; merge/discovery maps key by name.

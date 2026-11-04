@@ -17,9 +17,10 @@ const DEFAULT_BATCH_READ_OUTPUT_BYTES: usize = 64 * 1_024;
 const MAX_BATCH_READ_OUTPUT_BYTES: usize = MAX_OUTPUT_SIZE - (4 * 1_024);
 pub(crate) const MAX_BATCH_READ_PATH_BYTES: usize = 4 * 1_024;
 
-/// Show one file line from `byte_offset`. A line past [`MAX_LINE_LENGTH`]
-/// keeps a prefix and names the next byte index, so a reader can continue
-/// the same line instead of treating the prefix as the whole line.
+/// Show one file line, optionally skipping a leading byte index.
+/// A line past [`MAX_LINE_LENGTH`] keeps a prefix and names the next byte
+/// index, so a reader can continue the same line instead of treating the
+/// prefix as the whole line.
 pub(crate) fn display_read_line(line: &str, byte_offset: usize) -> String {
     let start = line.floor_char_boundary(byte_offset.min(line.len()));
     let rest = &line[start..];
@@ -42,14 +43,34 @@ pub(crate) struct NumberedPage {
     pub returned: usize,
 }
 
+/// Reject a `byte_offset` that does not address the first returned line.
+/// The offset applies once, to the start of the returned stream.
+pub(crate) fn validate_byte_offset(
+    first_line: Option<&str>,
+    byte_offset: usize,
+) -> Result<(), String> {
+    let Some(line) = first_line else {
+        return Ok(());
+    };
+    if byte_offset > line.len() || !line.is_char_boundary(byte_offset) {
+        return Err(format!(
+            "byte_offset {byte_offset} is outside the first returned line ({} bytes) or not on a UTF-8 boundary",
+            line.len()
+        ));
+    }
+    Ok(())
+}
+
 /// Number lines from `offset` until the next line would leave the page
 /// budget. The first line is always returned so a page always advances.
+/// `byte_offset` skips bytes of the first line only; later lines are whole.
 pub(crate) fn numbered_page<S: AsRef<str>>(
     lines: &[S],
     offset: usize,
     byte_offset: usize,
     budget_bytes: usize,
-) -> NumberedPage {
+) -> Result<NumberedPage, String> {
+    validate_byte_offset(lines.first().map(AsRef::as_ref), byte_offset)?;
     let budget = budget_bytes.saturating_sub(PAGE_CONTINUATION_RESERVE_BYTES);
     let mut text = String::new();
     let mut returned = 0;
@@ -57,7 +78,7 @@ pub(crate) fn numbered_page<S: AsRef<str>>(
         let entry = format!(
             "{:>6}\t{}\n",
             offset + returned + 1,
-            display_read_line(line.as_ref(), byte_offset)
+            display_read_line(line.as_ref(), if returned == 0 { byte_offset } else { 0 })
         );
         if returned > 0 && text.len() + entry.len() > budget {
             break;
@@ -65,7 +86,7 @@ pub(crate) fn numbered_page<S: AsRef<str>>(
         text.push_str(&entry);
         returned += 1;
     }
-    NumberedPage { text, returned }
+    Ok(NumberedPage { text, returned })
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -100,29 +121,29 @@ fn read_properties() -> serde_json::Value {
     serde_json::json!({
         "file_path": {
             "type": "string",
-            "description": "Path to one file, absolute or relative to the workspace, or an aster://tool-output/... artifact URI named by a truncated tool result. Use exactly one of file_path or files."
+            "description": "Absolute/workspace-relative file or aster://tool-output/... URI from a tool result. Choose file_path or files."
         },
         "offset": {
             "type": "integer",
             "minimum": 0,
-            "description": "Optional. Line number to start reading from. 0-indexed. Default: 0."
+            "description": "0-based start line; default 0."
         },
         "byte_offset": {
             "type": "integer",
             "minimum": 0,
-            "description": "Optional. Byte index within each returned line. Use the byte_offset named by a truncated line to read the rest of that line. Default: 0."
+            "description": "Byte index in the first returned line only (default 0, at most its length); later lines are whole. Resume with the returned line offset and byte_offset."
         },
         "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": MAX_READ_LINES,
-            "description": "Optional. Maximum number of lines to read. Default and maximum: 2000."
+            "description": "Line limit; default/max 2000."
         },
         "files": {
             "type": "array",
             "minItems": 1,
             "maxItems": MAX_BATCH_READ_FILES,
-            "description": "Read several independent text ranges in request order under one shared output budget. A failed member is reported in its own segment without discarding successful members.",
+            "description": "Text ranges in request order, sharing one output budget. Per-member errors preserve successful members.",
             "items": {
                 "type": "object",
                 "additionalProperties": false,
@@ -131,23 +152,23 @@ fn read_properties() -> serde_json::Value {
                         "type": "string",
                         "minLength": 1,
                         "maxLength": MAX_BATCH_READ_PATH_BYTES,
-                        "description": "Path to a text file, absolute or relative to the workspace."
+                        "description": "Absolute/workspace-relative text file."
                     },
                     "offset": {
                         "type": "integer",
                         "minimum": 0,
-                        "description": "Optional 0-based starting line. Default: 0."
+                        "description": "0-based start line; default 0."
                     },
                     "byte_offset": {
                         "type": "integer",
                         "minimum": 0,
-                        "description": "Optional byte index within each returned line. Default: 0."
+                        "description": "Byte index in this entry's first returned line; default 0, at most its length."
                     },
                     "limit": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": MAX_READ_LINES,
-                        "description": "Optional maximum lines for this file. Default and maximum: 2000."
+                        "description": "Line limit for this file; default/max 2000."
                     }
                 },
                 "required": ["path"]
@@ -157,7 +178,7 @@ fn read_properties() -> serde_json::Value {
             "type": "integer",
             "minimum": MIN_BATCH_READ_OUTPUT_BYTES,
             "maximum": MAX_BATCH_READ_OUTPUT_BYTES,
-            "description": "Optional shared byte budget for a files read. Default: 65536; maximum: 98304. The returned continuation is included inside this budget."
+            "description": "Shared batch byte budget, including continuation; default 65536, max 98304."
         }
     })
 }
@@ -202,7 +223,7 @@ impl Tool for ReadTool {
     }
 
     fn description(&self) -> &str {
-        "Read one text or image file, or pack 1-32 text files into one bounded response. Returns line-numbered text and exact continuation arguments when more content remains. A line longer than 2000 bytes is cut. The result names the next byte_offset so the rest of that line can be read."
+        "Read text/images or batch 1-32 text files under one output budget. Returns line numbers and exact continuations. Lines over 2000 bytes are cut; use the returned byte_offset to resume."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -287,10 +308,9 @@ impl Tool for ReadTool {
         {
             Ok(range) => range,
             Err(e) => {
-                return Ok(ToolOutput::error(format!(
-                    "Failed to read file {}: {}",
-                    ctx.workspace_services.display_path(&workspace_path),
-                    e
+                return Ok(ToolOutput::error(format_read_file_error(
+                    &ctx.workspace_services.display_path(&workspace_path),
+                    &e.to_string(),
                 )));
             }
         };
@@ -304,7 +324,11 @@ impl Tool for ReadTool {
                 offset, total_lines
             )));
         }
-        let page = numbered_page(&range.lines, offset, byte_offset, ctx.result_budget_bytes());
+        let page = match numbered_page(&range.lines, offset, byte_offset, ctx.result_budget_bytes())
+        {
+            Ok(page) => page,
+            Err(error) => return Ok(ToolOutput::error(error)),
+        };
         let budget_cut = page.returned < range.lines.len();
         let final_line_ending = final_line_ending.filter(|_| !budget_cut);
         let next_offset = if budget_cut {
@@ -482,7 +506,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                     &mut progress,
                     index,
                     segment,
-                    total,
+                    &entries,
                     max_output_bytes,
                 ) {
                     if segments.is_empty() {
@@ -497,14 +521,16 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 display_path,
                 error,
             } => {
-                let segment =
-                    format!("=== {display_path} ===\nFailed to read file {display_path}: {error}");
+                let segment = format!(
+                    "=== {display_path} ===\n{}",
+                    format_read_file_error(&display_path, &error)
+                );
                 if !accept_batch_message(
                     &mut segments,
                     &mut progress,
                     index,
                     segment,
-                    total,
+                    &entries,
                     max_output_bytes,
                 ) {
                     if segments.is_empty() {
@@ -532,7 +558,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 &mut progress,
                 index,
                 segment,
-                total,
+                &entries,
                 max_output_bytes,
             ) {
                 if segments.is_empty() {
@@ -554,7 +580,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 &mut progress,
                 index,
                 segment,
-                total,
+                &entries,
                 max_output_bytes,
             ) {
                 if segments.is_empty() {
@@ -567,15 +593,41 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             continue;
         }
 
+        if let Err(error) =
+            validate_byte_offset(range.lines.first().map(String::as_str), entry.byte_offset)
+        {
+            let segment = format!("=== {display_path} ===\n{error}");
+            if !accept_batch_message(
+                &mut segments,
+                &mut progress,
+                index,
+                segment,
+                &entries,
+                max_output_bytes,
+            ) {
+                if segments.is_empty() {
+                    return Ok(batch_budget_too_small(max_output_bytes));
+                }
+                break;
+            }
+            failed_files += 1;
+            continue;
+        }
+
         let lines = range
             .lines
             .iter()
             .enumerate()
             .map(|(line_index, line)| {
+                let byte_offset = if line_index == 0 {
+                    entry.byte_offset
+                } else {
+                    0
+                };
                 let mut text = format!(
                     "{:>6}\t{}",
                     entry.offset + line_index + 1,
-                    display_read_line(line, entry.byte_offset)
+                    display_read_line(line, byte_offset)
                 );
                 if line_index + 1 == range.lines.len() {
                     if let Some(ending) = final_line_ending {
@@ -594,7 +646,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             &range,
             &display_path,
             &lines,
-            total,
+            &entries,
             max_output_bytes,
         );
         if shown == 0 {
@@ -614,9 +666,10 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
         }
     }
 
-    let content = render_batch_response(&segments, &progress, total);
+    let content = render_batch_response(&segments, &progress, &entries);
     debug_assert!(content.len() <= max_output_bytes);
     let continuation = batch_continuation(&progress);
+    let counts = BatchCounts::of(&progress, &entries);
     let truncated = !continuation.is_empty();
     let metadata = serde_json::json!({
         "source_anchors": source_anchors,
@@ -631,7 +684,8 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             "requested_files": total,
             "successful_files": successful_files,
             "failed_files": failed_files,
-            "completed_files": total.saturating_sub(continuation.len()),
+            "completed_files": counts.complete,
+            "partial_files": counts.partial,
             "returned_lines": returned_lines,
             "max_output_bytes": max_output_bytes,
             "output_bytes": content.len(),
@@ -682,12 +736,12 @@ fn accept_batch_message(
     progress: &mut [Option<BatchReadEntry>],
     index: usize,
     segment: String,
-    total: usize,
+    entries: &[BatchReadEntry],
     budget: usize,
 ) -> bool {
     let mut proposed = progress.to_vec();
     proposed[index] = None;
-    if !batch_candidate_fits(segments, &segment, &proposed, total, budget) {
+    if !batch_candidate_fits(segments, &segment, &proposed, entries, budget) {
         return false;
     }
     segments.push(segment);
@@ -704,14 +758,14 @@ fn largest_batch_prefix(
     range: &WorkspaceTextRange,
     display_path: &str,
     lines: &[String],
-    total: usize,
+    entries: &[BatchReadEntry],
     budget: usize,
 ) -> usize {
     let fits = |shown: usize| {
         let mut proposed = progress.to_vec();
         proposed[index] = batch_progress_after(entry, range, shown);
         let segment = batch_content_segment(display_path, &lines[..shown]);
-        batch_candidate_fits(segments, &segment, &proposed, total, budget)
+        batch_candidate_fits(segments, &segment, &proposed, entries, budget)
     };
 
     if fits(lines.len()) {
@@ -747,7 +801,7 @@ fn batch_progress_after(
         return Some(BatchReadEntry {
             path: entry.path.clone(),
             offset,
-            byte_offset: entry.byte_offset,
+            byte_offset: 0,
             limit: entry.limit.map(|limit| limit.saturating_sub(shown)),
         });
     }
@@ -758,7 +812,7 @@ fn batch_progress_after(
     range.next_offset.map(|next_offset| BatchReadEntry {
         path: entry.path.clone(),
         offset: next_offset,
-        byte_offset: entry.byte_offset,
+        byte_offset: 0,
         limit: None,
     })
 }
@@ -771,28 +825,30 @@ fn batch_candidate_fits(
     segments: &[String],
     segment: &str,
     progress: &[Option<BatchReadEntry>],
-    total: usize,
+    entries: &[BatchReadEntry],
     budget: usize,
 ) -> bool {
     let mut proposed = segments.to_vec();
     proposed.push(segment.to_string());
-    render_batch_response(&proposed, progress, total).len() <= budget
+    render_batch_response(&proposed, progress, entries).len() <= budget
 }
 
 fn render_batch_response(
     segments: &[String],
     progress: &[Option<BatchReadEntry>],
-    total: usize,
+    entries: &[BatchReadEntry],
 ) -> String {
     let mut output = segments.join("\n\n");
     let continuation = batch_continuation(progress);
+    let total = entries.len();
     let footer = if continuation.is_empty() {
         format!("(Complete: all {total} file(s) processed.)")
     } else {
         let encoded = serde_json::to_string(&continuation).unwrap_or_else(|_| "[]".to_string());
+        let counts = BatchCounts::of(progress, entries);
         format!(
-            "(Partial: {} of {total} file(s) processed. Continue with files={encoded}.)",
-            total.saturating_sub(continuation.len())
+            "(Partial: {} of {total} file(s) complete, {} partially read, {} not started. Continue with files={encoded}.)",
+            counts.complete, counts.partial, counts.not_started
         )
     };
     if !output.is_empty() {
@@ -800,6 +856,32 @@ fn render_batch_response(
     }
     output.push_str(&footer);
     output
+}
+
+/// A continuation entry that moved past its requested offset was read in part;
+/// one still at its requested offset was never reached.
+struct BatchCounts {
+    complete: usize,
+    partial: usize,
+    not_started: usize,
+}
+
+impl BatchCounts {
+    fn of(progress: &[Option<BatchReadEntry>], entries: &[BatchReadEntry]) -> Self {
+        let mut counts = Self {
+            complete: 0,
+            partial: 0,
+            not_started: 0,
+        };
+        for (remaining, requested) in progress.iter().zip(entries) {
+            match remaining {
+                None => counts.complete += 1,
+                Some(remaining) if remaining.offset != requested.offset => counts.partial += 1,
+                Some(_) => counts.not_started += 1,
+            }
+        }
+        counts
+    }
 }
 
 fn batch_continuation(progress: &[Option<BatchReadEntry>]) -> Vec<BatchReadEntry> {
@@ -920,6 +1002,25 @@ fn display_range(mut range: WorkspaceTextRange) -> (WorkspaceTextRange, Option<S
         }
     }
     (range, ending)
+}
+
+/// Drop an inner `Failed to read file …: ` so the tool owns that prefix once.
+fn read_error_detail(error: &str) -> &str {
+    const MARKER: &str = "Failed to read file ";
+    let Some(rest) = error.strip_prefix(MARKER) else {
+        return error;
+    };
+    match rest.split_once(": ") {
+        Some((_, detail)) if !detail.is_empty() => detail,
+        _ => error,
+    }
+}
+
+fn format_read_file_error(display_path: &str, error: &str) -> String {
+    format!(
+        "Failed to read file {display_path}: {}",
+        read_error_detail(error)
+    )
 }
 
 async fn read_range(
@@ -1513,5 +1614,79 @@ mod tests {
         assert!(rest.content.contains('频'));
         assert!(rest.content.contains(&"z".repeat(20)));
         assert!(!rest.content.contains("line truncated"));
+    }
+
+    async fn read_text(content: &str, args: serde_json::Value) -> ToolOutput {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(temp.path().join("f.txt"), content).unwrap();
+        let ctx = ToolContext::new(temp.path().to_path_buf());
+        let mut args = args;
+        args["file_path"] = "f.txt".into();
+        ReadTool.execute(&args, &ctx).await.unwrap()
+    }
+
+    const LF_EOL: &str = "[End of file: final line ending is LF.]\n";
+    const ABSENT_EOL: &str = "[End of file: no final newline.]\n";
+
+    #[tokio::test]
+    async fn byte_offset_applies_once_to_the_first_line() {
+        let result = read_text("aa\nbb\ncc\ndd\n", serde_json::json!({"byte_offset": 1})).await;
+        assert!(result.success, "{}", result.content);
+        assert_eq!(
+            result.content,
+            format!("     1\ta\n     2\tbb\n     3\tcc\n     4\tdd\n{LF_EOL}")
+        );
+    }
+
+    #[tokio::test]
+    async fn byte_offset_past_the_first_line_is_an_error() {
+        let result = read_text("aa\nbb\ncc", serde_json::json!({"byte_offset": 3})).await;
+        assert!(!result.success);
+        assert!(result.content.contains("byte_offset 3 is outside"));
+        assert!(!result.content.contains("bb"));
+
+        let at_end = read_text("aa\nbb", serde_json::json!({"byte_offset": 2})).await;
+        assert!(at_end.success, "{}", at_end.content);
+        assert_eq!(
+            at_end.content,
+            format!("     1\t\n     2\tbb\n{ABSENT_EOL}")
+        );
+
+        let mid_char = read_text("频\nbb", serde_json::json!({"byte_offset": 1})).await;
+        assert!(!mid_char.success);
+        assert!(mid_char.content.contains("UTF-8 boundary"));
+    }
+
+    #[tokio::test]
+    async fn resuming_a_truncated_line_keeps_following_lines_intact() {
+        let long = format!("{}{}", "a".repeat(MAX_LINE_LENGTH), "TAIL");
+        let content = format!("{long}\nsecond\nthird\n");
+        let first = read_text(&content, serde_json::json!({})).await;
+        assert!(first.success, "{}", first.content);
+        assert!(first.content.contains(&format!(
+            "[line truncated, 4 bytes omitted] continue with byte_offset={MAX_LINE_LENGTH}"
+        )));
+
+        let resumed = read_text(
+            &content,
+            serde_json::json!({"byte_offset": MAX_LINE_LENGTH}),
+        )
+        .await;
+        assert!(resumed.success, "{}", resumed.content);
+        assert_eq!(
+            resumed.content,
+            format!("     1\tTAIL\n     2\tsecond\n     3\tthird\n{LF_EOL}")
+        );
+    }
+
+    #[tokio::test]
+    async fn byte_offset_applies_to_the_line_named_by_offset() {
+        let result = read_text(
+            "aa\nbbb\ncc\n",
+            serde_json::json!({"offset": 1, "byte_offset": 2}),
+        )
+        .await;
+        assert!(result.success, "{}", result.content);
+        assert_eq!(result.content, format!("     2\tb\n     3\tcc\n{LF_EOL}"));
     }
 }

@@ -96,9 +96,9 @@ fn parse_command(args: Vec<OsString>) -> Result<Command, String> {
             entrypoint: PathBuf::from(&args[1]),
             output: PathBuf::from(&args[3]),
         }),
-        "compile" => {
-            Err("usage: aster-flow-native-compiler compile <entrypoint.ts> -o <artifact>".to_string())
-        }
+        "compile" => Err(
+            "usage: aster-flow-native-compiler compile <entrypoint.ts> -o <artifact>".to_string(),
+        ),
         "dependencies" => {
             Err("usage: aster-flow-native-compiler dependencies <entrypoint.ts>".to_string())
         }

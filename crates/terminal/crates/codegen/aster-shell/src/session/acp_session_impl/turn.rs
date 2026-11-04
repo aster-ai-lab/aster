@@ -8,9 +8,7 @@ use aster_tools::implementations::grok_build::task::types::{
 use aster_tools::types::tool::ToolKind;
 use tracing::Instrument;
 static TURNS_ACTIVE: aster_telemetry::activity::ActivityGauge =
-    aster_telemetry::activity::ActivityGauge::work(
-        aster_telemetry::activity::TURNS_ACTIVE_KEY,
-    );
+    aster_telemetry::activity::ActivityGauge::work(aster_telemetry::activity::TURNS_ACTIVE_KEY);
 /// Synthetic tool for schema-constrained final answers on backends without native
 /// output constraints (Messages API); intercepted in the loop, never really executed.
 const STRUCTURED_OUTPUT_TOOL: &str = "StructuredOutput";
@@ -1457,13 +1455,15 @@ impl SessionActor {
         );
         let bridge_outcome = turn_result_to_hook_outcome(&result);
         self.observability_bridge
-            .emit(aster_tool_protocol::session_event::SessionEvent::TurnEnded {
-                turn_number: current_prompt_index as u64,
-                outcome: bridge_outcome,
-                duration_ms: turn_duration_ms,
-                tool_call_count: turn_tool_count,
-                model_id: turn_model_id.clone(),
-            })
+            .emit(
+                aster_tool_protocol::session_event::SessionEvent::TurnEnded {
+                    turn_number: current_prompt_index as u64,
+                    outcome: bridge_outcome,
+                    duration_ms: turn_duration_ms,
+                    tool_call_count: turn_tool_count,
+                    model_id: turn_model_id.clone(),
+                },
+            )
             .await;
         if aster_telemetry::external::is_active() {
             let committed = self
@@ -2284,12 +2284,11 @@ impl SessionActor {
             raw_query
         };
         let inject_start = std::time::Instant::now();
-        let inject_search_span =
-            aster_telemetry::region::Region::from_span(tracing::info_span!(
-                "memory.inject_search",
-                result_count = tracing::field::Empty,
-                elapsed_ms = tracing::field::Empty,
-            ));
+        let inject_search_span = aster_telemetry::region::Region::from_span(tracing::info_span!(
+            "memory.inject_search",
+            result_count = tracing::field::Empty,
+            elapsed_ms = tracing::field::Empty,
+        ));
         let search_result = backend.search(&query, 6, configured_min_score).await;
         inject_search_span
             .span()
@@ -3470,8 +3469,7 @@ impl SessionActor {
             let fallback_text = response.fallback_text();
             let stop_reason = response.stop_reason;
             let response_is_empty = response.is_empty();
-            let turn_refused =
-                stop_reason == Some(aster_sampling_types::StopReason::ContentFilter);
+            let turn_refused = stop_reason == Some(aster_sampling_types::StopReason::ContentFilter);
             let refusal_explanation = response.stop_message.clone();
             let final_answer_text = json_schema.is_some().then(|| response.assistant_text());
             match length_salvage_streak.on_sample(
@@ -3777,11 +3775,9 @@ impl SessionActor {
                 is_true_noop,
             );
             if is_true_noop {
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::ShellTrueNoop {
-                        tool_name: step_tool_name.clone(),
-                    },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::ShellTrueNoop {
+                    tool_name: step_tool_name.clone(),
+                });
             }
             let tool_call_responses: Vec<ToolCallResponse> = tool_calls
                 .into_iter()

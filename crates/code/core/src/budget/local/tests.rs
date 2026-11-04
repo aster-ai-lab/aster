@@ -133,6 +133,34 @@ fn monthly_windows_handle_leap_days_and_year_boundaries() {
 }
 
 #[test]
+fn weekly_windows_reset_on_monday_in_the_saved_zone_across_years() {
+    let mut policy = budget();
+    policy.period = serde_json::from_str("\"weekly\"").unwrap();
+    for (offset, before, monday, next) in [
+        (
+            480,
+            "2027-01-03T15:59:59Z",
+            "2026-12-27T16:00:00Z",
+            "2027-01-03T16:00:00Z",
+        ),
+        (
+            -300,
+            "2027-01-04T04:59:59Z",
+            "2026-12-28T05:00:00Z",
+            "2027-01-04T05:00:00Z",
+        ),
+    ] {
+        policy.utc_offset_minutes = offset;
+        let window = policy.window_at(timestamp(before)).unwrap();
+        assert_eq!(window.start_ms, timestamp(monday) as i64);
+        assert_eq!(window.end_ms, timestamp(next) as i64);
+        let after = policy.window_at(timestamp(next)).unwrap();
+        assert_eq!(after.start_ms, window.end_ms);
+        assert_eq!(after.end_ms - after.start_ms, 7 * 24 * 60 * 60 * 1000);
+    }
+}
+
+#[test]
 fn money_budgets_separate_currencies_and_subscription_reference_value() {
     let mut record = InvocationRecord {
         request_id: "request".into(),
@@ -211,10 +239,10 @@ fn invalid_policy_and_unknown_closed_set_values_are_refused() {
     policy = budget();
     policy.utc_offset_minutes = 1440;
     assert!(policy.validate().is_err());
-    assert!(BudgetPeriod::parse("weekly").is_err());
+    assert!(BudgetPeriod::parse("yearly").is_err());
     assert!(BudgetMode::parse("ignore").is_err());
     assert!(BudgetResource::parse("cost", None).is_err());
-    for value in ["daily", "monthly"] {
+    for value in ["daily", "weekly", "monthly"] {
         assert_eq!(BudgetPeriod::parse(value).unwrap().as_str(), value);
     }
     for value in ["notify", "stop"] {

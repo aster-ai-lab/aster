@@ -40,7 +40,8 @@ pub(super) async fn discard_unpublished_temporary_json(path: &Path, maximum: u64
 pub(super) async fn ensure_owned_directory(path: &Path) -> UseResult<()> {
     match fs::symlink_metadata(path).await {
         Ok(metadata)
-            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata) && metadata.is_dir() =>
+            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                && metadata.is_dir() =>
         {
             Ok(())
         }

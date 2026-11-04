@@ -53,9 +53,16 @@ pub(super) fn date_span(
 }
 
 pub(super) fn text_counts(text: &str) -> (usize, usize, usize) {
+    use unicode_segmentation::UnicodeSegmentation;
+    // Count extended grapheme clusters so ZWJ emoji sequences such as 👨‍👩‍👧‍👦
+    // are one user-perceived character for length limits.
+    let graphemes = text.graphemes(true).collect::<Vec<_>>();
     (
-        text.chars().count(),
-        text.chars().filter(|ch| !ch.is_whitespace()).count(),
+        graphemes.len(),
+        graphemes
+            .iter()
+            .filter(|grapheme| !grapheme.chars().all(char::is_whitespace))
+            .count(),
         text.split_whitespace().count(),
     )
 }

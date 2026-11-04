@@ -1,0 +1,32 @@
+[
+  {
+    "path": "crates/code/acp/tests/long_horizon/live.rs",
+    "sha256": "c646816d67c9f07c4c069dc2959eaa2e92232aa26d679ed31aba21ac4e4f1339",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/deloop_real_llm.rs",
+    "sha256": "bf152ca33014de3f971903fc9bdc957d500eeba8ef6d5714aef9ce961bcf796a",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/deloop_generalization_real_llm.rs",
+    "sha256": "63b20482e9b19fef09dcfeba158fb05926752f6c148e69ebb217fdd430c0c628",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/long_horizon_real_llm.rs",
+    "sha256": "be988ddb295df24cca94915c9d9e5c59d0cba76217bbd673c17b27205a254e2f",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  },
+  {
+    "path": "docs/evidence/code/2026-11-02-summary-input-retention/live.py",
+    "sha256": "9c22765744fd1cc522d18027f33ef0e145958c8cd715bbeb70b5167841f4f4c3",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  },
+  {
+    "path": "docs/evidence/code/2026-11-02-summary-input-retention/supplementary.py",
+    "sha256": "295f83d55c5442453384b90c2e73795695977492ce082b1dd0e25861df5e3659",
+    "matchesAuthorizedBudgetOnlyPatch": true
+  }
+]

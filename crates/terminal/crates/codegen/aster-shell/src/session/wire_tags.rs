@@ -6,8 +6,8 @@
 
 use std::sync::LazyLock;
 
-use aster_tools::types::TaskSnapshot;
 use agent_client_protocol as acp;
+use aster_tools::types::TaskSnapshot;
 
 use crate::extensions::notification::SessionUpdate as AsterSessionUpdate;
 

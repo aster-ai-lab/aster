@@ -15,6 +15,7 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_acp_lib::{
     AcpAgentGatewayReceiver as GatewayReceiver, AcpAgentGatewaySender as GatewaySender,
     LineBufferedRead,
@@ -22,7 +23,6 @@ use aster_acp_lib::{
 use aster_shell::agent::config::Config as AgentConfig;
 use aster_shell::agent::mvp_agent::MvpAgent;
 use aster_test_support::{MockInferenceServer, MockModelEntry};
-use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::json;
 use tempfile::TempDir;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};

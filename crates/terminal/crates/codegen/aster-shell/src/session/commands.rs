@@ -4,8 +4,8 @@ use super::acp_types::*;
 use super::plan_mode::PromptMode;
 use crate::extensions::notification::SessionNotification;
 use crate::session::signals::TurnDeltaSnapshot;
-use aster_tools::types::skill_discovery_tracker::SkillUpdateKind;
 use agent_client_protocol as acp;
+use aster_tools::types::skill_discovery_tracker::SkillUpdateKind;
 use tokio::sync::oneshot;
 /// Structured context for a cancelled turn.
 /// Clients deserialize into this same type.
@@ -400,8 +400,7 @@ pub enum SessionCommand {
     },
     /// Admit an owning parent's message as an ordinary protected turn or running-turn Steer.
     ParentAgentMessage {
-        delivery:
-            aster_tools::implementations::grok_build::task::types::ActiveAgentMessageDelivery,
+        delivery: aster_tools::implementations::grok_build::task::types::ActiveAgentMessageDelivery,
         #[allow(private_interfaces)]
         receipt_sink: tokio::sync::mpsc::Sender<crate::agent::subagent::PromptTurnReceipt>,
         parent_telemetry_ctx: aster_telemetry::TelemetryCtx,
@@ -510,8 +509,9 @@ pub enum SessionCommand {
     /// `dry_run` only reports.
     RepairHistory {
         dry_run: bool,
-        respond_to:
-            oneshot::Sender<anyhow::Result<aster_chat_state::compaction_utils::HistoryRepairReport>>,
+        respond_to: oneshot::Sender<
+            anyhow::Result<aster_chat_state::compaction_utils::HistoryRepairReport>,
+        >,
     },
     GetRewindPoints {
         respond_to: oneshot::Sender<RewindPointsResponse>,
@@ -735,8 +735,7 @@ pub enum SessionCommand {
     },
     /// This session's plugin registry, as served by `aster/plugins/list`.
     PluginsList {
-        respond_to:
-            oneshot::Sender<Option<std::sync::Arc<aster_agent::plugins::PluginRegistry>>>,
+        respond_to: oneshot::Sender<Option<std::sync::Arc<aster_agent::plugins::PluginRegistry>>>,
     },
     /// Inject a notification (monitor event or bash task completion) into the session's notification queue.
     /// Notifications wait for an idle session and are batched by `maybe_drain_notifications`.
@@ -925,8 +924,7 @@ pub enum SessionCommand {
     /// Routed through the session actor (like `TakeTurnMessages`) so the drain is ordered ahead of any subsequent turn's harness recording.
     /// Each `Vec` is one turn's synthetic `task` pairs, uploaded as its own sibling `turn_{N}` artifact.
     TakeHarnessTraceTurns {
-        respond_to:
-            oneshot::Sender<Vec<Vec<aster_sampling_types::conversation::ConversationItem>>>,
+        respond_to: oneshot::Sender<Vec<Vec<aster_sampling_types::conversation::ConversationItem>>>,
     },
     /// Returns `Some(...)` when the current turn streamed reasoning or text but the canonical assistant response never reached `chat_state`.
     /// The consumer uploads it as `streaming_partial.json` for trace inspection; `chat_state` is never mutated by this command.

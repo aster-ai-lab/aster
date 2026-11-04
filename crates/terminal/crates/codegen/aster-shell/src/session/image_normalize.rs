@@ -3,9 +3,9 @@
 use crate::session::normalize_cache::{
     HarnessVariant, NormalizeCache, NormalizeError, NormalizedEntry, run_blocking,
 };
+use agent_client_protocol::ImageContent;
 use aster_tools::util::format_bytes;
 use aster_tools::util::image_compress::{FilterType, ReEncodeParams, re_encode_under_limit};
-use agent_client_protocol::ImageContent;
 use base64::Engine as _;
 use bytes::Bytes;
 use std::borrow::Cow;
@@ -294,8 +294,7 @@ pub(crate) fn inline_attach_verdict(data_b64: &str) -> InlineAttachVerdict {
     let Ok(raw) = base64::engine::general_purpose::STANDARD.decode(data_b64) else {
         return InlineAttachVerdict::Unreadable;
     };
-    let Ok((w, h, _)) =
-        aster_tools::util::image_validate::validate_image_bytes_with(&raw, false)
+    let Ok((w, h, _)) = aster_tools::util::image_validate::validate_image_bytes_with(&raw, false)
     else {
         return InlineAttachVerdict::Unreadable;
     };

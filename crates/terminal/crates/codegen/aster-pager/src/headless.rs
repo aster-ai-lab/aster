@@ -19,6 +19,8 @@ use crate::client_identity::{HEADLESS_CLIENT_TYPE, PAGER_CLIENT_VERSION};
 use crate::headless::reducer::{
     Lifecycle, Reducer, SessionContext, StreamEvent, TurnEnd, map_session_update, reducer_for,
 };
+use agent_client_protocol as acp;
+use anyhow::Result;
 use aster_acp_lib::{AcpAgentTx, AcpClientMessageBox, AcpClientRx, acp_send};
 use aster_shell::agent::auth_method::AuthMethodKind;
 use aster_shell::agent::config::Config as AgentConfig;
@@ -32,8 +34,6 @@ use aster_shell::sampling::types::{
 };
 use aster_shell::util::config as cli_config;
 use aster_telemetry::startup::PendingStartup;
-use agent_client_protocol as acp;
-use anyhow::Result;
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};

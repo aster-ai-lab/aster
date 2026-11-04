@@ -286,7 +286,10 @@ where
         .map_err(|error| semantic_filter_error(node, format!("has invalid '{key}' value: {error}")))
 }
 
-fn semantic_filter_error(node: &DocumentNode, reason: impl Into<String>) -> aster_use_core::UseError {
+fn semantic_filter_error(
+    node: &DocumentNode,
+    reason: impl Into<String>,
+) -> aster_use_core::UseError {
     crate::discovery::office_error(
         "use.office.spreadsheet_filter_semantic_invalid",
         format!(

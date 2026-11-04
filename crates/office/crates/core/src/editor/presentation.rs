@@ -244,15 +244,17 @@ pub(super) fn add_shape(
         )
     })? % 4;
     let y = 1_828_800_i64 + i64::from(offset) * 1_143_000;
+    let body_index = u32::try_from(position.saturating_sub(1)).unwrap_or(0);
     let fragment = text_shape_xml(TextShape {
         id,
-        name: &format!("TextBox {id}"),
+        name: &format!("Content Placeholder {id}"),
         text,
         x: 914_400,
         y,
         width: 10_363_200,
         height: 914_400,
         font_size: 2_000,
+        placeholder: Some(PlaceholderKind::Body { index: body_index }),
     });
     let edited = insert_child(&part, shape_tree, fragment)?;
     package.set_part(part_name, edited)?;
@@ -807,11 +809,17 @@ fn slide_xml(title: &str) -> String {
             width: 10_363_200,
             height: 1_143_000,
             font_size: 3_200,
+            placeholder: Some(PlaceholderKind::Title),
         })
     };
     format!(
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><p:sld xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id=\"1\" name=\"\"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"0\" cy=\"0\"/><a:chOff x=\"0\" y=\"0\"/><a:chExt cx=\"0\" cy=\"0\"/></a:xfrm></p:grpSpPr>{shape}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>"
     )
+}
+
+enum PlaceholderKind {
+    Title,
+    Body { index: u32 },
 }
 
 struct TextShape<'a> {
@@ -823,13 +831,28 @@ struct TextShape<'a> {
     width: i64,
     height: i64,
     font_size: u32,
+    placeholder: Option<PlaceholderKind>,
 }
 
 fn text_shape_xml(shape: TextShape<'_>) -> String {
     let text = escape_text(shape.text);
-    let space = preserve_space_attribute(&text);
+    let space = preserve_space_attribute(shape.text);
+    let (cnv_sp, nv_pr) = match shape.placeholder {
+        Some(PlaceholderKind::Title) => (
+            "<p:cNvSpPr/>".to_string(),
+            "<p:nvPr><p:ph type=\"title\"/></p:nvPr>".to_string(),
+        ),
+        Some(PlaceholderKind::Body { index }) => (
+            "<p:cNvSpPr/>".to_string(),
+            format!("<p:nvPr><p:ph type=\"body\" idx=\"{index}\"/></p:nvPr>"),
+        ),
+        None => (
+            "<p:cNvSpPr txBox=\"1\"/>".to_string(),
+            "<p:nvPr/>".to_string(),
+        ),
+    };
     format!(
-        "<p:sp><p:nvSpPr><p:cNvPr id=\"{}\" name=\"{}\"/><p:cNvSpPr txBox=\"1\"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x=\"{}\" y=\"{}\"/><a:ext cx=\"{}\" cy=\"{}\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang=\"en-US\" sz=\"{}\"/><a:t{space}>{text}</a:t></a:r><a:endParaRPr lang=\"en-US\"/></a:p></p:txBody></p:sp>",
+        "<p:sp><p:nvSpPr><p:cNvPr id=\"{}\" name=\"{}\"/>{cnv_sp}{nv_pr}</p:nvSpPr><p:spPr><a:xfrm><a:off x=\"{}\" y=\"{}\"/><a:ext cx=\"{}\" cy=\"{}\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang=\"en-US\" sz=\"{}\"/><a:t{space}>{text}</a:t></a:r><a:endParaRPr lang=\"en-US\"/></a:p></p:txBody></p:sp>",
         shape.id,
         escape_attribute(shape.name),
         shape.x,

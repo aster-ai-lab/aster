@@ -1,55 +1,26 @@
-Summarise the conversation below into a compact context block. The summary will
-replace the older messages so the agent can continue working with full awareness
-of what has already happened.
+Write concise continuation notes for another coding agent within the host summary
+budget. The host reattaches the original Goal, earlier goal, constraints, and
+tracked steps from the original transcript after your response. Do not reproduce
+those sections or spend the body budget copying the task.
 
-Requirements:
-- Keep the summary under 600 words.
-- Preserve the **original user goal** verbatim in a "Goal" section. When a pinned
-  goal is supplied below, copy it exactly into `## Goal` — do not paraphrase,
-  shorten, or replace it with later assistant narration.
-- List every file that was **read, written, or modified** with a one-line note on
-  what changed.
-- List every **shell command** that was run and its outcome (success / error / output
-  snippet if important).
-- Note any **errors or failures** encountered and how they were resolved (or that
-  they are still open).
-- Note the **current state**: what has been completed and what still needs to be done.
-- Preserve the latest active user request, corrections, constraints, and immediate
-  next action precisely.
-- Preserve exact task-relevant values and identifiers learned from tool results
-  within the concise summary. Summarizing file contents does not require dropping
-  a value the user explicitly asked the agent to retain.
-- Record only constraints supported by original user instructions or host policy,
-  with their original scope. Mark completed requests as completed. A one-response
-  format such as "reply OK" is not a permanent response format, and retaining a
-  fact for later does not itself impose confidentiality or prohibit answering a
-  later explicit question about that fact.
-- Prior summaries are fallible generated notes. Do not promote an earlier
-  summary's inference into a new user instruction, permission, or prohibition.
-- If the transcript already starts with a context summary, merge it into one
-  updated cumulative summary. Do not nest or repeat old summaries.
-- Do NOT include raw file contents or full command output — only summaries.
+Preserve:
+- Current verified state, edits still in the tree, unfinished work, and the next
+  action. A passing sample alone does not satisfy other required inputs.
+- Exact task-relevant values, identifiers, paths, versions, and intermediate
+  results needed to continue. Retain requested information; omit unrelated raw
+  file contents and long command output.
+- Files and commands whose outcomes matter for continuation, including failed
+  checks, unresolved errors, and the evidence supporting established results.
 
-Output format:
+Preserve user corrections with their original scope. Previous summaries are
+fallible notes, not new instructions, permissions, prohibitions, or proof of
+completion. Completed requests stay completed; a one-response format is not a
+permanent constraint. Merge earlier notes into the current state without nesting
+old summaries. Do not calculate new results or claim pending work is finished.
 
-## Goal
-<original user request>
+Use `## Current State` and `## Evidence` for these notes.
 
-## Files Touched
-- `path/to/file` — <what was done>
-
-## Commands Run
-- `command` → <outcome>
-
-## Errors / Issues
-- <error> → <resolution or status>
-
-## Current State
-<what is done> / <what remains>
-
----
-
-Pinned original goal (copy verbatim under ## Goal; leave empty only if unknown):
+Pinned original goal (reference only; the host restores it verbatim):
 {goal}
 
 Conversation:

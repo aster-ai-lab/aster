@@ -221,6 +221,14 @@ impl AsterCodeAgent {
             .compact_conversation(user_context.as_deref())
             .await
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        self.emit_xai_session_update(
+            &acp::SessionId::new(session_id),
+            serde_json::json!({
+                "sessionUpdate":"model_info",
+                "sessionTotalTokens":session.recorded_usage_tokens().2
+            }),
+        )
+        .await;
         let body = serde_json::value::to_raw_value(&serde_json::json!({}))
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         Ok(acp::ExtResponse::new(body.into()))
@@ -400,6 +408,7 @@ impl AsterCodeAgent {
             notification.meta = Some(meta);
             self.emit(notification).await;
         }
+        self.replay_terminal_subagents(session_id, session).await;
         Ok(())
     }
 

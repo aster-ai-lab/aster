@@ -1,11 +1,9 @@
 use super::{
     WorkspaceChunk, WorkspaceHybridChannelRank, WorkspaceHybridSearchHit, WorkspaceRetrievalChannel,
 };
+use crate::rank_fusion::RankFusion;
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
-
-pub(super) const RRF_K: usize = 60;
 
 pub(super) struct RankedCandidate {
     pub chunk: Arc<WorkspaceChunk>,
@@ -16,46 +14,45 @@ pub(super) struct RankedCandidate {
 
 struct Accumulator {
     chunk: Arc<WorkspaceChunk>,
-    fused_score: f64,
     exact_identifier: bool,
-    ranks: BTreeMap<WorkspaceRetrievalChannel, usize>,
 }
 
 pub(super) fn fuse_candidates(candidates: Vec<RankedCandidate>) -> Vec<WorkspaceHybridSearchHit> {
-    let mut fused = HashMap::<String, Accumulator>::new();
+    let mut fusion = RankFusion::<_, _, f64>::new();
     for candidate in candidates {
-        if candidate.rank == 0 {
-            continue;
-        }
-        let entry = fused
-            .entry(candidate.chunk.id.as_str().to_owned())
-            .or_insert_with(|| Accumulator {
-                chunk: Arc::clone(&candidate.chunk),
-                fused_score: 0.0,
-                exact_identifier: false,
-                ranks: BTreeMap::new(),
-            });
-        if entry.ranks.contains_key(&candidate.channel) {
-            continue;
-        }
-        entry.fused_score += 1.0 / (RRF_K.saturating_add(candidate.rank) as f64);
-        entry.exact_identifier |= candidate.exact_identifier;
-        entry.ranks.insert(candidate.channel, candidate.rank);
+        fusion.add(
+            candidate.chunk.id.as_str().to_owned(),
+            candidate.channel,
+            candidate.rank,
+            Accumulator {
+                chunk: candidate.chunk,
+                exact_identifier: candidate.exact_identifier,
+            },
+            |current, incoming| current.exact_identifier |= incoming.exact_identifier,
+        );
     }
 
-    let mut fused = fused
-        .into_values()
-        .map(|candidate| WorkspaceHybridSearchHit {
-            chunk: candidate.chunk,
-            fused_score: candidate.fused_score,
-            rerank_score: candidate.fused_score,
-            redundancy_score: 0.0,
-            exact_identifier: candidate.exact_identifier,
-            channels: candidate
-                .ranks
+    let mut fused = fusion
+        .into_entries()
+        .map(|(_, entry)| {
+            let score = entry.score();
+            let (candidate, ranks) = entry.into_parts();
+            let mut channels = ranks
                 .into_iter()
-                .map(|(channel, rank)| WorkspaceHybridChannelRank { channel, rank })
-                .collect(),
+                .map(|(channel, rank)| WorkspaceHybridChannelRank {
+                    channel,
+                    rank: rank.get(),
+                })
+                .collect::<Vec<_>>();
+            channels.sort_by_key(|rank| rank.channel);
+            WorkspaceHybridSearchHit {
+                chunk: candidate.chunk,
+                fused_score: score,
+                rerank_score: score,
+                redundancy_score: 0.0,
+                exact_identifier: candidate.exact_identifier,
+                channels,
+            }
         })
         .collect::<Vec<_>>();
     fused.sort_by(compare_fused);

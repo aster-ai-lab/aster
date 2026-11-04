@@ -831,8 +831,7 @@ impl SessionActor {
                         let latest_slot = std::sync::Arc::clone(&latest_slot);
                         let origin = origin.clone();
                         async move {
-                            let slot =
-                                aster_tools::types::source_summary::SourceSummarySlot::new();
+                            let slot = aster_tools::types::source_summary::SourceSummarySlot::new();
                             *latest_slot.lock() = slot.clone();
                             let result = {
                                 let _guard = if let Some(ref l) = lock {
@@ -1072,8 +1071,7 @@ impl SessionActor {
                 }
                 Err(_) => true,
             };
-            let (ext_tool_output, ext_error_message) = if aster_telemetry::external::is_active()
-            {
+            let (ext_tool_output, ext_error_message) = if aster_telemetry::external::is_active() {
                 external_tool_bodies(&result)
             } else {
                 (None, None)
@@ -1812,15 +1810,13 @@ impl SessionActor {
             } else {
                 aster_telemetry::enums::PermissionMode::Ask
             };
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::PermissionPrompted {
-                    tool_name: canonical_permission_tool_name.clone(),
-                    access_kind: telemetry_access_kind,
-                    permission_mode: perm_mode,
-                    subagent_session_id: subagent_session_id.clone(),
-                    subagent_type: None,
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::PermissionPrompted {
+                tool_name: canonical_permission_tool_name.clone(),
+                access_kind: telemetry_access_kind,
+                permission_mode: perm_mode,
+                subagent_session_id: subagent_session_id.clone(),
+                subagent_type: None,
+            });
             let perm_start = self.events.permission_requested(&call.function.name);
             debug_assert!(
                 !self.session_info.id.0.is_empty(),
@@ -1834,9 +1830,10 @@ impl SessionActor {
                     .map(|cwd| std::path::PathBuf::from(cwd.as_str())),
             });
             let perm_wait_start = std::time::Instant::now();
-            let perm_wait_span = aster_telemetry::region::Region::from_span(
-                tracing::info_span!("permission.wait", wait_ms = tracing::field::Empty),
-            );
+            let perm_wait_span = aster_telemetry::region::Region::from_span(tracing::info_span!(
+                "permission.wait",
+                wait_ms = tracing::field::Empty
+            ));
             let resolution = {
                 let _pending_guard =
                     crate::session::pending_interaction::PendingInteractionGuard::new(
@@ -2169,10 +2166,10 @@ impl SessionActor {
         aster_tools::implementations::grok_build::exit_plan_mode::ExitPlanModeExtResponse,
         acp::Error,
     > {
+        use agent_client_protocol::Client as _;
         use aster_tools::implementations::grok_build::exit_plan_mode::{
             ExitPlanModeExtRequest, ExitPlanModeExtResponse,
         };
-        use agent_client_protocol::Client as _;
         let ext_req = ExitPlanModeExtRequest {
             session_id: self.session_id_string(),
             tool_call_id: tool_call_id.to_string(),
@@ -2468,15 +2465,13 @@ impl SessionActor {
                 vec![],
             ),
             ToolInput::Skill(skill) => {
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::SkillDispatched {
-                        skill_name: skill.skill.clone(),
-                        plugin_source: None,
-                        trigger: aster_telemetry::events::SkillTrigger::SkillTool,
-                        skill_source: None,
-                        skill_origin: None,
-                    },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::SkillDispatched {
+                    skill_name: skill.skill.clone(),
+                    plugin_source: None,
+                    trigger: aster_telemetry::events::SkillTrigger::SkillTool,
+                    skill_source: None,
+                    skill_origin: None,
+                });
                 aster_telemetry::event_span!(
                     "skill.activated",
                     skill_name = %skill.skill,
@@ -2926,9 +2921,7 @@ impl SessionActor {
                 }
                 if ops.pr_merged {
                     self.signals_handle().record_pr_merged();
-                    aster_telemetry::session_ctx::log_event(
-                        aster_telemetry::events::PrMerged {},
-                    );
+                    aster_telemetry::session_ctx::log_event(aster_telemetry::events::PrMerged {});
                 }
             }
             aster_tools::types::output::ToolOutput::MCP(m)

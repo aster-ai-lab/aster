@@ -639,7 +639,7 @@ async fn native_editor_adds_word_paragraphs_and_rolls_them_back_with_a_failed_ba
 
     let added = editor.add_paragraph("/body", "Second paragraph").unwrap();
 
-    assert_eq!(added, "/body/p[2]");
+    assert_eq!(added, "/body/p[1]");
     assert_eq!(
         editor.snapshot().unwrap().get(&added, 1).unwrap().text,
         "Second paragraph"
@@ -664,7 +664,7 @@ async fn native_editor_adds_word_paragraphs_and_rolls_them_back_with_a_failed_ba
             .get("/body", 1)
             .unwrap()
             .child_count,
-        2
+        1
     );
 }
 

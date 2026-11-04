@@ -237,7 +237,9 @@ fn apply_hunks(content: &str, hunks: &[Hunk]) -> Result<String, String> {
     let document = parse_document(content)?;
     let mut output = Vec::new();
     let mut old_cursor = 0usize;
-    let mut trailing_newline = document.trailing_newline;
+    // An empty source has no final-newline state to keep: the diff alone
+    // decides, and without a no-newline marker the new text is POSIX lines.
+    let mut trailing_newline = document.trailing_newline || document.lines.is_empty();
 
     for hunk in hunks {
         let old_target = if hunk.old_count == 0 {
@@ -299,7 +301,8 @@ fn apply_hunks(content: &str, hunks: &[Hunk]) -> Result<String, String> {
 
     output.extend_from_slice(&document.lines[old_cursor..]);
     let mut rendered = output.join(document.line_ending);
-    if trailing_newline {
+    // Removing every line leaves no line to terminate (GNU patch writes 0 bytes).
+    if trailing_newline && !output.is_empty() {
         rendered.push_str(document.line_ending);
     }
     Ok(rendered)
@@ -919,6 +922,102 @@ mod tests {
         let result = apply_hunks("first\r\nsecond\r\n", &hunks).unwrap();
 
         assert_eq!(result, "first\r\nchanged\r\n");
+    }
+
+    #[test]
+    fn removing_every_line_leaves_zero_bytes() {
+        let all = parse_hunks("@@ -1,2 +0,0 @@\n-x\n-y").unwrap();
+        assert_eq!(apply_hunks("x\ny\n", &all).unwrap(), "");
+        assert_eq!(apply_hunks("x\r\ny\r\n", &all).unwrap(), "");
+
+        let solo = parse_hunks("@@ -1 +0,0 @@\n-solo").unwrap();
+        assert_eq!(apply_hunks("solo\n", &solo).unwrap(), "");
+
+        let unterminated =
+            parse_hunks("@@ -1 +0,0 @@\n-solo\n\\ No newline at end of file").unwrap();
+        assert_eq!(apply_hunks("solo", &unterminated).unwrap(), "");
+    }
+
+    #[test]
+    fn adding_to_an_empty_file_ends_with_a_newline() {
+        let add = parse_hunks("@@ -0,0 +1 @@\n+new").unwrap();
+        assert_eq!(apply_hunks("", &add).unwrap(), "new\n");
+
+        let two = parse_hunks("@@ -0,0 +1,2 @@\n+one\n+two").unwrap();
+        assert_eq!(apply_hunks("", &two).unwrap(), "one\ntwo\n");
+
+        let marked = parse_hunks("@@ -0,0 +1 @@\n+new\n\\ No newline at end of file").unwrap();
+        assert_eq!(apply_hunks("", &marked).unwrap(), "new");
+    }
+
+    #[test]
+    fn editing_a_file_without_a_final_newline_keeps_it_that_way() {
+        let hunks = parse_hunks("@@ -1,2 +1,3 @@\n a\n b\n+c").unwrap();
+        assert_eq!(apply_hunks("a\nb", &hunks).unwrap(), "a\nb\nc");
+    }
+
+    #[tokio::test]
+    async fn patch_tool_clears_and_fills_files_like_gnu_patch() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(temp.path().join("clear.txt"), "x\ny\n").unwrap();
+        std::fs::write(temp.path().join("empty.txt"), "").unwrap();
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("patch-newline");
+
+        for (file, diff) in [
+            ("clear.txt", "@@ -1,2 +0,0 @@\n-x\n-y"),
+            ("empty.txt", "@@ -0,0 +1 @@\n+new"),
+        ] {
+            let result = PatchTool
+                .execute(&serde_json::json!({"file_path": file, "diff": diff}), &ctx)
+                .await
+                .unwrap();
+            assert!(result.success, "{}", result.content);
+        }
+
+        assert_eq!(std::fs::read(temp.path().join("clear.txt")).unwrap(), b"");
+        assert_eq!(
+            std::fs::read(temp.path().join("empty.txt")).unwrap(),
+            b"new\n"
+        );
+        crate::external_observation::release_session("patch-newline");
+    }
+
+    #[tokio::test]
+    async fn patch_accepts_a_crlf_file_after_a_write_append() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(temp.path().join("win.txt"), "a\r\nb\r\n").unwrap();
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("patch-after-append");
+        let appended = crate::tools::builtin::write::WriteTool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "win.txt",
+                    "content": "c\n",
+                    "mode": "append",
+                    "expected_offset": 6
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+        assert!(appended.success, "{}", appended.content);
+
+        let patched = PatchTool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "win.txt",
+                    "diff": "@@ -1,3 +1,3 @@\n a\n b\n-c\n+d"
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(patched.success, "{}", patched.content);
+        assert_eq!(
+            std::fs::read_to_string(temp.path().join("win.txt")).unwrap(),
+            "a\r\nb\r\nd\r\n"
+        );
+        crate::external_observation::release_session("patch-after-append");
     }
 
     #[test]

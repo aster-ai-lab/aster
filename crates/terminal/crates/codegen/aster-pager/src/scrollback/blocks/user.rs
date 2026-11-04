@@ -92,7 +92,7 @@ pub struct UserPromptBlock {
     /// The shell numbers only turn-starting prompts, so counting interjections would skew the positional prompt-to-entry mapping rewind uses.
     pub is_interjection: bool,
     pub prompt_index: Option<usize>,
-    /// Sanitized byte ranges into `text` rendered in the skill accent color (recognized `/command` tokens).
+    /// Sanitized byte ranges into `text` rendered in the command accent color (recognized `/command` tokens).
     /// Empty means plain prompt styling.
     /// This is the sole skill signal; a leading skill invocation is `[0..token_end]`.
     pub skill_token_ranges: Vec<Range<usize>>,
@@ -217,7 +217,7 @@ impl UserPromptBlock {
         };
         let mut prefix_style = theme.fg(prefix_color);
         let mut text_style = theme.fg(theme.text_primary);
-        let mut skill_style = theme.fg(theme.accent_skill);
+        let mut skill_style = theme.fg(theme.accent_verify);
         if terminal_native {
             prefix_style = prefix_style.add_modifier(Modifier::BOLD);
             text_style = text_style.add_modifier(Modifier::BOLD);
@@ -675,7 +675,7 @@ mod tests {
         let spans = &line_at(&lines, 0).content.spans;
         assert_eq!(spans.len(), 3);
         assert_eq!(span_at(spans, 1).content.as_ref(), "/pr-workflow");
-        assert_eq!(span_at(spans, 1).style.fg, Some(theme.accent_skill));
+        assert_eq!(span_at(spans, 1).style.fg, Some(theme.accent_verify));
         assert_eq!(
             span_at(spans, 2).content.as_ref(),
             " create a ticket for this"
@@ -694,7 +694,7 @@ mod tests {
         let spans = &line_at(&lines, 0).content.spans;
         assert_eq!(spans.len(), 2);
         assert_eq!(span_at(spans, 1).content.as_ref(), "/pr-workflow");
-        assert_eq!(span_at(spans, 1).style.fg, Some(theme.accent_skill));
+        assert_eq!(span_at(spans, 1).style.fg, Some(theme.accent_verify));
     }
 
     #[test]
@@ -707,7 +707,7 @@ mod tests {
         let theme = Theme::current();
         let line0 = &line_at(&lines, 0).content.spans;
         assert_eq!(span_at(line0, 1).content.as_ref(), "/foo");
-        assert_eq!(span_at(line0, 1).style.fg, Some(theme.accent_skill));
+        assert_eq!(span_at(line0, 1).style.fg, Some(theme.accent_verify));
         assert_eq!(span_at(line0, 2).content.as_ref(), " bar");
         assert_eq!(span_at(line0, 2).style.fg, Some(theme.text_primary));
 
@@ -730,7 +730,7 @@ mod tests {
         assert_eq!(span_at(spans, 1).content.as_ref(), "great ");
         assert_eq!(span_at(spans, 1).style.fg, Some(theme.text_primary));
         assert_eq!(span_at(spans, 2).content.as_ref(), "/pr-workflow");
-        assert_eq!(span_at(spans, 2).style.fg, Some(theme.accent_skill));
+        assert_eq!(span_at(spans, 2).style.fg, Some(theme.accent_verify));
         assert_eq!(span_at(spans, 3).content.as_ref(), " all good now");
         assert_eq!(span_at(spans, 3).style.fg, Some(theme.text_primary));
     }
@@ -769,14 +769,14 @@ mod tests {
             line0
                 .iter()
                 .filter(|s| s.content.as_ref().starts_with('/'))
-                .all(|s| s.style.fg != Some(theme.accent_skill)),
+                .all(|s| s.style.fg != Some(theme.accent_verify)),
             "line 0 has no token"
         );
         let line1 = &line_at(&lines, 1).content.spans;
         assert_eq!(span_at(line1, 1).content.as_ref(), "then ");
         assert_eq!(span_at(line1, 1).style.fg, Some(theme.text_primary));
         assert_eq!(span_at(line1, 2).content.as_ref(), "/model");
-        assert_eq!(span_at(line1, 2).style.fg, Some(theme.accent_skill));
+        assert_eq!(span_at(line1, 2).style.fg, Some(theme.accent_verify));
         assert_eq!(span_at(line1, 3).content.as_ref(), " here");
     }
 
@@ -825,7 +825,7 @@ mod tests {
     fn teal_text(line: &Line, theme: &Theme) -> String {
         line.spans
             .iter()
-            .filter(|s| s.style.fg == Some(theme.accent_skill))
+            .filter(|s| s.style.fg == Some(theme.accent_verify))
             .map(|s| s.content.as_ref())
             .collect()
     }

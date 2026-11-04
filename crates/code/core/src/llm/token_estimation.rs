@@ -9,6 +9,13 @@ pub(crate) fn estimate_prompt_tokens(
     let mut chars = system.map(str::len).unwrap_or(0);
     for message in messages {
         chars = chars.saturating_add(message.role.len() + 4);
+        if let Some(state) = message.content.iter().find_map(|block| match block {
+            ContentBlock::GeminiState { state } => Some(state),
+            _ => None,
+        }) {
+            chars = chars.saturating_add(state.wire_chars());
+            continue;
+        }
         chars = chars.saturating_add(message.reasoning_content.as_ref().map_or(0, String::len));
         for block in &message.content {
             chars = chars.saturating_add(match block {
@@ -25,6 +32,7 @@ pub(crate) fn estimate_prompt_tokens(
                 } => tool_use_id
                     .len()
                     .saturating_add(tool_result_content_chars(content)),
+                ContentBlock::GeminiState { .. } => 0,
             });
         }
     }

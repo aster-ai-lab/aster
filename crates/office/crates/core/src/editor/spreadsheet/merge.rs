@@ -403,7 +403,10 @@ fn container_is_removable(
         .all(u8::is_ascii_whitespace)
 }
 
-fn invalid_merge_collection(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
+fn invalid_merge_collection(
+    part_name: &str,
+    reason: impl Into<String>,
+) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_merge_invalid",
         format!("Spreadsheet worksheet merge collection {}.", reason.into()),

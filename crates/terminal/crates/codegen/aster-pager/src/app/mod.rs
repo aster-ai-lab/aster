@@ -47,6 +47,7 @@ pub(crate) mod status_line;
 mod status_line_policy;
 pub mod subagent;
 pub mod subscription;
+pub(crate) mod usage_meter;
 pub(crate) mod worktree_session;
 pub(crate) use dispatch::dashboard_stop_readiness;
 /// Display-refresh probe + motion cadence + terminal telemetry at startup.
@@ -85,8 +86,8 @@ pub(crate) mod workspace_sync;
 pub(crate) mod workspace_test_fixtures;
 mod xt_filter;
 pub(crate) use crate::terminal::{kitty_flags_pushed, kitty_releases_reported};
-use aster_shell::util::config;
 use anyhow::Context as _;
+use aster_shell::util::config;
 pub use cli::{
     AgentArgs, AgentCmd, Command, HeadlessArgs, LeaderArgs, LeaderMgmtArgs, LeaderMgmtCommand,
     LeaderTargetArgs, OutputFormat, PagerArgs, ServeArgs, WrapArgs,
@@ -1063,15 +1064,13 @@ pub async fn run(
     } else {
         crate::acp::AgentKind::Embedded
     };
-    aster_telemetry::external::init(
-        aster_shell::agent::config::resolve_external_otel_config(
-            aster_telemetry::external::config::ExternalClientInfo {
-                service_version: aster_version::full_version().to_owned(),
-                client_version: aster_version::VERSION.to_owned(),
-                app_entrypoint: "tui".to_owned(),
-            },
-        ),
-    );
+    aster_telemetry::external::init(aster_shell::agent::config::resolve_external_otel_config(
+        aster_telemetry::external::config::ExternalClientInfo {
+            service_version: aster_version::full_version().to_owned(),
+            client_version: aster_version::VERSION.to_owned(),
+            app_entrypoint: "tui".to_owned(),
+        },
+    ));
     let tracing_handle = crate::tracing::init_tracing();
     let pending_startup = aster_telemetry::startup::PendingStartup::new();
     let timer = aster_telemetry::startup::begin(crate::acp::Owner::Client);
@@ -1510,9 +1509,7 @@ fn init_terminal(
             })?;
         }
         if mode.is_fullscreen() {
-            aster_shell::util::with_locked_stderr(|stderr| {
-                execute!(stderr, EnterAlternateScreen)
-            })?;
+            aster_shell::util::with_locked_stderr(|stderr| execute!(stderr, EnterAlternateScreen))?;
         }
         #[cfg(windows)]
         if want_minimal {

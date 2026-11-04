@@ -1,0 +1,610 @@
+[
+  {
+    "case": "holdout",
+    "attempt": 1,
+    "status": "FINISHED",
+    "startedAt": "2026-11-04T02:29:59.285834+00:00",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/deloop_generalization_real_llm",
+      "--ignored",
+      "--exact",
+      "opaque_selected_records_survive_a_real_long_run",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exitCode": 101,
+    "outerSeconds": 616.577476584,
+    "finishedAt": "2026-11-04T02:40:15.862420+00:00",
+    "timing": {
+      "complete": true,
+      "process_pid": 68335,
+      "wall_us": 616571511,
+      "partition_us": {
+        "task": 600001994,
+        "cleanup": 2435,
+        "preparation": 16501095,
+        "verification": 18726,
+        "fixture": 1209,
+        "other_instrumented": 12551,
+        "unattributed": 33501
+      },
+      "sum_us": 616571511,
+      "unattributed_percent": 0.005433433008551704,
+      "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+    },
+    "phaseCoverage": {
+      "campaign_prepare": "observed",
+      "config_load": "observed",
+      "freeze_pair": "observed",
+      "build_id_query": "observed",
+      "initialize": "observed",
+      "session_new": "observed",
+      "prompt": "observed",
+      "driver_close": "observed",
+      "relay_close": "observed",
+      "oracle": "observed",
+      "timing_flush": "observed"
+    },
+    "phaseDeltas": {
+      "artifact_read": {
+        "before": null,
+        "after": 1479,
+        "delta": null,
+        "percent": null
+      },
+      "build_id_query": {
+        "before": null,
+        "after": 9030975,
+        "delta": null,
+        "percent": null
+      },
+      "campaign_prepare": {
+        "before": null,
+        "after": 16424598,
+        "delta": null,
+        "percent": null
+      },
+      "campaign_spawn": {
+        "before": null,
+        "after": 4006,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_load": {
+        "before": null,
+        "after": 2186722,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_copy": {
+        "before": null,
+        "after": 2851371,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_digest": {
+        "before": null,
+        "after": 4386612,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_open": {
+        "before": null,
+        "after": 1499,
+        "delta": null,
+        "percent": null
+      },
+      "child_reap": {
+        "before": null,
+        "after": 2135,
+        "delta": null,
+        "percent": null
+      },
+      "child_spawn": {
+        "before": null,
+        "after": 3344,
+        "delta": null,
+        "percent": null
+      },
+      "child_stop": {
+        "before": null,
+        "after": 21,
+        "delta": null,
+        "percent": null
+      },
+      "compaction": {
+        "before": null,
+        "after": 316107864,
+        "delta": null,
+        "percent": null
+      },
+      "config_identity_recheck": {
+        "before": null,
+        "after": 104,
+        "delta": null,
+        "percent": null
+      },
+      "config_load": {
+        "before": null,
+        "after": 496,
+        "delta": null,
+        "percent": null
+      },
+      "driver_close": {
+        "before": null,
+        "after": 2228,
+        "delta": null,
+        "percent": null
+      },
+      "driver_spawn": {
+        "before": null,
+        "after": 3421,
+        "delta": null,
+        "percent": null
+      },
+      "fact_read": {
+        "before": null,
+        "after": 4885,
+        "delta": null,
+        "percent": null
+      },
+      "feed_publish": {
+        "before": null,
+        "after": 4270,
+        "delta": null,
+        "percent": null
+      },
+      "file_digest": {
+        "before": null,
+        "after": 2351199,
+        "delta": null,
+        "percent": null
+      },
+      "fixture_setup": {
+        "before": null,
+        "after": 1209,
+        "delta": null,
+        "percent": null
+      },
+      "freeze_pair": {
+        "before": null,
+        "after": 14227596,
+        "delta": null,
+        "percent": null
+      },
+      "incoming_request": {
+        "before": null,
+        "after": 81657,
+        "delta": null,
+        "percent": null
+      },
+      "initialize": {
+        "before": null,
+        "after": 15633,
+        "delta": null,
+        "percent": null
+      },
+      "isolated_config": {
+        "before": null,
+        "after": 568,
+        "delta": null,
+        "percent": null
+      },
+      "model_headers": {
+        "before": null,
+        "after": 103043830,
+        "delta": null,
+        "percent": null
+      },
+      "model_request": {
+        "before": null,
+        "after": 591163204,
+        "delta": null,
+        "percent": null
+      },
+      "model_stream": {
+        "before": null,
+        "after": 124235521,
+        "delta": null,
+        "percent": null
+      },
+      "oracle": {
+        "before": null,
+        "after": 1467,
+        "delta": null,
+        "percent": null
+      },
+      "process_spawn": {
+        "before": null,
+        "after": 5095,
+        "delta": null,
+        "percent": null
+      },
+      "prompt": {
+        "before": null,
+        "after": 600001994,
+        "delta": null,
+        "percent": null
+      },
+      "public_evidence_write": {
+        "before": null,
+        "after": 3484,
+        "delta": null,
+        "percent": null
+      },
+      "relay_close": {
+        "before": null,
+        "after": 207,
+        "delta": null,
+        "percent": null
+      },
+      "relay_reply": {
+        "before": null,
+        "after": 414,
+        "delta": null,
+        "percent": null
+      },
+      "relay_start": {
+        "before": null,
+        "after": 128,
+        "delta": null,
+        "percent": null
+      },
+      "result_write": {
+        "before": null,
+        "after": 12374,
+        "delta": null,
+        "percent": null
+      },
+      "route_discovery": {
+        "before": null,
+        "after": 296,
+        "delta": null,
+        "percent": null
+      },
+      "session_new": {
+        "before": null,
+        "after": 56858,
+        "delta": null,
+        "percent": null
+      },
+      "test_process": {
+        "before": null,
+        "after": 616577349,
+        "delta": null,
+        "percent": null
+      },
+      "tester_copy": {
+        "before": null,
+        "after": 378,
+        "delta": null,
+        "percent": null
+      },
+      "timing_flush": {
+        "before": null,
+        "after": 58,
+        "delta": null,
+        "percent": null
+      },
+      "tool": {
+        "before": null,
+        "after": 18936,
+        "delta": null,
+        "percent": null
+      },
+      "wire_close": {
+        "before": null,
+        "after": 7,
+        "delta": null,
+        "percent": null
+      }
+    }
+  },
+  {
+    "case": "feed",
+    "attempt": 1,
+    "status": "FINISHED",
+    "startedAt": "2026-11-04T02:40:15.868699+00:00",
+    "command": [
+      "/Users/roylin/code/aster/target/qualification/fallback-state-public-prose-20261104-current-config-1-7737c599-4d8d-4f03-ac03-83120e4cf70d/deloop_real_llm",
+      "--ignored",
+      "--exact",
+      "changing_external_batches_survive_compaction_in_one_real_acp_run",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exitCode": 101,
+    "outerSeconds": 618.4591805420001,
+    "finishedAt": "2026-11-04T02:50:34.326924+00:00",
+    "timing": {
+      "complete": true,
+      "process_pid": 90081,
+      "wall_us": 618456272,
+      "partition_us": {
+        "task": 600001996,
+        "cleanup": 3073,
+        "preparation": 16248027,
+        "verification": 2142233,
+        "fixture": 1835,
+        "other_instrumented": 15864,
+        "unattributed": 43244
+      },
+      "sum_us": 618456272,
+      "unattributed_percent": 0.006992248596680089,
+      "note": "Exclusive wall-time partition; model/tools/subagents/compaction overlap within task time. Unattributed includes native loading, uninstrumented fixture work, writer flush and scheduling. It is never treated as zero."
+    },
+    "phaseCoverage": {
+      "campaign_prepare": "observed",
+      "config_load": "observed",
+      "freeze_pair": "observed",
+      "build_id_query": "observed",
+      "initialize": "observed",
+      "session_new": "observed",
+      "prompt": "observed",
+      "driver_close": "observed",
+      "relay_close": "observed",
+      "oracle": "observed",
+      "timing_flush": "observed"
+    },
+    "phaseDeltas": {
+      "artifact_read": {
+        "before": null,
+        "after": 2978,
+        "delta": null,
+        "percent": null
+      },
+      "build_id_query": {
+        "before": null,
+        "after": 8831201,
+        "delta": null,
+        "percent": null
+      },
+      "campaign_prepare": {
+        "before": null,
+        "after": 16173708,
+        "delta": null,
+        "percent": null
+      },
+      "campaign_spawn": {
+        "before": null,
+        "after": 3604,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_load": {
+        "before": null,
+        "after": 2191760,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_copy": {
+        "before": null,
+        "after": 2792209,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_digest": {
+        "before": null,
+        "after": 4374841,
+        "delta": null,
+        "percent": null
+      },
+      "candidate_member_open": {
+        "before": null,
+        "after": 4144,
+        "delta": null,
+        "percent": null
+      },
+      "child_reap": {
+        "before": null,
+        "after": 1671,
+        "delta": null,
+        "percent": null
+      },
+      "child_spawn": {
+        "before": null,
+        "after": 2840,
+        "delta": null,
+        "percent": null
+      },
+      "child_stop": {
+        "before": null,
+        "after": 20,
+        "delta": null,
+        "percent": null
+      },
+      "compaction": {
+        "before": null,
+        "after": 310334913,
+        "delta": null,
+        "percent": null
+      },
+      "config_identity_recheck": {
+        "before": null,
+        "after": 158,
+        "delta": null,
+        "percent": null
+      },
+      "config_load": {
+        "before": null,
+        "after": 531,
+        "delta": null,
+        "percent": null
+      },
+      "driver_close": {
+        "before": null,
+        "after": 1760,
+        "delta": null,
+        "percent": null
+      },
+      "driver_spawn": {
+        "before": null,
+        "after": 2904,
+        "delta": null,
+        "percent": null
+      },
+      "fact_read": {
+        "before": null,
+        "after": 3972,
+        "delta": null,
+        "percent": null
+      },
+      "feed_publish": {
+        "before": null,
+        "after": 14076,
+        "delta": null,
+        "percent": null
+      },
+      "file_digest": {
+        "before": null,
+        "after": 4428180,
+        "delta": null,
+        "percent": null
+      },
+      "fixture_setup": {
+        "before": null,
+        "after": 5394,
+        "delta": null,
+        "percent": null
+      },
+      "freeze_pair": {
+        "before": null,
+        "after": 13972532,
+        "delta": null,
+        "percent": null
+      },
+      "identity_recheck": {
+        "before": null,
+        "after": 2076295,
+        "delta": null,
+        "percent": null
+      },
+      "incoming_request": {
+        "before": null,
+        "after": 62576,
+        "delta": null,
+        "percent": null
+      },
+      "initialize": {
+        "before": null,
+        "after": 15826,
+        "delta": null,
+        "percent": null
+      },
+      "isolated_config": {
+        "before": null,
+        "after": 566,
+        "delta": null,
+        "percent": null
+      },
+      "model_headers": {
+        "before": null,
+        "after": 35676414,
+        "delta": null,
+        "percent": null
+      },
+      "model_request": {
+        "before": null,
+        "after": 560787421,
+        "delta": null,
+        "percent": null
+      },
+      "model_stream": {
+        "before": null,
+        "after": 178493556,
+        "delta": null,
+        "percent": null
+      },
+      "oracle": {
+        "before": null,
+        "after": 2085251,
+        "delta": null,
+        "percent": null
+      },
+      "process_spawn": {
+        "before": null,
+        "after": 2114,
+        "delta": null,
+        "percent": null
+      },
+      "prompt": {
+        "before": null,
+        "after": 600001996,
+        "delta": null,
+        "percent": null
+      },
+      "public_evidence_write": {
+        "before": null,
+        "after": 4755,
+        "delta": null,
+        "percent": null
+      },
+      "relay_close": {
+        "before": null,
+        "after": 1313,
+        "delta": null,
+        "percent": null
+      },
+      "relay_reply": {
+        "before": null,
+        "after": 809,
+        "delta": null,
+        "percent": null
+      },
+      "relay_start": {
+        "before": null,
+        "after": 115,
+        "delta": null,
+        "percent": null
+      },
+      "result_write": {
+        "before": null,
+        "after": 56135,
+        "delta": null,
+        "percent": null
+      },
+      "route_discovery": {
+        "before": null,
+        "after": 309,
+        "delta": null,
+        "percent": null
+      },
+      "session_new": {
+        "before": null,
+        "after": 54889,
+        "delta": null,
+        "percent": null
+      },
+      "test_process": {
+        "before": null,
+        "after": 618459085,
+        "delta": null,
+        "percent": null
+      },
+      "tester_copy": {
+        "before": null,
+        "after": 386,
+        "delta": null,
+        "percent": null
+      },
+      "timing_flush": {
+        "before": null,
+        "after": 56,
+        "delta": null,
+        "percent": null
+      },
+      "tool": {
+        "before": null,
+        "after": 15337,
+        "delta": null,
+        "percent": null
+      },
+      "wire_close": {
+        "before": null,
+        "after": 8,
+        "delta": null,
+        "percent": null
+      }
+    }
+  }
+]

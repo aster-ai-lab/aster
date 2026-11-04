@@ -10,8 +10,8 @@ use crate::session::{
     CommentDeleteRequest, CommentDeleteResponse, CommentRequest, CommentResponse,
 };
 use crate::upload::gcs::WithAuth as _;
-use aster_telemetry::id::agent_id;
 use aster_file_utils::gcs::upload_bytes;
+use aster_telemetry::id::agent_id;
 
 /// Record inline code review events.
 /// Methods: `aster/review/comment`: record a new inline code comment to cloud storage `aster/review/comment/delete`: record a tombstone event for a deleted comment

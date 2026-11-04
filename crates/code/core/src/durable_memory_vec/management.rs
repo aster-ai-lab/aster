@@ -305,6 +305,7 @@ struct InspectedMeta {
     metadata: BTreeMap<String, String>,
     access_count: u32,
     last_accessed: Option<String>,
+    tags: Option<Vec<String>>,
 }
 
 fn digest(value: &[u8]) -> String {
@@ -369,7 +370,7 @@ fn inspect(document: &Doc, path: &Path) -> ManagementResult<ManagedMemory> {
     let item = ManagedMemory {
         id,
         content,
-        tags: tags.split_whitespace().map(str::to_owned).collect(),
+        tags: decode_stored_tags(meta.tags, &tags),
         importance,
         memory_type: kind,
         timestamp,
@@ -397,7 +398,14 @@ impl VecMemoryStore {
         request: MemoryManagementRequest,
     ) -> ManagementResult<MemoryManagementResponse> {
         request.validate()?;
-        let _mutation = self
+        self.manage_validated(request)
+    }
+
+    fn manage_validated(
+        &self,
+        request: MemoryManagementRequest,
+    ) -> ManagementResult<MemoryManagementResponse> {
+        let mut hygiene = self
             .mutation
             .lock()
             .map_err(|_| MemoryManagementFailure::failed("memory mutation lock is poisoned"))?;
@@ -593,7 +601,7 @@ impl VecMemoryStore {
                         "memory record changed; inspect it again before saving",
                     ));
                 }
-                let old_hash = <[u8; 32]>::from(Sha256::digest(item.content.trim().as_bytes()));
+                let old_content = item.content.clone();
                 let growth = content.len().saturating_sub(item.content.len());
                 if stats.accounted_document_bytes.saturating_add(growth as u64)
                     > MAX_SCAN_BYTES as u64
@@ -614,18 +622,12 @@ impl VecMemoryStore {
                         "memory detail exceeds inspection limits",
                     ));
                 }
-                let new_hash = <[u8; 32]>::from(Sha256::digest(item.content.trim().as_bytes()));
-                let embedded = self
-                    .semantic
-                    .as_ref()
-                    .and_then(|provider| provider.embed(&item.content));
-                let mut hygiene = self.hygiene.lock().map_err(|_| {
-                    MemoryManagementFailure::failed("memory hygiene lock is poisoned")
-                })?;
-                let mut vectors = self.vectors.lock().map_err(|_| {
-                    MemoryManagementFailure::failed("memory vectors lock is poisoned")
-                })?;
-                if new_hash != old_hash && hygiene.contains(&new_hash) {
+                hygiene
+                    .ensure_current(&self.collection)
+                    .map_err(MemoryManagementFailure::failed)?;
+                if item.content.trim() != old_content.trim()
+                    && hygiene.exact_duplicate(&item.content).is_some()
+                {
                     return Err(MemoryManagementFailure::new(
                         MemoryManagementCode::Conflict,
                         "another memory has this exact content",
@@ -641,6 +643,7 @@ impl VecMemoryStore {
                         .add_vector_f32("embedding", &vec![0.0; dimension])
                         .map_err(MemoryManagementFailure::failed)?;
                 }
+                hygiene.invalidate();
                 let result = self
                     .collection
                     .update(&[&patch])
@@ -650,15 +653,13 @@ impl VecMemoryStore {
                         "memory update was rejected",
                     ));
                 }
-                hygiene.retain(|known| *known != old_hash && *known != new_hash);
-                hygiene.push(new_hash);
-                vectors.retain(|(key, _)| key != &id);
-                if let Some(vector) = embedded {
-                    vectors.push((id.clone(), vector));
-                }
                 self.collection
                     .flush()
                     .map_err(MemoryManagementFailure::failed)?;
+                hygiene.forget(&id, &old_content);
+                hygiene.remember(&id, &item.content);
+                hygiene.finish();
+                self.update_semantic(&id, Some(&item.content));
                 Ok(MemoryManagementResponse::Update {
                     item: self.inspect_id(&id)?,
                 })
@@ -676,7 +677,7 @@ impl VecMemoryStore {
                         "memory record changed; inspect it again before deleting",
                     ));
                 }
-                self.delete_record(&id)
+                self.delete_record(&id, &mut hygiene)
                     .map_err(MemoryManagementFailure::failed)?;
                 Ok(MemoryManagementResponse::Delete { id })
             }
@@ -697,35 +698,49 @@ impl VecMemoryStore {
         inspect(document, &self.path)
     }
 
-    pub(super) fn delete_record(&self, id: &str) -> Result<()> {
+    pub(super) fn delete_record(&self, id: &str, hygiene: &mut MemoryHygiene) -> Result<()> {
+        self.delete_records(&[id], hygiene)
+    }
+
+    pub(super) fn delete_records(&self, ids: &[&str], hygiene: &mut MemoryHygiene) -> Result<()> {
+        if ids.is_empty() {
+            return Ok(());
+        }
+        hygiene.ensure_current(&self.collection)?;
         let documents = self
             .collection
-            .fetch_with_options(&[id], Some(&[CONTENT_FIELD]), false)
-            .map_err(display_error)?;
-        let content = documents
-            .first()
-            .map(|document| document.get_string(CONTENT_FIELD))
-            .transpose()
-            .map_err(display_error)?
-            .flatten();
-        let mut hygiene = self
-            .hygiene
-            .lock()
-            .map_err(|_| anyhow!("memory hygiene lock is poisoned"))?;
-        let mut vectors = self
-            .vectors
-            .lock()
-            .map_err(|_| anyhow!("memory vectors lock is poisoned"))?;
-        let result = self.collection.delete(&[id]).map_err(display_error)?;
-        if result.error_count != 0 {
-            return Err(anyhow!("aster-vec memory delete rejected {id}"));
+            .fetch_with_options(ids, Some(&[CONTENT_FIELD]), false)?;
+        let removed = documents
+            .into_iter()
+            .map(|document| Ok((memory_id(&document)?, document.get_string(CONTENT_FIELD)?)))
+            .collect::<Result<Vec<_>>>()?;
+        hygiene.invalidate();
+        self.commit_delete(ids)?;
+        for (id, content) in removed {
+            if let Some(content) = content {
+                hygiene.forget(&id, &content);
+            }
         }
-        if let Some(content) = content {
-            let hash = <[u8; 32]>::from(Sha256::digest(content.trim().as_bytes()));
-            hygiene.retain(|known| *known != hash);
+        hygiene.finish();
+        if self.collection.count()? == 0 {
+            *self
+                .semantic_index
+                .lock()
+                .map_err(|_| anyhow!("memory semantic index lock is poisoned"))? = None;
+        } else {
+            for id in ids {
+                self.update_semantic(id, None);
+            }
         }
-        vectors.retain(|(key, _)| key != id);
-        self.collection.flush().map_err(display_error)?;
+        Ok(())
+    }
+
+    pub(super) fn commit_delete(&self, ids: &[&str]) -> Result<()> {
+        let result = self.collection.delete(ids)?;
+        if let Some(rejected) = result.results.into_iter().find(|result| !result.success) {
+            return Err(aster_vec::Error::new(rejected.code, rejected.message).into());
+        }
+        self.collection.flush()?;
         Ok(())
     }
 }
@@ -736,18 +751,20 @@ impl LazyFileMemoryStore {
         request: MemoryManagementRequest,
     ) -> ManagementResult<MemoryManagementResponse> {
         request.validate()?;
-        self.inner()
+        self.with_store(move |store| store.manage_validated(request))
             .await
             .map_err(|error| {
-                let message = error.to_string();
-                let code = if message.contains("collection is locked") {
+                let code = if error.is::<MemoryCollectionBusy>()
+                    || error
+                        .downcast_ref::<aster_vec::Error>()
+                        .is_some_and(|error| error.code == aster_vec::ErrorCode::Unavailable)
+                {
                     MemoryManagementCode::Busy
                 } else {
                     MemoryManagementCode::Failed
                 };
-                MemoryManagementFailure::new(code, message)
+                MemoryManagementFailure::new(code, format!("{error:#}"))
             })?
-            .manage(request)
     }
 }
 

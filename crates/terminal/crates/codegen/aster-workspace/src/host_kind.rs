@@ -4,8 +4,8 @@
 //! catalog table is shared with the sandbox, so the tools that would call the API with the
 //! server's own credential are cut per host here and nowhere else.
 
-use aster_tools::registry::types::ToolServerConfig;
 use aster_computer_hub_sdk::SharedAuthProvider;
+use aster_tools::registry::types::ToolServerConfig;
 
 use crate::session::tool_config::WorkspaceSessionContextFactory;
 

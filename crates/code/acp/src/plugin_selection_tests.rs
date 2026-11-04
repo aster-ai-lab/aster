@@ -383,6 +383,26 @@ async fn cancelled_actual_task_native_tool_settles_descendants_before_package_re
         .await
         .unwrap()
         .unwrap();
+    let tasks = tokio::time::timeout(Duration::from_secs(3), async {
+        loop {
+            let tasks = session.subagent_tasks().await;
+            if !tasks.is_empty() && tasks.iter().all(|task| task.finished_ms.is_some()) {
+                break tasks;
+            }
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .expect("the cancelled child must publish its real terminal event");
+    assert_eq!(tasks.len(), 1);
+    assert_eq!(
+        tasks[0].status,
+        aster_core::subagent_task_tracker::SubagentStatus::Cancelled
+    );
+    assert!(
+        tasks[0].finished_ms.is_some(),
+        "the actual child must publish its terminal event"
+    );
     store.collect_retired_sync("acme/echo").unwrap();
     assert!(
         !entry.exists(),

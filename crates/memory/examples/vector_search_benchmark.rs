@@ -4,10 +4,10 @@
 //!
 //! `cargo run --example vector_search_benchmark --release`
 
+use anyhow::{bail, Context, Result};
 use aster_durable_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord, VectorSearchRequest,
 };
-use anyhow::{bail, Context, Result};
 use serde_json::json;
 use std::time::{Duration, Instant};
 

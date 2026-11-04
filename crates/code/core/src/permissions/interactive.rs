@@ -189,6 +189,31 @@ impl PermissionChecker for InteractiveToolGuardrail {
     fn check(&self, tool_name: &str, args: &serde_json::Value) -> PermissionDecision {
         self.mode.apply(&self.assess(tool_name, args))
     }
+
+    fn denial_code(&self, tool_name: &str, args: &serde_json::Value) -> Option<&'static str> {
+        if self.check(tool_name, args) != PermissionDecision::Deny {
+            return None;
+        }
+        let assessment = self.assess(tool_name, args);
+        if assessment
+            .reasons
+            .contains(&ToolRiskReason::SymlinkBoundaryEscape)
+        {
+            Some("symlink_boundary_escape")
+        } else if assessment
+            .reasons
+            .contains(&ToolRiskReason::WorkspaceBoundaryEscape)
+        {
+            Some("workspace_boundary_escape")
+        } else if assessment
+            .reasons
+            .contains(&ToolRiskReason::CatastrophicOperation)
+        {
+            Some("catastrophic_operation")
+        } else {
+            None
+        }
+    }
 }
 
 fn invocation_crosses_local_symlink(
@@ -196,22 +221,11 @@ fn invocation_crosses_local_symlink(
     tool_name: &str,
     args: &serde_json::Value,
 ) -> bool {
+    // A batch is admitted as a composite; member symlink/path boundaries are
+    // enforced when each nested call runs. Rejecting the outer batch for one
+    // member would discard every sibling result and hide which call failed.
     if tool_name.eq_ignore_ascii_case("batch") {
-        return args
-            .get("invocations")
-            .and_then(serde_json::Value::as_array)
-            .is_some_and(|invocations| {
-                invocations.iter().any(|invocation| {
-                    let Some(tool) = invocation.get("tool").and_then(serde_json::Value::as_str)
-                    else {
-                        return false;
-                    };
-                    let Some(tool_args) = invocation.get("args") else {
-                        return false;
-                    };
-                    invocation_crosses_local_symlink(root, tool, tool_args)
-                })
-            });
+        return false;
     }
 
     let tool = tool_name.to_ascii_lowercase();
@@ -220,7 +234,7 @@ fn invocation_crosses_local_symlink(
     }
     if tool == "read" {
         if let Some(path) = args.get("file_path").and_then(serde_json::Value::as_str) {
-            return local_path_crosses_symlink(root, path);
+            return read_path_crosses_boundary(root, path);
         }
         return args
             .get("files")
@@ -230,7 +244,7 @@ fn invocation_crosses_local_symlink(
                     entry
                         .get("path")
                         .and_then(serde_json::Value::as_str)
-                        .is_some_and(|path| local_path_crosses_symlink(root, path))
+                        .is_some_and(|path| read_path_crosses_boundary(root, path))
                 })
             });
     }
@@ -259,6 +273,17 @@ fn shell_path_crosses_symlink(root: &std::path::Path, args: &serde_json::Value) 
 
 fn local_path_crosses_symlink(root: &std::path::Path, path: &str) -> bool {
     path_crosses_symlink(root, path, false)
+}
+
+fn read_path_crosses_boundary(root: &std::path::Path, path: &str) -> bool {
+    if !local_path_crosses_symlink(root, path) {
+        return false;
+    }
+    // Read-only aliases such as AGENTS.md -> CLAUDE.md keep the same workspace authority.
+    let Ok(root) = root.canonicalize() else {
+        return true;
+    };
+    aster_common::tools::resolve_path(&root, path).is_err()
 }
 
 fn shell_token_path_crosses_symlink(root: &std::path::Path, path: &str) -> bool {

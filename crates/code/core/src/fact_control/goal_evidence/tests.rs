@@ -8,6 +8,59 @@ use aster_effect::{
 };
 use serde_json::json;
 
+#[test]
+fn goal_observation_retains_loss_reference_exit_and_verification_without_mutating_receipt() {
+    let facts = receipt_pair(observation());
+    let mut receipt: ToolExecutionResultV1 =
+        serde_json::from_value(facts[2].payload["receipt"].clone()).unwrap();
+    let report = crate::verification::VerificationReport::new(
+        "host:original-check",
+        vec![crate::verification::VerificationCheck::required(
+            "original-check",
+            "file",
+            "Original check failed",
+        )
+        .with_status(crate::verification::VerificationStatus::Failed)],
+    );
+    let original = "original failed check output ".repeat(100);
+    let preview = "original failed check output (preview)";
+    let reference = "aster://tool-output/original-check";
+    let metadata = crate::tools::attach_tool_result_evidence(
+        Some(json!({
+            "artifact":{"artifact_uri":reference},"verification_report":report,"verification_author":"host",
+        })),
+        &original,
+        preview,
+        crate::tools::ToolResultLossModeV1::BoundedPreview,
+    );
+    receipt.outcome = ToolExecutionOutcome::Failed;
+    receipt.exit_code = Some(101);
+    receipt.output = json!({"kind":FACT_TOOL_RESULT_KIND,"text":preview,"is_error":true,
+        "exit_code":101,"metadata":metadata,"observation_digest":"immutable-meter-digest"})
+    .to_string()
+    .into();
+    receipt.validate().unwrap();
+    let before = receipt.clone();
+    let value = goal_tool_observation("bash", &receipt).unwrap();
+    assert_eq!(value["outcome"], "failed");
+    assert_eq!(value["exit_code"], 101);
+    assert_eq!(value["output"]["text"], preview);
+    assert_eq!(
+        value["output"]["metadata"]["verification_report"],
+        json!(report)
+    );
+    assert_eq!(value["output_projection"]["loss_mode"], "bounded_preview");
+    assert_eq!(value["output_projection"]["content_ref"], reference);
+    assert_eq!(value["output_projection"]["original_bytes"], original.len());
+    assert_eq!(value["output_projection"]["projected_bytes"], preview.len());
+    assert!(value["output"]["observation_digest"].is_null());
+    assert!(value["output"]["metadata"]["aster_tool_result_evidence"].is_null());
+    assert_eq!(
+        receipt, before,
+        "presentation cannot mutate the bound original receipt"
+    );
+}
+
 fn observation() -> ToolEffectObservationV1 {
     ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
         path: "source.txt".into(),
@@ -210,4 +263,41 @@ fn a_settled_background_mutation_must_belong_to_the_current_run() {
     facts[3].payload["source_run"] = json!("current-run");
     facts[3].payload["process_settled"] = json!(false);
     assert!(!progress(&facts));
+}
+
+#[test]
+fn verified_goal_evidence_accepts_a_long_stage_and_still_bounds_larger_input() {
+    for (bytes, admitted) in [(48 * 1024, true), (70 * 1024, false)] {
+        let mut facts = receipt_pair(observation());
+        let mut receipt: ToolExecutionResultV1 =
+            serde_json::from_value(facts[2].payload["receipt"].clone()).unwrap();
+        let mut ledger = crate::harness_loop::MutationLedger::default();
+        ledger.observe_tool_receipt("write", &receipt);
+        let report = crate::verification::VerificationReport::new(
+            "current-run",
+            vec![crate::verification::VerificationCheck::required(
+                "original-check",
+                "source.txt",
+                "Original check passes on the current source",
+            )
+            .with_status(crate::verification::VerificationStatus::Passed)],
+        )
+        .with_effect_digest(ledger.digest());
+        receipt.output = json!({"kind":FACT_TOOL_RESULT_KIND,"text":"x".repeat(bytes),"is_error":false,"exit_code":0,"metadata":{"verification_report":report,"verification_author":"host"}}).to_string().into();
+        facts[2].payload["receipt"] = json!(receipt);
+        let before = facts.clone();
+        let evidence =
+            evidence_for_goal_step(&facts, 1, "current-session", "current-run", None, None);
+        assert_eq!(evidence.is_some(), admitted, "source bytes={bytes}");
+        if let Some((reports, evidence, _)) = evidence {
+            assert!(evidence.len() > 32 * 1024 && evidence.len() <= 64 * 1024);
+            assert!(VerificationSummary::from_reports(&reports).supports_goal_achievement());
+            let projected: serde_json::Value = serde_json::from_str(&evidence).unwrap();
+            assert_eq!(
+                projected[0]["output"]["text"].as_str().unwrap().len(),
+                bytes
+            );
+        }
+        assert_eq!(facts, before, "projection cannot mutate original receipts");
+    }
 }

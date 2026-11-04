@@ -222,8 +222,7 @@ fn dashboard_picker_filters_workspace_members_and_strict_loads_fuzzy_pick() {
             grouping: aster_dashboard_store::Grouping::State,
             members: vec![
                 aster_dashboard_store::Member {
-                    session_id: aster_dashboard_store::SessionId::new(visible_id.clone())
-                        .unwrap(),
+                    session_id: aster_dashboard_store::SessionId::new(visible_id.clone()).unwrap(),
                     kind: aster_dashboard_store::MemberKind::Build,
                     origin: aster_dashboard_store::MemberOrigin::Local,
                     cwd: Some(cwd.to_string_lossy().into_owned()),
@@ -250,8 +249,7 @@ fn dashboard_picker_filters_workspace_members_and_strict_loads_fuzzy_pick() {
                     order_rank: None,
                 },
                 aster_dashboard_store::Member {
-                    session_id: aster_dashboard_store::SessionId::new(pinned_id.clone())
-                        .unwrap(),
+                    session_id: aster_dashboard_store::SessionId::new(pinned_id.clone()).unwrap(),
                     kind: aster_dashboard_store::MemberKind::Build,
                     origin: aster_dashboard_store::MemberOrigin::Local,
                     cwd: Some(cwd.to_string_lossy().into_owned()),
@@ -264,10 +262,8 @@ fn dashboard_picker_filters_workspace_members_and_strict_loads_fuzzy_pick() {
                     order_rank: None,
                 },
                 aster_dashboard_store::Member {
-                    session_id: aster_dashboard_store::SessionId::new(
-                        optimistic_pinned_id.clone(),
-                    )
-                    .unwrap(),
+                    session_id: aster_dashboard_store::SessionId::new(optimistic_pinned_id.clone())
+                        .unwrap(),
                     kind: aster_dashboard_store::MemberKind::Build,
                     origin: aster_dashboard_store::MemberOrigin::Local,
                     cwd: Some(cwd.to_string_lossy().into_owned()),
@@ -516,10 +512,7 @@ fn missing_workspace_row_toasts_without_remote_restore() {
     );
 }
 /// `app` as a dashboard v2 client over `store`, ready for writes.
-fn ready_workspace_app(
-    mut app: AppView,
-    store: aster_dashboard_store::WorkspaceStore,
-) -> AppView {
+fn ready_workspace_app(mut app: AppView, store: aster_dashboard_store::WorkspaceStore) -> AppView {
     let snapshot = store.snapshot().unwrap();
     app.workspace_dashboard_enabled = true;
     app.workspace_membership.set_ready_for_test(store, snapshot);
@@ -6038,10 +6031,8 @@ fn workspace_dashboard_stop_archives_loaded_row_and_repairs_selection() {
                 .iter()
                 .enumerate()
                 .map(|(index, _)| aster_dashboard_store::Member {
-                    session_id: aster_dashboard_store::SessionId::new(format!(
-                        "archive-{index}"
-                    ))
-                    .unwrap(),
+                    session_id: aster_dashboard_store::SessionId::new(format!("archive-{index}"))
+                        .unwrap(),
                     kind: aster_dashboard_store::MemberKind::Build,
                     origin: aster_dashboard_store::MemberOrigin::Local,
                     cwd: Some("/tmp".into()),
@@ -6190,9 +6181,11 @@ fn confirmed_workspace_archive_reports_when_session_became_busy() {
     let effects = dispatch_dashboard_delete(&mut app);
     assert!(effects.is_empty());
     assert!(app.agents.contains_key(&id));
-    assert!(!app.workspace_membership.removal_pending_for_test(
-        &aster_dashboard_store::SessionId::new("archive-race").unwrap()
-    ));
+    assert!(
+        !app.workspace_membership.removal_pending_for_test(
+            &aster_dashboard_store::SessionId::new("archive-race").unwrap()
+        )
+    );
     let dashboard = app.dashboard.as_ref().unwrap();
     assert!(dashboard.delete_confirm.is_none());
     assert_eq!(

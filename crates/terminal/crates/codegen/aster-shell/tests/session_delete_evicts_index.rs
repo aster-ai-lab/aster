@@ -3,6 +3,7 @@
 
 use std::sync::{Arc, OnceLock};
 
+use agent_client_protocol as acp;
 use aster_login::{AuthManager, GrokComConfig};
 use aster_shell::session::info::Info;
 use aster_shell::session::persistence::delete_session_history;
@@ -12,7 +13,6 @@ use aster_shell::session::storage::search::{
 };
 use aster_shell::session::storage::{JsonlStorageAdapter, StorageAdapter};
 use aster_test_support::EnvGuard;
-use agent_client_protocol as acp;
 
 fn home() -> &'static std::path::Path {
     static HOME: OnceLock<(tempfile::TempDir, EnvGuard)> = OnceLock::new();

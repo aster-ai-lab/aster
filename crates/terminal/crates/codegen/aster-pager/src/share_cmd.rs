@@ -1,5 +1,5 @@
-use aster_shell::agent::config::Config as AgentConfig;
 use anyhow::Result;
+use aster_shell::agent::config::Config as AgentConfig;
 
 #[derive(Debug, clap::Args, Clone)]
 pub struct ShareArgs {

@@ -177,9 +177,18 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
     use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let base = format!("http://{}/v1", listener.local_addr().unwrap());
-    let provider = tokio::spawn(async move {
+    let (ready, mut turns) = tokio::sync::mpsc::channel::<()>(1);
+    let provider = async move {
         let mut requests = Vec::<serde_json::Value>::new();
+        let mut awaiting_turn = true;
         for _ in 0..16 {
+            if awaiting_turn {
+                // Session rebuilds are outside the provider's request deadline.
+                turns
+                    .recv()
+                    .await
+                    .expect("the next session is ready to send");
+            }
             let (socket, _) =
                 tokio::time::timeout(std::time::Duration::from_secs(5), listener.accept())
                     .await
@@ -206,6 +215,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
             socket.read_exact(&mut bytes).await.unwrap();
             let request: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
             let streaming = request["stream"] == true;
+            awaiting_turn = streaming;
             let index = requests.len();
             if streaming {
                 requests.push(request);
@@ -243,7 +253,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         }
         assert_eq!(requests.len(), 5);
         requests
-    });
+    };
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
@@ -257,10 +267,13 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
     let host = AsterCodeAgent::new(launch.clone());
     let initialize = || {
         acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
-            [(
-                "rules".into(),
-                serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"),
-            )]
+            [
+                (
+                    "rules".into(),
+                    serde_json::json!("Initialize rules marker: BLUE_WHALE_9090"),
+                ),
+                ("aster/terminalMarkdown".into(), serde_json::json!(true)),
+            ]
             .into_iter()
             .collect(),
         ))
@@ -271,6 +284,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         .await
         .unwrap()
         .session_id;
+    let provider = tokio::spawn(provider);
     for (index, selected) in [None, Some("low"), Some("none"), Some("default")]
         .into_iter()
         .enumerate()
@@ -307,6 +321,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
             assert!(history.contains(&format!("marker-{earlier}")));
             assert!(history.contains(&format!("reply-{earlier}")));
         }
+        ready.send(()).await.unwrap();
         tokio::time::timeout(
             std::time::Duration::from_secs(5),
             session.send(&format!("marker-{index}\n{}", phrasings[index]), None),
@@ -341,6 +356,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         .unwrap()
         .session
         .clone();
+    ready.send(()).await.unwrap();
     tokio::time::timeout(
         std::time::Duration::from_secs(5),
         session.send("marker-4", None),
@@ -361,6 +377,8 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
             system.contains(SESSION_OUTCOME_BOUNDARY),
             "core boundary must remain in request {index}"
         );
+        assert!(system.contains(TERMINAL_MARKDOWN_PRESENTATION),
+            "terminal artifact guidance must reach the actual provider request after model switches");
         let messages = request["messages"].to_string();
         if index < phrasings.len() {
             assert!(messages.contains(phrasings[index]));

@@ -14,13 +14,13 @@ use super::ShellCompletionData;
 use crate::agent::mvp_agent::{LocalRef, MvpAgent};
 use crate::extensions::notification::{SessionNotification, SessionUpdate};
 use crate::session::SessionCommand;
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_telemetry::region::Region;
 use aster_tools::implementations::grok_build::task::coordinator::{self, ChildCompletion};
 use aster_tools::implementations::grok_build::task::types::{
     SubagentRequest, SubagentResult, SubagentSnapshot,
 };
-use agent_client_protocol as acp;
 use tokio::sync::mpsc;
 /// Floor keeps the pool responsive when `available_parallelism` is tiny.
 const MIN_WORKER_THREADS: usize = 2;
@@ -89,8 +89,7 @@ pub(crate) async fn join_worker_task<T>(task: tokio::task::JoinHandle<T>, panic_
 }
 impl coordinator::ChildRunner for ShellChildRunner {
     type Control = crate::agent::subagent::ShellChildRuntime;
-    type RootControl =
-        aster_tools::implementations::grok_build::task::root_control::NoRootControl;
+    type RootControl = aster_tools::implementations::grok_build::task::root_control::NoRootControl;
     type CompletionData = crate::agent::subagent::ShellCompletionData;
     type RunFuture = coordinator::LocalBoxFuture<coordinator::ChildRunOutput<Self::CompletionData>>;
     type ValidateFuture = coordinator::LocalBoxFuture<
@@ -331,9 +330,7 @@ impl coordinator::ChildRunner for ShellChildRunner {
 }
 /// Coordinator limit sink; the coordinator cannot link telemetry directly.
 fn log_limit_notice(notice: coordinator::SubagentLimitNotice) {
-    use aster_telemetry::events::{
-        SubagentLimitDisposition, SubagentLimitHit, SubagentOwnerKind,
-    };
+    use aster_telemetry::events::{SubagentLimitDisposition, SubagentLimitHit, SubagentOwnerKind};
     use coordinator::{LimitedSpawnOrigin, SubagentLimitDecision};
     let (disposition, limit) = match notice.decision {
         SubagentLimitDecision::QueuedAtConcurrentLimit { limit } => {
@@ -368,11 +365,10 @@ pub(crate) fn spawn_subagent_coordinator(
     };
     let limit_sink: coordinator::SubagentLimitSink = std::sync::Arc::new(log_limit_notice);
     let config = coordinator::CoordinatorConfig {
-        foreground_budget:
-            aster_tools::implementations::grok_build::task::backend::env_duration_or(
-                "GROK_SUBAGENT_AWAIT_BUDGET_MS",
-                std::time::Duration::from_secs(600),
-            ),
+        foreground_budget: aster_tools::implementations::grok_build::task::backend::env_duration_or(
+            "GROK_SUBAGENT_AWAIT_BUDGET_MS",
+            std::time::Duration::from_secs(600),
+        ),
         limits,
         limit_sink: Some(limit_sink),
         buffer_completions: true,
@@ -591,7 +587,8 @@ pub(crate) fn emit_subagent_notification(
         .and_then(|v| serde_json::value::to_raw_value(&v))
         .ok();
     if let Some(params) = params {
-        let ext_notification = acp::ExtNotification::new("aster/session_notification", params.into());
+        let ext_notification =
+            acp::ExtNotification::new("aster/session_notification", params.into());
         gateway.forward_fire_and_forget(ext_notification);
         return persist_ok;
     }

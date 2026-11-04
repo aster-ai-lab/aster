@@ -49,7 +49,8 @@ fn manual_install_cmd(channel: &str) -> String {
         return if cfg!(windows) {
             "irm https://github.com/aster-ai-lab/aster/cli/enterprise-install.ps1 | iex".to_string()
         } else {
-            "curl -fsSL https://github.com/aster-ai-lab/aster/cli/enterprise-install.sh | bash".to_string()
+            "curl -fsSL https://github.com/aster-ai-lab/aster/cli/enterprise-install.sh | bash"
+                .to_string()
         };
     }
     if is_stable_channel(channel) || !safe {
@@ -461,8 +462,7 @@ pub async fn ensure_latest_on_disk(update_config: &UpdateConfig) -> Result<Ensur
         .await?;
         // The leader relaunches right after a successful converge and would die with the event still in flight
         // Failures keep it alive, so successes would under-report. The install is already done.
-        aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN)
-            .await;
+        aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN).await;
         outcome.installed = Some(target.clone());
     }
 
@@ -780,7 +780,9 @@ pub async fn run_update_if_available(
         return Ok(false);
     }
     if inst == WINGET {
-        eprintln!("A new version of Aster Code is available: {current_version} -> {latest_version}");
+        eprintln!(
+            "A new version of Aster Code is available: {current_version} -> {latest_version}"
+        );
         let target = if has_version_cap(&policy) {
             crate::winget::Target::Exact(&latest_version)
         } else {

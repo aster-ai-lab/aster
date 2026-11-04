@@ -264,7 +264,7 @@ impl Tool for SearchWikiTool {
             let value = host
                 .bridge
                 .search_workspace_wikis(
-                    ctx.workspace_operation(aster_core::capability::WorkspaceOperation::Read)?,
+                    ctx,
                     &host.session,
                     query,
                     scope.as_str(),
@@ -352,6 +352,14 @@ fn validate_host_reply(
         "missing Wiki coverage state"
     );
     anyhow::ensure!(
+        value["phase"] != "not-ready" || value["complete"] == false,
+        "not-ready Wiki search cannot claim complete=true"
+    );
+    anyhow::ensure!(
+        value["phase"] != "not-ready" || value["searched"].as_u64() == Some(0),
+        "not-ready Wiki search cannot report searched>0"
+    );
+    anyhow::ensure!(
         value["nextCursor"].is_null()
             || value["nextCursor"].as_str().is_some_and(|s| !s.is_empty()
                 && s.len() <= 256
@@ -365,6 +373,10 @@ fn validate_host_reply(
     anyhow::ensure!(
         value["phase"] != "not-ready" || hits.is_empty(),
         "unpublished Wiki hits refused"
+    );
+    anyhow::ensure!(
+        value["phase"] != "not-ready" || value["complete"] == false,
+        "not-ready Wiki cannot report a complete search"
     );
     for hit in hits {
         for key in ["sourceRoot", "outputRoot", "path", "name", "passage"] {

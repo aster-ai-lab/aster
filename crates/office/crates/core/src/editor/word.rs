@@ -19,10 +19,15 @@ pub(super) use arrange::{copy_node, move_node, swap_nodes};
 
 const DOCUMENT_PART: &str = "word/document.xml";
 const WORD_NAMESPACE: &str = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
-const DEFAULT_COLUMN_WIDTH: u32 = 2_400;
+/// Usable body width for the blank template: pgSz 12240 minus left/right margins 1440 each.
+const PAGE_CONTENT_WIDTH_TWIPS: u32 = 9_360;
 const MAX_TABLE_ROWS: usize = 10_000;
 const MAX_TABLE_COLUMNS: usize = 63;
 const MAX_TABLE_CELLS: usize = 100_000;
+
+fn column_width_twips(columns: usize) -> u32 {
+    (PAGE_CONTENT_WIDTH_TWIPS / u32::try_from(columns.max(1)).unwrap_or(1)).max(1)
+}
 
 const RUN_PROPERTY_ORDER: &[&str] = &[
     "rStyle",
@@ -96,16 +101,31 @@ pub(super) fn add_paragraph(
     let body = index
         .child("body", 1)
         .ok_or_else(|| node_not_found("/body"))?;
-    let position = direct_child_count(body, "p") + 1;
     let prefix = prefix(&body.qualified_name);
     let paragraph_tag = qualified(prefix, "p");
-    let run_tag = qualified(prefix, "r");
-    let text_tag = qualified(prefix, "t");
-    let escaped = crate::xml_edit::escape_text(text);
-    let space = preserve_space_attribute(text);
     let fragment = format!(
-        "<{paragraph_tag}><{run_tag}><{text_tag}{space}>{escaped}</{text_tag}></{run_tag}></{paragraph_tag}>"
+        "<{paragraph_tag}>{}</{paragraph_tag}>",
+        word_paragraph_runs_xml(prefix, text)
     );
+    // Blank templates ship a single empty <w:p/>; fill it so the first real
+    // paragraph is /body/p[1] rather than leaving a leading blank.
+    if let Some(first) = body.child("p", 1) {
+        if first.empty
+            && direct_child_count(body, "p") == 1
+            && body
+                .children
+                .iter()
+                .all(|child| child.local_name == "p" || child.local_name == "sectPr")
+        {
+            let edited = apply_patches(
+                &part,
+                vec![XmlPatch::new(first.full_range.clone(), fragment)],
+            )?;
+            package.set_part(DOCUMENT_PART, edited)?;
+            return Ok("/body/p[1]".into());
+        }
+    }
+    let position = direct_child_count(body, "p") + 1;
     let edited = if let Some(section) = body
         .children
         .iter()
@@ -145,6 +165,12 @@ pub(super) fn set_text(package: &mut NativeOfficePackage, path: &str, text: &str
         ));
     }
 
+    if target.local_name == "p" {
+        let runs = word_paragraph_runs_xml(prefix(&target.qualified_name), text);
+        let edited = replace_paragraph_runs(&part, target, &runs)?;
+        return package.set_part(DOCUMENT_PART, edited);
+    }
+
     if target.local_name == "tc" {
         let mut text_elements = Vec::new();
         target.descendants_named("t", &mut text_elements);
@@ -158,12 +184,16 @@ pub(super) fn set_text(package: &mut NativeOfficePackage, path: &str, text: &str
             let edited = insert_child(&part, paragraph, word_text_fragment(paragraph, text, true))?;
             return package.set_part(DOCUMENT_PART, edited);
         }
+        // Prefer rewriting the first cell paragraph so newlines become w:br.
+        if let Some(paragraph) = target.child("p", 1) {
+            let runs = word_paragraph_runs_xml(prefix(&paragraph.qualified_name), text);
+            let edited = replace_paragraph_runs(&part, paragraph, &runs)?;
+            return package.set_part(DOCUMENT_PART, edited);
+        }
     }
 
     let insertion = if target.local_name == "r" {
         Some(word_text_fragment(target, text, false))
-    } else if target.local_name == "p" {
-        Some(word_text_fragment(target, text, true))
     } else {
         None
     };
@@ -526,7 +556,7 @@ pub(super) fn add_table_row(
     let edited_part = LosslessXmlPart::parse(DOCUMENT_PART.to_string(), edited)?;
     let edited_index = index_xml(&edited_part)?;
     let edited_table = locate_word_path(&edited_index, parent)?;
-    let row = row_xml(columns);
+    let row = row_xml(columns, column_width_twips(columns));
     let edited = insert_child(&edited_part, edited_table, row)?;
     package.set_part(DOCUMENT_PART, edited)?;
     Ok(format!("{parent}/tr[{}]", existing_rows + 1))
@@ -560,7 +590,11 @@ pub(super) fn add_table_cell(
     let edited_part = LosslessXmlPart::parse(DOCUMENT_PART.to_string(), edited)?;
     let edited_index = index_xml(&edited_part)?;
     let edited_row = locate_word_path(&edited_index, parent)?;
-    let edited = insert_child(&edited_part, edited_row, cell_xml(text))?;
+    let edited = insert_child(
+        &edited_part,
+        edited_row,
+        cell_xml(text, column_width_twips(columns)),
+    )?;
     package.set_part(DOCUMENT_PART, edited)?;
     Ok(format!("{parent}/tc[{columns}]"))
 }
@@ -699,15 +733,49 @@ fn is_comment_reference_run(run: &IndexedXmlElement) -> bool {
 
 fn word_text_fragment(target: &IndexedXmlElement, text: &str, wrap_run: bool) -> String {
     let prefix = prefix(&target.qualified_name);
-    let text_tag = qualified(prefix, "t");
-    let space = preserve_space_attribute(text);
-    let text = crate::xml_edit::escape_text(text);
     if wrap_run {
-        let run_tag = qualified(prefix, "r");
-        format!("<{run_tag}><{text_tag}{space}>{text}</{text_tag}></{run_tag}>")
+        word_paragraph_runs_xml(prefix, text)
     } else {
+        let text_tag = qualified(prefix, "t");
+        let space = preserve_space_attribute(text);
+        let text = crate::xml_edit::escape_text(text);
         format!("<{text_tag}{space}>{text}</{text_tag}>")
     }
+}
+
+fn word_paragraph_runs_xml(prefix: Option<&str>, text: &str) -> String {
+    let run_tag = qualified(prefix, "r");
+    let text_tag = qualified(prefix, "t");
+    let break_tag = qualified(prefix, "br");
+    let normalized = text.replace("\r\n", "\n").replace('\r', "\n");
+    let mut runs = String::new();
+    runs.push_str(&format!("<{run_tag}>"));
+    for (index, line) in normalized.split('\n').enumerate() {
+        if index > 0 {
+            runs.push_str(&format!("<{break_tag}/>"));
+        }
+        let space = preserve_space_attribute(line);
+        let escaped = crate::xml_edit::escape_text(line);
+        runs.push_str(&format!("<{text_tag}{space}>{escaped}</{text_tag}>"));
+    }
+    runs.push_str(&format!("</{run_tag}>"));
+    runs
+}
+
+fn replace_paragraph_runs(
+    part: &LosslessXmlPart,
+    paragraph: &IndexedXmlElement,
+    runs: &str,
+) -> UseResult<Vec<u8>> {
+    let start = paragraph
+        .child("pPr", 1)
+        .map_or(paragraph.content_range.start, |properties| {
+            properties.full_range.end
+        });
+    apply_patches(
+        part,
+        vec![XmlPatch::new(start..paragraph.content_range.end, runs)],
+    )
 }
 
 fn require_word(package: &NativeOfficePackage, operation: &str) -> UseResult<()> {
@@ -796,10 +864,9 @@ fn ensure_grid_width(
         return Ok(part.raw().to_vec());
     }
     let missing = columns - existing;
+    let width = column_width_twips(columns);
     let columns_xml = (0..missing)
-        .map(|_| {
-            format!("<w:gridCol xmlns:w=\"{WORD_NAMESPACE}\" w:w=\"{DEFAULT_COLUMN_WIDTH}\"/>")
-        })
+        .map(|_| format!("<w:gridCol xmlns:w=\"{WORD_NAMESPACE}\" w:w=\"{width}\"/>"))
         .collect::<String>();
     if let Some(grid) = table.child("tblGrid", 1) {
         return insert_child(part, grid, columns_xml);
@@ -895,24 +962,29 @@ fn parent_path(path: &str) -> Option<&str> {
 }
 
 fn table_xml(rows: usize, columns: usize) -> String {
+    let width = column_width_twips(columns);
     let grid = (0..columns)
-        .map(|_| format!("<w:gridCol w:w=\"{DEFAULT_COLUMN_WIDTH}\"/>"))
+        .map(|_| format!("<w:gridCol w:w=\"{width}\"/>"))
         .collect::<String>();
-    let rows = (0..rows).map(|_| row_xml(columns)).collect::<String>();
+    let rows = (0..rows)
+        .map(|_| row_xml(columns, width))
+        .collect::<String>();
     format!(
         "<w:tbl xmlns:w=\"{WORD_NAMESPACE}\"><w:tblPr><w:tblW w:w=\"0\" w:type=\"auto\"/><w:tblLayout w:type=\"autofit\"/><w:tblBorders><w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/><w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/><w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/><w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/><w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/><w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"auto\"/></w:tblBorders></w:tblPr><w:tblGrid>{grid}</w:tblGrid>{rows}</w:tbl>"
     )
 }
 
-fn row_xml(columns: usize) -> String {
-    let cells = (0..columns).map(|_| cell_xml("")).collect::<String>();
+fn row_xml(columns: usize, width: u32) -> String {
+    let cells = (0..columns)
+        .map(|_| cell_xml("", width))
+        .collect::<String>();
     format!("<w:tr xmlns:w=\"{WORD_NAMESPACE}\">{cells}</w:tr>")
 }
 
-fn cell_xml(text: &str) -> String {
+fn cell_xml(text: &str, width: u32) -> String {
+    let space = preserve_space_attribute(text);
     let text = crate::xml_edit::escape_text(text);
-    let space = preserve_space_attribute(text.as_ref());
     format!(
-        "<w:tc xmlns:w=\"{WORD_NAMESPACE}\"><w:tcPr><w:tcW w:w=\"{DEFAULT_COLUMN_WIDTH}\" w:type=\"dxa\"/></w:tcPr><w:p><w:r><w:t{space}>{text}</w:t></w:r></w:p></w:tc>"
+        "<w:tc xmlns:w=\"{WORD_NAMESPACE}\"><w:tcPr><w:tcW w:w=\"{width}\" w:type=\"dxa\"/></w:tcPr><w:p><w:r><w:t{space}>{text}</w:t></w:r></w:p></w:tc>"
     )
 }

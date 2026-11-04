@@ -70,7 +70,7 @@ pub(crate) fn append_turn_complete_fact(
         "effect_digest": digest,
         "forced_stop": forced_stop.map(crate::harness_loop::ForcedStop::as_str),
         "receipt_keys": receipt_keys,
-        "background_receipt_keys": facts.iter().filter(|fact| fact.kind == "background.output" && fact.payload["event"] == "exited")
+        "background_receipt_keys": facts.iter().filter(|fact| (fact.kind == "background.output" && fact.payload["event"] == "exited") || fact.kind == "subagent.settled")
             .map(|fact| fact.key.clone()).collect::<Vec<_>>(),
         "log_cut": { "seq": cut.seq, "digest": cut.digest },
     });
@@ -80,6 +80,37 @@ pub(crate) fn append_turn_complete_fact(
             kind: TURN_COMPLETE_FACT_KIND.into(),
             key: format!("turn-complete:{}:{}", cut.seq, cut.digest),
             payload,
+        }],
+        None,
+    )?;
+    Ok(())
+}
+
+/// A parent answer can yield while exact Session-owned children remain unsettled.
+/// This marker covers no receipts and grants no Goal or mutation settlement.
+pub(crate) fn append_turn_yielded_fact(
+    surface: &SessionSurface,
+    deferred: &std::collections::BTreeSet<String>,
+) -> Result<(), ActorError> {
+    let log = surface_fact_log(surface)?;
+    let _writer = log.try_writer_fence()?;
+    let facts = log.read(&thread_for_session(&surface.session_id))?;
+    let debt = receipts::fold_debt(&facts);
+    if debt.unresolved.iter().any(|key| {
+        !deferred
+            .iter()
+            .any(|id| key == &format!("workspace-child:{id}"))
+    }) {
+        return Err(ActorError::Schema(
+            "tool_effect_unresolved: parent answer cannot cover other unknown invocations".into(),
+        ));
+    }
+    log.append(
+        &thread_for_session(&surface.session_id),
+        &[NewFact {
+            kind: "turn.yielded".into(),
+            key: format!("turn-yielded:{}", facts.last().map_or(0, |fact| fact.seq)),
+            payload: serde_json::json!({"pending_children":deferred,"run_id":surface.run_id}),
         }],
         None,
     )?;

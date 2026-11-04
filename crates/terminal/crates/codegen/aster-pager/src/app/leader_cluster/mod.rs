@@ -31,6 +31,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::{AcpClientRx, acp_send};
 use aster_shell::agent::MvpAgent;
 use aster_shell::leader::{
@@ -40,7 +41,6 @@ use aster_shell::leader::{
     run_leader_server,
 };
 use aster_test_support::MockInferenceServer;
-use agent_client_protocol as acp;
 use tempfile::TempDir;
 use tokio::task::{JoinSet, LocalSet};
 use tokio_util::sync::CancellationToken;

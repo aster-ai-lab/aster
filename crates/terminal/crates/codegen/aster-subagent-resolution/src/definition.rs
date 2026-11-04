@@ -4,6 +4,7 @@ use crate::types::{EffectiveRuntimeConfig, ResolutionError};
 use aster_agent::config::{AgentDefinition, IsolationMode};
 use aster_agent::plugins::PluginRegistry;
 use aster_agent::prompt::context::{PromptAudience, PromptContext};
+use aster_tool_types::{SubagentCapabilityMode, SubagentIsolationMode};
 use aster_tools::implementations::grok_build::task::types::{
     SubagentCapabilityModeExt, SubagentRuntimeOverrides, prune_orphaned_background_task_tools,
 };
@@ -11,7 +12,6 @@ use aster_tools::registry::types::ToolConfig;
 use aster_tools::types::compat::CompatConfig;
 use aster_tools::types::template_renderer::TemplateRenderer;
 use aster_tools::types::tool::ToolKind;
-use aster_tool_types::{SubagentCapabilityMode, SubagentIsolationMode};
 use std::collections::HashMap;
 use std::path::Path;
 /// Inputs that affect definition discovery and spawn permission.
@@ -64,18 +64,14 @@ pub fn discover_agent_definition(
     subagent_type: &str,
     context: &DefinitionResolutionContext<'_>,
 ) -> Option<AgentDefinition> {
-    aster_agent::discovery::by_name_in_cwd_with_plugins(
-        subagent_type,
-        context.cwd,
-        context.plugins,
-    )
-    .or_else(|| {
-        context
-            .cli_agents
-            .iter()
-            .find(|definition| definition.name == subagent_type)
-            .cloned()
-    })
+    aster_agent::discovery::by_name_in_cwd_with_plugins(subagent_type, context.cwd, context.plugins)
+        .or_else(|| {
+            context
+                .cli_agents
+                .iter()
+                .find(|definition| definition.name == subagent_type)
+                .cloned()
+        })
 }
 /// Sorted agent names the model can request under the current discovery context.
 pub fn available_agent_names(context: &DefinitionResolutionContext<'_>) -> Vec<String> {

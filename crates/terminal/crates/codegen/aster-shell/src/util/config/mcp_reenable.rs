@@ -7,8 +7,8 @@
 
 use std::collections::{BTreeSet, HashMap, HashSet};
 
-use aster_workspace::permission::resolution::{ManagedSettings, McpSubject, McpVerdict};
 use agent_client_protocol as acp;
+use aster_workspace::permission::resolution::{ManagedSettings, McpSubject, McpVerdict};
 
 use crate::session::managed_mcp::{McpDiscoveryInputs, discover_mcp_definitions_ignoring_disable};
 

@@ -2,8 +2,9 @@
 
 use super::CollectionResourceLimits;
 use crate::config::{current_config, ConfigBuilder, Durability, IoBackend};
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::storage_ceilings::StorageCeilings;
+use std::num::NonZeroU64;
 
 /// Supported options for creating or opening a collection.
 ///
@@ -24,6 +25,7 @@ pub struct CollectionOptions {
     pub(super) io_backend: Option<IoBackend>,
     pub(super) resource_limits: CollectionResourceLimits,
     pub(super) storage_ceilings: Option<StorageCeilings>,
+    wal_checkpoint_thresholds: Option<(NonZeroU64, NonZeroU64)>,
 }
 
 impl CollectionOptions {
@@ -47,6 +49,27 @@ impl CollectionOptions {
 
     pub fn durability(&self) -> Option<Durability> {
         self.durability
+    }
+
+    /// Overrides both checkpoint triggers captured by this collection.
+    ///
+    /// Always and Interval evaluate the triggers after each committed mutation.
+    /// One admitted mutation may cross a trigger; storage ceilings remain the
+    /// hard admission boundary and can require earlier checkpoints. Manual
+    /// still requires an explicit flush.
+    ///
+    /// # Errors
+    /// Returns `InvalidArgument` if either threshold is zero, leaving the
+    /// existing override unchanged.
+    pub fn set_wal_checkpoint_thresholds(&mut self, max_ops: u64, max_bytes: u64) -> Result<()> {
+        let operations = NonZeroU64::new(max_ops).ok_or_else(|| {
+            Error::invalid_argument("WAL checkpoint operation threshold must be positive")
+        })?;
+        let bytes = NonZeroU64::new(max_bytes).ok_or_else(|| {
+            Error::invalid_argument("WAL checkpoint byte threshold must be positive")
+        })?;
+        self.wal_checkpoint_thresholds = Some((operations, bytes));
+        Ok(())
     }
 
     /// Overrides the process-wide derived-sidecar I/O backend for this handle.
@@ -108,6 +131,10 @@ fn resolve_options_config(
     if let Some(durability) = options.durability {
         process_config.durability = durability;
     }
+    if let Some((operations, bytes)) = options.wal_checkpoint_thresholds {
+        process_config.wal_max_ops = Some(operations.get());
+        process_config.wal_max_bytes = Some(bytes.get());
+    }
     if let Some(io_backend) = options.io_backend {
         process_config.io_backend = io_backend;
     }
@@ -116,6 +143,10 @@ fn resolve_options_config(
     }
     process_config
 }
+
+#[cfg(test)]
+#[path = "configuration_wal_tests.rs"]
+mod wal_tests;
 
 #[cfg(test)]
 mod tests {

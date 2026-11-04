@@ -2,7 +2,9 @@ use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use aster_use_core::{OkfKnowledgeObservation, OkfProjectionReceipt, PlanScope, UseError, UseResult};
+use aster_use_core::{
+    OkfKnowledgeObservation, OkfProjectionReceipt, PlanScope, UseError, UseResult,
+};
 use aster_use_extension::ExtensionPaths;
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};

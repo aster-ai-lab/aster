@@ -15,8 +15,8 @@
 
 use crate::remote::BackendClient;
 use crate::session::export::{ExportedMessage, ExportedMetadata};
-use aster_telemetry::id::agent_id;
 use agent_client_protocol as acp;
+use aster_telemetry::id::agent_id;
 use tokio::sync::mpsc;
 
 /// Max buffered notifications before triggering an emergency flush.

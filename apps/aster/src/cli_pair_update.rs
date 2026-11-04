@@ -1,13 +1,8 @@
 //! Install the Aster CLI pair from this repository's `aster-cli` releases.
 //!
-//! The download meter is the ascii.rest `progress-bar` piece
-//! (https://ascii.rest/progress-bar/, `src/pieces/progress-bar.ts`).
-//! Copyright (c) 2026 bas3line. MIT License.
-//!
-//! That piece's clock eases, stalls, and restarts on its own. This command
-//! keeps the piece's five styles and 48×11 layout, and fills them from the
-//! bytes received. The meter stops when the update stops. `--check` and
-//! `--json` do not draw it and do not replace either binary.
+//! Download progress measures received bytes only. Verification, extraction,
+//! and installation report their own stages. Non-interactive output uses
+//! plain stage lines; `--check` and `--json` do not draw progress or install.
 //!
 //! Releases are discovered at run time from the channel manifest each
 //! release publishes as `latest.json`. `aster update` reads the newest
@@ -51,11 +46,7 @@ const SANDBOX_MEMBERS: [&str; 9] = [
     "sandbox/system-image.json",
 ];
 
-const COLS: usize = 48;
-const ROWS: usize = 11;
-const BAR_W: usize = 28;
-const LABELS: [&str; 5] = ["fetching", "unpacking", "indexing", "building", "linking"];
-const EIGHTHS: [char; 8] = [' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉'];
+const PROGRESS_INTERVAL: Duration = Duration::from_millis(100);
 
 pub struct Request {
     pub check: bool,
@@ -160,6 +151,8 @@ pub fn run(request: Request) -> Result<()> {
         },
     };
     refuse_foreign_installer_env()?;
+    let mut meter = Progress::new(!request.check && !request.json);
+    meter.show("Checking for updates...");
     let channel = resolve_channel(requested)?;
     if request.check || request.json {
         return print_status(&channel, request.json);
@@ -167,10 +160,19 @@ pub fn run(request: Request) -> Result<()> {
     // An unpinned update installs strictly newer releases only. An explicit
     // `--version` (and `--force-reinstall`) may reinstall the same release.
     if requested.is_none() && !request.force_reinstall && channel.version <= Version::current() {
+        meter.finish();
         print_current(&channel.version, &channel.tag, None);
         return Ok(());
     }
-    match install_release(&channel, request.force_reinstall)? {
+    meter.finish();
+    eprintln!(
+        "Updating Aster {} -> {}",
+        Version::current(),
+        channel.version
+    );
+    let outcome = install_release(&channel, request.force_reinstall, &mut meter)?;
+    meter.finish();
+    match outcome {
         InstallOutcome::Installed {
             identity,
             dir,
@@ -470,24 +472,29 @@ enum InstallOutcome {
     },
 }
 
-fn install_release(channel: &Channel, force_reinstall: bool) -> Result<InstallOutcome> {
+fn install_release(
+    channel: &Channel,
+    force_reinstall: bool,
+    meter: &mut Progress,
+) -> Result<InstallOutcome> {
     let work = WorkDir::new()?;
     let archive = work.path.join("archive");
-    let mut meter = Progress::for_terminal();
-    let copied = match &channel.source {
+    meter.show("Downloading...");
+    match &channel.source {
         ChannelSource::Official { url } => {
-            download_official(url, &channel.asset_name, &archive, &mut meter)
+            download_official(url, &channel.asset_name, &archive, meter)
         }
-        ChannelSource::Local(path) => copy_chunks(path, &archive, &mut meter),
-    };
-    meter.finish();
-    copied?;
+        ChannelSource::Local(path) => copy_chunks(path, &archive, meter),
+    }?;
+    meter.show("Verifying archive...");
     let digest = sha256_hex(&archive).context("cannot digest the release archive")?;
     if digest != channel.sha256 {
         bail!("channel checksum mismatch");
     }
     let unpacked = work.path.join("unpack");
+    meter.show("Extracting...");
     unpack_archive(&archive, &unpacked).context("release archive is incomplete")?;
+    meter.show("Verifying components...");
     let pair = verify_pair(&unpacked)?;
     let dir = install_dir()?;
     let (aster_name, acp_name) = binary_names();
@@ -508,6 +515,7 @@ fn install_release(channel: &Channel, force_reinstall: bool) -> Result<InstallOu
             tag: channel.tag.clone(),
         });
     }
+    meter.show("Installing...");
     promote_pair(&dir, &dest_aster, &dest_acp, &pair)?;
     Ok(InstallOutcome::Installed {
         identity: pair.identity,
@@ -972,8 +980,8 @@ fn download_official(url: &str, name: &str, dest: &Path, meter: &mut Progress) -
     if !github_asset_host(response.url()) || !response.status().is_success() {
         bail!("cannot download the Aster CLI release");
     }
-    let total = response.content_length().unwrap_or(0);
-    if total > MAX_ARCHIVE {
+    let total = response.content_length();
+    if total.is_some_and(|total| total > MAX_ARCHIVE) {
         bail!("release archive is too large");
     }
     meter.push(0, total);
@@ -995,11 +1003,10 @@ fn download_official(url: &str, name: &str, dest: &Path, meter: &mut Progress) -
         if got > MAX_ARCHIVE {
             bail!("release archive is too large");
         }
-        let denom = if total == 0 { got } else { total };
-        meter.push(got, denom);
+        meter.push(got, total);
     }
     file.sync_all()?;
-    if total != 0 && got != total {
+    if total.is_some_and(|total| got != total) {
         bail!("release download ended early");
     }
     Ok(())
@@ -1034,7 +1041,7 @@ fn copy_chunks(src: &Path, dest: &Path, meter: &mut Progress) -> Result<()> {
     }
     let mut input = File::open(src).context("release archive is missing")?;
     let mut output = File::create(dest).context("cannot store the release archive")?;
-    meter.push(0, total);
+    meter.push(0, Some(total));
     let mut got = 0_u64;
     let mut buf = [0_u8; READ_CHUNK];
     loop {
@@ -1050,7 +1057,7 @@ fn copy_chunks(src: &Path, dest: &Path, meter: &mut Progress) -> Result<()> {
         if got > MAX_ARCHIVE {
             bail!("release archive is too large");
         }
-        meter.push(got, total);
+        meter.push(got, Some(total));
     }
     output.sync_all()?;
     Ok(())
@@ -1183,52 +1190,64 @@ fn sole_name(path: &Path) -> Option<&str> {
 
 struct Progress {
     enabled: bool,
+    interactive: bool,
     open: bool,
-    last: Option<String>,
+    started: Instant,
+    last_draw: Option<Instant>,
 }
 
 impl Progress {
-    fn for_terminal() -> Self {
+    fn new(enabled: bool) -> Self {
         Self {
-            enabled: std::io::IsTerminal::is_terminal(&std::io::stderr()),
+            enabled,
+            interactive: std::io::IsTerminal::is_terminal(&std::io::stderr())
+                && std::env::var_os("TERM").as_deref() != Some(std::ffi::OsStr::new("dumb")),
             open: false,
-            last: None,
+            started: Instant::now(),
+            last_draw: None,
         }
     }
 
-    fn push(&mut self, got: u64, total: u64) {
+    fn show(&mut self, text: &str) {
         if !self.enabled {
             return;
         }
-        let fraction = if total == 0 {
-            1.0
+        let mut err = std::io::stderr().lock();
+        if self.interactive {
+            let text: String = text.chars().take(progress_width()).collect();
+            let _ = write!(err, "\r\x1b[2K{text}");
+            self.open = true;
         } else {
-            (got as f64 / total as f64).clamp(0.0, 1.0)
-        };
-        let frame = render_progress_bar(fraction);
-        if self.last.as_ref() == Some(&frame) {
+            let _ = writeln!(err, "{text}");
+        }
+        let _ = err.flush();
+    }
+
+    fn push(&mut self, got: u64, total: Option<u64>) {
+        if !self.enabled || !self.interactive {
             return;
         }
-        let mut err = std::io::stderr().lock();
-        if self.open {
-            let _ = write!(err, "\x1b[{ROWS}A");
-        } else {
-            let _ = write!(err, "\x1b[?25l");
-            self.open = true;
+        if got == 0 {
+            self.started = Instant::now();
+        } else if total != Some(got)
+            && self
+                .last_draw
+                .is_some_and(|last| last.elapsed() < PROGRESS_INTERVAL)
+        {
+            return;
         }
-        let _ = writeln!(err, "{frame}");
-        let _ = err.flush();
-        self.last = Some(frame);
+        let frame = render_download(got, total, self.started.elapsed(), progress_width());
+        self.show(&frame);
+        self.last_draw = Some(Instant::now());
     }
 
     fn finish(&mut self) {
-        if !self.open {
-            return;
+        if self.open {
+            let mut err = std::io::stderr().lock();
+            let _ = write!(err, "\r\x1b[2K");
+            let _ = err.flush();
+            self.open = false;
         }
-        let mut err = std::io::stderr().lock();
-        let _ = write!(err, "\x1b[?25h");
-        let _ = err.flush();
-        self.open = false;
     }
 }
 
@@ -1238,110 +1257,44 @@ impl Drop for Progress {
     }
 }
 
-fn render_progress_bar(fraction: f64) -> String {
-    let fraction = fraction.clamp(0.0, 1.0);
-    let bars = [
-        style_equals(fraction),
-        style_block(fraction),
-        style_hash(fraction),
-        style_lamps(fraction),
-        style_rule(fraction),
-    ];
-    let mut lines = Vec::with_capacity(ROWS);
-    for row in 0..ROWS {
-        if row % 2 == 0 {
-            lines.push(" ".repeat(COLS));
-            continue;
+fn progress_width() -> usize {
+    // Leave the last column unused so a redraw cannot trigger automatic wrapping.
+    crossterm::terminal::size().map_or(79, |(columns, _)| usize::from(columns).saturating_sub(1))
+}
+
+fn render_download(got: u64, total: Option<u64>, elapsed: Duration, width: usize) -> String {
+    let received = got as f64 / (1024.0 * 1024.0);
+    let speed = received / elapsed.as_secs_f64().max(0.001);
+    let mut line = match total {
+        Some(total) => {
+            let fraction = (got as f64 / total.max(1) as f64).clamp(0.0, 1.0);
+            let percent = (fraction * 100.0).floor() as u32;
+            let size = format!("{received:.1}/{:.1} MiB", total as f64 / (1024.0 * 1024.0));
+            let suffix = format!("{percent:>3}%  {size}  {speed:.1} MiB/s");
+            let bar_width = width
+                .saturating_sub("Downloading  ".len() + suffix.len())
+                .min(28);
+            if bar_width >= 8 {
+                let inner = bar_width - 2;
+                let filled = (fraction * inner as f64).floor() as usize;
+                let bar = if filled == inner {
+                    "=".repeat(inner)
+                } else {
+                    format!("{}>{}", "=".repeat(filled), " ".repeat(inner - filled - 1))
+                };
+                format!("Downloading [{bar}] {suffix}")
+            } else {
+                let compact = format!("Downloading {percent:>3}%  {size}");
+                if compact.len() <= width {
+                    compact
+                } else {
+                    format!("Downloading {percent:>3}%")
+                }
+            }
         }
-        let index = (row - 1) / 2;
-        let Some(bar) = bars.get(index) else {
-            lines.push(" ".repeat(COLS));
-            continue;
-        };
-        lines.push(pad_cols(format!(
-            "  {}{bar}  {}",
-            label(index),
-            percent(fraction)
-        )));
-    }
-    lines.join("\n")
-}
-
-fn pad_cols(mut line: String) -> String {
-    while line.chars().count() < COLS {
-        line.push(' ');
-    }
-    line
-}
-
-fn label(index: usize) -> String {
-    let text = LABELS.get(index).copied().unwrap_or("");
-    let cut: String = text.chars().take(9).collect();
-    format!("{cut:<10}")
-}
-
-fn percent(fraction: f64) -> String {
-    let value = (fraction * 100.0).floor() as u32;
-    format!("{value:>3}%")
-}
-
-fn filled_cells(fraction: f64, width: usize) -> usize {
-    (fraction * width as f64).floor() as usize
-}
-
-fn style_equals(fraction: f64) -> String {
-    let inner = BAR_W - 2;
-    let n = filled_cells(fraction, inner);
-    let mut line = String::from("[");
-    line.push_str(&"=".repeat(n));
-    if n < inner {
-        line.push('>');
-        line.push_str(&" ".repeat(inner - 1 - n));
-    }
-    line.push(']');
-    line
-}
-
-fn style_block(fraction: f64) -> String {
-    let inner = BAR_W - 2;
-    let eighths = (fraction * inner as f64 * 8.0).round() as usize;
-    let n = eighths >> 3;
-    let mut line = String::from("▕");
-    line.push_str(&"█".repeat(n));
-    if n < inner {
-        line.push(EIGHTHS.get(eighths & 7).copied().unwrap_or(' '));
-        line.push_str(&" ".repeat(inner - 1 - n));
-    }
-    line.push('▏');
-    line
-}
-
-fn style_hash(fraction: f64) -> String {
-    let inner = BAR_W - 2;
-    let n = filled_cells(fraction, inner);
-    let mut line = String::from("[");
-    line.push_str(&"#".repeat(n));
-    line.push_str(&".".repeat(inner - n));
-    line.push(']');
-    line
-}
-
-fn style_lamps(fraction: f64) -> String {
-    let n = (fraction * 14.0 + 1e-9).floor() as usize;
-    let raw = format!("{}{}", "█ ".repeat(n), "░ ".repeat(14 - n));
-    let mut line: String = raw.chars().take(BAR_W - 1).collect();
-    line.push(' ');
-    line
-}
-
-fn style_rule(fraction: f64) -> String {
-    let steps = (fraction * BAR_W as f64 * 2.0).floor() as usize;
-    let n = steps >> 1;
-    let mut line = "━".repeat(n);
-    if n < BAR_W {
-        line.push(if steps & 1 == 1 { '╾' } else { '─' });
-        line.push_str(&"─".repeat(BAR_W - 1 - n));
-    }
+        None => format!("Downloading {received:.1} MiB  {speed:.1} MiB/s"),
+    };
+    line.truncate(width);
     line
 }
 

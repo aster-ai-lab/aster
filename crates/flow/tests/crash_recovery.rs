@@ -31,7 +31,11 @@ impl CrashBeforeRunStartedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRunStartedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -76,7 +80,11 @@ impl CrashBeforeRetryExhaustionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRetryExhaustionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -125,7 +133,11 @@ impl CrashBeforeBatchSettlementStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeBatchSettlementStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -174,7 +186,11 @@ impl CrashBeforeStepCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeStepCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -223,7 +239,11 @@ impl CrashBeforeActivityCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -272,7 +292,11 @@ impl CrashBeforeActivityStartedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityStartedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -321,7 +345,11 @@ impl CrashBeforeActivityUnknownStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityUnknownStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -370,7 +398,11 @@ impl CrashBeforeActivityHeartbeatStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityHeartbeatStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

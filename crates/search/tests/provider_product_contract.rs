@@ -9,7 +9,7 @@ mod support;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use aster_search::providers::{
-    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
+    AliyunConfig, AliyunProvider, AsterConfig, AsterProvider, BochaConfig, BochaProvider,
     CredentialSource, DeepSeekConfig, DeepSeekProvider, DoubaoConfig, DoubaoProvider,
     FirecrawlCategory, FirecrawlConfig, FirecrawlProvider, FirecrawlSource, ProviderEngine,
     ProviderRequest, SearchProvider, TavilyAnswer, TavilyConfig, TavilyProvider, TavilyRawContent,

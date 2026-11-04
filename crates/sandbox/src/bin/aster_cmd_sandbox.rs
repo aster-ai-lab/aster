@@ -1,7 +1,7 @@
 //! `aster-sandbox` CLI — probe, digest, capabilities, reproduction exec, and relay.
 
-use aster_cmd_sandbox::{default_guest_relay_addr, CapabilityReport, NativeSandbox, TcpUnixRelay};
 use anyhow::{bail, Context, Result};
+use aster_cmd_sandbox::{default_guest_relay_addr, CapabilityReport, NativeSandbox, TcpUnixRelay};
 use std::env;
 use std::net::SocketAddr;
 use std::path::PathBuf;

@@ -1148,7 +1148,9 @@ async fn axum_adapter_error_responses_are_json() {
     let app = BootApplication::builder()
         .route(
             RouteDefinition::get("/bad", |_| async {
-                Err(aster_boot::BootError::BadRequest("invalid input".to_string()))
+                Err(aster_boot::BootError::BadRequest(
+                    "invalid input".to_string(),
+                ))
             })
             .unwrap(),
         )

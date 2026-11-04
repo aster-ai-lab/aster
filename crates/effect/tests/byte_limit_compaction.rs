@@ -113,6 +113,75 @@ fn config() -> HarnessConfig {
         .with_keep_tokens(0)
 }
 
+struct TailAwareSummaries {
+    tails: Mutex<Vec<Vec<String>>>,
+}
+
+impl Compactor for TailAwareSummaries {
+    fn compact(&self, _: &[String]) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
+        panic!("the scheduler must supply its actual retained tail")
+    }
+
+    fn compact_with_tail(
+        &self,
+        _: &[String],
+        kept: &[String],
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
+        self.tails.lock().unwrap().push(kept.to_vec());
+        Box::pin(async { Ok("Earlier observations remain summarized.".into()) })
+    }
+}
+
+#[tokio::test]
+async fn compactor_receives_the_exact_unchanged_multi_tool_tail() {
+    let compactor = Arc::new(TailAwareSummaries {
+        tails: Mutex::new(Vec::new()),
+    });
+    let services = Arc::new(CodingServices {
+        completion: Arc::new(BatchModel {
+            rounds: 2,
+            calls: AtomicUsize::new(0),
+        }),
+        tools: Arc::new(BigOutput(Arc::new(AtomicUsize::new(0)))),
+        compactor: compactor.clone(),
+    });
+    let log = MemoryLog::new();
+    let settled = ingest_coding(
+        &coding_actor(config().with_keep_tokens(64)),
+        &log,
+        services,
+        THREAD,
+        message_fact("m1", "complete the observations"),
+        LIMIT,
+    )
+    .await
+    .unwrap();
+    assert_eq!(settled.view.assistant.as_deref(), Some("finished"));
+    let tails = compactor.tails.lock().unwrap();
+    assert!(tails.len() >= 2);
+    let facts = log.read(THREAD).unwrap();
+    let landed = facts
+        .iter()
+        .filter(|fact| fact.kind == "compaction.done")
+        .collect::<Vec<_>>();
+    assert_eq!(landed.len(), tails.len());
+    for (fact, kept) in landed.into_iter().zip(tails.iter()) {
+        assert_eq!(fact.payload["kept"], json!(kept));
+        assert_eq!(
+            kept.iter()
+                .filter(|line| line.starts_with("tool\n"))
+                .count(),
+            BATCH
+        );
+        assert_eq!(
+            kept.iter()
+                .filter(|line| line.starts_with("assistant\ntool "))
+                .count(),
+            BATCH
+        );
+    }
+}
+
 #[tokio::test]
 async fn long_run_past_the_byte_limit_keeps_running_across_compactions() {
     let dir = tempfile::tempdir().unwrap();

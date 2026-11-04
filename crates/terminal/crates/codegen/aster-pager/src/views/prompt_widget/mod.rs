@@ -354,6 +354,8 @@ pub fn mode_flags<'a>(
 /// The default is blank: a caller that wants the bottom border without any info text passes it, and [`Self::is_blank`] then skips the text pass.
 #[derive(Default)]
 pub struct PromptInfo<'a> {
+    /// Session usage and throughput, placed before the trailing model caption when space permits.
+    pub telemetry: Option<&'a str>,
     /// Primary label to display on the info line (left side).
     pub model_name: &'a str,
     /// Flags to display on the left side, joined by " · " (e.g., "plan", "yolo").
@@ -369,6 +371,7 @@ pub struct PromptInfo<'a> {
 impl PromptInfo<'_> {
     pub fn is_blank(&self) -> bool {
         self.model_name.is_empty()
+            && self.telemetry.is_none()
             && self.flags.is_empty()
             && !self.multiline
             && self.usage_warning.is_none()
@@ -3097,9 +3100,7 @@ impl PromptWidget {
         let natural_text_h = if self.history_search.is_browse() {
             1
         } else {
-            self.textarea
-                .desired_height(text_width_for_height)
-                .max(1)
+            self.textarea.desired_height(text_width_for_height).max(1)
         };
 
         // Borderless Cursor-like: pin the elevated fill to pad + draft (+ bottom pad).
@@ -3119,10 +3120,7 @@ impl PromptWidget {
             let text_h = natural_text_h.min(remain.max(1));
             (pad_top, text_h, pad_bottom, info_h)
         } else {
-            let max_text = area
-                .height
-                .saturating_sub(vpad_top + info_block)
-                .max(1);
+            let max_text = area.height.saturating_sub(vpad_top + info_block).max(1);
             (vpad_top, max_text, 0, info_block)
         };
         let fill_height = if borderless {
@@ -3194,11 +3192,7 @@ impl PromptWidget {
 
         if style.chrome && style.show_accent_line {
             let accent_color = style.accent_color(&theme);
-            let accent_top = if half_vpad {
-                area.y + pad_top
-            } else {
-                area.y
-            };
+            let accent_top = if half_vpad { area.y + pad_top } else { area.y };
             let accent_h = if half_vpad { text_h } else { fill_height };
             for y in accent_top..accent_top + accent_h {
                 if let Some(cell) = buf.cell_mut((area.x, y)) {
@@ -3329,19 +3323,13 @@ impl PromptWidget {
             }
         }
 
-        // Slash overlays: teal command name and args ghost text
+        // Slash overlays: command name and args ghost text
         // Both use the same snapshot, so clone once
         // Capture flags for later ghost text suppression to avoid a second clone
         let (slash_active, slash_has_inline_ghost) = {
             let snap = self.slash_state.snapshot();
 
-            // Slash command-name highlight color
-            // Minimal mode is monochrome, so recolor to primary text (no visible accent); typed `/commands` then match the rest of the input
-            let slash_hl = if crate::views::modal_window::embedded() {
-                theme.text_primary
-            } else {
-                theme.accent_skill
-            };
+            let slash_hl = theme.accent_verify;
 
             let text = self.textarea.text();
             let leading_invocation = snap.command_range.as_ref().is_some_and(|range| {
@@ -3349,8 +3337,7 @@ impl PromptWidget {
                     .is_some_and(|before| before.trim().is_empty())
             });
 
-            // Leading `/` teals on dropdown or a recognized name. Mid-text teals only when
-            // the token actually runs (hoist) or is a skill/plugin mention.
+            // Completion eligibility is separate from the syntax-only mentions painted below.
             if snap.active
                 && (snap.command_recognized || (leading_invocation && snap.open))
                 && let Some(cmd_range) = &snap.command_range
@@ -3410,8 +3397,7 @@ impl PromptWidget {
                 }
             }
 
-            // Teal highlighting for recognized mid-text `/command` tokens.
-            for token_range in &snap.recognized_tokens {
+            for token_range in snap.recognized_tokens.iter().chain(&snap.syntax_tokens) {
                 paint_slash_token_highlight(
                     &self.textarea,
                     self.textarea_state,
@@ -3797,6 +3783,23 @@ impl PromptWidget {
             right_spans.push(Span::styled("multiline", flag_style));
         }
 
+        let telemetry_room = area
+            .width
+            .saturating_sub(
+                left_spans
+                    .iter()
+                    .chain(&right_spans)
+                    .map(Span::width)
+                    .sum::<usize>() as u16,
+            )
+            .saturating_sub(2);
+        if right_align
+            && let Some(label) = info.telemetry
+            && unicode_width::UnicodeWidthStr::width(label) <= telemetry_room as usize
+        {
+            buf.set_stringn(area.x, area.y, label, telemetry_room as usize, model_style);
+        }
+
         if !right_spans.is_empty() {
             // Pad the right side so it doesn't sit flush against the ╯ corner.
             right_spans.push(Span::styled(" ", pad_style));
@@ -3980,6 +3983,11 @@ fn remap_slash_snapshot_to_raw(
     }
     snap.recognized_tokens = snap
         .recognized_tokens
+        .iter()
+        .map(|r| map_clean_range_to_raw(text, r.clone(), textarea))
+        .collect();
+    snap.syntax_tokens = snap
+        .syntax_tokens
         .iter()
         .map(|r| map_clean_range_to_raw(text, r.clone(), textarea))
         .collect();

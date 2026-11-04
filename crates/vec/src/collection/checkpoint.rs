@@ -67,8 +67,8 @@ pub(super) fn maybe_checkpoint(
     state: &CollectionState,
     config: &ConfigBuilder,
 ) -> Result<()> {
-    let should =
-        matches!(config.durability, Durability::Interval) && storage.should_checkpoint(config);
+    let should = matches!(config.durability, Durability::Always | Durability::Interval)
+        && storage.should_checkpoint(config);
     if should {
         storage.checkpoint(&state.schema, state.docs.as_ref(), state.revision, true)?;
         persist_index_cache(storage, &state.schema, &state.indexes, state.revision, true);

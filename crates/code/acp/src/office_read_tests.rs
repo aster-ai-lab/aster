@@ -243,7 +243,10 @@ async fn output_and_argument_bounds_refuse_unbounded_reads() {
     assert!(partial["returned"].as_u64().unwrap() > 0);
     assert!(partial["returned"].as_u64().unwrap() < partial["total"].as_u64().unwrap());
     assert!(
-        partial.get("next_node_path").and_then(|value| value.as_str()).is_some(),
+        partial
+            .get("next_node_path")
+            .and_then(|value| value.as_str())
+            .is_some(),
         "{partial}"
     );
     assert!(
@@ -344,4 +347,81 @@ fn cell_conversion_refuses_invalid_values_and_keeps_missing_distinct_from_zero()
         cell_value(OfficeNodeType::Cell, "", &format).unwrap(),
         Some(Value::Null)
     );
+}
+
+#[tokio::test]
+async fn corrupt_source_errors_name_the_workspace_path_not_temp_files() {
+    let root = tempfile::tempdir().unwrap();
+    let mut truncated = vec![0u8; 700];
+    truncated[..4].copy_from_slice(b"PK\x03\x04");
+    std::fs::write(root.path().join("calc.xlsx"), truncated).unwrap();
+    let error = read(root.path(), json!({"file_path":"calc.xlsx"}))
+        .await
+        .unwrap_err()
+        .to_string();
+    assert!(
+        error.contains("calc.xlsx"),
+        "expected workspace path in error: {error}"
+    );
+    assert!(
+        !error.contains("aster-office-read-"),
+        "temporary path leaked: {error}"
+    );
+}
+
+#[tokio::test]
+async fn annotated_text_applies_percent_and_date_number_formats() {
+    let root = tempfile::tempdir().unwrap();
+    let mut editor = NativeOfficeEditor::create(root.path().join("formats.xlsx"))
+        .await
+        .unwrap();
+    editor
+        .set_cell_value(
+            "/Sheet1/A1",
+            SpreadsheetCellValue::Number {
+                value: "0.125".into(),
+            },
+        )
+        .unwrap();
+    editor
+        .set_cell_format(
+            "/Sheet1/A1",
+            NativeSpreadsheetCellFormat {
+                number_format: Some("0.0%".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    editor
+        .set_cell_value(
+            "/Sheet1/B1",
+            SpreadsheetCellValue::Number {
+                value: "46327".into(),
+            },
+        )
+        .unwrap();
+    editor
+        .set_cell_format(
+            "/Sheet1/B1",
+            NativeSpreadsheetCellFormat {
+                number_format: Some("yyyy-mm-dd".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    editor.save().await.unwrap();
+    let result = read(root.path(), json!({"file_path":"formats.xlsx"}))
+        .await
+        .unwrap();
+    let entries = result["entries"].as_array().unwrap();
+    let cell = |address: &str| {
+        entries
+            .iter()
+            .find(|entry| entry["path"] == format!("/Sheet1/{address}"))
+            .unwrap()
+    };
+    assert_eq!(cell("A1")["text"], "12.5%");
+    assert_eq!(cell("A1")["value"], 0.125);
+    assert_eq!(cell("B1")["text"], "2026-11-01");
+    assert_eq!(cell("B1")["value"], 46327);
 }

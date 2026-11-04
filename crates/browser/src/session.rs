@@ -724,7 +724,9 @@ mod tests {
                 .expect("the fixture textbox should have a semantic reference");
             let reference = textbox.reference.clone();
 
-            sessions.type_text(&session, &reference, "aster use").await?;
+            sessions
+                .type_text(&session, &reference, "aster use")
+                .await?;
             let stale = sessions.type_text(&session, &reference, " stale").await;
             assert_eq!(stale.unwrap_err().code, "use.browser.reference_stale");
 

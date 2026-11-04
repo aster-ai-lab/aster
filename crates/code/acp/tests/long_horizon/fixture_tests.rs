@@ -102,6 +102,46 @@ fn test_output_requires_the_original_cases_and_allows_extra_tests() {
     ));
 }
 
+#[test]
+fn fixture_seed_admission_is_closed_and_original_bytes_are_preserved() {
+    for value in ["", "0", "2400", "2406", "-2401", "invalid"] {
+        assert!(value.parse::<FixtureSeed>().is_err());
+    }
+    for seed in FixtureSeed::ALL {
+        assert_eq!(seed.number().to_string().parse::<FixtureSeed>(), Ok(seed));
+    }
+    assert_eq!(FixtureSeed::Original.sources(), (INPUT, CALC, DISPLAY));
+}
+
+#[tokio::test]
+async fn all_registered_seeds_fail_before_repair_and_share_the_frozen_oracle() {
+    let mut registrations = Vec::new();
+    let mut distinct_sources = std::collections::BTreeSet::new();
+    for seed in FixtureSeed::ALL {
+        let root = tempfile::tempdir().unwrap();
+        let fixture = Fixture::create_seeded(root.path(), seed).unwrap();
+        let before = fixture.check().await.unwrap();
+        assert!(before.compile_ok && !before.correct && !before.tests_ok);
+        let source = ["input.rs", "calc.rs", "display.rs"]
+            .into_iter()
+            .map(|name| std::fs::read(fixture.workspace.join(name)).unwrap())
+            .collect::<Vec<_>>();
+        assert!(distinct_sources.insert(source));
+        registrations
+            .push(serde_json::json!({"seed":seed.number(),"initial_files":before.current_files,"prompt_sha256":format!("{:x}",Sha256::digest(fixture.request().as_bytes()))}));
+        repair(&fixture);
+        assert!(fixture.check().await.unwrap().correct);
+    }
+    println!(
+        "SEEDED_FIXTURE_CONTRACTS {}",
+        serde_json::json!({
+            "seeds":registrations,
+            "guest_checker_sha256":format!("{:x}",Sha256::digest(checker_source(Path::new("/workspace/lib.rs")).as_bytes())),
+            "scope":"trusted static C0 sources; no model output executes on the host"
+        })
+    );
+}
+
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 #[ignore = "regrade retained delivery bytes with current hidden oracle; no model request or original-result overwrite"]

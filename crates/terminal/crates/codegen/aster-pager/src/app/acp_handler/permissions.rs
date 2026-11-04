@@ -336,9 +336,7 @@ fn permission_description_lines(
     lines
 }
 
-fn hook_ask(
-    req: &acp::RequestPermissionRequest,
-) -> Option<aster_workspace::permission::HookAsk> {
+fn hook_ask(req: &acp::RequestPermissionRequest) -> Option<aster_workspace::permission::HookAsk> {
     let value = req
         .meta
         .as_ref()?

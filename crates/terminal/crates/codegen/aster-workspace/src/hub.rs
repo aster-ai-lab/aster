@@ -23,18 +23,18 @@
 //!   They are dropped in subagent sessions with restricted capability modes.
 use crate::error::{WorkspaceError, WorkspaceResult};
 use crate::handle::WorkspaceHandle;
-use aster_diag_server::DiagHandle;
-use aster_tools::registry::types::ToolConfig;
 use aster_computer_hub_sdk::{
     AuthProvider, CLOSE_CODE_SANDBOX_TERMINATED, ClientError, HubConnectionPool,
     InitialConnectPolicy, RefusalCode, ToolServer, ToolServerBuilder, ToolServerHandler,
 };
+use aster_diag_server::DiagHandle;
 use aster_tool_protocol::ToolId;
 use aster_tool_runtime::{
     ToolCallContext, ToolError, ToolErrorKind, ToolStream, ToolStreamItem, TypedToolOutput,
     terminal_only,
 };
 use aster_tool_types::ToolDescription;
+use aster_tools::registry::types::ToolConfig;
 use async_trait::async_trait;
 use serde_json::Value;
 use std::sync::Arc;
@@ -955,7 +955,9 @@ mod tests {
             )
             .expect("register_tool must succeed");
     }
-    async fn drain_counts<T>(mut stream: aster_tool_runtime::ToolStream<T>) -> (usize, usize, bool) {
+    async fn drain_counts<T>(
+        mut stream: aster_tool_runtime::ToolStream<T>,
+    ) -> (usize, usize, bool) {
         let mut progress = 0;
         let mut terminal = 0;
         let mut last_is_terminal = false;
@@ -1064,9 +1066,7 @@ mod tests {
         }
     }
     fn bg_started_notif(task_id: &str) -> ToolNotification {
-        use aster_tools::notification::types::{
-            BashExecutionBackgrounded, BashNotificationBase,
-        };
+        use aster_tools::notification::types::{BashExecutionBackgrounded, BashNotificationBase};
         ToolNotification::BashExecutionBackgrounded(BashExecutionBackgrounded {
             base: BashNotificationBase {
                 tool_call_id: task_id.to_owned(),
@@ -1881,8 +1881,7 @@ mod tests {
             &self,
             _ctx: aster_tool_runtime::ToolCallContext,
             _input: serde_json::Value,
-        ) -> Result<aster_tools::types::output::ToolOutput, aster_tool_runtime::ToolError>
-        {
+        ) -> Result<aster_tools::types::output::ToolOutput, aster_tool_runtime::ToolError> {
             let stdout = "/workspace/conv-abc/out.txt";
             Ok(aster_tools::types::output::ToolOutput::Bash(
                 aster_tools::types::output::BashOutput {

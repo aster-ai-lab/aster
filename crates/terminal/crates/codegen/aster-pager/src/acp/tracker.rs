@@ -20,12 +20,12 @@ use crate::scrollback::blocks::tool::{
 use crate::scrollback::entry::{EntryId, ScrollbackEntry};
 use crate::scrollback::state::ScrollbackState;
 use crate::scrollback::state::verb_group::verb_group_kind_changed;
+use agent_client_protocol as acp;
 use aster_shell::session::storage::chunk_meta_flag;
+use aster_tool_types::ReadLineCounts;
 use aster_tools::types::output::{BashOutput, ToolOutput};
 use aster_tools::types::output::{ReadFileOutput, SearchToolOutput, WebFetchOutput};
 use aster_tools::util::strip_redundant_session_cd;
-use aster_tool_types::ReadLineCounts;
-use agent_client_protocol as acp;
 use chrono::{DateTime, Local, TimeZone};
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -191,8 +191,8 @@ impl WritingToolCall {
             Some(name) => {
                 use aster_tools::types::tool::ToolKind;
                 let copy =
-                    aster_tools::tool_taxonomy::writing_tool_kind(name).and_then(|kind| {
-                        match kind {
+                    aster_tools::tool_taxonomy::writing_tool_kind(name).and_then(
+                        |kind| match kind {
                             ToolKind::Write => Some("Writing file"),
                             ToolKind::Edit => Some("Writing edit"),
                             ToolKind::Execute => Some("Writing command"),
@@ -205,13 +205,12 @@ impl WritingToolCall {
                             }
                             ToolKind::AskUser => Some("Preparing question"),
                             _ => None,
-                        }
-                    });
+                        },
+                    );
                 match copy {
                     Some(copy) => format!("{copy}{ordinal}…"),
                     None => {
-                        let name =
-                            aster_workspace::permission::mcp_pretty_name_if_qualified(name);
+                        let name = aster_workspace::permission::mcp_pretty_name_if_qualified(name);
                         format!("Preparing {}{ordinal}…", clamp_activity_subject(&name))
                     }
                 }
@@ -1711,8 +1710,7 @@ fn user_message_hidden_from_scrollback(
         return true;
     }
     if let Some(pid) = meta.prompt_id.as_deref()
-        && aster_shell::session::PromptOrigin::from_prompt_id(pid)
-            .hide_user_echo_from_scrollback()
+        && aster_shell::session::PromptOrigin::from_prompt_id(pid).hide_user_echo_from_scrollback()
     {
         return true;
     }

@@ -3530,8 +3530,7 @@ mod tests {
 
     #[test]
     fn reasoning_summary_adds_a_reasoning_block_only_when_there_is_something_to_send() {
-        let with_summary =
-            client_with_summary(Some(aster_sampling_types::ReasoningSummary::Auto));
+        let with_summary = client_with_summary(Some(aster_sampling_types::ReasoningSummary::Auto));
         let mut request = CreateResponseWrapper::new(rs::CreateResponse::default());
         with_summary.apply_response_defaults(&mut request).unwrap();
         assert_eq!(

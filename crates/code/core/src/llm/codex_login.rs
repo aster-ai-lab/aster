@@ -262,6 +262,7 @@ impl LlmClient for CodexLoginClient {
         tools: &[ToolDefinition],
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::gemini::refuse_foreign_state(messages)?;
         let body = self.build_body(messages, system, tools, true);
         let url = self.api.as_ref().map_or_else(
             || format!("{CODEX_BASE}/responses"),
@@ -665,6 +666,7 @@ fn convert_messages(messages: &[Message], encrypted_reasoning: &[Option<String>]
         }
         for block in &message.content {
             match block {
+                ContentBlock::GeminiState { .. } => {}
                 ContentBlock::Text { text } => {
                     let text_type = if message.role == "assistant" {
                         "output_text"

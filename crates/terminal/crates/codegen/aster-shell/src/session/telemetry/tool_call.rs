@@ -7,6 +7,8 @@ use aster_telemetry::events::{
     CanonicalToolId, InvocationId, InvocationSource, PathScope, ProductModelId, ReadProfile,
     ToolCallCompleted, ToolContractVersion, ToolOutputLimit, ToolSourceReason, ToolSourceStatus,
 };
+use aster_tool_protocol::ToolId;
+use aster_tool_runtime::Tool;
 use aster_tools::implementations::codex::CodexReadFileTool;
 use aster_tools::implementations::grok_build::{ReadFileTool, SearchReplaceTool};
 use aster_tools::implementations::grok_build_concise::{
@@ -19,8 +21,6 @@ use aster_tools::types::resources::resolve_model_path;
 use aster_tools::types::source_summary::ToolSourceSummary;
 use aster_tools::types::tool::ToolNamespace;
 use aster_tools::types::tool_call_origin::ToolCallOrigin;
-use aster_tool_protocol::ToolId;
-use aster_tool_runtime::Tool;
 
 use crate::session::events::ToolOutcome;
 
@@ -518,9 +518,8 @@ mod tests {
     use super::qualified_id;
     use super::*;
     use crate::session::events::ToolOutcome;
-    use aster_telemetry::events::{
-        CanonicalToolId, PathScope, ToolSourceReason, ToolSourceStatus,
-    };
+    use aster_telemetry::events::{CanonicalToolId, PathScope, ToolSourceReason, ToolSourceStatus};
+    use aster_tool_runtime::Tool;
     use aster_tools::implementations::codex::CodexReadFileTool;
     use aster_tools::implementations::grok_build::{GrepTool, ReadFileTool, SearchReplaceTool};
     use aster_tools::implementations::grok_build_concise::{
@@ -530,7 +529,6 @@ mod tests {
     use aster_tools::types::output::{GrepSearchOutput, TextOutput};
     use aster_tools::types::resources::resolve_model_path;
     use aster_tools::types::tool::ToolNamespace;
-    use aster_tool_runtime::Tool;
     use std::path::Path;
 
     fn registered(namespace: ToolNamespace, tool: &impl Tool) -> CanonicalToolId {

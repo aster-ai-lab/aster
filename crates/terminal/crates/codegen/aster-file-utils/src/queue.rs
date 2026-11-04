@@ -12,9 +12,9 @@
 use crate::gcs::{StorageConfig, upload_bytes, upload_file, upload_stream};
 use crate::storage_client::{Auth401AttributionCallback, HttpUploadError};
 use crate::{BlobCompression, TraceExportConfig, UploadMethod};
-use aster_circuit_breaker::{Disposition, RetryPolicy};
-use aster_auth::AuthCredentialProvider;
 use anyhow::Context;
+use aster_auth::AuthCredentialProvider;
+use aster_circuit_breaker::{Disposition, RetryPolicy};
 use async_compression::tokio::bufread::ZstdEncoder;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};

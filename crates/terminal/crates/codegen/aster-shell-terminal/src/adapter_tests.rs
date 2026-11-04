@@ -71,7 +71,9 @@ fn scripted_gateway(outputs: Vec<(String, bool)>) -> GatewaySender {
     tokio::spawn(async move {
         let mut next = 0usize;
         let mut wait_reply: Option<
-            tokio::sync::oneshot::Sender<aster_acp_lib::AcpResult<acp::WaitForTerminalExitResponse>>,
+            tokio::sync::oneshot::Sender<
+                aster_acp_lib::AcpResult<acp::WaitForTerminalExitResponse>,
+            >,
         > = None;
         let mut exited = false;
         while let Some(msg) = rx.recv().await {

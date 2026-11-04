@@ -94,18 +94,24 @@ fn validate_svg(svg: &str) -> Result<()> {
                     }
                     if root {
                         match attribute.key.as_ref() {
-                            b"width" => width = Some(dimension(&value)?),
-                            b"height" => height = Some(dimension(&value)?),
+                            b"width" => width = Some(dimension("width", &value)?),
+                            b"height" => height = Some(dimension("height", &value)?),
                             b"viewBox" => {
                                 let numbers = value
                                     .split(|ch: char| ch == ',' || ch.is_ascii_whitespace())
                                     .filter(|part| !part.is_empty())
-                                    .map(str::parse::<f64>)
-                                    .collect::<std::result::Result<Vec<_>, _>>()?;
+                                    .map(|part| {
+                                        part.parse::<f64>().map_err(|_| {
+                                            anyhow::anyhow!(
+                                                "SVG viewBox must use four finite numbers (min-x min-y width height); got '{value}'"
+                                            )
+                                        })
+                                    })
+                                    .collect::<Result<Vec<_>>>()?;
                                 ensure!(
                                     numbers.len() == 4
                                         && numbers.iter().all(|value| value.is_finite()),
-                                    "SVG viewBox must contain four finite numbers"
+                                    "SVG viewBox must contain four finite numbers (min-x min-y width height); got '{value}'"
                                 );
                                 view_box = Some((numbers[2], numbers[3]));
                             }
@@ -148,10 +154,21 @@ fn validate_svg(svg: &str) -> Result<()> {
     Ok(())
 }
 
-fn dimension(value: &str) -> Result<f64> {
+fn dimension(attribute: &str, value: &str) -> Result<f64> {
     let value = value.trim();
-    let number = value.strip_suffix("px").unwrap_or(value).parse::<f64>()?;
-    ensure!(number.is_finite(), "SVG dimensions must be finite");
+    let number = value
+        .strip_suffix("px")
+        .unwrap_or(value)
+        .parse::<f64>()
+        .map_err(|_| {
+            anyhow::anyhow!(
+                "SVG {attribute} must be a finite number or px length (for example 320 or 320px); got '{value}'"
+            )
+        })?;
+    ensure!(
+        number.is_finite(),
+        "SVG {attribute} must be a finite number or px length (for example 320 or 320px); got '{value}'"
+    );
     Ok(number)
 }
 

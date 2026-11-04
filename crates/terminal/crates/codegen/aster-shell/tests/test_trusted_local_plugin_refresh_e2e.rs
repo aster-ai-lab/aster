@@ -178,10 +178,7 @@ fn trusted_local_refresh_surfaces_new_agent_via_discovery() {
     let plugin = registry
         .get("session-plugin")
         .expect("session plugin discovered");
-    assert_eq!(
-        plugin.scope,
-        aster_agent::plugins::PluginScope::CliOverride
-    );
+    assert_eq!(plugin.scope, aster_agent::plugins::PluginScope::CliOverride);
     assert!(plugin.trusted && plugin.enabled);
     assert_eq!(registry.session_plugin_dirs(), session_dirs.as_slice());
 

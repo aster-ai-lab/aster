@@ -880,7 +880,16 @@ async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool
         .unwrap()
         .unwrap();
     assert_eq!(snapshot.session.id, MATRIX_SESSION);
-    assert_matrix_usage(&snapshot.session.total_usage, false);
+    if !mode.ordinary() {
+        assert_eq!(
+            serde_json::to_value(&snapshot.session.total_usage).unwrap(),
+            serde_json::json!({
+                "prompt_tokens":28,"completion_tokens":20,"total_tokens":48,"cache_read_tokens":2,"cache_write_tokens":3
+            })
+        );
+    } else {
+        assert_matrix_usage(&snapshot.session.total_usage, false);
+    }
     assert_eq!(snapshot.run_records.len(), 1);
     assert_eq!(
         serde_json::to_value(&snapshot.run_records).unwrap(),

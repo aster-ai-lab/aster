@@ -231,11 +231,9 @@ pub(super) fn dispatch_submit_feedback_modal(
     if trace_choice.is_none() && offer_trace {
         modal.begin_trace_step();
         // Funnel denominator for the in-modal trace step; logged once when Write actually advances.
-        aster_telemetry::session_ctx::log_event(
-            aster_telemetry::events::FeedbackTraceCardShown {
-                reenables_sharing: trace_reenables_sharing,
-            },
-        );
+        aster_telemetry::session_ctx::log_event(aster_telemetry::events::FeedbackTraceCardShown {
+            reenables_sharing: trace_reenables_sharing,
+        });
         return vec![];
     }
     let draft = draft_id

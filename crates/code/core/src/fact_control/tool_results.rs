@@ -129,6 +129,44 @@ pub(super) fn message_from_folded_tool(id: &str, body: &str, folded_error: bool)
     )
 }
 
+/// Project current host guidance beside the latest observation, without
+/// changing original tool bytes, trust, or the cached system prefix.
+pub(super) fn apply_verification_context(
+    messages: &mut [Message],
+    system: &mut Option<String>,
+    gate: crate::harness_loop::CompletionGate,
+) {
+    let result = messages
+        .last_mut()
+        .and_then(|message| match message.content.last_mut() {
+            Some(crate::llm::ContentBlock::ToolResult { content, .. }) => Some(content),
+            _ => None,
+        });
+    let context = match gate {
+        crate::harness_loop::CompletionGate::Allow(crate::harness_loop::CompletionTerminal::Verified { .. }) if result.is_some() =>
+            "[host verification state]\nThe current workspace changes are verified. Further edits invalidate this verification; finish with the requested answer when the task is satisfied.".to_string(),
+        gate => match crate::harness_loop::model_verification_context(gate) {
+            Some(context) => context,
+            None => return,
+        },
+    };
+    if let Some(content) = result {
+        match content {
+            crate::llm::ToolResultContentField::Text(text) => {
+                text.push_str("\n\n");
+                text.push_str(&context);
+            }
+            crate::llm::ToolResultContentField::Blocks(blocks) => {
+                blocks.push(crate::llm::ToolResultContent::Text { text: context });
+            }
+        }
+        return;
+    }
+    let system = system.get_or_insert_with(String::new);
+    system.push_str("\n\n");
+    system.push_str(&context);
+}
+
 pub(super) fn message_from_tool_observation(
     id: &str,
     body: &str,
@@ -294,24 +332,65 @@ pub(crate) fn execution_permission(
     name: &str,
     args: &serde_json::Value,
 ) -> PermissionDecision {
+    evaluate_execution_permission(policy, checker, name, args).decision()
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum PermissionEvaluation {
+    Allow,
+    Ask,
+    PolicyDenied,
+    HostCheckerDenied(&'static str),
+    ChildCheckerDenied,
+    ChildConfirmationUnavailable,
+}
+
+impl PermissionEvaluation {
+    pub(super) fn decision(self) -> PermissionDecision {
+        match self {
+            Self::Allow => PermissionDecision::Allow,
+            Self::Ask => PermissionDecision::Ask,
+            Self::PolicyDenied
+            | Self::HostCheckerDenied(_)
+            | Self::ChildCheckerDenied
+            | Self::ChildConfirmationUnavailable => PermissionDecision::Deny,
+        }
+    }
+
+    pub(super) fn denial_reason(self) -> Option<&'static str> {
+        match self {
+            Self::Allow | Self::Ask => None,
+            Self::PolicyDenied => Some("policy_denied"),
+            Self::HostCheckerDenied(code) => Some(code),
+            Self::ChildCheckerDenied => Some("child_checker_denied"),
+            Self::ChildConfirmationUnavailable => Some("child_confirmation_unavailable"),
+        }
+    }
+}
+
+fn evaluate_execution_permission(
+    policy: &PermissionPolicy,
+    checker: Option<&dyn crate::permissions::PermissionChecker>,
+    name: &str,
+    args: &serde_json::Value,
+) -> PermissionEvaluation {
     let policy_decision = policy.check(name, args);
     if policy_decision == PermissionDecision::Deny {
-        return PermissionDecision::Deny;
+        return PermissionEvaluation::PolicyDenied;
     }
-    let Some(checker) = checker else {
-        return policy_decision;
-    };
-    let ceiling = checker.check(name, args);
+    let ceiling = checker.map_or(policy_decision, |checker| checker.check(name, args));
     if ceiling == PermissionDecision::Deny {
-        return PermissionDecision::Deny;
+        let code = checker
+            .and_then(|checker| checker.denial_code(name, args))
+            .unwrap_or("host_checker_denied");
+        return PermissionEvaluation::HostCheckerDenied(code);
     }
-    if policy_decision == PermissionDecision::Allow {
-        return PermissionDecision::Allow;
-    }
-    match ceiling {
-        PermissionDecision::Allow if !side_effect_tool(name) => PermissionDecision::Allow,
-        PermissionDecision::Deny => PermissionDecision::Deny,
-        PermissionDecision::Allow | PermissionDecision::Ask => PermissionDecision::Ask,
+    if policy_decision == PermissionDecision::Allow
+        || (ceiling == PermissionDecision::Allow && !side_effect_tool(name))
+    {
+        PermissionEvaluation::Allow
+    } else {
+        PermissionEvaluation::Ask
     }
 }
 
@@ -328,14 +407,26 @@ pub(super) fn run_permission(
     name: &str,
     args: &serde_json::Value,
 ) -> PermissionDecision {
+    evaluate_run_permission(policy, checker, agent, name, args).decision()
+}
+
+pub(super) fn evaluate_run_permission(
+    policy: &PermissionPolicy,
+    checker: Option<&dyn crate::permissions::PermissionChecker>,
+    agent: Option<&crate::agent::AgentLoop>,
+    name: &str,
+    args: &serde_json::Value,
+) -> PermissionEvaluation {
     let Some(agent) = agent.filter(|agent| agent.is_child_run()) else {
-        return execution_permission(policy, checker, name, args);
+        return evaluate_execution_permission(policy, checker, name, args);
     };
     match checker.map_or(PermissionDecision::Ask, |checker| checker.check(name, args)) {
+        PermissionDecision::Allow => PermissionEvaluation::Allow,
         PermissionDecision::Ask if agent.confirmation_provider().is_none() => {
-            PermissionDecision::Deny
+            PermissionEvaluation::ChildConfirmationUnavailable
         }
-        decision => decision,
+        PermissionDecision::Ask => PermissionEvaluation::Ask,
+        PermissionDecision::Deny => PermissionEvaluation::ChildCheckerDenied,
     }
 }
 
@@ -510,12 +601,7 @@ pub(super) async fn decision_from_response(
     // A length-limited final response is a truncated answer, not a finished
     // one: flag it so the settled End names the cut. Exact members of the
     // closed wire set only ("length", "max_tokens") — no substring tuning.
-    if let Some(surface) = surface.filter(|_| {
-        matches!(
-            response.stop_reason.as_deref(),
-            Some("length") | Some("max_tokens")
-        )
-    }) {
+    if let Some(surface) = surface.filter(|_| response.output_truncated()) {
         *surface
             .forced_stop
             .lock()

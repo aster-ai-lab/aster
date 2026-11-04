@@ -113,3 +113,102 @@ fn incomplete_oversized_duplicate_and_conflicting_streams_keep_honest_usage() {
         assert!(observed.usage.is_none());
     }
 }
+
+#[test]
+fn native_messages_usage_counts_cache_input_without_retaining_response_text() {
+    let payload = json!({"type":"message","stop_reason":"max_tokens","content":[{"type":"thinking","thinking":"private-native-thought"}],"usage":{"input_tokens":20,"output_tokens":7,"cache_read_input_tokens":80,"cache_creation_input_tokens":10}});
+    let observed = Observation::native_json(
+        super::super::Protocol::Anthropic,
+        200,
+        &serde_json::to_vec(&payload).unwrap(),
+    );
+    assert_eq!(observed.state, State::Present);
+    let counts = observed.usage.as_ref().unwrap();
+    assert_eq!(counts.prompt_tokens, 110);
+    assert_eq!(counts.completion_tokens, 7);
+    assert_eq!(counts.total_tokens, 117);
+    assert_eq!(counts.cache_read_tokens, Some(80));
+    assert!(!serde_json::to_string(&observed)
+        .unwrap()
+        .contains("private-native"));
+}
+
+fn messages_stream() -> String {
+    [
+        json!({"type":"message_start","message":{"usage":{"input_tokens":20,"output_tokens":1,"cache_read_input_tokens":80,"cache_creation_input_tokens":10}}}),
+        json!({"type":"content_block_delta","delta":{"type":"thinking_delta","thinking":"private-native-thought"}}),
+        json!({"type":"message_delta","delta":{"stop_reason":null},"usage":{"output_tokens":5}}),
+        json!({"type":"message_delta","delta":{"stop_reason":"max_tokens"},"usage":{"output_tokens":7}}),
+        json!({"type":"message_stop"}),
+    ].into_iter().map(|frame| format!("data: {frame}\r\n\r\n")).collect()
+}
+
+#[test]
+fn native_messages_stream_is_cumulative_fragment_safe_and_keeps_stop_reason() {
+    let payload = messages_stream();
+    for split in 0..=payload.len() {
+        let mut reader = Sse::for_protocol(super::super::Protocol::Anthropic);
+        reader.feed(&payload.as_bytes()[..split]);
+        reader.feed(&payload.as_bytes()[split..]);
+        let observed = reader.finish(200);
+        assert_eq!(observed.state, State::Present, "split {split}");
+        assert_eq!(observed.stop_reason.as_deref(), Some("max_tokens"));
+        let usage = observed.usage.as_ref().unwrap();
+        assert_eq!(usage.total_tokens, 117);
+        assert_eq!(
+            usage.completion_tokens, 7,
+            "snapshots are not added together"
+        );
+        assert_eq!(usage.cache_write_tokens, Some(10));
+        assert_eq!(usage.cache_miss_tokens, None);
+        assert_eq!(usage.reasoning_tokens, None);
+        assert!(!serde_json::to_string(&observed)
+            .unwrap()
+            .contains("private-native"));
+    }
+}
+
+#[test]
+fn native_messages_missing_interrupted_invalid_and_zero_usage_stay_distinct() {
+    let protocol = super::super::Protocol::Anthropic;
+    assert_eq!(
+        Observation::native_json(protocol, 200, b"{}").state,
+        State::Missing
+    );
+    for bytes in [
+        br#"{"usage":[20,1,80,10]}"#.as_slice(),
+        br#"{"usage":{"input_tokens":20,"input_tokens":20,"output_tokens":1}}"#,
+        br#"{"usage":{"input_tokens":-1,"output_tokens":1}}"#,
+        br#"{"usage":{"input_tokens":"20","output_tokens":1}}"#,
+        br#"{"usage":{"input_tokens":18446744073709551615,"output_tokens":1}}"#,
+        br#"{"usage":{"input_tokens":18446744073709551615,"output_tokens":0,"cache_read_input_tokens":1}}"#,
+    ] {
+        let observed = Observation::native_json(protocol,200,bytes);
+        assert_eq!(observed.state, State::Invalid);
+        assert!(observed.usage.is_none());
+    }
+    let payload = messages_stream();
+    let cut = payload.rfind("data:").unwrap();
+    let mut reader = Sse::for_protocol(protocol);
+    reader.feed(&payload.as_bytes()[..cut]);
+    let observed = reader.finish(200);
+    assert_eq!(observed.state, State::Incomplete);
+    assert!(observed.usage.is_none());
+    assert!(observed.stop_reason.is_none());
+    for payload in [
+        format!("{payload}data: {{\"type\":\"message_stop\"}}\n\n"),
+        payload.replace("\"output_tokens\":7", "\"output_tokens\":4"),
+        payload.replace("message_stop", "unrecognized_terminal"),
+        format!("data: {}\n\n", "x".repeat(EVENT_LIMIT + 1)),
+    ] {
+        let mut reader = Sse::for_protocol(protocol);
+        reader.feed(payload.as_bytes());
+        let observed = reader.finish(200);
+        assert_eq!(observed.state, State::Invalid);
+        assert!(observed.usage.is_none());
+    }
+    let zero = br#"{"usage":{"input_tokens":0,"output_tokens":0},"stop_reason":"end_turn"}"#;
+    let observed = Observation::native_json(protocol, 200, zero);
+    assert_eq!(observed.state, State::Present);
+    assert_eq!(observed.usage.unwrap().total_tokens, 0);
+}

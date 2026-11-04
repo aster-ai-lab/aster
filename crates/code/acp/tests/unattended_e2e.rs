@@ -16,6 +16,8 @@ use agent_client_protocol as acp;
 mod artifact;
 #[path = "long_horizon/candidate.rs"]
 mod candidate;
+#[path = "unattended_e2e/convergence.rs"]
+mod convergence;
 #[path = "unattended_e2e/goal_feedback.rs"]
 mod goal_feedback;
 #[path = "unattended_e2e/permission_modes.rs"]
@@ -29,6 +31,7 @@ const MODEL_ID: &str = "mock/gpt";
 
 #[derive(Default)]
 struct Script {
+    convergence: convergence::ObservationScript,
     bodies: Vec<String>,
     asked: bool,
     feedback_required: bool,
@@ -248,6 +251,10 @@ fn decide(raw: &str, script: &mut Script) -> String {
     }
     let streaming = parsed["stream"].as_bool().unwrap_or(false);
     if raw.contains("context-compaction engine") {
+        if script.convergence.source.is_some() {
+            script.convergence.compactions += 1;
+            return reply_text("Goal: observe source.txt. Earlier observations are already recorded; continue from the latest result.", streaming);
+        }
         return reply_text(
             "Goal: write answer.txt for UNATTENDED-TASK. The file exists. No check proved the task.",
             streaming,
@@ -295,6 +302,9 @@ fn decide(raw: &str, script: &mut Script) -> String {
         })
     }) {
         return reply_text(&judgment.to_string(), streaming);
+    }
+    if script.convergence.source.is_some() && tool_names.contains(&"read") {
+        return convergence::observation_reply(&mut script.convergence, streaming);
     }
     if raw.contains("STATE-CYCLE-TASK") && tool_names.contains(&"write") {
         script.state_cycle_requests += 1;

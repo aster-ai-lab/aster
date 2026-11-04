@@ -839,8 +839,7 @@ pub async fn run_cli_login(
         device_auth,
     )
     .await;
-    aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN)
-        .await;
+    aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN).await;
     result
 }
 async fn run_cli_login_steps(
@@ -860,7 +859,9 @@ async fn run_cli_login_steps(
     .await
     {
         if grok_com_config.oauth2.is_none() {
-            anyhow::bail!("Sign-in is not available for this deployment. Set ASTER_API_KEY instead.");
+            anyhow::bail!(
+                "Sign-in is not available for this deployment. Set ASTER_API_KEY instead."
+            );
         }
         let (auth, did_auth) = run_auth_flow_interactive(
             auth_manager,
@@ -931,9 +932,7 @@ pub fn perform_logout(
         })),
     );
     if was_logged_in {
-        aster_telemetry::external::set_identity(
-            aster_telemetry::external::IdentityAttrs::default(),
-        );
+        aster_telemetry::external::set_identity(aster_telemetry::external::IdentityAttrs::default());
         aster_telemetry::external::flush();
         if let Some(scope) = scope {
             auth_manager.remove_scope(scope)?;

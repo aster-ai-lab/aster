@@ -3,6 +3,33 @@
 use super::*;
 
 impl AsterCodeAgent {
+    pub(super) fn announce_session_usage(&self, session_id: &str, session: &AgentSession) {
+        let Some(client) = self.client.borrow().as_ref().map(Rc::downgrade) else {
+            return;
+        };
+        let session_id = acp::SessionId::new(session_id.to_owned());
+        let mut usage = session.subscribe_usage();
+        let cancellation = session.session_cancel_token();
+        tokio::task::spawn_local(async move {
+            tokio::task::yield_now().await;
+            loop {
+                let tokens = usage.borrow_and_update().total_tokens as u64;
+                let Some(connection) = client.upgrade() else {
+                    return;
+                };
+                let update =
+                    serde_json::json!({"sessionUpdate":"model_info","sessionTotalTokens":tokens});
+                send_session_update(&connection, &session_id, acp::Meta::new(), update).await;
+                drop(connection);
+                tokio::select! {
+                    biased;
+                    _ = cancellation.cancelled() => return,
+                    changed = usage.changed() => if changed.is_err() { return },
+                }
+            }
+        });
+    }
+
     pub(super) async fn emit_permission_mode(
         &self,
         id: acp::SessionId,
@@ -84,16 +111,28 @@ impl AsterCodeAgent {
         self.emit_run_observation(observation).await;
     }
 
-    pub(super) async fn emit_text(&self, session_id: &acp::SessionId, text: &str) {
+    pub(super) async fn emit_text(
+        &self,
+        session_id: &acp::SessionId,
+        text: &str,
+        generation_delta: bool,
+    ) {
         if text.is_empty() {
             return;
         }
         tracing::info!(target: "perf_probe", len = text.len(), preview = %text.chars().take(60).collect::<String>(), "chunk_emit");
         self.emit(acp::SessionNotification::new(
             session_id.clone(),
-            acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(acp::ContentBlock::Text(
-                acp::TextContent::new(text.to_string()),
-            ))),
+            acp::SessionUpdate::AgentMessageChunk(
+                acp::ContentChunk::new(acp::ContentBlock::Text(acp::TextContent::new(
+                    text.to_string(),
+                )))
+                .meta(Some(
+                    [("asterGenerationDelta".into(), generation_delta.into())]
+                        .into_iter()
+                        .collect(),
+                )),
+            ),
         ))
         .await;
     }
@@ -249,24 +288,178 @@ impl AsterCodeAgent {
         session_id: &acp::SessionId,
         update: serde_json::Value,
     ) {
-        let payload = serde_json::json!({
-            "sessionId": session_id.0.as_ref(),
-            "update": update,
-            "_meta": self.notification_meta(session_id),
-        });
-        let Ok(raw) = serde_json::value::to_raw_value(&payload) else {
-            return;
-        };
         let client = self.client.borrow().clone();
         let Some(client) = client else {
             return;
         };
-        let _ = client
-            .ext_notification(acp::ExtNotification::new(
-                "aster/session_notification",
-                raw.into(),
-            ))
-            .await;
+        send_session_update(
+            &client,
+            session_id,
+            self.notification_meta(session_id),
+            update,
+        )
+        .await;
+    }
+
+    pub(super) async fn replay_terminal_subagents(
+        &self,
+        session_id: &acp::SessionId,
+        session: &AgentSession,
+    ) {
+        use aster_core::subagent_task_tracker::SubagentStatus;
+        let Some(client) = self.client.borrow().clone() else {
+            return;
+        };
+        for task in session.subagent_tasks().await {
+            // Running snapshots have no restored worker; replay only observed terminal lifecycles.
+            if !matches!(
+                task.status,
+                SubagentStatus::Completed | SubagentStatus::Failed | SubagentStatus::Cancelled
+            ) {
+                continue;
+            }
+            let Some(finished) = task.finished_ms else {
+                continue;
+            };
+            let mut state = TurnState::default();
+            state
+                .subagent_started_ms
+                .insert(task.task_id.clone(), task.started_ms);
+            let mut progress = ChildProgress::default();
+            for entry in &task.progress {
+                note_child_progress(&mut progress, &entry.status, &entry.metadata);
+            }
+            let background = task.progress.iter().rev().find_map(|entry| {
+                entry
+                    .metadata
+                    .get("background")
+                    .and_then(serde_json::Value::as_bool)
+            });
+            let (window, percentage) =
+                context_usage(session.context_window_tokens() as u64, progress.tokens_used);
+            let updates = [
+                serde_json::json!({
+                    "sessionUpdate":"subagent_spawned", "subagent_id":task.task_id,
+                    "parent_session_id":session_id.0.as_ref(), "child_session_id":task.child_session_id,
+                    "subagent_type":task.agent, "description":task.description, "startedAt":task.started_ms,
+                }),
+                serde_json::json!({
+                    "sessionUpdate":"subagent_progress", "subagent_id":task.task_id,
+                    "parent_session_id":session_id.0.as_ref(), "child_session_id":task.child_session_id,
+                    "duration_ms":finished.saturating_sub(task.started_ms), "turn_count":progress.turn_count,
+                    "tool_call_count":progress.tool_call_count, "tokens_used":progress.tokens_used,
+                    "context_window_tokens":window,"context_usage_pct":percentage,
+                    "tools_used":progress.tools_used,"error_count":progress.error_count,
+                }),
+                project_subagent_end(
+                    &state,
+                    Some(&task),
+                    &task.task_id,
+                    &task.child_session_id,
+                    task.status == SubagentStatus::Completed,
+                    task.output.as_deref().unwrap_or_default(),
+                    finished,
+                ),
+            ];
+            for update in updates {
+                let mut meta = acp::Meta::new();
+                meta.insert("isReplay".into(), serde_json::json!(true));
+                meta.insert("origin".into(), serde_json::json!("core.subagent_tasks"));
+                meta.insert(
+                    "entryId".into(),
+                    serde_json::json!(format!(
+                        "subagent:{}:{}:{}:{}",
+                        task.task_id,
+                        task.started_ms,
+                        finished,
+                        update["sessionUpdate"].as_str().unwrap_or_default()
+                    )),
+                );
+                if let Some(background) = background {
+                    meta.insert("subagentBackground".into(), serde_json::json!(background));
+                }
+                send_session_update(&client, session_id, meta, update).await;
+            }
+        }
+    }
+
+    pub(super) fn continue_subagent_events(
+        &self,
+        session_id: acp::SessionId,
+        session: Arc<AgentSession>,
+        mut state: TurnState,
+        mut events: tokio::sync::mpsc::Receiver<AgentEvent>,
+    ) {
+        let Some(client) = self.client.borrow().clone() else {
+            return;
+        };
+        // The cancelled prompt returns promptly; its children still own their cleanup
+        // and may publish their real terminal event after the foreground drain.
+        tokio::task::spawn_local(async move {
+            while let Some(event) = events.recv().await {
+                match event {
+                    AgentEvent::SubagentProgress {
+                        task_id,
+                        status,
+                        metadata,
+                        ..
+                    } => {
+                        let progress = state.child_progress.entry(task_id).or_default();
+                        note_child_progress(progress, &status, &metadata);
+                    }
+                    AgentEvent::SubagentEnd {
+                        task_id,
+                        session_id: child_id,
+                        success,
+                        output,
+                        finished_ms,
+                        ..
+                    } => {
+                        let update = observed_subagent_end(
+                            &session,
+                            &state,
+                            &task_id,
+                            &child_id,
+                            success,
+                            &output,
+                            finished_ms,
+                        )
+                        .await;
+                        send_session_update(&client, &session_id, acp::Meta::new(), update).await;
+                        state.subagent_started_ms.remove(&task_id);
+                        state.child_progress.remove(&task_id);
+                    }
+                    _ => {}
+                }
+            }
+            // Detached children can finish after the parent's event forwarder closes.
+            let mut tick = tokio::time::interval(std::time::Duration::from_millis(100));
+            while !state.subagent_started_ms.is_empty() && !session.is_closed() {
+                tick.tick().await;
+                let pending: Vec<_> = state.subagent_started_ms.keys().cloned().collect();
+                for task_id in pending {
+                    let Some(task) = session.subagent_task(&task_id).await else {
+                        continue;
+                    };
+                    let Some(finished_ms) = task.finished_ms else {
+                        continue;
+                    };
+                    let update = observed_subagent_end(
+                        &session,
+                        &state,
+                        &task_id,
+                        &task.child_session_id,
+                        task.success.unwrap_or(false),
+                        task.output.as_deref().unwrap_or_default(),
+                        finished_ms,
+                    )
+                    .await;
+                    send_session_update(&client, &session_id, acp::Meta::new(), update).await;
+                    state.subagent_started_ms.remove(&task_id);
+                    state.child_progress.remove(&task_id);
+                }
+            }
+        });
     }
 
     /// Notify the client how the run closed at the completion gate, on a
@@ -362,47 +555,101 @@ impl AsterCodeAgent {
                 update[key] = value.clone();
             }
         }
-        self.emit_xai_session_update(session_id, update).await;
-    }
-
-    #[allow(clippy::too_many_arguments)] // event surface arity is the ACP wire shape
-    pub(super) async fn emit_subagent_end(
-        &self,
-        session_id: &acp::SessionId,
-        task_id: &str,
-        child_session_id: &str,
-        success: bool,
-        output: &str,
-        started_ms: u64,
-        finished_ms: u64,
-        progress: &ChildProgress,
-    ) {
-        let duration_ms = finished_ms.saturating_sub(started_ms);
-        let mut update = subagent_finished_update(
-            task_id,
-            child_session_id,
-            success,
-            output,
-            duration_ms,
-            progress,
-        );
-        update["completedAt"] = serde_json::json!(finished_ms);
-        let session = self
-            .sessions
-            .lock()
-            .await
-            .get(session_id.0.as_ref())
-            .map(|live| Arc::clone(&live.session));
-        if let Some(session) = session {
-            if session.subagent_task(task_id).await.is_some_and(|task| {
-                task.status == aster_core::subagent_task_tracker::SubagentStatus::Cancelled
-            }) {
-                update["status"] = "stopped".into();
-                update["error"] = serde_json::Value::Null;
-            }
+        let mut meta = self.notification_meta(session_id);
+        if let Some(background) = metadata.get("background").and_then(|value| value.as_bool()) {
+            meta.insert("subagentBackground".into(), serde_json::json!(background));
         }
-        self.emit_xai_session_update(session_id, update).await;
+        let client = self.client.borrow().clone();
+        if let Some(client) = client {
+            send_session_update(&client, session_id, meta, update).await;
+        }
     }
+}
+
+async fn send_session_update(
+    client: &acp::AgentSideConnection,
+    session_id: &acp::SessionId,
+    meta: acp::Meta,
+    update: serde_json::Value,
+) {
+    let payload = serde_json::json!({
+        "sessionId": session_id.0.as_ref(),
+        "update": update,
+        "_meta": meta,
+    });
+    let Ok(raw) = serde_json::value::to_raw_value(&payload) else {
+        return;
+    };
+    let _ = client
+        .ext_notification(acp::ExtNotification::new(
+            "aster/session_notification",
+            raw.into(),
+        ))
+        .await;
+}
+
+pub(super) async fn observed_subagent_end(
+    session: &AgentSession,
+    state: &TurnState,
+    task_id: &str,
+    child_session_id: &str,
+    success: bool,
+    output: &str,
+    finished_ms: u64,
+) -> serde_json::Value {
+    let task = session.subagent_task(task_id).await;
+    project_subagent_end(
+        state,
+        task.as_ref(),
+        task_id,
+        child_session_id,
+        success,
+        output,
+        finished_ms,
+    )
+}
+
+fn project_subagent_end(
+    state: &TurnState,
+    task: Option<&aster_core::subagent_task_tracker::SubagentTaskSnapshot>,
+    task_id: &str,
+    child_session_id: &str,
+    success: bool,
+    output: &str,
+    finished_ms: u64,
+) -> serde_json::Value {
+    let started_ms = state
+        .subagent_started_ms
+        .get(task_id)
+        .copied()
+        .unwrap_or(finished_ms);
+    let mut progress = ChildProgress::default();
+    if let Some(task) = task {
+        for entry in &task.progress {
+            note_child_progress(&mut progress, &entry.status, &entry.metadata);
+        }
+    }
+    let progress = if task.is_some_and(|task| !task.progress.is_empty()) {
+        &progress
+    } else {
+        state.child_progress.get(task_id).unwrap_or(&progress)
+    };
+    let mut update = subagent_finished_update(
+        task_id,
+        child_session_id,
+        success,
+        output,
+        finished_ms.saturating_sub(started_ms),
+        progress,
+    );
+    update["completedAt"] = serde_json::json!(finished_ms);
+    if task.is_some_and(|task| {
+        task.status == aster_core::subagent_task_tracker::SubagentStatus::Cancelled
+    }) {
+        update["status"] = "stopped".into();
+        update["error"] = serde_json::Value::Null;
+    }
+    update
 }
 
 pub(super) fn note_child_progress(
@@ -523,3 +770,7 @@ pub(super) fn context_usage(window_tokens: u64, tokens_used: u64) -> (u64, u8) {
     let pct = tokens_used.saturating_mul(100) / window_tokens;
     (window_tokens, pct.min(100) as u8)
 }
+
+#[cfg(test)]
+#[path = "emit_tests.rs"]
+mod tests;

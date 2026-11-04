@@ -107,13 +107,11 @@ impl NotificationService {
                 self.terminal_ctx,
                 &self.escape_writer,
             );
-            aster_telemetry::session_ctx::log_event(
-                aster_telemetry::events::NotificationEmitted {
-                    protocol: self.protocol.into(),
-                    event_kind: event.kind.into(),
-                    was_focused: self.focus_tracker.is_focused(),
-                },
-            );
+            aster_telemetry::session_ctx::log_event(aster_telemetry::events::NotificationEmitted {
+                protocol: self.protocol.into(),
+                event_kind: event.kind.into(),
+                was_focused: self.focus_tracker.is_focused(),
+            });
         }
     }
 

@@ -54,8 +54,7 @@ fn settings_save_serializes_against_init_flock_writer() {
 
     // Flock-holding writer mid read-modify-write (the shape of
     // session-start auto-enable's `add_enabled_plugin`).
-    let flock =
-        aster_shell::util::config::acquire_init_lock(grok_home.path()).expect("init flock");
+    let flock = aster_shell::util::config::acquire_init_lock(grok_home.path()).expect("init flock");
     let stale_read = std::fs::read_to_string(&config_path).unwrap();
 
     // Concurrent settings toggle on its own runtime thread.

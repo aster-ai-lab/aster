@@ -1,7 +1,7 @@
 //! LLM client abstraction layer
 //!
 //! Provides a unified interface for interacting with LLM providers
-//! (Anthropic Claude, OpenAI, Zhipu AI GLM, and OpenAI-compatible providers).
+//! (Anthropic Claude, OpenAI, Zhipu AI GLM, native Gemini, and compatible providers).
 
 mod admission;
 pub mod anthropic;
@@ -16,6 +16,7 @@ pub use effort::{
 };
 mod error;
 pub mod factory;
+pub mod gemini;
 pub mod http;
 pub mod local_policy;
 pub mod metering;
@@ -40,6 +41,7 @@ pub use codex_login::CodexLoginClient;
 pub(crate) use error::non_retryable_llm_error_message;
 pub use error::{NonRetryableLlmError, RetryableProviderFailure};
 pub use factory::{create_client_with_config, LlmConfig};
+pub use gemini::{GeminiError, GeminiState};
 pub use http::{
     clear_http_metrics_callback, default_http_client, set_http_metrics_callback, HttpClient,
     HttpClientError, HttpMetricsCallback, HttpMetricsRecord, HttpResponse, StreamingHttpResponse,

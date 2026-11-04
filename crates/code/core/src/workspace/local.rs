@@ -9,13 +9,13 @@ use super::local_access::{LocalWorkspaceAccessBoundary, LocalWorkspaceAccessPoli
 use super::DirectFileGuard;
 use super::{
     default_path_input, escape_control_chars_for_display, has_windows_path_prefix,
-    normalize_relative_path, pathbuf_to_workspace_path, validate_relative_pattern, CommandOutput,
-    CommandRequest, WorkspaceCommandRunner, WorkspaceDirEntry, WorkspaceError, WorkspaceFileSystem,
-    WorkspaceFileType, WorkspaceGit, WorkspaceGitBranch, WorkspaceGitCheckoutOutput,
-    WorkspaceGitCheckoutRequest, WorkspaceGitCommit, WorkspaceGitCreateBranchRequest,
-    WorkspaceGitCreateWorktreeRequest, WorkspaceGitDiffRequest, WorkspaceGitRemote,
-    WorkspaceGitRemoveWorktreeRequest, WorkspaceGitStash, WorkspaceGitStashProvider,
-    WorkspaceGitStashRequest, WorkspaceGitStatus, WorkspaceGitWorktree,
+    normalize_relative_path, pathbuf_to_workspace_path, validate_relative_pattern, BraceGlob,
+    CommandOutput, CommandRequest, WorkspaceCommandRunner, WorkspaceDirEntry, WorkspaceError,
+    WorkspaceFileSystem, WorkspaceFileType, WorkspaceGit, WorkspaceGitBranch,
+    WorkspaceGitCheckoutOutput, WorkspaceGitCheckoutRequest, WorkspaceGitCommit,
+    WorkspaceGitCreateBranchRequest, WorkspaceGitCreateWorktreeRequest, WorkspaceGitDiffRequest,
+    WorkspaceGitRemote, WorkspaceGitRemoveWorktreeRequest, WorkspaceGitStash,
+    WorkspaceGitStashProvider, WorkspaceGitStashRequest, WorkspaceGitStatus, WorkspaceGitWorktree,
     WorkspaceGitWorktreeMutation, WorkspaceGitWorktreeProvider, WorkspaceGlobRequest,
     WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
     WorkspaceGrepResult, WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch,
@@ -374,13 +374,7 @@ impl WorkspaceFileSystem for LocalWorkspaceBackend {
         file.take(MAX_TEXT_FILE_BYTES + 1)
             .read_to_string(&mut content)
             .await
-            .map_err(|error| {
-                WorkspaceError::Backend(anyhow!(
-                    "Failed to read file {}: {}",
-                    resolved.display(),
-                    error
-                ))
-            })?;
+            .map_err(|error| WorkspaceError::Backend(error.into()))?;
         if content.len() as u64 > MAX_TEXT_FILE_BYTES {
             return Err(WorkspaceError::TooLarge {
                 path: path.as_str().to_string(),
@@ -616,7 +610,7 @@ impl LocalWorkspaceBackend {
         let mut lines = BufReader::new(file.take(MAX_TEXT_FILE_BYTES + 1));
         let mut line_index = 0usize;
         while line_index < offset {
-            match next_terminated_line(&mut lines, &resolved).await? {
+            match next_terminated_line(&mut lines).await? {
                 Some(line) => {
                     consumed += line.len();
                     line_index += 1;
@@ -635,7 +629,7 @@ impl LocalWorkspaceBackend {
 
         let mut selected = Vec::with_capacity(limit);
         while selected.len() < limit {
-            match next_terminated_line(&mut lines, &resolved).await? {
+            match next_terminated_line(&mut lines).await? {
                 Some(line) => {
                     consumed += line.len();
                     selected.push(line);
@@ -653,7 +647,7 @@ impl LocalWorkspaceBackend {
             }
         }
 
-        let next_line = next_terminated_line(&mut lines, &resolved).await?;
+        let next_line = next_terminated_line(&mut lines).await?;
         consumed += next_line.as_ref().map_or(0, String::len);
         let has_more = next_line.is_some();
         ensure_range_within_bound(path, consumed)?;
@@ -668,12 +662,12 @@ impl LocalWorkspaceBackend {
 
 async fn next_terminated_line(
     reader: &mut (impl tokio::io::AsyncBufRead + Unpin),
-    path: &Path,
 ) -> WorkspaceResult<Option<String>> {
     let mut line = String::new();
-    let size = reader.read_line(&mut line).await.map_err(|error| {
-        WorkspaceError::Backend(anyhow!("Failed to read file {}: {}", path.display(), error))
-    })?;
+    let size = reader
+        .read_line(&mut line)
+        .await
+        .map_err(|error| WorkspaceError::Backend(error.into()))?;
     Ok((size > 0).then_some(line))
 }
 
@@ -682,11 +676,17 @@ impl WorkspaceSearch for LocalWorkspaceBackend {
     async fn glob(&self, request: WorkspaceGlobRequest) -> Result<WorkspaceGlobResult> {
         validate_relative_pattern(&request.pattern, "glob pattern")?;
         let base = self.local_path_for_read(&request.base)?;
-        let full_pattern = base.join(&request.pattern);
-        let full_pattern = full_pattern.to_string_lossy().replace('\\', "/");
-
-        let entries = glob::glob(&full_pattern)
+        let brace_glob = BraceGlob::new(&request.pattern)
             .map_err(|e| anyhow!("Invalid glob pattern '{}': {}", request.pattern, e))?;
+        let mut entries = Vec::new();
+        for expansion in brace_glob.expansions() {
+            let full_pattern = base.join(expansion);
+            let full_pattern = full_pattern.to_string_lossy().replace('\\', "/");
+            entries.extend(
+                glob::glob(&full_pattern)
+                    .map_err(|e| anyhow!("Invalid glob pattern '{}': {}", request.pattern, e))?,
+            );
+        }
 
         let mut matches = Vec::new();
         for entry in entries {
@@ -706,6 +706,7 @@ impl WorkspaceSearch for LocalWorkspaceBackend {
         }
 
         matches.sort_by(|a, b| a.as_str().cmp(b.as_str()));
+        matches.dedup();
         Ok(WorkspaceGlobResult { matches })
     }
 

@@ -5,8 +5,8 @@ use crate::sampling::{
     ConversationRequest, ConversationToolChoice, HostedTool, SamplingError, ToolChoice,
     ToolDefinition, ToolSpec, conversation_to_chat_messages,
 };
-use aster_sampler::SamplerConfig as SamplingConfig;
 use agent_client_protocol as acp;
+use aster_sampler::SamplerConfig as SamplingConfig;
 use async_openai::types::responses::ResponseStreamEvent;
 use futures_util::StreamExt;
 use reqwest::StatusCode;
@@ -553,8 +553,7 @@ pub(crate) async fn generate_session_compact(
                             }
                             if let Some(fr) = choice.finish_reason {
                                 let sr = aster_sampling_types::StopReason::from(fr);
-                                truncated =
-                                    matches!(sr, aster_sampling_types::StopReason::Length);
+                                truncated = matches!(sr, aster_sampling_types::StopReason::Length);
                                 stop_reason = Some(sr.as_ref().to_string());
                             }
                         }

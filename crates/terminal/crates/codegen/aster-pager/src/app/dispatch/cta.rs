@@ -4,8 +4,8 @@ use super::transcript::extensions_modal_tab_fetches;
 use crate::app::actions::Effect;
 use crate::app::agent::AgentId;
 use crate::app::app_view::AppView;
-use aster_telemetry::session_ctx::log_event;
 use agent_client_protocol as acp;
+use aster_telemetry::session_ctx::log_event;
 
 /// Max times the MCP list is re-read after an install while waiting for the just-installed plugin's MCP servers to reach a terminal state.
 /// Probes are ~1s apart (`Effect::RetryPluginCtaMcps`), so the budget bounds the wait at ~15s before a final no-auth verdict is forced.
@@ -54,13 +54,11 @@ pub(super) fn plugin_cta_candidates(
         Some(name) => sources.iter().position(|s| s.source_name == name),
         None => sources
             .iter()
-            .position(|s| {
-                aster_plugin_marketplace::is_official_source_url(&s.source_url_or_path)
-            })
+            .position(|s| aster_plugin_marketplace::is_official_source_url(&s.source_url_or_path))
             .or_else(|| {
-                sources.iter().position(|s| {
-                    s.source_name == aster_plugin_marketplace::OFFICIAL_SOURCE_NAME
-                })
+                sources
+                    .iter()
+                    .position(|s| s.source_name == aster_plugin_marketplace::OFFICIAL_SOURCE_NAME)
             }),
     };
     let Some(idx) = winner else {
@@ -261,7 +259,9 @@ pub(super) fn handle_cta_plugin_reload_done(
     let session_id = agent.session.session_id.clone();
     // Mirror the install handler: a non-Success outcome is a failure, not a reason to advance to the steps after install
     let reload_result = match result {
-        Ok(outcome) if outcome.status == aster_hooks_plugins_types::OutcomeStatus::Success => Ok(()),
+        Ok(outcome) if outcome.status == aster_hooks_plugins_types::OutcomeStatus::Success => {
+            Ok(())
+        }
         Ok(outcome) => Err(crate::app::effects::sanitize_user_error(&outcome.message)),
         Err(e) => Err(e),
     };

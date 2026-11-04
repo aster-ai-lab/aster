@@ -31,11 +31,11 @@
 //! Available only when the `s3` feature is enabled.
 
 use super::{
-    escape_control_chars_for_display, validate_relative_pattern, WorkspaceDirEntry, WorkspaceError,
-    WorkspaceFileSystem, WorkspaceFileSystemExt, WorkspaceFileType, WorkspaceGlobRequest,
-    WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
-    WorkspaceGrepResult, WorkspacePath, WorkspaceResult, WorkspaceSearch, WorkspaceVersionConflict,
-    WorkspaceWriteOutcome,
+    escape_control_chars_for_display, validate_relative_pattern, BraceGlob, WorkspaceDirEntry,
+    WorkspaceError, WorkspaceFileSystem, WorkspaceFileSystemExt, WorkspaceFileType,
+    WorkspaceGlobRequest, WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome,
+    WorkspaceGrepRequest, WorkspaceGrepResult, WorkspacePath, WorkspaceResult, WorkspaceSearch,
+    WorkspaceVersionConflict, WorkspaceWriteOutcome,
 };
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
@@ -630,7 +630,7 @@ impl S3WorkspaceBackend {
 impl WorkspaceSearch for S3WorkspaceBackend {
     async fn glob(&self, request: WorkspaceGlobRequest) -> Result<WorkspaceGlobResult> {
         validate_relative_pattern(&request.pattern, "glob pattern")?;
-        let pattern = glob::Pattern::new(&request.pattern)
+        let pattern = BraceGlob::new(&request.pattern)
             .map_err(|e| anyhow!("Invalid glob pattern '{}': {}", request.pattern, e))?;
         // The `glob` crate's `Pattern::matches` is more permissive than the
         // filesystem walker behind `glob::glob` — `*` happily matches across
@@ -690,7 +690,7 @@ impl WorkspaceSearch for S3WorkspaceBackend {
 
         let glob_filter = match request.glob.as_deref() {
             Some(g) => Some((
-                glob::Pattern::new(g)
+                BraceGlob::new(g)
                     .map_err(|e| anyhow!("Invalid grep glob filter '{}': {}", g, e))?,
                 g.contains('/'),
             )),

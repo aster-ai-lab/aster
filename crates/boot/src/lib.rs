@@ -80,6 +80,14 @@ mod versioning;
 mod view;
 mod websocket;
 
+#[cfg(feature = "axum")]
+pub use adapters::AxumAdapter;
+#[cfg(feature = "shutdown-hooks")]
+pub use app::{wait_for_shutdown_signal, ShutdownSignal};
+pub use app::{
+    BootApplication, BootApplicationBuilder, BootApplicationContext, BootApplicationHandle,
+    BootFactory, BootMicroservice, LazyLoadedModule, LazyModuleLoader, RouteMatch,
+};
 #[cfg(all(feature = "macros", feature = "session"))]
 pub use aster_boot_macros::session;
 #[cfg(feature = "macros")]
@@ -103,14 +111,6 @@ pub use aster_boot_macros::{cron, interval, schedule, timeout};
 pub use aster_boot_macros::{event_listener, on_event};
 #[cfg(all(feature = "macros", feature = "file-upload"))]
 pub use aster_boot_macros::{uploaded_file, uploaded_files};
-#[cfg(feature = "axum")]
-pub use adapters::AxumAdapter;
-#[cfg(feature = "shutdown-hooks")]
-pub use app::{wait_for_shutdown_signal, ShutdownSignal};
-pub use app::{
-    BootApplication, BootApplicationBuilder, BootApplicationContext, BootApplicationHandle,
-    BootFactory, BootMicroservice, LazyLoadedModule, LazyModuleLoader, RouteMatch,
-};
 #[cfg(feature = "auth")]
 pub use auth::{
     AuthCredentials, AuthGuard, AuthModule, AuthPrincipal, AuthService, AuthStrategy,
@@ -149,8 +149,9 @@ pub use discovery_backends::{ConsulServiceDiscovery, KubernetesServiceDiscovery}
 pub use error::{BootError, BootErrorKind};
 #[cfg(feature = "events")]
 pub use events::{
-    AsterEvent, AsterEventBus, AsterEventProvider, AsterMemoryEventConfig, AsterMemoryEventProvider,
-    EventContext, EventEmitter, EventEnvelope, EventListener, EventListenerDefinition, EventModule,
+    AsterEvent, AsterEventBus, AsterEventProvider, AsterMemoryEventConfig,
+    AsterMemoryEventProvider, EventContext, EventEmitter, EventEnvelope, EventListener,
+    EventListenerDefinition, EventModule,
 };
 pub use feature_flags::{FeatureFlagClient, StaticFeatureFlags};
 #[cfg(feature = "file-upload")]

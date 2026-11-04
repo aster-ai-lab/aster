@@ -64,7 +64,10 @@ impl Module for BodyFieldFeatureModule {
         "body-field-feature"
     }
 
-    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(
+        &self,
+        _module_ref: &aster_boot::ModuleRef,
+    ) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(BodyFieldController).controller()?])
     }
 }

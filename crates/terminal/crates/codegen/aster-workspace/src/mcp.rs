@@ -6,20 +6,20 @@ use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use std::time::Duration;
 
-use aster_mcp::rmcp;
-use aster_mcp::servers::{
-    InitClaimGuard, LivenessCheck, MCP_TOOL_NAME_DELIMITER, McpClient, McpClientTimeoutOverrides,
-    McpSpawnCtx, OauthInteractivity, SharedMcpState, parse_mcp_qualified_name,
-};
-use aster_tools::util::mcp_structured_content::render_structured_content;
 use aster_computer_hub_mcp_adapter::{
     McpBridge, McpBridgeConfig, McpBridgeHandle, McpCallResult, McpContent, McpServerInfo,
     McpToolDefinition, McpTransport,
 };
 use aster_computer_hub_sdk::ToolServerHandler;
+use aster_mcp::rmcp;
+use aster_mcp::servers::{
+    InitClaimGuard, LivenessCheck, MCP_TOOL_NAME_DELIMITER, McpClient, McpClientTimeoutOverrides,
+    McpSpawnCtx, OauthInteractivity, SharedMcpState, parse_mcp_qualified_name,
+};
 use aster_tool_protocol::{SessionId, ToolId};
 use aster_tool_runtime::{ToolCallContext, ToolStream, TypedToolOutput};
 use aster_tool_types::ToolDescription;
+use aster_tools::util::mcp_structured_content::render_structured_content;
 use async_trait::async_trait;
 use futures::stream::{FuturesUnordered, StreamExt};
 use serde_json::Value;
@@ -520,18 +520,13 @@ pub(crate) async fn drive_server_starts(
                 (&ctx_plain, McpServerTier::ThirdParty)
             };
             async move {
-                let client = aster_mcp::servers::start_mcp_server(
-                    config,
-                    Some(overrides),
-                    None,
-                    None,
-                    ctx,
-                )
-                .await
-                .map_err(|error| McpStartFailure {
-                    name: server_name.clone(),
-                    error: error.to_string(),
-                })?;
+                let client =
+                    aster_mcp::servers::start_mcp_server(config, Some(overrides), None, None, ctx)
+                        .await
+                        .map_err(|error| McpStartFailure {
+                            name: server_name.clone(),
+                            error: error.to_string(),
+                        })?;
                 let client = Arc::new(client);
                 let transport: Arc<dyn McpTransport> =
                     Arc::new(McpClientTransportAdapter::new(Arc::clone(&client)));

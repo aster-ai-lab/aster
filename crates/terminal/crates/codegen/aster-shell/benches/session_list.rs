@@ -22,12 +22,12 @@ use std::hint::black_box;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
+use agent_client_protocol as acp;
+use aster_fast_worktree::{ListFilter, WorktreeDb, WorktreeKind, WorktreeRecord, WorktreeStatus};
 use aster_shell::session::info::Info;
 use aster_shell::session::persistence::Summary;
 use aster_shell::session::storage::{JsonlStorageAdapter, StorageAdapter};
 use aster_shell::session::unified_list::{ListReq, UnifiedListResult, build_unified_list};
-use aster_fast_worktree::{ListFilter, WorktreeDb, WorktreeKind, WorktreeRecord, WorktreeStatus};
-use agent_client_protocol as acp;
 use chrono::{DateTime, Duration as ChronoDuration, Utc};
 use criterion::{
     BenchmarkId, Criterion, SamplingMode, Throughput, criterion_group, criterion_main,

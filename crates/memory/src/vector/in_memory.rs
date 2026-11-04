@@ -80,6 +80,52 @@ impl InMemoryVectorIndex {
         })
     }
 
+    /// Replace a partition inline without requiring a Tokio runtime.
+    ///
+    /// Uses the same admission, budgets and atomic publication as
+    /// [`VectorIndex::replace_partition`]. Returns [`VectorIndexError`] on
+    /// invalid input or exhausted resources; no partial partition is published.
+    /// Async callers should use the trait method to keep CPU work off their executor.
+    pub fn replace_partition_blocking(
+        &self,
+        partition: &str,
+        records: Vec<VectorRecord>,
+    ) -> VectorResult<VectorIndexStatus> {
+        let partition = validate_partition(partition)?.to_string();
+        let block = build_partition(&self.inner.descriptor, partition, records)?;
+        publish_partition(&self.inner, block, None)
+    }
+
+    /// Remove a partition inline, using the same revision owner as the async port.
+    /// Missing partitions are a no-op; invalid names return [`VectorIndexError`].
+    pub fn remove_partition_blocking(&self, partition: &str) -> VectorResult<VectorIndexStatus> {
+        let partition = validate_partition(partition)?;
+        remove_partition(&self.inner, partition, None)
+    }
+
+    /// Search one immutable revision inline without a runtime or I/O.
+    ///
+    /// Returns [`VectorIndexError`] for invalid filters/vectors or score overflow.
+    /// Async callers should use [`VectorIndex::search`] to run this bounded CPU
+    /// work on the existing blocking executor.
+    pub fn search_blocking(
+        &self,
+        mut request: VectorSearchRequest,
+    ) -> VectorResult<VectorSearchResult> {
+        validate_request_filters(&request)?;
+        if request.limit == 0 {
+            return Err(VectorIndexError::InvalidRequest(
+                "limit must be greater than zero".to_string(),
+            ));
+        }
+        let query = prepare_vector(
+            std::mem::take(&mut request.embedding),
+            &self.inner.descriptor,
+            "query".to_string(),
+        )?;
+        search_snapshot(self.snapshot(), &self.inner.descriptor, query, request)
+    }
+
     fn snapshot(&self) -> Arc<IndexSnapshot> {
         read_unpoisoned(&self.inner.snapshot).clone()
     }
@@ -139,13 +185,9 @@ impl VectorIndex for InMemoryVectorIndex {
         partition: &str,
         records: Vec<VectorRecord>,
     ) -> VectorResult<VectorIndexStatus> {
-        let partition = validate_partition(partition)?.to_string();
-        let inner = Arc::clone(&self.inner);
-        run_blocking(move || {
-            let block = build_partition(&inner.descriptor, partition, records)?;
-            publish_partition(&inner, block, None)
-        })
-        .await
+        let partition = partition.to_string();
+        let index = self.clone();
+        run_blocking(move || index.replace_partition_blocking(&partition, records)).await
     }
 
     async fn replace_partition_if_revision(
@@ -164,9 +206,9 @@ impl VectorIndex for InMemoryVectorIndex {
     }
 
     async fn remove_partition(&self, partition: &str) -> VectorResult<VectorIndexStatus> {
-        let partition = validate_partition(partition)?.to_string();
-        let inner = Arc::clone(&self.inner);
-        run_blocking(move || remove_partition(&inner, &partition, None)).await
+        let partition = partition.to_string();
+        let index = self.clone();
+        run_blocking(move || index.remove_partition_blocking(&partition)).await
     }
 
     async fn remove_partition_if_revision(
@@ -179,21 +221,9 @@ impl VectorIndex for InMemoryVectorIndex {
         run_blocking(move || remove_partition(&inner, &partition, Some(expected_revision))).await
     }
 
-    async fn search(&self, mut request: VectorSearchRequest) -> VectorResult<VectorSearchResult> {
-        validate_request_filters(&request)?;
-        if request.limit == 0 {
-            return Err(VectorIndexError::InvalidRequest(
-                "limit must be greater than zero".to_string(),
-            ));
-        }
-        let query = prepare_vector(
-            std::mem::take(&mut request.embedding),
-            &self.inner.descriptor,
-            "query".to_string(),
-        )?;
-        let descriptor = self.inner.descriptor.clone();
-        let snapshot = self.snapshot();
-        run_blocking(move || search_snapshot(snapshot, &descriptor, query, request)).await
+    async fn search(&self, request: VectorSearchRequest) -> VectorResult<VectorSearchResult> {
+        let index = self.clone();
+        run_blocking(move || index.search_blocking(request)).await
     }
 
     async fn clear(&self) -> VectorResult<VectorIndexStatus> {

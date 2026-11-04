@@ -33,6 +33,7 @@ pub(super) struct PinnedRuntimeProjection {
     knowledge: Option<Arc<crate::package_context::PackageContextSession>>,
     projected_knowledge_authoritative: bool,
     context_providers: Vec<Arc<dyn crate::context::ContextProvider>>,
+    background_admission: Option<Arc<super::background_tasks::BackgroundAdmission>>,
 }
 
 impl PinnedRuntimeProjection {
@@ -162,6 +163,7 @@ fn assemble_pinned_agent_loop(
         agent_registry,
         command_registry: _,
         hook_engine: _,
+        background_admission,
         tool_executor,
         task_tools,
         mcp_bindings,
@@ -170,6 +172,8 @@ fn assemble_pinned_agent_loop(
         projected_knowledge_authoritative,
         context_providers,
     } = runtime_projection;
+    let mut inputs = inputs;
+    inputs.tool_context.background_admission = background_admission;
     let mut config = inputs.config;
     config.hook_engine = Some(run_hook_executor);
     config.skill_registry = Some(Arc::clone(&skill_registry));
@@ -410,6 +414,7 @@ pub(super) fn capture_owned_preparation(
     config.budget_guard = parent.budget_guard.clone();
     apply_non_budget_runtime_overrides(session, &mut config);
 
+    let background_cancellation = cancellation.child_token();
     let capture_projection = || -> crate::error::Result<CapturedRuntimeProjection> {
         let projection = session.capability_catalog.pin();
         let ceiling = session.capability_run_ceiling_from_captured_budget(
@@ -422,12 +427,20 @@ pub(super) fn capture_owned_preparation(
             &ceiling,
         )
         .map_err(|error| crate::error::CodeError::Internal(anyhow::anyhow!(error)))?;
-        let runtime = pin_runtime_projection_with_command_registry(
+        let mut runtime = pin_runtime_projection_with_command_registry(
             session,
             projection.projection(),
             &commands,
             Some(&ceiling),
         )?;
+        runtime.background_admission = Some(super::background_tasks::BackgroundAdmission::new(
+            session,
+            &projection,
+            ceiling.clone(),
+            background_cancellation.clone(),
+            Arc::clone(&runtime.hook_engine),
+            session.hook_executor.clone(),
+        ));
         Ok(CapturedRuntimeProjection {
             projection,
             ceiling,
@@ -616,8 +629,17 @@ async fn pin_and_admit_runtime_projection_with_cancellation(
                 &ceiling,
             )
             .map_err(|error| crate::error::CodeError::Internal(anyhow::anyhow!(error)))?;
-        let runtime_projection =
+        let mut runtime_projection =
             pin_runtime_projection(session, projection.projection(), &ceiling)?;
+        runtime_projection.background_admission =
+            Some(super::background_tasks::BackgroundAdmission::new(
+                session,
+                &projection,
+                ceiling.clone(),
+                cancellation.child_token(),
+                Arc::clone(&runtime_projection.hook_engine),
+                session.hook_executor.clone(),
+            ));
         (
             projection,
             ceiling,
@@ -1032,6 +1054,7 @@ pub(super) fn pin_runtime_projection_with_command_registry(
             .iter()
             .any(|(_, value)| matches!(value, CapabilityValue::Knowledge(_))),
         context_providers: projected_context,
+        background_admission: None,
     })
 }
 

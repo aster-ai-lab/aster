@@ -730,12 +730,10 @@ pub fn log_paste_key_empty_host_clipboard(surface: &str) {
     if !aster_telemetry::client::is_enabled() {
         return;
     }
-    aster_telemetry::session_ctx::log_event(
-        aster_telemetry::events::PasteKeyEmptyHostClipboard {
-            terminal,
-            surface: surface.to_owned(),
-        },
-    );
+    aster_telemetry::session_ctx::log_event(aster_telemetry::events::PasteKeyEmptyHostClipboard {
+        terminal,
+        surface: surface.to_owned(),
+    });
 }
 
 fn lone_http_url_trimmed(t: &str) -> bool {
@@ -1033,14 +1031,12 @@ pub fn log_clipboard_probe_dropped(
     if !aster_telemetry::client::is_enabled() {
         return;
     }
-    aster_telemetry::session_ctx::log_event(
-        aster_telemetry::events::ClipboardPasteProbeDropped {
-            terminal: crate::terminal::terminal_context().telemetry_snapshot(),
-            reason,
-            image_hash: image.map(image_fingerprint).unwrap_or_default(),
-            duration_ms: started.elapsed().as_millis() as u64,
-        },
-    );
+    aster_telemetry::session_ctx::log_event(aster_telemetry::events::ClipboardPasteProbeDropped {
+        terminal: crate::terminal::terminal_context().telemetry_snapshot(),
+        reason,
+        image_hash: image.map(image_fingerprint).unwrap_or_default(),
+        duration_ms: started.elapsed().as_millis() as u64,
+    });
 }
 
 /// Read file URLs and image from the system clipboard in one macOS `osascript`.

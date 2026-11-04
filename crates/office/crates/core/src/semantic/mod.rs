@@ -357,9 +357,17 @@ fn collect_text_blocks(node: &DocumentNode, kind: DocumentKind, output: &mut Vec
         DocumentKind::Presentation => node.node_type == OfficeNodeType::Slide,
     };
     if include && (!node.text.is_empty() || kind == DocumentKind::Spreadsheet) {
+        let text = if kind == DocumentKind::Spreadsheet {
+            node.format
+                .get("numberFormat")
+                .and_then(|format| spreadsheet::format_number_display(&node.text, format))
+                .unwrap_or_else(|| node.text.clone())
+        } else {
+            node.text.clone()
+        };
         output.push(TextBlock {
             path: node.path.clone(),
-            text: node.text.clone(),
+            text,
         });
         if kind == DocumentKind::Presentation
             || (kind == DocumentKind::Word && node.node_type == OfficeNodeType::Table)

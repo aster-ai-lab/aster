@@ -1,0 +1,32 @@
+[
+  {
+    "name": "format",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exitCode": 1,
+    "seconds": 23.577918958
+  },
+  {
+    "name": "dependencies",
+    "command": [
+      "python3.13",
+      "tests/workspace_dependencies.py"
+    ],
+    "exitCode": 0,
+    "seconds": 7.283164708000001
+  },
+  {
+    "name": "release-workflow",
+    "command": [
+      "python3.13",
+      "tests/code_release_workflow.py"
+    ],
+    "exitCode": 0,
+    "seconds": 6.1134794160000006
+  }
+]

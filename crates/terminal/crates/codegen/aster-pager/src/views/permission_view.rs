@@ -1,3 +1,4 @@
+use agent_client_protocol as acp;
 use aster_workspace::permission::bash_command_splitting::{
     BashCommandHighlights, heredoc_payload_byte_ranges, range_fully_inside,
     soft_break_offsets_after_operators,
@@ -6,7 +7,6 @@ use aster_workspace::permission::{
     ALLOW_EDITS_SESSION_OPTION_ID, BashCommandPermission, McpToolPermission,
     QuestionPermissionMeta, mcp_titleize_segment, mcp_tool_action, mcp_tool_display_name,
 };
-use agent_client_protocol as acp;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};

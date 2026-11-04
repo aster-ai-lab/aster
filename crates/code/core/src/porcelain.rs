@@ -893,11 +893,7 @@ fn index_files_within(root: &Path, cap: usize) -> FileIndex {
         budget |= capped;
         for (name, stat) in found {
             visited += 1;
-            if name == ".git"
-                || name == ".aster"
-                || name == ".aster"
-                || name == ".aster-agent-retrievals"
-            {
+            if name == ".git" || name == ".aster" || name == ".aster-agent-retrievals" {
                 continue;
             }
             let path = dir.join(name);
@@ -1731,6 +1727,23 @@ impl Drop for WorkspaceChildGuard {
         slot.abandoned
             .store(true, std::sync::atomic::Ordering::SeqCst);
         slot.notify.notify_waiters();
+    }
+}
+
+pub(crate) async fn observe_workspace_child_settlement(
+    task_id: &str,
+    root: &Path,
+) -> aster_effect::ToolEffectObservationV1 {
+    let slot = lock_slots().get(task_id).cloned();
+    let watch = slot.as_ref().and_then(|slot| {
+        slot.watch
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .take()
+    });
+    match watch {
+        Some(watch) => watch.finish_effects_with_revision(root, true).await,
+        None => aster_effect::ToolEffectObservationV1::incomplete("child baseline unavailable"),
     }
 }
 

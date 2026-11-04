@@ -151,10 +151,7 @@ pub fn is_dismissible(a: &aster_announcements::RemoteAnnouncement) -> bool {
 /// The hidden-ids filter the selection gates share.
 /// It applies only to dismissible items: an explicit `dismissible: false` stays selectable even with its hide key stored.
 /// Flipping the flag server-side thus resurrects a previously-hidden banner (the remote config stays source of truth).
-fn is_hidden(
-    a: &aster_announcements::RemoteAnnouncement,
-    hidden_ids: &BTreeSet<String>,
-) -> bool {
+fn is_hidden(a: &aster_announcements::RemoteAnnouncement, hidden_ids: &BTreeSet<String>) -> bool {
     is_dismissible(a) && hidden_ids.contains(&aster_announcements::announcement_hide_key(a))
 }
 
@@ -1237,7 +1234,11 @@ mod tests {
     /// But an unusable CTA paints no button, so its caption can never show on the promo row either.
     #[test]
     fn usable_cta_caption_trims_and_never_resurrects_unusable_cta() {
-        let mut p = promo("p", "msg", Some(("Go", "https://github.com/aster-ai-lab/aster")));
+        let mut p = promo(
+            "p",
+            "msg",
+            Some(("Go", "https://github.com/aster-ai-lab/aster")),
+        );
         assert_eq!(usable_cta_caption(&p), None, "absent caption");
         p.cta.as_mut().unwrap().caption = Some("  or use Ctrl+O  ".into());
         assert_eq!(usable_cta_caption(&p), Some("or use Ctrl+O"), "trimmed");
@@ -1282,7 +1283,10 @@ mod tests {
         let mut pinned = promo(
             "p",
             "msg",
-            Some(("Upgrade Account", "https://github.com/aster-ai-lab/aster/promo")),
+            Some((
+                "Upgrade Account",
+                "https://github.com/aster-ai-lab/aster/promo",
+            )),
         );
         pinned.dismissible = Some(false);
         let pinned = [pinned];
@@ -1449,7 +1453,10 @@ mod tests {
         let mut ann = promo(
             "p",
             "New promo",
-            Some(("Get Aster Code", "https://github.com/aster-ai-lab/aster/grok")),
+            Some((
+                "Get Aster Code",
+                "https://github.com/aster-ai-lab/aster/grok",
+            )),
         );
         ann.cta.as_mut().unwrap().caption = Some("or use Ctrl+O".into());
         let anns = [ann];

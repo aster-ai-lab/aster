@@ -386,8 +386,7 @@ fn rate_limit_mid_continuation_stays_terminal() {
                     "enough history that the token estimate clears the tiny window",
                 ),
             );
-            let error =
-                error_with_tiny_window(aster_sampler::SamplingErrorKind::RateLimited, 429);
+            let error = error_with_tiny_window(aster_sampler::SamplingErrorKind::RateLimited, 429);
             let Err(err) = actor
                 .handle_sampling_failure(
                     error,

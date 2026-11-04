@@ -62,7 +62,7 @@ pub enum BrowserBackend {
     /// Chrome/Chromium headless browser for explicit compatibility use.
     #[serde(alias = "chromium")]
     Chrome,
-    /// Explicit Lightpanda backend (native Linux/macOS; WSL2 on Windows).
+    /// Legacy value retained for config compatibility; Aster rejects its use.
     Lightpanda,
 }
 
@@ -83,7 +83,7 @@ pub struct HeadlessConfig {
     pub max_tabs: usize,
 
     /// Path to the browser executable. If None, Moli is discovered/downloaded
-    /// or an explicit Chrome/Lightpanda runtime is discovered.
+    /// or an explicit Chrome runtime is discovered.
     #[serde(
         default,
         alias = "chromePath",

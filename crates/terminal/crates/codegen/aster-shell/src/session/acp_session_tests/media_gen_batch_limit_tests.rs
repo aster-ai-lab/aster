@@ -7,10 +7,10 @@
 
 use super::support::*;
 use super::*;
+use agent_client_protocol as acp;
 use aster_tools::implementations::grok_build::image_gen::ImageGenTool;
 use aster_tools::media_gen_limits::DEFAULT_MAX_PARALLEL_IMAGE_GEN;
 use aster_tools::registry::types::ToolConfig;
-use agent_client_protocol as acp;
 
 fn image_gen_call(id: &str) -> ToolCallResponse {
     ToolCallResponse {
@@ -190,8 +190,7 @@ async fn over_cap_report_classifies_modest_vs_egregious() {
                 "max+1 is modest first-K, not a 2x resample"
             );
 
-            let spam: Vec<aster_sampling_types::ToolCall> = (0..DEFAULT_MAX_PARALLEL_IMAGE_GEN
-                * 2)
+            let spam: Vec<aster_sampling_types::ToolCall> = (0..DEFAULT_MAX_PARALLEL_IMAGE_GEN * 2)
                 .map(|i| aster_sampling_types::ToolCall {
                     id: format!("spam_{i}").into(),
                     name: "image_gen".into(),

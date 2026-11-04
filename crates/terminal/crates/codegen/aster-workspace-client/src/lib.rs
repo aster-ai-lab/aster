@@ -13,6 +13,8 @@
 //! No deadline is imposed by default ([`WorkspaceClient::with_deadline`] opts in).
 //! That preserves the `WorkspaceOps::rpc_raw` behaviour where callers own their timeouts.
 #![deny(clippy::indexing_slicing)]
+use aster_computer_hub_sdk::harness::ToolHarness;
+use aster_tool_runtime::{ToolCallContext, ToolStreamItem, TypedToolOutput};
 use aster_workspace_types::rpc::agents_md::{AgentConfigFile, DiscoverAgentsMdReq};
 use aster_workspace_types::rpc::code_nav::{
     CodeFindDefinitionsReq, CodeFindReferencesReq, CodeGotoDefinitionReq, CodeGotoReferencesReq,
@@ -55,8 +57,6 @@ use aster_workspace_types::rpc::worktree::{
     WorktreeGcReq, WorktreeListReq, WorktreeShowReq,
 };
 use aster_workspace_types::rpc::{RpcEnvelope, RpcError, WORKSPACE_RPC_TOOL_ID, WorkspaceRpc};
-use aster_computer_hub_sdk::harness::ToolHarness;
-use aster_tool_runtime::{ToolCallContext, ToolStreamItem, TypedToolOutput};
 use serde_json::Value;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -134,7 +134,9 @@ fn is_non_retryable_workspace_unavailable(err: &aster_tool_runtime::ToolError) -
             use serde::Deserialize as _;
             aster_tool_protocol::WorkspaceUnavailableDetails::deserialize(d).ok()
         })
-        .is_some_and(|d| d.code == aster_tool_protocol::WORKSPACE_UNAVAILABLE_SUBCODE && !d.retryable)
+        .is_some_and(|d| {
+            d.code == aster_tool_protocol::WORKSPACE_UNAVAILABLE_SUBCODE && !d.retryable
+        })
 }
 /// Typed client over a bound [`ToolHarness`] for `workspace.*` RPCs.
 /// Clones share the harness and the connected latch, which fast-fails after a fatal transport error; [`mark_connected`](Self::mark_connected) / [`with_connected_flag`](Self::with_connected_flag) reset it.
@@ -582,11 +584,11 @@ impl WorkspaceClient {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aster_workspace_types::rpc::RpcActivityClass;
     use aster_computer_hub_sdk::harness::LocalRegistry;
     use aster_tool_protocol::{SessionId, ToolId};
     use aster_tool_runtime::{Tool, ToolError};
     use aster_tool_types::ToolDescription;
+    use aster_workspace_types::rpc::RpcActivityClass;
     use schemars::JsonSchema;
     use serde::Deserialize;
     #[derive(Debug, Deserialize, JsonSchema)]

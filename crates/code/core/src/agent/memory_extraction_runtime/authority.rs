@@ -363,10 +363,10 @@ impl MemoryRetentionProgress {
     }
 }
 
-/// The original ticket and local observations have exactly one owner. Drop
-/// reports only what was synchronously recorded; it performs no async work.
+/// Borrows the original ticket so its caller can retain the drain boundary
+/// through a final usage save. Drop only reports synchronous observations.
 pub(super) struct MemoryRetentionAttempt<'a> {
-    ticket: MemoryExtractionTicket,
+    ticket: &'a mut MemoryExtractionTicket,
     pub(super) progress: MemoryRetentionProgress,
     cancel: &'a CancellationToken,
     session_id: &'a str,
@@ -376,7 +376,7 @@ pub(super) struct MemoryRetentionAttempt<'a> {
 
 impl<'a> MemoryRetentionAttempt<'a> {
     pub(super) fn new(
-        ticket: MemoryExtractionTicket,
+        ticket: &'a mut MemoryExtractionTicket,
         cancel: &'a CancellationToken,
         session_id: &'a str,
     ) -> Self {

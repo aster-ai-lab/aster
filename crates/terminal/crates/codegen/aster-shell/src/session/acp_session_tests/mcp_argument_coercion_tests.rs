@@ -1,7 +1,7 @@
 use super::support::*;
 use super::*;
-use aster_tools::types::output::{MCPOutput, ToolOutput, ToolRunResult};
 use agent_client_protocol as acp;
+use aster_tools::types::output::{MCPOutput, ToolOutput, ToolRunResult};
 use pretty_assertions::assert_eq;
 use std::time::Duration;
 
@@ -42,12 +42,11 @@ async fn use_tool_actor() -> (
     tokio::sync::mpsc::UnboundedReceiver<SessionEvent>,
 ) {
     let (actor, event_rx) = open_actor().await;
-    *actor.agent.borrow_mut() = test_agent_with_tools(vec![
-        aster_tools::registry::types::ToolConfig::for_tool::<
+    *actor.agent.borrow_mut() =
+        test_agent_with_tools(vec![aster_tools::registry::types::ToolConfig::for_tool::<
             aster_tools::implementations::use_tool::UseTool,
-        >(),
-    ])
-    .await;
+        >()])
+        .await;
     (actor, event_rx)
 }
 

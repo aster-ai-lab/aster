@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender;
 use aster_paths::AbsPathBuf;
 use aster_workspace::permission::{
     AccessKind, ClientType, PermissionRequest, spawn_permission_manager,
 };
-use agent_client_protocol as acp;
 
 use super::support::create_test_actor;
 use super::{PersistenceMsg, SessionActor};

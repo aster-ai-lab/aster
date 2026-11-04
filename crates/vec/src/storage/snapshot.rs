@@ -2,6 +2,12 @@
 
 mod codec;
 
+#[cfg(test)]
+mod recovery_tests;
+
+#[cfg(test)]
+mod schema_identity_tests;
+
 use super::fault::{FaultInjector, FaultPoint};
 use super::manifest::{
     atomic_write_with_faults, checksum, sync_directory, AtomicWriteKind, Manifest,
@@ -300,102 +306,87 @@ fn read_binary(
         manifest,
         max_snapshot_bytes,
     )?;
-    let mut seen = HashSet::new();
-    resolve_snapshot(
-        root,
-        &bytes,
-        manifest.generation,
-        Some(manifest),
-        max_snapshot_bytes,
-        &mut seen,
-    )
+    resolve_snapshot(root, bytes, manifest, max_snapshot_bytes)
 }
 
 fn resolve_snapshot(
     root: &Path,
-    bytes: &[u8],
-    expected_generation: u64,
-    manifest: Option<&Manifest>,
+    mut bytes: Vec<u8>,
+    manifest: &Manifest,
     max_snapshot_bytes: u64,
-    seen: &mut HashSet<u64>,
 ) -> Result<(CollectionSchema, Vec<Doc>)> {
-    let format_version = peek_format_version(bytes)?;
-    match format_version {
-        SNAPSHOT_FORMAT_VERSION => {
-            let snapshot = decode_full(bytes)?;
-            let (version, generation, revision, schema, docs) = snapshot.into_parts();
-            if version != SNAPSHOT_FORMAT_VERSION {
+    let mut expected_generation = manifest.generation;
+    let mut tip_manifest = Some(manifest);
+    let mut tip_schema: Option<CollectionSchema> = None;
+    let mut seen = HashSet::new();
+    // shortcut: decoded deltas stay in memory; stream if measured legacy recovery needs it.
+    let mut deltas = Vec::new();
+    loop {
+        let (generation, revision, schema, base, docs) = match peek_format_version(&bytes)? {
+            SNAPSHOT_FORMAT_VERSION => {
+                let snapshot = decode_full(&bytes)?;
+                let (_, generation, revision, schema, docs) = snapshot.into_parts();
+                (generation, revision, schema, None, docs)
+            }
+            DELTA_SNAPSHOT_FORMAT_VERSION => {
+                let snapshot = decode_delta(&bytes)?;
+                let (
+                    _,
+                    generation,
+                    revision,
+                    schema,
+                    base_generation,
+                    base_checksum,
+                    removed,
+                    upserted,
+                ) = snapshot.into_parts();
+                if base_generation == 0 || base_generation == generation {
+                    return Err(Error::internal(
+                        "document snapshot delta base generation is invalid",
+                    ));
+                }
+                deltas.push((removed, upserted));
+                (
+                    generation,
+                    revision,
+                    schema,
+                    Some((base_generation, base_checksum)),
+                    Vec::new(),
+                )
+            }
+            version => {
                 return Err(Error::not_supported(format!(
                     "unsupported document snapshot format version {version}"
-                )));
+                )))
             }
-            if generation != expected_generation {
-                return Err(Error::internal(
-                    "document snapshot generation does not match its file",
-                ));
-            }
-            if !seen.insert(generation) {
-                return Err(Error::internal("document snapshot delta cycle"));
-            }
-            if let Some(manifest) = manifest {
-                validate_metadata(manifest, generation, revision, &schema)?;
-            }
-            Ok((schema, docs))
+        };
+        if generation != expected_generation {
+            return Err(Error::internal(
+                "document snapshot generation does not match its file",
+            ));
         }
-        DELTA_SNAPSHOT_FORMAT_VERSION => {
-            let snapshot = decode_delta(bytes)?;
-            let (
-                version,
-                generation,
-                revision,
-                schema,
-                base_generation,
-                base_checksum,
-                removed,
-                upserted,
-            ) = snapshot.into_parts();
-            if version != DELTA_SNAPSHOT_FORMAT_VERSION {
-                return Err(Error::not_supported(format!(
-                    "unsupported document snapshot format version {version}"
-                )));
-            }
-            if generation != expected_generation {
-                return Err(Error::internal(
-                    "document snapshot generation does not match its file",
-                ));
-            }
-            if !seen.insert(generation) {
-                return Err(Error::internal("document snapshot delta cycle"));
-            }
-            if let Some(manifest) = manifest {
-                validate_metadata(manifest, generation, revision, &schema)?;
-            }
-            if base_generation == 0 || base_generation == generation {
-                return Err(Error::internal(
-                    "document snapshot delta base generation is invalid",
-                ));
-            }
-            let base_bytes =
-                read_generation_bytes(root, base_generation, base_checksum, max_snapshot_bytes)?;
-            let (base_schema, base_docs) = resolve_snapshot(
-                root,
-                &base_bytes,
-                base_generation,
-                None,
-                max_snapshot_bytes,
-                seen,
-            )?;
-            if base_schema.digest() != schema.digest() {
+        if !seen.insert(generation) {
+            return Err(Error::internal("document snapshot delta cycle"));
+        }
+        if let Some(manifest) = tip_manifest.take() {
+            validate_metadata(manifest, generation, revision, &schema)?;
+        }
+        if let Some(tip) = &tip_schema {
+            if tip.digest() != schema.digest() {
                 return Err(Error::internal(
                     "snapshot delta base schema does not match the tip",
                 ));
             }
-            let docs = apply_delta(base_docs, &removed, upserted)?;
-            Ok((schema, docs))
+        } else {
+            tip_schema = Some(schema.clone());
         }
-        version => Err(Error::not_supported(format!(
-            "unsupported document snapshot format version {version}"
-        ))),
+        match base {
+            Some((generation, checksum)) => {
+                bytes = read_generation_bytes(root, generation, checksum, max_snapshot_bytes)?;
+                expected_generation = generation;
+            }
+            None => return Ok((tip_schema.unwrap_or(schema), apply_deltas(docs, deltas)?)),
+        }
     }
 }
 
@@ -434,7 +425,10 @@ fn peek_format_version(bytes: &[u8]) -> Result<u32> {
         .map_err(|error| Error::internal(format!("parse document snapshot version: {error}")))
 }
 
-fn apply_delta(base_docs: Vec<Doc>, removed: &[String], upserted: Vec<Doc>) -> Result<Vec<Doc>> {
+fn apply_deltas(base_docs: Vec<Doc>, deltas: Vec<(Vec<String>, Vec<Doc>)>) -> Result<Vec<Doc>> {
+    if deltas.is_empty() {
+        return Ok(base_docs);
+    }
     let mut merged = BTreeMap::<String, Doc>::new();
     for doc in base_docs {
         let pk = doc
@@ -442,14 +436,16 @@ fn apply_delta(base_docs: Vec<Doc>, removed: &[String], upserted: Vec<Doc>) -> R
             .ok_or_else(|| Error::internal("snapshot document has no primary key"))?;
         merged.insert(pk.to_string(), doc);
     }
-    for pk in removed {
-        merged.remove(pk);
-    }
-    for doc in upserted {
-        let pk = doc
-            .get_pk()
-            .ok_or_else(|| Error::internal("snapshot document has no primary key"))?;
-        merged.insert(pk.to_string(), doc);
+    for (removed, upserted) in deltas.into_iter().rev() {
+        for pk in removed {
+            merged.remove(&pk);
+        }
+        for doc in upserted {
+            let pk = doc
+                .get_pk()
+                .ok_or_else(|| Error::internal("snapshot document has no primary key"))?;
+            merged.insert(pk.to_string(), doc);
+        }
     }
     Ok(merged.into_values().collect())
 }
@@ -579,7 +575,7 @@ fn validate_metadata(
             "snapshot collection name does not match manifest",
         ));
     }
-    if schema.digest() != manifest.schema_digest {
+    if !schema.matches_digest(&manifest.schema_digest) {
         return Err(Error::internal("schema digest does not match manifest"));
     }
     Ok(())

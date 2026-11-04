@@ -33,6 +33,8 @@ pub struct Publication {
     pub generation: u64,
     pub surfaces: Vec<PublishedSurface>,
     revision: String,
+    owned_directory: PathBuf,
+    owned_digest: Option<String>,
 }
 
 /// An exact native publication identity. A serialized cursor is not authority.
@@ -45,6 +47,16 @@ pub struct PublicationCursor {
 }
 
 impl Publication {
+    /// Host-managed runtime data retained and reclaimed with this generation's leases.
+    pub fn owned_directory(&self) -> &Path {
+        &self.owned_directory
+    }
+
+    /// Host preparation evidence bound into this exact publication cursor.
+    pub fn owned_digest(&self) -> Option<&str> {
+        self.owned_digest.as_deref()
+    }
+
     pub fn cursor(&self) -> PublicationCursor {
         PublicationCursor {
             package_id: self.package_id.clone(),
@@ -62,7 +74,11 @@ pub(crate) struct Snapshot {
     pub(crate) generation: u64,
     pub(crate) published: bool,
     surfaces: Vec<SnapshotSurface>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    owned_digest: Option<String>,
 }
+
+const OWNED_SCHEMA: &str = "aster.use.package-reconcile.v3";
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -114,6 +130,21 @@ impl ReconcileStore {
         apply(&self.root, spec)
     }
 
+    /// Prepare host-owned runtime data before publishing a new generation.
+    ///
+    /// The blocking hook runs once and may write only beneath its supplied directory.
+    /// It returns a SHA-256 binding for its verified runtime receipt. Hook failure
+    /// removes the candidate and preserves the current publication. A successful
+    /// generation and its runtime data share the existing lease/retirement lifecycle.
+    /// This always creates a new generation; the host owns readiness/reuse decisions.
+    pub fn apply_with_owned_sync(
+        &self,
+        spec: &PackageSpec,
+        prepare: impl FnOnce(&Path) -> std::io::Result<String>,
+    ) -> Result<Publication, ReconcileError> {
+        apply_with_owned(&self.root, spec, Some(prepare))
+    }
+
     pub async fn current(&self, package_id: &str) -> Result<Option<Publication>, ReconcileError> {
         let root = self.root.clone();
         let package_id = package_id.to_string();
@@ -142,6 +173,14 @@ impl ReconcileStore {
 }
 
 fn apply(root: &Path, spec: &PackageSpec) -> Result<Publication, ReconcileError> {
+    apply_with_owned::<fn(&Path) -> std::io::Result<String>>(root, spec, None)
+}
+
+fn apply_with_owned<F: FnOnce(&Path) -> std::io::Result<String>>(
+    root: &Path,
+    spec: &PackageSpec,
+    prepare_owned: Option<F>,
+) -> Result<Publication, ReconcileError> {
     let prepared = prepare_package(spec)?;
     let _lock = AcquireLock::acquire(root)?;
     let package_dir = package_dir(root, &spec.package_id)?;
@@ -155,7 +194,11 @@ fn apply(root: &Path, spec: &PackageSpec) -> Result<Publication, ReconcileError>
                 snapshot.package_id.clone(),
             ));
         }
-        if snapshot.published && same_generation(snapshot, &prepared) {
+        if prepare_owned.is_none()
+            && snapshot.owned_digest.is_none()
+            && snapshot.published
+            && same_generation(snapshot, &prepared)
+        {
             let publication = publication_from(&package_dir, snapshot)?;
             if executable_entries_ready(&publication)? {
                 return Ok(publication);
@@ -172,8 +215,32 @@ fn apply(root: &Path, spec: &PackageSpec) -> Result<Publication, ReconcileError>
         .ok_or(ReconcileError::GenerationExhausted)?;
     let generation_dir = package_dir.join("g").join(generation.to_string());
     write_generation(&generation_dir, &prepared)?;
+    let owned_digest = if let Some(prepare) = prepare_owned {
+        let owned = generation_dir.join("owned");
+        let result = (|| {
+            fs::create_dir(&owned)
+                .map_err(|error| ReconcileError::io("create owned runtime", &owned, error))?;
+            let digest = prepare(&owned)
+                .map_err(|error| ReconcileError::io("prepare owned runtime", &owned, error))?;
+            normalize_sha256(&digest)
+        })();
+        match result {
+            Ok(digest) => Some(digest),
+            Err(error) => {
+                remove_tree(&generation_dir)?;
+                return Err(error);
+            }
+        }
+    } else {
+        None
+    };
     let snapshot = Snapshot {
-        schema: SCHEMA.to_string(),
+        schema: if owned_digest.is_some() {
+            OWNED_SCHEMA
+        } else {
+            SCHEMA
+        }
+        .to_string(),
         package_id: spec.package_id.clone(),
         generation,
         published: true,
@@ -190,6 +257,7 @@ fn apply(root: &Path, spec: &PackageSpec) -> Result<Publication, ReconcileError>
                 })
             })
             .collect::<Result<Vec<_>, ReconcileError>>()?,
+        owned_digest,
     };
     write_snapshot(&package_dir, &snapshot)?;
     publication_from(&package_dir, &snapshot)
@@ -430,8 +498,16 @@ pub(crate) fn read_snapshot(package_dir: &Path) -> Result<Option<Snapshot>, Reco
         Ok(bytes) => {
             let snapshot: Snapshot =
                 serde_json::from_slice(&bytes).map_err(|_| ReconcileError::InvalidSnapshot)?;
-            if snapshot.schema != SCHEMA || snapshot.generation == 0 {
+            if snapshot.generation == 0
+                || !matches!(
+                    (snapshot.schema.as_str(), snapshot.owned_digest.as_deref()),
+                    (SCHEMA, None) | (OWNED_SCHEMA, Some(_))
+                )
+            {
                 return Err(ReconcileError::InvalidSnapshot);
+            }
+            if let Some(digest) = &snapshot.owned_digest {
+                normalize_sha256(digest).map_err(|_| ReconcileError::InvalidSnapshot)?;
             }
             Ok(Some(snapshot))
         }
@@ -511,6 +587,8 @@ pub(crate) fn publication_from(
         package_id: snapshot.package_id.clone(),
         generation: snapshot.generation,
         surfaces,
+        owned_directory: generation_dir.join("owned"),
+        owned_digest: snapshot.owned_digest.clone(),
         revision: format!(
             "sha256:{:x}",
             Sha256::digest(

@@ -502,7 +502,10 @@ mod mouse_off_banner_tests {
             !msg.chars().any(char::is_control),
             "show_toast must scrub controls: {msg:?}"
         );
-        assert!(msg.contains("https://github.com/aster-ai-lab/aster"), "{msg:?}");
+        assert!(
+            msg.contains("https://github.com/aster-ai-lab/aster"),
+            "{msg:?}"
+        );
     }
 
     #[test]

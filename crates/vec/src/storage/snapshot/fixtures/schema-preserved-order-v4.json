@@ -1,0 +1,27 @@
+{
+  "schema_digest": "325a59be",
+  "schema": {
+    "name": "identity",
+    "fields": [
+      {
+        "name": "content",
+        "data_type": "String",
+        "nullable": false,
+        "dimension": 0,
+        "index_params": {
+          "index_type": "Fts",
+          "metric_type": "Undefined",
+          "quantize_type": "Undefined",
+          "params": {
+            "tokenizer_name": "whitespace",
+            "filters": [
+              "lowercase"
+            ]
+          }
+        }
+      }
+    ],
+    "vectors": [],
+    "max_doc_count_per_segment": 0
+  }
+}

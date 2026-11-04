@@ -3,12 +3,12 @@
 
 mod acp_harness;
 
+use acp_harness::{AutoApproveClient, RPC_TIMEOUT, connect_and_auth, prompt_turn, run_agent_test};
+use agent_client_protocol::{self as acp, Agent as _};
 use aster_shell::sampling::{ContentPart, ConversationItem};
 use aster_shell::session::info::Info;
 use aster_shell::session::storage::{JsonlStorageAdapter, StorageAdapter};
 use aster_test_support::ScriptedResponse;
-use acp_harness::{AutoApproveClient, RPC_TIMEOUT, connect_and_auth, prompt_turn, run_agent_test};
-use agent_client_protocol::{self as acp, Agent as _};
 use base64::Engine as _;
 use serde_json::json;
 

@@ -446,6 +446,8 @@ fn finish_agent_session(
         .hook_executor
         .clone()
         .unwrap_or_else(|| Arc::clone(&hook_engine) as Arc<dyn crate::hooks::HookExecutor>);
+    let background_tasks =
+        super::background_tasks::BackgroundTasks::new(&session_id, session_cancel.child_token());
     let close_handle = Arc::new(super::session_close::SessionCloseHandle {
         session_id: session_id.clone(),
         closed: Arc::clone(&closed),
@@ -455,6 +457,7 @@ fn finish_agent_session(
         #[cfg(test)]
         run_store: Arc::clone(&run_store),
         subagent_tasks: Arc::clone(&subagent_tasks),
+        background_tasks: Arc::clone(&background_tasks),
         confirmation_manager: config.confirmation_manager.clone(),
         hook_executor: Some(lifecycle_hook_executor),
         started_at: std::time::Instant::now(),
@@ -537,6 +540,7 @@ fn finish_agent_session(
         active_run_control,
         run_store,
         subagent_tasks,
+        background_tasks,
         active_tools: Arc::new(tokio::sync::RwLock::new(HashMap::new())),
         trace_sink,
         verification_reports: Arc::new(RwLock::new(Vec::new())),

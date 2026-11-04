@@ -146,7 +146,10 @@ fn sqlite_migrations_keep_every_published_checksum() {
         migration_rows(&migrations),
         vec![
             ("aster-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
-            ("aster-flow-0002-retention".into(), RETENTION_CHECKSUM.into()),
+            (
+                "aster-flow-0002-retention".into(),
+                RETENTION_CHECKSUM.into()
+            ),
             (
                 "aster-flow-0003-active-hooks".into(),
                 SQLITE_ACTIVE_HOOKS_CHECKSUM.into(),
@@ -211,8 +214,14 @@ fn postgres_migrations_keep_every_published_checksum() {
         migration_rows(&migrations),
         vec![
             ("aster-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
-            ("aster-flow-0002-tasks".into(), POSTGRES_TASKS_CHECKSUM.into(),),
-            ("aster-flow-0003-retention".into(), RETENTION_CHECKSUM.into()),
+            (
+                "aster-flow-0002-tasks".into(),
+                POSTGRES_TASKS_CHECKSUM.into(),
+            ),
+            (
+                "aster-flow-0003-retention".into(),
+                RETENTION_CHECKSUM.into()
+            ),
             (
                 "aster-flow-0004-active-hooks".into(),
                 POSTGRES_ACTIVE_HOOKS_CHECKSUM.into(),

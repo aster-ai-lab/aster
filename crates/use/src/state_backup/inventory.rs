@@ -152,7 +152,8 @@ fn scan_root(
             )))
         }
     };
-    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir()
+    {
         return Err(state_backup_path_invalid(
             "A Use-owned backup root is not an owned directory.",
         ));

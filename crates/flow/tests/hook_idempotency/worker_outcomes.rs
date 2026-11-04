@@ -44,7 +44,11 @@ impl CrashBeforeHookSuccessorStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeHookSuccessorStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -168,7 +172,11 @@ impl CoordinatedHookLookupStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedHookLookupStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

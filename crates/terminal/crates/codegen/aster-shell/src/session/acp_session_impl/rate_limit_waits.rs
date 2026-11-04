@@ -3,9 +3,7 @@
 use std::time::Duration;
 
 use aster_sampler::{SamplingErrorInfo, SamplingErrorKind};
-use aster_telemetry::events::{
-    RateLimitWaitOutcome as ReportedOutcome, SubagentRateLimitWaited,
-};
+use aster_telemetry::events::{RateLimitWaitOutcome as ReportedOutcome, SubagentRateLimitWaited};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct RateLimitWaitConfig {

@@ -466,9 +466,7 @@ impl SessionActor {
         };
         let session_dir = crate::session::persistence::session_dir(&self.session_info);
         let backend =
-            aster_tools::implementations::grok_build::task::backend::ChannelBackend::new(
-                event_tx,
-            );
+            aster_tools::implementations::grok_build::task::backend::ChannelBackend::new(event_tx);
         let (cmd_tx, mut cmd_rx) = mpsc::unbounded_channel();
         crate::agent::subagent::reconcile_live_orphaned_subagents(
             &backend,

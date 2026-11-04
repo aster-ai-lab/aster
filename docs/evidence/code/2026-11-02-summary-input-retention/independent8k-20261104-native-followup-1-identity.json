@@ -1,0 +1,76 @@
+{
+  "expected": "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+  "observed": [
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin",
+    "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin"
+  ],
+  "testerEmbeddedIds": {
+    "deloop_real_llm": [
+      "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin"
+    ],
+    "deloop_generalization_real_llm": [
+      "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin"
+    ],
+    "long_horizon_real_llm": [
+      "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin"
+    ],
+    "acp_conformance_stdio": [
+      "aster-cli-pair-v1:60b0b21e6353e17026ee86454696167e145bea19:aarch64-apple-darwin"
+    ],
+    "shipped_tui_e2e": [],
+    "cursor_account_tui_e2e": [],
+    "aster-acp-unit": []
+  },
+  "ptyIdentity": "PTY/Cursor/unit runners use the same unchanged source interval and frozen executable digests; any embedded ID must match",
+  "members": {
+    "aster": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster",
+      "sha256": "7ac4cc986cb928ba91b6ba3f454998196eda436f817172b6e06ae0c02b234bf1",
+      "bytes": 899099080
+    },
+    "aster-acp": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster-acp",
+      "sha256": "75d8bff604fda0c4dd0593e5623fc34c8e327358b917bcc5c15406794ab43de8",
+      "bytes": 355112216
+    },
+    "aster-acp-unit": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/aster-acp-unit",
+      "sha256": "412552eed9c773149b72e8692629c5c26aa4a2475cecffa899e7c01d79756fba",
+      "bytes": 387675432
+    },
+    "acp_conformance_stdio": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/acp_conformance_stdio",
+      "sha256": "6fe943b1a19955931f3726e11655f247f2d595bf91074a778b815da0aa1eebe2",
+      "bytes": 6399288
+    },
+    "cursor_account_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/cursor_account_tui_e2e",
+      "sha256": "d59856e7d2939b05e1fcdf1494aa2cf6075be3cd7787d7000a46b4d58dcaa0fa",
+      "bytes": 218414088
+    },
+    "deloop_generalization_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/deloop_generalization_real_llm",
+      "sha256": "4962a85f5ea9c205ffc84156ea06cb758a3d593d07f9362382763692e612ab68",
+      "bytes": 42967120
+    },
+    "deloop_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/deloop_real_llm",
+      "sha256": "f05828ab2b37525b0104e8b47033f788bf3166db02dbb980c40520e55a656a02",
+      "bytes": 43172736
+    },
+    "long_horizon_real_llm": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/long_horizon_real_llm",
+      "sha256": "bd97c2c60ceb228ee9d19690d13cd7454b6484fc430e2b32433d8348a4a0913e",
+      "bytes": 67073832
+    },
+    "shipped_tui_e2e": {
+      "path": "/Users/roylin/code/aster/target/qualification/fallback-state-independent8k-20261104-native-followup-1-f99a16d0-a954-4188-bf12-8b072eb68dec/shipped_tui_e2e",
+      "sha256": "e155cd829af6dac8cb32bca7af8bac6f2745c6c2d5d25307c4e38f3ed20d3548",
+      "bytes": 18815568
+    }
+  }
+}

@@ -11,7 +11,14 @@ impl AsterCodeAgent {
             .lock()
             .await
             .get(session_id.0.as_ref())
-            .map(|live| crate::goal::GoalLanguage::from_host(live.host.output_language.as_deref()))
+            .map(|live| {
+                crate::goal::GoalLanguage::from_host(
+                    live.session
+                        .reply_language()
+                        .as_deref()
+                        .or(live.host.output_language.as_deref()),
+                )
+            })
             .unwrap_or_default()
     }
 
@@ -63,42 +70,54 @@ impl AsterCodeAgent {
         observation: Option<&crate::run_observation::Binding>,
     ) -> acp::Result<acp::PromptResponse> {
         let key = session_id.0.to_string();
-        let language = self.goal_language(session_id).await;
-        let invalid = |error: anyhow::Error| acp::Error::invalid_params().data(error.to_string());
-        if let Some(bound) = crate::goal::apply_bound_goal(session, &op, language)
-            .await
-            .map_err(invalid)?
-        {
+        let language = match &op {
+            crate::goal::GoalOp::Set(text) => {
+                self.goal_language(session_id).await.for_user_text(text)
+            }
+            _ => self.goal_language(session_id).await,
+        };
+        let goal_error = |error: anyhow::Error| {
+            let response = if error
+                .chain()
+                .any(|cause| cause.is::<aster_core::goal_control::GoalControlError>())
+            {
+                acp::Error::invalid_params()
+            } else {
+                acp::Error::internal_error()
+            };
+            response.data(format!("{error:#}"))
+        };
+        let bound = tokio::select! {
+            biased;
+            _ = self.wait_for_turn_cancel(&key, generation) => {
+                return Ok(acp::PromptResponse::new(acp::StopReason::Cancelled));
+            }
+            result = crate::goal::apply_bound_goal(session, &op, language) => result.map_err(goal_error)?,
+        };
+        if let Some(bound) = bound {
             self.goals.lock().await.remove(&key);
-            self.emit_text(session_id, &bound.reply).await;
+            self.emit_text(session_id, &bound.reply, false).await;
             if !bound.tick {
                 drop(turn_permit);
                 return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
             }
+            let mut last_report = bound.reply;
             let mut turn_permit = Some(turn_permit);
             loop {
+                let language = self.goal_language(session_id).await;
                 let command = match crate::goal::bound_goal_step(session)
                     .await
-                    .map_err(invalid)?
+                    .map_err(goal_error)?
                 {
                     crate::goal::BoundGoalStep::Advance(command) => command,
-                    crate::goal::BoundGoalStep::Finished => {
+                    crate::goal::BoundGoalStep::Finished
+                    | crate::goal::BoundGoalStep::Stopped(_) => {
                         drop(turn_permit.take());
-                        if matches!(language, crate::goal::GoalLanguage::English) {
-                            self.emit_text(session_id, "\n\nDurable goal finished\n")
-                                .await;
-                        }
-                        return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
-                    }
-                    crate::goal::BoundGoalStep::Stopped(decision) => {
-                        drop(turn_permit.take());
-                        if matches!(language, crate::goal::GoalLanguage::English) {
-                            self.emit_text(
-                                session_id,
-                                &format!("\n\n{}\n", language.decision(decision)),
-                            )
+                        let report = crate::goal::bound_slice_report(session, None, language)
+                            .await
+                            .map_err(goal_error)?;
+                        self.emit_goal_report(session_id, report, &mut last_report)
                             .await;
-                        }
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
                 };
@@ -120,6 +139,7 @@ impl AsterCodeAgent {
                         self.emit_text(
                             session_id,
                             &format!("\n\n{}\n", language.decision(decision)),
+                            false,
                         )
                         .await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
@@ -129,12 +149,13 @@ impl AsterCodeAgent {
                         let report =
                             crate::goal::bound_slice_report(session, Some(&snapshot.id), language)
                                 .await
-                                .map_err(invalid)?;
-                        self.emit_text(session_id, &format!("\n\n{report}")).await;
+                                .map_err(goal_error)?;
+                        self.emit_text(session_id, &format!("\n\n{report}"), false)
+                            .await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
                     aster_core::GoalTickStream::Started(stream) => {
-                        self.emit_text(session_id, "\n\n").await;
+                        self.emit_text(session_id, "\n\n", false).await;
                         let run_id = stream.run.as_ref().map(|run| run.id().to_string());
                         let response = self
                             .drain_turn(
@@ -152,8 +173,9 @@ impl AsterCodeAgent {
                 };
                 let report = crate::goal::bound_slice_report(session, run_id.as_deref(), language)
                     .await
-                    .map_err(invalid)?;
-                self.emit_text(session_id, &format!("\n\n{report}")).await;
+                    .map_err(goal_error)?;
+                self.emit_goal_report(session_id, report, &mut last_report)
+                    .await;
                 let response = response?;
                 if response.stop_reason == acp::StopReason::Cancelled {
                     return Ok(response);
@@ -190,6 +212,7 @@ impl AsterCodeAgent {
             self.emit_text(
                 session_id,
                 &language.legacy_reply(applied.next.as_ref(), &reply),
+                false,
             )
             .await;
         }
@@ -211,6 +234,19 @@ impl AsterCodeAgent {
         }
         drop(turn_permit);
         Ok(acp::PromptResponse::new(acp::StopReason::EndTurn))
+    }
+
+    async fn emit_goal_report(
+        &self,
+        session_id: &acp::SessionId,
+        report: String,
+        previous: &mut String,
+    ) {
+        if report != *previous {
+            self.emit_text(session_id, &format!("\n\n{report}"), false)
+                .await;
+            *previous = report;
+        }
     }
 
     /// Typed goal commands are the Core DTOs; writes wait behind the turn queue.

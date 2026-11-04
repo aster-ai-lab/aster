@@ -92,20 +92,19 @@ impl HeadlessPersistence {
             return Ok(());
         };
         let usage: PromptUsage = serde_json::from_value(value.clone())?;
-        let row =
-            |value: &aster_shell::extensions::notification::PromptUsageModel| UsageSummary {
-                input_tokens: value.input_tokens,
-                output_tokens: value.output_tokens,
-                total_tokens: value.total_tokens,
-                cached_read_tokens: value.cached_read_tokens,
-                cache_creation_tokens: value.cache_creation_tokens,
-                reasoning_tokens: value.reasoning_tokens,
-                model_calls: value.model_calls,
-                cost_usd_ticks: value.cost_usd_ticks,
-                cost_is_partial: value.cost_is_partial,
-                usage_is_incomplete: usage.usage_is_incomplete,
-                ..Default::default()
-            };
+        let row = |value: &aster_shell::extensions::notification::PromptUsageModel| UsageSummary {
+            input_tokens: value.input_tokens,
+            output_tokens: value.output_tokens,
+            total_tokens: value.total_tokens,
+            cached_read_tokens: value.cached_read_tokens,
+            cache_creation_tokens: value.cache_creation_tokens,
+            reasoning_tokens: value.reasoning_tokens,
+            model_calls: value.model_calls,
+            cost_usd_ticks: value.cost_usd_ticks,
+            cost_is_partial: value.cost_is_partial,
+            usage_is_incomplete: usage.usage_is_incomplete,
+            ..Default::default()
+        };
         let mut totals = row(&usage.totals);
         totals.model_usage = usage
             .model_usage

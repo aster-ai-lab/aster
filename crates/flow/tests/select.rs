@@ -35,7 +35,10 @@ impl FlowRuntime for SelectRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
@@ -168,7 +171,10 @@ impl FlowRuntime for ArmIdentityDriftRuntime {
         Ok(ctx.join("both", arms))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
@@ -220,7 +226,11 @@ impl CrashBeforeSelectCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeSelectCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -352,7 +362,10 @@ impl FlowRuntime for SelectCompletedBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         unreachable!("select-completed-beside-wait runtime does not schedule steps")
     }
 
@@ -380,7 +393,11 @@ impl CrashAfterSelectCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterSelectCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

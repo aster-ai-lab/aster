@@ -215,7 +215,7 @@ impl AgentSession {
         })?
     }
 
-    /// Language published for user-visible prose by the latest model call.
+    /// Language published by the latest user-authored goal or model call.
     pub fn reply_language(&self) -> Option<String> {
         self.tool_context.reply_language()
     }

@@ -11,6 +11,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument as _;
 
 pub(super) struct ProjectionContext<'a> {
     pub(super) catalog: &'a WorkspaceChunkCatalog,
@@ -101,6 +102,12 @@ pub(super) async fn project_pending_partitions(
         let provider_requests = AtomicUsize::new(0);
         let result = executor
             .embed_counted(inputs, cancellation.child_token(), &provider_requests)
+            .instrument(tracing::debug_span!(
+                target: "aster_core::retrieval_phase",
+                "semantic_embedding",
+                kind = "documents",
+                source_revision = snapshot.source_revision()
+            ))
             .await;
         state.batching.document_provider_requests = state
             .batching

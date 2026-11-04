@@ -118,6 +118,11 @@ async fn an_automatic_slice_child_task_is_billed_once_through_the_original_guard
     eprintln!("CHILD-COST closeout={parent} governed={billed}");
     assert_eq!(parent, 14, "the closeout is the parent Run's own usage");
     assert_eq!(billed, parent + 7, "the child is billed once, in the guard");
+    assert_eq!(
+        session.recorded_usage_tokens().2,
+        21,
+        "the session includes both parent calls and the child exactly once"
+    );
     assert_eq!(slices(root.path()).len(), 1);
     assert!(matches!(
         session

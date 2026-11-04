@@ -265,7 +265,9 @@ impl SessionActor {
             return;
         }
         let context = self.build_status_context().await;
-        self.send_aster_notification_transient(AsterSessionUpdate::SessionStatus(Box::new(context)));
+        self.send_aster_notification_transient(AsterSessionUpdate::SessionStatus(Box::new(
+            context,
+        )));
     }
 }
 

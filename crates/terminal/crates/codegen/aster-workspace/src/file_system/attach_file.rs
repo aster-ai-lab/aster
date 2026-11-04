@@ -1,6 +1,6 @@
 //! Attaches file content and renders it in the training format
-use aster_tools::util::truncate::estimate_tokens;
 use agent_client_protocol::{BlobResourceContents, EmbeddedResource, EmbeddedResourceResource};
+use aster_tools::util::truncate::estimate_tokens;
 use base64::{Engine as _, engine::general_purpose};
 use regex::Regex;
 use sha2::{Digest, Sha256};

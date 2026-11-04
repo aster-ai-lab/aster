@@ -247,7 +247,9 @@ impl StorageClientAttributionBridge {
     }
 }
 
-impl aster_file_utils::storage_client::Auth401AttributionCallback for StorageClientAttributionBridge {
+impl aster_file_utils::storage_client::Auth401AttributionCallback
+    for StorageClientAttributionBridge
+{
     fn record_401(&self, operation: &str, sent_bearer_prefix: Option<&str>) {
         crate::attribution::record_consumer_401(
             self.auth_manager.as_ref(),
@@ -338,7 +340,8 @@ impl HttpAuth for OtelAuthCredentialProvider {
     fn apply(&self, builder: RequestBuilder, base_url: &str) -> RequestBuilder {
         // The collector is an Aster host, so a session token from another authority must not be sent to it
         // A deployment key is configured locally rather than minted, so it still applies.
-        if self.deployment_key.load().is_none() && !ActiveAuthBackend::default().is_aster_authority()
+        if self.deployment_key.load().is_none()
+            && !ActiveAuthBackend::default().is_aster_authority()
         {
             return builder;
         }
@@ -389,7 +392,8 @@ impl AuthCredentialProvider for OtelAuthCredentialProvider {
     fn snapshot(&self) -> CredentialSnapshot {
         // The exporter reads the token from here rather than through `apply`, so both need the guard.
         // A deployment key is configured locally, so it still applies.
-        if self.deployment_key.load().is_none() && !ActiveAuthBackend::default().is_aster_authority()
+        if self.deployment_key.load().is_none()
+            && !ActiveAuthBackend::default().is_aster_authority()
         {
             return CredentialSnapshot::default();
         }
@@ -899,8 +903,11 @@ mod tests {
             );
         }
 
-        let resolved =
-            embedding_session_credentials("https://api.aster/v1", Some(&mgr), Some(api_key_provider));
+        let resolved = embedding_session_credentials(
+            "https://api.aster/v1",
+            Some(&mgr),
+            Some(api_key_provider),
+        );
         assert!(!resolved.is_empty());
     }
 

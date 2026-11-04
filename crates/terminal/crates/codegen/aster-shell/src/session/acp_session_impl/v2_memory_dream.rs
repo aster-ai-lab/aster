@@ -715,9 +715,7 @@ impl SessionActor {
         cancel: &tokio_util::sync::CancellationToken,
         clock: aster_memory::SharedV2Clock,
     ) -> V2DreamPass {
-        use aster_telemetry::memory_telemetry::{
-            MemoryV2DreamDisposition, MemoryV2FailureClass,
-        };
+        use aster_telemetry::memory_telemetry::{MemoryV2DreamDisposition, MemoryV2FailureClass};
         let cancelled = |coalesced| V2DreamPass {
             outcome: MemoryDreamResponse::new(MemoryDreamDisposition::Cancelled),
             coalesced,

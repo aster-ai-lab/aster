@@ -1,13 +1,11 @@
 use std::path::{Path, PathBuf};
 
+use anyhow::{Context, Result};
 use aster_login::GrokAuth;
 use aster_shell::agent::config::Config as AgentConfig;
 use aster_shell::session::repo_changes::UploadMethod;
-use aster_shell::upload::trace_turns::{
-    TraceTurnsReport, TraceTurnsRequest, upload_trace_turns,
-};
+use aster_shell::upload::trace_turns::{TraceTurnsReport, TraceTurnsRequest, upload_trace_turns};
 use aster_shell::util::grok_home::grok_home;
-use anyhow::{Context, Result};
 
 /// The whole-session bundle; also the canary the per-turn upload expects its existence probe to see.
 const TRACE_BUNDLE_FILENAME: &str = "trace_export.tar.gz";
@@ -646,11 +644,7 @@ impl UploadAttempt<'_> {
         let _ = writeln!(log, "Trace upload debug log");
         let _ = writeln!(log, "======================");
         let _ = writeln!(log, "Timestamp:    {}", chrono::Utc::now().to_rfc3339());
-        let _ = writeln!(
-            log,
-            "Aster Code version: {}",
-            aster_version::full_version()
-        );
+        let _ = writeln!(log, "Aster Code version: {}", aster_version::full_version());
         let _ = writeln!(
             log,
             "OS:           {} {}",

@@ -257,7 +257,12 @@ fn by_name_with_home(
 /// Project-level `.aster/agents/` has highest priority, then falls back to built-ins, user-level, and finally bundled definitions.
 pub fn by_name_in_cwd(name: &str, cwd: &Path) -> Option<AgentDefinition> {
     let grok = aster_config::user_grok_home();
-    by_name_in_cwd_with_home(name, cwd, aster_dirs::home_dir().as_deref(), grok.as_deref())
+    by_name_in_cwd_with_home(
+        name,
+        cwd,
+        aster_dirs::home_dir().as_deref(),
+        grok.as_deref(),
+    )
 }
 
 fn by_name_in_cwd_with_home(

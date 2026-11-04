@@ -3422,9 +3422,7 @@ mod tests {
         assert!(description_text.starts_with("1234567890"));
     }
     /// Fixture: a one-plugin registry whose `agents/` dir holds `reviewer.md`.
-    fn plugin_registry_with_reviewer(
-        plugin_root: &Path,
-    ) -> aster_agent::plugins::PluginRegistry {
+    fn plugin_registry_with_reviewer(plugin_root: &Path) -> aster_agent::plugins::PluginRegistry {
         use aster_agent::plugins::discovery::PluginId;
         use aster_agent::plugins::{
             DiscoveredPlugin, PluginManifest, PluginOrigin, PluginRegistry, PluginScope,

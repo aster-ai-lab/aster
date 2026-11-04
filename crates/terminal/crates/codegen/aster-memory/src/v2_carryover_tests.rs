@@ -238,8 +238,7 @@ fn existing_v2_topic_keeps_its_content_first_and_demotes_appended_headings() {
         .strip_prefix(existing.trim_end())
         .expect("existing content stays first");
     assert!(
-        appended
-            .starts_with("\n\n## From earlier sessions\n\nRun `cargo test -p aster-memory`.")
+        appended.starts_with("\n\n## From earlier sessions\n\nRun `cargo test -p aster-memory`.")
     );
     assert_eq!(
         1,

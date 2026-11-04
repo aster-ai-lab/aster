@@ -1,7 +1,7 @@
 use super::*;
+use aster_tool_types::ForegroundSpawnInterrupt;
 use aster_tools::bridge::BackgroundNoticeNames;
 use aster_tools::implementations::grok_build::task::backend::ChannelBackend;
-use aster_tool_types::ForegroundSpawnInterrupt;
 
 const HAND_OFF_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(2);
 

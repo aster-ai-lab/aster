@@ -45,9 +45,9 @@ impl VoiceAuthProvider for AuthManagerVoiceAuth {
 /// Serves Aster logins and `ASTER_API_KEY` / per-model BYOK keys. A foreign-issuer login resolves to
 /// [`VoiceAuthError::ForeignSession`] instead of a bearer.
 pub fn build_voice_auth(auth_manager: Arc<aster_login::AuthManager>) -> SharedVoiceAuth {
-    Arc::new(AuthManagerVoiceAuth(
-        aster_login::shared_api_key_provider(auth_manager),
-    ))
+    Arc::new(AuthManagerVoiceAuth(aster_login::shared_api_key_provider(
+        auth_manager,
+    )))
 }
 
 #[cfg(test)]

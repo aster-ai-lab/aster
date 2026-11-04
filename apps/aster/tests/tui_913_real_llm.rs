@@ -222,7 +222,11 @@ impl PtySession {
             std::thread::sleep(Duration::from_millis(40));
         }
         let redacted = self.redact(&last);
-        panic!("timed out waiting for {needle:?}\n{redacted}");
+        let exited = self.child_exited();
+        panic!(
+            "timed out waiting for {needle:?} (raw_bytes={}, child_exited={exited})\n{redacted}",
+            self.raw.len()
+        );
     }
 }
 
@@ -316,12 +320,13 @@ fn without_clock(line: &str) -> String {
 }
 
 /// A one-token assistant line still counts when it is the planted marker.
-/// Paths and the user prompt row (which carries `❯`) do not.
+/// Paths and the user prompt row (❯ or Cursor-like →) do not.
 fn is_marker_reply(line: &str, marker: &str) -> bool {
     !marker.is_empty()
         && !line.contains('/')
         && !line.contains('\\')
         && !line.contains('❯')
+        && !line.contains('\u{2192}')
         && line.split_whitespace().any(|word| word.contains(marker))
 }
 
@@ -347,6 +352,8 @@ fn is_chrome(line: &str) -> bool {
         "clipboard",
         "ctrl+",
         "to paste",
+        "Type a message",
+        "Quit",
     ];
     CHROME.iter().any(|needle| line.contains(needle))
 }
@@ -370,6 +377,7 @@ fn collect_fresh_lines(
                 || prior.contains(&body)
                 || (!prompt.is_empty() && body.contains(prompt))
                 || body.contains('❯')
+                || body.contains('\u{2192}')
                 || is_chrome(&body)
                 || banner(&body).is_some()
             {
@@ -404,6 +412,7 @@ fn fresh_matching(
                 || prior.contains(&body)
                 || (!prompt.is_empty() && body.contains(prompt))
                 || body.contains('❯')
+                || body.contains('\u{2192}')
                 || body.contains('/')
                 || body.contains('\\')
                 || is_chrome(&body)
@@ -638,7 +647,10 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         path
     };
     let mut env = vec![
-        ("ASTER_ACP_AGENT_BIN".to_string(), proxy.display().to_string()),
+        (
+            "ASTER_ACP_AGENT_BIN".to_string(),
+            proxy.display().to_string(),
+        ),
         (
             "ASTER_CONFIG".to_string(),
             launch_config.display().to_string(),
@@ -677,10 +689,7 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         ));
     }
     if let Some(trace) = &prompt_trace {
-        env.push((
-            "ASTER_TUI_TEST_ACP_REAL".into(),
-            acp.display().to_string(),
-        ));
+        env.push(("ASTER_TUI_TEST_ACP_REAL".into(), acp.display().to_string()));
         env.push((
             "ASTER_TUI_TEST_ACP_TRACE".into(),
             trace.display().to_string(),
@@ -691,9 +700,13 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         .map(|(key, value)| (key.as_str(), value.as_str()))
         .collect();
     let mut pty = open_pty(&binary, &workspace, &refs, secrets);
-    let ready = pty.wait_for("\u{276f}", Duration::from_secs(45));
+    // Home uses the Cursor-like bar ("Type a message..." + →). Older agent
+    // chrome kept ❯. Either means the composer can accept a first turn.
+    let ready = pty.wait_for("Type a message", Duration::from_secs(45));
     assert!(
-        ready.contains("\u{276f}"),
+        ready.contains("Type a message")
+            || ready.contains('\u{276f}')
+            || ready.contains('\u{2192}'),
         "composer not ready\n{}",
         pty.redact(&ready)
     );

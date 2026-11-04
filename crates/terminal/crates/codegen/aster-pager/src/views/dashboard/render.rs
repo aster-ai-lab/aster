@@ -2121,6 +2121,7 @@ fn paint_dispatch_config_badge(
     }
 
     let info = PromptInfo {
+        telemetry: None,
         model_name: &model_label,
         flags: &flags,
         multiline: state.multiline_mode,
@@ -2134,17 +2135,15 @@ fn paint_dispatch_config_badge(
         width: area.width.saturating_sub(2),
         height: 1,
     };
-    state
-        .dispatch
-        .render_info_line(
-            buf,
-            info_rect,
-            &info,
-            theme.bg_base,
-            theme,
-            input_focused,
-            /* right_align */ true,
-        );
+    state.dispatch.render_info_line(
+        buf,
+        info_rect,
+        &info,
+        theme.bg_base,
+        theme,
+        input_focused,
+        /* right_align */ true,
+    );
 }
 
 /// Paint the left-aligned `● rec` badge on a box's top border while the mic is hot.

@@ -106,8 +106,8 @@ pub(super) fn create_backup(
             "Use-owned state changed between the initial and final backup inventories.",
         ));
     }
-    aster_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination).map_err(
-        |error| {
+    aster_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination)
+        .map_err(|error| {
             if error.kind() == io::ErrorKind::AlreadyExists {
                 state_backup_exists()
             } else {
@@ -116,8 +116,7 @@ pub(super) fn create_backup(
                     error
                 ))
             }
-        },
-    )?;
+        })?;
     sync_parent(parent)?;
     Ok(manifest)
 }

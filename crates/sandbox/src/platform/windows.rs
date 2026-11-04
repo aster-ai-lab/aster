@@ -1260,7 +1260,10 @@ mod tests {
         let error = resolve_powershell_with(workspace.path(), Some(OsString::from("")))
             .expect_err("empty override");
         let text = format!("{error:#}");
-        assert!(text.contains("ASTER_SANDBOX_PWSH is set but empty"), "{text}");
+        assert!(
+            text.contains("ASTER_SANDBOX_PWSH is set but empty"),
+            "{text}"
+        );
         assert!(!text.contains("winget"), "{text}");
     }
 

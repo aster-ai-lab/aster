@@ -1,5 +1,6 @@
 //! Draw the provider/model modal: providers on the left, connection and models on the right.
 
+use aster_core::config::AccountImport;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
@@ -55,7 +56,7 @@ const MODEL_SHORTCUTS: [Shortcut; 6] = [
         id: 2,
     },
     Shortcut {
-        label: "space tools",
+        label: "space toggle",
         clickable: false,
         id: 3,
     },
@@ -87,7 +88,8 @@ pub(crate) fn render_model_config(
         title: MODAL_TITLE,
         tabs: None,
         shortcuts,
-        sizing: ModalSizing::large().with_compact(compact),
+        // Seven-row margins otherwise hide setup fields in an 80×24 terminal.
+        sizing: ModalSizing::large().with_compact(compact || area.height < 40),
         fold_info: None,
     };
     let Some(content) =
@@ -173,11 +175,13 @@ fn paint(buf: &mut Buffer, area: Rect, state: &ModelConfigState) {
     }
 
     let mut line_y = right.y;
-    let title = state
-        .selected_provider()
-        .map(|provider| format!("Connection  {}", provider.id))
-        .unwrap_or_else(|| "Connection".to_string());
-    buf.set_stringn(right.x, line_y, &title, right.width as usize, header);
+    buf.set_stringn(
+        right.x,
+        line_y,
+        "Signed-in accounts",
+        right.width as usize,
+        header,
+    );
     line_y += 1;
     let fields = state.detail_fields();
     let mut saw_models = false;
@@ -185,6 +189,14 @@ fn paint(buf: &mut Buffer, area: Rect, state: &ModelConfigState) {
     for (index, field) in fields.iter().enumerate() {
         if line_y >= right.y + right.height {
             break;
+        }
+        if *field == DetailField::ProviderId {
+            let title = state
+                .selected_provider()
+                .map(|provider| format!("Connection  {}", provider.id))
+                .unwrap_or_else(|| "Connection".to_string());
+            buf.set_stringn(right.x, line_y, &title, right.width as usize, header);
+            line_y += 1;
         }
         if !saw_models && is_model_section(*field) {
             let count = state
@@ -252,6 +264,19 @@ fn field_line(state: &ModelConfigState, field: DetailField, focused: bool) -> St
     let value = |field: DetailField| state.field_text(field).unwrap_or_default();
     let shown = |fallback: String| edited.clone().unwrap_or(fallback);
     match field {
+        DetailField::ImportAccount(import) => {
+            let name = match import {
+                AccountImport::Codex => "Codex",
+                AccountImport::Cursor => "Cursor",
+                AccountImport::Grok => "Grok",
+            };
+            let mark = if state.draft.import_accounts.contains(&import) {
+                "x"
+            } else {
+                " "
+            };
+            format!("[{mark}] {name}")
+        }
         DetailField::ProviderId => format!("Provider   {}", shown(value(field))),
         DetailField::BaseUrl => format!("API URL    {}", blank(&shown(value(field)), "not set")),
         DetailField::ApiKey => {

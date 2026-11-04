@@ -127,14 +127,14 @@ pub(super) fn collect_all_indexable_content_single_pass(
             continue;
         }
 
-        let (raw_params, is_aster) = if let Ok(env) = serde_json::from_str::<RawLinePeek<'_>>(trimmed)
-        {
-            let raw = env.params.map(|p| p.get()).unwrap_or(trimmed);
-            let aster = env.method == Some(ASTER_SESSION_UPDATE_METHOD);
-            (raw, aster)
-        } else {
-            (trimmed, false)
-        };
+        let (raw_params, is_aster) =
+            if let Ok(env) = serde_json::from_str::<RawLinePeek<'_>>(trimmed) {
+                let raw = env.params.map(|p| p.get()).unwrap_or(trimmed);
+                let aster = env.method == Some(ASTER_SESSION_UPDATE_METHOD);
+                (raw, aster)
+            } else {
+                (trimmed, false)
+            };
 
         let update_peek = serde_json::from_str::<RawParamsPeek<'_>>(raw_params)
             .ok()

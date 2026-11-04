@@ -142,7 +142,7 @@ pub(super) async fn validate_named_surface_files(
         validate_okf_bundle(okf, canonical_root, package_root).await?;
     }
     for ui in &manifest.ui {
-        let _ = list_ui_package_assets(ui, package_root).await?;
+        let _ = inspect_ui_package_inventory(ui, package_root).await?;
     }
     Ok(())
 }
@@ -606,6 +606,46 @@ pub struct UiPackageAsset {
     pub text: bool,
 }
 
+/// Complete UI contribution membership and its separately admitted web assets.
+/// Non-web files remain fingerprinted package content and are never advertised
+/// as web assets merely because they are inside a UI root.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct UiPackageInventory {
+    files: Vec<PathBuf>,
+    web_assets: Vec<UiPackageAsset>,
+}
+
+impl UiPackageInventory {
+    pub fn file_paths(&self) -> &[PathBuf] {
+        &self.files
+    }
+
+    pub fn web_assets(&self) -> &[UiPackageAsset] {
+        &self.web_assets
+    }
+}
+
+/// Inspect all contribution files while retaining the closed web media set.
+/// Files under a root keep the existing file/byte/path/link limits; recognized
+/// text assets must be UTF-8. Non-web files contribute to the surface digest
+/// without becoming browser-readable assets. No files are installed or run.
+pub async fn inspect_ui_package_inventory(
+    surface: &super::PluginUiSurface,
+    package_root: &Path,
+) -> UseResult<UiPackageInventory> {
+    if let Some(root) = &surface.root {
+        return inspect_ui_root_inventory(surface, package_root, root).await;
+    }
+    let web_assets = list_ui_package_assets(surface, package_root).await?;
+    Ok(UiPackageInventory {
+        files: web_assets
+            .iter()
+            .map(|asset| asset.relative_path.clone())
+            .collect(),
+        web_assets,
+    })
+}
+
 /// Closed media set for a UI root. Text assets must be UTF-8.
 pub fn ui_asset_media(extension: &str) -> Option<(&'static str, bool)> {
     match extension {
@@ -615,6 +655,7 @@ pub fn ui_asset_media(extension: &str) -> Option<(&'static str, bool)> {
         "json" | "map" => Some(("application/json", true)),
         "svg" => Some(("image/svg+xml", true)),
         "png" => Some(("image/png", false)),
+        "jpg" | "jpeg" => Some(("image/jpeg", false)),
         "webp" => Some(("image/webp", false)),
         "ico" => Some(("image/x-icon", false)),
         "woff" => Some(("font/woff", false)),
@@ -632,7 +673,24 @@ pub async fn list_ui_package_assets(
     package_root: &Path,
 ) -> UseResult<Vec<UiPackageAsset>> {
     if let Some(root) = &surface.root {
-        return list_ui_root(surface, package_root, root).await;
+        let inventory = inspect_ui_root_inventory(surface, package_root, root).await?;
+        if let Some(path) = inventory.files.iter().find(|path| {
+            ui_asset_media(
+                path.extension()
+                    .and_then(|value| value.to_str())
+                    .unwrap_or(""),
+            )
+            .is_none()
+        }) {
+            return Err(UseError::new(
+                "use.extension.ui_asset_invalid",
+                format!(
+                    "UI asset '{}' uses an extension outside the UI media set.",
+                    package_root.join(path).display()
+                ),
+            ));
+        }
+        return Ok(inventory.web_assets);
     }
     let canonical_root = canonical_package_root(package_root, "UI").await?;
     validate_ui_text_asset(
@@ -686,11 +744,11 @@ pub async fn list_ui_package_assets(
     Ok(assets)
 }
 
-async fn list_ui_root(
+async fn inspect_ui_root_inventory(
     surface: &super::PluginUiSurface,
     package_root: &Path,
     root: &Path,
-) -> UseResult<Vec<UiPackageAsset>> {
+) -> UseResult<UiPackageInventory> {
     let canonical_package = canonical_package_root(package_root, "UI").await?;
     let root_path = package_root.join(root);
     let metadata = fs::symlink_metadata(&root_path)
@@ -713,6 +771,7 @@ async fn list_ui_root(
     }
     let mut pending = vec![canonical_root.clone()];
     let mut assets = Vec::new();
+    let mut files = Vec::new();
     let mut total = 0u64;
     while let Some(directory) = pending.pop() {
         let mut entries = fs::read_dir(&directory)
@@ -743,7 +802,7 @@ async fn list_ui_root(
                     format!("UI asset '{}' must be a regular file.", path.display()),
                 ));
             }
-            if assets.len() >= MAX_UI_ROOT_FILES {
+            if files.len() >= MAX_UI_ROOT_FILES {
                 return Err(UseError::new(
                     "use.extension.ui_asset_invalid",
                     format!(
@@ -776,15 +835,7 @@ async fn list_ui_root(
                 .extension()
                 .and_then(|value| value.to_str())
                 .unwrap_or("");
-            let Some((media_type, text)) = ui_asset_media(extension) else {
-                return Err(UseError::new(
-                    "use.extension.ui_asset_invalid",
-                    format!(
-                        "UI asset '{}' uses an extension outside the UI media set.",
-                        path.display()
-                    ),
-                ));
-            };
+            let media = ui_asset_media(extension);
             let canonical = fs::canonicalize(&path)
                 .await
                 .map_err(|error| io_error("resolve UI asset", &path, error))?;
@@ -809,6 +860,11 @@ async fn list_ui_root(
                     format!("UI asset '{}' is not a relative file.", path.display()),
                 ));
             }
+            let relative_path = root.join(relative);
+            files.push(relative_path.clone());
+            let Some((media_type, text)) = media else {
+                continue;
+            };
             if text {
                 let bytes = fs::read(&canonical)
                     .await
@@ -821,13 +877,14 @@ async fn list_ui_root(
                 }
             }
             assets.push(UiPackageAsset {
-                relative_path: root.join(relative),
+                relative_path,
                 media_type,
                 text,
             });
         }
     }
     assets.sort_by(|left, right| left.relative_path.cmp(&right.relative_path));
+    files.sort();
     if !assets
         .iter()
         .any(|asset| asset.relative_path == surface.entry)
@@ -853,7 +910,10 @@ async fn list_ui_root(
             ));
         }
     }
-    Ok(assets)
+    Ok(UiPackageInventory {
+        files,
+        web_assets: assets,
+    })
 }
 
 /// Revalidate and digest one immutable UI contribution and all declared
@@ -863,11 +923,8 @@ pub async fn inspect_ui_surface_files(
     package_root: &Path,
 ) -> UseResult<PluginSurfaceFileEvidence> {
     let canonical_root = canonical_package_root(package_root, "UI").await?;
-    let assets = list_ui_package_assets(surface, package_root).await?;
-    let paths = assets
-        .into_iter()
-        .map(|asset| asset.relative_path)
-        .collect();
+    let inventory = inspect_ui_package_inventory(surface, package_root).await?;
+    let paths = inventory.file_paths().to_vec();
     digest_surface_files(package_root, &canonical_root, paths).await
 }
 

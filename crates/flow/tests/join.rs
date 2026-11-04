@@ -29,7 +29,10 @@ impl FlowRuntime for JoinRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
+    async fn run_step(
+        &self,
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 

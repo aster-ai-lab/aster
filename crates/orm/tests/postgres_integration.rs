@@ -172,9 +172,9 @@ async fn executes_typed_queries_against_postgres_pool() {
         .unwrap_err();
     assert!(matches!(
         drift,
-        aster_orm::migration::MigrationRunError::Backend(aster_orm::PostgresMigrationError::Migration(
-            MigrationError::ChecksumMismatch { .. }
-        ))
+        aster_orm::migration::MigrationRunError::Backend(
+            aster_orm::PostgresMigrationError::Migration(MigrationError::ChecksumMismatch { .. })
+        )
     ));
 
     let failed = Migrator::new(executor.clone())

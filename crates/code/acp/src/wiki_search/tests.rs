@@ -129,6 +129,7 @@ fn workspace_search_host_reply_retains_attribution_and_refuses_unpublished_or_fo
         json!({"sessionId":"session-b"}),
         json!({"scope":"current"}),
         json!({"phase":"not-ready"}),
+        json!({"phase":"not-ready","hits":[],"complete":true}),
         json!({"hits":[{"path":"../private.md"}]}),
     ] {
         let mut value = valid.clone();
@@ -137,6 +138,13 @@ fn workspace_search_host_reply_retains_attribution_and_refuses_unpublished_or_fo
         }
         assert!(validate_host_reply(&value, "session-a", Scope::All, "evidence").is_err());
     }
+}
+
+#[test]
+fn not_ready_host_reply_is_accepted_only_as_incomplete() {
+    let reply = |complete| json!({"sessionId":"session-a","scope":"current","query":"evidence","phase":"not-ready","searched":0,"pending":0,"complete":complete,"nextCursor":null,"hits":[]});
+    validate_host_reply(&reply(false), "session-a", Scope::Current, "evidence").unwrap();
+    assert!(validate_host_reply(&reply(true), "session-a", Scope::Current, "evidence").is_err());
 }
 
 #[test]

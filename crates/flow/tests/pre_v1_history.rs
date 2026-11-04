@@ -37,7 +37,11 @@ impl RetainedHistoryStore {
 
 #[async_trait]
 impl FlowEventStore for RetainedHistoryStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let mut events = self.events.lock().await;
         if run_id != self.run_id {
             return Err(FlowError::RunNotFound(run_id.to_string()));

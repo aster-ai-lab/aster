@@ -90,6 +90,7 @@ struct Host {
     calls: AtomicUsize,
     foreign: AtomicBool,
     revoke: AtomicBool,
+    unavailable: AtomicBool,
     denies: Arc<Mutex<Vec<String>>>,
 }
 #[async_trait(?Send)]
@@ -117,6 +118,11 @@ impl agent_client_protocol::Client for Host {
         assert_eq!(params["scope"], "all");
         assert!(params["cursor"].is_null());
         self.calls.fetch_add(1, Ordering::SeqCst);
+        if self.unavailable.load(Ordering::SeqCst) {
+            return Err(
+                agent_client_protocol::Error::internal_error().data("SYNTHETIC_HOST_ERROR_PAYLOAD")
+            );
+        }
         if self.revoke.load(Ordering::SeqCst) {
             self.denies.lock().unwrap().push(TOOL_NAME.into());
         }
@@ -133,6 +139,7 @@ impl agent_client_protocol::Client for Host {
 
 #[tokio::test]
 async fn search_memory_round_trip_uses_governed_harness_and_original_acp_transport() {
+    let phases = crate::test_support::PhaseTrace::new();
     tokio::task::LocalSet::new()
         .run_until(async {
             let origin = tempfile::tempdir().unwrap();
@@ -141,6 +148,7 @@ async fn search_memory_round_trip_uses_governed_harness_and_original_acp_transpo
                 calls: AtomicUsize::new(0),
                 foreign: AtomicBool::new(false),
                 revoke: AtomicBool::new(false),
+                unavailable: AtomicBool::new(false),
                 denies: Arc::clone(&denies),
             });
             let bridge = crate::document_read::DocumentBridge::new();
@@ -249,6 +257,17 @@ async fn search_memory_round_trip_uses_governed_harness_and_original_acp_transpo
             assert!(model.results.lock().unwrap()[3].contains("denied"));
             assert!(!model.results.lock().unwrap()[3].contains("stock-rule"));
             assert_eq!(host.calls.load(Ordering::SeqCst), 3);
+            denies.lock().unwrap().clear();
+            host.revoke.store(false, Ordering::SeqCst);
+            host.unavailable.store(true, Ordering::SeqCst);
+            session
+                .send("Find while host is unavailable", None)
+                .await
+                .unwrap();
+            let failed = model.results.lock().unwrap()[4].clone();
+            assert!(failed.contains("SYNTHETIC_HOST_ERROR_PAYLOAD"), "{failed}");
+            assert!(!failed.contains("stock-rule"));
+            assert_eq!(host.calls.load(Ordering::SeqCst), 4);
             session.close().await;
             denies.lock().unwrap().clear();
             std::fs::rename(origin.path(), origin.path().with_extension("moved")).unwrap();
@@ -260,7 +279,7 @@ async fn search_memory_round_trip_uses_governed_harness_and_original_acp_transpo
                 )
                 .await
                 .is_err());
-            assert_eq!(host.calls.load(Ordering::SeqCst), 3);
+            assert_eq!(host.calls.load(Ordering::SeqCst), 4);
             std::fs::remove_dir_all(origin.path().with_extension("moved")).unwrap();
             bridge.stop();
             for task in io {
@@ -268,6 +287,17 @@ async fn search_memory_round_trip_uses_governed_harness_and_original_acp_transpo
             }
         })
         .await;
+    phases.assert_host_search(
+        "aster/memory/search-workspaces",
+        "origin-session",
+        &[true, true, true, false],
+        &[
+            "库存",
+            "stock-rule",
+            "Inventory project",
+            "SYNTHETIC_HOST_ERROR_PAYLOAD",
+        ],
+    );
 }
 
 #[test]

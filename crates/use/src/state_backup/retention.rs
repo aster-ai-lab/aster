@@ -213,7 +213,8 @@ impl BackupDirectoryLock {
                         "The state backup retention lock cannot be inspected: {error}"
                     ))
                 })?;
-                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
+                    || !metadata.is_file()
                 {
                     return Err(directory_invalid(
                         "The state backup retention lock is not an owned regular file.",

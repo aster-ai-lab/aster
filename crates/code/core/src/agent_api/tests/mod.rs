@@ -21,6 +21,7 @@ mod agents_workers;
 mod async_mcp;
 mod attachment_cap;
 mod background_settlement;
+mod background_subagent;
 mod checkpoint_capability_recovery;
 mod close;
 mod compact;

@@ -354,15 +354,13 @@ pub fn init_tracing() -> TracingHandle {
         .with(hooks_log_layer)
         .with(otel_layer);
     aster_telemetry::debug_log::install_firehose(registry, "tui");
-    aster_telemetry::external::init(
-        aster_shell::agent::config::resolve_external_otel_config(
-            aster_telemetry::external::config::ExternalClientInfo {
-                service_version: aster_version::full_version().to_owned(),
-                client_version: aster_version::VERSION.to_owned(),
-                app_entrypoint: "tui".to_owned(),
-            },
-        ),
-    );
+    aster_telemetry::external::init(aster_shell::agent::config::resolve_external_otel_config(
+        aster_telemetry::external::config::ExternalClientInfo {
+            service_version: aster_version::full_version().to_owned(),
+            client_version: aster_version::VERSION.to_owned(),
+            app_entrypoint: "tui".to_owned(),
+        },
+    ));
     TracingHandle { rx }
 }
 /// Curated per-crate directives for the TUI subscriber.

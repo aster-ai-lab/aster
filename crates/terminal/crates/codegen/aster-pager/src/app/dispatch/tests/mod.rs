@@ -997,8 +997,7 @@ fn enqueue_permission_with_enable_always_approve(
     response_rx
 }
 const POLICY_WARNING: &str =
-    aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode
-        .message();
+    aster_workspace::permission::resolution::YoloPinReason::DisableBypassPermissionsMode.message();
 fn agent_toast(app: &AppView) -> Option<String> {
     test_agent(app, AgentId(0))
         .toast

@@ -1,7 +1,7 @@
 //! ACP slash command advertising and resolution.
+use agent_client_protocol as acp;
 use aster_tools::implementations::skills::skill::format_skill_name;
 use aster_tools::implementations::skills::types::{SkillInfo, SkillScope};
-use agent_client_protocol as acp;
 use std::collections::{HashMap, HashSet};
 use std::sync::LazyLock;
 pub(crate) struct BuiltinCommand {
@@ -1648,9 +1648,7 @@ pub(super) fn resolve_human_intent(
 /// It stays identical to the pager's `LoopCommand`, so the two front-ends can't drift.
 /// Like the pager, there is no host-side interval default: the model derives the cadence from the request and asks when none is given.
 fn build_loop_prompt_blocks(args: &str) -> Vec<acp::ContentBlock> {
-    use aster_tools::implementations::grok_build::{
-        loop_schedule_instruction, loop_usage_message,
-    };
+    use aster_tools::implementations::grok_build::{loop_schedule_instruction, loop_usage_message};
     let text = if args.trim().is_empty() {
         loop_usage_message().to_string()
     } else {

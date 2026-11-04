@@ -1,0 +1,92 @@
+[
+  {
+    "name": "aster",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/aster"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "aster-acp",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/aster-acp"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "aster-acp-unit",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/aster-acp-unit"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "acp_conformance_stdio",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/acp_conformance_stdio"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "cursor_account_tui_e2e",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/cursor_account_tui_e2e"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "deloop_generalization_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/deloop_generalization_real_llm"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "deloop_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/deloop_real_llm"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "long_horizon_real_llm",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/long_horizon_real_llm"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "shipped_tui_e2e",
+    "command": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/Users/roylin/code/aster/target/qualification/fallback-state-retained-budget-20261104-root-12a-current-config-1-bcb7c761-29b7-4f71-b3b5-fcfa8691c126/shipped_tui_e2e"
+    ],
+    "exitCode": 0
+  }
+]

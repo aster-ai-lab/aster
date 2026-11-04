@@ -32,14 +32,12 @@ impl SessionActor {
                     } else {
                         "default"
                     };
-                    aster_telemetry::session_ctx::log_event(
-                        aster_telemetry::events::YoloToggled {
-                            enabled: actual,
-                            previous_state: was,
-                            trigger: aster_telemetry::events::YoloTrigger::SlashCommand,
-                            from_mode: Some(from_mode.to_owned()),
-                        },
-                    );
+                    aster_telemetry::session_ctx::log_event(aster_telemetry::events::YoloToggled {
+                        enabled: actual,
+                        previous_state: was,
+                        trigger: aster_telemetry::events::YoloTrigger::SlashCommand,
+                        from_mode: Some(from_mode.to_owned()),
+                    });
                     aster_telemetry::event_span!(
                         "session.permission_mode_changed",
                         from_mode = crate::session::telemetry::permission_mode_label(was),
@@ -522,13 +520,10 @@ impl SessionActor {
 
                     if !trust {
                         let install_source =
-                            aster_agent::plugins::git_install::parse_install_source(
-                                &source, cwd,
-                            );
+                            aster_agent::plugins::git_install::parse_install_source(&source, cwd);
                         let source_desc = match &install_source {
                             aster_agent::plugins::git_install::InstallSource::Git {
-                                url,
-                                ..
+                                url, ..
                             } => {
                                 format!("remote git repo: {url}")
                             }
@@ -957,8 +952,10 @@ impl SessionActor {
                 self.goal_turn_task_ids.lock().clear();
                 self.subagent_token_records.lock().clear();
                 self.clear_pending_classifier_completions();
-                self.send_aster_notification(crate::session::goal_orchestrator::build_goal_cleared())
-                    .await;
+                self.send_aster_notification(
+                    crate::session::goal_orchestrator::build_goal_cleared(),
+                )
+                .await;
                 self.send_host_turn_slash_command_output("Goal cleared.")
                     .await;
                 ok_end_turn(0, None)

@@ -85,9 +85,8 @@ pub(crate) struct WorkflowManager {
     active_work: Arc<std::sync::atomic::AtomicUsize>,
     store: WorkflowRunStore,
     notify: WorkflowNotifySender,
-    subagent_event_tx: mpsc::UnboundedSender<
-        aster_tools::implementations::grok_build::task::types::SubagentEvent,
-    >,
+    subagent_event_tx:
+        mpsc::UnboundedSender<aster_tools::implementations::grok_build::task::types::SubagentEvent>,
     telemetry: TelemetryHook,
     session_cmd_tx: mpsc::UnboundedSender<crate::session::commands::SessionCommand>,
     templates: HashMap<String, String>,

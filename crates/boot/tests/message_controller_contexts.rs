@@ -100,7 +100,10 @@ impl TransportInterceptor for RetryOnce {
 impl TransientMessageController {
     #[aster_boot::message_pattern("macro.context.transient.retry")]
     #[aster_boot::use_interceptor(RetryOnce)]
-    async fn retry(&self, #[aster_boot::payload("value")] value: String) -> Result<ControllerReply> {
+    async fn retry(
+        &self,
+        #[aster_boot::payload("value")] value: String,
+    ) -> Result<ControllerReply> {
         TRANSIENT_ATTEMPTS.lock().unwrap().push(self.id);
         if self.attempts.fetch_add(1, Ordering::SeqCst) == 0 {
             return Err(BootError::Internal(

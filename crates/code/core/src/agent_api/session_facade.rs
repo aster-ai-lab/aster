@@ -134,7 +134,9 @@ impl AgentSession {
     pub async fn prepare_workspace_index(&self) -> crate::error::Result<bool> {
         let boundary = Arc::clone(&self.close_handle);
         let services = Arc::clone(&self.tool_context.workspace_services);
+        let span = tracing::Span::current();
         tokio::task::spawn_blocking(move || {
+            let _entered = span.enter();
             boundary.mutate_immediate(|| {
                 services.capabilities().read && services.persistent_index().is_some()
             })

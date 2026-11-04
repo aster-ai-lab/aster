@@ -1,11 +1,20 @@
 //! Opening and replacing the core session behind an ACP session.
 
 use super::*;
+use tracing::Instrument as _;
 
 impl AsterCodeAgent {
     pub(super) async fn ensure_core_agent(&self) -> acp::Result<()> {
+        let started = std::time::Instant::now();
         let mut guard = self.core_agent.lock().await;
         if guard.is_some() {
+            tracing::info!(
+                target: "aster_acp::retrieval_phase",
+                phase = "core_agent",
+                reused = true,
+                elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+                "ACP phase completed"
+            );
             return Ok(());
         }
         let mut config = self.launch.config.clone();
@@ -28,6 +37,13 @@ impl AsterCodeAgent {
             tracing::warn!(error = %error, "sampling stays refused: arming failed");
         }
         *guard = Some(agent);
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "core_agent",
+            reused = false,
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
         Ok(())
     }
 
@@ -162,6 +178,7 @@ impl AsterCodeAgent {
         setup: &SessionSetup<'_>,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
+        let started = std::time::Instant::now();
         let retrieval = self
             .launch
             .config
@@ -180,6 +197,14 @@ impl AsterCodeAgent {
             ),
             _ => (None, None),
         };
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "session_embedding",
+            session_id,
+            available = embedding.is_some(),
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
         let options = match &self.unattended {
             Some(unattended) => unattended
                 .session_options(
@@ -206,6 +231,11 @@ impl AsterCodeAgent {
             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
             None => options,
         };
+        if self.client_terminal_markdown.get() {
+            let mut slots = options.prompt_slots.clone().unwrap_or_default();
+            append_slot_extra(&mut slots, TERMINAL_MARKDOWN_PRESENTATION);
+            options = options.with_prompt_slots(slots);
+        }
         if let Some(rules) = self.client_rules.borrow().as_ref() {
             let mut slots = options.prompt_slots.clone().unwrap_or_default();
             append_slot_extra(
@@ -250,12 +280,14 @@ impl AsterCodeAgent {
         }
     }
 
+    #[tracing::instrument(target = "aster_acp::retrieval_phase", skip_all, fields(session_id = session_id, restore = restore))]
     pub(super) async fn open_core_session(
         &self,
         session_id: &str,
         setup: SessionSetup<'_>,
         restore: bool,
     ) -> acp::Result<LiveSession> {
+        let started = std::time::Instant::now();
         let store_dir =
             Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
         let stored = if restore {
@@ -280,6 +312,7 @@ impl AsterCodeAgent {
         };
         let options = crate::harness_assemble::apply(options, setup.components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
+        let assembly_started = std::time::Instant::now();
         let session = match stored {
             Some(store) => {
                 agent
@@ -294,6 +327,13 @@ impl AsterCodeAgent {
             }
         }
         .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "core_session_build",
+            session_id,
+            elapsed_ms = assembly_started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
         let names = session.tool_names();
         let command_tool = if names.iter().any(|name| name == "bash") {
             "bash"
@@ -342,6 +382,14 @@ impl AsterCodeAgent {
             active_prompt_id: std::sync::Mutex::new(None),
         };
         start_workspace_indexing(&live);
+        tracing::info!(
+            target: "aster_acp::retrieval_phase",
+            phase = "core_session",
+            session_id,
+            restore,
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "ACP phase completed"
+        );
         Ok(live)
     }
 
@@ -617,18 +665,21 @@ fn start_workspace_indexing(live: &LiveSession) {
         return;
     }
     let session = Arc::downgrade(&live.session);
-    tokio::spawn(async move {
-        let Some(session) = session.upgrade() else {
-            return;
-        };
-        match session.prepare_workspace_index().await {
-            Ok(true) | Err(aster_core::CodeError::SessionClosed { .. }) => {}
-            Ok(false) => tracing::warn!(
+    tokio::spawn(
+        async move {
+            let Some(session) = session.upgrade() else {
+                return;
+            };
+            match session.prepare_workspace_index().await {
+                Ok(true) | Err(aster_core::CodeError::SessionClosed { .. }) => {}
+                Ok(false) => tracing::warn!(
                 "workspace aster-vec index unavailable; verified retrieval fallback remains active"
             ),
-            Err(error) => tracing::warn!(%error, "workspace index preparation failed"),
+                Err(error) => tracing::warn!(%error, "workspace index preparation failed"),
+            }
         }
-    });
+        .in_current_span(),
+    );
 }
 
 /// The desired global set: baseline ∪ every live session's servers,
@@ -816,8 +867,7 @@ fn mcp_tool_timeout(meta: Option<&acp::Meta>) -> Option<u64> {
 #[path = "session_mcp_timeout_tests.rs"]
 mod session_mcp_timeout_tests;
 
-/// The host's registered provider (BYO model engine) serves the trusted
-/// local_cpu opt-in; the product itself ships no engine.
+/// A registered host provider or the bundled light tier serves the trusted local_cpu opt-in.
 async fn local_cpu_embedding() -> (
     Option<Arc<dyn aster_core::EmbeddingProvider>>,
     Option<String>,

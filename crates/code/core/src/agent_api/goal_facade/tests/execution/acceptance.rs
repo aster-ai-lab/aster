@@ -87,6 +87,220 @@ async fn goal_step_current_source_and_original_judgment_accept_only_the_ready_st
     }
 }
 
+#[tokio::test]
+async fn a_repaired_current_check_replaces_its_earlier_failed_observation() {
+    verify_order(true).await;
+}
+
+#[tokio::test]
+async fn a_later_failed_check_cannot_borrow_its_earlier_pass() {
+    verify_order(false).await;
+}
+
+#[tokio::test]
+async fn a_long_verified_stage_keeps_observations_inside_the_judgment_bound() {
+    let root = tempfile::tempdir().unwrap();
+    let text = format!(
+        "ORIGINAL-STAGE-SOURCE\n{}",
+        "read-only evidence ".repeat(12)
+    );
+    std::fs::write(root.path().join("source.txt"), &text).unwrap();
+    for index in 0..31 {
+        std::fs::write(
+            root.path().join(format!("source-{index}.txt")),
+            format!("{text}\nitem-{index}\n"),
+        )
+        .unwrap();
+    }
+    let (agent, session, client) = fixture(
+        root.path(),
+        true,
+        options("goal-run")
+            .with_max_tool_rounds(64)
+            .with_permission_policy(
+                crate::permissions::PermissionPolicy::new()
+                    .allow_all(&["read(*)", "verify_source(*)"]),
+            ),
+    )
+    .await;
+    session
+        .register_dynamic_tool(Arc::new(VerifySource(text)))
+        .unwrap();
+    client.scripted.lock().unwrap().push_back(LlmResponse {
+        message: Message {
+            role: "assistant".into(),
+            content: (0..31)
+                .map(|index| crate::llm::ContentBlock::ToolUse {
+                    id: format!("read-source-{index}"),
+                    name: "read".into(),
+                    input: serde_json::json!({"file_path":format!("source-{index}.txt")}),
+                })
+                .collect(),
+            reasoning_content: None,
+            transcript_text: None,
+            transcript_visibility: Default::default(),
+        },
+        usage: TokenUsage::default(),
+        stop_reason: None,
+        token_logprobs: vec![],
+        meta: None,
+    });
+    script(
+        &client,
+        r#"{"achieved":true,"progress":1.0,"remaining_criteria":[]}"#,
+    );
+    let usage_updates = session.subscribe_usage();
+    let result = session
+        .send(
+            "Read the original source and independently verify only this stage.",
+            None,
+        )
+        .await;
+    let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+    if result.is_err() {
+        for fact in facts.iter().filter(|f| f.kind == "tool.result").take(2) {
+            eprintln!("READ_REFUSAL {}", fact.payload["receipt"]["output"]);
+        }
+    }
+    result.unwrap();
+    assert_eq!(session.recorded_usage_tokens().2, 21);
+    assert_eq!(usage_updates.borrow().total_tokens, 21);
+    let receipt_bytes = facts
+        .iter()
+        .filter(|f| f.kind == "tool.result")
+        .map(|f| serde_json::to_vec(&f.payload["receipt"]).unwrap().len())
+        .sum::<usize>();
+    assert!(
+        receipt_bytes > 32 * 1024,
+        "fixture must exercise the original evidence ceiling: {receipt_bytes}"
+    );
+    let admission = facts
+        .iter()
+        .find(|f| f.kind == "aster.goal.slice.admitted")
+        .unwrap();
+    let terminal = facts
+        .iter()
+        .position(|f| f.kind == "turn.complete")
+        .unwrap();
+    let projected = crate::fact_control::evidence_for_goal_step(
+        &facts[..terminal],
+        admission.seq,
+        session.session_id(),
+        admission.payload["body"]["run_id"].as_str().unwrap(),
+        None,
+        None,
+    );
+    eprintln!(
+        "LONG_STAGE_EVIDENCE raw_receipt_bytes={receipt_bytes} projected_bytes={:?}",
+        projected.as_ref().map(|v| v.1.len())
+    );
+    let (_, evidence, _) =
+        projected.expect("verified current observations fit without repeating protocol identities");
+    assert!(evidence.len() <= 32 * 1024);
+    assert!(evidence.contains("ORIGINAL-STAGE-SOURCE"));
+    assert!(!evidence.contains("capability_binding_digest"));
+    assert!(!evidence.contains("aster_tool_result_transform_binding"));
+    assert_eq!(
+        session
+            .goal_definition()
+            .unwrap()
+            .unwrap()
+            .plan
+            .unwrap()
+            .steps[0]
+            .status,
+        crate::planning::TaskStatus::Completed
+    );
+    assert_eq!(facts.iter().filter(|f| f.kind == "tool.result").count(), 32);
+    session.close().await;
+    agent.close().await;
+}
+
+async fn verify_order(repaired: bool) {
+    for file_store in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let storage = tempfile::tempdir().unwrap();
+        let store: Arc<dyn SessionStore> = if file_store {
+            Arc::new(FileSessionStore::new(storage.path()).await.unwrap())
+        } else {
+            Arc::new(MemorySessionStore::new())
+        };
+        let source = root.path().join("source.txt");
+        std::fs::write(&source, if repaired { "wrong" } else { "checked" }).unwrap();
+        let (agent, session, client) = fixture(
+            root.path(),
+            true,
+            options("goal-run")
+                .with_session_store(store)
+                .with_permission_policy(
+                    crate::permissions::PermissionPolicy::new().allow("verify_source(*)"),
+                ),
+        )
+        .await;
+        session
+            .register_dynamic_tool(Arc::new(VerifySource("checked".into())))
+            .unwrap();
+        *client.before_response.lock().unwrap() = Some(Box::new(move |call| {
+            if call == 2 {
+                std::fs::write(&source, if repaired { "checked" } else { "wrong" }).unwrap();
+            }
+        }));
+        for id in ["first-check", "fresh-check"] {
+            client.scripted.lock().unwrap().push_back(LlmResponse {
+                message: Message {
+                    role: "assistant".into(),
+                    content: vec![crate::llm::ContentBlock::ToolUse {
+                        id: id.into(),
+                        name: "verify_source".into(),
+                        input: serde_json::json!({}),
+                    }],
+                    reasoning_content: None,
+                    transcript_text: None,
+                    transcript_visibility: crate::llm::TranscriptVisibility::Wire,
+                },
+                usage: TokenUsage::default(),
+                stop_reason: None,
+                token_logprobs: vec![],
+                meta: None,
+            });
+        }
+        for text in [
+            "The current source was checked.",
+            r#"{"achieved":true,"progress":1.0,"remaining_criteria":[]}"#,
+        ] {
+            client.scripted.lock().unwrap().push_back(LlmResponse {
+                message: Message::assistant(text),
+                usage: TokenUsage::default(),
+                stop_reason: None,
+                token_logprobs: vec![],
+                meta: None,
+            });
+        }
+        session
+            .send(
+                "Execute only the current admitted step with fresh evidence.",
+                None,
+            )
+            .await
+            .unwrap();
+        let goal = session.goal_definition().unwrap().unwrap();
+        assert_eq!(
+            goal.plan.as_ref().unwrap().steps[0].status == crate::planning::TaskStatus::Completed,
+            repaired
+        );
+        let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
+        assert_eq!(
+            facts
+                .iter()
+                .filter(|fact| fact.kind == "tool.result")
+                .count(),
+            2
+        );
+        session.close().await;
+        agent.close().await;
+    }
+}
+
 async fn prove_acceptance(file_store: bool) {
     let root = tempfile::tempdir().unwrap();
     let storage = tempfile::tempdir().unwrap();
@@ -357,7 +571,8 @@ async fn goal_step_late_workspace_acceptance_still_requires_its_original_report(
 #[tokio::test]
 async fn goal_step_oversized_original_observation_cannot_be_silently_truncated() {
     let root = tempfile::tempdir().unwrap();
-    let expected = "本次原始观察".repeat(3000);
+    let expected = "本次原始观察".repeat(6000);
+    assert!(expected.len() > 64 * 1024);
     std::fs::write(root.path().join("source.txt"), &expected).unwrap();
     let (agent, session, client) = fixture(
         root.path(),

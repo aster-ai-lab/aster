@@ -1,8 +1,8 @@
+use anyhow::Result;
 use aster_login::{AuthManager, try_ensure_fresh_auth};
 use aster_shell::agent::config::Config as AgentConfig;
 use aster_shell::session::merge::MergedSession;
 use aster_shell::util::grok_home::grok_home;
-use anyhow::Result;
 use clap::Subcommand;
 #[derive(Debug, clap::Args, Clone)]
 pub struct SessionsArgs {
@@ -217,8 +217,8 @@ async fn delete_companion_session(
     session_id: &str,
     cwd: Option<&str>,
 ) -> Result<()> {
-    use aster_acp_lib::acp_send;
     use agent_client_protocol as acp;
+    use aster_acp_lib::acp_send;
     use tokio_util::sync::CancellationToken;
 
     let cancel = CancellationToken::new();

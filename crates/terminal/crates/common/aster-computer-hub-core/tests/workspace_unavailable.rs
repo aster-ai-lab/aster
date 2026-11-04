@@ -1,7 +1,9 @@
 //! `is_workspace_unavailable` recognizer coverage, pinned against the real
 //! wire decode path (`error_from_envelope` / `tool_error_from_wire`).
 
-use aster_computer_hub_core::{error_from_envelope, is_workspace_unavailable, tool_error_from_wire};
+use aster_computer_hub_core::{
+    error_from_envelope, is_workspace_unavailable, tool_error_from_wire,
+};
 use aster_tool_protocol::{
     JsonRpcError, ToolErrorWire, WORKSPACE_UNAVAILABLE_SUBCODE, WorkspaceGonePhase,
     WorkspaceGoneReason, WorkspaceUnavailableDetails, workspace_unavailable_wire,

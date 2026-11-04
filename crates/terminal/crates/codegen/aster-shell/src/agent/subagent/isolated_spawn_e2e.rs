@@ -3,7 +3,9 @@ use super::spawn::present_child_completion;
 use super::{ShellChildRuntime, ShellCompletionData, SubagentSpawnContext, run_shell_child};
 use crate::session::SessionCommand;
 use crate::util::config::RemoteSettings;
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
+use aster_tool_types::SubagentIsolationMode;
 use aster_tools::implementations::grok_build::task::coordinator::{
     ChildCompletion, ChildRunOutput, ChildRunner, LocalBoxFuture, SubagentCoordinator,
 };
@@ -11,8 +13,6 @@ use aster_tools::implementations::grok_build::task::root_control::NoRootControl;
 use aster_tools::implementations::grok_build::task::types::{
     SubagentDescribeOutcome, SubagentOwner, SubagentRequest, SubagentValidateTypeOutcome,
 };
-use aster_tool_types::SubagentIsolationMode;
-use agent_client_protocol as acp;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -59,9 +59,9 @@ fn spawn_ctx(parent_cwd: PathBuf) -> SubagentSpawnContext {
         subagent_event_tx: tx,
         hunk_tracker_handle: aster_hunk_tracker::HunkTrackerHandle::noop(),
         hunk_tracking_enabled: false,
-        fs: Arc::new(aster_workspace::file_system::LocalFs::new(
-            PathBuf::from("/tmp"),
-        )),
+        fs: Arc::new(aster_workspace::file_system::LocalFs::new(PathBuf::from(
+            "/tmp",
+        ))),
         terminal: Arc::new(crate::terminal::TerminalRunner::new(
             Arc::new(test_gateway()),
             acp::SessionId::new("test"),

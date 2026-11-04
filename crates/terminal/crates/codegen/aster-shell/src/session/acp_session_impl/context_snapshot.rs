@@ -48,8 +48,7 @@ impl SessionActor {
             &counts,
             &tokens,
         ));
-        aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN)
-            .await;
+        aster_telemetry::session_ctx::drain_pending(aster_telemetry::session_ctx::CLI_DRAIN).await;
     }
 
     async fn tokenize_api_key(&self) -> Option<String> {

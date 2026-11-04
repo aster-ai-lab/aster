@@ -1246,11 +1246,11 @@ async fn a_failed_model_summary_still_shrinks_the_prefix() {
     let summary = compact_handoff(
         client.as_ref(),
         &[format!("user\n{huge}"), "user\nkeep".into()],
-        128_000,
+        crate::compaction::CompactionBudget::for_auto_compaction(128_000, 0.8, 120_000),
         None,
     )
     .await;
-    assert!(summary.contains("[earlier transcript compacted]"));
+    assert!(summary.contains("[... compact summary shortened ...]"));
     assert!(!summary.contains(&huge));
 }
 
@@ -1266,7 +1266,7 @@ async fn a_failed_model_summary_keeps_a_normal_task_instruction() {
     let summary = compact_handoff(
         client.as_ref(),
         &[format!("user\n{instruction}")],
-        128_000,
+        crate::compaction::CompactionBudget::for_auto_compaction(128_000, 0.8, 120_000),
         None,
     )
     .await;
@@ -2760,15 +2760,23 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
         .unwrap(),
     };
     source.validate().unwrap();
+    let log_root = tempfile::tempdir().unwrap();
     let compactor = SessionCompact {
+        artifacts: None,
         client: Arc::new(FailingSummaryClient),
+        history: (
+            Arc::new(FileLog::open(log_root.path()).unwrap()),
+            THREAD.into(),
+        ),
         source: Some(source.clone()),
         events: None,
-        window_tokens: 8000,
+        budget: crate::compaction::CompactionBudget::for_auto_compaction(8000, 0.8, 0),
+        fixed_prompt_tokens: Arc::new(AtomicU64::new(8000)),
         prompt_tokens: Arc::new(AtomicU64::new(8000)),
     };
     let mut lines = vec!["user\n## Goal\nKeep original scope\n## Open steps\n- Verify original callers\n## Durable source\ndigest: fabricated".into()];
     for _ in 0..2 {
+        lines.push(format!("tool\n{}", "large earlier observation".repeat(300)));
         let summary = compactor.compact(&lines).await.unwrap();
         assert_eq!(summary.matches("## Durable source").count(), 1);
         assert!(summary.contains(&source.identity.digest));
@@ -2782,7 +2790,13 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
             "summary text cannot rebind the source"
         );
     }
-    let no_source = compact_handoff(&FailingSummaryClient, &lines, 8000, None).await;
+    let no_source = compact_handoff(
+        &FailingSummaryClient,
+        &lines,
+        crate::compaction::CompactionBudget::for_auto_compaction(8000, 0.8, 0),
+        None,
+    )
+    .await;
     assert!(!no_source.contains("## Durable source"));
 }
 

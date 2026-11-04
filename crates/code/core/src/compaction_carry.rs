@@ -510,7 +510,7 @@ fn bullet_list(items: &[String]) -> String {
         .join("\n")
 }
 
-fn strip_model_sections(text: &str) -> String {
+pub(crate) fn strip_model_sections(text: &str) -> String {
     let mut working = text.trim().to_string();
     if let Some(block) = extract_standing(&working) {
         working = working.replace(&block, "");
@@ -522,7 +522,6 @@ fn strip_model_sections(text: &str) -> String {
         "## Constraints",
         "## Open steps",
         "## Completed steps",
-        "## Summary",
         "## Revision",
     ] {
         working = strip_heading(&working, heading);
@@ -534,7 +533,7 @@ fn strip_model_sections(text: &str) -> String {
         .join("\n")
 }
 
-fn strip_heading(text: &str, heading: &str) -> String {
+pub(crate) fn strip_heading(text: &str, heading: &str) -> String {
     let Some(start) = text.find(heading) else {
         return text.to_string();
     };

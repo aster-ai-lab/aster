@@ -6,8 +6,8 @@
 //! Defaults therefore stay unchanged for every client that does not declare delivery tools.
 //! SDK/stdio consumers read plain-text responses; subagents report to their parent.
 
-use aster_mcp::servers::McpInitStrategy;
 use agent_client_protocol as acp;
+use aster_mcp::servers::McpInitStrategy;
 
 use super::mcp::format_mcp_connecting_reminder;
 use super::support::*;

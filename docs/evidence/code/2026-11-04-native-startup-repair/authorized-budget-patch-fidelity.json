@@ -1,0 +1,26 @@
+[
+  {
+    "path": "crates/code/acp/tests/long_horizon/live.rs",
+    "matchesAuthorizedPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/long_horizon_real_llm.rs",
+    "matchesAuthorizedPatch": true
+  },
+  {
+    "path": "docs/evidence/code/2026-11-02-summary-input-retention/supplementary.py",
+    "matchesAuthorizedPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/deloop_generalization_real_llm.rs",
+    "matchesAuthorizedPatch": true
+  },
+  {
+    "path": "docs/evidence/code/2026-11-02-summary-input-retention/live.py",
+    "matchesAuthorizedPatch": true
+  },
+  {
+    "path": "crates/code/acp/tests/deloop_real_llm.rs",
+    "matchesAuthorizedPatch": true
+  }
+]

@@ -1,6 +1,8 @@
 use std::collections::BTreeMap;
 
-use aster_use_core::{McpReleaseDescriptor, ReleaseKind, ReleaseResolution, SkillReleaseDescriptor};
+use aster_use_core::{
+    McpReleaseDescriptor, ReleaseKind, ReleaseResolution, SkillReleaseDescriptor,
+};
 
 const MCP_FIXTURE: &[u8] = include_bytes!("../fixtures/releases/mcp-release-v1.json");
 const SKILL_FIXTURE: &[u8] = include_bytes!("../fixtures/releases/skill-release-v1.json");

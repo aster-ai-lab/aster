@@ -15,8 +15,7 @@ use super::app_view::AppView;
 use super::cancel_latency::TurnEnd;
 
 /// `_meta.cancellationCategory` of a hook-denied turn end: renders the "blocked by a hook" marker instead of "cancelled by user" on every rail.
-pub(crate) const HOOK_DENIED_CATEGORY: &str =
-    aster_shell::session::commands::HOOK_DENIED_CATEGORY;
+pub(crate) const HOOK_DENIED_CATEGORY: &str = aster_shell::session::commands::HOOK_DENIED_CATEGORY;
 
 /// `_meta` key of a cancelled terminal's trigger (`"send_now"`, `"ctrl_c"`, …).
 pub(crate) const CANCEL_TRIGGER_KEY: &str = "cancelTrigger";
@@ -31,7 +30,7 @@ pub(crate) const COMPLETION_KIND_KEY: &str = aster_shell::session::commands::COM
 pub(crate) const REMOVED_FROM_QUEUE_KIND: &str =
     aster_shell::session::commands::REMOVED_FROM_QUEUE_KIND;
 
-/// Unknown tokens stay [`TurnStopReason::Unknown`], which maps to `TurnCompleted` (live `_` arm).
+/// Missing or unknown stop reasons cannot prove normal completion.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum TurnStopReason {
     EndTurn,
@@ -259,11 +258,23 @@ pub(crate) fn duration_to_elapsed_ms(elapsed: Option<std::time::Duration>) -> Op
 pub(crate) fn terminal_marker(input: TerminalMarkerInput<'_>) -> Option<SessionEvent> {
     let elapsed = input.elapsed_ms.map(std::time::Duration::from_millis);
     match input.stop {
-        TurnStopReason::EndTurn
-        | TurnStopReason::Refusal
+        TurnStopReason::EndTurn => Some(SessionEvent::TurnCompleted { elapsed }),
+        TurnStopReason::Refusal
         | TurnStopReason::MaxTokens
         | TurnStopReason::MaxTurnRequests
-        | TurnStopReason::Unknown => Some(SessionEvent::TurnCompleted { elapsed }),
+        | TurnStopReason::Unknown => {
+            let reason = match input.stop {
+                TurnStopReason::Refusal => "The model refused the request.",
+                TurnStopReason::MaxTokens => "The response reached the model output limit.",
+                TurnStopReason::MaxTurnRequests => "The turn reached its tool request limit.",
+                _ => "The turn ended without a recognized stop reason.",
+            };
+            Some(failed_turn_event(
+                input.error_kind,
+                Some(input.agent_result.unwrap_or(reason)),
+                elapsed,
+            ))
+        }
         TurnStopReason::Cancelled if input.send_now_cancel => None,
         TurnStopReason::Cancelled => Some(cancelled_turn_event(
             input.cancel_trigger,
@@ -412,9 +423,7 @@ fn open_prompt_blocked_card(
     prompt_text: String,
 ) {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
 
     if agent.question_view.is_some()
         || matches!(

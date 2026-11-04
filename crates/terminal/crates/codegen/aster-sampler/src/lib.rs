@@ -32,9 +32,9 @@ mod stream_classify;
 pub mod types;
 
 // Public re-exports: the API consumers see
-pub use aster_sampling_types::ConversationGroupId;
 pub use actor::SamplerActor;
 pub use actor::request_task::CompletionResult;
+pub use aster_sampling_types::ConversationGroupId;
 pub use attribution::{
     Auth401AttributionCallback, BEARER_SUFFIX_LEN, SamplingConsumer, SharedAttributionCallback,
 };

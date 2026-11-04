@@ -12,9 +12,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 aster_okf::MaintenanceOperation::Ingest,
             )?)?
         }
-        [operation, root, job] if operation == "finish" => {
-            serde_json::to_value(aster_okf::finish_knowledge_maintenance(Path::new(root), job)?)?
-        }
+        [operation, root, job] if operation == "finish" => serde_json::to_value(
+            aster_okf::finish_knowledge_maintenance(Path::new(root), job)?,
+        )?,
         _ => {
             return Err(std::io::Error::new(
                 std::io::ErrorKind::InvalidInput,

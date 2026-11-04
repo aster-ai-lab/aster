@@ -186,8 +186,7 @@ fn test_auth() -> GrokAuth {
 }
 fn test_auth_manager() -> Arc<aster_login::AuthManager> {
     let dir = tempfile::tempdir().unwrap();
-    let mgr =
-        aster_login::AuthManager::new(dir.path(), aster_login::GrokComConfig::default());
+    let mgr = aster_login::AuthManager::new(dir.path(), aster_login::GrokComConfig::default());
     mgr.hot_swap(test_auth());
     std::mem::forget(dir);
     Arc::new(mgr)
@@ -827,7 +826,10 @@ fn inference_url_base_url_wins_over_proxy() {
 #[test]
 fn list_url_defaults_to_proxy_models() {
     let ep = endpoints("https://proxy.aster/v1", None, None);
-    assert_eq!(ep.resolve_models_list_url(), "https://proxy.aster/v1/models");
+    assert_eq!(
+        ep.resolve_models_list_url(),
+        "https://proxy.aster/v1/models"
+    );
 }
 #[test]
 fn list_url_derived_from_base_url() {

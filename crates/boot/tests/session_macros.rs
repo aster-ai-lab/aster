@@ -51,7 +51,10 @@ impl Module for SessionFeatureModule {
         "session-feature"
     }
 
-    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(
+        &self,
+        _module_ref: &aster_boot::ModuleRef,
+    ) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(SessionController).controller()?])
     }
 }

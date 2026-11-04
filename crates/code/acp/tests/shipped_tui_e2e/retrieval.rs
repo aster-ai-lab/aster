@@ -4,6 +4,7 @@ use super::*;
 use serde_json::{json, Value};
 
 const PROMPT: &str = "RETRIEVAL-ORACLE: find the workspace retrieval probe using hybrid search";
+const SEMANTIC_PROMPT: &str = "RETRIEVAL-ORACLE: find configuration loading by meaning";
 const EVIDENCE: &str = "VERIFIED_RETRIEVAL_011";
 const COMPLETE: &str = "RETRIEVAL-EVIDENCE-VERIFIED";
 
@@ -33,16 +34,16 @@ pub(super) fn response(body: &Value, state: &mut MockState, streaming: bool) -> 
         .as_array()?
         .iter()
         .find(|tool| tool["function"]["name"] == "search");
+    let semantic = messages.iter().any(|message| {
+        message["role"] == "user" && message["content"].to_string().contains(SEMANTIC_PROMPT)
+    });
+    let args = if semantic {
+        json!({"mode": "semantic", "query": "parse application configuration", "limit": 1})
+    } else {
+        json!({"mode": "hybrid", "query": "retrieval_probe", "path": "source.rs", "limit": 1})
+    };
     Some(match search {
-        Some(_) => reply_tool(
-            "search",
-            &json!({
-                "mode": "hybrid", "query": "retrieval_probe", "path": "source.rs", "limit": 1,
-            })
-            .to_string(),
-            state,
-            streaming,
-        ),
+        Some(_) => reply_tool("search", &args.to_string(), state, streaming),
         None => reply_text("RETRIEVAL-TOOL-MISSING", streaming),
     })
 }
@@ -66,11 +67,24 @@ fn fixture(root: &Path, local_opt_in: bool) -> (PathBuf, PathBuf, PathBuf, Arc<M
     (workspace, home, config, state)
 }
 
-async fn stdio_case(local_opt_in: bool) {
+async fn stdio_case(local_opt_in: bool, prompt: &str) {
     let root = tempfile::tempdir().unwrap();
     let (workspace, home, config, state) = fixture(root.path(), local_opt_in);
+    if prompt == SEMANTIC_PROMPT {
+        let mut lines = vec!["// unrelated prefix".to_owned(); 79];
+        lines[63] = format!(
+            "pub fn load_settings() {{ /* Read application configuration settings from disk. {EVIDENCE} */ }}"
+        );
+        std::fs::write(workspace.join("source.rs"), lines.join("\n")).unwrap();
+        std::fs::write(
+            workspace.join("weather.md"),
+            "The weather is sunny today.\n",
+        )
+        .unwrap();
+    }
     let missing_model = root.path().join("absent-model");
     let product_home = home.join(".aster");
+    let started = Instant::now();
     let agent = spawn_agent_with_env(
         &workspace,
         &config,
@@ -92,16 +106,19 @@ async fn stdio_case(local_opt_in: bool) {
         acp::Agent::new_session(agent.conn.as_ref(), acp::NewSessionRequest::new(workspace))
             .await
             .unwrap();
+    let session_opened = started.elapsed();
+    let query_started = Instant::now();
     let result = tokio::time::timeout(
         Duration::from_secs(45),
         acp::Agent::prompt(
             agent.conn.as_ref(),
-            user_prompt(&session.session_id, PROMPT),
+            user_prompt(&session.session_id, prompt),
         ),
     )
     .await
     .unwrap()
     .unwrap();
+    let query_elapsed = query_started.elapsed();
     assert_eq!(result.stop_reason, acp::StopReason::EndTurn);
     assert!(agent_text(&agent, &session.session_id, 0).contains(COMPLETE));
     let bodies = state.lock().unwrap().bodies.clone();
@@ -125,15 +142,23 @@ async fn stdio_case(local_opt_in: bool) {
             !missing_model.exists(),
             "session startup installed assets implicitly"
         );
+    } else {
+        assert!(!modes.contains(&json!("semantic")));
     }
     oracle(
         "shipped_retrieval_stdio",
-        if local_opt_in {
-            "missing-assets-fallback"
+        if prompt == SEMANTIC_PROMPT {
+            "embedded-local-semantic"
+        } else if local_opt_in {
+            "embedded-local-hybrid"
         } else {
             "model-free-hybrid"
         },
-        "actual tool result includes verified line 64; no semantic mode",
+        &format!(
+            "actual tool result includes verified line 64; session-open-ms={}; prompt-ms={}",
+            session_opened.as_millis(),
+            query_elapsed.as_millis()
+        ),
     );
     stop_agent(agent).await;
 }
@@ -141,14 +166,21 @@ async fn stdio_case(local_opt_in: bool) {
 #[tokio::test(flavor = "current_thread")]
 async fn shipped_retrieval_stdio_without_semantic_model() {
     tokio::task::LocalSet::new()
-        .run_until(stdio_case(false))
+        .run_until(stdio_case(false, PROMPT))
         .await;
 }
 
 #[tokio::test(flavor = "current_thread")]
 async fn shipped_retrieval_stdio_missing_local_assets_keeps_hybrid() {
     tokio::task::LocalSet::new()
-        .run_until(stdio_case(true))
+        .run_until(stdio_case(true, PROMPT))
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn shipped_retrieval_stdio_executes_embedded_semantic_search() {
+    tokio::task::LocalSet::new()
+        .run_until(stdio_case(true, SEMANTIC_PROMPT))
         .await;
 }
 

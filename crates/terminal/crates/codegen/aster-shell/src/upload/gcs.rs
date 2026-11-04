@@ -16,13 +16,13 @@
 //! Use [`WithAuth::with_auth`] at every shell-side upload call site that has an `AuthManager` in scope.
 //! Call it immediately before passing the config to an `aster_file_utils::gcs::*` helper.
 use aster_auth::AuthCredentialProvider;
+use aster_file_utils::gcs::StorageConfig;
+use aster_file_utils::storage_client::Auth401AttributionCallback;
+use aster_file_utils::{TraceExportConfig, UploadMethod};
 use aster_login::AuthManager;
 use aster_login::credential_provider::{
     ShellAuthCredentialProvider, StorageClientAttributionBridge,
 };
-use aster_file_utils::gcs::StorageConfig;
-use aster_file_utils::storage_client::Auth401AttributionCallback;
-use aster_file_utils::{TraceExportConfig, UploadMethod};
 use std::sync::Arc;
 /// See the module docs for why this exists.
 /// `auth_manager == None` is supported (for tests, direct-mode upload, and a few sites without an `AuthManager` in scope).

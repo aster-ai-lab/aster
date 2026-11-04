@@ -151,7 +151,8 @@ impl PluginManagerService {
         input.validate()?;
         self.verify_scope(&input.scope())?;
         let packages = self.stable_installed_packages().await?;
-        let snapshot_digest = digest_value("aster.use.plugin-manager-installed-page.v1", &packages)?;
+        let snapshot_digest =
+            digest_value("aster.use.plugin-manager-installed-page.v1", &packages)?;
         let start = input
             .cursor
             .as_deref()

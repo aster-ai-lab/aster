@@ -6,10 +6,10 @@ use crate::config::{
 use crate::error::WorkspaceError;
 use crate::session::tool_config::resolve_session_toolset;
 use crate::session::tool_config::test_support::{TestSessionContextFactory, baseline_config, tc};
+use aster_tool_runtime::ToolCallContext;
 use aster_tools::registry::types::ToolServerConfig;
 use aster_tools::types::tool::ToolKind;
 use aster_workspace_types::WorkspaceEvent;
-use aster_tool_runtime::ToolCallContext;
 use axum::response::IntoResponse;
 use std::sync::Arc;
 /// Create a test workspace handle with a "main" session pre-created.
@@ -169,10 +169,9 @@ impl aster_tool_runtime::Tool for BashCcoStub {
         Ok(aster_tools::types::output::ToolOutput::Bash(
             aster_tools::types::output::BashOutput {
                 output: output.to_vec(),
-                output_for_prompt:
-                    aster_tools::types::output::BashOutput::make_output_for_prompt(
-                        BASH_CCO_STUB_STDOUT,
-                    ),
+                output_for_prompt: aster_tools::types::output::BashOutput::make_output_for_prompt(
+                    BASH_CCO_STUB_STDOUT,
+                ),
                 exit_code: 0,
                 command: format!("echo {BASH_CCO_STUB_STDOUT}"),
                 truncated: false,
@@ -4622,8 +4621,7 @@ async fn end_mcp_service_loop(handle: &WorkspaceHandle, session_id: &str, server
         .expect("the client is ready");
     service.cancellation_token().cancel();
     tokio::time::timeout(std::time::Duration::from_secs(5), async {
-        while client.liveness_check().await != aster_mcp::servers::LivenessCheck::TransportClosed
-        {
+        while client.liveness_check().await != aster_mcp::servers::LivenessCheck::TransportClosed {
             tokio::time::sleep(std::time::Duration::from_millis(10)).await;
         }
     })
@@ -4857,9 +4855,12 @@ async fn the_stop_ends_the_client_while_the_push_waits_on_the_hub() {
     handle.create_session("main").unwrap();
     let resolver = bind_resolver_fixture(&handle);
     let session_id = "conversation";
-    resolver(aster_tool_protocol::SessionId::new(session_id).unwrap(), None)
-        .await
-        .expect("bind must succeed");
+    resolver(
+        aster_tool_protocol::SessionId::new(session_id).unwrap(),
+        None,
+    )
+    .await
+    .expect("bind must succeed");
     let hub = Arc::new(HubThatNeverAcksUnregisters {
         inner: FakeHubRegistry::default(),
     });
@@ -5036,9 +5037,12 @@ async fn a_shadowed_mcp_tool_is_not_attributed_to_its_server() {
     let handle = WorkspaceHandle::new(config).unwrap();
     handle.create_session("main").unwrap();
     let resolver = bind_resolver_fixture(&handle);
-    resolver(aster_tool_protocol::SessionId::new("shadowed").unwrap(), None)
-        .await
-        .expect("bind must succeed");
+    resolver(
+        aster_tool_protocol::SessionId::new("shadowed").unwrap(),
+        None,
+    )
+    .await
+    .expect("bind must succeed");
     let hub = FakeHubRegistry::default();
     converge_with(&handle, "shadowed", &hub, crate::mcp::McpReclaim::Always).await;
     assert_eq!(

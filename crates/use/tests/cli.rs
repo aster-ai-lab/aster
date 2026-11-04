@@ -266,12 +266,19 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
     assert!(applied.stderr.is_empty());
     let applied: serde_json::Value = serde_json::from_slice(&applied.stdout).unwrap();
     let result = &applied["data"]["state"]["backupRetention"]["result"];
-    assert_eq!(result["schema"], "aster.use.state-backup-retention-result.v1");
+    assert_eq!(
+        result["schema"],
+        "aster.use.state-backup-retention-result.v1"
+    );
     assert_eq!(result["removed"].as_array().unwrap().len(), 1);
     assert_eq!(result["retainedBackupCount"], 2);
     assert!(!backup_directory.join("001.aster-use-state-backup").exists());
-    assert!(backup_directory.join("002.aster-use-state-backup").is_file());
-    assert!(backup_directory.join("003.aster-use-state-backup").is_file());
+    assert!(backup_directory
+        .join("002.aster-use-state-backup")
+        .is_file());
+    assert!(backup_directory
+        .join("003.aster-use-state-backup")
+        .is_file());
 }
 
 #[cfg(feature = "extensions")]
@@ -360,7 +367,10 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
     assert!(status.status.success(), "{status:?}");
     let status: serde_json::Value = serde_json::from_slice(&status.stdout).unwrap();
     let diagnostic = &status["data"]["state"]["restore"]["diagnostic"];
-    assert_eq!(diagnostic["schema"], "aster.use.state-restore-diagnostic.v1");
+    assert_eq!(
+        diagnostic["schema"],
+        "aster.use.state-restore-diagnostic.v1"
+    );
     assert!(diagnostic["active"].is_null());
     assert_eq!(diagnostic["operations"][0]["status"], "completed");
     assert_eq!(diagnostic["operations"][0]["planDigest"], plan_digest);

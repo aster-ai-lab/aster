@@ -4431,13 +4431,11 @@ impl McpClient {
                         Some(reg)
                     }
                     Err(reason) => {
-                        event_writer.emit(
-                            aster_session_events::Event::McpToolRegistrationFailed {
-                                server_name: self.server_name.clone(),
-                                tool_name: name,
-                                error: reason.to_string(),
-                            },
-                        );
+                        event_writer.emit(aster_session_events::Event::McpToolRegistrationFailed {
+                            server_name: self.server_name.clone(),
+                            tool_name: name,
+                            error: reason.to_string(),
+                        });
                         None
                     }
                 }
@@ -4795,12 +4793,11 @@ pub async fn start_mcp_server(
             };
 
             let spawn_child_start = std::time::Instant::now();
-            let spawn_child_span =
-                aster_telemetry::region::Region::from_span(tracing::info_span!(
-                    "mcp.spawn_child",
-                    server_name = %name,
-                    elapsed_ms = tracing::field::Empty,
-                ));
+            let spawn_child_span = aster_telemetry::region::Region::from_span(tracing::info_span!(
+                "mcp.spawn_child",
+                server_name = %name,
+                elapsed_ms = tracing::field::Empty,
+            ));
             let spawn_result = SafeTokioChildProcess::spawn(
                 cmd,
                 ctx.scope,
@@ -4814,15 +4811,13 @@ pub async fn start_mcp_server(
             spawn_child_span.close();
             let (transport, stderr_handle) = spawn_result.map_err(|e| {
                 tracing::error!("Failed to spawn MCP server '{}': {}", name, e);
-                aster_telemetry::session_ctx::log_event(
-                    aster_telemetry::events::McpServerFailed {
-                        server_name: name.clone(),
-                        error_type: aster_telemetry::events::McpErrorType::SpawnFailed,
-                        duration_ms: spawn_start.elapsed().as_millis() as u64,
-                        timeout_sec: startup_timeout,
-                        error_message: Some(e.to_string()),
-                    },
-                );
+                aster_telemetry::session_ctx::log_event(aster_telemetry::events::McpServerFailed {
+                    server_name: name.clone(),
+                    error_type: aster_telemetry::events::McpErrorType::SpawnFailed,
+                    duration_ms: spawn_start.elapsed().as_millis() as u64,
+                    timeout_sec: startup_timeout,
+                    error_message: Some(e.to_string()),
+                });
                 McpError::SpawnFailed {
                     server: name.clone(),
                     source: e,

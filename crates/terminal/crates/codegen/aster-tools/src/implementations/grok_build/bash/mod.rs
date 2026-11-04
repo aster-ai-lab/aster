@@ -3173,9 +3173,12 @@ mod tests {
         // No Terminal inserted
         let tool = BashTool;
 
-        let result =
-            aster_tool_runtime::Tool::run(&tool, test_ctx(resources.into_shared()), make_input("ls"))
-                .await;
+        let result = aster_tool_runtime::Tool::run(
+            &tool,
+            test_ctx(resources.into_shared()),
+            make_input("ls"),
+        )
+        .await;
         assert!(result.is_err());
         assert!(
             result

@@ -12,6 +12,7 @@ pub struct NativeFixture {
 
 impl NativeFixture {
     pub fn create(root: &Path) -> std::io::Result<Self> {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::FixtureSetup);
         let workspace = root.join("workspace");
         std::fs::create_dir_all(&workspace)?;
         std::fs::write(workspace.join("README.md"), README)?;
@@ -20,6 +21,7 @@ impl NativeFixture {
     }
 
     pub fn prepare(&self, revision: u64) -> std::io::Result<Value> {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::FeedPublish);
         let quantity = if revision == 1 { 2 } else { 5 };
         let price = if revision < 3 { 99 } else { 109 };
         let rate = if revision == 3 { 0 } else { 750 };
@@ -43,6 +45,7 @@ impl NativeFixture {
     }
 
     pub fn check(&self, expected: &Value) -> bool {
+        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::Oracle);
         self.read("report.json")
             .ok()
             .and_then(|bytes| serde_json::from_slice::<Value>(&bytes).ok())

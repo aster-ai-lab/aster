@@ -358,7 +358,10 @@ impl WorkspaceSessionContextFactory {
         }
     }
     /// Factory with auth: gen tools use the provider's live token.
-    pub fn with_auth(auth: aster_computer_hub_sdk::SharedAuthProvider, api_base_url: String) -> Self {
+    pub fn with_auth(
+        auth: aster_computer_hub_sdk::SharedAuthProvider,
+        api_base_url: String,
+    ) -> Self {
         Self {
             auth: Some(auth),
             api_base_url: Some(api_base_url),
@@ -551,8 +554,7 @@ fn build_proxy_headers(base_url: &str) -> indexmap::IndexMap<String, String> {
     headers
 }
 /// Enabled with default params unless `GROK_DISABLE_WEB_FETCH=1` is set.
-fn build_web_fetch_config() -> aster_tools::implementations::grok_build::web_fetch::WebFetchConfig
-{
+fn build_web_fetch_config() -> aster_tools::implementations::grok_build::web_fetch::WebFetchConfig {
     use aster_tools::implementations::grok_build::web_fetch::{WebFetchConfig, WebFetchParams};
     if std::env::var("GROK_DISABLE_WEB_FETCH").is_ok_and(|v| v == "1" || v == "true") {
         return WebFetchConfig::Disabled;

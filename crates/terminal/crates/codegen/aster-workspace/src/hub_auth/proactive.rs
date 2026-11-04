@@ -10,10 +10,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, LazyLock};
 use std::time::{Duration, Instant};
 
+use arc_swap::ArcSwap;
 use aster_computer_hub_sdk::{
     AuthCredential, AuthIdentity, AuthProvider, OnRefreshCallback, PrincipalKey, RefreshEvent,
 };
-use arc_swap::ArcSwap;
 use chrono::{DateTime, Utc};
 use prometheus::{
     Histogram, IntCounterVec, exponential_buckets, register_histogram, register_int_counter_vec,

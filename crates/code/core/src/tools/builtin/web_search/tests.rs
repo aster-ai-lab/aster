@@ -1681,6 +1681,19 @@ fn moli_preparation_is_lazy_without_an_executor() {
 
 #[cfg(feature = "headless-search")]
 #[tokio::test]
+async fn legacy_lightpanda_cannot_launch_even_with_an_explicit_executable() {
+    let config = HeadlessConfig {
+        backend: BrowserBackend::Lightpanda,
+        browser_path: Some("/legacy/lightpanda".to_owned()),
+        ..HeadlessConfig::default()
+    };
+    assert!(headless_runtime(config.clone(), false).1.is_none());
+    let error = headless_runtime(config, true).1.unwrap().await.unwrap_err();
+    assert_eq!(error, crate::search_runtime::LIGHTPANDA_UNSUPPORTED);
+}
+
+#[cfg(feature = "headless-search")]
+#[tokio::test]
 async fn deferred_moli_resolution_uses_the_configured_executable() {
     let directory = tempfile::tempdir().unwrap();
     let executable = directory.path().join("moli-fixture");

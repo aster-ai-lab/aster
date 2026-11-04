@@ -16,6 +16,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument as _;
 
 /// Session-owned asynchronous projection from workspace chunks to vectors.
 ///
@@ -81,9 +82,9 @@ impl WorkspaceRetrievalRuntime {
             semantic_readiness_timeout,
             semantic_min_score,
         });
-        let task = tokio::spawn(run_semantic_updates(
-            catalog, index, executor, status, lifetime,
-        ));
+        let task = tokio::spawn(
+            run_semantic_updates(catalog, index, executor, status, lifetime).in_current_span(),
+        );
         *lock_unpoisoned(&runtime.task) = Some(task);
         Ok(runtime)
     }

@@ -217,6 +217,7 @@ impl EmbeddingExecutor {
         if cancellation.is_cancelled() {
             return Err(EmbeddingError::Cancelled);
         }
+        let started = std::time::Instant::now();
         let batches = plan_batches(&inputs, self.descriptor.dimension, self.config)?;
         let mut vectors = Vec::with_capacity(inputs.len());
         let mut provider_attempts = 0usize;
@@ -232,6 +233,17 @@ impl EmbeddingExecutor {
                 response,
             )?);
         }
+        tracing::debug!(
+            target: "aster_core::retrieval_phase",
+            phase = "embedding_request",
+            input_count = inputs.len(),
+            input_bytes = inputs.iter().map(|input| input.text().len()).sum::<usize>(),
+            batch_count = batches.len(),
+            provider_attempts,
+            dimension = self.descriptor.dimension,
+            elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+            "retrieval phase completed"
+        );
         Ok(EmbeddingExecution {
             descriptor: self.descriptor.clone(),
             vectors,

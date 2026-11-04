@@ -191,7 +191,10 @@ fn unix_installer_refuses_to_replace_an_unmanaged_command() {
         !output.status.success(),
         "installer replaced an unmanaged file"
     );
-    assert_eq!(fs::read(bin_dir.join("aster-use")).unwrap(), b"user-owned\n");
+    assert_eq!(
+        fs::read(bin_dir.join("aster-use")).unwrap(),
+        b"user-owned\n"
+    );
     assert!(!install_root.join("releases").join(VERSION).exists());
 }
 

@@ -5,9 +5,9 @@ use aster_flow::PostgresEventStore;
 #[cfg(feature = "sqlite")]
 use aster_flow::SqliteEventStore;
 use aster_flow::{
-    AsterFlowEvent, AsterFlowEventBridge, AsterFlowEventSink, ActivityInvocation, ActivityResolution,
-    FanoutFlowEventObserver, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope,
-    FlowEventObserver, FlowEventStore, FlowRuntime, HookMetadata, HookStatus,
+    ActivityInvocation, ActivityResolution, AsterFlowEvent, AsterFlowEventBridge,
+    AsterFlowEventSink, FanoutFlowEventObserver, FlowEngine, FlowError, FlowEvent,
+    FlowEventEnvelope, FlowEventObserver, FlowEventStore, FlowRuntime, HookMetadata, HookStatus,
     InMemoryAsterFlowEventSink, InMemoryEventStore, InMemoryFlowEventObserver,
     LocalFileAsterFlowEventSink, LocalFileEventStore, RetryPolicy, RuntimeCommand, ScheduledWakeup,
     StepFailureAction, StepInvocation, StepStatus, WaitStatus, WorkflowInvocation,
@@ -563,7 +563,11 @@ impl CrashAfterActivityCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterActivityCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -707,7 +711,11 @@ impl CrashAfterActivityNonRetryableStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterActivityNonRetryableStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

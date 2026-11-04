@@ -7,6 +7,8 @@ use std::collections::HashMap;
 use std::path::Path;
 
 pub const RELAY_KEY_ENV: &str = "ASTER_LONG_HORIZON_RELAY_KEY";
+pub const RUST_LOCAL_CHECK: &str =
+    "rustc --edition=2021 --test lib.rs -o checks && ./checks && test -s CHANGELOG.md";
 
 pub fn with_rust_verification(source: &str, workspace: &Path) -> Result<String, String> {
     let mut document = aster_acl::parse_acl(source).map_err(|_| "fixture ACL parse")?;
@@ -21,7 +23,7 @@ pub fn with_rust_verification(source: &str, workspace: &Path) -> Result<String, 
             ),
             (
                 "command".into(),
-                aster_acl::Value::String(super::fixture::LOCAL_CHECK.into()),
+                aster_acl::Value::String(RUST_LOCAL_CHECK.into()),
             ),
             (
                 "covers".into(),
@@ -57,13 +59,18 @@ pub fn isolated_acl(
     max_tool_rounds: usize,
 ) -> Result<String, String> {
     let endpoint = url::Url::parse(local_endpoint).map_err(|_| "invalid local relay URL")?;
+    let path = match provider.resolved_protocol() {
+        aster_core::config::ProviderProtocol::Openai => "/v1/chat/completions",
+        aster_core::config::ProviderProtocol::Anthropic => "/v1/messages",
+        _ => return Err("unsupported native relay protocol".into()),
+    };
     if endpoint.scheme() != "http"
         || endpoint.host_str() != Some("127.0.0.1")
         || !endpoint.username().is_empty()
         || endpoint.password().is_some()
         || endpoint.query().is_some()
         || endpoint.fragment().is_some()
-        || endpoint.path() != "/v1/chat/completions"
+        || endpoint.path() != path
     {
         return Err("relay must be an exact loopback chat-completions endpoint".into());
     }
@@ -78,10 +85,16 @@ pub fn isolated_acl(
     let config = CodeConfig {
         default_model: Some(format!("{}/{}", provider.name, model.id)),
         providers: vec![ProviderConfig {
-            protocol: None,
+            protocol: Some(provider.resolved_protocol()),
             name: provider.name.clone(),
             api_key: Some("fixture-placeholder-replaced-by-env-reference".into()),
-            base_url: Some(local_endpoint.into()),
+            base_url: Some(
+                if provider.resolved_protocol() == aster_core::config::ProviderProtocol::Anthropic {
+                    endpoint.origin().ascii_serialization()
+                } else {
+                    local_endpoint.into()
+                },
+            ),
             headers: HashMap::new(),
             session_id_header: None,
             models: vec![model],

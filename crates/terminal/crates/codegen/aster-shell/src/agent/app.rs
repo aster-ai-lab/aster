@@ -5,6 +5,7 @@ use crate::agent::remote_config::{ModelFetchAuth, prefetch_models_blocking};
 use crate::leader::CursorWorkerStartArgs;
 use crate::leader::protocol::InternalMethod;
 use crate::util::grok_home;
+use agent_client_protocol as acp;
 use aster_acp_lib::{
     AcpAgentGatewayReceiver as GatewayReceiver, AcpAgentGatewaySender as GatewaySender,
     LineBufferedRead,
@@ -12,7 +13,6 @@ use aster_acp_lib::{
 #[cfg(test)]
 use aster_login::AuthMode;
 use aster_login::{AuthManager, GrokAuth, GrokComConfig, run_auth_flow};
-use agent_client_protocol as acp;
 use parking_lot::Mutex;
 use std::pin::Pin;
 use std::rc::Rc;
@@ -846,8 +846,7 @@ pub async fn run_leader(
     let ctx = &agent_config.grok_com_config;
     suppress_otel();
     let auth: Option<GrokAuth> =
-        aster_login::try_noninteractive_auth_no_mint(ctx, agent_config.endpoints.proxy_url())
-            .await;
+        aster_login::try_noninteractive_auth_no_mint(ctx, agent_config.endpoints.proxy_url()).await;
     let has_session = auth.is_some()
         || agent_config
             .create_auth_manager()

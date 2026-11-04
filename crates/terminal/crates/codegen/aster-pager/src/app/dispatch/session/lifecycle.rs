@@ -25,8 +25,8 @@ use crate::app::dispatch::transcript::extensions_modal_tab_fetches;
 use crate::scrollback::block::RenderBlock;
 use crate::scrollback::blocks::SessionEvent;
 use crate::scrollback::state::ScrollbackState;
-use aster_shell::sampling::types::ReasoningEffort;
 use agent_client_protocol as acp;
+use aster_shell::sampling::types::ReasoningEffort;
 use std::time::Instant;
 /// A deferred model switch to apply once the session exists, plus any effort error to report.
 /// `switch` is still populated when a `-m` model was stashed even if the effort token failed, so an invalid effort never drops the CLI model override.
@@ -192,9 +192,7 @@ pub(in crate::app::dispatch) fn dispatch_new_session(app: &mut AppView) -> Vec<E
 /// The answer routes to [`dispatch_new_session_inner`] or [`dispatch_new_worktree_session`].
 pub(in crate::app::dispatch) fn open_new_session_question(app: &mut AppView) -> Vec<Effect> {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     let ActiveView::Agent(id) = app.active_view else {
         return vec![];
     };
@@ -249,9 +247,7 @@ pub(in crate::app::dispatch) fn open_agent_type_mismatch_question(
     model_name: &str,
 ) -> Vec<Effect> {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     let ActiveView::Agent(id) = app.active_view else {
         return vec![];
     };
@@ -523,9 +519,7 @@ pub(in crate::app::dispatch) fn open_delete_current_session_question(
     app: &mut AppView,
 ) -> Vec<Effect> {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     let ActiveView::Agent(id) = app.active_view else {
         return vec![];
     };
@@ -1508,7 +1502,10 @@ pub(super) fn apply_session_modes_dropping_auto(
     modes: Option<acp::SessionModeState>,
     permission_mode: &mut Option<String>,
 ) {
-    if agent.apply_session_modes(modes) && permission_mode.as_deref() == Some("auto") {
+    if agent.apply_session_modes(modes)
+        && !agent.session.auto_mode
+        && permission_mode.as_deref() == Some("auto")
+    {
         *permission_mode = Some("ask".into());
     }
 }

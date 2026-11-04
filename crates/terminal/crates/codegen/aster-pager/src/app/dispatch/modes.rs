@@ -5,9 +5,9 @@ use super::queue::{maybe_drain_queue, note_peek_page_flip};
 use super::settings::ui::{refresh_open_settings_modals, save_success_toast};
 use crate::app::actions::Effect;
 use crate::app::app_view::{ActiveView, AppView};
+use agent_client_protocol as acp;
 use aster_telemetry::session_ctx::log_event;
 use aster_tools::types::SessionMode;
-use agent_client_protocol as acp;
 
 /// Show the current plan: if a plan file exists, open it in the preview overlay popover.
 /// If no plan has been written yet, show a toast.

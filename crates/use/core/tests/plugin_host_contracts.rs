@@ -365,7 +365,10 @@ fn capabilities_freeze_the_single_current_host_contract() {
     capabilities.validate().unwrap();
     assert_eq!(capabilities.schema, PLUGIN_HOST_CAPABILITIES_SCHEMA_V6);
     assert_eq!(capabilities.protocol_level, PLUGIN_HOST_PROTOCOL_LEVEL_V6);
-    assert_eq!(capabilities.catalog_schemas, ["aster.use.plugin-catalog.v3"]);
+    assert_eq!(
+        capabilities.catalog_schemas,
+        ["aster.use.plugin-catalog.v3"]
+    );
     assert_eq!(capabilities.plan_schemas, [PLUGIN_OPERATION_PLAN_SCHEMA_V4]);
     assert!(capabilities.exclusive_managed_scope_mutation);
     assert_eq!(

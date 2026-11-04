@@ -548,6 +548,9 @@ impl crate::agent::TurnEngine {
         mut state: ExecutionLoopState,
         cancel: &tokio_util::sync::CancellationToken,
     ) -> Result<AgentResult> {
+        if let Some(admission) = &self.tool_context.background_admission {
+            admission.cancel();
+        }
         let workspace = self.tool_context.workspace.as_path();
         let child_unobserved = crate::harness_loop::absorb_open_workspace_children(
             &mut state.mutations,

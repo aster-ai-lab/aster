@@ -1,6 +1,8 @@
 //! Thread-safe collection handle and transaction coordinator.
 
 mod checkpoint;
+#[cfg(test)]
+mod checkpoint_wal_tests;
 mod configuration;
 mod index_api;
 mod maintenance;

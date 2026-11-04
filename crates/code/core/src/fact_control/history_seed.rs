@@ -4,11 +4,21 @@ use super::*;
 
 #[derive(Clone)]
 pub(super) struct RecordedCall {
+    pub(super) response_seq: Option<u64>,
     pub(super) id: String,
     pub(super) name: String,
     pub(super) args: serde_json::Value,
     pub(super) text: String,
     pub(super) reasoning: Option<String>,
+}
+
+impl RecordedCall {
+    fn shares_response(&self, other: &Self) -> bool {
+        self.response_seq.is_some()
+            && self.response_seq == other.response_seq
+            && self.text == other.text
+            && self.reasoning == other.reasoning
+    }
 }
 
 pub(super) struct SeededTool {
@@ -357,6 +367,48 @@ pub(super) fn scheduler_tool_record_indexes(lines: &[String]) -> std::collection
     indexes
 }
 
+/// Effect's public prose is reattached from call metadata below. Match only
+/// the exact prose immediately ahead of its original closed tool batch.
+pub(super) fn scheduler_tool_prose_indexes(
+    lines: &[String],
+    records: &std::collections::HashSet<usize>,
+    calls: &[RecordedCall],
+) -> std::collections::HashSet<usize> {
+    let mut indexes = std::collections::HashSet::new();
+    let mut completed = 0;
+    for (index, line) in lines.iter().enumerate() {
+        if line.starts_with("tool\n") || line.starts_with("tool-error\n") {
+            completed += 1;
+        }
+        if !records.contains(&index)
+            || index
+                .checked_sub(1)
+                .is_some_and(|prior| records.contains(&prior))
+        {
+            continue;
+        }
+        let count = (index..lines.len())
+            .take_while(|next| records.contains(next))
+            .count();
+        let Some(batch) = calls.get(completed..completed + count) else {
+            continue;
+        };
+        let mut spoken = std::collections::BTreeSet::new();
+        let public = batch
+            .iter()
+            .filter(|call| !call.text.is_empty() && spoken.insert(call.text.as_str()))
+            .map(|call| format!("assistant\n{}", call.text))
+            .collect::<Vec<_>>();
+        let Some(start) = index.checked_sub(public.len()) else {
+            continue;
+        };
+        if lines[start..index] == public {
+            indexes.extend(start..index);
+        }
+    }
+    indexes
+}
+
 pub(super) fn folded_message_with_images(
     role: &str,
     body: &str,
@@ -418,6 +470,7 @@ pub(super) fn recorded_tool_calls_in(
                     ));
                 }
                 pending.push_back(RecordedCall {
+                    response_seq: Some(fact.seq),
                     id: call.id,
                     name: call.name,
                     args: call.args,
@@ -497,18 +550,115 @@ pub(super) fn recorded_tool_calls_in(
     Ok(completed.into_iter().map(|(call, _)| call).collect())
 }
 
+/// Restore public prose and account for retained private continuation length.
+/// Retained public checkpoints also reach the summary before older results disappear.
+/// Reasoning text is never projected; scheduler records and result bytes stay intact.
+pub(super) fn with_original_tool_text(
+    lines: &[String],
+    kept: &[String],
+    facts: Vec<aster_effect::Fact>,
+) -> Result<([Vec<String>; 2], usize), ActorError> {
+    let calls = recorded_tool_calls_in(facts)?;
+    let combined = lines.iter().chain(kept).cloned().collect::<Vec<_>>();
+    let records = scheduler_tool_record_indexes(&combined);
+    let prose = scheduler_tool_prose_indexes(&combined, &records, &calls);
+    let kept_results = kept
+        .iter()
+        .filter(|line| line.starts_with("tool\n") || line.starts_with("tool-error\n"))
+        .count();
+    let start = calls.len().saturating_sub(kept_results);
+    let kept_records = scheduler_tool_record_indexes(kept);
+    let mut retained = calls[start..].iter();
+    let mut previous: Option<&RecordedCall> = None;
+    let mut continuation_tokens = 0;
+    for (index, line) in kept.iter().enumerate() {
+        if line.starts_with("tool\n") || line.starts_with("tool-error\n") {
+            // Standalone compaction also accepts text without a mounted call log.
+            let Some(call) = retained.next() else {
+                previous = None;
+                continue;
+            };
+            if !previous.is_some_and(|previous| call.shares_response(previous)) {
+                continuation_tokens += call
+                    .reasoning
+                    .as_ref()
+                    .map_or(0, |text| text.len().div_ceil(4));
+            }
+            previous = Some(call);
+        } else if !kept_records.contains(&index) {
+            previous = None;
+        }
+    }
+    let prefix_records = scheduler_tool_record_indexes(lines);
+    let mut calls = calls.into_iter();
+    let mut project = |lines: &[String],
+                       records: &std::collections::HashSet<usize>,
+                       offset: usize|
+     -> Result<(Vec<String>, Vec<String>), ActorError> {
+        let mut projected = Vec::with_capacity(lines.len() + records.len());
+        let mut public = Vec::new();
+        let mut previous_call: Option<RecordedCall> = None;
+        for (index, line) in lines.iter().enumerate() {
+            if prose.contains(&(offset + index)) {
+                continue;
+            }
+            if records.contains(&index) {
+                let call = calls.next().ok_or_else(|| {
+                    ActorError::Schema("compacted tool record has no original call metadata".into())
+                })?;
+                if !call.text.is_empty()
+                    && !previous_call
+                        .as_ref()
+                        .is_some_and(|previous| call.shares_response(previous))
+                {
+                    let text = format!("assistant\n{}", call.text);
+                    projected.push(text.clone());
+                    public.push(text);
+                }
+                previous_call = Some(call);
+            } else {
+                previous_call = None;
+            }
+            projected.push(line.clone());
+        }
+        Ok((projected, public))
+    };
+    let (mut prefix, _) = project(lines, &prefix_records, 0)?;
+    let (kept, public) = project(kept, &kept_records, lines.len())?;
+    prefix.extend(public);
+    Ok(([prefix, kept], continuation_tokens))
+}
+
 pub(super) fn recorded_tool_messages(
     recorded: &mut std::vec::IntoIter<RecordedCall>,
+    messages: &mut Vec<Message>,
+    previous: &mut Option<(RecordedCall, usize)>,
     body: &str,
     is_error: bool,
-) -> Result<[Message; 2], ActorError> {
+) -> Result<(), ActorError> {
     let call = recorded.next().ok_or_else(|| {
         ActorError::Schema("folded tool result has no original call metadata".into())
     })?;
-    Ok([
-        assistant_tool_call(&call),
-        message_from_folded_tool(&call.id, body, is_error),
-    ])
+    let assistant_index = match previous.as_ref() {
+        Some((prior, index)) if call.shares_response(prior) => {
+            messages[*index]
+                .content
+                .push(crate::llm::ContentBlock::ToolUse {
+                    id: call.id.clone(),
+                    name: call.name.clone(),
+                    input: call.args.clone(),
+                });
+            *index
+        }
+        _ => {
+            let index = messages.len();
+            messages.push(assistant_tool_call(&call));
+            index
+        }
+    };
+    messages.push(message_from_folded_tool(&call.id, body, is_error));
+    *previous = Some((call, assistant_index));
+    Ok(())
 }
 
 pub(super) fn recorded_call_from(call: &serde_json::Value) -> RecordedCall {
@@ -535,6 +685,7 @@ pub(super) fn recorded_call_from(call: &serde_json::Value) -> RecordedCall {
         .filter(|text| !text.is_empty())
         .map(str::to_string);
     RecordedCall {
+        response_seq: None,
         id: id.to_string(),
         name: name.to_string(),
         args,

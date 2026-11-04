@@ -1,10 +1,10 @@
 //! `aster/subagent/message` — queue or steer literal text to an owned child.
 
+use agent_client_protocol as acp;
 use aster_tools::implementations::grok_build::send_subagent_message::resolve_delivery;
 use aster_tools::implementations::grok_build::task::types::{
     ActiveAgentMessageOutcome, MAX_ACTIVE_AGENT_MESSAGE_BYTES,
 };
-use agent_client_protocol as acp;
 use serde::{Deserialize, Serialize};
 
 use crate::agent::MvpAgent;

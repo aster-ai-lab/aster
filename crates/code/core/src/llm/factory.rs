@@ -280,6 +280,11 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
     let protocol = config.protocol;
 
     match protocol {
+        ProviderProtocol::Gemini => Arc::new(super::gemini::GeminiClient::new(
+            config,
+            headers,
+            http.unwrap_or_else(default_http_client),
+        )),
         ProviderProtocol::Anthropic => {
             let mut client = AnthropicClient::new(api_key, config.model)
                 .with_provider_name(config.provider.clone())

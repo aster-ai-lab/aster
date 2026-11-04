@@ -972,13 +972,9 @@ impl AgentView {
         } else {
             base_prompt_height
         };
-        let prompt_height =
-            prompt_height.max(
-                prompt_style.vpad_top
-                    + 1
-                    + prompt_style.vpad_bottom
-                    + prompt_style.info_block(true),
-            );
+        let prompt_height = prompt_height.max(
+            prompt_style.vpad_top + 1 + prompt_style.vpad_bottom + prompt_style.info_block(true),
+        );
         let prompt_height = if self.composer_route() == ComposerRoute::Hidden {
             0
         } else {
@@ -1546,6 +1542,11 @@ impl AgentView {
                     scratch,
                 );
             let sb_output = sb_rendered.output;
+            self.prompt.slash_controller.highlight_scrollback(
+                buf,
+                &sb_output.selection_model,
+                rewind_dim_from,
+            );
             sticky_gap_row = sb_output.sticky_gap_row;
             self.update_scrollback_selection_state(
                 sb_output.selection_model.clone(),
@@ -1976,8 +1977,7 @@ impl AgentView {
                 height: layout.turn_status.height,
             };
             let tick = self.scrollback.animation_tick();
-            let live = self.resolve_turn_activity();
-            let activity = if send_now_gap { None } else { live };
+            let activity = self.resolve_turn_activity();
             if crate::acp::tracker::is_phase_transition(
                 self.last_activity.as_ref(),
                 activity.as_ref(),
@@ -2324,8 +2324,12 @@ impl AgentView {
             Some(eff) => format!("{model_id} ({eff})"),
             None => model_id,
         };
+        let telemetry = self
+            .usage_meter
+            .caption(std::time::Instant::now(), self.session.state.is_busy());
         let info = match &self.prompt_mode {
             PromptMode::Normal => PromptInfo {
+                telemetry: Some(&telemetry),
                 model_name: &model_label,
                 flags: &flags,
                 multiline,
@@ -2336,6 +2340,7 @@ impl AgentView {
                 let pos = self.session.queue_position(*id).map(|i| i + 1).unwrap_or(1);
                 editing_label = format!("editing queued #{pos}");
                 PromptInfo {
+                    telemetry: Some(&telemetry),
                     model_name: &editing_label,
                     flags: &flags,
                     multiline,
@@ -2346,6 +2351,7 @@ impl AgentView {
         };
         let info = if let Some(label) = self.prompt_input_mode.prompt_info_override() {
             PromptInfo {
+                telemetry: Some(&telemetry),
                 model_name: label,
                 flags: &[],
                 multiline: false,
@@ -4881,9 +4887,7 @@ mod status_line_draw_tests {
     use crate::scrollback::render::ScratchBuffer;
     use crate::views::question_view::QuestionViewState;
     use crate::views::status_line::{SanitizedText, StatusLineDisplay, StatusLineFrame};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
     use ratatui::buffer::Buffer;
     use ratatui::layout::Rect;
     use ratatui::style::Color;

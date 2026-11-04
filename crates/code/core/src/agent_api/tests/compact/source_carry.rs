@@ -134,6 +134,11 @@ async fn prove_two_compactions(file: bool, policy_enabled: bool, goal_enabled: b
         serde_json::to_value(session.goal_definition().unwrap()).unwrap(),
         goal
     );
+    let saved_usage = session.recorded_usage_tokens();
+    assert!(
+        saved_usage.2 >= 40,
+        "two reported compaction calls are included"
+    );
     session.save().await.unwrap();
     assert_eq!(
         store
@@ -161,6 +166,7 @@ async fn prove_two_compactions(file: bool, policy_enabled: bool, goal_enabled: b
         serde_json::to_value(resumed.goal_definition().unwrap()).unwrap(),
         goal
     );
+    assert_eq!(resumed.recorded_usage_tokens(), saved_usage);
     if goal_enabled {
         let calls = client.streams.lock().unwrap().len();
         assert!(resumed

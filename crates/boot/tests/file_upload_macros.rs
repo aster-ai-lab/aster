@@ -66,7 +66,10 @@ impl Module for UploadModule {
         "uploads"
     }
 
-    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(
+        &self,
+        _module_ref: &aster_boot::ModuleRef,
+    ) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(UploadController).controller()?])
     }
 }

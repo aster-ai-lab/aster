@@ -195,9 +195,9 @@ use crate::workspace_ops::{
     GetFileEntry, GetFileResult, GetFilesRes, PutFileEntry, PutFileResult, PutFilesRes,
 };
 use aster_diag_server::DiagHandle;
+use aster_file_utils::queue::EnqueueOutcome;
 use aster_session_events::types::CancellationCategory;
 use aster_session_events::{Event, SessionRelationship, TurnOutcomeLabel};
-use aster_file_utils::queue::EnqueueOutcome;
 use aster_tool_protocol::turn_hook::{AfterTurnAckPayload, AfterTurnAckStatus};
 /// Per-domain checkpoint captures, by domain and turn outcome.
 pub(crate) static REWIND_CHECKPOINT_CAPTURE_TOTAL: std::sync::LazyLock<IntCounterVec> =
@@ -420,9 +420,7 @@ pub struct WorkspaceHandle {
 }
 type AcknowledgedNotifyChannel = (
     aster_tools::notification::types::ToolNotificationHandle,
-    tokio::sync::mpsc::UnboundedReceiver<
-        aster_tools::notification::AcknowledgedToolNotification,
-    >,
+    tokio::sync::mpsc::UnboundedReceiver<aster_tools::notification::AcknowledgedToolNotification>,
 );
 /// Builds with no forwarder. They must not open the channel, because an unread one blocks every delete.
 fn acknowledged_notify_channel(_enabled: bool) -> Option<AcknowledgedNotifyChannel> {
@@ -2618,12 +2616,12 @@ impl WorkspaceHandle {
         )
         .await?;
         if !result.started.is_empty() {
-            let _ =
-                self.shared
-                    .events
-                    .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
-                        session_id: session_id.to_owned(),
-                    });
+            let _ = self
+                .shared
+                .events
+                .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
+                    session_id: session_id.to_owned(),
+                });
         }
         Ok(result)
     }
@@ -2791,12 +2789,12 @@ impl WorkspaceHandle {
                 failed = ?delta.failed,
                 "converged session onto the published MCP configuration"
             );
-            let _ =
-                self.shared
-                    .events
-                    .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
-                        session_id: session_id.to_owned(),
-                    });
+            let _ = self
+                .shared
+                .events
+                .send(aster_workspace_types::WorkspaceEvent::ToolsChanged {
+                    session_id: session_id.to_owned(),
+                });
         }
         Some(delta)
     }
@@ -4110,9 +4108,8 @@ fn build_session_routed_handlers(
             Some(def.function.parameters.clone()),
             ws.clone(),
         ) {
-            Ok(handler) => {
-                handlers.push(Arc::new(handler) as Arc<dyn aster_computer_hub_sdk::ToolServerHandler>)
-            }
+            Ok(handler) => handlers
+                .push(Arc::new(handler) as Arc<dyn aster_computer_hub_sdk::ToolServerHandler>),
             Err(e) => {
                 tracing::warn!(
                     tool = %def.function.name,
@@ -4670,7 +4667,9 @@ async fn enqueue_workspace_tool_definitions(
 }
 /// Single source of truth for mapping a turn-hook outcome to the `events.jsonl` [`TurnOutcomeLabel`].
 /// Kept as one `match` so the two enums cannot drift and the mapping is never duplicated across call sites.
-fn turn_outcome_label(outcome: aster_tool_protocol::turn_hook::TurnHookOutcome) -> TurnOutcomeLabel {
+fn turn_outcome_label(
+    outcome: aster_tool_protocol::turn_hook::TurnHookOutcome,
+) -> TurnOutcomeLabel {
     use aster_tool_protocol::turn_hook::TurnHookOutcome;
     match outcome {
         TurnHookOutcome::Completed => TurnOutcomeLabel::Completed,

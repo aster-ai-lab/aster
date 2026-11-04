@@ -841,8 +841,7 @@ async fn proactive_refresh_makes_per_turn_refresh_a_cache_hit() {
 
             // Wait for the proactive task to fire; its first pass runs after PROACTIVE_MIN_SLEEP, so the window must exceed the floor
             tokio::time::sleep(
-                aster_login::manager::PROACTIVE_MIN_SLEEP
-                    + std::time::Duration::from_millis(1000),
+                aster_login::manager::PROACTIVE_MIN_SLEEP + std::time::Duration::from_millis(1000),
             )
             .await;
             assert!(
@@ -1628,9 +1627,12 @@ async fn switch_to_first_party_model_drops_minted_provider_token() {
             let token = provider.ensure_fresh_token(None).await.rotated().unwrap();
             assert_eq!(token, "tok-1");
 
-            let (actor, _rx) =
-                make_actor_with_auth_and_credentials(None, aster_chat_state::AuthType::ApiKey, token)
-                    .await;
+            let (actor, _rx) = make_actor_with_auth_and_credentials(
+                None,
+                aster_chat_state::AuthType::ApiKey,
+                token,
+            )
+            .await;
             seed_provider_memo(&actor, provider).await;
 
             let model = actor
@@ -1681,9 +1683,12 @@ async fn sampler_401_on_provider_model_remints_and_resubmits() {
             let token = provider.ensure_fresh_token(None).await.rotated().unwrap();
             assert_eq!(token, "tok-1");
 
-            let (actor, _rx) =
-                make_actor_with_auth_and_credentials(None, aster_chat_state::AuthType::ApiKey, token)
-                    .await;
+            let (actor, _rx) = make_actor_with_auth_and_credentials(
+                None,
+                aster_chat_state::AuthType::ApiKey,
+                token,
+            )
+            .await;
             seed_provider_memo(&actor, provider).await;
             aster_login::test_backdate_provider_mint(
                 "test-4c-recover",
@@ -1729,9 +1734,12 @@ async fn sampler_non_auth_kind_401_on_provider_model_still_recovers() {
             let provider = counting_provider("test-4c-non-auth-kind", dir.path());
             let token = provider.ensure_fresh_token(None).await.rotated().unwrap();
 
-            let (actor, _rx) =
-                make_actor_with_auth_and_credentials(None, aster_chat_state::AuthType::ApiKey, token)
-                    .await;
+            let (actor, _rx) = make_actor_with_auth_and_credentials(
+                None,
+                aster_chat_state::AuthType::ApiKey,
+                token,
+            )
+            .await;
             seed_provider_memo(&actor, provider).await;
             aster_login::test_backdate_provider_mint(
                 "test-4c-non-auth-kind",

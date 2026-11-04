@@ -11,9 +11,7 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use aster_login::{
-    AuthMode, GrokAuth, GrokComConfig, ensure_authenticated, try_ensure_fresh_auth,
-};
+use aster_login::{AuthMode, GrokAuth, GrokComConfig, ensure_authenticated, try_ensure_fresh_auth};
 use chrono::Utc;
 
 const STALE_TOKEN: &str = "stale-token-the-provider-will-not-renew";

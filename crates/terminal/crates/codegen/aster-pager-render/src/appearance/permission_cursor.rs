@@ -9,8 +9,8 @@
 
 use std::cell::Cell;
 
-use aster_workspace::permission::is_enable_always_approve_option;
 use agent_client_protocol as acp;
+use aster_workspace::permission::is_enable_always_approve_option;
 
 /// Persisted as `[ui].default_selected_permission`. Steers only the first prompt; later prompts stick to the last-used kind.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

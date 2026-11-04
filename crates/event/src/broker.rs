@@ -280,7 +280,11 @@ mod tests {
     #[test]
     fn test_filter_by_type() {
         let filter = TriggerFilter::by_type("aster.gateway.scale.up");
-        assert!(filter.matches(&test_event("aster.gateway.scale.up", "gw", "events.scale.up")));
+        assert!(filter.matches(&test_event(
+            "aster.gateway.scale.up",
+            "gw",
+            "events.scale.up"
+        )));
         assert!(!filter.matches(&test_event(
             "aster.gateway.scale.down",
             "gw",

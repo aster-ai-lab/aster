@@ -221,6 +221,7 @@ impl CursorAccountClient {
         tools: &[super::types::ToolDefinition],
         cancel_token: CancellationToken,
     ) -> Result<LlmResponse> {
+        super::gemini::refuse_foreign_state(messages)?;
         let url = self.endpoint();
         if url.contains("/v1/chat/completions") {
             return Err(anyhow!(

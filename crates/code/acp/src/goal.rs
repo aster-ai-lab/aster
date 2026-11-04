@@ -40,18 +40,47 @@ impl GoalLanguage {
 
     pub(crate) fn decision(self, decision: GoalTickDecisionV1) -> String {
         if matches!(self, Self::English) {
-            return format!("Durable goal tick: {}", decision.as_str());
+            return match decision {
+                GoalTickDecisionV1::Advance => "Ready for the next step.",
+                GoalTickDecisionV1::Wait => "Waiting for a required result.",
+                GoalTickDecisionV1::NeedsInput => "Your input is needed to continue.",
+                GoalTickDecisionV1::Paused => "Use /goal resume to continue.",
+                GoalTickDecisionV1::BudgetExhausted => {
+                    "The execution limit has been reached. Automatic work has stopped."
+                }
+                GoalTickDecisionV1::Reconcile => {
+                    "Execution records need review before work can continue."
+                }
+                GoalTickDecisionV1::Complete => "All completion criteria are satisfied.",
+            }
+            .into();
         }
         match decision {
-            GoalTickDecisionV1::Advance => "正在继续执行。",
+            GoalTickDecisionV1::Advance => "可继续执行下一步。",
             GoalTickDecisionV1::Wait => "等待所需结果后继续。",
-            GoalTickDecisionV1::NeedsInput => "需要补充信息或调整计划后继续。",
-            GoalTickDecisionV1::Paused => "已暂停，可发送 /goal resume 继续。",
-            GoalTickDecisionV1::BudgetExhausted => "已达到目标执行上限，请检查结果并调整执行额度。",
+            GoalTickDecisionV1::NeedsInput => "需要你的输入后才能继续。",
+            GoalTickDecisionV1::Paused => "发送 /goal resume 可继续执行。",
+            GoalTickDecisionV1::BudgetExhausted => "已达到执行上限，自动执行已停止。",
             GoalTickDecisionV1::Reconcile => "需要核对执行记录后继续。",
             GoalTickDecisionV1::Complete => "目标已满足完成条件。",
         }
         .into()
+    }
+
+    pub(crate) fn for_user_text(self, text: &str) -> Self {
+        let fallback = match self {
+            Self::English => "en",
+            Self::Chinese => "zh-CN",
+        };
+        let language = aster_core::resolve_product_output_language(Some(fallback), text);
+        Self::from_host(language.as_deref())
+    }
+
+    fn for_goal(self, session: &aster_core::AgentSession, goal: &DurableGoalDefinitionV1) -> Self {
+        session
+            .reply_language()
+            .map(|tag| Self::from_host(Some(&tag)))
+            .unwrap_or_else(|| self.for_user_text(&goal.goal.description))
     }
 
     pub(crate) fn legacy_reply(self, goal: Option<&DurableGoal>, fallback: &str) -> String {
@@ -164,14 +193,14 @@ pub fn parse_goal_command(prompt: &str) -> Option<GoalOp> {
 }
 
 fn none_message() -> String {
-    format!("No durable goal is set.\n{USAGE}")
+    format!("No goal is set.\n{USAGE}")
 }
 
 fn status_line(goal: &DurableGoal) -> String {
     if goal.paused {
-        format!("Durable goal paused: {}", goal.objective)
+        "Goal paused.".into()
     } else {
-        format!("Durable goal active: {}", goal.objective)
+        "Goal in progress.".into()
     }
 }
 
@@ -247,7 +276,7 @@ pub fn apply_goal(current: Option<DurableGoal>, op: GoalOp) -> AppliedGoal {
                 AppliedGoal {
                     next: None,
                     plan: GoalPlan::ClearOverride,
-                    reply: Some("Cleared the durable goal.".to_string()),
+                    reply: Some("Goal cleared.".to_string()),
                     model_prompt: None,
                 }
             }
@@ -309,7 +338,7 @@ pub(crate) async fn apply_bound_goal(
                 .await?
                 .is_none()
         {
-            bind_task_goal(session, task)?;
+            bind_task_goal(session, task).await?;
             true
         } else {
             false
@@ -336,6 +365,12 @@ pub(crate) async fn apply_bound_goal(
                 current = control(&current, GoalCommandKindV1::Resume)?;
             }
             tick = !matches!(current.state, GoalState::Completed | GoalState::Cancelled);
+            if tick && current.import_source.is_none() && current.plan.is_none() {
+                bind_task_goal(session, &current.goal.description).await?;
+                current = session
+                    .goal_definition()?
+                    .ok_or_else(|| anyhow::anyhow!("goal.not_found"))?;
+            }
         }
         GoalOp::Clear if current.state != GoalState::Cancelled => {
             current = control(&current, GoalCommandKindV1::Cancel)?;
@@ -350,6 +385,7 @@ pub(crate) async fn apply_bound_goal(
             .into());
         }
     }
+    let language = language.for_goal(session, &current);
     let mut reply = bound_status(session, &current, language).await?;
     if matches!(op, GoalOp::Clear) {
         reply.push_str(match language {
@@ -366,61 +402,110 @@ pub(crate) async fn bound_status(
     current: &DurableGoalDefinitionV1,
     language: GoalLanguage,
 ) -> anyhow::Result<String> {
-    let mut lines = vec![match language {
-        GoalLanguage::English => format!(
-            "Durable goal {}: {}",
-            current.state.as_str(),
-            current.goal.description
-        ),
-        GoalLanguage::Chinese => match current.state {
-            GoalState::Active => "目标进行中",
-            GoalState::Waiting => "目标等待中",
-            GoalState::Paused => "目标已暂停",
-            GoalState::Completed => "目标已完成",
-            GoalState::Cancelled => "目标已取消",
+    let language = language.for_goal(session, current);
+    let preview = control_command(current, GoalCommandKindV1::Tick, "acp-status".into());
+    let decision = if matches!(current.state, GoalState::Completed | GoalState::Cancelled) {
+        None
+    } else {
+        Some(session.preview_goal_tick(&preview).await?)
+    };
+    let heading = match (language, current.state) {
+        (GoalLanguage::English, GoalState::Active)
+            if matches!(
+                decision,
+                Some(
+                    GoalTickDecisionV1::NeedsInput
+                        | GoalTickDecisionV1::BudgetExhausted
+                        | GoalTickDecisionV1::Reconcile
+                )
+            ) =>
+        {
+            "Goal not complete yet."
         }
-        .into(),
-    }];
-    match (&current.plan, current.plan_revision) {
-        (Some(plan), Some(revision)) => {
-            let done = plan
-                .steps
-                .iter()
-                .filter(|step| step.status == aster_core::planning::TaskStatus::Completed)
-                .count();
-            let accepted = if current.plan_accepted {
-                "accepted"
-            } else {
-                "proposed"
-            };
+        (GoalLanguage::English, GoalState::Active) => "Goal in progress.",
+        (GoalLanguage::English, GoalState::Waiting) => "Goal waiting for a result.",
+        (GoalLanguage::English, GoalState::Paused) => "Goal paused.",
+        (GoalLanguage::English, GoalState::Completed) => "Goal complete.",
+        (GoalLanguage::English, GoalState::Cancelled) => "Goal cancelled.",
+        (GoalLanguage::Chinese, GoalState::Active)
+            if matches!(
+                decision,
+                Some(
+                    GoalTickDecisionV1::NeedsInput
+                        | GoalTickDecisionV1::BudgetExhausted
+                        | GoalTickDecisionV1::Reconcile
+                )
+            ) =>
+        {
+            "目标尚未完成"
+        }
+        (GoalLanguage::Chinese, GoalState::Active) => "目标进行中",
+        (GoalLanguage::Chinese, GoalState::Waiting) => "目标等待中",
+        (GoalLanguage::Chinese, GoalState::Paused) => "目标已暂停",
+        (GoalLanguage::Chinese, GoalState::Completed) => "目标已完成",
+        (GoalLanguage::Chinese, GoalState::Cancelled) => "目标已取消",
+    };
+    let mut lines = vec![heading.to_string()];
+    if let Some(plan) = &current.plan {
+        let done = plan
+            .steps
+            .iter()
+            .filter(|step| step.status == aster_core::planning::TaskStatus::Completed)
+            .count();
+        if current.state != GoalState::Completed {
             lines.push(match language {
-                GoalLanguage::English => format!(
-                    "Plan r{revision} {accepted}: {done}/{} steps done",
-                    plan.steps.len()
-                ),
-                GoalLanguage::Chinese => format!(
-                    "计划：已完成 {done}/{} 项{}",
-                    plan.steps.len(),
-                    if current.plan_accepted {
-                        ""
-                    } else {
-                        "，待确认"
-                    }
-                ),
+                GoalLanguage::English => format!("Completed {done} of {} steps.", plan.steps.len()),
+                GoalLanguage::Chinese => format!("已完成 {done}/{} 项。", plan.steps.len()),
             });
         }
-        _ => lines.push(match language {
-            GoalLanguage::Chinese => "尚未制定计划。".into(),
-            GoalLanguage::English => "Plan: none".into(),
-        }),
-    }
-    if !matches!(current.state, GoalState::Completed | GoalState::Cancelled) {
-        let preview = control_command(current, GoalCommandKindV1::Tick, "acp-status".into());
-        let decision = session.preview_goal_tick(&preview).await?;
-        lines.push(match language {
-            GoalLanguage::Chinese => language.decision(decision),
-            GoalLanguage::English => format!("Next: {}", decision.as_str()),
-        });
+        if !current.plan_accepted {
+            lines.push(
+                match language {
+                    GoalLanguage::English => "Review and accept the plan to continue.",
+                    GoalLanguage::Chinese => "请确认计划后继续。",
+                }
+                .into(),
+            );
+        }
+        if decision == Some(GoalTickDecisionV1::Advance) && current.plan_accepted {
+            if let Some(step) = plan.get_ready_steps().first() {
+                lines.push(match language {
+                    GoalLanguage::English => format!("Next: {}", step.content),
+                    GoalLanguage::Chinese => format!("下一步：{}", step.content),
+                });
+            }
+        } else if let Some(decision) = decision {
+            lines.push(language.decision(decision));
+        }
+        if decision == Some(GoalTickDecisionV1::NeedsInput) && current.plan_accepted {
+            if let Some(step) = plan.get_ready_steps().first() {
+                if let Some(feedback) = session.goal_tick_feedback(&preview, &step.id)? {
+                    if !feedback.remaining_criteria.is_empty() {
+                        lines.push(
+                            match language {
+                                GoalLanguage::English => "Still to verify:",
+                                GoalLanguage::Chinese => "仍需验证：",
+                            }
+                            .into(),
+                        );
+                        lines.extend(
+                            feedback
+                                .remaining_criteria
+                                .iter()
+                                .map(|criterion| format!("- {criterion}")),
+                        );
+                    }
+                }
+            }
+        }
+    } else if !matches!(current.state, GoalState::Completed | GoalState::Cancelled) {
+        lines.push(
+            match language {
+                GoalLanguage::English => "A plan is needed before work can continue.",
+                GoalLanguage::Chinese => "需要先制定计划后才能继续。",
+            }
+            .into(),
+        );
     }
     Ok(lines.join("\n"))
 }
@@ -471,51 +556,98 @@ pub(crate) async fn bound_goal_step(
     })
 }
 
-/// Bind an explicit task as a durable goal with one accepted step, then
-/// return the tick for that step. The task text is the goal, the step and its
-/// criterion; nothing is derived from it.
-pub(crate) fn bind_task_goal(
+/// Bind the explicit objective and exact context facts, then accept a model's
+/// typed proposal. Checklist statuses never grant accepted progress.
+pub(crate) async fn bind_task_goal(
     session: &aster_core::AgentSession,
     task: &str,
 ) -> anyhow::Result<GoalControlCommandV1> {
     use aster_core::goal_control::{GoalDefinitionCommandV1, GoalPlanCommandV1};
-    use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
+    use aster_core::planning::AgentGoal;
     let criterion = "Every requirement of the task holds in the workspace.";
-    let definition = session.apply_goal_definition(GoalDefinitionCommandV1 {
-        kind: GoalCommandKindV1::Create,
-        import_source: None,
-        operation_id: "unattended-create".into(),
-        goal_id: "unattended-task".into(),
-        session_id: session.session_id().into(),
-        workspace: aster_core::workspace::WorkspaceServices::local(session.workspace())
-            .workspace_ref()
-            .clone(),
-        goal: AgentGoal::new(task).with_criteria(vec![criterion.into()]),
-        non_goals: vec![],
-        scope_fact_sequences: vec![],
-        work_policy_digest: session.work_policy_digest()?,
-        expected_goal_revision: None,
-        expected_plan_revision: None,
-        expected_goal_sequence: None,
-    })?;
-    let mut plan = ExecutionPlan::new(task, Complexity::Simple);
-    plan.upsert_step(Task::new("task", task).with_success_criteria(criterion));
+    let definition = if let Some(current) = session.goal_definition()? {
+        anyhow::ensure!(
+            current.goal.description == task,
+            "goal.conflict: the bound objective differs"
+        );
+        if current.plan_accepted {
+            return bound_tick_command(session)?.ok_or_else(|| anyhow::anyhow!("goal.not_found"));
+        }
+        current
+    } else {
+        let thread = aster_core::fact_control::thread_for_session(session.session_id());
+        let source_sequences = || {
+            let workspace = session.workspace().to_path_buf();
+            let thread = thread.clone();
+            tokio_util::task::AbortOnDropHandle::new(tokio::task::spawn_blocking(
+                move || -> anyhow::Result<Vec<u64>> {
+                    let facts =
+                        aster_core::fact_control::read_workspace_facts(&workspace, &thread)?;
+                    let active = facts
+                        .iter()
+                        .rposition(|fact| fact.kind == "compaction.done")
+                        .unwrap_or(0);
+                    Ok(facts[active..]
+                        .iter()
+                        .filter(|fact| {
+                            matches!(
+                                fact.kind.as_str(),
+                                "user.message" | "model.turn" | "compaction.done"
+                            )
+                        })
+                        .map(|fact| fact.seq)
+                        .collect())
+                },
+            ))
+        };
+        let mut scope_fact_sequences = source_sequences().await??;
+        if scope_fact_sequences.len() > 32 {
+            session.compact_conversation(Some("Preserve the authorized plan, original requirements, constraints, unfinished work and failures. Checklist completion is not accepted Goal progress.")).await?;
+            scope_fact_sequences = source_sequences().await??;
+        }
+        anyhow::ensure!(
+            scope_fact_sequences.len() <= 32,
+            "goal.scope_too_large: compact the conversation before binding its plan"
+        );
+        session.apply_goal_definition(GoalDefinitionCommandV1 {
+            kind: GoalCommandKindV1::Create,
+            import_source: None,
+            operation_id: "unattended-create".into(),
+            goal_id: "unattended-task".into(),
+            session_id: session.session_id().into(),
+            workspace: aster_core::workspace::WorkspaceServices::local(session.workspace())
+                .workspace_ref()
+                .clone(),
+            goal: AgentGoal::new(task).with_criteria(vec![criterion.into()]),
+            non_goals: vec![],
+            scope_fact_sequences,
+            work_policy_digest: session.work_policy_digest()?,
+            expected_goal_revision: None,
+            expected_plan_revision: None,
+            expected_goal_sequence: None,
+        })?
+    };
     let mut proposal = GoalPlanCommandV1 {
         kind: GoalCommandKindV1::ProposePlan,
-        operation_id: "unattended-plan".into(),
-        goal_id: definition.binding.goal_id,
-        session_id: definition.binding.session_id,
-        workspace: definition.binding.workspace,
-        work_policy_digest: definition.binding.work_policy_digest,
+        operation_id: format!("unattended-plan-{}", definition.goal_sequence),
+        goal_id: definition.binding.goal_id.clone(),
+        session_id: definition.binding.session_id.clone(),
+        workspace: definition.binding.workspace.clone(),
+        work_policy_digest: definition.binding.work_policy_digest.clone(),
         expected_goal_revision: definition.binding.goal_revision,
         expected_plan_revision: definition.plan_revision,
         expected_goal_sequence: definition.goal_sequence,
-        plan: Some(plan),
+        plan: None,
         proposal_sequence: None,
     };
-    let proposed = session.apply_goal_plan(proposal.clone())?;
+    let proposed = if definition.plan.is_some() {
+        definition
+    } else {
+        proposal.plan = Some(session.generate_goal_plan().await?);
+        session.apply_goal_plan(proposal.clone())?
+    };
     proposal.kind = GoalCommandKindV1::AcceptPlan;
-    proposal.operation_id = "unattended-accept".into();
+    proposal.operation_id = format!("unattended-accept-{}", proposed.goal_sequence);
     proposal.expected_plan_revision = proposed.plan_revision;
     proposal.expected_goal_sequence = proposed.goal_sequence;
     proposal.plan = None;
@@ -540,14 +672,41 @@ pub(crate) async fn bound_slice_report(
     run_id: Option<&str>,
     language: GoalLanguage,
 ) -> anyhow::Result<String> {
+    let current = session.goal_definition()?;
+    let language = current
+        .as_ref()
+        .map(|goal| language.for_goal(session, goal))
+        .unwrap_or(language);
     let mut lines = Vec::new();
     if let Some(run_id) = run_id {
         let snapshot = session
             .run_snapshot(run_id)
             .await
             .ok_or_else(|| anyhow::anyhow!("goal slice {run_id} has no Run record"))?;
-        if matches!(language, GoalLanguage::English) {
-            lines.push(format!("Goal slice {}: {:?}", snapshot.id, snapshot.status));
+        tracing::debug!(run_id = %snapshot.id, status = ?snapshot.status, "Goal execution status");
+        let message = match (language, snapshot.status) {
+            (_, aster_core::run::RunStatus::Completed) => None,
+            (GoalLanguage::English, aster_core::run::RunStatus::Failed) => {
+                Some("The latest execution failed.")
+            }
+            (GoalLanguage::Chinese, aster_core::run::RunStatus::Failed) => Some("本次执行未完成。"),
+            (GoalLanguage::English, aster_core::run::RunStatus::Cancelled) => {
+                Some("The latest execution was cancelled.")
+            }
+            (GoalLanguage::Chinese, aster_core::run::RunStatus::Cancelled) => {
+                Some("本次执行已取消。")
+            }
+            (GoalLanguage::English, aster_core::run::RunStatus::Verifying) => {
+                Some("Verifying the latest results.")
+            }
+            (GoalLanguage::Chinese, aster_core::run::RunStatus::Verifying) => {
+                Some("正在验证本次结果。")
+            }
+            (GoalLanguage::English, _) => Some("The current step is running."),
+            (GoalLanguage::Chinese, _) => Some("正在执行当前步骤。"),
+        };
+        if let Some(message) = message {
+            lines.push(message.into());
         }
     }
     if let Some(after) = session.goal_definition()? {
@@ -660,10 +819,7 @@ mod tests {
 
         let status = apply_goal(Some(goal.clone()), GoalOp::Status);
         assert_eq!(status.plan, GoalPlan::Unchanged);
-        assert_eq!(
-            status.reply.as_deref(),
-            Some("Durable goal active: Ship the fix")
-        );
+        assert_eq!(status.reply.as_deref(), Some("Goal in progress."));
         assert!(status.model_prompt.is_none());
 
         let paused = apply_goal(Some(goal.clone()), GoalOp::Pause);
@@ -682,7 +838,7 @@ mod tests {
         let cleared = apply_goal(resumed.next, GoalOp::Clear);
         assert_eq!(cleared.next, None);
         assert!(cleared.plan.clears_override());
-        assert_eq!(cleared.reply.as_deref(), Some("Cleared the durable goal."));
+        assert_eq!(cleared.reply.as_deref(), Some("Goal cleared."));
     }
 
     #[test]
@@ -692,7 +848,7 @@ mod tests {
             assert_eq!(applied.next, None);
             assert_eq!(applied.plan, GoalPlan::Unchanged);
             assert!(applied.model_prompt.is_none());
-            assert!(applied.reply.unwrap().contains("No durable goal is set."));
+            assert!(applied.reply.unwrap().contains("No goal is set."));
         }
     }
 }

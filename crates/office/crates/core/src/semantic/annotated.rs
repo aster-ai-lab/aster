@@ -180,7 +180,8 @@ fn include_node(kind: DocumentKind, node_type: OfficeNodeType) -> bool {
 }
 
 fn entry(node: &DocumentNode, level: usize) -> NativeOfficeAnnotatedEntry {
-    let (text, text_truncated) = bounded_value(&node.text, MAX_ANNOTATED_TEXT_BYTES);
+    let display = cell_display_text(node);
+    let (text, text_truncated) = bounded_value(&display, MAX_ANNOTATED_TEXT_BYTES);
     let style = node
         .style
         .as_deref()
@@ -217,6 +218,16 @@ fn internal_format_key(key: &str) -> bool {
             | "sheetId"
             | "slideId"
     )
+}
+
+fn cell_display_text(node: &DocumentNode) -> String {
+    if node.node_type != OfficeNodeType::Cell {
+        return node.text.clone();
+    }
+    node.format
+        .get("numberFormat")
+        .and_then(|format| super::spreadsheet::format_number_display(&node.text, format))
+        .unwrap_or_else(|| node.text.clone())
 }
 
 fn bounded_value(value: &str, limit: usize) -> (String, bool) {

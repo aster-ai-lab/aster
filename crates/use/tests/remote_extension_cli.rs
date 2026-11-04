@@ -416,7 +416,8 @@ async fn apply_planned_enablement(
             "The integration test expected an enablement plan to apply.",
         )
     })?;
-    let confirmation = (envelope.plan.authority.decision == aster_use_core::PlanPolicyDecision::Ask)
+    let confirmation = (envelope.plan.authority.decision
+        == aster_use_core::PlanPolicyDecision::Ask)
         .then(|| aster_use_core::PluginOperationConfirmation {
             schema: aster_use_core::PLUGIN_OPERATION_CONFIRMATION_SCHEMA.to_string(),
             operation_id: envelope.plan.operation_id.clone(),

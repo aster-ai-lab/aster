@@ -26,7 +26,13 @@ const DSML_NS_ASCII: &str = "||DSML||";
 /// Existing structured calls are kept. Markup is removed from the visible
 /// text either way, so a protocol fragment is never the answer.
 pub(crate) fn recover_text_tool_calls(message: &mut Message) -> Vec<ToolCall> {
-    if message.role != "assistant" {
+    // Native parts are already decoded; rewriting text breaks opaque replay.
+    if message.role != "assistant"
+        || message
+            .content
+            .iter()
+            .any(|block| matches!(block, ContentBlock::GeminiState { .. }))
+    {
         return message.tool_calls();
     }
     let already_structured = message

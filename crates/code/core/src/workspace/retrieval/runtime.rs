@@ -9,6 +9,7 @@ use std::time::Duration;
 use tokio::sync::{broadcast, mpsc};
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument as _;
 
 // Test-only force switches. Always compiled so `--no-cfg-coverage` does not
 // leave dead `#[cfg(not(test))]` stubs diluting line coverage; production
@@ -346,18 +347,21 @@ impl LocalWorkspaceCatalogRuntime {
             task: Mutex::new(None),
             persistent: persistent_coordinator.clone(),
         });
-        let task = tokio::spawn(run_catalog_updates(
-            manifest,
-            WorkspaceCatalogReconciler::new(
-                catalog,
-                WorkspaceEligibilityPolicy::default(),
-                file_system,
-            ),
-            snapshots,
-            changes,
-            lifetime,
-            persistent_coordinator,
-        ));
+        let task = tokio::spawn(
+            run_catalog_updates(
+                manifest,
+                WorkspaceCatalogReconciler::new(
+                    catalog,
+                    WorkspaceEligibilityPolicy::default(),
+                    file_system,
+                ),
+                snapshots,
+                changes,
+                lifetime,
+                persistent_coordinator,
+            )
+            .in_current_span(),
+        );
         *runtime
             .task
             .lock()

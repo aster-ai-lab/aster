@@ -380,9 +380,7 @@ impl SessionActor {
     }
 
     /// The applied overrides to echo, or `None` when backend search is off.
-    pub(crate) fn effective_tool_overrides(
-        &self,
-    ) -> Option<aster_sampling_types::ToolOverrides> {
+    pub(crate) fn effective_tool_overrides(&self) -> Option<aster_sampling_types::ToolOverrides> {
         if !self.backend_search_active() {
             return None;
         }
@@ -446,9 +444,7 @@ impl SessionActor {
         self.chat_state_handle
             .get_sampling_config()
             .await
-            .is_some_and(|config| {
-                config.api_backend == aster_sampling_types::ApiBackend::Messages
-            })
+            .is_some_and(|config| config.api_backend == aster_sampling_types::ApiBackend::Messages)
     }
 
     pub(super) fn model_auth_facts(&self, model_id: &str) -> crate::agent::config::ModelAuthFacts {
@@ -865,11 +861,12 @@ impl SessionActor {
                             let config = session.reconstruct_full_config().await;
                             let context_window = config.context_window;
                             let model = config.model.clone();
-                            let client = aster_sampler::SamplingClient::new(config).map_err(|e| {
-                                aster_workspace::permission::ClassifierFailure::TransportError(
-                                    e.to_string(),
-                                )
-                            })?;
+                            let client =
+                                aster_sampler::SamplingClient::new(config).map_err(|e| {
+                                    aster_workspace::permission::ClassifierFailure::TransportError(
+                                        e.to_string(),
+                                    )
+                                })?;
                             (client, model, context_window)
                         }
                     };

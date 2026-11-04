@@ -24,8 +24,8 @@ use crate::notifications::{NotificationEvent, NotificationEventKind};
 use crate::scrollback::block::RenderBlock;
 use crate::scrollback::blocks::{MemoryCommandKind, SessionEvent};
 use crate::slash::command::DoctorRequest;
-use aster_telemetry::session_ctx::log_event;
 use agent_client_protocol as acp;
+use aster_telemetry::session_ctx::log_event;
 
 /// Shared by every submit guard that refuses while the session reconnects.
 pub(super) const RECONNECTING_NOTICE: &str = "Reconnecting, please wait...";
@@ -133,9 +133,7 @@ pub(super) fn open_doctor_fix_question(
     plan: Box<crate::diagnostics::FixPlan>,
 ) {
     use crate::views::question_view::{LocalQuestionKind, QuestionViewState};
-    use aster_tools::implementations::grok_build::ask_user_question::{
-        Question, QuestionOption,
-    };
+    use aster_tools::implementations::grok_build::ask_user_question::{Question, QuestionOption};
 
     let Some(agent) = app.agents.get_mut(&target.agent_id) else {
         return;
@@ -1443,16 +1441,31 @@ pub(super) fn handle_prompt_response(
     if let Some(agent) = app.agents.get_mut(&agent_id) {
         // Discard PromptResponses that don't belong to the currently active prompt
         // They belong to a turn the user rewound, or to a queued prompt that never became the running turn
-        // Without the `Err` fallback, a queued prompt's RPC error has no id to gate on and is misattributed to the running turn
+        // Older backends omit response metadata; the RPC still owns its original prompt id.
         let response_pid = match &result {
             Ok(pr) => pr
                 .meta
                 .as_ref()
                 .and_then(|m| m.get("promptId"))
                 .and_then(|v| v.as_str())
-                .map(str::to_string),
+                .map(str::to_string)
+                .or_else(|| prompt_id.clone()),
             Err(_) => prompt_id.clone(),
         };
+        if let (Some(response_pid), Some(sid)) =
+            (response_pid.as_deref(), agent.session.session_id.as_ref())
+        {
+            retire_optimistic_echo(
+                &mut app.optimistic_prompt_echoes,
+                &mut app.shared_prompt_queues,
+                sid.0.as_ref(),
+                response_pid,
+            );
+            agent.shared_queue.retain(|entry| entry.id != response_pid);
+            if agent.session.current_prompt_id.as_deref() == Some(response_pid) {
+                agent.optimistic_queue_ids.remove(response_pid);
+            }
+        }
         // The turn-end RPC for this prompt arrived: clear the lost-response reconcile that `handle_prompt_complete` set for it
         // The broadcast is emitted before the RPC response, so in the healthy path the marker lives only a few ms
         if let Some(pending) = agent.pending_turn_end_reconcile.as_ref()
@@ -1486,14 +1499,7 @@ pub(super) fn handle_prompt_response(
                 }
                 // This prompt's RPC resolved without becoming the running turn (removed, cancelled, rewound)
                 // Retire its optimistic echo so a later `aster/queue/changed` broadcast can't re-pin a stale placeholder and reorder the queue
-                if let Some(sid) = agent.session.session_id.as_ref().map(|s| s.0.to_string()) {
-                    retire_optimistic_echo(
-                        &mut app.optimistic_prompt_echoes,
-                        &mut app.shared_prompt_queues,
-                        &sid,
-                        response_pid,
-                    );
-                    agent.shared_queue.retain(|e| e.id != response_pid);
+                if agent.session.session_id.is_some() {
                     agent.note_queue_echo_retired(response_pid);
                 }
                 // Resolved-without-running never adopts; explicit for the session-less arm (no note_queue_echo_retired above)

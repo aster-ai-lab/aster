@@ -406,6 +406,9 @@ mod tests {
     #[test]
     fn default_etcd_prefix_is_the_aster_service_root() {
         assert_eq!(DEFAULT_PREFIX, "/aster/services");
-        assert_eq!(EtcdDiscoveryOptions::default().key_prefix, "/aster/services");
+        assert_eq!(
+            EtcdDiscoveryOptions::default().key_prefix,
+            "/aster/services"
+        );
     }
 }

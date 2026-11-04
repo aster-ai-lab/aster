@@ -16,44 +16,59 @@ if [[ -n "$ARTIFACT_RUN_ID" ]]; then
 else
   built="$BUILD_SHA"
 fi
+source_commit="$(git rev-parse HEAD)"
+source_status="$(git status --porcelain -- . ':!dist' ':!qualification' ':!notes.md')"
+if [[ "$source_commit" != "$built" || -n "$source_status" ]]; then
+  echo "refusing release: publish from the clean artifact source commit $built" >&2
+  exit 1
+fi
+version="$(cargo read-manifest --manifest-path apps/aster/Cargo.toml | python3 -c 'import json, sys; print(json.load(sys.stdin)["version"])')"
+acp_version="$(cargo read-manifest --manifest-path crates/code/acp/Cargo.toml | python3 -c 'import json, sys; print(json.load(sys.stdin)["version"])')"
+core_version="$(cargo read-manifest --manifest-path crates/code/core/Cargo.toml | python3 -c 'import json, sys; print(json.load(sys.stdin)["version"])')"
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ || "$acp_version" != "$core_version" ]]; then
+  echo "refusing release: invalid CLI version or mismatched Core/ACP versions" >&2
+  exit 1
+fi
+tag="aster-cli-v${version}"
+for asset in "${tag}-macos.tar.gz" "${tag}-linux.tar.gz" "${tag}-windows.zip"; do
+  if [[ ! -f "dist/$asset" ]]; then
+    echo "missing CLI release archive: $asset" >&2
+    exit 1
+  fi
+done
 successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${built}&event=push&status=completed&per_page=100" --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')"
 if [[ "$successful_runs" -eq 0 ]]; then
   echo "refusing release: artifact source $built has no successful branch qualification" >&2
   exit 1
 fi
-python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.6-macos.tar.gz --output-dir qualification
-python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.6-macos.tar.gz --mode yolo --output-dir qualification/yolo
-macos_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.6-macos.tar.gz | cut -d' ' -f1)"
-linux_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.6-linux.tar.gz | cut -d' ' -f1)"
-windows_sha="$(shasum -a 256 -b dist/aster-cli-v0.1.6-windows.zip | cut -d' ' -f1)"
+python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --output-dir qualification
+python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --mode yolo --output-dir qualification/yolo
+macos_sha="$(shasum -a 256 -b "dist/${tag}-macos.tar.gz" | cut -d' ' -f1)"
+linux_sha="$(shasum -a 256 -b "dist/${tag}-linux.tar.gz" | cut -d' ' -f1)"
+windows_sha="$(shasum -a 256 -b "dist/${tag}-windows.zip" | cut -d' ' -f1)"
 # Compact single-line manifest: scripts/install.sh parses this exact shape.
-printf '{"version":"0.1.6","tag":"aster-cli-v0.1.6","assets":{"macos":{"name":"aster-cli-v0.1.6-macos.tar.gz","sha256":"%s"},"linux":{"name":"aster-cli-v0.1.6-linux.tar.gz","sha256":"%s"},"windows":{"name":"aster-cli-v0.1.6-windows.zip","sha256":"%s"}}}\n' \
-  "$macos_sha" "$linux_sha" "$windows_sha" > dist/latest.json
-cat > notes.md <<'EOF'
-aster-cli v0.1.6 — Core / ACP 9.1.6
-
-Image and image-only prompts now reach image-capable models. Explicit text-only models reject images before admission.
-Model context limits follow configured or documented capacities and update when switching models. Unknown capacity remains unknown in the status bar.
-Raw reasoning is folded by default and remains available on demand. TUI status chrome stays English independently of the model reply language; internal subagent lifecycle events no longer appear as reasoning text.
-Subagent stop requests now reach their owning session and cancel the actual child. Failed stop requests remain retryable.
+printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","sha256":"%s"},"linux":{"name":"%s-linux.tar.gz","sha256":"%s"},"windows":{"name":"%s-windows.zip","sha256":"%s"}}}\n' \
+  "$version" "$tag" "$tag" "$macos_sha" "$tag" "$linux_sha" "$tag" "$windows_sha" > dist/latest.json
+cat > notes.md <<EOF
+aster-cli v${version} — Core / ACP ${acp_version}
 
 macOS archives include the verified sandbox runtime with Aster and ACP. Installation and self-update reject incomplete archives. The final installed macOS archive must execute a real sandbox command before release assets can be created or uploaded.
-Each archive contains the locked release build of Aster 0.1.6 and ACP 9.1.6 from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
+Each archive contains the locked release build of Aster ${version} and ACP ${acp_version} from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
 The Linux archive uses x86_64 glibc 2.31. Linux and Windows runtime support is not qualified by the macOS sandbox probe.
-Update with `aster update`, or inspect with `aster update --check`, then restart the TUI to use the new pair.
+Update with \`aster update\`, or inspect with \`aster update --check\`, then restart the TUI to use the new pair.
 EOF
 printf 'Built from %s.\n' "$built" >> notes.md
 # A rerun may extend this draft, never replace published assets.
-if gh release view aster-cli-v0.1.6 >/dev/null 2>&1; then
-  test "$(gh release view aster-cli-v0.1.6 --json isDraft --jq .isDraft)" = true
-  test "$(gh release view aster-cli-v0.1.6 --json targetCommitish --jq .targetCommitish)" = "$built"
-  gh release upload aster-cli-v0.1.6 "${files[@]}" dist/latest.json --clobber
+if gh release view "$tag" >/dev/null 2>&1; then
+  test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+  test "$(gh release view "$tag" --json targetCommitish --jq .targetCommitish)" = "$built"
+  gh release upload "$tag" "${files[@]}" dist/latest.json --clobber
 else
-  gh release create aster-cli-v0.1.6 \
+  gh release create "$tag" \
     --draft --target "$built" \
     --latest=false \
-    --title "aster-cli v0.1.6" \
+    --title "aster-cli v${version}" \
     --notes-file notes.md \
     "${files[@]}" dist/latest.json
 fi
-gh release view aster-cli-v0.1.6
+gh release view "$tag"

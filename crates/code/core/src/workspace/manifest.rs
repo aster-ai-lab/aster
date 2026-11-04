@@ -12,17 +12,18 @@ use super::retrieval::{
     WorkspacePersistentIndex,
 };
 use super::{
-    escape_control_chars_for_display, validate_relative_pattern, CommandOutput, CommandRequest,
-    DirectFileGuard, LocalWorkspaceAccessPolicy, LocalWorkspaceBackend, WorkspaceCommandRunner,
-    WorkspaceDirEntry, WorkspaceFileSystem, WorkspaceGit, WorkspaceGitBranch,
-    WorkspaceGitCheckoutOutput, WorkspaceGitCheckoutRequest, WorkspaceGitCommit,
-    WorkspaceGitCreateBranchRequest, WorkspaceGitCreateWorktreeRequest, WorkspaceGitDiffRequest,
-    WorkspaceGitRemote, WorkspaceGitRemoveWorktreeRequest, WorkspaceGitStash,
-    WorkspaceGitStashProvider, WorkspaceGitStashRequest, WorkspaceGitStatus, WorkspaceGitWorktree,
-    WorkspaceGitWorktreeMutation, WorkspaceGitWorktreeProvider, WorkspaceGlobRequest,
-    WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
-    WorkspaceGrepResult, WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch,
-    WorkspaceTextRange, WorkspaceTextReader, WorkspaceWriteOutcome,
+    escape_control_chars_for_display, validate_relative_pattern, BraceGlob, CommandOutput,
+    CommandRequest, DirectFileGuard, LocalWorkspaceAccessPolicy, LocalWorkspaceBackend,
+    WorkspaceCommandRunner, WorkspaceDirEntry, WorkspaceFileSystem, WorkspaceGit,
+    WorkspaceGitBranch, WorkspaceGitCheckoutOutput, WorkspaceGitCheckoutRequest,
+    WorkspaceGitCommit, WorkspaceGitCreateBranchRequest, WorkspaceGitCreateWorktreeRequest,
+    WorkspaceGitDiffRequest, WorkspaceGitRemote, WorkspaceGitRemoveWorktreeRequest,
+    WorkspaceGitStash, WorkspaceGitStashProvider, WorkspaceGitStashRequest, WorkspaceGitStatus,
+    WorkspaceGitWorktree, WorkspaceGitWorktreeMutation, WorkspaceGitWorktreeProvider,
+    WorkspaceGlobRequest, WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome,
+    WorkspaceGrepRequest, WorkspaceGrepResult, WorkspacePath, WorkspacePathResolver,
+    WorkspaceResult, WorkspaceSearch, WorkspaceTextRange, WorkspaceTextReader,
+    WorkspaceWriteOutcome,
 };
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
@@ -993,7 +994,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
         let Some(search_snapshot) = self.manifest_ready() else {
             return self.fallback_search().glob(request).await;
         };
-        let pattern = glob::Pattern::new(&request.pattern)
+        let pattern = BraceGlob::new(&request.pattern)
             .map_err(|e| anyhow!("Invalid glob pattern '{}': {}", request.pattern, e))?;
         let candidates =
             candidate_indices_for_glob(&search_snapshot.index, &request.base, &request.pattern);
@@ -1044,7 +1045,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
         let glob = request
             .glob
             .as_deref()
-            .map(glob::Pattern::new)
+            .map(BraceGlob::new)
             .transpose()
             .map_err(|e| anyhow!("Invalid grep glob filter: {e}"))?;
 
@@ -1512,7 +1513,7 @@ fn relative_to_base<'a>(path: &'a str, base: &WorkspacePath) -> Option<&'a str> 
     }
 }
 
-fn glob_matches(pattern: &glob::Pattern, path: &str) -> bool {
+fn glob_matches(pattern: &BraceGlob, path: &str) -> bool {
     let path = Path::new(path);
     pattern.matches_path(path)
         || path

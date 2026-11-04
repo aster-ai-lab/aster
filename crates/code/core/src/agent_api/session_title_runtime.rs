@@ -14,10 +14,14 @@ impl AgentSession {
         {
             return None;
         }
-        let client = self
-            .llm_client
+        let cancellation = self.session_cancel.child_token();
+        let _cancel_on_drop = cancellation.clone().drop_guard();
+        let agent_loop = super::agent_loop_runtime::build_agent_loop(self);
+        let governed =
+            agent_loop.scoped_llm_client_for_parts(Some(&self.session_id), &None, &cancellation);
+        let client = governed
             .fork_for_session(&format!("{}:session-title", self.session_id))
-            .unwrap_or_else(|| Arc::clone(&self.llm_client))
+            .unwrap_or(governed)
             .with_output_cap(100)?;
         let schema = serde_json::json!({
             "type": "object", "additionalProperties": false,
@@ -39,7 +43,6 @@ impl AgentSession {
             prompt.chars().take(4_000).collect::<String>(),
         ))];
         let system = "You are tasked with generating the session title. Produce a short and distinctive 5-10 word descriptive title for the user's request. Use the user's language. Generate the session_title and nothing else.";
-        let cancellation = self.session_cancel.child_token();
         let response = tokio::select! {
             biased;
             _ = cancellation.cancelled() => return None,
@@ -48,6 +51,9 @@ impl AgentSession {
                 client.complete_structured(&messages, Some(system), &tools, &directive),
             ) => result.ok()?.ok()?,
         };
+        super::session_persistence::SessionPersistenceContext::from_session(self)
+            .auto_save_if_enabled()
+            .await;
         let mut calls = response
             .message
             .content
@@ -72,3 +78,7 @@ impl AgentSession {
         Some(title.session_title)
     }
 }
+
+#[cfg(test)]
+#[path = "session_title_runtime_tests.rs"]
+mod tests;

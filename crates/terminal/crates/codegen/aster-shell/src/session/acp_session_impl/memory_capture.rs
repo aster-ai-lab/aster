@@ -603,10 +603,9 @@ impl SessionActor {
             // runs as a tracked task instead of on the actor's startup path.
             let session = Arc::clone(self);
             let clock = aster_memory::system_v2_clock();
-            let promotion =
-                aster_telemetry::session_ctx::spawn_local_in_session_ctx(async move {
-                    session.promote_v2_hidden_observations(true, clock).await;
-                });
+            let promotion = aster_telemetry::session_ctx::spawn_local_in_session_ctx(async move {
+                session.promote_v2_hidden_observations(true, clock).await;
+            });
             self.memory.dream_workers.track(promotion);
         }
         if self.v2_capture_enabled() {
@@ -1279,9 +1278,7 @@ impl SessionActor {
         usage: aster_telemetry::memory_telemetry::MemoryV2ModelUsage,
         memories: Vec<crate::extensions::notification::MemoryCaptureDebugEntry>,
     ) {
-        use aster_telemetry::memory_telemetry::{
-            MemoryV2CaptureLifecycle, MemoryV2CaptureStage,
-        };
+        use aster_telemetry::memory_telemetry::{MemoryV2CaptureLifecycle, MemoryV2CaptureStage};
         let stage = match activity {
             CaptureActivity::Queued => MemoryV2CaptureStage::Queued,
             CaptureActivity::Running => MemoryV2CaptureStage::Claimed,
@@ -1922,8 +1919,7 @@ mod tests {
     fn init_v2_scopes(root: &Path, global: &Path, workspace: &Path) {
         std::fs::create_dir_all(root.join("workspaces")).unwrap();
         aster_memory::ensure_scope_initialized(root, global, V2MemoryScope::Global).unwrap();
-        aster_memory::ensure_scope_initialized(root, workspace, V2MemoryScope::Workspace)
-            .unwrap();
+        aster_memory::ensure_scope_initialized(root, workspace, V2MemoryScope::Workspace).unwrap();
     }
 
     /// Claim one pending capture job for `session_id` so a guard can be armed over it.

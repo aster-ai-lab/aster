@@ -7,6 +7,8 @@ fn text_measurement_counts_unicode_and_punctuation_without_guessing_words() {
     assert_eq!(text_counts("报告，\n2 秒🚀"), (8, 6, 3));
     assert_eq!(text_counts(&"字".repeat(301)), (301, 301, 1));
     assert_eq!(text_counts(""), (0, 0, 0));
+    // ZWJ family emoji is one grapheme cluster, not seven code points.
+    assert_eq!(text_counts("👨‍👩‍👧‍👦"), (1, 1, 1));
 }
 
 #[test]

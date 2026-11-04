@@ -22,9 +22,8 @@ fn startup_completed_carries_bootstrap_subphase_fields() {
     aster_telemetry::startup::PendingStartup::new()
         .finish(aster_telemetry::startup::StartupOutcome::Ok);
 
-    let log =
-        String::from_utf8(aster_telemetry::unified_log::snapshot_log().expect("unified log"))
-            .expect("utf8");
+    let log = String::from_utf8(aster_telemetry::unified_log::snapshot_log().expect("unified log"))
+        .expect("utf8");
     let ctx = log
         .lines()
         .find_map(|line| {

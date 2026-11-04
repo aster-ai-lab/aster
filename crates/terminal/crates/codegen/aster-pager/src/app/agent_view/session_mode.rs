@@ -1,7 +1,7 @@
 //! Session modes an agent publishes, kept next to the plan flags every plan surface already reads.
 
-use aster_tools::types::SessionMode;
 use agent_client_protocol as acp;
+use aster_tools::types::SessionMode;
 
 use crate::app::agent_view::AgentView;
 

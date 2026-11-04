@@ -12,9 +12,11 @@ closed_set!(GoalSliceOutcomeV1 {
 /// Advisory judgment data; the enclosing settlement binds goal and plan revisions.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct GoalStepFeedback {
-    pub(crate) step_id: String,
-    pub(crate) remaining_criteria: Vec<String>,
+pub struct GoalStepFeedback {
+    /// The admitted step the original judgment described.
+    pub step_id: String,
+    /// Unmet criteria in the judgment's original order; never acceptance evidence.
+    pub remaining_criteria: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]

@@ -29,7 +29,9 @@ impl aster_search::Engine for FailingEngine {
     }
 
     async fn search(&self, _query: &SearchQuery) -> aster_search::Result<Vec<SearchResult>> {
-        Err(aster_search::SearchError::Other("forced failure".to_string()))
+        Err(aster_search::SearchError::Other(
+            "forced failure".to_string(),
+        ))
     }
 }
 

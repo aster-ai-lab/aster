@@ -406,8 +406,7 @@ mod tests {
             aster_workspace::permission::resolution::MarketplaceAllowlist {
                 allowed_urls: vec!["https://github.com/ok/repo.git".into()],
                 source_path: None,
-                authority:
-                    aster_workspace::permission::resolution::PolicySourceAuthority::Advisory,
+                authority: aster_workspace::permission::resolution::PolicySourceAuthority::Advisory,
             },
         );
         let sources = vec![

@@ -4,6 +4,51 @@ use super::*;
 use serde_json::json;
 
 #[test]
+fn completions_share_cumulative_usage_and_treat_text_as_committed_output() {
+    let mut meter = WireMeter::new(UsageProtocol::OpenaiCompletions);
+    assert!(meter
+        .event(r#"{"choices":[{"text":"hello","index":0}]}"#)
+        .unwrap());
+    let usage = r#"{"choices":[],"usage":{"prompt_tokens":2,"completion_tokens":3}}"#;
+    meter.event(usage).unwrap();
+    meter.event(usage).unwrap();
+    meter.event("[DONE]").unwrap();
+    assert!(meter.finished && meter.usage_complete);
+    assert_eq!(meter.usage().unwrap().total_tokens().unwrap(), Some(5));
+    assert_eq!(
+        UsageProtocol::parse("openai_completions").unwrap().as_str(),
+        "openai_completions"
+    );
+}
+
+#[test]
+fn embedding_usage_has_no_output_tokens_and_keeps_missing_counters_unknown() {
+    let mut meter = WireMeter::new(UsageProtocol::OpenaiEmbeddings);
+    meter
+        .response(&json!({"data":[],"usage":{"prompt_tokens":2,"total_tokens":2}}))
+        .unwrap();
+    assert_eq!(meter.usage().unwrap().input_tokens, Some(2));
+    assert_eq!(meter.usage().unwrap().output_tokens, Some(0));
+    assert_eq!(meter.usage().unwrap().cache_read_tokens, None);
+    let mut priced = WireMeter::new(UsageProtocol::OpenaiEmbeddings);
+    priced.response(&json!({"usage":{"prompt_tokens":2,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0}}})).unwrap();
+    assert_eq!(priced.usage().unwrap().no_cache_tokens, Some(2));
+    assert!(meter
+        .response(&json!({"usage":{"prompt_tokens":3,"total_tokens":4}}))
+        .is_err());
+    assert_eq!(meter.usage().unwrap().input_tokens, Some(2));
+    let mut absent = WireMeter::new(UsageProtocol::OpenaiEmbeddings);
+    absent.response(&json!({"data":[]})).unwrap();
+    assert!(!absent.usage_complete);
+    assert_eq!(absent.usage().unwrap().total_tokens().unwrap(), None);
+    assert!(absent.event("[DONE]").is_err());
+    assert_eq!(
+        UsageProtocol::parse("openai_embeddings").unwrap().as_str(),
+        "openai_embeddings"
+    );
+}
+
+#[test]
 fn chat_usage_chunk_owns_final_totals_without_adding_repeated_snapshots() {
     let mut meter = WireMeter::new(UsageProtocol::OpenaiChat);
     assert!(meter
@@ -111,7 +156,7 @@ fn sse_meter_preserves_split_utf8_multiline_data_and_bounded_frames() {
     assert!(meter.meter.finished);
     assert!(!meter.meter.usage_complete);
     assert!(SseMeter::new(UsageProtocol::OpenaiChat)
-        .push(&vec![b'x'; 1024 * 1024 + 1])
+        .push(&vec![b'x'; MAX_SSE_FRAME_BYTES + 1])
         .is_err());
 }
 
@@ -141,7 +186,7 @@ fn dispatch_endpoints_keep_the_existing_provider_url_rules() {
 
 #[test]
 fn malformed_framing_invalidates_previously_complete_usage() {
-    for tail in [vec![0xff], vec![b'x'; 1024 * 1024 + 1]] {
+    for tail in [vec![0xff], vec![b'x'; MAX_SSE_FRAME_BYTES + 1]] {
         let mut meter = SseMeter::new(UsageProtocol::OpenaiChat);
         meter
             .push(b"data: {\"usage\":{\"prompt_tokens\":10,\"completion_tokens\":2}}\n\n")

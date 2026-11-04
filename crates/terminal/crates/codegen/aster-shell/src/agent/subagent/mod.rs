@@ -25,8 +25,10 @@ use crate::upload::trace::{
     upload_metadata, upload_session_state, upload_subagent_metadata, upload_turn_result,
 };
 use crate::upload::turn::{PromptTraceContext, complete_prompt_trace};
+use agent_client_protocol as acp;
 use aster_acp_lib::AcpAgentGatewaySender as GatewaySender;
 use aster_agent::config::{McpInheritance, ModelOverride, PermissionMode};
+use aster_hunk_tracker::HunkTrackerHandle;
 use aster_sampling_types::conversation::ConversationItem;
 use aster_session_events::types::CancellationCategory;
 use aster_subagent_resolution::ResumeSourceData;
@@ -34,8 +36,6 @@ use aster_tools::implementations::grok_build::monitor::types::MonitorEventBuffer
 use aster_tools::implementations::grok_build::task::types::*;
 use aster_tools::types::tool::ToolKind;
 use aster_workspace::file_system::AsyncFileSystem;
-use aster_hunk_tracker::HunkTrackerHandle;
-use agent_client_protocol as acp;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -737,9 +737,7 @@ fn session_bearer_resolver(
         crate::util::is_aster_api_url(base_url),
     )
     .then(|| {
-        aster_login::credential_provider::WireValidBearerResolver::shared(
-            ctx.auth_manager.clone(),
-        )
+        aster_login::credential_provider::WireValidBearerResolver::shared(ctx.auth_manager.clone())
     })
 }
 /// [`session_bearer_resolver`] for an inherited config, where only the model string is known: BYOK comes from the catalog memo.
@@ -1533,10 +1531,8 @@ fn resolve_agent_definition(
         toggles: &ctx.subagent_toggle,
         allowed_types: ctx.allowed_subagent_types.as_deref(),
     };
-    let mut def = aster_subagent_resolution::discover_agent_definition(
-        subagent_type,
-        &resolution_context,
-    )?;
+    let mut def =
+        aster_subagent_resolution::discover_agent_definition(subagent_type, &resolution_context)?;
     ctx.apply_session_cli_overrides(&mut def);
     Some(def)
 }
@@ -1770,8 +1766,7 @@ fn resolve_subagent_permission_mode(
 /// Both arms MUST resolve this identically.
 fn resolve_subagent_source_repo(ctx: &SubagentSpawnContext) -> std::path::PathBuf {
     let source_cwd = parent_source_cwd(ctx);
-    aster_workspace::session::git::find_main_repo_root_from_path(&source_cwd)
-        .unwrap_or(source_cwd)
+    aster_workspace::session::git::find_main_repo_root_from_path(&source_cwd).unwrap_or(source_cwd)
 }
 enum SubagentWaitOutcome {
     Cancelled,
@@ -1835,9 +1830,7 @@ fn cancellation_error_message(
         _ => "Subagent turn was cancelled".to_string(),
     }
 }
-fn telemetry_owner_kind(
-    request: &SubagentRequest,
-) -> aster_telemetry::events::SubagentOwnerKind {
+fn telemetry_owner_kind(request: &SubagentRequest) -> aster_telemetry::events::SubagentOwnerKind {
     if request.owner.is_workflow() {
         aster_telemetry::events::SubagentOwnerKind::Workflow
     } else if request.from_scheduler_loop() {

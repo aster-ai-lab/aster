@@ -1710,7 +1710,7 @@
     }
 
     #[test]
-    fn replay_unknown_stop_reason_pushes_completed_marker() {
+    fn replay_unknown_stop_reason_pushes_failed_marker() {
         let mut app = make_app_with_agent("sess-1");
         begin_replay(&mut app);
         let _ = handle_ext_notification(
@@ -1728,7 +1728,7 @@
         assert!(agent.replayed_terminal_prompts.contains("p1"));
         assert!(matches!(
             last_session_event(&agent.scrollback),
-            Some(SessionEvent::TurnCompleted { .. })
+            Some(SessionEvent::TurnFailed { .. })
         ));
     }
 

@@ -42,6 +42,12 @@ impl ForcedStop {
     }
 }
 
+impl std::fmt::Display for ForcedStop {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// How a successful run closed.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
@@ -496,6 +502,41 @@ impl MutationLedger {
             head: marker.head,
             nongit: marker.nongit,
         });
+    }
+
+    pub(crate) fn deferred_background_children(
+        &self,
+        live: &std::collections::BTreeMap<String, Option<String>>,
+    ) -> std::collections::BTreeSet<String> {
+        live.iter()
+            .filter(|(id, parent)| {
+                let observed = self.open_children.iter().any(|child| child.task_id == **id)
+                    || self
+                        .unresolved_tool_effects
+                        .contains(&format!("workspace-child:{id}"));
+                observed
+                    && parent
+                        .as_ref()
+                        .is_none_or(|key| self.applied_tool_receipts.contains(key))
+            })
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub(crate) fn without_background_children(
+        &self,
+        deferred: &std::collections::BTreeSet<String>,
+    ) -> Self {
+        let mut projection = self.clone();
+        projection
+            .open_children
+            .retain(|child| !deferred.contains(&child.task_id));
+        for id in deferred {
+            projection
+                .unresolved_tool_effects
+                .remove(&format!("workspace-child:{id}"));
+        }
+        projection
     }
 
     pub fn has_open_children(&self) -> bool {
@@ -1372,9 +1413,27 @@ pub async fn absorb_open_workspace_children(
     workspace: &std::path::Path,
     cancel: &tokio_util::sync::CancellationToken,
 ) -> bool {
+    absorb_workspace_children_except(
+        ledger,
+        workspace,
+        cancel,
+        &std::collections::BTreeSet::new(),
+    )
+    .await
+}
+
+pub(crate) async fn absorb_workspace_children_except(
+    ledger: &mut MutationLedger,
+    workspace: &std::path::Path,
+    cancel: &tokio_util::sync::CancellationToken,
+    deferred: &std::collections::BTreeSet<String>,
+) -> bool {
     let pending = ledger.open_children.to_vec();
     let mut incomplete = false;
     for child in pending {
+        if deferred.contains(&child.task_id) {
+            continue;
+        }
         if let Some(paths) = crate::porcelain::take_settled_workspace_child(&child.task_id) {
             ledger.record_child_paths(&child.task_id, &paths);
             continue;
@@ -1925,7 +1984,7 @@ pub(crate) fn model_verification_context(gate: CompletionGate) -> Option<String>
     unbound_mutation_digest(&message)?;
     let diagnostic = serde_json::Value::String(message);
     Some(format!(
-        "[host verification state]\nFollow the verification method in the diagnostic using only exposed tools. An admitted command must run unchanged after the latest edit; do not repeat completed mutations. This note grants no execution permission, verification or waiver. Diagnostic data:\n{diagnostic}"
+        "[host verification state]\nWorkspace verification is still incomplete. A tool exit code of 0 does not itself bind verification to the current changes. Follow the verification method in the diagnostic using only exposed tools. Run an admitted command unchanged after the latest edit; run cleanup and status printing separately. Do not repeat completed mutations. This note grants no execution permission, verification or waiver. Diagnostic data:\n{diagnostic}"
     ))
 }
 

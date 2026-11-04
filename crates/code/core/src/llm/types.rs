@@ -258,6 +258,9 @@ pub enum ContentBlock {
         name: String,
         input: serde_json::Value,
     },
+    /// Native replay state; omitted from product text and tool execution.
+    #[serde(rename = "gemini_state")]
+    GeminiState { state: super::GeminiState },
     #[serde(rename = "tool_result")]
     ToolResult {
         tool_use_id: String,
@@ -647,6 +650,13 @@ pub struct LlmResponse {
 }
 
 impl LlmResponse {
+    pub(crate) fn output_truncated(&self) -> bool {
+        matches!(
+            self.stop_reason.as_deref(),
+            Some("length") | Some("max_tokens")
+        )
+    }
+
     /// Get text content
     pub fn text(&self) -> String {
         self.message.text()
@@ -661,10 +671,13 @@ impl LlmResponse {
 /// Token usage statistics
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TokenUsage {
+    /// Full input, including any reported cache reads and writes.
     pub prompt_tokens: usize,
     pub completion_tokens: usize,
     pub total_tokens: usize,
+    /// Cache-read subset already included in `prompt_tokens`.
     pub cache_read_tokens: Option<usize>,
+    /// Cache-write subset already included in `prompt_tokens`.
     pub cache_write_tokens: Option<usize>,
 }
 

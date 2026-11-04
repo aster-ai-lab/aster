@@ -80,7 +80,10 @@ pub(super) fn qualified(prefix: Option<&str>, local_name: &str) -> String {
 }
 
 pub(super) fn preserve_space_attribute(text: &str) -> &'static str {
-    if text.starts_with(char::is_whitespace) || text.ends_with(char::is_whitespace) {
+    if text.contains('\t')
+        || text.starts_with(char::is_whitespace)
+        || text.ends_with(char::is_whitespace)
+    {
         " xml:space=\"preserve\""
     } else {
         ""

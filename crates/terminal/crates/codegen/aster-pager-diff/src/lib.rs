@@ -1080,11 +1080,11 @@ mod tests {
 
     #[test]
     fn extract_edit_hunks_from_raw_output() {
+        use agent_client_protocol as acp;
         use aster_tools::types::output::{
             SearchReplaceEditContextInformation, SearchReplaceEditsApplied, SearchReplaceOutput,
             ToolOutput,
         };
-        use agent_client_protocol as acp;
         use std::sync::Arc;
 
         let edits_applied = SearchReplaceEditsApplied {
@@ -1185,8 +1185,8 @@ mod tests {
     #[test]
     fn extract_edit_hunks_from_diff_meta_structured() {
         // Strategy 2: structured edit details from Diff.meta (acp_conversion embeds SearchReplaceEditContextInformation)
-        use aster_tools::types::output::SearchReplaceEditContextInformation;
         use agent_client_protocol as acp;
+        use aster_tools::types::output::SearchReplaceEditContextInformation;
         use std::sync::Arc;
 
         let edits = SearchReplaceEditContextInformation {

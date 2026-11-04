@@ -2,8 +2,8 @@
 use super::turn::{PromptTraceContext, UploadWait};
 use crate::sampling::types::ToolDefinition;
 use crate::session::repo_changes::{TraceExportConfig, UploadMethod};
-use aster_workspace::permission::PermissionEvent;
 use aster_file_utils::queue::{EnqueueOutcome, TraceExportSource, UploadQueue, UploadRetryPolicy};
+use aster_workspace::permission::PermissionEvent;
 use base64::Engine as _;
 use std::path::Path;
 use std::sync::Arc;
@@ -1849,10 +1849,7 @@ pub(crate) mod tests {
         store.insert(scope, expired_auth);
         let auth_json = serde_json::to_string_pretty(&store).unwrap();
         std::fs::write(dir.path().join("auth.json"), &auth_json).unwrap();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         let resolver = DynamicResolver {
             auth_manager,
             base_config: TraceExportConfig {
@@ -1897,10 +1894,7 @@ pub(crate) mod tests {
         store.insert(scope, valid_auth);
         let auth_json = serde_json::to_string_pretty(&store).unwrap();
         std::fs::write(dir.path().join("auth.json"), &auth_json).unwrap();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         let resolver = DynamicResolver {
             auth_manager,
             base_config: TraceExportConfig {
@@ -1950,10 +1944,7 @@ pub(crate) mod tests {
         store.insert(scope, expired_auth);
         let auth_json = serde_json::to_string_pretty(&store).unwrap();
         std::fs::write(dir.path().join("auth.json"), &auth_json).unwrap();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         struct FreshRefresher;
         #[async_trait::async_trait]
         impl aster_login::refresh::TokenRefresher for FreshRefresher {
@@ -1961,14 +1952,12 @@ pub(crate) mod tests {
                 &self,
                 _r: aster_login::manager::RefreshReason,
             ) -> aster_login::refresh::RefreshOutcome {
-                aster_login::refresh::RefreshOutcome::Success(Box::new(
-                    aster_login::GrokAuth {
-                        key: "refresher-fresh-token".into(),
-                        expires_at: Some(chrono::Utc::now() + chrono::Duration::hours(1)),
-                        refresh_token: Some("rt-new".into()),
-                        ..aster_login::GrokAuth::test_default()
-                    },
-                ))
+                aster_login::refresh::RefreshOutcome::Success(Box::new(aster_login::GrokAuth {
+                    key: "refresher-fresh-token".into(),
+                    expires_at: Some(chrono::Utc::now() + chrono::Duration::hours(1)),
+                    refresh_token: Some("rt-new".into()),
+                    ..aster_login::GrokAuth::test_default()
+                }))
             }
         }
         auth_manager.set_refresher(Arc::new(FreshRefresher));
@@ -2009,10 +1998,7 @@ pub(crate) mod tests {
         use chrono::{Duration, Utc};
         let dir = tempfile::tempdir().unwrap();
         let grok_com_config = GrokComConfig::default();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         auth_manager.hot_swap(GrokAuth {
             key: "expired-oidc".into(),
             refresh_token: Some("rt".into()),
@@ -2085,10 +2071,7 @@ pub(crate) mod tests {
         use crate::session::repo_changes::UploadMethod;
         let dir = tempfile::tempdir().unwrap();
         let grok_com_config = aster_login::GrokComConfig::default();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         let base_config = TraceExportConfig {
             bucket_url: None,
             service_account_key: None,
@@ -2131,10 +2114,7 @@ pub(crate) mod tests {
         store.insert(scope, auth);
         let auth_json = serde_json::to_string_pretty(&store).unwrap();
         std::fs::write(dir.path().join("auth.json"), &auth_json).unwrap();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         let base_config = TraceExportConfig {
             bucket_url: Some("gs://bucket".into()),
             service_account_key: Some("sa-key".into()),
@@ -2290,10 +2270,7 @@ pub(crate) mod tests {
         use crate::session::repo_changes::UploadMethod;
         let dir = tempfile::tempdir().unwrap();
         let grok_com_config = aster_login::GrokComConfig::default();
-        let auth_manager = Arc::new(aster_login::AuthManager::new(
-            dir.path(),
-            grok_com_config,
-        ));
+        let auth_manager = Arc::new(aster_login::AuthManager::new(dir.path(), grok_com_config));
         let gcs_config = TraceExportConfig {
             bucket_url: None,
             service_account_key: None,

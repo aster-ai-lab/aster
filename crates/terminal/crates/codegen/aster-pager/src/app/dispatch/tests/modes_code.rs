@@ -39,3 +39,55 @@ fn code_plan_yolo_exit_preserves_backend_posture() {
         "Code must confirm the retained YOLO posture, got {effects:?}"
     );
 }
+
+#[test]
+fn code_session_creation_preserves_confirmed_auto_and_accepts_default() {
+    let _guard = CodeBackendGuard(crate::app::ASTER_ACTIVE.swap(true, Ordering::AcqRel));
+    for mode in ["auto", "default"] {
+        let mut app = test_app_with_agent();
+        app.current_ui.permission_mode = Some("auto".into());
+        let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+        agent.session.session_id = None;
+        agent.session.auto_mode = true;
+        app.apply_aster_slash_gate();
+        crate::app::dispatch::downgrade_displayed_auto_if_gated(&mut app);
+        let flags = crate::app::event_loop::session_flags_for_effects(&mut app, &[]);
+        assert_eq!(
+            flags.permission_posture(),
+            Some("auto"),
+            "explicit launch Auto must survive backend initialization"
+        );
+        let _ = dispatch(
+            Action::TaskComplete(TaskResult::SessionCreated {
+                agent_id: AgentId(0),
+                session_id: "confirmed-auto-session".into(),
+                models: None,
+                modes: Some(acp::SessionModeState::new(
+                    mode,
+                    vec![
+                        acp::SessionMode::new("default", "Normal"),
+                        acp::SessionMode::new("auto", "Auto"),
+                    ],
+                )),
+            }),
+            &mut app,
+        );
+        let auto = mode == "auto";
+        assert_eq!(test_agent(&app, AgentId(0)).session.auto_mode, auto);
+        assert_eq!(
+            app.current_ui.permission_mode.as_deref(),
+            Some(if auto { "auto" } else { "ask" }),
+            "the display and next prompt must retain the backend's confirmed mode"
+        );
+        assert!(!test_agent(&app, AgentId(0)).session.is_yolo());
+        let flags = crate::app::event_loop::session_flags_for_effects(&mut app, &[]);
+        assert_eq!(flags.permission_posture(), Some(mode));
+    }
+    let mut app = test_app_with_agent();
+    app.auto_mode_gate = false;
+    app.current_ui.permission_mode = Some("auto".into());
+    app.apply_aster_slash_gate();
+    crate::app::dispatch::downgrade_displayed_auto_if_gated(&mut app);
+    assert!(!app.auto_mode_gate);
+    assert_eq!(app.current_ui.permission_mode.as_deref(), Some("ask"));
+}

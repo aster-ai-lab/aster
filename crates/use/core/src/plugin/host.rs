@@ -385,8 +385,9 @@ mod tests {
         let capabilities =
             PluginHostCapabilities::v6("host:node-01", "0.3.0", "use:0.3.0:linux-x86_64").unwrap();
         verify_supported_plan_schema(&capabilities, PLUGIN_OPERATION_PLAN_SCHEMA_V4).unwrap();
-        let error = verify_supported_plan_schema(&capabilities, "aster.use.plugin-operation-plan.v3")
-            .unwrap_err();
+        let error =
+            verify_supported_plan_schema(&capabilities, "aster.use.plugin-operation-plan.v3")
+                .unwrap_err();
         assert_eq!(error.code, "use.plugin.host_plan_schema_unsupported");
     }
 }

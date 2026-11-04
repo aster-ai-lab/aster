@@ -3,8 +3,8 @@ use crate::capability::CapabilityMode;
 use crate::hub::HubConfig;
 use crate::permission::ToolApprovalGate;
 pub use aster_hooks::discovery::HookSourceConfig;
-use aster_tools::registry::types::{SessionContext, ToolRegistryBuilder, ToolServerConfig};
 use aster_tool_runtime::ToolApprovalPolicy;
+use aster_tools::registry::types::{SessionContext, ToolRegistryBuilder, ToolServerConfig};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -1175,8 +1175,11 @@ mod tests {
         );
         let scalar = serde_json::json!("opaque");
         assert_eq!(
-            merge_host_identity_metadata(Some(scalar.clone()), aster_tool_protocol::HOST_KIND_DAEMON)
-                .unwrap(),
+            merge_host_identity_metadata(
+                Some(scalar.clone()),
+                aster_tool_protocol::HOST_KIND_DAEMON
+            )
+            .unwrap(),
             scalar
         );
     }

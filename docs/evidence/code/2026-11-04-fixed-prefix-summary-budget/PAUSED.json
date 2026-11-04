@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-04T03:26:27.947981+00:00",
+  "reason": "User explicitly requested pause and progress report.",
+  "paidModelAttemptsForCurrentCandidate": 0,
+  "completedRuntimeGroups": 7,
+  "interruptedRuntimeGroup": "shipped-pty",
+  "signal": "SIGTERM",
+  "ownedProcessIds": [
+    14557,
+    34959,
+    37742,
+    37841,
+    37847
+  ],
+  "note": "User interruption is not a test failure or a pass. No frozen real-model critical task started."
+}

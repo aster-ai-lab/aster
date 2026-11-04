@@ -24,6 +24,10 @@ pub(crate) async fn retain_verified<T>(
     runtime_cancellation: &CancellationToken,
     caller_cancellation: &CancellationToken,
 ) -> Result<(Vec<T>, bool, bool), WorkspaceRetrievalError> {
+    let started = std::time::Instant::now();
+    let mut read_files = 0usize;
+    let mut read_bytes = 0usize;
+    let mut failed_reads = 0usize;
     let mut candidates_by_path = HashMap::<Arc<str>, Vec<usize>>::new();
     for (index, candidate) in candidates.iter().enumerate() {
         candidates_by_path
@@ -39,10 +43,12 @@ pub(crate) async fn retain_verified<T>(
             let candidate = &candidates[candidate_index];
             let chunk = chunk_of(candidate);
             let path_key = Arc::clone(&chunk.path);
+            // Removing a group marks all its candidates; an unchecked one still owns its group.
             let indices = candidates_by_path
                 .remove(&path_key)
                 .expect("candidate path must have a pending verification group");
             let path = WorkspacePath::from_normalized(path_key.as_ref());
+            read_files += 1;
             let read = async {
                 match operation_timeout {
                     Some(timeout) => tokio::time::timeout(timeout, file_system.read_text(&path))
@@ -64,6 +70,7 @@ pub(crate) async fn retain_verified<T>(
             };
             match content {
                 Some(content) => {
+                    read_bytes = read_bytes.saturating_add(content.len());
                     let digest = digest_content(&content);
                     for index in indices {
                         let chunk = chunk_of(&candidates[index]);
@@ -76,6 +83,7 @@ pub(crate) async fn retain_verified<T>(
                     }
                 }
                 None => {
+                    failed_reads += 1;
                     for index in indices {
                         verified[index] = Some(false);
                     }
@@ -92,11 +100,22 @@ pub(crate) async fn retain_verified<T>(
     }
 
     let filtered = verified.contains(&Some(false));
-    let retained = candidates
+    let retained: Vec<T> = candidates
         .into_iter()
         .zip(verified)
         .filter_map(|(candidate, verified)| (verified == Some(true)).then_some(candidate))
         .take(limit)
         .collect();
+    tracing::debug!(
+        target: "aster_core::retrieval_phase",
+        phase = "source_verification",
+        read_files,
+        read_bytes,
+        failed_reads,
+        returned_hits = retained.len(),
+        filtered,
+        elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0,
+        "retrieval phase completed"
+    );
     Ok((retained, filtered, verified_count > limit))
 }

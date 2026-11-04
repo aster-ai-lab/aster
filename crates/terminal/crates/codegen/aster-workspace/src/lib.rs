@@ -49,9 +49,9 @@ pub(crate) mod upload;
 pub mod util;
 pub mod workspace_ops;
 pub mod worktree;
+pub use aster_hunk_tracker::HunkTrackerHandle;
 pub use aster_workspace_client::WorkspaceClient;
 pub use aster_workspace_types::WorkspaceEvent;
-pub use aster_hunk_tracker::HunkTrackerHandle;
 pub use capability::CapabilityMode;
 pub use channel::{TransportCallResult, TransportContext, TransportError, TransportNotification};
 pub use config::{

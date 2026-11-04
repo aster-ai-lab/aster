@@ -87,10 +87,9 @@ pub(crate) use facts::{
     check_step_run, closes_goal, definition_from_facts, prepare_completion, prepare_control,
     prepare_definition, prepare_plan, prepare_run, prepare_settlement, prepare_step, prepare_wait,
     reconcile_slices, refuse_unbound_goal_execution, render_run_context, tick_feedback,
-    validate_step_append, ContinuationSource, GoalStepFeedback, MutationProgress,
-    PreparedDefinition,
+    validate_step_append, ContinuationSource, MutationProgress, PreparedDefinition,
 };
-pub use facts::{goal_fact_key, GoalFactKindV1, GOAL_FACT_SCHEMA_V1};
+pub use facts::{goal_fact_key, GoalFactKindV1, GoalStepFeedback, GOAL_FACT_SCHEMA_V1};
 
 pub const GOAL_LEGACY_SOURCE_DOMAIN_V1: &str = "aster.code.goal-legacy-source.v1";
 

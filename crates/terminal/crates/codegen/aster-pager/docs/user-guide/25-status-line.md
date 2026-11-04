@@ -2,6 +2,8 @@
 
 An optional row at the bottom of the pager — above the shortcuts bar in the full screen, under the prompt's info row in minimal mode — and disabled by default. It shows live session context, such as the model, context-window usage, cost, directory, and git worktree, or the output of any script you configure. Opt in with `[ui.status_line]` in `~/.grok/config.toml`.
 
+The prompt footer also shows session token consumption and output throughput when the agent supplies accounting. `Σ` counts reported input plus output across the session, including cached input once and continued/restored work; it is separate from context occupancy. During a response, `≈` marks a bytes/4 estimate of visible text and reasoning per second. At turn end, reported output tokens and the measured generation window replace that estimate when available. Tool waits show no live rate. Missing values show `—`; narrow terminals keep the model and mode caption first.
+
 ## Set up
 
 ### Built-in

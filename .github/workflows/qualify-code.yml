@@ -48,12 +48,18 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          cargo fmt -p aster-core -p aster-acp -- --check
+          cargo fmt -p aster-effect -p aster-core -p aster-acp -- --check
           python3 tests/workspace_dependencies.py
           python3 tests/code_release_workflow.py
       - name: Test Core goal feedback
         shell: bash
         run: cargo test --locked -p aster-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test loop convergence and replay
+        shell: bash
+        run: |
+          cargo test --locked -p aster-effect
+          cargo test --locked -p aster-core --lib convergence -- --test-threads=1
+          cargo test --locked -p aster-core --lib -- tool_history_tests batch_history_tests verification_metadata_tests compaction::tests compaction_budget_tests compaction_carry agent_api::tests::compact tools::artifact_view:: tools::builtin::search:: tools::builtin::grep:: tools::builtin::web_fetch:: truncated_completion_preserves prompts::tests final_delivery confirmation_snapshot completion_attestor --test-threads=1
       - name: Test native host execution
         shell: bash
         run: cargo test --locked -p aster-core --lib sandbox::host_access::tests -- --test-threads=1
@@ -62,6 +68,8 @@ jobs:
         run: |
           cargo test --locked -p aster-acp --lib -- --test-threads=1
           cargo test --locked -p aster-acp --test acp_conformance_stdio -- --test-threads=1
+          cargo test --locked -p aster-acp --test unattended_e2e -- convergence cycle original_refusals child_refusal --test-threads=1
+          cargo test --locked -p aster-acp --test deloop_real_llm --test deloop_generalization_real_llm -- --test-threads=1
 
   test-windows:
     name: Core/ACP portable tests (windows-latest)
@@ -99,11 +107,19 @@ jobs:
       - name: Check Core/ACP formatting and dependency boundary
         shell: bash
         run: |
-          cargo fmt -p aster-core -p aster-acp -- --check
+          cargo fmt -p aster-effect -p aster-core -p aster-acp -- --check
           python3 tests/workspace_dependencies.py
       - name: Test Core goal feedback
         shell: bash
         run: cargo test --locked -p aster-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test loop convergence and replay
+        shell: bash
+        run: |
+          cargo test --locked -p aster-effect
+          cargo test --locked -p aster-core --lib convergence -- --test-threads=1
+          cargo test --locked -p aster-core --lib -- tool_history_tests batch_history_tests verification_metadata_tests compaction::tests compaction_budget_tests compaction_carry agent_api::tests::compact tools::artifact_view:: tools::builtin::search:: tools::builtin::grep:: tools::builtin::web_fetch:: truncated_completion_preserves prompts::tests final_delivery confirmation_snapshot completion_attestor --test-threads=1
+          cargo test --locked -p aster-acp --lib permission_denial_closes_each_tool_row_once -- --test-threads=1
+          cargo test --locked -p aster-acp --test unattended_e2e convergence -- --test-threads=1
       - name: Test native host execution
         shell: bash
         run: cargo test --locked -p aster-core --lib sandbox::host_access::tests -- --test-threads=1

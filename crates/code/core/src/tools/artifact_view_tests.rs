@@ -50,6 +50,22 @@ fn artifact_uri(output: &str) -> String {
         .to_string()
 }
 
+fn retain_log(store: &crate::tools::ArtifactStore, text: &str) -> String {
+    let meta = crate::tools::tool_output_artifact("log", text, 0);
+    let uri = meta.artifact_uri;
+    store
+        .put_content_addressed(crate::tools::ToolArtifact {
+            artifact_id: meta.artifact_id,
+            artifact_uri: uri.clone(),
+            tool_name: "log".into(),
+            content: text.into(),
+            original_bytes: text.len(),
+            shown_bytes: 0,
+        })
+        .unwrap();
+    uri
+}
+
 #[tokio::test]
 async fn the_model_reads_and_greps_the_region_a_truncated_result_omitted() {
     let workspace = tempfile::tempdir().expect("workspace");
@@ -129,6 +145,135 @@ async fn an_unretained_artifact_is_refused_by_name() {
         "{}",
         result.output
     );
+}
+
+#[tokio::test]
+async fn artifact_search_honors_output_modes_and_content_cursor() {
+    let workspace = tempfile::tempdir().unwrap();
+    let executor = ToolExecutor::new(workspace.path().display().to_string());
+    let text = "needle needle\nother\nNEEDLE\nneedle\n";
+    let uri = retain_log(&executor.artifact_store(), text);
+    let registry = executor.registry();
+    for (mode, expected) in [
+        ("count", format!("{uri}: 3 matching line(s)")),
+        ("files_with_matches", uri.clone()),
+        ("summary", "3 matching line(s) in 1 file(s)".into()),
+    ] {
+        let result = registry
+            .execute(
+                "search",
+                &serde_json::json!({
+                    "mode":"grep", "query":"needle", "path":uri,
+                    "case_sensitive":false, "output_mode":mode
+                }),
+            )
+            .await
+            .unwrap();
+        assert_eq!(result.exit_code, 0, "{}", result.output);
+        assert_eq!(result.output.trim(), expected, "mode={mode}");
+    }
+    for (cursor, expected, omitted) in [
+        ("", "1:needle needle", "3:NEEDLE"),
+        ("1", "3:NEEDLE", "1:needle needle"),
+    ] {
+        let result = registry
+            .execute(
+                "search",
+                &serde_json::json!({
+                    "mode":"grep", "query":"needle", "path":uri,
+                    "case_sensitive":false, "limit":1, "cursor":cursor
+                }),
+            )
+            .await
+            .unwrap();
+        assert_eq!(result.exit_code, 0, "{}", result.output);
+        assert!(result.output.contains(expected), "{}", result.output);
+        assert!(!result.output.contains(omitted), "{}", result.output);
+        assert!(result.output.contains(if cursor.is_empty() {
+            "cursor=1"
+        } else {
+            "cursor=2"
+        }));
+    }
+    for args in [
+        serde_json::json!({"output_mode":"invalid"}),
+        serde_json::json!({"limit":0}),
+        serde_json::json!({"cursor":"broken"}),
+        serde_json::json!({"cursor":"4"}),
+        serde_json::json!({"output_mode":"summary","limit":1}),
+    ] {
+        let mut args = args.as_object().unwrap().clone();
+        args.extend(
+            serde_json::json!({"mode":"grep","query":"needle","path":uri})
+                .as_object()
+                .unwrap()
+                .clone(),
+        );
+        let result = registry.execute("search", &args.into()).await.unwrap();
+        assert_ne!(result.exit_code, 0, "{}", result.output);
+    }
+    for mode in ["content", "count", "files_with_matches", "summary"] {
+        let result = registry
+            .execute("search", &serde_json::json!({"mode":"grep", "query":"absent", "path":uri,"output_mode":mode}))
+            .await.unwrap();
+        assert_eq!(result.exit_code, 0);
+        assert!(!result.output.contains("needle"));
+        assert!(
+            result.output.contains(if mode == "summary" {
+                "0 matching line(s) in 0 file(s)"
+            } else {
+                "No matches"
+            }),
+            "{}",
+            result.output
+        );
+    }
+}
+
+#[test]
+fn artifact_search_cursor_advances_under_the_output_budget_with_wide_context() {
+    let workspace = tempfile::tempdir().unwrap();
+    let store = crate::tools::ArtifactStore::new();
+    let text = (0..50)
+        .map(|index| format!("needle {index} {}\n", "值".repeat(500)))
+        .collect::<String>();
+    let uri = retain_log(&store, &text);
+    let ctx = ToolContext::new(workspace.path().to_path_buf())
+        .with_artifact_store(store)
+        .with_result_budget_bytes(4096);
+    for (budget, context) in [(1024, 0), (1024, 8), (4096, 0), (4096, 8)] {
+        let ctx = ctx.clone().with_result_budget_bytes(budget);
+        let mut cursor = String::new();
+        let mut seen = 0;
+        for _ in 0..50 {
+            let request =
+                super::PageRequest::parse(&serde_json::json!({"cursor":cursor}), 200, 1000)
+                    .unwrap();
+            let output = super::grep(
+                &ctx,
+                &uri,
+                "needle",
+                false,
+                context,
+                super::GrepOutputMode::Content,
+                request,
+            );
+            assert!(output.success, "{}", output.content);
+            assert!(output.content.len() <= ctx.result_budget_bytes());
+            let metadata = output.metadata.unwrap();
+            let count = metadata["page"]["returned_items"].as_u64().unwrap();
+            assert!(count > 0);
+            seen += count;
+            assert_eq!(metadata["matches"], 50);
+            let Some(next) = metadata["page"]["next_cursor"].as_str() else {
+                break;
+            };
+            assert_ne!(next, cursor);
+            assert!(output.content.contains(&format!("cursor={next}")));
+            cursor = next.into();
+        }
+        assert_eq!(seen, 50);
+    }
 }
 
 #[tokio::test]

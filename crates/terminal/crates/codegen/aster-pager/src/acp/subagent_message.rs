@@ -6,13 +6,13 @@
 //! `delivery` value this pager predates still renders the destination and text.
 //! The id is resolved to a display label through the tracker's registry; an unknown id falls back to the raw id.
 
+use agent_client_protocol as acp;
 use aster_tools::implementations::grok_build::send_subagent_message::{
     SEND_SUBAGENT_MESSAGE_TOOL_NAME, SendSubagentMessageDisposition, SendSubagentMessageOutput,
 };
 use aster_tools::tool_taxonomy::{CanonicalToolMeta, TOOL_META_KEY, TOOL_META_VERSION};
 use aster_tools::types::output::ToolOutput;
 use aster_tools::types::tool::ToolKind;
-use agent_client_protocol as acp;
 use serde::Deserialize;
 
 use crate::acp::subagent_label_registry::SubagentLabelRegistry;

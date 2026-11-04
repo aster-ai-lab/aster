@@ -35,10 +35,10 @@ pub mod single_flight;
 pub mod storage;
 pub mod token_output;
 pub mod token_type;
-pub use aster_config_types::AuthProviderConfig;
 pub use api_key_probe::{
     DEFAULT_PROBE_TIMEOUT, first_party_env_key_allows_advertise, should_probe_first_party_env_key,
 };
+pub use aster_config_types::AuthProviderConfig;
 pub use auth_provider::AuthProviderRef;
 pub use auth_provider::{
     PROVIDER_TIMEOUT_CEILING_SECS, PROVIDER_TOKEN_EXPIRY_SKEW_SECS, ProviderRefreshOutcome,

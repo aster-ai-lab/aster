@@ -261,7 +261,8 @@ async fn read_source(
             max_compression_ratio: 250,
         },
     )
-    .await?;
+    .await
+    .map_err(|error| redact_office_temp_path(error, path.as_str(), snapshot.path()))?;
     let digest = package.source_revision().sha256.clone();
     let document = NativeOfficeDocument::from_package(package)?;
     let mut result = if let Some(node_path) = input.node_path {
@@ -304,13 +305,7 @@ async fn read_source(
                 }
             }
             entries.push(value);
-            let candidate = office_list_result(
-                &entries,
-                view.total,
-                true,
-                outline.as_ref(),
-                None,
-            );
+            let candidate = office_list_result(&entries, view.total, true, outline.as_ref(), None);
             if serde_json::to_vec(&candidate)?.len() > OUTPUT_LIMIT - ENVELOPE_RESERVE {
                 entries.pop();
                 next_node_path = Some(entry.path);
@@ -349,6 +344,21 @@ async fn read_source(
 }
 
 const ENVELOPE_RESERVE: usize = 2048;
+
+fn redact_office_temp_path(
+    error: impl std::fmt::Display,
+    source_path: &str,
+    temporary: &Path,
+) -> anyhow::Error {
+    let message = error.to_string();
+    let temporary = temporary.display().to_string();
+    let redacted = if temporary.is_empty() {
+        message
+    } else {
+        message.replace(&temporary, source_path)
+    };
+    anyhow::anyhow!(redacted)
+}
 
 fn office_list_result(
     entries: &[Value],

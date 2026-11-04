@@ -1,7 +1,7 @@
 //! Agent commands use one runtime for backend selection and leader resolution.
 use crate::app::{AgentArgs, AgentCmd, LeaderMode, resolve_leader_mode};
-use aster_shell::agent::config::Config;
 use anyhow::Result;
+use aster_shell::agent::config::Config;
 pub struct AgentRuntime {
     backend: Backend,
     leader_mode: LeaderMode<'static>,

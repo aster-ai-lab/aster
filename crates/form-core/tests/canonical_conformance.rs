@@ -53,7 +53,10 @@ fn fixture() -> Fixture {
 #[test]
 fn matches_shared_canonical_json_cases() {
     let fixture = fixture();
-    assert_eq!(fixture.api_version, "aster.dev/form-canonical-conformance/v1");
+    assert_eq!(
+        fixture.api_version,
+        "aster.dev/form-canonical-conformance/v1"
+    );
 
     for case in fixture.cases {
         let canonical = canonicalize_json(case.input_json.as_bytes())

@@ -1,6 +1,6 @@
 [package]
 name = "aster"
-version = "0.1.6"
+version = "0.1.8"
 license = "MIT"
 authors = ["Aster"]
 default-run = "aster"
@@ -31,14 +31,15 @@ tokio = {version = "1", features = ["full", "sync", "rt", "macros", "rt-multi-th
 zip = {workspace = true}
 tokio-util = {version = "0.7", features = ["rt", "compat"]}
 anyhow = {workspace = true}
+crossterm = {workspace = true}
 tracing = {workspace = true}
 tracing-subscriber = {workspace = true}
 serde_json = {workspace = true}
 dunce = {workspace = true}
 semver = {workspace = true}
 
-aster-use = {path = "../../crates/use"}
 aster-extra-ca = {path = "../../crates/terminal/crates/codegen/aster-extra-ca"}
+aster-use = {path = "../../crates/use"}
 aster-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-sandbox"}
 aster-config = {path = "../../crates/terminal/crates/codegen/aster-config"}
 aster-tty-utils = {path = "../../crates/terminal/crates/codegen/aster-tty-utils"}

@@ -13,7 +13,8 @@ use super::workspace_grant_io::{
 use super::ExtensionPaths;
 
 pub const WORKSPACE_GRANT_RECEIPT_SCHEMA: &str = "aster.use.plugin-workspace-grant-receipt.v1";
-pub const WORKSPACE_GRANT_REVOCATION_SCHEMA: &str = "aster.use.plugin-workspace-grant-revocation.v1";
+pub const WORKSPACE_GRANT_REVOCATION_SCHEMA: &str =
+    "aster.use.plugin-workspace-grant-revocation.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(

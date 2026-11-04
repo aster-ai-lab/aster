@@ -72,7 +72,11 @@ impl CrashBeforeCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -490,7 +494,10 @@ impl FlowRuntime for HookBesideOpenWaitRuntime {
         unreachable!("hook-beside-wait runtime does not schedule steps")
     }
 
-    async fn run_update(&self, _invocation: aster_flow::UpdateInvocation) -> aster_flow::Result<Value> {
+    async fn run_update(
+        &self,
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<Value> {
         Ok(json!({ "opened": true }))
     }
 }
@@ -574,7 +581,11 @@ impl CrashAfterHookReceivedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterHookReceivedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -625,7 +636,11 @@ impl CrashAfterHookDisposedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterHookDisposedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
+    async fn append(
+        &self,
+        run_id: &str,
+        event: FlowEvent,
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 

@@ -72,7 +72,9 @@ fn inspect_schema(schema: &CanonicalValue, path: &str, diagnostics: &mut Vec<Dia
         if !SUPPORTED_SCHEMA_KEYWORDS.contains(&keyword.as_str()) {
             diagnostics.push(schema_diagnostic(
                 "schema.keyword.unsupported",
-                format!("Schema keyword {keyword} is not supported by Aster Form Schema Profile 1."),
+                format!(
+                    "Schema keyword {keyword} is not supported by Aster Form Schema Profile 1."
+                ),
                 format!("{path}/{}", pointer_token(keyword)),
                 Some(format!(
                     "Use one of: {}.",

@@ -7,10 +7,10 @@
 use std::hint::black_box;
 use std::time::Duration;
 
+use agent_client_protocol as acp;
 use aster_shell::session::info::Info;
 use aster_shell::session::storage::{CopySessionOptions, JsonlStorageAdapter, StorageAdapter};
 use aster_shell::session::testkit::synth::make_session_with_size_blocking;
-use agent_client_protocol as acp;
 use criterion::{
     BenchmarkId, Criterion, SamplingMode, Throughput, criterion_group, criterion_main,
 };

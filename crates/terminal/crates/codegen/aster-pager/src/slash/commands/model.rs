@@ -1,8 +1,8 @@
 //! `/model` (alias `/m`): switch the model and optionally its reasoning effort.
 //! Chained autocomplete: after picking a reasoning-supported model, the trailing space re-opens the dropdown into a `low|medium|high|xhigh` sub-menu.
 
-use aster_shell::sampling::types::{ReasoningEffortOption, supports_reasoning_effort_meta};
 use agent_client_protocol as acp;
+use aster_shell::sampling::types::{ReasoningEffortOption, supports_reasoning_effort_meta};
 
 use crate::acp::model_state::ModelState;
 use crate::app::actions::Action;
