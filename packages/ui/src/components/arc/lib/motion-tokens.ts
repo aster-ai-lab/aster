@@ -1,6 +1,7 @@
 /** Motion presets are shared by the gallery and future registry consumers. */
 export const motionTokens = {
-  duration: { instant: 0.12, fast: 0.16, exit: 0.18, standard: 0.24, considered: 0.48 },
+  // Align with DESIGN.md dialog/popup contract: 160ms enter / 200ms exit for shared surfaces.
+  duration: { instant: 0.12, fast: 0.16, exit: 0.2, standard: 0.24, considered: 0.48 },
   ease: {
     enter: [0.16, 1, 0.3, 1],
     exit: [0.7, 0, 0.84, 0],

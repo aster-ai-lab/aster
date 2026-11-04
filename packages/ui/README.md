@@ -11,6 +11,17 @@ Aster UI component library for React applications.
 - 🔷 **TypeScript**: Complete type definitions and editor support
 - 🎯 **Low Collision**: CSS variable isolation without taking over app runtime state by default
 
+### Pickers (DESIGN.md §6)
+
+Product surfaces must use drawn pickers: prefer **`SearchSelect`** (default) or **`Combobox`** when the
+trigger must read as a text field. The Radix `Select` / `SelectTrigger` composite remains exported for
+legacy screens only and is **deprecated** — do not add new call sites. Native `<select>` / `<datalist>`
+are forbidden on product UI.
+
+Dialogs and popovers follow the in-place **160ms enter / 200ms exit** opacity+scale contract
+(`styles/dialog-motion.css`, `styles/popup-motion.css`). Arc gallery sources under `components/arc/`
+must not introduce travel or `filter` blur into product owners.
+
 ---
 
 ## 🚀 Quick Start

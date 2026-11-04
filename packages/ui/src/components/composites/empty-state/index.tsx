@@ -26,58 +26,49 @@ export type EmptyStatePreset =
 
 type EmptyStateIcon = ComponentType<{ size?: number; className?: string; strokeWidth?: number }>
 
-/** Variants of the unified empty illustration, all drawn in one visual family. */
-export type EmptyStateIllustration = 'inbox' | 'book'
+/** One line-drawing family for an empty collection, knowledge and search. */
+export type EmptyStateIllustration = 'inbox' | 'book' | 'search'
 
-const EMPTY_ILLUSTRATION_RATIO = 41 / 64
-
-/**
- * Unified empty illustrations — soft line drawings with a ground shadow. All
- * colors derive from `currentColor` opacity layers so they adapt to themes.
- * `inbox` is the generic "nothing here"; `book` reads as knowledge/learning.
- */
-function EmptyIllustration({
-  variant = 'inbox',
-  width,
-  className
-}: {
-  variant?: EmptyStateIllustration
-  width: number
-  className?: string
-}) {
+function EmptyIllustration({ variant, compact }: { variant: EmptyStateIllustration; compact: boolean }) {
   return (
     <svg
-      width={width}
-      height={Math.round(width * EMPTY_ILLUSTRATION_RATIO)}
-      viewBox="0 0 64 41"
-      className={className}
-      aria-hidden="true">
+      width={compact ? 64 : 112}
+      height={compact ? 48 : 84}
+      viewBox="0 0 128 96"
+      className="mb-5 max-w-full shrink-0 text-foreground"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round">
       {variant === 'book' ? (
-        <g transform="translate(0 1)" fill="none" fillRule="evenodd">
-          <ellipse fill="currentColor" fillOpacity={0.08} cx="32" cy="33" rx="28" ry="6.5" />
-          <g stroke="currentColor" strokeOpacity={0.4} strokeLinejoin="round">
-            <path fill="currentColor" fillOpacity={0.05} d="M32 10.5 11 6.5v18.2L32 30.5Z" />
-            <path fill="currentColor" fillOpacity={0.05} d="M32 10.5 53 6.5v18.2L32 30.5Z" />
-            <path d="M32 10.5v20" />
-          </g>
+        <>
           <path
-            fill="currentColor"
-            fillOpacity={0.35}
-            d="m55.5 0 1.3 2.8 2.8 1.3-2.8 1.3-1.3 2.8-1.3-2.8-2.8-1.3 2.8-1.3Z"
+            opacity=".55"
+            d="M64 24C48 14 32 14 16 18v58c16-4 32-4 48 6 16-10 32-10 48-6V18c-16-4-32-4-48 6Zm0 0v58"
           />
-        </g>
+          <path opacity=".2" d="m28 31 22 4m-22 9 22 4m-22 9 22 4m28-26 22-4m-22 17 22-4m-22 17 22-4" />
+        </>
       ) : (
-        <g transform="translate(0 1)" fill="none" fillRule="evenodd">
-          <ellipse fill="currentColor" fillOpacity={0.08} cx="32" cy="33" rx="32" ry="7" />
-          <g fillRule="nonzero" stroke="currentColor" strokeOpacity={0.4}>
-            <path d="M55 12.76 44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z" />
-            <path
-              fill="currentColor"
-              fillOpacity={0.05}
-              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
-            />
-          </g>
-        </g>
+        <>
+          <rect x="15" y="10" width="96" height="74" rx="12" opacity=".55" />
+          <path opacity=".2" d="M30 29h65M30 45h65M30 61h42" />
+          {variant === 'search' ? (
+            <>
+              <circle cx="91" cy="62" r="19" className="fill-background" stroke="none" />
+              <circle cx="91" cy="62" r="19" opacity=".75" />
+              <path d="m105 76 16 16" opacity=".75" />
+              <path d="M81 59a11 11 0 0 1 7-7" opacity=".3" />
+            </>
+          ) : (
+            <>
+              <path className="fill-background" d="M49 75h30v18H49z" stroke="none" />
+              <path d="M54 82h20M64 72v20" opacity=".55" />
+            </>
+          )}
+        </>
       )}
     </svg>
   )
@@ -112,34 +103,27 @@ export function EmptyState({
   className
 }: EmptyStateProps) {
   const Icon = IconOverride
-  const buttonSize = compact ? 'sm' : 'default'
+  const hasActions = Boolean((actionLabel && onAction) || (secondaryLabel && onSecondary))
 
   return (
     <div
+      data-slot="empty-state"
       className={cn(
-        'aster-row-enter flex flex-col items-center justify-center text-center',
-        compact ? 'px-4 py-8' : 'flex-1 px-6 py-12',
+        'aster-row-enter flex min-w-0 flex-col items-center justify-center text-center [overflow-wrap:anywhere]',
+        compact ? 'px-4 py-8' : 'flex-1 px-6 py-10',
         className
       )}>
       {Icon ? (
-        <Icon
-          size={compact ? 28 : 40}
-          strokeWidth={1.5}
-          className={cn('text-muted-foreground', compact ? 'mb-3' : 'mb-4')}
-        />
+        <Icon aria-hidden="true" size={compact ? 28 : 40} strokeWidth={1.7} className="mb-5 text-muted-foreground" />
       ) : (
-        <EmptyIllustration
-          variant={illustration}
-          width={compact ? 48 : 64}
-          className={cn('text-muted-foreground', compact ? 'mb-3' : 'mb-4')}
-        />
+        <EmptyIllustration variant={illustration} compact={compact} />
       )}
       {title && (
         <h3
           className={cn(
-            'font-normal text-muted-foreground',
-            compact ? 'text-xs' : 'text-sm',
-            description ? 'mb-1.5' : actionLabel || secondaryLabel ? (compact ? 'mb-3' : 'mb-5') : ''
+            'm-0 max-w-lg text-balance font-medium text-foreground',
+            compact ? 'text-sm leading-5' : 'text-lg leading-6',
+            description ? 'mb-2' : hasActions ? (compact ? 'mb-3' : 'mb-5') : ''
           )}>
           {title}
         </h3>
@@ -147,21 +131,21 @@ export function EmptyState({
       {description && (
         <p
           className={cn(
-            'text-muted-foreground',
-            compact ? 'mb-3 max-w-xs text-xs' : 'mb-5 max-w-md text-xs leading-relaxed'
+            'm-0 text-pretty text-foreground/70',
+            compact ? 'mb-4 max-w-xs text-xs leading-5' : 'mb-5 max-w-md text-sm leading-6'
           )}>
           {description}
         </p>
       )}
-      {(actionLabel || secondaryLabel) && (
-        <div className="flex items-center gap-2">
+      {hasActions && (
+        <div className="flex max-w-full flex-wrap items-center justify-center gap-2">
           {actionLabel && onAction && (
-            <Button variant="outline" size={buttonSize} onClick={onAction}>
+            <Button variant="default" size="sm" className="max-w-full whitespace-normal" onClick={onAction}>
               {actionLabel}
             </Button>
           )}
           {secondaryLabel && onSecondary && (
-            <Button variant="ghost" size={buttonSize} onClick={onSecondary}>
+            <Button variant="ghost" size="sm" onClick={onSecondary}>
               {secondaryLabel}
             </Button>
           )}

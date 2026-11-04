@@ -80,6 +80,17 @@ Aster is one Rust workspace for the terminal coding tool, harness, and shared As
 - Behavior changes retain commands, counts, and an Explicitly not claimed
   section in `docs/evidence/<domain>/<date-slug>/OUTCOME.md` as required by
   the constitution. Never claim a check passed without its actual result.
+- Before any Studio / desktop GUI end-to-end run (`agent-desktop`, CUA, or a
+  headed scenario that drives a live window), build the application under test
+  from **this** checkout so the window serves the current sources—not a stale
+  dist, a leftover instance binary, or another worktree's renderer. For Aster
+  Studio that means, from the repository root after `apps/studio` is
+  initialized: `just build-studio` (native host + companions) and a renderer
+  that matches the change (`just studio` hot reload, or an explicit
+  `STUDIO_RENDERER_DIST=…` rsbuild build/preview of the current tree). Do not
+  open or reuse a pre-existing Aster/Studio window for e2e unless you have
+  verified it was launched from that fresh build. Record the build and launch
+  commands in the OUTCOME; a green scenario against an outdated UI is invalid.
 
 ## Rust implementation and review
 

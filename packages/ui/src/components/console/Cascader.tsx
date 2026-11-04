@@ -125,7 +125,7 @@ function Chevron() {
       <path
         d="M4.5 2.5L8 6L4.5 9.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -377,7 +377,7 @@ export function Cascader({
               }}
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
               </svg>
             </span>
           ) : null}
@@ -388,7 +388,7 @@ export function Cascader({
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.7"
             aria-hidden
           >
             <path d="m6 9 6 6 6-6" />
@@ -813,7 +813,7 @@ export function MultiCascader({
               }}
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
               </svg>
             </span>
           ) : null}
@@ -824,7 +824,7 @@ export function MultiCascader({
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.7"
             aria-hidden
           >
             <path d="m6 9 6 6 6-6" />

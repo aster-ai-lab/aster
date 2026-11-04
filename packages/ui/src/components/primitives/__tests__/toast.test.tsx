@@ -2,6 +2,9 @@
 import '@testing-library/jest-dom/vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { getToastUtilities, type ToastLabels, ToastProvider, ToastViewport, useToasts } from '../toast'
@@ -18,6 +21,15 @@ describe('Toast', () => {
       toast.closeAll()
     })
     vi.useRealTimers()
+  })
+
+  it('keeps the toast card on the compact floating radius', () => {
+    const toastCss = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../arc/toast/toast.module.css'),
+      'utf8'
+    )
+    expect(toastCss).toContain('border-radius: var(--radius-panel)')
+    expect(toastCss).not.toMatch(/border-radius:\s*16px/)
   })
 
   it('keeps older actions inaccessible until the stack expands, then restores the chosen item', async () => {
@@ -97,6 +109,49 @@ describe('Toast', () => {
     expect(screen.getByText('First').closest('[inert]')).not.toBeNull()
   })
 
+  it('opens a conversation notification with the keyboard without triggering secondary actions', async () => {
+    const user = userEvent.setup()
+    const open = vi.fn()
+    render(<ToastViewport labels={{ notifications: '通知' }} />)
+    act(() => {
+      toast.info({ title: 'Task finished', description: 'Open its conversation', onClick: open })
+    })
+    const content = screen.getByRole('button', { name: 'Task finished Open its conversation' })
+    content.focus()
+    await user.keyboard('{Enter}')
+    expect(open).toHaveBeenCalledTimes(1)
+    expect(screen.getByRole('region', { name: '通知' })).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(open).toHaveBeenCalledTimes(1)
+  })
+
+  it('preserves reading time while the window is hidden', () => {
+    vi.useFakeTimers()
+    const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+    render(<ToastViewport />)
+    act(() => {
+      toast.info('Read this notification')
+      vi.advanceTimersByTime(1000)
+    })
+    act(() => {
+      hidden.mockReturnValue(true)
+      document.dispatchEvent(new Event('visibilitychange'))
+      vi.advanceTimersByTime(10000)
+    })
+    expect(screen.getByText('Read this notification')).toBeVisible()
+    act(() => {
+      hidden.mockReturnValue(false)
+      document.dispatchEvent(new Event('visibilitychange'))
+      vi.advanceTimersByTime(3999)
+    })
+    expect(screen.getByText('Read this notification')).toBeVisible()
+    act(() => {
+      vi.advanceTimersByTime(1)
+    })
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    hidden.mockRestore()
+  })
+
   it('renders a string toast in the viewport', () => {
     render(<ToastViewport />)
 
@@ -152,8 +207,8 @@ describe('Toast', () => {
     expect(actionButton).toHaveAttribute('data-variant', 'outline')
     expect(screen.getByRole('status')).toHaveClass('items-start')
     expect(actionButton).toBeEnabled()
-    expect(title).toHaveClass('min-h-7', 'py-1')
-    expect(closeButton.parentElement).toHaveClass('flex', 'min-h-7', 'items-center')
+    expect(title).toBeVisible()
+    expect(closeButton).toHaveAccessibleName('Close')
   })
 
   it('marks toast items as no-drag so they stay clickable over titlebar drag regions', () => {

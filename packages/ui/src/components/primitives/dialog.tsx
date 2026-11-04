@@ -1,19 +1,26 @@
 import '../../styles/dialog-motion.css'
+import { DIALOG_CLOSE_DURATION_MS } from '@aster-ai-lab/ui/utils'
 import { composeEventHandlers } from '@radix-ui/primitive'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import * as React from 'react'
 
-import arcDialog from '../arc/dialog/dialog.module.css'
-
 import { cn } from '../../lib/utils'
 import { buttonVariants } from './button'
-import { DIALOG_CLOSE_DURATION_MS } from '@aster-ai-lab/ui/utils'
-
+import { usePopupState } from './popup-dismissal'
 import { PortalContainerProvider, useDialogPortalContainer } from './portal-container'
 
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+import arcDialog from '../arc/dialog/dialog.module.css'
+
+const DialogOpenContext = React.createContext(false)
+
+function Dialog({ open, defaultOpen, onOpenChange, ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  const state = usePopupState({ open, defaultOpen, onOpenChange })
+  return (
+    <DialogOpenContext value={state.open}>
+      <DialogPrimitive.Root data-slot="dialog" {...props} {...state} />
+    </DialogOpenContext>
+  )
 }
 
 function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
@@ -33,13 +40,7 @@ function DialogOverlay({ className, onPointerDown, ...props }: React.ComponentPr
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className={cn(
-        'arc',
-        arcDialog.overlay,
-        'fixed inset-0 z-[80]!',
-        'motion-reduce:animate-none',
-        className
-      )}
+      className={cn('arc', arcDialog.overlay, 'fixed inset-0 z-[80]!', 'motion-reduce:animate-none', className)}
       onPointerDown={composeEventHandlers(onPointerDown, (event) => event.stopPropagation(), {
         checkForDefaultPrevented: false
       })}
@@ -89,6 +90,7 @@ function DialogContent({
   ref,
   ...props
 }: DialogContentProps) {
+  const open = React.use(DialogOpenContext)
   const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null)
   // A later pr-12 would replace only the right side of p-0 and double-inset headers that already clear the icon.
   const contentBleeds = typeof className === 'string' && /(?:^|\s)!?p-0(?![\w.-])/.test(className)
@@ -129,6 +131,7 @@ function DialogContent({
         ref={handleRef}
         data-slot="dialog-content"
         data-dialog-motion={motion}
+        aria-modal="true"
         className={cn(
           // no-drag punches the dialog's area out of any titlebar drag region it overlaps,
           // so the close button stays clickable when the dialog reaches max height (Electron).
@@ -143,7 +146,9 @@ function DialogContent({
         onPointerDown={composeEventHandlers(onPointerDown, (event) => event.stopPropagation(), {
           checkForDefaultPrevented: false
         })}
-        {...props}>
+        {...props}
+        inert={!open || props.inert}
+        aria-hidden={!open || props['aria-hidden'] || undefined}>
         <PortalContainerProvider container={contentElement}>
           {showCloseButton && (
             <DialogPrimitive.Close

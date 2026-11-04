@@ -3,10 +3,10 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from 'motion/
 import type React from 'react'
 import { createContext, use, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
-import arcToast from '../arc/toast/toast.module.css'
-
 import { cn } from '../../lib/utils'
 import { Button } from './button'
+
+import arcToast from '../arc/toast/toast.module.css'
 
 export type ToastType = 'error' | 'success' | 'warning' | 'info' | 'loading'
 type StaticToastType = Exclude<ToastType, 'loading'>
@@ -43,6 +43,7 @@ export interface ToastRecord extends ToastConfig {
 
 export interface ToastLabels {
   close: string
+  notifications?: string
   error: React.ReactNode
   errorDescription: React.ReactNode
   loading: React.ReactNode
@@ -60,7 +61,7 @@ export type ToastLabelsInput = Partial<ToastLabels> | (() => Partial<ToastLabels
 export type ToastUtilities = ReturnType<typeof getToastUtilities>
 export type ToastStore = ReturnType<typeof createToastStore>
 
-const DEFAULT_TIMEOUT = 3000
+const DEFAULT_TIMEOUT = 5000
 const DEFAULT_TOAST_LABELS: ToastLabels = {
   close: 'Close',
   error: 'Error',
@@ -360,7 +361,9 @@ const typeIconMap: Record<ToastType, React.ReactNode> = {
   success: <CheckCircle2 className="size-4 text-success-subtle-foreground" strokeWidth={1.7} />,
   warning: <AlertTriangle className="size-4 text-warning-subtle-foreground" strokeWidth={1.7} />,
   info: <Info className="size-4 text-info-subtle-foreground" strokeWidth={1.7} />,
-  loading: <LoaderCircle className={cn('size-4 animate-spin motion-reduce:animate-none', arcToast.muted)} strokeWidth={1.7} />
+  loading: (
+    <LoaderCircle className={cn('size-4 animate-spin motion-reduce:animate-none', arcToast.muted)} strokeWidth={1.7} />
+  )
 }
 
 const getToastA11yProps = (type: ToastType): Pick<React.HTMLAttributes<HTMLDivElement>, 'aria-live' | 'role'> => {
@@ -373,6 +376,7 @@ const getToastA11yProps = (type: ToastType): Pick<React.HTMLAttributes<HTMLDivEl
 
 const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: ToastStore; toast: ToastRecord }) => {
   const isPresent = useIsPresent()
+  const Content = toast.onClick ? 'button' : 'div'
   const action = toast.action
   const icon = toast.icon ?? typeIconMap[toast.type]
   const a11yProps = getToastA11yProps(toast.type)
@@ -406,39 +410,48 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
         // so hover/click reach the items instead of the window-drag hit test (Electron).
         'arc',
         arcToast.card,
-        'pointer-events-auto flex w-max max-w-[min(420px,calc(100vw-3rem))] items-start gap-2.5 [-webkit-app-region:no-drag]',
-        'px-3 py-2.5',
+        'pointer-events-auto flex w-[360px] max-w-[calc(100vw-2rem)] items-start gap-2.5 [-webkit-app-region:no-drag]',
+        'px-3.5 py-3',
         toast.className
       )}
       style={toast.style}
+      data-toast-key={toast.key}
+      data-toast-type={toast.type}
       onClick={toast.onClick}>
-      <div className={cn('flex size-7 shrink-0 items-center justify-center', arcToast.iconWell)} aria-hidden="true">
+      <div
+        className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center', arcToast.iconWell)}
+        aria-hidden="true">
         {icon}
       </div>
-      <div className="min-w-0 flex-1">
+      <Content
+        type={toast.onClick ? 'button' : undefined}
+        className={cn(
+          'min-w-0 flex-1 border-0 bg-transparent p-0 text-left outline-none',
+          toast.onClick && 'cursor-pointer rounded-md focus-visible:ring-2 focus-visible:ring-ring'
+        )}>
         {toast.title && (
-          <div
+          <span
             title={typeof toast.title === 'string' ? toast.title : undefined}
-            className="min-h-7 py-1 text-[13px] leading-5 break-words font-medium">
+            className="block text-[13px] leading-5 break-words font-medium">
             {toast.title}
-          </div>
+          </span>
         )}
         {toast.description && (
-          <div
+          <span
             className={cn(
-              'text-xs leading-5 break-words',
+              'block text-xs leading-[18px] break-words',
               arcToast.muted,
               (toast.title || !action) && 'mt-0.5',
-              action && !toast.title && 'min-h-7 py-1'
+              !toast.title && 'pt-0.5'
             )}>
             {toast.description}
-          </div>
+          </span>
         )}
-      </div>
+      </Content>
       {action && (
         <Button
           type="button"
-          className="shrink-0 rounded-[8px]"
+          className="h-6 shrink-0 rounded-[8px] px-2.5 text-xs"
           size="sm"
           variant="outline"
           onClick={(event) => {
@@ -449,7 +462,7 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
           {action.label}
         </Button>
       )}
-      <div className="flex min-h-7 shrink-0 items-center">
+      <div className="flex h-6 shrink-0 items-center">
         <button
           type="button"
           aria-label={labels.close}
@@ -482,13 +495,19 @@ export const ToastViewport = ({
   const expanded = hovered || focused
 
   useEffect(() => {
-    store.setPaused(expanded && toasts.length > 0)
-    return () => store.setPaused(false)
+    const sync = () => store.setPaused(document.hidden || (expanded && toasts.length > 0))
+    sync()
+    document.addEventListener('visibilitychange', sync)
+    return () => {
+      document.removeEventListener('visibilitychange', sync)
+      store.setPaused(false)
+    }
   }, [expanded, store, toasts.length])
 
   useEffect(() => {
     const active = document.activeElement
-    if (active instanceof HTMLElement && viewportRef.current?.contains(active) && active.closest('[inert]')) active.blur()
+    if (active instanceof HTMLElement && viewportRef.current?.contains(active) && active.closest('[inert]'))
+      active.blur()
     setFocused(viewportRef.current?.contains(document.activeElement) ?? false)
     if (toasts.length === 0) {
       setHovered(false)
@@ -502,7 +521,7 @@ export const ToastViewport = ({
   return (
     <div
       ref={viewportRef}
-      aria-label="notifications"
+      aria-label={toastLabels.notifications ?? 'notifications'}
       className={cn(
         'pointer-events-auto fixed top-5 left-1/2 z-[10000] -translate-x-1/2 [-webkit-app-region:no-drag]',
         expanded

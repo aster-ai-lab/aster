@@ -11,7 +11,7 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
-it.each(['default', 'line', 'underline'] as const)(
+it.each(['default', 'plain', 'line', 'underline'] as const)(
   'moves only the selected %s plate after the controlled owner accepts a change',
   async (variant) => {
     const onValueChange = vi.fn()
@@ -42,6 +42,46 @@ it.each(['default', 'line', 'underline'] as const)(
     expect(files).toHaveFocus()
   }
 )
+
+it('exchanges panels with Arc directional motion when selection changes', async () => {
+  const user = userEvent.setup()
+  render(
+    <Tabs defaultValue="files">
+      <TabsList aria-label="Workspace">
+        <TabsTrigger value="files">Files</TabsTrigger>
+        <TabsTrigger value="terminal">Terminal</TabsTrigger>
+      </TabsList>
+      <TabsContent value="files">files-panel</TabsContent>
+      <TabsContent value="terminal">terminal-panel</TabsContent>
+    </Tabs>
+  )
+
+  expect(screen.getByText('files-panel')).toBeInTheDocument()
+  expect(screen.queryByText('terminal-panel')).not.toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Terminal' }))
+  expect(screen.getByText('terminal-panel')).toBeInTheDocument()
+  expect(screen.getByText('terminal-panel').closest('[data-slot="tabs-content"]')).not.toBeNull()
+})
+
+it('keeps forceMount panels mounted without Arc presence unmount', () => {
+  render(
+    <Tabs defaultValue="files">
+      <TabsList aria-label="Workspace">
+        <TabsTrigger value="files">Files</TabsTrigger>
+        <TabsTrigger value="terminal">Terminal</TabsTrigger>
+      </TabsList>
+      <TabsContent value="files" forceMount>
+        files-panel
+      </TabsContent>
+      <TabsContent value="terminal" forceMount hidden>
+        terminal-panel
+      </TabsContent>
+    </Tabs>
+  )
+
+  expect(screen.getByText('files-panel')).toBeInTheDocument()
+  expect(screen.getByText('terminal-panel')).toBeInTheDocument()
+})
 
 describe('Tabs workflow variant', () => {
   it('marks the active trigger with bold + underline styles', () => {

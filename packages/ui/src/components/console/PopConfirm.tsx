@@ -10,8 +10,10 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../../lib/cn';
+import { usePopupPresence } from '../../lib/usePopupPresence';
 import { Button } from '../primitives/button';
 import { usePortalContainer } from '../primitives/portal-container';
+import '../../styles/popup-motion.css'
 
 export type PopConfirmProps = {
   title: string;
@@ -80,7 +82,7 @@ function WarnIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.75"
+      strokeWidth="1.7"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -111,8 +113,11 @@ export function PopConfirm({
 }: PopConfirmProps) {
   const portalContainer = usePortalContainer();
   const [open, setOpen] = useState(defaultOpen);
+  // Hold the panel through the shared 200ms popup exit (DESIGN / popup-motion.css).
+  const { present, state: presenceState } = usePopupPresence(open || null);
   const [busy, setBusy] = useState(false);
   const [pos, setPos] = useState<PanelPos | null>(null);
+  const heldPos = useRef<PanelPos | null>(null);
   const triggerRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
@@ -121,7 +126,7 @@ export function PopConfirm({
   const place = () => {
     const trigger = triggerRef.current;
     const panel = panelRef.current;
-    if (!trigger || !panel) return;
+    if (!trigger || !panel || presenceState === 'closed') return;
     const rect = trigger.getBoundingClientRect();
     const bounds = boundary
       ? trigger.closest(boundary)?.getBoundingClientRect() ?? null
@@ -140,26 +145,30 @@ export function PopConfirm({
         bounds,
         { width: window.innerWidth, height: window.innerHeight },
       );
+      heldPos.current = refit;
       setPos(refit);
       return;
     }
+    heldPos.current = fitted;
     setPos(fitted);
   };
 
   useLayoutEffect(() => {
-    if (!open) {
+    if (!present) {
       setPos(null);
+      heldPos.current = null;
       return;
     }
+    if (!open) return;
     place();
     const frame = window.requestAnimationFrame(() => {
-      if (tone !== 'danger') return;
+      if (tone !== 'danger' && !defaultOpen) return;
       panelRef.current
         ?.querySelector<HTMLButtonElement>('.ui-popconfirm__actions button')
         ?.focus();
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [open, tone, boundary, portalContainer]);
+  }, [open, present, tone, defaultOpen, boundary, portalContainer]);
 
   useEffect(() => {
     if (!open) return;
@@ -220,8 +229,9 @@ export function PopConfirm({
   };
 
   const origin = portalContainer?.getBoundingClientRect();
+  const placed = pos ?? (presenceState === 'closed' ? heldPos.current : null);
   const panel =
-    open && typeof document !== 'undefined'
+    present && typeof document !== 'undefined'
       ? createPortal(
           <div
             ref={panelRef}
@@ -229,21 +239,23 @@ export function PopConfirm({
             role="dialog"
             aria-label={title}
             aria-describedby={description ? descId : undefined}
-            data-placement={pos?.placement ?? 'below'}
+            data-placement={placed?.placement ?? 'below'}
             data-tone={tone}
-            className="ui-popconfirm fixed z-[90] box-border rounded-lg border border-[#e5e5e5] bg-white px-[0.95rem] pt-[0.9rem] pb-[0.8rem] text-[#171717] shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:border-[#2f2f33] dark:bg-[#171717] dark:text-[#f5f5f5] dark:shadow-[0_16px_48px_rgba(0,0,0,0.55)]"
+            data-state={presenceState}
+            inert={presenceState === 'closed' || undefined}
+            className="ui-popconfirm aster-popup-rise fixed z-[90] box-border rounded-lg border border-[#e5e5e5] bg-white px-[0.95rem] pt-[0.9rem] pb-[0.8rem] text-[#171717] shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:border-[#2f2f33] dark:bg-[#171717] dark:text-[#f5f5f5] dark:shadow-[0_16px_48px_rgba(0,0,0,0.55)]"
             style={{
               position: portalContainer ? 'absolute' : 'fixed',
               zIndex: 90,
-              width: pos?.width ? `${pos.width}px` : PANEL_WIDTH,
+              width: placed?.width ? `${placed.width}px` : PANEL_WIDTH,
               // Off-screen until placed. visibility:hidden makes WKWebView lay
               // out native buttons and then never paint them once the panel
               // is shown, so the actions keep their box and lose their face.
-              ...(pos
+              ...(placed
                 ? {
-                    top: pos.top - (origin?.top ?? 0) - (portalContainer?.clientTop ?? 0),
-                    left: pos.left - (origin?.left ?? 0) - (portalContainer?.clientLeft ?? 0),
-                    pointerEvents: 'auto' as const,
+                    top: placed.top - (origin?.top ?? 0) - (portalContainer?.clientTop ?? 0),
+                    left: placed.left - (origin?.left ?? 0) - (portalContainer?.clientLeft ?? 0),
+                    pointerEvents: presenceState === 'open' ? ('auto' as const) : ('none' as const),
                   }
                 : { top: -9999, left: 0, pointerEvents: 'none' as const }),
             }}
@@ -255,7 +267,7 @@ export function PopConfirm({
                   ? '-top-[0.3rem] rotate-45 border-t border-l border-[#e5e5e5] dark:border-[#2f2f33]'
                   : '-bottom-[0.3rem] rotate-45 border-r border-b border-[#e5e5e5] dark:border-[#2f2f33]',
               )}
-              style={{ left: pos?.arrowX ?? 16 }}
+              style={{ left: placed?.arrowX ?? 16 }}
               aria-hidden
             />
             <div className="ui-popconfirm__body flex items-start gap-[0.55rem]">

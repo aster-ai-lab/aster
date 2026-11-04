@@ -5,7 +5,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 
 import { cn } from '../../lib/utils'
-import { Button as ArcButton } from '../arc/button/button'
+import { ArcButton } from './arc-button'
 
 import arcButton from '../arc/button/button.module.css'
 

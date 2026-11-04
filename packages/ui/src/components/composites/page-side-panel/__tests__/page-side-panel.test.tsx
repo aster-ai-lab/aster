@@ -290,7 +290,7 @@ describe('PageSidePanel', () => {
       )
       const dialog = screen.getByRole('dialog')
       expect(dialog.className).toContain('w-100')
-      expect(dialog.className).toContain('rounded-3xl')
+      expect(dialog.className).toContain('rounded-[12px]')
       expect(dialog.className).toContain('bg-card')
       expect(dialog.className).toContain('text-card-foreground')
       expect(dialog.className).toContain('shadow-xl')

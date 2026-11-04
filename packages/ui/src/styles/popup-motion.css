@@ -1,120 +1,7 @@
 @layer properties, theme, base, components, utilities, app;
-/*
- * Anchored popups rise at most 0.5rem on the CSS translate property.
- * Do not animate transform or filter. transform replaces the popper
- * position, and filter adds a layer.
- */
-
-@keyframes aster-popup-from-above {
-  from {
-    opacity: 0;
-    translate: 0 -0.5rem;
-    scale: 0.97;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
-@keyframes aster-popup-from-below {
-  from {
-    opacity: 0;
-    translate: 0 0.5rem;
-    scale: 0.97;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
-@keyframes aster-popup-from-left {
-  from {
-    opacity: 0;
-    translate: -0.5rem 0;
-    scale: 0.97;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
-@keyframes aster-popup-from-right {
-  from {
-    opacity: 0;
-    translate: 0.5rem 0;
-    scale: 0.97;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
-@keyframes aster-popup-leave-above {
-  from {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    translate: 0 -0.5rem;
-    scale: 0.97;
-  }
-}
-
-@keyframes aster-popup-leave-below {
-  from {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    translate: 0 0.5rem;
-    scale: 0.97;
-  }
-}
-
-@keyframes aster-popup-leave-left {
-  from {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    translate: -0.5rem 0;
-    scale: 0.97;
-  }
-}
-
-@keyframes aster-popup-leave-right {
-  from {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    translate: 0.5rem 0;
-    scale: 0.97;
-  }
+/* Keep Popper's transform untouched. Transitions reverse from the current frame. */
+@keyframes aster-popup-exit {
+  to { --aster-popup-exit: 1; }
 }
 
 @keyframes aster-popup-fade-in {
@@ -137,201 +24,110 @@
   }
 }
 
-@keyframes aster-drawer-in {
-  from {
-    opacity: 0;
-    scale: 0.98;
-  }
-
-  to {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
-@keyframes aster-drawer-out {
-  from {
-    opacity: 1;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    scale: 0.98;
-  }
-}
-
 @layer components {
-  [data-slot='dropdown-menu-content']:not([data-side]),
-  [data-slot='dropdown-menu-sub-content']:not([data-side]),
-  [data-slot='context-menu-content']:not([data-side]),
-  [data-slot='context-menu-sub-content']:not([data-side]),
-  [data-slot='popover-content']:not([data-side]),
-  [data-slot='select-content']:not([data-side]),
-  [data-slot='hover-card-content']:not([data-side]),
-  [data-slot='tooltip-content']:not([data-side]) {
-    visibility: hidden;
-  }
+  :is(
+    [data-slot='dropdown-menu-content'], [data-slot='dropdown-menu-sub-content'],
+    [data-slot='context-menu-content'], [data-slot='context-menu-sub-content'],
+    [data-slot='popover-content'], [data-slot='select-content'],
+    [data-slot='hover-card-content'], [data-slot='tooltip-content'],
+    .ui-search-select__panel, .aster-popup-rise, [data-composer-popup]
+  ) {
+    /* DESIGN.md: in-place popup — opacity + 0.97 scale only. No travel. */
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+    transform-origin: var(--radix-popover-content-transform-origin,
+      var(--radix-dropdown-menu-content-transform-origin,
+      var(--radix-context-menu-content-transform-origin,
+      var(--radix-select-content-transform-origin,
+      var(--radix-hover-card-content-transform-origin,
+      var(--radix-tooltip-content-transform-origin, 50% 100%))))));
+    transition:
+      opacity 160ms cubic-bezier(0.16, 1, 0.3, 1),
+      scale 160ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  [data-slot='dropdown-menu-content'][data-side='bottom'][data-state='open'],
-  [data-slot='dropdown-menu-sub-content'][data-side='bottom'][data-state='open'],
-  [data-slot='context-menu-content'][data-side='bottom'][data-state='open'],
-  [data-slot='context-menu-sub-content'][data-side='bottom'][data-state='open'],
-  [data-slot='popover-content'][data-side='bottom'][data-state='open'],
-  [data-slot='select-content'][data-side='bottom'][data-state='open'],
-  [data-slot='hover-card-content'][data-side='bottom'][data-state='open'],
-  [data-slot='tooltip-content'][data-side='bottom'][data-state*='open'] {
-    animation: aster-popup-from-above 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
+    &:not([data-side]):not(.aster-popup-rise):not([data-composer-popup]) { visibility: hidden; }
+    &[data-side='bottom'] { transform-origin: 50% 0; }
+    &[data-side='top'] { transform-origin: 50% 100%; }
+    &[data-side='left'] { transform-origin: 100% 0; }
+    &[data-side='right'] { transform-origin: 0 0; }
 
-  [data-slot='dropdown-menu-content'][data-side='top'][data-state='open'],
-  [data-slot='dropdown-menu-sub-content'][data-side='top'][data-state='open'],
-  [data-slot='context-menu-content'][data-side='top'][data-state='open'],
-  [data-slot='context-menu-sub-content'][data-side='top'][data-state='open'],
-  [data-slot='popover-content'][data-side='top'][data-state='open'],
-  [data-slot='select-content'][data-side='top'][data-state='open'],
-  [data-slot='hover-card-content'][data-side='top'][data-state='open'],
-  [data-slot='tooltip-content'][data-side='top'][data-state*='open'] {
-    animation: aster-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
+    @starting-style {
+      opacity: 0;
+      scale: 0.97;
+    }
 
-  [data-slot='dropdown-menu-content'][data-side='right'][data-state='open'],
-  [data-slot='dropdown-menu-sub-content'][data-side='right'][data-state='open'],
-  [data-slot='context-menu-content'][data-side='right'][data-state='open'],
-  [data-slot='context-menu-sub-content'][data-side='right'][data-state='open'],
-  [data-slot='popover-content'][data-side='right'][data-state='open'],
-  [data-slot='select-content'][data-side='right'][data-state='open'],
-  [data-slot='hover-card-content'][data-side='right'][data-state='open'],
-  [data-slot='tooltip-content'][data-side='right'][data-state*='open'] {
-    animation: aster-popup-from-left 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  [data-slot='dropdown-menu-content'][data-side='left'][data-state='open'],
-  [data-slot='dropdown-menu-sub-content'][data-side='left'][data-state='open'],
-  [data-slot='context-menu-content'][data-side='left'][data-state='open'],
-  [data-slot='context-menu-sub-content'][data-side='left'][data-state='open'],
-  [data-slot='popover-content'][data-side='left'][data-state='open'],
-  [data-slot='select-content'][data-side='left'][data-state='open'],
-  [data-slot='hover-card-content'][data-side='left'][data-state='open'],
-  [data-slot='tooltip-content'][data-side='left'][data-state*='open'] {
-    animation: aster-popup-from-right 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  [data-slot='dropdown-menu-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='dropdown-menu-sub-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='context-menu-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='context-menu-sub-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='popover-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='select-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='hover-card-content'][data-side='bottom'][data-state='closed'],
-  [data-slot='tooltip-content'][data-side='bottom'][data-state='closed'] {
-    animation: aster-popup-leave-above 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  [data-slot='dropdown-menu-content'][data-side='top'][data-state='closed'],
-  [data-slot='dropdown-menu-sub-content'][data-side='top'][data-state='closed'],
-  [data-slot='context-menu-content'][data-side='top'][data-state='closed'],
-  [data-slot='context-menu-sub-content'][data-side='top'][data-state='closed'],
-  [data-slot='popover-content'][data-side='top'][data-state='closed'],
-  [data-slot='select-content'][data-side='top'][data-state='closed'],
-  [data-slot='hover-card-content'][data-side='top'][data-state='closed'],
-  [data-slot='tooltip-content'][data-side='top'][data-state='closed'] {
-    animation: aster-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  [data-slot='dropdown-menu-content'][data-side='right'][data-state='closed'],
-  [data-slot='dropdown-menu-sub-content'][data-side='right'][data-state='closed'],
-  [data-slot='context-menu-content'][data-side='right'][data-state='closed'],
-  [data-slot='context-menu-sub-content'][data-side='right'][data-state='closed'],
-  [data-slot='popover-content'][data-side='right'][data-state='closed'],
-  [data-slot='select-content'][data-side='right'][data-state='closed'],
-  [data-slot='hover-card-content'][data-side='right'][data-state='closed'],
-  [data-slot='tooltip-content'][data-side='right'][data-state='closed'] {
-    animation: aster-popup-leave-left 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  [data-slot='dropdown-menu-content'][data-side='left'][data-state='closed'],
-  [data-slot='dropdown-menu-sub-content'][data-side='left'][data-state='closed'],
-  [data-slot='context-menu-content'][data-side='left'][data-state='closed'],
-  [data-slot='context-menu-sub-content'][data-side='left'][data-state='closed'],
-  [data-slot='popover-content'][data-side='left'][data-state='closed'],
-  [data-slot='select-content'][data-side='left'][data-state='closed'],
-  [data-slot='hover-card-content'][data-side='left'][data-state='closed'],
-  [data-slot='tooltip-content'][data-side='left'][data-state='closed'] {
-    animation: aster-popup-leave-right 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    &[data-state='closed'] {
+      opacity: 0;
+      scale: 0.97;
+      pointer-events: none !important;
+      transition-duration: 200ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+      /* Radix Presence waits for animationend while the transition paints the exit. */
+      animation: aster-popup-exit 200ms linear;
+    }
   }
 
   [data-slot='drawer-overlay'][data-state='open'] {
     animation: aster-popup-fade-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-
   [data-slot='drawer-overlay'][data-state='closed'] {
     animation: aster-popup-fade-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
-  .ui-search-select__panel--shown,
-  .aster-popup-rise:not([data-state='closed']) {
-    animation: aster-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .aster-popup-rise[data-state='closed'] {
-    animation: aster-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  /* Phone bottom sheets keep the library slide. Every other edge, and desktop, stays put. */
+  /* Phone bottom sheets keep Vaul's gesture motion. Other sheets stay at rest. */
   [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom']) {
     transform: none !important;
+    opacity: 1;
+    scale: 1;
+    transition: opacity 160ms ease-out, scale 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    @starting-style { opacity: 0; scale: 0.98; }
+    &[data-state='closed'] {
+      opacity: 0; scale: 0.98; pointer-events: none !important;
+      transition-duration: 200ms;
+      animation: aster-popup-exit 200ms linear;
+    }
   }
-
-  [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='open'] {
-    animation: aster-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='closed'] {
-    animation: aster-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
   @media (min-width: 640px) {
     [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'] {
       transform: none !important;
-    }
-
-    [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='open'] {
-      animation: aster-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='closed'] {
-      animation: aster-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+      opacity: 1;
+      scale: 1;
+      transition: opacity 160ms ease-out, scale 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      @starting-style { opacity: 0; scale: 0.98; }
+      &[data-state='closed'] {
+        opacity: 0; scale: 0.98; pointer-events: none !important;
+        transition-duration: 200ms;
+        animation: aster-popup-exit 200ms linear;
+      }
     }
   }
 
-  /* Background WebKit windows must not retain popups waiting for animationend. */
-  :root:not(:focus-within) [data-slot='dropdown-menu-content'],
-  :root:not(:focus-within) [data-slot='dropdown-menu-sub-content'],
-  :root:not(:focus-within) [data-slot='context-menu-content'],
-  :root:not(:focus-within) [data-slot='context-menu-sub-content'],
-  :root:not(:focus-within) [data-slot='popover-content'],
-  :root:not(:focus-within) [data-slot='select-content'],
-  :root:not(:focus-within) [data-slot='hover-card-content'],
-  :root:not(:focus-within) [data-slot='tooltip-content'] {
+  /* The host marks actual window inactivity; an unfocused hover trigger is still active. */
+  :root[data-motion-paused] :is(
+    [data-slot='dropdown-menu-content'], [data-slot='dropdown-menu-sub-content'],
+    [data-slot='context-menu-content'], [data-slot='context-menu-sub-content'],
+    [data-slot='popover-content'], [data-slot='select-content'],
+    [data-slot='hover-card-content'], [data-slot='tooltip-content'],
+    .ui-search-select__panel, .aster-popup-rise, [data-composer-popup]
+  ) {
     animation: none;
+    transition: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    [data-slot='dropdown-menu-content'],
-    [data-slot='dropdown-menu-sub-content'],
-    [data-slot='context-menu-content'],
-    [data-slot='context-menu-sub-content'],
-    [data-slot='popover-content'],
-    [data-slot='select-content'],
-    [data-slot='hover-card-content'],
-    [data-slot='tooltip-content'],
-    [data-slot='drawer-overlay'],
-    [data-slot='drawer-content'],
-    .ui-search-select__panel--shown,
-    .aster-popup-rise {
+    :is(
+      [data-slot='dropdown-menu-content'], [data-slot='dropdown-menu-sub-content'],
+      [data-slot='context-menu-content'], [data-slot='context-menu-sub-content'],
+      [data-slot='popover-content'], [data-slot='select-content'],
+      [data-slot='hover-card-content'], [data-slot='tooltip-content'],
+      [data-slot='drawer-overlay'], [data-slot='drawer-content'],
+      .ui-search-select__panel, .aster-popup-rise, [data-composer-popup]
+    ) {
       animation: none !important;
       transition: none !important;
+      scale: 1;
+      translate: 0 0;
     }
   }
 }

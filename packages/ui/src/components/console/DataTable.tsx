@@ -168,7 +168,7 @@ function ColumnsIcon() {
       <path
         d="M4 5h16l-6.2 7.2a1 1 0 0 0-.25.66V19l-3.1 1.55V12.86A1 1 0 0 0 10.2 12.2L4 5Z"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.7"
         strokeLinejoin="round"
       />
     </svg>
@@ -203,13 +203,13 @@ function RefreshIcon() {
       <path
         d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.7"
         strokeLinecap="round"
       />
       <path
         d="M20 5v4.5h-4.5M4 19v-4.5h4.5"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -269,7 +269,7 @@ function SortGlyph({ direction }: { direction: SortDirection | null }) {
         className="ui-data-table__sort-up"
         d="M3.5 4.75 6 2.25l2.5 2.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -277,7 +277,7 @@ function SortGlyph({ direction }: { direction: SortDirection | null }) {
         className="ui-data-table__sort-down"
         d="M3.5 7.25 6 9.75l2.5-2.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

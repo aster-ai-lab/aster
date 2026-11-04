@@ -44,7 +44,7 @@ const ToolbarButton = ({ children, disabled, label, onClick, pressed }: ToolbarB
     <Button
       aria-label={label}
       aria-pressed={pressed}
-      className="size-9 rounded-full text-muted-foreground hover:text-foreground disabled:opacity-40"
+      className="size-9 rounded-[8px] text-muted-foreground hover:text-foreground disabled:opacity-40"
       disabled={disabled}
       onClick={onClick}
       size="icon"

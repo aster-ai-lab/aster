@@ -80,7 +80,7 @@ function Chevron({ open }: { open: boolean }) {
       <path
         d="M4.25 2.5 7.75 6l-3.5 3.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

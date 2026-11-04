@@ -1,115 +1,47 @@
 @layer properties, theme, base, components, utilities, app;
-/*
- * Dialogs stay where they rest.
- * Animate opacity and the scale property only. Animating transform replaces
- * the centering translation and makes the panel jump up from the lower half.
- * This file is in @layer components so a utility such as animate-none wins.
- */
-
-@keyframes aster-dialog-in {
-  from {
-    opacity: 0;
-    scale: 0.98;
-  }
-
-  to {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
+/* Dialogs stay centered; never replace their centering transform. */
 @keyframes aster-dialog-out {
-  from {
-    opacity: 1;
-    scale: 1;
-  }
-
-  to {
-    opacity: 0;
-    scale: 0.98;
-  }
-}
-
-@keyframes aster-dialog-scrim-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes aster-dialog-scrim-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+  to { --aster-dialog-exit: 1; }
 }
 
 @layer components {
-  [data-slot='dialog-overlay'][data-state='open'] {
-    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  :is([data-slot='dialog-overlay'], .ui-dialog-backdrop, .aster-dialog-scrim) {
+    opacity: 1;
+    transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    @starting-style { opacity: 0; }
+  }
+  :is([data-slot='dialog-content'], .ui-dialog-panel, .aster-dialog-surface) {
+    opacity: 1;
+    scale: 1;
+    transition:
+      opacity 160ms cubic-bezier(0.16, 1, 0.3, 1),
+      scale 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    @starting-style { opacity: 0; scale: 0.98; }
+  }
+  :is([data-slot='dialog-overlay'], [data-slot='dialog-content'],
+      .ui-dialog-backdrop, .ui-dialog-panel, .aster-dialog-scrim, .aster-dialog-surface)[data-state='closed'] {
+    opacity: 0;
+    pointer-events: none !important;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    /* Keep Radix mounted through the transition; quick reopen reverses in place. */
+    animation: aster-dialog-out 200ms linear;
+  }
+  :is([data-slot='dialog-content'], .ui-dialog-panel, .aster-dialog-surface)[data-state='closed'] {
+    scale: 0.98;
   }
 
-  [data-slot='dialog-overlay'][data-state='closed'] {
-    animation: aster-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  [data-slot='dialog-content'][data-state='open'] {
-    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  [data-slot='dialog-content'][data-state='closed'] {
-    animation: aster-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  .ui-dialog-backdrop {
-    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .ui-dialog-panel {
-    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  /* Hand-drawn dialogs opt in with these classes. data-state=closed plays the leave. */
-  .aster-dialog-scrim:not([data-state='closed']) {
-    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .aster-dialog-scrim[data-state='closed'] {
-    animation: aster-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  .aster-dialog-surface:not([data-state='closed']) {
-    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .aster-dialog-surface[data-state='closed'] {
-    animation: aster-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  /* WebKit can suspend background animations before Radix receives animationend. */
-  :root:not(:focus-within) [data-slot='dialog-overlay'],
-  :root:not(:focus-within) [data-slot='dialog-content'] {
+  :root[data-motion-paused] :is([data-slot='dialog-overlay'], [data-slot='dialog-content'],
+      .ui-dialog-backdrop, .ui-dialog-panel, .aster-dialog-scrim, .aster-dialog-surface) {
     animation: none;
+    transition: none;
   }
-
   @media (prefers-reduced-motion: reduce) {
-    [data-slot='dialog-overlay'][data-state='open'],
-    [data-slot='dialog-overlay'][data-state='closed'],
-    [data-slot='dialog-content'][data-state='open'],
-    [data-slot='dialog-content'][data-state='closed'],
-    .ui-dialog-backdrop,
-    .ui-dialog-panel,
-    .aster-dialog-scrim:not([data-state='closed']),
-    .aster-dialog-scrim[data-state='closed'],
-    .aster-dialog-surface:not([data-state='closed']),
-    .aster-dialog-surface[data-state='closed'] {
-      animation: none;
+    :is([data-slot='dialog-overlay'], [data-slot='dialog-content'],
+        .ui-dialog-backdrop, .ui-dialog-panel, .aster-dialog-scrim, .aster-dialog-surface) {
+      animation: none !important;
+      transition: none !important;
+      scale: 1;
     }
   }
 }

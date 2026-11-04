@@ -2,10 +2,10 @@ import { MODEL_ICON_META_CATALOG, type ModelIconKey } from './models/meta-catalo
 import { PROVIDER_ICON_META_CATALOG, type ProviderIconKey } from './providers/meta-catalog'
 import type { IconMeta } from './types'
 
-// NOTE: the vendor-level regex below duplicate `@cherrystudio/provider-registry`'s
+// NOTE: the vendor-level regex below duplicate `@aster-ai-lab/provider-registry`'s
 // `VENDOR_PATTERNS` (anthropic, gemini, gemma, grok, doubao, hunyuan, kimi, zhipu,
 // mimo, ling, qwen). Kept in sync manually until UI's build surface lets us
-// import from `@cherrystudio/provider-registry` directly. When adding / tweaking
+// import from `@aster-ai-lab/provider-registry` directly. When adding / tweaking
 // a vendor pattern, update BOTH places — or, better, fix the UI → registry import
 // story and swap these inline regex for `VENDOR_PATTERNS.<vendor>`.
 

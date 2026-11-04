@@ -53,6 +53,10 @@ const selectTriggerVariants = cva(
   }
 )
 
+/**
+ * @deprecated Prefer `SearchSelect` (or `Combobox` when the trigger must read as a text field).
+ * DESIGN.md §6 / constitution XVI: product pickers are drawn; this Radix composite is shrink-only debt.
+ */
 function Select({
   defaultOpen,
   onOpenChange,
@@ -212,8 +216,6 @@ function SelectContent({
           'arc',
           arcSelect.menuSurface,
           'relative z-[240] max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto text-[13px] [-webkit-app-region:no-drag]',
-          position === 'popper' &&
-            'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className
         )}
         position={position}
@@ -302,6 +304,7 @@ function SelectScrollDownButton({
   )
 }
 
+/** @deprecated Prefer `SearchSelect` / `Combobox` — see `Select` JSDoc. */
 export {
   Select,
   SelectContent,

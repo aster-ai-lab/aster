@@ -56,17 +56,6 @@ const GOLDEN_EXPORTS = new Set([
   'CompositeInput',
   'ConfettiBurst',
   'ConfirmDialog',
-  'ConsoleConfirmDialog',
-  'ConsoleDialog',
-  'ConsoleDrawer',
-  'ConsoleDropdownMenu',
-  'ConsoleEmptyState',
-  'ConsoleFormField',
-  'ConsolePageHeader',
-  'ConsolePagination',
-  'ConsoleTable',
-  'ConsoleTextarea',
-  'ConsoleToastProvider',
   'ContextMenu',
   'ContextMenuCheckboxItem',
   'ContextMenuContent',
@@ -162,6 +151,7 @@ const GOLDEN_EXPORTS = new Set([
   'FieldTitle',
   'FileDropzone',
   'FilterChip',
+  'fitConfirmPanel',
   'Flex',
   'ForbiddenPage',
   'Form',
@@ -198,6 +188,7 @@ const GOLDEN_EXPORTS = new Set([
   'InputGroupTextarea',
   'InputNumber',
   'InviteWizard',
+  'isTriggerPress',
   'Item',
   'ItemActions',
   'ItemContent',
@@ -224,6 +215,7 @@ const GOLDEN_EXPORTS = new Set([
   'MultiCascader',
   'NavLinkList',
   'NormalTooltip',
+  'OffsetPagination',
   'OrgMark',
   'PAGE_LOADING_BOOT_MS',
   'PageHeader',
@@ -271,6 +263,7 @@ const GOLDEN_EXPORTS = new Set([
   'SecretReveal',
   'SectionHeader',
   'SegmentedControl',
+  'SelectionHighlight',
   'Select',
   'SelectContent',
   'SelectDropdown',
@@ -399,9 +392,24 @@ describe('@aster/ui public barrel', () => {
     expect(missing).toEqual([])
     expect(extra).toEqual([])
   })
-  it('keeps the console-kit renames importable', () => {
-    for (const name of ['ConsoleDialog', 'ConsoleConfirmDialog', 'ConsoleToastProvider', 'ResourceTable']) {
+  it('keeps preferred console exports and omits colliding Console* aliases', () => {
+    for (const name of ['FormDialog', 'InlineBanner', 'OffsetPagination', 'ResourceTable', 'useToast']) {
       expect(AsterUI).toHaveProperty(name)
+    }
+    for (const name of [
+      'ConsoleConfirmDialog',
+      'ConsoleDialog',
+      'ConsoleDrawer',
+      'ConsoleDropdownMenu',
+      'ConsoleEmptyState',
+      'ConsoleFormField',
+      'ConsolePageHeader',
+      'ConsolePagination',
+      'ConsoleTable',
+      'ConsoleTextarea',
+      'ConsoleToastProvider'
+    ]) {
+      expect(AsterUI).not.toHaveProperty(name)
     }
   })
 })

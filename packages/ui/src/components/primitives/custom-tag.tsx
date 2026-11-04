@@ -64,7 +64,7 @@ const CustomTag: FC<CustomTagProps> = ({
         {children}
         {closable && (
           <div
-            className="absolute flex cursor-pointer items-center justify-center rounded-full transition-all duration-200 hover:bg-[#da8a8a] hover:text-white"
+            className="absolute flex cursor-pointer items-center justify-center rounded-[8px] transition-all duration-200 hover:bg-[#da8a8a] hover:text-white"
             style={{
               right: `${size * 0.2}px`,
               top: `${size * 0.2}px`,

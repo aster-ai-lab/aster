@@ -29,6 +29,11 @@ describe('collection pagination', () => {
     );
     expect(screen.getAllByRole('button').length).toBeLessThanOrEqual(9);
     expect(screen.getByRole('button', { name: 'Page 1' })).toBeTruthy();
+    expect(
+      screen
+        .getByRole('button', { name: 'Page 5' })
+        .querySelector('[data-slot="selection-highlight"]'),
+    ).toBeTruthy();
     await user.click(screen.getByRole('button', { name: 'Page 5' }));
     expect(change).not.toHaveBeenCalled();
     await user.click(screen.getByRole('button', { name: 'Page 20' }));
@@ -41,6 +46,11 @@ describe('collection pagination', () => {
         .disabled,
     ).toBe(true);
     expect(screen.getByRole('status').textContent).toBe('191–200 of 200');
+    expect(
+      screen
+        .getByRole('button', { name: 'Page 20' })
+        .querySelector('[data-slot="selection-highlight"]'),
+    ).toBeTruthy();
   });
 
   it('localizes cursor navigation and refuses repeat navigation while a page is pending', () => {

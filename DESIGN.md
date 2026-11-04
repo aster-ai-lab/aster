@@ -174,6 +174,9 @@ dialog placement and authority rules. Arc is a behavior reference, not a second 
 bulk-install components. Public examples with simulated events are not a production data source. Reusing
 licensed source requires the corresponding rights; reading a public preview does not provide that source.
 
+The [Arc UI migration plan](./docs/arc-ui-migration-plan.md) records the proposed replacement scope,
+batch dependencies, acceptance criteria and execution status. Implementation follows the contracts here.
+
 #### Arc foundation consistency
 
 The shared Arc foundation retains Aster's compact scale: 30px quiet/toolbar controls, 36px form controls,
@@ -528,6 +531,18 @@ The page header holds one filled action. Other header actions are quiet. Refresh
 vertical padding. A settings card uses 24px. A filter that matches nothing uses a different sentence from an
 empty source.
 
+### Page transitions
+
+All Aster page navigation uses the View Transition API through the shared router and navigation owners.
+This includes route changes, opening/switching/closing main tabs, workbench canvas navigation and Wiki entry/exit.
+Capture only the content surface (`aster-page`); window chrome and the activity rail stay still. The old
+and new views exchange opacity over 160ms with the Arc enter/exit easing. Do not add travel, blur, a second
+entrance or an artificial loading delay. Async routes retain their real pending/error behavior.
+Unsupported hosts perform the same navigation immediately; reduced motion removes snapshot animation.
+Repeated or interrupted navigation must still commit each requested update once and preserve the last
+destination, draft buffers, dirty guards, focus and scroll ownership. Dialogs and anchored menus keep their
+own shared motion contract rather than turning ordinary control changes into page transitions.
+
 ### Table
 
 A data table is the organization member table. It is full width, `table-fixed`, and left aligned. It has no
@@ -667,14 +682,14 @@ Task history renders as soon as its saved session and messages are available. Mo
 
 Object actions open that object's Wiki detail in this same layer. The former Knowledge page is the
 workspace Wiki reader. Reuse the existing KnowledgePage, tree, search, editor/reader, graph and maintenance components directly; do not replace them with a second detail layout. Its root comes from the selected workspace, never the background task or global preference. Browsing an empty scoped vault must not create directories.
-The detail uses one 48px header row containing a truncated workspace name and inline path, original page actions, resource tabs and close. There is no additional overlay header, back button or workspace-open button; narrow windows hide the secondary path rather than wrap. Resource order is Analysis / Encyclopedia / Outputs / Memory / Board. Analysis opens by default and presents measured execution metrics, event filters, timeline playback and event details from the selected task's real messages; project scope selects one of its tasks before analysis. Outputs opens the selected folder's actual file tree. File editors reuse the shared workspace tabs, preserve open documents across resource switches, and guard unsaved closes. Selecting a file tab also selects its tree entry. File tabs use the same extension-specific document icons as the file tree; their context menu supports closing through the existing dirty guard, copying the path and revealing the file in the sidebar. Dialog content explicitly restores pointer events inside page-level portals so save/discard confirmations stay operable. Embedded Markdown omits the redundant read-only preview/line-count bar already covered by its host toolbar. Code save/download actions share the existing bottom status bar instead of reserving a second header row. Empty editor chrome never reserves height.
+The detail uses one 48px header row containing a truncated workspace name and inline path, original page actions, resource tabs and close. There is no additional overlay header, back button or workspace-open button; narrow windows hide the secondary path rather than wrap. Resource order is Encyclopedia / Outputs, then a quiet plane separator, then Analysis / Memory / Board (Memory and Board stay project-only; task Wiki hides both). Encyclopedia opens by default so published pages or the compile empty state are first; Analysis is the opt-in trace plane for measured execution metrics, event filters, timeline playback and event details from the selected task's real messages; project scope selects one of its tasks before analysis. Outputs opens the selected folder's actual file tree. File editors reuse the shared workspace tabs, preserve open documents across resource switches, and guard unsaved closes. Selecting a file tab also selects its tree entry. File tabs use the same extension-specific document icons as the file tree; their context menu supports closing through the existing dirty guard, copying the path and revealing the file in the sidebar. Dialog content explicitly restores pointer events inside page-level portals so save/discard confirmations stay operable. Embedded Markdown omits the redundant read-only preview/line-count bar already covered by its host toolbar. Code save/download actions share the existing bottom status bar instead of reserving a second header row. Empty editor chrome never reserves height.
 Outputs, Encyclopedia and Memory share a mouse-draggable sidebar seam, a remembered 260px default, a 200px minimum and a maximum of 480px or 45% of the available content width. The seam is keyboard accessible and cleans up drag state on blur or exit. Encyclopedia tree rows match Outputs: 32px height, consistent indentation, document/folder icons and a quiet selected fill. Reader/tab action rows stay 40px tall without wrapping; long labels truncate. Memory opens with readable prose, explicit editing, compact time/type/tags and collapsed technical details. It has no redundant displayed/total counter.
 Keep the catalog mounted so Escape restores its query, page, scroll and selected-card focus. Returning refreshes that bounded owner page while retaining its existing cards; query/page changes clear old results, late responses are ignored and failed refreshes expose retry. Reading a Wiki does not change the background selection. An unavailable Wiki shows its real empty state,
 not sample pages or a pretend generation. Knowledge is removed from the ActivityBar, including stored
 and custom rail orders; old unscoped Knowledge routes return to Work.
 
 The Board is a derived view of the existing task owner, scoped by project ID or exact task ID. Project cards are real sessions from the bounded owner query (20 per page), searched by stored name/description and filtered by the exact execution status before paging. Column counts describe the loaded page, not an invented collection total. Task cards are the latest structured agent plan, retaining original step IDs and states; the existing conversation source supplies live updates and bounded older-history continuation. A missing plan is explicit and can open the original task. Invalid plans or unavailable reads never become successful empty boards.
-All five scoped resources use the shared EmptyState inbox illustration at 64px, a 14px muted regular title and the same 16px illustration gap. Center it horizontally and vertically in the remaining main content area, with a flex-filling parent. No resource substitutes a large standalone Lucide icon or a top-aligned empty block. A populated board may retain quiet empty-column text; a completely empty board uses the common centered empty state.
+All five scoped resources use the shared EmptyState line illustration at 112×84px, an 18px medium Ink title and a 20px illustration gap. Compact surfaces use a 64×48px illustration and a 14px title. Search-empty states use the search variant and a real clear/reset action; an empty collection uses its actual create or browse action when available. Descriptions use 14px Body/Muted text and the primary action uses the shared 30px Ink button. Center it horizontally and vertically in the remaining main content area, with a flex-filling parent. No resource substitutes a large standalone Lucide icon or a top-aligned empty block. A populated board may retain quiet empty-column text; a completely empty board uses the common centered empty state.
 The file-tree context menu uses the shared anchored Popover inside the owning dialog, with collision handling and an interactive portal boundary for its nested confirmations. Clicking outside or Escape dismisses the menu without closing the Wiki. Creating or renaming inline receives focus; Escape cancels that edit before the Wiki's catalog navigation runs. Do not portal an interactive file menu directly to body outside a modal's pointer/focus boundary.
 There is no standalone Encyclopedia question pane. Ordinary tasks use the existing scoped `search_wiki` tool. The Encyclopedia sidebar graph button and graph tab are the graph entry points; do not repeat them at the right edge or show the legacy related-information rail for a workspace Encyclopedia.
 
@@ -723,12 +738,13 @@ icon button sits to its right.
 with a 13px `#8a8a8a` 更多 action. Empty copy is 13px `#8a8a8a` ("还没有项目", "尚无任务").
 
 Session rows use the list row. A current session is the selected row. Each row leads with a 20px black circle,
-then the title. The relative time is 12px `#8a8a8a` and hides while the row is hovered so Wiki, rename, pin,
-and archive can show. The row has no delete control. Day headings stay above groups of tasks.
+then the title. Task rows reveal one 24px More (`MoreHorizontal`) button on hover or keyboard focus.
+Its menu contains Wiki details, rename, pin/unpin, and archive. No individual action icons or delete control
+appear on the row. The title keeps the same available width through hover and focus. Day headings stay above groups of tasks.
 
-Project and task rows reveal a Wiki shortcut on hover or keyboard focus, using the same 14px Lucide
-PanelsTopLeft glyph, 1.7 stroke and 24px ghost button as the neighboring row actions. The project
-new-session action uses MessageSquarePlus. A shortcut resolves the original project/task record by
+Project group headers have no Wiki button; their new-session action uses MessageSquarePlus.
+The task More menu uses a 14px Lucide PanelsTopLeft glyph at 1.7 stroke for Wiki details.
+The Wiki action resolves the original task record by
 ID before opening the existing Wiki details; it does not fabricate a path or navigate the background
 conversation. Missing or mismatched records show a retryable error. Project scope shows the project
 root and all its task cards; task scope shows that task's actual directory and execution/plan. If
@@ -877,10 +893,9 @@ mounted. Opening settings does not clear the selected rail item.
 
 The overlay is `data-ui="settings.overlay"` inside the content area, above the page and not over the rail.
 
-- Scrim fades in over 220ms ease-out and fades out over 180ms ease-in.
-- The panel rises 12px and scales from 0.985, over 280ms `cubic-bezier(0.22, 1, 0.36, 1)`. Close moves it down
-  10px over 200ms `cubic-bezier(0.4, 0, 1, 1)`.
-- 返回应用 starts that close. The settings tab goes away when the panel animation ends.
+- Page navigation uses the content View Transition described in §6. The settings panel adds no second entrance.
+- Hosts without that API fade and scale the panel in place: 160ms enter, 200ms exit, with the shared Arc easing.
+- 返回应用 closes through the tab navigation owner. Only the fallback waits for its exit animation.
 - `prefers-reduced-motion: reduce` skips the animation and closes the tab immediately.
 
 The settings view is white, text `#171717`. The nav is 260px, the shared page-sidebar width
@@ -902,6 +917,23 @@ Local Aster exposes the existing 模型服务 at `/settings/provider` and 模型
 and saved defaults. 用量 stays under 偏好 and reads the local accounting source. API 网关 lives under 连接
 and links to those same model, route, budget and usage editors. It does not own duplicate configuration or a
 second usage dashboard. A local account or cloud billing flow is not added.
+
+Document processing exposes the OCR plugin's install state directly in its local processor panel. That
+plugin includes PP-OCRv6: one install action, measured progress, an installed state and error/retry feedback.
+Missing optional OCR is not an initialization failure. Browser settings expose Moli and Chrome
+downloads through their existing host installers. Installation continues across settings navigation and
+does not save a different backend or enable search engines. Show an indeterminate status when the installer
+does not report byte progress, and explain unsupported platforms instead of offering a broken download.
+Keep the installed-runtime state together and put document defaults or browser connection fields in their
+own 14px settings group. Text fields retain the shared 32px height, 8px radius, visible boundary and focus
+state; form columns follow the detail pane's available width. A service list has one current item. Service
+detail navigation uses the same content View Transition, while field edits retain their ordinary control motion.
+Lightpanda is unsupported because it has no native Windows build. Legacy configurations require an explicit
+choice of Moli or Chrome; opening settings must not replace the stored backend or start a download.
+
+Initial setup inspects and prepares plugins before mounting permission setup. Wait for successful
+inspection, installation completion and the preparation dialog's exit. Required installation failures stay
+in the preparation/retry flow; a missing optional component alone does not block permission setup.
 
 Settings destinations have distinct outline glyphs, shared with their settings-search entries: sliders for
 General, sun for Appearance, keyboard for Shortcuts, bars for Usage, server for Model services, CPU for Model

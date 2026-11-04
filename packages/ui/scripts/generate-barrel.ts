@@ -184,28 +184,14 @@ function expandBarrelFile(
   return lines
 }
 
-/** Console section: per-file exports with the rename map applied. */
+/**
+ * Console section: rename for preferred public names, omit when a twin already
+ * owns the barrel name (primitives/composites). Product uses the owner export.
+ */
 const consoleRenames: Record<string, string> = {
-  Dialog: 'ConsoleDialog',
-  DialogProps: 'ConsoleDialogProps',
-  ConfirmDialog: 'ConsoleConfirmDialog',
-  ConfirmDialogProps: 'ConsoleConfirmDialogProps',
-  Drawer: 'ConsoleDrawer',
-  DrawerProps: 'ConsoleDrawerProps',
-  DropdownMenu: 'ConsoleDropdownMenu',
-  DropdownMenuItem: 'ConsoleDropdownMenuItem',
-  FormField: 'ConsoleFormField',
-  FormFieldProps: 'ConsoleFormFieldProps',
-  ToastProvider: 'ConsoleToastProvider',
-  EmptyState: 'ConsoleEmptyState',
-  EmptyStateProps: 'ConsoleEmptyStateProps',
-  PageHeader: 'ConsolePageHeader',
-  PageHeaderProps: 'ConsolePageHeaderProps',
-  Pagination: 'ConsolePagination',
-  PaginationProps: 'ConsolePaginationProps',
-  Table: 'ConsoleTable',
-  Textarea: 'ConsoleTextarea',
-  TextareaProps: 'ConsoleTextareaProps',
+  // Prefer OffsetPagination (avoids primitives Pagination collision).
+  Pagination: 'OffsetPagination',
+  PaginationProps: 'OffsetPaginationProps',
   DataTable: 'ResourceTable',
   DataTableProps: 'ResourceTableProps',
   DataTableColumn: 'ResourceTableColumn',
@@ -213,23 +199,64 @@ const consoleRenames: Record<string, string> = {
   DataTableSortState: 'ResourceTableSortState',
   DataTablePaginationState: 'ResourceTablePaginationState',
   DataTableColumnFilterState: 'ResourceTableColumnFilterState',
-  DataTableSortValue: 'ResourceTableSortValue',
-  // collides with the command primitive's CommandItem
-  CommandItem: 'ConsoleCommandItem'
+  DataTableSortValue: 'ResourceTableSortValue'
 }
+
+/** Colliding console twins — not barrel-exported; owner kit already ships the name. */
+const consoleOmit = new Set([
+  'Dialog',
+  'DialogProps',
+  'ConfirmDialog',
+  'ConfirmDialogProps',
+  'Drawer',
+  'DrawerProps',
+  'DropdownMenu',
+  'DropdownMenuItem',
+  'DropdownMenuProps',
+  'FormField',
+  'FormFieldProps',
+  'ToastProvider',
+  'EmptyState',
+  'EmptyStateProps',
+  'EmptyStateVariant',
+  'PageHeader',
+  'PageHeaderProps',
+  'Table',
+  // collides with the command primitive's CommandItem
+  'CommandItem'
+])
 
 const consoleLines: string[] = []
 for (const file of readdirSync(join(srcRoot, 'components', 'console')).filter((f) => f.endsWith('.tsx')).sort()) {
   if (file === 'calendar.tsx') continue // internal to DateRangePicker
+  // Thin fill wrapper; product uses Textarea.Input from the primitives namespace export.
+  if (file === 'Textarea.tsx') continue
+  // Entire module is a colliding twin of composites/primitives — skip the barrel line.
+  if (
+    file === 'ConfirmDialog.tsx' ||
+    file === 'Drawer.tsx' ||
+    file === 'DropdownMenu.tsx' ||
+    file === 'EmptyState.tsx' ||
+    file === 'FormField.tsx' ||
+    file === 'PageHeader.tsx' ||
+    file === 'Table.tsx'
+  ) {
+    continue
+  }
   // DataTable re-exports the resource-table model types; ./lib/resourceTableModel is canonical
   const fileExcludes = file === 'DataTable.tsx'
     ? ['ResourceTableSortState', 'ResourceTablePaginationState', 'ResourceTableColumnFilterState', 'ResourceTableSortValue', 'SortDirection', 'ResourceTableColumnModel']
     : []
   const entries = [...collectExports(join(srcRoot, 'components', 'console', file)).entries()]
-    .filter(([n]) => n !== 'default' && !fileExcludes.includes(n))
+    .filter(([n]) => n !== 'default' && !fileExcludes.includes(n) && !consoleOmit.has(n))
     .sort((a, b) => a[0].localeCompare(b[0]))
-  const values = entries.map(([n, kind]) => (kind === 'value' ? (consoleRenames[n] ? `${n} as ${consoleRenames[n]}` : n) : null)).filter(Boolean) as unknown as string[]
-  const types = entries.map(([n, kind]) => (kind === 'type' ? (consoleRenames[n] ? `${n} as ${consoleRenames[n]}` : n) : null)).filter(Boolean) as unknown as string[]
+  const values = entries
+    .map(([n, kind]) => (kind === 'value' ? (consoleRenames[n] ? `${n} as ${consoleRenames[n]}` : n) : null))
+    .filter(Boolean) as unknown as string[]
+  const types = entries
+    .map(([n, kind]) => (kind === 'type' ? (consoleRenames[n] ? `${n} as ${consoleRenames[n]}` : n) : null))
+    .filter(Boolean) as unknown as string[]
+  if (!values.length && !types.length) continue
   const spec = `'./components/console/${file.replace(/\.tsx$/, '')}'`
   if (values.length) consoleLines.push(wrap(values) + ` } from ${spec}`)
   if (types.length) consoleLines.push(wrap(types, 'export type { ') + ` } from ${spec}`)
@@ -280,7 +307,8 @@ sections.push(`export { cn } from './lib/utils'`)
 // lib modules declare exports inline (no export statements), so emit from their symbol set
 for (const [mod, renames] of [
   ['date', {}],
-  ['resourceTableModel', consoleRenames]
+  ['resourceTableModel', consoleRenames],
+  ['rowMotion', {}]
 ] as const) {
   const entries = [...collectExports(join(srcRoot, 'lib', `${mod}.ts`)).entries()]
     .filter(([n]) => n !== 'default')

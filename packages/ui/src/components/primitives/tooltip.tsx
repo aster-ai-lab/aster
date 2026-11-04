@@ -125,9 +125,9 @@ function useTooltipController(
  */
 function setupTooltipOrphanSweeper(): void {
   const pending = new WeakMap<Element, number>()
-  const observedRoots = new WeakSet<Document | ShadowRoot>()
+  const observedRoots = new WeakSet<Document | Element>()
   // 已观察 shadow root 的弱引用清单，替代「全文档元素级遍历 + 逐元素递归」的引用搜索
-  const shadowRoots: WeakRef<ShadowRoot>[] = []
+  const shadowRoots: WeakRef<Element>[] = []
   /** 查找对某 contentId 的 trigger 引用：document 单查询 + 已观察 shadow root 逐个单查询。
    * 只覆盖已观察的 shadow root（宿主插入后迟 attach 的 root 为已知边界）；iframe 不可达。 */
   const hasActiveAriaReference = (tooltipId: string): boolean => {
@@ -241,7 +241,7 @@ function setupTooltipOrphanSweeper(): void {
     }
   })
   // shadow 边界不穿透：已挂 root 的宿主连同其内容一并纳入观察，嵌套宿主逐层递归
-  function scanShadowTree(root: ShadowRoot): void {
+  function scanShadowTree(root: Document | Element): void {
     ensureObserved(root)
     for (const el of root.querySelectorAll(SWEEPABLE_CONTENT_SELECTOR)) {
       maybeSweep(el)
@@ -250,10 +250,16 @@ function setupTooltipOrphanSweeper(): void {
       if (child.shadowRoot) scanShadowTree(child.shadowRoot)
     }
   }
-  function ensureObserved(root: Document | ShadowRoot): void {
+  function ensureObserved(root: Document | Element): void {
     if (observedRoots.has(root)) return
     observedRoots.add(root)
-    if (root instanceof ShadowRoot) shadowRoots.push(new WeakRef(root))
+    // Bun/happy-dom hermetic runners may lack ShadowRoot; skip weak tracking there.
+    const ShadowRootCtor = (globalThis as Record<string, unknown>)['ShadowRoot'] as
+      | (abstract new (...args: never[]) => object)
+      | undefined
+    if (typeof ShadowRootCtor === 'function' && root instanceof ShadowRootCtor) {
+      shadowRoots.push(new WeakRef(root))
+    }
     observer.observe(root, {
       childList: true,
       subtree: true,

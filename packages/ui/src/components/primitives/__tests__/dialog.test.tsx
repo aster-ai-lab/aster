@@ -129,7 +129,9 @@ describe('Dialog primitive', () => {
     const dialogSource = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../dialog.tsx'), 'utf8')
     expect(content).not.toBeNull()
     expect(motionCss).toContain(`aster-dialog-out ${DIALOG_CLOSE_DURATION_MS}ms`)
-    expect(motionCss).toContain('aster-dialog-in 160ms')
+    expect(motionCss).toContain('scale 160ms')
+    expect(motionCss).toContain('@starting-style')
+    expect(motionCss).not.toContain(':root:not(:focus-within)')
     expect(motionCss).not.toMatch(/transform:|slide-in-from-bottom|filter:/)
     expect(dialogSource).not.toMatch(/slide-in-from-bottom|slide-out-to-bottom|animate-in|zoom-in-/)
     expect(DIALOG_CLOSE_DURATION_MS).toBe(200)
@@ -147,11 +149,19 @@ describe('Dialog primitive', () => {
 
     const overlay = document.querySelector('[data-slot="dialog-overlay"]')
     const content = document.querySelector('[data-slot="dialog-content"]')
+    const arcDialogCss = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../arc/dialog/dialog.module.css'),
+      'utf8'
+    )
 
     expect(overlay).toHaveClass('motion-reduce:animate-none')
     expect(content).toHaveClass('motion-reduce:animate-none')
     expect(content?.className ?? '').not.toMatch(/slide-in-from-bottom|slide-out-to-bottom|zoom-in-|animate-in/)
     expect(overlay?.className ?? '').not.toMatch(/slide-in-from-bottom|animate-in/)
+    expect(getComputedStyle(overlay!).backdropFilter || 'none').toMatch(/^(none)?$/)
+    expect(arcDialogCss).not.toMatch(/translateY|backdrop-filter|blur\(/)
+    expect(arcDialogCss).toContain('scale: 0.98')
+    expect(arcDialogCss).toContain('rgba(0, 0, 0, 0.20)')
   })
 
   it('keeps a requested directional motion in place', () => {

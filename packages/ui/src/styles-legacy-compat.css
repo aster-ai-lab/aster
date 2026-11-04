@@ -5,9 +5,10 @@
 @source "./**/*.{ts,tsx}";
 
 @theme {
-  --font-sans: 'Inter Variable', 'Inter V', 'Inter', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', -apple-system,
-    system-ui, sans-serif;
+  /* Match Studio product defaults (DESIGN.md §3): system UI stack, not Inter. */
+  --font-sans: Ubuntu, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
+    sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, monospace;
 

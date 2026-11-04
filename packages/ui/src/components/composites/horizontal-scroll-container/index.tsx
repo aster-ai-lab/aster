@@ -132,7 +132,7 @@ const HorizontalScrollContainer: React.FC<HorizontalScrollContainerProps> = ({
           aria-label={scrollLeftLabel}
           data-no-expand
           className={cn(
-            'scroll-left-button absolute top-1/2 left-2 z-[1] -translate-y-1/2 rounded-full bg-background opacity-0 shadow-md transition-opacity hover:bg-background focus-visible:bg-background',
+            'scroll-left-button absolute top-1/2 left-2 z-[1] -translate-y-1/2 rounded-[8px] bg-background opacity-0 shadow-md transition-opacity hover:bg-background focus-visible:bg-background',
             'text-muted-foreground hover:text-foreground focus-visible:text-foreground',
             'group-hover/container:opacity-100 focus-visible:opacity-100'
           )}
@@ -148,7 +148,7 @@ const HorizontalScrollContainer: React.FC<HorizontalScrollContainerProps> = ({
           aria-label={scrollRightLabel}
           data-no-expand
           className={cn(
-            'scroll-right-button absolute top-1/2 right-2 z-[1] -translate-y-1/2 rounded-full bg-background opacity-0 shadow-md transition-opacity hover:bg-background focus-visible:bg-background',
+            'scroll-right-button absolute top-1/2 right-2 z-[1] -translate-y-1/2 rounded-[8px] bg-background opacity-0 shadow-md transition-opacity hover:bg-background focus-visible:bg-background',
             'text-muted-foreground hover:text-foreground focus-visible:text-foreground',
             'group-hover/container:opacity-100 focus-visible:opacity-100'
           )}

@@ -1,3 +1,4 @@
+import { LayoutGroup } from 'motion/react'
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
@@ -85,54 +86,57 @@ function SegmentedControl<TValue extends string = string>({
   }
 
   return (
-    <div
-      role="radiogroup"
-      data-slot="segmented-control"
-      data-size={size}
-      aria-disabled={disabled}
-      className={cn(
-        'arc',
-        arcSegmented.root,
-        'relative isolate inline-flex items-center',
-        disabled && 'pointer-events-none opacity-40',
-        className
-      )}
-      {...props}>
-      {options.map((option) => {
-        const selected = option.value === selectedValue
+    <LayoutGroup id={highlightId}>
+      <div
+        role="radiogroup"
+        data-slot="segmented-control"
+        data-size={size}
+        aria-disabled={disabled}
+        className={cn(
+          'arc',
+          arcSegmented.root,
+          'relative isolate inline-flex items-center',
+          disabled && 'pointer-events-none opacity-40',
+          className
+        )}
+        {...props}>
+        {options.map((option) => {
+          const selected = option.value === selectedValue
 
-        return (
-          <button
-            key={option.value}
-            ref={(element) => {
-              if (element) buttons.current.set(option.value, element)
-              else buttons.current.delete(option.value)
-            }}
-            type="button"
-            role="radio"
-            data-size={size}
-            aria-checked={selected}
-            disabled={disabled || option.disabled}
-            tabIndex={option.value === focusValue ? 0 : -1}
-            onClick={() => handleSelect(option)}
-            onKeyDown={(event) => handleKeyDown(event, option)}
-            className={cn(
-              'arc',
-              arcSegmented.button,
-              'relative inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150 disabled:pointer-events-none disabled:opacity-40'
-            )}>
-            {selected && (
-              <SelectionHighlight
-                data-slot="segmented-control-indicator"
-                layoutId={highlightId}
-                className={arcSegmented.selection}
-              />
-            )}
-            <span className={arcSegmented.label}>{option.label}</span>
-          </button>
-        )
-      })}
-    </div>
+          return (
+            <button
+              key={option.value}
+              ref={(element) => {
+                if (element) buttons.current.set(option.value, element)
+                else buttons.current.delete(option.value)
+              }}
+              type="button"
+              role="radio"
+              data-size={size}
+              aria-checked={selected}
+              disabled={disabled || option.disabled}
+              tabIndex={option.value === focusValue ? 0 : -1}
+              onClick={() => handleSelect(option)}
+              onKeyDown={(event) => handleKeyDown(event, option)}
+              className={cn(
+                'arc',
+                arcSegmented.button,
+                'relative inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none motion-safe:transition-colors motion-safe:duration-150 disabled:pointer-events-none disabled:opacity-40'
+              )}>
+              {selected && selectedValue !== undefined && (
+                <SelectionHighlight
+                  data-slot="segmented-control-indicator"
+                  layoutId={highlightId}
+                  layoutDependency={selectedValue}
+                  className={arcSegmented.selection}
+                />
+              )}
+              <span className={arcSegmented.label}>{option.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </LayoutGroup>
   )
 }
 

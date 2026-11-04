@@ -5,19 +5,30 @@ import {
   useId,
   type ReactElement,
   type ReactNode,
-} from 'react';
-import { cn } from '../../lib/cn';
+} from 'react'
+import { cn } from '../../lib/cn'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../primitives/field'
+import { RequiredMark } from '../primitives/label'
 
 export type FormFieldProps = {
-  label?: string;
-  hint?: string;
-  error?: string;
-  required?: boolean;
-  htmlFor?: string;
-  children: ReactNode;
-  className?: string;
-};
+  label?: string
+  hint?: string
+  error?: string
+  required?: boolean
+  htmlFor?: string
+  children: ReactNode
+  className?: string
+}
 
+/**
+ * Console labeled control shell on shared Field primitives.
+ * Prefer composing `Field` / `FieldLabel` / `FieldError` for new Studio forms.
+ */
 export function FormField({
   label,
   hint,
@@ -27,55 +38,46 @@ export function FormField({
   children,
   className = '',
 }: FormFieldProps) {
-  const autoId = useId();
-  const fieldId = htmlFor ?? autoId;
-  const hintId = `${fieldId}-hint`;
-  const errorId = `${fieldId}-error`;
-  const describedBy = [
-    error ? errorId : null,
-    hint && !error ? hintId : null,
-  ]
+  const autoId = useId()
+  const fieldId = htmlFor ?? autoId
+  const hintId = `${fieldId}-hint`
+  const errorId = `${fieldId}-error`
+  const describedBy = [error ? errorId : null, hint && !error ? hintId : null]
     .filter(Boolean)
-    .join(' ');
+    .join(' ')
 
   const control = Children.map(children, (child) => {
-    if (!isValidElement(child)) return child;
-    const el = child as ReactElement<Record<string, unknown>>;
+    if (!isValidElement(child)) return child
+    const el = child as ReactElement<Record<string, unknown>>
     return cloneElement(el, {
       id: (el.props.id as string | undefined) ?? fieldId,
       'aria-invalid': error ? true : el.props['aria-invalid'],
       'aria-describedby':
         describedBy || (el.props['aria-describedby'] as string | undefined),
-    });
-  });
+    })
+  })
 
   return (
-    <div className={cn('flex flex-col gap-1.5', className)}>
+    <Field
+      data-invalid={error ? true : undefined}
+      className={cn('gap-1.5', className)}
+    >
       {label ? (
-        <label htmlFor={fieldId} className="text-xs font-medium text-ink-muted">
+        <FieldLabel htmlFor={fieldId} className="text-xs font-medium text-ink-muted">
           {label}
-          {required ? (
-            <span className="text-[color:var(--color-error)]" aria-hidden>
-              {' '}
-              *
-            </span>
-          ) : null}
-        </label>
+          {required ? <RequiredMark /> : null}
+        </FieldLabel>
       ) : null}
       {control}
       {error ? (
-        <p
-          id={errorId}
-          className="mt-0.5 text-xs text-[color:var(--color-error)]"
-          role="alert"
-        >
+        <FieldError id={errorId} className="mt-0.5 text-xs text-[color:var(--color-error)]">
           {error}
-        </p>
+        </FieldError>
       ) : hint ? (
-        <p id={hintId} className="mt-0.5 text-xs leading-relaxed text-ink-faint">
+        <FieldDescription id={hintId} className="mt-0.5 text-xs leading-relaxed text-ink-faint">
           {hint}
-        </p>
+        </FieldDescription>
       ) : null}
-    </div>
-  );
+    </Field>
+  )
 }

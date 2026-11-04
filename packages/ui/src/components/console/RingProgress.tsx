@@ -1,13 +1,18 @@
-import { cn } from '../../lib/cn';
+import CircularProgress from '../primitives/circular-progress'
+import { cn } from '../../lib/cn'
 
 export type RingProgressProps = {
-  value: number; // 0–100
-  size?: number;
-  strokeWidth?: number;
-  label?: string;
-  className?: string;
-};
+  value: number // 0–100
+  size?: number
+  strokeWidth?: number
+  label?: string
+  className?: string
+}
 
+/**
+ * Console meter API on shared Arc CircularProgress.
+ * Prefer `CircularProgress` for new product surfaces.
+ */
 export function RingProgress({
   value,
   size = 72,
@@ -15,11 +20,7 @@ export function RingProgress({
   label,
   className = '',
 }: RingProgressProps) {
-  const pct = Math.max(0, Math.min(100, value));
-  const r = (size - strokeWidth) / 2;
-  const c = 2 * Math.PI * r;
-  const offset = c * (1 - pct / 100);
-
+  const pct = Math.max(0, Math.min(100, value))
   return (
     <div
       className={cn('ui-ring', className)}
@@ -30,29 +31,15 @@ export function RingProgress({
       aria-valuenow={Math.round(pct)}
       aria-label={label}
     >
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
-        <circle
-          className="ui-ring__track"
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          strokeWidth={strokeWidth}
-        />
-        <circle
-          className="ui-ring__fill"
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          strokeWidth={strokeWidth}
-          strokeDasharray={c}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </svg>
-      <span className="ui-ring__label">{Math.round(pct)}%</span>
+      <CircularProgress
+        value={pct}
+        size={size}
+        strokeWidth={strokeWidth}
+        showLabel
+        renderLabel={() => `${Math.round(pct)}%`}
+        className="block"
+        labelClassName="ui-ring__label text-[13px] tabular-nums"
+      />
     </div>
-  );
+  )
 }

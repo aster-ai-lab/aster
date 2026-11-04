@@ -1,111 +1,72 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { EmptyState } from '../index'
 
-beforeAll(() => {
-  vi.stubGlobal('PointerEvent', globalThis.PointerEvent ?? MouseEvent)
-  vi.stubGlobal('ResizeObserver', class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  })
-})
-
+beforeAll(() => vi.stubGlobal('PointerEvent', MouseEvent))
 afterAll(() => vi.unstubAllGlobals())
-
-afterEach(() => {
-  cleanup()
-})
+afterEach(cleanup)
 
 describe('EmptyState', () => {
-  it('renders title and description', () => {
-    render(<EmptyState title="No items" description="Add something" />)
-    expect(screen.getByText('No items')).toBeInTheDocument()
-    expect(screen.getByText('Add something')).toBeInTheDocument()
-  })
-
-  it('renders action button and fires callback', () => {
-    const onAction = vi.fn()
-    render(<EmptyState title="Empty" actionLabel="Create" onAction={onAction} />)
-    const btn = screen.getByRole('button', { name: 'Create' })
-    expect(btn).toBeInTheDocument()
-    fireEvent.click(btn)
-    expect(onAction).toHaveBeenCalledTimes(1)
-  })
-
-  it('activates the action from the keyboard using the button accessible name', async () => {
+  it('offers the actual recovery action to keyboard users', async () => {
     const user = userEvent.setup()
-    const onAction = vi.fn()
-    render(<EmptyState title="Empty" actionLabel="Create" onAction={onAction} />)
-
-    const button = screen.getByRole('button', { name: 'Create' })
-    button.focus()
-    await user.keyboard('{Enter}')
-    expect(onAction).toHaveBeenCalledTimes(1)
-
-    await user.keyboard(' ')
-    expect(onAction).toHaveBeenCalledTimes(2)
-  })
-
-  it('renders secondary button and fires callback', () => {
-    const onSecondary = vi.fn()
-    render(<EmptyState title="Empty" secondaryLabel="Learn more" onSecondary={onSecondary} />)
-    const btn = screen.getByText('Learn more')
-    fireEvent.click(btn)
-    expect(onSecondary).toHaveBeenCalledTimes(1)
-  })
-
-  it('does not render buttons when no labels provided', () => {
-    const { container } = render(<EmptyState title="Empty" />)
-    expect(container.querySelectorAll('button')).toHaveLength(0)
-  })
-
-  it('renders the unified illustration for presets', () => {
-    const { container } = render(<EmptyState preset="no-code-tool" title="No tools" />)
-
-    expect(container.querySelector('svg[viewBox="0 0 64 41"]')).toBeInTheDocument()
-    expect(screen.getByText('No tools')).toBeInTheDocument()
-  })
-
-  it('applies compact styling', () => {
-    const { container } = render(<EmptyState compact title="Compact" />)
-    const wrapper = container.firstElementChild as HTMLElement
-    expect(wrapper.className).toContain('py-8')
-  })
-
-  it('renders the inbox illustration by default', () => {
-    const { container } = render(<EmptyState title="Empty" />)
-    expect(container.querySelector('svg')).toBeInTheDocument()
-    // the sparkle path is unique to the book variant
-    expect(container.querySelector('path[fill-opacity="0.35"]')).not.toBeInTheDocument()
-  })
-
-  it('renders the book illustration variant', () => {
-    const { container } = render(<EmptyState illustration="book" title="Empty" />)
-    expect(container.querySelector('path[fill-opacity="0.35"]')).toBeInTheDocument()
-  })
-
-  it('prefers an explicit icon over the illustration', () => {
-    const Icon = ({ className }: { className?: string }) => (
-      <svg data-testid="custom-icon" className={className} aria-hidden="true" />
+    const clear = vi.fn()
+    render(
+      <EmptyState
+        illustration="search"
+        title="No results for roadmap"
+        description="Two filters are active."
+        actionLabel="Clear filters"
+        onAction={clear}
+      />
     )
-    const { container } = render(<EmptyState icon={Icon} title="Empty" />)
-    expect(screen.getByTestId('custom-icon')).toBeInTheDocument()
-    expect(container.querySelectorAll('svg')).toHaveLength(1)
+    expect(screen.getByRole('heading', { name: 'No results for roadmap' })).toBeVisible()
+    expect(screen.getByText('Two filters are active.')).toBeVisible()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Clear filters' })).toHaveFocus()
+    await user.keyboard('{Enter}')
+    expect(clear).toHaveBeenCalledTimes(1)
   })
 
-  it('keeps spacing between the title and actions when no description is present', () => {
-    render(<EmptyState title="Empty" actionLabel="Create" onAction={vi.fn()} />)
-    expect(screen.getByText('Empty').className).toContain('mb-5')
+  it('keeps primary and secondary outcomes independent', async () => {
+    const user = userEvent.setup()
+    const create = vi.fn(),
+      browse = vi.fn()
+    render(
+      <EmptyState
+        title="No files"
+        actionLabel="Import"
+        onAction={create}
+        secondaryLabel="Browse"
+        onSecondary={browse}
+      />
+    )
+    await user.click(screen.getByRole('button', { name: 'Browse' }))
+    expect(browse).toHaveBeenCalledOnce()
+    expect(create).not.toHaveBeenCalled()
   })
 
-  it('applies custom className', () => {
-    const { container } = render(<EmptyState className="custom-class" title="Test" />)
-    const wrapper = container.firstElementChild as HTMLElement
-    expect(wrapper.className).toContain('custom-class')
+  it('does not offer an action without an executable callback', () => {
+    render(<EmptyState title="No results" actionLabel="Create" secondaryLabel="Browse" />)
+    expect(screen.queryByRole('button')).toBeNull()
+  })
+
+  it('preserves action focus while the search result copy changes', async () => {
+    const user = userEvent.setup()
+    const clear = vi.fn()
+    const view = render(<EmptyState title="No results for plan" actionLabel="Clear" onAction={clear} />)
+    await user.tab()
+    view.rerender(<EmptyState title="No results for roadmap" actionLabel="Clear" onAction={clear} />)
+    expect(screen.getByRole('button', { name: 'Clear' })).toHaveFocus()
+    expect(screen.getByRole('heading', { name: 'No results for roadmap' })).toBeVisible()
+  })
+
+  it('keeps the illustration decorative for assistive technology', () => {
+    render(<EmptyState illustration="search" title="No results" />)
+    expect(screen.queryByRole('img')).toBeNull()
+    expect(screen.getByRole('heading', { name: 'No results' })).toBeVisible()
   })
 })

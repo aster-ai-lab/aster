@@ -38,24 +38,29 @@ function DefaultEmptyIcon() {
         height="20"
         rx="3"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
       />
       <path
         d="M6 14h28"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
       />
       <path
         d="M14 22h12M16 26h8"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
       />
     </svg>
   );
 }
 
+/**
+ * Console list/filter empty shell. New Studio product empties should use the
+ * shared composites `EmptyState` (unified illustration + DESIGN empty recipe).
+ * This API stays for Console `no-match` / clear-filters call sites — shrink-only.
+ */
 export function EmptyState({
   title,
   description,
@@ -74,7 +79,7 @@ export function EmptyState({
   ) : null;
   const body = (
     <>
-      <div className={plain ? 'flex items-center justify-center' : 'flex size-12 items-center justify-center rounded-full bg-[color:var(--color-control-fill)]'}>
+      <div className={plain ? 'flex items-center justify-center' : 'flex size-12 items-center justify-center rounded-[8px] bg-[color:var(--color-control-fill)]'}>
         {icon ?? <DefaultEmptyIcon />}
       </div>
       <div className="max-w-sm">

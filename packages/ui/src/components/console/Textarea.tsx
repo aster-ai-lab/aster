@@ -1,19 +1,25 @@
-import type { TextareaHTMLAttributes } from 'react';
-import { cn } from '../../lib/cn';
+import type { TextareaHTMLAttributes } from 'react'
+import { cn } from '../../lib/cn'
+import { Input as PrimitiveTextarea } from '../primitives/textarea'
 
-/** Fill control — soft gray fill, no outline stroke by default. */
+/**
+ * Console fill textarea on the shared Arc/primitives Textarea input.
+ * Not barrel-exported — product surfaces use `Textarea.Input` from `@aster-ai-lab/ui`.
+ */
 export function Textarea({
   className = '',
+  value,
+  defaultValue,
+  onChange,
   ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <textarea
-      className={cn(
-        'min-h-[5.5rem] w-full resize-y rounded-lg border border-transparent bg-[color:var(--color-control-fill)] px-3 py-2 text-[13px] font-normal leading-5 text-ink outline-none transition placeholder:text-ink-faint',
-        'focus-visible:shadow-[var(--ring-focus)]',
-        className,
-      )}
+    <PrimitiveTextarea
+      className={cn('min-h-[5.5rem] w-full resize-y', className)}
+      value={typeof value === 'string' ? value : undefined}
+      defaultValue={typeof defaultValue === 'string' ? defaultValue : undefined}
+      onChange={onChange}
       {...props}
     />
-  );
+  )
 }

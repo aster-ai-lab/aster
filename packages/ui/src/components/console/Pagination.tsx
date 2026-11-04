@@ -1,10 +1,16 @@
+import { useId } from 'react';
+import { LayoutGroup } from 'motion/react';
+
 import { cn } from '../../lib/cn';
+import { SelectionHighlight } from '../primitives/selection-highlight';
 
 /**
  * Pagination — DESIGN.md `pagination*` / `cursor-pager`.
  *
  * Industry pattern (GitHub / Linear / Ant): icon steps + numbered window + ellipsis.
  * Secondary geometry only — never primary black CTA.
+ * Active page uses Arc shared-highlight plate travel (SelectionHighlight).
+ * Page-window math stays here; primitives `pagination` stays the low-level building block.
  */
 
 export type PaginationProps = {
@@ -75,7 +81,7 @@ function ChevronLeft() {
       <path
         d="M7.5 2.5 4 6l3.5 3.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -89,7 +95,7 @@ function ChevronRight() {
       <path
         d="M4.5 2.5 8 6l-3.5 3.5"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -102,7 +108,7 @@ const navigationClassName =
 const controlsClassName =
   'inline-flex shrink-0 items-center gap-0 whitespace-nowrap sm:gap-1';
 const pageButtonClassName =
-  'inline-flex h-[30px] min-w-[30px] shrink-0 items-center justify-center rounded-[8px] px-2 text-[13px] tabular-nums outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 dark:focus-visible:ring-[#d4d4d4] disabled:pointer-events-none disabled:opacity-40';
+  'relative isolate inline-flex h-[30px] min-w-[30px] shrink-0 items-center justify-center rounded-[8px] px-2 text-[13px] tabular-nums outline-none motion-safe:transition-colors motion-safe:duration-150 hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 dark:focus-visible:ring-[#d4d4d4] disabled:pointer-events-none disabled:opacity-40';
 
 export function Pagination({
   page,
@@ -117,6 +123,7 @@ export function Pagination({
   busy = false,
   labels: labelOverrides,
 }: PaginationProps) {
+  const highlightId = useId();
   const labels = { ...defaultLabels, ...labelOverrides };
   const pageCount =
     typeof total === 'number'
@@ -163,62 +170,70 @@ export function Pagination({
       ) : null}
 
       {pageCount === 1 ? null : (
-        <div
-          className={cn('ui-pagination__controls', controlsClassName)}
-          role="group"
-          aria-label={labels.pages}
-        >
-          <button
-            type="button"
-            className={cn('ui-pagination__step', pageButtonClassName)}
-            aria-label={labels.previous}
-            disabled={!prevEnabled}
-            onClick={() => onPageChange(current - 1)}
+        <LayoutGroup id={highlightId}>
+          <div
+            className={cn('ui-pagination__controls', controlsClassName)}
+            role="group"
+            aria-label={labels.pages}
           >
-            <ChevronLeft />
-          </button>
+            <button
+              type="button"
+              className={cn('ui-pagination__step', pageButtonClassName)}
+              aria-label={labels.previous}
+              disabled={!prevEnabled}
+              onClick={() => onPageChange(current - 1)}
+            >
+              <ChevronLeft />
+            </button>
 
-          {items.map((item, index) =>
-            item === 'ellipsis' ? (
-              <span
-                key={`e-${index}`}
-                className="ui-pagination__ellipsis inline-flex h-[30px] min-w-5 items-center justify-center"
-                aria-hidden
-              >
-                …
-              </span>
-            ) : (
-              <button
-                key={item}
-                type="button"
-                className={cn(
-                  'ui-pagination__page',
-                  pageButtonClassName,
-                  item === current && 'is-active',
-                  item === current && 'bg-muted font-medium text-foreground',
-                )}
-                aria-label={labels.page(item)}
-                aria-current={item === current ? 'page' : undefined}
-                disabled={busy}
-                onClick={() => {
-                  if (item !== current) onPageChange(item);
-                }}
-              >
-                {item}
-              </button>
-            ),
-          )}
+            {items.map((item, index) =>
+              item === 'ellipsis' ? (
+                <span
+                  key={`e-${index}`}
+                  className="ui-pagination__ellipsis inline-flex h-[30px] min-w-5 items-center justify-center"
+                  aria-hidden
+                >
+                  …
+                </span>
+              ) : (
+                <button
+                  key={item}
+                  type="button"
+                  className={cn(
+                    'ui-pagination__page',
+                    pageButtonClassName,
+                    item === current && 'is-active font-medium text-foreground',
+                  )}
+                  aria-label={labels.page(item)}
+                  aria-current={item === current ? 'page' : undefined}
+                  disabled={busy}
+                  onClick={() => {
+                    if (item !== current) onPageChange(item);
+                  }}
+                >
+                  {item === current ? (
+                    <SelectionHighlight
+                      layoutId={highlightId}
+                      layoutDependency={item}
+                      className="bg-muted"
+                    />
+                  ) : null}
+                  <span className="relative z-10">{item}</span>
+                </button>
+              ),
+            )}
 
-          <button
-            type="button"
-            className={cn('ui-pagination__step', pageButtonClassName)}
-            aria-label={labels.next}
-            disabled={!nextEnabled}
-            onClick={() => onPageChange(current + 1)}
-          >
-            <ChevronRight />
-          </button>
-        </div>
+            <button
+              type="button"
+              className={cn('ui-pagination__step', pageButtonClassName)}
+              aria-label={labels.next}
+              disabled={!nextEnabled}
+              onClick={() => onPageChange(current + 1)}
+            >
+              <ChevronRight />
+            </button>
+          </div>
+        </LayoutGroup>
       )}
     </nav>
   );

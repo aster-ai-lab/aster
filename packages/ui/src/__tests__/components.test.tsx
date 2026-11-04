@@ -8,6 +8,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { useState } from 'react';
 
 beforeEach(() => {
@@ -366,12 +367,30 @@ describe('Wave A — P0', () => {
     expect(await screen.findByText('Operation op-1')).toBeTruthy();
   });
 
-  test('FilterChip aria-pressed', async () => {
+  test('FilterChip aria-pressed and optional SelectionHighlight', async () => {
     const { FilterChip } = await import('../components/console/FilterChip');
+    const { LayoutGroup } = await import('motion/react');
     render(<FilterChip label="Active" active />);
     expect(screen.getByRole('button', { name: 'Active' }).getAttribute('aria-pressed')).toBe(
       'true',
     );
+    cleanup();
+    const { rerender } = render(
+      <LayoutGroup id="filters">
+        <FilterChip label="Done" active highlightId="filters" />
+      </LayoutGroup>,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Done' }).querySelector('[data-slot="selection-highlight"]'),
+    ).toBeTruthy();
+    rerender(
+      <LayoutGroup id="filters">
+        <FilterChip label="Done" active={false} highlightId="filters" />
+      </LayoutGroup>,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Done' }).querySelector('[data-slot="selection-highlight"]'),
+    ).toBeNull();
   });
 
   test('Dialog opens with aria-modal', async () => {
@@ -478,6 +497,7 @@ describe('Wave B — P1', () => {
 
 
   test('DropdownMenu danger item', async () => {
+    const user = userEvent.setup();
     const { DropdownMenu } = await import('../components/console/DropdownMenu');
     const onDelete = vi.fn(() => undefined);
     render(
@@ -488,8 +508,8 @@ describe('Wave B — P1', () => {
         ]}
       />,
     );
-    fireEvent.click(screen.getByRole('button', { name: 'More actions' }));
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
+    await user.click(screen.getByRole('button', { name: 'More actions' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Delete' }));
     expect(onDelete).toHaveBeenCalled();
   });
 
@@ -500,7 +520,18 @@ describe('Wave B — P1', () => {
     const { Drawer } = await import('../components/console/Drawer');
     const onAction = vi.fn(() => undefined);
     const onOpenChange = vi.fn(() => undefined);
-    render(
+    const { rerender } = render(
+      <>
+        <Alert tone="warn" title="Careful">
+          Body
+        </Alert>
+        <DangerZone actionLabel="Disable" onAction={onAction} />
+        <Skeleton className="h-4 w-10" />
+      </>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Disable' }));
+    expect(onAction).toHaveBeenCalled();
+    rerender(
       <>
         <Alert tone="warn" title="Careful">
           Body
@@ -512,8 +543,6 @@ describe('Wave B — P1', () => {
         </Drawer>
       </>,
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Disable' }));
-    expect(onAction).toHaveBeenCalled();
     expect(screen.getByText('Drawer body')).toBeTruthy();
     expect(
       document.querySelector('.ui-drawer-root')?.className,

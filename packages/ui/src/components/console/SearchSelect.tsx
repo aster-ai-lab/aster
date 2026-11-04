@@ -15,6 +15,7 @@ import { createPortal } from 'react-dom'
 
 import { cn } from '../../lib/cn'
 import { menuCardClass, menuRowClass, menuRowSelectedClass } from '../../lib/menu-surface'
+import { usePopupPresence } from '../../lib/usePopupPresence'
 import { usePopupDismissal } from '../primitives/popup-dismissal'
 import { PopupHighlight } from '../primitives/popup-highlight'
 import { usePortalContainer } from '../primitives/portal-container'
@@ -144,6 +145,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   const inputRef = useRef<HTMLInputElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
+  const { present, state } = usePopupPresence(open || null)
   const dismissal = usePopupDismissal(panelRef, { open, onOpenChange: setOpen })
   const [instantMotion, setInstantMotion] = useState(false)
   const [query, setQuery] = useState('')
@@ -158,7 +160,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   } | null>(null)
   const portalContainer =
     typeof portalTarget === 'function'
-      ? open && triggerRef.current
+      ? present && triggerRef.current
         ? portalTarget(triggerRef.current)
         : inheritedPortalContainer
       : (portalTarget ?? inheritedPortalContainer)
@@ -244,7 +246,6 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
 
   useLayoutEffect(() => {
     if (!open) {
-      setCoords(null)
       return
     }
     updatePosition()
@@ -481,7 +482,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                 clearSelection()
               }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
               </svg>
             </span>
           ) : null}
@@ -495,18 +496,21 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.7"
             aria-hidden>
             <path d="m6 9 6 6 6-6" />
           </svg>
         </span>
       </button>
-      {open && typeof document !== 'undefined'
+      {present && typeof document !== 'undefined'
         ? createPortal(
             <div
               ref={dismissal.ref}
               data-popup-surface=""
               data-side={coords?.side}
+              data-state={state}
+              inert={!open}
+              aria-hidden={!open || undefined}
               className={cn(
                 'arc ui-search-select__panel ui-search-select__panel--portal',
                 menuCardClass,
@@ -532,13 +536,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                       animation: instantMotion ? 'none' : undefined,
                       transition: instantMotion ? 'none' : undefined
                     }
-                  : {
-                      position: 'fixed',
-                      top: -9999,
-                      left: -9999,
-                      visibility: 'hidden',
-                      zIndex: 240
-                    }
+                  : { position: 'fixed', top: -9999, left: -9999, visibility: 'hidden', zIndex: 240 }
               }>
               {glidingHighlight && <PopupHighlight visible={open} />}
               {searchable ? (
@@ -627,7 +625,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                                     <path
                                       d="M3.2 8.3 6.3 11.4 12.8 4.7"
                                       stroke="currentColor"
-                                      strokeWidth="2"
+                                      strokeWidth="1.7"
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                     />

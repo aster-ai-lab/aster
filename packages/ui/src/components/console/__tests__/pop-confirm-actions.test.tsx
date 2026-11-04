@@ -1,15 +1,31 @@
 // @vitest-environment happy-dom
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { PortalContainerProvider } from '../../primitives/portal-container'
 
 import { PopConfirm } from '../PopConfirm'
 
-afterEach(cleanup)
-afterEach(() => vi.restoreAllMocks())
+beforeEach(() => {
+  // Unit cases assert immediate dismiss; production keeps the 200ms popup exit.
+  document.documentElement.setAttribute('data-motion-paused', '')
+})
+
+afterEach(() => {
+  cleanup()
+  document.documentElement.removeAttribute('data-motion-paused')
+  vi.restoreAllMocks()
+})
 
 describe('PopConfirm actions', () => {
+  it('focuses cancel when a neutral confirmation opens from a menu', async () => {
+    render(
+      <PopConfirm defaultOpen tone="default" title="Archive task?" onConfirm={() => undefined}>
+        <span aria-hidden />
+      </PopConfirm>
+    )
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Cancel' })))
+  })
   it('does not consume Escape from a different dialog while clearing a background confirm', () => {
     render(<PopConfirm defaultOpen tone="default" title="Background action" onConfirm={() => undefined}><button type="button">Action</button></PopConfirm>)
     const other = document.createElement('div')
@@ -35,21 +51,25 @@ describe('PopConfirm actions', () => {
       if (this.classList.contains('confirm-trigger')) return new DOMRect(140, 240, 80, 30)
       return new DOMRect()
     })
-    render(
-      <PortalContainerProvider container={host}>
-        <PopConfirm defaultOpen tone="default" className="confirm-trigger" title="Remove this item?" onConfirm={() => undefined}>
-          <button type="button">Remove</button>
-        </PopConfirm>
-      </PortalContainerProvider>,
-      { container: host }
-    )
-    const panel = screen.getByRole('dialog', { name: 'Remove this item?' })
-    expect(host.contains(panel)).toBe(true)
-    const viewportTop = Number.parseFloat(panel.style.top) + (panel.style.position === 'fixed' ? 0 : 200)
-    expect(viewportTop).toBeGreaterThanOrEqual(270)
-    expect(viewportTop).toBeLessThanOrEqual(290)
-    fireEvent.click(within(panel).getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByRole('dialog', { name: 'Remove this item?' })).toBeNull()
+    try {
+      render(
+        <PortalContainerProvider container={host}>
+          <PopConfirm defaultOpen tone="default" className="confirm-trigger" title="Remove this item?" onConfirm={() => undefined}>
+            <button type="button">Remove</button>
+          </PopConfirm>
+        </PortalContainerProvider>,
+        { container: host }
+      )
+      const panel = screen.getByRole('dialog', { name: 'Remove this item?' })
+      expect(host.contains(panel)).toBe(true)
+      const viewportTop = Number.parseFloat(panel.style.top) + (panel.style.position === 'fixed' ? 0 : 200)
+      expect(viewportTop).toBeGreaterThanOrEqual(270)
+      expect(viewportTop).toBeLessThanOrEqual(290)
+      fireEvent.click(within(panel).getByRole('button', { name: 'Cancel' }))
+      expect(screen.queryByRole('dialog', { name: 'Remove this item?' })).toBeNull()
+    } finally {
+      host.remove()
+    }
   })
 
   it('withdraws confirmation when the owner disables an already open action and still allows cancel', () => {
@@ -64,7 +84,7 @@ describe('PopConfirm actions', () => {
     fireEvent.click(confirm)
     expect(removed).toBe(false)
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.queryByRole('dialog', { name: 'Remove this item?' })).toBeNull()
   })
   it('places the panel without hiding its cancel and confirm buttons', () => {
     render(
@@ -90,7 +110,7 @@ describe('PopConfirm actions', () => {
       </PopConfirm>
     )
 
-    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '归档这个任务？' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '归档' }))
     expect(screen.getByRole('dialog', { name: '归档这个任务？' })).toBeTruthy()
   })

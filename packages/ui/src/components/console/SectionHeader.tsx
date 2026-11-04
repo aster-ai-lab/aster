@@ -34,7 +34,7 @@ export function SectionHeader({
       {badge ? (
         <div
           className={cn(
-            'mb-3 inline-flex items-center rounded-full bg-surface px-2.5 py-1',
+            'mb-3 inline-flex items-center rounded-[4px] bg-surface px-2.5 py-1',
             align === 'center' && 'mx-auto',
           )}
         >
