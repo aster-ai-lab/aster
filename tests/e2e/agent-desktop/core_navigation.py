@@ -401,7 +401,7 @@ def extended_settings_pages(driver: AgentDesktop) -> dict[str, Any]:
     work(driver)
     driver.click("button", "设置")
     visited = []
-    for label, expected in [("API 网关", "客户端"), ("模型配置", "重试"), ("用量", "概览"), ("快捷键", "全部启用"), ("归档", "恢复")]:
+    for label, expected in [("API 网关", "客户端"), ("模型配置", "默认模型"), ("用量", "概览"), ("快捷键", "全部启用"), ("归档", "恢复")]:
         driver.click("button", label)
         wait_text(driver, expected)
         visited.append(label)
