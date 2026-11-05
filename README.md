@@ -225,8 +225,8 @@ Studio 默认租户为 `aster`，租户身份、数据和更新包分别管理�
 开发前阅读[仓库约定](AGENTS.md)、[开发规范](docs/development-standards.md)与
 [设计规范](DESIGN.md)。构建和发布遵循[发布规范](docs/release-governance.md)。
 当前接口与版本说明见[手册索引](crates/code/manual/README.md)。
-Core／ACP 的模块、搜索预算、增量索引、错误语义和发布门禁见
-[Core／ACP DeepWiki](docs/architecture/aster-core-acp.md)。
+Core、ACP 与 TUI 的进程拓扑、模块职责、调用链、状态恢复、搜索索引和发布门禁见
+[Aster 源码导览](docs/architecture/aster-core-acp.md)。
 历史验证范围见[验证记录](docs/validation.md)。
 
 报告缺陷请提交到 [Issues](https://github.com/aster-ai-lab/aster/issues)。
