@@ -24,6 +24,7 @@ jobs:
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_BUILD_JOBS: "2"
+      RUST_MIN_STACK: "8388608"
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned workspace sources
@@ -78,6 +79,7 @@ jobs:
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_BUILD_JOBS: "2"
+      RUST_MIN_STACK: "8388608"
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned workspace sources
