@@ -1,0 +1,40 @@
+{
+  "app": "dev.aster.studio.aster.fork6",
+  "pid": 64137,
+  "window_id": "w-64231",
+  "delivery": "agent-desktop-headless-semantic",
+  "results": [
+    {
+      "id": "NAV-03",
+      "status": "passed",
+      "details": {
+        "query": "0101",
+        "closed": true,
+        "composer_restored": true,
+        "focus_restored": true
+      }
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    }
+  ]
+}

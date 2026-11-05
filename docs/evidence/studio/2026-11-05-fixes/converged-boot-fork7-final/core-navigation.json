@@ -1,0 +1,17 @@
+{
+  "app": "dev.aster.studio.aster.fork7",
+  "pid": 61568,
+  "window_id": "w-64393",
+  "delivery": "agent-desktop-headless-semantic",
+  "results": [
+    {
+      "id": "BOOT-01",
+      "status": "passed",
+      "details": {
+        "composer_ready": true,
+        "permissions_deferred": false
+      }
+    }
+  ],
+  "steps": []
+}

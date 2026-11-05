@@ -1,0 +1,34 @@
+{
+  "app": "dev.aster.studio.aster.fork7",
+  "pid": 61568,
+  "window_id": "w-64393",
+  "delivery": "agent-desktop-headless-semantic",
+  "results": [
+    {
+      "id": "NAV-06",
+      "status": "passed",
+      "details": {
+        "query": "NAV06 Fixture",
+        "session_result": true,
+        "opened": true
+      }
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    }
+  ]
+}
