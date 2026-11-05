@@ -335,6 +335,7 @@ fn pool_policy() -> (InferenceConfig, InferencePoolIdentity) {
                                 protocol: Default::default(),
                                 api_key_env: None,
                                 translate: false,
+                                forward_client_identity: false,
                             }],
                             scheduling: Some(scheduling()),
                         },

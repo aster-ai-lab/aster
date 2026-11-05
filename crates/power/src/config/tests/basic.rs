@@ -795,7 +795,10 @@ fn test_env_aster_power_gpu_attestation_nras_rest() {
 #[test]
 #[serial]
 fn test_env_aster_power_gpu_attestation_nras_timeout_invalid_rejected() {
-    std::env::set_var("ASTER_POWER_GPU_ATTESTATION_NRAS_TIMEOUT_SECS", "eventually");
+    std::env::set_var(
+        "ASTER_POWER_GPU_ATTESTATION_NRAS_TIMEOUT_SECS",
+        "eventually",
+    );
     let mut config = PowerConfig::default();
     let err = config.apply_env_overrides().unwrap_err();
     std::env::remove_var("ASTER_POWER_GPU_ATTESTATION_NRAS_TIMEOUT_SECS");

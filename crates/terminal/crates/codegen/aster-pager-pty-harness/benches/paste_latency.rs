@@ -26,13 +26,13 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::time::{Duration, Instant};
 
+use anyhow::{Context, Result, bail};
 use aster_pager_pty_harness::{
     ContentController, PtyHarness,
     host_clipboard::{HostClipboardTextGuard, pbcopy, set_clipboard_png, write_fixture_png},
     pager_binary,
     results::percentile,
 };
-use anyhow::{Context, Result, bail};
 use clap::Parser as ClapParser;
 
 /// Ctrl+V byte; a plain PTY delivers it as the Ctrl+V paste chord.

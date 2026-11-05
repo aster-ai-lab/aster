@@ -1,29 +1,53 @@
-//! Streaming SSE translation bodies for cross-protocol attempts.
+//! Bounded SSE framing for cross-protocol response bodies.
 //!
-//! Each wrapper sits innermost over the upstream SSE body, scans complete
-//! `data:` lines (the `event:` name lines ride alongside and are redundant
-//! for translation), feeds the matching stream machine, and re-frames the
-//! translated output. Downstream observers (admission reconciliation,
-//! usage lifecycle, metrics) see frames in the endpoint dialect.
+//! Complete events enter the shared translators; malformed, oversized or
+//! unfinished streams fail the body. A protocol terminal releases the upstream.
 
 use crate::response_body::ResponseBody;
+use crate::sse::SseDecoder;
 use crate::translation::{
-    AnthropicToOpenaiStream, ChatToResponsesStream, OpenaiToAnthropicStream, TranslationError,
+    AnthropicToOpenaiStream, ChatToResponsesStream, OpenaiToAnthropicStream, ResponseTranslation,
+    TranslationError,
 };
 use bytes::Bytes;
+use futures_util::{Stream, StreamExt};
+use http_body_util::{BodyExt, StreamBody};
 use hyper::body::{Body, Frame, SizeHint};
 use serde_json::Value;
+use std::io;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-/// Bound for an incomplete SSE line carried between frames; event payloads
-/// fit in a few hundred bytes, mirroring the usage observer's line bound.
-const MAX_LINE_CARRY_BYTES: usize = 8 * 1024;
+impl ResponseTranslation {
+    /// Translate upstream SSE bytes with the same bounded codec used by Gateway.
+    ///
+    /// Malformed, oversized or unfinished streams yield an I/O error. Backpressure
+    /// is preserved; a protocol terminal or dropping the stream releases upstream.
+    /// `created_unix` supplies the timestamp for Anthropic-to-Chat output.
+    pub fn translate_sse_stream<S>(
+        self,
+        upstream: S,
+        created_unix: i64,
+    ) -> impl Stream<Item = io::Result<Bytes>> + Send
+    where
+        S: Stream<Item = io::Result<Bytes>> + Send + 'static,
+    {
+        let body = ResponseBody::boxed(StreamBody::new(
+            upstream.map(|chunk| chunk.map(Frame::data)),
+        ));
+        match self {
+            Self::ToOpenai => TranslatedStreamBody::to_openai(body, created_unix),
+            Self::ToAnthropic => TranslatedStreamBody::to_anthropic(body),
+            Self::ResponsesFromChat => TranslatedStreamBody::to_responses(body),
+        }
+        .into_data_stream()
+    }
+}
 
-/// The two stream machines behind one scanner.
-// The `To*` prefix is the point: each variant names the dialect the
-// stream is translated into.
-#[allow(clippy::enum_variant_names)]
+#[expect(
+    clippy::enum_variant_names,
+    reason = "variants name the destination dialect"
+)]
 enum StreamMachine {
     ToOpenai(AnthropicToOpenaiStream),
     ToAnthropic(OpenaiToAnthropicStream),
@@ -35,36 +59,26 @@ impl StreamMachine {
         match self {
             Self::ToOpenai(machine) => machine.push(event),
             Self::ToAnthropic(machine) => machine.push(event),
-            Self::ToResponses(machine) => machine.push(event),
+            Self::ToResponses(machine) => machine.push_sse(event),
         }
     }
 
-    /// Frame one translated event as SSE bytes. The Anthropic direction
-    /// prefixes the `event:` name line, matching its wire convention.
-    fn frame(event: &Value) -> Option<Bytes> {
-        if event.is_string() {
-            let sentinel = event.as_str().unwrap_or("[DONE]");
-            return Some(Bytes::from(format!("data: {sentinel}\n\n")));
-        }
-        let encoded = serde_json::to_vec(event).ok()?;
-        let payload = String::from_utf8_lossy(&encoded);
-        if let Some(event_type) = event.get("type").and_then(Value::as_str) {
-            Some(Bytes::from(format!(
-                "event: {event_type}\ndata: {payload}\n\n"
-            )))
-        } else {
-            Some(Bytes::from(format!("data: {payload}\n\n")))
+    fn is_finished(&self) -> bool {
+        match self {
+            Self::ToOpenai(machine) => machine.is_finished(),
+            Self::ToAnthropic(machine) => machine.is_finished(),
+            Self::ToResponses(machine) => machine.is_finished(),
         }
     }
 }
 
 pub(crate) struct TranslatedStreamBody {
-    inner: Pin<Box<ResponseBody>>,
+    inner: Option<Pin<Box<ResponseBody>>>,
     machine: StreamMachine,
-    line_carry: Vec<u8>,
-    skip_until_newline: bool,
+    decoder: SseDecoder,
     pending: std::collections::VecDeque<Bytes>,
-    upstream_ended: bool,
+    error: Option<io::Error>,
+    sequence_number: u64,
 }
 
 impl TranslatedStreamBody {
@@ -91,113 +105,117 @@ impl TranslatedStreamBody {
 
     fn with_machine(inner: ResponseBody, machine: StreamMachine) -> Self {
         Self {
-            inner: Box::pin(inner),
+            inner: Some(Box::pin(inner)),
             machine,
-            line_carry: Vec::new(),
-            skip_until_newline: false,
+            decoder: SseDecoder::default(),
             pending: std::collections::VecDeque::new(),
-            upstream_ended: false,
+            error: None,
+            sequence_number: 0,
         }
     }
 
-    fn note_bytes(&mut self, bytes: &[u8]) {
-        if self.skip_until_newline {
-            let Some(newline) = bytes.iter().position(|&b| b == b'\n') else {
-                return;
-            };
-            self.skip_until_newline = false;
-            self.note_bytes(&bytes[newline + 1..]);
-            return;
-        }
-        self.line_carry.extend_from_slice(bytes);
-        while let Some(newline) = self.line_carry.iter().position(|&b| b == b'\n') {
-            let mut line = self.line_carry.drain(..=newline).collect::<Vec<u8>>();
-            if line.last() == Some(&b'\n') {
-                line.pop();
-            }
-            if line.last() == Some(&b'\r') {
-                line.pop();
-            }
-            if let Ok(text) = std::str::from_utf8(&line) {
-                self.note_line(text.trim_end_matches(['\r', '\n']));
+    fn note_bytes(&mut self, mut bytes: &[u8]) -> io::Result<()> {
+        while let Some(data) = self.decoder.next_event(&mut bytes)? {
+            self.dispatch_event(&data)?;
+            if self.inner.is_none() {
+                break;
             }
         }
-        if self.line_carry.len() > MAX_LINE_CARRY_BYTES {
-            self.line_carry.clear();
-            self.skip_until_newline = true;
-        }
+        Ok(())
     }
 
-    fn note_line(&mut self, line: &str) {
-        let Some(data) = line.strip_prefix("data:") else {
-            // `event:` name lines and comments ride alongside; translation
-            // keys off the data payload only.
-            return;
+    fn dispatch_event(&mut self, data: &[u8]) -> io::Result<()> {
+        let event = if data.trim_ascii() == b"[DONE]" {
+            Value::String("[DONE]".into())
+        } else {
+            serde_json::from_slice(data)
+                .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?
         };
-        let data = data.trim();
-        if data.is_empty() {
-            return;
-        }
-        let Ok(event) = serde_json::from_str::<Value>(data) else {
-            return;
-        };
-        match self.machine.push(&event) {
-            Ok(frames) => {
-                for frame in frames {
-                    if let Some(bytes) = StreamMachine::frame(&frame) {
-                        self.pending.push_back(bytes);
-                    }
+        let events = self
+            .machine
+            .push(&event)
+            .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
+        for mut event in events {
+            if matches!(self.machine, StreamMachine::ToResponses(_)) {
+                if let Some(object) = event.as_object_mut() {
+                    object.insert("sequence_number".into(), Value::from(self.sequence_number));
+                    self.sequence_number += 1;
                 }
             }
-            Err(TranslationError(reason)) => {
-                tracing::warn!(reason, "Streaming translation refused an event");
-            }
+            self.pending.push_back(frame_event(&event)?);
         }
+        if self.machine.is_finished() {
+            self.inner.take();
+        }
+        Ok(())
+    }
+
+    fn fail(&mut self, error: io::Error) {
+        self.inner.take();
+        self.decoder = SseDecoder::default();
+        self.error = Some(error);
     }
 }
 
 impl Body for TranslatedStreamBody {
     type Data = Bytes;
-    type Error = std::io::Error;
+    type Error = io::Error;
 
     fn poll_frame(
         self: Pin<&mut Self>,
         context: &mut Context<'_>,
-    ) -> Poll<Option<Result<Frame<Self::Data>, Self::Error>>> {
+    ) -> Poll<Option<io::Result<Frame<Bytes>>>> {
         let this = self.get_mut();
         loop {
             if let Some(frame) = this.pending.pop_front() {
                 return Poll::Ready(Some(Ok(Frame::data(frame))));
             }
-            if this.upstream_ended {
-                return Poll::Ready(None);
+            if let Some(error) = this.error.take() {
+                return Poll::Ready(Some(Err(error)));
             }
-            match this.inner.as_mut().poll_frame(context) {
+            let Some(inner) = this.inner.as_mut() else {
+                return Poll::Ready(None);
+            };
+            match inner.as_mut().poll_frame(context) {
                 Poll::Ready(Some(Ok(frame))) => {
                     if let Some(data) = frame.data_ref() {
-                        this.note_bytes(data);
+                        if let Err(error) = this.note_bytes(data) {
+                            this.fail(error);
+                        }
                     }
-                    if this.inner.is_end_stream() {
-                        this.upstream_ended = true;
-                    }
                 }
-                Poll::Ready(Some(Err(error))) => {
-                    this.upstream_ended = true;
-                    return Poll::Ready(Some(Err(error)));
-                }
-                Poll::Ready(None) => {
-                    this.upstream_ended = true;
-                }
+                Poll::Ready(Some(Err(error))) => this.fail(error),
+                Poll::Ready(None) => this.fail(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "upstream SSE ended before its protocol terminal",
+                )),
                 Poll::Pending => return Poll::Pending,
             }
         }
     }
 
     fn is_end_stream(&self) -> bool {
-        self.pending.is_empty() && self.upstream_ended && self.inner.is_end_stream()
+        self.pending.is_empty() && self.error.is_none() && self.inner.is_none()
     }
 
     fn size_hint(&self) -> SizeHint {
-        self.inner.size_hint()
+        SizeHint::default()
     }
 }
+
+fn frame_event(event: &Value) -> io::Result<Bytes> {
+    if let Some(sentinel) = event.as_str() {
+        return Ok(Bytes::from(format!("data: {sentinel}\n\n")));
+    }
+    let payload = serde_json::to_string(event).map_err(io::Error::other)?;
+    Ok(Bytes::from(
+        match event.get("type").and_then(Value::as_str) {
+            Some(name) => format!("event: {name}\ndata: {payload}\n\n"),
+            None => format!("data: {payload}\n\n"),
+        },
+    ))
+}
+
+#[cfg(test)]
+#[path = "translation_stream_tests.rs"]
+mod tests;

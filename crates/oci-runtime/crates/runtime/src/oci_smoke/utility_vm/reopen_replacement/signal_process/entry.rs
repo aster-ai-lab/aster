@@ -219,7 +219,8 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.container_id = Some(exact_target.id.clone());
     report.exec_process_id = Some(process_id);
 
-    let state_root = console_directory.join(format!("aster-oci-signal-process-reopen-{nonce}-state"));
+    let state_root =
+        console_directory.join(format!("aster-oci-signal-process-reopen-{nonce}-state"));
     if let Err(reason) = super::super::create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }

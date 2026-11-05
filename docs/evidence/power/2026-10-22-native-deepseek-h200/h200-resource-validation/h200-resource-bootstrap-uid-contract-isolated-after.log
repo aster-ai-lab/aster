@@ -1,6 +1,0 @@
-test_root_image_drops_groups_and_writes_as_exact_artifact_owner (__main__.SubmittedBootstrapUidTests.test_root_image_drops_groups_and_writes_as_exact_artifact_owner) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.102s
-
-OK

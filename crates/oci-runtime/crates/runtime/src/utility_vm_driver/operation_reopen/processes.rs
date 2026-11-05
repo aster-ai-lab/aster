@@ -76,11 +76,13 @@ pub async fn linux_kvm_processes_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-processes-reopen-{nonce}"))
-    {
-        Ok(id) => id,
-        Err(error) => return failed(report, format!("failed to construct container ID: {error}")),
-    };
+    let container_id =
+        match aster_oci_sdk::ContainerId::new(format!("kvm-processes-reopen-{nonce}")) {
+            Ok(id) => id,
+            Err(error) => {
+                return failed(report, format!("failed to construct container ID: {error}"))
+            }
+        };
     let create_operation_id = match operation_id(&format!("kvm-processes-reopen-{nonce}-create")) {
         Ok(operation_id) => operation_id,
         Err(reason) => return failed(report, reason),

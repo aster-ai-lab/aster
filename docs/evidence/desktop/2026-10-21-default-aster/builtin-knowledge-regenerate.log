@@ -1,7 +1,0 @@
-$ tsx scripts/generate-cherry-assistant-knowledge
-[builtin-knowledge] wrote resources/builtin-agents/cherry-assistant/product-manifest.json (19405 chars)
-[builtin-knowledge] wrote resources/builtin-agents/cherry-assistant/.claude/skills/cherry-assistant-guide/SKILL.md (1974 chars)
-[builtin-knowledge] wrote resources/builtin-agents/cherry-assistant/agent.json (1570 chars)
-[builtin-knowledge] wrote resources/builtin-agents/cherry-support/agent.json (1922 chars)
-(node:34306) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)

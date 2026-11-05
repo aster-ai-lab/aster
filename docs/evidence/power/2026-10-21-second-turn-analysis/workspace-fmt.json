@@ -1,7 +1,0 @@
-{
-  "command": "cargo fmt --all -- --check",
-  "exit_code": 1,
-  "output_bytes": 809,
-  "output_sha256": "77acf97d95a43cfe16a0c3b0c22b120b7fecb5461a5e733c514a01d57aaa8093",
-  "full_output_private": true
-}

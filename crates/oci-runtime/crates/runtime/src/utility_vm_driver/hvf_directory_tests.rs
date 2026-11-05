@@ -107,15 +107,16 @@ async fn transport_retains_exact_identity_access_and_caller_permissions() {
 #[tokio::test]
 async fn restricted_directory_requires_a_declared_extension_and_enforcement_digest() {
     let mut fixture = Fixture::new();
-    let restrictions =
-        aster_oci_sdk::StoragePathRestrictions::new(vec![aster_oci_sdk::StoragePathRestriction::new(
+    let restrictions = aster_oci_sdk::StoragePathRestrictions::new(vec![
+        aster_oci_sdk::StoragePathRestriction::new(
             StorageAttachmentId::new("caller-1").unwrap(),
             vec![".env".into()],
             vec![".aster".into()],
             vec![".aster/loops".into()],
         )
-        .unwrap()])
-        .unwrap();
+        .unwrap(),
+    ])
+    .unwrap();
     let mut config: serde_json::Value = serde_json::from_str(fixture.bundle.config_json()).unwrap();
     config["annotations"] = json!({aster_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION: restrictions.to_annotation_value().unwrap()});
     fixture.bundle = OciBundle::from_json(fixture.bundle.directory(), config.to_string()).unwrap();

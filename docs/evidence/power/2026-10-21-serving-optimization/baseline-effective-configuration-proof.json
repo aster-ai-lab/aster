@@ -1,8 +1,0 @@
-{
-  "acl_redacted_sha256": "688875558ee20b06da48a55c41ca7b83e5b5321830496c84f9f92116e7a6e240",
-  "safe_environment": {
-    "A3S_POWER_HOME": "/code/Power/.git/optimization-20261021/baseline-home"
-  },
-  "digest_definition": "sha256(redacted ACL UTF-8 bytes + LF + canonical JSON safe environment)",
-  "effective_configuration_sha256": "8d60f8186ab3d6df2d8bf2c4d59797c150cab6d46865ef53ae4e8537c39538de"
-}

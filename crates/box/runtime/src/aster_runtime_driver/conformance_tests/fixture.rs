@@ -563,7 +563,10 @@ impl BoxRuntimeConformanceFixture {
         for ((home, id), resource) in seen {
             for (kind, path) in [
                 ("box-dir", home.join("boxes").join(&id)),
-                ("aster-oci-root", crate::vm::sandbox_runtime_root(&home, &id)),
+                (
+                    "aster-oci-root",
+                    crate::vm::sandbox_runtime_root(&home, &id),
+                ),
                 (
                     "socket-dir",
                     PathBuf::from("/tmp/aster-box-sockets").join(&id),
@@ -664,7 +667,8 @@ impl BoxRuntimeConformanceFixture {
         // owner spawn (saved UID stays 0). Restore before deleting any
         // prepare-time trees that remain root-owned.
         #[cfg(target_os = "linux")]
-        if let Err(error) = crate::sandbox::aster_oci_controller::restore_effective_root_if_saved() {
+        if let Err(error) = crate::sandbox::aster_oci_controller::restore_effective_root_if_saved()
+        {
             failures.push(format!("restore effective root for R17 cleanup: {error}"));
         }
 

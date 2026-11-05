@@ -119,20 +119,26 @@
 }
 
 .work-office-ribbon-tabs.ds-tabs > button[aria-selected="true"] {
-  background: var(--aster-panel-strong);
-  box-shadow: none;
   color: var(--work-office-accent);
   font-weight: 500;
 }
 
 .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"]:hover:not(:disabled) {
-  background: var(--aster-panel-strong);
   color: var(--work-office-accent);
 }
 
-.work-office-ribbon-tabs.ds-tabs > button[aria-selected="true"]::after {
-  background: var(--work-office-accent);
+.work-office-ribbon-tabs .ds-tabs-selection--segment,
+.work-office-ribbon-tabs .ds-tabs-selection--line {
+  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  border-radius: 8px;
+  background: var(--aster-panel-strong);
+  box-shadow: none;
 }
 
 .work-office-ribbon[data-contextual-active="true"] > .work-office-ribbon-panel {

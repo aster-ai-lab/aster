@@ -1,1 +1,0 @@
-{"command": ["aster", "exec", "--offline", "--tool", "node@system", "--", "/bin/echo", "override-probe"], "exit": 1, "stdout": "", "stderr": "Error: locate exec command failed at --tool: entity not found: entity not found\n"}

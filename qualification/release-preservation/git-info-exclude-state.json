@@ -1,0 +1,7 @@
+{
+  "path": "/Users/roylin/code/aster/.git/info/exclude",
+  "beforeSha256": "22bae25eb39b44404de30a5fee742ba6720d63d5d8d2470ddec0fff4249ebf9e",
+  "duringSha256": "6f42d8c70e02e694662654b2b952f83741458bff79f76a1fba020478b14b4173",
+  "block": "\n# Temporary Aster release artifacts; restore after publication.\n/target-goal-issues/\n/target-issue-fix/\n/docs/evidence/code/2026-11-02-summary-input-retention/release-8k-20261104-*\n",
+  "reason": "Known Cargo output directories and generated cohort artifacts only; no product/test source or frozen fixture ignored"
+}

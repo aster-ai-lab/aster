@@ -262,7 +262,15 @@ fn prepare_trusted_maintenance_root(maintenance_dir: &Path) -> Result<PathBuf> {
 
     remove_path_no_follow(maintenance_dir)?;
     let root = maintenance_dir.join("root");
-    for directory in ["dev", "proc", "sys", "run", "tmp", "sbin", "mnt/aster-rootfs"] {
+    for directory in [
+        "dev",
+        "proc",
+        "sys",
+        "run",
+        "tmp",
+        "sbin",
+        "mnt/aster-rootfs",
+    ] {
         std::fs::create_dir_all(root.join(directory)).map_err(BoxError::IoError)?;
     }
     std::fs::set_permissions(maintenance_dir, std::fs::Permissions::from_mode(0o700))

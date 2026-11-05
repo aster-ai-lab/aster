@@ -1,0 +1,28 @@
+suite "aster-model-usage" {
+  version = 1
+
+  scenario "reported-model-usage-and-throughput" {
+    surface = "tui"
+    timeout_ms = 120000
+
+    wait "composer-ready" {
+      text = "Type a message..."
+    }
+    terminal_paste "bounded-prompt" {
+      text = "Reply with exactly UI_USAGE_OK. Do not use tools."
+    }
+    press "submit" {
+      key = "Enter"
+    }
+    wait "turn-settled" {
+      text = "Worked for"
+    }
+    wait "measured-accounting" {
+      regex = "Σ [1-9][0-9.kM]* tokens · [0-9]+\\.[0-9] tok/s"
+    }
+    snapshot "session-usage-footer" {}
+    terminal_recording "footer-evidence" {
+      path = "terminal/session-usage.vt"
+    }
+  }
+}

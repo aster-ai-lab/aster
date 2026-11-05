@@ -1,4 +1,6 @@
-use aster_oci_sdk::{Result, StorageAccessMode, StorageAttachment, StorageCleanup, StorageOwnership};
+use aster_oci_sdk::{
+    Result, StorageAccessMode, StorageAttachment, StorageCleanup, StorageOwnership,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};

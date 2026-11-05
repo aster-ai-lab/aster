@@ -109,7 +109,9 @@ fn main() -> anyhow::Result<()> {
             match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| pipeline.evaluate(&ev)))
             {
                 Ok(d) => handle(&ev, &d, &enforcer, &metrics),
-                Err(_) => eprintln!("aster-sentry: a judge panicked on an escalated event — skipped"),
+                Err(_) => {
+                    eprintln!("aster-sentry: a judge panicked on an escalated event — skipped")
+                }
             }
         }));
     }

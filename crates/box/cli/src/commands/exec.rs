@@ -509,9 +509,9 @@ pub(crate) async fn run_pty_session(
                             let _ = stdout.flush().await;
                         }
                         FRAME_PTY_EXIT => {
-                            if let Ok(exit) =
-                                serde_json::from_slice::<aster_box_core::pty::PtyExit>(&frame.payload)
-                            {
+                            if let Ok(exit) = serde_json::from_slice::<aster_box_core::pty::PtyExit>(
+                                &frame.payload,
+                            ) {
                                 return exit.exit_code;
                             }
                             return 1;

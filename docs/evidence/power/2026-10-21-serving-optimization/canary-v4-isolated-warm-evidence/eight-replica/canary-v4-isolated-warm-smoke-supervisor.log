@@ -1,3 +1,0 @@
-{"line_sha256": "be5c2f991463f96a87d11054d3c8deaf612d1b53132b243dd1eb6e27a82b9ad2", "line_bytes": 83, "status": "passed", "file": "canary-v4-isolated-warm-functional.json", "cases": 4, "at_monotonic": 99761.794775795, "child_pid": 3531971}
-{"line_sha256": "70c814f42558a4365a30098396ddc8674c9f3f20defd9b7d88f0afdebb389a83", "line_bytes": 195, "status": "passed", "file": "candidate-c1-r1.json", "outcomes": {"success": 2, "refused": 0, "http_error": 0, "error": 0, "timeout": 0, "cancelled": 0, "invalid_stream": 0, "invalid_output": 0}, "at_monotonic": 99769.432497496, "child_pid": 3534228}
-{"file": "canary-v4-isolated-warm-driver-smoke.json", "status": "passed", "phase": "smoke"}

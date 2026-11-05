@@ -1,4 +1,0 @@
-
-thread 'layers::xq::attention::tests::gpu::h200_xq_f32_projections_codecs_rope_and_sparse_attention_match_stage_oracles' (1048) panicked at crates/deepseek/src/layers/xq/attention/tests/gpu.rs:311:10:
-called `Result::unwrap()` on an `Err` value: InferenceFailed("native DeepSeek tensor operation failed: matmul is only supported for contiguous tensors lstride: Layout { shape: [1, 512], stride: [3, 3], start_offset: 0 } rstride: Layout { shape: [512, 1], stride: [1, 512], start_offset: 0 } mnk: (1, 1, 512)")
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

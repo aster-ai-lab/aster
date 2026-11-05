@@ -1,5 +1,0 @@
-warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
-package:   /Users/roylin/code/aster/crates/power/Cargo.toml
-workspace: /Users/roylin/code/aster/Cargo.toml
-     Locking 0 packages to latest Rust 1.63.0 compatible versions
-note: pass `--verbose` to see 340 unchanged dependencies behind latest

@@ -35,11 +35,14 @@ pub fn pdf_snapshot(update: &[u8]) -> PdfSnapshot {
     let annotation_fields = document.get_or_insert_map("aster.office.pdf.annotations.fields");
     let redaction_presence =
         document.get_or_insert_map("aster.office.pdf.redaction-proposals.presence");
-    let redaction_fields = document.get_or_insert_map("aster.office.pdf.redaction-proposals.fields");
+    let redaction_fields =
+        document.get_or_insert_map("aster.office.pdf.redaction-proposals.fields");
     let page_operation_presence =
         document.get_or_insert_map("aster.office.pdf.page-operations.presence");
-    let page_operation_fields = document.get_or_insert_map("aster.office.pdf.page-operations.fields");
-    let decision_presence = document.get_or_insert_map("aster.office.pdf.review-decisions.presence");
+    let page_operation_fields =
+        document.get_or_insert_map("aster.office.pdf.page-operations.fields");
+    let decision_presence =
+        document.get_or_insert_map("aster.office.pdf.review-decisions.presence");
     let decision_fields = document.get_or_insert_map("aster.office.pdf.review-decisions.fields");
     let claims = document.get_or_insert_array("aster.office.pdf.record-claims");
     let transaction = document.transact();

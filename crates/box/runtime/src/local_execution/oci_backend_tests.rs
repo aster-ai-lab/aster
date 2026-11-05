@@ -5840,6 +5840,8 @@ fn test_endpoint() -> OciRuntimeEndpoint {
 
 #[cfg(not(any(unix, windows)))]
 fn test_endpoint() -> OciRuntimeEndpoint {
-    OciRuntimeEndpoint::unix_socket(std::path::PathBuf::from("/aster-box-oci-backend-tests.sock"))
-        .expect("synthetic Unix socket endpoint")
+    OciRuntimeEndpoint::unix_socket(std::path::PathBuf::from(
+        "/aster-box-oci-backend-tests.sock",
+    ))
+    .expect("synthetic Unix socket endpoint")
 }

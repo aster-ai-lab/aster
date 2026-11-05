@@ -1,7 +1,0 @@
-test_eight_distinct_full_devices_are_required_for_eight_card_proof (test_resource_probe.AllocationInventoryTests.test_eight_distinct_full_devices_are_required_for_eight_card_proof) ... ok
-test_wrong_model_partial_hbm_invalid_uuid_and_wrong_schema_refuse (test_resource_probe.AllocationInventoryTests.test_wrong_model_partial_hbm_invalid_uuid_and_wrong_schema_refuse) ... ok
-
-----------------------------------------------------------------------
-Ran 2 tests in 0.001s
-
-OK

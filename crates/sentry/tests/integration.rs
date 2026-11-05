@@ -45,7 +45,10 @@ const CREDS: &str =
 fn blocks_metadata_ssrf_and_writes_egress_deny() {
     let dir = tmp("ssrf");
     let deny = dir.join("egress-deny.txt");
-    let (stdout, _) = run(&[("ASTER_SENTRY_EGRESS_DENY", deny.to_str().unwrap())], SSRF);
+    let (stdout, _) = run(
+        &[("ASTER_SENTRY_EGRESS_DENY", deny.to_str().unwrap())],
+        SSRF,
+    );
     assert!(
         stdout.contains("\"verdict\":\"block\""),
         "should block: {stdout}"

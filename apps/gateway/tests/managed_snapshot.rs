@@ -1,4 +1,6 @@
-use aster_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
+use aster_gateway::managed_snapshot::{
+    ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus,
+};
 use aster_gateway::{config::GatewayConfig, Gateway};
 use chrono::{Duration, Utc};
 use std::net::SocketAddr;

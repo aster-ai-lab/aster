@@ -93,6 +93,7 @@ fn target(
         protocol,
         api_key_env: Some(env.into()),
         translate: false,
+        forward_client_identity: false,
     }
 }
 
@@ -222,6 +223,87 @@ fn split_request(request: Vec<u8>) -> (String, serde_json::Value) {
 }
 
 #[tokio::test]
+async fn signed_in_responses_enforce_endpoint_model_and_quota_before_native_dispatch() {
+    for (grant, quota, expected_status) in
+        [(false, false, 404), (true, true, 429), (true, false, 200)]
+    {
+        let key_env = format!("ASTER_TEST_RESPONSES_KEY_{}", Uuid::new_v4().simple());
+        std::env::set_var(&key_env, "synthetic-responses-upstream");
+        let (verifier, _) = spawn_auth_verifier().await;
+        let (backend, captured) = spawn_capturing_backend().await;
+        let mut config = principal_config(verifier, backend, backend, &key_env, &key_env);
+        for route in config.inference.as_mut().unwrap().routes.values_mut() {
+            let principal = route.principal.as_mut().unwrap();
+            principal.models = vec!["qwen".into()];
+            if grant {
+                principal.endpoints.push(InferenceEndpoint::Responses);
+            }
+            if quota {
+                principal.limits.tokens_per_minute = 1;
+            }
+        }
+        config.validate().unwrap();
+        let (address, shutdown, handle) = start_test_entrypoint(gateway_state(&config)).await;
+        let client = reqwest::Client::new();
+        let url = format!("http://{address}/v1/responses");
+        let invalid = client
+            .post(&url)
+            .bearer_auth("aster_us_forged")
+            .body("not-json")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(invalid.status(), 401);
+        for model in ["claude", "missing-model"] {
+            let response = client
+                .post(&url)
+                .bearer_auth(SESSION)
+                .json(&serde_json::json!({"model":model,"input":"hello"}))
+                .send()
+                .await
+                .unwrap();
+            assert_eq!(response.status(), 404);
+            let body: serde_json::Value = response.json().await.unwrap();
+            assert_eq!(body["error"]["code"], "model_not_found");
+            assert!(!body.to_string().contains(model));
+        }
+        let body = serde_json::json!({"model":"qwen","input":"hello","previous_response_id":"resp-prior","max_output_tokens":1});
+        let response = client
+            .post(&url)
+            .bearer_auth(SESSION)
+            .header("cookie", "aster_us=browser-session")
+            .json(&body)
+            .send()
+            .await
+            .unwrap();
+        let status = response.status();
+        let response_body = response.text().await.unwrap();
+        assert_eq!(status, expected_status, "{response_body}");
+        if expected_status == 200 {
+            assert_eq!(response_body, "{}");
+            let raw = tokio::time::timeout(Duration::from_secs(2), captured)
+                .await
+                .unwrap()
+                .unwrap();
+            assert!(raw.starts_with(b"POST /v1/responses HTTP/1.1\r\n"));
+            let (headers, forwarded) = split_request(raw);
+            assert!(headers.contains("authorization: bearer synthetic-responses-upstream"));
+            assert!(!headers.contains(SESSION));
+            assert!(!headers.contains("cookie:"));
+            let mut expected = body;
+            expected["model"] = serde_json::json!("Qwen/Qwen3-8B");
+            assert_eq!(forwarded, expected);
+        } else {
+            assert!(tokio::time::timeout(Duration::from_millis(100), captured)
+                .await
+                .is_err());
+        }
+        stop_test_entrypoint(shutdown, handle).await;
+        std::env::remove_var(key_env);
+    }
+}
+
+#[tokio::test]
 async fn signed_in_users_reach_providers_on_the_native_wire() {
     let openai_env = format!("ASTER_TEST_OPENAI_KEY_{}", Uuid::new_v4().simple());
     let anthropic_env = format!("ASTER_TEST_ANTHROPIC_KEY_{}", Uuid::new_v4().simple());
@@ -312,15 +394,17 @@ async fn signed_in_users_reach_providers_on_the_native_wire() {
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), 404);
-    let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["error"], "standard_not_admitted");
-    assert!(
-        tokio::time::timeout(Duration::from_millis(200), anthropic_request)
-            .await
-            .is_err(),
-        "a reserved Anthropic path must not reach the upstream"
-    );
+    assert_eq!(response.status(), 200);
+    assert_eq!(response.text().await.unwrap(), "{}");
+    let raw = tokio::time::timeout(Duration::from_secs(2), anthropic_request)
+        .await
+        .unwrap()
+        .unwrap();
+    assert!(raw.starts_with(b"POST /v1/messages HTTP/1.1\r\n"));
+    let (headers, body) = split_request(raw);
+    assert!(headers.contains("x-api-key: sk-upstream-anthropic"));
+    assert!(!headers.contains(PERSONAL_KEY));
+    assert_eq!(body["model"], "claude-sonnet-4-5");
 
     stop_test_entrypoint(shutdown_tx, handle).await;
     std::env::remove_var(&openai_env);

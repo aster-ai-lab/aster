@@ -1538,7 +1538,10 @@ async fn drive_failed_delete(
     expect_failure(store.prepare_delete(request).await, failure)
 }
 
-fn expect_failure<T>(result: aster_oci_sdk::Result<T>, expected: &Error) -> aster_oci_sdk::Result<()> {
+fn expect_failure<T>(
+    result: aster_oci_sdk::Result<T>,
+    expected: &Error,
+) -> aster_oci_sdk::Result<()> {
     match result {
         Err(error) if error == *expected => Ok(()),
         Err(error) => Err(error),

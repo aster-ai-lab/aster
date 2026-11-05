@@ -82,6 +82,21 @@ class FakeOpenAIBackend:
             scenario = self.scenario(scenario_name)
             scenario.requests.append(request)
 
+            if scenario_name == "upstream-error":
+                body = json.dumps({"error": {
+                    "message": "fixture upstream rate limit",
+                    "type": "rate_limit_error",
+                    "code": "fixture_rate_limit",
+                }}).encode()
+                writer.write(
+                    b"HTTP/1.1 429 Too Many Requests\r\n"
+                    b"Content-Type: application/json\r\nRetry-After: 1\r\n"
+                    + f"Content-Length: {len(body)}\r\n".encode()
+                    + b"Connection: close\r\n\r\n" + body
+                )
+                await writer.drain()
+                return
+
             if not stream:
                 await self._write_json_response(writer, request)
                 return

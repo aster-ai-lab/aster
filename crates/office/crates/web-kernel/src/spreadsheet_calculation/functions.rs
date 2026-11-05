@@ -731,11 +731,113 @@ fn round_number(number: f64, digits: f64) -> SpreadsheetValue {
     if !(-308.0..=308.0).contains(&digits) {
         return SpreadsheetValue::error(SpreadsheetFormulaErrorLiteral::Number);
     }
-    let factor = 10_f64.powi(digits.trunc() as i32);
-    if !factor.is_finite() || factor == 0.0 {
-        return SpreadsheetValue::error(SpreadsheetFormulaErrorLiteral::Number);
+    let digits = digits.trunc() as i32;
+    finite_number(excel_round(number, digits))
+}
+
+/// Excel ROUND: half away from zero on the decimal representation, not binary float.
+fn excel_round(number: f64, digits: i32) -> f64 {
+    if !number.is_finite() {
+        return number;
     }
-    finite_number((number * factor).round() / factor)
+    let negative = number.is_sign_negative() && number != 0.0;
+    let abs = number.abs();
+    let rounded = round_decimal_text(&abs.to_string(), digits).unwrap_or_else(|| {
+        let factor = 10_f64.powi(digits);
+        if !factor.is_finite() || factor == 0.0 {
+            return abs;
+        }
+        let scaled = abs * factor;
+        if scaled.is_sign_negative() {
+            (scaled - 0.5).ceil() / factor
+        } else {
+            (scaled + 0.5).floor() / factor
+        }
+    });
+    if negative {
+        -rounded
+    } else {
+        rounded
+    }
+}
+
+fn round_decimal_text(text: &str, digits: i32) -> Option<f64> {
+    if text.contains(['e', 'E']) {
+        return None;
+    }
+    let (integer, fraction) = match text.split_once('.') {
+        Some((integer, fraction)) => (integer, fraction),
+        None => (text, ""),
+    };
+    if integer.is_empty()
+        || !integer.bytes().all(|byte| byte.is_ascii_digit())
+        || !fraction.bytes().all(|byte| byte.is_ascii_digit())
+    {
+        return None;
+    }
+    if digits >= 0 {
+        let keep = digits as usize;
+        let mut digits_vec: Vec<u8> = integer.bytes().chain(fraction.bytes()).collect();
+        while digits_vec.len() < integer.len() + keep + 1 {
+            digits_vec.push(b'0');
+        }
+        let round_index = integer.len() + keep;
+        let round_up = digits_vec
+            .get(round_index)
+            .is_some_and(|digit| *digit >= b'5');
+        digits_vec.truncate(round_index);
+        if round_up {
+            bump_decimal_digits(&mut digits_vec);
+        }
+        while digits_vec.len() < keep {
+            digits_vec.insert(0, b'0');
+        }
+        let split = digits_vec.len() - keep;
+        let mut out = String::from_utf8(digits_vec[..split].to_vec()).ok()?;
+        if out.is_empty() {
+            out.push('0');
+        }
+        if keep > 0 {
+            out.push('.');
+            out.push_str(std::str::from_utf8(&digits_vec[split..]).ok()?);
+        }
+        return out.parse().ok();
+    }
+    let shift = (-digits) as usize;
+    if integer.len() <= shift {
+        return Some(0.0);
+    }
+    let mut digits_vec: Vec<u8> = integer.bytes().collect();
+    let round_index = digits_vec.len() - shift;
+    let round_up = digits_vec
+        .get(round_index)
+        .is_some_and(|digit| *digit >= b'5');
+    for digit in &mut digits_vec[round_index..] {
+        *digit = b'0';
+    }
+    if round_up {
+        let mut prefix = digits_vec[..round_index].to_vec();
+        bump_decimal_digits(&mut prefix);
+        prefix.extend(std::iter::repeat_n(b'0', shift));
+        digits_vec = prefix;
+    }
+    String::from_utf8(digits_vec).ok()?.parse().ok()
+}
+
+fn bump_decimal_digits(digits: &mut Vec<u8>) {
+    let mut index = digits.len();
+    loop {
+        if index == 0 {
+            digits.insert(0, b'1');
+            return;
+        }
+        index -= 1;
+        if digits[index] < b'9' {
+            digits[index] += 1;
+            return;
+        }
+        digits[index] = b'0';
+    }
 }
 
 fn logical_aggregate(values: &[EvaluatedValue], and: bool) -> SpreadsheetValue {

@@ -7,7 +7,8 @@ use serde::{Deserialize, Serialize};
 use crate::report::AgentVmSmokeReport;
 
 /// Schema emitted by the native Linux fault-cleanup diagnostic.
-pub const NATIVE_LINUX_FAULT_CLEANUP_SCHEMA_VERSION: &str = "aster.oci.native-linux-fault-cleanup.v6";
+pub const NATIVE_LINUX_FAULT_CLEANUP_SCHEMA_VERSION: &str =
+    "aster.oci.native-linux-fault-cleanup.v6";
 /// Schema emitted by the utility-VM fault-cleanup diagnostic.
 pub const OCI_VM_FAULT_CLEANUP_SCHEMA_VERSION: &str = "aster.oci.oci-vm-fault-cleanup.v4";
 

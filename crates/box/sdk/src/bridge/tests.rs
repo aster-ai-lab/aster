@@ -709,7 +709,7 @@ async fn management_inspection_bridge_reads_typed_local_state() {
 #[tokio::test]
 async fn capabilities_publish_a_unique_exhaustive_operation_inventory() {
     let checked_protocol: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../sdk/bridge-protocol.json")).unwrap();
+        serde_json::from_str(include_str!("../../tests/fixtures/bridge-protocol.json")).unwrap();
     assert_eq!(
         checked_protocol["version"],
         serde_json::json!(BRIDGE_PROTOCOL_VERSION)
@@ -728,7 +728,7 @@ async fn capabilities_publish_a_unique_exhaustive_operation_inventory() {
         serde_json::to_value(BRIDGE_OPERATIONS).unwrap()
     );
     let checked_inventory: Vec<String> =
-        serde_json::from_str(include_str!("../../../../sdk/bridge-operations.json")).unwrap();
+        serde_json::from_str(include_str!("../../tests/fixtures/bridge-operations.json")).unwrap();
     assert_eq!(checked_inventory, BRIDGE_OPERATIONS);
 }
 

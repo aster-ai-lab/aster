@@ -177,9 +177,15 @@ mod tests {
 
     #[test]
     fn serve_cli_bind_values_remain_explicit_overrides() {
-        let cli =
-            Cli::try_parse_from(["aster-power", "serve", "--host", "0.0.0.0", "--port", "18080"])
-                .expect("serve arguments should parse");
+        let cli = Cli::try_parse_from([
+            "aster-power",
+            "serve",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "18080",
+        ])
+        .expect("serve arguments should parse");
         let Some(Command::Serve(args)) = cli.command else {
             panic!("expected serve command");
         };

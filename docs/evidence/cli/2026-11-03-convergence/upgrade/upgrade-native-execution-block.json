@@ -1,8 +1,0 @@
-{
-  "testPid": 91323,
-  "command": "/Users/roylin/code/aster/target/studio/aster/debug/deps/env_manager-1c40265f5698e043 --test-threads=1 --nocapture",
-  "observed": "More than three minutes sleeping at zero CPU with a zero-byte log; no test case began",
-  "logBytes": 0,
-  "action": "SIGINT to this task's own test process",
-  "classification": "native execution/startup infrastructure unresolved; not a test-suite pass or evidence of functional failure"
-}

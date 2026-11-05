@@ -1,9 +1,0 @@
-{
-  "unix": 1792842480.8642974,
-  "phase": "launched",
-  "worker_sha256": "762a1f6a09547fc249df1bbbafdbdf8bc520d4dc4e3b82b81c76f77687adc782",
-  "base_url": "http://10.102.93.68/v1",
-  "no_forwarding": true,
-  "pid": 185856,
-  "created_filetime": 134373160808666596
-}

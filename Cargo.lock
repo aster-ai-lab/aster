@@ -3497,6 +3497,7 @@ dependencies = [
  "aster-orm",
  "aster-sag",
  "aster-studio-data-sqlite",
+ "aster-use-browser",
  "aster-use-core",
  "aster-use-extension",
  "aster-use-ocr",

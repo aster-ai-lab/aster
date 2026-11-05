@@ -220,7 +220,8 @@ pub async fn dispatch_json(input: &str) -> BridgeResponse {
             })
         }
     };
-    let client = match AsterBoxClient::with_configured_paths(crate::AsterBoxPaths::default()).await {
+    let client = match AsterBoxClient::with_configured_paths(crate::AsterBoxPaths::default()).await
+    {
         Ok(client) => client,
         Err(error) => {
             return BridgeResponse::failure(BridgeFailure {
@@ -1042,9 +1043,9 @@ impl From<ClientError> for BridgeFailure {
                     ClientError::Execution(aster_box_core::ExecutionManagerError::Conflict {
                         ..
                     }) => "conflict",
-                    ClientError::Execution(aster_box_core::ExecutionManagerError::Unavailable(_)) => {
-                        "unavailable"
-                    }
+                    ClientError::Execution(aster_box_core::ExecutionManagerError::Unavailable(
+                        _,
+                    )) => "unavailable",
                     ClientError::Runtime(BoxError::ConfigError(_) | BoxError::TeeConfig(_)) => {
                         "invalid_request"
                     }

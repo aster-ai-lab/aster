@@ -1,5 +1,0 @@
-{"used_mib": 8210.0, "total_mib": 24564.0, "util_pct": 30.0, "temperature_c": 33.0, "observed_at": "2026-10-21T01:50:20.266202+00:00"}
-{"used_mib": 8563.0, "total_mib": 24564.0, "util_pct": 3.0, "temperature_c": 33.0, "observed_at": "2026-10-21T01:50:20.842494+00:00"}
-{"used_mib": 8563.0, "total_mib": 24564.0, "util_pct": 0.0, "temperature_c": 33.0, "observed_at": "2026-10-21T01:50:21.418453+00:00"}
-{"used_mib": 13959.0, "total_mib": 24564.0, "util_pct": 44.0, "temperature_c": 33.0, "observed_at": "2026-10-21T01:50:21.997983+00:00"}
-{"used_mib": 22977.0, "total_mib": 24564.0, "util_pct": 51.0, "temperature_c": 35.0, "observed_at": "2026-10-21T01:50:22.576767+00:00"}

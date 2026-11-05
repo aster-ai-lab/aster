@@ -1,7 +1,0 @@
-{
-  "matching": true,
-  "identities": {
-    "aster": "aster-cli-pair-v1:a4bd572677b48697201f782315c36563847163e5:aarch64-apple-darwin",
-    "a3s-code-acp": "aster-cli-pair-v1:a4bd572677b48697201f782315c36563847163e5:aarch64-apple-darwin"
-  }
-}

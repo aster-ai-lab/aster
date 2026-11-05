@@ -698,7 +698,9 @@ fn test_load_from_rejects_invalid_env_gpu_attestation_source() {
     let err = PowerConfig::load_from(acl_path.to_str().unwrap()).unwrap_err();
     std::env::remove_var("ASTER_POWER_GPU_ATTESTATION_SOURCE");
 
-    assert!(err.to_string().contains("ASTER_POWER_GPU_ATTESTATION_SOURCE"));
+    assert!(err
+        .to_string()
+        .contains("ASTER_POWER_GPU_ATTESTATION_SOURCE"));
 }
 
 #[test]

@@ -289,8 +289,9 @@ mod tests {
             .and_then(serde_json::Value::as_str)
             .expect("init shell command");
         assert!(!command.contains(ORIGINAL_INIT_MARKER_WRITE));
-        assert!(command
-            .contains("printf 'aster-oci-exec-init-exec-123\\n' > /.aster-oci-create-start-smoke;"));
+        assert!(command.contains(
+            "printf 'aster-oci-exec-init-exec-123\\n' > /.aster-oci-create-start-smoke;"
+        ));
         assert!(nonce_bound_bundle(bound, "unsafe nonce").is_err());
     }
 

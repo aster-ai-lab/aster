@@ -1,7 +1,7 @@
 // Both binaries stamp the same source bytes, including uncommitted Rust changes.
 use std::io::{self, Write};
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 pub fn stamp(root: &Path) -> io::Result<()> {
     let listed = Command::new("git")
@@ -33,40 +33,42 @@ pub fn stamp(root: &Path) -> io::Result<()> {
         .collect::<io::Result<Vec<_>>>()?;
     paths.sort();
     paths.dedup();
-    let mut hash = Command::new("git")
-        .current_dir(root)
-        .args(["hash-object", "--stdin"])
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()?;
-    let mut input = hash
-        .stdin
-        .take()
-        .ok_or_else(|| io::Error::other("missing hash input"))?;
-    for path in paths {
-        let file = root.join(&path);
-        let Ok(metadata) = file.symlink_metadata() else {
-            continue;
-        };
-        if !metadata.is_file() && !metadata.file_type().is_symlink() {
-            continue;
+    let input_path =
+        std::env::temp_dir().join(format!("aster-cli-pair-{}.bin", std::process::id()));
+    let mut input = std::fs::File::create(&input_path)?;
+    let output = (|| {
+        for path in paths {
+            let file = root.join(&path);
+            let Ok(metadata) = file.symlink_metadata() else {
+                continue;
+            };
+            if !metadata.is_file() && !metadata.file_type().is_symlink() {
+                continue;
+            }
+            println!("cargo:rerun-if-changed={}", file.display());
+            let bytes = if metadata.file_type().is_symlink() {
+                std::fs::read_link(&file)?
+                    .to_string_lossy()
+                    .as_bytes()
+                    .to_vec()
+            } else {
+                std::fs::read(&file)?
+            };
+            input.write_all(path.as_bytes())?;
+            input.write_all(&[0])?;
+            input.write_all(&(bytes.len() as u64).to_le_bytes())?;
+            input.write_all(&bytes)?;
         }
-        println!("cargo:rerun-if-changed={}", file.display());
-        let bytes = if metadata.file_type().is_symlink() {
-            std::fs::read_link(&file)?
-                .to_string_lossy()
-                .as_bytes()
-                .to_vec()
-        } else {
-            std::fs::read(&file)?
-        };
-        input.write_all(path.as_bytes())?;
-        input.write_all(&[0])?;
-        input.write_all(&(bytes.len() as u64).to_le_bytes())?;
-        input.write_all(&bytes)?;
-    }
-    drop(input);
-    let output = hash.wait_with_output()?;
+        drop(input);
+        // A file avoids stalling the build script on the large streaming stdin pipe.
+        Command::new("git")
+            .current_dir(root)
+            .arg("hash-object")
+            .arg(&input_path)
+            .output()
+    })();
+    let _ = std::fs::remove_file(&input_path);
+    let output = output?;
     if !output.status.success() {
         return Err(io::Error::other("cannot hash CLI pair sources"));
     }

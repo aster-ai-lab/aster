@@ -1,8 +1,0 @@
-{
-  "unix": 1792818275.6289814,
-  "user_instruction": "先做到单卡300 token/s",
-  "target_single_gpu_single_request_decode_tok_s": 300,
-  "measurement": "(generated tokens - 1) / (last token arrival - first token arrival); serial requests, no aggregate substitution",
-  "achieved": false,
-  "previous_goal_tok_s": 500
-}

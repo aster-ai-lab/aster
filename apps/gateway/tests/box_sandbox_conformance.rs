@@ -272,8 +272,9 @@ fn required_path(name: &str) -> TestResult<PathBuf> {
 
 #[test]
 fn generated_gateway_acl_validates() {
-    let config = aster_gateway::config::GatewayConfig::from_acl(&gateway_config(18080, 18081, 19090))
-        .expect("Box Sandbox conformance ACL should parse");
+    let config =
+        aster_gateway::config::GatewayConfig::from_acl(&gateway_config(18080, 18081, 19090))
+            .expect("Box Sandbox conformance ACL should parse");
     config
         .validate()
         .expect("Box Sandbox conformance ACL should validate");

@@ -1,5 +1,0 @@
-warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
-package:   /Users/roylin/code/aster/crates/power/Cargo.toml
-workspace: /Users/roylin/code/aster/Cargo.toml
-   Compiling aster-use-ocr v0.3.2 (/Users/roylin/code/aster/crates/ocr)
-    Finished `release` profile [optimized] target(s) in 20.01s

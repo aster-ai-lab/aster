@@ -8,10 +8,10 @@ use std::io;
 #[cfg(unix)]
 use std::path::Path;
 
-#[cfg(any(unix, test))]
-use aster_test_support::TestSandbox;
 #[cfg(unix)]
 use anyhow::{Context, Result};
+#[cfg(any(unix, test))]
+use aster_test_support::TestSandbox;
 use portable_pty::CommandBuilder;
 
 use crate::pty::EnvOp;

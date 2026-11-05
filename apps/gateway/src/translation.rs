@@ -20,7 +20,130 @@ impl TranslationError {
     }
 }
 
+impl std::fmt::Display for TranslationError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(&self.0)
+    }
+}
+
+impl std::error::Error for TranslationError {}
+
 pub type TranslationResult = Result<Value, TranslationError>;
+
+/// Rough message-input estimate using the Gateway's existing tokenizer revision.
+///
+/// This is not a provider tokenizer or a billable usage observation. Callers
+/// admit bounded JSON before calling. Missing message arrays return a field error.
+pub fn estimate_message_input_tokens(request: &Value) -> Result<u64, TranslationError> {
+    let object = request
+        .as_object()
+        .ok_or_else(|| TranslationError::field("request", "expected an object"))?;
+    let messages = object
+        .get("messages")
+        .and_then(Value::as_array)
+        .ok_or_else(|| TranslationError::field("messages", "expected an array"))?;
+    for message in messages {
+        if !matches!(
+            message.get("role").and_then(Value::as_str),
+            Some("user" | "assistant")
+        ) {
+            return Err(TranslationError::field(
+                "messages.role",
+                "expected user or assistant",
+            ));
+        }
+        if !message
+            .get("content")
+            .is_some_and(|value| value.is_string() || value.is_array())
+        {
+            return Err(TranslationError::field(
+                "messages.content",
+                "expected text or content blocks",
+            ));
+        }
+    }
+    let input: Map<String, Value> = ["messages", "system", "tools", "thinking", "tool_choice"]
+        .into_iter()
+        .filter_map(|key| object.get(key).map(|value| (key.to_owned(), value.clone())))
+        .collect();
+    let wire = serde_json::to_string(&input)
+        .map_err(|_| TranslationError::field("request", "cannot encode message input"))?;
+    Ok(crate::inference::estimate_text_tokens(&wire))
+}
+
+/// Estimate Gemini input with the same provisional tokenizer; never a billable observation.
+/// Both native countTokens input forms retain their system/tool/media context.
+/// Callers admit bounded JSON before calling.
+///
+/// # Errors
+/// Returns a field error for ambiguous or malformed counter input.
+pub fn estimate_gemini_input_tokens(request: &Value) -> Result<u64, TranslationError> {
+    let input = gemini_count_input(request)?;
+    let object = input
+        .as_object()
+        .ok_or_else(|| TranslationError::field("request", "expected an object"))?;
+    let input: Map<String, Value> = [
+        "contents",
+        "systemInstruction",
+        "system_instruction",
+        "tools",
+        "cachedContent",
+        "cached_content",
+    ]
+    .into_iter()
+    .filter_map(|key| object.get(key).map(|value| (key.into(), value.clone())))
+    .collect();
+    let wire = serde_json::to_string(&input)
+        .map_err(|_| TranslationError::field("request", "cannot encode Gemini input"))?;
+    Ok(crate::inference::estimate_text_tokens(&wire))
+}
+
+/// Validate the two mutually exclusive native countTokens input forms.
+///
+/// # Errors
+/// Returns a field error for ambiguous forms, non-object requests or invalid
+/// Content/Part containers. Provider-specific part fields remain unchanged.
+pub fn gemini_count_input(request: &Value) -> Result<&Value, TranslationError> {
+    let object = request
+        .as_object()
+        .ok_or_else(|| TranslationError::field("request", "expected an object"))?;
+    let camel = object.get("generateContentRequest");
+    let snake = object.get("generate_content_request");
+    if (camel.is_some() && snake.is_some())
+        || ((camel.is_some() || snake.is_some()) && object.contains_key("contents"))
+    {
+        return Err(TranslationError::field(
+            "generateContentRequest",
+            "ambiguous counter input",
+        ));
+    }
+    let input = camel.or(snake).unwrap_or(request);
+    let input_object = input
+        .as_object()
+        .ok_or_else(|| TranslationError::field("generateContentRequest", "expected an object"))?;
+    if let Some(contents) = input_object.get("contents") {
+        let contents = contents
+            .as_array()
+            .ok_or_else(|| TranslationError::field("contents", "expected an array"))?;
+        for content in contents {
+            let content = content
+                .as_object()
+                .ok_or_else(|| TranslationError::field("contents", "expected Content objects"))?;
+            if let Some(parts) = content.get("parts") {
+                if !parts
+                    .as_array()
+                    .is_some_and(|parts| parts.iter().all(Value::is_object))
+                {
+                    return Err(TranslationError::field(
+                        "contents.parts",
+                        "expected Part objects",
+                    ));
+                }
+            }
+        }
+    }
+    Ok(input)
+}
 
 /// Translate an OpenAI chat-completions request body into an Anthropic
 /// messages request body.
@@ -906,6 +1029,16 @@ pub enum ResponseTranslation {
 }
 
 impl ResponseTranslation {
+    /// Translate the caller's JSON request to the upstream dialect paired with
+    /// this response direction, retaining that codec's mappings, losses and refusals.
+    pub fn translate_json_request(self, body: &Value) -> TranslationResult {
+        match self {
+            Self::ToOpenai => openai_request_to_anthropic(body),
+            Self::ToAnthropic => anthropic_request_to_openai(body),
+            Self::ResponsesFromChat => responses_request_to_openai(body),
+        }
+    }
+
     /// Translate one buffered JSON response body. `created_unix` is
     /// supplied by the caller; a pure function never invents time.
     pub fn translate_json_response(&self, body: &Value, created_unix: i64) -> TranslationResult {
@@ -1150,7 +1283,6 @@ pub fn translate_anthropic_stream(
 /// one `message_delta` + `message_stop` sequence, so `message_start`'s
 /// usage is provisional (zeroed) until the final event — the same
 /// provisional/final split Anthropic's own streams use.
-#[derive(Debug)]
 pub struct OpenaiToAnthropicStream {
     started: bool,
     ended: bool,
@@ -1191,7 +1323,9 @@ impl OpenaiToAnthropicStream {
                 "index": index,
             }));
         }
-        let reason = self.finish_reason.as_deref().unwrap_or("stop");
+        let reason = self.finish_reason.as_deref().ok_or_else(|| {
+            TranslationError::field("finish_reason", "[DONE] arrived without a finish reason")
+        })?;
         let stop_reason = openai_finish_reason_to_anthropic(Some(reason))?;
         let stop_reason = stop_reason.as_str().unwrap_or("end_turn").to_string();
         let mut message_delta = serde_json::json!({
@@ -1244,17 +1378,33 @@ impl OpenaiToAnthropicStream {
         let object = frame.as_object().ok_or_else(|| {
             TranslationError::field("stream frame", "must be a JSON object or \"[DONE]\"")
         })?;
-        let Some(choices) = object.get("choices").and_then(Value::as_array) else {
-            // The trailing usage-only frame carries no choices; hold the
-            // usage for the terminal events.
-            if object.get("usage").is_some() {
-                self.usage = Some(frame.clone());
+        if let Some(usage) = object.get("usage").filter(|value| !value.is_null()) {
+            if !usage.is_object() {
+                return Err(TranslationError::field("usage", "must be an object"));
             }
-            return Ok(Vec::new());
-        };
-        let choice = choices.first().ok_or_else(|| {
-            TranslationError::field("stream frame.choices", "must be non-empty when present")
-        })?;
+            self.usage = Some(serde_json::json!({"usage":usage}));
+        }
+        let choices = object
+            .get("choices")
+            .and_then(Value::as_array)
+            .ok_or_else(|| TranslationError::field("choices", "required as an array"))?;
+        if choices.is_empty() {
+            return if self.finish_reason.is_some() && self.usage.is_some() {
+                self.emit_terminal()
+            } else {
+                Err(TranslationError::field(
+                    "choices",
+                    "usage-only frame requires a finished choice",
+                ))
+            };
+        }
+        if choices.len() != 1 || self.finish_reason.is_some() {
+            return Err(TranslationError::field(
+                "choices",
+                "expected one unfinished choice",
+            ));
+        }
+        let choice = &choices[0];
         let mut events = Vec::new();
         if !self.started {
             self.started = true;
@@ -1271,15 +1421,6 @@ impl OpenaiToAnthropicStream {
             }));
         }
         let delta = choice.get("delta");
-        if let Some(finish) = choice.get("finish_reason").and_then(Value::as_str) {
-            self.finish_reason = Some(finish.to_string());
-            if object.get("usage").is_some() {
-                self.usage = Some(frame.clone());
-            }
-            let terminal = self.emit_terminal()?;
-            events.extend(terminal);
-            return Ok(events);
-        }
         let Some(delta) = delta else {
             return Ok(events);
         };
@@ -1350,6 +1491,13 @@ impl OpenaiToAnthropicStream {
                 }
             }
         }
+        if let Some(finish) = choice.get("finish_reason").and_then(Value::as_str) {
+            openai_finish_reason_to_anthropic(Some(finish))?;
+            self.finish_reason = Some(finish.to_owned());
+        }
+        if self.finish_reason.is_some() && self.usage.is_some() {
+            events.extend(self.emit_terminal()?);
+        }
         Ok(events)
     }
 
@@ -1365,6 +1513,18 @@ impl Default for OpenaiToAnthropicStream {
     }
 }
 
+impl std::fmt::Debug for OpenaiToAnthropicStream {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("OpenaiToAnthropicStream")
+            .field("started", &self.started)
+            .field("ended", &self.ended)
+            .field("tool_blocks", &self.tool_block_by_index.len())
+            .field("has_usage", &self.usage.is_some())
+            .finish_non_exhaustive()
+    }
+}
+
 /// Batch form of [`OpenaiToAnthropicStream`] for recorded sequences.
 pub fn translate_openai_stream(events: &[Value]) -> Result<Vec<Value>, TranslationError> {
     let mut machine = OpenaiToAnthropicStream::new();
@@ -1375,238 +1535,134 @@ pub fn translate_openai_stream(events: &[Value]) -> Result<Vec<Value>, Translati
     Ok(out)
 }
 
-/// Translate a stateless `/v1/responses` request onto a chat-completions
-/// request. Stateful surfaces refuse: `previous_response_id` and
-/// function-call items carry server-side state the stateless lane cannot
-/// reconstruct (the loss ledger names them).
+#[path = "translation_responses_request.rs"]
+mod responses_request;
+
+/// Translate content-complete Responses input and tool history to Chat Completions.
+/// Server-side references and unrepresentable fields refuse before dispatch.
 pub fn responses_request_to_openai(request: &Value) -> TranslationResult {
-    let object = request.as_object().ok_or_else(|| {
-        TranslationError::field("request", "the responses request must be a JSON object")
-    })?;
-    if object.get("previous_response_id").is_some() {
-        return Err(TranslationError::field(
-            "previous_response_id",
-            "stateful responses require a responses-native upstream; the stateless translation lane refuses",
-        ));
-    }
-    let mut out = Map::new();
-    if let Some(model) = object.get("model") {
-        out.insert("model".into(), model.clone());
-    }
-    let mut messages = Vec::new();
-    if let Some(instructions) = object.get("instructions").and_then(Value::as_str) {
-        if !instructions.is_empty() {
-            messages.push(serde_json::json!({
-                "role": "system",
-                "content": instructions,
-            }));
-        }
-    }
-    match object.get("input") {
-        Some(Value::String(text)) => {
-            messages.push(serde_json::json!({ "role": "user", "content": text }));
-        }
-        Some(Value::Array(items)) => {
-            for item in items {
-                let item_type = item
-                    .get("type")
-                    .and_then(Value::as_str)
-                    .unwrap_or("message");
-                if item_type != "message" {
-                    return Err(TranslationError::field(
-                        "input.type",
-                        &format!("'{item_type}' is not one of message (function_call items carry state the stateless lane refuses)"),
-                    ));
-                }
-                let role = item.get("role").and_then(Value::as_str).ok_or_else(|| {
-                    TranslationError::field("input.role", "required on message items")
-                })?;
-                if role != "user" && role != "assistant" {
-                    return Err(TranslationError::field(
-                        "input.role",
-                        &format!("'{role}' is not one of user, assistant"),
-                    ));
-                }
-                let text = match item.get("content") {
-                    Some(Value::String(text)) => text.clone(),
-                    Some(Value::Array(parts)) => {
-                        let mut joined = String::new();
-                        for part in parts {
-                            let part_type =
-                                part.get("type").and_then(Value::as_str).ok_or_else(|| {
-                                    TranslationError::field("content.type", "required")
-                                })?;
-                            match part_type {
-                                "input_text" | "output_text" => joined.push_str(
-                                    part.get("text").and_then(Value::as_str).unwrap_or(""),
-                                ),
-                                other => {
-                                    return Err(TranslationError::field(
-                                        "content.type",
-                                        &format!("'{other}' is not one of input_text, output_text"),
-                                    ))
-                                }
-                            }
-                        }
-                        joined
-                    }
-                    _ => {
-                        return Err(TranslationError::field(
-                            "input.content",
-                            "required as a part list or a text string",
-                        ))
-                    }
-                };
-                messages.push(serde_json::json!({ "role": role, "content": text }));
-            }
-        }
-        _ => {
-            return Err(TranslationError::field(
-                "input",
-                "required as a text string or an item list",
-            ))
-        }
-    }
-    if messages.is_empty() {
-        return Err(TranslationError::field(
-            "input",
-            "no messages remain to translate",
-        ));
-    }
-    out.insert("messages".into(), Value::Array(messages));
-    // The chat-completions dialect requires a completion bound; pin the
-    // same fail-closed default the gateway's reservation estimator uses.
-    let max_tokens = object
-        .get("max_output_tokens")
-        .and_then(Value::as_u64)
-        .unwrap_or(1_024);
-    out.insert("max_tokens".into(), Value::from(max_tokens));
-    for field in ["temperature", "top_p"] {
-        if let Some(value) = object.get(field) {
-            out.insert(field.into(), value.clone());
-        }
-    }
-    if object.get("stream") == Some(&Value::Bool(true)) {
-        out.insert("stream".into(), Value::Bool(true));
-    }
-    Ok(Value::Object(out))
+    responses_request::to_openai(request)
 }
 
 /// Translate a chat-completions response into a `/v1/responses` response
 /// object. Output item ids are deterministic (`msg_{index}`, `fc_{index}`);
 /// the response id rides the completion id.
 pub fn openai_response_to_responses(response: &Value) -> TranslationResult {
-    let object = response.as_object().ok_or_else(|| {
-        TranslationError::field("response", "the OpenAI response must be a JSON object")
-    })?;
-    let choice = object
+    let object = response
+        .as_object()
+        .ok_or_else(|| TranslationError::field("response", "must be a JSON object"))?;
+    let choices = object
         .get("choices")
         .and_then(Value::as_array)
-        .and_then(|choices| choices.first())
-        .ok_or_else(|| TranslationError::field("choices", "required and must be non-empty"))?;
-    let message = choice
+        .filter(|choices| choices.len() == 1)
+        .ok_or_else(|| {
+            TranslationError::field(
+                "choices",
+                "Responses translation requires exactly one choice",
+            )
+        })?;
+    let choice = &choices[0];
+    let mut delta = choice
         .get("message")
-        .ok_or_else(|| TranslationError::field("choices.message", "required"))?;
-    let finish = choice.get("finish_reason").and_then(Value::as_str);
-    let status = match finish {
-        Some("length") => "incomplete",
-        _ => "completed",
-    };
-
-    let mut output = Vec::new();
-    if let Some(text) = message.get("content").and_then(Value::as_str) {
-        if !text.is_empty() {
-            output.push(serde_json::json!({
-                "type": "message",
-                "id": "msg_0",
-                "role": "assistant",
-                "status": status,
-                "content": [{ "type": "output_text", "text": text }],
-            }));
+        .and_then(Value::as_object)
+        .cloned()
+        .ok_or_else(|| TranslationError::field("choices.message", "required as an object"))?;
+    if let Some(calls) = delta.get_mut("tool_calls").filter(|value| !value.is_null()) {
+        let calls = calls
+            .as_array_mut()
+            .ok_or_else(|| TranslationError::field("tool_calls", "must be an array"))?;
+        for (index, call) in calls.iter_mut().enumerate() {
+            let call = call.as_object_mut().ok_or_else(|| {
+                TranslationError::field("tool_calls", "each call must be an object")
+            })?;
+            call.insert("index".into(), Value::from(index));
         }
     }
-    if let Some(calls) = message.get("tool_calls").and_then(Value::as_array) {
-        for (index, call) in calls.iter().enumerate() {
-            let function = call
-                .get("function")
-                .ok_or_else(|| TranslationError::field("tool_calls.function", "required"))?;
-            output.push(serde_json::json!({
-                "type": "function_call",
-                "id": format!("fc_{index}"),
-                "call_id": call.get("id").cloned().unwrap_or(Value::Null),
-                "name": function.get("name").cloned().unwrap_or(Value::Null),
-                "arguments": function.get("arguments").cloned().unwrap_or(Value::Null),
-                "status": status,
-            }));
-        }
+    let frame = serde_json::json!({
+        "id":object.get("id"), "model":object.get("model"), "created":object.get("created"),
+        "choices":[{"index":0, "delta":delta, "finish_reason":choice.get("finish_reason")}],
+        "usage":object.get("usage"),
+    });
+    let mut machine = ChatToResponsesStream::new();
+    let mut events = machine.push(&frame)?;
+    if !machine.is_finished() {
+        events.extend(machine.push(&Value::String("[DONE]".into()))?);
     }
-    if output.is_empty() {
-        return Err(TranslationError::field(
-            "choices.message",
-            "content or tool_calls is required",
-        ));
-    }
-
-    let mut out = Map::new();
-    if let Some(id) = object.get("id") {
-        out.insert("id".into(), id.clone());
-    }
-    out.insert("object".into(), Value::String("response".into()));
-    if let Some(created) = object.get("created") {
-        out.insert("created_at".into(), created.clone());
-    }
-    if let Some(model) = object.get("model") {
-        out.insert("model".into(), model.clone());
-    }
-    out.insert("status".into(), Value::String(status.into()));
-    out.insert("output".into(), Value::Array(output));
-    if let Some(usage) = object.get("usage") {
-        let usage_object = usage
-            .as_object()
-            .ok_or_else(|| TranslationError::field("usage", "must be a JSON object"))?;
-        let prompt = usage_object
-            .get("prompt_tokens")
-            .cloned()
-            .unwrap_or(Value::from(0));
-        let completion = usage_object
-            .get("completion_tokens")
-            .cloned()
-            .unwrap_or(Value::from(0));
-        let total = usage_object
-            .get("total_tokens")
-            .cloned()
-            .unwrap_or(Value::from(0));
-        out.insert(
-            "usage".into(),
-            serde_json::json!({
-                "input_tokens": prompt,
-                "output_tokens": completion,
-                "total_tokens": total,
-                "output_tokens_details": usage_object
-                    .get("completion_tokens_details")
-                    .cloned()
-                    .unwrap_or_else(|| serde_json::json!({ "reasoning_tokens": 0 })),
-            }),
-        );
-    }
-    Ok(Value::Object(out))
+    events
+        .pop()
+        .and_then(|event| event.get("response").cloned())
+        .ok_or_else(|| {
+            TranslationError::field("response", "translation produced no terminal response")
+        })
 }
 
-/// Incremental SSE translator: chat-completions chunks in, Responses-API
-/// events out (`response.created` → `response.output_item.*` →
-/// `response.completed`). The text deltas accumulate so `output_item.done`
-/// and `response.completed` carry full content, mirroring the Responses
-/// stream contract. The first chunk supplies id/model/created.
-#[derive(Debug)]
+/// Incremental chat-completions to Responses translation. Output items retain
+/// arrival order; the finish frame waits for trailing usage or `[DONE]`.
 pub struct ChatToResponsesStream {
     id: Value,
     model: Value,
     created_at: i64,
     started: bool,
-    text: String,
-    finish_reason: Option<String>,
+    items: Vec<ResponsesOutputItem>,
+    output_bytes: usize,
+    finish_reason: Option<ResponsesFinish>,
     usage: Option<Value>,
     ended: bool,
+}
+
+const MAX_RESPONSES_OUTPUT_BYTES: usize = 8 * 1024 * 1024;
+const MAX_RESPONSES_OUTPUT_ITEMS: usize = 1024;
+
+#[derive(Clone, Copy)]
+enum ResponsesFinish {
+    Stop,
+    ToolCalls,
+    Length,
+    ContentFilter,
+}
+
+impl ResponsesFinish {
+    fn parse(value: &str) -> Result<Self, TranslationError> {
+        match value {
+            "stop" => Ok(Self::Stop),
+            "tool_calls" | "function_call" => Ok(Self::ToolCalls),
+            "length" => Ok(Self::Length),
+            "content_filter" => Ok(Self::ContentFilter),
+            _ => Err(TranslationError::field(
+                "finish_reason",
+                "expected stop, tool_calls, function_call, length or content_filter",
+            )),
+        }
+    }
+
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Stop => "stop",
+            Self::ToolCalls => "tool_calls",
+            Self::Length => "length",
+            Self::ContentFilter => "content_filter",
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum ResponsesTextKind {
+    Text,
+    Reasoning,
+    Refusal,
+}
+
+enum ResponsesOutputItem {
+    Text {
+        kind: ResponsesTextKind,
+        text: String,
+    },
+    Function {
+        source_index: u64,
+        call_id: String,
+        name: String,
+        arguments: String,
+    },
 }
 
 impl ChatToResponsesStream {
@@ -1616,51 +1672,28 @@ impl ChatToResponsesStream {
             model: Value::Null,
             created_at: 0,
             started: false,
-            text: String::new(),
+            items: Vec::new(),
+            output_bytes: 0,
             finish_reason: None,
             usage: None,
             ended: false,
         }
     }
 
-    fn shell(&self, status: &str) -> Value {
-        serde_json::json!({
-            "id": self.id,
-            "object": "response",
-            "created_at": self.created_at,
-            "model": self.model,
-            "status": status,
-        })
-    }
-
-    fn message_item(&self, status: &str, full: bool) -> Value {
-        serde_json::json!({
-            "type": "message",
-            "id": "msg_0",
-            "role": "assistant",
-            "status": status,
-            "content": if full {
-                serde_json::json!([{ "type": "output_text", "text": self.text }])
-            } else {
-                serde_json::json!([])
-            },
-        })
-    }
-
-    /// Feed one parsed OpenAI chunk (or the `"[DONE]"` sentinel); returns
-    /// the translated Responses events it produced.
+    /// Feed one parsed chunk or the `"[DONE]"` sentinel. Unknown choices,
+    /// delta fields, finish reasons and output over the fixed bounds refuse.
     pub fn push(&mut self, frame: &Value) -> Result<Vec<Value>, TranslationError> {
-        if frame.is_string() {
-            if frame == &Value::String("[DONE]".into()) {
-                if self.ended {
-                    return Ok(Vec::new());
-                }
-                return self.emit_terminal();
+        if let Some(sentinel) = frame.as_str() {
+            if sentinel != "[DONE]" {
+                return Err(TranslationError::field(
+                    "stream frame",
+                    "the only accepted string sentinel is \"[DONE]\"",
+                ));
             }
-            return Err(TranslationError::field(
-                "stream frame",
-                "the only accepted string sentinel is \"[DONE]\"",
-            ));
+            if self.ended {
+                return Ok(Vec::new());
+            }
+            return self.emit_terminal();
         }
         if self.ended {
             return Err(TranslationError::field(
@@ -1671,115 +1704,407 @@ impl ChatToResponsesStream {
         let object = frame.as_object().ok_or_else(|| {
             TranslationError::field("stream frame", "must be a JSON object or \"[DONE]\"")
         })?;
+        let choices = object
+            .get("choices")
+            .and_then(Value::as_array)
+            .ok_or_else(|| TranslationError::field("choices", "required as an array"))?;
+        if choices.len() > 1
+            || choices
+                .first()
+                .is_some_and(|choice| choice.get("index").and_then(Value::as_u64) != Some(0))
+        {
+            return Err(TranslationError::field(
+                "choices",
+                "Responses translation requires one choice at index zero",
+            ));
+        }
+        if self.finish_reason.is_some() && !choices.is_empty() {
+            return Err(TranslationError::field("stream frame", "the response already completed; only trailing usage or [DONE] may follow its finish reason"));
+        }
         let mut events = Vec::new();
         if !self.started {
-            self.started = true;
-            if let Some(id) = object.get("id") {
-                self.id = id.clone();
+            if choices.is_empty() {
+                return Err(TranslationError::field(
+                    "choices",
+                    "a usage-only frame cannot start a response",
+                ));
             }
-            if let Some(model) = object.get("model") {
-                self.model = model.clone();
-            }
+            let id = object.get("id").and_then(Value::as_str).ok_or_else(|| {
+                TranslationError::field("id", "required as a string on the first chunk")
+            })?;
+            let model = object.get("model").and_then(Value::as_str).ok_or_else(|| {
+                TranslationError::field("model", "required as a string on the first chunk")
+            })?;
+            self.reserve_output_bytes(id.len().saturating_add(model.len()))?;
+            self.id = Value::String(id.to_owned());
+            self.model = Value::String(model.to_owned());
             self.created_at = object.get("created").and_then(Value::as_i64).unwrap_or(0);
-            events.push(serde_json::json!({
-                "type": "response.created",
-                "response": self.shell("in_progress"),
-            }));
-            events.push(serde_json::json!({
-                "type": "response.output_item.added",
-                "output_index": 0,
-                "item": self.message_item("in_progress", false),
-            }));
+            self.started = true;
+            events.push(serde_json::json!({"type":"response.created", "response":self.shell("in_progress")}));
         }
-        let choices = object.get("choices").and_then(Value::as_array);
-        let choice = choices.and_then(|choices| choices.first());
-        if let Some(choice) = choice {
-            if let Some(finish) = choice.get("finish_reason").and_then(Value::as_str) {
-                self.finish_reason = Some(finish.to_string());
-            }
-            if let Some(content) = choice
+        if let Some(choice) = choices.first() {
+            let delta = choice
                 .get("delta")
-                .and_then(|delta| delta.get("content"))
-                .and_then(Value::as_str)
+                .and_then(Value::as_object)
+                .ok_or_else(|| TranslationError::field("delta", "required as an object"))?;
+            if delta
+                .get("role")
+                .is_some_and(|value| !value.is_null() && value != "assistant")
             {
-                self.text.push_str(content);
-                events.push(serde_json::json!({
-                    "type": "response.output_text.delta",
-                    "item_id": "msg_0",
-                    "output_index": 0,
-                    "content_index": 0,
-                    "delta": content,
-                }));
+                return Err(TranslationError::field("delta.role", "expected assistant"));
             }
-        } else if object.get("usage").is_some() {
-            self.usage = Some(frame.clone());
+            for (field, value) in delta {
+                if !value.is_null()
+                    && !matches!(
+                        field.as_str(),
+                        "role" | "content" | "reasoning_content" | "refusal" | "tool_calls"
+                    )
+                {
+                    return Err(TranslationError::field(
+                        "delta",
+                        &format!("unsupported field {field}"),
+                    ));
+                }
+            }
+            for (field, kind) in [
+                ("content", ResponsesTextKind::Text),
+                ("reasoning_content", ResponsesTextKind::Reasoning),
+                ("refusal", ResponsesTextKind::Refusal),
+            ] {
+                if let Some(value) = delta.get(field).filter(|value| !value.is_null()) {
+                    let text = value
+                        .as_str()
+                        .ok_or_else(|| TranslationError::field(field, "must be a string"))?;
+                    if !text.is_empty() {
+                        self.push_text(kind, text, &mut events)?;
+                    }
+                }
+            }
+            if let Some(value) = delta.get("tool_calls").filter(|value| !value.is_null()) {
+                let calls = value
+                    .as_array()
+                    .ok_or_else(|| TranslationError::field("tool_calls", "must be an array"))?;
+                for call in calls {
+                    self.push_tool(call, &mut events)?;
+                }
+            }
+            if let Some(finish) = choice.get("finish_reason").filter(|value| !value.is_null()) {
+                let finish = finish
+                    .as_str()
+                    .ok_or_else(|| TranslationError::field("finish_reason", "must be a string"))?;
+                self.finish_reason = Some(ResponsesFinish::parse(finish)?);
+            }
         }
-        if self.finish_reason.is_some() {
-            if object.get("usage").is_some() {
-                self.usage = Some(frame.clone());
+        if let Some(usage) = object.get("usage").filter(|value| !value.is_null()) {
+            if !usage.is_object() {
+                return Err(TranslationError::field("usage", "must be an object"));
             }
-            let terminal = self.emit_terminal()?;
-            events.extend(terminal);
+            self.usage = Some(chat_usage_to_responses(usage)?);
+        }
+        if self.finish_reason.is_some() && self.usage.is_some() {
+            events.extend(self.emit_terminal()?);
         }
         Ok(events)
     }
 
-    fn emit_terminal(&mut self) -> Result<Vec<Value>, TranslationError> {
-        self.ended = true;
-        let finish = self.finish_reason.as_deref().unwrap_or("stop");
-        let status = match finish {
-            "length" => "incomplete",
-            _ => "completed",
-        };
-        let mut done_item = self.message_item(status, true);
-        done_item["status"] = Value::String(status.into());
-        let mut response = self.shell(status);
-        let response_object = response.as_object_mut().expect("response shell object");
-        response_object.insert("output".into(), Value::Array(vec![done_item.clone()]));
-        if let Some(usage_frame) = self.usage.as_ref() {
-            if let Some(usage) = usage_frame.get("usage") {
-                let prompt = usage
-                    .get("prompt_tokens")
-                    .cloned()
-                    .unwrap_or(Value::from(0));
-                let output = usage
-                    .get("completion_tokens")
-                    .cloned()
-                    .unwrap_or(Value::from(0));
-                let total = usage.get("total_tokens").cloned().unwrap_or(Value::from(0));
-                response_object.insert(
-                    "usage".into(),
-                    serde_json::json!({
-                        "input_tokens": prompt,
-                        "output_tokens": output,
-                        "total_tokens": total,
-                        "output_tokens_details": usage
-                            .get("completion_tokens_details")
-                            .cloned()
-                            .unwrap_or_else(|| serde_json::json!({ "reasoning_tokens": 0 })),
-                    }),
-                );
-            }
-        }
-        Ok(vec![
-            serde_json::json!({
-                "type": "response.output_item.done",
-                "output_index": 0,
-                "item": done_item,
-            }),
-            serde_json::json!({ "type": "response.completed", "response": response }),
-        ])
-    }
-
-    /// True once `response.completed` was emitted.
+    /// True once a terminal Responses event was emitted.
     pub fn is_finished(&self) -> bool {
         self.ended
+    }
+
+    fn shell(&self, status: &str) -> Value {
+        serde_json::json!({"id":self.id, "object":"response", "created_at":self.created_at, "model":self.model, "status":status})
+    }
+
+    /// Complete HTTP SSE framing while retaining the published minimal event API.
+    pub(crate) fn push_sse(&mut self, frame: &Value) -> Result<Vec<Value>, TranslationError> {
+        let mut wire = Vec::new();
+        for mut event in self.push(frame)? {
+            match event["type"].as_str() {
+                Some("response.created") => event["response"]["output"] = serde_json::json!([]),
+                Some("response.output_text.delta") => event["logprobs"] = serde_json::json!([]),
+                Some("response.output_item.added") if event["item"]["type"] == "message" => {
+                    let index = event["output_index"]
+                        .as_u64()
+                        .and_then(|index| usize::try_from(index).ok())
+                        .ok_or_else(|| {
+                            TranslationError::field(
+                                "output_index",
+                                "missing from generated output item",
+                            )
+                        })?;
+                    let kind = match self.items.get(index) {
+                        Some(ResponsesOutputItem::Text { kind, .. }) => *kind,
+                        _ => {
+                            return Err(TranslationError::field(
+                                "output_index",
+                                "does not identify the generated message",
+                            ))
+                        }
+                    };
+                    let part = match kind {
+                        ResponsesTextKind::Refusal => {
+                            serde_json::json!({"type":"refusal","refusal":""})
+                        }
+                        _ => serde_json::json!({"type":"output_text","text":"","annotations":[]}),
+                    };
+                    let added = serde_json::json!({"type":"response.content_part.added","item_id":event["item"]["id"],"output_index":index,"content_index":0,"part":part});
+                    wire.push(event);
+                    wire.push(added);
+                    continue;
+                }
+                Some("response.output_item.done") if event["item"]["type"] == "message" => {
+                    complete_response_wire_item(&mut event["item"]);
+                    if let Some(parts) = event["item"]["content"].as_array() {
+                        for (index, part) in parts.iter().enumerate() {
+                            let mut done = serde_json::json!({"item_id":event["item"]["id"],"output_index":event["output_index"],"content_index":index});
+                            if part["type"] == "refusal" {
+                                done["type"] = Value::String("response.refusal.done".into());
+                                done["refusal"] = part["refusal"].clone();
+                            } else {
+                                done["type"] = Value::String("response.output_text.done".into());
+                                done["text"] = part["text"].clone();
+                                done["logprobs"] = serde_json::json!([]);
+                            }
+                            wire.push(done);
+                            wire.push(serde_json::json!({"type":"response.content_part.done","item_id":event["item"]["id"],"output_index":event["output_index"],"content_index":index,"part":part}));
+                        }
+                    }
+                }
+                Some("response.completed" | "response.incomplete") => {
+                    if let Some(items) = event["response"]["output"].as_array_mut() {
+                        for item in items {
+                            complete_response_wire_item(item);
+                        }
+                    }
+                }
+                _ => {}
+            }
+            wire.push(event);
+        }
+        Ok(wire)
+    }
+
+    fn reserve_output_bytes(&mut self, bytes: usize) -> Result<(), TranslationError> {
+        if bytes > MAX_RESPONSES_OUTPUT_BYTES.saturating_sub(self.output_bytes) {
+            return Err(TranslationError::field(
+                "output",
+                "exceeds the 8 MiB translation bound",
+            ));
+        }
+        self.output_bytes += bytes;
+        Ok(())
+    }
+
+    fn add_item(
+        &mut self,
+        item: ResponsesOutputItem,
+        events: &mut Vec<Value>,
+    ) -> Result<usize, TranslationError> {
+        if self.items.len() == MAX_RESPONSES_OUTPUT_ITEMS {
+            return Err(TranslationError::field(
+                "output",
+                "exceeds the 1024 item translation bound",
+            ));
+        }
+        let index = self.items.len();
+        events.push(serde_json::json!({"type":"response.output_item.added", "output_index":index, "item":item.to_value(index, "in_progress", false)}));
+        self.items.push(item);
+        Ok(index)
+    }
+
+    fn push_text(
+        &mut self,
+        kind: ResponsesTextKind,
+        text: &str,
+        events: &mut Vec<Value>,
+    ) -> Result<(), TranslationError> {
+        self.reserve_output_bytes(text.len())?;
+        let index = match self.items.iter().position(|item| matches!(item, ResponsesOutputItem::Text {kind: existing, ..} if *existing == kind)) {
+            Some(index) => index,
+            None => self.add_item(ResponsesOutputItem::Text {kind, text:String::new()}, events)?,
+        };
+        if let ResponsesOutputItem::Text { text: buffer, .. } = &mut self.items[index] {
+            buffer.push_str(text);
+        }
+        let (event_type, item_id) = match kind {
+            ResponsesTextKind::Text => ("response.output_text.delta", format!("msg_{index}")),
+            ResponsesTextKind::Reasoning => {
+                ("response.reasoning_text.delta", format!("rs_{index}"))
+            }
+            ResponsesTextKind::Refusal => ("response.refusal.delta", format!("msg_{index}")),
+        };
+        events.push(serde_json::json!({"type":event_type, "item_id":item_id, "output_index":index, "content_index":0, "delta":text}));
+        Ok(())
+    }
+
+    fn push_tool(&mut self, call: &Value, events: &mut Vec<Value>) -> Result<(), TranslationError> {
+        let source_index = call.get("index").and_then(Value::as_u64).ok_or_else(|| {
+            TranslationError::field("tool_calls.index", "required as an unsigned integer")
+        })?;
+        if call
+            .get("type")
+            .is_some_and(|value| !value.is_null() && value != "function")
+        {
+            return Err(TranslationError::field(
+                "tool_calls.type",
+                "only function calls can translate",
+            ));
+        }
+        let function = call
+            .get("function")
+            .and_then(Value::as_object)
+            .ok_or_else(|| {
+                TranslationError::field("tool_calls.function", "required as an object")
+            })?;
+        let name = match function.get("name").filter(|value| !value.is_null()) {
+            Some(value) => Some(value.as_str().ok_or_else(|| {
+                TranslationError::field("tool_calls.function.name", "must be a string")
+            })?),
+            None => None,
+        };
+        let arguments = match function.get("arguments").filter(|value| !value.is_null()) {
+            Some(value) => value.as_str().ok_or_else(|| {
+                TranslationError::field("tool_calls.function.arguments", "must be a string")
+            })?,
+            None => "",
+        };
+        let index = match self.items.iter().position(|item| matches!(item, ResponsesOutputItem::Function {source_index: existing, ..} if *existing == source_index)) {
+            Some(index) => {
+                self.reserve_output_bytes(name.map_or(0, str::len).saturating_add(arguments.len()))?;
+                if let ResponsesOutputItem::Function {call_id, name: buffer, arguments: accumulated, ..} = &mut self.items[index] {
+                    if call.get("id").is_some_and(|value| !value.is_null() && value.as_str() != Some(call_id)) {
+                        return Err(TranslationError::field("tool_calls.id", "changed within one tool call"));
+                    }
+                    if let Some(name) = name { buffer.push_str(name); }
+                    accumulated.push_str(arguments);
+                }
+                index
+            }
+            None => {
+                let call_id = call.get("id").and_then(Value::as_str).filter(|value| !value.is_empty()).ok_or_else(|| TranslationError::field("tool_calls.id", "required on the first delta"))?;
+                let name = name.filter(|value| !value.is_empty()).ok_or_else(|| TranslationError::field("tool_calls.function.name", "required on the first delta"))?;
+                self.reserve_output_bytes(call_id.len().saturating_add(name.len()).saturating_add(arguments.len()))?;
+                self.add_item(ResponsesOutputItem::Function {source_index, call_id:call_id.to_owned(), name:name.to_owned(), arguments:arguments.to_owned()}, events)?
+            }
+        };
+        if !arguments.is_empty() {
+            events.push(serde_json::json!({"type":"response.function_call_arguments.delta", "item_id":format!("fc_{index}"), "output_index":index, "delta":arguments}));
+        }
+        Ok(())
+    }
+
+    fn emit_terminal(&mut self) -> Result<Vec<Value>, TranslationError> {
+        let finish = self.finish_reason.ok_or_else(|| {
+            TranslationError::field("finish_reason", "[DONE] arrived without a finish reason")
+        })?;
+        let incomplete = match finish {
+            ResponsesFinish::Length => Some("max_output_tokens"),
+            ResponsesFinish::ContentFilter => Some("content_filter"),
+            _ => None,
+        };
+        let status = if incomplete.is_some() {
+            "incomplete"
+        } else {
+            "completed"
+        };
+        let mut events = Vec::new();
+        let output = self.items.iter().enumerate().map(|(index,item)| {
+            if let ResponsesOutputItem::Function {name, arguments, ..} = item {
+                events.push(serde_json::json!({"type":"response.function_call_arguments.done", "item_id":format!("fc_{index}"), "output_index":index, "name":name, "arguments":arguments}));
+            }
+            let value = item.to_value(index, status, true);
+            events.push(serde_json::json!({"type":"response.output_item.done", "output_index":index, "item":value}));
+            value
+        }).collect::<Vec<_>>();
+        let mut response = self.shell(status);
+        response["output"] = Value::Array(output);
+        if let Some(usage) = &self.usage {
+            response["usage"] = usage.clone();
+        }
+        if let Some(reason) = incomplete {
+            response["incomplete_details"] = serde_json::json!({"reason":reason});
+        }
+        events.push(serde_json::json!({"type":if incomplete.is_some() {"response.incomplete"} else {"response.completed"}, "response":response}));
+        self.ended = true;
+        Ok(events)
+    }
+}
+
+impl ResponsesOutputItem {
+    fn to_value(&self, index: usize, status: &str, full: bool) -> Value {
+        match self {
+            Self::Function {
+                call_id,
+                name,
+                arguments,
+                ..
+            } => {
+                serde_json::json!({"type":"function_call", "id":format!("fc_{index}"), "call_id":call_id, "name":name, "arguments":if full {arguments.as_str()} else {""}, "status":status})
+            }
+            Self::Text {
+                kind: ResponsesTextKind::Reasoning,
+                text,
+            } => {
+                serde_json::json!({"type":"reasoning", "id":format!("rs_{index}"), "status":status, "summary":[], "content":if full {serde_json::json!([{"type":"reasoning_text", "text":text}])} else {serde_json::json!([])}})
+            }
+            Self::Text { kind, text } => {
+                let part = if *kind == ResponsesTextKind::Refusal {
+                    serde_json::json!({"type":"refusal", "refusal":text})
+                } else {
+                    serde_json::json!({"type":"output_text", "text":text})
+                };
+                serde_json::json!({"type":"message", "id":format!("msg_{index}"), "role":"assistant", "status":status, "content":if full {serde_json::json!([part])} else {serde_json::json!([])}})
+            }
+        }
+    }
+}
+
+impl std::fmt::Debug for ChatToResponsesStream {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("ChatToResponsesStream")
+            .field("started", &self.started)
+            .field("ended", &self.ended)
+            .field("output_items", &self.items.len())
+            .field("output_bytes", &self.output_bytes)
+            .field(
+                "finish_reason",
+                &self.finish_reason.map(ResponsesFinish::as_str),
+            )
+            .finish_non_exhaustive()
     }
 }
 
 impl Default for ChatToResponsesStream {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+fn chat_usage_to_responses(usage: &Value) -> TranslationResult {
+    let usage = usage
+        .as_object()
+        .ok_or_else(|| TranslationError::field("usage", "must be an object"))?;
+    let mut translated = serde_json::json!({
+        "input_tokens":usage.get("prompt_tokens").cloned().unwrap_or(Value::from(0)),
+        "output_tokens":usage.get("completion_tokens").cloned().unwrap_or(Value::from(0)),
+        "total_tokens":usage.get("total_tokens").cloned().unwrap_or(Value::from(0)),
+        "output_tokens_details":usage.get("completion_tokens_details").cloned().unwrap_or_else(|| serde_json::json!({"reasoning_tokens":0})),
+    });
+    if let Some(details) = usage.get("prompt_tokens_details") {
+        translated["input_tokens_details"] = details.clone();
+    }
+    Ok(translated)
+}
+
+fn complete_response_wire_item(item: &mut Value) {
+    if let Some(parts) = item.get_mut("content").and_then(Value::as_array_mut) {
+        for part in parts {
+            if part["type"] == "output_text" {
+                part["annotations"] = serde_json::json!([]);
+            }
+        }
     }
 }
 
@@ -1794,3 +2119,11 @@ pub fn translate_chat_to_responses_stream(
     }
     Ok(out)
 }
+
+#[cfg(test)]
+#[path = "responses_translation_tests.rs"]
+mod responses_tests;
+
+#[cfg(test)]
+#[path = "responses_request_tests.rs"]
+mod responses_request_tests;

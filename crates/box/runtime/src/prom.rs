@@ -173,7 +173,8 @@ impl RuntimeMetrics {
             .buckets(vec![0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, 120.0]),
         )?;
 
-        let image_build_total = IntCounter::new("aster_box_image_build_total", "Total image builds")?;
+        let image_build_total =
+            IntCounter::new("aster_box_image_build_total", "Total image builds")?;
 
         let rootfs_cache_hits =
             IntCounter::new("aster_box_rootfs_cache_hits_total", "Rootfs cache hits")?;

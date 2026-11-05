@@ -1,1 +1,0 @@
-aster-cli-pair-v1:78d70eb4718e8114d4cce693dacc1788f6db7ce2:aarch64-apple-darwin

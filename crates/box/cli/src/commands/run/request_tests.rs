@@ -19,7 +19,10 @@ fn test_build_box_config_selects_requested_sandbox_isolation() {
     )
     .unwrap();
 
-    assert_eq!(config.isolation, aster_box_core::ExecutionIsolation::Sandbox);
+    assert_eq!(
+        config.isolation,
+        aster_box_core::ExecutionIsolation::Sandbox
+    );
 }
 
 #[test]

@@ -1,8 +1,0 @@
-{
-  "unix": 1792602230.5813608,
-  "elapsed_s": 649.7259918446653,
-  "reconstructed_bytes": 0,
-  "network_bytes": 227611411,
-  "total_bytes": 1893629952,
-  "ended_early_reason": "No improvement after ten minutes; native rate about 0.35 MB/s versus prior HTTP ranges about 1.5 MB/s."
-}

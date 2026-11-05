@@ -74,6 +74,18 @@ impl Default for ObservedTokenUsage {
 }
 
 impl ObservedTokenUsage {
+    pub(crate) fn unbilled() -> Self {
+        let usage = Self::new();
+        usage.record(&ObservedTokens {
+            prompt: Some(0),
+            completion: Some(0),
+            cached_input: Some(0),
+            reasoning: Some(0),
+            total: Some(0),
+        });
+        usage
+    }
+
     pub(crate) fn new() -> Self {
         Self {
             prompt_tokens: AtomicU64::new(UNKNOWN_TOKENS),
@@ -108,6 +120,21 @@ impl ObservedTokenUsage {
     /// observation.
     pub(crate) fn total(&self) -> Option<u64> {
         known(self.total_tokens.load(Ordering::Acquire))
+    }
+
+    pub(crate) fn observation(&self) -> Option<ObservedTokens> {
+        let tokens = ObservedTokens {
+            prompt: known(self.prompt_tokens.load(Ordering::Acquire)),
+            completion: known(self.completion_tokens.load(Ordering::Acquire)),
+            cached_input: known(self.cached_input_tokens.load(Ordering::Acquire)),
+            reasoning: known(self.reasoning_tokens.load(Ordering::Acquire)),
+            total: self.total(),
+        };
+        if tokens == ObservedTokens::default() {
+            None
+        } else {
+            Some(tokens)
+        }
     }
 
     /// Full split for the terminal lifecycle event; `None` when no lane was

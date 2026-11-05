@@ -1,7 +1,0 @@
-{
-  "authenticated_models": true,
-  "unauthenticated_status": 401,
-  "alias": "deepseek-v4.1-flash-1017-xq-v3",
-  "inference_tested": false,
-  "unix": 1792599254.1789799
-}

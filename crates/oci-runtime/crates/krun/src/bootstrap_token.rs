@@ -787,8 +787,8 @@ mod tests {
     fn cleanup_refuses_a_replaced_bootstrap_file() {
         let rootfs = tempfile::tempdir().expect("temporary rootfs");
         protect_handoff_root(rootfs.path());
-        let endpoint =
-            AgentVsockEndpoint::new("aster-oci-agent-bootstrap-replacement").expect("valid endpoint");
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-bootstrap-replacement")
+            .expect("valid endpoint");
         let token = SessionToken::from_bytes([0x42; 32]).expect("nonzero token");
         let bootstrap = BootstrapTokenFile::create(rootfs.path(), "/", &endpoint, &token)
             .expect("bootstrap file");
@@ -842,8 +842,8 @@ mod tests {
         let runtime_share = tempfile::tempdir().expect("temporary runtime share");
         std::fs::set_permissions(runtime_share.path(), std::fs::Permissions::from_mode(0o755))
             .expect("make Linux handoff root public");
-        let endpoint =
-            AgentVsockEndpoint::new("aster-oci-agent-public-runtime-share").expect("valid endpoint");
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-public-runtime-share")
+            .expect("valid endpoint");
         let token = SessionToken::from_bytes([0x7d; 32]).expect("nonzero token");
 
         assert!(BootstrapTokenFile::create(

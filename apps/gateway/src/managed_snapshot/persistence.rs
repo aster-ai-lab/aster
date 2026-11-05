@@ -8,7 +8,8 @@ use std::path::{Path, PathBuf};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use uuid::Uuid;
 
-pub(super) const MANAGED_SNAPSHOT_JOURNAL_SCHEMA: &str = "aster.gateway.managed-snapshot-journal.v1";
+pub(super) const MANAGED_SNAPSHOT_JOURNAL_SCHEMA: &str =
+    "aster.gateway.managed-snapshot-journal.v1";
 
 const MAX_JOURNAL_BYTES: u64 = super::MAX_ACL_BYTES as u64 * 6 + 64 * 1024;
 

@@ -135,7 +135,8 @@ describe('Office shared design roles', () => {
     let index = 0;
     for (const tab of document.querySelectorAll<HTMLElement>('[aria-selected="true"]')) {
       expect(getComputedStyle(tab).color).toBe(colors[index++]);
-      expect(getComputedStyle(tab).backgroundColor).toBe('#f2f3f5');
+      const plate = tab.querySelector<HTMLElement>('[data-slot="selection-highlight"]')!
+      expect(getComputedStyle(plate).backgroundColor).toBe('#f2f3f5');
       expect(getComputedStyle(tab).fontSize).toBe('13px');
       expect(getComputedStyle(tab).fontWeight).toBe('500');
     }

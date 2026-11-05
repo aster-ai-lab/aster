@@ -11,7 +11,9 @@ use aster_oci_agent_protocol::{
     AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_PREFIX,
 };
 use aster_oci_core::{CapabilityStatus, HostPlatform};
-use aster_oci_sdk::{Error, ErrorCode, IoMode, OciBundle, OperationContext, OperationId, ProcessIo};
+use aster_oci_sdk::{
+    Error, ErrorCode, IoMode, OciBundle, OperationContext, OperationId, ProcessIo,
+};
 use tokio::time::timeout;
 
 use super::{

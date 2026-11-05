@@ -1,7 +1,0 @@
-
-running 1 test
-test layers::xq::text::tests::gpu::h200_xq_embedding_shifted_f32_mhc_and_output_head_match_independent_math ... qualified XQ component endpoints source=b5340b19b94db04da98b3c642a91b87050b7986817c87f4cd791e4b994b53108 ptx=d0a6a65b8c3399e5ecfaab6967a215c000fc33a6a201ee05a0affba5fafc6ce4 gather=aster-sm90-xq-gather-f32-v1
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 456 filtered out; finished in 8.89s
-

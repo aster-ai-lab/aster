@@ -217,7 +217,7 @@ fn generate_ratls_config(
     let key_der = key_pair.serialize_der();
 
     // Build rustls ServerConfig
-    let _ = rustls::crypto::ring::default_provider().install_default();
+    let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
 
     let tls_cert = CertificateDer::from(cert_der.clone());
     let tls_key = PrivateKeyDer::Pkcs8(PrivatePkcs8KeyDer::from(key_der));

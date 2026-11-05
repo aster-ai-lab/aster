@@ -56,13 +56,13 @@ pub async fn linux_kvm_filesystem_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-filesystem-reopen-{nonce}"))
-    {
-        Ok(id) => id,
-        Err(error) => {
-            return failed(report, format!("failed to construct container ID: {error}"));
-        }
-    };
+    let container_id =
+        match aster_oci_sdk::ContainerId::new(format!("kvm-filesystem-reopen-{nonce}")) {
+            Ok(id) => id,
+            Err(error) => {
+                return failed(report, format!("failed to construct container ID: {error}"));
+            }
+        };
     let create_operation_id = match operation_id(&format!("kvm-filesystem-reopen-{nonce}-create")) {
         Ok(id) => id,
         Err(reason) => return failed(report, reason),

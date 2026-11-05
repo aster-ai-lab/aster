@@ -1,7 +1,0 @@
-{
-  "observedAtEpoch": 1792788651,
-  "exit": 1,
-  "stdout": "10-24 04:50:45 [INFO] auto restart is not enabled, this job will not be restarted when issues occur\n10-24 04:50:45 [INFO] rjob name with timestamp is simple, use aster-h200-resource-8-17bb05a770ee-45127289 as metadata name\n10-24 04:50:45 [ERROR] Error!!! Submit rjob aster-h200-resource-8-17bb05a770ee: RJob.rjob.brainpp.cn \"aster-h200-resource-8-17bb05a770ee-45127289\" is invalid: spec.backoffLimit: Invalid value: 0: must be greater than zero (Invalid)\n",
-  "stderr": "",
-  "matchingJobs": []
-}

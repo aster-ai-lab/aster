@@ -93,6 +93,7 @@ fn model(service_name: &str, upstream_model: &str) -> InferenceModelConfig {
             protocol: InferenceProtocol::Openai,
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         }],
         scheduling: None,
     }
@@ -112,6 +113,7 @@ fn supplier(
         protocol,
         api_key_env: None,
         translate: false,
+        forward_client_identity: false,
     }
 }
 

@@ -59,7 +59,8 @@ fn compacted_bytes(source: &[u8], first_sequence: u64) -> Vec<u8> {
     assert!(first_record < source_lines.len());
     let mut header: serde_json::Value =
         serde_json::from_slice(&source_lines[0][..source_lines[0].len() - 1]).unwrap();
-    header["schema"] = serde_json::Value::String("aster.gateway.usage-spool-segment.v2".to_string());
+    header["schema"] =
+        serde_json::Value::String("aster.gateway.usage-spool-segment.v2".to_string());
     header["first_sequence"] = serde_json::json!(first_sequence);
     let mut bytes = serde_json::to_vec(&header).unwrap();
     bytes.push(b'\n');

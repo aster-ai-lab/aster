@@ -34,8 +34,10 @@ pub const EXT4_ARTIFACT_SCHEMA: &str = "aster.box.rootfs-ext4.v1";
 pub const EXT4_BUILDER_ID: &str = "mkext4/0.0.3+aster-adapter-v3";
 /// Builder identities that remain safe to resume as already-published disks.
 #[cfg(any(target_os = "macos", all(unix, test)))]
-pub(super) const LEGACY_EXT4_BUILDER_IDS: &[&str] =
-    &["mkext4/0.0.3+aster-adapter-v1", "mkext4/0.0.3+aster-adapter-v2"];
+pub(super) const LEGACY_EXT4_BUILDER_IDS: &[&str] = &[
+    "mkext4/0.0.3+aster-adapter-v1",
+    "mkext4/0.0.3+aster-adapter-v2",
+];
 
 pub(super) const DISK_FILE_NAME: &str = "rootfs.ext4";
 pub(super) const MANIFEST_FILE_NAME: &str = "artifact.json";

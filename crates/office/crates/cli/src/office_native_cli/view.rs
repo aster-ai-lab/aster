@@ -245,5 +245,7 @@ async fn screenshot(
         "use.browser.disabled",
         "Native Office screenshots require the Aster Use Browser feature.",
     )
-    .with_suggestion("Use an Aster Use build with Browser support, or request html or svg instead."))
+    .with_suggestion(
+        "Use an Aster Use build with Browser support, or request html or svg instead.",
+    ))
 }

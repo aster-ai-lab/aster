@@ -59,7 +59,7 @@ specs/021-workspace-wiki/
 
 ## Research
 
-详见 [research.md](research.md)、[data-model.md](data-model.md) 和 [交互/协议合同](contracts/workspace-wiki.md)。personal 维护保留原 `wiki/local` 约束；工作区维护复用原 OKF owner、原生 PlaneStore 与已保存绑定。按 2026-10-27 用户修订，普通任务可自行调用 `search_wiki` 与 `search_memory` 跨当前实例已保存的工作区检索。原异步 catalog/持久 FTS、记忆存储与离线向量继续由原 owner 拥有，不增建服务或模型客户端。
+详见 [research.md](research.md)、[data-model.md](data-model.md)、[交互/协议合同](contracts/workspace-wiki.md) 与 **[架构优化目标](architecture.md)**（2026-11-03：三平面内容模型、所有权切分、增量非 Map-Reduce、O1–O7 优先级）。personal 维护保留原 `wiki/local` 约束；工作区维护复用原 OKF owner、原生 PlaneStore 与已保存绑定。按 2026-10-27 用户修订，普通任务可自行调用 `search_wiki` 与 `search_memory` 跨当前实例已保存的工作区检索。原异步 catalog/持久 FTS、记忆存储与离线向量继续由原 owner 拥有，不增建服务或模型客户端。下一阶段以 architecture.md 的 O1–O4 收口接缝（IA/合同、T009 增量权威、维护锁、T012），不平行开 WeKnora 式分片编译。
 
 ## Delivery phases and estimates
 
@@ -116,3 +116,5 @@ specs/021-workspace-wiki/
 ## Deferred scope
 
 先把核心阅读、编辑、图谱、任务检索、出处和更新做好。独立百科问答已按用户要求删除；2026-10-27 修订纳入当前实例跨任务百科/记忆检索及原文档工具转换。跨实例全局索引、聊天来源导入、远程公开发布、可编辑知识图谱、任意格式转换保证以及 020 业务验收不进入本轮实现。后续依据真实工作区的理解正确性、首次可读时间、增量成本和重复使用情况排期。
+
+架构上明确延期：WeKnora 式 Map-Reduce 入库 Wiki、多租户 RAG 中台、renderer 作为跨窗口维护权威、以「分析」替代百科作为 Wiki 首屏。增量与 finalize 按 [architecture.md](architecture.md) §3 / §5 切口演进。

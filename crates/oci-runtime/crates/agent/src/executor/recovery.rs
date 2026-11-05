@@ -4358,7 +4358,8 @@ mod tests {
                 .expect("exec live")
                 .start_time_ticks,
         };
-        let v5_exec_id = aster_oci_sdk::ProcessId::new("legacy-worker").expect("v5 exec process ID");
+        let v5_exec_id =
+            aster_oci_sdk::ProcessId::new("legacy-worker").expect("v5 exec process ID");
         let v5_exec_identity = ProcessIdentity {
             pid: v5_exec_pid,
             start_time_ticks: process_observation(v5_exec_pid)

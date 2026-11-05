@@ -1,9 +1,0 @@
-{
-  "pid": 39728,
-  "parent": 39727,
-  "binary": "/Users/roylin/code/aster/target/studio-macos-alignment/debug/a3s-code-acp",
-  "sha256": "418835ed9c272d9de13545590d1452cb5b813b4f167efa01b92220ebcea96232",
-  "env_boundary": "PATH+new fixture A3S_HOME/STATE_HOME+disable auto account imports; HOME unchanged/unset in child",
-  "rc": 0,
-  "elapsed": 48.02693812502548
-}

@@ -5,6 +5,8 @@
 
 完整用例见 [cases.md](cases.md)，12 条主旅程见 [journeys.md](journeys.md)，落地顺序见 [tasks.md](tasks.md)，源码/协议依据见 [research.md](research.md)。所有新增 case 当前均为 **PLANNED**。
 
+2026-11-01 的长程任务故障分析与近期实施顺序见 [Core / ACP / 宿主分层优化计划](tui-reliability-plan.md)。该补充在 §5 区分三层产品职责、测试侧缺陷与基础设施原因，并为每项任务指定分层交付；复用本计划的状态、用例和验收门，不改变既有 case 分母或已执行状态。
+
 ## 1. 架构视角：边界、状态、所有权
 
 ```mermaid

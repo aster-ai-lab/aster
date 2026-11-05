@@ -9,10 +9,10 @@
 #[allow(unused_imports)]
 use super::common::*;
 
+use anyhow::Context as _;
 use aster_pager_pty_harness::{
     InferenceEndpoint, InferenceExpectation, InferenceRequestMatcher, inference_request_count,
 };
-use anyhow::Context as _;
 
 const USER_FEEDBACK_EVENT: &str = "grok-shell-user_feedback";
 

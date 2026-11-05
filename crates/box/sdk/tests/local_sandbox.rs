@@ -387,7 +387,10 @@ async fn cleanup_programmable_resources(
     Ok(())
 }
 
-async fn exercise_image_management(client: &AsterBoxClient, reference: &str) -> Result<(), AnyError> {
+async fn exercise_image_management(
+    client: &AsterBoxClient,
+    reference: &str,
+) -> Result<(), AnyError> {
     require(
         client.get_image(reference).await?.is_some(),
         "built image was not gettable through the SDK",
@@ -401,7 +404,10 @@ async fn exercise_image_management(client: &AsterBoxClient, reference: &str) -> 
         "built image history was not available through the SDK",
     )?;
     let tagged = client
-        .tag_image(TagImage::new(reference, "local/aster-sdk-smoke-rust:tested"))
+        .tag_image(TagImage::new(
+            reference,
+            "local/aster-sdk-smoke-rust:tested",
+        ))
         .await?;
     require(
         tagged.reference == "local/aster-sdk-smoke-rust:tested",

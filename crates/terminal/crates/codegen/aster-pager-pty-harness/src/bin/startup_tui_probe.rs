@@ -2,8 +2,8 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use aster_pager_pty_harness::{ContentController, PtyExitPoll, PtyHarness};
 use anyhow::{Context, Result};
+use aster_pager_pty_harness::{ContentController, PtyExitPoll, PtyHarness};
 use clap::{Parser, ValueEnum};
 use serde::Serialize;
 

@@ -580,6 +580,7 @@ mod tests {
                 protocol: crate::config::InferenceProtocol::Openai,
                 api_key_env: None,
                 translate: false,
+                forward_client_identity: false,
             })
             .collect()
     }

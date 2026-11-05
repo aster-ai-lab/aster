@@ -1,8 +1,0 @@
-RESUMING_WITH_COMPLETE_SOURCE_TARGET_ENTRIES
-{"schema": "aster-native-linux-cuda-build-v2", "GPU_execution_claimed": false, "tests_ran": false, "phase": "failed", "error_type": "RuntimeError", "error": "new root build identity differs", "finished_unix": 1792756305.638509}
-Traceback (most recent call last):
-  File "/output/linux_cuda_build_resume_worker.py", line 66, in <module>
-    try:main()
-  File "/output/linux_cuda_build_resume_worker.py", line 39, in main
-    if digest(source/name)!=sha:raise RuntimeError('new root build identity differs')
-RuntimeError: new root build identity differs

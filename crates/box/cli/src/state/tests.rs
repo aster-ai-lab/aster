@@ -1191,7 +1191,10 @@ fn test_box_record_backward_compat_no_health() {
     assert_eq!(parsed.restart_count, 0);
     assert_eq!(parsed.max_restart_count, 0);
     assert!(parsed.exit_code.is_none());
-    assert_eq!(parsed.isolation, aster_box_core::ExecutionIsolation::Microvm);
+    assert_eq!(
+        parsed.isolation,
+        aster_box_core::ExecutionIsolation::Microvm
+    );
 }
 
 #[test]
@@ -1202,7 +1205,10 @@ fn test_box_record_round_trips_sandbox_isolation() {
     let json = serde_json::to_string(&record).unwrap();
     let parsed: BoxRecord = serde_json::from_str(&json).unwrap();
 
-    assert_eq!(parsed.isolation, aster_box_core::ExecutionIsolation::Sandbox);
+    assert_eq!(
+        parsed.isolation,
+        aster_box_core::ExecutionIsolation::Sandbox
+    );
 }
 
 // --- Restart policy validation tests ---

@@ -1,8 +1,0 @@
-{
-  "schema": "aster-serving-reservation-v1",
-  "unix": 1792841508.6733992,
-  "allocation_uid": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b",
-  "gpu_uuid": "GPU-117aafbe-8432-d158-0666-42464fe5ff49",
-  "purpose": "131072-context shadow qualification; optimization is prohibited while reserved",
-  "shadow_intent": "xolotl-longctx-shadow-v1-intent.json"
-}

@@ -460,7 +460,9 @@ fn inspect_recorded_sandbox(
         ))
     })?;
     let generation = runtime.generation.ok_or_else(|| {
-        aster_box_core::BoxError::StateError(format!("Aster OCI generation is missing for {box_id}"))
+        aster_box_core::BoxError::StateError(format!(
+            "Aster OCI generation is missing for {box_id}"
+        ))
     })?;
     let (status, pid) = match crate::sandbox::aster_oci_handler::AsterOciHandler::query_state_at(
         socket, box_id, generation,

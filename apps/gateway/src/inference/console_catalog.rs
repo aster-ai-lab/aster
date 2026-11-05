@@ -318,6 +318,7 @@ fn merge_catalog_with_policy(
                         target.supplier_id.replace('-', "_")
                     )),
                     translate: false,
+                    forward_client_identity: false,
                 });
             }
             if targets.is_empty() {

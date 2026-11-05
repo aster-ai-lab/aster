@@ -55,7 +55,10 @@ fn worker_cannot_read_write_connect_or_exec_outside_its_grants() {
     );
     assert_eq!(fs::read(share.join("output")).unwrap(), b"written");
     assert_eq!(fs::read(writable.join(".env")).unwrap(), b"credential");
-    assert_eq!(fs::read(writable.join(".aster/config")).unwrap(), b"control");
+    assert_eq!(
+        fs::read(writable.join(".aster/config")).unwrap(),
+        b"control"
+    );
     assert_eq!(
         fs::read(writable.join(".aster/loops/output")).unwrap(),
         b"loop state"

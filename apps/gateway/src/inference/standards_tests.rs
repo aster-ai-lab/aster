@@ -21,6 +21,8 @@ fn catalog_is_the_closed_plan() {
             "ocr",
             "decision.systemone",
             "gemini.generate",
+            "gemini.count-tokens",
+            "gemini.models",
             "gemini.embed",
             "openai.images",
             "openai.audio",
@@ -95,6 +97,8 @@ fn model_name_placement_follows_the_route() {
                 | ModelStandard::Ocr
                 | ModelStandard::DecisionSystemOne
                 | ModelStandard::GeminiGenerate
+                | ModelStandard::GeminiCountTokens
+                | ModelStandard::GeminiModels
                 | ModelStandard::GeminiEmbed
                 | ModelStandard::Api
                 | ModelStandard::Mcp
@@ -147,6 +151,8 @@ fn companion_routes_stay_on_their_standard() {
         vec![
             "/v1beta/models/{model}:generateContent",
             "/v1beta/models/{model}:streamGenerateContent",
+            "/v1/models/{model}:generateContent",
+            "/v1/models/{model}:streamGenerateContent",
         ]
     );
     let audio: Vec<_> = ModelStandard::OpenaiAudio
@@ -158,7 +164,7 @@ fn companion_routes_stay_on_their_standard() {
 }
 
 #[test]
-fn admission_admits_openai_core_and_audio() {
+fn admission_admits_openai_core_responses_and_audio() {
     let admitted: Vec<_> = ModelStandard::ALL
         .into_iter()
         .filter(|standard| standard.admission() == StandardAdmission::Admitted)
@@ -171,6 +177,11 @@ fn admission_admits_openai_core_and_audio() {
             "openai.chat",
             "openai.completions",
             "openai.embeddings",
+            "openai.responses",
+            "anthropic.messages",
+            "gemini.generate",
+            "gemini.count-tokens",
+            "gemini.models",
             // Audio carries no managed-inference profile, so admitting it only
             // lifts the reserved-path 404; the ACL proxy route serves it.
             "openai.audio",
@@ -217,11 +228,26 @@ fn admission_admits_openai_core_and_audio() {
         ModelStandard::match_route("POST", "/v1beta/models/gemma:embedContent"),
         Some(ModelStandard::GeminiEmbed)
     );
-    assert!(ModelStandard::is_reserved_route(
+    assert!(!ModelStandard::is_reserved_route(
         "POST",
         "/v1beta/models/gemma:generateContent"
     ));
     assert!(ModelStandard::match_route("POST", "/v1beta/models/:generateContent").is_none());
-    assert!(ModelStandard::match_route("POST", "/v1beta/models/a/b:generateContent").is_none());
+    assert_eq!(
+        ModelStandard::match_route("POST", "/v1beta/models/a/b:generateContent"),
+        Some(ModelStandard::GeminiGenerate)
+    );
     assert!(ModelStandard::match_route("GET", "/v1/messages").is_none());
+    assert!(!ModelStandard::is_reserved_route(
+        "GET",
+        "/v1/models/an-openai-model"
+    ));
+    assert!(ModelStandard::is_reserved_route(
+        "POST",
+        "/v1beta/models/provider/model:unknown"
+    ));
+    assert!(ModelStandard::is_reserved_route(
+        "GET",
+        "/v1beta/models/provider/model"
+    ));
 }

@@ -1,7 +1,0 @@
-
-/Users/roylin/code/aster/apps/studio/src/renderer/components/layout/FirstRunRuntimeComponentsDialog.tsx
-  253:19  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
-  426:17  warning  ⚠️ Avoid template literals in t() — they make rendering output unpredictable  i18n/no-template-in-t
-
-✖ 2 problems (0 errors, 2 warnings)
-

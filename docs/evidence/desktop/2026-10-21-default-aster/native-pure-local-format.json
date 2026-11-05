@@ -1,8 +1,0 @@
-{
-  "native_manifest": "native-source-ready-pure-local.json",
-  "native_manifest_sha256": "c672ae18b164d3e7691edfac84391cd18d5c99db4a1211858c16bfa108907c66",
-  "source_count": 33,
-  "source_drift": [],
-  "native_fmt_rc": 0,
-  "diff_rc": 0
-}

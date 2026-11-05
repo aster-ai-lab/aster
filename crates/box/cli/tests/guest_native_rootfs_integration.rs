@@ -58,7 +58,9 @@ impl GuestNativeSmoke {
             .command(args)
             .envs(environment.iter().copied())
             .output()
-            .unwrap_or_else(|error| panic!("failed to run `aster-box {}`: {error}", args.join(" ")));
+            .unwrap_or_else(|error| {
+                panic!("failed to run `aster-box {}`: {error}", args.join(" "))
+            });
         eprint!("{}", String::from_utf8_lossy(&output.stderr));
         output
     }
@@ -149,7 +151,8 @@ impl GuestNativeSmoke {
 fn legacy_apfs_migration_retains_verified_rollback_generation() {
     let mut smoke = GuestNativeSmoke::new();
     smoke.name = format!("guest-native-migration-{}", std::process::id());
-    let image = std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
+    let image =
+        std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
     let name = smoke.name.clone();
 
     // Create and stop one compatibility generation first. The explicit legacy
@@ -250,7 +253,8 @@ impl Drop for GuestNativeSmoke {
 #[ignore]
 fn guest_native_persistent_restart_and_crash_recovery() {
     let mut smoke = GuestNativeSmoke::new();
-    let image = std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
+    let image =
+        std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
     let name = smoke.name.clone();
 
     smoke.ok(&[
@@ -394,7 +398,8 @@ fn guest_native_filesystem_snapshot_clone_is_mount_free() {
     let mut smoke = GuestNativeSmoke::new();
     smoke.name = format!("guest-native-snapshot-{}", std::process::id());
     let restored_name = format!("{}-restored", smoke.name);
-    let image = std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
+    let image =
+        std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| DEFAULT_IMAGE.to_string());
     let source_name = smoke.name.clone();
 
     smoke.ok(&[

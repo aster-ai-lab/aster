@@ -1,6 +1,0 @@
-{
-  "result": "timeout",
-  "seconds": 5.00367225,
-  "stdout": "",
-  "stderr": "+ set -euo pipefail\n+ [[ apps/studio/scripts/kylin-flatpak/kylin-launch.sh != \\a\\p\\p\\s\\/\\s\\t\\u\\d\\i\\o\\/\\s\\c\\r\\i\\p\\t\\s\\/\\k\\y\\l\\i\\n\\-\\f\\l\\a\\t\\p\\a\\k\\/\\k\\y\\l\\i\\n\\-\\l\\a\\u\\n\\c\\h\\.\\s\\h ]]\n+ [[ --print == \\-\\-\\p\\r\\i\\n\\t ]]\n+ kylin_select_input_method\n+ local gtk= file= xmod= dbus= note= backend=\n+ local has_fcitx5=0 fcitx_service= has_ibus=0 module_id= display_number\n+ local root=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpeyml4qdi/im/immodules\n+ local id_file=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpeyml4qdi/im/immodules/fcitx5/module-id\n++ /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/tmpeyml4qdi/probe\n"
-}

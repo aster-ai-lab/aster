@@ -1,9 +1,0 @@
-{
-  "unix": 1792811220.9526656,
-  "job": "aster-xolotl-trial-44d2ede6ac9f-76952220",
-  "uid": "1fcfba40-40e5-496c-a5f6-679bf4378fc9",
-  "phase": "Stopped",
-  "replica": "aster-xolotl-trial-44d2ede6ac9f-76952220-cfcd2",
-  "replica_uid": "beba8635-22e5-4344-8327-0e6af411640f",
-  "stdout": "10-24 11:07:00 [INFO] stopped rjob aster-xolotl-trial-44d2ede6ac9f-76952220\n"
-}

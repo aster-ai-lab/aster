@@ -10,7 +10,9 @@ use aster_office::{
     NativeOfficeRenderFormat, NativeOfficeUnit, NativeOfficeUnitLocator,
     NativeOfficeUnitRenderOptions, MAX_NATIVE_OFFICE_RENDER_BYTES,
 };
-use aster_use_browser::{BrowserPool, BrowserPoolConfig, PageRenderer, RenderRequest, WaitCondition};
+use aster_use_browser::{
+    BrowserPool, BrowserPoolConfig, PageRenderer, RenderRequest, WaitCondition,
+};
 use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

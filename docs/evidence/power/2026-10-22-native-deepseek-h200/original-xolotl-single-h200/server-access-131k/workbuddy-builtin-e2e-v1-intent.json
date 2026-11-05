@@ -1,9 +1,0 @@
-{
-  "unix": 1792844111.0484385,
-  "phase": "launched",
-  "worker_sha256": "3006677387c1d90b2d27b248193d5928764f83429266d7f88624d3f8b8bbe11d",
-  "client": "existing WorkBuddy bundled client; no UI automation",
-  "no_forwarding": true,
-  "pid": 138948,
-  "created_filetime": 134373177110511160
-}

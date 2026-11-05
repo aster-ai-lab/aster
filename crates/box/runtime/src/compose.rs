@@ -161,12 +161,13 @@ impl ComposeRuntimePlan {
         let add_hosts = svc.extra_hosts.to_vec();
         aster_box_core::dns::parse_add_host_entries(&add_hosts)
             .map_err(|e| BoxError::ConfigError(format!("Invalid extra_hosts entry: {e}")))?;
-        let port_map = aster_box_core::normalize_and_resolve_port_maps(&svc.ports).map_err(|e| {
-            BoxError::ConfigError(format!(
-                "Service '{}' has invalid port mapping: {}",
-                service_name, e
-            ))
-        })?;
+        let port_map =
+            aster_box_core::normalize_and_resolve_port_maps(&svc.ports).map_err(|e| {
+                BoxError::ConfigError(format!(
+                    "Service '{}' has invalid port mapping: {}",
+                    service_name, e
+                ))
+            })?;
 
         let config = BoxConfig {
             image: image.to_string(),

@@ -279,7 +279,9 @@ fn reserved_metadata_path_is_detected_after_curdir_normalization() {
         ))
     );
     assert!(
-        aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new("init-rust.log"))
+        aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new(
+            "init-rust.log"
+        ))
     );
 }
 

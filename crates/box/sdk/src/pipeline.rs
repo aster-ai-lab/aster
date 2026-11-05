@@ -1179,8 +1179,9 @@ esac
     #[test]
     fn builders_chain_all_options() {
         // Exercise every builder method (fields are private; chaining covers the bodies).
-        let c = FileCache::new(std::env::temp_dir().join(format!("aster-ci-bld-{}", key(&["bld"]))))
-            .unwrap();
+        let c =
+            FileCache::new(std::env::temp_dir().join(format!("aster-ci-bld-{}", key(&["bld"]))))
+                .unwrap();
         let _ = WarmBase::new("img", "setup")
             .env("A", "1")
             .cache(&c)

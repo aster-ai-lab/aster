@@ -1,7 +1,38 @@
 use sha2::{Digest, Sha256};
+use std::ffi::OsStr;
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
+use std::process::Command;
+
+/// Query the minimum macOS version selected by the pinned Rust compiler.
+pub(crate) fn macos_deployment_target(rustc: &mut Command, target: &OsStr) -> io::Result<String> {
+    let output = rustc
+        .args([
+            OsStr::new("--print"),
+            OsStr::new("deployment-target"),
+            OsStr::new("--target"),
+            target,
+        ])
+        .output()?;
+    if !output.status.success() {
+        return Err(io::Error::other(format!(
+            "rustc deployment-target query failed: {}",
+            output.status
+        )));
+    }
+    let text = std::str::from_utf8(&output.stdout).map_err(io::Error::other)?;
+    text.trim()
+        .strip_prefix("MACOSX_DEPLOYMENT_TARGET=")
+        .filter(|value| !value.is_empty() && !value.contains(['\r', '\n']))
+        .map(str::to_owned)
+        .ok_or_else(|| {
+            io::Error::new(
+                io::ErrorKind::InvalidData,
+                "unexpected rustc deployment target",
+            )
+        })
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct DebianCrossArchitecture {

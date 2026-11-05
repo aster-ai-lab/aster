@@ -1,4 +1,0 @@
-plugin_domains {
- schema_version = 1
- domain "knowledge" { owners = ["aster-ai-lab"] publishers = ["aster"] }
-}

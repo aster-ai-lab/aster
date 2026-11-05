@@ -71,7 +71,8 @@ fn rejects_symlink_as_ext4_disk_rootfs_source() {
 #[cfg(target_os = "linux")]
 #[test]
 fn parses_sandbox_worker_pid_identity_after_complex_comm() {
-    let stat = "123 (aster oci (sandbox) worker) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 4242";
+    let stat =
+        "123 (aster oci (sandbox) worker) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 4242";
     assert_eq!(linux_process_identity_from_stat(stat), Some(('S', 4242)));
     assert_eq!(linux_process_identity_from_stat("malformed"), None);
 }
@@ -365,7 +366,9 @@ fn test_network_config() -> aster_box_core::vmm::NetworkInstanceConfig {
     aster_box_core::vmm::NetworkInstanceConfig {
         egress_allowed_names: Vec::new(),
         net_socket_path: std::path::PathBuf::from("/tmp/aster-box-test-net.sock"),
-        net_stats_path: Some(std::path::PathBuf::from("/tmp/aster-box-test-net.stats.json")),
+        net_stats_path: Some(std::path::PathBuf::from(
+            "/tmp/aster-box-test-net.stats.json",
+        )),
         #[cfg(unix)]
         net_socket_fd: Some(42),
         #[cfg(unix)]

@@ -23,7 +23,10 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use uuid::Uuid;
 
+mod gemini_tests;
+mod messages_tests;
 mod prefix_affinity_tests;
+mod responses_tests;
 
 const KEY_PREFIX: &str = "aster_inf_abc12345";
 
@@ -143,6 +146,7 @@ pub(super) fn inference_config(
                         protocol: Default::default(),
                         api_key_env: None,
                         translate: false,
+                        forward_client_identity: false,
                     }],
                     scheduling: None,
                 },
@@ -163,6 +167,7 @@ pub(super) fn inference_config(
                 generation: 3,
                 expires_at: Utc::now() + ChronoDuration::hours(1),
                 revoked: false,
+                max_concurrent_requests: None,
             },
         )]),
         routes: HashMap::from([(
@@ -2984,13 +2989,21 @@ async fn cross_protocol_target_translates_request_and_response() {
         r#"{"id":"resp_1","type":"message","role":"assistant","model":"internal-allowed-model","content":[{"type":"text","text":"Ship the money loop first."}],"stop_reason":"end_turn","usage":{"input_tokens":12,"output_tokens":6}}"#,
     )
     .await;
-    let config = cross_protocol_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    let mut config = cross_protocol_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    config
+        .services
+        .get_mut("model-service")
+        .unwrap()
+        .load_balancer
+        .servers[0]
+        .url
+        .push_str("/vendor");
     config.validate().unwrap();
     let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
 
     let response = client
-        .post(format!("http://{address}/v1/chat/completions"))
+        .post(format!("http://{address}/v1/chat/completions?api-version=fixture-v1&trace=two%20words"))
         .bearer_auth(&key)
         .header("content-type", "application/json")
         .body(r#"{"model":"allowed-model","messages":[{"role":"user","content":"Summarize the plan."}],"max_tokens":64}"#)
@@ -3013,6 +3026,10 @@ async fn cross_protocol_target_translates_request_and_response() {
         .unwrap()
         .unwrap();
     let request_text = String::from_utf8(request).unwrap();
+    assert_eq!(
+        request_text.lines().next().unwrap(),
+        "POST /vendor/v1/messages?api-version=fixture-v1&trace=two%20words HTTP/1.1"
+    );
     let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
     let routed_body: serde_json::Value =
         serde_json::from_str(&request_text[body_offset..]).unwrap();
@@ -3061,7 +3078,7 @@ async fn spawn_openai_stream_backend() -> (SocketAddr, tokio::sync::oneshot::Rec
 }
 
 #[tokio::test]
-async fn reserved_anthropic_messages_are_not_admitted() {
+async fn anthropic_messages_require_an_endpoint_grant() {
     let key = inference_key('r');
     let (backend, captured_request) = spawn_openai_stream_backend().await;
     let config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
@@ -3077,14 +3094,14 @@ async fn reserved_anthropic_messages_are_not_admitted() {
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), 404);
+    assert_eq!(response.status(), 403);
     let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["error"], "standard_not_admitted");
+    assert_eq!(body["error_code"], "entitlement.denied");
     assert!(
         tokio::time::timeout(Duration::from_millis(200), captured_request)
             .await
             .is_err(),
-        "a reserved messages path must not reach the upstream"
+        "an ungranted messages path must not reach the upstream"
     );
 
     stop_test_entrypoint(shutdown_tx, handle).await;
@@ -3128,13 +3145,21 @@ async fn spawn_anthropic_stream_backend() -> (SocketAddr, tokio::sync::oneshot::
 async fn cross_protocol_streaming_translates_sse_frames() {
     let key = inference_key('w');
     let (backend, captured_request) = spawn_anthropic_stream_backend().await;
-    let config = cross_protocol_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    let mut config = cross_protocol_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    config
+        .services
+        .get_mut("model-service")
+        .unwrap()
+        .load_balancer
+        .servers[0]
+        .url
+        .push_str("/vendor");
     config.validate().unwrap();
     let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
 
     let mut event_stream = client
-        .post(format!("http://{address}/v1/chat/completions"))
+        .post(format!("http://{address}/v1/chat/completions?api-version=fixture-v1&trace=two%20words"))
         .bearer_auth(&key)
         .header("content-type", "application/json")
         .body(r#"{"model":"allowed-model","stream":true,"messages":[{"role":"user","content":"Summarize the plan."}]}"#)
@@ -3185,6 +3210,10 @@ async fn cross_protocol_streaming_translates_sse_frames() {
         .unwrap()
         .unwrap();
     let request_text = String::from_utf8(request).unwrap();
+    assert_eq!(
+        request_text.lines().next().unwrap(),
+        "POST /vendor/v1/messages?api-version=fixture-v1&trace=two%20words HTTP/1.1"
+    );
     let body_offset = request_text.find("\r\n\r\n").unwrap() + 4;
     let routed_body: serde_json::Value =
         serde_json::from_str(&request_text[body_offset..]).unwrap();
@@ -3194,10 +3223,17 @@ async fn cross_protocol_streaming_translates_sse_frames() {
 }
 
 #[tokio::test]
-async fn reserved_responses_are_not_admitted() {
+async fn responses_require_an_endpoint_grant_before_dispatch() {
     let key = inference_key('n');
     let (backend, captured_request) = spawn_capturing_backend().await;
-    let config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    let mut config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+    for route in config.inference.as_mut().unwrap().routes.values_mut() {
+        for grant in route.grants.values_mut() {
+            grant
+                .endpoints
+                .retain(|endpoint| *endpoint != InferenceEndpoint::Responses);
+        }
+    }
     config.validate().unwrap();
     let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
@@ -3210,14 +3246,14 @@ async fn reserved_responses_are_not_admitted() {
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), 404);
+    assert_eq!(response.status(), 403);
     let body: serde_json::Value = response.json().await.unwrap();
-    assert_eq!(body["error"], "standard_not_admitted");
+    assert_eq!(body["error_code"], "entitlement.denied");
     assert!(
         tokio::time::timeout(Duration::from_millis(200), captured_request)
             .await
             .is_err(),
-        "a reserved responses path must not reach the upstream"
+        "an ungranted responses path must not reach the upstream"
     );
 
     stop_test_entrypoint(shutdown_tx, handle).await;
@@ -3507,6 +3543,7 @@ fn routed_config(backend: SocketAddr, key: &str) -> GatewayConfig {
             protocol: Default::default(),
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         },
         InferenceTargetConfig {
             target_id: primary_target,
@@ -3517,6 +3554,7 @@ fn routed_config(backend: SocketAddr, key: &str) -> GatewayConfig {
             protocol: Default::default(),
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         },
     ];
     model.routing = Some(crate::config::InferenceRoutingPlan {
@@ -3768,6 +3806,7 @@ async fn hr_content_reaches_a_real_decision_service_over_http() {
                 protocol: Default::default(),
                 api_key_env: None,
                 translate: false,
+                forward_client_identity: false,
             }],
             scheduling: None,
         },
@@ -4374,6 +4413,7 @@ async fn decider_backed_config(
                 protocol: Default::default(),
                 api_key_env: None,
                 translate: false,
+                forward_client_identity: false,
             }],
             scheduling: None,
         },

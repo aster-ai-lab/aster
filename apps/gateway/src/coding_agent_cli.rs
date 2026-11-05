@@ -303,7 +303,10 @@ fn join_arguments(arguments: &[OsString]) -> String {
     }
 }
 
-fn require_agent_success(agent: &str, status: std::process::ExitStatus) -> aster_gateway::Result<()> {
+fn require_agent_success(
+    agent: &str,
+    status: std::process::ExitStatus,
+) -> aster_gateway::Result<()> {
     if status.success() {
         Ok(())
     } else {

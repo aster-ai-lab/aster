@@ -528,7 +528,8 @@ async fn native_standard_mcp_runs_a_resumable_collaboration_event_loop() {
             .unwrap(),
         )
         .unwrap();
-    let document_fragment = document_peer.get_or_insert_xml_fragment("aster.office.document.content");
+    let document_fragment =
+        document_peer.get_or_insert_xml_fragment("aster.office.document.content");
     let document_options = document_peer.get_or_insert_map("aster.office.document.options");
     let document_transaction = document_peer.transact();
     let document_paragraphs = document_fragment

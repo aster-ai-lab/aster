@@ -1,7 +1,0 @@
-
-/Users/roylin/code/aster/apps/studio/src/renderer/components/layout/ShellTabBarActions.tsx
-  12:1   error  Deep import into barrel `renderer/components/Sidebar` — import its index, not its internals (naming-conventions.md §6.4 rule 2)                                                       barrel/closed
-  16:79  error  Unexpected path "@renderer/pages/org/OrgAppletLaunchpad" imported in restricted zone. Shared buckets must not import pages/windows (reverse layer edge). architecture/renderer.md §7  import-x/no-restricted-paths
-
-✖ 2 problems (2 errors, 0 warnings)
-

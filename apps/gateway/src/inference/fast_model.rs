@@ -47,6 +47,7 @@ impl LightweightInferenceRequest {
         Ok(super::OpenAiJsonRequest {
             body: self.body,
             document,
+            path_model: None,
         })
     }
 }

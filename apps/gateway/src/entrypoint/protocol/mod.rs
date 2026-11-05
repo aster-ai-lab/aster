@@ -94,6 +94,69 @@ mod http_handler;
 mod streaming_handler;
 mod ws_handler;
 
+fn translated_upstream_uri(
+    original: &http::Uri,
+    translation: Option<crate::translation::ResponseTranslation>,
+    gemini: Option<&(crate::inference::GeminiModelCall, String)>,
+) -> Result<http::Uri, http::Error> {
+    use crate::translation::ResponseTranslation;
+    if let Some((call, model)) = gemini {
+        return call.upstream_uri(model, original);
+    }
+    let Some(translation) = translation else {
+        return Ok(original.clone());
+    };
+    let path = match translation {
+        ResponseTranslation::ToOpenai => "/v1/messages",
+        ResponseTranslation::ToAnthropic | ResponseTranslation::ResponsesFromChat => {
+            "/v1/chat/completions"
+        }
+    };
+    let Some(query) = original.query() else {
+        return Ok(http::Uri::from_static(path));
+    };
+    http::Uri::builder()
+        .path_and_query(format!("{path}?{query}"))
+        .build()
+}
+
+fn observe_translation_usage(
+    mut response: http::Response<ResponseBody>,
+    translation: Option<crate::translation::ResponseTranslation>,
+    endpoint: Option<crate::config::InferenceEndpoint>,
+) -> (
+    http::Response<ResponseBody>,
+    Option<Arc<crate::inference::ObservedTokenUsage>>,
+) {
+    if endpoint.is_some_and(crate::config::InferenceEndpoint::is_token_count) {
+        // A counter result, even an upstream `usage` extension, is not generation spend.
+        response
+            .headers_mut()
+            .entry("x-aster-token-count-source")
+            .or_insert(http::HeaderValue::from_static("upstream"));
+        return (
+            response,
+            Some(Arc::new(crate::inference::ObservedTokenUsage::unbilled())),
+        );
+    }
+    if translation.is_none() {
+        return (response, None);
+    }
+    // Translation can synthesize wire defaults; only upstream observations
+    // may settle the admission guard held around the caller-facing body.
+    let tokens = Arc::new(crate::inference::ObservedTokenUsage::new());
+    let response =
+        crate::inference::track_token_budget_response(response, None, Some(tokens.clone()));
+    (response, Some(tokens))
+}
+
+#[cfg(test)]
+#[path = "inference_uri_tests.rs"]
+mod inference_uri_tests;
+
+#[cfg(test)]
+mod translation_usage_tests;
+
 /// Execute a replayable upstream operation under the route retry policy.
 ///
 /// Only transport failures that happen before response headers and explicitly

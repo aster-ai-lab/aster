@@ -1,9 +1,0 @@
-extension "aster/lark-cli" {
- schema_version = 3
- version = "1.0.98"
- route = "lark-cli"
- requires_use = ">=0.3.0, <0.4.0"
- actions = ["read"]
- repository { url = "https://github.com/aster-ai-lab/plugins" }
- plugin "toolchain" { entry = "toolchain.acl" optional = false }
-}

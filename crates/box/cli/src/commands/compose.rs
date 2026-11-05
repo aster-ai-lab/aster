@@ -17,7 +17,9 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use aster_box_core::compose::{normalize_compose, ComposeConfig, ComposeSourceFormat, ServiceConfig};
+use aster_box_core::compose::{
+    normalize_compose, ComposeConfig, ComposeSourceFormat, ServiceConfig,
+};
 use aster_box_core::config::DEFAULT_VCPUS;
 use aster_box_core::event::EventEmitter;
 use aster_box_runtime::{ComposeRuntimePlan, NetworkStore, VmManager};
@@ -728,48 +730,47 @@ async fn execute_up(
             // endpoint. Register the bare service name plus declared network
             // aliases so peers can use Compose DNS names, not only the
             // `{project}-{svc}` box name.
-            let endpoint =
-                match net_store.with_write_lock(
-                    |networks| -> Result<
-                        aster_box_core::network::NetworkEndpoint,
-                        Box<dyn std::error::Error>,
-                    > {
-                        let net_config = networks.get_mut(net_name).ok_or_else(
-                            || -> Box<dyn std::error::Error> {
-                                format!("Compose network '{}' was not created", net_name).into()
-                            },
-                        )?;
-                        super::network::validate_attachable_network(net_config)
-                            .map_err(|e| -> Box<dyn std::error::Error> { e.into() })?;
-                        net_config
-                            .connect_with_aliases(&box_id, &box_name, &network_aliases)
-                            .map_err(|e| -> Box<dyn std::error::Error> {
-                                format!("Failed to connect service '{}' to network: {e}", svc_name)
-                                    .into()
-                            })
-                    },
-                ) {
-                    Ok(endpoint) => endpoint,
-                    Err(error) => {
-                        return rollback_compose_up(
-                            &mut state,
-                            &started_services,
-                            &created_networks,
-                            chain_partial_cleanup_error(
-                                error,
-                                cleanup_partial_service_box(
-                                    &box_id,
-                                    &box_dir,
-                                    &initial_exec_socket_path,
-                                    network_name.as_deref(),
-                                    &volume_names,
-                                    &[],
-                                ),
+            let endpoint = match net_store.with_write_lock(
+                |networks| -> Result<
+                    aster_box_core::network::NetworkEndpoint,
+                    Box<dyn std::error::Error>,
+                > {
+                    let net_config = networks.get_mut(net_name).ok_or_else(
+                        || -> Box<dyn std::error::Error> {
+                            format!("Compose network '{}' was not created", net_name).into()
+                        },
+                    )?;
+                    super::network::validate_attachable_network(net_config)
+                        .map_err(|e| -> Box<dyn std::error::Error> { e.into() })?;
+                    net_config
+                        .connect_with_aliases(&box_id, &box_name, &network_aliases)
+                        .map_err(|e| -> Box<dyn std::error::Error> {
+                            format!("Failed to connect service '{}' to network: {e}", svc_name)
+                                .into()
+                        })
+                },
+            ) {
+                Ok(endpoint) => endpoint,
+                Err(error) => {
+                    return rollback_compose_up(
+                        &mut state,
+                        &started_services,
+                        &created_networks,
+                        chain_partial_cleanup_error(
+                            error,
+                            cleanup_partial_service_box(
+                                &box_id,
+                                &box_dir,
+                                &initial_exec_socket_path,
+                                network_name.as_deref(),
+                                &volume_names,
+                                &[],
                             ),
-                        )
-                        .await;
-                    }
-                };
+                        ),
+                    )
+                    .await;
+                }
+            };
             print!(
                 "  [+] {} (image={}, ip={})",
                 svc_name, image, endpoint.ip_address

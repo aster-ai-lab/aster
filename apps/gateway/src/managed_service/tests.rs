@@ -420,7 +420,10 @@ fn cloud_managed_acl(
     base_upstream: Option<SocketAddr>,
 ) -> String {
     // Node API requires a configured bearer env when management.enabled.
-    std::env::set_var("ASTER_GATEWAY_TEST_ADMIN_TOKEN", "managed-service-test-token");
+    std::env::set_var(
+        "ASTER_GATEWAY_TEST_ADMIN_TOKEN",
+        "managed-service-test-token",
+    );
     let traffic = base_upstream.map_or_else(String::new, |upstream| {
         format!(
             r#"

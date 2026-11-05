@@ -1,0 +1,34 @@
+suite "aster-account-import" {
+  version = 1
+
+  scenario "first-run-account-choices" {
+    surface = "tui"
+    timeout_ms = 30000
+
+    wait "first-run-config" {
+      text = "Space selects signed-in accounts"
+    }
+    terminal_resize "standard-terminal" {
+      columns = 80
+      rows = 24
+    }
+    snapshot "standard-terminal-account-choices" {}
+    expect "codex-off" { text = "[ ] Codex" }
+    expect "cursor-off" { text = "[ ] Cursor" }
+    expect "grok-off" { text = "[ ] Grok" }
+    press "select-codex" { key = "Space" }
+    wait "codex-on" { text = "[x] Codex" }
+    press "cursor-row" { key = "Down" }
+    press "select-cursor" { key = "Enter" }
+    wait "cursor-on" { text = "[x] Cursor" }
+    press "grok-row" { key = "Down" }
+    press "select-grok" { key = "Space" }
+    wait "grok-on" { text = "[x] Grok" }
+    press "save" { key = "s" }
+    wait "saved" { text = "Saved. Restart aster" }
+    snapshot "saved-account-choices" {}
+    terminal_recording "account-choices" {
+      path = "terminal/account-import.vt"
+    }
+  }
+}

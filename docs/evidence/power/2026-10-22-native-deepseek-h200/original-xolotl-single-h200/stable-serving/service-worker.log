@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-serving-9c996c5a434b/serve-stable/service-worker.py", line 54, in <module>
-    run([sys.executable,'-m','unittest','serve.test_security'],'security-tests',60,env)
-  File "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-serving-9c996c5a434b/serve-stable/service-worker.py", line 16, in run
-    if q.returncode:raise RuntimeError(name+' exit '+str(q.returncode))
-RuntimeError: security-tests exit 1

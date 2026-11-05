@@ -1,8 +1,0 @@
-{
-  "schema": "aster-serving-reservation-v1",
-  "unix": 1792849609.1591203,
-  "allocation_uid": "ea86cb78-5efd-472c-a4f7-d97c38a95637",
-  "gpu_uuid": "GPU-0349ad96-57f8-0001-128d-3ac22f864c3e",
-  "purpose": "public1M-context server; optimization prohibited",
-  "old_serving_allocation_to_drain": "81f6b9d4-409d-4ec2-98cf-cd402e6a380b"
-}

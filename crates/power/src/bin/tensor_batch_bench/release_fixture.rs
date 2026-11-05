@@ -149,7 +149,9 @@ fn collect_fixture_capture(
         profile_implementation_sha256: domain_sha256(
             b"aster-power-release-fixture-profile-implementation-v1\0",
         ),
-        profile_shape_class_sha256: domain_sha256(b"aster-power-release-fixture-profile-class-v1\0"),
+        profile_shape_class_sha256: domain_sha256(
+            b"aster-power-release-fixture-profile-class-v1\0",
+        ),
         fallback_implementation_sha256: domain_sha256(
             b"aster-power-release-fixture-fallback-implementation-v1\0",
         ),

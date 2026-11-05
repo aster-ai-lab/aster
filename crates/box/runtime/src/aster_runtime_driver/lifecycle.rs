@@ -1157,7 +1157,9 @@ fn not_found(spec: &RuntimeUnitSpec) -> RuntimeInspection {
 /// handoff operation id. `ExecutionSnapshotId` bounds the charset to
 /// `[A-Za-z0-9_-]{1,128}` while operation ids may carry `:` — the
 /// SHA-256 digest keeps the mapping injective and replay-stable.
-pub(super) fn snapshot_key(operation_id: &str) -> RuntimeResult<aster_box_core::ExecutionSnapshotId> {
+pub(super) fn snapshot_key(
+    operation_id: &str,
+) -> RuntimeResult<aster_box_core::ExecutionSnapshotId> {
     use sha2::Digest as _;
     let digest = sha2::Sha256::digest(operation_id.as_bytes());
     let key = format!("ed3-{:x}", digest);

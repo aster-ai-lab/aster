@@ -34,6 +34,7 @@ fn policy(secret: &str) -> (InferenceConfig, Uuid, Uuid) {
         generation: 4,
         expires_at: Utc::now() + chrono::Duration::hours(1),
         revoked: false,
+        max_concurrent_requests: None,
     };
     let grant = InferenceGrantConfig {
         credential_generation: 4,
@@ -78,6 +79,7 @@ fn policy(secret: &str) -> (InferenceConfig, Uuid, Uuid) {
                         protocol: Default::default(),
                         api_key_env: None,
                         translate: false,
+                        forward_client_identity: false,
                     }],
                     scheduling: None,
                 },
@@ -189,6 +191,7 @@ async fn selects_weighted_targets_then_falls_back_by_priority() {
             protocol: Default::default(),
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         },
         InferenceTargetConfig {
             target_id: Uuid::new_v4(),
@@ -199,6 +202,7 @@ async fn selects_weighted_targets_then_falls_back_by_priority() {
             protocol: Default::default(),
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         },
         InferenceTargetConfig {
             target_id: Uuid::new_v4(),
@@ -209,6 +213,7 @@ async fn selects_weighted_targets_then_falls_back_by_priority() {
             protocol: Default::default(),
             api_key_env: None,
             translate: false,
+            forward_client_identity: false,
         },
     ];
     let authorizer = InferenceAuthorizer::new(&policy);
@@ -534,6 +539,7 @@ fn access_errors_are_stable_and_do_not_contain_credentials() {
     for (error, status) in [
         (InferenceAccessError::Unauthorized, StatusCode::UNAUTHORIZED),
         (InferenceAccessError::Denied, StatusCode::FORBIDDEN),
+        (InferenceAccessError::NotFound, StatusCode::NOT_FOUND),
         (
             InferenceAccessError::UnsupportedEndpoint,
             StatusCode::NOT_FOUND,

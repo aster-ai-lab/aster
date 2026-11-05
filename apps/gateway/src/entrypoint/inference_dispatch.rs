@@ -39,6 +39,7 @@ pub(crate) struct InferenceDispatchState {
     native_wire: bool,
     /// Back-translation for the currently dispatched cross-protocol attempt.
     translate_response: Option<ResponseTranslation>,
+    gemini_upstream: Option<(crate::inference::GeminiModelCall, String)>,
     prefix_hint: Option<PrefixHint>,
     prefix_signature: Option<[u8; 32]>,
     prefix_lease: Option<PrefixLease>,
@@ -67,6 +68,14 @@ pub(crate) struct PreparedDistributedAttempt {
 }
 
 impl InferenceDispatchState {
+    pub(crate) fn gemini_upstream(&self) -> Option<(crate::inference::GeminiModelCall, String)> {
+        self.gemini_upstream.clone()
+    }
+
+    pub(crate) fn endpoint(&self) -> crate::config::InferenceEndpoint {
+        self.request_identity.endpoint()
+    }
+
     pub(crate) fn new(
         authorizer: Arc<InferenceAuthorizer>,
         authenticated: AuthenticatedInference,
@@ -88,6 +97,7 @@ impl InferenceDispatchState {
             attempted_worker_units: HashSet::new(),
             native_wire: false,
             translate_response: None,
+            gemini_upstream: None,
             prefix_hint: None,
             prefix_signature: None,
             prefix_lease: None,
@@ -100,9 +110,8 @@ impl InferenceDispatchState {
     /// to report streamed usage.
     pub(crate) fn use_native_wire(&mut self) {
         self.native_wire = true;
-        if self.request_identity.endpoint().protocol() == crate::config::InferenceProtocol::Openai {
-            self.request.request_stream_usage();
-        }
+        self.request
+            .request_stream_usage(self.request_identity.endpoint());
     }
 
     pub(crate) fn native_wire(&self) -> bool {
@@ -535,6 +544,11 @@ impl InferenceDispatchState {
             .map_err(|_| InferenceAccessError::Unavailable)?;
         let (body, translate_response) = self.translate_body_for_target(&target, body)?;
         self.translate_response = translate_response;
+        self.gemini_upstream = self
+            .request
+            .path_model
+            .clone()
+            .map(|call| (call, target.upstream_model.clone()));
         #[cfg(feature = "wire")]
         let body = self.apply_guardrails(body)?;
         let content_length = http::HeaderValue::from_str(&body.len().to_string())
@@ -542,7 +556,10 @@ impl InferenceDispatchState {
         headers.insert(CONTENT_LENGTH, content_length);
         apply_upstream_credential(headers, &target, &selected.backend);
 
-        let identity = self.request_identity.begin_attempt(target.target_id);
+        let mut identity = self.request_identity.begin_attempt(target.target_id);
+        if target.forward_client_identity {
+            identity.set_gateway_client(self.authenticated.credential_id());
+        }
         identity.prepare_upstream_headers(headers);
         self.attempt_count = self.attempt_count.saturating_add(1);
 
@@ -613,23 +630,15 @@ impl InferenceDispatchState {
 
     /// Translate a routed request body when the selected target speaks a
     /// different dialect than the endpoint and opted in. Translation runs
-    /// per attempt, before any upstream response starts, so fallback
-    /// semantics are untouched. Streaming over a cross-protocol target
-    /// refuses until the SSE lane ships; an untranslatable body refuses
-    /// naming the field in the log.
+    /// per attempt, before any upstream response starts. An untranslatable
+    /// body refuses, naming the field in the log.
     fn translate_body_for_target(
         &self,
         target: &InferenceDispatchTarget,
         body: Bytes,
     ) -> Result<(Bytes, Option<ResponseTranslation>), InferenceAccessError> {
-        // Responses-dialect streaming runs on the translated lane (chat
-        // chunks feed the machine, which observes usage); native streaming
-        // still refuses until a native usage-observation path exists.
-        if self.request_identity.endpoint() == crate::config::InferenceEndpoint::Responses
-            && self.request.stream_requested()
-            && !target.translates
-        {
-            return Err(InferenceAccessError::CrossProtocolStreaming);
+        if self.request_identity.endpoint().is_token_count() && target.translates {
+            return Err(InferenceAccessError::TranslationRefused);
         }
         if !target.translates {
             return Ok((body, None));
@@ -659,7 +668,8 @@ impl InferenceDispatchState {
             }
             let value = serde_json::from_slice(&body)
                 .map_err(|error| translation_refused(&error.to_string()))?;
-            let translated = crate::translation::responses_request_to_openai(&value)
+            let translated = ResponseTranslation::ResponsesFromChat
+                .translate_json_request(&value)
                 .map_err(|error| translation_refused(&error.0))?;
             let translated_bytes = serde_json::to_vec(&translated)
                 .map_err(|error| translation_refused(&error.to_string()))?;
@@ -681,19 +691,13 @@ impl InferenceDispatchState {
         body: Bytes,
     ) -> Result<(Bytes, Option<ResponseTranslation>), InferenceAccessError> {
         let endpoint_protocol = self.request_identity.endpoint().protocol();
-        type RequestTranslator =
-            fn(
-                &serde_json::Value,
-            ) -> Result<serde_json::Value, crate::translation::TranslationError>;
         let direction = match (endpoint_protocol, target.protocol) {
-            (InferenceProtocol::Openai, InferenceProtocol::Anthropic) => (
-                translate_openai_request as RequestTranslator,
-                ResponseTranslation::ToOpenai,
-            ),
-            (InferenceProtocol::Anthropic, InferenceProtocol::Openai) => (
-                translate_anthropic_request as RequestTranslator,
-                ResponseTranslation::ToAnthropic,
-            ),
+            (InferenceProtocol::Openai, InferenceProtocol::Anthropic) => {
+                ResponseTranslation::ToOpenai
+            }
+            (InferenceProtocol::Anthropic, InferenceProtocol::Openai) => {
+                ResponseTranslation::ToAnthropic
+            }
             _ => {
                 tracing::warn!(
                     endpoint = ?self.request_identity.endpoint(),
@@ -705,7 +709,9 @@ impl InferenceDispatchState {
         };
         let value = serde_json::from_slice(&body)
             .map_err(|error| translation_refused(&error.to_string()))?;
-        let translated = direction.0(&value).map_err(|error| translation_refused(&error.0))?;
+        let translated = direction
+            .translate_json_request(&value)
+            .map_err(|error| translation_refused(&error.0))?;
         let translated_bytes = serde_json::to_vec(&translated)
             .map_err(|error| translation_refused(&error.to_string()))?;
         tracing::info!(
@@ -713,7 +719,7 @@ impl InferenceDispatchState {
             request_id = %self.request_identity.request_id(),
             "Translated cross-protocol inference request"
         );
-        Ok((Bytes::from(translated_bytes), Some(direction.1)))
+        Ok((Bytes::from(translated_bytes), Some(direction)))
     }
 
     fn scheduled_service_is_available(
@@ -918,10 +924,14 @@ fn apply_upstream_credential(
 ) {
     headers.remove(http::header::AUTHORIZATION);
     headers.remove("x-api-key");
+    headers.remove("x-goog-api-key");
     let Some(key) = target.upstream_key.clone() else {
         return;
     };
     match target.protocol {
+        InferenceProtocol::Gemini => {
+            headers.insert("x-goog-api-key", key);
+        }
         InferenceProtocol::Openai | InferenceProtocol::Ocr | InferenceProtocol::SystemOne => {
             headers.insert(http::header::AUTHORIZATION, key);
         }
@@ -1013,18 +1023,6 @@ fn select_backend(
         scheduling: None,
         distributed: None,
     })
-}
-
-fn translate_openai_request(
-    value: &serde_json::Value,
-) -> Result<serde_json::Value, crate::translation::TranslationError> {
-    crate::translation::openai_request_to_anthropic(value)
-}
-
-fn translate_anthropic_request(
-    value: &serde_json::Value,
-) -> Result<serde_json::Value, crate::translation::TranslationError> {
-    crate::translation::anthropic_request_to_openai(value)
 }
 
 fn translation_refused(reason: &str) -> InferenceAccessError {

@@ -954,8 +954,10 @@ mod tests {
 
     #[test]
     fn collect_kvm_live_bindings_walks_nested_shares() {
-        let root =
-            std::env::temp_dir().join(format!("aster-kvm-live-binding-walk-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!(
+            "aster-kvm-live-binding-walk-{}",
+            std::process::id()
+        ));
         let nested = root.join("shares").join("a").join("b");
         std::fs::create_dir_all(&nested).expect("create nested shares");
         let binding = nested.join(KVM_LIVE_BINDING_FILE);

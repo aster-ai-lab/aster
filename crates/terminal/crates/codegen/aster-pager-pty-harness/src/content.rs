@@ -9,8 +9,8 @@
 
 use std::path::Path;
 
-use aster_test_support::{MockInferenceServer, TestSandbox};
 use anyhow::{Context, Result};
+use aster_test_support::{MockInferenceServer, TestSandbox};
 
 pub use aster_test_support::mock_server::FeedbackPost;
 pub use aster_test_support::mock_server::LogEntry;

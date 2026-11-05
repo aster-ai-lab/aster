@@ -38,7 +38,9 @@ use aster_oci_agent_protocol::{
     AGENT_SESSION_TOKEN_ENV, AGENT_TRANSPORT_QUALIFICATION_ENV,
 };
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
-use aster_oci_agent_protocol::{AGENT_SESSION_TOKEN_DIRECTORY_PREFIX, AGENT_SESSION_TOKEN_FILE_NAME};
+use aster_oci_agent_protocol::{
+    AGENT_SESSION_TOKEN_DIRECTORY_PREFIX, AGENT_SESSION_TOKEN_FILE_NAME,
+};
 use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde_json::Value;
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]

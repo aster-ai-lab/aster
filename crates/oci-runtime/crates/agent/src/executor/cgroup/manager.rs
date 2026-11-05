@@ -273,7 +273,8 @@ impl CgroupManager {
                 )
             })?
             .as_nanos();
-        let root = authority_root.join(format!("aster-oci-{}-{timestamp:032x}", std::process::id()));
+        let root =
+            authority_root.join(format!("aster-oci-{}-{timestamp:032x}", std::process::id()));
         std::fs::create_dir(&root).map_err(|error| {
             cgroup_error(
                 if error.kind() == io::ErrorKind::AlreadyExists {

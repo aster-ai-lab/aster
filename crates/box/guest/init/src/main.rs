@@ -229,7 +229,9 @@ mod linux {
                 std::path::Path::new("/"),
             )?;
         } else {
-            aster_box_guest_init::rootfs_archive::restore_rootfs_metadata(std::path::Path::new("/"))?;
+            aster_box_guest_init::rootfs_archive::restore_rootfs_metadata(std::path::Path::new(
+                "/",
+            ))?;
         }
 
         let (mut exec_config, boot_host_config, boot_mode): (
@@ -903,7 +905,8 @@ mod linux {
         if let Err(error) = terminal_status::persist(code) {
             warn!(%error, "Failed to persist guest terminal status");
         }
-        if let Ok(mut file) = std::fs::File::create(aster_box_core::rootfs_metadata::EXIT_CODE_PATH) {
+        if let Ok(mut file) = std::fs::File::create(aster_box_core::rootfs_metadata::EXIT_CODE_PATH)
+        {
             let _ = write!(file, "{code}");
             let _ = file.sync_all();
         }
@@ -936,7 +939,8 @@ mod linux {
             info!("Published guest-owned rootfs handoff acknowledgement");
         }
 
-        if let Ok(mut file) = std::fs::File::create(aster_box_core::rootfs_metadata::EXIT_CODE_PATH) {
+        if let Ok(mut file) = std::fs::File::create(aster_box_core::rootfs_metadata::EXIT_CODE_PATH)
+        {
             let _ = write!(file, "{code}");
             let _ = file.sync_all();
         }

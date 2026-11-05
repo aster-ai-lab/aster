@@ -1,4 +1,0 @@
-Sampling process 49391 for 1 second with 10 milliseconds of run time between samples
-Couldn't find _sigtramp symbol in expected dylibs
-Sampling completed, processing symbols...
-Sample analysis of process 49391 written to file .tmp/plugin-registry/toolchain-test-startup.sample.txt

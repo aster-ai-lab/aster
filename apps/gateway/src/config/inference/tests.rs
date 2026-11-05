@@ -2,6 +2,49 @@ use super::*;
 use crate::config::{GatewayConfig, InferenceModelPricing, InferenceSpendWindow};
 
 #[test]
+fn credential_wide_concurrency_is_optional_positive_and_strict_in_acl() {
+    let source = valid_acl();
+    let config = GatewayConfig::from_acl(&source).unwrap();
+    assert!(config
+        .inference
+        .unwrap()
+        .credentials
+        .values()
+        .next()
+        .unwrap()
+        .max_concurrent_requests
+        .is_none());
+    for value in ["1", "4294967295"] {
+        let source = source.replace(
+            "revoked = false",
+            &format!("revoked = false\n max_concurrent_requests = {value}"),
+        );
+        let config = GatewayConfig::from_acl(&source).unwrap();
+        assert_eq!(
+            config
+                .inference
+                .unwrap()
+                .credentials
+                .values()
+                .next()
+                .unwrap()
+                .max_concurrent_requests
+                .unwrap()
+                .get()
+                .to_string(),
+            value
+        );
+    }
+    for value in ["0", "-1", "1.5", "4294967296", "\"1\""] {
+        let source = source.replace(
+            "revoked = false",
+            &format!("revoked = false\n max_concurrent_requests = {value}"),
+        );
+        assert!(GatewayConfig::from_acl(&source).is_err(), "{value}");
+    }
+}
+
+#[test]
 fn prefix_affinity_is_opt_in_and_acl_types_remain_closed() {
     let source = valid_acl();
     let disabled = GatewayConfig::from_acl(&source).unwrap();
@@ -1254,7 +1297,10 @@ fn inference_policy_requires_managed_mode_and_an_unexpired_window() {
 
 #[test]
 fn inference_policy_requires_supported_tokenizer_revision() {
-    let missing = valid_acl().replace("  tokenizer_revision = \"aster.gateway.tokenizer.v1\"\n", "");
+    let missing = valid_acl().replace(
+        "  tokenizer_revision = \"aster.gateway.tokenizer.v1\"\n",
+        "",
+    );
     let error = GatewayConfig::from_acl(&missing).unwrap_err();
     assert!(
         error.to_string().contains("tokenizer_revision"),

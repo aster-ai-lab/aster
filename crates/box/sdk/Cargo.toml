@@ -1,5 +1,6 @@
 [package]
 name = "aster-box-sdk"
+publish = false
 version = "3.2.7"
 edition = "2021"
 license = "MIT"

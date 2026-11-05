@@ -19,7 +19,7 @@ mod support;
 use support::*;
 
 #[cfg(unix)]
-#[path = "host_smoke_capabilities.rs"]
+#[path = "host_smoke/capabilities.rs"]
 mod capabilities;
 
 fn inspect_box(cli: &CliTest, name: &str) -> serde_json::Value {
@@ -210,7 +210,8 @@ fn test_real_vm_stop_reaps_inherited_stdio_workers() {
 
         let (stdout, stderr, stopped) = cli.output(&["stop", "--timeout", "2", name]);
         let after = inspect_box(&cli, name);
-        let process_remains = aster_box_runtime::process::is_process_alive_with_identity(pid, start);
+        let process_remains =
+            aster_box_runtime::process::is_process_alive_with_identity(pid, start);
         assert!(stopped && after["status"] == "stopped" && after["exit_code"] == 0 && !process_remains,
             "stop must reap workers and the original shim without replacing the main exit: {after}\n{stdout}\n{stderr}");
         cli.ok(&["rm", name]);

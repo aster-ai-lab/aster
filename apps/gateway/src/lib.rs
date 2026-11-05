@@ -56,6 +56,7 @@ pub(crate) mod response_body;
 pub mod router;
 pub(crate) mod scaling;
 pub(crate) mod service;
+mod sse;
 pub(crate) mod static_object;
 pub mod translation;
 mod translation_stream;

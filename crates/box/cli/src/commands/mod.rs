@@ -314,7 +314,8 @@ pub(crate) async fn tail_file_stream_positioned(
 
     #[cfg(target_os = "windows")]
     let (mut file, windows_identity) = {
-        let Ok((file, identity)) = aster_box_core::windows_file::open_regular_file(path, None) else {
+        let Ok((file, identity)) = aster_box_core::windows_file::open_regular_file(path, None)
+        else {
             return;
         };
         (tokio::fs::File::from_std(file), identity)
@@ -345,9 +346,10 @@ pub(crate) async fn tail_file_stream_positioned(
                     // updates stay invisible to a reader already at EOF. Open
                     // a fresh handle and resume from the consumed byte offset.
                     tokio::time::sleep(eof_poll).await;
-                    if let Ok((replacement, _)) =
-                        aster_box_core::windows_file::open_regular_file(path, Some(windows_identity))
-                    {
+                    if let Ok((replacement, _)) = aster_box_core::windows_file::open_regular_file(
+                        path,
+                        Some(windows_identity),
+                    ) {
                         let mut replacement = tokio::fs::File::from_std(replacement);
                         let visible_len = replacement
                             .metadata()
@@ -745,9 +747,14 @@ mod isolation_cli_tests {
 
     #[test]
     fn run_accepts_explicit_sandbox_isolation() {
-        let cli =
-            Cli::try_parse_from(["aster-box", "run", "--isolation", "sandbox", "alpine:latest"])
-                .unwrap();
+        let cli = Cli::try_parse_from([
+            "aster-box",
+            "run",
+            "--isolation",
+            "sandbox",
+            "alpine:latest",
+        ])
+        .unwrap();
 
         let Command::Run(args) = cli.command else {
             panic!("expected run command");
@@ -770,10 +777,15 @@ mod isolation_cli_tests {
 
     #[test]
     fn cli_rejects_explicit_microvm_spelling() {
-        let error =
-            Cli::try_parse_from(["aster-box", "run", "--isolation", "microvm", "alpine:latest"])
-                .err()
-                .expect("explicit microvm spelling must be rejected");
+        let error = Cli::try_parse_from([
+            "aster-box",
+            "run",
+            "--isolation",
+            "microvm",
+            "alpine:latest",
+        ])
+        .err()
+        .expect("explicit microvm spelling must be rejected");
 
         assert!(error.to_string().contains("invalid value 'microvm'"));
     }

@@ -79,6 +79,8 @@ pub(crate) enum ModelStandard {
     Ocr,
     DecisionSystemOne,
     GeminiGenerate,
+    GeminiCountTokens,
+    GeminiModels,
     GeminiEmbed,
     OpenaiImages,
     OpenaiAudio,
@@ -113,7 +115,7 @@ const DECISION_QUESTIONS: [DecisionQuestionType; 3] = [
 ];
 
 impl ModelStandard {
-    pub(crate) const ALL: [Self; 15] = [
+    pub(crate) const ALL: [Self; 17] = [
         Self::OpenaiModels,
         Self::OpenaiChat,
         Self::OpenaiCompletions,
@@ -124,6 +126,8 @@ impl ModelStandard {
         Self::Ocr,
         Self::DecisionSystemOne,
         Self::GeminiGenerate,
+        Self::GeminiCountTokens,
+        Self::GeminiModels,
         Self::GeminiEmbed,
         Self::OpenaiImages,
         Self::OpenaiAudio,
@@ -143,6 +147,8 @@ impl ModelStandard {
             Self::Ocr => "ocr",
             Self::DecisionSystemOne => "decision.systemone",
             Self::GeminiGenerate => "gemini.generate",
+            Self::GeminiCountTokens => "gemini.count-tokens",
+            Self::GeminiModels => "gemini.models",
             Self::GeminiEmbed => "gemini.embed",
             Self::OpenaiImages => "openai.images",
             Self::OpenaiAudio => "openai.audio",
@@ -170,8 +176,12 @@ impl ModelStandard {
 
     pub(crate) const fn model_placement(self) -> ModelNamePlacement {
         match self {
-            Self::OpenaiModels | Self::Ocr | Self::DecisionSystemOne => ModelNamePlacement::None,
-            Self::GeminiGenerate | Self::GeminiEmbed => ModelNamePlacement::Path,
+            Self::OpenaiModels | Self::GeminiModels | Self::Ocr | Self::DecisionSystemOne => {
+                ModelNamePlacement::None
+            }
+            Self::GeminiGenerate | Self::GeminiCountTokens | Self::GeminiEmbed => {
+                ModelNamePlacement::Path
+            }
             Self::Api | Self::Mcp => ModelNamePlacement::Supplier,
             Self::OpenaiChat
             | Self::OpenaiCompletions
@@ -197,6 +207,11 @@ impl ModelStandard {
             | Self::OpenaiChat
             | Self::OpenaiCompletions
             | Self::OpenaiEmbeddings
+            | Self::OpenaiResponses
+            | Self::AnthropicMessages
+            | Self::GeminiGenerate
+            | Self::GeminiCountTokens
+            | Self::GeminiModels
             // Audio is served by a plain proxy route bound in the ACL, not by
             // managed inference: `from_standard` yields no profile, so the
             // request falls through to ordinary router matching. Admitting the
@@ -204,10 +219,7 @@ impl ModelStandard {
             // for the route owns authentication for these multipart calls.
             | Self::OpenaiAudio => StandardAdmission::Admitted,
             Self::Ocr | Self::DecisionSystemOne | Self::Rerank => StandardAdmission::Platform,
-            Self::OpenaiResponses
-            | Self::AnthropicMessages
-            | Self::GeminiGenerate
-            | Self::GeminiEmbed
+            Self::GeminiEmbed
             | Self::OpenaiImages
             | Self::Api
             | Self::Mcp => StandardAdmission::Reserved,
@@ -225,6 +237,14 @@ impl ModelStandard {
     }
 
     pub(crate) fn is_reserved_route(method: &str, path: &str) -> bool {
+        // Own Google's namespace while preserving ordinary OpenAI model-detail GET routes.
+        if (path == "/v1beta/models"
+            || path.starts_with("/v1beta/models/")
+            || (method == "POST" && path.starts_with("/v1/models/")))
+            && Self::match_route(method, path).is_none()
+        {
+            return true;
+        }
         Self::match_route(method, path)
             .is_some_and(|standard| standard.admission() == StandardAdmission::Reserved)
     }
@@ -282,7 +302,29 @@ impl ModelStandard {
                     method: "POST",
                     path: "/v1beta/models/{model}:streamGenerateContent",
                 },
+                StandardRoute {
+                    method: "POST",
+                    path: "/v1/models/{model}:generateContent",
+                },
+                StandardRoute {
+                    method: "POST",
+                    path: "/v1/models/{model}:streamGenerateContent",
+                },
             ],
+            Self::GeminiCountTokens => &[
+                StandardRoute {
+                    method: "POST",
+                    path: "/v1beta/models/{model}:countTokens",
+                },
+                StandardRoute {
+                    method: "POST",
+                    path: "/v1/models/{model}:countTokens",
+                },
+            ],
+            Self::GeminiModels => &[StandardRoute {
+                method: "GET",
+                path: "/v1beta/models",
+            }],
             Self::GeminiEmbed => &[StandardRoute {
                 method: "POST",
                 path: "/v1beta/models/{model}:embedContent",
@@ -323,7 +365,7 @@ fn route_matches(pattern: &str, path: &str) -> bool {
     let Some(model) = rest.strip_suffix(suffix) else {
         return false;
     };
-    !model.is_empty() && !model.contains('/')
+    !model.is_empty()
 }
 
 fn expected_standards() -> String {

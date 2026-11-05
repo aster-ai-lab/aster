@@ -59,10 +59,14 @@ fn render_from<'a>(items: impl Iterator<Item = BoxMetric<'a>>) -> String {
 
     out.push_str("# HELP aster_box_state Boxes by lifecycle status.\n");
     out.push_str("# TYPE aster_box_state gauge\n");
-    out.push_str(&format!("aster_box_state{{status=\"running\"}} {running}\n"));
+    out.push_str(&format!(
+        "aster_box_state{{status=\"running\"}} {running}\n"
+    ));
     out.push_str(&format!("aster_box_state{{status=\"paused\"}} {paused}\n"));
     out.push_str(&format!("aster_box_state{{status=\"dead\"}} {dead}\n"));
-    out.push_str(&format!("aster_box_state{{status=\"created\"}} {created}\n"));
+    out.push_str(&format!(
+        "aster_box_state{{status=\"created\"}} {created}\n"
+    ));
     out.push_str(&format!("aster_box_state{{status=\"other\"}} {other}\n"));
 
     out.push_str("# HELP aster_box_restarts_total Sum of per-box restart counts.\n");
@@ -71,7 +75,9 @@ fn render_from<'a>(items: impl Iterator<Item = BoxMetric<'a>>) -> String {
 
     out.push_str("# HELP aster_box_health Boxes by health-check status.\n");
     out.push_str("# TYPE aster_box_health gauge\n");
-    out.push_str(&format!("aster_box_health{{status=\"healthy\"}} {healthy}\n"));
+    out.push_str(&format!(
+        "aster_box_health{{status=\"healthy\"}} {healthy}\n"
+    ));
     out.push_str(&format!(
         "aster_box_health{{status=\"unhealthy\"}} {unhealthy}\n"
     ));

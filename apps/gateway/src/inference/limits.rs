@@ -41,6 +41,7 @@ const MAX_PRINCIPAL_LIMITERS: usize = 100_000;
 /// Local limit state for every grant in one active inference projection.
 pub(super) struct InferenceLimitStore {
     states: HashMap<InferenceGrantIdentity, Arc<InferenceGrantLimiter>>,
+    credential_concurrency: HashMap<Uuid, (Option<std::num::NonZeroU32>, Arc<AtomicU64>)>,
     /// Principal route limits keyed by `(route_id, policy_revision)`.
     principal_limits: HashMap<(Uuid, u64), InferenceLimitsConfig>,
     /// Per-subject limiters created on first admission.
@@ -79,6 +80,17 @@ impl InferenceLimitStore {
             .unwrap_or_default();
         Self {
             states: Self::grant_states(policy, previous),
+            credential_concurrency: policy
+                .credentials
+                .iter()
+                .map(|(id, credential)| {
+                    let counter = previous
+                        .and_then(|previous| previous.credential_concurrency.get(id))
+                        .map(|(_, counter)| Arc::clone(counter))
+                        .unwrap_or_else(|| Arc::new(AtomicU64::new(0)));
+                    (*id, (credential.max_concurrent_requests, counter))
+                })
+                .collect(),
             principal_limits,
             principal_states: Mutex::new(principal_states),
         }
@@ -160,7 +172,20 @@ impl InferenceLimitStore {
                 .principal_state(identity)
                 .ok_or(InferenceAccessError::Unavailable)?,
         };
-        state.try_admit(now, reservation, pricing)
+        // Track uncapped credentials too, so enabling a cap includes existing requests.
+        let credential_concurrency = self
+            .credential_concurrency
+            .get(&identity.credential_id)
+            .map(|(limit, counter)| {
+                CredentialConcurrencyGuard::try_acquire(
+                    Arc::clone(counter),
+                    limit.map_or(u64::MAX, |limit| u64::from(limit.get())),
+                )
+            })
+            .transpose()?;
+        let mut admission = state.try_admit(now, reservation, pricing)?;
+        admission._credential_concurrency = credential_concurrency;
+        Ok(admission)
     }
 }
 
@@ -275,6 +300,7 @@ impl InferenceGrantLimiter {
                 Ok(_) => {
                     return Ok(InferenceGrantAdmissionGuard {
                         state: self,
+                        _credential_concurrency: None,
                         reserved_tokens: AtomicU64::new(reserved_tokens),
                         reserved_spend_micros: AtomicU64::new(reserved_spend_micros),
                         pricing,
@@ -298,6 +324,7 @@ impl InferenceGrantLimiter {
 /// reconciles the same way, priced at the admitted model's snapshot pricing.
 pub(super) struct InferenceGrantAdmissionGuard {
     state: Arc<InferenceGrantLimiter>,
+    _credential_concurrency: Option<CredentialConcurrencyGuard>,
     reserved_tokens: AtomicU64,
     reserved_spend_micros: AtomicU64,
     pricing: Option<InferenceModelPricing>,
@@ -355,6 +382,32 @@ impl Drop for InferenceGrantAdmissionGuard {
                 .fetch_update(Ordering::AcqRel, Ordering::Acquire, |current| {
                     current.checked_sub(1)
                 });
+        debug_assert!(result.is_ok(), "inference admission guard underflow");
+    }
+}
+
+struct CredentialConcurrencyGuard {
+    in_flight: Arc<AtomicU64>,
+}
+
+impl CredentialConcurrencyGuard {
+    fn try_acquire(in_flight: Arc<AtomicU64>, limit: u64) -> Result<Self, InferenceAccessError> {
+        in_flight
+            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |current| {
+                (current < limit).then(|| current + 1)
+            })
+            .map_err(|_| InferenceAccessError::ConcurrencyLimited)?;
+        Ok(Self { in_flight })
+    }
+}
+
+impl Drop for CredentialConcurrencyGuard {
+    fn drop(&mut self) {
+        let result = self
+            .in_flight
+            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |current| {
+                current.checked_sub(1)
+            });
         debug_assert!(result.is_ok(), "inference admission guard underflow");
     }
 }
@@ -601,7 +654,7 @@ mod tests {
     };
     use chrono::Utc;
 
-    fn limits(
+    pub(super) fn limits(
         max_concurrent_requests: u64,
         requests_per_minute: u64,
         burst: u64,
@@ -636,7 +689,9 @@ mod tests {
         }
     }
 
-    fn policy(limits: InferenceLimitsConfig) -> (InferenceConfig, InferenceGrantIdentity) {
+    pub(super) fn policy(
+        limits: InferenceLimitsConfig,
+    ) -> (InferenceConfig, InferenceGrantIdentity) {
         let route_id = Uuid::new_v4();
         let credential_id = Uuid::new_v4();
         let environment_id = Uuid::new_v4();
@@ -660,6 +715,7 @@ mod tests {
                     generation: 3,
                     expires_at: Utc::now() + chrono::Duration::hours(1),
                     revoked: false,
+                    max_concurrent_requests: None,
                 },
             )]),
             routes: HashMap::from([(
@@ -691,6 +747,7 @@ mod tests {
                                 protocol: Default::default(),
                                 api_key_env: None,
                                 translate: false,
+                                forward_client_identity: false,
                             }],
                             scheduling: None,
                         },
@@ -1358,3 +1415,7 @@ mod tests {
             .is_ok());
     }
 }
+
+#[cfg(test)]
+#[path = "limits_client_tests.rs"]
+mod client_tests;

@@ -258,9 +258,12 @@ mod tests {
 
     #[test]
     fn overrides_win_over_search_root() {
-        let root =
-            std::env::temp_dir().join(format!("aster-kvm-packaged-override-{}", std::process::id()));
-        let alt = std::env::temp_dir().join(format!("aster-kvm-packaged-alt-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!(
+            "aster-kvm-packaged-override-{}",
+            std::process::id()
+        ));
+        let alt =
+            std::env::temp_dir().join(format!("aster-kvm-packaged-alt-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let _ = fs::remove_dir_all(&alt);
         fs::create_dir_all(&root).unwrap();

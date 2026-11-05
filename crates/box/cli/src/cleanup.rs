@@ -208,12 +208,14 @@ pub fn cleanup_removed_box(record: &BoxRecord) -> aster_box_core::error::Result<
         )?;
 
         // MicroVM :ro virtio-fs RO-bind aliases must be detached before wipe.
-        aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(|error| {
-            aster_box_core::error::BoxError::Other(format!(
-                "Failed to detach MicroVM :ro virtio-fs aliases for {}: {error}",
-                record.id
-            ))
-        })?;
+        aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(
+            |error| {
+                aster_box_core::error::BoxError::Other(format!(
+                    "Failed to detach MicroVM :ro virtio-fs aliases for {}: {error}",
+                    record.id
+                ))
+            },
+        )?;
 
         // Release the overlayfs mount FIRST: otherwise remove_dir_all deletes
         // into the live mount ("Stale file handle") and leaks it. Fail closed so

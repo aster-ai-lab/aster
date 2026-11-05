@@ -1,9 +1,0 @@
-{
-  "scope": "Windows to actual GPU gateway; unauthenticated synthetic request; no inference expected",
-  "host": "172.18.101.2",
-  "port": 8080,
-  "http_status": 401,
-  "body_bytes": 163,
-  "bounded_response": true,
-  "elapsed_ms": 344.0
-}

@@ -1,6 +1,0 @@
-{"file": "shared-c8-r1.json", "status": "passed", "outcomes": {"success": 1, "refused": 0, "http_error": 0, "error": 0, "timeout": 0, "cancelled": 0, "invalid_stream": 0, "invalid_output": 0}}
-................
-----------------------------------------------------------------------
-Ran 16 tests in 1.076s
-
-OK

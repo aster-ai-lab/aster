@@ -1,9 +1,0 @@
-{
-  "unix": 1792727636.055524,
-  "rjob": "aster-sm90-probe-1792726831-62784625",
-  "uid": "3ff664f4-08e2-4de4-a11b-d5c98ab4c058",
-  "before": "Inqueue",
-  "reason": "superseded while queued: add explicit scalar profile and driver allocation checks; never alter submitted artifacts",
-  "stop_exit": 0,
-  "after": "Stopped"
-}

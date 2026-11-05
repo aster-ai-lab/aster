@@ -68,6 +68,7 @@ impl InferenceRequestIdentity {
     pub(crate) fn prepare_request_headers(&self, headers: &mut HeaderMap) {
         insert_uuid_header(headers, REQUEST_ID_HEADER, self.request_id);
         headers.remove(ATTEMPT_ID_HEADER);
+        headers.remove("x-aster-gateway-client");
     }
 
     pub(crate) fn attach_response_header<B>(&self, response: &mut Response<B>) {
@@ -79,6 +80,7 @@ impl InferenceRequestIdentity {
             request: self.clone(),
             attempt_id: Uuid::new_v4(),
             target_id,
+            gateway_client: None,
         }
     }
 }
@@ -89,9 +91,14 @@ pub(crate) struct InferenceAttemptIdentity {
     request: InferenceRequestIdentity,
     attempt_id: Uuid,
     target_id: Uuid,
+    gateway_client: Option<Uuid>,
 }
 
 impl InferenceAttemptIdentity {
+    pub(crate) fn set_gateway_client(&mut self, client: Uuid) {
+        self.gateway_client = Some(client);
+    }
+
     pub(crate) fn request(&self) -> &InferenceRequestIdentity {
         &self.request
     }
@@ -107,6 +114,9 @@ impl InferenceAttemptIdentity {
     pub(crate) fn prepare_upstream_headers(&self, headers: &mut HeaderMap) {
         self.request.prepare_request_headers(headers);
         insert_uuid_header(headers, ATTEMPT_ID_HEADER, self.attempt_id);
+        if let Some(client) = self.gateway_client {
+            insert_uuid_header(headers, "x-aster-gateway-client", client);
+        }
     }
 
     pub(crate) fn attach_response_header<B>(&self, response: &mut Response<B>) {
@@ -180,3 +190,7 @@ mod tests {
         assert_send_sync::<InferenceAttemptIdentity>();
     }
 }
+
+#[cfg(test)]
+#[path = "identity_gateway_tests.rs"]
+mod gateway_tests;

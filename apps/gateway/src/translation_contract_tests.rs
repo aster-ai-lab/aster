@@ -8,6 +8,51 @@
 use super::*;
 use serde_json::Value;
 
+#[test]
+fn gemini_counter_estimates_preserve_context_and_ignore_output_settings() {
+    let contents = serde_json::json!({"contents":[{"parts":[{"text":"hello"}]}]});
+    let base = estimate_gemini_input_tokens(&contents).unwrap();
+    let mut full = contents.clone();
+    full["systemInstruction"] =
+        serde_json::json!({"parts":[{"text":"long instructions ".repeat(100)}]});
+    full["tools"] = serde_json::json!([{"functionDeclarations":[{"name":"lookup","description":"function context ".repeat(100)}]}]);
+    full["cachedContent"] = serde_json::json!("cachedContents/context");
+    let with_context = estimate_gemini_input_tokens(&full).unwrap();
+    assert!(with_context > base);
+    for field in ["generateContentRequest", "generate_content_request"] {
+        let wrapped = serde_json::json!({field:full});
+        assert_eq!(
+            estimate_gemini_input_tokens(&wrapped).unwrap(),
+            with_context
+        );
+        assert_eq!(gemini_count_input(&wrapped).unwrap(), &full);
+    }
+    full["model"] = serde_json::json!("models/ignored");
+    full["stream"] = serde_json::json!(true);
+    full["generationConfig"] = serde_json::json!({"maxOutputTokens":9000,"temperature":0.5});
+    assert_eq!(estimate_gemini_input_tokens(&full).unwrap(), with_context);
+}
+
+#[test]
+fn gemini_counter_refuses_ambiguous_and_malformed_input() {
+    for request in [
+        serde_json::json!(null),
+        serde_json::json!([]),
+        serde_json::json!({"contents":null}),
+        serde_json::json!({"contents":[true]}),
+        serde_json::json!({"contents":[{"parts":true}]}),
+        serde_json::json!({"contents":[{"parts":[true]}]}),
+        serde_json::json!({"generateContentRequest":true}),
+        serde_json::json!({"contents":[],"generateContentRequest":{"contents":[]}}),
+        serde_json::json!({"generateContentRequest":{"contents":[]},"generate_content_request":{"contents":[]}}),
+    ] {
+        assert!(estimate_gemini_input_tokens(&request).is_err(), "{request}");
+    }
+    assert!(estimate_gemini_input_tokens(&serde_json::json!({"contents":[]})).is_ok());
+    assert!(estimate_gemini_input_tokens(&serde_json::json!({})).is_ok());
+    assert!(estimate_gemini_input_tokens(&serde_json::json!({"generateContentRequest":{"systemInstruction":{"parts":[{"text":"instructions"}]}}})).is_ok());
+}
+
 const PLAIN_CHAT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/tests/fixtures/translation/plain_chat_pair.json"
@@ -425,6 +470,8 @@ fn reverse_stream_refuses_post_terminal_input_and_bad_sentinels() {
             "choices": [{ "index": 0, "delta": {}, "finish_reason": "stop" }],
         }))
         .unwrap();
+    assert!(!machine.is_finished());
+    machine.push(&Value::String("[DONE]".into())).unwrap();
     assert!(machine.is_finished());
     let error = machine
         .push(&serde_json::json!({
@@ -548,6 +595,8 @@ fn responses_stream_refuses_post_terminal_and_bad_sentinels() {
             "choices": [{ "index": 0, "delta": {}, "finish_reason": "stop" }],
         }))
         .unwrap();
+    assert!(!machine.is_finished());
+    machine.push(&Value::String("[DONE]".into())).unwrap();
     assert!(machine.is_finished());
     let error = machine
         .push(&serde_json::json!({

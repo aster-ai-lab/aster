@@ -2,7 +2,9 @@
 //! in-flight work on the retired generation while new requests move to the
 //! successor. This is Gateway-local; multi-replica joint gates remain open.
 
-use aster_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
+use aster_gateway::managed_snapshot::{
+    ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus,
+};
 use aster_gateway::{config::GatewayConfig, Gateway};
 use chrono::{Duration, Utc};
 use std::net::SocketAddr;

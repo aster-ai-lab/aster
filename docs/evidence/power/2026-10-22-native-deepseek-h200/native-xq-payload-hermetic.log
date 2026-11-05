@@ -1,8 +1,0 @@
-test_corruption_retains_failure_and_never_publishes_or_changes_inputs (test_prepare_payload.PayloadPublicationTests.test_corruption_retains_failure_and_never_publishes_or_changes_inputs) ... ok
-test_deadline_retains_incomplete_without_publishing (test_prepare_payload.PayloadPublicationTests.test_deadline_retains_incomplete_without_publishing) ... ok
-test_exact_parts_publish_only_the_complete_verified_payload (test_prepare_payload.PayloadPublicationTests.test_exact_parts_publish_only_the_complete_verified_payload) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.067s
-
-OK

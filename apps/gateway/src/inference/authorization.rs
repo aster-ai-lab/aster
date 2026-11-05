@@ -190,11 +190,20 @@ impl AuthenticatedInference {
     pub(crate) fn is_principal(self) -> bool {
         self.principal
     }
+
+    fn denial_error(self) -> InferenceAccessError {
+        if self.principal {
+            InferenceAccessError::NotFound
+        } else {
+            InferenceAccessError::Denied
+        }
+    }
 }
 
 /// One authorized model target selected from the active snapshot.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct InferenceDispatchTarget {
+    pub(crate) forward_client_identity: bool,
     pub(crate) model_id: Uuid,
     pub(crate) target_id: Uuid,
     pub(crate) priority: u32,
@@ -409,7 +418,7 @@ impl InferenceAuthorizer {
         let (route, grant) = self.grant(authenticated, now)?;
         let endpoint = endpoint(profile);
         if !grant.allows_endpoint(endpoint) {
-            return Err(InferenceAccessError::Denied);
+            return Err(authenticated.denial_error());
         }
         Ok(InferenceRequestIdentity::new(
             correlation_id,
@@ -431,17 +440,25 @@ impl InferenceAuthorizer {
             return Err(InferenceAccessError::Unavailable);
         }
         let route = self.route(router)?;
+        if profile.is_gemini() && route.principal.is_some() {
+            return Err(InferenceAccessError::UnsupportedEndpoint);
+        }
+        let token = if profile.is_anthropic() {
+            super::principal::principal_token(headers)
+        } else {
+            bearer_token(headers)
+        };
         if let Some(principal) = &route.principal {
-            let inference_key = bearer_token(headers)
-                .ok()
-                .filter(|token| token.starts_with(INFERENCE_KEY_PREFIX));
-            if inference_key.is_none() {
+            if !token
+                .as_ref()
+                .is_ok_and(|token| token.starts_with(INFERENCE_KEY_PREFIX))
+            {
                 return self
                     .authenticate_principal(route, principal, profile, headers)
                     .await;
             }
         }
-        let token = bearer_token(headers)?;
+        let token = token?;
         let credential = self.credential_for_token(token)?;
         if credential.revoked {
             return Err(InferenceAccessError::Revoked);
@@ -493,7 +510,7 @@ impl InferenceAuthorizer {
             .verify(route.route_id, principal, headers)
             .await?;
         if !principal.endpoints.contains(&endpoint(profile)) {
-            return Err(InferenceAccessError::Denied);
+            return Err(InferenceAccessError::NotFound);
         }
         Ok(AuthenticatedInference {
             route_id: route.route_id,
@@ -574,6 +591,27 @@ impl InferenceAuthorizer {
             authenticated,
             identity,
         })
+    }
+
+    /// Return the deterministic model aliases visible to one credential.
+    pub(crate) fn allowed_gemini_models(
+        &self,
+        authenticated: AuthenticatedInference,
+        now: DateTime<Utc>,
+    ) -> Result<Vec<String>, InferenceAccessError> {
+        let (route, _) = self.grant(authenticated, now)?;
+        Ok(self
+            .allowed_models(authenticated, now)?
+            .into_iter()
+            .filter(|alias| {
+                route.models.get(alias).is_some_and(|model| {
+                    model
+                        .targets
+                        .iter()
+                        .any(|target| target.protocol == InferenceProtocol::Gemini)
+                })
+            })
+            .collect())
     }
 
     /// Return the deterministic model aliases visible to one credential.
@@ -1025,6 +1063,7 @@ impl InferenceAuthorizer {
                     cumulative += u64::from(target.weight).saturating_mul(factor) / 1_000;
                     if selected_weight < cumulative {
                         return Ok(InferenceDispatchTarget {
+                            forward_client_identity: target.forward_client_identity,
                             model_id: model.model_id,
                             target_id: target.target_id,
                             priority,
@@ -1109,12 +1148,12 @@ impl InferenceAuthorizer {
     ) -> Result<(&InferenceRouteConfig, &InferenceModelConfig), InferenceAccessError> {
         let (route, grant) = self.grant(authenticated, now)?;
         if !grant.allows_model(alias) || !self.principal_allows_model(authenticated, alias) {
-            return Err(InferenceAccessError::Denied);
+            return Err(authenticated.denial_error());
         }
         let model = route
             .models
             .get(alias)
-            .ok_or(InferenceAccessError::Denied)?;
+            .ok_or_else(|| authenticated.denial_error())?;
         Ok((route, model))
     }
 
@@ -1295,9 +1334,11 @@ fn endpoint(profile: OpenAiRequestProfile) -> InferenceEndpoint {
         OpenAiRequestProfile::ChatCompletions => InferenceEndpoint::ChatCompletions,
         OpenAiRequestProfile::Completions => InferenceEndpoint::Completions,
         OpenAiRequestProfile::Embeddings => InferenceEndpoint::Embeddings,
-        OpenAiRequestProfile::Messages | OpenAiRequestProfile::CountTokens => {
-            InferenceEndpoint::Messages
-        }
+        OpenAiRequestProfile::Messages => InferenceEndpoint::Messages,
+        OpenAiRequestProfile::CountTokens => InferenceEndpoint::MessagesCountTokens,
+        OpenAiRequestProfile::GeminiGenerate => InferenceEndpoint::GeminiGenerate,
+        OpenAiRequestProfile::GeminiCountTokens => InferenceEndpoint::GeminiCountTokens,
+        OpenAiRequestProfile::GeminiModels => InferenceEndpoint::GeminiModels,
         OpenAiRequestProfile::Ocr => InferenceEndpoint::Ocr,
         OpenAiRequestProfile::SystemOne => InferenceEndpoint::SystemOne,
         OpenAiRequestProfile::Rerank => InferenceEndpoint::Rerank,

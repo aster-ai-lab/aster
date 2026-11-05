@@ -185,7 +185,8 @@ pub(crate) fn should_retry_guest_file_download(
     request: &aster_box_core::exec::FileRequest,
     error: &BoxError,
 ) -> bool {
-    matches!(request.op, aster_box_core::FileOp::Download) && is_ambiguous_filesystem_transport(error)
+    matches!(request.op, aster_box_core::FileOp::Download)
+        && is_ambiguous_filesystem_transport(error)
 }
 
 /// Combined guest file-transfer retry policy for ExecClient and MicroVM session.
@@ -311,8 +312,8 @@ impl ExecClient {
 
         match frame.frame_type {
             aster_transport::FrameType::Data => {
-                let output: aster_box_core::exec::ExecOutput = serde_json::from_slice(&frame.payload)
-                    .map_err(|e| {
+                let output: aster_box_core::exec::ExecOutput =
+                    serde_json::from_slice(&frame.payload).map_err(|e| {
                         BoxError::ExecError(format!("Failed to parse exec response: {}", e))
                     })?;
                 Ok(output)
@@ -430,7 +431,9 @@ impl ExecClient {
                     })?;
                     written = written.saturating_add(frame.payload.len() as u64);
                 }
-                aster_transport::FrameType::Control if frame.payload == EXEC_ARCHIVE_ROOTFS_DONE => {
+                aster_transport::FrameType::Control
+                    if frame.payload == EXEC_ARCHIVE_ROOTFS_DONE =>
+                {
                     output.flush().await.map_err(|error| {
                         BoxError::ExecError(format!("Rootfs archive output flush failed: {error}"))
                     })?;
@@ -483,8 +486,11 @@ impl ExecClient {
         mut stream: ExecStream,
         request: &aster_box_core::exec::FileRequest,
     ) -> Result<aster_box_core::exec::FileResponse> {
-        let payload = serde_json::to_vec(&aster_box_core::GuestSessionRequest::File(request.clone()))
-            .map_err(|e| BoxError::ExecError(format!("Failed to serialize file request: {}", e)))?;
+        let payload =
+            serde_json::to_vec(&aster_box_core::GuestSessionRequest::File(request.clone()))
+                .map_err(|e| {
+                    BoxError::ExecError(format!("Failed to serialize file request: {}", e))
+                })?;
 
         let request_frame = aster_transport::Frame::data(payload);
         let encoded = request_frame.encode().map_err(|e| {

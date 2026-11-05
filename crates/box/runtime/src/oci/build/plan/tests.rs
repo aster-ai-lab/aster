@@ -81,7 +81,10 @@ fn schema_is_closed_and_identity_values_are_exact() {
         Err(BoxBuildPlanError::InvalidValue { field: "label", .. })
     ));
 
-    let wrong_schema = PLAN.replace("aster.box.build-plan.v1", "aster.box.build-plan.experimental");
+    let wrong_schema = PLAN.replace(
+        "aster.box.build-plan.v1",
+        "aster.box.build-plan.experimental",
+    );
     assert!(matches!(
         BoxBuildPlan::parse_acl(&wrong_schema),
         Err(BoxBuildPlanError::InvalidValue {

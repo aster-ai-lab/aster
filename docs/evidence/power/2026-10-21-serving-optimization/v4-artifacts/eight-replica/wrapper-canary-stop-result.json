@@ -1,9 +1,0 @@
-{
-  "observed_at": "2026-10-21T03:29:29.120693+00:00",
-  "action": "stop-private-gpu7-wrappers",
-  "exit_code": 0,
-  "stdout": "{\"status\": \"stopped-owned-wrappers-only\", \"workers\": [7]}\n",
-  "stderr": "",
-  "production_native_signaled": false,
-  "production_power_signaled": false
-}

@@ -60,9 +60,11 @@ pub fn stage(socket_dir: &Path, signal: i32) -> io::Result<PathBuf> {
     clear(socket_dir)?;
     let request = request_path(socket_dir);
     let temporary = temporary_path(socket_dir);
-    if let Err(error) =
-        aster_box_core::fs_atomic::write_durable(&temporary, &request, signal.to_string().as_bytes())
-    {
+    if let Err(error) = aster_box_core::fs_atomic::write_durable(
+        &temporary,
+        &request,
+        signal.to_string().as_bytes(),
+    ) {
         let _ = remove_control_file(&temporary);
         return Err(error);
     }

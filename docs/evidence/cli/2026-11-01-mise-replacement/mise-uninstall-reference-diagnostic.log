@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/roylin/code/aster/tests/cli_mise_uninstall_reference.py", line 123, in <module>
-    main()
-  File "/Users/roylin/code/aster/tests/cli_mise_uninstall_reference.py", line 113, in main
-    assert executed.returncode == 0 and executed.stdout == version + "\n", executed
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: CompletedProcess(args=[PosixPath('/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall 3lbd4ach/0/data/installs/fixture/1.2/bin/fixture')], returncode=0, stdout='1.2.9\n', stderr='')

@@ -1,5 +1,47 @@
 # Harness migration
 
+## CLI version selection, 2026-11-01
+
+`crates/use/tool-acquire/src/version.rs` adapts mise's version matching and
+subtraction contracts from `v2026.10.25`, commit
+`3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa`. The original MIT notice is retained
+at `crates/use/tool-acquire/licenses/mise-MIT.txt`. General version ordering uses
+`versions 8.0.1`, matching the frozen upstream lockfile. The tool owner uses the
+root workspace's Rust 1.97 baseline, verified with the pinned 1.97.1 toolchain.
+
+Ten hermetic reference executions use an explicitly linked, locally authored
+plugin. The plugin lists fixed input versions and echoes the version selected
+by mise; it contains no selection logic or downloads. Each case uses fresh
+state and paranoid mode. The generator is
+`tests/cli_mise_version_reference.py`; it verifies the reference binary digest
+before execution. Captured outputs and their inputs live in the feature's
+contracts directory. Aster's unit and CLI tests consume these frozen outputs.
+
+External default layout discovery in
+`crates/use/tool-acquire/src/env_context/paths.rs` adapts the same release's
+`src/backend/github.rs`, `src/backend/npm.rs` and `src/plugins/core/node.rs`.
+Declaration-root handling follows `src/toolset/tool_request.rs` and
+`src/config/config_file/mod.rs`. Exact upstream blobs are recorded in
+`docs/source-manifest.json`; the same MIT notice applies. Native path and system
+selection reuse workspace `which 8.0.6` and create no managed receipts. Seven
+additional isolated reference cases are captured by
+`tests/cli_mise_context_reference.py`; the original version inputs are unchanged.
+Library checks pass on macOS arm64, while CLI/native platform acceptance and
+backend layouts needing registry metadata remain required.
+
+This is an incremental native implementation under Aster's existing owners.
+It does not delegate runtime behavior to mise, import its configuration
+language, or restore its updater. Complete version/backend/plugin and native
+platform acceptance remains required by `specs/031-cli-mise-replacement`.
+
+The `aster use` entry reuses the existing local `aster-use` Rust library by
+default, so the CLI/ACP release pair no longer requires a third executable for
+package commands. Standalone SDK APIs and its JSON/error envelope remain intact;
+an explicit `ASTER_USE_BIN` retains native subprocess forwarding. Six SDK cases,
+20 isolated CLI cases and a copied-CLI native AIX check pass on macOS arm64.
+Current runtime-pool integration, final archive and native Linux/Windows checks
+remain open. This adds no language binding, publishing job or external SDK.
+
 ## Scrawl evidence internalization, 2026-10-30
 
 The `scrawl` evidence engine is internalized at
@@ -393,6 +435,12 @@ and `crates/oci-runtime` (from the pinned aster-ai-lab/OCI-Runtime source), the
 - Validation: `cargo check` on contracts, node-agent, runtime, sms,
   form-core, and box-runtime, plus workspace-wide `cargo fmt --check`.
 
+The import omitted the two independent SDK bridge reference manifests. They
+are retained under `crates/box/sdk/tests/fixtures` from Box `v3.2.7`, revision
+`7355f043dd6c803fddfdaf95b7a76e4728f81349`. Their bytes, protocol version 4 and
+the inventory of 52 operations match the upstream blobs and the current bridge.
+The existing parity assertions remain; no language binding sources were added.
+
 ## Desktop delivery resource repair
 
 The web application remains removed. Desktop still consumes its public tenant
@@ -730,6 +778,24 @@ Edge services `auth`, `billing`, `config`, `runtime`, and `runner` moved under
 longer root workspace members. Compat symlinks preserve the legacy `apps/auth`
 family of paths for Tilt, scripts, and submodule references. `apps/gateway`
 stays in the root workspace because Studio embeds it.
+
+## 2026-11-01 — pinned Node release verification assets
+
+Imported the public Node release-key bundle and the signed Node v20.11.0
+checksum regression bytes from mise v2026.10.25, commit
+`3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa`. Git blob identities and SHA-256
+digests are recorded in docs/source-manifest.json. The MIT notice remains under
+crates/use/tool-acquire/licenses/mise-MIT.txt; Git attributes retain signed
+inputs byte-for-byte. No private keys, credentials or user state were copied.
+
+The existing tool owner uses the independent `pgp` 0.21.0 dependency to verify
+Node release signatures before admitting archive checksums. The verifier is
+adapted from the pinned MIT source and retains its issuer-first, bounded
+attempt contract. The official prebuilt Node provider preserves the complete
+runtime layout; genuine Node 20.11.0 stdlib and npm execution passed on macOS
+arm64. Source builds/options and full runtime parity remain required under
+specs/031-cli-mise-replacement/T008. No mise crate, binary, source checkout or
+mise registry is required to build or run this provider.
 
 ## OCR distribution moved to a native plugin (2026-11-02)
 

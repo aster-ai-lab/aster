@@ -1,9 +1,0 @@
-warning: linker stdout: 正在创建库 D:\code\aster\target\h200-native\test-target\debug\deps\a3s_deepseek-6a7d05bea10c4965.lib 和对象 D:\code\aster\target\h200-native\test-target\debug\deps\a3s_deepseek-6a7d05bea10c4965.exp
-  |
-  = note: `#[warn(linker_messages)]` on by default
-
-
-running 43 tests
-...........................................
-test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 305 filtered out; finished in 0.13s
-

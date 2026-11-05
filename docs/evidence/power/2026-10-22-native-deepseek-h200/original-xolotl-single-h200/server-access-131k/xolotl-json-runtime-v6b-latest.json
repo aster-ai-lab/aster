@@ -1,5 +1,0 @@
-{
-  "service-longctx-v1-result.json": "{\n  \"schema\": \"aster-xolotl-stable-service-v1\",\n  \"phase\": \"serving\",\n  \"unix\": 1792845692.4191933,\n  \"model\": \"deepseek-v4.1-flash-1017-xq\",\n  \"performance_300_claimed\": false,\n  \"context_tokens\": 131072,\n  \"cpu_api_tests_passed\": true,\n  \"gpu_uuid\": \"GPU-0349ad96-57f8-0001-128d-3ac22f864c3e\",\n  \"lease_ends_unix\": 1792859870.529365,\n  \"binary_sha256\": \"e943305094fd8612718cf817985cf232ee457e31d434c0512b32a8097e7f30b8\",\n  \"api_attempt\": 1,\n  \"api_process\": {\n    \"pid\": 2869,\n    \"start_ticks\": 728773473,\n    \"uid\": 10250\n  },\n  \"startup_unix\": 1792845706.8918195,\n  \"last_health_status\": 200,\n  \"last_health_unix\": 1792845867.0963805\n}\n",
-  "service-worker.log": "",
-  "strict-json-tests-v6b.stderr.log": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n"
-}

@@ -1,5 +1,0 @@
-Generating SQLite file /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/sinkhorn.sqlite from /mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/sinkhorn.nsys-rep
-Processing [/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/sinkhorn.sqlite] with [/opt/nvidia/nsight-systems/2025.3.1/host-linux-x64/reports/cuda_gpu_kern_sum.py] to [/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/summary_cuda_gpu_kern_sum.csv]... PROCESSED
-
-Processing [/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/sinkhorn.sqlite] with [/opt/nvidia/nsight-systems/2025.3.1/host-linux-x64/reports/cuda_api_sum.py] to [/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/fused-sinkhorn-b4fe8e58a999/profile/summary_cuda_api_sum.csv]... PROCESSED
-

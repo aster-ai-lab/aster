@@ -1,6 +1,0 @@
-Checking formatting...
-
-src/renderer/components/PromptOptimizeButton.tsx (96ms)
-
-Format issues found in above 1 files. Run without `--check` to fix.
-Finished in 130ms on 7 files using 18 threads.

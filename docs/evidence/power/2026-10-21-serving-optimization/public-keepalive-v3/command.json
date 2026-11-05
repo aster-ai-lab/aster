@@ -1,8 +1,0 @@
-{
-  "scope": "last authorized phase v3; existing driver lacks independent5s connect option, use authorized two ordinary turns with tools and30s/request",
-  "helper_sha256": "7317da6c5c65c992d4635abc9122126c38c266d461cda40bc7c2f0d2a4d30b88",
-  "started_monotonic": 1992369.171,
-  "deadline_monotonic": 1992549.171,
-  "native_mutation": false,
-  "public_inference_retry": false
-}

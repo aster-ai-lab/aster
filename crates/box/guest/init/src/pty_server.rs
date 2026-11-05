@@ -323,7 +323,8 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
         crate::container_devices::ensure_container_dev_nodes(rootfs);
         // CRI MaskedPaths / ReadonlyPaths (best-effort; a path that doesn't exist
         // is skipped) — these need /proc + /sys mounted above.
-        let masked = crate::exec_server::parse_sec_path_list(&request.env, "ASTER_SEC_MASKED_PATHS=");
+        let masked =
+            crate::exec_server::parse_sec_path_list(&request.env, "ASTER_SEC_MASKED_PATHS=");
         let readonly =
             crate::exec_server::parse_sec_path_list(&request.env, "ASTER_SEC_READONLY_PATHS=");
         if !masked.is_empty() || !readonly.is_empty() {
@@ -382,7 +383,10 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
 
             // Apply environment variables
             for (key, _) in std::env::vars_os() {
-                if key.to_str().is_some_and(|key| key.starts_with("ASTER_SEC_")) {
+                if key
+                    .to_str()
+                    .is_some_and(|key| key.starts_with("ASTER_SEC_"))
+                {
                     std::env::remove_var(key);
                 }
             }

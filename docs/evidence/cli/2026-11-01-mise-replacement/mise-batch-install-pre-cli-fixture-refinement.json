@@ -1,9 +1,0 @@
-{
-  "at": 1793590992.423441,
-  "before": "9bfcda4be9b4f23b609ef2e916abfd40d6312712ac67dbbcfdc5745024cd1ddf",
-  "after": "cd1bd6a14d6d01a59f7e8d4980699f1f8144986e27844d66de4c124b5a700caa",
-  "reason": "Before first CLI execution, cover current-pointer independence and remote latest alias; use a non-downloading missing runtime to verify later argument rejection hermetically.",
-  "active_commands": [
-    "tool-clippy"
-  ]
-}

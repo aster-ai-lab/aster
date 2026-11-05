@@ -133,7 +133,11 @@ fn print_package_cache_info() {
     print_named_package_cache(&store, "npm", NPM_CACHE_VOLUME_NAME);
 }
 
-fn print_named_package_cache(store: &aster_box_runtime::VolumeStore, label: &str, volume_name: &str) {
+fn print_named_package_cache(
+    store: &aster_box_runtime::VolumeStore,
+    label: &str,
+    volume_name: &str,
+) {
     match store.get(volume_name) {
         Ok(Some(volume)) => {
             if !scan_package_cache_size_enabled() {

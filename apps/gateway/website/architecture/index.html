@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="基于当前源码的 Aster Gateway 架构：统一接入、真实 HTTP / 推理与 TCP / UDP 分支、运行快照、宿主委托和独立 CLI。"
+    />
+    <meta name="theme-color" content="#f8f8f6" />
+    <title>Aster Gateway — 动态架构图</title>
+    <link rel="icon" href="../assets/mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="architecture.css" />
+    <script type="module" src="architecture.mjs"></script>
+  </head>
+  <body>
+    <main class="architecture">
+      <header class="diagram-header">
+        <a class="brand" href="../"
+          ><img src="../assets/mark.svg" width="24" height="24" alt="" />
+          <h1>Aster <span>Gateway</span></h1></a
+        >
+      </header>
+      <figure class="system-map" id="system-map" aria-label="Aster Gateway 当前运行架构">
+        <div class="diagram-stage" id="diagram-stage">
+          <div class="diagram-canvas" id="diagram-canvas">
+            <svg
+              id="architecture-svg"
+              viewBox="0 0 1620 1100"
+              role="img"
+              aria-labelledby="diagram-title diagram-description"
+            >
+              <title id="diagram-title">Aster Gateway 统一数据面入口与真实调用链</title>
+              <desc id="diagram-description">
+                调用方只进入同一 Gateway 实例的接入层。HTTP
+                请求按标准与路由、中间件、推理准入或普通服务选择、协议代理、响应与计量执行。TCP /
+                UDP、Node API、Studio ModelControl 和独立 Agent CLI 分别标出真实边界。 1–8
+                表示本例托管推理的请求顺序，R 表示响应前的条件回退。Cloud 上报独立异步运行。
+              </desc>
+            </svg>
+            <div id="node-labels"></div>
+            <div class="plane-label control-plane">控制面 · 配置编译与快照发布，独立于单次请求</div>
+            <div class="plane-label gateway-plane">
+              HTTP 托管推理时序 · 1–8 为请求顺序，R 为条件回退
+            </div>
+            <div class="plane-label host-plane">独立 CLI 命令 · 不经网关数据面</div>
+          </div>
+        </div>
+        <div class="map-playback">
+          <button type="button" id="play-toggle" aria-label="暂停动画">Ⅱ</button>
+          <div id="timeline" class="timeline" role="group" aria-label="统一架构动画阶段"></div>
+          <button type="button" id="replay" aria-label="从头重播动画">↺</button>
+        </div>
+        <figcaption>
+          <p aria-live="polite" aria-atomic="true">
+            <span id="stage-index"></span><strong id="stage-title"></strong>
+          </p>
+        </figcaption>
+      </figure>
+    </main>
+    <aside class="node-tooltip" id="node-tooltip" role="tooltip" hidden>
+      <div class="tooltip-heading">
+        <h2 id="detail-title"></h2>
+        <span id="detail-owner"></span>
+      </div>
+      <p id="detail-sequence"></p>
+      <p id="detail-description"></p>
+      <ul id="detail-features"></ul>
+      <small id="detail-source"></small>
+    </aside>
+    <noscript><p class="noscript">动态架构图与节点说明需要 JavaScript。</p></noscript>
+  </body>
+</html>

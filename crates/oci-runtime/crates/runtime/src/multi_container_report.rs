@@ -12,7 +12,8 @@ pub use cgroup_path::CgroupPathEvidence;
 pub const NATIVE_LINUX_MULTI_CONTAINER_SCHEMA_VERSION: &str =
     "aster.oci.native-linux-multi-container-smoke.v20";
 /// Schema emitted by the utility-VM multi-container lifecycle diagnostic.
-pub const OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str = "aster.oci.oci-vm-multi-container-smoke.v11";
+pub const OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str =
+    "aster.oci.oci-vm-multi-container-smoke.v11";
 /// Schema emitted by the Windows bootstrap-profile multi-container diagnostic.
 pub const WINDOWS_OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str =
     "aster.oci.windows-oci-vm-multi-container-smoke.v1";

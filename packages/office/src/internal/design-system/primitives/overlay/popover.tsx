@@ -1,3 +1,4 @@
+import { usePopupPresence } from '@aster-ai-lab/ui/lib/usePopupPresence';
 import {
   type AriaAttributes,
   type CSSProperties,
@@ -112,6 +113,8 @@ export function Popover({
 }) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const open = controlledOpen ?? internalOpen;
+  // Hold the panel through the shared 200ms popup exit (DESIGN / popup-motion.css).
+  const { present, state: presenceState } = usePopupPresence(open || null);
   const openRef = useRef(open);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -288,14 +291,16 @@ export function Popover({
   }, [open, portal, updateOpen]);
 
   useLayoutEffect(() => {
-    if (!open || !portal) {
-      setFloatingPosition(null);
+    // Keep the last floating rect through exit so the leave animation does not jump.
+    if (!present || !portal) {
+      if (!present) setFloatingPosition(null);
       return;
     }
+    if (!open) return;
     updateFloatingPosition();
     const frame = requestAnimationFrame(updateFloatingPosition);
     return () => cancelAnimationFrame(frame);
-  }, [floatingPosition?.anchorWidth, open, portal, updateFloatingPosition]);
+  }, [floatingPosition?.anchorWidth, open, portal, present, updateFloatingPosition]);
 
   useEffect(() => {
     if (!open || !portal) return;
@@ -360,13 +365,15 @@ export function Popover({
     );
   };
 
-  const panel = open ? (
+  const panel = present ? (
     <section
       ref={setPanelElement}
       id={panelId}
-      className={`ds-popover-panel${panelClassName ? ` ${panelClassName}` : ''}`}
+      className={`ds-popover-panel aster-popup-rise${panelClassName ? ` ${panelClassName}` : ''}`}
       role={panelRole}
       aria-label={panelLabel}
+      data-state={presenceState}
+      inert={presenceState === 'closed' || undefined}
       data-office-shortcuts="ignore"
       data-floating={portal ? 'true' : undefined}
       onKeyDown={handlePanelKeyDown}
@@ -387,7 +394,7 @@ export function Popover({
     <div
       ref={rootRef}
       className={`ds-popover${open ? ' open' : ''}${className ? ` ${className}` : ''}`}
-      data-office-shortcuts={open ? 'ignore' : undefined}
+      data-office-shortcuts={open || present ? 'ignore' : undefined}
       data-placement={placement}
     >
       {trigger(triggerProps, { open })}

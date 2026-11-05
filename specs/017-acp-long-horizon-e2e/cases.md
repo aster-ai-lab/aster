@@ -67,6 +67,8 @@
 
 C01 / LH01 的 Rust 诊断 variant `rust-multifile-host-contract-real-diagnostic`：fixture seed 2401，交互 ACP 默认严格完成门；显式宿主合同为 `rustc --edition=2021 --test lib.rs -o checks && ./checks && test -s CHANGELOG.md`，覆盖三个可修模块、CHANGELOG 和实际编译测试程序 checks。先失败、允许一次修改多个文件、再通过；不使用 disk_content 或 waiver。H1 用一个 completion 的四个独立 write 验证合法批量修复；R1 使用真实模型自主修复。R1 预算 40 次实际上游调用、每次最多 4096 输出 token、单 prompt 600 秒、旅程 1800 秒。H1 prompt 上限 180 秒。受测进程回收后，将当前有界文件快照放入另一个已资格化 compiler VM 执行隐藏验收；不在宿主执行模型代码。宿主保护文件与隐藏 checker hash 均须保留，当前完整 runtime 的文件/权限/链接摘要须前后一致。该单 seed 是诊断，不代替剩余样本、fault variants、TUI/GUI 或发布可靠性。
 
+2026-11-01 R008 扩展：同一 C01 variant 支持预登记 fixture seed 2401–2405，测试入口 `ASTER_LH_FIXTURE_SEED` 只接纳这五个值。2401 的原始源码、合同、提示和验收器保持字节一致；其余四个 seed 仅改变三个待修模块的初始缺陷组合。保护文件、输出文件数、隐藏验收器及上述预算全部不变。C0 对全部 seed 运行原始拒绝／参考修复接受控制，独立 fixture seed 不冒充模型采样 seed。用户指定项目 `./.aster/config.acl` 中的 GLM 5.3 后，当前 cohort 采用配置顺序首个精确条目 `glm-01/glm-5.3`，原生 Anthropic Messages 转发；账户导入不激活。每臂五个 seed 的交替顺序与初始文件／提示／checker 摘要见 `docs/evidence/code/2026-11-01-tui-long-horizon-reliability/glm-five-seed-registration.json`。新增的是同一 case 的样本，不增加 130 case／12 旅程分母。真实模型未通过前不得声称完成率或性能提升；未独立校验的计量保持 unknown。
+
 后续 H1 `masked_verification_is_repaired_with_the_admitted_exact_command` 先故意追加 echo，使一次成功的测试执行不符合精确宿主合同；脚本必须在实际下一请求收到当前可覆盖改动的合同诊断，才允许发出不带附加内容的原命令。随后必须收到 bound Verified、最终答复及独立 guest oracle 通过。该路径保留前次不合格核验，不新增宿主 waiver，也不通过重发整个用户目标完成修复。R1 后续 cohort 的 fixture、提示与通过条件均不降低，首次失败保留，合同引导修复和纯观测改动分别记录。
 
 需求：FR-003, FR-006, FR-010。每例证据：E0/W/F/A。

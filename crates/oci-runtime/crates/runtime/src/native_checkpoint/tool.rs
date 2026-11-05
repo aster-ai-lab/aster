@@ -7,7 +7,9 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use aster_oci_agent::{LinuxExecutorCheckpointSource, LinuxRestoreSpawnRequest, LinuxRestoreSpawner};
+use aster_oci_agent::{
+    LinuxExecutorCheckpointSource, LinuxRestoreSpawnRequest, LinuxRestoreSpawner,
+};
 use aster_oci_sdk::{async_trait, CheckpointDigest, ErrorCode, OperationContext, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

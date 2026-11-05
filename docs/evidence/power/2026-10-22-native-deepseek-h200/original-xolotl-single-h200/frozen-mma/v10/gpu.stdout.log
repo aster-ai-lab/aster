@@ -1,8 +1,0 @@
-{"device":"NVIDIA H200","sm":90,"devices":1,"strict_gate":"bitwise GU, identical q8, finite, untouched sentinels"}
-{"H":5120,"FF":2304,"groups":9,"tokens":8,"entries":35,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":155.395187,"mma_phase1_us":258.339203}
-{"H":1024,"FF":512,"groups":9,"tokens":8,"entries":35,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":33.2863998,"mma_phase1_us":50.6447945}
-{"H":5120,"FF":2304,"groups":7,"tokens":1,"entries":7,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":37.8736,"mma_phase1_us":141.225601}
-{"H":5120,"FF":2304,"groups":7,"tokens":3,"entries":21,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":89.5391998,"mma_phase1_us":146.824005}
-{"H":5120,"FF":2304,"groups":7,"tokens":5,"entries":35,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":138.401596,"mma_phase1_us":147.335999}
-{"H":5120,"FF":2304,"groups":7,"tokens":8,"entries":56,"finite":true,"sentinels":true,"different_gu_floats":0,"q8_equal":true,"relative_l2":0,"normalized_max":0,"strict_passed":true,"mode4_phase1_us":209.024002,"mma_phase1_us":147.5616}
-{"complete":true,"failures":0}

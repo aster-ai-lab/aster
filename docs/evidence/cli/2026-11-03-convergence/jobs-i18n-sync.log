@@ -1,3 +1,0 @@
-File zh-cn.json has been sorted and synced to match base locale content
-(node:1221) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)

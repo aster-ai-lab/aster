@@ -550,7 +550,10 @@ mod tests {
 
         let config = config_from_record(&record).unwrap();
 
-        assert_eq!(config.isolation, aster_box_core::ExecutionIsolation::Sandbox);
+        assert_eq!(
+            config.isolation,
+            aster_box_core::ExecutionIsolation::Sandbox
+        );
         assert_eq!(
             aster_box_core::resolve_execution(&config).unwrap().backend,
             aster_box_core::ExecutionBackend::AsterOci

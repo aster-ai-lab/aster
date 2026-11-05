@@ -36,7 +36,10 @@ pub fn reap_orphaned_box(box_id: &str) {
 /// Callers must run this before unmounting or deleting Box paths: a failed
 /// runtime cleanup may mean a shared-kernel process still uses the rootfs.
 #[cfg(target_os = "linux")]
-pub fn cleanup_recorded_sandbox_runtime(box_dir: &Path, box_id: &str) -> aster_box_core::Result<()> {
+pub fn cleanup_recorded_sandbox_runtime(
+    box_dir: &Path,
+    box_id: &str,
+) -> aster_box_core::Result<()> {
     cleanup_recorded_sandbox_runtime_in(&aster_box_core::dirs_home(), box_dir, box_id)
 }
 

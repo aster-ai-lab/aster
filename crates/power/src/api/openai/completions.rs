@@ -547,13 +547,15 @@ pub async fn handler(
                             let last =
                                 last_token_ns_for_usage.load(std::sync::atomic::Ordering::Relaxed);
                             if first != u64::MAX && last >= first {
-                                val["aster_performance"] = serde_json::json!(StreamingPerformance {
-                                    time_to_first_token_ns: first,
-                                    prompt_eval_duration_ns: (prompt_eval_duration_ns != u64::MAX)
-                                        .then_some(prompt_eval_duration_ns),
-                                    inter_token_duration_ns: last.saturating_sub(first),
-                                    completion_token_intervals: eval_count2.saturating_sub(1),
-                                });
+                                val["aster_performance"] =
+                                    serde_json::json!(StreamingPerformance {
+                                        time_to_first_token_ns: first,
+                                        prompt_eval_duration_ns: (prompt_eval_duration_ns
+                                            != u64::MAX)
+                                            .then_some(prompt_eval_duration_ns),
+                                        inter_token_duration_ns: last.saturating_sub(first),
+                                        completion_token_intervals: eval_count2.saturating_sub(1),
+                                    });
                             }
                         }
                     }

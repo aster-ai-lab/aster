@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "ok": true,
-  "available": false,
-  "source": "missing",
-  "family": "bge-m3",
-  "detail": "The local bge-m3 model is not installed in '<model-assets>'."
-}

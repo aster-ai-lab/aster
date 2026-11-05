@@ -1413,9 +1413,9 @@ impl From<TransportFaultStageArg> for aster_oci_runtime::AgentTransportFaultStag
             TransportFaultStageArg::GuestAfterRequestRead => Self::Operation(
                 aster_oci_runtime::AgentTransportOperationStage::GuestAfterRequestRead,
             ),
-            TransportFaultStageArg::GuestBeforeDispatch => {
-                Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch)
-            }
+            TransportFaultStageArg::GuestBeforeDispatch => Self::Operation(
+                aster_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch,
+            ),
             TransportFaultStageArg::GuestAfterDispatch => {
                 Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestAfterDispatch)
             }

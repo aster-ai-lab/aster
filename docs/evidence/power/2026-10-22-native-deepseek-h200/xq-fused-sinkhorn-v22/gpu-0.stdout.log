@@ -1,7 +1,0 @@
-
-running 1 test
-test cuda::sinkhorn::tests::gpu::h200_xq_sinkhorn_fused_matches_f64_tensor_control_and_reports_alternating_cost ... {"abi":"aster-xq-sinkhorn4-f32-v1","full_model_promotion_claimed":false,"measurements":[{"calls":20,"fused":false,"repeat":1,"seconds":0.080574124},{"calls":20,"fused":true,"repeat":1,"seconds":0.003750225},{"calls":20,"fused":true,"repeat":2,"seconds":0.003681391},{"calls":20,"fused":false,"repeat":2,"seconds":0.079985458},{"calls":20,"fused":false,"repeat":3,"seconds":0.080009689},{"calls":20,"fused":true,"repeat":3,"seconds":0.003710663}],"numeric_f64_absolute_budget":2e-6,"source_sha256":"1516af7836f3551f0840f306859f453f754a5a96cd20aea51393cfe430018635","tensor_absolute_budget":5e-7}
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 456 filtered out; finished in 8.94s
-

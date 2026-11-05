@@ -47,7 +47,10 @@ fn find_binary() -> String {
         .expect("cli crate should be inside workspace");
 
     for profile in ["debug", "release"] {
-        let bin = workspace_root.join("target").join(profile).join("aster-box");
+        let bin = workspace_root
+            .join("target")
+            .join(profile)
+            .join("aster-box");
         if bin.exists() {
             return bin.to_string_lossy().to_string();
         }

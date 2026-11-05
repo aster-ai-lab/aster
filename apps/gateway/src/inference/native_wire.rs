@@ -25,6 +25,7 @@ pub(crate) struct EnvelopeError {
 pub(crate) enum NativeWire {
     OpenAi,
     Anthropic,
+    Gemini,
 }
 
 tokio::task_local! {
@@ -52,10 +53,27 @@ pub(crate) fn mark_native_wire(wire: NativeWire) {
 /// Render one Gateway error in the native dialect.
 pub(crate) fn render_native_error(wire: NativeWire, error: &EnvelopeError) -> Bytes {
     let body = match wire {
+        NativeWire::Gemini => {
+            let status = match error.status.as_u16() {
+                400 | 413 | 415 => "INVALID_ARGUMENT",
+                401 => "UNAUTHENTICATED",
+                403 => "PERMISSION_DENIED",
+                404 => "NOT_FOUND",
+                429 => "RESOURCE_EXHAUSTED",
+                500 => "INTERNAL",
+                501 => "UNIMPLEMENTED",
+                504 => "DEADLINE_EXCEEDED",
+                _ => "UNAVAILABLE",
+            };
+            json!({ "error": { "code": error.status.as_u16(), "status": status, "message": error.message, "aster_error_code": error.error_code } })
+        }
         NativeWire::OpenAi => {
             let (kind, code) = match error.status.as_u16() {
                 401 => ("authentication_error", "invalid_api_key"),
                 403 => ("permission_error", "model_not_found"),
+                404 if error.error_code == "entitlement.denied" => {
+                    ("invalid_request_error", "model_not_found")
+                }
                 404 => ("invalid_request_error", "unknown_url"),
                 429 => ("rate_limit_error", "rate_limit_exceeded"),
                 400 | 413 | 415 => ("invalid_request_error", "invalid_request"),

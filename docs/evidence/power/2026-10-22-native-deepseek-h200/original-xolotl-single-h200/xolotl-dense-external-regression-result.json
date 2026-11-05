@@ -1,9 +1,0 @@
-{
-  "unix": 1792837635.5319235,
-  "passed": true,
-  "performance_claimed": false,
-  "returncode": 0,
-  "stdout": "PASS: unfenced stale readbacks=6; guarded exact readbacks=6; SM90\n",
-  "stderr": "",
-  "finished_unix": 1792837637.7612107
-}

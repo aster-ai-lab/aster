@@ -1,7 +1,0 @@
-{
-  "source": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/model_metadata_utils.py",
-  "revision": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
-  "path": "deepinfer/model_executor/model_metadata_utils.py",
-  "sha256": "1ef7803d2b0083d025de676c841db9a317235b881fb9ebf6781ec76d49d7b22c",
-  "bytes": 9821
-}

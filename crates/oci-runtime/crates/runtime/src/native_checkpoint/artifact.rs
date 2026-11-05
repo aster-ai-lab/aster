@@ -1097,10 +1097,11 @@ mod tests {
             "/dev/../null",
             "/dev/null/",
         ] {
-            assert!(
-                ExternalMountManifestEntry::new("aster-oci-device-0000", Path::new(mountpoint),)
-                    .is_err()
-            );
+            assert!(ExternalMountManifestEntry::new(
+                "aster-oci-device-0000",
+                Path::new(mountpoint),
+            )
+            .is_err());
         }
     }
 

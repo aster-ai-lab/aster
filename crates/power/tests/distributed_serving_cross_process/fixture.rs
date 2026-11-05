@@ -145,7 +145,8 @@ pub async fn serve_worker(
         worker_epoch,
         transfer,
     )?);
-    let runtime = aster_power::serving::DistributedServingRuntime::new(profile, transfer, executor)?;
+    let runtime =
+        aster_power::serving::DistributedServingRuntime::new(profile, transfer, executor)?;
     let state = state
         .with_distributed_serving(Arc::new(runtime))
         .with_auth(Arc::new(ApiKeyAuth::new(&[SERVICE_KEY.to_string()])));

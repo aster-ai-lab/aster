@@ -378,8 +378,12 @@ mod tests {
         client.send_request(&req).await.unwrap();
 
         let frame = server.await.unwrap();
-        assert_eq!(frame.frame_type as u8, aster_box_core::pty::FRAME_PTY_REQUEST);
-        let parsed: aster_box_core::pty::PtyRequest = serde_json::from_slice(&frame.payload).unwrap();
+        assert_eq!(
+            frame.frame_type as u8,
+            aster_box_core::pty::FRAME_PTY_REQUEST
+        );
+        let parsed: aster_box_core::pty::PtyRequest =
+            serde_json::from_slice(&frame.payload).unwrap();
         assert_eq!(parsed.cmd, req.cmd);
         assert_eq!(parsed.env, req.env);
         assert_eq!(parsed.working_dir, req.working_dir);
@@ -460,7 +464,8 @@ mod tests {
         assert_eq!(stdin.payload, b"echo hi\n");
 
         assert_eq!(resize.frame_type, aster_transport::FrameType::Heartbeat);
-        let resize: aster_box_core::pty::PtyResize = serde_json::from_slice(&resize.payload).unwrap();
+        let resize: aster_box_core::pty::PtyResize =
+            serde_json::from_slice(&resize.payload).unwrap();
         assert_eq!(resize.cols, 132);
         assert_eq!(resize.rows, 43);
 

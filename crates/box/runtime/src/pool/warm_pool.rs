@@ -1764,7 +1764,11 @@ mod tests {
         }
 
         impl VmHandler for AlwaysRunningHandler {
-            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::error::Result<()> {
+            fn stop(
+                &mut self,
+                _signal: i32,
+                _timeout_ms: u64,
+            ) -> aster_box_core::error::Result<()> {
                 self.stop_calls.fetch_add(1, Ordering::SeqCst);
                 Ok(())
             }
@@ -1843,7 +1847,11 @@ mod tests {
         }
 
         impl VmHandler for AlwaysRunningHandler {
-            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::error::Result<()> {
+            fn stop(
+                &mut self,
+                _signal: i32,
+                _timeout_ms: u64,
+            ) -> aster_box_core::error::Result<()> {
                 self.stop_calls.fetch_add(1, Ordering::SeqCst);
                 Ok(())
             }

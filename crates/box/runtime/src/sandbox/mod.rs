@@ -36,7 +36,8 @@ pub(crate) const ASTER_OCI_LIFECYCLE_TIMEOUT_MS: u64 = 15_000;
 /// path (for example CI runners using a temporary cgroup tree) set this to an
 /// absolute, pre-created, caller-owned cgroup v2 directory.
 #[cfg(target_os = "linux")]
-pub(crate) const SANDBOX_DELEGATED_CGROUP_ROOT_ENV: &str = "ASTER_BOX_SANDBOX_DELEGATED_CGROUP_ROOT";
+pub(crate) const SANDBOX_DELEGATED_CGROUP_ROOT_ENV: &str =
+    "ASTER_BOX_SANDBOX_DELEGATED_CGROUP_ROOT";
 
 /// Host cgroup root handed to the setuid Sandbox launcher / native OCI owner.
 ///
@@ -161,7 +162,10 @@ impl AsterOciController {
         })
     }
 
-    pub async fn start(&self, _launch: SandboxLaunchSpec) -> aster_box_core::Result<AsterOciHandler> {
+    pub async fn start(
+        &self,
+        _launch: SandboxLaunchSpec,
+    ) -> aster_box_core::Result<AsterOciHandler> {
         Err(aster_box_core::BoxError::BoxBootError {
             message: "Aster OCI Sandbox execution requires Linux".to_string(),
             hint: None,

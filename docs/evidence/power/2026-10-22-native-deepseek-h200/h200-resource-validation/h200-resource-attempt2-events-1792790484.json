@@ -1,6 +1,0 @@
-{
-  "observedAtEpoch": 1792790484,
-  "exit": 0,
-  "events": "10-23 21:18:43: Pulling image \"registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2\" ()\n10-23 21:09:25: 0/1936 nodes are unavailable: 1 node(s) were unschedulable, 1391 task node selector does not match node labels, 537 Insufficient cpu, 7 Insufficient memory. ()\n",
-  "stderr": ""
-}

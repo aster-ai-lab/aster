@@ -1,6 +1,8 @@
 use std::cmp::Ordering;
 
-use aster_office_formula_parser::{SpreadsheetFormulaBinaryOperator, SpreadsheetFormulaErrorLiteral};
+use aster_office_formula_parser::{
+    SpreadsheetFormulaBinaryOperator, SpreadsheetFormulaErrorLiteral,
+};
 
 use super::{EvaluationFailure, SpreadsheetValue, MAX_SPREADSHEET_TEXT_BYTES};
 

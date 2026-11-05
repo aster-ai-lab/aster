@@ -453,6 +453,7 @@ fn protocol_name(protocol: InferenceProtocol) -> &'static str {
     match protocol {
         InferenceProtocol::Openai => "openai",
         InferenceProtocol::Anthropic => "anthropic",
+        InferenceProtocol::Gemini => "gemini",
         InferenceProtocol::Ocr => "ocr",
         InferenceProtocol::SystemOne => "systemone",
     }

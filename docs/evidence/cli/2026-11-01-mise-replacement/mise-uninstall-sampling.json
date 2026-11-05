@@ -1,8 +1,0 @@
-{
-  "harness_pid": 49168,
-  "sample": {
-    "pid": 49171,
-    "exit": 0,
-    "stderr": "Sampling process 49171 for 1 second with 10 milliseconds of run time between samples\nSampling completed, processing symbols...\nSample analysis of process 49171 written to file /Users/roylin/code/aster/docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-install.sample.txt\n"
-  }
-}

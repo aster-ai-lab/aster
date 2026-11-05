@@ -506,7 +506,10 @@ mod tests {
         }
     }
 
-    fn write_source(root: &Path, entries: Vec<aster_box_core::rootfs_metadata::RootfsMetadataEntry>) {
+    fn write_source(
+        root: &Path,
+        entries: Vec<aster_box_core::rootfs_metadata::RootfsMetadataEntry>,
+    ) {
         let manifest = RootfsMetadataManifest::new(entries);
         std::fs::write(
             root.join(IMAGE_ROOTFS_METADATA_PATH.trim_start_matches('/')),

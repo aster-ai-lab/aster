@@ -1,9 +1,0 @@
-{
-  "unix": 1792824609.7302532,
-  "operation": "anonymous HEAD only from Windows; no body/download",
-  "expected_bytes": 8421868640,
-  "expected_sha256": "6f3d5b8611ddb3954bb89c09e8890806225715fea90868a6d7ec0ffee5c72082",
-  "status": 200,
-  "content_length": "8421868640",
-  "content_type": "application/octet-stream"
-}

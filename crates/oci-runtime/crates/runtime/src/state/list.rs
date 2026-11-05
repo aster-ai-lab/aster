@@ -1,4 +1,6 @@
-use aster_oci_sdk::{ContainerId, ContainerRecord, ErrorCode, ListRequest, Result, ValidateRequest};
+use aster_oci_sdk::{
+    ContainerId, ContainerRecord, ErrorCode, ListRequest, Result, ValidateRequest,
+};
 
 use super::filesystem::state_error;
 use super::DurableStateStore;

@@ -477,7 +477,8 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
     }
     aster_box_core::dns::parse_add_host_entries(&common.add_host)
         .map_err(|e| format!("Invalid --add-host: {e}"))?;
-    aster_box_core::dns::parse_dns_servers(&common.dns).map_err(|e| format!("Invalid --dns: {e}"))?;
+    aster_box_core::dns::parse_dns_servers(&common.dns)
+        .map_err(|e| format!("Invalid --dns: {e}"))?;
 
     let network = resolve_network(common.network.as_deref());
     if matches!(network, NetworkMode::Bridge { .. }) {

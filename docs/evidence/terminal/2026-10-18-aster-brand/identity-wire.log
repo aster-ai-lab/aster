@@ -1,6 +1,0 @@
-     Running tests/shipped_tui_e2e.rs (target/debug/deps/shipped_tui_e2e-2b0e865a08a6562b)
-
-running 1 test
-test shipped_agent_sends_aster_identity_to_the_model ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 4.71s

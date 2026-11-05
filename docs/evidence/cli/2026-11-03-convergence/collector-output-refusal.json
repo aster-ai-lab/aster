@@ -1,8 +1,0 @@
-{
-  "expectedRefusal": true,
-  "exit": 1,
-  "stdout": "{\n  \"error\": {\n    \"code\": \"use.extension.io\",\n    \"details\": {},\n    \"message\": \"Failed to publish new AIX archive '/Users/roylin/code/aster/.tmp/mise-convergence-implementation/original-aix/applet-demo.aix': File exists (os error 17)\"\n  },\n  \"ok\": false,\n  \"schemaVersion\": 1\n}\n",
-  "stderr": "",
-  "existingArchiveUnchanged": true,
-  "sha256": "1eaca5cd3b0d70c9c0b4b4bf32227dec594364dd0cc0c9fe056f4138282820a1"
-}

@@ -1,7 +1,0 @@
-
-running 1 test
-test cuda::finite::tests::gpu::h200_fused_finite_matches_tensor_control_for_strides_tail_bf16_and_invalid_values ... {"abi":"aster-finite-f32-flag-v1","full_model_promotion_claimed":false,"measurements":[{"calls":100,"fused":false,"repeat":1,"seconds":0.010279694},{"calls":100,"fused":true,"repeat":1,"seconds":0.002185473},{"calls":100,"fused":true,"repeat":2,"seconds":0.002118126},{"calls":100,"fused":false,"repeat":2,"seconds":0.010265695},{"calls":100,"fused":false,"repeat":3,"seconds":0.010149128},{"calls":100,"fused":true,"repeat":3,"seconds":0.002100373}]}
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 458 filtered out; finished in 8.41s
-

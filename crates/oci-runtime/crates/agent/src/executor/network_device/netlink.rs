@@ -147,7 +147,10 @@ impl NetworkDeviceLease {
         let Some(state) = self.rollback.take() else {
             return Ok(());
         };
-        run_disposable_thread("aster-oci-net-device-rollback", move || rollback_sync(&state)).await
+        run_disposable_thread("aster-oci-net-device-rollback", move || {
+            rollback_sync(&state)
+        })
+        .await
     }
 
     pub(in crate::executor) fn commit(&mut self) {

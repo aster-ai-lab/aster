@@ -1,9 +1,0 @@
-{
-  "manifest": "native-source-ready-local.json",
-  "manifest_sha256": "9628212396414d8ca9cce89b0d8a098e8c3f60b80d4359364704ef307b0bbfa4",
-  "file_count": 30,
-  "drift": [],
-  "rustfmt_rc": 1,
-  "diff_check_rc": 0,
-  "elapsed": 0.8034726249752566
-}

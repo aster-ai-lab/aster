@@ -1,4 +1,0 @@
-{
-  "exit": 1,
-  "err": "Error from server (Forbidden): pods is forbidden: User \"2719f82309b46a2aca14f264bc0437ae\" cannot list resource \"pods\" in API group \"\" in the namespace \"ailab-hrprdduanyan\"\n"
-}

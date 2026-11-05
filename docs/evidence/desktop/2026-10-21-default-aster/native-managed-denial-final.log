@@ -1,8 +1,0 @@
-
-running 1 test
-STUDIO_MANAGED_LOCAL_DENIAL {"compiled_tenant":"aster","provider_requests":0,"runtime_spawned":false,"terminal":"ai.stream.error"}
-STUDIO_FIXTURE_SERVER Ok(Ok(()))
-test agent_plane::turns::native_local_acp_alignment_tests::default_aster_managed_product_refuses_the_same_local_model_turn ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 896 filtered out; finished in 0.01s
-

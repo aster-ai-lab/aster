@@ -1081,7 +1081,9 @@ impl RuntimeDriver for WhpxRuntimeDriver {
                 let cleanup_owner = Arc::clone(&session.owner);
                 let mut owner_cleanup = DetachedAsyncCleanup::new(move || async move {
                     if let Err(error) = cleanup_owner.shutdown().await {
-                        eprintln!("aster-oci-runtime: cancelled WHPX delete cleanup failed: {error}");
+                        eprintln!(
+                            "aster-oci-runtime: cancelled WHPX delete cleanup failed: {error}"
+                        );
                     }
                 });
                 session.owner.shutdown().await?;

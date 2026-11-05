@@ -196,6 +196,7 @@ fn parse_credential(block: &Block) -> Result<InferenceCredentialConfig> {
             "generation",
             "expires_at",
             "revoked",
+            "max_concurrent_requests",
         ],
         &[],
     )?;
@@ -208,6 +209,13 @@ fn parse_credential(block: &Block) -> Result<InferenceCredentialConfig> {
         generation: required_u64_attr(block, "generation")?,
         expires_at: required_timestamp_attr(block, "expires_at")?,
         revoked: required_bool_attr(block, "revoked")?,
+        max_concurrent_requests: u32_attr(block, &["max_concurrent_requests"])?
+            .map(|value| {
+                std::num::NonZeroU32::new(value).ok_or_else(|| {
+                    config_error("Credential max_concurrent_requests must be positive")
+                })
+            })
+            .transpose()?,
     })
 }
 
@@ -482,6 +490,7 @@ fn parse_supplier(block: &Block, name: &str) -> Result<InferenceTargetConfig> {
             .map_err(config_error)?,
         api_key_env: optional_literal_string_attr(block, "api_key_env")?,
         translate: false,
+        forward_client_identity: false,
     })
 }
 
@@ -773,6 +782,7 @@ fn parse_target(block: &Block) -> Result<InferenceTargetConfig> {
             "protocol",
             "api_key_env",
             "translate",
+            "forward_client_identity",
         ],
         &[],
     )?;
@@ -788,6 +798,7 @@ fn parse_target(block: &Block) -> Result<InferenceTargetConfig> {
             .unwrap_or_default(),
         api_key_env: optional_literal_string_attr(block, "api_key_env")?,
         translate: bool_attr(block, &["translate"])?.unwrap_or(false),
+        forward_client_identity: bool_attr(block, &["forward_client_identity"])?.unwrap_or(false),
     })
 }
 

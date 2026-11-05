@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.py", line 87, in <module>
-    print(build(args.archive.resolve(), args.aster_use_bin.resolve(), args.out.resolve()))
-  File "/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.py", line 77, in build
-    result.check_returncode()
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 460, in check_returncode
-    raise CalledProcessError(self.returncode, self.args, self.stdout,
-subprocess.CalledProcessError: Command '['/Users/roylin/code/aster/.tmp/plugins-box-maintained/aster-use-builder-current', 'registry', 'package', 'prepare', '/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/aster-box-0.1.0-darwin-arm64.aix', '--repository', '/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/repository', '--domain', 'operations', '--catalog-metadata', '/Users/roylin/code/aster/plugins/recipes/aster-box/darwin-arm64.json', '--output', '/Users/roylin/code/aster/.tmp/plugins-box-maintained/qualified-current/aster-box-0.1.0-darwin-arm64.oci.json', '--json']' returned non-zero exit status 1.

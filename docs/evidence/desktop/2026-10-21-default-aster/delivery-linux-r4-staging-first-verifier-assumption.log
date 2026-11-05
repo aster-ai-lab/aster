@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/aster/target/evaluations/studio-work-alignment/ime-native/package-final-r4.py", line 92, in <module>
-    assert completed.returncode == 0 or blocked_seccomp, log_text[-4000:]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)bwrap: 
-Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)
-

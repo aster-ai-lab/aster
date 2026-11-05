@@ -19,7 +19,10 @@ async fn native_watch_binds_every_ooxml_format_without_an_external_runtime() {
     for (name, kind) in [
         ("document.docx", aster_office::DocumentKind::Word),
         ("workbook.xlsx", aster_office::DocumentKind::Spreadsheet),
-        ("presentation.pptx", aster_office::DocumentKind::Presentation),
+        (
+            "presentation.pptx",
+            aster_office::DocumentKind::Presentation,
+        ),
     ] {
         let path = temp.path().join(name);
         NativeOfficeEditor::create(&path).await.unwrap();

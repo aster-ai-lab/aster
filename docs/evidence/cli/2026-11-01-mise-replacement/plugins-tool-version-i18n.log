@@ -1,4 +1,0 @@
-$ dotenv -e .env -- tsx scripts/i18n-check.ts
-i18n 检查已通过（已校验 25380 条翻译）
-(node:19248) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)

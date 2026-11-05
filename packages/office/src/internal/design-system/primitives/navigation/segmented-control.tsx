@@ -1,13 +1,15 @@
-import { type ReactNode, useId } from 'react';
+import { SelectionHighlight } from '@aster-ai-lab/ui/components/primitives/selection-highlight'
+import { LayoutGroup } from 'motion/react'
+import { type ReactNode, useId } from 'react'
 
 export type SegmentedControlItem<T extends string> = {
-  id: T;
-  label: string;
-  ariaLabel?: string;
-  description?: string;
-  icon?: ReactNode;
-  disabled?: boolean;
-};
+  id: T
+  label: string
+  ariaLabel?: string
+  description?: string
+  icon?: ReactNode
+  disabled?: boolean
+}
 
 export function SegmentedControl<T extends string>({
   ariaLabel,
@@ -17,56 +19,64 @@ export function SegmentedControl<T extends string>({
   size = 'standard',
   layout = 'fit',
   disabled = false,
-  className = '',
+  className = ''
 }: {
-  ariaLabel: string;
-  value: T | null;
-  items: readonly SegmentedControlItem<T>[];
-  onChange: (value: T) => void;
-  size?: 'standard' | 'compact';
-  layout?: 'fit' | 'equal';
-  disabled?: boolean;
-  className?: string;
+  ariaLabel: string
+  value: T | null
+  items: readonly SegmentedControlItem<T>[]
+  onChange: (value: T) => void
+  size?: 'standard' | 'compact'
+  layout?: 'fit' | 'equal'
+  disabled?: boolean
+  className?: string
 }) {
-  const groupName = useId();
+  const groupName = useId()
+  const highlightId = useId()
 
   return (
-    <div
-      className={`ds-segmented-control ${size} ${layout}${className ? ` ${className}` : ''}`}
-      role="radiogroup"
-      aria-label={ariaLabel}
-      aria-disabled={disabled || undefined}
-      aria-orientation="horizontal"
-    >
-      {items.map((item) => {
-        const selected = item.id === value;
-        const itemDisabled = disabled || item.disabled;
-        return (
-          <label
-            className={`ds-segmented-control-item${selected ? ' selected' : ''}`}
-            title={item.description}
-            key={item.id}
-          >
-            <input
-              type="radio"
-              name={groupName}
-              value={item.id}
-              checked={selected}
-              disabled={itemDisabled}
-              aria-label={item.ariaLabel}
-              onChange={() => onChange(item.id)}
-            />
-            <span className="ds-segmented-control-content">
-              {item.icon && (
-                <span className="ds-segmented-control-icon" aria-hidden="true">
-                  {item.icon}
-                </span>
-              )}
-              <span className="ds-segmented-control-label">{item.label}</span>
-            </span>
-          </label>
-        );
-      })}
-    </div>
-  );
+    <LayoutGroup id={highlightId}>
+      <div
+        className={`ds-segmented-control ${size} ${layout}${className ? ` ${className}` : ''}`}
+        role="radiogroup"
+        aria-label={ariaLabel}
+        aria-disabled={disabled || undefined}
+        aria-orientation="horizontal">
+        {items.map((item) => {
+          const selected = item.id === value
+          const itemDisabled = disabled || item.disabled
+          return (
+            <label
+              className={`ds-segmented-control-item${selected ? ' selected' : ''}`}
+              title={item.description}
+              key={item.id}>
+              <input
+                type="radio"
+                name={groupName}
+                value={item.id}
+                checked={selected}
+                disabled={itemDisabled}
+                aria-label={item.ariaLabel}
+                onChange={() => onChange(item.id)}
+              />
+              <span className="ds-segmented-control-content">
+                {selected ? (
+                  <SelectionHighlight
+                    layoutId={highlightId}
+                    layoutDependency={item.id}
+                    className="ds-segmented-control-selection"
+                  />
+                ) : null}
+                {item.icon && (
+                  <span className="ds-segmented-control-icon" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                )}
+                <span className="ds-segmented-control-label">{item.label}</span>
+              </span>
+            </label>
+          )
+        })}
+      </div>
+    </LayoutGroup>
+  )
 }

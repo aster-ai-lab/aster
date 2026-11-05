@@ -1,0 +1,29 @@
+suite "aster-session-usage-resume" {
+  version = 1
+
+  scenario "restored-session-keeps-accounting" {
+    surface = "tui"
+    timeout_ms = 120000
+
+    wait "restored-composer" {
+      text = "Add a follow-up"
+    }
+    wait "restored-accounting" {
+      regex = "Σ [1-9][0-9.kM]* tokens · — tok/s"
+    }
+    expect "restored-transcript" {
+      text = "UI_USAGE_OK"
+    }
+    snapshot "restored-session-usage" {}
+    terminal_paste "follow-up" {
+      text = "Reply with exactly UI_USAGE_AGAIN. Do not use tools."
+    }
+    press "submit-follow-up" {
+      key = "Enter"
+    }
+    wait "new-measured-accounting" {
+      regex = "Σ [1-9][0-9.kM]* tokens · [0-9]+\\.[0-9] tok/s"
+    }
+    snapshot "continued-session-usage" {}
+  }
+}

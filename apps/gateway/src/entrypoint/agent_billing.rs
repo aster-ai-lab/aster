@@ -512,9 +512,15 @@ mod tests {
     fn parse_requires_a_positive_quantity_header() {
         let mut headers = http::HeaderMap::new();
         assert!(usage_quantity(&headers, true).is_err());
-        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("0"));
+        headers.insert(
+            "x-aster-usage-quantity",
+            http::HeaderValue::from_static("0"),
+        );
         assert_eq!(usage_quantity(&headers, true).unwrap(), 0);
-        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("4"));
+        headers.insert(
+            "x-aster-usage-quantity",
+            http::HeaderValue::from_static("4"),
+        );
         assert_eq!(usage_quantity(&headers, true).unwrap(), 4);
         assert_eq!(usage_quantity(&http::HeaderMap::new(), false).unwrap(), 1);
     }
@@ -522,7 +528,10 @@ mod tests {
     #[tokio::test]
     async fn unset_billing_drops_the_quantity_header() {
         let mut headers = http::HeaderMap::new();
-        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("2"));
+        headers.insert(
+            "x-aster-usage-quantity",
+            http::HeaderValue::from_static("2"),
+        );
         settle(
             None,
             "parse",
@@ -596,7 +605,10 @@ mod tests {
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
-        response.insert("x-aster-usage-quantity", http::HeaderValue::from_static("0"));
+        response.insert(
+            "x-aster-usage-quantity",
+            http::HeaderValue::from_static("0"),
+        );
         settle(
             Some(&billing),
             "parse",
@@ -667,7 +679,10 @@ mod tests {
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
-        response.insert("x-aster-usage-quantity", http::HeaderValue::from_static("9"));
+        response.insert(
+            "x-aster-usage-quantity",
+            http::HeaderValue::from_static("9"),
+        );
         settle(
             Some(&billing),
             "search",

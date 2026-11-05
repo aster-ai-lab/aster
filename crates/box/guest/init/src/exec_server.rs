@@ -2183,7 +2183,10 @@ fn build_command(
     // workload environment; skipping request entries alone would still leak
     // the parent process's ASTER_SEC_* values through Command inheritance.
     for (key, _) in std::env::vars_os() {
-        if key.to_str().is_some_and(|key| key.starts_with("ASTER_SEC_")) {
+        if key
+            .to_str()
+            .is_some_and(|key| key.starts_with("ASTER_SEC_"))
+        {
             command.env_remove(key);
         }
     }

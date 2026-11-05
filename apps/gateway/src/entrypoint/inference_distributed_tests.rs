@@ -522,7 +522,12 @@ async fn managed_openai_request_executes_through_the_power_prefill_decode_contra
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(
+        response.status(),
+        StatusCode::OK,
+        "{}",
+        response.text().await.unwrap()
+    );
     assert_eq!(response.headers()["content-type"], "application/json");
     assert!(response.headers().contains_key("x-request-id"));
     let response = response.json::<Value>().await.unwrap();
@@ -1865,20 +1870,14 @@ async fn spawn_holding_power_pair_for_execution_timeout() -> (
     let decode_address = decode_listener.local_addr().unwrap();
 
     tokio::spawn(async move {
-        let mut prefill_abort_tx = Some(prefill_abort_tx);
-        loop {
-            let (mut stream, _) = prefill_listener.accept().await.unwrap();
-            let request = read_power_request(&mut stream).await;
-            match request.path.as_str() {
-                "/internal/v1/distributed-serving/abort" => {
-                    write_json(&mut stream, abort_response(&request)).await;
-                    if let Some(tx) = prefill_abort_tx.take() {
-                        let _ = tx.send(());
-                    }
-                    break;
-                }
-                path => panic!("unexpected prefill path before abort: {path}"),
+        let (mut stream, _) = prefill_listener.accept().await.unwrap();
+        let request = read_power_request(&mut stream).await;
+        match request.path.as_str() {
+            "/internal/v1/distributed-serving/abort" => {
+                write_json(&mut stream, abort_response(&request)).await;
+                let _ = prefill_abort_tx.send(());
             }
+            path => panic!("unexpected prefill path before abort: {path}"),
         }
     });
 

@@ -27,9 +27,10 @@ fn bounding_set_mismatch_fails_closed() {
 
 #[test]
 fn plans_the_exact_aster_box_capability_profile() {
-    let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-            .expect("decode fixture");
+    let config: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../fixtures/aster-box/config.json"
+    ))
+    .expect("decode fixture");
     let capabilities: LinuxCapabilities =
         serde_json::from_value(config["process"]["capabilities"].clone())
             .expect("decode capabilities");

@@ -1906,8 +1906,11 @@ mod tests {
         let outside = temp_dir.path().join("outside");
         std::fs::create_dir_all(&target).unwrap();
         std::fs::write(&outside, b"host-secret").unwrap();
-        std::os::unix::fs::symlink("../outside", target.join(".aster_image_metadata_v1.json.tmp"))
-            .unwrap();
+        std::os::unix::fs::symlink(
+            "../outside",
+            target.join(".aster_image_metadata_v1.json.tmp"),
+        )
+        .unwrap();
 
         finalize_rootfs_metadata(&target).unwrap();
 

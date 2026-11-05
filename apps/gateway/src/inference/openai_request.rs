@@ -35,6 +35,12 @@ pub(crate) enum OpenAiRequestProfile {
     Messages,
     /// Count Anthropic message input tokens.
     CountTokens,
+    /// Native Google generation and streaming, selected by the URL method.
+    GeminiGenerate,
+    /// Native Google token preflight.
+    GeminiCountTokens,
+    /// Native Google model discovery.
+    GeminiModels,
     /// Recognize text in one image. The caller sends no model alias.
     Ocr,
     /// Answer a System One decision request. The caller sends no model alias.
@@ -55,7 +61,7 @@ impl OpenAiRequestProfile {
         let standard = ModelStandard::match_route(method.as_str(), path)?;
         match standard.admission() {
             StandardAdmission::Admitted | StandardAdmission::Platform => {
-                Self::from_standard(standard)
+                Self::from_standard(standard, path)
             }
             StandardAdmission::Reserved => None,
         }
@@ -66,19 +72,24 @@ impl OpenAiRequestProfile {
         ModelStandard::is_reserved_route(method.as_str(), path)
     }
 
-    fn from_standard(standard: ModelStandard) -> Option<Self> {
+    fn from_standard(standard: ModelStandard, path: &str) -> Option<Self> {
         Some(match standard {
             ModelStandard::OpenaiModels => Self::Models,
             ModelStandard::OpenaiChat => Self::ChatCompletions,
             ModelStandard::OpenaiCompletions => Self::Completions,
             ModelStandard::OpenaiEmbeddings => Self::Embeddings,
+            ModelStandard::OpenaiResponses => Self::Responses,
+            ModelStandard::AnthropicMessages if path == "/v1/messages/count_tokens" => {
+                Self::CountTokens
+            }
+            ModelStandard::AnthropicMessages => Self::Messages,
+            ModelStandard::GeminiGenerate => Self::GeminiGenerate,
+            ModelStandard::GeminiCountTokens => Self::GeminiCountTokens,
+            ModelStandard::GeminiModels => Self::GeminiModels,
             ModelStandard::Rerank => Self::Rerank,
             ModelStandard::Ocr => Self::Ocr,
             ModelStandard::DecisionSystemOne => Self::SystemOne,
-            ModelStandard::OpenaiResponses
-            | ModelStandard::AnthropicMessages
-            | ModelStandard::GeminiGenerate
-            | ModelStandard::GeminiEmbed
+            ModelStandard::GeminiEmbed
             | ModelStandard::OpenaiImages
             | ModelStandard::OpenaiAudio
             | ModelStandard::Api
@@ -97,7 +108,7 @@ impl OpenAiRequestProfile {
     /// OCR carries image bytes. A missing model alias must not send those
     /// bytes down the JSON chat path.
     pub(crate) const fn requires_json_body(self) -> bool {
-        !matches!(self, Self::Models | Self::Ocr)
+        !matches!(self, Self::Models | Self::GeminiModels | Self::Ocr)
     }
 
     /// Whether this endpoint can request an SSE response through its JSON
@@ -105,13 +116,24 @@ impl OpenAiRequestProfile {
     pub(crate) const fn supports_streaming(self) -> bool {
         matches!(
             self,
-            Self::ChatCompletions | Self::Completions | Self::Messages
+            Self::ChatCompletions
+                | Self::Completions
+                | Self::Messages
+                | Self::Responses
+                | Self::GeminiGenerate
         )
     }
 
     /// Whether errors use the Anthropic `{type:"error", error:{...}}` shape.
     pub(crate) const fn is_anthropic(self) -> bool {
         matches!(self, Self::Messages | Self::CountTokens)
+    }
+
+    pub(crate) const fn is_gemini(self) -> bool {
+        matches!(
+            self,
+            Self::GeminiGenerate | Self::GeminiCountTokens | Self::GeminiModels
+        )
     }
 }
 
@@ -134,6 +156,8 @@ pub(crate) enum OpenAiRequestError {
     InvalidModel,
     /// The optional prompt-cache affinity key is not a bounded identifier.
     InvalidPromptCacheKey,
+    /// Unsupported or inconsistent Gemini discovery query.
+    InvalidQuery,
 }
 
 impl OpenAiRequestError {
@@ -147,12 +171,14 @@ impl OpenAiRequestError {
             | Self::InvalidBodyShape
             | Self::MissingModel
             | Self::InvalidModel
+            | Self::InvalidQuery
             | Self::InvalidPromptCacheKey => StatusCode::BAD_REQUEST,
         }
     }
 
     fn message(self) -> &'static str {
         match self {
+            Self::InvalidQuery => "Invalid model discovery query.",
             Self::UnsupportedMediaType => "Content-Type must be application/json.",
             Self::BodyTooLarge => "Request body exceeds the 8 MiB limit.",
             Self::BodyReadFailed => "Request body could not be read.",
@@ -191,6 +217,7 @@ impl OpenAiRequestError {
 pub(crate) struct OpenAiJsonRequest {
     pub(crate) body: Bytes,
     pub(crate) document: serde_json::Map<String, serde_json::Value>,
+    pub(crate) path_model: Option<super::GeminiModelCall>,
 }
 
 /// A validated OpenAI request that will be forwarded without managed model
@@ -215,6 +242,9 @@ impl OpenAiJsonRequest {
     }
 
     pub(crate) fn model_alias(&self) -> &str {
+        if let Some(call) = &self.path_model {
+            return call.model();
+        }
         self.document
             .get("model")
             .and_then(serde_json::Value::as_str)
@@ -223,6 +253,9 @@ impl OpenAiJsonRequest {
 
     /// Whether the validated request explicitly selects OpenAI SSE streaming.
     pub(crate) fn stream_requested(&self) -> bool {
+        if let Some(call) = &self.path_model {
+            return call.streaming();
+        }
         self.document
             .get("stream")
             .and_then(serde_json::Value::as_bool)
@@ -262,9 +295,15 @@ impl OpenAiJsonRequest {
     /// `max_tokens`). This is not a Cloud billing tokenizer and must be
     /// reconciled when upstream `usage` is available.
     pub(crate) fn estimate_token_reservation(&self, profile: OpenAiRequestProfile) -> u64 {
-        self.estimate_token_reservation_split(profile)
-            .total()
-            .max(1)
+        let total = self.estimate_token_reservation_split(profile).total();
+        if matches!(
+            profile,
+            OpenAiRequestProfile::CountTokens | OpenAiRequestProfile::GeminiCountTokens
+        ) {
+            total
+        } else {
+            total.max(1)
+        }
     }
 
     /// [`Self::estimate_token_reservation`] split by price lane: the input
@@ -277,6 +316,13 @@ impl OpenAiJsonRequest {
         let input = match profile {
             // The responses dialect carries instructions + input items, not
             // a messages array.
+            OpenAiRequestProfile::CountTokens
+            | OpenAiRequestProfile::GeminiCountTokens
+            | OpenAiRequestProfile::GeminiModels => 0,
+            // Reserve all structured content, including opaque media and tool context.
+            OpenAiRequestProfile::GeminiGenerate => {
+                super::estimate_text_tokens(std::str::from_utf8(&self.body).unwrap_or_default())
+            }
             OpenAiRequestProfile::Responses => approximate_responses_input_tokens(&self.document),
             _ => approximate_input_tokens(&self.document),
         };
@@ -284,6 +330,8 @@ impl OpenAiJsonRequest {
             OpenAiRequestProfile::Embeddings
             | OpenAiRequestProfile::Models
             | OpenAiRequestProfile::CountTokens
+            | OpenAiRequestProfile::GeminiCountTokens
+            | OpenAiRequestProfile::GeminiModels
             | OpenAiRequestProfile::Ocr
             | OpenAiRequestProfile::SystemOne
             | OpenAiRequestProfile::Rerank => 0,
@@ -295,6 +343,19 @@ impl OpenAiJsonRequest {
             OpenAiRequestProfile::ChatCompletions
             | OpenAiRequestProfile::Completions
             | OpenAiRequestProfile::Messages => completion_token_budget(&self.document),
+            OpenAiRequestProfile::GeminiGenerate => self
+                .document
+                .get("generationConfig")
+                .and_then(|config| config.get("maxOutputTokens"))
+                .and_then(serde_json::Value::as_u64)
+                .unwrap_or(DEFAULT_COMPLETION_TOKEN_RESERVATION)
+                .saturating_mul(
+                    self.document
+                        .get("generationConfig")
+                        .and_then(|config| config.get("candidateCount"))
+                        .and_then(serde_json::Value::as_u64)
+                        .unwrap_or(1),
+                ),
         };
         super::limits::TokenReservation { input, completion }
     }
@@ -302,8 +363,13 @@ impl OpenAiJsonRequest {
     /// Ask an OpenAI-compatible upstream to report usage on the final SSE
     /// chunk so streamed requests can be metered. A caller-provided
     /// `stream_options.include_usage` is left as is.
-    pub(crate) fn request_stream_usage(&mut self) {
-        if !self.stream_requested() {
+    pub(crate) fn request_stream_usage(&mut self, endpoint: crate::config::InferenceEndpoint) {
+        if !matches!(
+            endpoint,
+            crate::config::InferenceEndpoint::ChatCompletions
+                | crate::config::InferenceEndpoint::Completions
+        ) || !self.stream_requested()
+        {
             return;
         }
         let options = self
@@ -323,6 +389,35 @@ impl OpenAiJsonRequest {
         upstream_model: &str,
         scoped_prompt_cache_key: Option<&str>,
     ) -> Result<Bytes, serde_json::Error> {
+        if let Some(call) = &self.path_model {
+            let counter = call
+                .counting()
+                .then(|| {
+                    ["generateContentRequest", "generate_content_request"]
+                        .into_iter()
+                        .find(|name| {
+                            self.document
+                                .get(*name)
+                                .is_some_and(serde_json::Value::is_object)
+                        })
+                })
+                .flatten();
+            if counter.is_none()
+                && !self.document.contains_key("model")
+                && !self.document.contains_key("stream")
+            {
+                return Ok(self.body.clone());
+            }
+            let mut document = self.document.clone();
+            // URL metadata is authoritative, including the counter's nested resource name.
+            document.remove("model");
+            document.remove("stream");
+            if let Some(counter) = counter {
+                document[counter]["model"] =
+                    serde_json::Value::String(format!("models/{upstream_model}"));
+            }
+            return serde_json::to_vec(&document).map(Bytes::from);
+        }
         let mut document = self.document.clone();
         document.insert(
             "model".to_string(),
@@ -344,6 +439,10 @@ impl OpenAiJsonRequest {
         serde_json::to_vec(&document).map(Bytes::from)
     }
 }
+
+#[cfg(test)]
+#[path = "openai_stream_usage_tests.rs"]
+mod stream_usage_tests;
 
 fn hash_part(digest: &mut Sha256, value: &[u8]) {
     digest.update((value.len() as u64).to_be_bytes());
@@ -631,6 +730,19 @@ where
     B: hyper::body::Body<Data = Bytes>,
     B::Error: Into<Box<dyn Error + Send + Sync>>,
 {
+    collect_json_body_with_model(headers, body, None).await
+}
+
+/// Collect a model-addressed request without inserting transport metadata into its body.
+pub(crate) async fn collect_json_body_with_model<B>(
+    headers: &HeaderMap,
+    body: B,
+    path_model: Option<super::GeminiModelCall>,
+) -> Result<OpenAiJsonRequest, OpenAiRequestError>
+where
+    B: hyper::body::Body<Data = Bytes>,
+    B::Error: Into<Box<dyn Error + Send + Sync>>,
+{
     let body = collect_bounded_json_body(headers, body).await?;
 
     let mut document = match serde_json::from_slice::<serde_json::Value>(&body)
@@ -639,6 +751,21 @@ where
         serde_json::Value::Object(document) => document,
         _ => return Err(OpenAiRequestError::InvalidBodyShape),
     };
+    if path_model.is_some() {
+        if path_model
+            .as_ref()
+            .is_some_and(super::GeminiModelCall::counting)
+            && document.contains_key("generateContentRequest")
+            && document.contains_key("generate_content_request")
+        {
+            return Err(OpenAiRequestError::InvalidBodyShape);
+        }
+        return Ok(OpenAiJsonRequest {
+            body,
+            document,
+            path_model,
+        });
+    }
     let model = document
         .get("model")
         .ok_or(OpenAiRequestError::MissingModel)?
@@ -654,7 +781,11 @@ where
         body
     };
 
-    Ok(OpenAiJsonRequest { body, document })
+    Ok(OpenAiJsonRequest {
+        body,
+        document,
+        path_model,
+    })
 }
 
 fn encode_normalized_body(value: &impl serde::Serialize) -> Result<Bytes, OpenAiRequestError> {
@@ -791,9 +922,6 @@ mod tests {
             (Method::GET, "/v1/systemone"),
             (Method::POST, "/v1/ocr/extra"),
             (Method::POST, "/v1/systemone/extra"),
-            (Method::POST, "/v1/responses"),
-            (Method::POST, "/v1/messages"),
-            (Method::POST, "/v1/messages/count_tokens"),
             (Method::POST, "/v1/mcp"),
             (Method::POST, "/v1/service"),
         ] {
@@ -803,7 +931,19 @@ mod tests {
             OpenAiRequestProfile::match_request(&Method::POST, "/v1/rerank"),
             Some(OpenAiRequestProfile::Rerank)
         );
-        assert!(OpenAiRequestProfile::is_reserved_route(
+        assert_eq!(
+            OpenAiRequestProfile::match_request(&Method::POST, "/v1/responses"),
+            Some(OpenAiRequestProfile::Responses)
+        );
+        assert_eq!(
+            OpenAiRequestProfile::match_request(&Method::POST, "/v1/messages"),
+            Some(OpenAiRequestProfile::Messages)
+        );
+        assert_eq!(
+            OpenAiRequestProfile::match_request(&Method::POST, "/v1/messages/count_tokens"),
+            Some(OpenAiRequestProfile::CountTokens)
+        );
+        assert!(!OpenAiRequestProfile::is_reserved_route(
             &Method::POST,
             "/v1/responses"
         ));
@@ -823,6 +963,8 @@ mod tests {
         assert!(OpenAiRequestProfile::ChatCompletions.requires_json_body());
         assert!(OpenAiRequestProfile::Completions.requires_json_body());
         assert!(OpenAiRequestProfile::Embeddings.requires_json_body());
+        assert!(OpenAiRequestProfile::Responses.requires_json_body());
+        assert!(OpenAiRequestProfile::Responses.supports_streaming());
         assert!(!OpenAiRequestProfile::Ocr.requires_json_body());
         assert!(OpenAiRequestProfile::SystemOne.requires_json_body());
         assert!(!OpenAiRequestProfile::Ocr.supports_streaming());
@@ -851,6 +993,12 @@ mod tests {
         )
         .await
         .unwrap();
+        assert_eq!(
+            chat.estimate_token_reservation(OpenAiRequestProfile::CountTokens),
+            0
+        );
+        let counter = chat.estimate_token_reservation_split(OpenAiRequestProfile::CountTokens);
+        assert_eq!((counter.input, counter.completion), (0, 0));
         // role "user" => 1; "abcd" => 1; completion budget 30.
         assert_eq!(
             chat.estimate_token_reservation(OpenAiRequestProfile::ChatCompletions),

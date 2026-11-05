@@ -27,6 +27,46 @@ python3 -m http.server 4173
 
 Then open <http://127.0.0.1:4173/>.
 
+The Chinese source-backed architecture diagram is at `/architecture/`. It has
+one logical data-plane entry layer for a Gateway instance, which may bind
+multiple configured listeners. The diagram follows the current source rather
+than a target AI platform: HTTP standards and route matching, middleware,
+managed inference admission/target preparation or ordinary service selection,
+protocol handlers, upstream execution, response lifetime, and usage recording.
+TCP/UDP has its own relay branch and does not run the HTTP middleware stack.
+
+Configuration compilation and `ArcSwap<GatewayState>` updates are control
+operations. Node API has a separate management listener. Studio-specific
+ModelControl delegation is conditional, with actual model retries and accounting
+owned by the host. Agent/Skill CLI commands run separately from the data plane;
+there is no fabricated Gateway Harness router or Lead/Worker execution preview.
+Reserved MCP/API/Images/Gemini-embedding standards are explained in hover text,
+not rendered as available request paths. Audio retains its ordinary proxy scope.
+
+The desktop-only isometric graph uses numbered request steps 1–8 and a separate
+conditional retry step R. Nodes retain their sequence badges while paused;
+usage has both 6 (begin before dispatch) and 8 (observe/finalize with the body).
+The animation advances one causal hop at a time; response delivery and usage
+observation share a concurrent hop. Configured Cloud upload runs independently
+once local records are available, including during upstream execution. This is
+an illustration of order, not measured latency. Selecting a timeline step pauses
+there for inspection. Shared request stages occupy ordered columns left to right;
+managed model selection branches above the ordinary proxy path, raw transport
+uses a lower lane, and responses return along the bottom. Rounded orthogonal
+links retain direction arrows even when playback is paused. Hover any platform
+or label for responsibilities, configured branches, and the exact owning source
+path. Conditional links stay faintly visible;
+hover reveals additional retry, fast-path and shared-dependency details. Pause,
+replay, keyboard focus, Escape dismissal, visibility pause, and reduced-motion
+startup remain supported. The site has no mobile layout or expanded roadmap.
+Clock, topology, authority, admission-scope, and source-reference checks run with:
+
+```bash
+node --test apps/gateway/website/scripts/architecture.test.mjs
+```
+
+Run that command from the repository root.
+
 ## Validation
 
 From the repository root, run:

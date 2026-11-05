@@ -1471,7 +1471,8 @@ mod qualification {
                 cmd: vec![
                     "/bin/sh".to_string(),
                     "-c".to_string(),
-                    "printf 'aster-box-kvm-live-session\\n'; while :; do sleep 60; done".to_string(),
+                    "printf 'aster-box-kvm-live-session\\n'; while :; do sleep 60; done"
+                        .to_string(),
                 ],
                 network: NetworkMode::None,
                 persistent: false,

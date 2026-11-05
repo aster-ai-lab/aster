@@ -260,7 +260,9 @@ fn assembles_layers_without_a_host_namespace() {
         ),
         (0o755, 0, 0, 0)
     );
-    assert!(filesystem.resolve("/.aster_image_metadata_v1.json").is_err());
+    assert!(filesystem
+        .resolve("/.aster_image_metadata_v1.json")
+        .is_err());
 }
 
 #[test]

@@ -1,5 +1,85 @@
 {
+  "box_bridge_reference_fixtures_20261103": {
+    "source": "https://github.com/A3S-Lab/Box",
+    "tag": "v3.2.7",
+    "revision": "7355f043dd6c803fddfdaf95b7a76e4728f81349",
+    "reason": "The cloud dependency import omitted the independent SDK bridge reference manifests required by the existing parity test.",
+    "files": [
+      {
+        "source": "sdk/bridge-protocol.json",
+        "destination": "crates/box/sdk/tests/fixtures/bridge-protocol.json",
+        "blob": "f13e55ca496c642e0a3cf2fbe108317d25312a63",
+        "sha256": "0b1ae4cfef3ca55d3dca70d694dcd873d13da146884821bd6425f2dd0cd52dba"
+      },
+      {
+        "source": "sdk/bridge-operations.json",
+        "destination": "crates/box/sdk/tests/fixtures/bridge-operations.json",
+        "blob": "bb70ac767550a661d8c03209a20900860cb967e0",
+        "sha256": "05e8db19afc9c04d5288a484271d53856a95ec461da716f166631a85ec0559b5"
+      }
+    ],
+    "verification": "Byte-exact upstream blobs; the current built SDK bridge reports protocol 4 and the same 52 operations in source order. The existing parity assertions are retained."
+  },
   "snapshot_date": "2026-10-18",
+  "cli_mise_uninstall_selection_20261101": {
+    "upstream": "https://github.com/jdx/mise",
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "license": "MIT",
+    "license_path": "crates/use/tool-acquire/licenses/mise-MIT.txt",
+    "contract_sources": [
+      {"path": "src/cli/uninstall.rs", "git_blob": "3ee303ab6be92e4e874a932c6ec8bd3929a4dd24"}
+    ],
+    "local_sources": ["crates/use/tool-acquire/src/store.rs", "crates/terminal/crates/codegen/aster-pager/src/env_manager_cmd.rs"],
+    "reference_capture": "tests/cli_mise_uninstall_reference.py",
+    "reference": "specs/031-cli-mise-replacement/contracts/mise-uninstall-reference.json",
+    "note": "Eight pinned native uninstall cases preserve real directory membership separately from compatibility symlinks. They corrected an initial assumption about explicit prefix operators: bare fragments may be ambiguous, while explicit operators resolve one provider version. Initial timeouts and the collector correction remain in evidence. Aster reuses native store/ACL owners without a mise runtime dependency; current CLI, full lifecycle/backend and platform acceptance remain required."
+  },
+  "cli_mise_external_context_20261101": {
+    "upstream": "https://github.com/jdx/mise",
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "license": "MIT",
+    "license_path": "crates/use/tool-acquire/licenses/mise-MIT.txt",
+    "adapted_sources": [
+      {"path": "src/backend/github.rs", "git_blob": "4d9340b716cc278facb1003863392c6c1cc9660e"},
+      {"path": "src/backend/npm.rs", "git_blob": "75d4341a5f56b40cfce13e4ee84987010bc232f7"},
+      {"path": "src/plugins/core/node.rs", "git_blob": "fbb5ca44fbf99b50c9dd5be2a1c9fd897807899e"}
+    ],
+    "contract_sources": [
+      {"path": "src/toolset/tool_request.rs", "git_blob": "4f43cb77c88a2c9367594337fb8592d703fdaca7"},
+      {"path": "src/config/config_file/mod.rs", "git_blob": "bd451b2c98cd3d116fbba5f295a685621a584ad4"}
+    ],
+    "local_sources": ["crates/use/tool-acquire/src/env_context.rs", "crates/use/tool-acquire/src/env_context/paths.rs"],
+    "reference": "specs/031-cli-mise-replacement/contracts/mise-context-reference.json",
+    "note": "Default GitHub/npm/Node layouts and declaration origins are adapted inside the native tool owner with bounded directory work and native executable lookup. Seven isolated pinned reference cases supplement the unchanged version reference. CLI acceptance, registry-described Aqua layouts and complete backend/platform parity remain required; no mise build/runtime dependency is introduced."
+  },
+  "cli_mise_node_trust_roots_20261101": {
+    "upstream": "https://github.com/jdx/mise",
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "license": "MIT",
+    "license_path": "crates/use/tool-acquire/licenses/mise-MIT.txt",
+    "assets": [
+      {"upstream": "crates/mise-util/src/assets/gpg/node.asc", "local": "crates/use/tool-acquire/src/http/node/node.asc", "git_blob": "b0ad252c0a67e632cde4549562b26b2585dd1c54", "sha256": "2c9cfa7ea82fd30c0544692b0bd9ea0317a3f87b7ba8837ee6f2969db3235693"},
+      {"upstream": "crates/mise-util/src/gpg_testdata/node_v20.11.0_SHASUMS256.txt", "local": "crates/use/tool-acquire/src/http/node/testdata/node_v20.11.0_SHASUMS256.txt", "git_blob": "4451497a180e6501e88e34c2e0c41ac8855454b4", "sha256": "aea39fba15158d792a0bc81c7bed31b8e6014cf9f431b111000ef93b02095fd2"},
+      {"upstream": "crates/mise-util/src/gpg_testdata/node_v20.11.0_SHASUMS256.txt.sig", "local": "crates/use/tool-acquire/src/http/node/testdata/node_v20.11.0_SHASUMS256.txt.sig", "git_blob": "ff8f992604241696c561f50f9d232ec26270dc5e", "sha256": "d12ecbed76d204e6b75094384d5194f204dfe8f98f9895e0f6b890361dd94b2c"}
+    ],
+    "adapted_verifier_source": {"path": "crates/mise-util/src/gpg.rs", "git_blob": "cb84aee7816e4ae448372925e37487363d16278a", "local": "crates/use/tool-acquire/src/http/node/verify.rs"},
+    "node_contract_source": {"path": "src/plugins/core/node.rs", "git_blob": "fbb5ca44fbf99b50c9dd5be2a1c9fd897807899e"},
+    "note": "Exact public release keys and signed test bytes support the native Node provider and its independent pgp 0.21.0 verifier. No private keys, credentials, user state, upstream executable or mise build/runtime dependency is included. Genuine Node 20.11.0 stdlib/npm execution passed on macOS arm64; complete Node behavior remains required under T008."
+  },
+  "cli_mise_version_resolution_20261101": {
+    "upstream": "https://github.com/jdx/mise",
+    "tag": "v2026.10.25",
+    "commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+    "license": "MIT",
+    "adapted_sources": ["src/backend/mod.rs", "src/toolset/tool_request.rs"],
+    "local_source": "crates/use/tool-acquire/src/version.rs",
+    "license_path": "crates/use/tool-acquire/licenses/mise-MIT.txt",
+    "reference": "specs/031-cli-mise-replacement/contracts/mise-version-reference.json",
+    "note": "Version matching and subtraction adapted inside the existing tool owner. General version ordering uses the same versions 8.0.1 package as the frozen upstream lockfile. ACL remains Aster's configuration language; no mise runtime dependency or updater was imported. Full backend/plugin parity remains incomplete."
+  },
   "office_embedpdf_patch_20261030": {
     "upstream": "https://github.com/embedpdf/embed-pdf-viewer",
     "tag": "v2.14.3",

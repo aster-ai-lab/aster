@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 use std::process::ExitCode;
 
+use anyhow::{Context, Result, bail};
 use aster_pager_pty_harness::{
     ScriptedRunConfig, ScriptedRunStatus, ScriptedScenario, ScriptedScenarioRunner, pager_binary,
 };
-use anyhow::{Context, Result, bail};
 use clap::Parser as ClapParser;
 
 #[derive(ClapParser, Debug)]

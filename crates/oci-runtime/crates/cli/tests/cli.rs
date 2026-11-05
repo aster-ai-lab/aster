@@ -1281,8 +1281,10 @@ fn whpx_driver_smoke_fails_closed_with_versioned_output() {
 
 #[test]
 fn box_whpx_qualification_service_fails_before_publishing_readiness() {
-    let temporary =
-        std::env::temp_dir().join(format!("aster-oci-box-whpx-cli-test-{}", std::process::id()));
+    let temporary = std::env::temp_dir().join(format!(
+        "aster-oci-box-whpx-cli-test-{}",
+        std::process::id()
+    ));
     let ready = temporary.join("ready.json");
     let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .arg("box-whpx-qualification-service")
@@ -1428,7 +1430,10 @@ fn oci_vm_fault_cleanup_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("diagnostic output must be valid JSON");
-    assert_eq!(report["schema_version"], "aster.oci.oci-vm-fault-cleanup.v4");
+    assert_eq!(
+        report["schema_version"],
+        "aster.oci.oci-vm-fault-cleanup.v4"
+    );
     assert_eq!(report["lifecycle"]["requested_fault"], "after-kill");
     assert_ne!(report["status"], "available");
 }

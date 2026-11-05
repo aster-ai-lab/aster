@@ -581,7 +581,10 @@ pub fn unmount_box_rootfs_for_reuse(rootfs: &Path) -> aster_box_core::error::Res
 
 #[cfg(target_os = "macos")]
 fn rootfs_detach_mountpoint(rootfs: &Path) -> &Path {
-    if rootfs.file_name().is_some_and(|name| name == ".aster-rootfs") {
+    if rootfs
+        .file_name()
+        .is_some_and(|name| name == ".aster-rootfs")
+    {
         rootfs.parent().unwrap_or(rootfs)
     } else {
         rootfs

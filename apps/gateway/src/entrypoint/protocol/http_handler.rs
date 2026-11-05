@@ -149,6 +149,12 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
             let operation_state = state.clone();
             let operation_method = Arc::new(req_parts.method.clone());
             let operation_uri = Arc::new(req_parts.uri.clone());
+            let translation = inference_dispatch
+                .as_ref()
+                .and_then(|dispatch| dispatch.translate_response());
+            let gemini = inference_dispatch
+                .as_ref()
+                .and_then(|dispatch| dispatch.gemini_upstream());
             let operation_headers = Arc::new(req_parts.headers.clone());
             let operation_body = body_bytes.clone();
             let result = retry_upstream(
@@ -161,13 +167,22 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
                     let headers = operation_headers.clone();
                     let body = operation_body.clone();
                     let proxy_service = service_name.clone();
+                    let gemini = gemini.clone();
                     async move {
+                        let uri = super::translated_upstream_uri(
+                            uri.as_ref(),
+                            translation,
+                            gemini.as_ref(),
+                        )
+                        .map_err(|error| {
+                            std::io::Error::new(std::io::ErrorKind::InvalidInput, error)
+                        })?;
                         state
                             .http_proxy_for_backend(&proxy_service, backend.as_ref())
                             .forward_streaming_response_with_options(
                                 &backend,
                                 method.as_ref(),
-                                uri.as_ref(),
+                                &uri,
                                 headers.as_ref(),
                                 body,
                                 forward_opts,
@@ -548,6 +563,16 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
                     response_body
                 };
 
+                let (response, upstream_tokens) = super::observe_translation_usage(
+                    http::Response::from_parts(resp_parts, response_body),
+                    inference_dispatch
+                        .as_ref()
+                        .and_then(|dispatch| dispatch.translate_response()),
+                    inference_dispatch
+                        .as_ref()
+                        .map(|dispatch| dispatch.endpoint()),
+                );
+                let (mut resp_parts, response_body) = response.into_parts();
                 // Cross-protocol back-translation: a buffered 2xx JSON
                 // response from a translated attempt returns in the endpoint
                 // dialect before envelope wrapping or native-wire
@@ -817,6 +842,7 @@ pub async fn handle_http_dispatch(ctx: ProtocolContext) -> Response<ResponseBody
                     inference_admission,
                     observed_tokens,
                     attribution,
+                    upstream_tokens,
                 );
                 let response = with_inference_metrics(response, request_start).await;
                 return track_usage_response(response, usage_lifecycle);

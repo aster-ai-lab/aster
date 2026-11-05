@@ -1328,17 +1328,11 @@ async fn reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route() {
     let client = reqwest::Client::new();
 
     for (method, path) in [
-        ("POST", "/v1/responses"),
-        ("POST", "/v1/messages"),
-        ("POST", "/v1/messages/count_tokens"),
         ("POST", "/v1/mcp"),
         ("POST", "/v1/service"),
         ("POST", "/v1/images/generations"),
         // Audio is admitted: the ACL proxy route serves it, so it must not
         // appear here. Its admission is asserted in standards_tests.
-        ("POST", "/v1beta/models/gemma:generateContent"),
-        ("POST", "/v1beta/models/gemma:streamGenerateContent"),
-        ("POST", "/v1beta/models/gemma:embedContent"),
     ] {
         let response = client
             .request(method.parse().unwrap(), format!("http://{address}{path}"))
@@ -1350,6 +1344,34 @@ async fn reserved_catalog_paths_do_not_fall_through_to_an_ordinary_route() {
         assert_eq!(response.status(), 404, "{method} {path}");
         let body: serde_json::Value = response.json().await.unwrap();
         assert_eq!(body["error"], "standard_not_admitted", "{method} {path}");
+    }
+
+    // Generation and counting now have their own native admission fixtures; these methods remain closed.
+    for method in ["embedContent", "unknown"] {
+        let response = client
+            .post(format!(
+                "http://{address}/v1beta/models/provider/model:{method}"
+            ))
+            .header("content-type", "application/json")
+            .body("{}")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 404);
+        let body: serde_json::Value = response.json().await.unwrap();
+        assert_eq!(body["error"]["status"], "NOT_FOUND");
+    }
+    for method in ["generateContent", "streamGenerateContent", "countTokens"] {
+        let response = client
+            .post(format!(
+                "http://{address}/v1beta/models/provider/model:{method}"
+            ))
+            .header("content-type", "application/json")
+            .body("[]")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 400, "{method}");
     }
 
     // Rerank is admitted by the existing runtime policy. An invalid payload

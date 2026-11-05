@@ -1,7 +1,0 @@
-
-running 1 test
-test execution::validation_cache::tests::gpu::h200_step_validation_cache_preserves_predicates_views_step_isolation_and_reports_cost ... {"full_model_promotion_claimed":false,"measurements":[{"cached":false,"calls":100,"counts":null,"repeat":1,"seconds":0.002198355},{"cached":true,"calls":100,"counts":[1,99],"repeat":1,"seconds":0.000071648},{"cached":true,"calls":100,"counts":[1,99],"repeat":2,"seconds":0.000066588},{"cached":false,"calls":100,"counts":null,"repeat":2,"seconds":0.002140008},{"cached":false,"calls":100,"counts":null,"repeat":3,"seconds":0.002131778},{"cached":true,"calls":100,"counts":[1,99],"repeat":3,"seconds":0.000067656}],"profile":"immutable-step-validation-cache-v1"}
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 466 filtered out; finished in 2.81s
-

@@ -28,12 +28,14 @@ fn main() -> ExitCode {
                                 security,
                             )
                         }
-                        (None, attachments) => aster_oci_agent::run_with_vm_attachments_and_security(
-                            token,
-                            runtime_parent,
-                            attachments,
-                            security,
-                        ),
+                        (None, attachments) => {
+                            aster_oci_agent::run_with_vm_attachments_and_security(
+                                token,
+                                runtime_parent,
+                                attachments,
+                                security,
+                            )
+                        }
                     }
                 })
             }),

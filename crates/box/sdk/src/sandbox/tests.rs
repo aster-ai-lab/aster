@@ -505,7 +505,11 @@ impl ExecutionSessionManager for RecordingRuntime {
 }
 
 fn test_client(runtime: Arc<RecordingRuntime>, home: &std::path::Path) -> AsterBoxClient {
-    AsterBoxClient::with_execution_services(AsterBoxPaths::from_home(home), runtime.clone(), runtime)
+    AsterBoxClient::with_execution_services(
+        AsterBoxPaths::from_home(home),
+        runtime.clone(),
+        runtime,
+    )
 }
 
 #[tokio::test]

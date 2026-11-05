@@ -1,0 +1,7 @@
+{
+  "stagedPaths": 1068,
+  "cachedDiffCheckExit": 0,
+  "sourceScope": "product package/dependency closure, required release callers/fixtures, selected evidence; unrelated source/provenance remains unstaged",
+  "forbiddenPrivateSourcePaths": [],
+  "mutableFtsTrackedAfterCommit": false
+}

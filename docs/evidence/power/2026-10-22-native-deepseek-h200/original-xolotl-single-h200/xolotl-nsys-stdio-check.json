@@ -1,8 +1,0 @@
-{
-  "exit": 0,
-  "stdout": "ASTER_ACK:synthetic-stdio-check\n",
-  "stderr": "",
-  "session": "aster-xolotl-stdio-c7ba25911d",
-  "shutdown_exit": 1,
-  "passed": true
-}

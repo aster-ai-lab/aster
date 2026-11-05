@@ -1,9 +1,0 @@
-{
-  "schema": "aster-native-diagnostic-profile-v1",
-  "service_stage": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-xq-service-v27-4d686e124e7a",
-  "server_sha256": "4d686e124e7aa562702bec2f25ff2b922274c0f429e8222361d02ba2485763af",
-  "campaign_stage": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/api-v27-single-2d29b635b43d",
-  "campaign_source_sha256": "2d29b635b43dde93603234076bdca0abe7013e55953e3f1e24d38f1234c11b96",
-  "resource_proof": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-native-xq-opt-e4ade4631c46/resource-result.json",
-  "worker_sha256": "5c20320dcfb0988dea85d6a2e82f945635e0092a18ff1c4a6c00d7160dd6e4f5"
-}

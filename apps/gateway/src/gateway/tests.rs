@@ -386,7 +386,10 @@ async fn test_gateway_keeps_serving_when_the_management_plane_cannot_start() {
     // starts, reports Running, and the sensitive surface simply never
     // opens. Operators catch the misconfiguration via `gateway validate`
     // and the error-level startup log.
-    let token_env = format!("ASTER_GATEWAY_ADMIN_UNSET_{}", uuid::Uuid::new_v4().simple());
+    let token_env = format!(
+        "ASTER_GATEWAY_ADMIN_UNSET_{}",
+        uuid::Uuid::new_v4().simple()
+    );
     std::env::remove_var(&token_env);
     let mut config = minimal_config();
     config

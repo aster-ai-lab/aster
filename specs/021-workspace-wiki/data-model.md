@@ -4,6 +4,8 @@
 
 宿主持有项目/任务到真实工作区的绑定与文档缓冲。Core/ACP 持有原 Run、权限与模型事实。OKF 持有既有知识维护任务、候选和发布产物；WikiIndex 检索同一发布结果。Studio renderer 仅保留显示状态/安全草稿。
 
+产品呈现按三平面划分（详见 [architecture.md](architecture.md)）：**证据**＝产物（`sourceRoot` 真文件）；**知识**＝百科（`outputRoot` 已发布页）；**轨迹**＝分析／看板／记忆（执行与记忆投影，不写入百科发布树）。标签是入口，不是第二套存储。
+
 以下关系扩展现有类型和维护账本，不另建业务存储。项目集合由原生 PlaneStore 的 `workspaces.json` 持有；旧 renderer 集合只作一次受保护的初始化输入，之后不再作为可写权威。归档只改变注册关系，不移动或删除项目源目录。
 
 ## WikiCatalogView

@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "tools": [
+    {
+      "name": "xerj_def",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/code_intelligence"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "核对定义优先、符号种类／语言过滤、index／prefix scope、真实 file:line 与 max_tokens。"
+      ]
+    },
+    {
+      "name": "xerj_batch_search",
+      "owner": "adapter",
+      "paths": [
+        "crates/code/acp/src/agent/host_methods.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "按输入顺序保留每项结果与错误；验证独立预算、部分失败、取消和实际工具调用。"
+      ]
+    },
+    {
+      "name": "xerj_search",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/workspace/retrieval/hybrid_query.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "分别证明 plain-string 与 ES DSL、过滤／sort／分页／_source、rerank／judge 和输出预算。"
+      ]
+    },
+    {
+      "name": "xerj_semantic_search",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/workspace/retrieval/semantic_query.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明 field／index 绑定、实际 embedding、k、预过滤、真实来源和 max_tokens；不能只贴 semantic 标签。"
+      ]
+    },
+    {
+      "name": "xerj_vector_search",
+      "owner": "core",
+      "paths": [
+        "crates/vec/src/lib.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明 caller-supplied vector、dimension／metric 错误、num_candidates、预过滤与 scope；区分 ANN 和 exact。"
+      ]
+    },
+    {
+      "name": "xerj_hybrid_search",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/workspace/retrieval/hybrid_query.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "实际执行每个显式子查询与权重，验证 RRF／linear、size、filter／rerank／judge 和预算。"
+      ]
+    },
+    {
+      "name": "xerj_memory_store",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/durable_memory_vec.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明 namespace、显式 ID upsert、metadata、外部 vector 与 dedup 的持久性和权限；不创建镜像权威库。"
+      ]
+    },
+    {
+      "name": "xerj_memory_recall",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/durable_memory_vec.rs",
+        "apps/studio/src-tauri/src/agent_plane/workspace_memory_search.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "独立验证 lexical／semantic／hybrid／caller-vector、metadata filter、recency 与图 restrict／blend 的当前 revision。"
+      ]
+    },
+    {
+      "name": "xerj_brain_ego",
+      "owner": "host",
+      "paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明方向、1／2 hops、link type、as_of／过期边、证据及 not_shown；不能以 SAG crate 存在冒充时态图。"
+      ]
+    },
+    {
+      "name": "xerj_brain_link",
+      "owner": "host",
+      "paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "核对 src／dst／type、quote／source／byte offset、weight／confidence、valid_at 与幂等 edge ID。"
+      ]
+    },
+    {
+      "name": "xerj_brain_unlink",
+      "owner": "host",
+      "paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明原 owner 软失效、重复 unlink、invalid_at 与历史 as_of 查询；不能物理删边伪装时态。"
+      ]
+    },
+    {
+      "name": "xerj_brain_overview",
+      "owner": "host",
+      "paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "核对实际图计数、as_of 与 top 上限、scope、部分覆盖与归因。"
+      ]
+    },
+    {
+      "name": "xerj_map",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "核对原 catalog 的 dataset／field map、detail、offset／limit、max_bytes 与 coverage。"
+      ]
+    },
+    {
+      "name": "xerj_index_budget",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/workspace/retrieval/semantic_types.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "区分 walk／hash／index；实际计算路径、prefix、磁盘与 max_index_bytes、no_semantic 和 unavailable 状态。"
+      ]
+    },
+    {
+      "name": "xerj_autoindex_remove",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "在可丢弃 fixture 验证原 owner 的预览、确认、prefix／root 精确范围、共享索引保留及取消；不碰用户数据。"
+      ]
+    },
+    {
+      "name": "xerj_code_search",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/code_intelligence"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "证明 Corpus 到真实定义／来源、mode／lang／stale_ok、licence_policy、弱匹配与 max_tokens。"
+      ]
+    },
+    {
+      "name": "xerj_plan",
+      "owner": "core",
+      "paths": [
+        "crates/code/core/src/planning/llm_planner.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "模型／typed grounding 给出实际 schema 可执行的 DSL；未知／歧义拒绝，不复制上游按词表猜意图的算法。"
+      ]
+    },
+    {
+      "name": "xerj_field_report",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/agent_plane/turns.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "只用本地 endpoint 验证 draft／confirm、字段限额、版本事实与凭证隔离；本批次不向真实第三方或 GitHub 外发。"
+      ]
+    },
+    {
+      "name": "xerj_corpus_feedback",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/agent_plane/turns.rs"
+      ],
+      "presence": "declared",
+      "required_evidence": [
+        "只用本地 endpoint 验证 Corpus／usefulness／found、可选问题字段、confirm 与权限；不把原始用户查询发送作模板。"
+      ]
+    },
+    {
+      "name": "xerj_hub_find",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "hub_signing_key",
+      "required_evidence": [
+        "核对签名 key 条件、question／k、真实目录／版本与许可来源，缺资源不能假成功。"
+      ]
+    },
+    {
+      "name": "xerj_hub_def",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/code_intelligence"
+      ],
+      "presence": "hub_signing_key",
+      "required_evidence": [
+        "核对 slug 固定包、symbol／k、verified pack、真实定义与来源身份、跨范围拒绝。"
+      ]
+    },
+    {
+      "name": "xerj_hub_ask",
+      "owner": "host",
+      "paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "presence": "hub_signing_key",
+      "required_evidence": [
+        "证明 Hub／local／combined 模式、corpus、max_tokens、来源绑定和 remote／offline 分栏；保持宿主 owner。"
+      ]
+    }
+  ]
+}

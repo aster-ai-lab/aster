@@ -1,8 +1,0 @@
-{
-  "schema": "aster-native-full-trace-artifact-v1",
-  "remote": "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/native-xq-service-v27-4d686e124e7a/full-model-profile/native-request.nsys-rep",
-  "local": "D:\\code\\aster\\target\\h200-native\\native-v27-full-model.nsys-rep",
-  "file": "native-request.nsys-rep",
-  "bytes": 209306825,
-  "sha256": "73be6919629dc439e8d016d796d52549d81a3638fed007d666f96bb48f0d01f0"
-}

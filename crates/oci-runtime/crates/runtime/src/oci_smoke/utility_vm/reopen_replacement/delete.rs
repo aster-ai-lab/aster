@@ -172,7 +172,8 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     if let Err(reason) = create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
-    let first_console = console_directory.join(format!("aster-oci-delete-reopen-{nonce}-first.log"));
+    let first_console =
+        console_directory.join(format!("aster-oci-delete-reopen-{nonce}-first.log"));
     let replacement_console =
         console_directory.join(format!("aster-oci-delete-reopen-{nonce}-replacement.log"));
 

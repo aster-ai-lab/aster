@@ -1,9 +1,0 @@
-{
-  "platform": "Windows; pinned uv CPython 3.12.14; -X utf8",
-  "scope": "Synthetic loopback and fixture tests; no GPU or production traffic",
-  "checks": [
-    {"command": "python -X utf8 tests/power_serving_qualification.py", "exit": 0, "passed": 28, "test_seconds": 2.533},
-    {"command": "python -X utf8 tests/power_serving_e2e.py", "exit": 0, "passed": 4, "test_seconds": 0.558},
-    {"command": "python -X utf8 tests/power_serving_context.py", "exit": 0, "passed": 4, "test_seconds": 0.529}
-  ]
-}

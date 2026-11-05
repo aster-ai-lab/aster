@@ -17,12 +17,12 @@ The cases cover:
 - graceful completion inside the configured drain deadline; and
 - forced termination at a zero-second drain deadline.
 
-Run it from the Gateway repository:
+Run it from the Aster repository root:
 
 ```bash
-cargo build --locked --bin aster-gateway
-python -m pip install --requirement tests/openai_sdk/requirements.txt
-python tests/openai_sdk/test_conformance.py
+cargo build --locked -p aster-gateway --bin aster-gateway
+python -m pip install --requirement apps/gateway/tests/openai_sdk/requirements.txt
+python apps/gateway/tests/openai_sdk/test_conformance.py
 ```
 
 The same commands work on Windows and automatically select

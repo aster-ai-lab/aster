@@ -615,7 +615,8 @@ impl VmManager {
         // Sandbox peer-auth may have dropped this process to the real UID.
         // Overlay unmount needs effective root / CAP_SYS_ADMIN.
         #[cfg(target_os = "linux")]
-        if let Err(error) = crate::sandbox::aster_oci_controller::restore_effective_root_if_saved() {
+        if let Err(error) = crate::sandbox::aster_oci_controller::restore_effective_root_if_saved()
+        {
             tracing::warn!(
                 box_id = %self.box_id,
                 %error,

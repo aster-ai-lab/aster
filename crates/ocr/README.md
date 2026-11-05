@@ -1,7 +1,7 @@
 # Aster OCR
 
 Provider-oriented Rust OCR interfaces and the native executable shipped in
-[`aster/aster-ocr`](https://github.com/aster-ai-lab/plugins/tree/main/plugins/aster/aster-ocr).
+[`aster/aster-ocr`](https://github.com/aster-ai-lab/plugins/tree/main/plugins/operations/aster/aster-ocr).
 The official distribution is one self-contained `.aix` containing the executable,
 ONNX Runtime, PP-OCRv6 models, licenses, stdio MCP entry and `aster-use-ocr` Skill.
 The desktop base uses the provider-neutral API and calls the plugin through MCP.

@@ -1,0 +1,598 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "tag": "v1.0.0-rc.100",
+    "commit": "682d7ce072c644239cfa13ca1a9ca9a0e45d794b",
+    "source": "docs/evidence/code/2026-11-01-xerj-replacement/references/landing/docs/agents/schemas/mcp-tools.json",
+    "sha256": "e8f2de3c67eeb3d795b9cc7e4f5cac52cdc356afa3eb61f839ebd4e387691ba0"
+  },
+  "coverage": {
+    "surface": "published_mcp_maximum",
+    "tool_count": 22,
+    "complete_replacement_denominator": false,
+    "live_reference_verified": false,
+    "owner_binding": "candidate_only",
+    "qualification_status": "NOT_RUN"
+  },
+  "tools": [
+    {
+      "name": "xerj_def",
+      "source_pointer": "/tools/0",
+      "tool_schema_sha256": "46f88cdaaf967dd81b254f68a9d1711832d360ba86ad19622cb2f701f856133c",
+      "properties": [
+        "symbol",
+        "prefix",
+        "index",
+        "kind",
+        "lang",
+        "k",
+        "max_tokens"
+      ],
+      "required": [
+        "symbol"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/code_intelligence"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "核对定义优先、符号种类／语言过滤、index／prefix scope、真实 file:line 与 max_tokens。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_batch_search",
+      "source_pointer": "/tools/1",
+      "tool_schema_sha256": "8ba74b4edbd7ffc8bd8994afd17957abf46a24a5eebc210f6e8b851443ec76aa",
+      "properties": [
+        "queries",
+        "index",
+        "prefix",
+        "size",
+        "max_tokens"
+      ],
+      "required": [
+        "queries"
+      ],
+      "candidate_owner": "adapter",
+      "candidate_paths": [
+        "crates/code/acp/src/agent/host_methods.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "按输入顺序保留每项结果与错误；验证独立预算、部分失败、取消和实际工具调用。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_search",
+      "source_pointer": "/tools/2",
+      "tool_schema_sha256": "6cf2323b78b777981a8436c0b43e2f192abc5523f5e09e835cfdf7639a16d840",
+      "properties": [
+        "index",
+        "prefix",
+        "query",
+        "size",
+        "from",
+        "sort",
+        "_source",
+        "rerank",
+        "judge",
+        "max_tokens"
+      ],
+      "required": [],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/workspace/retrieval/hybrid_query.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "分别证明 plain-string 与 ES DSL、过滤／sort／分页／_source、rerank／judge 和输出预算。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_semantic_search",
+      "source_pointer": "/tools/3",
+      "tool_schema_sha256": "c31573fc3eaccd3593f0bce80ba28c989db644d10f9d48dc5fd514848bc73236",
+      "properties": [
+        "index",
+        "field",
+        "query",
+        "k",
+        "filter",
+        "max_tokens"
+      ],
+      "required": [
+        "index",
+        "field",
+        "query"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/workspace/retrieval/semantic_query.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明 field／index 绑定、实际 embedding、k、预过滤、真实来源和 max_tokens；不能只贴 semantic 标签。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_vector_search",
+      "source_pointer": "/tools/4",
+      "tool_schema_sha256": "488fe2c7f5bbdcac7424ab174e4a7883b8d814b62ddf10b8cf9c1ae5007f6dbd",
+      "properties": [
+        "index",
+        "field",
+        "query_vector",
+        "k",
+        "num_candidates",
+        "filter",
+        "max_tokens"
+      ],
+      "required": [
+        "index",
+        "field",
+        "query_vector"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/vec/src/lib.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明 caller-supplied vector、dimension／metric 错误、num_candidates、预过滤与 scope；区分 ANN 和 exact。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_hybrid_search",
+      "source_pointer": "/tools/5",
+      "tool_schema_sha256": "91bdb0e31dffb4d43d7b7930f1bd890192bbd4ce191ebb4f6aad998079ecb7c0",
+      "properties": [
+        "index",
+        "queries",
+        "fusion",
+        "size",
+        "rerank",
+        "judge",
+        "max_tokens"
+      ],
+      "required": [
+        "index",
+        "queries"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/workspace/retrieval/hybrid_query.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "实际执行每个显式子查询与权重，验证 RRF／linear、size、filter／rerank／judge 和预算。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_memory_store",
+      "source_pointer": "/tools/6",
+      "tool_schema_sha256": "1098aac7ea1616b1824f0352e888194c3e41c8acb8e9b72de40bf9236d5dcc00",
+      "properties": [
+        "namespace",
+        "text",
+        "metadata",
+        "id",
+        "vector",
+        "dedup",
+        "dedup_threshold"
+      ],
+      "required": [
+        "namespace",
+        "text"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/durable_memory_vec.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明 namespace、显式 ID upsert、metadata、外部 vector 与 dedup 的持久性和权限；不创建镜像权威库。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_memory_recall",
+      "source_pointer": "/tools/7",
+      "tool_schema_sha256": "27149f1f89ab64b9dcb289589134d6f9487825e798d3a28fffba952a49bfea3b",
+      "properties": [
+        "namespace",
+        "query",
+        "semantic",
+        "hybrid",
+        "fusion",
+        "vector",
+        "k",
+        "filter",
+        "recency_weight",
+        "graph"
+      ],
+      "required": [
+        "namespace"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/durable_memory_vec.rs",
+        "apps/studio/src-tauri/src/agent_plane/workspace_memory_search.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "独立验证 lexical／semantic／hybrid／caller-vector、metadata filter、recency 与图 restrict／blend 的当前 revision。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_brain_ego",
+      "source_pointer": "/tools/8",
+      "tool_schema_sha256": "deeccfbe44dc7eac2573a75b3a7c79887bbb5881c2638583734ce5264de6bf20",
+      "properties": [
+        "brain",
+        "node",
+        "hops",
+        "direction",
+        "types",
+        "limit",
+        "as_of",
+        "include_expired",
+        "include_nodes"
+      ],
+      "required": [
+        "brain",
+        "node"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明方向、1／2 hops、link type、as_of／过期边、证据及 not_shown；不能以 SAG crate 存在冒充时态图。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_brain_link",
+      "source_pointer": "/tools/9",
+      "tool_schema_sha256": "b598b2e5c6e146b6a93faa3d9a72f3f8e21eb09610766628612ec8ddc35066e9",
+      "properties": [
+        "brain",
+        "src",
+        "dst",
+        "type",
+        "evidence",
+        "weight",
+        "confidence",
+        "valid_at"
+      ],
+      "required": [
+        "brain",
+        "src",
+        "dst",
+        "type"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "核对 src／dst／type、quote／source／byte offset、weight／confidence、valid_at 与幂等 edge ID。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_brain_unlink",
+      "source_pointer": "/tools/10",
+      "tool_schema_sha256": "4cde173ea55a9961fda8fffc3887ad9eb6fb9dc1abc9c85b9b71231ed2976952",
+      "properties": [
+        "brain",
+        "edge_id",
+        "invalid_at"
+      ],
+      "required": [
+        "brain",
+        "edge_id"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明原 owner 软失效、重复 unlink、invalid_at 与历史 as_of 查询；不能物理删边伪装时态。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_brain_overview",
+      "source_pointer": "/tools/11",
+      "tool_schema_sha256": "e4e131e1d15c95a16122db7690bc7bc3740cc3805e415f9ea693f281321312aa",
+      "properties": [
+        "brain",
+        "as_of",
+        "top"
+      ],
+      "required": [
+        "brain"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "crates/sag/src",
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "核对实际图计数、as_of 与 top 上限、scope、部分覆盖与归因。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_map",
+      "source_pointer": "/tools/12",
+      "tool_schema_sha256": "e5727ec4caa495c5ae98d714be5c7b8a36104ee48fe3e209607fbcfcfd9a52a2",
+      "properties": [
+        "index",
+        "offset",
+        "limit",
+        "detail",
+        "max_bytes"
+      ],
+      "required": [],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "核对原 catalog 的 dataset／field map、detail、offset／limit、max_bytes 与 coverage。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_index_budget",
+      "source_pointer": "/tools/13",
+      "tool_schema_sha256": "9e4003961caa716dfe7ec8330b98cd0386015bb21c0078b0cfa2cd2f3d6a7fc4",
+      "properties": [
+        "path",
+        "prefix",
+        "max_index_bytes",
+        "no_semantic"
+      ],
+      "required": [
+        "path"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/workspace/retrieval/semantic_types.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "区分 walk／hash／index；实际计算路径、prefix、磁盘与 max_index_bytes、no_semantic 和 unavailable 状态。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_autoindex_remove",
+      "source_pointer": "/tools/14",
+      "tool_schema_sha256": "24c57739b9e9b514144abd79b03eea9d0a7c8d9e638f4ef0578662bc62be8c70",
+      "properties": [
+        "prefix",
+        "root",
+        "confirm"
+      ],
+      "required": [
+        "prefix"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "在可丢弃 fixture 验证原 owner 的预览、确认、prefix／root 精确范围、共享索引保留及取消；不碰用户数据。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_code_search",
+      "source_pointer": "/tools/15",
+      "tool_schema_sha256": "27ab6eac547fb472bd935c7543a6a459cdabfe0051a0c48b81014ee08874cc85",
+      "properties": [
+        "corpus",
+        "query",
+        "k",
+        "mode",
+        "lang",
+        "full",
+        "no_symbol",
+        "stale_ok",
+        "licence_policy",
+        "max_tokens"
+      ],
+      "required": [
+        "corpus",
+        "query"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/code_intelligence"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "证明 Corpus 到真实定义／来源、mode／lang／stale_ok、licence_policy、弱匹配与 max_tokens。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_plan",
+      "source_pointer": "/tools/16",
+      "tool_schema_sha256": "ef25419c60dfdbc3d98651fd5f03602d45e650f1b5131b9005a1869a91a703f1",
+      "properties": [
+        "prompt",
+        "index"
+      ],
+      "required": [
+        "prompt"
+      ],
+      "candidate_owner": "core",
+      "candidate_paths": [
+        "crates/code/core/src/planning/llm_planner.rs",
+        "crates/vec/src/lib.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "模型／typed grounding 给出实际 schema 可执行的 DSL；未知／歧义拒绝，不复制上游按词表猜意图的算法。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_field_report",
+      "source_pointer": "/tools/17",
+      "tool_schema_sha256": "2a70264c84d81c238b4a698d05ce8d896bc52a99273656aac7300838f99c3773",
+      "properties": [
+        "agent",
+        "used_for",
+        "verdict",
+        "version",
+        "os",
+        "indexed",
+        "notes",
+        "confirm",
+        "github",
+        "endpoint"
+      ],
+      "required": [
+        "agent",
+        "used_for",
+        "verdict"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/agent_plane/turns.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "只用本地 endpoint 验证 draft／confirm、字段限额、版本事实与凭证隔离；本批次不向真实第三方或 GitHub 外发。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_corpus_feedback",
+      "source_pointer": "/tools/18",
+      "tool_schema_sha256": "4e1a0ff77ad5db400360af32b46f7e74506984de4f04ec6a25071fa27621fc92",
+      "properties": [
+        "corpus",
+        "usefulness",
+        "found",
+        "freshness",
+        "agent_family",
+        "agent_version",
+        "pack",
+        "query_template",
+        "coverage_gaps",
+        "problems",
+        "problem_note",
+        "confirm"
+      ],
+      "required": [
+        "corpus",
+        "usefulness",
+        "found"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/agent_plane/turns.rs"
+      ],
+      "reference_presence": "declared",
+      "required_evidence": [
+        "只用本地 endpoint 验证 Corpus／usefulness／found、可选问题字段、confirm 与权限；不把原始用户查询发送作模板。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_hub_find",
+      "source_pointer": "/tools/19",
+      "tool_schema_sha256": "1e640789ebb7b8defec129cff1527161f0e0bc66b76bbf160a9be0821cf9306f",
+      "properties": [
+        "question",
+        "k"
+      ],
+      "required": [
+        "question"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "hub_signing_key",
+      "required_evidence": [
+        "核对签名 key 条件、question／k、真实目录／版本与许可来源，缺资源不能假成功。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_hub_def",
+      "source_pointer": "/tools/20",
+      "tool_schema_sha256": "5bb22d27a06bf1f51f217eef279e795a93e4ae48e4d19ec740b5405157ebc24a",
+      "properties": [
+        "slug",
+        "symbol",
+        "k"
+      ],
+      "required": [
+        "slug",
+        "symbol"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs",
+        "crates/code/core/src/code_intelligence"
+      ],
+      "reference_presence": "hub_signing_key",
+      "required_evidence": [
+        "核对 slug 固定包、symbol／k、verified pack、真实定义与来源身份、跨范围拒绝。"
+      ],
+      "qualification_status": "NOT_RUN"
+    },
+    {
+      "name": "xerj_hub_ask",
+      "source_pointer": "/tools/21",
+      "tool_schema_sha256": "7ea47c34d1e3ac847c12ac79cd8e9905374c66263b6bdc759aeda9b7e83adea9",
+      "properties": [
+        "question",
+        "corpus",
+        "mode",
+        "max_tokens"
+      ],
+      "required": [
+        "question"
+      ],
+      "candidate_owner": "host",
+      "candidate_paths": [
+        "apps/studio/src-tauri/src/local_documents/library.rs"
+      ],
+      "reference_presence": "hub_signing_key",
+      "required_evidence": [
+        "证明 Hub／local／combined 模式、corpus、max_tokens、来源绑定和 remote／offline 分栏；保持宿主 owner。"
+      ],
+      "qualification_status": "NOT_RUN"
+    }
+  ]
+}

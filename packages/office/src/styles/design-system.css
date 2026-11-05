@@ -578,6 +578,7 @@ html[data-ds-resizing="horizontal"] * {
 
 .ds-tabs > button {
   position: relative;
+  isolation: isolate;
   display: inline-flex;
   min-width: 0;
   align-items: center;
@@ -589,6 +590,21 @@ html[data-ds-resizing="horizontal"] * {
   cursor: pointer;
   font-weight: 400;
   white-space: nowrap;
+}
+
+.ds-tabs-selection--segment {
+  background: var(--aster-panel);
+  box-shadow: 0 1px 3px rgb(20 24 40 / 8%);
+}
+
+.ds-tabs-selection--line {
+  top: auto;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: var(--ds-tabs-accent);
 }
 
 .ds-tabs.standard > button {
@@ -612,8 +628,6 @@ html[data-ds-resizing="horizontal"] * {
 }
 
 .ds-tabs.segment > button[aria-selected="true"] {
-  background: var(--aster-panel);
-  box-shadow: 0 1px 3px rgb(20 24 40 / 8%);
   color: var(--ds-tabs-accent);
   font-weight: 500;
 }
@@ -628,29 +642,22 @@ html[data-ds-resizing="horizontal"] * {
   padding-inline: 1px;
 }
 
-.ds-tabs.line > button::after {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  border-radius: 999px 999px 0 0;
-  background: transparent;
-  content: "";
-}
-
 .ds-tabs.line > button[aria-selected="true"] {
   color: var(--aster-ink);
   font-weight: 500;
 }
 
-.ds-tabs.line > button[aria-selected="true"]::after {
-  background: var(--ds-tabs-accent);
-}
-
 .ds-tabs > button:disabled {
   cursor: not-allowed;
   opacity: 0.4;
+}
+
+.ds-tabs-icon,
+.ds-tabs-label,
+.ds-tabs-label-compact,
+.ds-tabs-badge {
+  position: relative;
+  z-index: 1;
 }
 
 .ds-tabs-icon {
@@ -715,6 +722,8 @@ html[data-ds-resizing="horizontal"] * {
 }
 
 .ds-segmented-control-content {
+  position: relative;
+  isolation: isolate;
   display: flex;
   min-width: 0;
   height: 100%;
@@ -724,10 +733,12 @@ html[data-ds-resizing="horizontal"] * {
   border-radius: inherit;
   font-weight: 600;
   white-space: nowrap;
-  transition:
-    background-color 150ms ease,
-    box-shadow 150ms ease,
-    color 150ms ease;
+  transition: color 150ms ease;
+}
+
+.ds-segmented-control-selection {
+  background: var(--aster-panel);
+  box-shadow: 0 1px 3px rgb(20 24 40 / 8%);
 }
 
 .ds-segmented-control.standard .ds-segmented-control-content {
@@ -747,8 +758,6 @@ html[data-ds-resizing="horizontal"] * {
 }
 
 .ds-segmented-control-item.selected .ds-segmented-control-content {
-  background: var(--aster-panel);
-  box-shadow: 0 1px 3px rgb(20 24 40 / 8%);
   color: var(--aster-blue);
 }
 
@@ -761,6 +770,12 @@ html[data-ds-resizing="horizontal"] * {
 .ds-segmented-control-item:has(input:disabled) {
   cursor: not-allowed;
   opacity: 0.42;
+}
+
+.ds-segmented-control-icon,
+.ds-segmented-control-label {
+  position: relative;
+  z-index: 1;
 }
 
 .ds-segmented-control-icon {

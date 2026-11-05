@@ -1963,7 +1963,10 @@ struct OwnedAnonymousCleanup {
     unproved: bool,
 }
 impl OwnedAnonymousCleanup {
-    fn run(&mut self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> aster_box_core::Result<()> {
+    fn run(
+        &mut self,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
+    ) -> aster_box_core::Result<()> {
         if self.unproved {
             return Err(BoxError::StateError(
                 "original anonymous cleanup effect is unproved".into(),

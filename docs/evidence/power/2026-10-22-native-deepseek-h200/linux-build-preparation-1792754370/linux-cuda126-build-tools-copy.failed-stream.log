@@ -1,7 +1,0 @@
-client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature
-Traceback (most recent call last):
-  File "<string>", line 24, in <module>
-  File "/usr/lib/python3.10/tarfile.py", line 1882, in open
-    t = cls(name, filemode, stream, **kwargs)
-TypeError: TarFile.__init__() got an unexpected keyword argument 'compresslevel'
-command terminated with exit code 1

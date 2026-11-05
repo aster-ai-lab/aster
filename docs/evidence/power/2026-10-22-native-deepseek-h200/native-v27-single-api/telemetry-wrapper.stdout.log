@@ -1,1 +1,0 @@
-{"schema": "aster-native-service-telemetry-v1", "phase": "completed", "samples": 29, "nsys": "/usr/local/cuda/bin/nsys", "ncu": "/usr/local/bin/ncu", "ticks_per_second": 100, "page_bytes": 4096, "completed_unix": 1792805082.910176}

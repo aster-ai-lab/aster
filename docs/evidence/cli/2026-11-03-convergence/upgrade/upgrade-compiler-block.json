@@ -1,8 +1,0 @@
-{
-  "cargoPid": 7830,
-  "rustcPid": 16792,
-  "command": "/Users/roylin/.rustup/toolchains/1.97.1-aarch64-apple-darwin/bin/cargo test --locked --offline -p aster --test env_manager -- --test-threads=1 --nocapture",
-  "observation": "rustc sleeping for more than nine minutes at zero CPU; sample exceeded its 15-second diagnostic limit",
-  "action": "SIGINT sent only to this task's redundant full-CLI cargo retry",
-  "notClaimed": "No successful test execution or proven OS root cause from this attempt"
-}

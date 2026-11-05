@@ -1,9 +1,0 @@
-{
-  "archive_sha256": "7f19675f84ae19e8368b9319fde4ae70cfbc6f7b94f10745adde83dfab6c3658",
-  "archive_bytes": 90914556,
-  "files": 1835,
-  "uncompressed_bytes": 237555615,
-  "source_image": "registry.h.pjlab.org.cn/ailab-safeag/zoubo:v2.2",
-  "reference_files_changed": false,
-  "GPU_execution_claimed": false
-}

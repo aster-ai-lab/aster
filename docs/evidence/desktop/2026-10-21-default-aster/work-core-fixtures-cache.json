@@ -1,6 +1,0 @@
-{
-  "source": "target/studio-macos-alignment",
-  "target": "target/work-removal-core-fixtures-20261021",
-  "copy": "APFS copy-on-write clones of immutable compiler deps/fingerprints/build cache; no incremental or app/session state",
-  "elapsed": 24.00169016700238
-}

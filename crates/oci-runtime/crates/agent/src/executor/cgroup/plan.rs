@@ -624,9 +624,10 @@ mod tests {
     }
 
     fn fixture_linux() -> Linux {
-        let config: serde_json::Value =
-            serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-                .expect("decode fixture");
+        let config: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../../fixtures/aster-box/config.json"
+        ))
+        .expect("decode fixture");
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config")
     }
 

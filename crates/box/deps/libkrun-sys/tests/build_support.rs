@@ -2,6 +2,30 @@
 mod build_support;
 
 use std::path::{Path, PathBuf};
+use std::process::Command;
+
+#[test]
+fn native_deployment_target_matches_rust_and_explicit_overrides() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    for version in ["11.0", "12.0"] {
+        let actual = build_support::macos_deployment_target(
+            Command::new(&rustc).env("MACOSX_DEPLOYMENT_TARGET", version),
+            std::ffi::OsStr::new("aarch64-apple-darwin"),
+        )
+        .expect("query the pinned Rust compiler");
+        assert_eq!(actual, version);
+    }
+}
+
+#[test]
+fn unavailable_deployment_targets_are_refused() {
+    let rustc = std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into());
+    assert!(build_support::macos_deployment_target(
+        &mut Command::new(rustc),
+        std::ffi::OsStr::new("not-a-rust-target"),
+    )
+    .is_err());
+}
 
 #[test]
 fn debian_repository_architectures_are_distinct_from_gnu_targets() {

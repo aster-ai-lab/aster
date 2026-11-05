@@ -30,11 +30,13 @@ pub const AGENT_VM_RESTRICTED_DIRECTORY_MANIFEST_SCHEMA_VERSION: &str =
 pub const AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV: &str =
     "ASTER_OCI_HOST_STORAGE_PATH_RESTRICTIONS_SHA256";
 /// Protected Guest directory beneath the private runtime share.
-pub const AGENT_VM_DIRECTORY_GUEST_ROOT: &str = "/run/aster-oci-runtime/bundle/.aster-oci-directories";
+pub const AGENT_VM_DIRECTORY_GUEST_ROOT: &str =
+    "/run/aster-oci-runtime/bundle/.aster-oci-directories";
 /// Directory transport sources stay inside the existing bundle-only boundary.
 pub const AGENT_VM_DIRECTORY_RELATIVE_ROOT: &str = ".aster-oci-directories";
 /// Network-only transport schema emitted before raw storage transport existed.
-pub const AGENT_VM_ATTACHMENT_MANIFEST_SCHEMA_VERSION_V1: &str = "aster.oci.agent-vm-attachments.v1";
+pub const AGENT_VM_ATTACHMENT_MANIFEST_SCHEMA_VERSION_V1: &str =
+    "aster.oci.agent-vm-attachments.v1";
 /// Fixed file name inside one exact utility-VM runtime share.
 pub const AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME: &str = ".aster-oci-agent-vm-attachments.json";
 /// Guest environment key carrying the exact encoded-manifest SHA-256 digest.
@@ -442,7 +444,8 @@ impl AgentVmAttachmentManifest {
                     .ok_or_else(|| {
                         manifest_error("directory restriction references an ungranted identity")
                     })?;
-                if directory.attachment().access_mode() == aster_oci_sdk::StorageAccessMode::ReadOnly
+                if directory.attachment().access_mode()
+                    == aster_oci_sdk::StorageAccessMode::ReadOnly
                     && !entry.write_exceptions().is_empty()
                 {
                     return Err(manifest_error(

@@ -1,7 +1,0 @@
-{
-  "path": "apps/studio/scripts/kylin-flatpak/README.md",
-  "actual_host_path": "/app/bin/Studio",
-  "change": "Correct one incorrect technical path /app/bin/Desktop from external rename. Product binary is unchanged.",
-  "sha256": "caeaccc9740a2b45c8f885a72558f85c53802ba09b14701b90006b301f778dbd",
-  "receipt_sha256": "6f924d5e7fd029d77f808ce1c2f12fd51526a63244e58e0fee5c21d18c78ea48"
-}

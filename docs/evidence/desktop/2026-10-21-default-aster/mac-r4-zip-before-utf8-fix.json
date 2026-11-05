@@ -1,9 +1,0 @@
-{
-  "zip": "target/studio-macos-alignment/release/bundle/macos/AsterDream.zip",
-  "sha256": "8d9d1462511e3fb11a2881040510816bb13b3de4e7cd039f0aac99ac731b11d0",
-  "bytes": 108249331,
-  "result": "failed native ZIP filename decoding",
-  "native_log": "mac-r4-native-zip-filename.log",
-  "probe": "target/evaluations/studio-default-aster/zip-native-filename-probe.rs",
-  "cause": "ditto stores raw UTF-8 names without ZIP UTF-8 flag; pinned zip7.2 entry.name decodes CP437"
-}

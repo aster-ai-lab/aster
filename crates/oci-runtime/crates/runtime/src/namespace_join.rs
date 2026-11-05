@@ -280,7 +280,10 @@ mod tests {
             .iter()
             .any(|namespace| namespace["type"] == "mount"));
         assert!(config["linux"].get("sysctl").is_none());
-        assert_eq!(config["linux"]["cgroupsPath"], "aster-oci-host-network-test");
+        assert_eq!(
+            config["linux"]["cgroupsPath"],
+            "aster-oci-host-network-test"
+        );
         assert!(config["process"]["args"][2]
             .as_str()
             .expect("host-network command")

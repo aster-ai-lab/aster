@@ -158,7 +158,10 @@ pub(super) async fn setup_and_boot(
     );
     let reserve_start = std::time::Instant::now();
     let reservation = manager.create(request, &operation_id).await?;
-    aster_box_core::lifecycle_profile::record_lifecycle_phase("cli.reserve", reserve_start.elapsed());
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
+        "cli.reserve",
+        reserve_start.elapsed(),
+    );
     let execution_id = reservation.execution_id.clone();
     let box_id = execution_id.to_string();
     println!(

@@ -182,9 +182,6 @@ pub use aster_oci_agent::RootlessDevicePolicyBootstrap;
 pub struct RootlessDevicePolicyBootstrap {
     _private: (),
 }
-pub use aster_oci_agent_protocol::{
-    AgentTransportFaultStage, AgentTransportOperationStage, AgentTransportShutdownStage,
-};
 #[cfg(windows)]
 pub use agent_pipe::WindowsAgentPipeListener;
 pub use agent_smoke::agent_vm_smoke;
@@ -207,6 +204,9 @@ pub use agent_smoke::qualify_kvm_post_probe_failure;
 pub use agent_socket::LinuxAgentSocketListener;
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 pub use agent_socket::MacosAgentSocketListener;
+pub use aster_oci_agent_protocol::{
+    AgentTransportFaultStage, AgentTransportOperationStage, AgentTransportShutdownStage,
+};
 pub use box_whpx_service::{
     serve_box_whpx_qualification, BoxWhpxServiceConfig, BOX_WHPX_SERVICE_READY_SCHEMA_VERSION,
 };

@@ -1769,7 +1769,9 @@ mod tests {
         completion_receipt_with_runtime_policy, receipt_decoding_parameters_digest, receipt_digest,
         ReceiptDecodingPolicy, ReceiptInputDigest, ReceiptRequestType,
     };
-    use aster_power::api::types::{ChatCompletionMessage, ChatCompletionRequest, CompletionRequest};
+    use aster_power::api::types::{
+        ChatCompletionMessage, ChatCompletionRequest, CompletionRequest,
+    };
     use aster_power::backend::types::{EffectivePromptDigest, MessageContent};
     use aster_power::tee::attestation::TeeType;
     use aster_power::tee::attestation::{
@@ -2063,7 +2065,10 @@ mod tests {
             query,
             vec![
                 ("nonce".to_string(), "001122".to_string()),
-                ("model".to_string(), "aster-ai-lab/model & version=1".to_string()),
+                (
+                    "model".to_string(),
+                    "aster-ai-lab/model & version=1".to_string()
+                ),
             ]
         );
         assert!(url.contains("model=aster-ai-lab%2Fmodel+%26+version%3D1"));

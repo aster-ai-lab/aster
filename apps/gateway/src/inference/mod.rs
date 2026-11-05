@@ -12,6 +12,7 @@ mod decision_plane;
 mod decision_transport;
 mod distributed_serving;
 mod fast_model;
+mod gemini_request;
 mod identity;
 mod limits;
 mod native_wire;
@@ -53,6 +54,10 @@ pub(crate) use distributed_serving::{
     DistributedServingOrchestrator, DistributedWorkerEndpoint, PowerDistributedClient,
     ProtocolBinding,
 };
+pub(crate) use gemini_request::{
+    models_body as gemini_models_body, normalize_credentials as normalize_gemini_credentials,
+    GeminiModelCall,
+};
 pub(crate) use identity::{InferenceAttemptIdentity, InferenceRequestIdentity};
 #[cfg(test)]
 pub(crate) use identity::{ATTEMPT_ID_HEADER, REQUEST_ID_HEADER};
@@ -72,6 +77,7 @@ pub(crate) use routing::{
     build_decision_request, decision_inputs, effective_targets, evaluate_routing,
     plan_decision_definition, turn_identity_from_document, DecisionInputs, RouteDecision,
 };
+pub(crate) use tokenizer::estimate_text_tokens;
 /// Model aliases the in-process platform engines answer to. A route may
 /// never declare these: the platform models own them.
 pub(crate) const PLATFORM_OCR_ALIAS: &str = "platform/pp-ocr-v6";
@@ -82,9 +88,9 @@ pub(crate) const RESERVED_PLATFORM_ALIASES: [&str; 2] =
     [PLATFORM_EMBEDDING_ALIAS, PLATFORM_RERANK_ALIAS];
 
 pub(crate) use openai_request::{
-    collect_json_body, collect_proxy_json_body, models_response, tool_invoke_sku,
-    valid_model_alias, OpenAiJsonRequest, OpenAiRequestError, OpenAiRequestProfile,
-    OPENAI_REQUEST_BODY_LIMIT,
+    collect_json_body, collect_json_body_with_model, collect_proxy_json_body, models_response,
+    tool_invoke_sku, valid_model_alias, OpenAiJsonRequest, OpenAiRequestError,
+    OpenAiRequestProfile, OPENAI_REQUEST_BODY_LIMIT,
 };
 pub(crate) use scheduling::{
     InferenceWorkerCandidate, InferenceWorkerPairSelection, InferenceWorkerPairSelectionRequest,

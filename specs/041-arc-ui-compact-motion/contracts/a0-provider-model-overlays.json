@@ -1,0 +1,72 @@
+{
+  "created": "2026-11-03",
+  "routes": ["/settings/provider", "/settings/model"],
+  "statusVocabulary": ["待核对", "已决策", "实现中", "待验收", "已验收", "有证据的范围外"],
+  "sharedControls": [
+    {
+      "id": "provider-settings-drawer",
+      "owner": "ProviderSettings/primitives/ProviderSettingsDrawer.tsx",
+      "control": "PageSidePanel",
+      "decision": "adapt",
+      "status": "已验收",
+      "note": "Inherits shared 12px PageSidePanel radius from 041 batch"
+    },
+    {
+      "id": "model-check-dialog",
+      "owner": "ProviderSettings/ModelList/ModelCheckDialog.tsx",
+      "control": "Dialog/DialogContent + Combobox",
+      "decision": "adapt",
+      "status": "已决策",
+      "note": "Uses shared Dialog; no oversized radius override; Combobox is SearchSelect-family"
+    },
+    {
+      "id": "provider-api-setup-dialog",
+      "owner": "ProviderSettings/ConnectionSettings/ProviderApiSetupDialog.tsx",
+      "control": "Dialog size=lg",
+      "decision": "adapt",
+      "status": "已决策",
+      "note": "Shared dialog surface; multi-step save/verify/models"
+    },
+    {
+      "id": "add-edit-model-drawer",
+      "owner": "ProviderSettings/ModelList/ModelDrawer/*",
+      "control": "Dialog + PageSidePanel",
+      "decision": "adapt",
+      "status": "待核对",
+      "note": "Need native keyboard/IME pass in A2; radius follows shared owners"
+    },
+    {
+      "id": "provider-editor-drawer",
+      "owner": "ProviderSettings/ProviderList/ProviderEditorDrawer.tsx",
+      "control": "Dialog + Popover",
+      "decision": "adapt",
+      "status": "待核对",
+      "note": "Custom provider create/edit; A2 flow"
+    },
+    {
+      "id": "model-settings-page",
+      "owner": "ModelSettings/ModelSettings.tsx",
+      "control": "PageSidePanel + SegmentedControl + DefaultModelSelector",
+      "decision": "adapt",
+      "status": "待核对",
+      "note": "Default/translate/local budgets; focus search anchors present"
+    },
+    {
+      "id": "url-schema-info-popup",
+      "owner": "ProviderSettings UrlSchemaInfoPopup",
+      "control": "Popover/Dialog panel",
+      "decision": "adapt",
+      "status": "已验收",
+      "note": "Test asserts rounded-[12px], rejects rounded-2xl"
+    }
+  ],
+  "statesToCoverInA2": [
+    "empty providers",
+    "API key missing",
+    "connection check pending/fail/success",
+    "model list empty/filter/no-match",
+    "save failure keeps draft",
+    "nested drawer+dialog Esc",
+    "IME composition in model id fields"
+  ]
+}

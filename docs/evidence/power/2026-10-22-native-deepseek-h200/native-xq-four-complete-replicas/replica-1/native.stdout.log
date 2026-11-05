@@ -1,9 +1,0 @@
-{"elapsed_seconds":6.384e-6,"phase":"verifying_complete_xq_payload"}
-{"elapsed_seconds":188.939719342,"phase":"verifying_complete_official_engram_sources"}
-{"elapsed_seconds":305.953042697,"phase":"verified_one_complete_engram_source"}
-{"elapsed_seconds":423.762804539,"phase":"verified_one_complete_engram_source"}
-{"elapsed_seconds":424.820257089,"phase":"loading_all_forty_layers"}
-{"device_admissions":[{"capability":[9,0],"freeBytesAtLoad":149771845632,"name":"NVIDIA H200","ordinal":0,"residentUpperBytes":89700993760,"stateAndDriverReserve":38654705664,"totalBytes":150393585664,"uuid":[217,205,22,185,236,229,39,137,242,111,243,232,251,87,139,242]},{"capability":[9,0],"freeBytesAtLoad":149771845632,"name":"NVIDIA H200","ordinal":1,"residentUpperBytes":73246082784,"stateAndDriverReserve":38654705664,"totalBytes":150393585664,"uuid":[165,254,248,131,129,73,141,252,205,129,239,234,243,49,163,172]}],"elapsed_seconds":751.04927498,"model_sha256":"73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389","phase":"model_loaded"}
-{"generation_elapsed_seconds":10.665536383,"phase":"generated_token","token_id":1393}
-{"generation_elapsed_seconds":12.229411025,"phase":"generated_token","token_id":12}
-{"generation":{"pendingTail":12,"processedTokens":5,"promptTokens":4,"stats":{"completedPeerBytes":409680,"completedPeerCopies":4,"executedLayersByOrdinal":[40,40,0,0,0,0,0,0],"modelSteps":2},"stopReason":"length","tokens":[1393,12]},"generation_seconds":12.22951794,"group_width":"2","model_sha256":"73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389","native_execution":true,"phase":"generated","quality_or_performance_qualification_claimed":false,"total_seconds":767.194434255}

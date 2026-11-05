@@ -535,7 +535,10 @@ fn compile_environment(
     for reserved in RESERVED_BOOTSTRAP_ENVIRONMENT {
         values.remove(*reserved);
     }
-    values.insert("ASTER_BOOTSTRAP_MODE".to_string(), "host-sandbox".to_string());
+    values.insert(
+        "ASTER_BOOTSTRAP_MODE".to_string(),
+        "host-sandbox".to_string(),
+    );
     values.insert("ASTER_EXEC_LISTENER_FD".to_string(), "3".to_string());
     values.insert("ASTER_PTY_LISTENER_FD".to_string(), "4".to_string());
     values.insert("ASTER_INIT_LOG_FD".to_string(), "5".to_string());
@@ -1688,7 +1691,10 @@ mod tests {
                 ("ASTER_EXEC_LISTENER_FD".to_string(), "99".to_string()),
                 ("ASTER_PTY_LISTENER_FD".to_string(), "98".to_string()),
                 ("ASTER_INIT_LOG_FD".to_string(), "97".to_string()),
-                ("ASTER_BOOTSTRAP_MODE".to_string(), "image-value".to_string()),
+                (
+                    "ASTER_BOOTSTRAP_MODE".to_string(),
+                    "image-value".to_string(),
+                ),
             ],
             cwd: PathBuf::from("/workspace"),
             uid: 123,

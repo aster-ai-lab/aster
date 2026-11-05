@@ -670,7 +670,10 @@ mod tests {
                 ContainerId::new("restore-journal-target").unwrap(),
                 Generation(2),
             ),
-            bundle: AgentBundle::new(&bundle, GuestPath::new("/run/aster/restore-bundle").unwrap()),
+            bundle: AgentBundle::new(
+                &bundle,
+                GuestPath::new("/run/aster/restore-bundle").unwrap(),
+            ),
             io,
         };
         let artifact = CheckpointArtifactPath::new(root.join("checkpoint.bin")).unwrap();

@@ -1,4 +1,6 @@
-use aster_office::{NativeSpreadsheetSort, NativeSpreadsheetSortDirection, NativeSpreadsheetSortKey};
+use aster_office::{
+    NativeSpreadsheetSort, NativeSpreadsheetSortDirection, NativeSpreadsheetSortKey,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(

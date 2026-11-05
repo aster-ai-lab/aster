@@ -1,9 +1,0 @@
-{
-  "initial_shared_root_loss": "Inspected stash f06812aeb1ce705ad01d2753d85b2ee7aa9e9838 retained files; user authorized recovery",
-  "first_header_audit": "4096-byte audit ceiling refused actual 16384 alignment; corrected from the pinned exporter, not guessed",
-  "initial_isolated_lock_refusal": "Private Studio manifests differed from native v2 inputs; original log path was reused, this observed failure is retained as structured evidence",
-  "manifest_lookup_error": "No apps/studio/Cargo.toml exists in the archive; actual paths are src-tauri/Cargo.toml, src-tauri/contract/Cargo.toml and native/data-sqlite/Cargo.toml",
-  "root_manifest_preserved": "Current shared root has concurrent embedding changes; did not restore frozen native Cargo files over it",
-  "first_drift_guard": "Refused missing api/cloud lineage roots before their tracked submodules were initialized",
-  "initialized_drift_guard": "Failed with 62 findings; vm-memory source is unchanged from isolated worktree HEAD; no guard baseline was edited"
-}

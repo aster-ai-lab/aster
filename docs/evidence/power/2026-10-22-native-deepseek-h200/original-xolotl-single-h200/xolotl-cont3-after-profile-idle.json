@@ -1,9 +1,0 @@
-{
-  "unix": 1792834909.7680502,
-  "profile_target_pid": 3382,
-  "profile_target_start_ticks": 501174166,
-  "profile_target_gone": true,
-  "gpu_idle": true,
-  "active_compute_apps": "",
-  "resources_still_reserved": true
-}

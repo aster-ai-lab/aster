@@ -100,10 +100,14 @@ mod tests {
 
     #[test]
     fn validates_an_exact_windows_agent_pipe_basename() {
-        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-123").expect("valid agent endpoint");
+        let endpoint =
+            AgentVsockEndpoint::new("aster-oci-agent-123").expect("valid agent endpoint");
         assert_eq!(endpoint.pipe_name(), "aster-oci-agent-123");
         assert_eq!(endpoint.port(), AGENT_VSOCK_PORT);
-        assert_eq!(endpoint.windows_pipe_path(), r"\\.\pipe\aster-oci-agent-123");
+        assert_eq!(
+            endpoint.windows_pipe_path(),
+            r"\\.\pipe\aster-oci-agent-123"
+        );
 
         for name in [
             "",

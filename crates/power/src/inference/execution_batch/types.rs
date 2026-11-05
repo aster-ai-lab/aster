@@ -86,7 +86,10 @@ impl ExecutionBatchMemberBinding {
         validate_identifier(member_identifier, limits, "execution batch member")?;
         validate_identifier(state_identifier, limits, "execution batch state")?;
         Self::new(
-            identifier_sha256(b"aster-power-execution-batch-member-v1\0", member_identifier),
+            identifier_sha256(
+                b"aster-power-execution-batch-member-v1\0",
+                member_identifier,
+            ),
             identifier_sha256(b"aster-power-execution-batch-state-v1\0", state_identifier),
         )
     }

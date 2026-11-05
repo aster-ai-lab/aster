@@ -700,7 +700,10 @@ mod tests {
             Err(Error::unsupported("mapping-test-kill"))
         }
 
-        async fn delete(&self, _request: aster_oci_agent_protocol::AgentDeleteRequest) -> Result<()> {
+        async fn delete(
+            &self,
+            _request: aster_oci_agent_protocol::AgentDeleteRequest,
+        ) -> Result<()> {
             Err(Error::unsupported("mapping-test-delete"))
         }
 

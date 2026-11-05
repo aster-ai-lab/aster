@@ -1,7 +1,0 @@
-studio-kylin: Studio generation hash or membership mismatch
-Traceback (most recent call last):
-  File "/aster/target/evaluations/studio-work-alignment/ime-native/verify-final-r4-runtime.py", line 23, in <module>
-    subprocess.run(['python3', str(app / 'libexec/studio-kylin-delivery.py'), 'verify', str(app)], check=True, timeout=60)
-  File "/usr/lib/python3.12/subprocess.py", line 571, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['python3', '/aster/target/evaluations/studio-work-alignment/ime-native/final-r4-flatpak-aster/files/libexec/studio-kylin-delivery.py', 'verify', '/aster/target/evaluations/studio-work-alignment/ime-native/final-r4-flatpak-aster/files']' returned non-zero exit status 1.

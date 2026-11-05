@@ -1,7 +1,0 @@
-{
-  "path": "apps/web/public/tenant/toyou/INFO.md",
-  "source_commit": "64cfd79cac690e78c288c374ddba0c7650e5bfcc",
-  "before_sha256": "a5f1f5ec312e7bb3d1e4b794c1e9fa2d37235577f7eaf4d1d52c5c227e4afd67",
-  "after_sha256": "83ddaabfa758399c9a06f892fc8c464e530415e984738a85f588b65bdce87fbe",
-  "scope": "Concurrent prose rename corrupted protected runtime brand identity; restore exact structured definition from known prior commit, retain cleaned prose. Initial current-HEAD attempt reproduced corrupt metadata because another thread committed it; corrected using immutable known baseline."
-}

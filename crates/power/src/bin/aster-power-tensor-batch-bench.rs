@@ -487,7 +487,10 @@ fn current_executable_sha256() -> Result<String> {
 }
 
 fn fixture_source_sha256() -> String {
-    format!("{:x}", Sha256::digest(b"aster-power-generic-add-fixture-v1"))
+    format!(
+        "{:x}",
+        Sha256::digest(b"aster-power-generic-add-fixture-v1")
+    )
 }
 
 fn fixture_plan(width: usize, source_sha256: &str) -> String {

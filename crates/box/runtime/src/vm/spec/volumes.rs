@@ -14,7 +14,9 @@ pub(crate) struct PlannedAnonymousVolume {
 
 impl VmManager {
     #[cfg(not(any(target_os = "linux", target_os = "windows")))]
-    pub(crate) fn validate_virtiofs_mount_support(config: &aster_box_core::BoxConfig) -> Result<()> {
+    pub(crate) fn validate_virtiofs_mount_support(
+        config: &aster_box_core::BoxConfig,
+    ) -> Result<()> {
         for volume in &config.volumes {
             let volume = Self::parse_volume_spec(volume)?;
             if volume.read_only {

@@ -3,13 +3,6 @@
 version = 4
 
 [[package]]
-name = "aster-libkrun-sys"
-version = "3.2.7"
-dependencies = [
- "windows-sys 0.59.0",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -123,6 +116,13 @@ dependencies = [
 [[package]]
 name = "arch_gen"
 version = "3.2.7"
+
+[[package]]
+name = "aster-libkrun-sys"
+version = "3.2.7"
+dependencies = [
+ "windows-sys 0.59.0",
+]
 
 [[package]]
 name = "async-trait"

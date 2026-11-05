@@ -514,9 +514,8 @@ mod tests {
     fn init_command_is_fixed_and_carries_no_caller_text() {
         let command = super::guest_init_command();
         assert!(command.contains("mount -t virtiofs aster-oci-runtime /run/aster-oci-runtime"));
-        assert!(
-            command.contains("exec /usr/bin/aster-oci-agent --guest-command ./.aster-guest-command")
-        );
+        assert!(command
+            .contains("exec /usr/bin/aster-oci-agent --guest-command ./.aster-guest-command"));
         assert!(!command.contains("setsid"));
         assert_eq!(
             GuestCommandSettlement::parse(GuestCommandSettlement::TimedOut.as_str()),

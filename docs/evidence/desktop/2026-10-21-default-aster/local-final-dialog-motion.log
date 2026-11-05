@@ -1,9 +1,0 @@
-
- RUN  v5.0.1 /Users/roylin/code/aster
-
-
- Test Files  2 passed (2)
-      Tests  20 passed (20)
-   Start at  08:25:08
-   Duration  859ms (import 38%, environment 28%, tests 23%, transform 10%, worker 1%)
-

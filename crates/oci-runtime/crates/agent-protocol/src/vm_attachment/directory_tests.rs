@@ -90,15 +90,16 @@ fn directory_transport_binds_public_access_source_and_guest_mapping() {
 #[test]
 fn restricted_directories_cannot_downgrade_or_drop_the_host_enforcement_binding() {
     let (bundle, mut manifest) = fixture();
-    let restrictions =
-        aster_oci_sdk::StoragePathRestrictions::new(vec![aster_oci_sdk::StoragePathRestriction::new(
+    let restrictions = aster_oci_sdk::StoragePathRestrictions::new(vec![
+        aster_oci_sdk::StoragePathRestriction::new(
             StorageAttachmentId::new("directory-1").unwrap(),
             vec![".env".into()],
             vec![".aster".into()],
             vec![".aster/loops".into()],
         )
-        .unwrap()])
-        .unwrap();
+        .unwrap(),
+    ])
+    .unwrap();
     let mut config: Value = serde_json::from_str(bundle.config_json()).unwrap();
     config["annotations"] = json!({aster_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION: restrictions.to_annotation_value().unwrap()});
     let restricted_bundle = OciBundle::from_json(bundle.directory(), config.to_string()).unwrap();

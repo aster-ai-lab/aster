@@ -1,9 +1,0 @@
-{
-  "schema": "aster-native-linux-cuda-build-v2",
-  "GPU_execution_claimed": false,
-  "tests_ran": false,
-  "phase": "failed",
-  "error_type": "RuntimeError",
-  "error": "new root build identity differs",
-  "finished_unix": 1792756305.638509
-}

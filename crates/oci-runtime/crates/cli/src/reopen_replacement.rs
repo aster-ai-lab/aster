@@ -96,9 +96,9 @@ impl From<FaultStageArg> for aster_oci_runtime::AgentTransportFaultStage {
             FaultStageArg::GuestAfterRequestRead => Self::Operation(
                 aster_oci_runtime::AgentTransportOperationStage::GuestAfterRequestRead,
             ),
-            FaultStageArg::GuestBeforeDispatch => {
-                Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch)
-            }
+            FaultStageArg::GuestBeforeDispatch => Self::Operation(
+                aster_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch,
+            ),
             FaultStageArg::GuestAfterDispatch => {
                 Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestAfterDispatch)
             }
@@ -151,8 +151,9 @@ pub(crate) async fn run(arguments: Args) -> Result<ExitCode, super::CliError> {
             succeeded
         }
         operation => {
-            let stage = aster_oci_runtime::AgentTransportOperationStage::try_from(arguments.fault_at)
-                .map_err(super::CliError::Message)?;
+            let stage =
+                aster_oci_runtime::AgentTransportOperationStage::try_from(arguments.fault_at)
+                    .map_err(super::CliError::Message)?;
             match operation {
                 OperationArg::Create => unreachable!("Create handled above"),
                 OperationArg::CloseStdin => {

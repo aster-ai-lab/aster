@@ -61,7 +61,9 @@ impl AuditLog {
 
     /// Open the audit log at the default path (~/.aster/audit/audit.jsonl).
     pub fn default_path() -> Result<Self> {
-        let path = aster_box_core::dirs_home().join("audit").join("audit.jsonl");
+        let path = aster_box_core::dirs_home()
+            .join("audit")
+            .join("audit.jsonl");
 
         Self::new(path, AuditConfig::default())
     }

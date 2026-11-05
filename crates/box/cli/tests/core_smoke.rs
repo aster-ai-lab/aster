@@ -115,7 +115,10 @@ impl BackgroundCommand {
                 Ok(None) => {
                     let _ = child.kill();
                     let output = child.wait_with_output().unwrap_or_else(|error| {
-                        panic!("failed to reap timed-out `aster-box {}`: {error}", self.args)
+                        panic!(
+                            "failed to reap timed-out `aster-box {}`: {error}",
+                            self.args
+                        )
                     });
                     panic!(
                         "`aster-box {}` did not exit after signal {signal}\nstdout:\n{}\nstderr:\n{}",
@@ -127,7 +130,10 @@ impl BackgroundCommand {
                 Err(error) => {
                     let _ = child.kill();
                     let _ = child.wait();
-                    panic!("failed to poll signalled `aster-box {}`: {error}", self.args);
+                    panic!(
+                        "failed to poll signalled `aster-box {}`: {error}",
+                        self.args
+                    );
                 }
             }
         }
@@ -331,7 +337,12 @@ impl CoreSmoke {
             .stdout(Stdio::from(slave_stdout))
             .stderr(Stdio::from(slave_stderr))
             .spawn()
-            .map_err(|e| format!("failed to run `aster-box {}` under PTY: {e}", args.join(" ")))?;
+            .map_err(|e| {
+                format!(
+                    "failed to run `aster-box {}` under PTY: {e}",
+                    args.join(" ")
+                )
+            })?;
 
         if !input.is_empty() {
             master
@@ -801,7 +812,10 @@ fn find_binary() -> PathBuf {
         .expect("cli crate should be inside workspace");
 
     for profile in ["debug", "release"] {
-        let bin = workspace_root.join("target").join(profile).join("aster-box");
+        let bin = workspace_root
+            .join("target")
+            .join(profile)
+            .join("aster-box");
         if bin.exists() {
             return bin;
         }
@@ -1482,8 +1496,13 @@ fn real_core_postgres_scram_survives_sequential_published_connections() {
         let row = loop {
             attempt += 1;
             let nonce = format!("asterboxhvf{}{}{}", std::process::id(), connection, attempt);
-            match postgres_wire::query_text(address, "aster_cloud", "aster_cloud", "aster_cloud", &nonce)
-            {
+            match postgres_wire::query_text(
+                address,
+                "aster_cloud",
+                "aster_cloud",
+                "aster_cloud",
+                &nonce,
+            ) {
                 Ok(row) => break row,
                 Err(error) if Instant::now() < deadline => {
                     eprintln!(

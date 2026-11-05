@@ -20,7 +20,7 @@ import httpx
 from fake_backend import FakeOpenAIBackend
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 TEST_API_KEY = "aster_inf_abc12345" + ("a" * 64)
 TEST_ADMIN_TOKEN = "aster-gateway-openai-sdk-conformance"
 
@@ -36,7 +36,7 @@ DECIDER_MODEL_ID = "88888888-8888-4888-8888-888888888881"
 DECIDER_TARGET_ID = "88888888-8888-4888-8888-888888888882"
 VERIFIER_HASH = (
     "$argon2id$v=19$m=19456,t=2,p=1$YTNzLXNkay1jb25mb3JtYW5jZQ"
-    "$A3fZyCzw3dvKpZt3PJbaA33sEbzatWO8+9JD/OaGuEM"
+    "$J7IpT+5zW6j7LA5s+VczNhOb5Y3SDigmTp37hHy9CHk"
 )
 
 
@@ -247,6 +247,7 @@ class GatewayHarness:
                 )
 
         await self.backend.close()
+        await self.decider.stop()
         if self._temporary_directory is not None:
             self._temporary_directory.cleanup()
             self._temporary_directory = None

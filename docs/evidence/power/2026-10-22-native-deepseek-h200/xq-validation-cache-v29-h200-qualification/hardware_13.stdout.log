@@ -1,7 +1,0 @@
-
-running 1 test
-test layers::xq::attention::tests::gpu::h200_xq_f32_projections_codecs_rope_and_sparse_attention_match_stage_oracles ... qualified stage-local XQ Q8 projections, F32 norms/RoPE, exact three activation codecs, F16-KV sparse MQA and grouped output; full model/state qualification remains open
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 466 filtered out; finished in 10.57s
-

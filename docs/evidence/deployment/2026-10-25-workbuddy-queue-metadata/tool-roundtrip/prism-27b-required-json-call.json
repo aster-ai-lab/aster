@@ -1,1 +1,0 @@
-{"error":{"code":"server_error","message":"Inference failed: OpenAI upstream returned 500 Internal Server Error","type":"invalid_request_error"}}

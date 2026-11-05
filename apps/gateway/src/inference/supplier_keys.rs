@@ -287,6 +287,7 @@ mod tests {
                                     protocol: InferenceProtocol::Openai,
                                     api_key_env: Some("ASTER_BOYUE_API_KEY".into()),
                                     translate: false,
+                                    forward_client_identity: false,
                                 },
                                 InferenceTargetConfig {
                                     target_id: other,
@@ -297,6 +298,7 @@ mod tests {
                                     protocol: InferenceProtocol::Anthropic,
                                     api_key_env: Some("ASTER_OTHER_API_KEY".into()),
                                     translate: false,
+                                    forward_client_identity: false,
                                 },
                             ],
                         },

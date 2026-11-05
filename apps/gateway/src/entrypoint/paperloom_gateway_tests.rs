@@ -135,6 +135,7 @@ fn workload_ocr_config(
             generation: 1,
             expires_at: Utc::now() + ChronoDuration::minutes(10),
             revoked: false,
+            max_concurrent_requests: None,
         },
     );
     route.grants.insert(

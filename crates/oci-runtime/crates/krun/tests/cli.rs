@@ -327,7 +327,10 @@ fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
         "aster-oci-missing-agent-console-{}-{nonce}.log",
         std::process::id(),
     ));
-    let pipe_name = format!("aster-oci-agent-missing-image-{}-{nonce}", std::process::id());
+    let pipe_name = format!(
+        "aster-oci-agent-missing-image-{}-{nonce}",
+        std::process::id()
+    );
     let socket_directory = std::path::Path::new("/private/tmp").join(&pipe_name);
     std::fs::create_dir(&socket_directory).expect("private socket directory");
     std::fs::set_permissions(&socket_directory, std::fs::Permissions::from_mode(0o700))

@@ -1,9 +1,0 @@
-{
-  "unix": 1792630454.3167326,
-  "returncode": 0,
-  "numeric_curl_result": "206 2 65536 2907 22.537734",
-  "received_bytes": 65536,
-  "elapsed_s": 22.59635976329446,
-  "sha256": "e0c9c17c169746bdc53c4143e6cd7675a33bc9885dbd56339df784b69efe17c7",
-  "matches_existing_prefix": true
-}

@@ -25,7 +25,8 @@ const UPSTREAM_RUNTIME_TOOLS_LOCK: &str =
 const ATTEST_ACTION: &str = "actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1";
 const RELEASE_ACTION: &str =
     "softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2";
-const SIGNER_WORKFLOW: &str = "--signer-workflow aster-ai-lab/OCI-Runtime/.github/workflows/release.yml";
+const SIGNER_WORKFLOW: &str =
+    "--signer-workflow aster-ai-lab/OCI-Runtime/.github/workflows/release.yml";
 const PINNED_RELEASE_ACTIONS: [(&str, usize); 8] = [
     (
         "actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
@@ -228,9 +229,8 @@ fn linux_release_archives_retain_exact_package_qualification() {
     assert!(release_workflow.contains(
         "ASTER_OCI_UPSTREAM_RUNTIME_TOOL_MANIFEST=/usr/local/lib/aster-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3/build.json"
     ));
-    assert!(
-        release_workflow.contains("ASTER_OCI_CRIU_BINARY=/usr/local/lib/aster-oci-tools/criu-4.2.1")
-    );
+    assert!(release_workflow
+        .contains("ASTER_OCI_CRIU_BINARY=/usr/local/lib/aster-oci-tools/criu-4.2.1"));
     assert!(release_workflow.contains("ASTER_OCI_GIT_REVISION=\"$GITHUB_SHA\""));
 }
 

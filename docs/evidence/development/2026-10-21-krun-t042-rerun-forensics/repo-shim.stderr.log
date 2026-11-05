@@ -1,7 +1,0 @@
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: entered main argc=1
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: mount_filesystems ok
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: after cmdline env import KRUN_INIT=/sbin/init KRUN_INIT_PID1=<null> BOX_EXEC_EXEC=<null>
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: root propagation ok
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: tty/session configured
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: config parsed
-[2026-10-21T13:26:46Z ERROR init_or_kernel] init.krun: selected exec=/sbin/init init_pid1=0

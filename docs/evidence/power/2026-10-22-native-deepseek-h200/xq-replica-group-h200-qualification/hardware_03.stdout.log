@@ -1,8 +1,0 @@
-
-running 1 test
-test parallel::tests::gpu::h200x2_xq_replica_local_peer_cache_preserves_bits_and_step_isolation ... replica_gpu local_ordinal=0 uuid=[231, 212, 44, 155, 112, 111, 194, 193, 23, 38, 125, 100, 41, 158, 201, 21]
-replica_gpu local_ordinal=1 uuid=[61, 125, 222, 56, 206, 195, 48, 116, 189, 186, 107, 121, 14, 179, 51, 152]
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 439 filtered out; finished in 2.25s
-

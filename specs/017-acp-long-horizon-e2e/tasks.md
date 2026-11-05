@@ -3,6 +3,8 @@
 **Input**: [spec.md](spec.md)、[plan.md](plan.md)、[cases.md](cases.md)、[journeys.md](journeys.md)
 **Prerequisites**: Constitution Check 通过；read-only analyze 无未解决 blocker。实施已获用户授权。未完成任务不打勾，不提交/推送。
 
+2026-11-01 近期优化切片 R001–R008 见 [Core / ACP / 宿主分层补充计划](tui-reliability-plan.md#6-有序实施任务)，各层主责与交付见其中 §5.4。这些切片映射下列既有任务，不新增测试分母，不代表本次已实施。
+
 ## Phase 1 — 基础行为与测试系统自证
 
 - [ ] T001 [US6] 在 `docs/evidence/code/<date>-acp-long-horizon/` 记录当前源码/子模块/dirty、工具版本、二进制与 capability preflight；发现可信 ACL、精确模型标识和可用执行后端，不导出密钥/用户状态。测试身份错配、配置不全和零模型调用拒绝：A01–A10、M02/M09。候选身份漂移须重新冻结。

@@ -91,6 +91,8 @@ fn main() {
     println!("cargo:rerun-if-env-changed=ASTER_BUILD_LIBKRUN");
     println!("cargo:rerun-if-env-changed=ASTER_USE_SYSTEM_LIBKRUN");
     println!("cargo:rerun-if-env-changed=ASTER_LIBKRUNFW_DYLIB");
+    #[cfg(target_os = "macos")]
+    println!("cargo:rerun-if-env-changed=MACOSX_DEPLOYMENT_TARGET");
 
     // Check for stub mode (for CI linting without building)
     // Set ASTER_DEPS_STUB=1 to skip building and emit stub link directives
@@ -927,6 +929,14 @@ fn build() {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
+    // Cargo supplies the compiler and target for every build-script invocation.
+    let rustc = env::var_os("RUSTC").expect("Cargo supplies RUSTC");
+    let target = env::var_os("TARGET").expect("Cargo supplies TARGET");
+    let deployment = build_support::macos_deployment_target(&mut Command::new(rustc), &target)
+        .unwrap_or_else(|error| {
+            panic!("Failed to resolve Rust's macOS deployment target: {error}")
+        });
+
     let libkrunfw_install = out_dir.join("libkrunfw");
     let libkrun_install = out_dir.join("libkrun");
     let libkrunfw_lib = libkrunfw_install.join(LIB_DIR);
@@ -934,19 +944,37 @@ fn build() {
     let firmware_marker = out_dir.join("libkrunfw-src/.source-sha256");
     let firmware_current =
         fs::read_to_string(&firmware_marker).is_ok_and(|value| value == LIBKRUNFW_SHA256);
+    let deployment_marker = out_dir.join("macos-deployment-target");
+    let deployment_current =
+        fs::read_to_string(&deployment_marker).is_ok_and(|value| value == deployment);
 
     // Skip build if outputs already exist (incremental build optimization)
     if env::var("ASTER_BUILD_LIBKRUN").is_err()
         && firmware_current
+        && deployment_current
         && has_library(&libkrunfw_lib, "libkrunfw")
         && has_library(&libkrun_lib, "libkrun")
     {
         configure_linking(&libkrun_lib, &libkrunfw_lib);
         return;
     }
-    if !firmware_current {
-        let _ = fs::remove_dir_all(&libkrunfw_install);
-        let _ = fs::remove_dir_all(&libkrun_install);
+    fs::write(&deployment_marker, "")
+        .unwrap_or_else(|error| panic!("Failed to invalidate native deployment receipt: {error}"));
+    if !firmware_current || !deployment_current {
+        for directory in [
+            libkrunfw_install.clone(),
+            libkrun_install.clone(),
+            out_dir.join("libkrunfw-src"),
+        ] {
+            if let Err(error) = fs::remove_dir_all(&directory) {
+                if error.kind() != io::ErrorKind::NotFound {
+                    panic!(
+                        "Failed to invalidate native cache {}: {error}",
+                        directory.display()
+                    );
+                }
+            }
+        }
     }
 
     println!("cargo:warning=Building libkrun-sys for macOS (using prebuilt libkrunfw)");
@@ -983,17 +1011,14 @@ fn build() {
             &libkrunfw_src,
             &libkrunfw_install,
             "libkrunfw",
-            HashMap::new(),
+            HashMap::from([("MACOSX_DEPLOYMENT_TARGET".into(), deployment.clone())]),
         );
     }
 
     // 3. Build libkrun from vendored source
-    build_with_make(
-        &libkrun_src,
-        &libkrun_install,
-        "libkrun",
-        libkrun_build_env(&libkrunfw_install),
-    );
+    let mut native_env = libkrun_build_env(&libkrunfw_install);
+    native_env.insert("MACOSX_DEPLOYMENT_TARGET".into(), deployment.clone());
+    build_with_make(&libkrun_src, &libkrun_install, "libkrun", native_env);
 
     // 4. Fix install names for @rpath and re-sign
     fix_macos_libs(&libkrunfw_lib, "libkrunfw")
@@ -1001,6 +1026,8 @@ fn build() {
 
     fix_macos_libs(&libkrun_lib, "libkrun")
         .unwrap_or_else(|e| panic!("Failed to fix libkrun: {}", e));
+    fs::write(&deployment_marker, deployment)
+        .unwrap_or_else(|error| panic!("Failed to record native deployment target: {error}"));
 
     // 5. Configure linking
     configure_linking(&libkrun_lib, &libkrunfw_lib);

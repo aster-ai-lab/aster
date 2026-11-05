@@ -40,7 +40,10 @@ fn find_binary() -> PathBuf {
         .expect("cli crate should be inside workspace");
 
     for profile in ["debug", "release"] {
-        let bin = workspace_root.join("target").join(profile).join("aster-box");
+        let bin = workspace_root
+            .join("target")
+            .join(profile)
+            .join("aster-box");
         if bin.exists() {
             return bin;
         }
@@ -93,10 +96,16 @@ impl BackgroundProcessGuard<'_> {
             }
 
             if report_stdout && !stdout.trim().is_empty() {
-                eprintln!("background `aster-box {}` stdout:\n{}", self.command, stdout);
+                eprintln!(
+                    "background `aster-box {}` stdout:\n{}",
+                    self.command, stdout
+                );
             }
             if !stderr.trim().is_empty() {
-                eprintln!("background `aster-box {}` stderr:\n{}", self.command, stderr);
+                eprintln!(
+                    "background `aster-box {}` stderr:\n{}",
+                    self.command, stderr
+                );
             }
         }
     }
@@ -179,7 +188,10 @@ impl CliTest {
         }
 
         let output = child.wait_with_output().unwrap_or_else(|e| {
-            panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
+            panic!(
+                "failed to collect `aster-box {}` output: {e}",
+                args.join(" ")
+            )
         });
         (
             String::from_utf8_lossy(&output.stdout).to_string(),
@@ -289,7 +301,10 @@ impl CliTest {
         }
 
         let output = child.wait_with_output().unwrap_or_else(|e| {
-            panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
+            panic!(
+                "failed to collect `aster-box {}` output: {e}",
+                args.join(" ")
+            )
         });
         (
             String::from_utf8_lossy(&output.stdout).to_string(),
@@ -386,7 +401,10 @@ impl CliTest {
                 .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
             {
                 let output = child.wait_with_output().unwrap_or_else(|e| {
-                    panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
+                    panic!(
+                        "failed to collect `aster-box {}` output: {e}",
+                        args.join(" ")
+                    )
                 });
                 panic!(
                     "`aster-box {}` exited before {:?} with status {}\nstdout:\n{}\nstderr:\n{}",

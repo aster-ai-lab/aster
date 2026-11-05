@@ -1,9 +1,0 @@
-
-running 4 tests
-test capabilities::bundled_skill_tests::packaged_skills_never_fall_back_to_a_live_checkout_but_debug_can ... ok
-test capabilities::bundled_skill_tests::packaged_skills_refuse_symlinked_roots_and_documents ... ok
-test capabilities::bundled_skill_tests::packaged_skills_resolve_without_checkout_on_each_declared_layout ... ok
-test capabilities::bundled_skill_tests::packaged_skills_fail_closed_on_incomplete_generations_and_invalid_names ... ok
-
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 903 filtered out; finished in 0.05s
-

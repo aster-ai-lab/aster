@@ -868,7 +868,8 @@ mod tests {
 
     #[test]
     fn windows_handoff_contract_is_exact_and_path_bound() {
-        let runtime_path = Path::new("/run/aster-oci-runtime/.aster-oci-bootstrap-test/session-token");
+        let runtime_path =
+            Path::new("/run/aster-oci-runtime/.aster-oci-bootstrap-test/session-token");
         assert_eq!(
             parse_guest_handoff_security(
                 Some(std::ffi::OsStr::new(

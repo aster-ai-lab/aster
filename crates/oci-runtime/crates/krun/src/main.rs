@@ -1219,7 +1219,8 @@ fn take_session_token() -> Result<aster_oci_agent_protocol::SessionToken, String
 
 fn take_transport_qualification(
 ) -> Result<Option<aster_oci_agent_protocol::AgentTransportQualificationRequest>, String> {
-    let Some(encoded) = std::env::var_os(aster_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV)
+    let Some(encoded) =
+        std::env::var_os(aster_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV)
     else {
         return Ok(None);
     };

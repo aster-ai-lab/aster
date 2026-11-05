@@ -268,7 +268,8 @@ pub async fn graceful_stop_via_guest(
         u64::try_from(delivery_started.elapsed().as_millis()).unwrap_or(u64::MAX);
     let remaining_timeout_ms = timeout_ms.saturating_sub(delivery_elapsed_ms);
     let wait_ms = if delivered {
-        remaining_timeout_ms.saturating_add(aster_box_runtime::WINDOWS_GUEST_FINALIZATION_TIMEOUT_MS)
+        remaining_timeout_ms
+            .saturating_add(aster_box_runtime::WINDOWS_GUEST_FINALIZATION_TIMEOUT_MS)
     } else {
         remaining_timeout_ms
     };

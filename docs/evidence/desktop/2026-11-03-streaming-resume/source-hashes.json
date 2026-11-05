@@ -1,9 +1,0 @@
-{
-  "packages/ui/src/components/composites/markdown/internal.tsx": "51ef386e6dbb468a51e76b4f0c2e0fb454021f216d5145e2dab7b3e09bc0d094",
-  "packages/ui/src/components/composites/markdown/streaming-markdown.tsx": "a51d6e3c389e6efa3bbd66d5ad2691f99bbd7462e52fb5f2fabb33002fb241f6",
-  "packages/ui/src/components/composites/markdown/__tests__/streaming-markdown.test.tsx": "9bee6ac8316e344d96aacff5f17869d8750a76e3fe3af9087f9a066494aa6dfe",
-  "apps/studio/src/renderer/components/markdown/AppMarkdown.tsx": "fcefbeb4ffdcc70a5948bee7577d272c661f5a2d10d4f98ab5a6e8d36f17358c",
-  "apps/studio/src/renderer/components/markdown/__tests__/AppMarkdown.test.tsx": "c11c0d5233c579f6dfd9c9b38b6cc3890c05423a08df4943c57ffbc0a15817b2",
-  "apps/studio/patches/streamdown@2.5.0.patch": "d78119435bc0c82ed27870993754aca744d369e581c7fc6466337b3c9867c0ff",
-  "apps/studio/pnpm-lock.yaml": "a759760b7ee89f12fa25466915b0f63accf69754d1ba08b56bb2945fe0598288"
-}

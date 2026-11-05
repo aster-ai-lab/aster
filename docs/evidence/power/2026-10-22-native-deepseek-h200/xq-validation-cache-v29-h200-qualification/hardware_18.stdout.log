@@ -1,6 +1,0 @@
-
-running 1 test
-test weights::xq::load::tests::gpu::h200_xq_loaded_source_consumer_f32_attention_ffn_and_atomic_prefix_match_chunked_execution ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 466 filtered out; finished in 14.36s
-

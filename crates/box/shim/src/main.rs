@@ -362,7 +362,9 @@ fn run_sandbox_log_worker(config: &str) -> Result<()> {
 }
 
 #[cfg(target_os = "linux")]
-fn validate_sandbox_log_worker_spec(spec: &aster_box_core::log::SandboxLogWorkerSpec) -> Result<()> {
+fn validate_sandbox_log_worker_spec(
+    spec: &aster_box_core::log::SandboxLogWorkerSpec,
+) -> Result<()> {
     if spec.schema != aster_box_core::log::SANDBOX_LOG_WORKER_SCHEMA
         || spec.box_id.is_empty()
         || spec.watched_pid == 0

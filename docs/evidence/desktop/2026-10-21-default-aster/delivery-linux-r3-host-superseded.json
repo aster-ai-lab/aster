@@ -1,6 +1,0 @@
-{
-  "reason": "R3 native WebKit stale normal-composer paint over approval; Core opacity paint gate and R4 renderer pending. Do not spend a new ToYou R3 host build.",
-  "running_aster": "Allow actual compile to finish and preserve it as superseded cache/artifact proof.",
-  "toyou": "Own driver reads accepted_for_build before each tenant; false gate prevents starting ToYou R3.",
-  "native_source": "6bcea132bb14e93dcd3d589a1db9b2905ed569b37a1580a9a7f52bdb27da11d0 unchanged; final host embed waits explicit R4 GO."
-}

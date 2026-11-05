@@ -1,7 +1,0 @@
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=5120 FF=2304 groups=9
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=1024 FF=512 groups=9
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=5120 FF=2304 groups=7
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=5120 FF=2304 groups=7
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=5120 FF=2304 groups=7
-original_PTQ=true auxiliary_bytes=0 preparation_ms=0 H=5120 FF=2304 groups=7
-ASTER_MMA_GROUPS {"groups":[32,288,32,256,32,256,0,0,288],"entries":4928}

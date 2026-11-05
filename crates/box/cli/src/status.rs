@@ -42,8 +42,8 @@ pub fn require_active(record: &BoxRecord, action: &str) -> Result<(), String> {
         return Ok(());
     }
 
-    let hint =
-        status_hint(record).unwrap_or_else(|| "Use `aster-box ps -a` to inspect state.".to_string());
+    let hint = status_hint(record)
+        .unwrap_or_else(|| "Use `aster-box ps -a` to inspect state.".to_string());
     Err(format!(
         "Cannot {action} box {} because it is {}. {hint}",
         record.name, record.status

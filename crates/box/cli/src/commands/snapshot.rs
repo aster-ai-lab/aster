@@ -213,7 +213,8 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
 
     let store = SnapshotStore::default_path()?;
     #[cfg(target_os = "macos")]
-    let saved = if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
+    let saved = if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)?
+    {
         // The raw generation is already the exact guest filesystem state. Clone
         // it as a versioned immutable artifact; never attach it to macOS merely
         // to walk the same bytes through a host directory.
@@ -221,7 +222,8 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     } else {
         // Compatibility APFS generations still require a bounded attachment
         // while their historical directory snapshot is copied.
-        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs =
+            aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         let rootfs_path = super::resolve_box_rootfs(&record.box_dir).ok_or_else(|| {
             format!(
                 "Rootfs not found for box '{}' under {} (looked for merged/ and rootfs/); \
@@ -234,7 +236,8 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     };
     #[cfg(target_os = "linux")]
     let saved = {
-        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs =
+            aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         if stopped_sandbox_uses_managed_metadata(record) {
             let (rootfs_path, rootfs_metadata) =
                 aster_box_runtime::capture_sandbox_host_rootfs_for_commit(record).map_err(
@@ -261,7 +264,8 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     };
     #[cfg(all(not(target_os = "macos"), not(target_os = "linux")))]
     let saved = {
-        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs =
+            aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         let rootfs_path = super::resolve_box_rootfs(&record.box_dir).ok_or_else(|| {
             format!(
                 "Rootfs not found for box '{}' under {} (looked for merged/ and rootfs/); \

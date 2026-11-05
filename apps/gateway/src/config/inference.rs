@@ -88,6 +88,10 @@ pub struct InferenceCredentialConfig {
     pub expires_at: DateTime<Utc>,
     /// Explicit revocation state.
     pub revoked: bool,
+    /// Total simultaneous requests across this credential's routes and endpoints.
+    /// Omitted limits preserve the existing per-grant admission policy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_concurrent_requests: Option<std::num::NonZeroU32>,
 }
 
 impl InferenceCredentialConfig {
@@ -108,6 +112,7 @@ impl fmt::Debug for InferenceCredentialConfig {
             .field("generation", &self.generation)
             .field("expires_at", &self.expires_at)
             .field("revoked", &self.revoked)
+            .field("max_concurrent_requests", &self.max_concurrent_requests)
             .finish()
     }
 }
@@ -236,6 +241,8 @@ pub enum InferenceProtocol {
     Openai,
     /// Anthropic Messages `/v1/messages`.
     Anthropic,
+    /// Google Gemini model-addressed generation and token counting.
+    Gemini,
     /// Image OCR. The wire name stays `ocr`.
     #[serde(rename = "ocr")]
     Ocr,
@@ -249,11 +256,10 @@ impl InferenceProtocol {
         matches!(self, Self::Openai)
     }
 
-    /// Header value for an upstream secret. Anthropic sends the raw key.
-    /// Every other protocol sends a bearer token.
+    /// Anthropic and Gemini use raw API keys; the other protocols use bearer tokens.
     pub(crate) fn authorization_value(self, secret: &str) -> String {
         match self {
-            Self::Anthropic => secret.trim().to_string(),
+            Self::Anthropic | Self::Gemini => secret.trim().to_string(),
             Self::Openai | Self::Ocr | Self::SystemOne => format!("Bearer {}", secret.trim()),
         }
     }
@@ -266,10 +272,11 @@ impl FromStr for InferenceProtocol {
         match value {
             "openai" => Ok(Self::Openai),
             "anthropic" => Ok(Self::Anthropic),
+            "gemini" => Ok(Self::Gemini),
             "ocr" => Ok(Self::Ocr),
             "systemone" => Ok(Self::SystemOne),
             other => Err(format!(
-                "unknown inference protocol '{other}'; expected openai, anthropic, ocr, or systemone"
+                "unknown inference protocol '{other}'; expected openai, anthropic, gemini, ocr, or systemone"
             )),
         }
     }
@@ -786,6 +793,9 @@ pub struct InferenceTargetConfig {
     /// cross-protocol target refuse until the SSE lane ships.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub translate: bool,
+    /// Forward the authenticated local client ID to a trusted embedded model host.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub forward_client_identity: bool,
 }
 
 /// One credential's exact grant on an inference route.
@@ -823,8 +833,16 @@ pub enum InferenceEndpoint {
     Completions,
     Embeddings,
     Tools,
-    /// Anthropic Messages, including `count_tokens`.
+    /// Anthropic message generation.
     Messages,
+    /// Anthropic input-token preflight, independently authorized and unbilled.
+    MessagesCountTokens,
+    /// Google Gemini generation, with the model and streaming method in the URL.
+    GeminiGenerate,
+    /// Google Gemini input-token preflight, independently authorized and unbilled.
+    GeminiCountTokens,
+    /// Google Gemini model discovery.
+    GeminiModels,
     #[serde(rename = "ocr")]
     Ocr,
     #[serde(rename = "systemone")]
@@ -837,6 +855,10 @@ pub enum InferenceEndpoint {
 }
 
 impl InferenceEndpoint {
+    pub const fn is_token_count(self) -> bool {
+        matches!(self, Self::MessagesCountTokens | Self::GeminiCountTokens)
+    }
+
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Models => "models",
@@ -845,6 +867,10 @@ impl InferenceEndpoint {
             Self::Embeddings => "embeddings",
             Self::Tools => "tools",
             Self::Messages => "messages",
+            Self::MessagesCountTokens => "messages-count-tokens",
+            Self::GeminiGenerate => "gemini-generate",
+            Self::GeminiCountTokens => "gemini-count-tokens",
+            Self::GeminiModels => "gemini-models",
             Self::Ocr => "ocr",
             Self::SystemOne => "systemone",
             Self::Rerank => "rerank",
@@ -855,7 +881,10 @@ impl InferenceEndpoint {
     /// Upstream protocol a target must speak to serve this endpoint.
     pub const fn protocol(self) -> InferenceProtocol {
         match self {
-            Self::Messages => InferenceProtocol::Anthropic,
+            Self::Messages | Self::MessagesCountTokens => InferenceProtocol::Anthropic,
+            Self::GeminiGenerate | Self::GeminiCountTokens | Self::GeminiModels => {
+                InferenceProtocol::Gemini
+            }
             Self::Ocr => InferenceProtocol::Ocr,
             Self::SystemOne => InferenceProtocol::SystemOne,
             _ => InferenceProtocol::Openai,
@@ -880,12 +909,16 @@ impl FromStr for InferenceEndpoint {
             "embeddings" => Ok(Self::Embeddings),
             "tools" => Ok(Self::Tools),
             "messages" => Ok(Self::Messages),
+            "messages-count-tokens" => Ok(Self::MessagesCountTokens),
+            "gemini-generate" => Ok(Self::GeminiGenerate),
+            "gemini-count-tokens" => Ok(Self::GeminiCountTokens),
+            "gemini-models" => Ok(Self::GeminiModels),
             "ocr" => Ok(Self::Ocr),
             "systemone" => Ok(Self::SystemOne),
             "rerank" => Ok(Self::Rerank),
             "responses" => Ok(Self::Responses),
             other => Err(format!(
-                "unknown inference endpoint '{other}'; expected models, chat-completions, completions, embeddings, tools, messages, ocr, systemone, rerank, or responses"
+                "unknown inference endpoint '{other}'; expected models, chat-completions, completions, embeddings, tools, messages, messages-count-tokens, gemini-generate, gemini-count-tokens, gemini-models, ocr, systemone, rerank, or responses"
             )),
         }
     }

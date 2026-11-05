@@ -16,6 +16,8 @@ pub(crate) enum InferenceAccessError {
     Revoked,
     /// The authenticated credential has no matching route, endpoint, or model grant.
     Denied,
+    /// A principal cannot distinguish a missing resource from an ungranted one.
+    NotFound,
     /// Path matched an inference router but is not a managed OpenAI endpoint.
     UnsupportedEndpoint,
     /// The complete authorization snapshot or local verifier is unavailable.
@@ -39,8 +41,6 @@ pub(crate) enum InferenceAccessError {
     /// The grant's guardrails policy blocked this body (request leg) or
     /// withheld the completion (response leg).
     GuardrailBlocked { reason: String },
-    /// Streaming over a cross-protocol target is not available yet.
-    CrossProtocolStreaming,
     /// Compiled fallback candidates were exhausted without a usable upstream.
     UpstreamExhausted,
 }
@@ -69,6 +69,12 @@ impl InferenceAccessError {
             Self::Denied => (
                 StatusCode::FORBIDDEN,
                 "Listing or model is not entitled for this credential.",
+                "entitlement.denied",
+                None,
+            ),
+            Self::NotFound => (
+                StatusCode::NOT_FOUND,
+                "Requested resource was not found.",
                 "entitlement.denied",
                 None,
             ),
@@ -124,12 +130,6 @@ impl InferenceAccessError {
                 StatusCode::FORBIDDEN,
                 "Inference request blocked by the guardrails policy.",
                 "guardrail.blocked",
-                None,
-            ),
-            Self::CrossProtocolStreaming => (
-                StatusCode::BAD_REQUEST,
-                "Streaming over a cross-protocol target is not supported.",
-                "translation.streaming_unsupported",
                 None,
             ),
             Self::PoolQueueTimeout => (

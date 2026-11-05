@@ -1,7 +1,0 @@
-{
-  "unix": 1792824901.2264688,
-  "operation": "anonymous HEAD of ephemeral public-asset CDN redirect; URL not retained",
-  "error": "URLError",
-  "seconds": 30.032683849334717,
-  "cdn_host": "us.aws.cdn.hf.co"
-}

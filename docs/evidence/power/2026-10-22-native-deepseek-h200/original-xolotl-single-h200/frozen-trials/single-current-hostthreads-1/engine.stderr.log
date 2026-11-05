@@ -1,5 +1,0 @@
-ggml_cuda_init: found 1 CUDA devices (Total VRAM: 143426 MiB):
-  Device 0: NVIDIA H200, compute capability 9.0, VMM: yes, VRAM: 143426 MiB
-enc-skip: cut at layer 20 (last kv source), replay window 2560 (reach 2560)
-ds41: stage 0 layers [0,40) CUDA device 0
-arena: pinned (cudaHostRegister PORTABLE ok; large pages skipped (STRATA_NO_LARGEPAGES); using 4 KB pages)

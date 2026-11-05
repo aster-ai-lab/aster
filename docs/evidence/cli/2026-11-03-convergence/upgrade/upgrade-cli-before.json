@@ -1,6 +1,0 @@
-{
-  "binarySha256": "3ae0d11752e0db847a447d59aaa3c32ab77177e2c31a682ad57de810db73842a",
-  "exit": 2,
-  "stdout": "",
-  "stderr": "error: unrecognized subcommand 'upgrade'\n\n  tip: a similar subcommand exists: 'prune'\n\nUsage: aster tool [OPTIONS] <COMMAND>\n\nFor more information, try '--help'.\n"
-}

@@ -1,8 +1,0 @@
-{
-  "schema": "aster-native-dsml-json-fix-v6",
-  "upstream_source_sha256": "5180c184d1a421dd5b56e799360fe6306b96d41da2d443d0bb68dae6714f2e5d",
-  "patched_source_sha256": "b248a42c16b57eb05341b24a5e3dc97d602899f8c8a897c7e29203552197b80e",
-  "strict_tests_sha256": "1bdb5bad90157d274136386dc72fb9005bee17f289dec181e5a8a34e3ee709c7",
-  "real_failure_fixture": "xolotl-truncated-tool-v5-diagnostic.json",
-  "scope": "Native DSML invoke body containing a complete JSON object only; no renamed arguments, inferred aliases, or recovery from malformed JSON"
-}

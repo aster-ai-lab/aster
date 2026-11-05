@@ -50,6 +50,7 @@ fn add_fallback_target(
         protocol: Default::default(),
         api_key_env: None,
         translate: false,
+        forward_client_identity: false,
     });
     (primary_target_id, fallback_target_id)
 }
@@ -190,6 +191,148 @@ async fn managed_http_falls_back_after_pre_response_transport_failure() {
     assert_eq!(entry.backend.as_deref(), Some(expected_backend.as_str()));
 
     stop_test_entrypoint(shutdown_tx, handle).await;
+}
+
+#[tokio::test]
+async fn cross_protocol_fallback_reselects_each_attempt_path_and_body() {
+    use crate::config::InferenceProtocol::{Anthropic, Openai};
+
+    const CHAT_JSON: &str = r#"{"id":"c1","model":"fallback-upstream","choices":[{"index":0,"message":{"role":"assistant","content":"ok"},"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":8,"total_tokens":21}}"#;
+    const ANTHROPIC_JSON: &str = r#"{"id":"m1","type":"message","role":"assistant","model":"fallback-upstream","content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","usage":{"input_tokens":13,"output_tokens":8}}"#;
+    const CHAT_SSE: &str = "data: {\"id\":\"c1\",\"model\":\"fallback-upstream\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ok\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":8,\"total_tokens\":21}}\n\ndata: [DONE]\n\n";
+    const ANTHROPIC_SSE: &str = "data: {\"type\":\"message_start\",\"message\":{\"id\":\"m1\",\"model\":\"fallback-upstream\",\"usage\":{\"input_tokens\":13,\"output_tokens\":0}}}\n\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ok\"}}\n\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"},\"usage\":{\"output_tokens\":8}}\n\ndata: {\"type\":\"message_stop\"}\n\n";
+    for stream in [false, true] {
+        for (
+            primary_protocol,
+            fallback_protocol,
+            primary_path,
+            fallback_path,
+            json_body,
+            sse_body,
+        ) in [
+            (
+                Openai,
+                Anthropic,
+                "/v1/chat/completions",
+                "/v1/messages",
+                ANTHROPIC_JSON,
+                ANTHROPIC_SSE,
+            ),
+            (
+                Anthropic,
+                Openai,
+                "/v1/messages",
+                "/v1/chat/completions",
+                CHAT_JSON,
+                CHAT_SSE,
+            ),
+        ] {
+            let key = inference_key('p');
+            let (primary, primary_request) = spawn_drop_before_response_backend().await;
+            let body = if stream { sse_body } else { json_body };
+            let content_type = if stream {
+                "text/event-stream"
+            } else {
+                "application/json"
+            };
+            let (fallback, fallback_request) =
+                spawn_response_backend(200, content_type, body).await;
+            let mut config = inference_config(primary, &key, Utc::now() + ChronoDuration::hours(1));
+            add_fallback_target(&mut config, fallback);
+            for (service, prefix) in [
+                ("model-service", "/primary"),
+                ("fallback-service", "/secondary"),
+            ] {
+                config
+                    .services
+                    .get_mut(service)
+                    .unwrap()
+                    .load_balancer
+                    .servers[0]
+                    .url
+                    .push_str(prefix);
+            }
+            let model = config
+                .inference
+                .as_mut()
+                .unwrap()
+                .routes
+                .values_mut()
+                .next()
+                .unwrap()
+                .models
+                .get_mut("allowed-model")
+                .unwrap();
+            model.targets[0].protocol = primary_protocol;
+            model.targets[0].translate = true;
+            model.targets[1].protocol = fallback_protocol;
+            model.targets[1].translate = true;
+            config.validate().unwrap();
+            let (address, shutdown_tx, handle) =
+                start_test_entrypoint(super::inference_tests::gateway_state(&config)).await;
+            let response = reqwest::Client::new()
+                .post(format!("http://{address}/v1/chat/completions?trace=two%20words"))
+                .bearer_auth(&key)
+                .json(&serde_json::json!({"model":"allowed-model","messages":[{"role":"user","content":"hello"}],"max_tokens":64,"stream":stream}))
+                .send().await.unwrap();
+            assert_eq!(response.status(), 200);
+            if stream {
+                let text = response.text().await.unwrap();
+                let data = text
+                    .lines()
+                    .filter_map(|line| line.strip_prefix("data: "))
+                    .collect::<Vec<_>>();
+                assert_eq!(data.iter().filter(|line| **line == "[DONE]").count(), 1);
+                let events = data
+                    .iter()
+                    .filter(|line| **line != "[DONE]")
+                    .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+                    .collect::<Vec<_>>();
+                assert_eq!(
+                    events
+                        .iter()
+                        .filter_map(|event| event["choices"][0]["delta"]["content"].as_str())
+                        .collect::<String>(),
+                    "ok"
+                );
+                assert_eq!(
+                    events.last().unwrap()["choices"][0]["finish_reason"],
+                    "stop"
+                );
+                assert_eq!(events.last().unwrap()["usage"]["prompt_tokens"], 13);
+                assert_eq!(events.last().unwrap()["usage"]["completion_tokens"], 8);
+            } else {
+                let body: serde_json::Value = response.json().await.unwrap();
+                assert_eq!(body["data"]["choices"][0]["message"]["content"], "ok");
+                assert_eq!(body["data"]["choices"][0]["finish_reason"], "stop");
+                assert_eq!(body["data"]["usage"]["prompt_tokens"], 13);
+                assert_eq!(body["data"]["usage"]["completion_tokens"], 8);
+            }
+            let primary_request = primary_request.await.unwrap();
+            let fallback_request = fallback_request.await.unwrap();
+            assert_eq!(
+                String::from_utf8_lossy(&primary_request)
+                    .lines()
+                    .next()
+                    .unwrap(),
+                format!("POST /primary{primary_path}?trace=two%20words HTTP/1.1")
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&fallback_request)
+                    .lines()
+                    .next()
+                    .unwrap(),
+                format!("POST /secondary{fallback_path}?trace=two%20words HTTP/1.1")
+            );
+            assert_eq!(request_model(&primary_request), "primary-upstream");
+            assert_eq!(request_model(&fallback_request), "fallback-upstream");
+            let (request_id, attempt_id) = request_identity(&primary_request);
+            let (fallback_request_id, fallback_attempt_id) = request_identity(&fallback_request);
+            assert_eq!(request_id, fallback_request_id);
+            assert_ne!(attempt_id, fallback_attempt_id);
+            stop_test_entrypoint(shutdown_tx, handle).await;
+        }
+    }
 }
 
 #[tokio::test]

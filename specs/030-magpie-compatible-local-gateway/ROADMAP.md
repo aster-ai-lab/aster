@@ -49,6 +49,36 @@ description: "P0 收敛后的剩余路线图：按 Aster 产品范围复用现�
 | 隐私、插件与工具（CAP12–CAP13、CAP18–CAP22、CAP31–CAP33） | 请求脱敏/恢复、规则试用、实际需要的插件扩展、搜索/媒体/音频/rerank/对外 MCP、Responses WebSocket；逐项验证授权、计量、取消和产物。 | 原网关/插件/能力/搜索设置与请求详情；只补实际缺项，不另建 dashboard、账本或下载器。 |
 | 导入、远程与运维（CAP04、CAP23–CAP28、CAP35） | 显式迁移预览、冲突与回滚，远程授权，备份/恢复，后台或容器部署的真实资格；不能用旧 UI 或源码存在作为已接通证据。 | 原模型导入、数据、设备连接、通用设置及既有 CLI/发行流程。 |
 
+### 已保存待评估：复用本机 OpenCode 的模型来源
+
+记录：2026-11-03。状态：仅保存方案，尚未实施或完成接入验收；不改变 R1–R7 的顺序。
+归入现有 T130 配置导入及 T016/T040/T047 服务商、模型能力任务，不恢复第三方运行器托管计划。
+
+入口沿用“设置 → 模型服务”。Aster Agent/ACP 负责执行，ProviderStore、ModelControl 和原用量账本负责配置、推理及计量。
+
+| OpenCode 中的模型来源 | 拟采用的最小接入方式 |
+| --- | --- |
+| 普通 API Key、自定义服务或本地推理服务 | 预览并导入上游地址、真实模型 ID、协议和已知能力；密钥通过原服务商控件配置，Aster 直接调用同一上游。 |
+| OpenCode Console / Go | 调用官方推理 API。仓库已有 OpenCode Go 预设，先核对其端点与当前官方接口；Go 需要客户端自身标识及按会话稳定的 `x-opencode-session`，沿用原请求身份传递，不使用全局固定会话值。 |
+| 仅通过 OAuth 或 OpenCode 插件可用 | 先确认该来源的认证和独立推理契约，再判断是否需要 provider/auth 适配。模型名称或复制 token 不能作为兼容证明；不通过启动 OpenCode Agent 接管 Aster 的执行流程。 |
+
+已知边界：
+
+- `opencode serve` 不能直接视为 OpenAI 兼容推理服务。V1 暴露会话 API；V2 文档中的独立文本生成接口接收 `prompt/model`，不足以证明完整消息历史、工具调用及流式协议可用。
+- 官方目前限制免费专属聊天模型仅在 OpenCode 内使用；不能承诺导入后可由 Aster 调用，也不通过伪装客户端绕过限制。
+- 本次检查的 Shell PATH 未找到 `opencode`，不能据此认定未安装。本机版本、可执行文件位置、实际模型来源和运行接口均待确认；未读取本机 OpenCode 凭据或会话数据。
+
+后续最小实施与验收：
+
+1. 确认本机版本、配置范围及模型来源；导入采用显式预览/确认，不自动读取所有账户或执行配置中的插件。
+2. 复用原服务商导入、密钥、模型同步/编辑和选择控件；不新增管理页、配置仓库、账本或运行器。
+3. 用实际请求验证端点、认证、真实模型 ID 和能力；覆盖保存/重开、完整消息历史、流式输出、工具调用、取消与原账本归因。无法满足的能力保持不可用，未知用量/费用保持未知。
+4. 先交付一个真实可用的来源，再依据证据决定是否扩 OAuth/插件适配；不预先承诺全部 OpenCode 模型兼容。
+
+资料基线（执行前按实际版本复核）：[V1 Server](https://opencode.ai/docs/server/)、
+[V2 API](https://opencode.ai/v2/docs/api)、[Console 接入与会话](https://opencode.ai/v2/docs/console/harnesses)、
+[模型可用范围](https://opencode.ai/v2/docs/console/models/)。
+
 ## 已停止的范围
 
 - Aster 不继续开发 Hermes、OpenClaw、DeepSeek Harness 或其他第三方运行器的托管、安装、配置同步、启动/停止、专用 dashboard、Profile 或机器人传播适配。

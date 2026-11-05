@@ -1,9 +1,0 @@
-{
-  "same_source_files": true,
-  "differences": [],
-  "candidate": "v25",
-  "control": "v26",
-  "superseded_before_deployment": true,
-  "reason": "native counters moved under existing protected timings boundary before deployment",
-  "full_model_execution_claimed": false
-}

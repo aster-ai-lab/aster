@@ -1,7 +1,0 @@
-dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied
-dpkg: warning: failed to open configuration file '/root/.dpkg.cfg' for reading: Permission denied
-/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-300-0b1716ac50e0/xolotl-ptq-mma-prototype/prototype.cu(187): error: cannot deduce type of range in range-based "for" loop
-      for(auto shape:{std::pair<int,int>{5120,2304},{1024,512}})
-                     ^
-
-1 error detected in the compilation of "/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq/aster-xolotl-300-0b1716ac50e0/xolotl-ptq-mma-prototype/prototype.cu".

@@ -1,7 +1,0 @@
-
-running 2 tests
-test native_barrier::tests::ready_and_release_keep_the_exact_model_and_private_directory_contract ... ok
-test native_barrier::tests::unknown_model_operation_and_expired_deadline_never_release_a_replica ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-

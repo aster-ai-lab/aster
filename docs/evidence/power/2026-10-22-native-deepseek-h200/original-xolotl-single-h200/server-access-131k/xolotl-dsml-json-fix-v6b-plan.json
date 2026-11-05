@@ -1,9 +1,0 @@
-{
-  "schema": "aster-strict-native-arguments-v6b",
-  "upstream_sha256": "5180c184d1a421dd5b56e799360fe6306b96d41da2d443d0bb68dae6714f2e5d",
-  "patched_sha256": "b204c4af684f771a13b5889f62d9fe38b029f9f5af05e78747df10f406758b75",
-  "tests_sha256": "696a01d3b58f76a01d0ba957407d5df06decbdc52bcdf3a3043881f237c20c78",
-  "real_failure_fixture": "xolotl-truncated-tool-v5-diagnostic.json",
-  "preserved_public_api": "ds41_parse_tool_call(body, schema=None) -> ToolCall",
-  "unknown_argument_grammars_rejected": true
-}

@@ -1,8 +1,0 @@
-test_failed_probe_retains_bounded_diagnostic_lease_and_failure_exit (__main__.SubmittedBootstrapUidTests.test_failed_probe_retains_bounded_diagnostic_lease_and_failure_exit) ... ok
-test_foreign_artifact_owner_still_refuses_execution (__main__.SubmittedBootstrapUidTests.test_foreign_artifact_owner_still_refuses_execution) ... ok
-test_root_image_drops_groups_and_writes_as_exact_artifact_owner (__main__.SubmittedBootstrapUidTests.test_root_image_drops_groups_and_writes_as_exact_artifact_owner) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.350s
-
-OK

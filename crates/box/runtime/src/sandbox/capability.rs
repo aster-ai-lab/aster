@@ -223,10 +223,12 @@ pub fn probe_sandbox_capabilities_for(
     #[cfg(target_os = "linux")]
     {
         match backend {
-            ExecutionBackend::AsterOci => match resolve_aster_oci_artifacts(runtime_path, agent_path) {
-                Ok(runtime) => snapshot.aster_oci = Some(runtime),
-                Err(error) => snapshot.failures.push(error.to_string()),
-            },
+            ExecutionBackend::AsterOci => {
+                match resolve_aster_oci_artifacts(runtime_path, agent_path) {
+                    Ok(runtime) => snapshot.aster_oci = Some(runtime),
+                    Err(error) => snapshot.failures.push(error.to_string()),
+                }
+            }
             ExecutionBackend::Krun => snapshot
                 .failures
                 .push("MicroVM execution is not a Sandbox backend".to_string()),

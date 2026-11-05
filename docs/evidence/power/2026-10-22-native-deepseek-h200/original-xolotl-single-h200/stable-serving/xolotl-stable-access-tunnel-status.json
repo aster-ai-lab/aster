@@ -1,9 +1,0 @@
-{
-  "phase": "connected",
-  "unix": 1792838887.0981627,
-  "base_url": "http://127.0.0.1:30003/v1",
-  "reconnects": 0,
-  "ssh_pid": 182536,
-  "ssh_created_filetime": 134373124871051052,
-  "last_started_unix": 1792838887.170107
-}

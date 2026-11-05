@@ -692,9 +692,10 @@ fn legacy_absolute_device_target_manifest_fails_closed() {
 
 #[test]
 fn plans_the_exact_aster_box_device_allowlist() {
-    let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-            .expect("decode fixture");
+    let config: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../fixtures/aster-box/config.json"
+    ))
+    .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
     let namespaces = NamespacePlan::from_linux(Some(&linux), 0, 0, &[]).expect("namespace plan");
@@ -729,9 +730,10 @@ fn rootless_default_devices_do_not_require_an_access_policy() {
 
 #[test]
 fn rootless_policy_rejects_devices_outside_the_fixed_safe_set() {
-    let mut config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-            .expect("decode fixture");
+    let mut config: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../fixtures/aster-box/config.json"
+    ))
+    .expect("decode fixture");
     config["linux"]["devices"][0] = serde_json::json!({
         "path": "/dev/sda",
         "type": "b",
@@ -1077,9 +1079,10 @@ fn all_no_op_device_rules_keep_the_oci_inventory_filter_active() {
 
 #[test]
 fn fixed_device_nodes_and_inventory_survive_rule_clear_for_restore() {
-    let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-            .expect("decode fixture");
+    let config: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../fixtures/aster-box/config.json"
+    ))
+    .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
     let current = DevicePlan::from_linux(Some(&linux), &[], false, true).expect("device plan");
@@ -1105,9 +1108,10 @@ fn fixed_device_nodes_and_inventory_survive_rule_clear_for_restore() {
 
 #[test]
 fn keeps_device_access_rules_independent_from_created_nodes() {
-    let mut config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
-            .expect("decode fixture");
+    let mut config: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../fixtures/aster-box/config.json"
+    ))
+    .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
     let namespaces = NamespacePlan::from_linux(Some(&linux), 0, 0, &[]).expect("namespace plan");

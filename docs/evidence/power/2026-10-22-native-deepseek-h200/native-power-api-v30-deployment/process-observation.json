@@ -1,8 +1,0 @@
-{
-  "exists": true,
-  "expected_pid": 6960,
-  "expected_start_ticks": 722031010,
-  "state": "S",
-  "actual_start_ticks": 722031010,
-  "uid": 10250
-}

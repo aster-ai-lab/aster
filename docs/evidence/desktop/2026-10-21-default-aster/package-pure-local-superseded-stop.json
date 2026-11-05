@@ -1,6 +1,0 @@
-{
-  "pgid": 2890,
-  "command": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python target/evaluations/studio-default-aster/package-final.py",
-  "signal": "SIGINT",
-  "reason": "Superseded by observed published-catalog/frontend footer and packaged-skill resolver fixes before final source freeze; completed dependencies retained, no completed-package acceptance claimed"
-}

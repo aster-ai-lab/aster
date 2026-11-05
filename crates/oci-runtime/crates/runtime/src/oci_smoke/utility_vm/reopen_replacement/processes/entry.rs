@@ -201,8 +201,9 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
         state_root: state_root.clone(),
         first_console: console_directory
             .join(format!("aster-oci-processes-reopen-{nonce}-first.log")),
-        replacement_console: console_directory
-            .join(format!("aster-oci-processes-reopen-{nonce}-replacement.log")),
+        replacement_console: console_directory.join(format!(
+            "aster-oci-processes-reopen-{nonce}-replacement.log"
+        )),
         init_marker,
         exec_marker,
         init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),

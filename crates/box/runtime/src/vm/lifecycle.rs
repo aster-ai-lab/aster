@@ -907,8 +907,9 @@ impl VmManager {
             if !guest_control_ready.is_file() {
                 return false;
             }
-            let pipe =
-                std::path::PathBuf::from(aster_box_core::exec::windows_exec_pipe_path(&self.box_id));
+            let pipe = std::path::PathBuf::from(aster_box_core::exec::windows_exec_pipe_path(
+                &self.box_id,
+            ));
             let client = crate::grpc::ExecClient::for_socket(&pipe);
             return matches!(
                 tokio::time::timeout(HEARTBEAT_TIMEOUT, client.heartbeat()).await,

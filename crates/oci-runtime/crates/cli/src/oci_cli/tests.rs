@@ -589,8 +589,8 @@ async fn terminal_bundle_is_rejected_before_runtime_mutation() {
 
 #[test]
 fn parser_accepts_oci_and_runc_signal_forms() {
-    let positional =
-        try_parse_cli_for_test(&["aster-oci", "kill", "sample", "KILL"]).expect("positional signal");
+    let positional = try_parse_cli_for_test(&["aster-oci", "kill", "sample", "KILL"])
+        .expect("positional signal");
     assert!(matches!(
         positional.command,
         Command::Kill {

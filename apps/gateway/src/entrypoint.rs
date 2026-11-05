@@ -1524,10 +1524,16 @@ async fn handle_http_request_inner(
         if state.metrics_enabled {
             state.metrics.record_request(404, 0);
         }
-        return Ok(finish_access_log(
-            access_log,
-            error_response(404, "standard_not_admitted"),
-        ));
+        let response = if req.uri().path() == "/v1beta/models"
+            || req.uri().path().starts_with("/v1beta/models/")
+        {
+            crate::inference::mark_native_wire(crate::inference::NativeWire::Gemini);
+            inference_access_error_response(InferenceAccessError::UnsupportedEndpoint, None)
+                .map(full_body)
+        } else {
+            error_response(404, "standard_not_admitted")
+        };
+        return Ok(finish_access_log(access_log, response));
     }
 
     // Route the request.
@@ -1843,7 +1849,10 @@ async fn handle_http_request_inner(
         } else {
             if authorizer.route_wire(&route.router_name) == crate::config::InferenceWire::Openai {
                 crate::inference::mark_native_wire(
-                    if initial_openai_profile.is_some_and(OpenAiRequestProfile::is_anthropic) {
+                    if initial_openai_profile.is_some_and(OpenAiRequestProfile::is_gemini) {
+                        crate::inference::NativeWire::Gemini
+                    } else if initial_openai_profile.is_some_and(OpenAiRequestProfile::is_anthropic)
+                    {
                         crate::inference::NativeWire::Anthropic
                     } else {
                         crate::inference::NativeWire::OpenAi
@@ -1880,14 +1889,27 @@ async fn handle_http_request_inner(
                 )
                 .await);
             }
-            let authenticated = match authorizer
-                .authenticate(
-                    &route.router_name,
-                    profile,
-                    req.headers(),
-                    chrono::Utc::now(),
-                )
-                .await
+            let authenticated = match async {
+                if profile.is_gemini() {
+                    let mut uri = req.uri().clone();
+                    crate::inference::normalize_gemini_credentials(req.headers_mut(), &mut uri)?;
+                    *req.uri_mut() = uri;
+                }
+                let authenticated = authorizer
+                    .authenticate(
+                        &route.router_name,
+                        profile,
+                        req.headers(),
+                        chrono::Utc::now(),
+                    )
+                    .await?;
+                // The current Cloud spool schema has no Gemini endpoint. Never emit an undecodable bill.
+                if profile == OpenAiRequestProfile::GeminiGenerate && state.usage_spool.is_some() {
+                    return Err(InferenceAccessError::UsageUnavailable);
+                }
+                Ok(authenticated)
+            }
+            .await
             {
                 Ok(authenticated) => authenticated,
                 Err(error) => {
@@ -2098,12 +2120,19 @@ async fn handle_http_request_inner(
     let openai_profile = managed_openai_profile
         .or_else(|| OpenAiRequestProfile::match_request(&req_parts.method, req_parts.uri.path()));
 
-    if managed_openai_profile == Some(OpenAiRequestProfile::Models) {
+    if matches!(
+        managed_openai_profile,
+        Some(OpenAiRequestProfile::Models | OpenAiRequestProfile::GeminiModels)
+    ) {
         let response_and_admission = authenticated_inference
             .as_ref()
             .ok_or(InferenceAccessError::Unavailable)
             .and_then(|(authorizer, authenticated)| {
-                let models = authorizer.allowed_models(*authenticated, chrono::Utc::now())?;
+                let models = if managed_openai_profile == Some(OpenAiRequestProfile::GeminiModels) {
+                    authorizer.allowed_gemini_models(*authenticated, chrono::Utc::now())?
+                } else {
+                    authorizer.allowed_models(*authenticated, chrono::Utc::now())?
+                };
                 let request_id = inference_request_identity
                     .as_ref()
                     .map(|identity| identity.request_id())
@@ -2111,10 +2140,20 @@ async fn handle_http_request_inner(
                 let response = if authorizer.route_wire(&route.router_name)
                     == crate::config::InferenceWire::Openai
                 {
-                    native_response::native_json_response(
-                        crate::inference::native_models_body(&models),
-                        request_id,
-                    )
+                    if managed_openai_profile == Some(OpenAiRequestProfile::GeminiModels) {
+                        match crate::inference::gemini_models_body(&models, &req_parts.uri) {
+                            Ok(body) => native_response::native_json_response(body, request_id),
+                            Err(error) => openai_request_error_response(
+                                error,
+                                inference_request_identity.as_ref(),
+                            ),
+                        }
+                    } else {
+                        native_response::native_json_response(
+                            crate::inference::native_models_body(&models),
+                            request_id,
+                        )
+                    }
                 } else {
                     models_response(&models, request_id)
                         .map_err(|_| InferenceAccessError::Unavailable)?
@@ -2238,7 +2277,21 @@ async fn handle_http_request_inner(
         }
         let collected = match collect_request_body_up_to(body, collection_limit).await {
             Ok(body) => {
-                collect_json_body(&req_parts.headers, http_body_util::Full::new(body)).await
+                if openai_profile.is_some_and(OpenAiRequestProfile::is_gemini) {
+                    match crate::inference::GeminiModelCall::parse(req_parts.uri.path()) {
+                        Ok(call) => {
+                            crate::inference::collect_json_body_with_model(
+                                &req_parts.headers,
+                                http_body_util::Full::new(body),
+                                Some(call),
+                            )
+                            .await
+                        }
+                        Err(error) => Err(error),
+                    }
+                } else {
+                    collect_json_body(&req_parts.headers, http_body_util::Full::new(body)).await
+                }
             }
             Err(RequestBodyCollectionError::TooLarge) => {
                 return Ok(finish_native_response(
@@ -2298,12 +2351,7 @@ async fn handle_http_request_inner(
         };
         match collected {
             Ok(request) => {
-                // The responses dialect streams through its own SSE lane
-                // (translated); native responses streaming refuses at
-                // admission before this point selects a handler.
                 is_sse |= openai_profile.is_some_and(OpenAiRequestProfile::supports_streaming)
-                    && request.stream_requested();
-                is_sse |= openai_profile == Some(OpenAiRequestProfile::Responses)
                     && request.stream_requested();
                 // Reserved platform aliases on embeddings and rerank serve
                 // through the platform engines or a bound supplier before any
@@ -2429,7 +2477,11 @@ async fn handle_http_request_inner(
                             .await);
                         }
                     };
-                    if let Some(spool) = state.usage_spool.clone() {
+                    if let Some(spool) = state
+                        .usage_spool
+                        .clone()
+                        .filter(|_| !dispatch.endpoint().is_token_count())
+                    {
                         let lifecycle = match UsageRequestLifecycle::begin(
                             spool,
                             dispatch.request_identity(),

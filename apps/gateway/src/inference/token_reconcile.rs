@@ -3,6 +3,7 @@
 use super::observed_tokens::{ObservedTokenUsage, ObservedTokens};
 use super::InferenceAdmissionGuard;
 use crate::response_body::ResponseBody;
+use crate::sse::SseDecoder;
 use bytes::Bytes;
 use http::Response;
 use hyper::body::{Body, Frame, SizeHint};
@@ -18,9 +19,14 @@ const MAX_JSON_PREFIX_BYTES: usize = 256 * 1024;
 /// keeping the whole body.
 const MAX_JSON_TAIL_BYTES: usize = 16 * 1024;
 
-/// Incomplete SSE/line remainder retained between body frames. OpenAI usage
-/// objects fit in a few hundred bytes; a larger incomplete line is skipped.
-const MAX_LINE_CARRY_BYTES: usize = 8 * 1024;
+const GEMINI_USAGE_FIELDS: [&str; 6] = [
+    "promptTokenCount",
+    "toolUsePromptTokenCount",
+    "candidatesTokenCount",
+    "thoughtsTokenCount",
+    "cachedContentTokenCount",
+    "totalTokenCount",
+];
 
 /// Signed-in caller a finished response is attributed to.
 #[derive(Debug, Clone)]
@@ -42,7 +48,7 @@ pub(crate) fn track_token_budget_response(
     admission: Option<InferenceAdmissionGuard>,
     observed_tokens: Option<Arc<ObservedTokenUsage>>,
 ) -> Response<ResponseBody> {
-    track_attributed_token_budget_response(response, admission, observed_tokens, None)
+    track_attributed_token_budget_response(response, admission, observed_tokens, None, None)
 }
 
 /// [`track_token_budget_response`] that also records principal usage.
@@ -51,10 +57,20 @@ pub(crate) fn track_attributed_token_budget_response(
     admission: Option<InferenceAdmissionGuard>,
     observed_tokens: Option<Arc<ObservedTokenUsage>>,
     attribution: Option<UsageAttribution>,
+    upstream_tokens: Option<Arc<ObservedTokenUsage>>,
 ) -> Response<ResponseBody> {
     if admission.is_none() && observed_tokens.is_none() && attribution.is_none() {
         return response;
     }
+    let sse_response = response
+        .headers()
+        .get(http::header::CONTENT_TYPE)
+        .and_then(|value| value.to_str().ok())
+        .is_some_and(|value| {
+            value.split(';').next().is_some_and(|media_type| {
+                media_type.trim().eq_ignore_ascii_case("text/event-stream")
+            })
+        });
     let status = response.status().as_u16();
     let (parts, body) = response.into_parts();
     let body = ResponseBody::boxed(TokenBudgetBody {
@@ -62,14 +78,16 @@ pub(crate) fn track_attributed_token_budget_response(
         admission,
         observed_tokens,
         attribution,
+        upstream_tokens,
         status,
+        sse_response,
         json_prefix: Vec::new(),
         json_truncated: false,
         json_tail: Vec::new(),
-        line_carry: Vec::new(),
-        skip_until_newline: false,
+        sse_decoder: Some(SseDecoder::default()),
         sse_usage: None,
         sse_anthropic: None,
+        sse_gemini: serde_json::Map::new(),
     });
     Response::from_parts(parts, body)
 }
@@ -80,12 +98,102 @@ fn observe_json_usage(bytes: &[u8]) -> Option<ObservedUsage> {
 }
 
 fn usage_from_value(value: &serde_json::Value) -> Option<ObservedUsage> {
+    if let Some(usage) = value.get("usageMetadata") {
+        return gemini_usage(usage);
+    }
+    let value = match value.get("type").and_then(serde_json::Value::as_str) {
+        Some("response.completed" | "response.incomplete" | "response.failed") => {
+            value.get("response")?
+        }
+        _ => value,
+    };
     let usage = value.get("usage")?;
     usage_from_object(usage)
 }
 
 fn u64_field(object: &serde_json::Value, key: &str) -> Option<u64> {
     object.get(key).and_then(serde_json::Value::as_u64)
+}
+
+fn gemini_usage(usage: &serde_json::Value) -> Option<ObservedUsage> {
+    usage.as_object()?;
+    for name in GEMINI_USAGE_FIELDS {
+        if usage
+            .get(name)
+            .is_some_and(|value| !value.is_null() && value.as_u64().is_none())
+        {
+            return None;
+        }
+    }
+    let additive = |name| match usage.get(name) {
+        None => Some(0),
+        Some(value) => value.as_u64(),
+    };
+    let mut prompt =
+        match u64_field(usage, "promptTokenCount").zip(additive("toolUsePromptTokenCount")) {
+            Some((base, extra)) => Some(base.checked_add(extra)?),
+            None => None,
+        };
+    let reasoning = additive("thoughtsTokenCount");
+    let mut completion = match u64_field(usage, "candidatesTokenCount").zip(reasoning) {
+        Some((base, extra)) => Some(base.checked_add(extra)?),
+        None => None,
+    };
+    let cached_input = additive("cachedContentTokenCount");
+    let total = u64_field(usage, "totalTokenCount");
+    if let Some(total) = total {
+        match (prompt, completion) {
+            (Some(input), Some(output)) if input.checked_add(output)? != total => return None,
+            (Some(input), None) => completion = Some(total.checked_sub(input)?),
+            (None, Some(output)) => prompt = Some(total.checked_sub(output)?),
+            (None, None) if total == 0 => {
+                prompt = Some(0);
+                completion = Some(0);
+            }
+            _ => {}
+        }
+    }
+    if cached_input
+        .zip(u64_field(usage, "promptTokenCount"))
+        .is_some_and(|(cached, prompt)| cached > prompt)
+        || [
+            "promptTokenCount",
+            "toolUsePromptTokenCount",
+            "cachedContentTokenCount",
+        ]
+        .iter()
+        .any(|name| {
+            u64_field(usage, name)
+                .zip(prompt.or(total))
+                .is_some_and(|(component, input)| component > input)
+        })
+        || ["candidatesTokenCount", "thoughtsTokenCount"]
+            .iter()
+            .any(|name| {
+                u64_field(usage, name)
+                    .zip(completion.or(total))
+                    .is_some_and(|(component, output)| component > output)
+            })
+        || cached_input
+            .zip(prompt)
+            .is_some_and(|(cached, input)| cached > input)
+        || reasoning
+            .zip(completion)
+            .is_some_and(|(thoughts, output)| thoughts > output)
+    {
+        return None;
+    }
+    let sum = match prompt.zip(completion) {
+        Some((input, output)) => Some(input.checked_add(output)?),
+        None => None,
+    };
+    Some(ObservedUsage {
+        prompt,
+        completion,
+        cached_input,
+        reasoning,
+        total: total.or(sum),
+    })
 }
 
 /// Anthropic input including prompt-cache reads and writes.
@@ -98,19 +206,20 @@ fn anthropic_input(usage: &serde_json::Value) -> Option<u64> {
     )
 }
 
-/// OpenAI `prompt_tokens_details.cached_tokens`: the cache-served subset of
-/// the prompt tokens.
+/// Cache-served input in Chat Completions or Responses usage.
 fn openai_cached_input(usage: &serde_json::Value) -> Option<u64> {
     usage
-        .get("prompt_tokens_details")?
+        .get("prompt_tokens_details")
+        .or_else(|| usage.get("input_tokens_details"))?
         .get("cached_tokens")
         .and_then(serde_json::Value::as_u64)
 }
 
-/// OpenAI `completion_tokens_details.reasoning_tokens`.
+/// Reasoning output in Chat Completions or Responses usage.
 fn openai_reasoning(usage: &serde_json::Value) -> Option<u64> {
     usage
-        .get("completion_tokens_details")?
+        .get("completion_tokens_details")
+        .or_else(|| usage.get("output_tokens_details"))?
         .get("reasoning_tokens")
         .and_then(serde_json::Value::as_u64)
 }
@@ -123,7 +232,9 @@ fn sum_total(prompt: Option<u64>, completion: Option<u64>) -> Option<u64> {
 }
 
 fn usage_from_object(usage: &serde_json::Value) -> Option<ObservedUsage> {
-    if usage.get("prompt_tokens").is_some() || usage.get("total_tokens").is_some() {
+    if usage.get("prompt_tokens").is_some()
+        || (usage.get("input_tokens").is_none() && usage.get("total_tokens").is_some())
+    {
         let prompt = u64_field(usage, "prompt_tokens");
         let completion = u64_field(usage, "completion_tokens");
         return Some(ObservedUsage {
@@ -141,9 +252,10 @@ fn usage_from_object(usage: &serde_json::Value) -> Option<ObservedUsage> {
         completion,
         // Anthropic reports cache reads separately; they are already inside
         // the summed prompt lane above.
-        cached_input: u64_field(usage, "cache_read_input_tokens"),
-        reasoning: None,
-        total: sum_total(Some(prompt), completion),
+        cached_input: u64_field(usage, "cache_read_input_tokens")
+            .or_else(|| openai_cached_input(usage)),
+        reasoning: openai_reasoning(usage),
+        total: u64_field(usage, "total_tokens").or_else(|| sum_total(Some(prompt), completion)),
     })
 }
 
@@ -155,29 +267,35 @@ fn observe_json_usage_from_tail(bytes: &[u8]) -> Option<ObservedUsage> {
     }
     let text = std::str::from_utf8(bytes).ok()?;
     let mut last = None;
-    let mut search_from = 0;
-    while let Some(rel) = text[search_from..].find("\"usage\"") {
-        let key_at = search_from + rel;
-        let after_key = &text[key_at + "\"usage\"".len()..];
-        let trimmed = after_key.trim_start();
-        if !trimmed.starts_with(':') {
-            search_from = key_at + 1;
-            continue;
-        }
-        let after_colon = &trimmed[1..];
-        let value = after_colon.trim_start();
-        if !value.starts_with('{') {
-            search_from = key_at + 1;
-            continue;
-        }
-        if let Some(object) = extract_balanced_json_object(value) {
-            if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(object) {
-                if let Some(usage) = usage_from_object(&parsed) {
-                    last = Some(usage);
+    for key in ["\"usage\"", "\"usageMetadata\""] {
+        let mut search_from = 0;
+        while let Some(rel) = text[search_from..].find(key) {
+            let key_at = search_from + rel;
+            let after_key = &text[key_at + key.len()..];
+            let trimmed = after_key.trim_start();
+            if !trimmed.starts_with(':') {
+                search_from = key_at + 1;
+                continue;
+            }
+            let after_colon = &trimmed[1..];
+            let value = after_colon.trim_start();
+            if !value.starts_with('{') {
+                search_from = key_at + 1;
+                continue;
+            }
+            if let Some(object) = extract_balanced_json_object(value) {
+                if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(object) {
+                    if let Some(usage) = if key == "\"usageMetadata\"" {
+                        gemini_usage(&parsed)
+                    } else {
+                        usage_from_object(&parsed)
+                    } {
+                        last = Some(usage);
+                    }
                 }
             }
+            search_from = key_at + 1;
         }
-        search_from = key_at + 1;
     }
     last
 }
@@ -216,36 +334,34 @@ fn extract_balanced_json_object(input: &str) -> Option<&str> {
     None
 }
 
-fn sse_data_value(line: &str) -> Option<serde_json::Value> {
-    let data = line.strip_prefix("data:")?.trim();
-    if data.is_empty() || data == "[DONE]" {
-        return None;
-    }
-    serde_json::from_str::<serde_json::Value>(data).ok()
-}
-
 struct TokenBudgetBody {
     inner: Pin<Box<ResponseBody>>,
     admission: Option<InferenceAdmissionGuard>,
     observed_tokens: Option<Arc<ObservedTokenUsage>>,
     attribution: Option<UsageAttribution>,
+    upstream_tokens: Option<Arc<ObservedTokenUsage>>,
     status: u16,
+    sse_response: bool,
     json_prefix: Vec<u8>,
     json_truncated: bool,
     json_tail: Vec<u8>,
-    line_carry: Vec<u8>,
-    skip_until_newline: bool,
+    sse_decoder: Option<SseDecoder>,
     sse_usage: Option<ObservedUsage>,
     /// Anthropic stream: input from `message_start`, cumulative output from
     /// `message_delta`.
     sse_anthropic: Option<ObservedUsage>,
+    sse_gemini: serde_json::Map<String, serde_json::Value>,
 }
 
 impl TokenBudgetBody {
-    fn note_sse_line(&mut self, line: &str) {
-        let Some(value) = sse_data_value(line) else {
+    fn note_sse_event(&mut self, data: &[u8]) {
+        let Ok(value) = serde_json::from_slice::<serde_json::Value>(data) else {
             return;
         };
+        if let Some(metadata) = value.get("usageMetadata") {
+            self.note_gemini_usage(metadata);
+            return;
+        }
         match value.get("type").and_then(serde_json::Value::as_str) {
             Some("message_start") => {
                 if let Some(usage) = value
@@ -286,6 +402,77 @@ impl TokenBudgetBody {
         }
     }
 
+    fn note_gemini_usage(&mut self, metadata: &serde_json::Value) {
+        let Some(metadata) = metadata.as_object() else {
+            return;
+        };
+        let mut snapshot = self.sse_gemini.clone();
+        for name in GEMINI_USAGE_FIELDS {
+            let Some(value) = metadata.get(name) else {
+                continue;
+            };
+            if value.is_null() {
+                continue;
+            }
+            let Some(counter) = value.as_u64() else {
+                return;
+            };
+            if snapshot
+                .get(name)
+                .and_then(serde_json::Value::as_u64)
+                .is_some_and(|previous| counter < previous)
+            {
+                return;
+            }
+            snapshot.insert(name.into(), value.clone());
+        }
+        if !metadata.contains_key("totalTokenCount") || metadata["totalTokenCount"].is_null() {
+            snapshot.remove("totalTokenCount");
+        }
+        let Some(mut usage) = gemini_usage(&serde_json::Value::Object(snapshot.clone())) else {
+            return;
+        };
+        if let Some(previous) = self.sse_usage {
+            usage.prompt = usage.prompt.or(previous.prompt);
+            usage.completion = usage.completion.or(previous.completion);
+            if [
+                (previous.prompt, usage.prompt),
+                (previous.completion, usage.completion),
+                (previous.cached_input, usage.cached_input),
+                (previous.reasoning, usage.reasoning),
+                (previous.total, usage.total),
+            ]
+            .iter()
+            .any(|(old, new)| old.zip(*new).is_some_and(|(old, new)| new < old))
+            {
+                return;
+            }
+        }
+        if let Some((input, output)) = usage.prompt.zip(usage.completion) {
+            let Some(total) = input.checked_add(output) else {
+                return;
+            };
+            if usage.total.is_some_and(|reported| reported != total) {
+                return;
+            }
+            usage.total = Some(total);
+        }
+        if [
+            (usage.cached_input, usage.prompt),
+            (usage.reasoning, usage.completion),
+        ]
+        .iter()
+        .any(|(component, lane)| {
+            component
+                .zip(*lane)
+                .is_some_and(|(component, lane)| component > lane)
+        }) {
+            return;
+        }
+        self.sse_gemini = snapshot;
+        self.sse_usage = Some(usage);
+    }
+
     fn observed_sse_usage(&self) -> Option<ObservedUsage> {
         self.sse_anthropic
             .map(|mut usage| {
@@ -320,44 +507,28 @@ impl TokenBudgetBody {
         }
     }
 
-    fn note_sse_lines(&mut self, bytes: &[u8]) {
-        if bytes.is_empty() {
-            return;
-        }
-
-        let mut offset = 0;
-        if self.skip_until_newline {
-            if let Some(newline) = bytes.iter().position(|&b| b == b'\n') {
-                self.skip_until_newline = false;
-                offset = newline + 1;
-            } else {
-                return;
+    fn note_sse_events(&mut self, mut bytes: &[u8]) {
+        while let Some(decoder) = self.sse_decoder.as_mut() {
+            match decoder.next_event(&mut bytes) {
+                Ok(Some(data)) => self.note_sse_event(&data),
+                Ok(None) => break,
+                Err(error) => {
+                    tracing::warn!(%error, "SSE usage observation stopped; unknown usage keeps its reservation");
+                    self.sse_decoder = None;
+                }
             }
-        }
-
-        self.line_carry.extend_from_slice(&bytes[offset..]);
-        while let Some(newline) = self.line_carry.iter().position(|&b| b == b'\n') {
-            let mut line = self.line_carry.drain(..=newline).collect::<Vec<u8>>();
-            if line.last() == Some(&b'\n') {
-                line.pop();
-            }
-            if line.last() == Some(&b'\r') {
-                line.pop();
-            }
-            if let Ok(text) = std::str::from_utf8(&line) {
-                self.note_sse_line(text);
-            }
-        }
-
-        if self.line_carry.len() > MAX_LINE_CARRY_BYTES {
-            self.line_carry.clear();
-            self.skip_until_newline = true;
         }
     }
 
     fn note_data(&mut self, bytes: &[u8]) {
-        self.note_json_prefix(bytes);
-        self.note_sse_lines(bytes);
+        if self.upstream_tokens.is_some() {
+            return;
+        }
+        if self.sse_response {
+            self.note_sse_events(bytes);
+        } else {
+            self.note_json_prefix(bytes);
+        }
     }
 
     fn observed_json_usage(&self) -> Option<ObservedUsage> {
@@ -371,16 +542,19 @@ impl TokenBudgetBody {
     }
 
     fn finish(&mut self) {
-        if !self.line_carry.is_empty() {
-            let carry = std::mem::take(&mut self.line_carry);
-            if let Ok(text) = std::str::from_utf8(&carry) {
-                self.note_sse_line(text.trim_end_matches(['\r', '\n']));
-            }
-        }
-
-        let usage = self
-            .observed_sse_usage()
-            .or_else(|| self.observed_json_usage());
+        // A partial SSE stream may still contain provisional usage in
+        // response.created; JSON tail recovery must not settle from it.
+        let usage = if let Some(upstream) = &self.upstream_tokens {
+            upstream.observation()
+        } else {
+            self.observed_sse_usage().or_else(|| {
+                if self.sse_response {
+                    None
+                } else {
+                    self.observed_json_usage()
+                }
+            })
+        };
         if let Some(usage) = usage.as_ref() {
             if let Some(sink) = self.observed_tokens.as_ref() {
                 sink.record(usage);
@@ -470,188 +644,5 @@ impl Drop for TokenBudgetBody {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::inference::LifecycleTokenBreakdown;
-
-    fn empty_body() -> TokenBudgetBody {
-        TokenBudgetBody {
-            inner: Box::pin(ResponseBody::full(Bytes::new())),
-            admission: None,
-            observed_tokens: None,
-            attribution: None,
-            status: 200,
-            json_prefix: Vec::new(),
-            json_truncated: false,
-            json_tail: Vec::new(),
-            line_carry: Vec::new(),
-            skip_until_newline: false,
-            sse_usage: None,
-            sse_anthropic: None,
-        }
-    }
-
-    fn observe_usage_from_bytes(bytes: &[u8]) -> Option<ObservedUsage> {
-        let mut body = empty_body();
-        body.note_data(bytes);
-        body.finish();
-        body.observed_sse_usage()
-            .or_else(|| body.observed_json_usage())
-    }
-
-    fn observe_total_tokens_from_bytes(bytes: &[u8]) -> Option<u64> {
-        observe_usage_from_bytes(bytes).and_then(|usage| usage.resolved_total())
-    }
-
-    #[test]
-    fn parses_anthropic_json_usage() {
-        let body = br#"{"type":"message","usage":{"input_tokens":10,"cache_read_input_tokens":4,"output_tokens":6}}"#;
-        assert_eq!(
-            observe_usage_from_bytes(body),
-            Some(ObservedUsage {
-                prompt: Some(14),
-                completion: Some(6),
-                cached_input: Some(4),
-                reasoning: None,
-                total: Some(20),
-            })
-        );
-    }
-
-    #[test]
-    fn parses_anthropic_sse_usage_across_start_and_delta() {
-        let body = b"event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"usage\":{\"input_tokens\":25,\"output_tokens\":1}}}\n\n\
-event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"delta\":{\"text\":\"hi\"}}\n\n\
-event: message_delta\ndata: {\"type\":\"message_delta\",\"usage\":{\"output_tokens\":15}}\n\n";
-        assert_eq!(
-            observe_usage_from_bytes(body),
-            Some(ObservedUsage {
-                prompt: Some(25),
-                completion: Some(15),
-                cached_input: None,
-                reasoning: None,
-                total: Some(40),
-            })
-        );
-    }
-
-    #[test]
-    fn parses_openai_cache_and_reasoning_details() {
-        let body = br#"{"id":"1","usage":{"prompt_tokens":100,"prompt_tokens_details":{"cached_tokens":60},"completion_tokens":7,"completion_tokens_details":{"reasoning_tokens":5},"total_tokens":107}}"#;
-        assert_eq!(
-            observe_usage_from_bytes(body),
-            Some(ObservedUsage {
-                prompt: Some(100),
-                completion: Some(7),
-                cached_input: Some(60),
-                reasoning: Some(5),
-                total: Some(107),
-            })
-        );
-    }
-
-    #[test]
-    fn total_only_usage_leaves_split_lanes_unknown() {
-        let body = br#"{"usage":{"total_tokens":42}}"#;
-        assert_eq!(
-            observe_usage_from_bytes(body),
-            Some(ObservedUsage {
-                prompt: None,
-                completion: None,
-                cached_input: None,
-                reasoning: None,
-                total: Some(42),
-            })
-        );
-    }
-
-    #[test]
-    fn parses_json_usage_total_tokens() {
-        let body =
-            br#"{"id":"1","usage":{"prompt_tokens":3,"completion_tokens":7,"total_tokens":10}}"#;
-        assert_eq!(observe_total_tokens_from_bytes(body), Some(10));
-    }
-
-    #[test]
-    fn parses_json_usage_without_total_field() {
-        let body = br#"{"usage":{"prompt_tokens":2,"completion_tokens":5}}"#;
-        assert_eq!(observe_total_tokens_from_bytes(body), Some(7));
-    }
-
-    #[test]
-    fn parses_sse_usage_from_last_data_line() {
-        let body = b"data: {\"choices\":[]}\n\ndata: {\"usage\":{\"total_tokens\":42}}\n\ndata: [DONE]\n\n";
-        assert_eq!(observe_total_tokens_from_bytes(body), Some(42));
-    }
-
-    #[test]
-    fn observes_sse_usage_after_prefix_larger_than_json_buffer() {
-        let sink = std::sync::Arc::new(ObservedTokenUsage::new());
-        let mut body = empty_body();
-        body.observed_tokens = Some(sink.clone());
-
-        let padding_line = b"data: {\"choices\":[{\"delta\":{\"content\":\"x\"}}]}\n\n";
-        let mut padded = 0usize;
-        while padded <= MAX_JSON_PREFIX_BYTES {
-            body.note_data(padding_line);
-            padded += padding_line.len();
-        }
-        assert!(body.json_truncated);
-        body.note_data(b"data: {\"usage\":{\"total_tokens\":99}}\n\ndata: [DONE]\n\n");
-        body.finish();
-        assert_eq!(sink.total(), Some(99));
-    }
-
-    #[test]
-    fn observes_sse_usage_split_across_frames() {
-        let sink = std::sync::Arc::new(ObservedTokenUsage::new());
-        let mut body = empty_body();
-        body.observed_tokens = Some(sink.clone());
-        body.note_data(b"data: {\"usage\":{\"total_tok");
-        body.note_data(b"ens\":17}}\n\ndata: [DONE]\n\n");
-        body.finish();
-        assert_eq!(sink.total(), Some(17));
-    }
-
-    #[test]
-    fn observes_json_usage_after_body_exceeds_prefix_budget() {
-        let sink = std::sync::Arc::new(ObservedTokenUsage::new());
-        let mut body = empty_body();
-        body.observed_tokens = Some(sink.clone());
-
-        body.note_data(b"{\"id\":\"1\",\"choices\":[{\"message\":{\"content\":\"");
-        let mut padded = body.json_prefix.len();
-        let chunk = b"x".repeat(4096);
-        while padded <= MAX_JSON_PREFIX_BYTES {
-            body.note_data(&chunk);
-            padded += chunk.len();
-        }
-        assert!(body.json_truncated);
-        body.note_data(
-            b"\"}}],\"usage\":{\"prompt_tokens\":2,\"completion_tokens\":3,\"total_tokens\":88}}",
-        );
-        body.finish();
-        assert_eq!(sink.total(), Some(88));
-    }
-
-    #[test]
-    fn sink_records_the_full_token_split() {
-        let sink = std::sync::Arc::new(ObservedTokenUsage::new());
-        let mut body = empty_body();
-        body.observed_tokens = Some(sink.clone());
-        body.note_data(
-            b"data: {\"usage\":{\"prompt_tokens\":9,\"completion_tokens\":4,\"total_tokens\":13}}\n\n",
-        );
-        body.finish();
-        assert_eq!(sink.total(), Some(13));
-        assert_eq!(
-            sink.breakdown(),
-            Some(LifecycleTokenBreakdown {
-                prompt_tokens: Some(9),
-                completion_tokens: Some(4),
-                cached_input_tokens: None,
-                reasoning_tokens: None,
-            })
-        );
-    }
-}
+#[path = "token_reconcile_tests.rs"]
+mod tests;

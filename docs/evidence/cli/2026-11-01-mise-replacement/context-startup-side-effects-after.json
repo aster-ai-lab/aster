@@ -1,9 +1,0 @@
-{
-  "exit": 0,
-  "stdout": "startup-probe\n",
-  "user_guide_files_written": 0,
-  "files": [],
-  "state": "fresh isolated home",
-  "deadline_seconds": 20,
-  "cli_sha256": "c2fe73d276e35f0291f5ab64ea0570534f20fe68a2e2e640c96fae42e751370e"
-}

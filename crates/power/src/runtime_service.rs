@@ -144,7 +144,10 @@ mod tests {
             unit_id: "environment/inference/power/revision-1".into(),
             generation: 1,
             artifact: ArtifactRef {
-                uri: format!("oci://registry.example/aster-power@sha256:{}", "a".repeat(64)),
+                uri: format!(
+                    "oci://registry.example/aster-power@sha256:{}",
+                    "a".repeat(64)
+                ),
                 digest: format!("sha256:{}", "a".repeat(64)),
                 media_type: "application/vnd.oci.image.manifest.v1+json".into(),
             },

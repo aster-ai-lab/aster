@@ -5,6 +5,8 @@
 
 mod autoscaling;
 pub(crate) mod builders;
+#[cfg(test)]
+mod embedded_reload_tests;
 mod managed_service;
 #[cfg(test)]
 mod mode_tests;
@@ -482,7 +484,13 @@ impl GatewayReloadHandle {
         ensure_lifecycle_operation(&self.state, &self.shutdown, GatewayState::Running, "reload")?;
         let old_config = self.config.read().unwrap().clone();
         let new_config = new_config.unwrap_or_else(|| old_config.clone());
+        if source == "embedded-host" && self.embedded_supplier_keys.is_none() {
+            return Err(GatewayError::Config(
+                "Embedded reload requires Gateway::new_embedded".into(),
+            ));
+        }
         if source != "managed-snapshot"
+            && source != "embedded-host"
             && !source.starts_with("managed-service-")
             && old_config.mode == crate::config::OperatingMode::CloudManaged
             && old_config.managed.gateway_id.is_some()
@@ -802,6 +810,18 @@ impl Gateway {
     /// lifecycle state other than [`GatewayState::Running`].
     pub async fn reload(&self, new_config: GatewayConfig) -> Result<()> {
         self.reload_handle().reload(new_config, "manual").await
+    }
+
+    /// Publish an authoritative host snapshot without rebinding unchanged listeners.
+    ///
+    /// Only instances constructed with [`Gateway::new_embedded`] admit this operation.
+    /// Uses ordinary reload validation and atomic runtime publication. Failed
+    /// preparation leaves the prior runtime active. Lifecycle, validation and
+    /// activation failures are returned as [`GatewayError`].
+    pub async fn reload_embedded(&self, new_config: GatewayConfig) -> Result<()> {
+        self.reload_handle()
+            .reload(new_config, "embedded-host")
+            .await
     }
 
     /// Initiate graceful shutdown.

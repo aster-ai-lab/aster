@@ -572,6 +572,10 @@ async fn proxy_supplier(
     }
     if let Some(authorization) = authorization {
         match supplier.protocol {
+            InferenceProtocol::Gemini => {
+                return InferenceAccessError::UnsupportedEndpoint
+                    .into_response_with_request_id(request_id);
+            }
             InferenceProtocol::Anthropic => {
                 request = request.header("x-api-key", authorization);
             }

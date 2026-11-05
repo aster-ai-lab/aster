@@ -429,8 +429,10 @@ impl PowerConfig {
         }
 
         if let Ok(value) = std::env::var("ASTER_POWER_PROMPT_CACHE_MAX_ENTRIES") {
-            self.prompt_cache_max_entries =
-                parse_required_env_override::<usize>("ASTER_POWER_PROMPT_CACHE_MAX_ENTRIES", &value)?;
+            self.prompt_cache_max_entries = parse_required_env_override::<usize>(
+                "ASTER_POWER_PROMPT_CACHE_MAX_ENTRIES",
+                &value,
+            )?;
         }
 
         if let Ok(value) = std::env::var("ASTER_POWER_PROMPT_CACHE_TTL_SECONDS") {
@@ -531,7 +533,8 @@ impl PowerConfig {
             self.gpu_attestation.nvattest_verifier = verifier;
         }
 
-        if let Ok(source) = std::env::var("ASTER_POWER_GPU_ATTESTATION_NVATTEST_GPU_EVIDENCE_SOURCE")
+        if let Ok(source) =
+            std::env::var("ASTER_POWER_GPU_ATTESTATION_NVATTEST_GPU_EVIDENCE_SOURCE")
         {
             self.gpu_attestation.nvattest_gpu_evidence_source = source;
         }
@@ -546,11 +549,13 @@ impl PowerConfig {
             self.gpu_attestation.nras_url = Some(url);
         }
 
-        if let Ok(architecture) = std::env::var("ASTER_POWER_GPU_ATTESTATION_NRAS_GPU_ARCHITECTURE") {
+        if let Ok(architecture) = std::env::var("ASTER_POWER_GPU_ATTESTATION_NRAS_GPU_ARCHITECTURE")
+        {
             self.gpu_attestation.nras_gpu_architecture = Some(architecture);
         }
 
-        if let Ok(claims_version) = std::env::var("ASTER_POWER_GPU_ATTESTATION_NRAS_CLAIMS_VERSION") {
+        if let Ok(claims_version) = std::env::var("ASTER_POWER_GPU_ATTESTATION_NRAS_CLAIMS_VERSION")
+        {
             self.gpu_attestation.nras_claims_version = claims_version;
         }
 

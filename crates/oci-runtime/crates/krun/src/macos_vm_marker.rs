@@ -338,7 +338,8 @@ mod tests {
         assert!(validate_marker_name("../marker").is_err());
         assert!(validate_marker_name(".aster-oci-hvf-vm-smoke-1';reboot").is_err());
         assert!(
-            validate_marker_name(".aster-oci-hvf-vm-smoke-0123456789ABCDEF0123456789abcdef").is_err()
+            validate_marker_name(".aster-oci-hvf-vm-smoke-0123456789ABCDEF0123456789abcdef")
+                .is_err()
         );
     }
 

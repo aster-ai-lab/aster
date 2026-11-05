@@ -167,7 +167,7 @@ async fn spawn_capturing_backend_with_json_body(
     (address, request_rx)
 }
 
-async fn spawn_sse_backend_with_body(
+pub(super) async fn spawn_sse_backend_with_body(
     body: String,
 ) -> (SocketAddr, tokio::sync::oneshot::Receiver<Vec<u8>>) {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -244,7 +244,7 @@ async fn spawn_repeating_json_backend_with_body(body: &'static str) -> SocketAdd
     address
 }
 
-async fn spawn_json_backend_with_owned_body(
+pub(super) async fn spawn_json_backend_with_owned_body(
     body: String,
 ) -> (SocketAddr, tokio::sync::oneshot::Receiver<Vec<u8>>) {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -324,6 +324,71 @@ async fn managed_inference_persists_upstream_usage_on_request_terminal() {
 
     stop_test_entrypoint(shutdown_tx, handle).await;
     spool.shutdown().await;
+}
+
+#[tokio::test]
+async fn translated_json_and_sse_persist_raw_cache_usage_without_inventing_reasoning() {
+    for streaming in [false, true] {
+        let key = inference_key('y');
+        let (backend, captured_request) = if streaming {
+            let events = [
+                serde_json::json!({"type":"message_start","message":{"id":"m1","type":"message","role":"assistant","model":"m","content":[],"usage":{"input_tokens":10,"cache_creation_input_tokens":2,"cache_read_input_tokens":4,"output_tokens":0}}}),
+                serde_json::json!({"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}),
+                serde_json::json!({"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"answer"}}),
+                serde_json::json!({"type":"content_block_stop","index":0}),
+                serde_json::json!({"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"output_tokens":6}}),
+                serde_json::json!({"type":"message_stop"}),
+            ];
+            spawn_sse_backend_with_body(
+                events
+                    .iter()
+                    .map(|event| {
+                        format!(
+                            "event: {}\ndata: {event}\n\n",
+                            event["type"].as_str().unwrap()
+                        )
+                    })
+                    .collect(),
+            )
+            .await
+        } else {
+            spawn_capturing_backend_with_json_body(r#"{"id":"m1","type":"message","role":"assistant","model":"m","content":[{"type":"text","text":"answer"}],"stop_reason":"end_turn","usage":{"input_tokens":10,"cache_creation_input_tokens":2,"cache_read_input_tokens":4,"output_tokens":6}}"#).await
+        };
+        let mut config = inference_config(backend, &key, Utc::now() + ChronoDuration::hours(1));
+        for route in config.inference.as_mut().unwrap().routes.values_mut() {
+            for model in route.models.values_mut() {
+                for target in &mut model.targets {
+                    target.protocol = crate::config::InferenceProtocol::Anthropic;
+                    target.translate = true;
+                }
+            }
+        }
+        config.validate().unwrap();
+        let directory = tempfile::tempdir().unwrap();
+        let (state, spool) = usage_state(&config, directory.path(), 1024 * 1024).await;
+        let (address, shutdown_tx, handle) = start_test_entrypoint(state).await;
+        let response = reqwest::Client::new().post(format!("http://{address}/v1/chat/completions"))
+            .bearer_auth(&key).json(&serde_json::json!({"model":"allowed-model","stream":streaming,"messages":[{"role":"user","content":"prompt-stays-out-of-ledger"}]}))
+            .send().await.unwrap();
+        assert_eq!(response.status(), 200);
+        let bytes = response.bytes().await.unwrap();
+        assert!(std::str::from_utf8(&bytes).unwrap().contains("answer"));
+        let request = captured_request.await.unwrap();
+        assert!(request.starts_with(b"POST /v1/messages HTTP/1.1\r\n"));
+        let events = lifecycle_events(&spool, 4).await;
+        let terminal = events.last().unwrap();
+        assert_eq!(terminal["outcome"], "succeeded");
+        assert_eq!(terminal["total_tokens"], 22);
+        assert_eq!(terminal["tokens"]["prompt_tokens"], 16);
+        assert_eq!(terminal["tokens"]["completion_tokens"], 6);
+        assert_eq!(terminal["tokens"]["cached_input_tokens"], 4);
+        assert!(terminal["tokens"].get("reasoning_tokens").is_none());
+        let serialized = serde_json::to_string(&events).unwrap();
+        assert!(!serialized.contains("prompt-stays-out-of-ledger"));
+        assert!(!serialized.contains(&key));
+        stop_test_entrypoint(shutdown_tx, handle).await;
+        spool.shutdown().await;
+    }
 }
 
 #[tokio::test]

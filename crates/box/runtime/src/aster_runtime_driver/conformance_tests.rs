@@ -225,11 +225,9 @@ fn hardware_sev_snp_config() -> Result<BoxRuntimeSevSnpConfig> {
         match std::env::var("ASTER_BOX_RUNTIME_CONFORMANCE_SEV_SNP_GENERATION").as_deref() {
             Ok("milan") => SevSnpGeneration::Milan,
             Ok("genoa") => SevSnpGeneration::Genoa,
-            _ => {
-                return Err(failure(
-                    "ASTER_BOX_RUNTIME_CONFORMANCE_SEV_SNP_GENERATION must be exactly milan or genoa",
-                ))
-            }
+            _ => return Err(failure(
+                "ASTER_BOX_RUNTIME_CONFORMANCE_SEV_SNP_GENERATION must be exactly milan or genoa",
+            )),
         };
     let measurement = std::env::var("ASTER_BOX_RUNTIME_CONFORMANCE_SEV_SNP_MEASUREMENT")
         .map_err(|_| {

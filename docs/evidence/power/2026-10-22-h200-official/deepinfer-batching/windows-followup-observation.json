@@ -1,6 +1,0 @@
-{
-  "stage": "Windows follow-up after batching",
-  "status": "credential_read_failed_before_inference",
-  "prior_windows_client_pass_retained": true,
-  "services_restarted_because_of_observation_failure": false
-}

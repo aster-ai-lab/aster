@@ -115,7 +115,8 @@ async fn shared_isolation_does_not_implicitly_advertise_attachment_v4() {
     capability
         .isolation_classes
         .push(IsolationClass::SharedGuestKernel);
-    let fixture = Fixture::with_profile(capability, aster_oci_sdk::AttachmentCapabilities::base_v1());
+    let fixture =
+        Fixture::with_profile(capability, aster_oci_sdk::AttachmentCapabilities::base_v1());
     let request = fixture.shared_handoff_request(
         "unadvertised-v4",
         named_target("unadvertised-v4", 1),

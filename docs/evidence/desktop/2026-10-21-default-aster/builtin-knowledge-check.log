@@ -1,3 +1,0 @@
-$ tsx scripts/generate-cherry-assistant-knowledge --check
-build:builtin-knowledge:check failed - resources/builtin-agents/cherry-assistant/product-manifest.json is out of date
-[ELIFECYCLE] Command failed with exit code 1.

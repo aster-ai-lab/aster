@@ -81,8 +81,13 @@ fn serve_test_connection(listener: TcpListener) {
 
     let (tag, client_final) = read_message(&mut stream).unwrap();
     assert_eq!(tag, b'p');
-    let (expected_final, server_signature) =
-        scram_client_final("aster_cloud", client_nonce, client_first_bare, &server_first).unwrap();
+    let (expected_final, server_signature) = scram_client_final(
+        "aster_cloud",
+        client_nonce,
+        client_first_bare,
+        &server_first,
+    )
+    .unwrap();
     assert_eq!(client_final, expected_final.as_bytes());
 
     let mut final_message = 12_u32.to_be_bytes().to_vec();

@@ -1,4 +1,6 @@
-use aster_box_core::{ExecutionLease, ExecutionManagerError, ExecutionManagerResult, ExecutionState};
+use aster_box_core::{
+    ExecutionLease, ExecutionManagerError, ExecutionManagerResult, ExecutionState,
+};
 
 use super::record::{execution_id, lease_from_record};
 use super::store::RuntimeUpdate;

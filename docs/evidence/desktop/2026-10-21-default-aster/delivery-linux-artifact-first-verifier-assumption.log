@@ -1,1 +1,0 @@
-First independent verifier run exited1: it incorrectly required the prefix "a3s-office " in --version output. Actual output was "0.45.0". Source crates/office/crates/cli/Cargo.toml declares0.45.0. Corrected verifier compares exact declared version; no product changes.

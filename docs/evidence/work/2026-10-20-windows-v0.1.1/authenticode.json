@@ -1,5 +1,0 @@
-{
-  "Path": "D:\\code\\aster\\target\\packaging\\aster-0.1.1-windows\\artifacts\\aster_0.1.1_x64-setup.exe",
-  "Status": "NotSigned",
-  "StatusMessage": "文件 D:\\code\\aster\\target\\packaging\\aster-0.1.1-windows\\artifacts\\aster_0.1.1_x64-setup.exe 未进行数字签名。无法在当前系统上运行此脚本。有关运行脚本和设置执行策略的详细信息，请参阅 https://go.microsoft.com/fwlink/?LinkID=135170 处的 about_Execution_Policies"
-}

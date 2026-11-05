@@ -410,8 +410,9 @@ mod tests {
             .open(temporary.path().join("init.log"))
             .expect("init log");
 
-        let plan = InheritedDescriptorPlan::aster_box_control(exec.as_fd(), pty.as_fd(), log.as_fd())
-            .expect("descriptor plan");
+        let plan =
+            InheritedDescriptorPlan::aster_box_control(exec.as_fd(), pty.as_fd(), log.as_fd())
+                .expect("descriptor plan");
         assert_eq!(
             plan.schema(),
             Some(&AgentInheritedDescriptorSchema::aster_box_control_v1())
@@ -603,8 +604,9 @@ mod tests {
             .mode(0o600)
             .open(&log_path)
             .expect("init log");
-        let plan = InheritedDescriptorPlan::aster_box_control(exec.as_fd(), pty.as_fd(), log.as_fd())
-            .expect("descriptor plan");
+        let plan =
+            InheritedDescriptorPlan::aster_box_control(exec.as_fd(), pty.as_fd(), log.as_fd())
+                .expect("descriptor plan");
         let occupied = OpenOptions::new()
             .read(true)
             .open("/dev/null")

@@ -1,9 +1,0 @@
-{
-  "argv": [
-    "target/debug/deps/env_manager-1f7217e7bdec0bca",
-    "--test-threads=1"
-  ],
-  "startedAtUnixSeconds": 1793629882.886963,
-  "finishedAtUnixSeconds": 1793630084.6523368,
-  "exitCode": 0
-}

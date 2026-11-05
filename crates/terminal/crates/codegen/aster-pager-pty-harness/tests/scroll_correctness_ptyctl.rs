@@ -6,8 +6,8 @@
 
 use std::time::{Duration, Instant};
 
-use aster_pager_pty_harness::{ContentController, PtyHarness, keys, pager_binary};
 use anyhow::{Context, Result, bail};
+use aster_pager_pty_harness::{ContentController, PtyHarness, keys, pager_binary};
 
 const ROWS: u16 = 40;
 const COLS: u16 = 100;

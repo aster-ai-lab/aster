@@ -1,1 +1,0 @@
-I'll read `input.txt` first, then copy it exactly to `output.txt` and verify.Writing the exact contents to `output.txt`, then reading it back and verifying with the required bash command.Next I'll read `output.txt`, then run the required comparison command.Running the required comparison now.cursor-delivery-6b6d2472-95b5-4b4d-ac12-2df57d48319a verified

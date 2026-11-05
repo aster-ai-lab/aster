@@ -196,7 +196,7 @@ impl PrincipalVerifier {
 
 /// Accept `Authorization: Bearer <token>` (OpenAI SDKs) or `x-api-key`
 /// (Anthropic SDKs). Exactly one credential must be present.
-fn principal_token(headers: &HeaderMap) -> Result<&str, InferenceAccessError> {
+pub(super) fn principal_token(headers: &HeaderMap) -> Result<&str, InferenceAccessError> {
     let bearer = single_header(headers, AUTHORIZATION.as_str())?
         .map(|value| {
             let (scheme, token) = value

@@ -106,11 +106,11 @@ mod windows_handle_reclamation;
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 mod windows_system_image;
 
+pub use agent_smoke::{agent_vm_smoke, AgentVmHandoff};
 pub use aster_oci_agent_protocol::{AgentVsockEndpoint, AGENT_VSOCK_PORT};
 use aster_oci_core::CapabilityStatus;
 use aster_oci_core::HostPlatform;
 use aster_oci_sdk::{Error, ErrorCode, Result};
-pub use agent_smoke::{agent_vm_smoke, AgentVmHandoff};
 pub use report::{
     KrunAgentVmSmokeReport, KrunContextSmokeReport, KrunSystemImageContextSmokeReport,
     KrunVmSmokeReport, LinuxBootAssetsEvidence, MacosBootAssetsEvidence, WindowsBootAssetsEvidence,
@@ -762,7 +762,8 @@ pub struct MacosAgentVmWorkerHandoff<'a> {
     socket: &'a Path,
     guest_recovery_report: Option<&'a str>,
     vm_attachment_manifest_sha256: Option<&'a str>,
-    transport_qualification: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification:
+        Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
 }
 
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
@@ -924,7 +925,8 @@ pub struct LinuxAgentVmWorkerHandoff<'a> {
     socket: &'a Path,
     guest_recovery_report: Option<&'a str>,
     vm_attachment_manifest_sha256: Option<&'a str>,
-    transport_qualification: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification:
+        Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
     qualify_kvm_post_probe_failure: bool,
     qualify_kvm_compatibility_drift: Option<&'a str>,
 }

@@ -1,7 +1,0 @@
-
-running 1 test
-test layers::xq::indexer::tests::gpu::h200_xq_f32_compression_index_projections_and_atomic_cache_match_stage_oracles ... qualified small XQ F16/F32 C1/C2, group-start RoPE, exact main/index grids, scaled F32 index scoring and cancel/partial-prefix atomic caches; full backbone/model/8-card qualification remains open
-ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 456 filtered out; finished in 11.87s
-

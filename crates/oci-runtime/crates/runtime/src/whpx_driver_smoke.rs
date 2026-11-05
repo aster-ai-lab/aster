@@ -348,9 +348,10 @@ mod windows {
         let capability = driver.capability();
         report.readiness_remained_probe_only = capability.status == CapabilityStatus::Available
             && capability.readiness == DriverReadiness::ProbeOnly;
-        let expected_share =
-            aster_oci_core::hardware_vm::virtiofs_share_mode(aster_oci_core::DriverKind::LibkrunWhpx)
-                .unwrap_or("");
+        let expected_share = aster_oci_core::hardware_vm::virtiofs_share_mode(
+            aster_oci_core::DriverKind::LibkrunWhpx,
+        )
+        .unwrap_or("");
         report.runtime_share_capability_verified = capability
             .evidence
             .get("runtime_share")

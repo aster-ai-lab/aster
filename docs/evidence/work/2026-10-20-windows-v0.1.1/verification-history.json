@@ -1,8 +1,0 @@
-{
-  "first_installer_check": "Exact built-host hash comparison failed; candidate installer remained unchanged.",
-  "cause": "Tauri CLI 2.11.5 inserts the NSIS NSS marker when bundling and restores UNK in the build directory.",
-  "reconciliation": "Independent whole-file comparison proves exactly three expected bytes differ inside the unique full 27-byte marker. All other host bytes match. ACP and Office are exact SHA-256 matches.",
-  "proof": "nsis-marker-independent-audit.json",
-  "candidate_rebuilt_or_modified": false,
-  "github_read_retry": "One pre-notes GraphQL read timed out; the upload succeeded. A fresh read verified matching published hashes before notes were edited; no existing asset was overwritten."
-}

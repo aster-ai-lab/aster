@@ -28,7 +28,8 @@ fn xolotl_inline_acl_is_explicit_bounded_and_uses_the_native_schema() {
 
 #[test]
 fn workload_acl_environment_is_an_explicit_exclusive_input() {
-    let parsed = Cli::try_parse_from(["aster-power", "serve", "--config-from-workload-env"]).unwrap();
+    let parsed =
+        Cli::try_parse_from(["aster-power", "serve", "--config-from-workload-env"]).unwrap();
     let Some(Command::Serve(args)) = parsed.command else {
         panic!("serve")
     };
