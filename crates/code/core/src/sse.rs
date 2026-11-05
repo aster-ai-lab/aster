@@ -44,6 +44,10 @@ impl Utf8StreamDecoder {
     pub(crate) fn finish(&self) -> Result<(), std::str::Utf8Error> {
         std::str::from_utf8(&self.pending).map(|_| ())
     }
+
+    pub(crate) fn pending_bytes(&self) -> usize {
+        self.pending.len()
+    }
 }
 
 /// Remove every complete SSE event from the front of `buffer`.
@@ -213,5 +217,17 @@ mod tests {
     fn utf8_stream_decoder_rejects_invalid_bytes() {
         let mut decoder = Utf8StreamDecoder::default();
         assert!(decoder.push_to(&[0xff], &mut String::new()).is_err());
+    }
+
+    #[test]
+    fn utf8_stream_decoder_reports_pending_bytes() {
+        let mut decoder = Utf8StreamDecoder::default();
+        let mut output = String::new();
+        let bytes = "维护".as_bytes();
+        decoder.push_to(&bytes[..1], &mut output).unwrap();
+        assert_eq!(decoder.pending_bytes(), 1);
+        decoder.push_to(&bytes[1..], &mut output).unwrap();
+        assert_eq!(decoder.pending_bytes(), 0);
+        decoder.finish().unwrap();
     }
 }

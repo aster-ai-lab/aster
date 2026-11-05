@@ -1,12 +1,12 @@
 //! Legacy MCP HTTP+SSE transport. The configured URL receives SSE events;
 //! the server advertises the POST endpoint and returns JSON-RPC replies on SSE.
 
-use super::notifications::{NotificationReceiver, NotificationSender};
 use super::McpTransport;
+use super::notifications::{NotificationReceiver, NotificationSender};
 use crate::llm::http::build_reqwest_client;
 use crate::mcp::protocol::{JsonRpcNotification, JsonRpcRequest, JsonRpcResponse, McpNotification};
-use crate::sse::{data_field_value, take_sse_events_scanned, SseEventScan, Utf8StreamDecoder};
-use anyhow::{anyhow, bail, Context, Result};
+use crate::sse::{Utf8StreamDecoder, data_field_value, take_sse_events};
+use anyhow::{Context, Result, anyhow, bail};
 use async_trait::async_trait;
 use futures::StreamExt;
 use reqwest::{Client, Url};
@@ -200,7 +200,6 @@ impl HttpSseTransport {
         }
         let mut stream = response.bytes_stream();
         let mut decoder = Utf8StreamDecoder::default();
-        let mut scan = SseEventScan::default();
         let mut buffer = String::new();
         while let Some(chunk) = stream.next().await {
             let bytes = chunk.map_err(reqwest::Error::without_url)?;
@@ -215,12 +214,12 @@ impl HttpSseTransport {
             decoder
                 .push_to(&bytes, &mut buffer)
                 .context("Invalid MCP SSE UTF-8")?;
-            for event in take_sse_events_scanned(&mut buffer, &mut scan, false) {
+            for event in take_sse_events(&mut buffer, false) {
                 Self::receive_event(&event, url, session, notifications, ready).await?;
             }
         }
         decoder.finish().context("Incomplete MCP SSE UTF-8")?;
-        for event in take_sse_events_scanned(&mut buffer, &mut scan, true) {
+        for event in take_sse_events(&mut buffer, true) {
             Self::receive_event(&event, url, session, notifications, ready).await?;
         }
         Ok(())
