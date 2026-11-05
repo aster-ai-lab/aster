@@ -541,6 +541,16 @@ struct DrainedChanges {
     lagged: bool,
 }
 
+fn failure_kind_counts(
+    failures: &[super::reconcile::CatalogReconcileFailure],
+) -> std::collections::BTreeMap<super::reconcile::CatalogReconcileFailureKind, usize> {
+    let mut counts = std::collections::BTreeMap::new();
+    for failure in failures {
+        *counts.entry(failure.kind.clone()).or_default() += 1;
+    }
+    counts
+}
+
 async fn report_reconciliation(
     result: Result<CatalogReconcileReport, super::types::WorkspaceIndexError>,
     reconciler: &WorkspaceCatalogReconciler,
@@ -563,6 +573,8 @@ async fn report_reconciliation(
                     source_revision = report.source_revision,
                     failed_files = report.failures.len(),
                     indexed_files = report.indexed_files,
+                    failure_samples = ?report.failures.iter().take(3).collect::<Vec<_>>(),
+                    failure_kinds = ?failure_kind_counts(&report.failures),
                     "workspace retrieval catalog is partially indexed"
                 );
             }

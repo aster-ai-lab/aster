@@ -387,6 +387,22 @@ fn decide(raw: &str, script: &mut Script) -> String {
             streaming,
         );
     }
+    if raw.contains("INCIDENT-GREP-FIRST") && script.searches == 0 {
+        script.searches += 1;
+        return reply_tool(
+            "search",
+            serde_json::json!({
+                "mode": "grep",
+                "query": "aster-convergence-plan\\.html|native-client-architecture\\.md|target-goal-issues|target-issue-search|\\.kimi-tmp",
+                "path": ".",
+                "include": "*.{md,html,toml,yml,yaml,json,acl,justfile}",
+                "output_mode": "content",
+                "limit": 40
+            }),
+            seq,
+            streaming,
+        );
+    }
     if raw.contains("SEARCH-FIRST") && script.searches < SEARCHES.len() {
         let (mode, query) = SEARCHES[script.searches];
         script.searches += 1;
@@ -1228,6 +1244,67 @@ async fn a_goal_launch_runs_the_first_attempt_as_the_bound_task_slice() {
                 std::fs::read_to_string(workspace.join("answer.txt")).expect("answer"),
                 "42\n"
             );
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn incident_grep_is_bounded_through_default_interactive_and_unattended_acp() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("incident-grep-ws");
+            std::fs::write(workspace.join("a.md"), ".kimi-tmp\n").expect("seed match");
+            for index in 0..20_001 {
+                std::fs::write(workspace.join(format!("filler-{index:05}.md")), "x\n")
+                    .expect("seed scan fixture");
+            }
+            for unattended in [false, true] {
+                let label = if unattended {
+                    "unattended"
+                } else {
+                    "interactive"
+                };
+                let outside = isolate("incident-grep-state");
+                let home = isolate("incident-grep-home");
+                let tmp = isolate("incident-grep-tmp");
+                let (addr, script) = spawn_mock();
+                let config = write_acl(&outside, &format!("http://{addr}/v1"));
+                let args = if unattended {
+                    vec!["--unattended"]
+                } else {
+                    vec![]
+                };
+                let agent = spawn_agent(&workspace, &config, &home, &tmp, &args).await;
+                let session = open(&agent, &workspace).await;
+                let started = std::time::Instant::now();
+                let response = say(
+                    &agent,
+                    &session,
+                    "INCIDENT-GREP-FIRST UNATTENDED-TASK write answer.txt",
+                )
+                .await;
+                let prompt_ms = started.elapsed().as_millis();
+                if unattended {
+                    assert!(response.is_ok(), "{label} ACP prompt failed: {response:?}");
+                }
+                let script = script.lock().expect("mock");
+                assert_eq!(script.searches, 1);
+                assert!(
+                    script
+                        .bodies
+                        .iter()
+                        .any(|body| body.contains("a.md:1:") && body.contains("output truncated")),
+                    "{label} ACP did not return bounded grep results"
+                );
+                assert!(
+                    prompt_ms < 45_000,
+                    "{label} ACP search orchestration took {prompt_ms} ms"
+                );
+                eprintln!(
+                    "ACP_GREP_BUDGET_OBSERVATION {}",
+                    serde_json::json!({"mode": label, "promptMs": prompt_ms})
+                );
+            }
         })
         .await;
 }

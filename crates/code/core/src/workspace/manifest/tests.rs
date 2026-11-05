@@ -471,6 +471,88 @@ async fn manifest_search_matches_glob_and_grep() {
     );
 }
 
+#[cfg(feature = "grep-trigram")]
+#[tokio::test]
+async fn manifest_grep_skips_auto_index_for_a_regex_that_cannot_prune() {
+    let _permit = crate::test_support::resource_intensive_test_permit().await;
+    let temp = tempfile::tempdir().unwrap();
+    write(&temp.path().join("README.md"), b"needle\n");
+    let backend = ManifestWorkspaceBackend::new(temp.path());
+    let mut rx = backend.manifest().subscribe();
+    tokio::time::timeout(
+        crate::test_support::external_resource_start_timeout(Duration::from_secs(5)),
+        rx.recv(),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+
+    let grep = backend
+        .grep(WorkspaceGrepRequest {
+            base: WorkspacePath::root(),
+            pattern: "needle|other".to_string(),
+            glob: None,
+            context_lines: 0,
+            case_insensitive: false,
+            max_output_size: 1024,
+        })
+        .await
+        .unwrap();
+
+    assert_eq!(grep.match_count, 1);
+    assert!(backend.auto_grep_candidates.lock().unwrap().is_none());
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn manifest_grep_candidate_selection_does_not_block_the_executor() {
+    use std::future::{poll_fn, Future};
+    use std::task::Poll;
+
+    struct SlowCandidate;
+    impl crate::workspace::GrepCandidateIndex for SlowCandidate {
+        fn select_paths(
+            &self,
+            _pattern: &str,
+            _case_insensitive: bool,
+        ) -> crate::workspace::GrepCandidateSelection {
+            std::thread::sleep(Duration::from_millis(50));
+            crate::workspace::GrepCandidateSelection::Unconstrained
+        }
+    }
+
+    let _permit = crate::test_support::resource_intensive_test_permit().await;
+    let temp = tempfile::tempdir().unwrap();
+    write(&temp.path().join("README.md"), b"needle\n");
+    let backend = ManifestWorkspaceBackend::new(temp.path());
+    backend
+        .configure_grep_candidate_index(Arc::new(SlowCandidate))
+        .unwrap();
+    let mut rx = backend.manifest().subscribe();
+    tokio::time::timeout(
+        crate::test_support::external_resource_start_timeout(Duration::from_secs(5)),
+        rx.recv(),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+
+    let mut fut = std::pin::pin!(backend.grep(WorkspaceGrepRequest {
+        base: WorkspacePath::root(),
+        pattern: "needle".to_string(),
+        glob: None,
+        context_lines: 0,
+        case_insensitive: false,
+        max_output_size: 1024,
+    }));
+    let pending = poll_fn(|cx| match fut.as_mut().poll(cx) {
+        Poll::Pending => Poll::Ready(true),
+        Poll::Ready(_) => Poll::Ready(false),
+    })
+    .await;
+    assert!(pending, "candidate selection blocked the executor");
+    assert_eq!(fut.await.unwrap().match_count, 1);
+}
+
 #[tokio::test]
 async fn deferred_manifest_keeps_fallback_search_ready_until_one_way_activation() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
@@ -1098,6 +1180,69 @@ async fn manifest_search_falls_back_before_initial_scan() {
         .matches
         .iter()
         .any(|path| path.as_str() == "src/main.rs"));
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn manifest_grep_poll_yields_before_the_walk_finishes() {
+    use std::future::{poll_fn, Future};
+    use std::task::Poll;
+
+    let temp = tempfile::tempdir().unwrap();
+    std::fs::write(temp.path().join("big.txt"), vec![b'x'; 8 * 1024 * 1024]).unwrap();
+    let backend = ManifestWorkspaceBackend::new(temp.path());
+    let request = WorkspaceGrepRequest {
+        base: WorkspacePath::root(),
+        pattern: "needle-not-in-file".to_string(),
+        glob: None,
+        context_lines: 0,
+        case_insensitive: false,
+        max_output_size: 1024,
+    };
+    let mut fut = std::pin::pin!(backend.grep_with_sources(request));
+    let pending = poll_fn(|cx| match fut.as_mut().poll(cx) {
+        Poll::Pending => Poll::Ready(true),
+        Poll::Ready(_) => Poll::Ready(false),
+    })
+    .await;
+    assert!(
+        pending,
+        "manifest grep held the current-thread runtime for the whole walk"
+    );
+}
+
+#[test]
+fn manifest_grep_honors_the_time_limit() {
+    let temp = tempfile::tempdir().unwrap();
+    std::fs::write(temp.path().join("a.txt"), "needle\n").unwrap();
+    let mut snapshot = LocalWorkspaceManifestSnapshot::empty(temp.path().to_path_buf());
+    snapshot.files.push(test_file("a.txt"));
+    let search_snapshot = ManifestSearchSnapshot {
+        snapshot: Arc::new(snapshot.clone()),
+        index: Arc::new(ManifestIndex::build(&snapshot.files)),
+    };
+    let outcome = grep_manifest_snapshot(
+        Arc::new(LocalWorkspaceBackend::new(temp.path().to_path_buf())),
+        search_snapshot,
+        WorkspaceGrepRequest {
+            base: WorkspacePath::root(),
+            pattern: "needle".to_string(),
+            glob: None,
+            context_lines: 0,
+            case_insensitive: false,
+            max_output_size: 1024,
+        },
+        HashMap::new(),
+        None,
+        &AtomicBool::new(false),
+        crate::workspace::local::GrepScanLimits {
+            deadline: std::time::Instant::now(),
+            file_limit: 10,
+        },
+    )
+    .unwrap();
+
+    assert!(outcome.result.truncated);
+    assert_eq!(outcome.result.match_count, 0);
 }
 
 #[test]

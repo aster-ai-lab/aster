@@ -600,13 +600,14 @@ impl WorkspacePersistentIndex {
                     plan_generation_delta(previous_chunks, previous_pks, &indexed_chunks)
                 {
                     let source = self.root.join(previous_generation).join("collection");
+                    let appended_pks = delta.new_pks[delta.kept.len()..].to_vec();
                     match super::aster_vec::AsterVecLexicalIndex::apply_delta_at_path(
                         &collection_path,
                         &source,
                         delta.kept,
                         &delta.removed_pks,
                         delta.appended,
-                        previous_chunks.len(),
+                        &appended_pks,
                     ) {
                         Ok(built) => {
                             tracing::debug!(
@@ -1318,8 +1319,19 @@ fn plan_generation_delta(
     if churn > cap {
         return None;
     }
-    for next_ordinal in (previous_chunks.len()..).take(appended.len()) {
-        appended_pks.push(String::from("d") + &next_ordinal.to_string());
+    let used_pks: std::collections::HashSet<&str> =
+        previous_pks.iter().map(String::as_str).collect();
+    let mut next_ordinal = previous_chunks.len();
+    for _ in &appended {
+        let pk = loop {
+            let candidate = String::from("d") + &next_ordinal.to_string();
+            if !used_pks.contains(candidate.as_str()) {
+                break candidate;
+            }
+            next_ordinal += 1;
+        };
+        appended_pks.push(pk);
+        next_ordinal += 1;
     }
     let appended_count = appended.len();
     let mut new_pks = kept.iter().map(|(pk, _)| pk.clone()).collect::<Vec<_>>();

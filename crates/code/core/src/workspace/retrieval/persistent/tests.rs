@@ -399,6 +399,72 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
 
 #[cfg(feature = "aster-vec-fts")]
 #[test]
+fn delta_never_reuses_a_live_sparse_primary_key() {
+    let directory = tempfile::tempdir().expect("temporary index directory");
+    let catalog = WorkspaceChunkCatalog::new_with_engine(
+        ChunkingConfig::default(),
+        ChunkCatalogLimits::default(),
+        WorkspaceLexicalEngine::AsterVec,
+    )
+    .expect("catalog");
+    for (position, name) in ["alpha", "beta", "gamma"].into_iter().enumerate() {
+        catalog
+            .replace_file(
+                &WorkspacePath::from_normalized(format!("src/{name}.rs")),
+                Some("rust"),
+                1,
+                &format!("pub fn marker{position}() {{}}\n"),
+            )
+            .expect("initial admission");
+    }
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
+        .expect("persistent index");
+    index
+        .sync_snapshot(&catalog.snapshot().expect("initial snapshot"))
+        .expect("initial generation");
+    catalog
+        .replace_file(
+            &WorkspacePath::from_normalized("src/beta.rs"),
+            Some("rust"),
+            2,
+            "pub fn replacement() {}\n",
+        )
+        .expect("edit");
+    index
+        .sync_snapshot(&catalog.snapshot().expect("edited snapshot"))
+        .expect("first sparse generation");
+
+    let (previous_chunks, previous_pks) = {
+        let guard = index.state.read().expect("state");
+        let state = guard.as_ref().expect("published state");
+        (
+            std::sync::Arc::clone(&state.indexed_chunks),
+            std::sync::Arc::clone(&state.pks),
+        )
+    };
+    catalog
+        .remove_file(&WorkspacePath::from_normalized("src/alpha.rs"), 3)
+        .expect("remove old path");
+    catalog
+        .replace_file(
+            &WorkspacePath::from_normalized("src/renamed.rs"),
+            Some("rust"),
+            3,
+            "pub fn marker0() {}\n",
+        )
+        .expect("rename");
+    let next_chunks = catalog.snapshot().expect("renamed snapshot").chunks();
+    let delta = super::plan_generation_delta(&previous_chunks, &previous_pks, &next_chunks)
+        .expect("bounded rename delta");
+    let appended = &delta.new_pks[delta.kept.len()..];
+    assert!(
+        appended.iter().all(|pk| !previous_pks.contains(pk)),
+        "appended keys {appended:?} collide with live keys {previous_pks:?}"
+    );
+}
+
+#[cfg(feature = "aster-vec-fts")]
+#[test]
 fn oversized_delta_and_missing_source_fall_back_to_full_builds() {
     let directory = tempfile::tempdir().expect("temporary index directory");
     let catalog = WorkspaceChunkCatalog::new_with_engine(

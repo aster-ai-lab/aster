@@ -221,21 +221,38 @@ impl AsterVecLexicalIndex {
     ///
     /// The previous generation's collection directory is copied to
     /// `collection_root` (a fresh staging destination), the removed primary
-    /// keys are deleted, and the appended documents are upserted with fresh
-    /// ordinals. Kept documents retain their previous engine primary keys, so
-    /// `native_ordinals` maps old keys onto the new dense positions. The
-    /// caller owns generation atomicity: it publishes the containing
-    /// directory only after this returns.
+    /// keys are deleted, and the appended documents are upserted with the
+    /// caller-allocated fresh primary keys. Kept documents retain their
+    /// previous engine primary keys, so `native_ordinals` maps old keys onto
+    /// the new dense positions. The caller owns generation atomicity: it
+    /// publishes the containing directory only after this returns.
     pub(crate) fn apply_delta_at_path(
         collection_root: &std::path::Path,
         source_collection: &std::path::Path,
         kept: Vec<(String, String)>,
         removed_pks: &[String],
         appended: Vec<(String, String)>,
-        next_ordinal: usize,
+        appended_pks: &[String],
     ) -> Result<Self, AsterVecBuildError> {
         let kept = validate_pk_documents(kept)?;
         let appended = validate_pk_documents(appended)?;
+        if appended_pks.len() != appended.len() {
+            return Err(AsterVecBuildError::Fatal(
+                "aster-vec delta primary key count does not match appended documents".to_owned(),
+            ));
+        }
+        let mut engine_pks = HashSet::with_capacity(kept.len() + appended_pks.len());
+        for pk in kept
+            .iter()
+            .map(|(pk, _)| pk.as_str())
+            .chain(appended_pks.iter().map(String::as_str))
+        {
+            if pk.is_empty() || pk.contains('\0') || !engine_pks.insert(pk) {
+                return Err(AsterVecBuildError::Fatal(
+                    "aster-vec delta primary keys must be non-empty and unique".to_owned(),
+                ));
+            }
+        }
         if !source_collection.is_dir() {
             return Err(AsterVecBuildError::Retryable(
                 "aster-vec delta source collection is missing: ".to_owned()
@@ -260,14 +277,16 @@ impl AsterVecLexicalIndex {
         }
 
         let prepared_appended = prepare_documents(&appended).map_err(fatal_error)?;
-        let mut appended_pks = Vec::with_capacity(prepared_appended.len());
+        if prepared_appended.len() != appended_pks.len() {
+            return Err(AsterVecBuildError::Fatal(
+                "aster-vec delta primary keys do not cover every prepared document".to_owned(),
+            ));
+        }
         for (batch_index, batch) in prepared_appended.chunks(INSERT_BATCH_SIZE).enumerate() {
-            let base = next_ordinal + batch_index * INSERT_BATCH_SIZE;
+            let base = batch_index * INSERT_BATCH_SIZE;
             let mut docs = Vec::with_capacity(batch.len());
             for (offset, prepared_document) in batch.iter().enumerate() {
-                let ordinal = base + offset;
-                let native_key = String::from("d") + &ordinal.to_string();
-                appended_pks.push(native_key.clone());
+                let native_key = appended_pks[base + offset].clone();
                 let mut native_document = Doc::new().map_err(fatal_error)?;
                 native_document.set_pk(&native_key);
                 native_document

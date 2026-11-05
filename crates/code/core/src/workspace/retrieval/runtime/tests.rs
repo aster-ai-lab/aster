@@ -808,8 +808,38 @@ async fn report_reconciliation_warns_on_partial_failures() {
         full_rebuild: false,
         failures: vec![CatalogReconcileFailure {
             path: "bad.rs".to_string(),
+            kind: super::super::reconcile::CatalogReconcileFailureKind::Other,
             message: "forced partial failure".to_string(),
         }],
     };
     super::report_reconciliation(Ok(report), &reconciler, None).await;
+}
+
+#[test]
+fn failure_kinds_are_counted_by_typed_reason() {
+    use super::super::reconcile::{CatalogReconcileFailure, CatalogReconcileFailureKind};
+
+    let failures = vec![
+        CatalogReconcileFailure {
+            path: "a.rs".into(),
+            kind: CatalogReconcileFailureKind::BudgetExceeded("index byte estimate"),
+            message: "budget".into(),
+        },
+        CatalogReconcileFailure {
+            path: "b.rs".into(),
+            kind: CatalogReconcileFailureKind::BudgetExceeded("index byte estimate"),
+            message: "budget".into(),
+        },
+        CatalogReconcileFailure {
+            path: "c.rs".into(),
+            kind: CatalogReconcileFailureKind::TooManyChunks,
+            message: "chunks".into(),
+        },
+    ];
+    let counts = super::failure_kind_counts(&failures);
+    assert_eq!(
+        counts[&CatalogReconcileFailureKind::BudgetExceeded("index byte estimate")],
+        2
+    );
+    assert_eq!(counts[&CatalogReconcileFailureKind::TooManyChunks], 1);
 }

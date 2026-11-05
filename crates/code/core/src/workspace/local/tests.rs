@@ -1,5 +1,34 @@
-use super::super::WorkspaceServices;
+use super::super::{WorkspaceRef, WorkspaceServices};
 use super::*;
+
+#[tokio::test]
+async fn local_services_set_a_finite_operation_timeout() {
+    let temp = tempfile::tempdir().unwrap();
+    for services in [
+        WorkspaceServices::local(temp.path()),
+        WorkspaceServices::local_with_manifest(temp.path()),
+    ] {
+        assert_eq!(services.operation_timeout(), Some(Duration::from_secs(30)));
+    }
+}
+
+#[tokio::test]
+async fn operation_timeout_surfaces_instead_of_waiting_forever() {
+    let temp = tempfile::tempdir().unwrap();
+    let backend = Arc::new(LocalWorkspaceBackend::new(temp.path().to_path_buf()));
+    let services = WorkspaceServices::builder(WorkspaceRef::new("test", "test"), backend)
+        .operation_timeout(Duration::from_millis(5))
+        .build();
+
+    let error = services
+        .run_with_timeout("probe", async {
+            tokio::time::sleep(Duration::from_secs(60)).await;
+            Ok::<(), anyhow::Error>(())
+        })
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("timed out"), "{error}");
+}
 
 #[tokio::test]
 async fn local_backend_reads_writes_and_lists() {
@@ -85,8 +114,89 @@ fn grep_walk_stops_when_cancel_is_already_set() {
         max_output_size: 1024,
     };
     let cancel = AtomicBool::new(true);
-    let error = grep_walk(temp.path(), None, temp.path(), &regex, &request, &cancel).unwrap_err();
+    let error = grep_walk(
+        temp.path(),
+        None,
+        temp.path(),
+        &regex,
+        &request,
+        &cancel,
+        GrepScanLimits {
+            deadline: Instant::now() + Duration::from_secs(60),
+            file_limit: 10,
+        },
+    )
+    .unwrap_err();
     assert!(error.to_string().contains("cancelled"), "{error}");
+}
+
+#[test]
+fn grep_walk_returns_partial_results_at_the_file_limit() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    for name in ["a.txt", "b.txt", "c.txt"] {
+        std::fs::write(root.join(name), "needle\n").unwrap();
+    }
+    let regex = regex::Regex::new("needle").unwrap();
+    let request = WorkspaceGrepRequest {
+        base: WorkspacePath::root(),
+        pattern: "needle".to_string(),
+        glob: None,
+        context_lines: 0,
+        case_insensitive: false,
+        max_output_size: 1024,
+    };
+    let outcome = grep_walk(
+        &root,
+        None,
+        &root,
+        &regex,
+        &request,
+        &AtomicBool::new(false),
+        GrepScanLimits {
+            deadline: Instant::now() + Duration::from_secs(60),
+            file_limit: 2,
+        },
+    )
+    .unwrap();
+
+    assert!(outcome.result.truncated);
+    assert_eq!(outcome.result.match_count, 2, "{outcome:?}");
+    assert_eq!(outcome.result.file_count, 2, "{outcome:?}");
+    assert_eq!(outcome.matched_paths.unwrap().len(), 2);
+}
+
+#[test]
+fn grep_walk_returns_partial_results_at_the_time_limit() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    std::fs::write(root.join("a.txt"), "needle\n").unwrap();
+    let regex = regex::Regex::new("needle").unwrap();
+    let request = WorkspaceGrepRequest {
+        base: WorkspacePath::root(),
+        pattern: "needle".to_string(),
+        glob: None,
+        context_lines: 0,
+        case_insensitive: false,
+        max_output_size: 1024,
+    };
+    let outcome = grep_walk(
+        &root,
+        None,
+        &root,
+        &regex,
+        &request,
+        &AtomicBool::new(false),
+        GrepScanLimits {
+            deadline: Instant::now(),
+            file_limit: 10,
+        },
+    )
+    .unwrap();
+
+    assert!(outcome.result.truncated);
+    assert_eq!(outcome.result.match_count, 0);
+    assert_eq!(outcome.result.file_count, 0);
 }
 
 #[tokio::test(flavor = "current_thread")]

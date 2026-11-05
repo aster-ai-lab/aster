@@ -1,0 +1,6 @@
+platform=macos
+release=aster-cli-v0.1.8
+asset=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-release-qualification-0qh4xy0d/assets/aster-cli-v0.1.8-macos.tar.gz
+installed Aster v0.1.8 into /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-release-qualification-0qh4xy0d/bin
+aster=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-release-qualification-0qh4xy0d/bin/aster
+aster-acp=/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster-release-qualification-0qh4xy0d/bin/aster-acp

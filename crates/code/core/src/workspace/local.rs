@@ -28,7 +28,16 @@ use std::io::Read as _;
 use std::path::{Component, Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::time::{Duration, Instant};
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
+
+pub(super) const GREP_SCAN_TIMEOUT: Duration = Duration::from_secs(30);
+pub(super) const GREP_SCAN_FILE_LIMIT: usize = 20_000;
+
+pub(super) struct GrepScanLimits {
+    pub(super) deadline: Instant,
+    pub(super) file_limit: usize,
+}
 
 /// Per-file byte bound for text reads that materialize a file in memory.
 ///
@@ -48,20 +57,20 @@ pub struct LocalWorkspaceBackend {
     access_boundary: Option<Arc<LocalWorkspaceAccessBoundary>>,
 }
 
-struct CancelGitWorkerOnDrop {
+pub(super) struct CancelGitWorkerOnDrop {
     cancellation: Arc<AtomicBool>,
     armed: bool,
 }
 
 impl CancelGitWorkerOnDrop {
-    fn new(cancellation: Arc<AtomicBool>) -> Self {
+    pub(super) fn new(cancellation: Arc<AtomicBool>) -> Self {
         Self {
             cancellation,
             armed: true,
         }
     }
 
-    fn disarm(&mut self) {
+    pub(super) fn disarm(&mut self) {
         self.armed = false;
     }
 }
@@ -752,6 +761,10 @@ impl WorkspaceSearch for LocalWorkspaceBackend {
                 &regex,
                 &request,
                 &worker_cancellation,
+                GrepScanLimits {
+                    deadline: Instant::now() + GREP_SCAN_TIMEOUT,
+                    file_limit: GREP_SCAN_FILE_LIMIT,
+                },
             )
         })
         .await;
@@ -1427,6 +1440,7 @@ fn grep_walk(
     regex: &regex::Regex,
     request: &WorkspaceGrepRequest,
     cancel: &AtomicBool,
+    limits: GrepScanLimits,
 ) -> Result<WorkspaceGrepOutcome> {
     if cancel.load(Ordering::Acquire) {
         bail!("cancelled");
@@ -1455,15 +1469,22 @@ fn grep_walk(
     let mut matched_paths = Vec::new();
     let mut matches = Vec::new();
     let mut skipped_oversize = Vec::new();
+    let mut scanned_files = 0;
+    let mut truncated = false;
     let metadata_only = request.max_output_size == 0;
 
     for entry in builder.build().flatten() {
         if cancel.load(Ordering::Acquire) {
             bail!("cancelled");
         }
+        if scanned_files >= limits.file_limit || Instant::now() >= limits.deadline {
+            truncated = true;
+            break;
+        }
         if !entry.file_type().map(|ft| ft.is_file()).unwrap_or(false) {
             continue;
         }
+        scanned_files += 1;
 
         let file_path = entry.path();
         let workspace_path =
@@ -1544,7 +1565,7 @@ fn grep_walk(
             output,
             match_count,
             file_count,
-            truncated: false,
+            truncated,
         },
         matches: Some(matches),
         matched_paths: Some(matched_paths),

@@ -1,5 +1,17 @@
 # Local validation
 
+## Core／ACP 当前技术文档与发布证据
+
+2026-11-05 更新的 [Core／ACP DeepWiki](architecture/aster-core-acp.md)
+系统说明当前搜索预算、取消与截断语义、清单检索、增量主键、失败分类、
+ACP 装配和发布门禁。相关结果为 278 项 Core／ACP 测试通过，Core／ACP
+Clippy 通过，以及 13 成员 macOS 候选包的两种隔离安装执行验收通过。
+这些结果不覆盖全部 TUI 改动，也不表示大型仓库默认索引预算必然达到 Ready。
+
+详细证据：[Core／ACP 发布收敛](evidence/code/2026-11-05-core-acp-release-convergence/OUTCOME.md)。
+
+## 历史验证
+
 Validated on macOS / Apple Silicon with Rust 1.97.1 on 2026-10-18.
 These results qualify the migration and local launch paths, not a release
 or every optional upstream integration.
@@ -60,7 +72,7 @@ python3 tests/e2e/startup.py
 python3 tests/just_work.py
 ```
 
-`just code --version` builds both default members and reports Aster 0.1.1.
+After `just build`, `just code --version` runs the built CLI and reports its version.
 `just work` was also used to launch the existing compiled Work bundle;
 Work now builds from this same workspace; its frontend remains a local pnpm workspace.
 
@@ -98,7 +110,7 @@ external browsers and live optional cloud backends were not qualified in this lo
 ## Work quality gates retained from the import
 
 The full Work `pnpm typecheck` remains red with 17 errors in existing Node
-and E2E files: the archived Electron build test, the composer-mode registry
+and E2E files: the archived desktop build test, the composer-mode registry
 shape, and E2E assertion/DOM types. Its Web and aiCore projects pass. The
 production renderer and local Office declaration build also pass.
 

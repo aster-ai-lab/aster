@@ -301,6 +301,47 @@ async fn reconciliation_keeps_a_safe_subset_when_one_file_exceeds_the_budget() {
     assert_eq!(result.hits[0].chunk.path.as_ref(), "b-small.rs");
 }
 
+#[tokio::test]
+async fn generated_evidence_neither_reads_nor_consumes_the_source_budget() {
+    let documents = vec![
+        FixtureDocument {
+            path: "docs/evidence/code/run.jsonl".to_owned(),
+            content: "{\"event\":\"generated\"}\n".to_owned(),
+        },
+        FixtureDocument {
+            path: "src/lib.rs".to_owned(),
+            content: "pub fn source_sentinel() {}\n".to_owned(),
+        },
+    ];
+    let file_system = Arc::new(CountingFileSystem::default());
+    file_system.replace_all(&documents);
+    let catalog = WorkspaceChunkCatalog::new(
+        ChunkingConfig::default(),
+        ChunkCatalogLimits {
+            max_files: 1,
+            max_chunks: 8,
+            max_text_bytes: 1024,
+            max_index_bytes: 1024 * 1024,
+        },
+    )
+    .unwrap();
+    let reconciler = WorkspaceCatalogReconciler::new(
+        Arc::clone(&catalog),
+        WorkspaceEligibilityPolicy::default(),
+        file_system.clone(),
+    );
+
+    let report = reconciler
+        .reconcile_snapshot(&snapshot(1, &documents))
+        .await
+        .unwrap();
+
+    assert!(report.failures.is_empty(), "{:?}", report.failures);
+    assert_eq!(report.eligible_files, 1);
+    assert_eq!(catalog.snapshot().unwrap().paths(), ["src/lib.rs"]);
+    assert_eq!(file_system.take_reads(), ["src/lib.rs"]);
+}
+
 fn snapshot(version: u64, documents: &[FixtureDocument]) -> LocalWorkspaceManifestSnapshot {
     LocalWorkspaceManifestSnapshot {
         version,

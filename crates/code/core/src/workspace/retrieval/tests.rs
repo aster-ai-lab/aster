@@ -505,9 +505,12 @@ fn eligibility_excludes_sensitive_generated_binary_and_oversized_files() {
         "secrets.json",
         "credentials.toml",
         "keys/server.pem",
+        "docs/evidence/code/run.jsonl",
     ] {
         assert!(!policy.admits(&manifest_file(path, 20, 1)), "{path}");
     }
+    assert!(policy.admits(&manifest_file("docs/evidence.md", 20, 1)));
+    assert!(policy.admits(&manifest_file("docs/evidence-notes/run.md", 20, 1)));
     assert!(
         policy.admits(&manifest_file(".aster/kb/sources/note.md", 20, 1)),
         "personal KB vault must be eligible for agent search"

@@ -1,0 +1,1 @@
+elapsed_ms=459 outcome=Ok(WorkspaceGrepOutcome { result: WorkspaceGrepResult { output: ">z-match.md:1: needle\n", match_count: 1, file_count: 1, truncated: true }, matches: Some([WorkspaceGrepMatch { path: WorkspacePath { inner: "z-match.md" }, output_range: 0..22 }]), matched_paths: Some([WorkspacePath { inner: "z-match.md" }]), skipped_oversize: [] })

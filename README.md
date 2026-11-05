@@ -206,6 +206,7 @@ just code --cwd /path/to/project
 ```
 
 `just build` 构建 CLI 与 ACP，并在 macOS ARM64 上准备沙箱组件。
+`just code` 直接运行已构建的 CLI；源码变更后需先重新执行 `just build`。
 桌面构建还需前端依赖和平台工具，准备步骤见 [Studio 说明](apps/studio/README.md)。
 
 | 开发任务 | 命令或入口 |
@@ -224,6 +225,8 @@ Studio 默认租户为 `aster`，租户身份、数据和更新包分别管理�
 开发前阅读[仓库约定](AGENTS.md)、[开发规范](docs/development-standards.md)与
 [设计规范](DESIGN.md)。构建和发布遵循[发布规范](docs/release-governance.md)。
 当前接口与版本说明见[手册索引](crates/code/manual/README.md)。
+Core／ACP 的模块、搜索预算、增量索引、错误语义和发布门禁见
+[Core／ACP DeepWiki](docs/architecture/aster-core-acp.md)。
 历史验证范围见[验证记录](docs/validation.md)。
 
 报告缺陷请提交到 [Issues](https://github.com/aster-ai-lab/aster/issues)。

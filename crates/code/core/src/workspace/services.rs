@@ -13,6 +13,9 @@ use crate::code_intelligence::{LocalCodeIntelligence, WorkspaceCodeIntelligence}
 use anyhow::{anyhow, Result};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
+use std::time::Duration;
+
+const LOCAL_OPERATION_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// Lazy lexical handles attached on first catalog/index access.
 type LazyLexicalHandles = (
@@ -44,7 +47,7 @@ pub struct WorkspaceServices {
     git_worktree: Option<Arc<dyn WorkspaceGitWorktreeProvider>>,
     /// Default timeout applied to non-bash workspace operations (file system,
     /// search, git). Bash uses its own per-call timeout in [`CommandRequest`].
-    /// `None` means no enforced timeout — appropriate for the local backend.
+    /// `None` is reserved for custom backends that enforce their own deadline.
     operation_timeout: Option<std::time::Duration>,
     local_root: Option<PathBuf>,
     direct_file_guard: Option<Arc<dyn DirectFileGuard>>,
@@ -154,7 +157,7 @@ impl WorkspaceServices {
             git: Some(git),
             git_stash: Some(git_stash),
             git_worktree: Some(git_worktree),
-            operation_timeout: None,
+            operation_timeout: Some(LOCAL_OPERATION_TIMEOUT),
             local_root: Some(backend.root.clone()),
             direct_file_guard: Some(backend),
         })
@@ -313,7 +316,7 @@ impl WorkspaceServices {
             git: Some(git),
             git_stash: Some(git_stash),
             git_worktree: Some(git_worktree),
-            operation_timeout: None,
+            operation_timeout: Some(LOCAL_OPERATION_TIMEOUT),
             local_root: Some(backend.local_root().to_path_buf()),
             direct_file_guard: Some(backend),
         })
@@ -716,9 +719,9 @@ impl WorkspaceServices {
 
     /// Default timeout applied to non-bash workspace operations.
     ///
-    /// `None` means no enforced timeout. Backends that may stall (remote,
-    /// browser, DFS) should set this so tools using [`Self::run_with_timeout`]
-    /// surface a timeout error instead of letting the agent loop hang.
+    /// `None` means no enforced timeout. Backends that may stall should set
+    /// this so tools using [`Self::run_with_timeout`] surface a timeout error
+    /// instead of letting the agent loop hang.
     pub fn operation_timeout(&self) -> Option<std::time::Duration> {
         self.operation_timeout
     }

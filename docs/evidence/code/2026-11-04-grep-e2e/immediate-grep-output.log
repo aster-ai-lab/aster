@@ -1,0 +1,3 @@
+I'll run that exact grep search once now.**Truncation status:** truncated (output explicitly marked truncated; 5 matches in 3 files).
+
+**Summary:** The grep hit five matches across three files—mostly the same prompt string in `docs/evidence/code/2026-11-04-grep-e2e/` JSON fixtures, plus a live reference to `aster-convergence-plan.html` in `apps/cloud/docs/convergence/phase0-change-package.md`.

@@ -70,6 +70,11 @@ impl TrigramGrepCandidateIndex {
         crate::state_root::workspace_index_dir(root).join("grep-trigram")
     }
 
+    /// Whether this provider can safely narrow candidates for `pattern`.
+    pub fn supports_pattern(pattern: &str) -> bool {
+        literal_needle(pattern).is_some_and(|needle| needle.len() >= 3)
+    }
+
     /// Build an index for `files` under `root` and write a stamp under `index_dir`.
     ///
     /// `files` must be absolute paths that live under `root`. Relative paths

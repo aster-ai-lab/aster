@@ -23,9 +23,15 @@ impl Default for WorkspaceEligibilityPolicy {
 
 impl WorkspaceEligibilityPolicy {
     pub fn admits(&self, file: &LocalWorkspaceFile) -> bool {
-        if file.binary || file.generated || file.size > self.max_file_bytes {
+        let path = Path::new(&file.path);
+        // Test-run artifacts can outnumber source files and exhaust catalog budgets.
+        if file.binary
+            || file.generated
+            || file.size > self.max_file_bytes
+            || path.starts_with("docs/evidence")
+        {
             return false;
         }
-        !crate::workspace::source_egress::path_is_denied(Path::new(&file.path))
+        !crate::workspace::source_egress::path_is_denied(path)
     }
 }

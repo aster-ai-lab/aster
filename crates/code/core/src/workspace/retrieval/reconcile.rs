@@ -11,10 +11,37 @@ use std::sync::Arc;
 
 const DEFAULT_READ_CONCURRENCY: usize = 8;
 
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub(crate) enum CatalogReconcileFailureKind {
+    TooManyChunks,
+    BudgetExceeded(&'static str),
+    ReadFailed,
+    Other,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct CatalogReconcileFailure {
     pub path: String,
+    pub kind: CatalogReconcileFailureKind,
     pub message: String,
+}
+
+impl CatalogReconcileFailure {
+    fn new(path: String, error: WorkspaceIndexError) -> Self {
+        let kind = match &error {
+            WorkspaceIndexError::TooManyChunks { .. } => CatalogReconcileFailureKind::TooManyChunks,
+            WorkspaceIndexError::BudgetExceeded { resource, .. } => {
+                CatalogReconcileFailureKind::BudgetExceeded(resource)
+            }
+            WorkspaceIndexError::ReadFailed { .. } => CatalogReconcileFailureKind::ReadFailed,
+            _ => CatalogReconcileFailureKind::Other,
+        };
+        Self {
+            path,
+            kind,
+            message: error.to_string(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -288,18 +315,15 @@ impl WorkspaceCatalogReconciler {
             match outcome {
                 Ok(built) => {
                     if let Err(error) = usage.try_add(&built, limits) {
-                        failures.push(CatalogReconcileFailure {
-                            path: built.manifest.path.clone(),
-                            message: error.to_string(),
-                        });
+                        failures.push(CatalogReconcileFailure::new(
+                            built.manifest.path.clone(),
+                            error,
+                        ));
                     } else {
                         next_files.insert(built.manifest.path.clone(), built);
                     }
                 }
-                Err(error) => failures.push(CatalogReconcileFailure {
-                    path: manifest.path,
-                    message: error.to_string(),
-                }),
+                Err(error) => failures.push(CatalogReconcileFailure::new(manifest.path, error)),
             }
         }
         read_paths.sort();

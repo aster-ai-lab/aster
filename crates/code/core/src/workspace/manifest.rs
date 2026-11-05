@@ -27,7 +27,7 @@ use super::{
 };
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
-use std::collections::{hash_map::DefaultHasher, HashMap, HashSet};
+use std::collections::{hash_map::DefaultHasher, BTreeSet, HashMap, HashSet};
 use std::hash::{Hash, Hasher};
 use std::path::{Component, Path, PathBuf};
 #[cfg(feature = "grep-trigram")]
@@ -487,7 +487,7 @@ pub struct ManifestWorkspaceBackend {
     /// Auto-built tgrep index keyed by manifest snapshot version. Present only
     /// when the `grep-trigram` feature is enabled and no host override is set.
     #[cfg(feature = "grep-trigram")]
-    auto_grep_candidates: Mutex<Option<(u64, crate::workspace::SharedGrepCandidateIndex)>>,
+    auto_grep_candidates: Arc<Mutex<Option<(u64, crate::workspace::SharedGrepCandidateIndex)>>>,
     owns_manifest: bool,
 }
 
@@ -544,7 +544,7 @@ impl ManifestWorkspaceBackend {
             persistent_index: OnceLock::new(),
             grep_candidates: OnceLock::new(),
             #[cfg(feature = "grep-trigram")]
-            auto_grep_candidates: Mutex::new(None),
+            auto_grep_candidates: Arc::new(Mutex::new(None)),
             owns_manifest: true,
         })
     }
@@ -564,7 +564,7 @@ impl ManifestWorkspaceBackend {
             persistent_index: OnceLock::new(),
             grep_candidates: OnceLock::new(),
             #[cfg(feature = "grep-trigram")]
-            auto_grep_candidates: Mutex::new(None),
+            auto_grep_candidates: Arc::new(Mutex::new(None)),
             owns_manifest: false,
         })
     }
@@ -602,12 +602,23 @@ impl ManifestWorkspaceBackend {
     }
 
     fn grep_content_candidate_paths(
-        &self,
+        configured: Option<crate::workspace::SharedGrepCandidateIndex>,
+        #[cfg(feature = "grep-trigram")] auto: &Arc<
+            Mutex<Option<(u64, crate::workspace::SharedGrepCandidateIndex)>>,
+        >,
+        root: &Path,
         pattern: &str,
         case_insensitive: bool,
         search_snapshot: &ManifestSearchSnapshot,
     ) -> Option<std::collections::BTreeSet<String>> {
-        let index = self.resolve_grep_candidate_index(search_snapshot)?;
+        let index = Self::resolve_grep_candidate_index(
+            configured,
+            #[cfg(feature = "grep-trigram")]
+            auto,
+            root,
+            pattern,
+            search_snapshot,
+        )?;
         match index.select_paths(pattern, case_insensitive) {
             crate::workspace::GrepCandidateSelection::Paths(paths) => Some(paths),
             crate::workspace::GrepCandidateSelection::Unconstrained
@@ -616,32 +627,42 @@ impl ManifestWorkspaceBackend {
     }
 
     fn resolve_grep_candidate_index(
-        &self,
+        configured: Option<crate::workspace::SharedGrepCandidateIndex>,
+        #[cfg(feature = "grep-trigram")] auto: &Arc<
+            Mutex<Option<(u64, crate::workspace::SharedGrepCandidateIndex)>>,
+        >,
+        root: &Path,
+        pattern: &str,
         search_snapshot: &ManifestSearchSnapshot,
     ) -> Option<crate::workspace::SharedGrepCandidateIndex> {
-        if let Some(index) = self.grep_candidates.get() {
-            return Some(Arc::clone(index));
+        if let Some(index) = configured {
+            return Some(index);
         }
         #[cfg(feature = "grep-trigram")]
         {
-            self.ensure_auto_trigram_candidate_index(search_snapshot)
+            Self::ensure_auto_trigram_candidate_index(auto, root, pattern, search_snapshot)
         }
         #[cfg(not(feature = "grep-trigram"))]
         {
-            let _ = search_snapshot;
+            let _ = (root, pattern, search_snapshot);
             None
         }
     }
 
     #[cfg(feature = "grep-trigram")]
     fn ensure_auto_trigram_candidate_index(
-        &self,
+        auto: &Arc<Mutex<Option<(u64, crate::workspace::SharedGrepCandidateIndex)>>>,
+        root: &Path,
+        pattern: &str,
         search_snapshot: &ManifestSearchSnapshot,
     ) -> Option<crate::workspace::SharedGrepCandidateIndex> {
         use crate::workspace::TrigramGrepCandidateIndex;
 
+        if !TrigramGrepCandidateIndex::supports_pattern(pattern) {
+            return None;
+        }
         let version = search_snapshot.snapshot.version;
-        let mut guard = self.auto_grep_candidates.lock().ok()?;
+        let mut guard = auto.lock().ok()?;
         if let Some((cached_version, index)) = guard.as_ref() {
             if *cached_version == version {
                 return Some(Arc::clone(index));
@@ -659,16 +680,12 @@ impl ManifestWorkspaceBackend {
             return None;
         }
 
-        let root = self.local.root.clone();
-        let index_dir = TrigramGrepCandidateIndex::default_index_dir(&root);
+        let index_dir = TrigramGrepCandidateIndex::default_index_dir(root);
         // Drop the previous generation before rewriting the stamp directory.
         *guard = None;
-        let built = TrigramGrepCandidateIndex::build_from_relative_paths(
-            &root,
-            &index_dir,
-            &relative_paths,
-        )
-        .ok()?;
+        let built =
+            TrigramGrepCandidateIndex::build_from_relative_paths(root, &index_dir, &relative_paths)
+                .ok()?;
         let index: crate::workspace::SharedGrepCandidateIndex = Arc::new(built);
         *guard = Some((version, Arc::clone(&index)));
         Some(index)
@@ -1034,155 +1051,203 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
         let Some(search_snapshot) = self.manifest_ready() else {
             return self.fallback_search().grep_with_sources(request).await;
         };
-
-        let regex_pattern = if request.case_insensitive {
-            format!("(?i){}", request.pattern)
-        } else {
-            request.pattern.clone()
-        };
-        let regex = regex::Regex::new(&regex_pattern)
-            .map_err(|e| anyhow!("Invalid regex pattern '{}': {}", request.pattern, e))?;
-        let glob = request
-            .glob
-            .as_deref()
-            .map(BraceGlob::new)
-            .transpose()
-            .map_err(|e| anyhow!("Invalid grep glob filter: {e}"))?;
-
-        let mut output = String::new();
-        let mut match_count = 0;
-        let mut file_count = 0;
-        let mut total_size = 0;
-        let mut matched_paths = Vec::new();
-        let mut matches = Vec::new();
-        let mut skipped_oversize = Vec::new();
-        let metadata_only = request.max_output_size == 0;
-
-        let candidates = request
-            .glob
-            .as_deref()
-            .map(|glob| candidate_indices_for_glob(&search_snapshot.index, &request.base, glob))
-            .unwrap_or_else(|| CandidateIndices::Indexed(&search_snapshot.index.all));
         let recent_ranks = self.recent_path_ranks(&search_snapshot.index);
-        let content_filter = self.grep_content_candidate_paths(
-            &request.pattern,
-            request.case_insensitive,
-            &search_snapshot,
-        );
-        // Dirty order only moves files outside the recent window.
-        let dirty = if dirty_order_can_change(
-            &candidates,
-            &search_snapshot.snapshot.files,
-            &recent_ranks,
-            content_filter.as_ref(),
-        ) {
-            crate::git::dirty_paths(&self.local.root).unwrap_or_default()
-        } else {
-            HashSet::new()
+        let configured_candidates = self.grep_candidates.get().cloned();
+        #[cfg(feature = "grep-trigram")]
+        let auto_candidates = Arc::clone(&self.auto_grep_candidates);
+        let local = Arc::clone(&self.local);
+        let cancellation = Arc::new(AtomicBool::new(false));
+        let worker_cancellation = Arc::clone(&cancellation);
+        let mut cancel_on_drop = super::local::CancelGitWorkerOnDrop::new(cancellation);
+        let joined = tokio::task::spawn_blocking(move || {
+            let content_filter = Self::grep_content_candidate_paths(
+                configured_candidates,
+                #[cfg(feature = "grep-trigram")]
+                &auto_candidates,
+                &local.root,
+                &request.pattern,
+                request.case_insensitive,
+                &search_snapshot,
+            );
+            grep_manifest_snapshot(
+                local,
+                search_snapshot,
+                request,
+                recent_ranks,
+                content_filter,
+                &worker_cancellation,
+                super::local::GrepScanLimits {
+                    deadline: std::time::Instant::now() + super::local::GREP_SCAN_TIMEOUT,
+                    file_limit: super::local::GREP_SCAN_FILE_LIMIT,
+                },
+            )
+        })
+        .await;
+        cancel_on_drop.disarm();
+        joined.map_err(|error| anyhow!("grep worker failed: {error}"))?
+    }
+}
+
+fn grep_manifest_snapshot(
+    local: Arc<LocalWorkspaceBackend>,
+    search_snapshot: ManifestSearchSnapshot,
+    request: WorkspaceGrepRequest,
+    recent_ranks: HashMap<String, usize>,
+    content_filter: Option<BTreeSet<String>>,
+    cancel: &AtomicBool,
+    limits: super::local::GrepScanLimits,
+) -> Result<WorkspaceGrepOutcome> {
+    let regex_pattern = if request.case_insensitive {
+        format!("(?i){}", request.pattern)
+    } else {
+        request.pattern.clone()
+    };
+    let regex = regex::Regex::new(&regex_pattern)
+        .map_err(|e| anyhow!("Invalid regex pattern '{}': {}", request.pattern, e))?;
+    let glob = request
+        .glob
+        .as_deref()
+        .map(BraceGlob::new)
+        .transpose()
+        .map_err(|e| anyhow!("Invalid grep glob filter: {e}"))?;
+
+    let mut output = String::new();
+    let mut match_count = 0;
+    let mut file_count = 0;
+    let mut total_size = 0;
+    let mut matched_paths = Vec::new();
+    let mut matches = Vec::new();
+    let mut skipped_oversize = Vec::new();
+    let mut scanned_files = 0;
+    let mut truncated = false;
+    let metadata_only = request.max_output_size == 0;
+
+    let candidates = request
+        .glob
+        .as_deref()
+        .map(|glob| candidate_indices_for_glob(&search_snapshot.index, &request.base, glob))
+        .unwrap_or_else(|| CandidateIndices::Indexed(&search_snapshot.index.all));
+    // Dirty order only moves files outside the recent window.
+    let dirty = if dirty_order_can_change(
+        &candidates,
+        &search_snapshot.snapshot.files,
+        &recent_ranks,
+        content_filter.as_ref(),
+    ) {
+        crate::git::dirty_paths(&local.root).unwrap_or_default()
+    } else {
+        HashSet::new()
+    };
+
+    for file_index in
+        order_grep_candidates(&candidates, &search_snapshot.index, &recent_ranks, &dirty)
+    {
+        if cancel.load(Ordering::Acquire) {
+            anyhow::bail!("cancelled");
+        }
+        if scanned_files >= limits.file_limit || std::time::Instant::now() >= limits.deadline {
+            truncated = true;
+            break;
+        }
+        let Some(file) = search_snapshot.snapshot.files.get(file_index) else {
+            continue;
         };
-
-        for file_index in
-            order_grep_candidates(&candidates, &search_snapshot.index, &recent_ranks, &dirty)
-        {
-            let Some(file) = search_snapshot.snapshot.files.get(file_index) else {
-                continue;
-            };
-            if file.binary {
+        if file.binary {
+            continue;
+        }
+        scanned_files += 1;
+        if let Some(ref allowed) = content_filter {
+            if !allowed.contains(&file.path) {
                 continue;
             }
-            if let Some(ref allowed) = content_filter {
-                if !allowed.contains(&file.path) {
-                    continue;
-                }
-            }
-            let Some(relative_to_base) = relative_to_base(&file.path, &request.base) else {
+        }
+        let Some(relative_to_base) = relative_to_base(&file.path, &request.base) else {
+            continue;
+        };
+        if let Some(glob) = &glob {
+            if !glob_matches(glob, relative_to_base) {
                 continue;
-            };
-            if let Some(glob) = &glob {
-                if !glob_matches(glob, relative_to_base) {
-                    continue;
-                }
-            }
-
-            let workspace_path = WorkspacePath::from_normalized(file.path.clone());
-            let Some(content) = self.local.read_search_file(&workspace_path) else {
-                if self.local.search_file_is_oversize(&workspace_path) {
-                    skipped_oversize.push(workspace_path);
-                }
-                continue;
-            };
-            let lines: Vec<&str> = content.lines().collect();
-            let file_matches = lines
-                .iter()
-                .enumerate()
-                .filter_map(|(line_idx, line)| regex.is_match(line).then_some(line_idx))
-                .collect::<Vec<_>>();
-
-            if file_matches.is_empty() {
-                continue;
-            }
-
-            file_count += 1;
-            let display_path = escape_control_chars_for_display(&file.path);
-            let mut path_recorded = false;
-            for &match_idx in &file_matches {
-                if !metadata_only && total_size > request.max_output_size {
-                    return Ok(WorkspaceGrepOutcome {
-                        result: WorkspaceGrepResult {
-                            output,
-                            match_count,
-                            file_count,
-                            truncated: true,
-                        },
-                        matches: Some(matches),
-                        matched_paths: Some(matched_paths),
-                        skipped_oversize,
-                    });
-                }
-
-                if !path_recorded {
-                    matched_paths.push(workspace_path.clone());
-                    path_recorded = true;
-                }
-                match_count += 1;
-                if metadata_only {
-                    continue;
-                }
-                let output_start = output.len();
-                let start = match_idx.saturating_sub(request.context_lines);
-                let end = (match_idx + request.context_lines + 1).min(lines.len());
-
-                for (i, line) in lines[start..end].iter().enumerate() {
-                    let abs_i = start + i;
-                    let prefix = if abs_i == match_idx { ">" } else { " " };
-                    let line = format!("{}{}:{}: {}\n", prefix, display_path, abs_i + 1, line);
-                    total_size += line.len();
-                    output.push_str(&line);
-                }
-
-                if request.context_lines > 0 {
-                    output.push_str("--\n");
-                    total_size += 3;
-                }
-                matches.push(WorkspaceGrepMatch {
-                    path: workspace_path.clone(),
-                    output_range: output_start..output.len(),
-                });
             }
         }
 
-        Ok(WorkspaceGrepOutcome {
-            result: WorkspaceGrepResult {
-                output,
-                match_count,
-                file_count,
-                truncated: false,
-            },
-            matches: Some(matches),
-            matched_paths: Some(matched_paths),
-            skipped_oversize,
-        })
+        let workspace_path = WorkspacePath::from_normalized(file.path.clone());
+        let Some(content) = local.read_search_file(&workspace_path) else {
+            if local.search_file_is_oversize(&workspace_path) {
+                skipped_oversize.push(workspace_path);
+            }
+            continue;
+        };
+        let lines: Vec<&str> = content.lines().collect();
+        let file_matches = lines
+            .iter()
+            .enumerate()
+            .filter_map(|(line_idx, line)| regex.is_match(line).then_some(line_idx))
+            .collect::<Vec<_>>();
+
+        if file_matches.is_empty() {
+            continue;
+        }
+
+        file_count += 1;
+        let display_path = escape_control_chars_for_display(&file.path);
+        let mut path_recorded = false;
+        for &match_idx in &file_matches {
+            if !metadata_only && total_size > request.max_output_size {
+                return Ok(WorkspaceGrepOutcome {
+                    result: WorkspaceGrepResult {
+                        output,
+                        match_count,
+                        file_count,
+                        truncated: true,
+                    },
+                    matches: Some(matches),
+                    matched_paths: Some(matched_paths),
+                    skipped_oversize,
+                });
+            }
+
+            if !path_recorded {
+                matched_paths.push(workspace_path.clone());
+                path_recorded = true;
+            }
+            match_count += 1;
+            if metadata_only {
+                continue;
+            }
+            let output_start = output.len();
+            let start = match_idx.saturating_sub(request.context_lines);
+            let end = (match_idx + request.context_lines + 1).min(lines.len());
+
+            for (i, line) in lines[start..end].iter().enumerate() {
+                let abs_i = start + i;
+                let prefix = if abs_i == match_idx { ">" } else { " " };
+                let line = format!("{}{}:{}: {}\n", prefix, display_path, abs_i + 1, line);
+                total_size += line.len();
+                output.push_str(&line);
+            }
+
+            if request.context_lines > 0 {
+                output.push_str("--\n");
+                total_size += 3;
+            }
+            matches.push(WorkspaceGrepMatch {
+                path: workspace_path.clone(),
+                output_range: output_start..output.len(),
+            });
+        }
     }
+
+    Ok(WorkspaceGrepOutcome {
+        result: WorkspaceGrepResult {
+            output,
+            match_count,
+            file_count,
+            truncated,
+        },
+        matches: Some(matches),
+        matched_paths: Some(matched_paths),
+        skipped_oversize,
+    })
 }
 
 #[async_trait]
