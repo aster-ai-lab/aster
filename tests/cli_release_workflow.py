@@ -238,11 +238,16 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("name: Verify pre-merge qualification", text)
         self.assertIn("actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed", text)
         self.assertIn(".head_branch !=", text)
-        self.assertEqual(text.count("needs: qualified"), 2)
+        # Platform builds start from preflight so they overlap qualify polling.
+        self.assertEqual(text.count("needs: preflight"), 3)
+        self.assertIn("needs: [preflight, qualified, build, build-linux]", text)
+        self.assertIn("ASTER_QUALIFY_WAIT_SECONDS", text)
         self.assertIn("python3 tests/release_governance.py", text)
         self.assertNotIn("cargo fmt", text)
         self.assertNotIn("cargo test", text)
         self.assertIn("bash scripts/publish-aster-cli.sh", text)
+        self.assertIn("--profile \"$CLI_PROFILE\"", text)
+        self.assertIn("CLI_PROFILE: release-dist", text)
         publisher = (ROOT / "scripts/publish-aster-cli.sh").read_text()
         self.assertIn('python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --output-dir', publisher)
         self.assertIn("--mode yolo --output-dir qualification/yolo", publisher)
@@ -254,8 +259,8 @@ class ReleaseWorkflowContract(unittest.TestCase):
     def test_all_three_cli_platforms_have_product_specific_caches(self):
         text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
         self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 2)
-        self.assertIn("shared-key: aster-cli-release-${{ matrix.platform }}", text)
-        self.assertIn("shared-key: aster-cli-release-linux", text)
+        self.assertIn("shared-key: aster-cli-release-dist-${{ matrix.platform }}", text)
+        self.assertIn("shared-key: aster-cli-release-dist-linux", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-${{ matrix.platform }}.${{ matrix.extension }}", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-linux.tar.gz", text)
         self.assertIn('package-aster-cli.sh linux "$bin_dir" "$CLI_ASSET_NAME"', text)
@@ -263,13 +268,20 @@ class ReleaseWorkflowContract(unittest.TestCase):
 
     def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):
         text = (ROOT / ".github/workflows/qualify-aster-cli.yml").read_text()
-        self.assertIn('push:\n    branches: ["**"]\n  pull_request:', text)
+        self.assertIn('push:\n    branches: ["**"]\n', text)
+        self.assertIn("pull_request:", text)
+        self.assertIn("paths:", text)
+        self.assertIn("Aster CLI tests (ubuntu-latest)", text)
+        self.assertIn("runs-on: ubuntu-latest", text)
+        self.assertNotIn("runs-on: macos-latest", text)
+        self.assertNotIn("matrix:", text)
         self.assertIn("cargo build --locked -p aster -p aster-acp", text)
         self.assertIn("cargo test --locked -p aster --bin aster -- --test-threads=4", text)
         self.assertIn("python3 tests/cli_pair_delivery.py", text)
         self.assertIn("python3 tests/aster_cli_linux.py", text)
         self.assertIn("python3 tests/cli_release_workflow.py", text)
-        self.assertIn("shared-key: aster-cli-qualify-${{ matrix.os }}", text)
+        self.assertIn("shared-key: aster-cli-qualify-ubuntu-latest", text)
+        self.assertNotIn("CARGO_BUILD_JOBS", text)
 
 
 if __name__ == "__main__":

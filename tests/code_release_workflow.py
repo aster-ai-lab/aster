@@ -89,6 +89,9 @@ printf '%s\\n' '{"version":"0.1.6"}'
                 "RELEASE_SHA": source,
                 "RELEASE_TAG": release_tag or ("aster-cli-v0.1.6" if workflow == "release-aster-cli.yml" else "fixture-tag"),
                 "QUALIFIED_COUNT": str(count),
+                # Keep the gate hermetic: one attempt, no multi-minute poll loop.
+                "ASTER_QUALIFY_WAIT_SECONDS": "0",
+                "ASTER_QUALIFY_POLL_SECONDS": "0",
                 "EXPECTED_URL": f"repos/fixture/aster/actions/workflows/{qualifier}/runs?head_sha={expected_sha or source}&event=push&status=completed&per_page=100",
             })
             return subprocess.run(["bash", "-c", script], env=env, text=True, capture_output=True, timeout=10)

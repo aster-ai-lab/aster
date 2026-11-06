@@ -3,7 +3,43 @@ name: Qualify aster-cli
 on:
   push:
     branches: ["**"]
+    paths:
+      - "apps/aster/**"
+      - "crates/code/**"
+      - "crates/terminal/**"
+      - "crates/oci-runtime/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "scripts/aster_sandbox.py"
+      - "scripts/package-aster-cli.sh"
+      - "scripts/publish-aster-cli.sh"
+      - ".github/workflows/qualify-aster-cli.yml"
+      - ".github/workflows/release-aster-cli.yml"
+      - "tests/aster_cli_linux.py"
+      - "tests/cli_*.py"
+      - "tests/release_governance.py"
+      - "tests/studio_checkout.py"
+      - "tests/workspace_dependencies.py"
   pull_request:
+    paths:
+      - "apps/aster/**"
+      - "crates/code/**"
+      - "crates/terminal/**"
+      - "crates/oci-runtime/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "scripts/aster_sandbox.py"
+      - "scripts/package-aster-cli.sh"
+      - "scripts/publish-aster-cli.sh"
+      - ".github/workflows/qualify-aster-cli.yml"
+      - ".github/workflows/release-aster-cli.yml"
+      - "tests/aster_cli_linux.py"
+      - "tests/cli_*.py"
+      - "tests/release_governance.py"
+      - "tests/studio_checkout.py"
+      - "tests/workspace_dependencies.py"
 
 permissions:
   contents: read
@@ -13,28 +49,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Linux alone gates release tags. Host CLI coverage comes from the release
+  # archive build plus the operator's pre-publish checks; a second debug
+  # build+test matrix lane only added wall time without gating distribution.
   test:
-    name: Aster CLI tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+    name: Aster CLI tests (ubuntu-latest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
     env:
       CARGO_INCREMENTAL: "0"
-      CARGO_BUILD_JOBS: "2"
+      CARGO_TERM_COLOR: always
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned desktop sources
         uses: ./.github/actions/checkout-studio
         with:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install macOS build tools
-        if: runner.os == 'macOS'
-        run: brew install protobuf just
       - name: Install Linux build tools
-        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev bubblewrap
       - name: Install pinned toolchain
         shell: bash
@@ -42,10 +73,9 @@ jobs:
       - name: Cache CLI qualification dependencies
         uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
         with:
-          shared-key: aster-cli-qualify-${{ matrix.os }}
+          shared-key: aster-cli-qualify-ubuntu-latest
           save-if: "true"
       - name: Check CLI formatting and delivery contracts
-        if: runner.os == 'Linux'
         shell: bash
         run: |
           cargo fmt -p aster -p aster-core -p aster-acp -- --check
