@@ -67,7 +67,15 @@ class QualificationGate(unittest.TestCase):
         qualifier = "qualify-aster-cli.yml" if workflow == "release-aster-cli.yml" else "qualify-code.yml"
         source = "a" * 40
         with tempfile.TemporaryDirectory(prefix="aster-qualifier-") as directory:
-            commands = Path(directory)
+            root = Path(directory)
+            commands = root / "commands"
+            commands.mkdir()
+            repo = root / "repo"
+            repo.mkdir()
+            if workflow == "release-aster-cli.yml":
+                package = repo / "apps" / "aster"
+                package.mkdir(parents=True)
+                (package / "Cargo.toml").write_text('[package]\nname = "aster"\nversion = "0.1.6"\n')
             gh = commands / "gh"
             gh.write_text('''#!/bin/sh
 set -eu
@@ -76,15 +84,9 @@ test "$2" = "$EXPECTED_URL"
 printf '%s\\n' "$QUALIFIED_COUNT"
 ''')
             gh.chmod(0o755)
-            cargo = commands / "cargo"
-            cargo.write_text('''#!/bin/sh
-test "$*" = 'read-manifest --manifest-path apps/aster/Cargo.toml' || exit 93
-printf '%s\\n' '{"version":"0.1.6"}'
-''')
-            cargo.chmod(0o755)
             env = os.environ.copy()
             env.update({
-                "PATH": directory + os.pathsep + env["PATH"],
+                "PATH": str(commands) + os.pathsep + env["PATH"],
                 "GH_REPO": "fixture/aster", "GH_TOKEN": "test",
                 "RELEASE_SHA": source,
                 "RELEASE_TAG": release_tag or ("aster-cli-v0.1.6" if workflow == "release-aster-cli.yml" else "fixture-tag"),
@@ -94,7 +96,7 @@ printf '%s\\n' '{"version":"0.1.6"}'
                 "ASTER_QUALIFY_POLL_SECONDS": "0",
                 "EXPECTED_URL": f"repos/fixture/aster/actions/workflows/{qualifier}/runs?head_sha={expected_sha or source}&event=push&status=completed&per_page=100",
             })
-            return subprocess.run(["bash", "-c", script], env=env, text=True, capture_output=True, timeout=10)
+            return subprocess.run(["bash", "-c", script], cwd=repo, env=env, text=True, capture_output=True, timeout=10)
 
     def test_both_release_gates_require_a_successful_run_for_the_exact_source(self):
         for workflow in ["release-aster-cli.yml", "release-code.yml"]:

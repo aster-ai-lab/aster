@@ -54,7 +54,18 @@ jobs:
           ASTER_QUALIFY_POLL_SECONDS: "30"
         run: |
           set -euo pipefail
-          version="$(cargo read-manifest --manifest-path apps/aster/Cargo.toml | python3 -c 'import json, sys; print(json.load(sys.stdin)["version"])')"
+          # Read the package version without loading the workspace (studio may be
+          # absent on this lightweight gate job).
+          version="$(python3 - <<'PY'
+          from pathlib import Path
+          for line in Path("apps/aster/Cargo.toml").read_text().splitlines():
+              if line.startswith("version = "):
+                  print(line.split('"', 2)[1])
+                  break
+          else:
+              raise SystemExit("apps/aster/Cargo.toml is missing version")
+          PY
+          )"
           if [[ "$RELEASE_TAG" != "aster-cli-v${version}" ]]; then
             echo "release tag $RELEASE_TAG does not match CLI $version" >&2
             exit 1
