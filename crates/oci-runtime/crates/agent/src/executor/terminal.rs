@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use aster_oci_sdk::{Error, ErrorCode, Result, TerminalSize};
 use nix::pty::openpty;
-use tokio::io::unix::AsyncFd;
+use tokio::io::{unix::AsyncFd, Interest};
 use tokio::process::Command;
 
 /// One PTY allocated before process launch.
@@ -67,7 +67,12 @@ impl TerminalSetup {
                 format!("failed to make process terminal master nonblocking: {error}"),
             )
         })?;
-        let descriptor = AsyncFd::new(self.master).map_err(|error| {
+        // SAFETY: `OwnedFd` keeps the master descriptor open and unchanged for
+        // the entire lifetime of the `AsyncFd`.
+        let descriptor = unsafe {
+            AsyncFd::register_with_interest(self.master, Interest::READABLE | Interest::WRITABLE)
+        }
+        .map_err(|error| {
             terminal_error(
                 ErrorCode::Internal,
                 format!("failed to register process terminal with Tokio: {error}"),

@@ -1,0 +1,15 @@
+1: GET /v1/models
+2: POST /v1/responses stream=True tools=36 markers=['WRITE-E2E', 'DELETE-E2E', 'completion gate']
+  completion gate: ed caller. Preserve validation, error handling, permissions, cancellation, budgets, persistence and completion gates. Guidance does not grant authority or waive a check.\n\nVerify the changed behavior and meaningful
+3: POST /v1/responses stream=True tools=36 markers=['WRITE-E2E', 'DELETE-E2E', 'completion gate']
+  completion gate: ed caller. Preserve validation, error handling, permissions, cancellation, budgets, persistence and completion gates. Guidance does not grant authority or waive a check.\n\nVerify the changed behavior and meaningful
+4: POST /v1/responses stream=True tools=0 markers=['DELETE-E2E']
+5: POST /v1/responses stream=True tools=0 markers=['DELETE-E2E']
+6: GET /v1/models
+7: GET /v1/models
+8: POST /v1/responses stream=True tools=36 markers=['WRITE-E2E', 'completion gate']
+  completion gate: ed caller. Preserve validation, error handling, permissions, cancellation, budgets, persistence and completion gates. Guidance does not grant authority or waive a check.\n\nVerify the changed behavior and meaningful
+9: POST /v1/responses stream=True tools=36 markers=['WRITE-E2E', 'completion gate']
+  completion gate: ed caller. Preserve validation, error handling, permissions, cancellation, budgets, persistence and completion gates. Guidance does not grant authority or waive a check.\n\nVerify the changed behavior and meaningful
+10: POST /v1/responses stream=True tools=0 markers=['WRITE-E2E']
+11: POST /v1/responses stream=True tools=0 markers=['WRITE-E2E']
