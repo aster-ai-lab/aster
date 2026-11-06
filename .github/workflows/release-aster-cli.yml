@@ -43,10 +43,6 @@ jobs:
     timeout-minutes: 100
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned desktop sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Require successful branch qualification for the tagged commit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -83,23 +79,13 @@ jobs:
   build:
     needs: preflight
     if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
-    name: ${{ matrix.platform }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-latest
-            platform: macos
-            extension: tar.gz
-          - os: windows-latest
-            platform: windows
-            extension: zip
+    name: windows
+    runs-on: windows-latest
+    timeout-minutes: 120
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
-      CLI_ASSET_NAME: ${{ github.ref_name }}-${{ matrix.platform }}.${{ matrix.extension }}
+      CLI_ASSET_NAME: ${{ github.ref_name }}-windows.zip
       CLI_PROFILE: release-dist
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -107,23 +93,7 @@ jobs:
         uses: ./.github/actions/checkout-studio
         with:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install macOS build tools
-        if: runner.os == 'macOS'
-        run: |
-          set -euo pipefail
-          packages=(protobuf just coreutils e2fsprogs llvm jq xz gnu-tar)
-          missing=()
-          for package in "${packages[@]}"; do
-            if ! brew list --versions "$package" >/dev/null 2>&1; then
-              missing+=("$package")
-            fi
-          done
-          if [[ ${#missing[@]} -gt 0 ]]; then
-            brew install "${missing[@]}"
-          fi
-          rustup target add aarch64-unknown-linux-musl
       - name: Install Windows protoc
-        if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $version = "29.3"
@@ -142,29 +112,11 @@ jobs:
       - name: Cache CLI release dependencies
         uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
         with:
-          shared-key: aster-cli-release-dist-${{ matrix.platform }}
+          shared-key: aster-cli-release-dist-windows
           save-if: "true"
       - name: Build locked release
         shell: bash
         run: env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster -p aster-acp
-      - name: Stage macOS sandbox companions
-        if: runner.os == 'macOS'
-        shell: bash
-        run: |
-          set -euo pipefail
-          # Sandbox assets still build through Cargo's builtin release profile
-          # (oci companions + musl guest). Attach them to the CLI profile dir.
-          python3 scripts/aster_sandbox.py stage --profile release
-          if [[ -n "${CARGO_TARGET_DIR:-}" ]]; then
-            release_dir="${CARGO_TARGET_DIR}/release"
-            dist_dir="${CARGO_TARGET_DIR}/${CLI_PROFILE}"
-          else
-            release_dir="target/release"
-            dist_dir="target/${CLI_PROFILE}"
-          fi
-          mkdir -p "$dist_dir"
-          rm -rf "${dist_dir}/sandbox"
-          cp -a "${release_dir}/sandbox" "${dist_dir}/sandbox"
       - name: Package aster-cli archive
         shell: bash
         run: |
@@ -173,14 +125,150 @@ jobs:
           else
             bin_dir="target/${CLI_PROFILE}"
           fi
-          bash scripts/package-aster-cli.sh "${{ matrix.platform }}" "$bin_dir" "$CLI_ASSET_NAME"
+          bash scripts/package-aster-cli.sh windows "$bin_dir" "$CLI_ASSET_NAME"
       - name: Verify Windows pair installation and rollback
-        if: runner.os == 'Windows'
         shell: pwsh
         run: ./tests/cli_pair_delivery.ps1 -Archive "${{ env.CLI_ASSET_NAME }}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: aster-cli-${{ matrix.platform }}
+          name: aster-cli-windows
+          path: ${{ env.CLI_ASSET_NAME }}
+          if-no-files-found: error
+
+  # macOS CLI binaries and sandbox companions are independent compiles; run them
+  # on separate runners so wall time is max(bins, sandbox) instead of sum.
+  build-macos-bins:
+    needs: preflight
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
+    name: macos-bins
+    runs-on: macos-latest
+    timeout-minutes: 120
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_TERM_COLOR: always
+      CLI_PROFILE: release-dist
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS build tools
+        run: |
+          set -euo pipefail
+          packages=(protobuf)
+          missing=()
+          for package in "${packages[@]}"; do
+            if ! brew list --versions "$package" >/dev/null 2>&1; then
+              missing+=("$package")
+            fi
+          done
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            brew install "${missing[@]}"
+          fi
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Cache CLI release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-dist-macos-bins
+          save-if: "true"
+      - name: Build locked release
+        shell: bash
+        run: env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster -p aster-acp
+      - name: Upload macOS CLI binaries
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aster-cli-macos-bins
+          path: |
+            target/${{ env.CLI_PROFILE }}/aster
+            target/${{ env.CLI_PROFILE }}/aster-acp
+          if-no-files-found: error
+
+  build-macos-sandbox:
+    needs: preflight
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
+    name: macos-sandbox
+    runs-on: macos-latest
+    timeout-minutes: 120
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_TERM_COLOR: always
+      # sandbox_assets still invokes Cargo's builtin release profile for oci /
+      # musl guests; override LTO so that work matches release-dist cost.
+      CARGO_PROFILE_RELEASE_LTO: "false"
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - name: Install macOS sandbox tools
+        run: |
+          set -euo pipefail
+          packages=(protobuf just coreutils e2fsprogs llvm jq xz gnu-tar)
+          missing=()
+          for package in "${packages[@]}"; do
+            if ! brew list --versions "$package" >/dev/null 2>&1; then
+              missing+=("$package")
+            fi
+          done
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            brew install "${missing[@]}"
+          fi
+          rustup target add aarch64-unknown-linux-musl
+      - name: Install pinned toolchain
+        shell: bash
+        run: rustup show active-toolchain
+      - name: Cache sandbox release dependencies
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          shared-key: aster-cli-release-dist-macos-sandbox
+          save-if: "true"
+      - name: Stage macOS sandbox companions
+        shell: bash
+        run: python3 scripts/aster_sandbox.py stage --profile release
+      - name: Upload macOS sandbox tree
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aster-cli-macos-sandbox
+          path: target/release/sandbox
+          if-no-files-found: error
+
+  build-macos:
+    needs: [build-macos-bins, build-macos-sandbox]
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' && !cancelled() && needs.build-macos-bins.result == 'success' && needs.build-macos-sandbox.result == 'success' }}
+    name: macos
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      CLI_ASSET_NAME: ${{ github.ref_name }}-macos.tar.gz
+      CLI_PROFILE: release-dist
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: aster-cli-macos-bins
+          path: target/${{ env.CLI_PROFILE }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: aster-cli-macos-sandbox
+          path: target/${{ env.CLI_PROFILE }}/sandbox
+      - name: Package aster-cli archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod 755 "target/${CLI_PROFILE}/aster" "target/${CLI_PROFILE}/aster-acp"
+          bash scripts/package-aster-cli.sh macos "target/${CLI_PROFILE}" "$CLI_ASSET_NAME"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aster-cli-macos
           path: ${{ env.CLI_ASSET_NAME }}
           if-no-files-found: error
 
@@ -190,7 +278,7 @@ jobs:
     if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
     name: linux
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 120
     container: ubuntu:20.04
     env:
       CARGO_INCREMENTAL: "0"
@@ -267,8 +355,8 @@ jobs:
     permissions:
       contents: write
       actions: read
-    needs: [preflight, qualified, build, build-linux]
-    if: ${{ inputs.qualified_runner != '' && !cancelled() && needs.preflight.result == 'success' && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-linux.result == 'success')) }}
+    needs: [preflight, qualified, build, build-macos, build-linux]
+    if: ${{ inputs.qualified_runner != '' && !cancelled() && needs.preflight.result == 'success' && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-macos.result == 'success' && needs.build-linux.result == 'success')) }}
     runs-on: ${{ inputs.qualified_runner }}
     timeout-minutes: 20
     steps:
@@ -286,6 +374,16 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
+      - name: Keep only the three platform archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          mkdir -p dist
+          # Intermediate bin/sandbox artifacts share the aster-cli-* prefix; drop them.
+          find dist -mindepth 1 -maxdepth 1 ! -name 'aster-cli-v*-macos.tar.gz' \
+            ! -name 'aster-cli-v*-linux.tar.gz' ! -name 'aster-cli-v*-windows.zip' -exec rm -rf {} +
+          ls -la dist
       - name: Assemble draft aster-cli
         env:
           GH_TOKEN: ${{ github.token }}
