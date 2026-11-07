@@ -1055,7 +1055,10 @@ fn require_members(seen: &std::collections::BTreeSet<String>) -> Result<()> {
     if !seen.contains(aster_name) || !seen.contains(acp_name) {
         bail!("archive did not contain both aster-cli binaries");
     }
-    if seen.iter().any(|name| name.starts_with("sandbox/") || name == "sandbox") {
+    if seen
+        .iter()
+        .any(|name| name.starts_with("sandbox/") || name == "sandbox")
+    {
         bail!("archive contains unexpected sandbox companions");
     }
     Ok(())

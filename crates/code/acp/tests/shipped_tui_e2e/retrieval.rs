@@ -183,4 +183,3 @@ async fn shipped_retrieval_stdio_executes_embedded_semantic_search() {
         .run_until(stdio_case(true, SEMANTIC_PROMPT))
         .await;
 }
-

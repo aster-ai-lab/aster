@@ -239,7 +239,9 @@ fn real_llm_tui_ksandbox_bash_does_not_poison_the_next_turn() {
     assert_eq!(bash.len(), 1, "the model must invoke bash exactly once");
     assert_eq!(bash[0]["outcome"], "succeeded");
     assert_eq!(
-        std::fs::read_to_string(workspace.join("ksandbox-ran.txt")).ok().as_deref(),
+        std::fs::read_to_string(workspace.join("ksandbox-ran.txt"))
+            .ok()
+            .as_deref(),
         Some("ksandbox-ok")
     );
 

@@ -1,4 +1,4 @@
-use super::{asset_name_for, channel_for, parse_manifest, Version};
+use super::{Version, asset_name_for, channel_for, parse_manifest};
 
 #[test]
 fn download_progress_reports_bytes_and_never_invents_an_unknown_percentage() {
@@ -29,10 +29,12 @@ fn channel_manifest_reads_are_bounded_before_allocating_the_whole_input() {
         limit
     );
     let mut source = io::Cursor::new(vec![b' '; limit + 4096]);
-    assert!(super::read_manifest_body(&mut source)
-        .unwrap_err()
-        .to_string()
-        .contains("too large"));
+    assert!(
+        super::read_manifest_body(&mut source)
+            .unwrap_err()
+            .to_string()
+            .contains("too large")
+    );
     assert_eq!(source.position(), super::MAX_MANIFEST + 1);
     struct Broken;
     impl Read for Broken {
@@ -46,11 +48,13 @@ fn channel_manifest_reads_are_bounded_before_allocating_the_whole_input() {
     );
     let root = super::WorkDir::new().unwrap();
     std::fs::write(root.path.join(super::MANIFEST_NAME), vec![b' '; limit + 1]).unwrap();
-    assert!(super::read_local_manifest(&root.path)
-        .err()
-        .unwrap()
-        .to_string()
-        .contains("too large"));
+    assert!(
+        super::read_local_manifest(&root.path)
+            .err()
+            .unwrap()
+            .to_string()
+            .contains("too large")
+    );
 }
 
 #[test]
