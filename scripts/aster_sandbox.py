@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Stage the shared macOS sandbox for CLI delivery and trusted development use."""
+"""Stage the shared macOS sandbox for CLI delivery and trusted development use.
+
+Alpine package pins and digests live in apps/studio/scripts/sandbox_assets.py;
+this wrapper only stages that shared manifest into the CLI install layout.
+"""
 
 import argparse
 import hashlib
