@@ -189,6 +189,105 @@ pub fn legacy_effect_log_dir(workspace: &Path) -> PathBuf {
     crate::state_root::workspace_state_dir(workspace).join("effect-log")
 }
 
+/// Directory under a session/effect folder that holds durable image bytes.
+pub fn session_images_dir(effect_dir: &Path) -> PathBuf {
+    effect_dir.join("images")
+}
+
+/// Content-addressed image written beside the effect log (never into the fact JSON).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PersistedSessionImage {
+    pub media_type: String,
+    /// Path relative to the effect/session directory, e.g. `images/<sha256>.png`.
+    pub path: String,
+    pub sha256: String,
+    pub byte_len: usize,
+}
+
+/// Persist image bytes under `effect_dir/images/` keyed by SHA-256. Idempotent.
+pub fn persist_session_image(
+    effect_dir: &Path,
+    bytes: &[u8],
+    media_type: &str,
+) -> Result<PersistedSessionImage> {
+    if bytes.is_empty() {
+        bail!("image must contain at least 1 byte");
+    }
+    if bytes.len() > crate::llm::MAX_ATTACHMENT_BYTES {
+        bail!(
+            "attachment exceeds the {}-byte limit",
+            crate::llm::MAX_ATTACHMENT_BYTES
+        );
+    }
+    if !media_type.starts_with("image/") {
+        bail!("image MIME type must be an image/* type");
+    }
+    use sha2::{Digest, Sha256};
+    let sha256 = format!("{:x}", Sha256::digest(bytes));
+    let ext = match media_type {
+        "image/png" => "png",
+        "image/jpeg" => "jpg",
+        "image/gif" => "gif",
+        "image/webp" => "webp",
+        _ => "bin",
+    };
+    let relative = format!("images/{sha256}.{ext}");
+    let images = session_images_dir(effect_dir);
+    ensure_owner_dir(effect_dir)?;
+    ensure_owner_dir(&images)?;
+    let absolute = effect_dir.join(&relative);
+    if std::fs::symlink_metadata(&absolute).is_err() {
+        let temporary = images.join(format!(".{sha256}.{ext}.tmp"));
+        std::fs::write(&temporary, bytes)
+            .with_context(|| format!("write {}", temporary.display()))?;
+        set_mode(&temporary, 0o600)?;
+        std::fs::rename(&temporary, &absolute)
+            .with_context(|| format!("rename {}", absolute.display()))?;
+    }
+    Ok(PersistedSessionImage {
+        media_type: media_type.to_owned(),
+        path: relative,
+        sha256,
+        byte_len: bytes.len(),
+    })
+}
+
+/// Load a previously persisted relative image path. Refuses path escape.
+pub fn load_session_image(effect_dir: &Path, relative: &str) -> Result<Vec<u8>> {
+    let relative = relative.trim();
+    if relative.is_empty()
+        || relative.contains('\0')
+        || relative.contains("..")
+        || std::path::Path::new(relative).is_absolute()
+        || !relative.starts_with("images/")
+    {
+        bail!("refusing image path outside session images/: {relative}");
+    }
+    let absolute = effect_dir.join(relative);
+    let meta = std::fs::symlink_metadata(&absolute)
+        .with_context(|| format!("stat {}", absolute.display()))?;
+    if meta.file_type().is_symlink() {
+        bail!("refusing to follow a symlink at {}", absolute.display());
+    }
+    if !meta.is_file() {
+        bail!("{} is not a file", absolute.display());
+    }
+    if meta.len() > crate::llm::MAX_ATTACHMENT_BYTES as u64 {
+        bail!(
+            "attachment exceeds the {}-byte limit",
+            crate::llm::MAX_ATTACHMENT_BYTES
+        );
+    }
+    let bytes = std::fs::read(&absolute).with_context(|| format!("read {}", absolute.display()))?;
+    if bytes.is_empty() || bytes.len() > crate::llm::MAX_ATTACHMENT_BYTES {
+        bail!(
+            "attachment exceeds the {}-byte limit",
+            crate::llm::MAX_ATTACHMENT_BYTES
+        );
+    }
+    Ok(bytes)
+}
+
 fn folder_component(session_id: &str) -> Result<String> {
     let component = crate::fact_control::thread_for_session(session_id);
     if component.is_empty()
@@ -316,6 +415,18 @@ fn set_mode(_path: &Path, _mode: u32) -> Result<()> {
 mod tests {
     use super::*;
     use aster_effect::LogStore;
+
+    #[test]
+    fn persist_session_image_is_content_addressed_and_reloadable() {
+        let root = tempfile::tempdir().unwrap();
+        let png = [0x89_u8, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        let first = persist_session_image(root.path(), &png, "image/png").unwrap();
+        let second = persist_session_image(root.path(), &png, "image/png").unwrap();
+        assert_eq!(first, second);
+        assert_eq!(first.path, format!("images/{}.png", first.sha256));
+        assert_eq!(load_session_image(root.path(), &first.path).unwrap(), png);
+        assert!(load_session_image(root.path(), "../escape.png").is_err());
+    }
 
     const ID: &str = "11111111-1111-4111-8111-111111111111";
 

@@ -2377,7 +2377,7 @@ async fn test_queued_tool_result_preserves_metadata() {
     );
     assert_eq!(result.images.len(), 1);
     assert_eq!(result.images[0].media_type, "image/png");
-    assert_eq!(result.images[0].data, vec![1, 2, 3, 4]);
+    assert_eq!(result.images[0].data.as_ref(), &[1, 2, 3, 4]);
 }
 
 #[tokio::test(flavor = "multi_thread")]

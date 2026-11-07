@@ -628,7 +628,7 @@ fn test_mcp_notification_unknown() {
 #[test]
 fn test_tool_content_image() {
     let content = ToolContent::Image {
-        data: "base64data".to_string(),
+        data: "base64data".into(),
         mime_type: "image/png".to_string(),
     };
     let json = serde_json::to_string(&content).unwrap();

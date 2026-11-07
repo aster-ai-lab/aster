@@ -87,7 +87,12 @@ pub(super) fn seeded_tool(message: &Message) -> Option<SeededTool> {
 }
 
 /// Seed the original transcript without admitting or running an infer.
-pub(crate) fn seed_history(log: &FileLog, thread: &str, history: &[Message]) -> Result<()> {
+pub(crate) fn seed_history(
+    log: &FileLog,
+    thread: &str,
+    history: &[Message],
+    effect_dir: Option<&Path>,
+) -> Result<()> {
     let existing = log.read(thread).map_err(|error| anyhow::anyhow!(error))?;
     if existing.iter().any(|fact| {
         fact.kind != crate::standing_context::STANDING_CONTEXT_FACT_KIND
@@ -114,7 +119,7 @@ pub(crate) fn seed_history(log: &FileLog, thread: &str, history: &[Message]) -> 
                         None,
                     )
                     .map_err(|error| anyhow::anyhow!(error))?;
-                    append_seeded_tool(log, thread, turn, &seeded)?;
+                    append_seeded_tool(log, thread, turn, &seeded, effect_dir)?;
                 } else {
                     log.append(
                         thread,
@@ -155,11 +160,13 @@ pub(super) fn append_seeded_tool(
     thread: &str,
     turn: u64,
     seeded: &SeededTool,
+    effect_dir: Option<&Path>,
 ) -> Result<()> {
-    let output = match fact_tool_runner_value(&seeded.text, seeded.is_error, &seeded.images) {
-        serde_json::Value::String(text) => text,
-        other => other.to_string(),
-    };
+    let output =
+        match fact_tool_runner_value(&seeded.text, seeded.is_error, &seeded.images, effect_dir) {
+            serde_json::Value::String(text) => text,
+            other => other.to_string(),
+        };
     let decision = ModelDecision::Tool {
         call: ToolCall {
             id: seeded.id.clone(),
@@ -239,30 +246,116 @@ pub(super) fn assistant_tool_call(call: &RecordedCall) -> Message {
     }
 }
 
-pub(super) fn user_message_fact(key: String, text: &str, attachments: &[Attachment]) -> NewFact {
+/// Persist attachments under `effect_dir/images/` and record only by-ref
+/// metadata in the fact. Legacy inline `data` is still readable on reload.
+pub(super) fn user_message_fact(
+    key: String,
+    text: &str,
+    attachments: &[Attachment],
+    effect_dir: &Path,
+) -> Result<NewFact> {
     if attachments.is_empty() {
-        return message_fact(key, text);
+        return Ok(message_fact(key, text));
     }
-    NewFact {
+    let mut images = Vec::with_capacity(attachments.len());
+    for image in attachments {
+        let stored = crate::session_folder::persist_session_image(
+            effect_dir,
+            image.data.as_ref(),
+            &image.media_type,
+        )?;
+        images.push(serde_json::json!({
+            "media_type": stored.media_type,
+            "path": stored.path,
+            "sha256": stored.sha256,
+            "byte_len": stored.byte_len,
+        }));
+    }
+    Ok(NewFact {
         kind: "user.message".into(),
         key,
         payload: serde_json::json!({
             "text": text,
-            "images": attachments
-                .iter()
-                .map(|image| serde_json::json!({
-                    "media_type": image.media_type,
-                    "data": base64::Engine::encode(
-                        &base64::engine::general_purpose::STANDARD,
-                        &image.data,
-                    ),
-                }))
-                .collect::<Vec<_>>(),
+            "images": images,
         }),
+    })
+}
+
+#[derive(Debug, Clone)]
+pub(super) struct ImageRefMeta {
+    pub(super) media_type: String,
+    pub(super) path: Option<String>,
+    pub(super) sha256: Option<String>,
+    pub(super) byte_len: Option<usize>,
+}
+
+/// How a post-compaction user line should present its images to the model.
+#[derive(Debug, Clone)]
+pub(super) enum PlannedUserImages {
+    /// First model look after the user message: send pixels.
+    Pixels(Vec<Attachment>),
+    /// Later cycles after tool/model activity: keep identity, drop pixels.
+    Stub(Vec<ImageRefMeta>),
+}
+
+impl PlannedUserImages {
+    pub(super) fn into_message_parts(self, body: &str) -> (String, Vec<Attachment>) {
+        match self {
+            Self::Pixels(images) => (body.to_owned(), images),
+            Self::Stub(refs) if refs.is_empty() => (body.to_owned(), Vec::new()),
+            Self::Stub(refs) => {
+                let notes = refs
+                    .iter()
+                    .map(|item| {
+                        let digest = item
+                            .sha256
+                            .as_deref()
+                            .or(item.path.as_deref())
+                            .unwrap_or("unknown");
+                        let len = item
+                            .byte_len
+                            .map(|n| n.to_string())
+                            .unwrap_or_else(|| "?".into());
+                        format!(
+                            "[image retained: sha256={digest} media={} bytes={len}; pixels omitted after tool activity]",
+                            item.media_type
+                        )
+                    })
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                (format!("{body}\n{notes}"), Vec::new())
+            }
+        }
     }
 }
 
-pub(super) fn attachments_from_user_payload(payload: &serde_json::Value) -> Vec<Attachment> {
+fn image_ref_meta(image: &serde_json::Value) -> Option<ImageRefMeta> {
+    let media_type = image
+        .get("media_type")
+        .and_then(|value| value.as_str())
+        .filter(|value| value.starts_with("image/"))?
+        .to_owned();
+    Some(ImageRefMeta {
+        media_type,
+        path: image
+            .get("path")
+            .and_then(|value| value.as_str())
+            .map(str::to_owned),
+        sha256: image
+            .get("sha256")
+            .and_then(|value| value.as_str())
+            .map(str::to_owned),
+        byte_len: image
+            .get("byte_len")
+            .and_then(|value| value.as_u64())
+            .and_then(|value| usize::try_from(value).ok()),
+    })
+}
+
+pub(super) fn attachments_from_user_payload(
+    payload: &serde_json::Value,
+    effect_dir: Option<&Path>,
+) -> Vec<Attachment> {
     let Some(images) = payload.get("images").and_then(|value| value.as_array()) else {
         return Vec::new();
     };
@@ -273,21 +366,55 @@ pub(super) fn attachments_from_user_payload(payload: &serde_json::Value) -> Vec<
             if !media_type.starts_with("image/") {
                 return None;
             }
+            if let Some(path) = image.get("path").and_then(|value| value.as_str()) {
+                let bytes = crate::session_folder::load_session_image(effect_dir?, path).ok()?;
+                return Some(Attachment::new(bytes, media_type));
+            }
+            // Legacy facts inlined base64 under `data`. Persist beside the
+            // session when possible so later reads can use path/sha256.
             let data = image.get("data").and_then(|value| value.as_str())?;
             let bytes = base64::Engine::decode(&base64::engine::general_purpose::STANDARD, data)
                 .ok()
                 .filter(|bytes| !bytes.is_empty())?;
+            if let Some(dir) = effect_dir {
+                let _ = crate::session_folder::persist_session_image(dir, &bytes, media_type);
+            }
             Some(Attachment::new(bytes, media_type))
         })
         .collect()
 }
 
-/// Image bytes for user lines that the effect fold still has after the latest
+fn user_message_followed_by_tool_activity(facts: &[aster_effect::Fact], user_index: usize) -> bool {
+    facts
+        .iter()
+        .skip(user_index + 1)
+        .take_while(|fact| {
+            !matches!(
+                fact.kind.as_str(),
+                "user.message" | "question.answered" | "compaction.done"
+            )
+        })
+        .any(|fact| {
+            matches!(
+                fact.kind.as_str(),
+                "tool.result"
+                    | "tool.prepared"
+                    | "model.turn"
+                    | "confirmation.answered"
+                    | "aster.fact_tool_result"
+            )
+        })
+}
+
+/// Image plan for user lines that the effect fold still has after the latest
 /// compaction. `kept` lines are already in the scheduler transcript and are
-/// not paired with these facts.
+/// not paired with these facts. After tool/model activity on a user image
+/// turn, pixels are stubbed so later complete() calls do not re-inflate the
+/// multimodal payload.
 pub(super) fn user_attachment_plan(
     facts: &[aster_effect::Fact],
-) -> (usize, std::collections::VecDeque<Vec<Attachment>>) {
+    effect_dir: Option<&Path>,
+) -> (usize, std::collections::VecDeque<PlannedUserImages>) {
     let start = facts
         .iter()
         .rposition(|fact| fact.kind == "compaction.done")
@@ -304,10 +431,27 @@ pub(super) fn user_attachment_plan(
         0
     };
     let mut images = std::collections::VecDeque::new();
-    for fact in facts.iter().skip(start) {
+    for (offset, fact) in facts.iter().enumerate().skip(start) {
         match fact.kind.as_str() {
-            "user.message" => images.push_back(attachments_from_user_payload(&fact.payload)),
-            "question.answered" => images.push_back(Vec::new()),
+            "user.message" => {
+                let refs = fact
+                    .payload
+                    .get("images")
+                    .and_then(|value| value.as_array())
+                    .map(|items| items.iter().filter_map(image_ref_meta).collect::<Vec<_>>())
+                    .unwrap_or_default();
+                if refs.is_empty() {
+                    images.push_back(PlannedUserImages::Pixels(Vec::new()));
+                } else if user_message_followed_by_tool_activity(facts, offset) {
+                    images.push_back(PlannedUserImages::Stub(refs));
+                } else {
+                    images.push_back(PlannedUserImages::Pixels(attachments_from_user_payload(
+                        &fact.payload,
+                        effect_dir,
+                    )));
+                }
+            }
+            "question.answered" => images.push_back(PlannedUserImages::Pixels(Vec::new())),
             _ => {}
         }
     }
@@ -318,16 +462,18 @@ pub(super) fn images_for_user_line(
     index: usize,
     summary_offset: usize,
     kept_len: usize,
-    queue: &mut std::collections::VecDeque<Vec<Attachment>>,
-) -> Vec<Attachment> {
+    queue: &mut std::collections::VecDeque<PlannedUserImages>,
+) -> PlannedUserImages {
     if index < summary_offset {
-        return Vec::new();
+        return PlannedUserImages::Pixels(Vec::new());
     }
     let request_index = index - summary_offset;
     if request_index < kept_len {
-        return Vec::new();
+        return PlannedUserImages::Pixels(Vec::new());
     }
-    queue.pop_front().unwrap_or_default()
+    queue
+        .pop_front()
+        .unwrap_or_else(|| PlannedUserImages::Pixels(Vec::new()))
 }
 
 /// Indexes of `assistant\ntool <name>\n<json>` lines that belong to a closed
@@ -635,6 +781,8 @@ pub(super) fn recorded_tool_messages(
     previous: &mut Option<(RecordedCall, usize)>,
     body: &str,
     is_error: bool,
+    effect_dir: Option<&Path>,
+    stub_tool_image_ids: &std::collections::HashSet<String>,
 ) -> Result<(), ActorError> {
     let call = recorded.next().ok_or_else(|| {
         ActorError::Schema("folded tool result has no original call metadata".into())
@@ -656,9 +804,43 @@ pub(super) fn recorded_tool_messages(
             index
         }
     };
-    messages.push(message_from_folded_tool(&call.id, body, is_error));
+    let load_pixels = !stub_tool_image_ids.contains(&call.id);
+    messages.push(message_from_folded_tool(
+        &call.id,
+        body,
+        is_error,
+        effect_dir,
+        load_pixels,
+    ));
     *previous = Some((call, assistant_index));
     Ok(())
+}
+
+/// Tool-result call ids whose images should be stubbed because a later
+/// `model.turn` already consumed that observation.
+pub(super) fn tool_image_ids_to_stub(
+    facts: &[aster_effect::Fact],
+) -> std::collections::HashSet<String> {
+    let mut stub = std::collections::HashSet::new();
+    for (index, fact) in facts.iter().enumerate() {
+        if fact.kind != "tool.result" {
+            continue;
+        }
+        let Some(id) = fact
+            .payload
+            .get("toolCallId")
+            .and_then(|value| value.as_str())
+        else {
+            continue;
+        };
+        if facts[index + 1..]
+            .iter()
+            .any(|next| next.kind == "model.turn")
+        {
+            stub.insert(id.to_owned());
+        }
+    }
+    stub
 }
 
 pub(super) fn recorded_call_from(call: &serde_json::Value) -> RecordedCall {

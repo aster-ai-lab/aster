@@ -836,7 +836,7 @@ async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool
             .collect();
         assert_eq!(images.len(), usize::from(mode.attachments()));
         if mode.attachments() {
-            assert_eq!(images[0].data, attachment.base64_data());
+            assert_eq!(images[0].data.as_ref(), attachment.base64_data());
             assert_eq!(images[0].media_type, attachment.media_type);
         }
         let records = guard.records.lock().unwrap();
@@ -1006,13 +1006,21 @@ async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool
     assert_eq!(users.len(), 1);
     assert_eq!(users[0].payload["text"], MATRIX_PROMPT);
     if mode.attachments() {
-        assert_eq!(
-            users[0].payload["images"][0]["data"],
-            attachment.base64_data()
+        assert!(
+            users[0].payload["images"][0].get("data").is_none(),
+            "user.message must store images by reference, not inline base64"
         );
         assert_eq!(
             users[0].payload["images"][0]["media_type"],
             attachment.media_type
+        );
+        assert!(users[0].payload["images"][0]["path"]
+            .as_str()
+            .unwrap()
+            .starts_with("images/"));
+        assert_eq!(
+            users[0].payload["images"][0]["byte_len"],
+            attachment.data.len() as u64
         );
     }
     session.close().await;

@@ -182,7 +182,7 @@ fn test_tool_result_to_string_empty() {
 fn test_tool_result_to_string_image() {
     let result = CallToolResult {
         content: vec![ToolContent::Image {
-            data: "base64data".to_string(),
+            data: "base64data".into(),
             mime_type: "image/png".to_string(),
         }],
         is_error: false,
@@ -220,7 +220,7 @@ fn test_tool_result_to_string_mixed_content() {
                 text: "Text content".to_string(),
             },
             ToolContent::Image {
-                data: "base64".to_string(),
+                data: "base64".into(),
                 mime_type: "image/jpeg".to_string(),
             },
             ToolContent::Resource {

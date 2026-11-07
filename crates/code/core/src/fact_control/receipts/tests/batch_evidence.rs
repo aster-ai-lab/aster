@@ -9,6 +9,7 @@ fn lost_batch_lifecycle_evidence_cannot_be_successful_execution() {
         0,
         Some(&json!({"evidence_incomplete":true})),
         None,
+        None,
     );
     let envelope = decode_fact_tool_result(value.as_str().unwrap()).unwrap();
     assert_eq!(envelope.outcome, Some(ToolExecutionOutcome::Unknown));
@@ -47,7 +48,7 @@ fn batched_background_identity_settles_only_with_its_matching_terminal() {
             "workspace_child":"one", "source_run":if wrong_run {"other-source"} else {"source-one"}, "run":"effect-one"
         }}]});
         receipt.output =
-            runner_result_value("batch accepted", false, &[], 0, Some(&metadata), None);
+            runner_result_value("batch accepted", false, &[], 0, Some(&metadata), None, None);
         facts[0] = prepared_fact(&prepared);
         facts[1] = result_fact(&receipt);
         let live = Arc::new(Mutex::new(crate::harness_loop::MutationLedger::default()));

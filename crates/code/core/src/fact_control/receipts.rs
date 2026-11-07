@@ -24,15 +24,13 @@ pub(super) fn runner_result_value(
     exit_code: i32,
     metadata: Option<&serde_json::Value>,
     observation_digest: Option<&str>,
+    effect_dir: Option<&Path>,
 ) -> serde_json::Value {
     let evidence_incomplete = metadata
         .and_then(|value| value.get("evidence_incomplete"))
         .and_then(serde_json::Value::as_bool)
         == Some(true);
-    let images: Vec<_> = images.iter().map(|image| serde_json::json!({
-        "media_type": image.media_type,
-        "data": base64::Engine::encode(&base64::engine::general_purpose::STANDARD, &image.data),
-    })).collect();
+    let images = tool_results::encode_fact_tool_images(images, effect_dir);
     let mut envelope = serde_json::json!({
         "kind": FACT_TOOL_RESULT_KIND,
         "text": output,

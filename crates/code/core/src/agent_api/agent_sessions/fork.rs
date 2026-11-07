@@ -203,8 +203,14 @@ async fn fork_session_async_inner(
                 .map_err(fork_error)?;
         session.admit_nonexecuting_standing(&log, &target_facts, &thread)?;
         crate::work_policy::commit_policy(&log, &writer, &thread, &prepared).map_err(fork_error)?;
-        crate::fact_control::seed_history(&log, &thread, &snapshot.session.messages)
-            .map_err(fork_error)?;
+        let effect_dir = crate::session_folder::effect_log_dir(session.workspace(), &target_id);
+        crate::fact_control::seed_history(
+            &log,
+            &thread,
+            &snapshot.session.messages,
+            Some(effect_dir.as_path()),
+        )
+        .map_err(fork_error)?;
         let persistence = session_persistence::SessionPersistenceContext::from_session(&session);
         let fresh = persistence.capture_snapshot().await?;
         let fork = snapshot

@@ -62,16 +62,16 @@ pub(crate) use goal_evidence::{
     assess_goal_step, commit_goal_step, evidence_for_goal_step, goal_slice_workspace_evidence,
     settle_goal_slice,
 };
-#[cfg(test)]
-use history_seed::recorded_tool_calls;
 pub(crate) use history_seed::seed_history;
 use history_seed::{
     attachments_from_user_payload, emit_tool_request_bound, folded_message_with_images,
     images_for_user_line, recorded_call_from, recorded_tool_calls_in, recorded_tool_messages,
-    repeat_note_prefix, repeated_result_note, scheduler_tool_record_indexes, user_attachment_plan,
-    user_message_fact, user_message_with_images, visible_tool_output, workspace_boundary_error,
-    RecordedCall,
+    repeat_note_prefix, repeated_result_note, scheduler_tool_record_indexes,
+    tool_image_ids_to_stub, user_attachment_plan, user_message_fact, user_message_with_images,
+    visible_tool_output, workspace_boundary_error, RecordedCall,
 };
+#[cfg(test)]
+use history_seed::{recorded_tool_calls, PlannedUserImages};
 pub(crate) use model_call::model_error;
 #[cfg(test)]
 use model_call::project_model_frame;
@@ -83,9 +83,10 @@ use model_wait::{
 pub use tool_results::admit_tool_call;
 pub(crate) use tool_results::exposed_tool_specs;
 use tool_results::{
-    confirmation_parked, decision_from_response, decode_fact_tool_result, definitions_for,
-    fact_tool_runner_value, latest_user_text, message_from_folded_tool, run_permission,
-    skill_denial, split_folded_message, verified_turn_text, FACT_TOOL_RESULT_KIND,
+    attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+    decode_fact_tool_result, definitions_for, fact_tool_runner_value, latest_user_text,
+    message_from_folded_tool, run_permission, skill_denial, split_folded_message,
+    verified_turn_text, FACT_TOOL_RESULT_KIND,
 };
 #[cfg(test)]
 use turn_facts::append_steer_input;
@@ -217,6 +218,8 @@ pub(crate) struct MemoryTelemetryBatch {
 pub(crate) struct SessionSurface {
     pub(crate) agent: crate::agent::AgentLoop,
     pub(crate) session_id: String,
+    /// Effect/session directory; durable `images/` and the fact log live here.
+    pub(crate) effect_dir: PathBuf,
     pub(crate) persistence: Option<crate::agent_api::SessionPersistenceContext>,
     pub(crate) fact_log: Arc<Mutex<Option<Arc<FileLog>>>>,
     pub(crate) checkpoint: Option<CheckpointEmit>,
@@ -300,7 +303,8 @@ pub struct LiveCompletion {
     visibility: Arc<dyn crate::permissions::PermissionChecker>,
     /// Model attempts on this completion. Early returns do not increment it.
     model_turns: Arc<AtomicUsize>,
-    catalog: Vec<ToolDefinition>,
+    /// Shared tool catalog. Completions clone the Arc, not each schema tree.
+    catalog: Arc<[ToolDefinition]>,
     surface: Option<SessionSurface>,
     context_ready: Arc<AtomicBool>,
     cached_system: Arc<Mutex<Option<String>>>,
@@ -333,7 +337,7 @@ impl LiveCompletion {
                 visibility: Arc::new(policy.clone()),
                 model_turns: Arc::new(AtomicUsize::new(0)),
                 policy,
-                catalog,
+                catalog: catalog.into(),
                 surface: None,
                 context_ready: Arc::new(AtomicBool::new(false)),
                 cached_system: Arc::new(Mutex::new(None)),
@@ -395,7 +399,7 @@ impl Completion for LiveCompletion {
         let policy = self.policy.clone();
         let visibility = Arc::clone(&self.visibility);
         let model_turns = Arc::clone(&self.model_turns);
-        let catalog = self.catalog.clone();
+        let catalog = Arc::clone(&self.catalog);
         let surface = self.surface.clone();
         let ready_flag = Arc::clone(&self.context_ready);
         let system_slot = Arc::clone(&self.cached_system);
@@ -659,9 +663,14 @@ impl Completion for LiveCompletion {
                 }
                 _ => None,
             };
+            let image_root = surface.as_ref().map(|surface| surface.effect_dir.as_path());
             let (kept_len, mut user_images) = match &thread_facts {
-                Some(Ok(facts)) => user_attachment_plan(facts),
+                Some(Ok(facts)) => user_attachment_plan(facts, image_root),
                 _ => (0, std::collections::VecDeque::new()),
+            };
+            let stub_tool_image_ids = match &thread_facts {
+                Some(Ok(facts)) => tool_image_ids_to_stub(facts),
+                _ => std::collections::HashSet::new(),
             };
             let recorded_calls = thread_facts
                 .map(|facts| {
@@ -703,13 +712,16 @@ impl Completion for LiveCompletion {
                         &mut previous_tool_response,
                         &body,
                         role == "tool-error",
+                        image_root,
+                        &stub_tool_image_ids,
                     )?;
                 } else {
                     previous_tool_response = None;
-                    let images = if text.starts_with("user\n") {
+                    let (body, images) = if text.starts_with("user\n") {
                         images_for_user_line(index, summary_offset, kept_len, &mut user_images)
+                            .into_message_parts(&body)
                     } else {
-                        Vec::new()
+                        (body, Vec::new())
                     };
                     messages.push(folded_message_with_images(role, &body, images));
                 }
@@ -1162,31 +1174,27 @@ impl FactRun {
         };
         let context = executor.registry().context();
         let context = context.with_fact_log(Arc::clone(&shared_log));
-        let mut run = Self::open(
-            effect_dir,
-            Arc::new(completion),
-            Arc::new(ExecutorTools {
-                capability_operation: None,
-                executor,
-                checkpoint: None,
-                events: None,
-                persistence: None,
-                context,
-                permission: permission.clone(),
-                checker: None,
-                agent: None,
-                execution_started: None,
-                run_store: None,
-                run_id: None,
-                ledger: None,
-                reports: None,
-                targeted_paths: None,
-                pre_tool_hook_resolved: false,
-                repeats: Arc::default(),
-            }),
-            config,
-            session_id,
-        )?;
+        let tools = Arc::new(ExecutorTools {
+            capability_operation: None,
+            executor,
+            checkpoint: None,
+            events: None,
+            persistence: None,
+            context,
+            permission: permission.clone(),
+            checker: None,
+            agent: None,
+            execution_started: None,
+            run_store: None,
+            run_id: None,
+            ledger: None,
+            reports: None,
+            targeted_paths: None,
+            pre_tool_hook_resolved: false,
+            repeats: Arc::default(),
+            effect_dir: effect_dir.clone(),
+        });
+        let mut run = Self::open(effect_dir, Arc::new(completion), tools, config, session_id)?;
         run.log = shared_log;
         run.thread = thread;
         run.admitted_tools = admitted_tools;
@@ -1506,28 +1514,30 @@ impl FactRun {
             fixed_prompt_tokens,
             prompt_tokens,
         });
+        let tools = Arc::new(ExecutorTools {
+            capability_operation: None,
+            executor,
+            checkpoint,
+            events,
+            persistence: surface.persistence.clone(),
+            context,
+            permission,
+            checker,
+            agent: Some(agent),
+            execution_started,
+            run_store,
+            run_id,
+            ledger,
+            reports,
+            targeted_paths: Some(Arc::clone(&surface.targeted_paths)),
+            pre_tool_hook_resolved: false,
+            repeats: Arc::default(),
+            effect_dir: effect_dir.clone(),
+        });
         let mut run = Self::open_with_optional_step_limit(
             effect_dir,
             completion,
-            Arc::new(ExecutorTools {
-                capability_operation: None,
-                executor,
-                checkpoint,
-                events,
-                persistence: surface.persistence.clone(),
-                context,
-                permission,
-                checker,
-                agent: Some(agent),
-                execution_started,
-                run_store,
-                run_id,
-                ledger,
-                reports,
-                targeted_paths: Some(Arc::clone(&surface.targeted_paths)),
-                pre_tool_hook_resolved: false,
-                repeats: Arc::default(),
-            }),
+            tools,
             step_limit,
             session_id,
             graph,
@@ -1629,7 +1639,12 @@ impl FactRun {
     /// An existing conversation log is already the control source and is left
     /// unchanged. Standing-context and policy metadata are not that conversation.
     pub fn seed_history(&self, history: &[Message]) -> Result<()> {
-        seed_history(self.open_log()?.as_ref(), &self.thread, history)
+        seed_history(
+            self.open_log()?.as_ref(),
+            &self.thread,
+            history,
+            Some(self.dir.as_path()),
+        )
     }
 
     pub async fn user_text(&self, text: &str) -> Result<aster_effect::Settlement<CodingView>> {
@@ -1638,9 +1653,9 @@ impl FactRun {
 
     /// Same turn as [`Self::user_text`], with image bytes stored beside `text`.
     ///
-    /// The effect fold only copies `text` into the scheduler transcript. The
-    /// model call reads `images` back from this fact so the pixels are not
-    /// reduced to a byte count.
+    /// Pixels are written under `{effect_dir}/images/` and the fact records
+    /// only path/sha256 metadata. The model call reloads those bytes for the
+    /// first look; later tool cycles stub the pixels.
     pub async fn user_text_with_attachments(
         &self,
         text: &str,
@@ -1653,7 +1668,7 @@ impl FactRun {
             log.as_ref(),
             Arc::clone(&self.services),
             &self.thread,
-            user_message_fact(key, text, attachments),
+            user_message_fact(key, text, attachments, &self.dir)?,
             self.limit,
             &self.cancel,
         )

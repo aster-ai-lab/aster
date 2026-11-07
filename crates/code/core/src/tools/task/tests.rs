@@ -7545,3 +7545,166 @@ async fn early_setup_failure_leaves_no_stale_canceller_entry() {
     );
     scheduler.shutdown().await;
 }
+
+fn nested_json_with_depth(target: usize) -> serde_json::Value {
+    let mut value = serde_json::Value::Null;
+    while crate::tools::task::json_value_depth(&value) < target {
+        value = serde_json::json!({ "n": value });
+    }
+    value
+}
+
+#[test]
+fn output_schema_depth_helpers_match_generate_object_ceiling() {
+    assert_eq!(MAX_TASK_OUTPUT_SCHEMA_DEPTH, 32);
+    let allowed = nested_json_with_depth(MAX_TASK_OUTPUT_SCHEMA_DEPTH);
+    assert_eq!(json_value_depth(&allowed), MAX_TASK_OUTPUT_SCHEMA_DEPTH);
+    assert!(refuse_oversized_output_schema(&allowed).is_none());
+    let refused = nested_json_with_depth(MAX_TASK_OUTPUT_SCHEMA_DEPTH + 1);
+    let message = refuse_oversized_output_schema(&refused).expect("must refuse");
+    assert!(message.contains("nesting depth"), "{message}");
+}
+
+#[tokio::test]
+async fn task_tool_refuses_oversized_output_schema_without_running_child() {
+    let workspace = tempfile::tempdir().unwrap();
+    let calls = Arc::new(AtomicUsize::new(0));
+    let executor = Arc::new(TaskExecutor::new(
+        test_registry_with_text_worker(),
+        Arc::new(CountingStaticClient {
+            text: "should-not-run".into(),
+            calls: Arc::clone(&calls),
+        }),
+        workspace.path().to_string_lossy().to_string(),
+    ));
+    let tool = TaskTool::new(executor);
+    let ctx = ToolContext::new(workspace.path().to_path_buf()).with_session_id("parent-session");
+    let output = tool
+        .execute(
+            &serde_json::json!({
+                "agent": "worker",
+                "description": "deep schema",
+                "prompt": "return structured",
+                "output_schema": nested_json_with_depth(MAX_TASK_OUTPUT_SCHEMA_DEPTH + 1)
+            }),
+            &ctx,
+        )
+        .await
+        .expect("typed invalid-argument output");
+    assert!(!output.success);
+    assert!(
+        output.content.contains("nesting depth"),
+        "unexpected content: {}",
+        output.content
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+}
+
+struct CountingStaticClient {
+    text: String,
+    calls: Arc<AtomicUsize>,
+}
+
+#[async_trait::async_trait]
+impl LlmClient for CountingStaticClient {
+    async fn complete(
+        &self,
+        _messages: &[Message],
+        _system: Option<&str>,
+        _tools: &[ToolDefinition],
+    ) -> Result<LlmResponse> {
+        self.calls.fetch_add(1, Ordering::SeqCst);
+        Ok(text_response(self.text.clone()))
+    }
+
+    async fn complete_streaming(
+        &self,
+        _messages: &[Message],
+        _system: Option<&str>,
+        _tools: &[ToolDefinition],
+        _cancel_token: CancellationToken,
+    ) -> Result<mpsc::Receiver<StreamEvent>> {
+        anyhow::bail!("streaming is not used by stack isolation tests")
+    }
+}
+
+/// A-S1: parent-delegated child task with a large-but-legal schema must settle
+/// on an isolated stack (no process abort). The child returns plain text; the
+/// schema is present so the structured prompt path still builds and clones it.
+#[tokio::test]
+async fn foreground_child_run_survives_deep_legal_output_schema() {
+    let workspace = tempfile::tempdir().unwrap();
+    let schema = nested_json_with_depth(MAX_TASK_OUTPUT_SCHEMA_DEPTH);
+    let executor = Arc::new(TaskExecutor::new(
+        test_registry_with_text_worker(),
+        Arc::new(StaticLlmClient::new(r#"{"n":null}"#)),
+        workspace.path().to_string_lossy().to_string(),
+    ));
+    let tool = TaskTool::new(executor);
+    let ctx = ToolContext::new(workspace.path().to_path_buf()).with_session_id("parent-session");
+    let output = tokio::time::timeout(
+        Duration::from_secs(10),
+        tool.execute(
+            &serde_json::json!({
+                "agent": "worker",
+                "description": "stack isolation",
+                "prompt": "answer",
+                "output_schema": schema
+            }),
+            &ctx,
+        ),
+    )
+    .await
+    .expect("child task must not hang or abort the process")
+    .expect("task tool returns ToolOutput");
+    // Success or bounded structured failure are both acceptable; abort is not.
+    assert!(
+        output.success || output.content.contains("Task failed") || !output.content.is_empty(),
+        "unexpected empty failure: {:?}",
+        output
+    );
+}
+
+#[tokio::test]
+async fn isolated_child_still_honours_parent_cancellation() {
+    let workspace = tempfile::tempdir().unwrap();
+    let started = Arc::new(Notify::new());
+    let calls = Arc::new(AtomicUsize::new(0));
+    let executor = Arc::new(TaskExecutor::new(
+        test_registry_with_text_worker(),
+        Arc::new(BlockingTaskClient {
+            started: Arc::clone(&started),
+            calls: Arc::clone(&calls),
+        }),
+        workspace.path().to_string_lossy().to_string(),
+    ));
+    let tool = TaskTool::new(executor);
+    let cancellation = CancellationToken::new();
+    let ctx = ToolContext::new(workspace.path().to_path_buf())
+        .with_session_id("parent-session")
+        .with_cancellation(cancellation.clone());
+    let started_wait = started.notified();
+    let run = tokio::spawn(async move {
+        tool.execute(
+            &serde_json::json!({
+                "agent": "worker",
+                "description": "wait",
+                "prompt": "wait forever"
+            }),
+            &ctx,
+        )
+        .await
+    });
+    tokio::time::timeout(Duration::from_secs(1), started_wait)
+        .await
+        .expect("child provider call should start on the isolated task");
+    cancellation.cancel();
+    let output = tokio::time::timeout(Duration::from_secs(2), run)
+        .await
+        .expect("parent cancellation must join the isolated child")
+        .expect("task join should succeed")
+        .expect("task tool should return a typed failed output");
+    assert!(!output.success);
+    assert!(output.content.contains("cancelled"));
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+}

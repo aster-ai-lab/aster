@@ -98,42 +98,47 @@ pub struct ToolDefinition {
 
 /// Image attachment for multi-modal messages.
 ///
-/// Supports JPEG, PNG, GIF, and WebP. Data is stored as raw bytes and
-/// base64-encoded when serialized for LLM APIs.
+/// Supports JPEG, PNG, GIF, and WebP. Bytes are shared via [`Arc`] so message
+/// rebuilds and request clones do not multiply pixel copies. Base64 is produced
+/// once per attachment (shared across clones) when building wire content —
+/// never stored in the fact log.
 #[derive(Debug, Clone)]
 pub struct Attachment {
-    /// Raw image bytes
-    pub data: Vec<u8>,
+    /// Raw image bytes (shared).
+    pub data: std::sync::Arc<[u8]>,
     /// MIME type (e.g., `"image/jpeg"`, `"image/png"`)
     pub media_type: String,
+    /// Lazily encoded base64, shared with every clone of this attachment.
+    base64: std::sync::Arc<std::sync::OnceLock<std::sync::Arc<str>>>,
 }
 
 impl Attachment {
     /// Create an attachment from raw bytes and media type.
-    pub fn new(data: Vec<u8>, media_type: impl Into<String>) -> Self {
+    pub fn new(data: impl Into<std::sync::Arc<[u8]>>, media_type: impl Into<String>) -> Self {
         Self {
-            data,
+            data: data.into(),
             media_type: media_type.into(),
+            base64: std::sync::Arc::new(std::sync::OnceLock::new()),
         }
     }
 
     /// Create a JPEG attachment.
-    pub fn jpeg(data: Vec<u8>) -> Self {
+    pub fn jpeg(data: impl Into<std::sync::Arc<[u8]>>) -> Self {
         Self::new(data, "image/jpeg")
     }
 
     /// Create a PNG attachment.
-    pub fn png(data: Vec<u8>) -> Self {
+    pub fn png(data: impl Into<std::sync::Arc<[u8]>>) -> Self {
         Self::new(data, "image/png")
     }
 
     /// Create a GIF attachment.
-    pub fn gif(data: Vec<u8>) -> Self {
+    pub fn gif(data: impl Into<std::sync::Arc<[u8]>>) -> Self {
         Self::new(data, "image/gif")
     }
 
     /// Create a WebP attachment.
-    pub fn webp(data: Vec<u8>) -> Self {
+    pub fn webp(data: impl Into<std::sync::Arc<[u8]>>) -> Self {
         Self::new(data, "image/webp")
     }
 
@@ -163,9 +168,16 @@ impl Attachment {
         Ok(Self::new(data, media_type))
     }
 
-    /// Return the base64-encoded data.
+    /// Return the base64-encoded data (allocates a fresh [`String`]).
     pub fn base64_data(&self) -> String {
-        BASE64_STANDARD.encode(&self.data)
+        self.base64_shared().as_ref().to_owned()
+    }
+
+    /// Shared base64 view — encode at most once for this attachment lineage.
+    pub fn base64_shared(&self) -> std::sync::Arc<str> {
+        std::sync::Arc::clone(self.base64.get_or_init(|| {
+            std::sync::Arc::<str>::from(BASE64_STANDARD.encode(self.data.as_ref()))
+        }))
     }
 
     /// Convert to a `ContentBlock::Image`.
@@ -174,7 +186,7 @@ impl Attachment {
             source: ImageSource {
                 source_type: "base64".to_string(),
                 media_type: self.media_type.clone(),
-                data: self.base64_data(),
+                data: self.base64_shared(),
             },
         }
     }
@@ -223,12 +235,26 @@ fn media_type_from_magic(data: &[u8]) -> Option<&'static str> {
 ///
 /// Matches the Anthropic API format:
 /// `{"type": "base64", "media_type": "image/jpeg", "data": "..."}`
+///
+/// `data` is shared [`Arc<str>`] so cloning a [`Message`] does not reallocate
+/// the base64 payload.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageSource {
     #[serde(rename = "type")]
     pub source_type: String,
     pub media_type: String,
-    pub data: String,
+    pub data: std::sync::Arc<str>,
+}
+
+impl ImageSource {
+    /// Build a base64 image source from raw bytes (encodes once into a shared string).
+    pub fn from_bytes(data: impl AsRef<[u8]>, media_type: impl Into<String>) -> Self {
+        Self {
+            source_type: "base64".to_string(),
+            media_type: media_type.into(),
+            data: std::sync::Arc::<str>::from(BASE64_STANDARD.encode(data.as_ref())),
+        }
+    }
 }
 
 /// Content within a tool result — either text or an image.
@@ -547,7 +573,7 @@ impl Message {
                 source: ImageSource {
                     source_type: "base64".to_string(),
                     media_type: img.media_type.clone(),
-                    data: img.base64_data(),
+                    data: img.base64_shared(),
                 },
             });
         }

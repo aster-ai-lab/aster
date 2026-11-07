@@ -73,6 +73,8 @@ jobs:
         run: python3 tests/workspace_dependencies.py
       - name: Pinned Studio checkout ownership
         run: python3 tests/studio_checkout.py
+      - name: Studio land guards
+        run: python3 tests/studio_land_guard.py
       - name: CLI pair delivery
         run: |
           python3 tests/cli_pair_delivery.py
@@ -188,3 +190,5 @@ jobs:
       - run: ASTER_TENANT_SLUG=${{ matrix.tenant }} STUDIO_RENDERER_DIST=.studio-package pnpm exec rsbuild build
       - name: Studio launcher contracts
         run: pnpm exec vitest run --project scripts scripts/__tests__/studioDev.test.ts scripts/__tests__/check-dependency-lockstep.test.ts
+      - name: Studio perf/layout contracts
+        run: pnpm run test:contracts:perf-layout

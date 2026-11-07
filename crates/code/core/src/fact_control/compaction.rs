@@ -82,19 +82,22 @@ impl Compactor for SessionCompact {
                     message: error.to_string(),
                 })??;
             // Summarize the public observation, not its stored receipt envelope.
-            let messages =
-                messages
-                    .into_iter()
-                    .map(|line| match line.split_once('\n') {
-                        Some((role @ ("tool" | "tool-error"), body)) => format!(
-                            "{role}\n{}",
-                            crate::compaction::render_message_for_summary(
-                                &message_from_folded_tool("", body, role == "tool-error",)
-                            )
-                        ),
-                        _ => line,
-                    })
-                    .collect::<Vec<_>>();
+            let messages = messages
+                .into_iter()
+                .map(|line| match line.split_once('\n') {
+                    Some((role @ ("tool" | "tool-error"), body)) => format!(
+                        "{role}\n{}",
+                        crate::compaction::render_message_for_summary(&message_from_folded_tool(
+                            "",
+                            body,
+                            role == "tool-error",
+                            None,
+                            true,
+                        ))
+                    ),
+                    _ => line,
+                })
+                .collect::<Vec<_>>();
             let kept_tokens = kept
                 .iter()
                 .map(|line| match line.split_once('\n') {
@@ -103,6 +106,8 @@ impl Compactor for SessionCompact {
                             "",
                             body,
                             role == "tool-error",
+                            None,
+                            true,
                         )])
                     }
                     _ => line.len().div_ceil(4),

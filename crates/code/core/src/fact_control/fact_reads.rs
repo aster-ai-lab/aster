@@ -32,11 +32,7 @@ pub(crate) fn tool_result_weights(workspace: &Path, thread: &str) -> Result<Vec<
                 pending = std::iter::once(call).chain(also).collect();
             }
         } else if fact.kind == "tool.result" {
-            let output = fact
-                .payload
-                .get("output")
-                .and_then(serde_json::Value::as_str)
-                .unwrap_or_default();
+            let output = tool_result_fact_output(&fact.payload);
             let text = decode_fact_tool_result(output)
                 .map_or_else(|| output.to_string(), |envelope| envelope.text);
             let (tool, id, args) = pending
@@ -72,7 +68,8 @@ pub(crate) fn compaction_transcript(workspace: &Path, session_id: &str) -> Resul
 pub(crate) fn retained_transcript(surface: &SessionSurface) -> Result<Vec<Message>, ActorError> {
     let log = surface_fact_log(surface)?;
     let facts = log.read(&thread_for_session(&surface.session_id))?;
-    let messages = checkpoints::checkpoint_messages_from_facts(&facts);
+    let messages =
+        checkpoints::checkpoint_messages_from_facts(&facts, Some(surface.effect_dir.as_path()));
     *surface
         .transcript
         .lock()
@@ -158,6 +155,23 @@ pub(super) fn message_from_kept_line(line: &serde_json::Value) -> Option<Message
     line.strip_prefix("assistant\n").map(Message::assistant)
 }
 
+/// Resolve tool-result text from either the legacy top-level `output` copy or
+/// the typed receipt (preferred after dual-write removal).
+pub(super) fn tool_result_fact_output(payload: &serde_json::Value) -> &str {
+    let top = payload
+        .get("output")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if !top.is_empty() {
+        return top;
+    }
+    payload
+        .get("receipt")
+        .and_then(|receipt| receipt.get("output"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default()
+}
+
 pub(super) fn message_from_fact(fact: &aster_effect::Fact) -> Option<Message> {
     match fact.kind.as_str() {
         "user.message" | "question.answered" => {
@@ -192,7 +206,10 @@ pub(super) fn message_from_fact(fact: &aster_effect::Fact) -> Option<Message> {
             }
         }
         "tool.result" => {
-            let output = fact.payload.get("output")?.as_str()?;
+            let output = tool_result_fact_output(&fact.payload);
+            if output.is_empty() {
+                return None;
+            }
             Some(Message::user(&format!("Tool result: {output}")))
         }
         _ => None,

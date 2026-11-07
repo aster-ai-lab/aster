@@ -91,6 +91,11 @@ Aster is one Rust workspace for the terminal coding tool, harness, and shared As
   open or reuse a pre-existing Aster/Studio window for e2e unless you have
   verified it was launched from that fresh build. Record the build and launch
   commands in the OUTCOME; a green scenario against an outdated UI is invalid.
+- Studio optimizations land as pushed commits in the `apps/studio` submodule
+  before the parent gitlink bump. Do not deliver via stash or a dirty tree.
+  Before bumping, run `just studio-land-check`. Changes that touch disclosures,
+  the message virtual list, or ModelSelector must keep
+  `just studio-contracts` green. See `.cursor/rules/studio-land-discipline.mdc`.
 
 ## Rust implementation and review
 

@@ -2439,7 +2439,6 @@
         "apps/studio/src/renderer/pages/settings/WebSearchSettings/AgentWebSearchSettings.tsx",
         "apps/studio/src/renderer/pages/settings/WebSearchSettings/HeadlessBrowserForm.tsx",
         "apps/studio/src/renderer/pages/settings/WebSearchSettings/components/ToolSourceSettings.tsx",
-        "apps/studio/src/renderer/pages/settings/aligned/ComputerUsePermission.tsx",
         "apps/studio/src/renderer/pages/translate/TranslateSettings.tsx",
         "packages/ui/src/components/composites/entity-selector/parts/multi-select-bar.tsx"
       ],

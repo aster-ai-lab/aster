@@ -25,6 +25,8 @@ pub(super) struct ExecutorTools {
     pub(super) pre_tool_hook_resolved: bool,
     /// Per run: call digest -> (last result digest, identical results in a row).
     pub(super) repeats: Arc<Mutex<std::collections::HashMap<String, (String, u32)>>>,
+    /// Effect/session directory for durable tool-image storage.
+    pub(super) effect_dir: PathBuf,
 }
 
 #[derive(Clone)]
@@ -296,6 +298,7 @@ impl ToolRunner for ExecutorTools {
         let targeted_paths = self.targeted_paths.clone();
         let pre_tool_hook_resolved = self.pre_tool_hook_resolved;
         let repeats = Arc::clone(&self.repeats);
+        let effect_dir = self.effect_dir.clone();
         Box::pin(async move {
             let context = capability_turn(&agent, &host_cancel, context).await?;
             // A `batch` or `program` call dispatches its nested calls through
@@ -328,6 +331,7 @@ impl ToolRunner for ExecutorTools {
                 targeted_paths,
                 pre_tool_hook_resolved,
                 repeats,
+                effect_dir,
             };
             emit_tool_request_bound(&tools, &call).await;
             if let Some(agent) = &tools.agent {
@@ -688,6 +692,7 @@ impl ToolRunner for ExecutorTools {
                 result.exit_code,
                 metadata.as_ref(),
                 Some(&observation_digest),
+                Some(tools.effect_dir.as_path()),
             ))
             }.await;
             // The turn stays open: a run-owned effect closes with the run,

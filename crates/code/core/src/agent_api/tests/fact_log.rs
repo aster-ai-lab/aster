@@ -438,12 +438,12 @@ fn request_has_image_bytes(messages: &[Message], png: &[u8]) -> bool {
                 crate::llm::ToolResultContentField::Blocks(blocks) => blocks.iter().any(|block| {
                     matches!(
                         block,
-                        crate::llm::ToolResultContent::Image { source } if source.data == encoded
+                        crate::llm::ToolResultContent::Image { source } if source.data.as_ref() == encoded
                     )
                 }),
                 crate::llm::ToolResultContentField::Text(_) => false,
             },
-            crate::llm::ContentBlock::Image { source } => source.data == encoded,
+            crate::llm::ContentBlock::Image { source } => source.data.as_ref() == encoded,
             _ => false,
         })
     })

@@ -1,0 +1,8 @@
+# No Studio fork windows
+
+`just fork` and `ASTER_STUDIO_INSTANCE=fork` are permanently removed.
+
+1. Do **not** restore the `fork` just recipe, the auto-allocated `forkN` launcher, or `ASTER_STUDIO_FORK_ALLOC`.
+2. Do **not** tell agents to open a second Studio window via fork.
+3. `ASTER_STUDIO_INSTANCE=fork` must keep failing closed in `studio-dev.mjs` and `tenant::instance_name`.
+4. Named side instances (any slug other than the reserved `fork`) remain allowed when explicitly set.

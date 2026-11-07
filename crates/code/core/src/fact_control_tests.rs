@@ -4,6 +4,73 @@ use super::*;
 
 use std::sync::Mutex;
 
+#[tokio::test]
+async fn live_completion_shares_tool_catalog_by_arc_across_completes() {
+    let catalog = vec![
+        crate::llm::ToolDefinition {
+            name: "read".into(),
+            description: "Read a file".into(),
+            parameters: serde_json::json!({
+                "type": "object",
+                "properties": { "path": { "type": "string" } }
+            }),
+        },
+        crate::llm::ToolDefinition {
+            name: "bash".into(),
+            description: "Run a command".into(),
+            parameters: serde_json::json!({
+                "type": "object",
+                "properties": { "command": { "type": "string" } }
+            }),
+        },
+    ];
+    let client = Arc::new(crate::agent::tests::MockLlmClient::new(vec![
+        crate::agent::tests::MockLlmClient::text_response("one"),
+        crate::agent::tests::MockLlmClient::text_response("two"),
+    ]));
+    let (completion, calls) =
+        LiveCompletion::new(client, PermissionPolicy::new().allow("read(*)"), catalog);
+    let tools = vec![
+        ToolSpec {
+            name: "read".into(),
+            description: "Read a file".into(),
+        },
+        ToolSpec {
+            name: "bash".into(),
+            description: "Run a command".into(),
+        },
+    ];
+    // Two completes must reuse the shared catalog Arc (no deep schema clone
+    // per turn) while visibility still filters bash out of the model view.
+    let first = completion
+        .complete(
+            CompletionRequest {
+                system: vec![],
+                tools: tools.clone(),
+                summary: String::new(),
+                messages: vec!["user\nfirst".into()],
+            },
+            tokio_util::sync::CancellationToken::new(),
+        )
+        .await
+        .expect("first complete");
+    let second = completion
+        .complete(
+            CompletionRequest {
+                system: vec![],
+                tools,
+                summary: String::new(),
+                messages: vec!["user\nsecond".into()],
+            },
+            tokio_util::sync::CancellationToken::new(),
+        )
+        .await
+        .expect("second complete");
+    assert!(matches!(first, ModelDecision::Text { .. }));
+    assert!(matches!(second, ModelDecision::Text { .. }));
+    assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 2);
+}
+
 #[test]
 fn prepared_context_does_not_replace_a_later_answer_or_steer() {
     let mut request = CompletionRequest {
@@ -1375,6 +1442,7 @@ fn timeout_run(client: Arc<dyn LlmClient>, timeout_ms: u64) -> (tempfile::TempDi
         agent,
         fact_log: Default::default(),
         session_id: "timeout-session".into(),
+        effect_dir: crate::session_folder::effect_log_dir(workspace.path(), "timeout-session"),
         persistence: None,
         checkpoint: None,
         events: None,
@@ -2357,6 +2425,7 @@ async fn fact_log_follow_up_sends_the_recorded_tool_call() {
         agent,
         fact_log: Default::default(),
         session_id: THREAD.into(),
+        effect_dir: crate::session_folder::effect_log_dir(workspace.path(), THREAD),
         persistence: None,
         checkpoint: None,
         events: None,
@@ -2521,7 +2590,14 @@ fn user_attachment_plan_restores_png_bytes_after_compaction() {
     append(
         "old",
         "user.message",
-        user_message_fact("old".into(), "earlier", &[Attachment::png(png.clone())]).payload,
+        user_message_fact(
+            "old".into(),
+            "earlier",
+            &[Attachment::png(png.clone())],
+            &dir,
+        )
+        .unwrap()
+        .payload,
     );
     append(
         "c1",
@@ -2543,21 +2619,34 @@ fn user_attachment_plan_restores_png_bytes_after_compaction() {
             "new".into(),
             "describe the image",
             &[Attachment::png(png.clone())],
+            &dir,
         )
+        .unwrap()
         .payload,
     );
     let facts = read_workspace_facts(workspace.path(), THREAD).unwrap();
-    let (kept_len, mut images) = user_attachment_plan(&facts);
+    let (kept_len, mut images) = user_attachment_plan(&facts, Some(dir.as_path()));
     assert_eq!(kept_len, 2);
-    assert!(images_for_user_line(0, 1, kept_len, &mut images).is_empty());
-    assert!(images_for_user_line(1, 1, kept_len, &mut images).is_empty());
-    assert!(images_for_user_line(2, 1, kept_len, &mut images).is_empty());
+    assert!(matches!(
+        images_for_user_line(0, 1, kept_len, &mut images),
+        PlannedUserImages::Pixels(ref items) if items.is_empty()
+    ));
+    assert!(matches!(
+        images_for_user_line(1, 1, kept_len, &mut images),
+        PlannedUserImages::Pixels(ref items) if items.is_empty()
+    ));
+    assert!(matches!(
+        images_for_user_line(2, 1, kept_len, &mut images),
+        PlannedUserImages::Pixels(ref items) if items.is_empty()
+    ));
     let answered = images_for_user_line(3, 1, kept_len, &mut images);
-    assert!(answered.is_empty());
-    let message = user_message_with_images(
-        "describe the image",
-        images_for_user_line(4, 1, kept_len, &mut images),
-    );
+    assert!(matches!(
+        answered,
+        PlannedUserImages::Pixels(ref items) if items.is_empty()
+    ));
+    let (body, attachments) =
+        images_for_user_line(4, 1, kept_len, &mut images).into_message_parts("describe the image");
+    let message = user_message_with_images(&body, attachments);
     assert_eq!(message.text(), "describe the image");
     match &message.content[0] {
         crate::llm::ContentBlock::Image { source } => {
@@ -2566,7 +2655,7 @@ fn user_attachment_plan_restores_png_bytes_after_compaction() {
                 source.data.as_bytes(),
             )
             .unwrap();
-            assert_eq!(bytes, png);
+            assert_eq!(bytes.as_slice(), png.as_slice());
             assert_eq!(source.media_type, "image/png");
             eprintln!(
                 "ORACLE restored-image media_type={} bytes={}",
@@ -2576,6 +2665,163 @@ fn user_attachment_plan_restores_png_bytes_after_compaction() {
         }
         other => panic!("expected image block, got {other:?}"),
     }
+}
+
+#[test]
+fn user_message_fact_stores_image_by_ref_not_inline_base64() {
+    let root = tempfile::tempdir().unwrap();
+    let png = vec![0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+    let fact = user_message_fact(
+        "m-1".into(),
+        "look",
+        &[Attachment::png(png.clone())],
+        root.path(),
+    )
+    .unwrap();
+    let encoded = serde_json::to_string(&fact.payload).unwrap();
+    assert!(
+        !encoded.contains("\"data\""),
+        "fact must not inline image bytes: {encoded}"
+    );
+    assert!(fact.payload["images"][0]["path"]
+        .as_str()
+        .unwrap()
+        .starts_with("images/"));
+    assert!(
+        encoded.len() < 512,
+        "fact payload stayed small: {}",
+        encoded.len()
+    );
+    let loaded = attachments_from_user_payload(&fact.payload, Some(root.path()));
+    assert_eq!(loaded.len(), 1);
+    assert_eq!(loaded[0].data.as_ref(), png.as_slice());
+}
+
+#[test]
+fn tool_result_images_are_stored_by_ref_and_stubbed_after_later_model_turn() {
+    use aster_effect::LogStore;
+    let workspace = tempfile::tempdir().unwrap();
+    let dir = log_dir(workspace.path());
+    std::fs::create_dir_all(&dir).unwrap();
+    let log = aster_effect::FileLog::open(&dir).unwrap();
+    let png = vec![0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+    let image = Attachment::png(png.clone());
+    let output = fact_tool_runner_value(
+        "saw pixels",
+        false,
+        std::slice::from_ref(&image),
+        Some(dir.as_path()),
+    );
+    let encoded = output.as_str().unwrap();
+    assert!(encoded.contains("\"path\""), "{encoded}");
+    assert!(!encoded.contains("\"data\":"), "{encoded}");
+    log.append(
+        THREAD,
+        &[aster_effect::NewFact {
+            kind: "tool.result".into(),
+            key: "r1".into(),
+            payload: serde_json::json!({
+                "toolCallId": "img-call",
+                "ok": true,
+                "output": encoded,
+            }),
+        }],
+        None,
+    )
+    .unwrap();
+    let facts_before = read_workspace_facts(workspace.path(), THREAD).unwrap();
+    assert!(tool_image_ids_to_stub(&facts_before).is_empty());
+    let first = message_from_folded_tool("img-call", encoded, false, Some(dir.as_path()), true);
+    assert!(
+        first.content.iter().any(|block| matches!(
+            block,
+            crate::llm::ContentBlock::ToolResult {
+                content: crate::llm::ToolResultContentField::Blocks(blocks),
+                ..
+            } if blocks.iter().any(|part| matches!(part, crate::llm::ToolResultContent::Image { .. }))
+        )),
+        "first look keeps pixels"
+    );
+
+    log.append(
+        THREAD,
+        &[aster_effect::NewFact {
+            kind: "model.turn".into(),
+            key: "model:2".into(),
+            payload: serde_json::json!({"kind":"text","text":"done"}),
+        }],
+        None,
+    )
+    .unwrap();
+    let facts_after = read_workspace_facts(workspace.path(), THREAD).unwrap();
+    assert!(tool_image_ids_to_stub(&facts_after).contains("img-call"));
+    let stubbed = message_from_folded_tool("img-call", encoded, false, Some(dir.as_path()), false);
+    let text = match &stubbed.content[0] {
+        crate::llm::ContentBlock::ToolResult { content, .. } => content.as_text(),
+        other => panic!("expected tool result, got {other:?}"),
+    };
+    assert!(
+        text.contains("pixels omitted after later model activity"),
+        "stub note missing: {text}"
+    );
+    assert!(
+        !stubbed.content.iter().any(|block| matches!(
+            block,
+            crate::llm::ContentBlock::ToolResult {
+                content: crate::llm::ToolResultContentField::Blocks(blocks),
+                ..
+            } if blocks.iter().any(|part| matches!(part, crate::llm::ToolResultContent::Image { .. }))
+        )),
+        "later cycle must drop pixels"
+    );
+    let reloaded = attachments_from_fact_tool_images(
+        &decode_fact_tool_result(encoded).unwrap().images,
+        Some(dir.as_path()),
+        true,
+    )
+    .0;
+    assert_eq!(reloaded[0].data.as_ref(), png.as_slice());
+}
+
+#[test]
+fn user_attachment_plan_stubs_pixels_after_tool_activity() {
+    use aster_effect::LogStore;
+    let workspace = tempfile::tempdir().unwrap();
+    let dir = log_dir(workspace.path());
+    std::fs::create_dir_all(&dir).unwrap();
+    let log = aster_effect::FileLog::open(&dir).unwrap();
+    let png = vec![0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+    let fact = user_message_fact("m-1".into(), "describe", &[Attachment::png(png)], &dir).unwrap();
+    log.append(THREAD, &[fact], None).unwrap();
+    log.append(
+        THREAD,
+        &[aster_effect::NewFact {
+            kind: "model.turn".into(),
+            key: "model:1".into(),
+            payload: serde_json::json!({"kind":"tool","call":{"id":"t1","name":"analyze_image","args":{},"needs_confirmation":false}}),
+        }],
+        None,
+    )
+    .unwrap();
+    log.append(
+        THREAD,
+        &[aster_effect::NewFact {
+            kind: "tool.result".into(),
+            key: "r1".into(),
+            payload: serde_json::json!({"toolCallId":"t1","ok":true,"output":"a cat"}),
+        }],
+        None,
+    )
+    .unwrap();
+    let facts = read_workspace_facts(workspace.path(), THREAD).unwrap();
+    let (_, mut images) = user_attachment_plan(&facts, Some(dir.as_path()));
+    let (body, attachments) =
+        images_for_user_line(0, 0, 0, &mut images).into_message_parts("describe");
+    assert!(attachments.is_empty(), "pixels must be stubbed after tools");
+    assert!(
+        body.contains("pixels omitted after tool activity"),
+        "stub note missing: {body}"
+    );
 }
 
 #[test]
@@ -2877,6 +3123,7 @@ fn bash_confirmation_surface(
         agent,
         fact_log: Default::default(),
         session_id: "bash-unavailable".into(),
+        effect_dir: crate::session_folder::effect_log_dir(root, "bash-unavailable"),
         persistence: None,
         checkpoint: None,
         events: None,
@@ -2996,6 +3243,7 @@ fn tools_for_surface(
         targeted_paths: None,
         pre_tool_hook_resolved: false,
         repeats: Arc::default(),
+        effect_dir: root.to_path_buf(),
     })
 }
 

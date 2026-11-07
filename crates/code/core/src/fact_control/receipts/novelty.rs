@@ -95,6 +95,8 @@ pub(in crate::fact_control) fn information_identity(
                 "observation",
                 body,
                 result.outcome == ToolExecutionOutcome::Failed,
+                None,
+                true,
             );
             crate::content_digest::digest_json("aster.code.tool-observation.v1", &visible)
                 .map_err(|error| ActorError::Schema(error.to_string()))?

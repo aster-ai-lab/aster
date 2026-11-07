@@ -7,6 +7,34 @@ use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
+#[tokio::test]
+async fn generate_blocking_refuses_deep_schemas_before_provider() {
+    let mut nested = serde_json::json!({ "type": "string" });
+    for _ in 0..40 {
+        nested = serde_json::json!({
+            "type": "object",
+            "properties": { "x": nested }
+        });
+    }
+    let client = MockStructuredClient::new(vec![]);
+    let req = StructuredRequest {
+        prompt: "x".into(),
+        system: None,
+        schema: nested,
+        schema_name: "deep".into(),
+        schema_description: None,
+        mode: StructuredMode::Prompt,
+        max_repair_attempts: 0,
+    };
+    let err = generate_blocking(&client, &req)
+        .await
+        .expect_err("deep schema");
+    assert!(
+        err.to_string().contains("nesting depth"),
+        "unexpected error: {err}"
+    );
+}
+
 #[test]
 fn streamed_value_completion_requires_exact_schema_valid_json() {
     let schema = serde_json::json!({

@@ -344,6 +344,9 @@ pub async fn generate_blocking_with_cancellation(
     req: &StructuredRequest,
     cancellation: CancellationToken,
 ) -> Result<StructuredResult> {
+    if let Some(error) = refuse_oversized_structured_schema(&req.schema) {
+        bail!("{error}");
+    }
     let mode = resolve_mode(req.mode, client.native_structured_support());
     let envelope = SchemaEnvelope::for_schema(&req.schema);
     let mut messages = build_initial_messages(req, mode);
@@ -446,6 +449,9 @@ pub async fn generate_streaming_with_cancellation(
     on_partial: PartialObjectCallback,
     cancellation: CancellationToken,
 ) -> Result<StructuredResult> {
+    if let Some(error) = refuse_oversized_structured_schema(&req.schema) {
+        bail!("{error}");
+    }
     let mode = resolve_mode(req.mode, client.native_structured_support());
     let envelope = SchemaEnvelope::for_schema(&req.schema);
     let mut messages = build_initial_messages(req, mode);
@@ -862,9 +868,54 @@ fn find_json_start(text: &str) -> Option<usize> {
 // Schema validation
 // ---------------------------------------------------------------------------
 
+/// Same nesting/byte ceilings as tool parameter schemas (`tools::registry`).
+const MAX_STRUCTURED_SCHEMA_BYTES: usize = 256 * 1024;
+const MAX_STRUCTURED_SCHEMA_DEPTH: usize = 32;
+
+fn structured_schema_depth(value: &Value) -> usize {
+    match value {
+        Value::Array(values) => {
+            1 + values
+                .iter()
+                .map(structured_schema_depth)
+                .max()
+                .unwrap_or(0)
+        }
+        Value::Object(values) => {
+            1 + values
+                .values()
+                .map(structured_schema_depth)
+                .max()
+                .unwrap_or(0)
+        }
+        _ => 1,
+    }
+}
+
+fn refuse_oversized_structured_schema(schema: &Value) -> Option<String> {
+    let bytes = match serde_json::to_vec(schema) {
+        Ok(bytes) => bytes.len(),
+        Err(_) => return Some("structured schema is not serializable".into()),
+    };
+    if bytes > MAX_STRUCTURED_SCHEMA_BYTES {
+        return Some(format!(
+            "structured schema exceeds the {MAX_STRUCTURED_SCHEMA_BYTES} byte safety limit"
+        ));
+    }
+    if structured_schema_depth(schema) > MAX_STRUCTURED_SCHEMA_DEPTH {
+        return Some(format!(
+            "structured schema exceeds the maximum nesting depth of {MAX_STRUCTURED_SCHEMA_DEPTH}"
+        ));
+    }
+    None
+}
+
 /// Validate a JSON value against a JSON Schema.
 /// Returns Ok(()) on success, or a list of human-readable error strings.
 fn validate_against_schema(value: &Value, schema: &Value) -> Result<(), Vec<String>> {
+    if let Some(error) = refuse_oversized_structured_schema(schema) {
+        return Err(vec![error]);
+    }
     // Structured-output schemas are host/model input, so compilation is kept
     // entirely in-memory: the dependency is built without HTTP/file resolvers.
     // Local `$ref` / `$defs`, composition keywords, conditional schemas, and

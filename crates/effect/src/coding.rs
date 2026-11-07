@@ -1370,7 +1370,8 @@ fn step(mut state: SchedulerState, fact: &Fact, config: &HarnessConfig) -> Sched
                     cycle: state.cycle + 1,
                     messages: {
                         let mut messages = state.messages.clone();
-                        messages.push(tool_result_line(payload.ok, &payload.output));
+                        let output = resolved_tool_result_output(&payload);
+                        messages.push(tool_result_line(payload.ok, &output));
                         messages
                     },
                     ..state
@@ -1669,6 +1670,18 @@ fn tool_output_text(value: &Value) -> String {
     }
 }
 
+/// Prefer receipt-carried output so `tool.result` facts need not dual-write the
+/// same envelope under both `output` and `receipt.output`.
+fn resolved_tool_result_output(payload: &ToolResultPayload) -> String {
+    if let Some(receipt) = &payload.receipt {
+        let receipt_text = tool_output_text(&receipt.output);
+        if payload.output.is_empty() || payload.output == receipt_text {
+            return receipt_text;
+        }
+    }
+    payload.output.clone()
+}
+
 fn interrupted_model_turn(turn: u64, cycle: u64) -> Result<Vec<NewFact>, Exit<ActorError>> {
     let decided = ModelDecision::Text {
         text: "(Response interrupted by the user.)".into(),
@@ -1706,12 +1719,15 @@ fn receipt_fact(
 ) -> Result<NewFact, ActorError> {
     result.ensure_prepared(prepared)?;
     let ok = result.outcome == ToolExecutionOutcome::Succeeded;
+    // Top-level `output` stays empty when a typed receipt carries the envelope;
+    // fold/read paths resolve text from `receipt.output` so the fact is not
+    // dual-written at ~2× size for large tool results.
     let mut fact = tool_result_fact(
         prepared.identity.turn,
         prepared.identity.cycle,
         &prepared.identity.tool_call_id,
         ok,
-        tool_output_text(&result.output),
+        String::new(),
         !ok,
     );
     fact.payload["receipt"] =
@@ -1763,10 +1779,12 @@ fn validate_folded_result(
                 )
             })?;
         receipt.ensure_prepared(prepared)?;
+        let receipt_text = tool_output_text(&receipt.output);
+        let output_matches_receipt = payload.output.is_empty() || payload.output == receipt_text;
         if receipt.identity.turn != state.turn
             || receipt.identity.tool_call_id != call.id
             || payload.ok != (receipt.outcome == ToolExecutionOutcome::Succeeded)
-            || payload.output != tool_output_text(&receipt.output)
+            || !output_matches_receipt
         {
             return Err(ActorError::Schema(
                 "tool_effect_identity_mismatch: terminal projection differs".into(),

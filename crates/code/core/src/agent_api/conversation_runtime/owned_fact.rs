@@ -198,6 +198,7 @@ pub(super) async fn prepare_owned_fact(
     parts.surface = Some(crate::fact_control::SessionSurface {
         response_meta: Arc::clone(&finish.response_meta),
         agent,
+        effect_dir: crate::session_folder::effect_log_dir(&parts.workspace, &session_id),
         session_id,
         persistence: Some(persistence),
         checkpoint,

@@ -93,6 +93,38 @@ where
     Ok(steps)
 }
 
+/// Matches `generate_object`: deep schemas must fail closed before jsonschema
+/// compilation can recurse on the FactRun stack.
+pub(crate) const MAX_TASK_OUTPUT_SCHEMA_DEPTH: usize = 32;
+pub(crate) const MAX_TASK_OUTPUT_SCHEMA_BYTES: usize = 64 * 1024;
+
+pub(crate) fn json_value_depth(value: &serde_json::Value) -> usize {
+    match value {
+        serde_json::Value::Array(values) => {
+            1 + values.iter().map(json_value_depth).max().unwrap_or(0)
+        }
+        serde_json::Value::Object(values) => {
+            1 + values.values().map(json_value_depth).max().unwrap_or(0)
+        }
+        _ => 1,
+    }
+}
+
+pub(crate) fn refuse_oversized_output_schema(schema: &serde_json::Value) -> Option<String> {
+    let bytes = serde_json::to_vec(schema).ok()?.len();
+    if bytes > MAX_TASK_OUTPUT_SCHEMA_BYTES {
+        return Some(format!(
+            "output_schema exceeds the {MAX_TASK_OUTPUT_SCHEMA_BYTES} byte limit"
+        ));
+    }
+    if json_value_depth(schema) > MAX_TASK_OUTPUT_SCHEMA_DEPTH {
+        return Some(format!(
+            "output_schema exceeds the maximum nesting depth of {MAX_TASK_OUTPUT_SCHEMA_DEPTH}"
+        ));
+    }
+    None
+}
+
 fn tighten_child_role_round_limit(config: &mut AgentConfig, role_limit: Option<usize>) {
     if let Some(limit) = role_limit.filter(|limit| *limit > 0) {
         if config.max_tool_rounds == 0 || limit < config.max_tool_rounds {
@@ -646,6 +678,11 @@ impl TaskExecutor {
         if !was_promoted && parent_cancellation.is_some_and(CancellationToken::is_cancelled) {
             anyhow::bail!("Operation cancelled by parent session");
         }
+        if let Some(schema) = params.output_schema.as_ref() {
+            if let Some(message) = refuse_oversized_output_schema(schema) {
+                anyhow::bail!("{message}");
+            }
+        }
 
         let capability_subtask = match admitted_capability_subtask {
             Some(subtask) => Some(subtask),
@@ -1150,16 +1187,38 @@ impl TaskExecutor {
             // The delegated task is a child fact run on its own log. The
             // parent context has no session id; the shared budget guard is
             // the fan-out ledger, and this child's scope stays `task-run-*`.
-            match (crate::agent_api::ChildRun {
+            //
+            // Run the child on an isolated Tokio task so its FactRun /
+            // LiveCompletion poll frames do not nest on the parent's OS
+            // stack (Box::pin alone does not change the OS stack). Always
+            // join; cancellation still flows through the shared token.
+            let child_prompt = execution_prompt.to_owned();
+            let child_run = crate::agent_api::ChildRun {
                 agent: agent_loop.clone(),
                 child_id: session_id.clone(),
                 budget_session: Some(session_id.clone()),
                 events: child_event_tx.clone(),
                 cancel: cancel_token.clone(),
-            }
-            .run(execution_prompt)
-            .await)
-            {
+            };
+            let child_join = tokio::spawn(async move { child_run.run(&child_prompt).await });
+            let child_outcome = match child_join.await {
+                Ok(outcome) => outcome,
+                Err(join_error) if join_error.is_cancelled() => {
+                    Err(anyhow::anyhow!("child task join cancelled"))
+                }
+                Err(join_error) => {
+                    let detail = match join_error.try_into_panic() {
+                        Ok(payload) => payload
+                            .downcast_ref::<&str>()
+                            .map(|text| (*text).to_string())
+                            .or_else(|| payload.downcast_ref::<String>().cloned())
+                            .unwrap_or_else(|| "unknown panic payload".to_string()),
+                        Err(join_error) => format!("child task aborted: {join_error}"),
+                    };
+                    Err(anyhow::anyhow!("child task died: {detail}"))
+                }
+            };
+            match child_outcome {
                 Ok(_) if cancel_token.is_cancelled() => {
                     ("Task cancelled by caller".to_string(), false, None)
                 }
@@ -1800,6 +1859,11 @@ impl TaskTool {
     }
 
     async fn execute_single(&self, params: TaskParams, ctx: &ToolContext) -> Result<ToolOutput> {
+        if let Some(schema) = params.output_schema.as_ref() {
+            if let Some(message) = refuse_oversized_output_schema(schema) {
+                return Ok(invalid_delegation_argument(message));
+            }
+        }
         let parent_cancellation = ctx.cancellation_token();
         let executor = self.executor.scoped_for_invocation(ctx);
 

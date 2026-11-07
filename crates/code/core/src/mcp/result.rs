@@ -511,7 +511,7 @@ mod tests {
             .unwrap();
         assert!(output.success);
         assert_eq!(output.images.len(), 1);
-        assert_eq!(output.images[0].data, png);
+        assert_eq!(output.images[0].data.as_ref(), png);
         assert_eq!(
             output.metadata.as_ref().unwrap()["mcp"]["structuredContent"]["text"],
             "Aster"
@@ -535,7 +535,7 @@ mod tests {
         let context = ToolContext::new(temp.path().to_path_buf());
         let invalid = CallToolResult {
             content: vec![ToolContent::Image {
-                data: "***".to_string(),
+                data: "***".into(),
                 mime_type: "image/png".to_string(),
             }],
             ..CallToolResult::default()

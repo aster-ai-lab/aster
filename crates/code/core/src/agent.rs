@@ -1138,6 +1138,38 @@ impl AgentResult {
 // ToolCommand — bridges ToolExecutor to SessionCommand for queue submission
 // ============================================================================
 
+/// Queue results are JSON `Value`s; images cross that boundary by stash id so
+/// pixels stay as shared [`Attachment`] arcs instead of a second base64 copy.
+fn tool_queue_image_stash(
+) -> &'static std::sync::Mutex<std::collections::HashMap<u64, Vec<crate::llm::Attachment>>> {
+    static STASH: std::sync::OnceLock<
+        std::sync::Mutex<std::collections::HashMap<u64, Vec<crate::llm::Attachment>>>,
+    > = std::sync::OnceLock::new();
+    STASH.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+static TOOL_QUEUE_IMAGE_STASH_SEQ: std::sync::atomic::AtomicU64 =
+    std::sync::atomic::AtomicU64::new(1);
+
+pub(crate) fn stash_tool_queue_images(images: Vec<crate::llm::Attachment>) -> Option<u64> {
+    if images.is_empty() {
+        return None;
+    }
+    let id = TOOL_QUEUE_IMAGE_STASH_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    tool_queue_image_stash()
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .insert(id, images);
+    Some(id)
+}
+
+pub(crate) fn take_tool_queue_images(id: u64) -> Option<Vec<crate::llm::Attachment>> {
+    tool_queue_image_stash()
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .remove(&id)
+}
+
 /// Adapter that implements `SessionCommand` for tool execution via the queue.
 ///
 /// Wraps a `ToolExecutor` call so it can be submitted to `SessionLaneQueue`.
@@ -1183,21 +1215,12 @@ impl SessionCommand for ToolCommand {
             self.tool_timeout_ms,
         )
         .await?;
-        let images = result
-            .images
-            .iter()
-            .map(|image| {
-                serde_json::json!({
-                    "data": image.base64_data(),
-                    "media_type": image.media_type,
-                })
-            })
-            .collect::<Vec<_>>();
+        let image_stash_id = stash_tool_queue_images(result.images);
         Ok(serde_json::json!({
             "output": result.output,
             "exit_code": result.exit_code,
             "metadata": result.metadata,
-            "images": images,
+            "image_stash_id": image_stash_id,
             "error_kind": result.error_kind,
         }))
     }

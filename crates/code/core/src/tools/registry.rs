@@ -24,6 +24,8 @@ use std::sync::{Arc, RwLock};
 use thiserror::Error;
 
 const MAX_TOOL_SCHEMA_BYTES: usize = 256 * 1024;
+/// Same nesting ceiling as task `output_schema` / `generate_object`.
+const MAX_TOOL_SCHEMA_DEPTH: usize = 32;
 const MAX_ARGUMENT_VALIDATION_ERRORS: usize = 8;
 const MAX_ARGUMENT_VALIDATION_MESSAGE_BYTES: usize = 4 * 1024;
 const MAX_INLINE_CHANGE_BYTES: usize = 64 * 1024;
@@ -379,6 +381,11 @@ impl ToolRegistry {
             return Err(format!(
                 "tool parameter schema exceeds the {} byte safety limit",
                 MAX_TOOL_SCHEMA_BYTES
+            ));
+        }
+        if tool_schema_depth(&schema) > MAX_TOOL_SCHEMA_DEPTH {
+            return Err(format!(
+                "tool parameter schema exceeds the maximum nesting depth of {MAX_TOOL_SCHEMA_DEPTH}"
             ));
         }
         let mut hasher = std::collections::hash_map::DefaultHasher::new();
@@ -887,6 +894,18 @@ impl ToolRegistry {
                 result.metadata.as_ref(),
             ));
         }
+    }
+}
+
+fn tool_schema_depth(value: &serde_json::Value) -> usize {
+    match value {
+        serde_json::Value::Array(values) => {
+            1 + values.iter().map(tool_schema_depth).max().unwrap_or(0)
+        }
+        serde_json::Value::Object(values) => {
+            1 + values.values().map(tool_schema_depth).max().unwrap_or(0)
+        }
+        _ => 1,
     }
 }
 

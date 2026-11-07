@@ -93,6 +93,7 @@ async fn retained_receipt_metadata_does_not_displace_public_summary_context() {
                 if is_error { 7 } else { 0 },
                 metadata.as_ref(),
                 None,
+                Some(root.path()),
             );
             let wrapped = wrapped.as_str().unwrap();
             if is_error {
@@ -186,6 +187,7 @@ async fn archived_fallback_keeps_observations_instead_of_receipt_metadata() {
         0,
         Some(&metadata),
         Some("internal-digest"),
+        None,
     );
     let wrapped = wrapped.as_str().unwrap();
     let mut decision = call("observed");
@@ -398,7 +400,7 @@ async fn fact_compaction_archives_public_results_without_private_call_metadata()
     let token = "Opaque observation Ω-9f773c";
     let tail = "END-PUBLIC-OBSERVATION Ω-81af0";
     let output = format!("{token}\n{}{tail}", "public data\n".repeat(1000));
-    let wrapped = super::receipts::runner_result_value(&output, false, &[], 0, None, None);
+    let wrapped = super::receipts::runner_result_value(&output, false, &[], 0, None, None, None);
     let wrapped = wrapped.as_str().unwrap();
     let mut decision = call("original");
     decision["call"]["reasoning"] = serde_json::json!(private);
@@ -653,6 +655,8 @@ async fn automatic_budget_reserves_fixed_prompt_and_retained_tail_and_reports_to
         "",
         &"retained🙂".repeat(200),
         false,
+        None,
+        true,
     )]);
     let expected = compactor
         .budget

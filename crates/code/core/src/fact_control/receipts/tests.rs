@@ -287,6 +287,7 @@ fn background_debt_fixture(cancelled: bool) -> Vec<Fact> {
             "workspace_child":"one", "source_run":"source-one", "run":"effect-one"
         })),
         None,
+        None,
     );
     let effects = ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
         path: "background.txt".into(),
@@ -649,6 +650,7 @@ fn executor_tools_with(
             targeted_paths: None,
             pre_tool_hook_resolved: false,
             repeats: Arc::default(),
+            effect_dir: PathBuf::new(),
         }),
         count,
     )

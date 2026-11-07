@@ -1,0 +1,41 @@
+---
+description: Land Studio optimizations as pushed commits; refuse stash restores and dirty resets
+alwaysApply: true
+---
+
+# Studio land discipline
+
+Studio (`apps/studio`) is a private submodule. Optimizations that live only in a
+dirty worktree or stash are not delivered and are the main cause of silent
+rollbacks.
+
+## Required order
+
+1. Implement and verify inside `apps/studio`.
+2. Commit and push on Studio `main` (or the branch the user named).
+3. Run `python3 scripts/studio_land_guard.py check` from the parent repo.
+4. Only then stage the parent `apps/studio` gitlink bump.
+
+Uncommitted Studio work does **not** count as complete. Do not treat stash as a
+delivery mechanism.
+
+## Hard refusals
+
+1. Do **not** run `git reset`, `git checkout --force`, `git submodule update`, or
+   equivalent that discards Studio changes while `apps/studio` is dirty. Run
+   `python3 scripts/studio_land_guard.py dirty` first; if it fails, stop.
+2. Do **not** bump the parent pointer to an ancestor of the current gitlink
+   (`python3 scripts/studio_land_guard.py pointer` must pass).
+3. Do **not** land or re-land work via commits whose subjects restore stash /
+   reassert WIP. Fix forward with a normal commit instead.
+4. Do **not** replace deferred disclosure / virtual-list / single-ModelSelector
+   contracts without updating and passing
+   `pnpm run test:contracts:perf-layout` in `apps/studio` (or
+   `just studio-contracts` from the parent).
+
+## Hot paths
+
+Serialize changes that touch message stream disclosures, `MessageVirtualList`,
+scroll-position memory, `ModelSelector`, reasoning slider / `ModelSpeedControl`,
+or ArcUI plate call sites. Do not open a second agent that edits the same globs
+while one land is in flight.

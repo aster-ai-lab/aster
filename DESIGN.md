@@ -945,7 +945,7 @@ the hit target and label stay still. Selection does not loop or replay the gestu
 trigger it, and reduced motion removes the gesture immediately. Reuse the existing SVG and CSS mechanisms.
 
 Each row opens the matching settings job. 通用 keeps launch, proxy, and developer controls, and adds 应用,
-权限 (电脑操控权限 and Agent 控制权限), 语言 / 设置应用语言, and 关于. The 语言 row jumps to that control on
+语言 / 设置应用语言, and 关于. The 语言 row jumps to that control on
 通用. 通用 also shows 工作区管理. That card shows the application workspace folder and lets you change it. When it is not set, the folder is `.aster` in the home directory. 外观 keeps light, dark, and system, the color, the UI font, and the code font, and adds 主题, 界面密度,
 对话最大宽度, and 页面对比度. 快捷键 lists bindings, rebinds them, clears a binding with Backspace while
 recording, and reports a conflict. 个性化 loads, edits, and saves 自定义指令; a failed save or a failed retry

@@ -81,7 +81,11 @@ the root `Cargo.lock`. The user-authorized private desktop submodule at
 `apps/studio` remains part of that workspace; its sources are committed only
 to `git@github.com:aster-ai-lab/studio.git`. Other new remotes or sibling
 checkouts created for Aster work violate principle XIII. A second checkout of
-this same repository is a git worktree.
+this same repository is a git worktree. Parent gitlink bumps must pass
+`scripts/studio_land_guard.py` (`just studio-land-check`): refuse dirty Studio
+trees, ancestor pointer rollbacks, and stash/WIP restore delivery subjects.
+Pinned renderer contracts run as `just studio-contracts` /
+`pnpm run test:contracts:perf-layout`.
 
 **Structural migrations commit whole.** A rename or relocation that
 moves a tree must land as one commit. A partially staged crate (the

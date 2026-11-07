@@ -111,7 +111,9 @@ fn native_image_parts_and_signature_only_thought_images_keep_their_projection() 
     ];
     let message = GeminiState::message("provider-a", "model", parts.clone()).unwrap();
     assert_eq!(message.content.len(), 2);
-    assert!(matches!(&message.content[0],ContentBlock::Image {source} if source.data=="YQ=="));
+    assert!(
+        matches!(&message.content[0],ContentBlock::Image {source} if source.data.as_ref() == "YQ==")
+    );
     let ContentBlock::GeminiState { state } = message.content.last().unwrap() else {
         panic!("state missing")
     };

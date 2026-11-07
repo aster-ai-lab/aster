@@ -51,7 +51,7 @@ pub(super) async fn save_committed(
     }
     // Ledger and conversation come from this same committed prefix. A
     // concurrent background append belongs to a later projection.
-    let messages = checkpoint_messages_from_facts(&facts);
+    let messages = checkpoint_messages_from_facts(&facts, Some(surface.effect_dir.as_path()));
     let mutations = surface
         .ledger
         .lock()
@@ -125,26 +125,36 @@ pub(super) async fn save_committed(
 /// Export the provider wire shape, with identities and attachments from the
 /// same original prefix as the ledger. The compaction display transcript is
 /// intentionally text-only and cannot substitute for a tool checkpoint.
-pub(super) fn checkpoint_messages_from_facts(facts: &[aster_effect::Fact]) -> Vec<Message> {
+pub(super) fn checkpoint_messages_from_facts(
+    facts: &[aster_effect::Fact],
+    effect_dir: Option<&Path>,
+) -> Vec<Message> {
     let start = facts
         .iter()
         .rposition(|fact| fact.kind == "compaction.done")
         .map_or(0, |index| index + 1);
-    transcript_messages_from(facts, start)
+    transcript_messages_from(facts, start, effect_dir)
 }
 
 /// Original observations only; compaction summaries are derived views.
 pub(crate) fn original_public_transcript_from_facts(facts: &[aster_effect::Fact]) -> String {
-    crate::compaction::public_compaction_transcript(&transcript_messages_from(facts, 0))
+    crate::compaction::public_compaction_transcript(&transcript_messages_from(facts, 0, None))
 }
 
-fn transcript_messages_from(facts: &[aster_effect::Fact], start: usize) -> Vec<Message> {
+fn transcript_messages_from(
+    facts: &[aster_effect::Fact],
+    start: usize,
+    effect_dir: Option<&Path>,
+) -> Vec<Message> {
     let mut messages = compaction_transcript_from_facts(&facts[..start]);
     for (index, fact) in facts.iter().enumerate().skip(start) {
         let message = match fact.kind.as_str() {
             "user.message" => fact.payload.get("text").and_then(|text| {
                 text.as_str().map(|text| {
-                    user_message_with_images(text, attachments_from_user_payload(&fact.payload))
+                    user_message_with_images(
+                        text,
+                        attachments_from_user_payload(&fact.payload, effect_dir),
+                    )
                 })
             }),
             "model.turn" => {
@@ -197,16 +207,14 @@ fn transcript_messages_from(facts: &[aster_effect::Fact], start: usize) -> Vec<M
                 .payload
                 .get("toolCallId")
                 .and_then(serde_json::Value::as_str)
-                .zip(
-                    fact.payload
-                        .get("output")
-                        .and_then(serde_json::Value::as_str),
-                )
-                .map(|(id, output)| {
+                .map(|id| {
+                    let output = super::fact_reads::tool_result_fact_output(&fact.payload);
                     message_from_folded_tool(
                         id,
                         output,
                         fact.payload.get("ok").and_then(serde_json::Value::as_bool) == Some(false),
+                        effect_dir,
+                        true,
                     )
                 }),
             _ => message_from_fact(fact),

@@ -9,9 +9,15 @@ fn folded_command_results_label_only_digest_bound_retained_streams() {
     let stderr = "actual error without newline";
     let body = format!("{stdout}{stderr}");
     let metadata = serde_json::json!({"shell_output_streams":crate::tools::builtin::bash::output_streams::capture(stdout, stderr)});
-    let receipt = runner_result_value(&body, true, &[], 7, Some(&metadata), None);
+    let receipt = runner_result_value(&body, true, &[], 7, Some(&metadata), None, None);
     let original = receipt.clone();
-    let message = message_from_folded_tool("failed-command", receipt.as_str().unwrap(), false);
+    let message = message_from_folded_tool(
+        "failed-command",
+        receipt.as_str().unwrap(),
+        false,
+        None,
+        true,
+    );
     let crate::llm::ContentBlock::ToolResult {
         tool_use_id,
         content,
@@ -28,8 +34,14 @@ fn folded_command_results_label_only_digest_bound_retained_streams() {
     assert_eq!(content.as_text(), format!("Tool exit code: 7\nCaptured stdout ({} UTF-8 bytes):\n{stdout}\nCaptured stderr ({} UTF-8 bytes):\n{stderr}", stdout.len(), stderr.len()));
     assert_eq!(receipt, original);
 
-    let redacted = runner_result_value("[redacted]\n", true, &[], 7, Some(&metadata), None);
-    let message = message_from_folded_tool("redacted-command", redacted.as_str().unwrap(), false);
+    let redacted = runner_result_value("[redacted]\n", true, &[], 7, Some(&metadata), None, None);
+    let message = message_from_folded_tool(
+        "redacted-command",
+        redacted.as_str().unwrap(),
+        false,
+        None,
+        true,
+    );
     let crate::llm::ContentBlock::ToolResult { content, .. } = &message.content[0] else {
         panic!("expected redacted result");
     };
@@ -39,9 +51,16 @@ fn folded_command_results_label_only_digest_bound_retained_streams() {
 #[test]
 fn folded_tool_messages_preserve_typed_exit_codes_without_changing_original_receipts() {
     for code in [0, 7, 137] {
-        let receipt = runner_result_value("original stdout", code != 0, &[], code, None, None);
+        let receipt =
+            runner_result_value("original stdout", code != 0, &[], code, None, None, None);
         let original = receipt.clone();
-        let message = message_from_folded_tool("original-call", receipt.as_str().unwrap(), false);
+        let message = message_from_folded_tool(
+            "original-call",
+            receipt.as_str().unwrap(),
+            false,
+            None,
+            true,
+        );
         let crate::llm::ContentBlock::ToolResult {
             tool_use_id,
             content,
@@ -60,17 +79,23 @@ fn folded_tool_messages_preserve_typed_exit_codes_without_changing_original_rece
             "the original fact remains byte-for-byte unchanged"
         );
     }
-    let message = message_from_folded_tool("legacy", "original stdout", false);
+    let message = message_from_folded_tool("legacy", "original stdout", false, None, true);
     assert!(
         matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "original stdout")
     );
-    let silent = runner_result_value("", true, &[], 7, None, None);
-    let message = message_from_folded_tool("silent", silent.as_str().unwrap(), true);
+    let silent = runner_result_value("", true, &[], 7, None, None, None);
+    let message = message_from_folded_tool("silent", silent.as_str().unwrap(), true, None, true);
     assert!(
         matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "Tool exit code: 7\n")
     );
     let interrupted = runner_interrupted_value("interrupted output");
-    let message = message_from_folded_tool("interrupted", interrupted.as_str().unwrap(), true);
+    let message = message_from_folded_tool(
+        "interrupted",
+        interrupted.as_str().unwrap(),
+        true,
+        None,
+        true,
+    );
     assert!(
         matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "interrupted output")
     );
@@ -113,6 +138,7 @@ pub(super) fn surface_with_config(
         ),
         fact_log: Default::default(),
         session_id: THREAD.into(),
+        effect_dir: crate::session_folder::effect_log_dir(workspace, THREAD),
         persistence: None,
         checkpoint: None,
         events: None,
@@ -579,7 +605,9 @@ fn missing_original_metadata_never_fabricates_a_tool_call() {
         &mut Vec::new(),
         &mut None,
         "output",
-        false
+        false,
+        None,
+        &std::collections::HashSet::new(),
     )
     .is_err());
 }
@@ -638,7 +666,16 @@ fn legacy_result_without_id_and_error_role_remain_supported() {
         .unwrap()
         .into_iter();
     let mut messages = Vec::new();
-    recorded_tool_messages(&mut calls, &mut messages, &mut None, "refused", true).unwrap();
+    recorded_tool_messages(
+        &mut calls,
+        &mut messages,
+        &mut None,
+        "refused",
+        true,
+        None,
+        &std::collections::HashSet::new(),
+    )
+    .unwrap();
     assert_eq!(messages.len(), 2);
     let request = &messages[0];
     let response = &messages[1];
@@ -907,7 +944,7 @@ async fn current_verification_follows_the_last_observation_without_changing_the_
         let workspace = tempfile::tempdir().unwrap();
         let log = FileLog::open(log_dir(workspace.path())).unwrap();
         append(&log, "model:1:0", "model.turn", call("kept"));
-        let raw = runner_result_value("actual stdout", false, &[], 0, None, None);
+        let raw = runner_result_value("actual stdout", false, &[], 0, None, None, None);
         let body = raw.as_str().unwrap();
         let args = aster_effect::tool_args_digest(&call("kept")["call"]["args"]).unwrap();
         let prepared = aster_effect::ToolPreparedV1 {

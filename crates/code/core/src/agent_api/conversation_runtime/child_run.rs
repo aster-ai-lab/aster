@@ -41,6 +41,7 @@ impl ChildRun {
             response_meta: Default::default(),
             agent,
             session_id: child_id.clone(),
+            effect_dir: effect_dir.clone(),
             persistence: None,
             fact_log: Arc::new(std::sync::Mutex::new(Some(log))),
             checkpoint: None,

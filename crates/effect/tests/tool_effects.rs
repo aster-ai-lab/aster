@@ -395,10 +395,17 @@ async fn terminal_prefix_campaign(case: Case, parallel: bool) {
     let first = receipts(&committed);
     assert_eq!(first.len(), 1);
     assert_eq!(first[0].outcome, ToolExecutionOutcome::Succeeded);
-    assert!(committed
+    let tool_result = committed
         .iter()
         .find(|fact| fact.kind == "tool.result")
-        .unwrap()
+        .unwrap();
+    assert_eq!(
+        tool_result.payload.get("output").and_then(|value| value.as_str()),
+        Some(""),
+        "typed receipt facts must not dual-write the tool envelope under top-level output"
+    );
+    assert!(tool_result.payload.get("receipt").is_some());
+    assert!(tool_result
         .cause
         .as_deref()
         .unwrap()

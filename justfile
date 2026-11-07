@@ -102,13 +102,11 @@ build-studio $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     python3 apps/studio/scripts/studio_product.py "$slug" stage-companions
     cargo "${build_args[@]}" --bin Studio
 
-# Second window on an already-built app: no cargo, so it never waits on the build-directory lock.
-fork $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster') port='4321':
+# Removed permanently. Do not restore auto-allocated Studio fork windows.
+fork:
     #!/usr/bin/env bash
-    set -euo pipefail
-    export ASTER_STUDIO_INSTANCE=fork
-    export STUDIO_RENDERER_PORT="{{port}}"
-    exec just studio "$slug"
+    echo "just fork is removed; Studio fork windows are not allowed." >&2
+    exit 1
 
 # Start Studio with isolated renderer hot reload: Aster on 4318, ToYou on 4319.
 # Default tenant is aster. `just studio toyou` starts the original ToWork product.
@@ -187,6 +185,14 @@ app-icons:
 # `just studio-desktop remove` / `remove-system` undo it.
 studio-desktop action='install':
     python3 apps/studio/scripts/studio-desktop.py {{action}}
+
+# Refuse dirty Studio trees, ancestor gitlink rollbacks, and stash-restore tips.
+studio-land-check:
+    python3 scripts/studio_land_guard.py check
+
+# Pinned renderer contracts for deferred disclosure, virtual list, and ModelSelector.
+studio-contracts:
+    python3 scripts/studio_land_guard.py contracts
 
 # Documented desktop host build. Same result as the shared host recipe.
 build-desktop $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):

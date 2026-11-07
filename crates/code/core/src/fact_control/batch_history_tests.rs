@@ -360,6 +360,7 @@ async fn grouped_batch_keeps_exact_image_and_failed_result_blocks() {
         0,
         None,
         None,
+        None,
     );
     let body = receipt.as_str().unwrap();
     result(&log, "result-0", "member-0", body);
@@ -376,8 +377,8 @@ async fn grouped_batch_keeps_exact_image_and_failed_result_blocks() {
         .unwrap();
     assert_eq!(messages.iter().flat_map(Message::tool_calls).count(), 2);
     let expected = [
-        message_from_folded_tool("member-0", receipt.as_str().unwrap(), false),
-        message_from_folded_tool("member-1", "exact observation 1", true),
+        message_from_folded_tool("member-0", receipt.as_str().unwrap(), false, None, true),
+        message_from_folded_tool("member-1", "exact observation 1", true, None, true),
     ];
     let actual: Vec<_> = messages
         .iter()

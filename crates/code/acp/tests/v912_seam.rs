@@ -290,6 +290,27 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         let args = serde_json::json!({ "file_path": "shot.png" }).to_string();
         return reply_tool("read", &args, state.reads, streaming);
     }
+    if raw.contains("IMAGE-PASTE-ORACLE") && tools {
+        if state.reads >= 1 {
+            return reply_text("paste turn done", streaming);
+        }
+        state.reads += 1;
+        let args = serde_json::json!({ "file_path": "note.txt" }).to_string();
+        return reply_tool("read", &args, state.reads, streaming);
+    }
+    if raw.contains("TOOL-IMAGE-ORACLE") && tools {
+        if state.reads == 0 {
+            state.reads += 1;
+            let args = serde_json::json!({ "file_path": "shot.png" }).to_string();
+            return reply_tool("read", &args, state.reads, streaming);
+        }
+        if state.reads == 1 {
+            state.reads += 1;
+            let args = serde_json::json!({ "file_path": "note.txt" }).to_string();
+            return reply_tool("read", &args, state.reads, streaming);
+        }
+        return reply_text("tool image turn done", streaming);
+    }
     if raw.contains("READONLY-GIT") && tools {
         if state.gits >= 1 {
             return reply_text("noted", streaming);
@@ -823,6 +844,125 @@ async fn v912_image_bytes_reach_the_model() {
                 "model request did not contain the image bytes"
             );
             eprintln!("ORACLE image-bytes model-body-contains=PNG_BASE64");
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn v912_pasted_image_is_fact_by_ref_and_stubbed_after_tools() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("image-paste");
+            std::fs::write(workspace.join("note.txt"), "hello").expect("note");
+            let (agent, session, state) = open_session(&workspace, "true").await;
+            let request = acp::PromptRequest::new(
+                session.clone(),
+                vec![
+                    acp::ContentBlock::Text(acp::TextContent::new("IMAGE-PASTE-ORACLE look")),
+                    acp::ContentBlock::Image(acp::ImageContent::new(PNG_BASE64, "image/png")),
+                ],
+            );
+            tokio::time::timeout(
+                Duration::from_secs(40),
+                acp::Agent::prompt(agent.conn.as_ref(), request),
+            )
+            .await
+            .expect("prompt timed out")
+            .expect("paste prompt");
+
+            let log = effect_log(&workspace);
+            assert!(
+                log.contains("\"path\":\"images/"),
+                "user.message must store image by path: {log}"
+            );
+            assert!(
+                !log.contains(&format!("\"data\":\"{PNG_BASE64}\"")),
+                "user.message must not inline paste base64"
+            );
+            let mut found_file = false;
+            if let Ok(dates) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
+                for date in dates.flatten() {
+                    let Ok(homes) = std::fs::read_dir(date.path()) else {
+                        continue;
+                    };
+                    for home in homes.flatten() {
+                        let images = home.path().join("images");
+                        if images.is_dir()
+                            && std::fs::read_dir(&images)
+                                .ok()
+                                .is_some_and(|entries| entries.flatten().next().is_some())
+                        {
+                            found_file = true;
+                        }
+                    }
+                }
+            }
+            assert!(found_file, "session images/ must hold durable bytes");
+
+            let bodies = state.lock().expect("mock").bodies.clone();
+            let with_pixels: Vec<_> = bodies
+                .iter()
+                .filter(|body| body.contains(PNG_BASE64))
+                .collect();
+            assert_eq!(
+                with_pixels.len(),
+                1,
+                "pixels should reach the model once before tools; bodies={}",
+                bodies.len()
+            );
+            assert!(
+                bodies.iter().any(|body| {
+                    body.contains("pixels omitted after tool activity")
+                        && !body.contains(PNG_BASE64)
+                }),
+                "later complete must stub pixels"
+            );
+            eprintln!("ORACLE pasted-image by-ref stub-after-tools ok");
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn v912_tool_read_image_is_fact_by_ref_and_stubbed_after_next_model() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("tool-image");
+            std::fs::write(workspace.join("shot.png"), PNG).expect("png");
+            std::fs::write(workspace.join("note.txt"), "hello").expect("note");
+            let (agent, session, state) = open_session(&workspace, "true").await;
+            say(&agent, &session, "TOOL-IMAGE-ORACLE describe shot.png")
+                .await
+                .expect("tool image prompt");
+
+            let log = effect_log(&workspace);
+            assert!(
+                log.contains("path") && log.contains("images/") && log.contains("sha256"),
+                "tool.result must store image by path: {log}"
+            );
+            assert!(
+                !log.contains(&format!("\"data\":\"{PNG_BASE64}\"")),
+                "tool.result must not inline read-image base64"
+            );
+
+            let bodies = state.lock().expect("mock").bodies.clone();
+            let with_pixels: Vec<_> = bodies
+                .iter()
+                .filter(|body| body.contains(PNG_BASE64))
+                .collect();
+            assert_eq!(
+                with_pixels.len(),
+                1,
+                "tool image pixels should reach the model once; bodies={}",
+                bodies.len()
+            );
+            assert!(
+                bodies.iter().any(|body| {
+                    body.contains("pixels omitted after later model activity")
+                        && !body.contains(PNG_BASE64)
+                }),
+                "later complete must stub tool-result pixels; bodies={bodies:?}"
+            );
+            eprintln!("ORACLE tool-image by-ref stub-after-model ok");
         })
         .await;
 }

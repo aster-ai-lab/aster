@@ -413,6 +413,10 @@ pub(super) async fn prepare_pinned(
         .with_surface(crate::fact_control::SessionSurface {
             response_meta: Default::default(),
             agent: agent_loop,
+            effect_dir: crate::session_folder::effect_log_dir(
+                &session.workspace,
+                &session.session_id,
+            ),
             session_id: session.session_id.clone(),
             persistence: Some(
                 super::super::session_persistence::SessionPersistenceContext::from_session(session),

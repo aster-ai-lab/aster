@@ -492,7 +492,7 @@ async fn image_stream_returns_the_admitted_run_and_retains_image_history() {
     let history = session.history();
     assert!(history[0].content.iter().any(|block| matches!(
         block, crate::ContentBlock::Image { source }
-            if source.data == "AQID" && source.media_type == "image/png"
+            if source.data.as_ref() == "AQID" && source.media_type == "image/png"
     )));
     assert_eq!(history[1].text(), "image answer");
 }

@@ -260,13 +260,13 @@ async fn late_input_scenario(route: &str, file_store: bool) {
             .messages
             .iter()
             .any(|message| message.role == "user" && message.text() == input));
-        let had_image = client.1.lock().unwrap()[0].iter().any(|message| message.content.iter().any(|block| matches!(block, crate::llm::ContentBlock::Image { source } if source.data == "AQID")));
+        let had_image = client.1.lock().unwrap()[0].iter().any(|message| message.content.iter().any(|block| matches!(block, crate::llm::ContentBlock::Image { source } if source.data.as_ref() == "AQID")));
         if attachments {
             assert!(
                 had_image,
                 "original attachment must reach the actual provider"
             );
-            assert!(result.messages.iter().any(|message| message.content.iter().any(|block| matches!(block, crate::llm::ContentBlock::Image { source } if source.data == "AQID"))));
+            assert!(result.messages.iter().any(|message| message.content.iter().any(|block| matches!(block, crate::llm::ContentBlock::Image { source } if source.data.as_ref() == "AQID"))));
         }
     }
     assert_eq!(client.0.load(std::sync::atomic::Ordering::SeqCst), 1);

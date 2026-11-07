@@ -37,7 +37,7 @@ fn checkpoint_keeps_one_batch_and_pairs_results_by_recorded_identity() {
             serde_json::json!({"toolCallId":"first", "output":"A", "ok":true}),
         ),
     ];
-    let messages = checkpoint_messages_from_facts(&facts);
+    let messages = checkpoint_messages_from_facts(&facts, None);
     assert_eq!(messages.len(), 3);
     assert_eq!(
         messages[0].reasoning_content.as_deref(),
@@ -61,43 +61,59 @@ fn checkpoint_keeps_one_batch_and_pairs_results_by_recorded_identity() {
 
 #[test]
 fn checkpoint_preserves_user_and_tool_image_bytes() {
+    let root = tempfile::tempdir().unwrap();
     let image = crate::llm::Attachment::new(vec![1, 2, 3], "image/png");
     let user = user_message_fact(
         "user:1".into(),
         "Inspect image",
         std::slice::from_ref(&image),
-    );
-    let output = fact_tool_runner_value("Image result", true, &[image]);
-    let messages = checkpoint_messages_from_facts(&[
-        fact(&user.kind, user.payload),
-        fact(
-            "tool.result",
-            serde_json::json!({"toolCallId":"image-call", "output":output, "ok":true}),
-        ),
-    ]);
-    assert!(messages[0]
-        .content
-        .iter()
-        .any(|block| matches!(block, ContentBlock::Image {source} if source.data == "AQID")));
+        root.path(),
+    )
+    .unwrap();
+    let output = fact_tool_runner_value("Image result", true, &[image], Some(root.path()));
     assert!(
-        matches!(&messages[1].content[0], ContentBlock::ToolResult {tool_use_id, content: ToolResultContentField::Blocks(blocks), is_error, ..} if tool_use_id == "image-call" && *is_error == Some(true) && blocks.iter().any(|block| matches!(block, crate::llm::ToolResultContent::Image {source} if source.data == "AQID")))
+        output.as_str().unwrap().contains("\"path\""),
+        "tool images must be by-ref: {output}"
+    );
+    assert!(
+        !output.as_str().unwrap().contains("\"data\":"),
+        "tool images must not inline base64: {output}"
+    );
+    let messages = checkpoint_messages_from_facts(
+        &[
+            fact(&user.kind, user.payload),
+            fact(
+                "tool.result",
+                serde_json::json!({"toolCallId":"image-call", "output":output, "ok":true}),
+            ),
+        ],
+        Some(root.path()),
+    );
+    assert!(messages[0].content.iter().any(
+        |block| matches!(block, ContentBlock::Image {source} if source.data.as_ref() == "AQID")
+    ));
+    assert!(
+        matches!(&messages[1].content[0], ContentBlock::ToolResult {tool_use_id, content: ToolResultContentField::Blocks(blocks), is_error, ..} if tool_use_id == "image-call" && *is_error == Some(true) && blocks.iter().any(|block| matches!(block, crate::llm::ToolResultContent::Image {source} if source.data.as_ref() == "AQID")))
     );
 }
 
 #[test]
 fn checkpoint_starts_at_last_compaction_and_does_not_invent_result_ids() {
-    let messages = checkpoint_messages_from_facts(&[
-        fact("user.message", serde_json::json!({"text":"discarded"})),
-        fact(
-            "compaction.done",
-            serde_json::json!({"summary":"original summary", "kept":["user\nkept"]}),
-        ),
-        fact(
-            "tool.result",
-            serde_json::json!({"output":"no identity", "ok":true}),
-        ),
-        fact("user.message", serde_json::json!({"text":"new message"})),
-    ]);
+    let messages = checkpoint_messages_from_facts(
+        &[
+            fact("user.message", serde_json::json!({"text":"discarded"})),
+            fact(
+                "compaction.done",
+                serde_json::json!({"summary":"original summary", "kept":["user\nkept"]}),
+            ),
+            fact(
+                "tool.result",
+                serde_json::json!({"output":"no identity", "ok":true}),
+            ),
+            fact("user.message", serde_json::json!({"text":"new message"})),
+        ],
+        None,
+    );
     assert_eq!(messages.len(), 3);
     assert!(messages[0].text().ends_with("original summary"));
     assert_eq!(messages[1].text(), "kept");
@@ -106,24 +122,27 @@ fn checkpoint_starts_at_last_compaction_and_does_not_invent_result_ids() {
 
 #[test]
 fn checkpoint_omits_unexecuted_batch_calls_without_inventing_results() {
-    let messages = checkpoint_messages_from_facts(&[
-        fact(
-            "model.turn",
-            serde_json::json!({"kind":"tool", "call":{"id":"denied", "name":"write", "args":{}, "needs_confirmation":true}, "also":[{"id":"done", "name":"read", "args":{}, "needs_confirmation":false}, {"id":"pending", "name":"write", "args":{}, "needs_confirmation":false}]}),
-        ),
-        fact(
-            "confirmation.answered",
-            serde_json::json!({"tool_call_id":"denied", "approved":false}),
-        ),
-        fact(
-            "tool.result",
-            serde_json::json!({"toolCallId":"done", "output":"known failure", "ok":false}),
-        ),
-        fact(
-            "tool.prepared",
-            serde_json::json!({"identity":{"tool_call_id":"pending"}}),
-        ),
-    ]);
+    let messages = checkpoint_messages_from_facts(
+        &[
+            fact(
+                "model.turn",
+                serde_json::json!({"kind":"tool", "call":{"id":"denied", "name":"write", "args":{}, "needs_confirmation":true}, "also":[{"id":"done", "name":"read", "args":{}, "needs_confirmation":false}, {"id":"pending", "name":"write", "args":{}, "needs_confirmation":false}]}),
+            ),
+            fact(
+                "confirmation.answered",
+                serde_json::json!({"tool_call_id":"denied", "approved":false}),
+            ),
+            fact(
+                "tool.result",
+                serde_json::json!({"toolCallId":"done", "output":"known failure", "ok":false}),
+            ),
+            fact(
+                "tool.prepared",
+                serde_json::json!({"identity":{"tool_call_id":"pending"}}),
+            ),
+        ],
+        None,
+    );
     assert_eq!(messages.len(), 2);
     assert_eq!(messages[0].content.len(), 1);
     assert!(matches!(&messages[0].content[0], ContentBlock::ToolUse {id, ..} if id == "done"));
@@ -134,20 +153,23 @@ fn checkpoint_omits_unexecuted_batch_calls_without_inventing_results() {
 
 #[test]
 fn checkpoint_does_not_pair_reused_ids_across_model_turns() {
-    let messages = checkpoint_messages_from_facts(&[
-        fact(
-            "model.turn",
-            serde_json::json!({"kind":"tool", "call":{"id":"reused", "name":"read", "args":{"path":"pending"}, "needs_confirmation":false}}),
-        ),
-        fact(
-            "model.turn",
-            serde_json::json!({"kind":"tool", "call":{"id":"reused", "name":"read", "args":{"path":"committed"}, "needs_confirmation":false}}),
-        ),
-        fact(
-            "tool.result",
-            serde_json::json!({"toolCallId":"reused", "output":"actual output", "ok":true}),
-        ),
-    ]);
+    let messages = checkpoint_messages_from_facts(
+        &[
+            fact(
+                "model.turn",
+                serde_json::json!({"kind":"tool", "call":{"id":"reused", "name":"read", "args":{"path":"pending"}, "needs_confirmation":false}}),
+            ),
+            fact(
+                "model.turn",
+                serde_json::json!({"kind":"tool", "call":{"id":"reused", "name":"read", "args":{"path":"committed"}, "needs_confirmation":false}}),
+            ),
+            fact(
+                "tool.result",
+                serde_json::json!({"toolCallId":"reused", "output":"actual output", "ok":true}),
+            ),
+        ],
+        None,
+    );
     assert_eq!(messages.len(), 2);
     assert!(
         matches!(&messages[0].content[0], ContentBlock::ToolUse {id, input, ..} if id == "reused" && input == &serde_json::json!({"path":"committed"}))

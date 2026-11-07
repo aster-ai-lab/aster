@@ -1448,7 +1448,7 @@ fn a_text_only_model_receives_a_note_instead_of_image_parts() {
                 source: ImageSource {
                     source_type: "base64".to_string(),
                     media_type: "image/png".to_string(),
-                    data: "AQID".to_string(),
+                    data: "AQID".into(),
                 },
             }],
             reasoning_content: None,

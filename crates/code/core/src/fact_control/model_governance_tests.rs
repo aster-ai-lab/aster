@@ -90,6 +90,7 @@ async fn surface() -> (
         response_meta: Default::default(),
         agent: invocation.bind_agent_loop(&agent),
         session_id: "parent-original".into(),
+        effect_dir: std::path::PathBuf::new(),
         persistence: None,
         fact_log: Default::default(),
         checkpoint: None,

@@ -29,7 +29,15 @@ pub(super) struct FactToolResultEnvelope {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(super) struct FactToolImage {
     pub(super) media_type: String,
-    pub(super) data: String,
+    /// Legacy inline base64. Absent on new writes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(super) data: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(super) path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(super) sha256: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(super) byte_len: Option<usize>,
 }
 
 pub(crate) fn exposed_tool_specs(
@@ -46,10 +54,102 @@ pub(crate) fn exposed_tool_specs(
         .collect()
 }
 
+/// Persist tool images under `effect_dir/images/` when provided; otherwise keep
+/// legacy inline base64 (tests without a session folder).
+pub(super) fn encode_fact_tool_images(
+    images: &[crate::llm::Attachment],
+    effect_dir: Option<&Path>,
+) -> Vec<FactToolImage> {
+    images
+        .iter()
+        .filter_map(|image| {
+            if let Some(root) = effect_dir {
+                let stored = crate::session_folder::persist_session_image(
+                    root,
+                    image.data.as_ref(),
+                    &image.media_type,
+                )
+                .ok()?;
+                return Some(FactToolImage {
+                    media_type: stored.media_type,
+                    data: None,
+                    path: Some(stored.path),
+                    sha256: Some(stored.sha256),
+                    byte_len: Some(stored.byte_len),
+                });
+            }
+            Some(FactToolImage {
+                media_type: image.media_type.clone(),
+                data: Some(base64::Engine::encode(
+                    &base64::engine::general_purpose::STANDARD,
+                    image.data.as_ref(),
+                )),
+                path: None,
+                sha256: None,
+                byte_len: Some(image.data.len()),
+            })
+        })
+        .collect()
+}
+
+pub(super) fn attachments_from_fact_tool_images(
+    images: &[FactToolImage],
+    effect_dir: Option<&Path>,
+    load_pixels: bool,
+) -> (Vec<crate::llm::Attachment>, Vec<String>) {
+    let mut attachments = Vec::new();
+    let mut stubs = Vec::new();
+    for image in images {
+        let digest = image
+            .sha256
+            .as_deref()
+            .or(image.path.as_deref())
+            .unwrap_or("unknown");
+        let len = image
+            .byte_len
+            .map(|n| n.to_string())
+            .unwrap_or_else(|| "?".into());
+        if !load_pixels {
+            stubs.push(format!(
+                "[tool image retained: sha256={digest} media={} bytes={len}; pixels omitted after later model activity]",
+                image.media_type
+            ));
+            continue;
+        }
+        if let Some(path) = image.path.as_deref() {
+            if let Some(root) = effect_dir {
+                if let Ok(bytes) = crate::session_folder::load_session_image(root, path) {
+                    attachments.push(crate::llm::Attachment::new(bytes, image.media_type.clone()));
+                    continue;
+                }
+            }
+            stubs.push(format!(
+                "[tool image unavailable: path={path} media={}]",
+                image.media_type
+            ));
+            continue;
+        }
+        let Some(data) = image.data.as_deref() else {
+            continue;
+        };
+        let Ok(bytes) =
+            base64::Engine::decode(&base64::engine::general_purpose::STANDARD, data.as_bytes())
+        else {
+            continue;
+        };
+        if bytes.is_empty() {
+            continue;
+        }
+        attachments.push(crate::llm::Attachment::new(bytes, image.media_type.clone()));
+    }
+    (attachments, stubs)
+}
+
 pub(super) fn fact_tool_runner_value(
     output: &str,
     is_error: bool,
     images: &[crate::llm::Attachment],
+    effect_dir: Option<&Path>,
 ) -> serde_json::Value {
     if !is_error && images.is_empty() {
         return serde_json::Value::String(output.to_string());
@@ -58,16 +158,7 @@ pub(super) fn fact_tool_runner_value(
         kind: FACT_TOOL_RESULT_KIND.to_string(),
         text: output.to_string(),
         is_error,
-        images: images
-            .iter()
-            .map(|image| FactToolImage {
-                media_type: image.media_type.clone(),
-                data: base64::Engine::encode(
-                    &base64::engine::general_purpose::STANDARD,
-                    &image.data,
-                ),
-            })
-            .collect(),
+        images: encode_fact_tool_images(images, effect_dir),
         exit_code: None,
         outcome: None,
         workspace_child: None,
@@ -89,26 +180,19 @@ pub(super) fn decode_fact_tool_result(body: &str) -> Option<FactToolResultEnvelo
     serde_json::from_value(value).ok()
 }
 
-pub(super) fn message_from_folded_tool(id: &str, body: &str, folded_error: bool) -> Message {
+pub(super) fn message_from_folded_tool(
+    id: &str,
+    body: &str,
+    folded_error: bool,
+    effect_dir: Option<&Path>,
+    load_pixels: bool,
+) -> Message {
     let Some(envelope) = decode_fact_tool_result(body) else {
         return Message::tool_result(id, body, folded_error);
     };
     let is_error = folded_error || envelope.is_error;
-    let images = envelope
-        .images
-        .iter()
-        .filter_map(|image| {
-            let bytes = base64::Engine::decode(
-                &base64::engine::general_purpose::STANDARD,
-                image.data.as_bytes(),
-            )
-            .ok()?;
-            if bytes.is_empty() {
-                return None;
-            }
-            Some(crate::llm::Attachment::new(bytes, image.media_type.clone()))
-        })
-        .collect::<Vec<_>>();
+    let (images, stubs) =
+        attachments_from_fact_tool_images(&envelope.images, effect_dir, load_pixels);
     let stream_text = envelope
         .metadata
         .as_ref()
@@ -120,13 +204,12 @@ pub(super) fn message_from_folded_tool(id: &str, body: &str, folded_error: bool)
                 stdout.len(), stderr.len()
             )
         });
-    message_from_tool_observation(
-        id,
-        stream_text.as_deref().unwrap_or(&envelope.text),
-        is_error,
-        &images,
-        envelope.exit_code,
-    )
+    let mut text = stream_text.unwrap_or_else(|| envelope.text.clone());
+    if !stubs.is_empty() {
+        text.push('\n');
+        text.push_str(&stubs.join("\n"));
+    }
+    message_from_tool_observation(id, &text, is_error, &images, envelope.exit_code)
 }
 
 /// Project current host guidance beside the latest observation, without

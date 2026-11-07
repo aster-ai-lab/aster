@@ -3925,7 +3925,7 @@ mod multimodal_tests {
     fn test_attachment_jpeg() {
         let a = Attachment::jpeg(vec![0xFF, 0xD8, 0xFF]);
         assert_eq!(a.media_type, "image/jpeg");
-        assert_eq!(a.data, vec![0xFF, 0xD8, 0xFF]);
+        assert_eq!(a.data.as_ref(), &[0xFF, 0xD8, 0xFF]);
     }
 
     #[test]
@@ -3956,6 +3956,9 @@ mod multimodal_tests {
     #[test]
     fn test_attachment_base64_data() {
         let a = Attachment::jpeg(vec![0xFF, 0xD8, 0xFF]);
+        let shared = a.base64_shared();
+        let cloned = a.clone().base64_shared();
+        assert!(std::sync::Arc::ptr_eq(&shared, &cloned));
         let b64 = a.base64_data();
         assert!(!b64.is_empty());
         // Verify round-trip
@@ -3985,7 +3988,7 @@ mod multimodal_tests {
         std::fs::write(&path, [0xFF, 0xD8, 0xFF]).unwrap();
         let a = Attachment::from_file(&path).unwrap();
         assert_eq!(a.media_type, "image/jpeg");
-        assert_eq!(a.data, vec![0xFF, 0xD8, 0xFF]);
+        assert_eq!(a.data.as_ref(), &[0xFF, 0xD8, 0xFF]);
     }
 
     #[test]
@@ -4015,7 +4018,7 @@ mod multimodal_tests {
             std::fs::write(&path, PNG).unwrap();
             let a = Attachment::from_file(&path).unwrap();
             assert_eq!(a.media_type, "image/png", "{name}");
-            assert_eq!(a.data, PNG);
+            assert_eq!(a.data.as_ref(), PNG);
         }
     }
 
@@ -4036,7 +4039,7 @@ mod multimodal_tests {
         std::fs::write(&path, PNG).unwrap();
         let a = Attachment::from_file(&path).unwrap();
         assert_eq!(a.media_type, "image/png");
-        assert_eq!(a.data, PNG);
+        assert_eq!(a.data.as_ref(), PNG);
     }
 
     #[test]
@@ -4066,7 +4069,7 @@ mod multimodal_tests {
         let src = ImageSource {
             source_type: "base64".to_string(),
             media_type: "image/jpeg".to_string(),
-            data: "abc123".to_string(),
+            data: "abc123".into(),
         };
         let json = serde_json::to_value(&src).unwrap();
         assert_eq!(json["type"], "base64");
@@ -4080,7 +4083,7 @@ mod multimodal_tests {
         let src: ImageSource = serde_json::from_str(json).unwrap();
         assert_eq!(src.source_type, "base64");
         assert_eq!(src.media_type, "image/png");
-        assert_eq!(src.data, "xyz");
+        assert_eq!(src.data.as_ref(), "xyz");
     }
 
     // --- ContentBlock::Image ---
@@ -4091,7 +4094,7 @@ mod multimodal_tests {
             source: ImageSource {
                 source_type: "base64".to_string(),
                 media_type: "image/jpeg".to_string(),
-                data: "abc".to_string(),
+                data: "abc".into(),
             },
         };
         let json = serde_json::to_value(&block).unwrap();
@@ -4109,7 +4112,7 @@ mod multimodal_tests {
             ContentBlock::Image { source } => {
                 assert_eq!(source.source_type, "base64");
                 assert_eq!(source.media_type, "image/png");
-                assert_eq!(source.data, "xyz");
+                assert_eq!(source.data.as_ref(), "xyz");
             }
             _ => panic!("Expected Image block"),
         }
@@ -4134,7 +4137,7 @@ mod multimodal_tests {
                 source: ImageSource {
                     source_type: "base64".to_string(),
                     media_type: "image/png".to_string(),
-                    data: "abc".to_string(),
+                    data: "abc".into(),
                 },
             },
         ]);
@@ -4191,7 +4194,7 @@ mod multimodal_tests {
                 source: ImageSource {
                     source_type: "base64".to_string(),
                     media_type: "image/png".to_string(),
-                    data: "x".to_string(),
+                    data: "x".into(),
                 },
             },
             ToolResultContent::Text {
@@ -4308,7 +4311,7 @@ mod multimodal_tests {
                     source: ImageSource {
                         source_type: "base64".to_string(),
                         media_type: "image/jpeg".to_string(),
-                        data: "abc123".to_string(),
+                        data: "abc123".into(),
                     },
                 },
                 ContentBlock::Text {
@@ -4341,7 +4344,7 @@ mod multimodal_tests {
                 source: ImageSource {
                     source_type: "base64".to_string(),
                     media_type: "image/png".to_string(),
-                    data: "abc123".to_string(),
+                    data: "abc123".into(),
                 },
             }],
             reasoning_content: None,
@@ -4372,7 +4375,7 @@ mod multimodal_tests {
                         source: ImageSource {
                             source_type: "base64".to_string(),
                             media_type: "image/png".to_string(),
-                            data: "xyz".to_string(),
+                            data: "xyz".into(),
                         },
                     },
                 ]),

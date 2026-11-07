@@ -1168,7 +1168,7 @@ mod tests {
             assert!(result.success, "{name}: {}", result.content);
             assert_eq!(result.images.len(), 1, "{name}");
             assert_eq!(result.images[0].media_type, "image/png", "{name}");
-            assert_eq!(result.images[0].data, PNG);
+            assert_eq!(result.images[0].data.as_ref(), PNG);
             assert!(result.content.contains("image/png"), "{name}");
         }
     }
@@ -1194,7 +1194,7 @@ mod tests {
             assert!(result.success, "{name}: {}", result.content);
             assert_eq!(result.images.len(), 1, "{name}");
             assert_eq!(result.images[0].media_type, media_type, "{name}");
-            assert_eq!(result.images[0].data, b"not-a-real-codec");
+            assert_eq!(result.images[0].data.as_ref(), b"not-a-real-codec");
         }
 
         std::fs::write(temp.path().join("notes.txt"), b"plain").unwrap();

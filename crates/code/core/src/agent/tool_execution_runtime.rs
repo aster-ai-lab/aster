@@ -284,44 +284,51 @@ impl crate::agent::TurnEngine {
                         .get("metadata")
                         .filter(|value| !value.is_null())
                         .cloned();
-                    let images = value
-                        .get("images")
-                        .and_then(Value::as_array)
-                        .map(|images| {
-                            images
-                                .iter()
-                                .map(|image| {
-                                    let data = image
-                                        .get("data")
-                                        .and_then(Value::as_str)
-                                        .ok_or_else(|| {
+                    let images = if let Some(stash_id) =
+                        value.get("image_stash_id").and_then(Value::as_u64)
+                    {
+                        super::take_tool_queue_images(stash_id).unwrap_or_default()
+                    } else {
+                        // Legacy queue payloads inlined base64 under `images`.
+                        value
+                            .get("images")
+                            .and_then(Value::as_array)
+                            .map(|images| {
+                                images
+                                    .iter()
+                                    .map(|image| {
+                                        let data = image
+                                            .get("data")
+                                            .and_then(Value::as_str)
+                                            .ok_or_else(|| {
+                                                anyhow::anyhow!(
+                                                    "Queue result has an image without base64 data for tool '{}'",
+                                                    name
+                                                )
+                                            })?;
+                                        let media_type = image
+                                            .get("media_type")
+                                            .and_then(Value::as_str)
+                                            .ok_or_else(|| {
+                                                anyhow::anyhow!(
+                                                    "Queue result has an image without media_type for tool '{}'",
+                                                    name
+                                                )
+                                            })?;
+                                        let data = BASE64_STANDARD.decode(data).map_err(|error| {
                                             anyhow::anyhow!(
-                                                "Queue result has an image without base64 data for tool '{}'",
-                                                name
+                                                "Queue result has invalid image data for tool '{}': {}",
+                                                name,
+                                                error
                                             )
                                         })?;
-                                    let media_type = image
-                                        .get("media_type")
-                                        .and_then(Value::as_str)
-                                        .ok_or_else(|| {
-                                            anyhow::anyhow!(
-                                                "Queue result has an image without media_type for tool '{}'",
-                                                name
-                                            )
-                                        })?;
-                                    let data = BASE64_STANDARD.decode(data).map_err(|error| {
-                                        anyhow::anyhow!(
-                                            "Queue result has invalid image data for tool '{}': {}",
-                                            name,
-                                            error
-                                        )
-                                    })?;
-                                    Ok(crate::llm::Attachment::new(data, media_type))
-                                })
-                                .collect::<anyhow::Result<Vec<_>>>()
-                        })
-                        .transpose()?
-                        .unwrap_or_default();
+                                        Ok(crate::llm::Attachment::new(data, media_type))
+                                    })
+                                    .collect::<anyhow::Result<Vec<_>>>()
+                            })
+                            .transpose()?
+                            .unwrap_or_default()
+                    };
                     let error_kind = value
                         .get("error_kind")
                         .filter(|value| !value.is_null())

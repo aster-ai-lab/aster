@@ -2031,7 +2031,7 @@ async fn case_image_read(commit: &str) {
     let image = crate::tools::read_image_file("shot.png", &json!({"file_path": "shot.png"}), &ctx);
     assert_eq!(image.images.len(), 1);
     assert_eq!(image.images[0].media_type, "image/png");
-    assert_eq!(image.images[0].data, PNG);
+    assert_eq!(image.images[0].data.as_ref(), PNG);
     row(
         commit,
         "Image `read` attachments",

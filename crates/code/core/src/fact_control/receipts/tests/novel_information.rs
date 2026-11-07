@@ -10,14 +10,14 @@ fn information_identity_includes_images_and_exit_outcomes_but_rejects_incomplete
             .unwrap();
     result.exit_code = Some(0);
     let image = |byte| crate::llm::Attachment::new(vec![byte], "image/png");
-    result.output = runner_result_value("same", false, &[image(1)], 0, None, None);
+    result.output = runner_result_value("same", false, &[image(1)], 0, None, None, None);
     let first = super::super::novelty::information_identity(
         "read",
         &result,
         &prepared.effective_args_digest,
     )
     .unwrap();
-    result.output = runner_result_value("same", false, &[image(2)], 0, None, None);
+    result.output = runner_result_value("same", false, &[image(2)], 0, None, None, None);
     let second = super::super::novelty::information_identity(
         "read",
         &result,
@@ -49,19 +49,23 @@ fn information_identity_includes_images_and_exit_outcomes_but_rejects_incomplete
 #[test]
 fn private_observation_meter_does_not_change_the_model_tool_message() {
     let digest = crate::content_digest::digest_bytes("test", b"original");
-    let plain = runner_result_value("original", false, &[], 0, None, None);
-    let measured = runner_result_value("original", false, &[], 0, None, Some(&digest));
+    let plain = runner_result_value("original", false, &[], 0, None, None, None);
+    let measured = runner_result_value("original", false, &[], 0, None, Some(&digest), None);
     assert_eq!(
         serde_json::to_value(message_from_folded_tool(
             "call",
             plain.as_str().unwrap(),
-            false
+            false,
+            None,
+            true
         ))
         .unwrap(),
         serde_json::to_value(message_from_folded_tool(
             "call",
             measured.as_str().unwrap(),
-            false
+            false,
+            None,
+            true
         ))
         .unwrap(),
     );
@@ -92,7 +96,7 @@ fn append_observation(
     let mut receipt =
         result_without_execution(&prepared, ToolExecutionOutcome::Succeeded, body.into()).unwrap();
     receipt.exit_code = Some(0);
-    receipt.output = runner_result_value(body, false, &[], 0, metadata, observation);
+    receipt.output = runner_result_value(body, false, &[], 0, metadata, observation, None);
     for mut fact in [prepared_fact(&prepared), result_fact(&receipt)] {
         fact.seq = facts.len() as u64 + 1;
         fact.key = format!("fixture-{}", fact.seq);
@@ -150,7 +154,7 @@ fn missing_preparation_malformed_digest_and_denied_results_never_earn_informatio
             }
             "digest" => {
                 receipt.output =
-                    runner_result_value("new", false, &[], 0, None, Some("invalid-digest"));
+                    runner_result_value("new", false, &[], 0, None, Some("invalid-digest"), None);
                 facts[1].payload["receipt"] = json!(receipt);
             }
             "denied" => {
