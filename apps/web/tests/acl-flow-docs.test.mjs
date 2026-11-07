@@ -68,7 +68,7 @@ test('the public documentation directory exposes both new products and their ind
 });
 
 test('the sidebar, product cards and product switcher use the same functional reading order', async (t) => {
-  const order = ['code', 'acp', 'acl', 'flow', 'effect', 'lane', 'event', 'memory', 'search', 'vec', 'apofasi', 'use', 'office', 'sandbox', 'boot', 'orm', 'gateway', 'power'];
+  const order = ['code', 'acp', 'acl', 'flow', 'effect', 'lane', 'event', 'memory', 'search', 'vec', 'apofasi', 'use', 'office', 'boot', 'orm', 'gateway', 'power'];
   assert.deepEqual(projects.map((project) => project.id), order);
   const titles = order.map((id) => projects.find((project) => project.id === id).title);
   const html = await readFile(path.join(root, 'apps/web/dist/docs/index.html'), 'utf8');

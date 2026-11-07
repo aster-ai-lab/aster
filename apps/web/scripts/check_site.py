@@ -193,7 +193,7 @@ def check_site(public_root=PUBLIC_ROOT):
             else:
                 local_url(node.attrs["href"], "download/index.html")
     if seen_downloads != DOWNLOAD_URLS:
-        raise ValueError("page does not expose all six verified desktop/CLI download links")
+        raise ValueError("page does not expose all verified desktop/CLI download links")
     if not set(SCREENSHOT_FILES).issubset(seen_images):
         raise ValueError("page does not reference all four PNG screenshots")
     css = re.sub(r"/\*.*?\*/", "", source["download/styles.css"], flags=re.S)
@@ -310,7 +310,7 @@ def check_home_page(root):
             else:
                 local_url(node.attrs["href"])
     if seen_downloads != DOWNLOAD_URLS:
-        raise ValueError("homepage does not expose all six verified desktop/CLI download links")
+        raise ValueError("homepage does not expose all verified desktop/CLI download links")
     if not set(SCREENSHOT_FILES).issubset(seen_images):
         raise ValueError("homepage does not reference all four PNG screenshots")
     css = re.sub(r"/\*.*?\*/", "", source["home.css"], flags=re.S)

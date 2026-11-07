@@ -596,24 +596,6 @@
                 aria-controls="platform-panel-macos"
               >
                 macOS</button
-              ><button
-                id="platform-tab-windows"
-                type="button"
-                role="tab"
-                aria-selected="false"
-                aria-controls="platform-panel-windows"
-                tabindex="-1"
-              >
-                Windows</button
-              ><button
-                id="platform-tab-kylin"
-                type="button"
-                role="tab"
-                aria-selected="false"
-                aria-controls="platform-panel-kylin"
-                tabindex="-1"
-              >
-                Linux</button
               >
             </div>
             <div class="platform-panels">
@@ -627,41 +609,9 @@
                 <p class="platform-spec"><strong>Apple Silicon</strong> · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</p>
                 <a
                   class="pill-button"
-                  href="https://github.com/aster-ai-lab/aster/releases"
+                  href="{{download.desktop.macos.url}}"
                   data-download
-                  >选择安装包</a
-                >
-              </div>
-              <div
-                class="platform-panel"
-                id="platform-panel-windows"
-                role="tabpanel"
-                aria-labelledby="platform-tab-windows"
-                tabindex="0"
-                hidden
-              >
-                <p class="platform-spec"><strong>x64</strong> · v{{download.desktop.windows.version}} · {{download.desktop.windows.format}}</p>
-                <a
-                  class="pill-button"
-                  href="https://github.com/aster-ai-lab/aster/releases"
-                  data-download
-                  >选择安装包</a
-                >
-              </div>
-              <div
-                class="platform-panel"
-                id="platform-panel-kylin"
-                role="tabpanel"
-                aria-labelledby="platform-tab-kylin"
-                tabindex="0"
-                hidden
-              >
-                <p class="platform-spec"><strong>x86_64</strong> · v{{download.desktop.kylin.version}} · {{download.desktop.kylin.format}}</p>
-                <a
-                  class="pill-button"
-                  href="https://github.com/aster-ai-lab/aster/releases"
-                  data-download
-                  >选择安装包</a
+                  >下载安装包</a
                 >
               </div>
             </div>
@@ -955,16 +905,15 @@
           ><span><strong>macOS</strong><small>Apple Silicon · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         ><a
-          href="{{download.desktop.windows.url}}"
+          href="{{download.cli.windows.url}}"
           ><svg class="icon"><use href="#i-menu" /></svg
-          ><span><strong>Windows</strong><small>x64 · v{{download.desktop.windows.version}} · EXE</small></span
+          ><span><strong>Windows CLI</strong><small>x64 · v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         ><a
-          href="{{download.desktop.kylin.url}}"
+          href="{{download.cli.linux.url}}"
           ><svg class="icon"><use href="#i-terminal" /></svg
-          ><span><strong>Linux</strong><small>x86_64 · v{{download.desktop.kylin.version}} · RUN</small></span
+          ><span><strong>Linux CLI</strong><small>x86_64 · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
-        ></a
         >
       </div>
       <p class="release-note">

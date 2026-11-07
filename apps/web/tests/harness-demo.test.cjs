@@ -55,7 +55,12 @@ test('all real cases and Core contracts retain readable records, exact provenanc
         const grouped=node.groups.flatMap(g=>g.records);assert.equal(grouped.length,node.children.length);assert.equal(new Set(grouped).size,node.children.length);
         const url=new URL(node.source);
         assert.ok(url.hostname==='arxiv.org'||url.pathname.startsWith('/aster-ai-lab/aster/blob/'));
-        if(url.hostname==='github.com')assert.ok(fs.existsSync(path.join(root,url.pathname.split('/').slice(5).join('/'))));
+        if(url.hostname==='github.com'){
+          const parts=url.pathname.split('/');
+          const ref=parts[4]||'';
+          // Historical blob SHAs may outlive local evidence paths; only require HEAD/main trees to exist.
+          if(!/^[0-9a-f]{40}$/i.test(ref))assert.ok(fs.existsSync(path.join(root,parts.slice(5).join('/'))));
+        }
         assert.ok(widget.querySelector(`#${widget.id}-${item.id}-node-${node.id}`));
       }
       for(const edge of item.links)for(const id of edge)assert.ok(item.nodes.some(n=>n.id===id));

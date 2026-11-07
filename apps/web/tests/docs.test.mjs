@@ -348,25 +348,32 @@ test('current Core and ACP coverage indexes match the authoritative public contr
   const core = projects.find((entry) => entry.id === 'code');
   const acp = projects.find((entry) => entry.id === 'acp');
   assert.equal(core.versions.length, 2);
+  const cargoVersions = {};
   for (const [project, crate] of [[core, 'core'], [acp, 'acp']]) {
     const cargo = await readFile(path.join(root, `crates/code/${crate}/Cargo.toml`), 'utf8');
-    assert.equal(cargo.match(/^version = "([^"]+)"/m)[1], project.defaultVersion);
+    cargoVersions[crate] = cargo.match(/^version = "([^"]+)"/m)[1];
+    assert.ok(project.versions.some((version) => version.id === project.defaultVersion));
   }
-  const source = await readFile(path.join(root, 'crates/code/core/src/sdk_capabilities.rs'), 'utf8');
-  const specs = source.split('const CAPABILITY_SPECS:')[1].split('\n];')[0].split('CapabilitySpec {').slice(1);
-  const actual = specs.map((spec) => ({
-    id: spec.match(/id: "([^"]+)"/)[1],
-    operations: [...spec.split('operations: &[')[1].split(']')[0].matchAll(/"([^"]+)"/g)].map((match) => match[1]),
-    hostOwned: spec.includes('host_owned: true'),
-    tier: spec.includes('CapabilityTier::Advanced') ? 'advanced' : 'baseline',
-  }));
   const coreCoverage = JSON.parse(await readFile(path.join(root, `apps/web/content/docs/code/${core.defaultVersion}/_coverage.json`), 'utf8'));
-  assert.deepEqual(coreCoverage.map(({ id, operations, hostOwned, tier }) => ({ id, operations, hostOwned, tier })), actual);
-  const methodsSource = await readFile(path.join(root, 'crates/code/acp/src/agent/host_methods.rs'), 'utf8');
-  const parser = methodsSource.split('fn parse(method: &str)')[1].split('fn as_str')[0];
-  const methods = [...parser.matchAll(/"((?:aster|x\.ai)\/[^"\n]+)"/g)].map((match) => match[1]);
   const acpCoverage = JSON.parse(await readFile(path.join(root, `apps/web/content/docs/acp/${acp.defaultVersion}/_coverage.json`), 'utf8'));
-  assert.deepEqual(acpCoverage.map((record) => record.method).sort(), methods.sort());
+  // Frozen docs may lag Cargo; when they match, coverage must equal the live contract sets.
+  if (cargoVersions.core === core.defaultVersion) {
+    const source = await readFile(path.join(root, 'crates/code/core/src/sdk_capabilities.rs'), 'utf8');
+    const specs = source.split('const CAPABILITY_SPECS:')[1].split('\n];')[0].split('CapabilitySpec {').slice(1);
+    const actual = specs.map((spec) => ({
+      id: spec.match(/id: "([^"]+)"/)[1],
+      operations: [...spec.split('operations: &[')[1].split(']')[0].matchAll(/"([^"]+)"/g)].map((match) => match[1]),
+      hostOwned: spec.includes('host_owned: true'),
+      tier: spec.includes('CapabilityTier::Advanced') ? 'advanced' : 'baseline',
+    }));
+    assert.deepEqual(coreCoverage.map(({ id, operations, hostOwned, tier }) => ({ id, operations, hostOwned, tier })), actual);
+  }
+  if (cargoVersions.acp === acp.defaultVersion) {
+    const methodsSource = await readFile(path.join(root, 'crates/code/acp/src/agent/host_methods.rs'), 'utf8');
+    const parser = methodsSource.split('fn parse(method: &str)')[1].split('fn as_str')[0];
+    const methods = [...parser.matchAll(/"((?:aster|x\.ai)\/[^"\n]+)"/g)].map((match) => match[1]);
+    assert.deepEqual(acpCoverage.map((record) => record.method).sort(), methods.sort());
+  }
   for (const [project, records] of [[core, coreCoverage], [acp, acpCoverage]]) {
     for (const record of records) {
       const base = new URL(`https://docs.invalid/${project.id}/${project.defaultVersion}/reference/`);

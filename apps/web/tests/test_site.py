@@ -225,9 +225,9 @@ class SiteTest(unittest.TestCase):
             stage_site(self.public, self.root / 'refuse-extra')
         self.assertFalse((self.root / 'refuse-extra').exists())
 
-    def test_valid_page_has_named_controls_and_all_six_exact_release_links(self):
+    def test_valid_page_has_named_controls_and_all_exact_release_links(self):
         result = check_site(self.public)
-        self.assertEqual(result["download_links"], 6)
+        self.assertEqual(result["download_links"], len(DOWNLOAD_MANIFEST))
         self.assertEqual(result["named_buttons"], 1)
 
     def test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse(self):
@@ -273,7 +273,7 @@ class SiteTest(unittest.TestCase):
 
     def test_missing_one_verified_download_refuses(self):
         self.rewrite(f'<a href="{DOWNLOAD_MANIFEST[0][4]}">', '<a href="https://github.com/aster-ai-lab/aster/releases">')
-        with self.assertRaisesRegex(ValueError, "six verified"):
+        with self.assertRaisesRegex(ValueError, "verified desktop/CLI download links"):
             check_site(self.public)
 
     def test_foreign_brand_or_private_script_import_refuses(self):

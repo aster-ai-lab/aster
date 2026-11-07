@@ -134,14 +134,15 @@ test('no-JS release links and labelled screenshots remain; retired simulated Off
     const fragment = decodeURIComponent(anchor.getAttribute('href').slice(1));
     if (fragment) assert.ok(document.getElementById(fragment), `Missing #${fragment}`);
   }
-  assert.equal(document.querySelectorAll('a[href*="/releases/download/"]').length, 6);
+  assert.equal(document.querySelectorAll('a[href*="/releases/download/"]').length, 7);
+  assert.equal(new Set([...document.querySelectorAll('a[href*="/releases/download/"]')].map((anchor) => anchor.href)).size, 4);
   assert.equal(document.body.textContent.includes('麒麟'), false);
   assert.equal(document.querySelector('noscript a').href, releaseUrl);
   const downloaders = [...document.querySelectorAll('[data-download]')];
   assert.ok(downloaders.length > 0);
   for (const opener of downloaders) {
     assert.equal(opener.tagName, 'A');
-    assert.equal(opener.href, releaseUrl);
+    assert.match(opener.href, /\/releases(?:\/|$)/);
   }
   assert.equal(document.querySelectorAll('#demo-form, #demo-prompt, [data-demo-reset], [data-tour], [data-demo-option], [data-review-action], .workspace-showcase, .office-paper, .office-toolbar, [contenteditable], select').length, 0);
   assert.equal(document.body.classList.contains('enhanced'), false);

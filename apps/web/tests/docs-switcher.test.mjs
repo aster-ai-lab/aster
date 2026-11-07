@@ -11,10 +11,10 @@ const { JSDOM } = require(process.env.JS_DOM_MODULE || path.join(root, 'packages
 
 async function page(t) {
   const [html, navigation] = await Promise.all([
-    readFile(path.join(root, 'apps/web/dist/docs/sandbox/current/index.html'), 'utf8'),
+    readFile(path.join(root, 'apps/web/dist/docs/office/current/index.html'), 'utf8'),
     readFile(path.join(root, 'apps/web/dist/docs/navigation.js'), 'utf8'),
   ]);
-  const dom = new JSDOM(html, { url: 'http://localhost/docs/sandbox/current/', runScripts: 'outside-only' });
+  const dom = new JSDOM(html, { url: 'http://localhost/docs/office/current/', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   dom.window.matchMedia = () => ({ matches: true, addEventListener() {} });
   dom.window.eval(navigation);
