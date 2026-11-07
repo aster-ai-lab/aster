@@ -378,7 +378,7 @@ pub(crate) fn wezterm_kitty_keyboard_warning_from(
 }
 
 pub fn sandbox_profile_conflict_warning(workspace: &Path) -> Option<TerminalWarning> {
-    sandbox_profile_conflict_warning_from(aster_sandbox::sandbox_profile_conflicts(workspace))
+    sandbox_profile_conflict_warning_from(aster_confine::sandbox_profile_conflicts(workspace))
 }
 
 fn sandbox_profile_conflict_warning_from(conflicts: Vec<String>) -> Option<TerminalWarning> {

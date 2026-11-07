@@ -52,23 +52,15 @@ Code's Node, Python, and Go SDK packages are absent.
 
 ## Terminal evidence
 
-The deterministic [startup ACL](../tests/e2e/startup.acl) runs through
-`aster-test` with isolated user state and a local-only fixture provider. It
-waits for live glyph animation and checks a full welcome, a small terminal,
-and the standard 80-by-24 compact welcome. Resize waits require new visible
-state so stale, clipped frames cannot satisfy the regression.
-
-- [120-by-40 welcome](evidence/terminal/startup-120x40.txt)
-- [80-by-24 welcome](evidence/terminal/startup-80x24.txt)
-- [60-by-20 welcome](evidence/terminal/startup-60x20.txt)
-- [Bounded VT recording](evidence/terminal/aster-logo.vt)
-- [Machine-readable scenario result](evidence/terminal/result.json)
-
-With `aster-test` installed, reproduce the startup check from the repository:
+Aster TUI welcome and slash regressions are driven by the paired Rust PTY /
+ACP suites (`crates/code/acp/tests/shipped_tui_e2e.rs`,
+`apps/aster/tests/tui_one_agent.rs`), not by an external A3S/`aster-test` TUI
+driver. Historical welcome viewport text and VT recordings remain under
+`evidence/terminal/` as retained artifacts only.
 
 ```sh
-cargo build --locked
-python3 tests/e2e/startup.py
+cargo build --locked -p aster -p aster-acp
+cargo test --locked -p aster-acp --test shipped_tui_e2e -- --test-threads=1
 python3 tests/just_work.py
 ```
 
@@ -78,16 +70,12 @@ Work now builds from this same workspace; its frontend remains a local pnpm work
 
 ## Known limits
 
-The imported Core deliberately refuses native shell commands on macOS with
-`native_process_lifetime_unqualified`. Two shell-dependent PTY success
-tests are skipped only on macOS, while the native refusal test verifies
-that the boundary remains intact. File tools and local mock-provider chat
-are exercised separately. The macOS ARM64 Studio build now stages the OCI
-Host, signed shim, matching guest Agent/system image, and pinned Bash rootfs
-beside ACP. Its default deny-network command path uses that utility VM
-without a manual asset-directory override. The native refusal remains intact;
-missing companions or an unsupported network posture still refuse execution.
-See [Studio build prerequisites](../apps/studio/README.md).
+Core's default Bash path uses ksandbox (Seatbelt on macOS). Out-of-workspace
+writes stay blocked; process-host and yolo remain explicit opt-ins. MicroVM
+isolation (kbox) is orthogonal and not required for Bash. File tools and
+local mock-provider chat are exercised separately. See
+[sandbox-control](architecture/sandbox-control.md) and
+[Studio build prerequisites](../apps/studio/README.md).
 
 The legacy ACP `v912_remember_before_stream_close` test expects raw user
 input to be stored even when the model returns an empty extraction. Current

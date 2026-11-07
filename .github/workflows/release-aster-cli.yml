@@ -146,8 +146,8 @@ jobs:
           path: ${{ env.CLI_ASSET_NAME }}
           if-no-files-found: error
 
-  # macOS CLI binaries and sandbox companions are independent compiles; run them
-  # on separate runners so wall time is max(bins, sandbox) instead of sum.
+  # macOS CLI binaries only. Process isolation is ksandbox-in-Core; no sandbox
+  # companions ship inside aster-cli archives.
   build-macos-bins:
     needs: preflight
     if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
@@ -197,60 +197,9 @@ jobs:
             target/${{ env.CLI_PROFILE }}/aster-acp
           if-no-files-found: error
 
-  build-macos-sandbox:
-    needs: preflight
-    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
-    name: macos-sandbox
-    runs-on: macos-latest
-    timeout-minutes: 120
-    env:
-      CARGO_INCREMENTAL: "0"
-      CARGO_TERM_COLOR: always
-      # sandbox_assets still invokes Cargo's builtin release profile for oci /
-      # musl guests; override LTO so that work matches release-dist cost.
-      CARGO_PROFILE_RELEASE_LTO: "false"
-      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Check out pinned desktop sources
-        uses: ./.github/actions/checkout-studio
-        with:
-          token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Install macOS sandbox tools
-        run: |
-          set -euo pipefail
-          packages=(protobuf just coreutils e2fsprogs llvm jq xz gnu-tar)
-          missing=()
-          for package in "${packages[@]}"; do
-            if ! brew list --versions "$package" >/dev/null 2>&1; then
-              missing+=("$package")
-            fi
-          done
-          if [[ ${#missing[@]} -gt 0 ]]; then
-            brew install "${missing[@]}"
-          fi
-          rustup target add aarch64-unknown-linux-musl
-      - name: Install pinned toolchain
-        shell: bash
-        run: rustup show active-toolchain
-      - name: Cache sandbox release dependencies
-        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
-        with:
-          shared-key: aster-cli-release-dist-macos-sandbox
-          save-if: "true"
-      - name: Stage macOS sandbox companions
-        shell: bash
-        run: python3 scripts/aster_sandbox.py stage --profile release
-      - name: Upload macOS sandbox tree
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: aster-cli-macos-sandbox
-          path: target/release/sandbox
-          if-no-files-found: error
-
   build-macos:
-    needs: [build-macos-bins, build-macos-sandbox]
-    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' && !cancelled() && needs.build-macos-bins.result == 'success' && needs.build-macos-sandbox.result == 'success' }}
+    needs: [build-macos-bins]
+    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' && !cancelled() && needs.build-macos-bins.result == 'success' }}
     name: macos
     runs-on: macos-latest
     timeout-minutes: 30
@@ -267,10 +216,6 @@ jobs:
         with:
           name: aster-cli-macos-bins
           path: target/${{ env.CLI_PROFILE }}
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: aster-cli-macos-sandbox
-          path: target/${{ env.CLI_PROFILE }}/sandbox
       - name: Package aster-cli archive
         shell: bash
         run: |

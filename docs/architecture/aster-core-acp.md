@@ -749,7 +749,7 @@ ACP 可以注册：
 
 - CLI／ACP 的 BUILD_ID 相同。
 - `scripts/package-aster-cli.sh macos` 生成 13 个必需成员。
-- 沙箱文件通过 `aster_sandbox.py verify`。
+- 沙箱文件通过 `aster_confine.py verify`。
 - 归档 SHA-256：`69c5712f891f75e5a26444aceed46bd44aef533ec8a6d9fed41d7df92f9da747`。
 - 隔离安装后，普通沙箱模式和 `--mode yolo` 都执行了真实命令并核对精确随机 nonce。
 

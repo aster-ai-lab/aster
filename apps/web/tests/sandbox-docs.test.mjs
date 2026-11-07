@@ -1,38 +1,13 @@
-import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import test from 'node:test';
-import { projects } from '../scripts/docs_catalog.mjs';
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 
-const require = createRequire(import.meta.url);
-const root = fileURLToPath(new URL('../../../', import.meta.url));
-const { JSDOM } = require(process.env.JS_DOM_MODULE || path.join(root, 'packages/ui/node_modules/jsdom'));
-const project = projects.find((entry) => entry.id === 'sandbox');
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-test('Sandbox product registration separates command and lifecycle guides', () => {
-  assert.ok(project);
-  assert.equal(project.defaultVersion, 'current');
-  assert.deepEqual(project.versions[0].pages.map((page) => page.slug), ['', 'native/', 'box/', 'integration/']);
-  assert.equal(project.versions[0].sourceRef, '8729d7c84a2d887c61dc206ba47bf8a63425e768');
-});
-
-test('Sandbox pages preserve native, Box and SDK boundaries without JavaScript', async (t) => {
-  const expectations = [
-    ['', 'Aster Sandbox 产品概览', 'Aster Sandbox 的组件边界'],
-    ['native/', 'aster-sandbox 命令边界', 'aster-sandbox probe'],
-    ['box/', 'aster-box 生命周期与隔离', 'LocalExecutionManager'],
-    ['integration/', 'Sandbox 接入与验证', 'aster_box_sdk::Sandbox'],
-  ];
-  for (const [route, title, text] of expectations) {
-    const html = await readFile(path.join(root, 'apps/web/dist/docs/sandbox/current', route, 'index.html'), 'utf8');
-    const dom = new JSDOM(html);
-    t.after(() => dom.window.close());
-    assert.ok(dom.window.document.documentElement.textContent.includes(title), route);
-    assert.ok(dom.window.document.documentElement.textContent.includes(text), route);
-    assert.doesNotMatch(html, /data-atlas-action|atlas-controls/);
-  }
-  const alias = await readFile(path.join(root, 'apps/web/dist/docs/sandbox/index.html'), 'utf8');
-  assert.ok(alias.includes('Aster Sandbox 产品概览'));
+describe("sandbox docs retired", () => {
+  it("does not ship in-tree aster sandbox documentation pages", () => {
+    assert.equal(existsSync(join(root, "content/docs/sandbox")), false);
+  });
 });

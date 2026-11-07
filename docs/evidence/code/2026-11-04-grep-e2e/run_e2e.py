@@ -20,7 +20,7 @@ def main():
     acp = ROOT / "target/debug/aster-acp"
     assert aster.is_file() and acp.is_file(), "run just build first"
     sandbox = subprocess.check_output(
-        ["python3", "scripts/aster_sandbox.py", "cache", "--target-dir", "target"],
+        ["python3", "scripts/aster_confine.py", "cache", "--target-dir", "target"],
         cwd=ROOT,
         text=True,
     ).strip()

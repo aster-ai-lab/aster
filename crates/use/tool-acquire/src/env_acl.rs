@@ -12,7 +12,7 @@
 //!     tool "uv" {
 //!       version = "latest"
 //!     }
-//!     tool "aster-sandbox" {
+//!     tool "kbox" {
 //!       version = "0.1.10"
 //!     }
 //!   }

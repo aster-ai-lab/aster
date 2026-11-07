@@ -1435,7 +1435,7 @@ impl AgentView {
         if show_worktree_label {
             location.push(crate::views::location::worktree_badge(&theme).patch_style(bg));
         }
-        if let Some(profile) = aster_sandbox::profile_name() {
+        if let Some(profile) = aster_confine::profile_name() {
             location.push(Span::styled(
                 format!("sandbox:{profile} "),
                 bg.fg(theme.warning),

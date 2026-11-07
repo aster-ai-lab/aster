@@ -857,7 +857,7 @@ fn spawn_with_argv(
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped());
 
-            aster_sandbox::child_net::restrict_child_network(cmd);
+            aster_confine::child_net::restrict_child_network(cmd);
         });
         // setsid: detach from the TTY and start a new process group for tree teardown
         cmd.wrap(ProcessSession);

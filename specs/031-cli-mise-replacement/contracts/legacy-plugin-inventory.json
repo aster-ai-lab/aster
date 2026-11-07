@@ -3448,10 +3448,10 @@
     {
       "ordinal": 36,
       "kind": "dependency",
-      "originalId": "aster-box",
-      "packageId": "aster/aster-box",
-      "originalName": "Aster Box",
-      "source": "plugins/plugins/operations/aster/aster-box",
+      "originalId": "kbox",
+      "packageId": "aster/kbox",
+      "originalName": "kbox",
+      "source": "plugins/plugins/operations/aster/kbox",
       "sourceKind": "native_manifest",
       "manifestSha256": "baecb53453444f2e2a1e4ad185195b8969cb6e4c54e80ea014e97d658202e18f",
       "recipeSha256": "126499b87c1a414dc2d30780b8f6238072330099cbba6e34ae7a1c021b55e192",
@@ -3701,9 +3701,9 @@
     {
       "ordinal": 47,
       "kind": "dependency",
-      "originalId": "aster-sandbox",
-      "packageId": "aster/aster-sandbox",
-      "originalName": "aster-sandbox",
+      "originalId": "kbox",
+      "packageId": "aster/kbox",
+      "originalName": "kbox",
       "source": "plugins/recipes/runtime/darwin-arm64.py",
       "sourceKind": "native_recipe",
       "manifestSha256": null,
@@ -3721,7 +3721,7 @@
           "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a",
           "requiresUse": ">=0.3.0, <0.4.0",
           "archive": {
-            "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix",
+            "targetName": "extensions/aster/kbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/kbox.aix",
             "length": 50188055,
             "sha256": "sha256:92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522"
           },

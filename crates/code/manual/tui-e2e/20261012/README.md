@@ -173,9 +173,9 @@ flowchart LR
 
 ## 9. 自动化落地
 
-采用 `aster-test` 技能所述的确定性终端驱动原则；技能在操作者本机的实际位置是 `/Users/roylin/.codex/skills/aster-test/SKILL.md`。仓库内不依赖该个人路径运行。
-
-后续可重复、已观察的工作流按域归档；当前已实现的拒绝恢复套件位于 `apps/code/acp/tests/aster-test/native_*refusal_recovery.acl`，配套 runner 为 `scripts/tui_refusal_e2e.py`。它们只覆盖选定变体，未生成其余 1,020 例脚本。Aster Test 拥有 PTY 与进程树，使用 `terminal_paste`、`press`、`terminal_resize`、文本/正则语义等待和有界 `terminal_recording`；正则只用于屏幕状态等待，不用于推断用户意图或消除效果债务。
+A3S/`aster-test` TUI ACL 驱动已从本仓库退役。可重复终端回归改走配对
+`aster`/`aster-acp` 的 Rust `portable_pty` 套件（如 `shipped_tui_e2e`）。本目录
+仍是历史 1,020 例规划清单，不是可执行 A3S ACL 套件。
 
 先用官方 CLI `check` 验证 ACL，再 `run --tui-executable <固定候选> --tui-working-directory <绝对夹具目录> --json`；其他参数以本次 runner `--help` 为准。尚未观察的模态/快捷键流程先探索和固定，不从本计划猜坐标生成脚本。独立 artifact/receipt oracle 用现有 Rust/Python 辅助检查器或受控外层 runner 实现，不能假造 ACL 不存在的断言语法。
 

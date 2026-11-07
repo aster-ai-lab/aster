@@ -180,16 +180,15 @@ aster-acl = {path = "../../acl"}
 aster-okf = {path = "../../okf"}
 aster-vec = {optional = true, path = "../../vec"}
 aster-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
-aster-cmd-sandbox = {path = "../../sandbox"}
 aster-flow = {default-features = false, optional = true, path = "../../flow"}
 aster-search = {default-features = false, path = "../../search"}
 aster-lane = {path = "../../lane"}
 aster-durable-memory = {path = "../../memory"}
 aster-common = {path = "../../common"}
 aster-effect = {path = "../../effect"}
-
-[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
-aster-oci-sdk = { workspace = true }
+# Process-isolation boundary for BashSandbox (Seatbelt / namespaces / AppContainer).
+# Pinned public kense-labs/ksandbox — not kbox (MicroVM).
+ksandbox = { git = "https://github.com/kense-labs/ksandbox.git", rev = "6c7c8bddc66325480342916e0387ab6580139316" }
 
 [target.'cfg(unix)'.dependencies]
 libc = {workspace = true}

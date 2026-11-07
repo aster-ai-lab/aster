@@ -1013,8 +1013,8 @@ impl PagerArgs {
     fn resolve_startup_sandbox(explicit: Option<&str>, saved: Option<String>) -> SandboxStartup {
         match (explicit, saved) {
             (Some(x), Some(s))
-                if x.parse::<aster_sandbox::ProfileName>().ok()
-                    != s.parse::<aster_sandbox::ProfileName>().ok() =>
+                if x.parse::<aster_confine::ProfileName>().ok()
+                    != s.parse::<aster_confine::ProfileName>().ok() =>
             {
                 SandboxStartup::Conflict {
                     requested: x.to_owned(),

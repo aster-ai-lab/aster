@@ -183,7 +183,7 @@ pub(crate) mod hydrate {
             worktree_label: None,
             agent: Default::default(),
             // Hydrated locally: record the profile this process runs under
-            sandbox_profile: aster_sandbox::configured_profile_name().map(String::from),
+            sandbox_profile: aster_confine::configured_profile_name().map(String::from),
             reasoning_effort: None,
             last_turn_summary: None,
             last_turn_summary_prompt_id: None,

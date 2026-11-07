@@ -24,7 +24,7 @@ uuid = {version = "1", features = ["serde", "v4", "v5", "v7"]}
 aster-tty-utils = {path = "../aster-tty-utils"}
 aster-workspace = {default-features = false, path = "../aster-workspace"}
 aster-tools = {path = "../aster-tools"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-paths = {path = "../aster-paths"}
 aster-config = {path = "../aster-config"}
 aster-acp-lib = {path = "../aster-acp-lib"}

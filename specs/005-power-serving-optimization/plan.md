@@ -65,7 +65,7 @@ User direction explicitly identifies the existing external Power repository as a
 
 | Layer | Path in this workspace | Planned change / existing pattern |
 | --- | --- | --- |
-| Qualification runner | `scripts/power_serving_qualification.py` (new) | Bounded client-only benchmark/provenance runner, following finite process/artifact patterns in `tests/e2e/startup.py` and `tests/cli_pair_delivery.py`; no Python SDK or bindings. |
+| Qualification runner | `scripts/power_serving_qualification.py` (new) | Bounded client-only benchmark/provenance runner, following finite process/artifact patterns in `tests/cli_pair_delivery.py`; no Python SDK or bindings. |
 | Runner proof | `tests/power_serving_qualification.py` (new) | Standard-library loopback fixtures, fake clock/result data and deadlines; reject invalid comparisons. |
 | Gateway integration | `apps/gateway/src/inference/observed_tokens.rs`, `scheduling.rs` | Reuse trusted usage and scheduling; change only a proven integration defect. |
 | Gateway proofs | `apps/gateway/src/inference/power_observation_contract_tests.rs`, `power_observation_projection_tests.rs`, `scheduling_tests.rs` | Existing schema/freshness/pressure and unsupported capability patterns. |

@@ -170,7 +170,7 @@ OpenTelemetry reports with `passed: true`.
 
 Run `35639843682` on commit `9b28f066` produced all nine performance reports with
 `passed: true` after standalone CI stripped monorepo path patches and
-re-locked `aster-apofasi`, `aster-sandbox`, and `aster-vec`.
+re-locked `aster-apofasi`, `kbox`, and `aster-vec`.
 
 Run `35642286881` on commit `515a50b0` produced S3-compat, controlled CDP, and
 OpenTelemetry reports with `passed: true` after aligning the hermetic access

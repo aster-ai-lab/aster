@@ -2,6 +2,29 @@
 
 use super::*;
 
+struct UnqualifiedNativeSandbox;
+
+#[async_trait::async_trait]
+impl crate::sandbox::BashSandbox for UnqualifiedNativeSandbox {
+    fn allows_host_execution_override(&self) -> bool {
+        true
+    }
+
+    fn validate_execution_available(&self) -> anyhow::Result<()> {
+        Err(crate::sandbox::native::native_process_lifetime_unqualified())
+    }
+
+    async fn exec_command(
+        &self,
+        _command: &str,
+        _guest_workspace: &str,
+    ) -> anyhow::Result<crate::sandbox::SandboxOutput> {
+        Err(crate::sandbox::native::native_process_lifetime_unqualified())
+    }
+
+    async fn shutdown(&self) {}
+}
+
 struct AvailabilityProbe(Arc<AtomicUsize>);
 
 #[derive(Debug)]
@@ -283,7 +306,9 @@ async fn assert_unavailable_sandbox_does_not_open_debt(initialization_failure: b
             Err(anyhow::anyhow!("fixture native initialization refused")),
         )
     } else {
-        Arc::new(crate::sandbox::native::NativeBashSandbox::new(root.path()).unwrap())
+        // Inject the typed unqualified refusal; live NativeBashSandbox now
+        // executes under ksandbox and is not a refuse fixture.
+        Arc::new(UnqualifiedNativeSandbox)
     });
     let tools = Arc::new(tools);
     let mut facts = Vec::new();

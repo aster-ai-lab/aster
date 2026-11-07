@@ -138,7 +138,7 @@ curl http://127.0.0.1:8080/v1/models
 | 不均衡或故障的提供方 | 主动/被动健康、熔断状态、加权选择、故障转移，且仅在响应开始前重试 |
 | 安全的策略变更 | 校验并编译完整快照，再原子激活；拒绝时保留先前运行时 |
 | 远程期望状态 | 应用完整 Cloud 快照，同时每个已授权请求决策仍保持本地 |
-| 缩容到零的工作负载 | 消费 Aster Box 的就绪副本端点，仅在工作负载可路由后放行有界请求 |
+| 缩容到零的工作负载 | 消费 kbox 的就绪副本端点，仅在工作负载可路由后放行有界请求 |
 
 这刻意窄于 AI 平台。Gateway 不拥有租户、部署、放置、发布、计费、模型服务或人工操作员 UI。
 
@@ -155,9 +155,9 @@ curl http://127.0.0.1:8080/v1/models
 
 更改权威需要进程重启。Gateway 暴露仅供机器使用的 Node API，用于健康、就绪、指标、版本、托管快照应用、确切快照状态与本地用量假脱机状态。
 
-### Gateway 与 Aster Box
+### Gateway 与 kbox
 
-Gateway 与 [Aster Box](https://github.com/aster-ai-lab/aster-box) 解决同一请求生命周期的不同部分。Gateway 拥有准入、路由、健康与流保真。Box 拥有 Sandbox 工作负载状态，并发布就绪的副本槽端点。在 standalone 模式下，可选的 Box 执行器可从零扩容、原子替换实时后端池、放行有界等待请求，并在 Box 排空并终止其工作负载前撤回端点。
+Gateway 与 [kbox](https://github.com/aster-ai-lab/kbox) 解决同一请求生命周期的不同部分。Gateway 拥有准入、路由、健康与流保真。Box 拥有 Sandbox 工作负载状态，并发布就绪的副本槽端点。在 standalone 模式下，可选的 Box 执行器可从零扩容、原子替换实时后端池、放行有界等待请求，并在 Box 排空并终止其工作负载前撤回端点。
 
 该集成已有本地、真实 Gateway、真实 Kubernetes 与确切修订的真实 Linux Box Sandbox 证据。真实 MicroVM 工作负载门仍开放，因此 standalone 自动扩缩仍属实验性。`cloud-managed` 流量不会调用 Box；在那里 Cloud 仍是期望副本权威。
 

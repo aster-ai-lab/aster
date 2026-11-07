@@ -1,7 +1,0 @@
-[package]
-name = "smbios"
-version = "3.2.7"
-edition = "2021"
-
-[dependencies]
-vm-memory = { version = ">=0.13", features = ["backend-mmap"] }

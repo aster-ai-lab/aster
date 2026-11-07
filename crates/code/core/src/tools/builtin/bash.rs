@@ -1007,7 +1007,7 @@ fn resolve_network_grant(
         },
         None => None,
     };
-    let grant = match aster_cmd_sandbox::NetworkGrant::new(host, port) {
+    let grant = match crate::sandbox::NetworkGrant::new(host, port) {
         Ok(grant) => grant,
         Err(error) => return Err(ToolOutput::error(error.to_string())),
     };

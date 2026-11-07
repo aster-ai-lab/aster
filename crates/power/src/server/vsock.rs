@@ -1,7 +1,7 @@
-//! Vsock transport: serve the Power HTTP API over AF_VSOCK for aster-box
+//! Vsock transport: serve the Power HTTP API over AF_VSOCK for kbox
 //! MicroVM guest-host communication.
 //!
-//! In a MicroVM, the host (aster-box orchestrator) communicates with aster-power
+//! In a MicroVM, the host (kbox orchestrator) communicates with aster-power
 //! over a vsock socket rather than TCP, avoiding the need for any network
 //! configuration inside the VM. The vsock server exposes the same axum router
 //! as the plain HTTP and TLS listeners.

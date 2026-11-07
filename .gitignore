@@ -58,3 +58,6 @@ __pycache__/
 # Mutable aster-vec index state from package-local development runs.
 /crates/code/core/manifest.json
 /crates/code/core/segments/
+
+# Local CLI release staging (never commit archives)
+/dist/

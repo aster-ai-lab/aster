@@ -59,7 +59,7 @@ aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
 aster-workspace-types = {path = "../aster-workspace-types"}
 aster-telemetry = {path = "../aster-telemetry"}
 aster-tools = {path = "../aster-tools"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-session-events = {path = "../aster-session-events"}
 aster-config = {path = "../aster-config"}
 aster-version = {path = "../aster-version"}

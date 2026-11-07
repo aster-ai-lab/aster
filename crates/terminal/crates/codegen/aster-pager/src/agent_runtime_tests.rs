@@ -35,7 +35,7 @@ fn shell_runtime_preserves_leader_resolution() {
             &raw_config,
             config.remote_settings.as_ref(),
             eligible,
-            aster_sandbox::requested_confinement_profile(),
+            aster_confine::requested_confinement_profile(),
         );
         assert_eq!(
             (Backend::Shell, expected),

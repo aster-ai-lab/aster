@@ -1,0 +1,3 @@
+test real_llm_tui_turn_shows_assistant_text ... ORACLE case=real-llm terminal=end_turn fact=narrative final_reply_visible=true assistant=Understood — I'll reply briefly and won't use any tools.
+ok
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 36 filtered out; finished in 15.56s

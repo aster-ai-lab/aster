@@ -32,8 +32,8 @@
       "统一沙箱"
     ],
     "implementation_mapping": {
-      "授权策略层 / 策略执行引擎": "aster-sandbox",
-      "执行运行时层 / 统一沙箱": "aster-box",
+      "授权策略层 / 策略执行引擎": "aster-confine",
+      "执行运行时层 / 统一沙箱": "kbox",
       "执行运行时层 / 共享机制": "aster-core"
     },
     "diagram_labels": "brand-neutral; implementation names are in the design document only",

@@ -68,7 +68,7 @@ dhat = {version = "0.3", optional = true}
 zstd = {workspace = true}
 aster-otel = {path = "../aster-otel"}
 aster-file-utils = {path = "../aster-file-utils"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-env = {path = "../aster-env"}
 aster-computer-hub-sdk = {path = "../../common/aster-computer-hub-sdk"}
 aster-computer-hub-core = {path = "../../common/aster-computer-hub-core"}

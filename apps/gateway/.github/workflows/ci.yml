@@ -251,21 +251,21 @@ jobs:
     timeout-minutes: 60
     env:
       ASTER_DEPS_STUB: "1"
-      ASTER_BOX_REV: 77e47b240569e3f61b4b2c2b1f78eb3dac287940
+      KBOX_REV: 77e47b240569e3f61b4b2c2b1f78eb3dac287940
       ASTER_OCI_RUNTIME_REV: f896aa99dc615dee38e102467e0adf3395d9741a
       ASTER_HOME: /tmp/aster-gateway-box-sandbox-conformance
-      ASTER_BOX_OCI_RUNTIME_PATH: /tmp/aster-gateway-box-sandbox-conformance/bin/aster-oci
-      ASTER_BOX_OCI_AGENT_PATH: /tmp/aster-gateway-box-sandbox-conformance/bin/aster-oci-agent
-      ASTER_BOX_OCI_HOST_ROOT: /tmp/aster-gateway-box-sandbox-oci-host
+      KBOX_OCI_RUNTIME_PATH: /tmp/aster-gateway-box-sandbox-conformance/bin/aster-oci
+      KBOX_OCI_AGENT_PATH: /tmp/aster-gateway-box-sandbox-conformance/bin/aster-oci-agent
+      KBOX_OCI_HOST_ROOT: /tmp/aster-gateway-box-sandbox-oci-host
       ASTER_GATEWAY_BOX_SANDBOX_IMAGE: docker.io/library/busybox@sha256:fc6dddc4c44b1bfe37f41cae8e67d1693828e8f42a91862816d7953e2c9d3f23
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout pinned Aster Box
+      - name: Checkout pinned kbox
         uses: actions/checkout@v4
         with:
           repository: aster-ai-lab/Box
-          ref: ${{ env.ASTER_BOX_REV }}
+          ref: ${{ env.KBOX_REV }}
           path: box
 
       - name: Initialize Box submodules
@@ -312,8 +312,8 @@ jobs:
           (
             export RUSTFLAGS=""
             cd box/src
-            cargo build --locked -p aster-box-cli -p aster-box-shim
-            cargo build --locked --release -p aster-box-guest-init \
+            cargo build --locked -p kbox-cli -p kbox-shim
+            cargo build --locked --release -p kbox-guest-init \
               --target x86_64-unknown-linux-musl
           )
           (
@@ -326,20 +326,20 @@ jobs:
         run: |
           set -euo pipefail
           sudo install -d -m 755 "$ASTER_HOME/bin"
-          sudo install -m 755 box/src/target/debug/aster-box-shim \
-            "$ASTER_HOME/bin/aster-box-shim"
+          sudo install -m 755 box/src/target/debug/kbox-shim \
+            "$ASTER_HOME/bin/kbox-shim"
           sudo install -m 755 \
-            box/src/target/x86_64-unknown-linux-musl/release/aster-box-guest-init \
-            "$ASTER_HOME/bin/aster-box-guest-init"
+            box/src/target/x86_64-unknown-linux-musl/release/kbox-guest-init \
+            "$ASTER_HOME/bin/kbox-guest-init"
           sudo install -m 755 oci-runtime/target/release/aster-oci \
-            "$ASTER_BOX_OCI_RUNTIME_PATH"
+            "$KBOX_OCI_RUNTIME_PATH"
           sudo install -m 755 oci-runtime/target/release/aster-oci-agent \
-            "$ASTER_BOX_OCI_AGENT_PATH"
-          test -x box/src/target/debug/aster-box
-          test -x "$ASTER_HOME/bin/aster-box-shim"
-          test -x "$ASTER_HOME/bin/aster-box-guest-init"
-          test -x "$ASTER_BOX_OCI_RUNTIME_PATH"
-          test -x "$ASTER_BOX_OCI_AGENT_PATH"
+            "$KBOX_OCI_AGENT_PATH"
+          test -x box/src/target/debug/kbox
+          test -x "$ASTER_HOME/bin/kbox-shim"
+          test -x "$ASTER_HOME/bin/kbox-guest-init"
+          test -x "$KBOX_OCI_RUNTIME_PATH"
+          test -x "$KBOX_OCI_AGENT_PATH"
           grep -q '^root:' /etc/subuid ||
             echo 'root:100000:65536' | sudo tee -a /etc/subuid
           grep -q '^root:' /etc/subgid ||
@@ -360,7 +360,7 @@ jobs:
               HOME="$HOME" \
               ASTER_DEPS_STUB=1 \
               ASTER_HOME="$ASTER_HOME" \
-              "$GITHUB_WORKSPACE/box/src/target/debug/aster-box" pull \
+              "$GITHUB_WORKSPACE/box/src/target/debug/kbox" pull \
                 "$ASTER_GATEWAY_BOX_SANDBOX_IMAGE"
 
       - name: Prove Box-to-Gateway Sandbox endpoint relay
@@ -376,12 +376,12 @@ jobs:
               RUSTFLAGS="$RUSTFLAGS" \
               ASTER_DEPS_STUB=1 \
               ASTER_HOME="$ASTER_HOME" \
-              ASTER_BOX_OCI_MIGRATION=sandbox \
-              ASTER_BOX_OCI_HOST_ROOT="$ASTER_BOX_OCI_HOST_ROOT" \
-              ASTER_BOX_OCI_RUNTIME_PATH="$ASTER_BOX_OCI_RUNTIME_PATH" \
-              ASTER_BOX_OCI_AGENT_PATH="$ASTER_BOX_OCI_AGENT_PATH" \
+              KBOX_OCI_MIGRATION=sandbox \
+              KBOX_OCI_HOST_ROOT="$KBOX_OCI_HOST_ROOT" \
+              KBOX_OCI_RUNTIME_PATH="$KBOX_OCI_RUNTIME_PATH" \
+              KBOX_OCI_AGENT_PATH="$KBOX_OCI_AGENT_PATH" \
               ASTER_GATEWAY_TEST_BOX_SANDBOX=1 \
-              ASTER_GATEWAY_BOX_BINARY="$GITHUB_WORKSPACE/box/src/target/debug/aster-box" \
+              ASTER_GATEWAY_BOX_BINARY="$GITHUB_WORKSPACE/box/src/target/debug/kbox" \
               ASTER_GATEWAY_BOX_SANDBOX_IMAGE="$ASTER_GATEWAY_BOX_SANDBOX_IMAGE" \
               RUST_MIN_STACK=16777216 \
               cargo test --locked --test box_sandbox_conformance \
@@ -396,7 +396,7 @@ jobs:
                 echo "===== $owner_log ====="
                 sudo tail -c 3800 "$owner_log"
               } | tee -a "$log"
-            done < <(sudo find "$ASTER_BOX_OCI_HOST_ROOT" -maxdepth 1 -type f -name 'owner.*.log' -print 2>/dev/null)
+            done < <(sudo find "$KBOX_OCI_HOST_ROOT" -maxdepth 1 -type f -name 'owner.*.log' -print 2>/dev/null)
             while IFS= read -r worker_log; do
               {
                 echo

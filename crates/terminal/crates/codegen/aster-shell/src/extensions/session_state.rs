@@ -143,7 +143,7 @@ fn sanitize_summary_for_host(summary: &mut serde_json::Map<String, Value>, id: &
     set_or_remove(
         summary,
         "sandbox_profile",
-        aster_sandbox::configured_profile_name().map(String::from),
+        aster_confine::configured_profile_name().map(String::from),
     );
 }
 

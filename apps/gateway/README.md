@@ -160,7 +160,7 @@ curl http://127.0.0.1:8080/v1/models
 | Uneven or failing providers | Active/passive health, circuit state, weighted selection, failover, and retry only before a response starts |
 | Safe policy changes | Validate and compile a complete snapshot, then atomically activate it; rejection keeps the previous runtime alive |
 | Remote desired state | Apply complete Cloud snapshots while every authorized request decision stays local |
-| Scale-to-zero workloads | Consume ready replica endpoints from Aster Box and release bounded requests only after the workload is routable |
+| Scale-to-zero workloads | Consume ready replica endpoints from kbox and release bounded requests only after the workload is routable |
 
 This is intentionally narrower than an AI platform. Gateway does not own
 tenants, deployment, placement, rollout, billing, model serving, or a human
@@ -181,9 +181,9 @@ Changing authority requires a process restart. Gateway exposes a machine-only
 Node API for health, readiness, metrics, version, managed snapshot application,
 exact snapshot status, and local usage-spool state.
 
-### Gateway and Aster Box
+### Gateway and kbox
 
-Gateway and [Aster Box](https://github.com/aster-ai-lab/aster-box) solve different parts
+Gateway and [kbox](https://github.com/aster-ai-lab/kbox) solve different parts
 of one request lifecycle. Gateway owns admission, routing, health, and stream
 fidelity. Box owns Sandbox workload state and publishes ready replica-slot
 endpoints. In standalone mode, an opt-in Box executor can scale from zero,

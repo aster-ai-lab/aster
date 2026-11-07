@@ -215,7 +215,7 @@ Permissions, confirmations, hooks, budgets, verification, sanitization, sandbox.
 - **Stimulus:** `bash`.
 - **Oracle:** typed sandbox error; command not executed; workspace unchanged.
 - **Fail:** command runs on the host.
-- **Home:** `core/src/sandbox/native.rs`; live `live_flash_bash_through_aster_sandbox_writes_workspace_token` in `core/tests/test_native_sandbox_live_e2e.rs`. Re-proven 2026-09-20 with `boyue/bailian/deepseek-v4.1-flash`: sandboxed bash writes the workspace token. Outside-workspace write deny remains `aster_sandbox_0_1_3_denies_outside_workspace_write_on_this_host`.
+- **Home:** `core/src/sandbox/native.rs`; live `live_flash_bash_through_aster_confine_writes_workspace_token` in `core/tests/test_native_sandbox_live_e2e.rs`. Re-proven 2026-09-20 with `boyue/bailian/deepseek-v4.1-flash`: sandboxed bash writes the workspace token. Outside-workspace write deny remains `aster_confine_0_1_3_denies_outside_workspace_write_on_this_host`.
 
 ### U-SB-02
 

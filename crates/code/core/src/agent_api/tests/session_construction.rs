@@ -17,35 +17,24 @@ async fn test_local_session_installs_native_sandbox_by_default() {
 
     assert!(session.tool_context.sandbox.is_some());
 
-    #[cfg(target_os = "macos")]
-    {
-        let sandbox = Arc::clone(session.tool_context.sandbox.as_ref().unwrap());
-        let digest = sandbox.policy_digest();
-        assert!(!sandbox.supports_background_execution());
-        for _ in 0..2 {
-            let output = session
-                .bash("printf unexpected-fallback > native-refusal-sentinel")
-                .await
-                .unwrap();
-            assert!(
-                output.contains("native_process_lifetime_unqualified"),
-                "the default native adapter must refuse explicitly: {output}"
-            );
-            assert!(!workspace.path().join("native-refusal-sentinel").exists());
-            let selected = session.tool_context.sandbox.as_ref().unwrap();
-            assert!(Arc::ptr_eq(&sandbox, selected));
-            assert_eq!(selected.policy_digest(), digest);
-        }
-    }
+    let sandbox = Arc::clone(session.tool_context.sandbox.as_ref().unwrap());
+    let digest = sandbox.policy_digest();
+    assert!(
+        digest.is_some(),
+        "ksandbox-backed default sandbox exposes a policy digest"
+    );
+    assert!(sandbox.supports_background_execution());
 
-    #[cfg(not(target_os = "macos"))]
-    {
-        #[cfg(not(windows))]
-        let command = "printf core-default-sandbox";
-        #[cfg(windows)]
-        let command = "[Console]::Out.Write('core-default-sandbox')";
+    #[cfg(not(windows))]
+    let command = "printf core-default-sandbox";
+    #[cfg(windows)]
+    let command = "[Console]::Out.Write('core-default-sandbox')";
+    for _ in 0..2 {
         let output = session.bash(command).await.unwrap();
         assert_eq!(output, "core-default-sandbox");
+        let selected = session.tool_context.sandbox.as_ref().unwrap();
+        assert!(Arc::ptr_eq(&sandbox, selected));
+        assert_eq!(selected.policy_digest(), digest);
     }
 }
 

@@ -51,7 +51,7 @@ fn settings(image: &str) -> BoxSettings {
 /// Run once before use: macOS assesses a new executable on its first exec,
 /// which under load can outlast a timed test's interrupt.
 fn fake_box(dir: &Path) -> PathBuf {
-    let path = dir.join("aster-box");
+    let path = dir.join("kbox");
     std::fs::write(&path, FAKE_BOX).unwrap();
     std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
     let warmed = std::process::Command::new(&path)

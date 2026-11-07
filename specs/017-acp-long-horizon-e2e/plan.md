@@ -177,7 +177,7 @@ H0/H1 的模型脚本按 fixture 的封闭阶段/工具回执决策，不加入�
 
 未来命令应优先扩展现有 owning-package targets，例如 `cargo test --locked -p aster-acp --test acp_conformance_stdio`、`--test unattended_e2e`、`--test boundary_e2e`；新增 target 未落地前不能标为可运行命令。覆盖率入口可使用现装 `cargo llvm-cov -p aster-acp --lib --json --summary-only -- --test-threads=4`，需保存原始报告并按 ACP 源路径过滤，防止依赖代码混入分母；完整 E2E 子进程插桩须另验证 profile 收集和合并。
 
-TUI 复用 aster-test ACL 与真实配对 `aster`；先 `check` 再 `run`。GUI 使用独占背景 lane 的观察→动作→再观察→断言→清理，只在稳定路径被实际观察后编写确定性 ACL。失去绑定或 `cgWindowNotFound` 即记录阻塞，不能靠切前台或换窗口续测。编制规划时不启动这些活动；实施阶段按已授权目标和明确预算执行。
+TUI 复用 Rust PTY / 配对 `aster`+`aster-acp`（A3S TUI ACL 已退役）。GUI 使用独占背景 lane 的观察→动作→再观察→断言→清理，只在稳定路径被实际观察后编写确定性 ACL。失去绑定或 `cgWindowNotFound` 即记录阻塞，不能靠切前台或换窗口续测。编制规划时不启动这些活动；实施阶段按已授权目标和明确预算执行。
 
 ## 9. Constitution Check
 
@@ -206,7 +206,7 @@ TUI 复用 aster-test ACL 与真实配对 `aster`；先 `check` 再 `run`。GUI 
 | 权限、客户端 FS、插件 | `approval_rules_stdio.rs`, `client_fs_stdio.rs`, `plugin_workspace_stdio.rs`, `workspace_layer_trust_stdio.rs` | 各自扩展对应 fault variant，复用现有握手/进程 owner |
 | 恢复/终态 | `acp/src/agent/resume_tests.rs`, `turn_terminal_tests.rs`; Core `tests/agent_exact_checkpoint_recovery_v1.rs` | ACP wire 贯通而非重复 Core 状态机 |
 | 验证与长期目标 | `manual/HOST_VERIFICATION_CONTRACT.md`, `acp/tests/unattended_e2e.rs` | 固定 checker、当前字节证明、停滞/预算/最终答复 |
-| TUI | `acp/tests/shipped_tui_e2e.rs`, `acp/tests/aster-test/*.acl` | `crates/code/acp/tests/aster-test/long_horizon.acl`（拟新增） |
+| TUI | `acp/tests/shipped_tui_e2e.rs`, live PTY suites | Rust PTY long-horizon fixtures（A3S TUI ACL 已退役） |
 | GUI | 私有 `apps/studio/src-tauri/src/agent_plane/turns.rs` 和私有测试树 | 私有宿主请求/可见状态/产物打开 E2E；父仓库只留公开案例 ID 和结果链接 |
 | Core/工具 | `crates/code/core/tests/run_control_runtime.rs`, `test_session_close_lifecycle.rs`, `durable_memory_restart.rs` | 缺陷回落到 owning-package 小测试，不重复新内核 |
 | Reporting | `docs/evidence/code/2026-10-24-sdk-capability-cleanup/OUTCOME.md` | 新 dated campaign，不把旧 374 个库测试算成这 130 个已执行 |

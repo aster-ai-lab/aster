@@ -1,0 +1,1122 @@
+{
+  "app": "dev.aster.studio.aster.adesk",
+  "pid": 88335,
+  "window_id": "w-10383",
+  "delivery": "agent-desktop-headless-semantic",
+  "results": [
+    {
+      "id": "BOOT-01",
+      "status": "passed",
+      "details": {
+        "composer_ready": true,
+        "permissions_deferred": false
+      }
+    },
+    {
+      "id": "NAV-01",
+      "status": "failed",
+      "error": "draft was not preserved: {'interactive': True, 'name': '描述任务，输入 / 使用指令或技能，@ 选择工作区文件', 'path': ['window:Aster', 'group', 'group', 'scrollarea', 'webarea:Aster', 'main', 'main', 'group', 'group'], 'ref_id': '@s2dbepn445nofr:e1', 'role': 'textfield', 'states': [], 'value': None}",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 337, in draft_roundtrip\n    raise AssertionError(f\"draft was not preserved: {composer}\")\nAssertionError: draft was not preserved: {'interactive': True, 'name': '描述任务，输入 / 使用指令或技能，@ 选择工作区文件', 'path': ['window:Aster', 'group', 'group', 'scrollarea', 'webarea:Aster', 'main', 'main', 'group', 'group'], 'ref_id': '@s2dbepn445nofr:e1', 'role': 'textfield', 'states': [], 'value': None}\n",
+      "recovery": "work"
+    },
+    {
+      "id": "NAV-02",
+      "status": "passed",
+      "details": {
+        "visited": [
+          "连接器",
+          "技能",
+          "自动化"
+        ],
+        "returned_to_work": true
+      }
+    },
+    {
+      "id": "NAV-03",
+      "status": "passed",
+      "details": {
+        "query": "0101",
+        "closed": true,
+        "composer_restored": true,
+        "focus_restored": true
+      }
+    },
+    {
+      "id": "NAV-04",
+      "status": "passed",
+      "details": {
+        "created": "settings",
+        "switched": true,
+        "closed": true,
+        "draft_preserved": true
+      }
+    },
+    {
+      "id": "NAV-05",
+      "status": "passed",
+      "details": {
+        "collapsed": true,
+        "navigation_hidden": true,
+        "composer_available": true,
+        "restored": true
+      }
+    },
+    {
+      "id": "NAV-06",
+      "status": "failed",
+      "error": "missing statictext 'NAV06 Fixture Task'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 370, in global_search_opens_session\n    wait_find(driver, \"statictext\", \"NAV06 Fixture Task\", exact=False)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing statictext 'NAV06 Fixture Task'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "HOME-02",
+      "status": "failed",
+      "error": "missing textfield '搜索任务'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 408, in task_search\n    field = wait_find(driver, \"textfield\", \"搜索任务\")\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing textfield '搜索任务'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "HOME-02D",
+      "status": "passed",
+      "details": {
+        "empty_state": "没有匹配的任务",
+        "cleared": true,
+        "empty_state_cleared": true
+      }
+    },
+    {
+      "id": "SET-01",
+      "status": "passed",
+      "details": {
+        "query": "归档",
+        "returned_to_work": true
+      }
+    },
+    {
+      "id": "CAP-01A",
+      "status": "passed",
+      "details": {
+        "query": "Fetch",
+        "result": "Fetch网页内容抓取",
+        "restored": true
+      }
+    },
+    {
+      "id": "SET-02A",
+      "status": "passed",
+      "details": {
+        "control": "开机自动启动",
+        "original": "0",
+        "changed_and_restored": true
+      }
+    },
+    {
+      "id": "SET-02B",
+      "status": "passed",
+      "details": {
+        "control": "启用上下文管理",
+        "original": "1",
+        "changed_and_restored": true
+      }
+    },
+    {
+      "id": "SET-02C",
+      "status": "passed",
+      "details": {
+        "switches": [
+          {
+            "control": "启动时最小化到托盘",
+            "original": "0",
+            "changed_and_restored": true
+          },
+          {
+            "control": "显示托盘图标",
+            "original": "1",
+            "changed_and_restored": true
+          },
+          {
+            "control": "关闭时最小化到托盘",
+            "original": "0",
+            "changed_and_restored": true
+          },
+          {
+            "control": "运行任务时保持系统唤醒",
+            "original": "0",
+            "changed_and_restored": true
+          }
+        ],
+        "app_close_triggered": false,
+        "task_run_triggered": false
+      }
+    },
+    {
+      "id": "HOME-02B",
+      "status": "failed",
+      "error": "missing combobox '更多：你好'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 555, in task_pin_and_archive_cancel\n    open_task_menu(driver)\n    ~~~~~~~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 526, in open_task_menu\n    combo = wait_find(driver, \"combobox\", \"更多：你好\")\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '更多：你好'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "HOME-02C",
+      "status": "failed",
+      "error": "missing combobox '更多：你好'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 571, in archive_cancel\n    open_task_menu(driver)\n    ~~~~~~~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 526, in open_task_menu\n    combo = wait_find(driver, \"combobox\", \"更多：你好\")\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '更多：你好'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "HOME-01A",
+      "status": "passed",
+      "details": {
+        "dialog": "新建项目",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "HOME-01B",
+      "status": "failed",
+      "error": "empty project form enabled Create",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 630, in project_required_fields\n    raise AssertionError(\"empty project form enabled Create\")\nAssertionError: empty project form enabled Create\n",
+      "recovery": "work"
+    },
+    {
+      "id": "SET-03A",
+      "status": "passed",
+      "details": {
+        "dialog": "添加自定义提供商",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "SET-03B",
+      "status": "passed",
+      "details": {
+        "dialog": "请求配置",
+        "cancelled": true,
+        "save_triggered": false,
+        "connection_test_triggered": false
+      }
+    },
+    {
+      "id": "SET-03C",
+      "status": "passed",
+      "details": {
+        "switches": [
+          {
+            "control": "模型温度",
+            "original": "0",
+            "changed_and_restored": true
+          },
+          {
+            "control": "Top-P",
+            "original": "0",
+            "changed_and_restored": true
+          }
+        ],
+        "translation_triggered": false
+      }
+    },
+    {
+      "id": "SET-03D",
+      "status": "passed",
+      "details": {
+        "route_dialog": "编辑模型路由",
+        "budget_dialog": "编辑本地预算",
+        "save_triggered": false
+      }
+    },
+    {
+      "id": "SET-03E",
+      "status": "passed",
+      "details": {
+        "initialization_error_present": false
+      }
+    },
+    {
+      "id": "COMP-01",
+      "status": "failed",
+      "error": "missing combobox 'GPT'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 720, in model_picker\n    original = wait_find(driver, \"combobox\", \"GPT\", exact=False)\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox 'GPT'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "COMP-02",
+      "status": "failed",
+      "error": "missing combobox '响应设置'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 747, in reasoning_effort\n    combo = wait_find(driver, \"combobox\", \"响应设置\")\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '响应设置'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "COMP-03A",
+      "status": "passed",
+      "details": {
+        "original": "请求批准",
+        "changed_to": "只读权限",
+        "restored": true
+      }
+    },
+    {
+      "id": "COMP-03B",
+      "status": "failed",
+      "error": "STALE_REF: Could not verify the live toggle value",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 820, in composer_local_switches\n    driver.call(\"toggle\", switches[name][\"ref_id\"])\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 27, in call\n    raise RuntimeError(f\"{error.get('code', 'COMMAND_FAILED')}: {error.get('message', 'unknown error')}\")\nRuntimeError: STALE_REF: Could not verify the live toggle value\n",
+      "recovery": "work"
+    },
+    {
+      "id": "COMP-04",
+      "status": "failed",
+      "error": "TIMEOUT: Target did not become actionable within the wait budget",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 841, in upload_attachment_cancel\n    driver.call(\"click\", upload[\"ref_id\"])\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 27, in call\n    raise RuntimeError(f\"{error.get('code', 'COMMAND_FAILED')}: {error.get('message', 'unknown error')}\")\nRuntimeError: TIMEOUT: Target did not become actionable within the wait budget\n",
+      "recovery": "work"
+    },
+    {
+      "id": "COMP-06",
+      "status": "failed",
+      "error": "ACTION_FAILED: Window focus did not settle on the requested window",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 890, in slash_skill\n    replace_text(driver, \"textfield\", COMPOSER, original, exact=False)\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 136, in replace_text\n    driver.call(\"focus-window\", \"--window-id\", driver.window_id)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 27, in call\n    raise RuntimeError(f\"{error.get('code', 'COMMAND_FAILED')}: {error.get('message', 'unknown error')}\")\nRuntimeError: ACTION_FAILED: Window focus did not settle on the requested window\n",
+      "recovery": "work"
+    },
+    {
+      "id": "CAP-01B",
+      "status": "passed",
+      "details": {
+        "dialog": "自定义连接器",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "CAP-01C",
+      "status": "passed",
+      "details": {
+        "detail": "Fetch网页内容抓取",
+        "closed": true,
+        "install_triggered": false,
+        "search_restored": true
+      }
+    },
+    {
+      "id": "CAP-02A",
+      "status": "passed",
+      "details": {
+        "dialog": "上传技能",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "CAP-03A",
+      "status": "passed",
+      "details": {
+        "dialog": "选择模型",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "SET-NAV-01",
+      "status": "passed",
+      "details": {
+        "visited": [
+          "网络搜索",
+          "文档处理",
+          "数据",
+          "关于"
+        ]
+      }
+    },
+    {
+      "id": "SET-NAV-02",
+      "status": "passed",
+      "details": {
+        "visited": [
+          "API 网关",
+          "模型配置",
+          "用量",
+          "快捷键",
+          "归档"
+        ]
+      }
+    },
+    {
+      "id": "SET-04A",
+      "status": "passed",
+      "details": {
+        "changed_to": "HTTP / RSS",
+        "restored": "原生 API"
+      }
+    },
+    {
+      "id": "SET-05A",
+      "status": "passed",
+      "details": {
+        "parser": "PP-OCRv6",
+        "plugin_status": "未安装",
+        "download_triggered": false
+      }
+    },
+    {
+      "id": "SET-07A",
+      "status": "passed",
+      "details": {
+        "changed_to": "cmd+shift+j",
+        "restored": "cmd+shift+f",
+        "both_verified": true
+      }
+    },
+    {
+      "id": "SET-12A",
+      "status": "passed",
+      "details": {
+        "period_restored": "7 天",
+        "metric_restored": "Token",
+        "export_triggered": false
+      }
+    },
+    {
+      "id": "SET-14A",
+      "status": "failed",
+      "error": "missing combobox '更多：使用技能 onetake'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 588, in archive_and_restore\n    combo = wait_find(driver, \"combobox\", \"更多：使用技能 onetake\", exact=False)\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '更多：使用技能 onetake'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "SET-15A",
+      "status": "failed",
+      "error": "missing button: 关于",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1118, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1019, in about_page\n    driver.click(\"button\", \"关于\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 关于\n",
+      "recovery": "work"
+    },
+    {
+      "id": "SET-16A",
+      "status": "passed",
+      "details": {
+        "dialog": "客户端",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "SET-16B",
+      "status": "passed",
+      "details": {
+        "status": "已停止",
+        "url": "http://127.0.0.1:23333",
+        "usage_navigation": true,
+        "start_triggered": false
+      }
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "连接器",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "技能",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "自动化",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+w",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "搜索任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "搜索任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "清除",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "取消搜索",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "连接器",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "通用",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "通用",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "通用",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建项目",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建项目",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型服务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "添加服务商",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型服务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "配置 API Host 与自定义请求头",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "翻译设置",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "路由计划",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建路由",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "本地预算",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "添加预算",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "翻译设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "翻译设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "onetake",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "连接器",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "创建",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "连接器",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "Fetch网页内容抓取",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "技能",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "自动化",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "return",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "网络搜索",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "文档处理",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "数据",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "关于",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "用量",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "快捷键",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "归档",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "网络搜索",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "HTTP / RSS",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "原生 API",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "文档处理",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "解析设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "PP-OCRv6",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "快捷键",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+j",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "快捷键",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "用量",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "30 天",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "7 天",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "请求数",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "Token",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "添加客户端",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "查看用量",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    }
+  ]
+}

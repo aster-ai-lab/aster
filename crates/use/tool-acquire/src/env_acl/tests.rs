@@ -284,7 +284,7 @@ env {
 tool "uv" {
   version = "latest"
 }
-tool "aster-sandbox" {
+tool "kbox" {
   version = "0.1.10"
 }
   }
@@ -299,7 +299,7 @@ var "NODE_ENV" {
     .unwrap();
     assert_eq!(config.tools.get("uv").map(String::as_str), Some("latest"));
     assert_eq!(
-        config.tools.get("aster-sandbox").map(String::as_str),
+        config.tools.get("kbox").map(String::as_str),
         Some("0.1.10")
     );
     assert_eq!(
@@ -376,7 +376,7 @@ fn resolve_maps_catalog_and_latest() {
     let config = EnvConfig {
         tools: BTreeMap::from([
             ("uv".into(), "latest".into()),
-            ("aster-sandbox".into(), "0.1.10".into()),
+            ("kbox".into(), "0.1.10".into()),
         ]),
         vars: BTreeMap::new(),
     };
@@ -387,7 +387,7 @@ fn resolve_maps_catalog_and_latest() {
     assert_eq!(uv.spec, "github:astral-sh/uv");
     let sandbox = resolved
         .iter()
-        .find(|entry| entry.name == "aster-sandbox")
+        .find(|entry| entry.name == "kbox")
         .unwrap();
     assert_eq!(sandbox.version.as_deref(), Some("0.1.10"));
 }

@@ -8,7 +8,7 @@ use aster_shell::leader::{
 
 #[tokio::test]
 async fn connect_or_spawn_refuses_when_sandbox_confinement_requested() {
-    aster_sandbox::set_configured_profile("strict");
+    aster_confine::set_configured_profile("strict");
 
     let env_urls = LeaderEnvUrls {
         // Guard returns before LeaderLock / socket paths touch the filesystem.

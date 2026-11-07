@@ -614,7 +614,7 @@ async fn run_workspace_mgmt(args: WorkspaceMgmtArgs) -> Result<()> {
         WorkspaceMgmtCommand::Start(_)
             | WorkspaceMgmtCommand::Restart(_)
             | WorkspaceMgmtCommand::Resume { .. }
-    ) && let Some(profile) = aster_sandbox::requested_confinement_profile()
+    ) && let Some(profile) = aster_confine::requested_confinement_profile()
     {
         anyhow::bail!(
             "`aster workspace` start/restart/resume is unavailable under sandbox profile '{profile}': \
@@ -720,7 +720,7 @@ async fn spawn_and_connect_leader(
         &raw_config,
         remote_settings,
         true,
-        aster_sandbox::requested_confinement_profile(),
+        aster_confine::requested_confinement_profile(),
     );
     if !use_leader {
         anyhow::bail!(
@@ -1368,7 +1368,7 @@ async fn run_agent_command(
     });
     let agent_memory_config = agent_config.memory_config.clone();
     let runtime = AgentRuntime::from_args(&agent_args, &agent_config, &raw_config);
-    let requested_confinement = aster_sandbox::requested_confinement_profile();
+    let requested_confinement = aster_confine::requested_confinement_profile();
     let LeaderMode {
         use_leader,
         policy_disable_reason,
@@ -2599,7 +2599,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             None
         };
     let result = aster_pager::app::run(args, bg_update_rx).await;
-    aster_sandbox::flush();
+    aster_confine::flush();
     match result {
         Ok(true) => {
             let adopted = bg_update_wait.lock().await.take();

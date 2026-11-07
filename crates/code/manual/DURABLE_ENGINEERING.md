@@ -112,9 +112,9 @@ are still explicit host calls; no driver runs in the background.
   claim a measured quality/efficiency benefit. T039 remains separate work.
 - The descriptive 2×2 experiment (T030) found no benefit, non-regression or
   regression signal that survives run-to-run variance.
-- On this host every check run is refused (`native_process_lifetime_unqualified`),
-  so strict completion is 0 in every arm. Positives stay pending native
-  qualification (HC-ACCEPT1, HC-EVAL1).
+- Default Bash now runs under ksandbox; check runs that previously recorded
+  `native_process_lifetime_unqualified` need re-baselining under the live
+  process sandbox (HC-ACCEPT1, HC-EVAL1).
 
 **Automatic goal mode: host-bounded, inside the turn that woke it.**
 - `/goal resume` keeps admitting the next original Run while the trusted

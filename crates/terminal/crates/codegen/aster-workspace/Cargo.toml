@@ -88,7 +88,7 @@ aster-computer-hub-mcp-adapter = {path = "../../common/aster-computer-hub-mcp-ad
 aster-computer-hub-sdk = {features = ["metrics"], path = "../../common/aster-computer-hub-sdk"}
 aster-hunk-tracker = {path = "../aster-hunk-tracker"}
 aster-hooks = {path = "../aster-hooks"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-env = {path = "../aster-env"}
 aster-fuzzy-file-search = {path = "../aster-fuzzy-file-search"}
 aster-paths = {path = "../aster-paths"}
@@ -120,13 +120,13 @@ name = "workspace-server-probe"
 path = "src/bin/workspace_server_probe.rs"
 
 [features]
-default = ["sandbox-enforce"]
+default = ["confine-noop"]
 compression = []
 test-support = []
 test-util = []
-sandbox-enforce = ["aster-sandbox/enforce"]
+confine-noop = ["aster-confine/enforce"]
 default-bazel = [
-    "sandbox-enforce",
+    "confine-noop",
     ]
 
 [dev-dependencies]

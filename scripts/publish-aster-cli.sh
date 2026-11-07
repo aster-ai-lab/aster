@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run on a Mac that can boot the packaged sandbox.
+# Run on a Mac that can verify the aster + aster-acp pair archives.
 set -euo pipefail
 : "${GH_REPO:?repository is required}"
 : "${BUILD_SHA:?source commit is required}"
@@ -41,8 +41,20 @@ if [[ "$successful_runs" -eq 0 ]]; then
   echo "refusing release: artifact source $built has no successful branch qualification" >&2
   exit 1
 fi
-python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --output-dir qualification
-python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --mode yolo --output-dir qualification/yolo
+python3 - "$tag" <<'PY'
+from pathlib import Path
+import sys
+import tarfile
+
+tag = sys.argv[1]
+archive = Path("dist") / f"{tag}-macos.tar.gz"
+with tarfile.open(archive, "r:gz") as tf:
+    names = set(tf.getnames())
+expected = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}
+if names != expected:
+    raise SystemExit(f"unexpected archive members: {sorted(names)}")
+print(f"verified archive members for {archive.name}")
+PY
 macos_sha="$(shasum -a 256 -b "dist/${tag}-macos.tar.gz" | cut -d' ' -f1)"
 linux_sha="$(shasum -a 256 -b "dist/${tag}-linux.tar.gz" | cut -d' ' -f1)"
 windows_sha="$(shasum -a 256 -b "dist/${tag}-windows.zip" | cut -d' ' -f1)"
@@ -52,9 +64,9 @@ printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","
 cat > notes.md <<EOF
 aster-cli v${version} — Core / ACP ${acp_version}
 
-macOS archives include the verified sandbox runtime with Aster and ACP. Installation and self-update reject incomplete archives. The final installed macOS archive must execute a real sandbox command before release assets can be created or uploaded.
+Aster CLI ships the aster + aster-acp pair only. Process isolation uses the locked ksandbox dependency in Core, not companions or kbox MicroVM inside this archive.
 Each archive contains the locked release build of Aster ${version} and ACP ${acp_version} from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
-The Linux archive uses x86_64 glibc 2.31. Linux and Windows runtime support is not qualified by the macOS sandbox probe.
+The Linux archive uses x86_64 glibc 2.31.
 Update with \`aster update\`, or inspect with \`aster update --check\`, then restart the TUI to use the new pair.
 EOF
 printf 'Built from %s.\n' "$built" >> notes.md

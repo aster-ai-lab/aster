@@ -42,7 +42,7 @@ package	aster-plugin-marketplace	aster-plugin-marketplace	aster_plugin_marketpla
 package	aster-s3-compat	aster-s3-compat	aster_s3_compat	aster_s3_compat
 package	aster-sampler	aster-sampler	aster_sampler	aster_sampler
 package	aster-sampling-types	aster-sampling-types	aster_sampling_types	aster_sampling_types
-package	aster-sandbox	aster-sandbox	aster_sandbox	aster_sandbox
+package	kbox	kbox	aster_confine	aster_confine
 package	aster-secrets	aster-secrets	aster_secrets	aster_secrets
 package	aster-session-events	aster-session-events	aster_session_events	aster_session_events
 package	aster-session-search	aster-session-search	aster_session_search	aster_session_search

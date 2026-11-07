@@ -8,9 +8,9 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 
 | Behavior | Test | Pass record |
 | --- | --- | --- |
-| Welcome on a wide terminal shows Aster | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 120×40 contains Aster |
-| Welcome on a narrow terminal shows Aster and the version | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 60×20 contains Aster and a semantic version; the workspace test separately checks the exact Cargo package version |
-| Welcome frame at the standard size | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 80×24 contains Aster |
+| Welcome on a wide terminal shows Aster | `shipped_tui_e2e` / pager welcome (A3S TUI ACL retired) | viewport 120×40 contains Aster |
+| Welcome on a narrow terminal shows Aster and the version | `shipped_tui_e2e` / pager welcome (A3S TUI ACL retired) | viewport 60×20 contains Aster and a semantic version; the workspace test separately checks the exact Cargo package version |
+| Welcome frame at the standard size | `shipped_tui_e2e` / pager welcome (A3S TUI ACL retired) | viewport 80×24 contains Aster |
 | Cold launch stays on the ACL model | `shipped_tui_launch_resume_and_visible_commands` | `continue-same-session` model `mock/gpt` |
 | `--continue` reopens that session and its transcript | `shipped_tui_launch_resume_and_visible_commands` | `continue-durable-transcript` |
 | `--resume` reopens that session and its transcript | `shipped_tui_launch_resume_and_visible_commands` | `resume-durable-transcript` |
@@ -126,7 +126,7 @@ test binary so a missing provider cannot hide a launch failure.
 | real-LLM 长程任务 | `real_llm_tui_long_task_repairs_and_quotes_the_check` | `tui_913_real_llm` |
 | Cursor account text and picker | `picker_shows_the_cursor_account_and_a_turn_returns_stub_text` | `cursor_account_tui_e2e` |
 | Cursor real model read/write and host byte verification | `live_cursor_tools_read_write_and_verify_actual_workspace_bytes` (explicit `--ignored`; fixture-only disk content attestor) | `cursor_account_tui_e2e` |
-| Cursor real TUI reads, writes and refuses unverified completion | `tests/e2e/cursor_tools.acl` (prepared isolated Cursor config/workspace; assert output bytes after run) | `aster-test` |
+| Cursor real TUI reads, writes and refuses unverified completion | `cursor_account_tui_e2e` Rust PTY (A3S TUI ACL retired) | `cursor_account_tui_e2e` |
 
 `shipped_binaries_report_current_version` in the hermetic binary checks the two
 version lines. The real-LLM tests run only when `ASTER_CONFIG_FILE` is

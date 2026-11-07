@@ -1,4 +1,0 @@
-/target/
-/release-out/
-*.cdx.json
-Cargo.lock

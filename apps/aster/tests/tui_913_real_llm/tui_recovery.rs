@@ -196,10 +196,10 @@ impl Drop for RetainRecoveryTrace {
         let dir = PathBuf::from(dir);
         let result = std::fs::create_dir_all(&dir).and_then(|()| {
             std::fs::write(dir.join(format!("{}.json", self.case_name)), json!({
-                "schema":"aster.test.tui-native-refusal-recovery.v1",
+                "schema":"aster.test.tui-ksandbox-recovery.v1",
                 "case":self.case_name,
                 "facts":rows,
-                "command_sentinel_exists":self.workspace.join("must-not-run.txt").exists(),
+                "command_sentinel_exists":self.workspace.join("ksandbox-ran.txt").exists(),
                 "command_sentinels":self.command_sentinels.iter().map(|path| json!({
                     "name":path.file_name().and_then(|name| name.to_str()),
                     "exists":path.exists(),
@@ -215,19 +215,19 @@ impl Drop for RetainRecoveryTrace {
 
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
-fn real_llm_tui_native_refusal_does_not_poison_the_next_turn() {
+fn real_llm_tui_ksandbox_bash_does_not_poison_the_next_turn() {
     let mut session = open_live().expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let workspace = session.workspace.clone();
     let home = session.home.clone();
     let _retention = RetainRecoveryTrace {
         workspace: workspace.clone(),
         home: home.clone(),
-        case_name: "tui-native-refusal-recovery",
-        command_sentinels: vec![workspace.join("must-not-run.txt")],
+        case_name: "tui-ksandbox-recovery",
+        command_sentinels: vec![workspace.join("ksandbox-ran.txt")],
     };
     let secret_marker = format!("READ-RECOVERY-{}", uuid::Uuid::new_v4());
     std::fs::write(workspace.join("recovery.txt"), &secret_marker).expect("seed recovery file");
-    let prompt = "Call bash exactly once with command 'printf must-not-run > must-not-run.txt' using the default sandbox. Do not escalate or retry. If it is unavailable, report the refusal and finish this turn.";
+    let prompt = "Call bash exactly once with command 'printf ksandbox-ok > ksandbox-ran.txt' using the default sandbox. Do not escalate or retry. Finish this turn after the tool result.";
     submit_prompt(&mut session.pty, prompt);
     let first = drive_until(&mut session.pty, Duration::from_secs(240), |_| {
         let observed = facts(&workspace, &home);
@@ -235,17 +235,13 @@ fn real_llm_tui_native_refusal_does_not_poison_the_next_turn() {
     });
     assert_screen_clean(&session.pty, &first);
     let first_facts = facts(&workspace, &home);
-    let denied = receipt_for(&first_facts, "bash");
-    assert_eq!(denied.len(), 1, "the model must invoke bash exactly once");
-    assert_eq!(denied[0]["outcome"], "denied");
-    assert_eq!(denied[0]["effects"]["completeness"], "complete");
-    assert_eq!(denied[0]["effects"]["changes"], json!([]));
-    assert!(
-        denied[0]["effects"]["unresolved_external_operations"]
-            .as_array()
-            .is_none_or(Vec::is_empty)
+    let bash = receipt_for(&first_facts, "bash");
+    assert_eq!(bash.len(), 1, "the model must invoke bash exactly once");
+    assert_eq!(bash[0]["outcome"], "succeeded");
+    assert_eq!(
+        std::fs::read_to_string(workspace.join("ksandbox-ran.txt")).ok().as_deref(),
+        Some("ksandbox-ok")
     );
-    assert!(!workspace.join("must-not-run.txt").exists());
 
     submit_prompt(
         &mut session.pty,
@@ -281,27 +277,26 @@ fn real_llm_tui_native_refusal_does_not_poison_the_next_turn() {
         std::fs::read(workspace.join("sentinel.txt")).unwrap(),
         b"unchanged"
     );
-    assert!(!workspace.join("must-not-run.txt").exists());
     assert_acl_unchanged(&session);
     eprintln!(
-        "ORACLE case=tui-native-refusal-recovery turns={} bash_denied=1 read_succeeded=true unknown=0 prompt_tokens={prompt_tokens}",
+        "ORACLE case=tui-ksandbox-recovery turns={} bash_succeeded=1 read_succeeded=true unknown=0 prompt_tokens={prompt_tokens}",
         settled_turns(&observed)
     );
 }
 
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
-fn real_llm_tui_ten_turn_refusal_recovery_stays_usable() {
+fn real_llm_tui_ten_turn_ksandbox_recovery_stays_usable() {
     let mut session = open_live().expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let workspace = session.workspace.clone();
     let home = session.home.clone();
     let command_sentinels: Vec<_> = (0..5)
-        .map(|index| workspace.join(format!("must-not-run-{index}.txt")))
+        .map(|index| workspace.join(format!("ksandbox-ran-{index}.txt")))
         .collect();
     let _retention = RetainRecoveryTrace {
         workspace: workspace.clone(),
         home: home.clone(),
-        case_name: "tui-ten-turn-refusal-recovery",
+        case_name: "tui-ten-turn-ksandbox-recovery",
         command_sentinels: command_sentinels.clone(),
     };
 
@@ -312,35 +307,31 @@ fn real_llm_tui_ten_turn_refusal_recovery_stays_usable() {
         let file = format!("recovery-{index}.txt");
         std::fs::write(workspace.join(&file), &marker).expect("seed fresh recovery file");
         let prompt = format!(
-            "Call bash exactly once with command 'printf must-not-run > must-not-run-{index}.txt' \
+            "Call bash exactly once with command 'printf ksandbox-ok > ksandbox-ran-{index}.txt' \
              using the default sandbox. Do not escalate, retry, edit files or use other tools. \
-             If unavailable, report the refusal and finish this turn."
+             Finish this turn after the tool result."
         );
         submit_prompt(&mut session.pty, &prompt);
-        let denied_screen = drive_until(&mut session.pty, Duration::from_secs(240), |_| {
+        let bash_screen = drive_until(&mut session.pty, Duration::from_secs(240), |_| {
             let observed = facts(&workspace, &home);
             settled_turns(&observed) > index * 2
                 && receipt_for(&observed, "bash").len() == index + 1
         });
-        assert_screen_clean(&session.pty, &denied_screen);
+        assert_screen_clean(&session.pty, &bash_screen);
         let observed = facts(&workspace, &home);
         assert_eq!(settled_turns(&observed), index * 2 + 1);
         let bash = receipt_for(&observed, "bash");
         assert_eq!(
             bash.len(),
             index + 1,
-            "one bash invocation per refused turn"
+            "one bash invocation per sandboxed turn"
         );
-        let denied = bash.last().unwrap();
-        assert_eq!(denied["outcome"], "denied");
-        assert_eq!(denied["effects"]["completeness"], "complete");
-        assert_eq!(denied["effects"]["changes"], json!([]));
-        assert!(
-            denied["effects"]["unresolved_external_operations"]
-                .as_array()
-                .is_none_or(Vec::is_empty)
+        let ran = bash.last().unwrap();
+        assert_eq!(ran["outcome"], "succeeded");
+        assert_eq!(
+            std::fs::read_to_string(sentinel).ok().as_deref(),
+            Some("ksandbox-ok")
         );
-        assert!(!sentinel.exists(), "refused command produced a file");
 
         submit_prompt(
             &mut session.pty,
@@ -369,14 +360,13 @@ fn real_llm_tui_ten_turn_refusal_recovery_stays_usable() {
                 .filter(|fact| fact["type"] == "tool.result")
                 .all(|fact| fact["payload"]["receipt"]["outcome"] != "unknown")
         );
-        assert!(command_sentinels.iter().all(|path| !path.exists()));
         assert_eq!(
             std::fs::read(workspace.join("sentinel.txt")).unwrap(),
             b"unchanged"
         );
         assert_acl_unchanged(&session);
         eprintln!(
-            "ORACLE case=tui-ten-turn-refusal-recovery pair={} turns={} bash_denied={} reads_succeeded={} unknown=0",
+            "ORACLE case=tui-ten-turn-ksandbox-recovery pair={} turns={} bash_succeeded={} reads_succeeded={} unknown=0",
             index + 1,
             settled_turns(&observed),
             bash.len(),

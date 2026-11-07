@@ -428,7 +428,7 @@ impl LspClient {
             cmd.env(k, v);
         }
         aster_tty_utils::detach_std_command(&mut cmd);
-        aster_sandbox::child_net::restrict_child_network_std(&mut cmd);
+        aster_confine::child_net::restrict_child_network_std(&mut cmd);
         cmd.envs(aster_tty_utils::pager_env());
         #[allow(clippy::disallowed_methods)] // enrolled by LspClient::enroll once started
         let mut child = cmd

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Bring up the Aster Cloud control-plane API against the root compose stack.
 #
-# apps/cloud/tools/dev/run_cloud.sh defaults to an aster-box compose
+# apps/cloud/tools/dev/run_cloud.sh defaults to an kbox compose
 # dependency and an object endpoint (host.orb.internal) that only routes
 # from inside OrbStack. This wrapper runs the same build → migrate → serve
 # flow against the shared compose stack instead: Postgres from

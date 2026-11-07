@@ -29,7 +29,7 @@ Markdown 报告；`--fixture mixed` 再加入读取台账的 Python 脚本。每
 2. 保留空工作区初始化等已知红例，完成正确owner修复；不得预建wiki绕过首次使用。
 3. 用Aster Test MCP观察真实应用，再按当前观察执行；UI、真实磁盘/SDK/ACP、执行身份同时核对。
 4. 脚本模型只替代模型供应方；真实Agent、工具、存储和百科发布仍执行。带L的用例另跑真实模型。
-5. 稳定路径再生成私有Studio里的`native_*.acl`，先`aster-test check`再用相同可信host配置`run`。
+5. 稳定路径再生成私有Studio里的`native_*.acl`，先对 GUI ACL 做协议检查再用相同可信 host 配置运行（TUI A3S ACL 已退役）。
 6. 参数变体、失败/阻断/待实现与实际通过分别计数；组件测试、旧stub API测试或截图不代替原生业务验收。
 
 现成可执行的预检和底层回归命令、未来runner的明确缺口、清单之外新增功能的登记规则、

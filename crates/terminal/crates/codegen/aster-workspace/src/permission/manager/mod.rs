@@ -1086,7 +1086,7 @@ pub fn spawn_permission_manager_with_pin(
                         && !recovered_classification
                         && sandbox_may_auto_allow_bash(
                             bash_evaluation.as_ref(),
-                            aster_sandbox::should_auto_allow_bash(),
+                            aster_confine::should_auto_allow_bash(),
                         )
                         && !policy_forced_prompt
                         && !auto_forced_prompt

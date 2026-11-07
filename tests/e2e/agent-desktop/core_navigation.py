@@ -51,7 +51,7 @@ class AgentDesktop:
             if attempt == 2 or code not in {"TIMEOUT", "APP_UNRESPONSIVE"}:
                 raise RuntimeError(f"{code or 'COMMAND_FAILED'}: {error.get('message', 'find failed')}")
             if code == "APP_UNRESPONSIVE":
-                self.call("focus-window", "--app", self.app, "--window-id", self.window_id)
+                self.call("focus-window", "--window-id", self.window_id)
             time.sleep(0.2)
         return None
 
@@ -80,7 +80,7 @@ class AgentDesktop:
 
     def press(self, key: str) -> None:
         for attempt in range(5):
-            focused = self.call("focus-window", "--app", self.app, "--window-id", self.window_id, allow_error=True)
+            focused = self.call("focus-window", "--window-id", self.window_id, allow_error=True)
             if not focused.get("ok"):
                 windows = self.call("list-windows", "--app", self.app).get("data") or []
                 current = next((window for window in windows if window.get("id") == self.window_id and window.get("pid") == self.pid), None)
@@ -89,7 +89,9 @@ class AgentDesktop:
                         time.sleep(0.3)
                         continue
                     raise RuntimeError("the isolated window did not become active")
-            payload = self.call("press", key, "--app", self.app, "--window-id", self.window_id, allow_error=True)
+            # Keys go to the focused window. Adding --app makes the CLI refresh a
+            # ps-backed app inventory, which headless CI sandboxes refuse.
+            payload = self.call("press", key, allow_error=True)
             if payload.get("ok"):
                 self.steps.append({"action": "press", "target": key, "result": "delivered"})
                 return
@@ -126,12 +128,12 @@ def wait_value(
 
 def replace_text(driver: AgentDesktop, role: str, name: str, text: str, *, exact: bool = True) -> None:
     def press(key: str) -> None:
-        driver.call("press", key, "--app", driver.app, "--window-id", driver.window_id)
+        driver.call("press", key)
 
     for focus_attempt in range(3):
         field = driver.find(role, name, exact=exact) or wait_find(driver, role, None)
         try:
-            driver.call("focus-window", "--app", driver.app, "--window-id", driver.window_id)
+            driver.call("focus-window", "--window-id", driver.window_id)
             driver.call("focus", field["ref_id"])
             press("cmd+a")
             press("delete")
@@ -177,7 +179,16 @@ def wait_any_composer(driver: AgentDesktop) -> dict[str, Any]:
 
 
 def work(driver: AgentDesktop) -> None:
-    if driver.find("combobox", "搜索设置", exact=False) or driver.find("button", "取消搜索"):
+    # Settings keeps the home composer mounted but hidden, so composer presence
+    # alone cannot prove we are on the work page. Detect settings chrome and
+    # explicitly return through the sidebar row before every scenario.
+    settings_chrome = (
+        driver.find("combobox", "搜索设置", exact=False)
+        or driver.find("button", "搜索设置", exact=False)
+        or driver.find("button", "返回应用")
+        or driver.find("button", "取消搜索")
+    )
+    if settings_chrome:
         if driver.find("button", "取消搜索"):
             driver.click("button", "取消搜索")
         driver.click("button", "工作")
@@ -185,11 +196,21 @@ def work(driver: AgentDesktop) -> None:
         return
     if find_composer(driver):
         return
+    # A leftover overlay hides the work sidebar in the AX tree. Close any
+    # dialog before deciding whether the composer proves we are on the work page.
     dialog = driver.find("dialog")
-    if dialog and dialog.get("name") == "搜索任务":
-        driver.press("escape")
-    elif dialog and driver.find("button", "返回应用"):
-        driver.click("button", "返回应用")
+    if dialog:
+        close = driver.find("button", "关闭") or driver.find("button", "取消")
+        if close:
+            driver.call("click", close["ref_id"], allow_error=True)
+        else:
+            driver.press("escape")
+        for _ in range(10):
+            if not driver.find("dialog"):
+                break
+            time.sleep(0.2)
+        if driver.find("dialog"):
+            raise AssertionError(f"startup dialog remained open: {dialog.get('name')}")
     if find_composer(driver):
         return
     driver.click("button", "新建任务")
@@ -248,14 +269,27 @@ def wait_text(driver: AgentDesktop, expected: str, *, interactive: bool = True) 
 def boot(driver: AgentDesktop) -> dict[str, Any]:
     driver.bind_window()
     deferred = False
+    for _ in range(4):
+        dialog = driver.find("dialog")
+        if not dialog:
+            break
+        name = dialog.get("name")
+        if name == "使用 Aster 前需要三项权限":
+            driver.click("button", "稍后设置")
+            deferred = True
+        elif name == "组件已就绪":
+            # Semantic AX action: press needs a stable ps-backed app inventory,
+            # which is unavailable in headless CI sandboxes.
+            driver.click("button", "继续")
+        else:
+            raise AssertionError(f"unexpected startup dialog: {name}")
+        # AXPress is delivered_unverified; wait for the tree to actually change.
+        for _ in range(5):
+            current = driver.find("dialog")
+            if current is None or current.get("name") != name:
+                break
+            time.sleep(0.2)
     dialog = driver.find("dialog")
-    if dialog and dialog.get("name") == "使用 Aster 前需要三项权限":
-        driver.click("button", "稍后设置")
-        deferred = True
-        dialog = driver.find("dialog")
-    if dialog and dialog.get("name") == "组件已就绪":
-        driver.press("escape")
-        dialog = driver.find("dialog")
     if dialog:
         raise AssertionError(f"unexpected startup dialog: {dialog.get('name')}")
     composer = wait_any_composer(driver)
@@ -336,9 +370,9 @@ def global_search_opens_session(driver: AgentDesktop) -> dict[str, Any]:
     wait_find(driver, "statictext", "NAV06 Fixture Task", exact=False)
     wait_find(driver, "statictext", "NAV06 Fixture Agent", exact=False)
     field = wait_find(driver, "combobox", "搜索对话", exact=False)
-    driver.call("focus-window", "--app", driver.app, "--window-id", driver.window_id)
+    driver.call("focus-window", "--window-id", driver.window_id)
     driver.call("focus", field["ref_id"])
-    driver.call("press", "return", "--app", driver.app, "--window-id", driver.window_id)
+    driver.call("press", "return")
     deadline = time.monotonic() + 10
     while driver.find("dialog") and time.monotonic() < deadline:
         time.sleep(0.15)
@@ -666,9 +700,9 @@ def translation_languages_load(driver: AgentDesktop) -> dict[str, Any]:
         time.sleep(0.2)
     close = wait_find(driver, "button", "关闭")
     commands = [
-        {"command": "focus-window", "args": {"app": driver.app, "window_id": driver.window_id}},
+        {"command": "focus-window", "args": {"window_id": driver.window_id}},
         {"command": "focus", "args": {"ref_id": close["ref_id"]}},
-        {"command": "press", "args": {"combo": "return", "app": driver.app, "window_id": driver.window_id}},
+        {"command": "press", "args": {"combo": "return"}},
     ]
     payload = json.loads(subprocess.run(["agent-desktop", "batch", json.dumps(commands), "--stop-on-error"], capture_output=True, text=True, check=True).stdout)
     if not payload.get("ok"):
@@ -728,13 +762,13 @@ def reasoning_effort(driver: AgentDesktop) -> dict[str, Any]:
         return None
 
     commands = [
-        {"command": "focus-window", "args": {"app": driver.app, "window_id": driver.window_id}},
+        {"command": "focus-window", "args": {"window_id": driver.window_id}},
         {"command": "focus", "args": {"ref_id": combo["ref_id"]}},
-        {"command": "press", "args": {"combo": "return", "app": driver.app, "window_id": driver.window_id}},
+        {"command": "press", "args": {"combo": "return"}},
         {"command": "snapshot", "args": {"app": driver.app, "window_id": driver.window_id, "interactive_only": True, "compact": True}},
-        {"command": "press", "args": {"combo": "right", "app": driver.app, "window_id": driver.window_id}},
+        {"command": "press", "args": {"combo": "right"}},
         {"command": "snapshot", "args": {"app": driver.app, "window_id": driver.window_id, "interactive_only": True, "compact": True}},
-        {"command": "press", "args": {"combo": "left", "app": driver.app, "window_id": driver.window_id}},
+        {"command": "press", "args": {"combo": "left"}},
         {"command": "snapshot", "args": {"app": driver.app, "window_id": driver.window_id, "interactive_only": True, "compact": True}},
     ]
     payload = json.loads(subprocess.run(["agent-desktop", "batch", json.dumps(commands), "--stop-on-error"], capture_output=True, text=True, check=True).stdout)
@@ -955,9 +989,9 @@ def shortcut_rebind(driver: AgentDesktop) -> dict[str, Any]:
     def record(combo: str) -> None:
         button = wait_find(driver, "button", "搜索消息: 按下快捷键")
         commands = [
-            {"command": "focus-window", "args": {"app": driver.app, "window_id": driver.window_id}},
+            {"command": "focus-window", "args": {"window_id": driver.window_id}},
             {"command": "click", "args": {"ref_id": button["ref_id"]}},
-            {"command": "press", "args": {"combo": combo, "app": driver.app, "window_id": driver.window_id}},
+            {"command": "press", "args": {"combo": combo}},
             {"command": "snapshot", "args": {"app": driver.app, "window_id": driver.window_id, "interactive_only": True, "compact": True}},
         ]
         payload = json.loads(subprocess.run(["agent-desktop", "batch", json.dumps(commands), "--stop-on-error"], capture_output=True, text=True, check=True).stdout)
@@ -985,11 +1019,15 @@ def about_page(driver: AgentDesktop) -> dict[str, Any]:
     driver.click("button", "关于")
     wait_text(driver, "当前已是最新版本", interactive=False)
     text = tree_text(driver, interactive=False)
-    if "v0.1.11" not in text or "构建" not in text:
+    config = json.loads(
+        (Path(__file__).resolve().parents[3] / "apps/studio/src-tauri/tauri.conf.json").read_text(encoding="utf-8")
+    )
+    version = "v" + config["version"]
+    if version not in text or "构建" not in text:
         raise AssertionError("version and build information are missing")
     wait_find(driver, "button", "检查更新")
     work(driver)
-    return {"version": "v0.1.11", "build_present": True, "update_not_triggered": True}
+    return {"version": version, "build_present": True, "update_not_triggered": True}
 
 
 def gateway_readonly_status(driver: AgentDesktop) -> dict[str, Any]:

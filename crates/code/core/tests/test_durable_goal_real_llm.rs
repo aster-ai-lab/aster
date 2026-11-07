@@ -14,9 +14,8 @@
 //! completed goal requires the full reference repair and a passing original
 //! check. The model's progress is reported. The edit stage is read from the
 //! frozen staged references, never by running model-edited code outside the
-//! original tool boundary. Where the host refuses native execution the
-//! refusal is recorded and the positive stays pending; Spec 007 independent
-//! acceptance needs a qualified native candidate host.
+//! original tool boundary. Default Bash now runs under ksandbox; pending arms
+//! that still grade `native_process_lifetime_unqualified` need re-baselining.
 //!
 //! ```text
 //! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \

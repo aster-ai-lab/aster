@@ -161,7 +161,7 @@ aster-extra-ca = {path = "../aster-extra-ca"}
 aster-compaction = {path = "../../common/aster-compaction"}
 aster-compaction-transcript = {path = "../aster-compaction-transcript"}
 aster-chat-state = {path = "../aster-chat-state"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-message-delivery-core = {path = "../../common/aster-message-delivery-core"}
 aster-interjection-core = {path = "../../common/aster-interjection-core"}
 aster-agent-lifecycle = {path = "../aster-agent-lifecycle"}
@@ -199,7 +199,7 @@ pretty_assertions = {workspace = true}
 tempfile = {workspace = true}
 # `extensions::bundle` tests build archives with `bundle::test_helpers`, which
 # is `#[cfg(test)]`-only inside aster-bundle without this feature.
-# sandbox-enforce: keep tests running against the enforcing sandbox build.
+# confine-noop: enable the aster-confine stub feature for feature-unified tests.
 tar = {workspace = true}
 flate2 = {workspace = true}
 semver = {workspace = true}
@@ -219,7 +219,7 @@ aster-sampler = {features = ["test-support"], path = "../aster-sampler"}
 aster-login = {features = ["test-support"], path = "../aster-login"}
 aster-shell-base = {features = ["test-support"], path = "../aster-shell-base"}
 aster-config = {features = [], path = "../aster-config"}
-aster-workspace = {default-features = false, features = ["test-support", "sandbox-enforce"], path = "../aster-workspace"}
+aster-workspace = {default-features = false, features = ["test-support", "confine-noop"], path = "../aster-workspace"}
 aster-memory = {features = ["test-support"], path = "../aster-memory"}
 aster-bundle = {features = ["test-support"], path = "../aster-bundle"}
 aster-status-line = {features = ["test-support"], path = "../aster-status-line"}

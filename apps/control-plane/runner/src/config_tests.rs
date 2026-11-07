@@ -8,7 +8,7 @@ runner {
   state_file        = "/var/lib/aster-runner/state.acl"
   work_dir          = "/var/lib/aster-runner/work"
   image             = "alpine:3.20"
-  box_cli           = "/usr/local/bin/aster-box"
+  box_cli           = "/usr/local/bin/kbox"
   cpus              = 4
   memory            = "1024m"
   poll_seconds      = 2
@@ -41,7 +41,7 @@ fn the_contract_example_parses() {
             state_file: PathBuf::from("/var/lib/aster-runner/state.acl"),
             work_dir: PathBuf::from("/var/lib/aster-runner/work"),
             image: "alpine:3.20".into(),
-            box_cli: Some(PathBuf::from("/usr/local/bin/aster-box")),
+            box_cli: Some(PathBuf::from("/usr/local/bin/kbox")),
             cpus: 4,
             memory: "1024m".into(),
             poll_seconds: 2,
@@ -112,7 +112,7 @@ fn values_are_checked() {
             "runner memory must match ^[1-9][0-9]{0,5}[mg]$",
         ),
         (
-            "box_cli = \"aster-box\"",
+            "box_cli = \"kbox\"",
             "runner box_cli must be an absolute path",
         ),
     ] {

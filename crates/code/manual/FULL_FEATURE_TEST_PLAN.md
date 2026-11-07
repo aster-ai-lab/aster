@@ -351,7 +351,7 @@ These are first-class cases because they broke real providers or builds:
 | **8.6.0 orphan isolate** | Empty `.aster-isolate-*` sibling is cleared before bind | `effect_isolation.rs` `bind_clears_a_stale_empty_isolation_directory` (#155) | — |
 | **8.6.0 slim serve removal** | No AgentDir HTTP serve / filesystem-first mode in Core or SDKs | tree/API absence + CHANGELOG; do not revive serve suites | — |
 | **8.5.12 batch schema** | No application `$ref` objects under `batch` parameters `examples` | `tools/builtin/batch.rs` schema asserts (#147) | Optional: GLM Coding turn with `batch` presented |
-| **8.5.11 musl** | `aster-sandbox` 0.1.4 rlimit typing | Node musl optional native build in Release | Release matrix |
+| **8.5.11 musl** | `kbox` 0.1.4 rlimit typing | Node musl optional native build in Release | Release matrix |
 | **8.5.10 Gate 7 + Fake-IP** | Native sandbox + DoH fallback | `safe_http` + `test_native_sandbox_live_e2e` | Layer C capabilities |
 | **Leaked tool markup** | WorkBuddy / Claude / DSML recovery | `llm::text_tool_calls` | issue-form / Flash |
 | **Unverified mutation** | Completion gate | verification / harness_loop unit | `test_harness_loop_live_e2e` |

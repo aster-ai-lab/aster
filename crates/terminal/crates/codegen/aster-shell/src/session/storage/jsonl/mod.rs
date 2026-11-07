@@ -1208,7 +1208,7 @@ impl StorageAdapter for JsonlStorageAdapter {
         } else {
             tracing::info!("Creating new session in JSONL");
             let mut summary = Summary::new(info, model_id)?;
-            summary.sandbox_profile = aster_sandbox::configured_profile_name().map(String::from);
+            summary.sandbox_profile = aster_confine::configured_profile_name().map(String::from);
             self.write_summary_sync(info, &summary)?;
             Ok(summary)
         }

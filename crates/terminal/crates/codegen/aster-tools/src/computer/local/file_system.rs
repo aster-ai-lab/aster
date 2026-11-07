@@ -145,7 +145,7 @@ impl AsyncFileSystem for LocalFs {
             Ok(data) => Ok(data),
             Err(e) => {
                 if is_permission_error(&e) {
-                    aster_sandbox::log_violation(&path.display().to_string(), "read");
+                    aster_confine::log_violation(&path.display().to_string(), "read");
                 }
                 Err(e.into())
             }
@@ -174,7 +174,7 @@ impl AsyncFileSystem for LocalFs {
         .await
         .map_err(|error| {
             if is_permission_error(&error) {
-                aster_sandbox::log_violation(&path.display().to_string(), "read");
+                aster_confine::log_violation(&path.display().to_string(), "read");
             }
             ComputerError::from(error)
         })
@@ -187,13 +187,13 @@ impl AsyncFileSystem for LocalFs {
             && let Err(e) = fs::create_dir_all(dir).await
         {
             if is_permission_error(&e) {
-                aster_sandbox::log_violation(&dir.display().to_string(), "mkdir");
+                aster_confine::log_violation(&dir.display().to_string(), "mkdir");
             }
             return Err(e.into());
         }
         if let Err(e) = write_file_with_transient_lock_retries(path, data).await {
             if is_permission_error(&e) {
-                aster_sandbox::log_violation(&path.display().to_string(), "write");
+                aster_confine::log_violation(&path.display().to_string(), "write");
             }
             return Err(e.into());
         }
@@ -213,7 +213,7 @@ impl AsyncFileSystem for LocalFs {
     async fn delete_file(&self, path: &Path) -> Result<(), ComputerError> {
         if let Err(e) = fs::remove_file(path).await {
             if is_permission_error(&e) {
-                aster_sandbox::log_violation(&path.display().to_string(), "delete");
+                aster_confine::log_violation(&path.display().to_string(), "delete");
             }
             return Err(e.into());
         }

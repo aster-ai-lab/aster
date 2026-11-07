@@ -9,7 +9,7 @@ this plan. The tests run at five levels, cheapest first:
 | Browser | The view in Chromium under Aster's exact headers, sandbox, and handshake; the real `agent/run.mjs` | `node tests/browser.proof.mjs`, `node tests/libero.proof.mjs` |
 | Load | View load time per phase, Chromium and WebKit, fresh context per run | `node tests/load.proof.mjs [runs]` |
 | Aster native | Rust tests in `apps/desktop/src-tauri` (authority, view sessions, view-agent binding, warm box) and the renderer tests | see below |
-| End to end | Aster's authority, catalog sync, asset route, turn route, warm `aster-box`, and a gateway; Chromium plays the renderer | see below |
+| End to end | Aster's authority, catalog sync, asset route, turn route, warm `kbox`, and a gateway; Chromium plays the renderer | see below |
 
 Aster native:
 
@@ -17,14 +17,14 @@ Aster native:
 cd apps/desktop/src-tauri
 rustup run 1.97.1 cargo test --lib -- aix_episodes workbench_projection view_agent authority
 ASTER_DESKTOP_BOX_LIVE=1 rustup run 1.97.1 cargo test --lib -- --ignored \
-  the_cobot_arm_agent_decides_in_a_live_aster_box cobot_arm_view_load_timing --nocapture
+  the_cobot_arm_agent_decides_in_a_live_kbox cobot_arm_view_load_timing --nocapture
 cd apps/desktop && npx vitest run src/renderer/services/plugins/__tests__/aixAgentProvider.test.ts \
   src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts \
   src/renderer/hooks/__tests__/useAssistantCatalogPresets.test.ts
 cd apps/api && rustup run 1.97.1 cargo test --bin aster-api -- workbench cobot_arm a_renamed_seed
 ```
 
-End to end (needs node, the Playwright install in `apps/desktop`, and `aster-box`):
+End to end (needs node, the Playwright install in `apps/desktop`, and `kbox`):
 
 ```sh
 cd apps/desktop/src-tauri
@@ -96,13 +96,13 @@ renderer test in `apps/desktop/src/renderer`, `api:` is a test in
 | --- | --- | --- | --- |
 | A-01 | Warm agent protocol | One process serves many runs with one process-wide sequence; every reply is one `Content-Length` JSON body | pkg:agent `the warm entry serves many runs…`, `every reply is one Content-Length JSON body…` |
 | A-02 | Malformed traffic | Malformed, duplicate, and unknown traffic is refused | pkg:agent `the entry refuses malformed, duplicate, and unknown traffic` |
-| A-03 | One warm box per episode | Many turns, one `aster-box run`; the box is removed on close | desktop:aix_episodes `a_warm_box_serves_many_turns_and_brokers_the_model_without_the_token`, `the_cobot_arm_agent_decides_in_one_warm_box_through_the_real_launcher` |
+| A-03 | One warm box per episode | Many turns, one `kbox run`; the box is removed on close | desktop:aix_episodes `a_warm_box_serves_many_turns_and_brokers_the_model_without_the_token`, `the_cobot_arm_agent_decides_in_one_warm_box_through_the_real_launcher` |
 | A-04 | The member token never enters the box | The host brokers the model call with the bearer; box arguments and environment carry none | desktop:aix_episodes (same two tests); e2e hermetic `foreignBearer: 0` |
 | A-05 | Failure and reclaim | A failed turn removes the box; the reaper ends boxes whose view no longer binds the agent; a running turn and the box limit refuse without starting a box | desktop:aix_episodes `a_failed_turn_removes_the_box…`, `the_reaper_ends_boxes…`, `a_running_turn_and_the_box_limit_refuse…` |
 | A-06 | Closed request shape | Only the closed turn and model body shapes pass; `model_request.api` is `chat` or `systemone` | desktop:aix_episodes `view_turns_and_model_bodies_accept_only_the_closed_shape` |
 | A-07 | A view binds only its own agent | Another agent is 404; no bearer is 401; a bad body is 400; an unbound turn is 404; upgrade, owner change, and an undeclared harness refuse the binding | e2e `unbound`; desktop:authority `a_view_agent_turn_without_a_bound_view_is_not_found`; desktop:capabilities_view_agent_tests (2) |
 | A-08 | Renderer turn port | One turn at a time, each answer carries its own id; failures reduce to the closed refusal set; withdrawal aborts and drops the late answer; messages per document are bounded | ui:aixAgentProvider (4) |
-| A-09 | Live MicroVM | The published agent decides in a real `aster-box` MicroVM; `aster-box ps -a` shows none left | desktop:aix_episodes `the_cobot_arm_agent_decides_in_a_live_aster_box` (`ASTER_DESKTOP_BOX_LIVE=1`) |
+| A-09 | Live MicroVM | The published agent decides in a real `kbox` MicroVM; `kbox ps -a` shows none left | desktop:aix_episodes `the_cobot_arm_agent_decides_in_a_live_kbox` (`ASTER_DESKTOP_BOX_LIVE=1`) |
 | A-10 | Whole chain | catalog → asset route → view → turn route → warm box → gateway → view; every turn 200 and model-decided | e2e hermetic and live |
 
 ## 6. Fallbacks

@@ -196,8 +196,8 @@ mod tests {
 
     #[test]
     fn keeps_human_skill_slash_spelling_from_desktop_compose() {
-        let text = "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n/aster-box run nginx";
-        assert_eq!(product_user_text(text), "/aster-box run nginx");
+        let text = "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n/kbox run nginx";
+        assert_eq!(product_user_text(text), "/kbox run nginx");
     }
 
     #[test]

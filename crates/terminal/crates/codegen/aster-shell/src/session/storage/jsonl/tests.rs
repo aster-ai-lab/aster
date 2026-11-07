@@ -1238,8 +1238,8 @@ async fn summary_provenance_defaults_to_none() {
 async fn init_session_stamps_configured_profile_on_new_session() {
     let tmp = TempDir::new().unwrap();
     let adapter = JsonlStorageAdapter::with_root(tmp.path().to_path_buf());
-    aster_sandbox::set_configured_profile("workspace");
-    let expected = aster_sandbox::configured_profile_name().map(String::from);
+    aster_confine::set_configured_profile("workspace");
+    let expected = aster_confine::configured_profile_name().map(String::from);
     let info = Info {
         id: acp::SessionId::new("new-sb"),
         cwd: "/new".to_string(),

@@ -5,7 +5,7 @@
 //   list      GET  /api/aix/views
 //   open      POST /api/aix/views/sessions
 //   load      the view in Chromium from /aix-view/<token>/…  (Studio's policy headers)
-//   turns     POST /api/aix/views/sessions/<token>/agents/g1-arm/turns  (warm aster-box)
+//   turns     POST /api/aix/views/sessions/<token>/agents/g1-arm/turns  (warm kbox)
 //   close     DELETE /api/aix/views/sessions/<token>
 //
 // It is started by the Studio test `g1_arm_runs_end_to_end_through_studio`

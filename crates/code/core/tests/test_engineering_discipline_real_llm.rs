@@ -9,10 +9,9 @@
 //! Asserted per task on every host: a real provider call, protected bytes and
 //! checks unchanged, and `Verified` only with a passing original check. The
 //! model's discipline (attempted check, passing check) is reported as the
-//! positive outcome, not asserted. Where the host refuses native command
-//! execution (`native_process_lifetime_unqualified`) the refusal is recorded
-//! and the positive stays pending; it is never substituted. Independent
-//! acceptance remains Spec 007's and needs a qualified native candidate host.
+//! positive outcome, not asserted. Default Bash now runs under ksandbox; arms
+//! that still grade `native_process_lifetime_unqualified` need re-baselining
+//! and must not substitute a pass. Independent acceptance remains Spec 007's.
 //!
 //! ```text
 //! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \

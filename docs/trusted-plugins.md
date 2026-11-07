@@ -427,7 +427,7 @@ The migration inventory below preserves the order and names in
 
 | Existing item | Package ID | Authoring domain | Existing acquisition contract |
 | --- | --- | --- | --- |
-| Aster Box (`aster-box`) | `aster/aster-box` | operations | `aster-box` |
+| kbox (`kbox`) | `aster/kbox` | operations | `kbox` |
 | CUA (`cua`) | `aster/cua` | operations | `trycua/cua` CLI release manifest |
 | uv (`uv`) | `aster/uv` | development | `uv` |
 | Bun (`bun`) | `aster/bun` | development | `bun` |
@@ -438,7 +438,7 @@ The migration inventory below preserves the order and names in
 | GitHub CLI (`gh`) | `aster/gh` | development | `gh` |
 | Notion CLI (`ntn`) | `aster/ntn` | productivity | `npm:ntn` |
 | BabelDOC Stream (`babeldoc-stream`) | `aster/babeldoc-stream` | knowledge | `pipx:babeldoc-stream`, minimum `0.6.4.post4` |
-| Aster Sandbox (`aster-sandbox`) | `aster/aster-sandbox` | operations | Required bundled sandbox component |
+| Aster Sandbox (`kbox`) | `aster/kbox` | operations | Required bundled sandbox component |
 | Aster Document (`aster-document`) | `aster/aster-document` | operations | Required bundled document component |
 | Aster Office (`aster-office`) | `aster/aster-office` | operations | Optional bundled Office component |
 

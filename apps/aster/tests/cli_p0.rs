@@ -26,7 +26,7 @@ struct Isolated {
     grok_home: PathBuf,
     workspace: PathBuf,
     config: PathBuf,
-    /// Read only by the macOS shell-refusal oracle.
+    /// Read only by the macOS ksandbox workspace-boundary oracle.
     #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     marker: PathBuf,
 }
@@ -145,7 +145,7 @@ fn decide(raw: &str, marker: &str, state: &mut MockState) -> String {
         let title = if raw.contains("TITLE-SHARED") {
             SHARED_TITLE.to_string()
         } else if raw.contains("SHELL-ORACLE") {
-            "shell refusal check".to_string()
+            "shell boundary check".to_string()
         } else if raw.contains("SANDBOX-ORIGIN") {
             "sandbox origin".to_string()
         } else if let Some(token) = ping_token(raw) {
@@ -1262,8 +1262,8 @@ default_model = "{MODEL_ID}"
         &format!("stored profile workspace; {}", refused.combined().trim()),
     );
 
-    // Ubuntu CI compiles this test. The refusal text and the absent marker are
-    // a macOS product gate, so that host is the only one that runs this oracle.
+    // Ubuntu CI compiles this test. The out-of-workspace write marker is a
+    // macOS Seatbelt product gate, so that host is the only one that runs it.
     #[cfg(target_os = "macos")]
     assert_macos_shell_gates(&isolated, turn);
 
@@ -1291,16 +1291,15 @@ default_model = "{MODEL_ID}"
     oracle("isolated-home", "developer homes unchanged");
 }
 
-/// Requires the shipped macOS shell refusal. Not compiled on Linux, so Ubuntu
-/// CI does not spawn the marker command.
+/// Unescalated macOS shell runs under ksandbox. The mock writes an absolute
+/// path outside the workspace; Seatbelt must keep that marker absent.
 ///
-/// Use unescalated `auto` (not `--yolo` / `bypassPermissions`): yolo installs
-/// `HostAccessSandbox` and is the documented Full-access escape hatch, so it
-/// must not be the refuse-path oracle.
+/// Use `auto` (not `--yolo`): yolo installs `HostAccessSandbox` and would
+/// allow the out-of-workspace write.
 #[cfg(target_os = "macos")]
 fn assert_macos_shell_gates(isolated: &Isolated, turn: Duration) {
     let _ = fs::remove_file(&isolated.marker);
-    let refused = run(
+    let sandboxed = run(
         isolated,
         &[
             "-p",
@@ -1315,21 +1314,21 @@ fn assert_macos_shell_gates(isolated: &Isolated, turn: Duration) {
         ],
         turn,
     );
-    let refused_text = refused.combined();
-    assert!(
-        refused_text.contains("native_process_lifetime_unqualified"),
-        "unescalated shell tool was not refused:\n{refused_text}"
-    );
+    let text = sandboxed.combined();
     assert!(
         !isolated.marker.exists(),
-        "unescalated shell left a side effect at {}",
+        "ksandbox allowed an out-of-workspace write at {}\n{text}",
         isolated.marker.display()
     );
+    assert!(
+        !text.contains("native_process_lifetime_unqualified"),
+        "default shell must execute under ksandbox, not the unqualified refusal:\n{text}"
+    );
     oracle(
-        "shell-refusal",
+        "shell-workspace-boundary",
         &format!(
-            "marker file was not created; {}",
-            excerpt_around(&refused_text, "native_process_lifetime_unqualified", 120)
+            "out-of-workspace marker absent; {}",
+            excerpt_around(&text, "bash", 120)
         ),
     );
 }

@@ -196,7 +196,7 @@ pub async fn run_command_hook(
     };
 
     aster_tools::util::detach_command(&mut cmd);
-    aster_sandbox::child_net::restrict_child_network(&mut cmd);
+    aster_confine::child_net::restrict_child_network(&mut cmd);
 
     #[cfg(not(unix))]
     let env_root = {

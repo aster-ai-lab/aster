@@ -25,7 +25,7 @@ def main():
     aster = ROOT / "target/debug/aster"
     acp = ROOT / "target/debug/aster-acp"
     sandbox = subprocess.check_output(
-        ["python3", "scripts/aster_sandbox.py", "cache", "--target-dir", "target"],
+        ["python3", "scripts/aster_confine.py", "cache", "--target-dir", "target"],
         cwd=ROOT,
         text=True,
     ).strip()

@@ -1908,11 +1908,11 @@ async fn lifetime_refusal_text_without_the_type_stays_a_tool_error() {
 
 #[tokio::test]
 #[cfg(target_os = "macos")]
-async fn macos_native_lifetime_refusal_settles_without_starting_a_process() {
+async fn macos_native_ksandbox_executes_workspace_writes() {
     let tool = BashTool;
     let temp = tempfile::tempdir().unwrap();
     let sandbox = crate::sandbox::native::NativeBashSandbox::new(temp.path()).unwrap();
-    let sentinel = temp.path().join("must-not-exist");
+    let sentinel = temp.path().join("ksandbox-ran");
     let ctx = ToolContext::new(temp.path().to_path_buf()).with_sandbox(Arc::new(sandbox));
     let result = tool
         .execute(
@@ -1922,17 +1922,9 @@ async fn macos_native_lifetime_refusal_settles_without_starting_a_process() {
             &ctx,
         )
         .await
-        .expect("macOS native refusal is a completed tool result");
-    assert!(!result.success);
-    assert_eq!(
-        result.content,
-        crate::sandbox::native::NATIVE_PROCESS_LIFETIME_UNQUALIFIED
-    );
-    assert!(matches!(
-        result.error_kind,
-        Some(ToolErrorKind::Unsupported { .. })
-    ));
-    assert!(!sentinel.exists());
+        .expect("macOS ksandbox bash is a completed tool result");
+    assert!(result.success, "{}", result.content);
+    assert_eq!(std::fs::read_to_string(&sentinel).unwrap(), "started");
 }
 
 #[tokio::test]
@@ -2068,7 +2060,7 @@ impl BashSandbox for GrantingSandbox {
 
     fn apply_network_grant(
         &self,
-        grant: aster_cmd_sandbox::NetworkGrant,
+        grant: crate::sandbox::NetworkGrant,
         expected_base_digest: &str,
     ) -> anyhow::Result<String> {
         if Some(expected_base_digest.to_string()) != self.policy_digest() {

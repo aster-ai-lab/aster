@@ -36,15 +36,8 @@ python3 tests/e2e/json_render_model.py --events target/json-render-model/events.
 `JSON-RENDER-CUA-INVALID` 开头的测试消息分别触发三个场景。模型只提供工具
 调用和判定回执，不模拟 ACP、注入 DOM 或代替宿主提交答案。
 
-终端已有 `ask-form.acl`，覆盖必填、范围、提交、取消和拒绝；由真实可执行文件夹具运行：
-
-```sh
-aster-test check tests/e2e/ask-form.acl --json
-cargo build -p aster -p aster-acp
-cargo test -p aster-acp --test shipped_tui_e2e shipped_native_form_submit_cancel_and_reject -- --ignored --exact --nocapture
-```
-
-运行前从根目录构建匹配的 `aster` 和 `aster-acp`。不要混用历史安装包。
+终端 A3S/`aster-test` TUI 表单 ACL（原 `ask-form.acl`）已退役；不再通过外部 TUI
+驱动回归原生表单。桌面 JSON Render 仍走下方 GUI CUA / `json-render-desktop.acl`。
 
 ## 桌面后台 CUA
 

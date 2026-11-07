@@ -86,7 +86,7 @@ fn capability_watch_uses_revision_to_report_an_unchanged_snapshot() {
 fn box_route_is_removed() {
     let output = Command::new(binary())
         .args(["box", "compose", "up", "--detach", "--json"])
-        .env("ASTER_USE_BOX_EXECUTABLE", "/tmp/aster-box-must-not-launch")
+        .env("ASTER_USE_BOX_EXECUTABLE", "/tmp/kbox-must-not-launch")
         .output()
         .unwrap();
 

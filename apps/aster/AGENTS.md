@@ -26,7 +26,9 @@ repository-root `AGENTS.md` also applies.
 - Build from the repository root with the pinned Rust toolchain. Build and
   distribute `aster` and `crates/code/acp`'s `aster-acp` companion together.
 - Keep configuration in ACL parsed by `aster-acl`. Preserve host/workspace trust
-  boundaries, sandbox enforcement, bounded reads, and fail-closed behavior.
+  boundaries, bounded reads, and fail-closed behavior. Process command isolation
+  uses the locked ksandbox git dependency; do not reintroduce in-tree kbox or
+  sandbox companions.
 - Do not add Node, Python, or Go bindings, SDKs, or package publishing jobs to
   the embeddable Rust harness.
 - Run `cargo fmt --all -- --check` and focused tests. Test real behavior with

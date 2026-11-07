@@ -4788,7 +4788,7 @@ pub async fn start_mcp_server(
                 cmd.kill_on_drop(true).args(&spawn_args);
                 apply_stdio_env(&mut cmd, &env, ctx.session_id);
                 aster_tools::util::detach_command(&mut cmd);
-                aster_sandbox::child_net::restrict_child_network(&mut cmd);
+                aster_confine::child_net::restrict_child_network(&mut cmd);
                 cmd
             };
 

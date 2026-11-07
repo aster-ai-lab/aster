@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 ///        from metadata.json (prompt content is no longer uploaded in metadata).
 /// v1.24: Prompt metadata updates.
 pub const GCS_SCHEMA_VERSION: &str = "v1.24";
-/// OS-level sandbox state for a trace turn (local `aster-sandbox`, not cloud sandbox).
+/// OS-level sandbox state for a trace turn (local `aster-confine`, not cloud sandbox).
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct LocalSandboxTelemetry {
     /// Resolved profile at process startup (e.g. "off", "workspace", "strict").

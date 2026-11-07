@@ -175,20 +175,31 @@ async fn assert_native_start_is_unsupported(
 
 #[cfg(target_os = "macos")]
 #[tokio::test]
-async fn native_macos_refuses_background_before_task_fact_or_process_admission() {
+async fn native_macos_background_runs_under_ksandbox() {
     let owned = TestRun::native();
     let tool = BackgroundTool::default();
+    assert!(owned
+        .ctx
+        .sandbox
+        .as_ref()
+        .unwrap()
+        .supports_background_execution());
     let output = start(
         &tool,
         &owned.ctx,
-        "uncontained",
-        "printf '%s' $$ > native-launch.pid; printf leaked > sentinel; sleep 30",
+        "ksandbox-bg",
+        "printf '%s' ok > sentinel",
     )
     .await;
-    assert_native_start_is_unsupported(&owned, &tool, &output).await;
-    assert!(!owned.workspace.path().join("native-launch.pid").exists());
-    assert!(!owned.workspace.path().join("sentinel").exists());
-    assert!(tool.runs.0.lock().unwrap().is_empty());
+    assert!(output.success, "{}", output.content);
+    let task = task(&tool, &owned.ctx, "ksandbox-bg");
+    wait_settled(&task).await;
+    assert!(task.failure().is_none(), "{:?}", task.failure());
+    assert_eq!(
+        std::fs::read_to_string(owned.workspace.path().join("sentinel")).unwrap(),
+        "ok"
+    );
+    owned.close().await;
 }
 
 #[tokio::test]
@@ -801,12 +812,6 @@ async fn native_background_denies_outside_and_control_metadata_writes() {
         shell_words::quote(external.to_str().unwrap())
     );
     let output = start(&tool, &owned.ctx, "denied", &command).await;
-    if cfg!(target_os = "macos") {
-        assert_native_start_is_unsupported(&owned, &tool, &output).await;
-        assert!(!external.exists());
-        assert!(!owned.workspace.path().join(".aster/host-leak").exists());
-        return;
-    }
     assert!(output.success, "{}", output.content);
     let task = task(&tool, &owned.ctx, "denied");
     wait_settled(&task).await;
@@ -842,15 +847,6 @@ async fn native_background_denies_ungranted_network_egress() {
         "printf 'sandbox-ready\n'; /usr/bin/curl --noproxy '*' --connect-timeout 1 --max-time 2 http://127.0.0.1:{port}/"
     );
     let output = start(&tool, &owned.ctx, "network-denied", &command).await;
-    if cfg!(target_os = "macos") {
-        assert_native_start_is_unsupported(&owned, &tool, &output).await;
-        assert!(
-            tokio::time::timeout(Duration::from_millis(100), listener.accept())
-                .await
-                .is_err()
-        );
-        return;
-    }
     assert!(output.success, "{}", output.content);
     let task = task(&tool, &owned.ctx, "network-denied");
     wait_settled(&task).await;

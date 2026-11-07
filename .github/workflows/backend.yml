@@ -114,8 +114,8 @@ jobs:
             test_args: -p aster-sms
           - package: aster-form-core
             test_args: -p aster-form-core
-          - package: aster-box-runtime
-            test_args: -p aster-box-runtime
+          - package: kbox-runtime
+            test_args: -p kbox-runtime
           - package: aster-use-core
             test_args: -p aster-use-core
     steps:

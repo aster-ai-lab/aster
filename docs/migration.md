@@ -227,11 +227,10 @@ Retained package names and Rust module paths keep the embeddable SDK stable.
 - **Configuration and state:** existing `.aster` / `.aster` paths and
   `ASTER_*` environment variables remain compatible. The migration copies
   no personal credentials, session stores, browser profiles, or build outputs.
-- **macOS native execution:** the source Core deliberately refuses native
-  shell execution with `native_process_lifetime_unqualified` until descendant
-  lifetime and settlement are qualified. This guard remains intact. The two
-  shell-dependent PTY success tests are skipped only on macOS; native refusal
-  tests cover the guard. Launching, model chat, and file tools remain available.
+- **macOS native execution:** Core's default Bash path uses ksandbox
+  (Seatbelt). Out-of-workspace writes stay blocked; process-host and yolo are
+  explicit opt-ins. MicroVM isolation (kbox) is orthogonal. Launching, model
+  chat, and file tools remain available.
 - **SDK-independent fixtures:** evaluation/research wire fixtures move
   from `sdk/` into `crates/code/fixtures/protocol`; Rust protocol tests
   point at the new paths. No foreign-language bindings are retained.

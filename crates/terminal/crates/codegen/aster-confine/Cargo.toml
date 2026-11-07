@@ -1,0 +1,18 @@
+[package]
+license = "Apache-2.0"
+name = "aster-confine"
+version = "0.1.0"
+description = "Compatibility stub (aster-confine): Aster no longer ships OS-level confinement; use external kbox"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = {workspace = true}
+serde = {workspace = true}
+tokio = {workspace = true}
+tracing = {workspace = true}
+
+[features]
+default = []
+## Retained for Cargo feature compatibility; enforcement is a no-op.
+enforce = []

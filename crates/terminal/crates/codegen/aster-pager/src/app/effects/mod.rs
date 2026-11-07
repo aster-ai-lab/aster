@@ -5481,7 +5481,7 @@ fn session_info_fields(
     if let Some(b) = info.data.api_backend.as_deref() {
         push("API Backend", b.to_string(), true);
     }
-    if let Some(profile) = aster_sandbox::profile_name() {
+    if let Some(profile) = aster_confine::profile_name() {
         push("Sandbox", profile.to_string(), true);
     }
     push("Turn", info.data.turn_index.to_string(), true);

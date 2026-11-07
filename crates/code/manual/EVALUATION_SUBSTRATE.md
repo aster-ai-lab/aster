@@ -108,17 +108,14 @@ does not prescribe a reviewer prompt, rubric, or decision token.
 
 ## Native command lifetime on macOS
 
-Core depends on the local [`aster-cmd-sandbox` crate](../../sandbox/Cargo.toml).
-The direct `NativeBashSandbox` adapter refuses macOS command execution with
-`native_process_lifetime_unqualified` because it cannot contain descendants.
+Core's default [`NativeBashSandbox`](../core/src/sandbox/native.rs) wraps
+ksandbox (Seatbelt on macOS). Descendants are owned by process-group
+kill-on-drop. MicroVM isolation (kbox) is not on this path.
 
-For macOS ARM64 sessions with the deny-network posture,
 [`select_default_local_sandbox`](../core/src/agent_api/session_sandbox.rs)
-first discovers the installed OCI Host companions and selects
-[`OciBashSandbox`](../core/src/sandbox/oci.rs). Missing companions leave native
-execution refused. This VM backend does not serve a mediated-network request.
-Explicit host execution and host-supplied SDK sandboxes have separate authority
-and do not establish isolated execution.
+installs that adapter when construction succeeds. If ksandbox cannot start,
+the session stays fail-closed unless the host opts into process-host.
+Explicit host execution and host-supplied SDK sandboxes have separate authority.
 
 An Auxiliary capability profile, logical timeout, or dropped future does not
 prove that descendants have stopped. Hosts must verify teardown and absence of

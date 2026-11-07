@@ -295,7 +295,7 @@ impl ShellState {
             .stderr(aster_tty_utils::null_stdio())
             .kill_on_drop(true);
         crate::util::detach_command(&mut cmd);
-        aster_sandbox::child_net::restrict_child_network(&mut cmd);
+        aster_confine::child_net::restrict_child_network(&mut cmd);
         // Apply the policy before the `export -p` snapshot so the replayed state is already filtered; otherwise the restore would undo it. No-op
         // unless set. SECURITY: this filters the base env only. Variables an rc file exports during login are captured in the replay snapshot and are
         // not re-filtered by `exclude`/`include_only` on the persistent backend, so warn when a policy is active.

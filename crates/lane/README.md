@@ -310,7 +310,7 @@ single-flight: cancellation settles the active worker before the next queued
 turn is admitted.
 
 ```
-aster-gateway → aster-box (MicroVM) → SafeClaw → aster → aster-lane
+aster-gateway → kbox (MicroVM) → SafeClaw → aster → aster-lane
                                                           ↑ here
 ```
 

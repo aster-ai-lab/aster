@@ -124,7 +124,7 @@ url = {workspace = true}
 # libc: poll/read for non-blocking terminal reads in theme/osc11.rs.
 parking_lot = {workspace = true}
 aster-crash-handler = {path = "../aster-crash-handler"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-hooks-plugins-types = {path = "../aster-hooks-plugins-types"}
 aster-hooks = {path = "../aster-hooks"}
 aster-plugin-marketplace = {path = "../aster-plugin-marketplace"}
@@ -234,10 +234,10 @@ path = "tests/settings_e2e.rs"
 workspace = true
 
 [features]
-default = ["jemalloc", "sandbox-enforce"]
+default = ["jemalloc", "confine-noop"]
 default-bazel = [
     "jemalloc",
-    "sandbox-enforce",
+    "confine-noop",
     "test-support",
     "local-workspace",
     ]
@@ -245,10 +245,10 @@ local-workspace = ["aster-shell/local-workspace"]
 # No-op on this crate: the actual `#[global_allocator]` (and the
 # `tikv-jemallocator` dep) live on the composition-root binary
 # `aster-pager-bin`, which owns `main.rs`. Kept as an empty feature so the
-# workspace-uniform `[jemalloc, sandbox-enforce]` default set resolves
+# workspace-uniform `[jemalloc, confine-noop]` default set resolves
 # here too and the generated `crate_features` stay valid.
 jemalloc = []
-sandbox-enforce = ["aster-sandbox/enforce"]
+confine-noop = ["aster-confine/enforce"]
 release-dist = []
 # Exposes test-only view-model constructors/setters (e.g. `test_agent_view`,
 # `AgentSession::set_yolo_mode_for_test`) to sibling crates' test builds — used

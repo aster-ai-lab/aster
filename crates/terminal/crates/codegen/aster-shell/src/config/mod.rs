@@ -1476,24 +1476,24 @@ pub fn apply_sandbox(
         .as_ref()
         .and_then(|v| v.get("sandbox")?.get("auto_allow_bash")?.as_bool());
     let resolved = config.resolve_profile(cli_profile, profile_req);
-    aster_sandbox::set_auto_allow_bash(config.resolve_auto_allow_bash(auto_allow_req).value);
-    let sandbox_profile: aster_sandbox::ProfileName = resolved.value.parse().unwrap_or_else(|e| {
+    aster_confine::set_auto_allow_bash(config.resolve_auto_allow_bash(auto_allow_req).value);
+    let sandbox_profile: aster_confine::ProfileName = resolved.value.parse().unwrap_or_else(|e| {
         eprintln!("warning: {e}, defaulting to no sandbox");
-        aster_sandbox::ProfileName::Off
+        aster_confine::ProfileName::Off
     });
-    aster_sandbox::set_configured_profile(&resolved.value);
+    aster_confine::set_configured_profile(&resolved.value);
     let workspace = cwd
         .and_then(|p| dunce::canonicalize(p).ok())
         .or_else(|| std::env::current_dir().ok())
         .unwrap_or_else(|| std::path::PathBuf::from("."));
     #[cfg(target_os = "linux")]
-    let requires_read_deny = aster_sandbox::requires_read_deny(&sandbox_profile, &workspace);
+    let requires_read_deny = aster_confine::requires_read_deny(&sandbox_profile, &workspace);
     #[cfg(target_os = "linux")]
     let requires_hook_write_deny =
-        aster_sandbox::requires_hook_write_deny(&sandbox_profile, &workspace);
+        aster_confine::requires_hook_write_deny(&sandbox_profile, &workspace);
     #[cfg(target_os = "linux")]
     let requires_data_write_deny =
-        aster_sandbox::requires_data_write_deny(&sandbox_profile, &workspace);
+        aster_confine::requires_data_write_deny(&sandbox_profile, &workspace);
     #[cfg(target_os = "linux")]
     let requires_bwrap = requires_read_deny || requires_hook_write_deny || requires_data_write_deny;
     #[cfg(target_os = "linux")]
@@ -1504,8 +1504,8 @@ pub fn apply_sandbox(
                  {cause} Refusing to start with denied paths unprotected."
             );
         };
-        let command = aster_sandbox::bwrap_reexec_for_profile(&sandbox_profile, &workspace);
-        match route_bwrap_startup(command, aster_sandbox::is_inside_bwrap(), requires_bwrap) {
+        let command = aster_confine::bwrap_reexec_for_profile(&sandbox_profile, &workspace);
+        match route_bwrap_startup(command, aster_confine::is_inside_bwrap(), requires_bwrap) {
             BwrapStartup::ReexecRequired(mut cmd) => {
                 use std::os::unix::process::CommandExt;
                 let err = cmd.exec();
@@ -1526,7 +1526,7 @@ pub fn apply_sandbox(
             }
             BwrapStartup::Verify => {
                 if requires_hook_write_deny
-                    && let Err(e) = aster_sandbox::verify_hook_write_deny_enforced()
+                    && let Err(e) = aster_confine::verify_hook_write_deny_enforced()
                 {
                     eprintln!(
                         "error: sandbox reports bwrap but required hook write-deny \
@@ -1537,7 +1537,7 @@ pub fn apply_sandbox(
                 }
                 if requires_read_deny
                     && let Err(e) =
-                        aster_sandbox::verify_read_deny_enforced(&sandbox_profile, &workspace)
+                        aster_confine::verify_read_deny_enforced(&sandbox_profile, &workspace)
                 {
                     eprintln!(
                         "error: sandbox reports bwrap but required read-deny mounts \
@@ -1548,7 +1548,7 @@ pub fn apply_sandbox(
                 }
                 if requires_data_write_deny
                     && let Err(e) =
-                        aster_sandbox::verify_data_write_deny_enforced(&sandbox_profile, &workspace)
+                        aster_confine::verify_data_write_deny_enforced(&sandbox_profile, &workspace)
                 {
                     eprintln!(
                         "error: sandbox reports bwrap but the required /data write-deny \
@@ -1568,14 +1568,14 @@ pub fn apply_sandbox(
             BwrapStartup::Continue => {}
         }
     }
-    if sandbox_profile != aster_sandbox::ProfileName::Off {
+    if sandbox_profile != aster_confine::ProfileName::Off {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let requires_protection = {
-            let is_custom = matches!(sandbox_profile, aster_sandbox::ProfileName::Custom(_));
-            let needs_hooks = aster_sandbox::requires_hook_write_deny(&sandbox_profile, &workspace);
+            let is_custom = matches!(sandbox_profile, aster_confine::ProfileName::Custom(_));
+            let needs_hooks = aster_confine::requires_hook_write_deny(&sandbox_profile, &workspace);
             is_custom || needs_hooks
         };
-        let mut sandbox = aster_sandbox::SandboxManager::new(sandbox_profile, &workspace);
+        let mut sandbox = aster_confine::SandboxManager::new(sandbox_profile, &workspace);
         if let Err(e) = sandbox.apply(&workspace) {
             eprintln!("warning: sandbox could not be applied: {e}");
         }
@@ -1593,8 +1593,8 @@ pub fn apply_sandbox(
             }
             #[cfg(target_os = "linux")]
             if requires_hook_write_deny
-                && aster_sandbox::is_inside_bwrap()
-                && let Err(e) = aster_sandbox::verify_hook_write_deny_enforced()
+                && aster_confine::is_inside_bwrap()
+                && let Err(e) = aster_confine::verify_hook_write_deny_enforced()
             {
                 eprintln!(
                     "error: required hook write-deny mounts not verified after apply ({e}); \

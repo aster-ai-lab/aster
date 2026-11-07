@@ -209,10 +209,10 @@ pub(crate) use prod_mc_cli_chat_proxy_types::{
     GCS_SCHEMA_VERSION, LocalSandboxTelemetry, PromptMetadata, PromptMetadataParams,
 };
 pub(crate) fn local_sandbox_telemetry() -> Option<LocalSandboxTelemetry> {
-    let profile = aster_sandbox::configured_profile_name()?;
+    let profile = aster_confine::configured_profile_name()?;
     Some(LocalSandboxTelemetry {
         profile: profile.to_owned(),
-        applied: aster_sandbox::is_active(),
+        applied: aster_confine::is_active(),
     })
 }
 /// In CI environments, git config may inject access tokens via URL rewriting (e.g., `url."https://x-access-token:TOKEN@github.com/".insteadOf`).

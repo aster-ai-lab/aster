@@ -789,7 +789,7 @@ pub async fn run(
         .mode,
     );
     let prefetch_elapsed = startup_start.elapsed();
-    let requested_confinement = aster_sandbox::requested_confinement_profile();
+    let requested_confinement = aster_confine::requested_confinement_profile();
     let LeaderMode {
         use_leader,
         policy_disable_reason,

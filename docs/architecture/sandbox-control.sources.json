@@ -341,7 +341,7 @@
       "matches_head": true
     },
     {
-      "path": "crates/terminal/crates/codegen/aster-sandbox/src/lib.rs",
+      "path": "crates/terminal/crates/codegen/aster-confine/src/lib.rs",
       "bytes": 45437,
       "sha256": "7d11e828b5ca261688a3a611fd57c738feb412c0baec0a6c4ac6418d0bf41f78",
       "repository": "aster",

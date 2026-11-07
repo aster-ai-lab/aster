@@ -1,4 +1,4 @@
-//! One step in one fresh `aster-box` MicroVM.
+//! One step in one fresh `kbox` MicroVM.
 //!
 //! The job's secrets and the step command travel in a 0600 `step.sh`
 //! mounted at `/run/aster`, never in argv: the box command is constant.
@@ -16,7 +16,7 @@ use tokio::time::Instant;
 
 use crate::state::private_file;
 
-pub const BOX_CLI_ENV: &str = "ASTER_BOX_CLI";
+pub const BOX_CLI_ENV: &str = "KBOX_CLI";
 pub const GUEST_WORKSPACE: &str = "/workspace";
 pub const GUEST_ENV_DIR: &str = "/run/aster";
 pub const STEP_SCRIPT: &str = "step.sh";
@@ -182,9 +182,9 @@ pub fn write_step_script(env_dir: &Path, script: &str) -> Result<(), String> {
     file.sync_all().map_err(failed)
 }
 
-/// Explicit path, then `ASTER_BOX_CLI`, then `aster-box` on `PATH`. A set
-/// `ASTER_BOX_CLI` that is not a file does not fall through. The path is
-/// canonicalized: aster-box finds its guest init next to the real binary.
+/// Explicit path, then `KBOX_CLI`, then `kbox` on `PATH`. A set
+/// `KBOX_CLI` that is not a file does not fall through. The path is
+/// canonicalized: kbox finds its guest init next to the real binary.
 pub fn resolve_box_cli(explicit: Option<&Path>) -> Result<PathBuf, String> {
     let chosen = if let Some(path) = explicit {
         path.to_path_buf()
@@ -194,13 +194,13 @@ pub fn resolve_box_cli(explicit: Option<&Path>) -> Result<PathBuf, String> {
         std::env::var_os("PATH")
             .and_then(|paths| {
                 std::env::split_paths(&paths)
-                    .map(|dir| dir.join("aster-box"))
+                    .map(|dir| dir.join("kbox"))
                     .find(|candidate| candidate.is_file())
             })
-            .ok_or_else(|| "aster-box is not on PATH (set box_cli or ASTER_BOX_CLI)".to_string())?
+            .ok_or_else(|| "kbox is not on PATH (set box_cli or KBOX_CLI)".to_string())?
     };
     if !chosen.is_file() {
-        return Err(format!("{} is not an aster-box executable", chosen.display()));
+        return Err(format!("{} is not an kbox executable", chosen.display()));
     }
     std::fs::canonicalize(&chosen).map_err(|error| format!("{}: {error}", chosen.display()))
 }
@@ -226,7 +226,7 @@ impl BoxExecutor {
         self
     }
 
-    /// Ctrl-C first: `aster-box run` then stops and removes its own box.
+    /// Ctrl-C first: `kbox run` then stops and removes its own box.
     /// A box still running after the grace period is killed and removed.
     async fn stop(&self, child: &mut Child, name: &str) {
         if let Some(pid) = child.id() {
@@ -290,15 +290,15 @@ impl Executor for BoxExecutor {
         command.process_group(0);
         let mut child = command
             .spawn()
-            .map_err(|error| format!("aster-box did not start: {error}"))?;
+            .map_err(|error| format!("kbox did not start: {error}"))?;
         let stdout = child
             .stdout
             .take()
-            .ok_or_else(|| "aster-box has no stdout".to_string())?;
+            .ok_or_else(|| "kbox has no stdout".to_string())?;
         let stderr = child
             .stderr
             .take()
-            .ok_or_else(|| "aster-box has no stderr".to_string())?;
+            .ok_or_else(|| "kbox has no stderr".to_string())?;
         let readers = [
             tokio::spawn(forward(stdout, output.clone())),
             tokio::spawn(forward(stderr, output)),
@@ -306,7 +306,7 @@ impl Executor for BoxExecutor {
         let exit = tokio::select! {
             status = child.wait() => match status {
                 Ok(status) => StepExit::Exited(status.code().unwrap_or(-1)),
-                Err(error) => return Err(format!("aster-box: {error}")),
+                Err(error) => return Err(format!("kbox: {error}")),
             },
             _ = tokio::time::sleep_until(step.deadline) => StepExit::TimedOut,
             _ = cancel.wait() => StepExit::Cancelled,

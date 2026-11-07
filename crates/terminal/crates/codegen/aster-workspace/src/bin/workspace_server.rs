@@ -348,7 +348,7 @@ async fn run(
     };
     let url = Url::parse(&args.hub_url).map_err(|e| anyhow::anyhow!("invalid --hub-url: {e}"))?;
     {
-        use aster_sandbox::{ProfileName, SandboxManager};
+        use aster_confine::{ProfileName, SandboxManager};
         let profile = match std::env::var("GROK_SANDBOX_PROFILE").ok() {
             Some(val) => {
                 let parsed = val
@@ -362,7 +362,7 @@ async fn run(
                     parsed
                 }
             }
-            None if aster_sandbox::trust_bwrap_marker_for_devbox() => ProfileName::Devbox,
+            None if aster_confine::trust_bwrap_marker_for_devbox() => ProfileName::Devbox,
             None => ProfileName::Workspace,
         };
         let profile_name = profile.to_string();
@@ -376,7 +376,7 @@ async fn run(
                 tracing::warn!("Sandbox could not be applied (unsupported platform)");
             }
             sandbox.install();
-            let active = aster_sandbox::is_active();
+            let active = aster_confine::is_active();
             let status_msg = if active {
                 "Workspace server sandbox active"
             } else {
@@ -385,7 +385,7 @@ async fn run(
             tracing::info!(
                 profile = %profile_name,
                 active,
-                restrict_network_at_known_linux_launches = aster_sandbox::should_restrict_child_network(),
+                restrict_network_at_known_linux_launches = aster_confine::should_restrict_child_network(),
                 "{status_msg}"
             );
         }
@@ -576,7 +576,7 @@ async fn run(
         pump.drain().await;
     }
     ws_handle.shutdown_hub().await;
-    aster_sandbox::flush();
+    aster_confine::flush();
     Ok(())
 }
 #[cfg(test)]

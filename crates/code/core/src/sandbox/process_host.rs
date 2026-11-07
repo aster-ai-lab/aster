@@ -1,13 +1,12 @@
 //! Process-host Bash sandbox for environments that already provide an outer
 //! isolation boundary (Harbor task containers, CI job VMs).
 //!
-//! Unlike [`super::native::NativeBashSandbox`], this backend does not require
-//! bubblewrap / Seatbelt. It still owns process-group termination and bounded
-//! output capture so tool contracts stay intact. It is never the silent
-//! default: hosts must opt in via
+//! Unlike [`super::native::NativeBashSandbox`] (ksandbox), this backend does
+//! not require Seatbelt / namespaces / AppContainer. It still owns
+//! process-group termination and bounded output capture so tool contracts stay
+//! intact. It is never the silent default: hosts must opt in via
 //! [`crate::SessionOptions::with_allow_process_host_sandbox`] or
-//! `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1` when the native backend cannot
-//! initialize.
+//! `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1` when ksandbox cannot initialize.
 
 use super::{BashSandbox, SandboxCommandRequest, SandboxExecutionOutput, SandboxOutput};
 use crate::tools::MAX_OUTPUT_SIZE;

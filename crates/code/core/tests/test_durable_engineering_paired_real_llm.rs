@@ -7,7 +7,8 @@
 //! rule, policy plus navigation) runs on the development tasks and is reported
 //! separately. Every attempt is printed as one `PAIRED` line; only product
 //! invariants are asserted. A measurement suite: no arm is declared better
-//! while HC-ACCEPT1 is open and the host refuses native execution.
+//! while HC-ACCEPT1 is open; native Bash now uses ksandbox and needs a fresh
+//! paired baseline.
 //!
 //! ```text
 //! cargo +1.97.1 test -p aster-core --test test_durable_engineering_paired_real_llm \

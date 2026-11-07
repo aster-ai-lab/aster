@@ -766,7 +766,7 @@ impl LocalTerminalActor {
             cmd.pre_exec(aster_tty_utils::detach_pre_exec_hook());
         }
 
-        aster_sandbox::child_net::restrict_child_network(&mut cmd);
+        aster_confine::child_net::restrict_child_network(&mut cmd);
 
         #[allow(clippy::disallowed_methods)] // attached to a process group below
         let child = cmd.spawn().map_err(|e| {
@@ -882,7 +882,7 @@ impl LocalTerminalActor {
             cmd.pre_exec(aster_tty_utils::detach_pre_exec_hook());
         }
 
-        aster_sandbox::child_net::restrict_child_network(&mut cmd);
+        aster_confine::child_net::restrict_child_network(&mut cmd);
 
         #[allow(clippy::disallowed_methods)] // attached to a process group below
         let child = cmd.spawn().map_err(|e| {
@@ -3146,7 +3146,7 @@ async fn capture_login_env() -> HashMap<String, String> {
             .stderr(aster_tty_utils::null_stdio())
             .kill_on_drop(true);
         crate::util::detach_command(&mut cmd);
-        aster_sandbox::child_net::restrict_child_network(&mut cmd);
+        aster_confine::child_net::restrict_child_network(&mut cmd);
         cmd.envs(crate::util::pager_env());
         #[allow(clippy::disallowed_methods)] // probe killed on drop
         let mut child = cmd.spawn().ok()?;
@@ -3307,7 +3307,7 @@ fn spawn_shell_command(
         // /dev/tty and compete with the TUI for terminal input.
         crate::util::detach_command(&mut cmd);
 
-        aster_sandbox::child_net::restrict_child_network(&mut cmd);
+        aster_confine::child_net::restrict_child_network(&mut cmd);
         cmd
     };
 

@@ -1,16 +1,13 @@
 //! Sandbox integration for bash tool execution.
 //!
 //! Local Aster Code sessions install a [`BashSandbox`] automatically, and the
-//! `bash` built-in tool routes commands through it instead of
-//! `std::process::Command`. The Aster native backend keeps the canonical host
-//! workspace path while enforcing the platform isolation boundary around the
-//! child process.
+//! `bash` built-in tool routes commands through it. The default native adapter
+//! wraps **ksandbox** (process isolation: Seatbelt / namespaces / AppContainer).
+//! That is distinct from **kbox** MicroVM isolation. Hosts may still inject
+//! another [`BashSandbox`], opt into process-host when ksandbox cannot start,
+//! or use yolo / escalated host execution.
 //!
-//! [`native::NativeBashSandbox`] is the Aster-owned fail-closed implementation
-//! used by default throughout Aster Code. Hosts can still supply another
-//! implementation through the trait contract when they own an equivalent
-//! isolation boundary. Non-local workspace backends retain their explicit
-//! command-runner contract.
+//! Non-local workspace backends retain their explicit command-runner contract.
 
 use async_trait::async_trait;
 use std::collections::HashMap;
@@ -18,17 +15,15 @@ use std::sync::Arc;
 
 use crate::workspace::CommandOutputObserver;
 
-pub mod guest;
 pub(crate) mod host_access;
 pub mod native;
-#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
-pub mod oci;
 pub mod process_host;
+pub(crate) mod workspace_boundary;
 
-pub use aster_cmd_sandbox::{
+pub use process_host::ProcessHostBashSandbox;
+pub use workspace_boundary::{
     is_protected_workspace_path, PROTECTED_WORKSPACE_DIRECTORIES, PROTECTED_WORKSPACE_FILES,
 };
-pub use process_host::ProcessHostBashSandbox;
 
 pub(crate) use native::parse_network_allow_rules;
 
@@ -68,6 +63,26 @@ impl SandboxNetworkMode {
             Self::Deny => "deny",
             Self::Mediated => "mediated",
         }
+    }
+}
+
+/// One approved network subject: `host` plus an optional port pin.
+///
+/// Exact-string semantics only — grants must not alias `localhost` with
+/// `127.0.0.1` or hostnames with literal IPs.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NetworkGrant {
+    pub host: String,
+    pub port: Option<u16>,
+}
+
+impl NetworkGrant {
+    pub fn new(host: impl Into<String>, port: Option<u16>) -> anyhow::Result<Self> {
+        let host = host.into();
+        if host.is_empty() || host.contains(['/', '\\', ' ', '*', '?']) {
+            anyhow::bail!("invalid network grant host: {host:?}");
+        }
+        Ok(Self { host, port })
     }
 }
 
@@ -273,7 +288,7 @@ pub trait BashSandbox: Send + Sync {
     /// explicitly.
     fn apply_network_grant(
         &self,
-        _grant: aster_cmd_sandbox::NetworkGrant,
+        _grant: NetworkGrant,
         _expected_base_digest: &str,
     ) -> anyhow::Result<String> {
         anyhow::bail!("this sandbox backend does not support policy grants")

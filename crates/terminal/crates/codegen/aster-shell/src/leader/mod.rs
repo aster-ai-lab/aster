@@ -1379,7 +1379,7 @@ pub async fn connect_or_spawn(
     env_urls: &LeaderEnvUrls,
     capabilities: ClientCapabilities,
 ) -> Result<LeaderConnection, ConnectionError> {
-    if let Some(profile) = aster_sandbox::requested_confinement_profile() {
+    if let Some(profile) = aster_confine::requested_confinement_profile() {
         return Err(ConnectionError::SandboxConfinement(profile));
     }
     let start = std::time::Instant::now();

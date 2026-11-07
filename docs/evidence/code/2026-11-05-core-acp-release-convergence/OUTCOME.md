@@ -45,7 +45,7 @@ compilation/linking. The paired build subsequently completed in
 and ACP both report
 `aster-cli-pair-v1:d88830a94fddaa8f5c043ce525ea51a70cc659a9:aarch64-apple-darwin`.
 The pinned sandbox download cache was reused after one upstream URL returned
-404; all staged sandbox files then passed `aster_sandbox.py verify`.
+404; all staged sandbox files then passed `aster_confine.py verify`.
 
 - Immediate incident grep through the real CLI→ACP path: exit 0 in
   **63.973 seconds**.

@@ -1,0 +1,172 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /Users/roylin/code/aster/crates/power/Cargo.toml
+workspace: /Users/roylin/code/aster/Cargo.toml
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 9 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running tests/shipped_tui_e2e.rs (target/debug/deps/shipped_tui_e2e-9b250fa8ad716685)
+
+running 21 tests
+test palette_rows_keep_the_declared_handler_description ... ok
+test pre_analysis_fixture_keeps_goal_stages_and_ordinary_steps_distinct ... ok
+test retrieval::shipped_retrieval_aster_test_terminal_round_trip ... ignored, requires aster-test and paired built Aster/ACP executables
+test retrieval::shipped_retrieval_stdio_executes_embedded_semantic_search ... ok
+test retrieval::shipped_retrieval_stdio_missing_local_assets_keeps_hybrid ... ok
+test retrieval::shipped_retrieval_stdio_without_semantic_model ... ok
+test shipped_agent_refuses_repeated_reads_without_new_progress ... ok
+test shipped_agent_sends_aster_identity_to_the_model ... ok
+test shipped_agent_session_wire ... ok
+test shipped_bound_goal_real_llm ... ignored, requires ASTER_CONFIG_FILE with boyue/deepseek-v4-flash and a built aster
+test shipped_native_form_submit_cancel_and_reject ... ignored, requires aster-test and built Aster/ACP executables
+test shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent ... ok
+test shipped_tui_launch_resume_and_visible_commands ... ok
+test shipped_tui_permission_reject_and_cancel_skip_the_side_effect ... ok
+test shipped_tui_prefix_fork_inherits_history_and_resumes_the_child ... ok
+test shipped_tui_reports_configuration_failure_before_the_connect_budget ... ok
+test shipped_tui_xai_key_keeps_acl_model ... ok
+test submitted_form_values_survive_the_tool_exit_status_prefix ... ok
+test tui_readiness::tests::a_resumed_session_uses_its_follow_up_composer_and_product_key_hints ... ok
+test tui_readiness::tests::welcome_readiness_refuses_partial_and_error_frames ... ok
+test tui_readiness::tests::welcome_readiness_uses_the_input_placeholder_instead_of_its_decoration ... ok
+
+test result: ok. 18 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 154.77s
+

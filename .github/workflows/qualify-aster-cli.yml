@@ -11,7 +11,6 @@ on:
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
-      - "scripts/aster_sandbox.py"
       - "scripts/package-aster-cli.sh"
       - "scripts/publish-aster-cli.sh"
       - ".github/workflows/qualify-aster-cli.yml"
@@ -30,7 +29,6 @@ on:
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
-      - "scripts/aster_sandbox.py"
       - "scripts/package-aster-cli.sh"
       - "scripts/publish-aster-cli.sh"
       - ".github/workflows/qualify-aster-cli.yml"
@@ -82,8 +80,6 @@ jobs:
           python3 tests/workspace_dependencies.py
           python3 tests/studio_checkout.py
           python3 tests/cli_pair_delivery.py
-          python3 tests/cli_sandbox.py
-          python3 tests/cli_sandbox_smoke_test.py
           python3 tests/cli_pair_identity.py
           python3 tests/aster_cli_linux.py
           python3 tests/cli_release_workflow.py

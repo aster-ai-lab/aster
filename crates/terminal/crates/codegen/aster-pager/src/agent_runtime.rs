@@ -44,7 +44,7 @@ impl Backend {
                     &args.mode,
                     None | Some(AgentCmd::Stdio) | Some(AgentCmd::Headless(_))
                 ),
-                aster_sandbox::requested_confinement_profile(),
+                aster_confine::requested_confinement_profile(),
             ),
         };
         AgentRuntime {

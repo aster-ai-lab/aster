@@ -51,15 +51,15 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 ### Aster CLI
 
-1. 用 `release-aster-cli.yml` 构建三个平台归档。macOS ARM64 GitHub 托管 runner [不支持嵌套虚拟化](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)，不能承担最终沙箱执行验收。指定已具备该能力的 `qualified_runner`；未指定时，流程只构建归档。
-   也可以在具备该能力的 Mac 上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
-   两条入口共用此发布脚本：先核对归档来源提交的分支资格，再安装并验证同一归档的自动模式 Linux 执行和 YOLO 本机 Darwin 执行，最后生成草稿。任一失败均禁止创建或上传 Release。
+1. 用 `release-aster-cli.yml` 构建三个平台归档。Aster CLI 只包含 `aster` 与 `aster-acp`；进程命令隔离由锁定的 ksandbox 依赖提供，不再打包 sandbox companions 或 kbox MicroVM。
+   在发布机上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
+   发布脚本先核对归档来源提交的分支资格与归档成员，再生成草稿。任一失败均禁止创建或上传 Release。
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。
 3. 运行 `release-aster-cli-channel.yml`，输入相同的 `X.Y.Z`。该流程拒绝草稿或预发布版本，验证清单后更新 `aster-cli-stable` 和 Aster Latest 上的旧客户端兼容清单。
 
 ### Aster 桌面版
 
-桌面运行组件统一使用 `.aix` 插件，发布到 `aster-ai-lab/plugins` 仓库关联的 GitHub Packages（GHCR），由受信 TUF 目录绑定 OCI manifest、AIX blob 和原生包摘要。沙箱、文档引擎（包含 ONNX Runtime）、Office 分别使用 `aster/aster-sandbox`、`aster/aster-document`、`aster/aster-office`。平台是发布变体，不进入包 ID。底座构建只消费已发布的组件锁（`ASTER_RUNTIME_COMPONENTS_LOCK`），不重建运行时插件。底座内的 `runtime-components.json` 固定兼容版本、平台、包与归档摘要；已安装且版本、摘要一致的组件不再安装。Office 首次使用时安装。
+桌面运行组件统一使用 `.aix` 插件，发布到 `aster-ai-lab/plugins` 仓库关联的 GitHub Packages（GHCR），由受信 TUF 目录绑定 OCI manifest、AIX blob 和原生包摘要。沙箱、文档引擎（包含 ONNX Runtime）、Office 分别使用 `aster/kbox`、`aster/aster-document`、`aster/aster-office`。平台是发布变体，不进入包 ID。底座构建只消费已发布的组件锁（`ASTER_RUNTIME_COMPONENTS_LOCK`），不重建运行时插件。底座内的 `runtime-components.json` 固定兼容版本、平台、包与归档摘要；已安装且版本、摘要一致的组件不再安装。Office 首次使用时安装。
 
 `pnpm package:host` 构建现有 `aster-use` CLI，并通过 `registry package build/check/prepare` 生成 AIX、OCI manifest 和发布证据；这些构建产物不上传到桌面 Release。只有 `plugins` 的包发布流程与受信目录负责组件分发，桌面首次启动复用同一扩展 Registry 的安装记录和不可变版本目录。
 

@@ -288,8 +288,8 @@ async fn run_box_ocr_test(test_name: &str) {
     .unwrap();
     let result = tokio::process::Command::new(binary)
         .args(["--exact", test_name, "--ignored", "--nocapture"])
-        .env("ASTER_BOX_TEST_GATEWAY_SOCKET", &path)
-        .env("ASTER_BOX_TEST_GATEWAY_KEY", key)
+        .env("KBOX_TEST_GATEWAY_SOCKET", &path)
+        .env("KBOX_TEST_GATEWAY_KEY", key)
         .kill_on_drop(true)
         .output()
         .await;

@@ -70,17 +70,17 @@ const CATALOG: &[CatalogTool] = &[
         pipx_extras: None,
     },
     CatalogTool {
-        name: "aster-box",
+        name: "kbox",
         spec: "github:aster-ai-lab/Box",
-        executable: "aster-box",
+        executable: "kbox",
         pipx_extras: None,
     },
     // Desktop runtime packs. Archives ship as aster-<name>-*-<host>.tar.gz on
     // aster-ai-lab/aster releases; unchanged versions skip reinstall via receipts.
     CatalogTool {
-        name: "aster-sandbox",
+        name: "kbox",
         spec: "github:aster-ai-lab/aster",
-        executable: "aster-sandbox",
+        executable: "kbox",
         pipx_extras: None,
     },
     CatalogTool {

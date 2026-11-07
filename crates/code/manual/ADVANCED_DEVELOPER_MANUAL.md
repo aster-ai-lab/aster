@@ -396,7 +396,7 @@ let output = session.bash("printf sandboxed").await?;
 ```
 
 `NativeBashSandbox` adapts the independent
-[`aster-sandbox`](https://github.com/aster-ai-lab/Sandbox) crate. It uses Seatbelt on
+[`kbox`](https://github.com/aster-ai-lab/Sandbox) crate. It uses Seatbelt on
 macOS, namespaces plus seccomp on Linux, and AppContainer plus a Job Object on
 Windows. A local session installs it automatically before registering tools and
 delegated workers. Initialization failure installs an error-only handle, so no

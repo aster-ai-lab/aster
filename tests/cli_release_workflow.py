@@ -1,9 +1,11 @@
 """Execute draft assembly with local artifacts and a fake GitHub CLI."""
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import subprocess
+import tarfile
 import tempfile
 import textwrap
 import unittest
@@ -12,13 +14,26 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
 NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
          [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]]
+EXPECTED_MACOS_MEMBERS = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}
+
+
+def write_macos_pair_archive(path, version_label):
+    """Minimal pair archive that satisfies publish-aster-cli member verification."""
+    with tarfile.open(path, "w:gz") as package:
+        for name in sorted(EXPECTED_MACOS_MEMBERS):
+            body = f"fixture {version_label} {name}".encode()
+            entry = tarfile.TarInfo(name)
+            entry.size = len(body)
+            entry.mode = 0o755
+            package.addfile(entry, io.BytesIO(body))
 
 
 class ReleaseAssembly(unittest.TestCase):
     def assemble(self, missing=False, extra=False, existing_draft=False, draft=True, draft_sha=SOURCE_SHA,
-                 qualification_exit=0, artifact_run_id="123", branch_qualification=1,
-                 yolo_qualification_exit=0, version="0.1.6", source_clean=True,
-                 checkout_sha=None, source_status_exit=0, core_version="9.2.3"):
+                 artifact_run_id="123", branch_qualification=1,
+                 version="0.1.6", source_clean=True,
+                 checkout_sha=None, source_status_exit=0, core_version="9.2.3",
+                 macos_members=None):
         lines = (ROOT / ".github/workflows/release-aster-cli.yml").read_text().splitlines()
         start = lines.index("      - name: Assemble draft aster-cli")
         start = lines.index("        run: |", start) + 1
@@ -42,13 +57,22 @@ class ReleaseAssembly(unittest.TestCase):
                 path.mkdir(parents=True)
                 (path / "Cargo.toml").write_text(f'[package]\nversion = "{package_version}"\n')
                 (path / "manifest.json").write_text(json.dumps({"version": package_version}))
-            tests = root / "tests"
-            tests.mkdir()
-            (tests / "cli_sandbox_smoke.py").write_text(
-                'import os, sys\nraise SystemExit(int(os.environ["TEST_YOLO_QUALIFICATION_EXIT"] if "yolo" in sys.argv else os.environ["TEST_QUALIFICATION_EXIT"]))\n')
             names = [name.replace("0.1.6", version) for name in NAMES]
             for name in names:
-                (dist / name).write_bytes(("opaque fixture " + name).encode())
+                path = dist / name
+                if name.endswith("-macos.tar.gz"):
+                    if macos_members is None:
+                        write_macos_pair_archive(path, name)
+                    else:
+                        with tarfile.open(path, "w:gz") as package:
+                            for member in sorted(macos_members):
+                                body = f"fixture {member}".encode()
+                                entry = tarfile.TarInfo(member)
+                                entry.size = len(body)
+                                entry.mode = 0o755
+                                package.addfile(entry, io.BytesIO(body))
+                else:
+                    path.write_bytes(("opaque fixture " + name).encode())
             if missing:
                 (dist / names[-1]).unlink()
             if extra:
@@ -108,9 +132,7 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                    "TEST_BRANCH_QUALIFICATION": str(branch_qualification),
                    "TEST_CHECKOUT_SHA": checkout_sha or (SOURCE_SHA if artifact_run_id else "b" * 40),
                    "TEST_SOURCE_CLEAN": "1" if source_clean else "0",
-                   "TEST_SOURCE_STATUS_EXIT": str(source_status_exit),
-                   "TEST_QUALIFICATION_EXIT": str(qualification_exit),
-                   "TEST_YOLO_QUALIFICATION_EXIT": str(yolo_qualification_exit)}
+                   "TEST_SOURCE_STATUS_EXIT": str(source_status_exit)}
             result = subprocess.run(["bash", "-c", script], cwd=root, env=env, text=True, capture_output=True, timeout=10)
             manifest = json.loads((dist / "latest.json").read_text()) if (dist / "latest.json").exists() else None
             args = receipt.read_text().splitlines() if receipt.exists() else None
@@ -160,7 +182,14 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
             name = entry["name"]
             self.assertIn(name, NAMES)
             self.assertIn("dist/" + name, args)
-            self.assertEqual(entry["sha256"], hashlib.sha256(("opaque fixture " + name).encode()).hexdigest())
+            if name.endswith("-macos.tar.gz"):
+                self.assertEqual(len(entry["sha256"]), 64)
+                self.assertTrue(all(c in "0123456789abcdef" for c in entry["sha256"]))
+            else:
+                self.assertEqual(
+                    entry["sha256"],
+                    hashlib.sha256(("opaque fixture " + name).encode()).hexdigest(),
+                )
 
     def test_missing_or_retired_archives_refuse_before_release_creation(self):
         for missing, extra in [(True, False), (False, True)]:
@@ -191,15 +220,18 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIsNone(args)
 
-    def test_failed_installed_archive_qualification_blocks_create_and_upload(self):
-        for artifact_run_id in ("", "123"):
-            for existing_draft in (False, True):
-                with self.subTest(artifact_run_id=artifact_run_id, existing_draft=existing_draft):
-                    result, manifest, args = self.assemble(existing_draft=existing_draft,
-                        qualification_exit=53, artifact_run_id=artifact_run_id)
-                    self.assertEqual(result.returncode, 53)
-                    self.assertIsNone(manifest)
-                    self.assertIsNone(args)
+    def test_unexpected_macos_archive_members_block_create_and_upload(self):
+        for members in (
+            EXPECTED_MACOS_MEMBERS | {"sandbox/aster-oci"},
+            EXPECTED_MACOS_MEMBERS - {"BUILD_ID"},
+            {"aster", "aster-acp"},
+        ):
+            with self.subTest(members=sorted(members)):
+                result, manifest, args = self.assemble(macos_members=members)
+                self.assertNotEqual(result.returncode, 0, result.stderr)
+                self.assertIn("unexpected archive members", result.stderr)
+                self.assertIsNone(manifest)
+                self.assertIsNone(args)
 
     def test_normal_and_reused_artifacts_require_branch_qualification_for_their_own_source(self):
         for artifact_run_id in ("", "123"):
@@ -209,16 +241,6 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                         artifact_run_id=artifact_run_id, branch_qualification=0)
                     self.assertNotEqual(result.returncode, 0)
                     self.assertIn("no successful branch qualification", result.stderr)
-                    self.assertIsNone(manifest)
-                    self.assertIsNone(args)
-
-    def test_yolo_failure_also_blocks_create_and_upload(self):
-        for artifact_run_id in ("", "123"):
-            for existing_draft in (False, True):
-                with self.subTest(artifact_run_id=artifact_run_id, existing_draft=existing_draft):
-                    result, manifest, args = self.assemble(existing_draft=existing_draft,
-                        artifact_run_id=artifact_run_id, yolo_qualification_exit=54)
-                    self.assertEqual(result.returncode, 54, result.stderr)
                     self.assertIsNone(manifest)
                     self.assertIsNone(args)
 
@@ -239,11 +261,10 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("actions/workflows/qualify-aster-cli.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed", text)
         self.assertIn(".head_branch !=", text)
         # Platform builds start from preflight so they overlap qualify polling.
-        self.assertEqual(text.count("needs: preflight"), 5)
+        self.assertEqual(text.count("needs: preflight"), 4)
         self.assertIn("needs: [preflight, qualified, build, build-macos, build-linux]", text)
         self.assertIn("name: macos-bins", text)
-        self.assertIn("name: macos-sandbox", text)
-        self.assertIn("CARGO_PROFILE_RELEASE_LTO: \"false\"", text)
+        self.assertNotIn("name: macos-sandbox", text)
         self.assertIn("ASTER_QUALIFY_WAIT_SECONDS", text)
         self.assertIn("python3 tests/release_governance.py", text)
         self.assertNotIn("cargo fmt", text)
@@ -252,8 +273,10 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("--profile \"$CLI_PROFILE\"", text)
         self.assertIn("CLI_PROFILE: release-dist", text)
         publisher = (ROOT / "scripts/publish-aster-cli.sh").read_text()
-        self.assertIn('python3 tests/cli_sandbox_smoke.py "dist/${tag}-macos.tar.gz" --output-dir', publisher)
-        self.assertIn("--mode yolo --output-dir qualification/yolo", publisher)
+        self.assertNotIn("cli_sandbox_smoke", publisher)
+        self.assertIn('expected = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}', publisher)
+        self.assertIn("verified archive members for", publisher)
+        self.assertIn("unexpected archive members", publisher)
         publish_job = text.split("\n  publish:\n", 1)[1]
         self.assertIn("runs-on: ${{ inputs.qualified_runner }}", publish_job)
         self.assertIn("inputs.qualified_runner != ''", publish_job)
@@ -262,10 +285,10 @@ class ReleaseWorkflowContract(unittest.TestCase):
 
     def test_all_three_cli_platforms_have_product_specific_caches(self):
         text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
-        self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 4)
+        self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 3)
         self.assertIn("shared-key: aster-cli-release-dist-windows", text)
         self.assertIn("shared-key: aster-cli-release-dist-macos-bins", text)
-        self.assertIn("shared-key: aster-cli-release-dist-macos-sandbox", text)
+        self.assertNotIn("shared-key: aster-cli-release-dist-macos-sandbox", text)
         self.assertIn("shared-key: aster-cli-release-dist-linux", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-windows.zip", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-macos.tar.gz", text)

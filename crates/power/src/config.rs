@@ -724,7 +724,7 @@ pub struct PowerConfig {
     #[serde(default)]
     pub ra_tls: bool,
 
-    /// Vsock port for guest-host communication inside aster-box MicroVMs.
+    /// Vsock port for guest-host communication inside kbox MicroVMs.
     /// When set, a vsock server is started alongside the plain HTTP server.
     /// Requires the `vsock` feature and Linux with AF_VSOCK kernel support.
     #[serde(default, skip_serializing_if = "Option::is_none")]

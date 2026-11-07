@@ -312,7 +312,7 @@ pub struct SessionOptions {
     pub projected_skill_files: Vec<PathBuf>,
     /// Extra environment variables merged into Bash / sandbox command execution.
     ///
-    /// Hosts use this to inject absolute tool paths (for example `ASTER_BOX_CLI`
+    /// Hosts use this to inject absolute tool paths (for example `KBOX_CLI`
     /// and a PATH prefix) without requiring the agent process to inherit a
     /// full desktop environment. Values are applied on top of the sandbox
     /// safe-env allowlist.
@@ -456,7 +456,7 @@ pub struct SessionOptions {
     /// Local sessions install the Aster native sandbox by default. When set, this
     /// handle replaces that default for `bash` tool commands. The host
     /// application constructs and owns the custom implementation (for example,
-    /// an Aster Box-backed handle).
+    /// an kbox-backed handle).
     pub sandbox_handle: Option<Arc<dyn crate::sandbox::BashSandbox>>,
     /// When the native sandbox cannot initialize, allow installing the
     /// process-host Bash runner instead of an error-only handle.

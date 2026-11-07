@@ -504,7 +504,7 @@
       "version": "0.3.1"
     },
     {
-      "package": "aster-sandbox",
+      "package": "kbox",
       "version": "0.2.3",
       "path": "crates/sandbox",
       "source": "../aster/crates/sandbox",
@@ -832,10 +832,10 @@
       "source_manifest_sha256": "e2b83b7b7af1988ccd8c7bffc2f815d712827ac29e7d3c02dcebd95b557b693f"
     },
     {
-      "package": "aster-sandbox",
+      "package": "aster-confine",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/aster-sandbox",
-      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-sandbox",
+      "path": "crates/terminal/crates/codegen/aster-confine",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/kbox",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "3e6a92f7a90e38ea56f3586d83bb3b8a7b56ae1199c72d0e8b183ae998f0825b"
     },

@@ -5,7 +5,7 @@ Package `aster/iris@1.0.0`. One self-contained `.aix` package, three surfaces:
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `iris` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `iris` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `aster-box` per open view. |
+| Agent | `iris` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `kbox` per open view. |
 | UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside Aster. There is no lab server, no port, and no Python.
@@ -34,7 +34,7 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 决策门槛 (default 0.55): when the chosen key's probability is below it, the episode pauses in 等待人工处理. 确认并继续 executes that reviewed action once; the next low-probability action requires another confirmation. A rule decision has no probability and never stops. Stop and reset cancel the page's pending decision wait. An unanswered host is bounded by the native cold-start plus turn budget (185 seconds); the page then labels its rule fallback as a timeout.
 
-When the agent cannot run (for example, `aster-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
+When the agent cannot run (for example, `kbox` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
 <a id="desktop-view-policy"></a>
 

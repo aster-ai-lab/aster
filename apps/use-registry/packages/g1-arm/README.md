@@ -5,7 +5,7 @@ Package `aster/g1-arm@1.0.0`. One self-contained `.aix` package, three surfaces:
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `g1-arm` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `g1-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `aster-box` per open view. |
+| Agent | `g1-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `kbox` per open view. |
 | UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside Aster. There is no lab server, no port, and no Python.
@@ -40,7 +40,7 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 决策门槛 (default 0.55): when the chosen key's probability is below it, the episode stops in 等待人工处理 until the user continues. A rule decision has no probability and never stops.
 
-When the agent cannot run (for example, `aster-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
+When the agent cannot run (for example, `kbox` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
 A vision decision is different. The page sends the two camera frames with the turn as named JPEG data URLs (`external`, `wrist`, each ≤ 256 KiB). Aster checks them and gives the agent only a manifest (`name`, `media_type`, `bytes`). The agent's chat request to `bailian/deepseek-v4.1-flash` labels each view and names it as `aix-image:<name>`; Aster puts the bytes in before calling the gateway, so the box never holds an image or a credential. The request sets `reasoning_effort: "none"`: with hidden reasoning on, this model spent all 4096 output tokens per step and answered nothing. An answer counts only as one finished JSON object with an offered `choice` and optional short public `intent` and `visual_evidence`, which the panel shows.
 
@@ -77,7 +77,7 @@ The load proof measures navigation to the first robot frame, phase by phase, in 
 
 `tests/desktop-open.swift` measures the same load in a running Aster window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `aster-box`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `g1_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `ASTER_DESKTOP_E2E_GATEWAY` and `ASTER_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `kbox`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `g1_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `ASTER_DESKTOP_E2E_GATEWAY` and `ASTER_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 

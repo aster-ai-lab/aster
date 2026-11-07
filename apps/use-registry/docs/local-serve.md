@@ -27,7 +27,7 @@ Defaults:
 State (PID, log, recorded URL) lives under `.local/serve/` (gitignored).
 
 Requires `python3` and `curl`. The process serves only the static `registry/`
-directory (metadata + targets). No Docker and no aster-box are required for this
+directory (metadata + targets). No Docker and no kbox are required for this
 preview transport.
 
 `serve_local.sh start` keeps a background `python3 -m http.server` process

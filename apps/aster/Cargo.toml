@@ -1,6 +1,6 @@
 [package]
 name = "aster"
-version = "0.1.9"
+version = "0.2.0"
 license = "MIT"
 authors = ["Aster"]
 default-run = "aster"
@@ -40,7 +40,7 @@ semver = {workspace = true}
 
 aster-extra-ca = {path = "../../crates/terminal/crates/codegen/aster-extra-ca"}
 aster-use = {path = "../../crates/use"}
-aster-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-sandbox"}
+aster-confine = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-confine"}
 aster-config = {path = "../../crates/terminal/crates/codegen/aster-config"}
 aster-tty-utils = {path = "../../crates/terminal/crates/codegen/aster-tty-utils"}
 aster-acp-lib = {path = "../../crates/terminal/crates/codegen/aster-acp-lib"}
@@ -89,16 +89,16 @@ clap = {workspace = true}
 [features]
 default = [
     "jemalloc",
-    "sandbox-enforce",
+    "confine-noop",
     ]
 default-bazel = [
     "jemalloc",
-    "sandbox-enforce",
+    "confine-noop",
     "local-workspace",
     ]
 jemalloc = ["dep:tikv-jemallocator", "dep:tikv-jemalloc-sys", "dep:tikv-jemalloc-ctl"]
-# aster-workspace no longer enables sandbox-enforce by default, so enable it here.
-sandbox-enforce = ["aster-pager/sandbox-enforce", "aster-workspace/sandbox-enforce"]
+# Propagate the aster-confine stub feature through pager and workspace.
+confine-noop = ["aster-pager/confine-noop", "aster-workspace/confine-noop"]
 local-workspace = ["aster-pager/local-workspace"]
 # Test-only, prod-inert seam: lets the e2e harness install a TEST-signed managed-policy key the
 # spawned pager trusts. Double locked out of production: absent from `default`, `default-bazel`, and

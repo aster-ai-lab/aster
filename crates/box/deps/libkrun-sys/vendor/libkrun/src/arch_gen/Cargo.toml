@@ -1,7 +1,0 @@
-[package]
-name = "arch_gen"
-version = "3.2.7"
-authors = ["Amazon Firecracker team <firecracker-devel@amazon.com>"]
-edition = "2021"
-
-[dependencies]

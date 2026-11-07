@@ -1,0 +1,505 @@
+{
+  "app": "dev.aster.studio.aster.adesk",
+  "pid": 88335,
+  "window_id": "w-10383",
+  "delivery": "agent-desktop-headless-semantic",
+  "results": [
+    {
+      "id": "BOOT-01",
+      "status": "passed",
+      "details": {
+        "composer_ready": true,
+        "permissions_deferred": false
+      }
+    },
+    {
+      "id": "NAV-01",
+      "status": "failed",
+      "error": "draft was not preserved: {'interactive': True, 'name': '描述任务，输入 / 使用指令或技能，@ 选择工作区文件', 'path': ['window:Aster', 'group', 'group', 'scrollarea', 'webarea:Aster', 'main', 'main', 'group', 'group'], 'ref_id': '@s3qf2flifdbco6:e1', 'role': 'textfield', 'states': [], 'value': None}",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 327, in draft_roundtrip\n    raise AssertionError(f\"draft was not preserved: {composer}\")\nAssertionError: draft was not preserved: {'interactive': True, 'name': '描述任务，输入 / 使用指令或技能，@ 选择工作区文件', 'path': ['window:Aster', 'group', 'group', 'scrollarea', 'webarea:Aster', 'main', 'main', 'group', 'group'], 'ref_id': '@s3qf2flifdbco6:e1', 'role': 'textfield', 'states': [], 'value': None}\n",
+      "recovery": "work"
+    },
+    {
+      "id": "NAV-02",
+      "status": "passed",
+      "details": {
+        "visited": [
+          "连接器",
+          "技能",
+          "自动化"
+        ],
+        "returned_to_work": true
+      }
+    },
+    {
+      "id": "NAV-03",
+      "status": "passed",
+      "details": {
+        "query": "0101",
+        "closed": true,
+        "composer_restored": true,
+        "focus_restored": true
+      }
+    },
+    {
+      "id": "NAV-04",
+      "status": "passed",
+      "details": {
+        "created": "settings",
+        "switched": true,
+        "closed": true,
+        "draft_preserved": true
+      }
+    },
+    {
+      "id": "NAV-05",
+      "status": "passed",
+      "details": {
+        "collapsed": true,
+        "navigation_hidden": true,
+        "composer_available": true,
+        "restored": true
+      }
+    },
+    {
+      "id": "NAV-06",
+      "status": "failed",
+      "error": "missing statictext 'NAV06 Fixture Task'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 360, in global_search_opens_session\n    wait_find(driver, \"statictext\", \"NAV06 Fixture Task\", exact=False)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing statictext 'NAV06 Fixture Task'; latest=None\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-02",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 396, in task_search\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-02D",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 407, in task_search_empty_and_clear\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-01",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 422, in settings_roundtrip\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "CAP-01A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 439, in connector_search\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-02A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 480, in general_switch\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-02B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 489, in context_switch\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-02C",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 498, in general_tray_switches\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-02B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 544, in task_pin_and_archive_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-02C",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 560, in archive_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-01A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 611, in project_dialog_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "HOME-01B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 616, in project_required_fields\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-03A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 630, in provider_dialog_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-03B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 635, in provider_request_config_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-03C",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 651, in translation_response_switches\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-03D",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 663, in route_and_budget_create_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-03E",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 681, in translation_languages_load\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-01",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 707, in model_picker\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-02",
+      "status": "failed",
+      "error": "missing combobox '响应设置'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 737, in reasoning_effort\n    combo = wait_find(driver, \"combobox\", \"响应设置\")\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '响应设置'; latest=None\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-03A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 775, in permission_mode\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-03B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 794, in composer_local_switches\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-04",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 826, in upload_attachment_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "COMP-06",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 860, in slash_skill\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "CAP-01B",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 885, in connector_create_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "CAP-01C",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 451, in connector_detail_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "CAP-02A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 899, in skill_upload_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "CAP-03A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 904, in schedule_create_cancel\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-NAV-01",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 922, in settings_pages\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-NAV-02",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 934, in extended_settings_pages\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-04A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 962, in web_search_mode\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-05A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 909, in document_ocr_status\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-07A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 974, in shortcut_rebind\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-12A",
+      "status": "failed",
+      "error": "missing button: 新建任务",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 946, in usage_filters\n    work(driver)\n    ~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 206, in work\n    driver.click(\"button\", \"新建任务\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 新建任务\n",
+      "recovery": "missing button: 新建任务"
+    },
+    {
+      "id": "SET-14A",
+      "status": "failed",
+      "error": "missing combobox '更多：使用技能 onetake'; latest=None",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 578, in archive_and_restore\n    combo = wait_find(driver, \"combobox\", \"更多：使用技能 onetake\", exact=False)\n            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 113, in wait_find\n    raise AssertionError(f\"missing {role} {name!r}; latest={latest}\")\nAssertionError: missing combobox '更多：使用技能 onetake'; latest=None\n",
+      "recovery": "work"
+    },
+    {
+      "id": "SET-15A",
+      "status": "failed",
+      "error": "missing button: 关于",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1108, in main\n    record[\"details\"] = scenario(driver)\n                        ~~~~~~~~^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 1009, in about_page\n    driver.click(\"button\", \"关于\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/Users/roylin/code/aster/tests/e2e/agent-desktop/core_navigation.py\", line 62, in click\n    raise AssertionError(f\"missing {role}: {name}\")\nAssertionError: missing button: 关于\n",
+      "recovery": "work"
+    },
+    {
+      "id": "SET-16A",
+      "status": "passed",
+      "details": {
+        "dialog": "客户端",
+        "cancelled": true
+      }
+    },
+    {
+      "id": "SET-16B",
+      "status": "passed",
+      "details": {
+        "status": "已停止",
+        "url": "http://127.0.0.1:23333",
+        "usage_navigation": true,
+        "start_triggered": false
+      }
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "连接器",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "技能",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "自动化",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+w",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "新建任务",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "cmd+shift+f",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "模型配置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "翻译设置",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "添加客户端",
+      "result": "delivered"
+    },
+    {
+      "action": "press",
+      "target": "escape",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "设置",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "查看用量",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "API 网关",
+      "result": "delivered"
+    },
+    {
+      "action": "click",
+      "target": "工作",
+      "result": "delivered"
+    }
+  ]
+}

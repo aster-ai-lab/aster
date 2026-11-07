@@ -22,7 +22,7 @@ url = {workspace = true}
 # Child-network restriction on hook command spawns; enforce is feature-unified
 # from the binary crate, matching the other consumers.
 aster-tools = {path = "../aster-tools"}
-aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-confine = {default-features = false, path = "../aster-confine"}
 aster-config = {path = "../aster-config"}
 aster-dirs = {path = "../aster-dirs"}
 aster-extra-ca = {path = "../aster-extra-ca"}

@@ -10,13 +10,7 @@ cargo test --locked -p tutorial-agent
 cargo run --locked -p tutorial-agent --example offline_tui
 ```
 
-After building the offline example, the native terminal regression can be run with:
-
-```sh
-aster-test run apps/tutorial-agent/tests/tui.acl --tui-executable "$PWD/target/debug/examples/offline_tui" --tui-working-directory "$PWD" --tui-columns 120 --tui-rows 36 --json
-```
-
-The offline example uses fixed responses, a temporary workspace and an injected `LlmClient`. It reads its README, asks permission to call the harmless `project_label` tool, then asks a business question. No provider credentials or external network are needed. Enter any task, press F6 for the displayed confirmation, then F9 for the selected answer. The example is an interaction fixture, not evidence of real-model task quality.
+The offline example uses fixed responses, a temporary workspace and an injected `LlmClient`. It reads its README, asks permission to call the harmless `project_label` tool, then asks a business question. No provider credentials or external network are needed. Enter any task, press F6 for the displayed confirmation, then F9 for the selected answer. The example is an interaction fixture, not evidence of real-model task quality. The former A3S/`aster-test` TUI ACL suite for this example has been removed.
 
 To use a real provider, pass an existing trusted ACL and a disposable workspace:
 

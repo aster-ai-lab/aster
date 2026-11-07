@@ -17,7 +17,7 @@ class CodeLauncherTest(unittest.TestCase):
             shutil.copy2(Path(__file__).resolve().parents[1] / "justfile", root / "justfile")
             scripts = root / "scripts"
             scripts.mkdir()
-            (scripts / "aster_sandbox.py").write_text(
+            (scripts / "aster_confine.py").write_text(
                 'import os,sys\n'
                 'if sys.argv[1]=="cache": print(os.environ["ASTER_TEST_SANDBOX"])\n'
             )

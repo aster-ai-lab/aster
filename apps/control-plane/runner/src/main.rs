@@ -1,5 +1,5 @@
 //! `aster-runner`: claims pipeline jobs and runs each step in a fresh
-//! aster-box MicroVM.
+//! kbox MicroVM.
 //!
 //! Exit codes: 0 after shutdown (or after the job with `--once`), 1 on a
 //! setup or job error, 2 when the API refuses the runner's credential.

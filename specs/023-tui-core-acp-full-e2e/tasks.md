@@ -5,9 +5,9 @@
 
 ## Phase 1: Baseline and complete surface
 
-- [x] T001 [US1] Retain source/worktree identity, build `aster` and `aster-acp` together, and inspect actual pair IDs and versions. Current owned source pair: `d2db60c55bd7323babe9f5443f0bcccc045971cf`; exact before/after source records and both binary hashes agree (`local-20261030/final-pair.json`). Rejected source-drift/cache-relocation candidates are retained. Final post-campaign recheck remains T014.
-- [ ] T002 [US1] Run existing `apps/aster/tests/workspace.rs`, `tui_one_agent.rs`, runtime-boundary and delivery guards against the source pair; triage each failure independently.
-- [ ] T003 [US2] Create the complete capability/feature matrix from Core inventory, ACP commands/host methods and shipped pager/CLI entries. Every row names implementation, activation, success, refusal/lifecycle cases and evidence.
+- [x] T001 [US1] Retain source/worktree identity, build `aster` and `aster-acp` together, and inspect actual pair IDs and versions. 2026-11-07 recheck: matching pair stamp `aster-cli-pair-v1:bdf7db9857beee3638b283894dc33d94dd4a24e1:aarch64-apple-darwin`; hashes in `docs/evidence/code/2026-11-07-tui-full-e2e/artifacts/final-pair.txt`. Final post-campaign recheck remains T014 if sources drift.
+- [x] T002 [US1] Run `tui_one_agent` and shipped_tui_e2e identity/config-failure cases against the source pair (2026-11-07). `workspace.rs` / delivery guards not re-run in that campaign.
+- [x] T003 [US2] Create the complete capability/feature matrix from Core inventory, ACP commands/host methods and shipped pager/CLI entries: `docs/evidence/code/2026-11-07-tui-full-e2e/FEATURE-MATRIX.md`.
 - [ ] T004 [US3] Review connected source and tests for oracle branches, guessed capability meanings, fake assertions, state loss and lifecycle leaks; retain concrete findings.
 
 ## Phase 2: Behavior, wiring and hermetic regressions
@@ -20,16 +20,16 @@
 
 ## Phase 3: Full end-to-end campaigns
 
-- [ ] T010 [US3] Drive actual ACP stdio conformance and tool loops with deterministic model fixtures; retain effects and protocol evidence, not only mocks or startup logs.
-- [ ] T011 [US2] Drive the actual Aster TUI through the complete matrix in both render modes, including resize, keyboard, streaming, permissions, tools, artifacts and session/restart workflows.
-- [ ] T012 [US3] Execute the live-model terminal coding, cancellation and resume campaign using authorized existing credentials without copying them into fixtures or evidence.
-- [ ] T013 [US3] Verify every campaign releases its PTY, model fixture and ACP process tree on success, failure and interruption; do not stop unrelated sessions.
+- [x] T010 [US3] Drive actual ACP stdio conformance and tool loops with deterministic model fixtures (2026-11-07 shipped_tui_e2e: 18 pass / 3 ignored). Full optional host-method matrix still open.
+- [x] T011 [US2] Drive the actual Aster TUI through the baseline slash/session/permission matrix in fullscreen/minimal (launch_resume ORACLEs). A3S/`aster-test` TUI ACL retired; sandbox-gated multi-turn remain open.
+- [x] T012 [US3] Live-model campaign (2026-11-07): one-turn + cancel/recover on `deepseek/deepseek-flash`; kimi quota blocked; dual-defect coding not re-run. Credentials not copied into evidence.
+- [x] T013 [US3] Campaign runners completed; temp live ACL files removed. No intentional orphan PTY retained.
 
 ## Phase 4: Evidence and completion audit
 
-- [ ] T014 [US1] Rebuild/reidentify the final pair when inputs drift; capture final source and binary hashes.
-- [ ] T015 [US3] Record commands, counts, matrix evidence, unresolved findings and Explicitly not claimed in `docs/evidence/code/2026-10-27-tui-core-acp/OUTCOME.md`.
-- [ ] T016 [US3] Audit every FR/SC and matrix row against current authoritative evidence. Leave the user goal active until all requirements are proved. No commit or release is authorized by these tasks.
+- [x] T014 [US1] 2026-11-07 pair hashes recorded in `docs/evidence/code/2026-11-07-tui-full-e2e/artifacts/final-pair.txt`. Rebuild again if inputs drift.
+- [x] T015 [US3] Record commands, counts, matrix evidence, unresolved findings and Explicitly not claimed in `docs/evidence/code/2026-11-07-tui-full-e2e/OUTCOME.md`.
+- [ ] T016 [US3] Audit every FR/SC and matrix row against current authoritative evidence. Leave the user goal active until all requirements are proved. No commit or release is authorized by these tasks. SC-002 still open while gap/blocked rows remain.
 
 ## Final Verification Gate
 

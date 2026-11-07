@@ -5,7 +5,6 @@ build:
     set -euo pipefail
     if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
     cargo build --locked
-    if [[ "$(uname -s)" == Darwin && "$(uname -m)" == arm64 ]]; then python3 scripts/aster_sandbox.py stage; fi
 
 # Windows has no sh on PATH. powershell -File keeps the cargo exit code.
 # An already-open terminal does not see a User PATH change, so point PROTOC
@@ -32,7 +31,6 @@ code *args: build
     #!/usr/bin/env python3
     import json
     import os
-    import platform
     from pathlib import Path
     import subprocess
     import sys
@@ -43,8 +41,6 @@ code *args: build
         if acl.is_file():
             os.environ["ASTER_CONFIG"] = str(acl.resolve())
     metadata = json.loads(subprocess.check_output(["cargo", "metadata", "--locked", "--offline", "--no-deps", "--format-version", "1"]))
-    if sys.platform == "darwin" and platform.machine() in ("arm64", "aarch64") and not os.environ.get("ASTER_SANDBOX_DIR"):
-        os.environ["ASTER_SANDBOX_DIR"] = subprocess.check_output([sys.executable, str(Path(r"{{justfile_directory()}}") / "scripts/aster_sandbox.py"), "cache", "--target-dir", metadata["target_directory"]], text=True).strip()
     executable = Path(metadata["target_directory"]) / "debug" / ("aster.exe" if os.name == "nt" else "aster")
     os.execv(str(executable), [str(executable), *sys.argv[1:]])
 

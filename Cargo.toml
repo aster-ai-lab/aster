@@ -21,13 +21,6 @@ members = [
     "crates/third-party/crossterm",
     "crates/sentry",
     "crates/updater",
-    "crates/box/cli",
-    "crates/box/core",
-    "crates/box/guest/init",
-    "crates/box/runtime",
-    "crates/box/netproxy",
-    "crates/box/sdk",
-    "crates/box/shim",
     "crates/runtime",
     "crates/sms",
     "crates/form-core",
@@ -46,13 +39,7 @@ members = [
     "crates/memory",
     "crates/okf",
     "crates/sag",
-    "crates/sandbox",
     "crates/search",
-    "crates/oci-runtime/crates/agent",
-    "crates/oci-runtime/crates/agent-protocol",
-    "crates/oci-runtime/crates/cli",
-    "crates/oci-runtime/crates/krun",
-    "crates/oci-runtime/crates/runtime",
     "crates/terminal/crates/build/aster-proto-build",
     "crates/terminal/crates/codegen/aster-acp-lib",
     "crates/terminal/crates/codegen/aster-agent-lifecycle",
@@ -92,7 +79,7 @@ members = [
     "crates/terminal/crates/codegen/aster-plugin-marketplace",
     "crates/terminal/crates/codegen/aster-sampler",
     "crates/terminal/crates/codegen/aster-sampling-types",
-    "crates/terminal/crates/codegen/aster-sandbox",
+    "crates/terminal/crates/codegen/aster-confine",
     "crates/terminal/crates/codegen/aster-secrets",
     "crates/terminal/crates/codegen/aster-session-events",
     "crates/terminal/crates/codegen/aster-session-search",
@@ -280,8 +267,6 @@ aster-boot = { path = "crates/boot", features = [
     "queue-postgres",
     "security",
 ], default-features = false }
-aster-box-core = { path = "crates/box/core" }
-aster-box-runtime = { path = "crates/box/runtime", features = ["build", "vm"], default-features = false }
 aster-core = { path = "crates/code/core", default-features = false }
 aster-event = { path = "crates/event", features = ["nats", "iggy"], default-features = false }
 aster-flow = { path = "crates/flow", features = ["boot", "postgres"], default-features = false }
@@ -326,7 +311,6 @@ zeroize = "1"
 # Cryptography (for TEE attestation verification)
 zip = { version = "2", default-features = false, features = ["deflate"] }
 
-aster-oci-sdk = { path = "crates/oci-runtime/crates/sdk" }
 aster-transport = { version = "0.1.1", package = "aster-common", path = "crates/common" }
 der = { version = "0.7", features = ["std", "alloc"] }
 ecdsa = { version = "0.16", features = ["verifying"] }
@@ -352,7 +336,6 @@ olpc-cjson = "0.1"
 rmcp = { version = "=0.8.5", default-features = false, features = ["base64", "client", "macros", "server", "transport-io", "transport-streamable-http-client-reqwest", "transport-streamable-http-server"] }
 tonic-build = "0.11"
 
-aster-libkrun-sys = { path = "crates/box/deps/libkrun-sys" }
 cap-fs-ext = "=4.0.2"
 cap-std = "=4.0.2"
 libloading = "0.8"
@@ -408,7 +391,6 @@ useless_format = "allow"
 
 [patch.crates-io]
 crossterm = { path = "crates/third-party/crossterm" }
-oci-spec = { path = "crates/oci-runtime/vendor/oci-spec-0.10.0" }
 serde-saphyr = { path = "crates/third-party/serde-saphyr" }
 saphyr-parser-bw = { path = "crates/third-party/saphyr-parser-bw" }
 

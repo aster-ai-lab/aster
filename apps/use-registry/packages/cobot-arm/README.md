@@ -5,7 +5,7 @@ Package `aster/cobot-arm@1.0.0`. One self-contained `.aix` package, three surfac
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `cobot-arm` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `aster-box` per open view. |
+| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `kbox` per open view. |
 | UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside Aster. There is no lab server, no port, and no Python.
@@ -31,7 +31,7 @@ Each cycle has two decisions: a phase, then an action. When only one key is offe
 
 决策门槛 (default 0.55) works as upstream. When the chosen key's probability is below it, the episode stops in 等待人工处理 until the user continues; lower the threshold to let it go on. A rule decision has no probability and never stops. On the lexical decision model in this repo's gateway, the chosen probability was 0.42–0.79 on the three tasks, so at 0.55 most action steps wait for a person.
 
-When the agent cannot run (for example, `aster-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
+When the agent cannot run (for example, `kbox` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
 ## LIBERO
 
@@ -80,7 +80,7 @@ The load proof measures navigation to the first robot frame, phase by phase, in 
 
 `tests/desktop-open.swift` measures the same load in a running Aster window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `aster-box`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `ASTER_DESKTOP_E2E_GATEWAY` and `ASTER_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `kbox`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `ASTER_DESKTOP_E2E_GATEWAY` and `ASTER_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 

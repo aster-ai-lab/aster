@@ -218,13 +218,13 @@ adapted from Microsoft's [Pragmatic Rust Guidelines](https://microsoft.github.io
 
 ## Release and distribution
 
-- macOS CLI releases include the complete verified sandbox companions.
-  Packaging, installation and self-update must reject missing companions.
-  Before creating or uploading a Release, install the final archive into an
-  isolated prefix and pass `tests/cli_sandbox_smoke.py` using its installed
-  CLI, ACP and sandbox. Reused build artifacts follow the same gate.
-  Preserve missing-file regressions and actual command-execution assertions;
-  startup, model acknowledgements and successful installation are insufficient.
+- Aster CLI releases ship the aster + aster-acp pair only. Process command
+  isolation uses the locked ksandbox git dependency (`kense-labs/ksandbox`),
+  not companions inside the CLI archive and not kbox MicroVM. Packaging and
+  installation must reject unexpected archive members and verify the paired
+  BUILD_ID / SHA256SUMS. Do not reintroduce in-tree kbox or a second
+  enforcing OS sandbox into the harness tree; keep only the
+  `aster-confine` API compatibility stub.
 - Apply the same completeness checks to other release prerequisites: native
   libraries, OCR models, fonts, Office/ACP companions, capture helpers and
   renderer entry assets. Required membership comes from the owning source

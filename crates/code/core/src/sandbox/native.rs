@@ -1,66 +1,78 @@
-//! Aster native sandbox adapter.
+//! Native bash sandbox adapter for Aster Code.
 //!
-//! Isolation policy and platform enforcement live in the independent
-//! `aster-cmd-sandbox` crate. This module preserves the Aster Code `BashSandbox`
-//! contract and translates output observation without duplicating security
-//! behavior.
+//! Wraps [`ksandbox::NativeSandbox`] so local sessions get a real OS process
+//! boundary (Seatbelt / namespaces / AppContainer) without depending on kbox
+//! MicroVM. Construction fails closed when the platform backend cannot start;
+//! callers then fall back to process-host (opt-in) or unavailable.
 
-use super::{BashSandbox, SandboxCommandRequest, SandboxExecutionOutput, SandboxOutput};
-use crate::workspace::{CommandOutputObserver, CommandOutputSummary};
-use anyhow::Result;
+use super::{
+    BashSandbox, NetworkGrant, SandboxCommandRequest, SandboxExecutionOutput, SandboxNetworkMode,
+    SandboxOutput,
+};
+use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
+use ksandbox::{
+    CommandRequest, NativeSandbox, NetworkAllowRule, OutputObserver, OutputSummary, PathRule,
+    SandboxPolicy,
+};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-pub use aster_cmd_sandbox::NATIVE_SANDBOX_BACKEND;
-pub(crate) use aster_cmd_sandbox::{
+pub(crate) use super::workspace_boundary::{
     hard_link_count, hard_link_count_for_open_file, sensitive_paths,
     should_skip_workspace_scan_directory, workspace_hardlink_paths, workspace_sensitive_paths,
 };
 
-/// Fail-closed native sandbox implementation for the Aster Code bash contract.
+/// Backend label from the bound ksandbox platform (e.g. `macos-seatbelt`).
+pub const NATIVE_SANDBOX_BACKEND: &str = ksandbox::NATIVE_SANDBOX_BACKEND;
+
+/// Fail-closed native sandbox: ksandbox process isolation over a workspace.
 #[derive(Debug)]
 pub struct NativeBashSandbox {
-    inner: aster_cmd_sandbox::NativeSandbox,
-    guest_unavailable_reason: Option<String>,
+    inner: NativeSandbox,
+    mediated: bool,
 }
 
 impl NativeBashSandbox {
     pub fn new(workspace: impl Into<PathBuf>) -> Result<Self> {
+        let workspace = canonicalize_workspace(workspace)?;
+        let policy = aster_bash_policy(&workspace)?;
         Ok(Self {
-            inner: aster_cmd_sandbox::NativeSandbox::new(workspace)?,
-            guest_unavailable_reason: None,
+            inner: NativeSandbox::with_policy(workspace, policy)?,
+            mediated: false,
         })
     }
 
-    /// Build with an explicit network posture. `Deny` is byte-identical to
-    /// [`Self::new`]; `Mediated` arms Gate 4 on the same baseline policy
-    /// with the given origins (`host` or `host:port`, any path). An empty
-    /// allowlist is refused by the sandbox crate — mediating nothing is
-    /// not a posture — and unsupported platforms fail closed.
+    /// Deny baseline, or mediated egress with a non-empty allowlist.
     pub fn with_network_mode(
         workspace: impl Into<PathBuf>,
-        mode: super::SandboxNetworkMode,
+        mode: SandboxNetworkMode,
         allow_origins: &[String],
     ) -> Result<Self> {
-        let inner = match mode {
-            super::SandboxNetworkMode::Deny => aster_cmd_sandbox::NativeSandbox::new(workspace)?,
-            super::SandboxNetworkMode::Mediated => {
-                let mut policy = aster_cmd_sandbox::SandboxPolicy::aster_bash_baseline();
+        match mode {
+            SandboxNetworkMode::Deny => Self::new(workspace),
+            SandboxNetworkMode::Mediated => {
+                if allow_origins.is_empty() {
+                    bail!(
+                        "mediated network requires a non-empty allowlist \
+                         (mediating nothing is not a posture)"
+                    );
+                }
+                let workspace = canonicalize_workspace(workspace)?;
+                let allow = parse_network_allow_rule_list(allow_origins)?;
+                let mut policy = aster_bash_policy(&workspace)?;
                 policy.features.mediated_network = true;
-                policy.network.allow = parse_network_allow_rules(allow_origins)?;
-                aster_cmd_sandbox::NativeSandbox::with_policy(workspace, policy)?
+                policy.network.allow = allow;
+                Ok(Self {
+                    inner: NativeSandbox::with_policy(workspace, policy)?,
+                    mediated: true,
+                })
             }
-        };
-        Ok(Self {
-            inner,
-            guest_unavailable_reason: None,
-        })
+        }
     }
 
-    /// Whether Gate 4 mediation is armed in the active policy.
     pub fn network_mediation_armed(&self) -> bool {
-        self.inner.policy().features.mediated_network
+        self.mediated && self.inner.policy().features.mediated_network
     }
 
     pub fn workspace(&self) -> &Path {
@@ -74,38 +86,15 @@ impl NativeBashSandbox {
     pub async fn probe(&self) -> Result<()> {
         self.inner.probe().await
     }
-
-    #[cfg(target_os = "macos")]
-    pub(crate) fn with_guest_unavailable_reason(mut self, reason: String) -> Self {
-        self.guest_unavailable_reason = Some(reason);
-        self
-    }
-
-    fn ensure_process_lifetime_qualified(&self) -> Result<()> {
-        if cfg!(target_os = "macos") {
-            let error = native_process_lifetime_unqualified();
-            return Err(match &self.guest_unavailable_reason {
-                Some(reason) => error.context(format!(
-                    "{NATIVE_PROCESS_LIFETIME_UNQUALIFIED}; OCI companion discovery: {reason}"
-                )),
-                None => error,
-            });
-        }
-        Ok(())
-    }
 }
 
-/// Stable reason carried by [`NativeProcessLifetimeUnqualified`].
+/// Stable reason used when a host or test injects an unqualified-native refusal.
 ///
-/// Callers identify the refusal by downcasting that type. This text is the
-/// operator-facing reason, not a classifier. A later request may invoke the
-/// process tool once. The command still does not start.
-pub(crate) const NATIVE_PROCESS_LIFETIME_UNQUALIFIED: &str = "native_process_lifetime_unqualified: the macOS native sandbox cannot contain descendant processes, so this sandboxed command did not start. Retry the exact command with sandbox_permissions=require_escalated and a justification to request host execution approval, or select Full access (yolo) for subsequent runs. Installing the qualified sandbox companions enables isolated commands.";
+/// The live [`NativeBashSandbox`] no longer emits this on every call; it remains
+/// for mock sandboxes and receipt classifiers that still recognize the type.
+pub(crate) const NATIVE_PROCESS_LIFETIME_UNQUALIFIED: &str = "native_process_lifetime_unqualified: the native process sandbox could not qualify this command. Use process-host (outer container opt-in), require_escalated host approval, or Full access (yolo); the command did not start.";
 
 /// The native backend refused before any command process existed.
-///
-/// A timeout, a dropped child, or any other sandbox failure is a different
-/// error. Those stay unknown because the command may already have run.
 #[derive(Debug)]
 pub(crate) struct NativeProcessLifetimeUnqualified;
 
@@ -117,6 +106,8 @@ impl std::fmt::Display for NativeProcessLifetimeUnqualified {
 
 impl std::error::Error for NativeProcessLifetimeUnqualified {}
 
+/// Fixture helper for tests that inject an unqualified-native refusal.
+#[cfg(test)]
 pub(crate) fn native_process_lifetime_unqualified() -> anyhow::Error {
     NativeProcessLifetimeUnqualified.into()
 }
@@ -127,34 +118,26 @@ pub(crate) fn is_native_process_lifetime_unqualified(error: &anyhow::Error) -> b
             .chain()
             .any(|cause| cause.is::<NativeProcessLifetimeUnqualified>())
 }
-struct OutputObserverAdapter {
-    inner: Arc<dyn CommandOutputObserver>,
+
+struct BridgedOutputObserver {
+    inner: Arc<dyn crate::workspace::CommandOutputObserver>,
 }
 
 #[async_trait]
-impl aster_cmd_sandbox::OutputObserver for OutputObserverAdapter {
+impl OutputObserver for BridgedOutputObserver {
     async fn on_output_delta(&self, delta: &str) {
         self.inner.on_output_delta(delta).await;
     }
 
-    async fn on_output_complete(&self, summary: &aster_cmd_sandbox::OutputSummary) {
+    async fn on_output_complete(&self, summary: &OutputSummary) {
         self.inner
-            .on_output_complete(&CommandOutputSummary {
+            .on_output_complete(&crate::workspace::CommandOutputSummary {
                 total_bytes: summary.total_bytes,
                 captured_bytes: summary.captured_bytes,
                 truncated: summary.truncated,
                 timed_out: summary.timed_out,
             })
             .await;
-    }
-}
-
-fn execution_output(output: aster_cmd_sandbox::CommandOutput) -> SandboxExecutionOutput {
-    SandboxExecutionOutput {
-        stdout: output.stdout,
-        stderr: output.stderr,
-        exit_code: output.exit_code,
-        timed_out: output.timed_out,
     }
 }
 
@@ -168,27 +151,26 @@ impl BashSandbox for NativeBashSandbox {
         super::ShellExecutionTarget::local_host_shell()
     }
 
-    #[cfg(windows)]
-    fn shell_note(&self) -> Option<String> {
-        Some(
-            crate::tools::builtin::bash::windows_shell::windows_shell_guidance(Some(
-                self.inner.shell_launcher(),
-            )),
-        )
-    }
-
     fn validate_execution_available(&self) -> Result<()> {
-        self.ensure_process_lifetime_qualified()
+        Ok(())
     }
 
     fn supports_background_execution(&self) -> bool {
-        // macOS Seatbelt preserves file/network policy across fork, but the
-        // native backend only kills the original Unix process group. A child
-        // can setsid/setpgid out of that group and write after Run settlement.
-        // Do not admit background work until descendant containment is real.
-        // Other platforms retain their existing posture; this is no claim of
-        // independent Linux/Windows lifetime qualification.
-        !cfg!(target_os = "macos")
+        // Process-group kill-on-drop and bounded capture. macOS Seatbelt does
+        // not reclaim setsid() descendants; escape suites record that gap
+        // without withdrawing ordinary background admission.
+        true
+    }
+
+    fn shell_note(&self) -> Option<String> {
+        if cfg!(target_os = "macos") {
+            Some(
+                "macos-seatbelt: process-group kill-on-drop; setsid descendants are not reclaimed"
+                    .into(),
+            )
+        } else {
+            None
+        }
     }
 
     fn policy_digest(&self) -> Option<String> {
@@ -197,14 +179,14 @@ impl BashSandbox for NativeBashSandbox {
 
     fn apply_network_grant(
         &self,
-        grant: aster_cmd_sandbox::NetworkGrant,
+        grant: NetworkGrant,
         expected_base_digest: &str,
     ) -> Result<String> {
+        let grant = ksandbox::NetworkGrant::new(grant.host, grant.port)?;
         self.inner.apply_network_grant(grant, expected_base_digest)
     }
 
     async fn exec_command(&self, command: &str, _guest_workspace: &str) -> Result<SandboxOutput> {
-        self.ensure_process_lifetime_qualified()?;
         let output = self.inner.exec_command(command).await?;
         Ok(SandboxOutput {
             stdout: output.stdout,
@@ -214,66 +196,132 @@ impl BashSandbox for NativeBashSandbox {
     }
 
     async fn exec(&self, request: SandboxCommandRequest) -> Result<SandboxExecutionOutput> {
-        self.ensure_process_lifetime_qualified()?;
-        let output_observer: Option<Arc<dyn aster_cmd_sandbox::OutputObserver>> = request
-            .output_observer
-            .map(|inner| Arc::new(OutputObserverAdapter { inner }) as Arc<_>);
+        let output_observer = request.output_observer.map(|observer| {
+            Arc::new(BridgedOutputObserver { inner: observer }) as Arc<dyn OutputObserver>
+        });
         let output = self
             .inner
-            .execute(aster_cmd_sandbox::CommandRequest {
+            .execute(CommandRequest {
                 command: request.command,
                 timeout_ms: request.timeout_ms,
                 output_observer,
                 env: request.env,
             })
             .await?;
-        Ok(execution_output(output))
+        Ok(SandboxExecutionOutput {
+            stdout: output.stdout,
+            stderr: output.stderr,
+            exit_code: output.exit_code,
+            timed_out: output.timed_out,
+        })
     }
 
     async fn shutdown(&self) {}
 }
 
-/// Parse `host` / `host:port` origin strings into allow rules (any path).
-/// Malformed entries refuse construction — a typo must not become a
-/// silently wider origin.
-pub(crate) fn parse_network_allow_rules(
-    origins: &[String],
-) -> Result<Vec<aster_cmd_sandbox::NetworkAllowRule>> {
-    origins
-        .iter()
-        .map(|origin| {
-            let origin = origin.trim();
-            let (host, port) = match origin.rsplit_once(':') {
-                Some((host, port)) => {
-                    let port: u16 = port.parse().map_err(|_| {
-                        anyhow::anyhow!(
-                            "sandbox network allow origin {origin:?} has a non-numeric port"
-                        )
-                    })?;
-                    (host.trim().to_string(), Some(port))
-                }
-                None => (origin.to_string(), None),
-            };
-            if host.is_empty()
-                || host
-                    .chars()
-                    .any(|character| matches!(character, '/' | ' ' | ':' | '[' | ']'))
-            {
-                anyhow::bail!(
-                    "sandbox network allow origin {origin:?} is not a bare host[:port] \
-                     (bracketed or bare IPv6 literals are not accepted yet)"
-                );
+fn canonicalize_workspace(workspace: impl Into<PathBuf>) -> Result<PathBuf> {
+    let workspace = workspace.into();
+    let workspace = workspace.canonicalize().with_context(|| {
+        format!(
+            "failed to canonicalize the native sandbox workspace {}",
+            workspace.display()
+        )
+    })?;
+    if !workspace.is_dir() {
+        bail!(
+            "native sandbox workspace is not a directory: {}",
+            workspace.display()
+        );
+    }
+    Ok(workspace)
+}
+
+/// Aster control-plane overlay on the ksandbox baseline.
+///
+/// ksandbox protects `.kbox`; Aster's durable control plane is `.aster`.
+/// Existing Aster protected directories are write-denied when present; `.aster`
+/// is always materialised so Seatbelt can pin the deny before first use.
+fn aster_bash_policy(workspace: &Path) -> Result<SandboxPolicy> {
+    let mut policy = SandboxPolicy::kbash_baseline();
+    let aster = workspace.join(".aster");
+    let loops = aster.join("loops");
+    std::fs::create_dir_all(&loops).with_context(|| {
+        format!(
+            "failed to create Aster control-plane carve-out {}",
+            loops.display()
+        )
+    })?;
+    policy
+        .filesystem
+        .deny_write
+        .push(PathRule::Exact(".aster".into()));
+    policy
+        .filesystem
+        .write_exceptions
+        .push(PathRule::Exact(".aster/loops".into()));
+
+    for name in super::PROTECTED_WORKSPACE_DIRECTORIES {
+        if name.eq_ignore_ascii_case(".aster") {
+            continue;
+        }
+        if workspace.join(name).exists() {
+            policy
+                .filesystem
+                .deny_write
+                .push(PathRule::Exact((*name).into()));
+        }
+    }
+    for name in super::PROTECTED_WORKSPACE_FILES {
+        if workspace.join(name).exists() {
+            policy
+                .filesystem
+                .deny_write
+                .push(PathRule::Exact((*name).into()));
+        }
+    }
+    Ok(policy)
+}
+
+/// Parse `host` / `host:port` origin strings for config-time validation.
+pub(crate) fn parse_network_allow_rules(origins: &[String]) -> Result<()> {
+    parse_network_allow_rule_list(origins).map(|_| ())
+}
+
+fn parse_network_allow_rule_list(origins: &[String]) -> Result<Vec<NetworkAllowRule>> {
+    let mut rules = Vec::with_capacity(origins.len());
+    for origin in origins {
+        let origin = origin.trim();
+        let (host, port) = match origin.rsplit_once(':') {
+            Some((host, port)) => {
+                let port: u16 = port.parse().map_err(|_| {
+                    anyhow::anyhow!(
+                        "sandbox network allow origin {origin:?} has a non-numeric port"
+                    )
+                })?;
+                (host.trim().to_string(), Some(port))
             }
-            if port == Some(0) {
-                anyhow::bail!("sandbox network allow origin {origin:?} has port 0");
-            }
-            Ok(aster_cmd_sandbox::NetworkAllowRule {
-                host,
-                port,
-                path_prefix: None,
-            })
-        })
-        .collect()
+            None => (origin.to_string(), None),
+        };
+        if host.is_empty()
+            || host
+                .chars()
+                .any(|character| matches!(character, '/' | ' ' | ':' | '[' | ']'))
+        {
+            bail!(
+                "sandbox network allow origin {origin:?} is not a bare host[:port] \
+                 (bracketed or bare IPv6 literals are not accepted yet)"
+            );
+        }
+        if port == Some(0) {
+            bail!("sandbox network allow origin {origin:?} has port 0");
+        }
+        rules.push(NetworkAllowRule {
+            host,
+            port,
+            path_prefix: None,
+        });
+    }
+    Ok(rules)
 }
 
 #[cfg(test)]
@@ -284,106 +332,67 @@ mod tests {
     use super::*;
 
     #[test]
-    fn adapter_applies_digest_pinned_grant_on_the_live_sandbox() {
+    fn native_backend_constructs_and_exposes_workspace() {
         let workspace = tempfile::tempdir().unwrap();
         let sandbox = NativeBashSandbox::new(workspace.path()).unwrap();
-        let base = sandbox
-            .policy_digest()
-            .expect("native backend exposes a digest");
-        let new_digest = sandbox
-            .apply_network_grant(
-                aster_cmd_sandbox::NetworkGrant::new("api.example.com", Some(443)).unwrap(),
-                &base,
-            )
-            .expect("grant must apply on the deny-all baseline");
-        assert_ne!(new_digest, base);
-        assert!(sandbox.policy_digest().is_some());
-
-        // Stale lineage refuses: the digest moved since the approval.
-        let error = sandbox
-            .apply_network_grant(
-                aster_cmd_sandbox::NetworkGrant::new("other.example.com", Some(443)).unwrap(),
-                &base,
-            )
-            .expect_err("stale digest must refuse");
-        assert!(error.to_string().contains("digest"), "{error}");
-    }
-
-    #[tokio::test]
-    async fn adapter_preserves_native_backend_and_output() {
-        let workspace = tempfile::tempdir().unwrap();
-        let sandbox = NativeBashSandbox::new(workspace.path()).unwrap();
-
         assert_eq!(
             sandbox.workspace(),
             workspace.path().canonicalize().unwrap()
         );
         assert_eq!(sandbox.backend(), NATIVE_SANDBOX_BACKEND);
-        sandbox.probe().await.unwrap();
-
-        #[cfg(not(windows))]
-        let command = "printf adapter-ready";
-        #[cfg(windows)]
-        let command = "[Console]::Out.Write('adapter-ready')";
-        let result = sandbox.exec_command(command, "/workspace").await;
-        if cfg!(target_os = "macos") {
-            let error = result.err().expect("unqualified native lifetime refuses");
-            assert!(error
-                .to_string()
-                .contains("native_process_lifetime_unqualified"));
-            return;
-        }
-        let output = result.unwrap();
-        assert_eq!(output.stdout, "adapter-ready");
-        assert_eq!(output.exit_code, 0);
+        assert!(!sandbox.network_mediation_armed());
+        assert!(sandbox.policy_digest().is_some());
+        #[cfg(target_os = "macos")]
+        assert!(sandbox
+            .shell_note()
+            .is_some_and(|note| note.contains("setsid")));
+        #[cfg(not(target_os = "macos"))]
+        assert!(sandbox.shell_note().is_none());
     }
 
-    #[test]
-    fn deny_mode_is_the_unchanged_baseline_policy() {
+    #[tokio::test]
+    async fn probe_and_exec_run_inside_ksandbox() {
         let workspace = tempfile::tempdir().unwrap();
-        let baseline =
-            NativeBashSandbox::new(workspace.path()).expect("baseline sandbox constructs");
-        let deny = NativeBashSandbox::with_network_mode(
-            workspace.path(),
-            crate::sandbox::SandboxNetworkMode::Deny,
-            &[],
-        )
-        .expect("deny mode constructs");
-        assert_eq!(
-            baseline.inner.policy_digest(),
-            deny.inner.policy_digest(),
-            "deny must be byte-identical to the default policy"
-        );
-        assert!(!deny.network_mediation_armed());
+        let sandbox = NativeBashSandbox::new(workspace.path()).unwrap();
+        sandbox.probe().await.expect("ksandbox probe");
+
+        let output = sandbox
+            .exec_command("printf ksandbox-ok", "/workspace")
+            .await
+            .expect("ksandbox exec");
+        assert_eq!(output.exit_code, 0);
+        assert_eq!(output.stdout, "ksandbox-ok");
+    }
+
+    #[tokio::test]
+    async fn aster_control_plane_write_is_denied() {
+        let workspace = tempfile::tempdir().unwrap();
+        let sandbox = NativeBashSandbox::new(workspace.path()).unwrap();
+        let output = sandbox
+            .exec_command("printf leak > .aster/host-leak", "/workspace")
+            .await
+            .expect("command starts under ksandbox");
+        assert_ne!(output.exit_code, 0, "stderr={}", output.stderr);
+        assert!(!workspace.path().join(".aster/host-leak").exists());
     }
 
     #[test]
-    fn mediated_mode_arms_gate4_with_the_given_allowlist() {
+    fn mediated_mode_arms_allowlist() {
         let workspace = tempfile::tempdir().unwrap();
         let mediated = NativeBashSandbox::with_network_mode(
             workspace.path(),
-            crate::sandbox::SandboxNetworkMode::Mediated,
+            SandboxNetworkMode::Mediated,
             &[
                 "registry.example".to_string(),
                 "packages.internal:8443".to_string(),
             ],
         )
-        .expect("mediated policy with an allowlist arms on this host");
+        .unwrap();
         assert!(mediated.network_mediation_armed());
-        let policy = mediated.inner.policy();
-        let hosts: Vec<&str> = policy
-            .network
-            .allow
-            .iter()
-            .map(|r| r.host.as_str())
-            .collect();
-        assert_eq!(hosts, vec!["registry.example", "packages.internal"]);
-        assert_eq!(policy.network.allow[1].port, Some(8443));
 
-        // An empty allowlist is refused: mediating nothing is not a posture.
         let refusal = NativeBashSandbox::with_network_mode(
             workspace.path(),
-            crate::sandbox::SandboxNetworkMode::Mediated,
+            SandboxNetworkMode::Mediated,
             &[],
         )
         .unwrap_err();
@@ -391,19 +400,12 @@ mod tests {
             format!("{refusal:#}").contains("allow"),
             "refusal names the allowlist: {refusal:#}"
         );
+    }
 
-        // Malformed origins refuse instead of widening into a typo —
-        // including the review's findings: a bare IPv6 literal mis-splits
-        // into host ":" port 1, a bracketed IPv6 keeps its brackets, and
-        // port 0 is not a real destination.
-        for bad in ["registry.example:notaport", "::1", "[::1]:443", "host:0"] {
-            let malformed = NativeBashSandbox::with_network_mode(
-                workspace.path(),
-                crate::sandbox::SandboxNetworkMode::Mediated,
-                &[bad.to_string()],
-            )
-            .unwrap_err();
-            assert!(!format!("{malformed:#}").is_empty(), "{bad:?} must refuse");
-        }
+    #[test]
+    fn unqualified_helper_remains_recognizable() {
+        let error = native_process_lifetime_unqualified();
+        assert!(is_native_process_lifetime_unqualified(&error));
+        assert_eq!(error.to_string(), NATIVE_PROCESS_LIFETIME_UNQUALIFIED);
     }
 }

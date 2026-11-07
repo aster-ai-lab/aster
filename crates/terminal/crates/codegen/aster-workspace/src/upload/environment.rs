@@ -142,7 +142,7 @@ impl WorkspaceEnvironment {
             server_id,
             sandbox_id,
             std::env::var("GROK_SANDBOX_PROFILE").ok(),
-            aster_sandbox::is_inside_bwrap(),
+            aster_confine::is_inside_bwrap(),
             std::env::var("HOSTNAME").ok().filter(|h| !h.is_empty()),
             repo_root,
             remote_url,

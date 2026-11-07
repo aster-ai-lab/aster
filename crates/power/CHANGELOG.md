@@ -1073,7 +1073,7 @@ SEV-SNP confidential-GPU captures.
 
 ### Added
 
-- Added `PowerRuntimeServiceProfile`, which compiles a digest-pinned Power deployment into the shared `aster-runtime` Service contract for execution by Aster Box.
+- Added `PowerRuntimeServiceProfile`, which compiles a digest-pinned Power deployment into the shared `aster-runtime` Service contract for execution by kbox.
 - Added a model-neutral embedded Rust inference substrate with reviewed static graphs, typed CPU/Metal/CUDA devices, bounded admission and cancellation, exact SafeTensors inventories, canonical execution receipts, and strict isolation from the HTTP server feature.
 - Added Colibri-inspired storage/host/device weight residency, layer-local LRU, explicit hot pins, deterministic heat-based planning, batched expert unions, bounded layer-ahead prefetch, and privacy-gated placement/routing telemetry.
 - Added embedded tensor operators and integrity hooks without embedding PP-OCR, Unlimited-OCR, tokenizers, model assets, or model revision policy in Power.
@@ -1109,7 +1109,7 @@ SEV-SNP confidential-GPU captures.
 - Made mistral.rs backend capability tests respect the active feature set, so picolm-only TEE builds no longer expect HuggingFace/Vision support from the disabled mistralrs backend.
 - Cleaned up test-only warnings in lean feature profiles.
 - Updated the llama.cpp multimodal bitmap path for the current `llama-cpp-2` MTMD API.
-- Removed the obsolete `box_integration` example and unused `aster-box-sdk` dev-dependency after the Box SDK dropped the legacy Sandbox API.
+- Removed the obsolete `box_integration` example and unused `kbox-sdk` dev-dependency after the Box SDK dropped the legacy Sandbox API.
 - Expanded CI clippy coverage to all targets for default, HuggingFace, llama.cpp, picolm, and tee-minimal feature profiles.
 - Fixed the Linux `vsock` server path to avoid pulling `tokio-vsock`'s Axum 0.8 adapter into Power's Axum 0.7 server stack.
 - Tightened the release gate to run all-target clippy plus tee-minimal clippy/tests before publishing.

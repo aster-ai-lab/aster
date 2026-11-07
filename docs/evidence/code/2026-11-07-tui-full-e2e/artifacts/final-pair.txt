@@ -1,0 +1,14 @@
+built_at=2026-11-07T07:42:49Z
+host=Darwin arm64
+rustc=rustc 1.97.1 (8bab26f4f 2026-07-14)
+aster_path=/Users/roylin/code/aster/target/debug/aster
+acp_path=/Users/roylin/code/aster/target/debug/aster-acp
+aster_sha256=fe8a3669095f6f461993ae2e67840e357c2c286ad8282e8a3f2248bb39ccf1e6
+acp_sha256=2a227417e6a9ef7970aca6feaf046910abc4fd3ba6580505705a408eeb8bca51
+--- aster --version ---
+aster 0.1.9 (a2fdfd625beb)
+--- aster-acp --version ---
+9.1.8
+--- pair env from strings ---
+, -statehubUrlactiveToolCallsresultGROK_WORKSPACE_COMMANDthe Agent Dashboard is disabled. Enable it by removing `[dashboard] enabled = false` from ~/.grok/config.toml and unsetting GROK_AGENT_DASHBOARD=0.GROK_OPEN_DASHBOARD_AT_STARTUP--build-idaster-cli-pair-v1:bdf7db9857beee3638b283894dc33d94dd4a24e1:aarch64-apple-darwinASTER_REFUSE_UNQUALIFIED_NATIVE_SHELLUpdate Aster to a version the policy allows, or ask your administrator to fix the managed requirements.
+aster-cli-pair-v1:bdf7db9857beee3638b283894dc33d94dd4a24e1:aarch64-apple-darwin

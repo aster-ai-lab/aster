@@ -271,7 +271,7 @@ async fn run_command(
             cmd.current_dir(cwd);
         }
         aster_tty_utils::detach_command(cmd);
-        aster_sandbox::child_net::restrict_child_network(cmd);
+        aster_confine::child_net::restrict_child_network(cmd);
     };
 
     let mut direct = Command::new(&expanded);

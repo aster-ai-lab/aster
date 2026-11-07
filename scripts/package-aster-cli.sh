@@ -44,15 +44,6 @@ copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
 copy_file "${bin_dir}/aster-acp${suffix}" "${stage}/aster-acp${suffix}"
 chmod 755 "${stage}/aster${suffix}" "${stage}/aster-acp${suffix}"
 release_files=("aster${suffix}" "aster-acp${suffix}")
-if [[ "$platform" == macos ]]; then
-  members="$(python3 "${script_dir}/aster_sandbox.py" members --directory "${bin_dir}/sandbox")"
-  while IFS= read -r name; do
-    release_files+=("$name")
-    mkdir -p "${stage}/$(dirname "$name")"
-    copy_file "${bin_dir}/${name}" "${stage}/${name}"
-  done <<< "$members"
-  python3 "${script_dir}/aster_sandbox.py" verify --directory "${stage}/sandbox"
-fi
 if [[ -n "$max_glibc" ]]; then
   if command -v python3 >/dev/null 2>&1; then
     py=(python3)
