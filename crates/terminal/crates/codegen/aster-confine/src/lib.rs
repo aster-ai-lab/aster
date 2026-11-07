@@ -133,8 +133,8 @@ pub fn flush() {}
 pub fn bwrap_reexec_for_profile(
     _profile: &ProfileName,
     _workspace: &Path,
-) -> anyhow::Result<Option<std::process::Command>> {
-    Ok(None)
+) -> Option<std::process::Command> {
+    None
 }
 
 pub fn verify_hook_write_deny_enforced() -> Result<(), String> {
