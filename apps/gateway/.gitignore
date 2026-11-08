@@ -1,6 +1,0 @@
-target/
-dist/
-.cache/
-*.pem
-!tests/fixtures/**/*.pem
-.DS_Store
