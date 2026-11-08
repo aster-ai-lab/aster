@@ -771,7 +771,7 @@ dependencies = [
 
 [[package]]
 name = "aster-acp"
-version = "9.2.0"
+version = "9.2.1"
 dependencies = [
  "agent-client-protocol",
  "anyhow",
@@ -1208,7 +1208,7 @@ dependencies = [
 
 [[package]]
 name = "aster-core"
-version = "9.2.0"
+version = "9.2.1"
 dependencies = [
  "aes-gcm 0.10.3",
  "anyhow",
