@@ -41,12 +41,20 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         engine = engines[0]
         self.assertEqual(engine["name"], "aster-flow")
         self.assertEqual(Path(engine["manifest_path"]), ROOT / "crates/flow/Cargo.toml")
-        for consumer in ["aster-core", "aster-studio"]:
-            package = next(package for package in metadata["packages"] if package["name"] == consumer)
-            dependencies = [dependency for dependency in package["dependencies"]
-                            if dependency["name"] == engine["name"]]
-            self.assertEqual(len(dependencies), 1, consumer)
-            self.assertEqual(Path(dependencies[0]["path"]), ROOT / "crates/flow", consumer)
+        # Studio always binds the workspace flow engine. aster-core may omit it
+        # after dynamic-workflow was retired from the default coding harness; if
+        # it depends on flow at all, it must use this same path package.
+        studio = next(package for package in metadata["packages"] if package["name"] == "aster-studio")
+        studio_deps = [dependency for dependency in studio["dependencies"]
+                       if dependency["name"] == engine["name"]]
+        self.assertEqual(len(studio_deps), 1, "aster-studio")
+        self.assertEqual(Path(studio_deps[0]["path"]), ROOT / "crates/flow", "aster-studio")
+        core = next(package for package in metadata["packages"] if package["name"] == "aster-core")
+        core_deps = [dependency for dependency in core["dependencies"]
+                     if dependency["name"] == engine["name"]]
+        if core_deps:
+            self.assertEqual(len(core_deps), 1, "aster-core")
+            self.assertEqual(Path(core_deps[0]["path"]), ROOT / "crates/flow", "aster-core")
 
     def test_desktop_sources_and_executable_fixtures_are_present(self):
         desktop = ROOT / "apps/studio"
