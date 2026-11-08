@@ -791,13 +791,7 @@ fn open_live_session(coding: bool, workspace_default_model: Option<&str>) -> Opt
         .iter()
         .map(|(key, value)| (key.as_str(), value.as_str()))
         .collect();
-    let mut pty = open_pty(
-        &binary,
-        &workspace,
-        &refs,
-        secrets,
-        Some(model_id.as_str()),
-    );
+    let mut pty = open_pty(&binary, &workspace, &refs, secrets, Some(model_id.as_str()));
     // Home uses the Cursor-like bar ("Type a message..." + →). Older agent
     // chrome kept ❯. Either means the composer can accept a first turn.
     let ready = pty.wait_for("Type a message", Duration::from_secs(45));
