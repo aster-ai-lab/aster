@@ -19,7 +19,7 @@ pub(super) fn repair(fixture: &Fixture) {
 
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "real compiler VM oracle controls; requires explicit qualified ASTER_TEST_OCI_ASSETS"]
+#[ignore = "OCI guest oracles retired with ksandbox-in-Core; host check() remains"]
 async fn guest_oracle_rejects_baseline_current_wrong_bytes_and_protected_changes() {
     let assets =
         PathBuf::from(std::env::var_os("ASTER_TEST_OCI_ASSETS").expect("explicit guest assets"));

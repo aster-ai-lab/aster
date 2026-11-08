@@ -604,9 +604,10 @@ fn qualified_assets(
         if assets.starts_with(&workspace) || workspace.starts_with(&assets) {
             return Err("sandbox_assets_overlap_workspace");
         }
-        aster_core::sandbox::oci::OciSandboxAssets::from_directory(&assets)
-            .map_err(|_| "sandbox_assets_invalid")?;
-        Ok(Some(assets))
+        // OCI guest asset packs were retired with ksandbox-in-Core; keep the
+        // path hygiene checks so callers cannot inherit overlapping assets.
+        let _ = assets;
+        Err("sandbox_profile_unsupported")
     }
     #[cfg(not(all(target_os = "macos", target_arch = "aarch64")))]
     {

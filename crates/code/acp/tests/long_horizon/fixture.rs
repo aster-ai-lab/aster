@@ -290,93 +290,13 @@ impl Fixture {
     }
 
     /// Called only after the ACP owner is reaped, or before it is started.
+    ///
+    /// OCI guest oracles were retired with ksandbox-in-Core; keep the surface so
+    /// ignored long-horizon fixtures still compile on macOS aarch64.
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     pub async fn check_in_guest(&self, assets: &Path) -> Result<Oracle, String> {
-        let _timing = super::artifact::timing::span(super::artifact::timing::Phase::Oracle);
-        use aster_core::sandbox::oci::{OciBashSandbox, OciSandboxAssets};
-        use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
-        let snapshot = tempfile::tempdir_in(&self.state).map_err(|_| "oracle_snapshot")?;
-        let mut current_files = BTreeMap::new();
-        for name in ARTIFACTS {
-            let bytes = match super::artifact::read(&self.workspace, name) {
-                Ok(bytes) => bytes,
-                Err(error)
-                    if name == "CHANGELOG.md" && error.kind() == std::io::ErrorKind::NotFound =>
-                {
-                    continue
-                }
-                Err(_) => return Err(format!("oracle_artifact_refused:{name}")),
-            };
-            std::fs::write(snapshot.path().join(name), &bytes)
-                .map_err(|_| "oracle_snapshot_write")?;
-            current_files.insert(name.to_owned(), format!("{:x}", Sha256::digest(&bytes)));
-        }
-        let hidden = snapshot.path().join("acceptance.rs");
-        std::fs::write(&hidden, checker_source(Path::new("/workspace/lib.rs")))
-            .map_err(|_| "oracle_checker_write")?;
-        let hidden_hash = digest(&hidden).map_err(|_| "oracle_checker_identity")?;
-        let sandbox = OciBashSandbox::from_artifacts(
-            snapshot.path(),
-            OciSandboxAssets::from_directory(assets).map_err(|_| "oracle_assets")?,
-        )
-        .map_err(|_| "oracle_sandbox")?;
-        let output = sandbox.exec(SandboxCommandRequest {
-            command: "rustc --edition=2021 --test acceptance.rs -o /tmp/acceptance && printf 'ASTER_ORACLE_COMPILE_OK\\n' && /tmp/acceptance --test-threads=1".into(),
-            guest_workspace: "/workspace".into(), timeout_ms: 30_000, output_observer: None, env: None,
-        }).await;
-        sandbox.shutdown().await;
-        let output = output.map_err(|_| "oracle_guest_execution")?;
-        let unchanged = current_files.iter().all(|(name, hash)| {
-            super::artifact::read(snapshot.path(), name)
-                .ok()
-                .map(|bytes| format!("{:x}", Sha256::digest(bytes)))
-                .as_ref()
-                == Some(hash)
-                && super::artifact::read(&self.workspace, name)
-                    .ok()
-                    .map(|bytes| format!("{:x}", Sha256::digest(bytes)))
-                    .as_ref()
-                    == Some(hash)
-        });
-        let checker_unchanged = unchanged
-            && super::artifact::read(snapshot.path(), "acceptance.rs")
-                .ok()
-                .map(|bytes| format!("{:x}", Sha256::digest(bytes)))
-                .as_ref()
-                == Some(&hidden_hash)
-            && digest(&self.checker).ok().as_ref() == Some(&self.checker_hash);
-        let protected_unchanged = self
-            .protected
-            .iter()
-            .all(|(name, hash)| current_files.get(name) == Some(hash));
-        let changelog_present = super::artifact::read(&self.workspace, "CHANGELOG.md")
-            .is_ok_and(|bytes| !String::from_utf8_lossy(&bytes).trim().is_empty());
-        let compile_ok = !output.timed_out
-            && output
-                .stdout
-                .lines()
-                .any(|line| line == "ASTER_ORACLE_COMPILE_OK");
-        let tests_ok = compile_ok
-            && output.exit_code == 0
-            && tests_passed(
-                &output.stdout,
-                &[
-                    "independent_contract",
-                    "fixture::tests::formats_cents",
-                    "fixture::tests::quantity_rejects_zero",
-                    "fixture::tests::rounds_half_up",
-                ],
-            );
-        Ok(Oracle {
-            correct: tests_ok && protected_unchanged && checker_unchanged && changelog_present,
-            compile_ok,
-            tests_ok,
-            protected_unchanged,
-            checker_unchanged,
-            changelog_present,
-            current_files,
-            diagnostic: format!("{}{}", output.stdout, output.stderr),
-        })
+        let _ = (self, assets);
+        Err("sandbox_profile_unsupported".into())
     }
 }
 
