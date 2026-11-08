@@ -158,7 +158,8 @@ jobs:
     if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
     name: macos-bins
     runs-on: macos-latest
-    timeout-minutes: 120
+    # release-dist + thin LTO routinely exceeds 90m on GHA macos-latest cold caches.
+    timeout-minutes: 180
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
