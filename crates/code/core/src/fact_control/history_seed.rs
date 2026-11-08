@@ -643,8 +643,10 @@ pub(super) fn recorded_tool_calls_in(
                 #[serde(default, rename = "toolCallId")]
                 tool_call_id: Option<String>,
                 ok: bool,
+                #[serde(default)]
                 output: String,
             }
+            let output = super::fact_reads::tool_result_fact_output(&fact.payload).to_owned();
             let payload: ResultPayload = serde_json::from_value(fact.payload).map_err(|error| {
                 ActorError::Schema(format!("invalid original tool-result metadata: {error}"))
             })?;
@@ -661,7 +663,7 @@ pub(super) fn recorded_tool_calls_in(
                 ));
             }
             let role = if payload.ok { "tool" } else { "tool-error" };
-            completed.push((call, format!("{role}\n{}", payload.output)));
+            completed.push((call, format!("{role}\n{output}")));
         } else if fact.kind == "compaction.done" {
             #[derive(serde::Deserialize)]
             struct CompactionPayload {
