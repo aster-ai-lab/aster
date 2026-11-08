@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/aster/tests/visual_tui_harness/drive_shop_multiturn.py", line 360, in <module>
+    raise SystemExit(main())
+  File "/Users/roylin/code/aster/apps/aster/tests/visual_tui_harness/drive_shop_multiturn.py", line 292, in main
+    wid = find_wid(marker)
+  File "/Users/roylin/code/aster/apps/aster/tests/visual_tui_harness/drive_shop_multiturn.py", line 232, in find_wid
+    raise RuntimeError(f"no Terminal window matching {marker} (tried {sorted(markers)})")
+RuntimeError: no Terminal window matching /private/tmp/aster-visual-shop-v3/ws (tried ['/private/tmp/aster-visual-shop-v3/ws', '/tmp/aster-visual-shop-v3/ws'])

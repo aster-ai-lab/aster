@@ -65,7 +65,13 @@ struct PtySession {
     answered_permission_seq: u64,
 }
 
-fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)], secrets: Vec<String>) -> PtySession {
+fn open_pty(
+    binary: &Path,
+    cwd: &Path,
+    env: &[(&str, &str)],
+    secrets: Vec<String>,
+    model: Option<&str>,
+) -> PtySession {
     let rows = 40;
     let cols = 120;
     let system = native_pty_system();
@@ -97,7 +103,11 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)], secrets: Vec<String
     // turns have to read, write, and run the checker, so start the execution
     // profile. `--no-plan` is the existing pager flag.
     command.arg("--no-plan");
-    if let Some(model) = std::env::var_os("ASTER_PINNED_MODEL") {
+    // Explicit launch model (CLI `--model` / ASTER_PINNED_MODEL) must reach aster-acp.
+    if let Some(model) = model.filter(|value| !value.is_empty()) {
+        command.arg("--model");
+        command.arg(model);
+    } else if let Some(model) = std::env::var_os("ASTER_PINNED_MODEL") {
         command.arg("--model");
         command.arg(model);
     }
@@ -457,6 +467,70 @@ fn assert_screen_clean(pty: &PtySession, screen: &str) {
 
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
+fn real_llm_tui_cli_model_outranks_workspace_default_model() {
+    use tui_coding::turns::{selected_model, trace_events, trace_pair};
+
+    // Workspace admits a different catalog model; CLI `--model` must still win.
+    const WORKSPACE_CONFLICT: &str = "glm-01/glm-5.3";
+    let mut session = open_live_with_workspace_model_conflict(WORKSPACE_CONFLICT)
+        .expect("ASTER_CONFIG_FILE is unset; refusing to pass");
+    assert_ne!(
+        session.model_id, WORKSPACE_CONFLICT,
+        "pin must differ from the workspace conflict model"
+    );
+    let ready = session
+        .pty
+        .wait_for(&session.model_id, Duration::from_secs(45));
+    assert!(
+        ready.contains(&session.model_id),
+        "footer missed the CLI pin under a conflicting workspace default_model\n{}",
+        session.pty.redact(&ready)
+    );
+    assert!(
+        !ready.contains(WORKSPACE_CONFLICT),
+        "workspace default_model leaked into the session chrome\n{}",
+        session.pty.redact(&ready)
+    );
+
+    let trace = session.prompt_trace.clone().expect("request relay");
+    submit_prompt(&mut session.pty, PROMPT);
+    let deadline = Instant::now() + Duration::from_secs(420);
+    loop {
+        let screen = session.pty.screen();
+        assert_screen_clean(&session.pty, &screen);
+        assert!(!session.pty.child_exited(), "TUI exited early");
+        answer_dialog(&mut session.pty, &screen);
+        if let Some((request, response)) = trace_pair(&trace_events(&trace), PROMPT) {
+            assert!(
+                response["error_code"].is_null(),
+                "prompt failed: {response}"
+            );
+            assert_eq!(
+                selected_model(
+                    &trace_events(&trace),
+                    request["session_id"].as_str().expect("session identity")
+                ),
+                Some(session.model_id.as_str()),
+                "session model must remain the CLI pin, not {WORKSPACE_CONFLICT}"
+            );
+            break;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "no completed turn while proving model pin\n{}",
+            session.pty.redact(&screen)
+        );
+        std::thread::sleep(Duration::from_millis(80));
+    }
+    assert_acl_unchanged(&session);
+    eprintln!(
+        "ORACLE case=a1-cli-model-pin pin={} workspace_conflict={WORKSPACE_CONFLICT}",
+        session.model_id
+    );
+}
+
+#[test]
+#[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_turn_shows_assistant_text() {
     use tui_coding::turns::{selected_model, trace_events, trace_pair};
 
@@ -542,6 +616,15 @@ fn open_live() -> Option<LiveSession> {
 }
 
 fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
+    open_live_session(coding, None)
+}
+
+/// Layer C A1: workspace ACL names a conflicting admitted model; CLI `--model` must win.
+fn open_live_with_workspace_model_conflict(workspace_default_model: &str) -> Option<LiveSession> {
+    open_live_session(false, Some(workspace_default_model))
+}
+
+fn open_live_session(coding: bool, workspace_default_model: Option<&str>) -> Option<LiveSession> {
     let config_value = std::env::var_os("ASTER_CONFIG_FILE").filter(|value| !value.is_empty())?;
     let config = PathBuf::from(config_value);
     assert!(config.is_file(), "ASTER_CONFIG_FILE is not a file");
@@ -574,6 +657,15 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
     std::fs::create_dir_all(home.join("grok")).expect("home");
     std::fs::create_dir_all(&workspace).expect("workspace");
     std::fs::write(workspace.join("sentinel.txt"), b"unchanged").expect("sentinel");
+    if let Some(model) = workspace_default_model {
+        let dir = workspace.join(".aster");
+        std::fs::create_dir_all(&dir).expect("workspace acl dir");
+        std::fs::write(
+            dir.join("config.acl"),
+            format!("default_model = \"{model}\"\n"),
+        )
+        .expect("workspace default_model conflict");
+    }
 
     // Exercise the public host ACL entry through the actual ACP process.
     // This is not SessionOptions injection or a workspace-owned declaration.
@@ -699,7 +791,13 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         .iter()
         .map(|(key, value)| (key.as_str(), value.as_str()))
         .collect();
-    let mut pty = open_pty(&binary, &workspace, &refs, secrets);
+    let mut pty = open_pty(
+        &binary,
+        &workspace,
+        &refs,
+        secrets,
+        Some(model_id.as_str()),
+    );
     // Home uses the Cursor-like bar ("Type a message..." + →). Older agent
     // chrome kept ❯. Either means the composer can accept a first turn.
     let ready = pty.wait_for("Type a message", Duration::from_secs(45));
@@ -731,9 +829,35 @@ fn permission_card_is_focused(screen: &str) -> bool {
     screen.contains("Ctrl+o:yolo")
 }
 
+/// True when the ask_user multi-choice card owns the keyboard.
+fn ask_user_card_is_focused(screen: &str) -> bool {
+    screen.contains("1/3:select") || (screen.contains("ask_user") && screen.contains("(●)"))
+}
+
+/// Keystrokes that select the "run / accept checker" option on shop ask_user cards.
+/// Matches `apps/aster/tests/visual_tui_harness/drive_shop_multiturn.py`.
+fn ask_user_reply_keys(screen: &str) -> Option<&'static [u8]> {
+    if !ask_user_card_is_focused(screen) {
+        return None;
+    }
+    // Observed shop cards put "run gate / accept HOLD" on option 2; avoid early fee fixes.
+    if screen.contains("Also fix fee.py")
+        || screen.contains("Run it anyway")
+        || screen.contains("accept the DUAL-HOLD")
+        || screen.contains("gate.py")
+    {
+        return Some(b"2\r");
+    }
+    Some(b"2\r")
+}
+
 fn answer_dialog(pty: &mut PtySession, screen: &str) -> bool {
     if screen.contains("Do you trust the contents of this directory") {
         pty.type_text("y");
+        return true;
+    }
+    if let Some(keys) = ask_user_reply_keys(screen) {
+        pty.write_bytes(keys);
         return true;
     }
     if permission_card_is_focused(screen) {
@@ -1399,7 +1523,10 @@ fn drive_until_screen(
             std::thread::sleep(Duration::from_millis(800));
             last = pty.screen();
             answer_dialog(pty, &last);
-            if done(&last, pty.parser.screen()) && !permission_card_is_focused(&last) {
+            if done(&last, pty.parser.screen())
+                && !permission_card_is_focused(&last)
+                && !ask_user_card_is_focused(&last)
+            {
                 return last;
             }
         }
@@ -1775,4 +1902,19 @@ fn wrapped_composer_line_still_matches_the_prompt() {
     let prompt = "Read note.txt in this workspace and reply with one short sentence that quotes the token written in that file. Use the read tool. Do not guess.";
     assert!(!screen.contains(prompt));
     assert!(screen_has(screen, prompt));
+}
+
+#[test]
+fn ask_user_reply_keys_match_visual_harness_policy() {
+    assert!(ask_user_reply_keys("composer idle").is_none());
+    assert!(ask_user_reply_keys("Ctrl+o:yolo Yes, proceed").is_none());
+
+    let run_card = "ask_user\n(●) Run it anyway\n1/3:select\ngate.py";
+    assert_eq!(ask_user_reply_keys(run_card), Some(b"2\r".as_slice()));
+
+    let fee_card = "1/3:select\nAlso fix fee.py\naccept the DUAL-HOLD";
+    assert_eq!(ask_user_reply_keys(fee_card), Some(b"2\r".as_slice()));
+
+    let generic = "ask_user choice\n(●) option a";
+    assert_eq!(ask_user_reply_keys(generic), Some(b"2\r".as_slice()));
 }

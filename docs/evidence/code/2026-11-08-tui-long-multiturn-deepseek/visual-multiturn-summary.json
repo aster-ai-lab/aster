@@ -1,0 +1,14 @@
+{
+  "visual_multiturn": true,
+  "note": "Turn2 used ask_user; forced gate for HOLD; turn4 composer needed extra Enter.",
+  "runs": [
+    "DUAL-HOLD",
+    "DUAL-HOLD",
+    "DUAL-GATE-7K",
+    "DUAL-GATE-7K"
+  ],
+  "rate": "def sticker_price(count):\n    return count * 8\n",
+  "fee": "def parcel_fee(count):\n    return count * 5\n",
+  "fail_before_pass": true,
+  "pass_count": 2
+}

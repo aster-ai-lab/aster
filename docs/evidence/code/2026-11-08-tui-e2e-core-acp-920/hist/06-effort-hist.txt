@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:36:18 on ttys000
+export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-e2e-030/ws                                                                                             
+                                                                                                                        
+     Unknown TUI command: /model/config. Use /help for available commands.                                              
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────3─  
+    ❯ low  Faster, lighter reasoning                                                                                    
+      high Heavy reasoning                                                                                              
+      max  Maximum reasoning                                                                                            
+  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────  
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → /effort <level>                                                                                                    
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — tok/s                                                                 deepseek/DeepSeek Flash · yolo   
+                                                                                                                        
+  Enter:send  │  Shift+Enter/Opt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                  
+                                                                                                                        
+

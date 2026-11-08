@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:36:18 on ttys000
+export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-e2e-030/ws                                                                                             
+                                                                                                                        
+     Unknown TUI c┌─ Settings ───────────────────────────────────────────────────────────────── [✗] ─┐                  
+                  │                                                                                  │                  
+                  │   / to search                                                                    │                  
+                  │  ──────────────────────────────────────────────────────────────────────────────  │                  
+                  │   Appearance ──────────────────────────────────────────────────────────────────  │                  
+                  │  ▸ Compact mode                                                         off      │                  
+                  │  ▸ Default screen mode                                           Fullscreen  ›   │                  
+                  │  ▸ Show timestamps                                                       on      │                  
+                  │  ▸ Timeline sidebar                                                     off      │                  
+                  │  ▸ Snap prompt to top on send                                            on      │                  
+                  │  ▸ Disable vim input mode                                                on      │                  
+                  │  ▸ Vim scrollback navigation                                            off      │                  
+                  │  ▸ Theme                                                        Aster Night  ›   │                  
+                  │  ▸ Auto dark theme                                              Aster Night  ›   │                  
+                  │  ▸ Auto light theme                                               Aster Day  ›   │                  
+                  │  ▸ Render Mermaid diagrams                                             Auto  ›   │                  
+                  │  ▸ Max thoughts width                                                   120      │                  
+                  │  ▸ Show thinking blocks                                                  on      │                  
+                  │                                                                                  │                  
+                  │                     Tip · Ask Aster Code to change a setting                     │                  
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                                                                  │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Add a follow-│    ↑/↓/j/k nav  |  g/G top/btm  |  Space toggle  |  Enter toggle  |  → expand    │                  
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                      / search  |  d reset  |  F2/Esc close                       │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — t└──────────────────────────────────────────────────────────────────────────────────┘ek Flash · yolo   
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+

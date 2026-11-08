@@ -1,0 +1,34 @@
+{
+  "model": "deepseek/deepseek-flash",
+  "aster": "0.3.0",
+  "aster_acp": "9.2.0",
+  "formal": {
+    "real_llm_tui_turns_fix_the_diagnosed_bug": true,
+    "real_llm_tui_long_task_repairs_and_quotes_the_check": true
+  },
+  "visual_long_task": {
+    "ok": true,
+    "runs": [
+      "DUAL-HOLD",
+      "DUAL-HOLD",
+      "DUAL-HOLD",
+      "DUAL-HOLD",
+      "DUAL-GATE-7K"
+    ]
+  },
+  "visual_multiturn": {
+    "visual_multiturn": true,
+    "note": "Turn2 used ask_user; forced gate for HOLD; turn4 composer needed extra Enter.",
+    "runs": [
+      "DUAL-HOLD",
+      "DUAL-HOLD",
+      "DUAL-GATE-7K",
+      "DUAL-GATE-7K"
+    ],
+    "rate": "def sticker_price(count):\n    return count * 8\n",
+    "fee": "def parcel_fee(count):\n    return count * 5\n",
+    "fail_before_pass": true,
+    "pass_count": 2
+  },
+  "all_ok": true
+}

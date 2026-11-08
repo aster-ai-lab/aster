@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:50:46 on ttys000
+export PATH='/tmp/aster-tui-long-e2e/bin':$PATH; cd '/tmp/aster-tui-long-e2e/ws'; clear; exec aster --model deepseek/deepseek-flash --no-plan --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-long-e2e/bin':$PATH; cd '/tmp/aster-tui-long-e2e/ws'; clear; exec aster --model deepseek/deepseek-flash --no-plan --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-long-e2e/ws                                                                                20K / 1.0M  
+                                                                                                                        
+                                                                                                                        
+     ❯ Run exactly `python3 gate.py` now. Do not edit any files. Quote its exact output.                    11:04 PM    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                        
+    ⠼ Working… 0.2s                                                                                 0.2s ⇣20.2k [stop]  
+                                                                                                                        
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Add a follow-up                                                                                                    
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 174.7k tokens · — tok/s                                                            deepseek/DeepSeek Flash · yolo   
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+c:cancel  │  Ctrl+x:shortcuts                                                                 
+                                                                                                                        
+

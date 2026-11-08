@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:36:18 on ttys000
+export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-e2e-030/ws                                                                                             
+                                                                                                                        
+                                                                                                                        
+            ╭───────────────────────────────────────────────────────────────────────────────────────────────╮           
+            │                                                                                               │           
+            │                    +                  Aster  0.3.0 (668c7bda60ec)                             │           
+            │                   *#        +#        Thanks for trying Aster, give feedback with /feedback!  │           
+            │                  *###                                                                         │           
+            │                +*#####+..........     New worktree                                    ctrl+w  │           
+            │            .+*####**####*+    ::.     Resume session                                  ctrl+r  │           
+            │       ....**#####*  +######*+::       Changelog                                               │           
+            │     ...       *###++###*+:            Quit                                            ctrl+q  │           
+            │     :::::::oo***+####*                                                                        │           
+            │                  +*#+                                                                         │           
+            │                   *#                                                                          │           
+            │                    +                                                                          │           
+            │                                                                                               │           
+            ╰───────────────────────────────────────────────────────────────────────────────────────────────╯           
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Type a message...                                                                                                  
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+                                                                                       deepseek/DeepSeek Flash · yolo   
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+

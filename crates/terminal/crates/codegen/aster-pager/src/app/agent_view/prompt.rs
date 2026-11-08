@@ -221,10 +221,9 @@ impl AgentView {
                     self.prompt.accept_slash_completion(&self.session.models);
                     return InputOutcome::Changed;
                 }
-                // Esc: close dropdown, revert any live preview.
+                // Esc: close dropdown, revert any live preview, clear `/…` draft.
                 KeyCode::Esc => {
-                    self.prompt.slash_cancel_preview();
-                    self.prompt.slash_close();
+                    self.prompt.slash_dismiss();
                     return InputOutcome::Changed;
                 }
                 // Enter: accept completion, then send (terminal row) or stay open (a row whose insert_text ends with a space chains)
@@ -813,6 +812,19 @@ impl AgentView {
         // REWIND requires an EMPTY prompt (checked below), so there is no draft to clobber or silently stash and it may arm from EITHER pane
         let has_content = !self.prompt.text().is_empty() || !self.prompt.images.is_empty();
 
+        // Bare `/effort` (palette already closed or never stole Esc): clear on the
+        // first Esc so prose cannot concatenate into `/effortReply`. `/model id`
+        // keeps args and still uses the double-Esc clear arm below.
+        if has_content
+            && self.active_pane == AgentPane::Prompt
+            && crate::views::prompt_widget::PromptWidget::is_bare_slash_command_draft(
+                self.prompt.text(),
+            )
+        {
+            self.prompt.slash_dismiss();
+            return Some(InputOutcome::Changed);
+        }
+
         // Idle, non-empty (text and/or image chips), prompt pane: arm clear (double Esc)
         if has_content && self.active_pane == AgentPane::Prompt {
             return Some(InputOutcome::ArmPending {
@@ -1200,6 +1212,36 @@ mod slash_menu_enter_tests {
             "got {outcome:?}; prompt={:?}",
             agent.prompt.text()
         );
+    }
+
+    #[test]
+    fn esc_clears_incomplete_slash_draft_so_prose_cannot_concatenate() {
+        let mut agent = agent_with_slash("/effort");
+        let outcome =
+            agent.handle_prompt_key_for_test(&KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE));
+        assert!(matches!(outcome, InputOutcome::Changed));
+        assert!(
+            !agent.prompt.slash_open(),
+            "slash palette must close on Esc"
+        );
+        assert_eq!(
+            agent.prompt.text(),
+            "",
+            "incomplete /effort draft must not remain for the next paste"
+        );
+        agent.prompt.set_text("Reply with exactly this token");
+        assert!(
+            !agent.prompt.text().starts_with("/effort"),
+            "prose must not concatenate onto a leftover slash token"
+        );
+    }
+
+    #[test]
+    fn clear_incomplete_slash_draft_leaves_multiline_prose() {
+        let mut agent = super::test_fixtures::make_agent();
+        agent.prompt.set_text("hello\n/world");
+        agent.prompt.clear_incomplete_slash_draft();
+        assert_eq!(agent.prompt.text(), "hello\n/world");
     }
 }
 

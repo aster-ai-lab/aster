@@ -143,6 +143,8 @@ jobs:
           cargo test --locked -p aster-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
       - name: Logo cache and rendering
         run: cargo test --locked -p aster-pager --lib views::welcome
+      - name: TUI invariant A1 (CLI --model outranks ACL default)
+        run: cargo test --locked -p aster-acp --test tui_913_hermetic cli_model_override_outranks_workspace_default_model -- --test-threads=1
       - name: Current memory-retention contracts
         run: cargo test --locked -p aster-core --lib memory_retention_tests
       - name: macOS native execution boundary

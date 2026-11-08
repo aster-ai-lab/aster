@@ -589,6 +589,15 @@ struct PtySession {
 }
 
 fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)]) -> PtySession {
+    open_pty_with_args(binary, cwd, env, &[])
+}
+
+fn open_pty_with_args(
+    binary: &Path,
+    cwd: &Path,
+    env: &[(&str, &str)],
+    extra_args: &[&str],
+) -> PtySession {
     let rows = 40;
     let cols = 120;
     let system = native_pty_system();
@@ -604,6 +613,9 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)]) -> PtySession {
     command.env_clear();
     command.arg("--cwd");
     command.arg(cwd);
+    for arg in extra_args {
+        command.arg(arg);
+    }
     for (key, value) in env {
         command.env(key, value);
     }
@@ -793,9 +805,13 @@ fn env_refs(env: &[(String, String)]) -> Vec<(&str, &str)> {
 }
 
 fn open_on_model(fixture: &Fixture, model: &str) -> PtySession {
+    open_on_model_with_args(fixture, model, &[])
+}
+
+fn open_on_model_with_args(fixture: &Fixture, model: &str, extra_args: &[&str]) -> PtySession {
     let binary = require_tui();
     let refs = env_refs(&fixture.env);
-    let mut pty = open_pty(&binary, &fixture.workspace, &refs);
+    let mut pty = open_pty_with_args(&binary, &fixture.workspace, &refs, extra_args);
     let screen = pty.wait_for(model, Duration::from_secs(45));
     assert_no_secret(&screen);
     pty
@@ -890,6 +906,141 @@ fn composer_opens_on_the_acl_default_model() {
     let sentinel = std::fs::read(fixture.workspace.join("sentinel.txt")).expect("sentinel");
     assert_eq!(sentinel, b"unchanged");
     eprintln!("ORACLE case=launch model={ACL_MODEL}");
+}
+
+/// A1: CLI `--model` outranks ACL / workspace `default_model`.
+/// Oracle is the mock request `model` field (L0/L2), not chrome alone.
+#[test]
+fn cli_model_override_outranks_workspace_default_model() {
+    let (addr, mock) = spawn_mock();
+    let fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
+    assert!(
+        fixture
+            .workspace
+            .join(".aster")
+            .join("config.acl")
+            .is_file(),
+        "fixture must seed workspace default_model={ACL_MODEL}"
+    );
+    let binary = require_tui();
+    let refs = env_refs(&fixture.env);
+    let mut pty = open_pty_with_args(
+        &binary,
+        &fixture.workspace,
+        &refs,
+        &["--model", ALT_MODEL, "--no-plan"],
+    );
+    let ready = pty.wait_for("Type a message", Duration::from_secs(45));
+    assert_no_secret(&ready);
+    submit_line(&mut pty, TURN_MARKER);
+    let answered = pty.wait_for(ASSISTANT_TEXT, Duration::from_secs(60));
+    assert_no_secret(&answered);
+    let bodies = mock.bodies.lock().expect("bodies").clone();
+    let models: Vec<_> = bodies
+        .iter()
+        .filter(|body| body.contains(TURN_MARKER))
+        .map(|body| request_model(body).unwrap_or_default())
+        .collect();
+    assert!(
+        !models.is_empty(),
+        "CLI-pinned turn never reached the mock\n{}",
+        redact(&answered)
+    );
+    assert!(
+        models
+            .iter()
+            .all(|model| model == "alt" || model.ends_with("/alt") || model == ALT_MODEL),
+        "CLI --model must outrank ACL default_model={ACL_MODEL}; got {models:?}\n{}",
+        redact(&answered)
+    );
+    // L1 chrome: footer should also show the pin once the session is live.
+    let screen = pty.screen();
+    assert!(
+        screen.contains(ALT_MODEL) || screen.contains("mock/alt"),
+        "CLI --model pin missing from chrome after a pinned turn\n{}",
+        redact(&screen)
+    );
+    assert!(
+        !screen.contains(ACL_MODEL),
+        "workspace/ACL default_model leaked past CLI --model\n{}",
+        redact(&screen)
+    );
+    eprintln!("ORACLE case=a1-cli-model-pin pin={ALT_MODEL} acl_default={ACL_MODEL} models={models:?}");
+}
+
+/// B1: Esc dismisses an incomplete `/effort` draft so prose cannot concatenate into `/effortReply`.
+#[test]
+fn effort_slash_esc_clears_draft_before_prose() {
+    let (addr, mock) = spawn_mock();
+    let fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
+    let mut pty = open_on_model(&fixture, ACL_MODEL);
+    pty.clear_line();
+    pty.type_text("/effort");
+    let open = pty.wait_for("Set reasoning effort", Duration::from_secs(5));
+    assert!(
+        open.contains("/effort"),
+        "slash draft missing\n{}",
+        redact(&open)
+    );
+    assert_no_secret(&open);
+    // Esc can be ambiguous on a raw PTY (`\x1b`); send a second Esc within the
+    // double-press window and also try the CSI u form used by modern terminals.
+    pty.escape();
+    std::thread::sleep(Duration::from_millis(80));
+    pty.write_bytes(b"\x1b[27u");
+    std::thread::sleep(Duration::from_millis(80));
+    pty.escape();
+    let dismissed = {
+        let deadline = Instant::now() + Duration::from_secs(4);
+        let mut last = String::new();
+        loop {
+            last = pty.screen();
+            let composer_has_effort = last.lines().any(|line| {
+                let trimmed = line.trim();
+                (trimmed.starts_with('→') || trimmed.contains('\u{276f}'))
+                    && trimmed.contains("/effort")
+            });
+            if !composer_has_effort && !last.contains("Set reasoning effort") {
+                break last;
+            }
+            if Instant::now() >= deadline {
+                panic!(
+                    "Esc did not dismiss /effort draft\n{}",
+                    redact(&last)
+                );
+            }
+            std::thread::sleep(Duration::from_millis(40));
+        }
+    };
+    assert_no_secret(&dismissed);
+    // Reuse TURN_MARKER so the loopback mock returns ASSISTANT_TEXT.
+    const PROSE: &str = TURN_MARKER;
+    pty.type_text(PROSE);
+    let typed = pty.wait_for(PROSE, Duration::from_secs(5));
+    assert!(
+        typed.contains(PROSE) && !typed.contains(&format!("/effort{PROSE}")),
+        "prose concatenated onto a leftover slash token\n{}",
+        redact(&typed)
+    );
+    assert!(
+        !typed.contains("Unknown TUI command"),
+        "prose was treated as an unknown slash\n{}",
+        redact(&typed)
+    );
+    pty.enter();
+    let settled = pty.wait_for(ASSISTANT_TEXT, Duration::from_secs(60));
+    assert!(
+        !settled.contains("Unknown TUI command"),
+        "prose after /effort Esc hit Unknown TUI command\n{}",
+        redact(&settled)
+    );
+    assert_no_secret(&settled);
+    let bodies = mock.bodies.lock().expect("bodies").clone();
+    assert!(
+        bodies.iter().any(|body| body.contains(PROSE)),
+        "prose turn must reach the mock as natural language, not a slash"
+    );
+    eprintln!("ORACLE case=b1-effort-esc-prose marker={PROSE}");
 }
 
 #[test]

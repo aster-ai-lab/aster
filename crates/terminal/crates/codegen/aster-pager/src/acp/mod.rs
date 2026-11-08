@@ -177,6 +177,9 @@ pub struct ConnectFlags {
     pub rules: Option<String>,
     /// Override reasoning effort for all models.
     pub reasoning_effort_override: Option<ReasoningEffort>,
+    /// CLI model override (`-m` / `--model`). Forwarded to aster-acp as `--model`
+    /// so workspace ACL `default_model` cannot silently win.
+    pub model: Option<String>,
     /// CLI permission rules from the --allow and --deny flags.
     /// Not supported in leader mode (agent config is set at leader startup).
     pub permission_rules: Vec<aster_workspace::permission::types::PermissionRule>,
@@ -225,6 +228,9 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
     if let Some(effort) = flags.reasoning_effort_override {
         agent_config.reasoning_effort_override = Some(effort);
     }
+    if let Some(model) = flags.model.clone() {
+        agent_config.default_model_override = Some(model);
+    }
     if !flags.permission_rules.is_empty() {
         agent_config.cli_agent_overrides.permission_rules = flags.permission_rules.clone();
     }
@@ -236,12 +242,20 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
     });
     // Product path: forked pager UI + aster-core ACP agent subprocess.
     // No sidecar fails closed. The legacy shell is not a fallback.
-    // The prompt model and effort are the ACL defaults the child loads. TOML
-    // theme and key bindings stay on this process and are not passed as
-    // `--model`. An inherited `ASTER_DEFAULT_MODEL` still applies inside the child.
+    // CLI `-m`/`--model` is forwarded as the child's `--model` so an explicit
+    // launch intent outranks workspace/user ACL `default_model`. TOML theme
+    // and key bindings stay on this process. Without a CLI override, the child
+    // loads ACL defaults; an inherited `ASTER_DEFAULT_MODEL` still applies.
     let cwd = std::env::current_dir().ok();
+    let spawn_model = agent_config.default_model_override.as_deref();
+    tracing::info!(
+        cli_model_override = ?spawn_model,
+        spawned_model = ?spawn_model,
+        "ACP sidecar spawn model selection"
+    );
     let spawned =
-        aster_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), None).await?;
+        aster_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), spawn_model)
+            .await?;
     let auth_manager = spawned.auth_manager.clone();
     initialize_connection(AgentEndpoint::from(spawned), &flags, auth_manager).await
 }

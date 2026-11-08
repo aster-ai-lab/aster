@@ -1,0 +1,111 @@
+== 02-help: '/help'
+   ok=True deepseek=True
+== 03-model: '/model'
+   ok=True deepseek=True
+== 04-config: '/config'
+   ok=True deepseek=True
+== 05-settings: '/settings'
+   ok=True deepseek=False
+== 06-effort: '/effort'
+   ok=True deepseek=True
+== 07-chat: 'Reply with exactly this token and nothing else: E2E_OK_DEEPSEEK_920'
+   ok=False deepseek=True
+== 08-tool-read: 'Read the file readme.txt in the current workspace and quote its exact contents in your reply.'
+   ok=True deepseek=True
+== 09-goal-set: '/goal Verify Aster TUI against Core 9.2.0 and ACP 9.2.0'
+   ok=True deepseek=True
+== 10-goal-status: '/goal status'
+   ok=True deepseek=True
+== 11-compact: '/compact'
+   ok=True deepseek=True
+== 12-new: '/new'
+   ok=True deepseek=True
+{
+  "wid": "w-36013",
+  "driver": "agent-desktop window ops + osascript key delivery + Terminal history",
+  "binaries": {
+    "aster": "0.3.0",
+    "aster-acp": "9.2.0",
+    "model": "deepseek/deepseek-flash"
+  },
+  "steps": [
+    {
+      "name": "01-welcome",
+      "version_0.3.0": true,
+      "footer_deepseek": true,
+      "footer_glm": false,
+      "welcome_box": true
+    },
+    {
+      "name": "02-help",
+      "input": "/help",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "03-model",
+      "input": "/model",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "04-config",
+      "input": "/config",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "05-settings",
+      "input": "/settings",
+      "ok": true,
+      "footer_deepseek": false
+    },
+    {
+      "name": "06-effort",
+      "input": "/effort",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "07-chat",
+      "input": "Reply with exactly this token and nothing else: E2E_OK_DEEPSEEK_920",
+      "ok": false,
+      "footer_deepseek": true
+    },
+    {
+      "name": "08-tool-read",
+      "input": "Read the file readme.txt in the current workspace and quote its exact contents in your reply.",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "09-goal-set",
+      "input": "/goal Verify Aster TUI against Core 9.2.0 and ACP 9.2.0",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "10-goal-status",
+      "input": "/goal status",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "11-compact",
+      "input": "/compact",
+      "ok": true,
+      "footer_deepseek": true
+    },
+    {
+      "name": "12-new",
+      "input": "/new",
+      "ok": true,
+      "footer_deepseek": true
+    }
+  ],
+  "failed": [
+    "07-chat"
+  ],
+  "final_footer_deepseek": true,
+  "all_ok": false
+}

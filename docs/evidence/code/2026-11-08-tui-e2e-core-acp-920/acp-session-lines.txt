@@ -1,0 +1,3 @@
+146:2026-11-08T14:30:23.946920Z  INFO open_core_session{session_id="a4c4ef47-5ef6-4179-8ec4-d844206e7eb5" restore=false}: aster_acp::agent::session_open: acp session ready command_tool="bash" model=deepseek/deepseek-flash
+330:2026-11-08T14:36:56.531540Z  INFO open_core_session{session_id="e0c8740b-5120-4e10-99cf-dd0ef08f58ed" restore=false}: aster_acp::agent::session_open: acp session ready command_tool="bash" model=deepseek/deepseek-flash
+427:2026-11-08T14:41:42.144454Z  INFO open_core_session{session_id="75eca1ba-c433-4b8c-aca5-907cf79bfc14" restore=false}: aster_acp::agent::session_open: acp session ready command_tool="bash" model=deepseek/deepseek-flash

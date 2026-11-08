@@ -40,3 +40,27 @@ fn both_stdio_entry_points_forward_the_same_model_effort_workspace_and_acl() {
         ["--cwd", "workspace with spaces"].map(OsString::from)
     );
 }
+
+#[test]
+fn interactive_connect_spawn_args_include_cli_model_override() {
+    // Mirrors connect(): CLI override is copied onto AgentConfig then passed
+    // as the spawn model so argv carries `--model` even when ACL defaults differ.
+    let mut config = super::AgentConfig::default();
+    let flags_model = Some("deepseek/deepseek-flash".to_string());
+    if let Some(model) = flags_model.clone() {
+        config.default_model_override = Some(model);
+    }
+    let args = super::sidecar_arguments(
+        &config,
+        std::path::Path::new("/tmp/ws"),
+        config.default_model_override.as_deref(),
+        None,
+    );
+    assert!(
+        args.windows(2).any(|pair| {
+            pair[0] == OsString::from("--model")
+                && pair[1] == OsString::from("deepseek/deepseek-flash")
+        }),
+        "spawn argv must include CLI --model; got {args:?}"
+    );
+}

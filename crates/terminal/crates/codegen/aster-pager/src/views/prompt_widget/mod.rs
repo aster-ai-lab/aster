@@ -1358,6 +1358,41 @@ impl PromptWidget {
         self.slash_state.close();
     }
 
+    /// After dismissing the slash palette without sending (Esc), drop a
+    /// bare `/command` draft (no args) so the next prose paste cannot
+    /// concatenate into `/effortReply` / `Unknown TUI command`.
+    ///
+    /// Leaves multi-line composers, non-slash drafts, and `/cmd arg…` lines
+    /// untouched — `/model mock/alt` + Esc must keep the typed command so
+    /// Enter can still submit it.
+    pub fn clear_incomplete_slash_draft(&mut self) {
+        let text = self.textarea.text().to_string();
+        let trimmed = text.trim();
+        if Self::is_bare_slash_command_draft(trimmed) {
+            self.set_text("");
+        }
+    }
+
+    /// True for a single-line `/token` with no arguments (e.g. `/effort`).
+    pub fn is_bare_slash_command_draft(text: &str) -> bool {
+        let trimmed = text.trim();
+        if !trimmed.starts_with('/') || trimmed.contains('\n') || trimmed.contains(' ') {
+            return false;
+        }
+        let name = &trimmed[1..];
+        !name.is_empty()
+            && name
+                .chars()
+                .all(|ch| ch.is_ascii_alphanumeric() || ch == '-' || ch == '_')
+    }
+
+    /// Esc dismiss: cancel preview, close palette, clear incomplete `/` draft.
+    pub fn slash_dismiss(&mut self) {
+        self.slash_cancel_preview();
+        self.slash_close();
+        self.clear_incomplete_slash_draft();
+    }
+
     /// Move the slash dropdown selection (Up = -1, Down = +1), wrapping around.
     pub fn slash_move_selection(&mut self, delta: isize) {
         self.slash_controller

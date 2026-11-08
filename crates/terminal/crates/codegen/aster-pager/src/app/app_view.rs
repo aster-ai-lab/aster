@@ -3442,8 +3442,7 @@ fn welcome_slash_menu_key(
             Some(InputOutcome::Changed)
         }
         KeyCode::Esc if key.modifiers.is_empty() => {
-            ctx.prompt.slash_cancel_preview();
-            ctx.prompt.slash_close();
+            ctx.prompt.slash_dismiss();
             Some(InputOutcome::Changed)
         }
         KeyCode::Enter if key.modifiers.is_empty() => {

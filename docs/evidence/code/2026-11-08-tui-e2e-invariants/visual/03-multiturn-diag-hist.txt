@@ -1,0 +1,88 @@
+Last login: Sun Nov  8 23:54:31 on ttys012
+export PATH='/private/tmp/aster-visual-bins-fp':$PATH; export ASTER_CONFIG='/Users/roylin/code/aster/.aster/config.acl'; cd '/private/tmp/aster-visual-shop-fp/ws'; clear; exec aster --model deepseek/deepseek-flash --no-plan --fullscreen
+➜  ~ export PATH='/private/tmp/aster-visual-bins-fp':$PATH; export ASTER_CONFIG='/Users/roylin/code/aster/.aster/config.acl'; cd '/private/tmp/aster-visual-shop-fp/ws'; clear; exec aster --model deepseek/deepseek-flash --no-plan --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /p/t/aster-visual-shop-fp/ws
+
+
+            ╭───────────────────────────────────────────────────────────────────────────────────────────────╮
+            │                                                                                               │
+            │                    +                  Aster  0.3.0 (668c7bda60ec)                             │
+            │                   *#     ...+#*o.     Thanks for trying Aster, give feedback with /feedback!  │
+            │                  *###....       .                                                             │
+            │                +*#####+       :::     New worktree                                    ctrl+w  │
+            │            .+*####**####*+  :::       Resume session                                  ctrl+r  │
+            │         ..**#####*  +######*+         Changelog                                               │
+            │       ...     *###++###*+:            Quit                                            ctrl+q  │
+            │     ...         +####*                                                                        │
+            │     .       :::::+*#+                                                                         │
+            │     ::::::::      *#                                                                          │
+            │                    +                                                                          │
+            │                                                                                               │
+            ╰───────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+
+   → Type a message...
+
+                                                                                 deepseek/DeepSeek Flash (max) · yolo
+
+
+
+

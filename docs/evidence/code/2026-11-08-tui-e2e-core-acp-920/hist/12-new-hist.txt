@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:36:18 on ttys000
+export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-e2e-030/ws                                                                                             
+                                                                                                                        
+     Session 75eca1ba-c433-4b8c-aca5-907cf79bfc14, use /dashboard to switch between sessions                            
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Add a follow-up                                                                                                    
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — tok/s                                                                 deepseek/DeepSeek Flash · yolo   
+                                                                                                                        
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                                                   
+                                                                                                                        
+

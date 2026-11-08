@@ -3150,7 +3150,9 @@ impl DashboardState {
                     return InputOutcome::Changed;
                 }
                 KeyCode::Esc => {
-                    self.dispatch.slash_close();
+                    // Dismiss clears an uncommitted `/token` so the next prose keystroke
+                    // cannot concatenate into `/effortReply` (same invariant as agent view).
+                    self.dispatch.slash_dismiss();
                     return InputOutcome::Changed;
                 }
                 KeyCode::Enter if key.modifiers.is_empty() => {

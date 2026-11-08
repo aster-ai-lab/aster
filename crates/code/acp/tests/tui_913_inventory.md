@@ -1,6 +1,17 @@
 # Shipped TUI case inventory
 
-This is the earlier offered-surface inventory, not the complete current Core/ACP acceptance. The full-scope audit is tracked in `specs/023-tui-core-acp-full-e2e` and `docs/evidence/code/2026-10-27-tui-core-acp/FEATURE-MATRIX.md`.
+This is the earlier offered-surface inventory, not the complete current Core/ACP acceptance.
+
+## Invariant gates (first principles)
+
+| ID | Invariant | Hermetic | Layer C / visual |
+| --- | --- | --- | --- |
+| A1 | CLI `--model` outranks host/workspace `default_model` | `tui_913_hermetic::cli_model_override_outranks_workspace_default_model` (mock request model + footer) | Visual: `aster --model deepseek/deepseek-flash` with repo `.aster/config.acl` default `glm-01/glm-5.3`; footer DeepSeek |
+| B1 | Esc dismisses bare `/effort` so prose cannot concatenate | `tui_913_hermetic::effort_slash_esc_clears_draft_before_prose` | Unit: `esc_clears_incomplete_slash_draft_so_prose_cannot_concatenate` |
+| C3 | Coding drive answers `ask_user` / permission cards | `shipped_tui_ask_user_*` | `tui_913_real_llm::answer_dialog` + visual harness |
+| C4 | Dual-defect HOLD→GATE | `three_turns_*` / `long_task_*` hermetic | `tui_913_real_llm` ignored Layer C; visual companion under `docs/evidence/.../visual` |
+
+Layer C rows remain `#[ignore]` and require `ASTER_CONFIG_FILE` + real provider. CI samples hermetic A1 only.
 
 ## Offered Aster TUI behaviors
 

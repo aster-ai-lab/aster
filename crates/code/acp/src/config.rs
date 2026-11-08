@@ -1185,6 +1185,43 @@ sandbox {
     }
 
     #[test]
+    fn aster_default_model_env_outranks_workspace_default_model() {
+        // CLI `--model` becomes ASTER_DEFAULT_MODEL in aster-acp before launch
+        // config is finalized. An explicit override must beat a workspace
+        // agent-preference default_model that would otherwise win the merge.
+        env_locked(|| {
+            let (_user, workspace) = write_user_and_workspace_layers(
+                r#"
+providers "mock" {
+  api_key = "user-key"
+  models "deepseek-flash" { name = "DeepSeek Flash" }
+  models "glm-5.3" { name = "GLM" }
+}
+default_model = "mock/deepseek-flash"
+"#,
+                r#"
+default_model = "mock/glm-5.3"
+"#,
+            );
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
+            let without = load_launch_config(workspace.path().to_path_buf(), None).expect("launch");
+            assert_eq!(
+                without.model_id, "mock/glm-5.3",
+                "workspace default_model is admitted as an agent preference"
+            );
+
+            std::env::set_var("ASTER_DEFAULT_MODEL", "mock/deepseek-flash");
+            let with_env =
+                load_launch_config(workspace.path().to_path_buf(), None).expect("launch with env");
+            assert_eq!(
+                with_env.model_id, "mock/deepseek-flash",
+                "ASTER_DEFAULT_MODEL / CLI --model must outrank workspace default_model"
+            );
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
+        });
+    }
+
+    #[test]
     fn workspace_layer_cannot_narrow_the_host_sandbox_posture() {
         env_locked(|| {
             let (_user, workspace) = write_user_and_workspace_layers(

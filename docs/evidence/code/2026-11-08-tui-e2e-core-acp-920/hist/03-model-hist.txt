@@ -1,0 +1,89 @@
+Last login: Sun Nov  8 22:36:18 on ttys000
+export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+➜  ~ export PATH='/tmp/aster-tui-e2e-030/bin':$PATH; cd '/tmp/aster-tui-e2e-030/ws'; clear; exec aster --model deepseek/deepseek-flash --fullscreen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                        
+  /p/t/aster-tui-e2e-030/ws                                                                                             
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────1─  
+    codex  cursor  deepseek  gateway  glm-01  glm-02  kimi                                                              
+    ❯ deepseek/DeepSeek Flash (current) From Aster ACL provider deepseek                                                
+  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────  
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → /model <model> [effort]                                                                                            
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — tok/s                                                                 deepseek/DeepSeek Flash · yolo   
+                                                                                                                        
+  Enter:send  │  Shift+Enter/Opt+Enter:newline  │  Shift+Tab:mode  │  Ctrl+x:shortcuts                                  
+                                                                                                                        
+
