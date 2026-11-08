@@ -31,7 +31,7 @@
     "grok:": 0,
     "obfstr::obfstr!": 0
   },
-  "acp_default_features": ["account-import", "svg-png"],
+  "acp_default_features": ["account-import", "svg-png", "bundled-embedding"],
   "event_loop_inline_tests_max_lines": 2173,
   "acp_account_mods": [
     "cursor_account",

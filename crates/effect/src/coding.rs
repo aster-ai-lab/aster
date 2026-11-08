@@ -2325,7 +2325,15 @@ mod batch_overlap_tests {
         for (fact, index) in facts.iter().zip(0..) {
             assert_eq!(fact.kind, "tool.result");
             assert_eq!(fact.key, format!("tool-result:1:1:r{index}"));
-            assert_eq!(fact.payload["output"], json!(format!("passed-r{index}")));
+            assert_eq!(
+                fact.payload["output"],
+                json!(""),
+                "typed receipt facts must not dual-write top-level output"
+            );
+            assert_eq!(
+                fact.payload["receipt"]["output"],
+                json!(format!("passed-r{index}"))
+            );
             assert_eq!(fact.payload["ok"], json!(true));
         }
         assert_eq!(
