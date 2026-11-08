@@ -51,7 +51,8 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 ### Aster CLI
 
-1. 用 `release-aster-cli.yml` 构建三个平台归档。Aster CLI 只包含 `aster` 与 `aster-acp`；进程命令隔离由锁定的 ksandbox 依赖提供，不再打包 sandbox companions 或 kbox MicroVM。
+1. 用 `release-aster-cli.yml` 构建三个平台归档。Aster CLI 包含 `aster`、`aster-acp`，以及离线 Model2Vec 资产目录 `embedding/`（`aster-acp` 发行构建关闭 `bundled-embedding`，运行时从该目录加载）。进程命令隔离由锁定的 ksandbox 依赖提供，不再打包 sandbox companions 或 kbox MicroVM。
+   CLI 与 Studio 的 ACP feature 分叉：CLI 为 `--no-default-features --features svg-png,account-import`；Studio / 本地默认保留 `bundled-embedding`（及 Office 等桌面能力）。`aster-core` 在 ACP 上显式启用 `local-code`。
    在发布机上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
    发布脚本先核对归档来源提交的分支资格与归档成员，再生成草稿。任一失败均禁止创建或上传 Release。
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。

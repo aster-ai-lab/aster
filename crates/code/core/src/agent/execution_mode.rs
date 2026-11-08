@@ -236,10 +236,6 @@ impl crate::agent::TurnEngine {
         // Apofasi stays off this path. The admission is ineligible because
         // pre-analysis returns more than a typed answer. An eligible result
         // would be a bug: there is no typed replacement, so do not skip.
-        #[cfg(feature = "apofasi")]
-        crate::typed_decision::enforce_ineligible(
-            crate::typed_decision::admit_planning_pre_analysis(),
-        )?;
 
         let operation =
             self.begin_capability_operation(0, cancel_token, "pre-analysis orchestration")?;

@@ -26,8 +26,6 @@ mod agent_projection;
 mod command_projection;
 mod context_projection;
 mod delegated_tool_projection;
-#[cfg(feature = "dynamic-workflow")]
-mod flow_projection;
 mod hook_projection;
 mod knowledge_projection;
 mod knowledge_surface_projection;
@@ -717,22 +715,6 @@ fn session_batch_accepts_migrated_kinds() {
         provider(context_generation, &acquired, &dropped),
     )
     .is_ok());
-
-    #[cfg(feature = "dynamic-workflow")]
-    {
-        let flow_generation = use_generation(6, 'e');
-        let (flow_set, _) = use_kind_set(
-            6,
-            flow_generation.clone(),
-            CapabilityKind::Flow,
-            &[("projected-flow", 'f')],
-        );
-        assert!(SessionCapabilityBatch::from_use_projection(
-            flow_set,
-            provider(flow_generation, &acquired, &dropped),
-        )
-        .is_ok());
-    }
 
     let knowledge_generation = use_generation(7, 'a');
     let (knowledge_set, _) = use_kind_set(

@@ -176,8 +176,7 @@ impl ToolInvocation {
     }
 
     /// Called from the `dynamic-workflow` surface.
-    #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
-    pub(crate) fn runtime_internal(name: impl Into<String>, args: Value) -> Self {
+        pub(crate) fn runtime_internal(name: impl Into<String>, args: Value) -> Self {
         let name = name.into();
         Self {
             id: format!("runtime-internal-{name}-{}", uuid::Uuid::new_v4()),

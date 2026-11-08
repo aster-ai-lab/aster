@@ -2037,9 +2037,9 @@ fn prompt_images_preserve_bytes_and_order() {
     .expect("supported image prompt");
     assert_eq!(text, "first\nsecond");
     assert_eq!(attachments.len(), 2);
-    assert_eq!(attachments[0].data, [1, 2, 3]);
+    assert_eq!(attachments[0].data.as_ref(), &[1, 2, 3]);
     assert_eq!(attachments[0].media_type, "image/png");
-    assert_eq!(attachments[1].data, [4, 5, 6]);
+    assert_eq!(attachments[1].data.as_ref(), &[4, 5, 6]);
     assert_eq!(attachments[1].media_type, "image/webp");
 }
 

@@ -18,12 +18,11 @@ Linux, macOS, and Windows. Otherwise Linux is enough and the waiver says so.
 - Ubuntu / macOS matrix soaks: macOS still hosted-CI only. **Local WSL Ubuntu
   (DESKTOP WSL2) re-proven 2026-09-20** (`~/aster-wsl-evidence/FINAL-GOAL4.txt`):
   hermetic `--lib` 3660/0 under `--test-threads=8`; S-WR-01 default+portable;
-  S-CM-01; S-EI-01; S-S3-01; plus MS/PS/WS/SG/SC/delegation and the broader
+  S-CM-01; S-EI-01; plus MS/PS/WS/SG/SC/delegation and the broader
   ignored soak batch. Parallel `--lib` flakes fixed by unique agent-dir fixtures
   (`config/agent_dir.rs` `unique_temp`) and catalog wait budgets
   (`retrieval/tests/lifecycle.rs` → `external_resource_start_timeout`).
 - S-WS-01: unlocked via optional `SearchEngineConfig.endpoint` (loopback HTTP / HTTPS only; SSRF unchanged). Proven Windows 2026-09-20; WSL Ubuntu 2026-09-20.
-- S-S3-01: unlocked via in-repo `fixtures/s3-compat` + `ASTER_S3_TEST_*`. Proven Windows 2026-09-20; **WSL Ubuntu 2026-09-20** (access key `aster-akid` so bucket names cannot false-positive the leak oracle).
 - S-RX-01: blocked - no append-only evidence fact store to reopen.
 - Do not soak the live Flash provider account for hermetic retry/load soaks.
 - Flash Layer C (boyue/bailian/deepseek-v4-flash → v4.1-flash): prior-fail + prior-pass + optional `advanced-harness` extensibility suite PASS 2026-09-20. Evidence under `%TEMP%\aster-layer-c-bailian-rerun*`. **WSL Ubuntu 2026-09-20:** full Layer C matrix PASS (`~/aster-wsl-evidence/FINAL-GOAL6.txt`); export `NVM_DIR` so native sandbox can re-allow the nvm toolchain under masked `$HOME`; live suite outer budgets raised to 300s where WSL provider turns exceeded 180s. Catalog blockers that remain: macOS matrix (CI), S-RX-01 (no inventable evidence store). AgentDir HTTP serve is removed; do not treat historical serve soak notes as current gates.
@@ -295,14 +294,6 @@ This is not a live provider soak. Do not soak the Flash account.
 - **Oracle:** one installed runtime; lock released; mismatch does not spawn.
 - **Fail:** lock file still held, or two different binaries in the cache.
 - **Home:** `core/src/moli_runtime/tests/install_soak.rs` `soak_concurrent_moli_install_publishes_one_binary` (`#[ignore]`, Cargo feature `headless-search`). Ten concurrent installs in one process download once, release `.install.lock`, and a later digest mismatch leaves that one binary in place. Separate OS processes are not spawned. Re-proven Windows 2026-09-20 (`--features headless-search --lib --ignored`).
-
-### S-S3-01
-
-- **Capability:** `s3_workspace`
-- **Cycles:** 40 put/get/delete against the hermetic backend, including 5 oversize puts.
-- **Oracle:** object count returns to the prefix baseline; oversize puts absent; error strings contain no key id.
-- **Fail:** object count climbs, or credentials in an error.
-- **Home:** `soak_s3_put_get_delete_returns_to_prefix_baseline` in `core/tests/test_s3_backend.rs` (`#[ignore]`, `--features s3`). Start `fixtures/s3-compat`, set `ASTER_S3_TEST_*`, then run the soak. Writes larger than `max_read_bytes` fail closed and leave no object. Proven Windows 2026-09-20.
 
 ### S-SV-01
 

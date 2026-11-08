@@ -105,9 +105,9 @@ fn porcelain_path(line: &str) -> &str {
     line.get(3..).map(str::trim).unwrap_or("")
 }
 
-/// `cargo test` rewrites the unused-patch order of `aster-apofasi` and
-/// `aster-cmd-sandbox` without changing the admitted source. Any other dirty path,
-/// including a real `Cargo.lock` edit, still refuses the receipt.
+/// `cargo test` rewrites the unused-patch order of `aster-cmd-sandbox`
+/// without changing the admitted source. Any other dirty path, including a
+/// real `Cargo.lock` edit, still refuses the receipt.
 fn cargo_lock_is_unused_patch_reorder(diff: &str) -> bool {
     diff.lines()
         .filter(|line| line.starts_with('+') || line.starts_with('-'))
@@ -116,7 +116,6 @@ fn cargo_lock_is_unused_patch_reorder(diff: &str) -> bool {
             matches!(
                 line[1..].trim(),
                 "" | "[[patch.unused]]"
-                    | "name = \"aster-apofasi\""
                     | "name = \"aster-cmd-sandbox\""
                     | "version = \"0.1.2\""
                     | "version = \"0.2.0\""
@@ -281,15 +280,9 @@ async fn deep_e2e_live_receipts() {
         case_packages(&commit).await;
         case_use_runtime_tasks(&commit).await;
         case_program(&commit).await;
-        case_programmable_workflows(&commit).await;
-        case_state_graph(&commit).await;
         case_agent_release_contract(&commit).await;
         case_agent_protocol(&commit).await;
-        case_evaluation_substrate(&commit).await;
-        case_typed_decisions(&commit).await;
         case_moli_runtime(&commit).await;
-        case_s3_workspace(&commit).await;
-        case_opentelemetry(&commit).await;
         case_effect_isolation(&commit).await;
         case_native_sandbox(&commit).await;
         case_safe_http(&commit).await;
@@ -297,7 +290,6 @@ async fn deep_e2e_live_receipts() {
         case_batch_schema(&commit).await;
         case_image_read(&commit).await;
         case_event_envelope(&commit).await;
-        case_research_wire(&commit).await;
     }
 }
 
@@ -1349,200 +1341,13 @@ async fn case_program(commit: &str) {
     row(commit, "program", &model, "script-timeout");
 }
 
-async fn case_programmable_workflows(commit: &str) {
-    let model = pinned_completion("programmable_workflows").await;
-    use crate::store::SessionStore;
-    use std::collections::HashMap;
 
-    struct EchoExecutor {
-        ran: Arc<tokio::sync::Mutex<Vec<String>>>,
-    }
 
-    #[async_trait::async_trait]
-    impl crate::AgentExecutor for EchoExecutor {
-        async fn execute_step(
-            &self,
-            spec: crate::AgentStepSpec,
-            _event_tx: Option<tokio::sync::broadcast::Sender<crate::AgentEvent>>,
-        ) -> crate::StepOutcome {
-            self.ran.lock().await.push(spec.task_id.clone());
-            crate::StepOutcome {
-                task_id: spec.task_id.clone(),
-                session_id: format!("task-run-{}", spec.task_id),
-                agent: spec.agent.clone(),
-                output: spec.prompt.clone(),
-                success: true,
-                structured: None,
-                source_anchors: Vec::new(),
-            }
-        }
-        fn concurrency_hint(&self) -> usize {
-            4
-        }
-    }
 
-    let exec = Arc::new(EchoExecutor {
-        ran: Arc::new(tokio::sync::Mutex::new(Vec::new())),
-    });
-    let ran = Arc::clone(&exec.ran);
-    let store: Arc<dyn SessionStore> = Arc::new(crate::store::MemorySessionStore::new());
-    let workflow = crate::Workflow::builder(exec)
-        .with_store(Arc::clone(&store))
-        .with_root_id("root")
-        .build();
-    let mut done = HashMap::new();
-    done.insert(
-        "a".to_string(),
-        crate::StepOutcome {
-            task_id: "a".into(),
-            session_id: "task-run-a".into(),
-            agent: "explore".into(),
-            output: "cached-a".into(),
-            success: true,
-            structured: None,
-            source_anchors: Vec::new(),
-        },
-    );
-    store
-        .save_workflow_checkpoint(
-            "root/0:implement",
-            &crate::WorkflowCheckpoint::from_completed("root/0:implement", &done, 1),
-        )
-        .await
-        .expect("checkpoint");
-    let out = workflow
-        .phase(
-            "implement",
-            vec![
-                crate::AgentStepSpec::new("a", "explore", "d", "pa"),
-                crate::AgentStepSpec::new("b", "review", "d", "pb"),
-            ],
-        )
-        .await;
-    assert_eq!(out[0].output, "cached-a");
-    assert_eq!(*ran.lock().await, vec!["b".to_string()]);
-    row(commit, "programmable_workflows", &model, "cached-a");
-}
 
-#[cfg(feature = "state-graph")]
-async fn case_state_graph(commit: &str) {
-    let model = pinned_completion("state_graph").await;
-    use crate::{GraphEvent, GraphPatch, GraphRuntime, PatchOperation};
 
-    let mut runtime = GraphRuntime::new();
-    assert!(runtime
-        .propose_patch(
-            GraphPatch::new(
-                0,
-                vec![PatchOperation::AddObject {
-                    id: "a".into(),
-                    object_type: "task".into(),
-                    data: json!({}),
-                }],
-            ),
-            None,
-        )
-        .expect("apply"));
-    let version = runtime.graph().version();
-    let hash = runtime.graph().state_hash().expect("hash");
-    let rejected = runtime
-        .propose_patch(
-            GraphPatch::new(
-                0,
-                vec![
-                    PatchOperation::AddObject {
-                        id: "b".into(),
-                        object_type: "task".into(),
-                        data: json!({}),
-                    },
-                    PatchOperation::AddObject {
-                        id: "c".into(),
-                        object_type: "task".into(),
-                        data: json!({}),
-                    },
-                ],
-            ),
-            None,
-        )
-        .expect("reject");
-    assert!(!rejected);
-    assert!(runtime.graph().object("b").is_none());
-    assert!(runtime.graph().object("c").is_none());
-    assert_eq!(runtime.graph().version(), version);
-    assert_eq!(runtime.graph().state_hash().expect("hash"), hash);
-    assert!(matches!(
-        runtime.events().last().expect("event").event,
-        GraphEvent::PatchRejected { .. }
-    ));
-    row(commit, "state_graph", &model, "PatchRejected");
-}
 
-#[cfg(not(feature = "state-graph"))]
-async fn case_state_graph(_commit: &str) {
-    panic!("feature required: state-graph");
-}
 
-#[cfg(feature = "evaluation")]
-fn evaluation_record(decision: &str) -> crate::EvaluationRecordV1 {
-    let result = crate::EvaluationResultV1::new(
-        "fixture-evaluator",
-        crate::ExecutionTargetV1::new("session-1", "run-1"),
-        "aux-1",
-        decision,
-        json!({"issues": []}),
-        format!("sha256:{}", "c".repeat(64)),
-    )
-    .expect("result");
-    crate::EvaluationRecordV1::new(result, 1).expect("record")
-}
-
-#[cfg(feature = "evaluation")]
-async fn case_evaluation_substrate(commit: &str) {
-    let model = pinned_completion("evaluation_substrate").await;
-    use crate::EvaluationResultSink;
-
-    let store = crate::InMemoryEvaluationResultStore::new();
-    let original = evaluation_record("observed");
-    let digest = original.record_digest.clone();
-    let first = store.write(original.clone()).await.expect("write");
-    assert!(first.written && !first.replayed);
-    let replay = store.write(original.clone()).await.expect("replay");
-    assert!(!replay.written && replay.replayed);
-    let conflict = store.write(evaluation_record("inconclusive")).await;
-    assert!(matches!(
-        conflict,
-        Err(crate::EvaluationStoreError::Conflict)
-    ));
-    let kept = store.get(&digest).await.expect("first record stays");
-    assert_eq!(kept.record_digest, digest);
-    let again = store.write(original).await.expect("replay after conflict");
-    assert!(!again.written && again.replayed);
-    row(commit, "evaluation_substrate", &model, "Conflict");
-}
-
-#[cfg(not(feature = "evaluation"))]
-async fn case_evaluation_substrate(_commit: &str) {
-    panic!("feature required: evaluation");
-}
-
-#[cfg(feature = "apofasi")]
-async fn case_typed_decisions(commit: &str) {
-    let model = pinned_completion("typed_decisions").await;
-    let planning = crate::admit_planning_pre_analysis();
-    crate::enforce_ineligible(planning).expect("ineligible stays");
-    let err = crate::enforce_ineligible(crate::GenerationAdmission {
-        eligible: true,
-        reason: "single typed answer",
-    })
-    .expect_err("eligible cannot replace");
-    assert!(matches!(err, crate::TypedDecisionError::CannotReplace(_)));
-    row(commit, "typed_decisions", &model, "CannotReplace");
-}
-
-#[cfg(not(feature = "apofasi"))]
-async fn case_typed_decisions(_commit: &str) {
-    panic!("feature required: apofasi");
-}
 
 #[cfg(feature = "headless-search")]
 async fn case_moli_runtime(commit: &str) {
@@ -1588,109 +1393,7 @@ async fn case_moli_runtime(_commit: &str) {
     panic!("feature required: headless-search");
 }
 
-#[cfg(feature = "s3")]
-async fn case_s3_workspace(commit: &str) {
-    let model = pinned_completion("s3_workspace").await;
-    use crate::workspace::{
-        WorkspaceError, WorkspaceFileSystem, WorkspaceFileSystemExt, WorkspacePath,
-    };
-    use wiremock::matchers::{header_exists, method};
-    use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    let server = MockServer::start().await;
-    Mock::given(method("GET"))
-        .respond_with(
-            ResponseTemplate::new(200)
-                .insert_header("etag", "\"etag-1\"")
-                .insert_header("content-type", "text/plain")
-                .insert_header("content-length", "10")
-                .insert_header("x-amz-request-id", "deep-e2e")
-                .set_body_string("alpha-body"),
-        )
-        .mount(&server)
-        .await;
-    Mock::given(method("HEAD"))
-        .respond_with(
-            ResponseTemplate::new(200)
-                .insert_header("etag", "\"etag-1\"")
-                .insert_header("content-type", "text/plain")
-                .insert_header("content-length", "10")
-                .insert_header("x-amz-request-id", "deep-e2e"),
-        )
-        .mount(&server)
-        .await;
-    Mock::given(method("PUT"))
-        .and(header_exists("if-match"))
-        .respond_with(
-            ResponseTemplate::new(412)
-                .insert_header("content-type", "application/xml")
-                .insert_header("x-amz-request-id", "deep-e2e")
-                .set_body_string(
-                    r#"<?xml version="1.0"?><Error><Code>PreconditionFailed</Code></Error>"#,
-                ),
-        )
-        .with_priority(1)
-        .mount(&server)
-        .await;
-    Mock::given(method("PUT"))
-        .respond_with(
-            ResponseTemplate::new(200)
-                .insert_header("etag", "\"etag-1\"")
-                .insert_header("x-amz-request-id", "deep-e2e"),
-        )
-        .with_priority(2)
-        .mount(&server)
-        .await;
-
-    let backend = crate::S3WorkspaceBackend::new(
-        crate::S3BackendConfig::new("deep-e2e", "prefix", "test-key", "test-secret")
-            .endpoint(server.uri())
-            .region("us-east-1")
-            .force_path_style(true),
-    );
-    let path = WorkspacePath::from_normalized("notes/alpha.txt");
-    backend.write_text(&path, "alpha-body").await.expect("put");
-    let (text, _version) = backend.read_text_with_version(&path).await.expect("get");
-    assert_eq!(text, "alpha-body");
-    let err = backend
-        .write_text_if_version(&path, "beta", "\"not-the-etag\"")
-        .await
-        .expect_err("stale etag");
-    match err {
-        WorkspaceError::VersionConflict(conflict) => assert!(conflict.actual.is_none()),
-        other => panic!("s3_workspace: expected VersionConflict, got {other:?}"),
-    }
-    let (again, _) = backend
-        .read_text_with_version(&path)
-        .await
-        .expect("get again");
-    assert_eq!(again, "alpha-body");
-    row(commit, "s3_workspace", &model, "VersionConflict");
-}
-
-#[cfg(not(feature = "s3"))]
-async fn case_s3_workspace(_commit: &str) {
-    panic!("feature required: s3");
-}
-
-#[cfg(feature = "telemetry")]
-async fn case_opentelemetry(commit: &str) {
-    let model = pinned_completion("opentelemetry").await;
-    let provider = opentelemetry_sdk::trace::TracerProvider::builder().build();
-    crate::telemetry_otel::shutdown_provider(provider);
-    let mut guard = crate::telemetry_otel::TelemetryGuard::from_provider(
-        opentelemetry_sdk::trace::TracerProvider::builder().build(),
-    );
-    assert!(guard.holds_provider());
-    guard.shutdown_held();
-    assert!(!guard.holds_provider());
-    row(commit, "opentelemetry", &model, "shutdown-empty-slot");
-}
-
-#[cfg(not(feature = "telemetry"))]
-async fn case_opentelemetry(_commit: &str) {
-    panic!("feature required: telemetry");
-}
 
 fn git(root: &Path, args: &[&str]) {
     let status = std::process::Command::new("git")
@@ -2077,42 +1780,4 @@ async fn case_event_envelope(commit: &str) {
     );
 }
 
-#[cfg(feature = "research")]
-async fn case_research_wire(commit: &str) {
-    let model = pinned_completion("research wire").await;
-    let core = crate::CoreEventIdentity::from_agent_event(
-        crate::CoreIdentity::new(
-            crate::OperationId::new("session-1/run-1").expect("operation"),
-            crate::SourceRevision::new(4),
-            Some(
-                crate::CapabilityStamp::new(2, format!("sha256:{}", "b".repeat(64)))
-                    .expect("stamp"),
-            ),
-            crate::EvidenceCursor::new(6),
-        ),
-        42,
-        &crate::AgentEvent::TextDelta {
-            text: "finding".to_string(),
-        },
-    )
-    .expect("core event");
-    let projected =
-        crate::ResearchEventV1::from_core_event("project-1", 3, &core).expect("project");
-    let mut tampered = core.clone();
-    tampered.event_digest = format!("sha256:{}", "0".repeat(64));
-    let err =
-        crate::ResearchEventV1::from_core_event("project-1", 3, &tampered).expect_err("tamper");
-    assert!(matches!(
-        err,
-        crate::ResearchContractError::InvalidField("coreEvent")
-    ));
-    let replayed = crate::ResearchEventV1::from_core_event("project-1", 3, &core).expect("replay");
-    assert_eq!(replayed.payload_digest, projected.payload_digest);
-    assert_eq!(replayed.event_digest, projected.event_digest);
-    row(commit, "research wire", &model, "payload-digest");
-}
 
-#[cfg(not(feature = "research"))]
-async fn case_research_wire(_commit: &str) {
-    panic!("feature required: research");
-}

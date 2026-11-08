@@ -30,7 +30,7 @@ Orchestration: `just harness-convergence-check` covers A1–A4.
 | B1 | Evaluation substrate | `advanced-harness` | `evaluation_*` |
 | B2 | Research contracts | `advanced-harness` | `research_*` |
 | B3 | State graph / dynamic workflow | `advanced-harness` | `test_state_graph_*`, `dynamic_workflow_*` |
-| B4 | S3 / telemetry | `s3` / `telemetry` (profile `server`) | `test_s3_backend`, OTEL collector-down |
+| B4 | Telemetry | `telemetry` (profile `server`) | OTEL collector-down |
 
 ## Layer C — Live provider E2E (ignored; config required)
 
@@ -172,7 +172,7 @@ lowered gate, or a prompt rewrite after a red run.
 | CX-6 | Question parked | `conversation`, fact log | No `question.answered` fact until the host answers. Not a live prompt that begs the model to ask | existing hermetic `fact_log_question_stays_parked_until_the_answer_fact` |
 
 `priority_scheduling`, `code_intelligence`, `packages`,
-`use_runtime_tasks`, `s3_workspace`, `opentelemetry`, and `moli_runtime`
+`use_runtime_tasks`, `opentelemetry`, and `moli_runtime`
 stay on the hermetic or host gate in `FULL_FEATURE_TEST_PLAN.md`. A model
 suite is not added for them.
 

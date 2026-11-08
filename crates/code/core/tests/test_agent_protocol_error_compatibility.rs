@@ -59,10 +59,6 @@ fn v912_core_category(error: &CodeError) -> &'static str {
         CodeError::Mcp(_) => "mcp",
         CodeError::Queue(_) => "queue",
         CodeError::Capability(_) => "capability",
-        #[cfg(feature = "dynamic-workflow")]
-        CodeError::Flow(_) => "flow",
-        #[cfg(feature = "apofasi")]
-        CodeError::TypedDecision(_) => "typed_decision",
         CodeError::Io(_) => "io",
         CodeError::Serialization(_) => "serialization",
         CodeError::Internal(_) => "internal",

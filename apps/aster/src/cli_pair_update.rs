@@ -14,7 +14,8 @@
 //! may pin or roll back. `ASTER_RELEASE_BASE` names a local directory
 //! holding `latest.json` and the assets for hermetic checks.
 //!
-//! The archive contains the two binaries plus `BUILD_ID` and `SHA256SUMS`.
+//! The archive contains the two binaries, `BUILD_ID`, `SHA256SUMS`, and the
+//! `embedding/` Model2Vec asset files used by `aster-acp` `local_cpu` retrieval.
 //! The two-file form without metadata stays installable; the manifest
 //! digest still bounds it. Archives must not contain a `sandbox/` tree.
 
@@ -386,9 +387,19 @@ fn archive_is_zip() -> bool {
     cfg!(windows)
 }
 
+const EMBEDDING_MEMBERS: &[&str] = &[
+    "embedding/potion-code-16M-v2.safetensors",
+    "embedding/potion-code-16M-v2.tokenizer.json",
+    "embedding/potion-code-16M-v2.config.json",
+];
+
 fn allowed_member(name: &str) -> bool {
     let (aster_name, acp_name) = binary_names();
-    name == aster_name || name == acp_name || name == "BUILD_ID" || name == "SHA256SUMS"
+    name == aster_name
+        || name == acp_name
+        || name == "BUILD_ID"
+        || name == "SHA256SUMS"
+        || EMBEDDING_MEMBERS.contains(&name)
 }
 
 fn install_dir() -> Result<PathBuf> {
@@ -540,7 +551,22 @@ impl Drop for WorkDir {
 struct VerifiedPair {
     aster: PathBuf,
     acp: PathBuf,
+    embedding: PathBuf,
     identity: Option<String>,
+}
+
+fn verify_embedding_dir(unpacked: &Path) -> Result<PathBuf> {
+    let embedding = unpacked.join("embedding");
+    for name in EMBEDDING_MEMBERS {
+        let file = name
+            .strip_prefix("embedding/")
+            .expect("embedding member prefix");
+        let path = embedding.join(file);
+        if !path.is_file() {
+            bail!("archive did not contain embedding assets");
+        }
+    }
+    Ok(embedding)
 }
 
 fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
@@ -553,6 +579,7 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
     if unpacked.join("sandbox").exists() {
         bail!("archive contains unexpected sandbox companions");
     }
+    let embedding = verify_embedding_dir(unpacked)?;
     make_executable(&aster)?;
     make_executable(&acp)?;
     let sums = unpacked.join("SHA256SUMS");
@@ -565,6 +592,7 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
         return Ok(VerifiedPair {
             aster,
             acp,
+            embedding,
             identity: None,
         });
     }
@@ -596,6 +624,7 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
     Ok(VerifiedPair {
         aster,
         acp,
+        embedding,
         identity: Some(identity.to_string()),
     })
 }
@@ -750,7 +779,23 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
     replace_file(&new_acp, dest_acp).context("cannot install aster-acp")?;
     stage.acp_promoted = true;
     make_executable(dest_acp)?;
+    install_embedding_dir(dir, &pair.embedding)?;
     stage.committed = true;
+    Ok(())
+}
+
+fn install_embedding_dir(install_root: &Path, source: &Path) -> Result<()> {
+    let dest = install_root.join("embedding");
+    fs::create_dir_all(&dest).context("cannot create the embedding asset directory")?;
+    for name in EMBEDDING_MEMBERS {
+        let file = name
+            .strip_prefix("embedding/")
+            .expect("embedding member prefix");
+        let from = source.join(file);
+        let to = dest.join(file);
+        fs::copy(&from, &to)
+            .with_context(|| format!("cannot install embedding asset {}", to.display()))?;
+    }
     Ok(())
 }
 
@@ -1054,6 +1099,11 @@ fn require_members(seen: &std::collections::BTreeSet<String>) -> Result<()> {
     let (aster_name, acp_name) = binary_names();
     if !seen.contains(aster_name) || !seen.contains(acp_name) {
         bail!("archive did not contain both aster-cli binaries");
+    }
+    for member in EMBEDDING_MEMBERS {
+        if !seen.contains(*member) {
+            bail!("archive did not contain embedding assets");
+        }
     }
     if seen
         .iter()

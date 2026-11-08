@@ -27,11 +27,6 @@ mod types;
 
 pub use process::{execute_owned_process, OwnedProcessOutput, OwnedProcessTermination};
 
-#[cfg(feature = "dynamic-workflow")]
-pub use crate::dynamic_workflow::{
-    register_dynamic_workflow, register_dynamic_workflow_with_event_store,
-    register_dynamic_workflow_with_scheduler,
-};
 pub use artifacts::{ArtifactStore, ArtifactStoreError, ArtifactStoreLimits, ToolArtifact};
 #[cfg(test)]
 pub(crate) use builtin::{

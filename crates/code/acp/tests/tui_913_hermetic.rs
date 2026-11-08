@@ -1050,16 +1050,13 @@ fn arm_shop(mock: &Mock, fixture: &mut Fixture) {
         ]),
     });
     std::fs::write(config, aster_acl::generate_acl(&document)).unwrap();
+    // Optional legacy override. Default Bash isolation is Core's locked ksandbox;
+    // companion-qualified ASTER_SANDBOX_DIR is no longer required on macOS.
     if let Some(directory) = std::env::var_os("ASTER_SANDBOX_DIR") {
         fixture.env.push((
             "ASTER_SANDBOX_DIR".into(),
             directory.into_string().expect("runtime path UTF-8"),
         ));
-    } else {
-        assert!(
-            !cfg!(target_os = "macos"),
-            "coding E2E requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
-        );
     }
 }
 
@@ -1144,10 +1141,6 @@ fn checker_fails_until_both_defects_are_fixed() {
 }
 
 #[test]
-#[cfg_attr(
-    target_os = "macos",
-    ignore = "requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
-)]
 fn three_turns_fix_the_bug_they_diagnosed() {
     prompts_omit_secrets_and_defects();
     let (addr, mock) = spawn_mock();
@@ -1237,10 +1230,6 @@ fn three_turns_fix_the_bug_they_diagnosed() {
 }
 
 #[test]
-#[cfg_attr(
-    target_os = "macos",
-    ignore = "requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
-)]
 fn long_task_repairs_the_check_after_a_failure() {
     prompts_omit_secrets_and_defects();
     let (addr, mock) = spawn_mock();

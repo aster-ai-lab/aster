@@ -38,18 +38,30 @@ fn base_options(id: &str) -> SessionOptions {
         .with_temperature(0.0)
 }
 
+fn repo_config_path() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.aster/config.acl")
+}
+
+fn load_pinned_config() -> CodeConfig {
+    CodeConfig::from_file(&repo_config_path()).expect("acl unreadable")
+}
+
+fn pinned_model(config: &CodeConfig) -> String {
+    config
+        .default_model
+        .clone()
+        .filter(|model| !model.trim().is_empty())
+        .unwrap_or_else(|| "boyue/bailian/deepseek-v4.1-flash".to_string())
+}
+
 async fn open_session(root: &Path, options: SessionOptions) -> (Agent, AgentSession) {
-    let config = crate::deep38_support::load_pinned_config();
+    let config = load_pinned_config();
     let agent = Agent::from_config(config).await.expect("build agent");
     let session = agent
         .session_async(root.to_string_lossy().as_ref(), Some(options))
         .await
         .expect("admit session");
     (agent, session)
-}
-
-fn repo_config_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.aster/config.acl")
 }
 
 fn assert_session_closed<T>(label: &str, result: Result<T, CodeError>) {
@@ -177,8 +189,8 @@ async fn opcov_agent_create() {
 
 #[tokio::test]
 async fn opcov_live_session_facts() {
-    let config = crate::deep38_support::load_pinned_config();
-    let pin = crate::deep38_support::pinned_model(&config);
+    let config = load_pinned_config();
+    let pin = pinned_model(&config);
     let agent = Agent::from_config(config).await.expect("live agent");
     let workspace = tempfile::tempdir().expect("workspace");
     let options = base_options(&session_id("facts")).with_model(pin.clone());
@@ -261,8 +273,8 @@ async fn opcov_live_session_facts() {
 
 #[tokio::test]
 async fn opcov_live_delegation() {
-    let config = crate::deep38_support::load_pinned_config();
-    let pin = crate::deep38_support::pinned_model(&config);
+    let config = load_pinned_config();
+    let pin = pinned_model(&config);
     let agent = Agent::from_config(config).await.expect("delegation agent");
     let workspace = tempfile::tempdir().expect("workspace");
     let session = agent
@@ -1378,34 +1390,6 @@ fn opcov_workflow_step() {
     op("session.workflow_step", "identity");
 }
 
-#[cfg(feature = "state-graph")]
-#[test]
-fn opcov_state_graph() {
-    let mut runtime = crate::GraphRuntime::new();
-    let before = runtime.graph().state_hash().expect("empty hash");
-    let applied = runtime
-        .propose_patch(
-            crate::GraphPatch::new(
-                0,
-                vec![crate::PatchOperation::AddObject {
-                    id: "a".into(),
-                    object_type: "task".into(),
-                    data: json!({}),
-                }],
-            ),
-            None,
-        )
-        .expect("propose setup");
-    assert!(applied);
-    let head = runtime.graph().state_hash().expect("head hash");
-    assert_ne!(head, before);
-    let restored = crate::GraphRuntime::restore(runtime.events().to_vec()).expect("restore");
-    assert_eq!(restored.graph().state_hash().expect("restored hash"), head);
-    assert!(runtime.diff(&restored).is_empty());
-    op("state_graph.create", "state-hash");
-    op("state_graph.restore", "state-hash");
-    op("state_graph.diff", "empty");
-}
 
 #[test]
 fn opcov_release_bind() {
@@ -1453,25 +1437,9 @@ fn opcov_release_bind() {
     op("release.bind_publication", "artifact-digest");
 }
 
-#[cfg(feature = "evaluation")]
-struct TurnPolicy;
 
-#[cfg(feature = "evaluation")]
-impl crate::EvaluationPolicy for TurnPolicy {
-    fn plan(&self, _fact: &crate::ExecutionFactV1) -> Option<crate::EvaluationPlanV1> {
-        Some(crate::EvaluationPlanV1::new(
-            crate::EvaluationBoundaryV1::TurnEnd,
-            "turn-check",
-            "inspect the bounded evidence",
-        ))
-    }
-}
 
-#[cfg(feature = "evaluation")]
-struct RecordingExecutor;
 
-#[cfg(feature = "evaluation")]
-#[async_trait::async_trait]
 impl crate::AuxiliaryExecutor for RecordingExecutor {
     async fn execute(
         &self,
@@ -1483,160 +1451,7 @@ impl crate::AuxiliaryExecutor for RecordingExecutor {
     }
 }
 
-#[cfg(feature = "evaluation")]
-#[tokio::test]
-async fn opcov_evaluation() {
-    let runs = Arc::new(crate::InMemoryRunStore::new());
-    let run = runs
-        .create_run_with_id("opcov-run".into(), "opcov-session", "prompt")
-        .await;
-    let target = crate::ExecutionTargetV1::new("opcov-session", &run.id);
-    runs.record_event(
-        &run.id,
-        crate::AgentEvent::TurnEnd {
-            turn: 1,
-            usage: crate::TokenUsage::default(),
-        },
-    )
-    .await;
-    let request = crate::EvidenceReadRequestV1::new(target.clone());
-    let snapshot = crate::RunEvidenceReader::new(Arc::clone(&runs))
-        .read(request.clone())
-        .await
-        .expect("evidence");
-    assert_eq!(snapshot.target, request.target);
-    let ledger = Arc::new(crate::InMemoryEvaluationDispatchLedger::new());
-    let supervisor = crate::EvaluationSupervisor::with_dispatch_ledger(
-        Arc::new(crate::InMemoryExecutionFactJournal::new()),
-        Arc::new(crate::RunEvidenceReader::new(Arc::clone(&runs))),
-        Arc::new(crate::InMemoryAuxiliaryRunService::new(Arc::new(
-            RecordingExecutor,
-        ))),
-        Arc::new(TurnPolicy),
-        ledger,
-    );
-    let start = crate::RunEventRecord {
-        sequence: 0,
-        timestamp_ms: 1,
-        event: crate::AgentEvent::TurnStart { turn: 1 },
-    };
-    let ignored = supervisor
-        .observe_event(crate::ExecutionFrameV1::root(target.clone()), &start)
-        .await
-        .expect("turn start");
-    assert_eq!(ignored.outcome, crate::EvaluationDispatchOutcome::Ignored);
-    let end = crate::RunEventRecord {
-        sequence: 1,
-        timestamp_ms: 2,
-        event: crate::AgentEvent::TurnEnd {
-            turn: 1,
-            usage: crate::TokenUsage::default(),
-        },
-    };
-    let frame = crate::ExecutionFrameV1::root(target.clone());
-    let dispatched = supervisor
-        .observe_event(frame.clone(), &end)
-        .await
-        .expect("turn end");
-    assert_eq!(
-        dispatched.outcome,
-        crate::EvaluationDispatchOutcome::Dispatched
-    );
-    assert_eq!(dispatched.fact.frame.target, target);
-    dispatched
-        .handle
-        .expect("dispatch handle")
-        .wait()
-        .await
-        .expect("dispatch wait");
-    let replay = supervisor.observe_event(frame, &end).await.expect("replay");
-    assert_eq!(replay.outcome, crate::EvaluationDispatchOutcome::Ignored);
-    let envelope = crate::EvaluationWireEnvelopeV1::new(
-        crate::EvaluationWireKindV1::EvidenceReadRequest,
-        serde_json::to_value(&request).expect("request json"),
-    )
-    .expect("envelope");
-    let bytes = envelope.to_vec().expect("envelope bytes");
-    assert_eq!(
-        crate::EvaluationWireEnvelopeV1::from_slice(&bytes).expect("roundtrip"),
-        envelope
-    );
-    let mut mutated = serde_json::to_value(&envelope).expect("envelope json");
-    mutated["kind"] = json!("not-a-kind");
-    match crate::EvaluationWireEnvelopeV1::from_value(mutated) {
-        Err(crate::EvaluationProtocolError::UnknownKind) => {}
-        other => panic!("unknown kind: {other:?}"),
-    }
-    assert_eq!(
-        crate::EvaluationWireEnvelopeV1::from_slice(&bytes).expect("bytes stay"),
-        envelope
-    );
-    op("evaluation.evidence", "target");
-    op("evaluation.auxiliary", "Dispatched");
-    op("evaluation.dispatch_ledger", "Ignored");
-    op("evaluation.wire_v1", "roundtrip");
-}
 
-#[cfg(feature = "apofasi")]
-#[test]
-fn opcov_typed_decision() {
-    let request: crate::SystemOneRequest = serde_json::from_value(json!({
-        "state": "Help! My payouts have been failing for 3 days.",
-        "questions": {
-            "is_urgent": {
-                "type": "noul",
-                "instructions": "Does this convey urgency?",
-                "criteria": {
-                    "true": "Explicitly time-sensitive",
-                    "false": "No urgency expressed"
-                }
-            },
-            "department": {
-                "type": "choice",
-                "instructions": "Which team should handle this?",
-                "criteria": {
-                    "billing": "Payments, invoicing, refunds",
-                    "technical": "Bugs, outages, integrations",
-                    "sales": "Pricing, upgrades, new accounts"
-                }
-            },
-            "frustration": {
-                "type": "score",
-                "instructions": "How frustrated is the customer?",
-                "criteria": ["Calm", "Frustrated", "Very angry"]
-            }
-        }
-    }))
-    .expect("request");
-    use crate::TypedDecisionEngine;
-    let service = crate::TypedDecisionService::lexical();
-    let policy = crate::GatePolicy::default();
-    let decided = service.decide(request.clone()).expect("decide");
-    let (gated, receipt) = service
-        .decide_and_gate_with_receipt(request.clone(), &policy)
-        .expect("gate");
-    let (_, again) = service
-        .decide_and_gate_with_receipt(request.clone(), &policy)
-        .expect("gate again");
-    assert!(gated.answers.len() > 1);
-    assert_eq!(decided.model, gated.model);
-    assert_eq!(gated.model, receipt.model);
-    assert_eq!(receipt.request_digest, again.request_digest);
-    let expected = crate::digest_json("aster.code.typed_decision.request.v1", &request)
-        .expect("request digest");
-    assert_eq!(receipt.request_digest, expected);
-    let mut rejected = request.clone();
-    rejected.questions.clear();
-    assert!(service.decide(rejected).is_err());
-    assert_eq!(receipt.request_digest, expected);
-    let route = service.route(&request, None, None).expect("route");
-    let route_again = service.route(&request, None, None).expect("route again");
-    assert_eq!(route.model, route_again.model);
-    op("typed_decision.decide", "model");
-    op("typed_decision.decide_and_gate", "model");
-    op("typed_decision.receipt_v1", "request-digest");
-    op("typed_decision.route", "checkpoint");
-}
 
 #[test]
 fn opcov_moli() {
@@ -1700,13 +1515,3 @@ async fn opcov_moli_ensure() {
     op("moli.ensure", "opcov-moli");
 }
 
-#[cfg(feature = "telemetry")]
-#[tokio::test]
-async fn opcov_telemetry_init() {
-    let guard = crate::telemetry_otel::TelemetryConfig::new("http://127.0.0.1:9")
-        .with_service_name("opcov")
-        .init()
-        .expect("telemetry.init");
-    guard.shutdown();
-    op("telemetry.init", "shutdown");
-}

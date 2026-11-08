@@ -893,7 +893,11 @@ fn index_files_within(root: &Path, cap: usize) -> FileIndex {
         budget |= capped;
         for (name, stat) in found {
             visited += 1;
-            if name == ".git" || name == ".aster" || name == ".aster-agent-retrievals" {
+            if name == ".git"
+                || name == ".aster"
+                || name == ".aster-agent-retrievals"
+                || name == ".kbox"
+            {
                 continue;
             }
             let path = dir.join(name);
@@ -1005,8 +1009,8 @@ pub(crate) fn file_delta(root: &Path, before: &FileIndex) -> PathDelta {
 }
 
 /// Baseline taken at run start. Queried again at the gate so a writer that
-/// never published a path still opens the same ledger. `.aster` and `.git` are
-/// harness metadata, not source mutations.
+/// never published a path still opens the same ledger. `.aster`, `.kbox`, and
+/// `.git` are harness metadata, not source mutations.
 pub(crate) struct RunWatch {
     snapshot: Snapshot,
     files: Option<FileIndex>,
@@ -1024,7 +1028,10 @@ impl RunWatch {
     }
 
     pub(crate) async fn baseline_changes(&self, root: &Path) -> PathDelta {
-        let mut observed = command_delta(root, &self.snapshot, true).await;
+        // The run gate catches unpublished working-tree writers. A parallel
+        // commit's clean HEAD paths are that commit's effect; this run's own
+        // HEAD-moving bash already publishes those paths through CommandSpan.
+        let mut observed = command_delta(root, &self.snapshot, false).await;
         if !observed.incomplete && !observed.status_budget {
             // A complete status list is sufficient for path-level baseline
             // observation even when secondary content stamps hit their cap.
@@ -1156,6 +1163,7 @@ pub(crate) fn is_harness_path(path: &str) -> bool {
             std::path::Component::Normal(name)
                 if name == ".aster"
                     || name == ".aster-agent-retrievals"
+                    || name == ".kbox"
                     || name == ".git"
                     || name == "__pycache__"
         )

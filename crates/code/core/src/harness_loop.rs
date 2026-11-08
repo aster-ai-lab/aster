@@ -991,8 +991,12 @@ impl MutationLedger {
             .map(|path| path.trim().trim_start_matches("./"))
             .filter(|path| !path.is_empty() && !seen.contains(*path))
             .filter(|path| {
+                // Durable Aster control plane and VCS, plus ksandbox's own
+                // runtime tree (`.kbox`), are not agent-owned mutations.
                 *path != ".aster"
                     && !path.starts_with(".aster/")
+                    && *path != ".kbox"
+                    && !path.starts_with(".kbox/")
                     && *path != ".git"
                     && !path.starts_with(".git/")
             })

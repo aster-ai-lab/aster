@@ -103,27 +103,6 @@ impl AgentSession {
     /// `complete` describes the requested event window and content only.
     /// Durable tool receipts and process settlement require their original
     /// proofs; digest-only evidence does not establish either one.
-    #[cfg(feature = "evaluation")]
-    pub async fn read_evaluation_evidence(
-        &self,
-        request: crate::evaluation::EvidenceReadRequestV1,
-    ) -> std::result::Result<crate::evaluation::EvidenceSnapshotV1, crate::evaluation::EvidenceError>
-    {
-        use crate::evaluation::{EvidenceError, RunEvidenceReader};
-
-        request.validate()?;
-        if request.target.session_id != self.session_id {
-            return Err(EvidenceError::RunNotFound);
-        }
-        RunEvidenceReader::new(Arc::clone(&self.run_store))
-            .with_artifacts(self.tool_executor.artifact_store())
-            .read(request)
-            .await
-            .map_err(|error| match error {
-                EvidenceError::TargetMismatch => EvidenceError::RunNotFound,
-                error => error,
-            })
-    }
 
     /// Return a cursor-based page from the run's retained event window.
     ///

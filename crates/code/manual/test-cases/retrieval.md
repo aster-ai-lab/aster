@@ -112,18 +112,8 @@ It does not search the network, and it does not keep vectors after close.
 - **Fail:** pass on a plausible filename that is not in the tree.
 - **Home:** those two tests. Fixture answer files carry semantic claims matching the query; query-echo distractors remain. `real_deepseek_chunking_strategy_matrix_qualifies_builtins_and_audits_custom_control` passed 2026-09-20 under remapped `boyue/bailian/deepseek-v4.1-flash` (~350s): line / fixed_window_512_64 / recursive all `qualityGatePassed=true` with `taskAccuracy=1.0` (oracle unchanged). Live twin `real_model_selects_bm25_and_uses_native_workspace_index` passed 2026-09-20 under remapped Flash (~14s).
 
-### I-WR-04
-
-- **Invariant:** remote-git workspace materializes a revision and searches that revision, not the host's dirty tree.
-- **Pre:** fixture remote with two commits.
-- **Stimulus:** bind commit 1, search a token that exists only in commit 2.
-- **Oracle:** miss; status revision is commit 1.
-- **Fail:** commit 2 token returned.
-- **Home:** `core/src/workspace/remote_git/tests.rs`.
-
 ## What this capability does not prove
 
 - Production Recall@k on a real embedding model. That is the external
   qualification in `manual/WORKSPACE_RETRIEVAL_QA.md`, not a unit oracle.
 - Headless page rendering. That is `moli_runtime`.
-- S3-backed search. That is `s3_workspace`.

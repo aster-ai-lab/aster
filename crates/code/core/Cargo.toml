@@ -13,16 +13,8 @@ name = "aster_core"
 path = "src/lib.rs"
 
 [[example]]
-name = "telemetry_collector_qualification"
-required-features = ["telemetry"]
-
-[[example]]
 name = "durable_memory_semantic_refresh_benchmark"
 required-features = ["durable-memory-sqlite"]
-
-[[example]]
-name = "durable_memory_prod1_host"
-required-features = ["dm-prod1-host"]
 
 [[example]]
 name = "workspace_persistent_index_benchmark"
@@ -36,38 +28,11 @@ required-features = ["aster-vec-fts"]
 name = "memory_retention_benchmark"
 required-features = ["aster-vec-fts"]
 
-[[example]]
-name = "flow_graph_benchmark"
-required-features = ["advanced-harness"]
-
-[[example]]
-name = "evaluation_substrate_benchmark"
-required-features = ["advanced-harness"]
-
-[[test]]
-name = "test_extensibility_real_llm"
-path = "tests/test_extensibility_real_llm.rs"
-required-features = ["advanced-harness"]
-
-[[test]]
-name = "typed_decision_layer_c"
-path = "tests/typed_decision_layer_c.rs"
-required-features = ["apofasi"]
-
-[[test]]
-name = "typed_decision_perf"
-path = "tests/typed_decision_perf.rs"
-required-features = ["apofasi"]
-
 [dependencies]
 aster-form-core = { workspace = true }
 # Internal crates
 # Pin the Search release so the browser-engine and Moli adapter APIs cannot
 # drift underneath the Code runtime manager.
-# Flow engine is optional: thin coding builds do not project named workflows.
-# Enabled by `dynamic-workflow` (and therefore `advanced-harness`).
-# Typed System-1 decisions (Apofasi). Optional so thin coding builds stay
-# ML-free; lexical/router path only unless `apofasi-infer` is enabled.
 # Pure-Rust aster-vec FTS engine for the workspace lexical index. Optional so
 # minimal builds keep the portable BM25 scorer without pulling the engine.
 # Async runtime
@@ -99,12 +64,6 @@ thiserror = "1.0"
 # Logging (tracing only — no OTel)
 tracing = {workspace = true}
 tracing-subscriber = {version = "0.3", features = ["env-filter", "json"]}
-
-# OpenTelemetry (optional — requires `telemetry` feature)
-opentelemetry = {version = "0.27", optional = true}
-opentelemetry_sdk = {version = "0.27", features = ["rt-tokio"], optional = true}
-opentelemetry-otlp = {version = "0.27", features = ["tonic", "http-proto", "hyper-client"], optional = true}
-tracing-opentelemetry = {version = "0.28", optional = true}
 
 # Async utilities
 futures = {workspace = true}
@@ -167,20 +126,9 @@ uuid = {version = "1.6", features = ["v4", "serde"]}
 chrono = {version = "0.4", features = ["serde"]}
 rquickjs = {version = "0.11.0", features = ["futures"]}
 
-# S3-compatible workspace backend (optional, gated by `s3` feature)
-# Redis client for the `DM-PROD1` host qualification harness only. The remote
-# vector index and distributed lease live in
-# `examples/durable_memory_prod1_host`; no library module depends on Redis.
-redis = {version = "0.32.7", default-features = false, features = ["tokio-comp", "script"], optional = true}
-aws-sdk-s3 = {version = "1", default-features = false, features = ["rt-tokio", "rustls"], optional = true}
-aws-credential-types = {version = "1", optional = true}
-aws-smithy-types = {version = "1", optional = true}
-aws-smithy-runtime-api = {version = "1", optional = true}
 aster-acl = {path = "../../acl"}
 aster-okf = {path = "../../okf"}
 aster-vec = {optional = true, path = "../../vec"}
-aster-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
-aster-flow = {default-features = false, optional = true, path = "../../flow"}
 aster-search = {default-features = false, path = "../../search"}
 aster-lane = {path = "../../lane"}
 aster-durable-memory = {path = "../../memory"}
@@ -198,45 +146,26 @@ windows-sys = {version = "0.61", features = ["Win32_Foundation", "Win32_Storage_
 
 [features]
 # Thin coding-harness default (`HARNESS-CONV5`): agent loop, tools, identity,
-# events, and aster-vec FTS. Advanced evaluation/research/workflows (including
-# Flow projection via `dynamic-workflow`), browser search, S3, and
-# telemetry require explicit profiles/features.
+# events, and aster-vec FTS. Browser search requires an explicit profile.
 default = ["local-code"]
 # ---------------------------------------------------------------------------
 # Release profiles (KRN-10). Embedders select a profile instead of composing
 # native/runtime dependencies by hand; each profile documents the surface it
 # adds over `minimal`.
 # ---------------------------------------------------------------------------
-# Governed agent loop, workspace tools, identity/events — no browser, aster-vec
-# FTS, S3, telemetry, or Advanced harness modules.
+# Governed agent loop, workspace tools, identity/events — no browser or
+# aster-vec FTS.
 minimal = []
 # Minimal plus the workspace persistent aster-vec FTS lexical path, in-tree
 # trigram pruning for workspace `grep` candidates, and PDF text extraction
 # for `web_fetch`.
 local-code = ["aster-vec-fts", "grep-trigram", "web-fetch-pdf"]
-# Local code plus durable SQLite memory vectors, browser-backed web search, and
-# Advanced evaluation/research/workflow surfaces.
-scientific = ["local-code", "durable-memory-sqlite", "headless-search", "advanced-harness"]
-# Local code plus S3 workspaces and OpenTelemetry export.
-server = ["local-code", "s3", "telemetry"]
-# Every optional surface.
-full = ["scientific", "server"]
-# Advanced harness: evaluation substrate, research contracts, state graphs,
-# Flow projection, and programmable dynamic workflows (`HARNESS-CONV3`).
-evaluation = []
-research = ["evaluation"]
-state-graph = []
-# Programmable workflows plus named Flow capability projection (`HOST-FLOW1`).
-dynamic-workflow = ["state-graph", "dep:aster-flow"]
-advanced-harness = ["evaluation", "research", "state-graph", "dynamic-workflow"]
+# Local code plus durable SQLite memory vectors and browser-backed web search.
+scientific = ["local-code", "durable-memory-sqlite", "headless-search"]
+# Alias for scientific (kept for existing profile selectors).
+full = ["scientific"]
 # Enable the locally durable SQLite vector index for semantic-memory hosts.
 durable-memory-sqlite = ["aster-durable-memory/sqlite"]
-# Build the `DM-PROD1` host qualification harness
-# (`examples/durable_memory_prod1_host`). It injects a Redis-backed
-# `VectorIndex` and a Redis lease into `DurableMemorySession`, so it is the only
-# surface that needs the Redis client. Deliberately excluded from every release
-# profile and from `ci-all`.
-dm-prod1-host = ["dep:redis"]
 # Enable browser-backed search plus managed browser lifecycle
 # APIs. Moli is the runtime default and is downloaded on first headless use when
 # no packaged or user-provided executable is available; Chrome/Chromium remains
@@ -256,48 +185,20 @@ aster-vec-fts = ["dep:aster-vec"]
 grep-trigram = []
 # Extract text from PDF responses in `web_fetch` (lopdf). Included in `local-code`.
 web-fetch-pdf = ["dep:lopdf"]
-# Enable OpenTelemetry OTLP export for traces and metrics.
-# When active, `TelemetryConfig::init()` sets up OTLP exporter + tracing subscriber.
-telemetry = [
-    "dep:opentelemetry",
-    "dep:opentelemetry_sdk",
-    "dep:opentelemetry-otlp",
-    "dep:tracing-opentelemetry",
-]
-# Enable the S3-compatible workspace backend (`S3WorkspaceBackend`).
-# Brings in the AWS Rust SDK and is safe to point at any S3-compatible
-# endpoint (AWS S3, MinIO, RustFS, Cloudflare R2, ...).
-s3 = [
-    "dep:aws-sdk-s3",
-    "dep:aws-credential-types",
-    "dep:aws-smithy-types",
-    "dep:aws-smithy-runtime-api",
-]
-# Typed System-1 decisions via Aster Apofasi (lexical + script router).
-# Not part of `local-code` / `scientific` / `full` — hosts opt in explicitly.
-# Call sites, GatePolicy thresholds, and product routing stay host-owned.
-apofasi = ["dep:aster-apofasi"]
-# Neural checkpoint path (Candle). Requires bundled weights; keeps ML off
-# the default Apofasi surface.
-apofasi-infer = ["apofasi", "aster-apofasi/infer"]
-# Apple Silicon Metal for Apofasi neural forwards. Not part of `ci-all`:
-# `--all-features` would pull objc2 onto Linux/Windows runners.
-apofasi-metal = ["apofasi-infer", "aster-apofasi/metal"]
 # Every optional surface that is safe on Linux/Windows CI hosts.
 # Prefer this over `--all-features` outside macOS.
-ci-all = ["full", "apofasi", "apofasi-infer"]
-# Real-model deep-case lineage: deep38 (superseded structurally by the
-# ci-all `deep_e2e_live` 45-case harness — its 28 cases are a subset) plus
-# the sdk_capabilities op-coverage assertions. Test-compile only behind this
-# feature so no default `cargo test` run hits a provider, and no coverage
-# claim hides in never-compiled source.
+ci-all = ["full"]
+# Real-model deep-case lineage (`deep_e2e_live`) plus sdk_capabilities
+# op-coverage assertions. Test-compile only behind this feature so no default
+# `cargo test` run hits a provider, and no coverage claim hides in
+# never-compiled source.
 deep-live = ["headless-search"]
 
 [dev-dependencies]
 # Deterministically advance the exponential stream-retry backoff in async tests.
 tokio = {version = "1.35", features = ["test-util"]}
-# HTTP mocking for the RemoteGitBackend (and any future HTTP-backed workspace
-# provider). Production code does not depend on wiremock.
+# HTTP mocking for hermetic transport tests. Production code does not depend
+# on wiremock.
 wiremock = {workspace = true}
 # Self-signed cert generation for mTLS happy-path tests. Production code does
 # not depend on rcgen.

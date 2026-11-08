@@ -33,7 +33,7 @@ see [META_HARNESS.md](META_HARNESS.md).
 ```bash
 # Thin default must stay clean of Advanced/server stacks
 cargo check -p aster-core
-cargo tree -p aster-core -e normal | rg -i 'evaluation|research|chromiumoxide|aws-sdk-s3' && exit 1 || true
+cargo tree -p aster-core -e normal | rg -i 'evaluation|research|chromiumoxide' && exit 1 || true
 
 # CI gate matrix
 cargo check -p aster-core --no-default-features --features local-code

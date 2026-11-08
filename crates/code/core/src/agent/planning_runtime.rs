@@ -452,8 +452,6 @@ impl crate::agent::TurnEngine {
         event_tx: &Option<mpsc::Sender<AgentEvent>>,
         cancel: &CancellationToken,
     ) -> Result<Result<(crate::planning::AchievementResult, crate::llm::TokenUsage)>> {
-        #[cfg(feature = "apofasi")]
-        crate::typed_decision::enforce_ineligible(crate::typed_decision::admit_goal_achievement())?;
         let operation =
             self.begin_capability_operation(0, cancel, "goal achievement orchestration")?;
         let client =

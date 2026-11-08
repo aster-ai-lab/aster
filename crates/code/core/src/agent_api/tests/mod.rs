@@ -27,9 +27,6 @@ mod close;
 mod compact;
 mod conversation_busy;
 mod durable_engineering;
-mod dynamic_workflow;
-#[cfg(feature = "evaluation")]
-mod evaluation_evidence;
 mod history_concurrency;
 mod host_adapter;
 mod long_horizon_capabilities;

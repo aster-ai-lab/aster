@@ -2,9 +2,10 @@
 #[cfg(all(feature = "jemalloc", unix))]
 #[global_allocator]
 static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
-#[cfg(all(feature = "jemalloc", feature = "release-dist", unix))]
+#[cfg(all(feature = "jemalloc-profiling", unix))]
 mod jemalloc_malloc_conf {
     /// jemalloc looks up `extern const char *malloc_conf`, a thin pointer, not a Rust `&[u8]` fat pointer.
+    /// Only compiled when `jemalloc-profiling` is on so release-dist stays lean.
     #[repr(transparent)]
     struct MallocConfPtr(*const u8);
     unsafe impl Sync for MallocConfPtr {}
@@ -2942,7 +2943,7 @@ mod tests {
         }
         eprintln!(
             "skip jemalloc prof checks: opt.prof false \
-             (release-dist static conf, or MALLOC_CONF=prof:true,prof_active:false,lg_prof_sample={})",
+             (build with --features jemalloc-profiling, or MALLOC_CONF=prof:true,prof_active:false,lg_prof_sample={})",
             aster_shell::heap_profile::LG_PROF_SAMPLE
         );
         false

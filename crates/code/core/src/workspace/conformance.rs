@@ -50,7 +50,7 @@
 //! itself in this module, proving the contract is internally consistent;
 //! (2) it serves as the smallest possible reference for what a backend
 //! that satisfies the suite has to look like. Real production backends
-//! (`LocalWorkspaceBackend`, `S3WorkspaceBackend`) layer real I/O on top
+//! (`LocalWorkspaceBackend` and other host backends) layer real I/O on top
 //! of the same observable semantics.
 
 use super::{

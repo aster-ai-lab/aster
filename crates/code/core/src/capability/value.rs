@@ -10,8 +10,6 @@ use crate::skills::Skill;
 use crate::subagent::AgentDefinition;
 use crate::tools::Tool;
 
-#[cfg(feature = "dynamic-workflow")]
-use super::FlowBinding;
 use super::{CapabilityKind, KnowledgeSurfaceBinding, UiBinding};
 
 /// Closed runtime value categories accepted by the Code projection kernel.
@@ -28,8 +26,6 @@ pub enum CapabilityValue {
     Command(Arc<dyn SlashCommand>),
     Hook(Arc<HookBinding>),
     Mcp(Arc<McpBinding>),
-    #[cfg(feature = "dynamic-workflow")]
-    Flow(Arc<FlowBinding>),
     KnowledgeSurface(Arc<KnowledgeSurfaceBinding>),
     Knowledge(Arc<PackageContextSession>),
     Ui(Arc<UiBinding>),
@@ -45,8 +41,6 @@ impl CapabilityValue {
             Self::Command(_) => CapabilityKind::Command,
             Self::Hook(_) => CapabilityKind::Hook,
             Self::Mcp(_) => CapabilityKind::Mcp,
-            #[cfg(feature = "dynamic-workflow")]
-            Self::Flow(_) => CapabilityKind::Flow,
             Self::KnowledgeSurface(_) => CapabilityKind::KnowledgeSurface,
             Self::Knowledge(_) => CapabilityKind::Knowledge,
             Self::Ui(_) => CapabilityKind::Ui,
@@ -61,8 +55,6 @@ impl CapabilityValue {
             Self::Agent(value) => Some(&value.name),
             Self::Command(value) => Some(value.name()),
             Self::Hook(value) => Some(&value.hook().id),
-            #[cfg(feature = "dynamic-workflow")]
-            Self::Flow(value) => Some(value.public_name()),
             Self::Mcp(value) => Some(value.server_name()),
             Self::KnowledgeSurface(value) => Some(value.public_name()),
             Self::Knowledge(value) => Some(value.provider_name()),

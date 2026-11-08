@@ -97,34 +97,20 @@ pub mod content_digest;
 pub mod context;
 pub mod core_event_log;
 pub mod core_identity;
-#[cfg(all(test, feature = "deep-live"))]
-mod deep38_live;
-/// Real-model deep-case lineage. `deep38_live` is superseded structurally by
-/// `deep_e2e_live` above (28 cases ⊂ 45); both it and the
-/// `sdk_capabilities()` op-coverage assertions compile only behind
-/// `--features deep-live`, so the default test run stays hermetic while no
-/// coverage claim hides in never-compiled source.
-#[cfg(all(test, feature = "deep-live"))]
-mod deep38_support;
+/// Real-model deep-case lineage and op-coverage compile behind `deep-live`.
 #[cfg(test)]
 mod deep_e2e_live;
 pub mod directory_projection;
 pub mod durable_memory;
 #[cfg(feature = "aster-vec-fts")]
 pub mod durable_memory_vec;
-#[cfg(feature = "dynamic-workflow")]
-pub mod dynamic_workflow;
 pub mod effect_isolation;
 pub mod embedding;
 pub mod error;
-#[cfg(feature = "evaluation")]
-pub mod evaluation;
 pub mod event_protocol;
 pub mod execution_identity;
 pub mod external_observation;
 pub mod fact_control;
-#[cfg(feature = "dynamic-workflow")]
-pub mod flow_graph;
 pub(crate) mod git;
 pub mod goal_control;
 pub mod harness_evidence;
@@ -155,8 +141,6 @@ pub mod queue;
 mod rank_fusion;
 pub mod read_only_verifier;
 pub mod release;
-#[cfg(feature = "research")]
-pub mod research;
 pub mod retention;
 pub(crate) mod retry;
 pub mod rl_trajectory;
@@ -178,8 +162,6 @@ pub mod shell_session;
 pub mod skills;
 pub(crate) mod sse;
 pub(crate) mod standing_context;
-#[cfg(feature = "state-graph")]
-pub mod state_graph;
 pub mod state_root;
 pub mod store;
 pub mod subagent;
@@ -187,8 +169,6 @@ pub mod subagent_task_tracker;
 pub(crate) mod surface_decision;
 pub mod task_scheduler;
 pub mod telemetry;
-#[cfg(feature = "telemetry")]
-pub mod telemetry_otel;
 #[cfg(test)]
 pub(crate) mod test_mutex_poison;
 #[cfg(test)]
@@ -199,9 +179,6 @@ pub mod tool_name;
 pub mod tools;
 pub mod trace;
 pub mod transcript;
-#[cfg(feature = "apofasi")]
-pub mod typed_decision;
-mod typed_decision_absence;
 pub mod use_harness;
 pub mod use_runtime_tasks;
 pub mod verification;
@@ -215,9 +192,6 @@ pub mod workspace;
 #[doc(hidden)]
 pub use agent::{context_window_for_model, documented_context_tokens, AgentExecutionFailure};
 pub use agent::{hostable_context_window, AgentEvent, AgentResult, ModelMiddlewareHealthSnapshot};
-#[cfg(feature = "dynamic-workflow")]
-#[doc(hidden)]
-pub use agent_api::ProjectedFlowHandle;
 pub use agent_api::{
     validate_output_schema, Agent, AgentRunSpawn, AgentRunStream, AgentSession,
     FollowUpSuggestions, GoalTickAdmission, GoalTickStream, ReadFileOptions, SessionOptions,
@@ -299,18 +273,6 @@ pub use durable_memory::{
     DURABLE_MEMORY_SEMANTIC_REFRESH_CHECKPOINT_SCHEMA_V1,
     DURABLE_MEMORY_SEMANTIC_REFRESH_PROFILE_V1,
 };
-#[cfg(feature = "dynamic-workflow")]
-#[doc(hidden)]
-pub use dynamic_workflow::{
-    dynamic_workflow_claim_identity, dynamic_workflow_continuation_identity,
-    dynamic_workflow_execution_plan, dynamic_workflow_step_identity, dynamic_workflow_store_path,
-    register_dynamic_workflow, register_dynamic_workflow_with_event_store,
-    register_dynamic_workflow_with_scheduler, CrossProcessFlowEventStore,
-    DynamicWorkflowAdmissionStats, DynamicWorkflowControl, DynamicWorkflowControlDiagnostics,
-    DynamicWorkflowControlSnapshot, DynamicWorkflowHealthSnapshot, DynamicWorkflowRuntime,
-    DynamicWorkflowScriptLimits, DynamicWorkflowTool, DYNAMIC_WORKFLOW_RUNTIME_BUILD_ID,
-    DYNAMIC_WORKFLOW_STORE_RELATIVE_PATH,
-};
 pub use embedding::EmbeddingProvider;
 #[doc(hidden)]
 pub use embedding::{
@@ -324,54 +286,11 @@ pub use error::CodeError;
 pub use error::Result;
 #[doc(hidden)]
 pub use error::SessionBuildResource;
-#[cfg(feature = "evaluation")]
-#[doc(hidden)]
-pub use evaluation::{
-    AuxiliaryCapabilityProfileV1, AuxiliaryExecutor, AuxiliaryModeV1, AuxiliaryRunContextV1,
-    AuxiliaryRunError, AuxiliaryRunHandle, AuxiliaryRunOutputV1, AuxiliaryRunService,
-    AuxiliaryRunSnapshotV1, AuxiliaryRunSpecV1, AuxiliaryRunStateV1, EvaluationBoundaryV1,
-    EvaluationDispatch, EvaluationDispatchClaimOutcome, EvaluationDispatchLedger,
-    EvaluationDispatchLedgerError, EvaluationDispatchOutcome, EvaluationPlanV1, EvaluationPolicy,
-    EvaluationProtocolError, EvaluationRecordV1, EvaluationResultSink, EvaluationResultV1,
-    EvaluationStoreError, EvaluationSupervisor, EvaluationWireEnvelopeV1,
-    EvaluationWireKindDescriptorV1, EvaluationWireKindV1, EvaluationWireTypeV1,
-    EvaluationWriteOutcomeV1, EventCursorV1, EvidenceArtifactV1, EvidenceContentModeV1,
-    EvidenceError, EvidenceEventV1, EvidenceLimitsV1, EvidenceReadRequestV1, EvidenceReader,
-    EvidenceRunStateV1, EvidenceSnapshotV1, ExecutionFactInputV1, ExecutionFactJournal,
-    ExecutionFactKindV1, ExecutionFactPageV1, ExecutionFactRecorder, ExecutionFactSnapshotV1,
-    ExecutionFactV1, ExecutionFrameV1, ExecutionTargetV1, FactAppendOutcomeV1,
-    FileEvaluationDispatchLedger, FileEvaluationResultStore, IdentityError,
-    InMemoryAuxiliaryRunService, InMemoryEvaluationDispatchLedger, InMemoryEvaluationResultStore,
-    InMemoryExecutionFactJournal, JournalError, RunEvidenceReader, StructuredAuxiliaryExecutor,
-    SupervisorError, AUXILIARY_MAX_OUTPUT_BYTES, AUXILIARY_MAX_STEPS, AUXILIARY_OUTPUT_SCHEMA_V1,
-    AUXILIARY_RUN_SCHEMA_V1, AUXILIARY_SNAPSHOT_SCHEMA_V1, EVALUATION_DISPATCH_LEASE_GRACE_MS,
-    EVALUATION_DISPATCH_LEDGER_DEFAULT_MAX_RECORDS, EVALUATION_DISPATCH_LEDGER_MAX_BYTES,
-    EVALUATION_DISPATCH_LEDGER_SCHEMA_V1, EVALUATION_DISPATCH_MIN_LEASE_MS,
-    EVALUATION_MAX_COOLDOWN_MS, EVALUATION_MAX_ID_BYTES, EVALUATION_MAX_PENDING,
-    EVALUATION_PLAN_SCHEMA_V1, EVALUATION_PROTOCOL_MAX_MESSAGE_BYTES,
-    EVALUATION_PROTOCOL_SCHEMA_V1, EVALUATION_PROTOCOL_VERSION_V1, EVALUATION_RECORD_SCHEMA_V1,
-    EVALUATION_RESULT_SCHEMA_V1, EVALUATION_RESULT_STORE_DEFAULT_MAX_RECORDS,
-    EVALUATION_RESULT_STORE_MAX_BYTES, EVALUATION_RESULT_STORE_SCHEMA_V1,
-    EVALUATION_WIRE_KIND_DESCRIPTORS_V1, EVIDENCE_MAX_ARTIFACTS, EVIDENCE_MAX_ARTIFACT_BYTES,
-    EVIDENCE_MAX_EVENTS, EVIDENCE_MAX_EVENT_BYTES, EVIDENCE_MAX_PROMPT_BYTES,
-    EVIDENCE_MAX_RESULT_BYTES, EVIDENCE_SNAPSHOT_SCHEMA_V1, EXECUTION_FACT_SCHEMA_V1,
-    EXECUTION_FRAME_SCHEMA_V1, EXECUTION_TARGET_SCHEMA_V1,
-};
 #[doc(hidden)]
 pub use event_protocol::AgentEventTypeV1;
 pub use event_protocol::{
     run_event_envelope_v1, AgentEventProjectionV1, EventEnvelopeV1, EventProtocolError,
     AGENT_EVENT_TYPES_V1, EVENT_ENVELOPE_V1_VERSION,
-};
-#[cfg(feature = "dynamic-workflow")]
-#[doc(hidden)]
-pub use flow_graph::{
-    run_object_id as flow_run_object_id, step_object_id as flow_step_object_id,
-    FileFlowDecisionLedger, FlowDecision, FlowDecisionClaimOutcome, FlowDecisionClaimState,
-    FlowDecisionDispatchError, FlowDecisionDispatcher, FlowDecisionHealthSnapshot,
-    FlowDecisionHealthStatus, FlowDecisionLedger, FlowDecisionRequest, FlowDecisionSink,
-    FlowDecisionStep, FlowGraphHealthSnapshot, FlowGraphHealthStatus, FlowGraphObserver,
-    MemoryFlowDecisionLedger, FLOW_GRAPH_SOURCE,
 };
 #[doc(hidden)]
 pub use harness_evidence::{
@@ -435,28 +354,6 @@ pub use prompts::{
     DetectionConfidence,
 };
 pub use prompts::{AgentStyle, PlanningMode, SystemPromptSlots};
-#[cfg(feature = "research")]
-#[doc(hidden)]
-pub use research::{
-    ResearchArtifactKindV1, ResearchCitationV1, ResearchClaimStatusV1, ResearchClaimV1,
-    ResearchContractError, ResearchEventV1, ResearchEvidenceCompletenessV1,
-    ResearchEvidenceFactKindV1, ResearchEvidenceFactV1, ResearchEvidenceGraphV1,
-    ResearchProtocolError, ResearchProvenanceReceiptV1, ResearchReproducibilityManifestV1,
-    ResearchReproducibilityV1, ResearchRerunLineageV1, ResearchReviewBatchV1,
-    ResearchReviewCategoryV1, ResearchReviewFindingV1, ResearchReviewLocationV1,
-    ResearchReviewSeverityV1, ResearchReviewStatusV1, ResearchRunStatusV1, ResearchRunV1,
-    ResearchWireEnvelopeV1, ResearchWireKindDescriptorV1, ResearchWireKindV1, ResearchWireTypeV1,
-    ResearchWorkflowPlanV1, ResearchWorkflowStepV1, RESEARCH_ARTIFACT_KINDS,
-    RESEARCH_CITATION_SCHEMA_V1, RESEARCH_CLAIM_SCHEMA_V1, RESEARCH_EVENT_SCHEMA_V1,
-    RESEARCH_EVIDENCE_FACT_SCHEMA_V1, RESEARCH_EVIDENCE_GRAPH_SCHEMA_V1,
-    RESEARCH_MAX_EVIDENCE_GRAPH_CITATIONS, RESEARCH_MAX_EVIDENCE_GRAPH_CLAIMS,
-    RESEARCH_MAX_REVIEW_FINDINGS, RESEARCH_MAX_WORKFLOW_STEPS, RESEARCH_PROTOCOL_MAX_MESSAGE_BYTES,
-    RESEARCH_PROTOCOL_SCHEMA_V1, RESEARCH_PROTOCOL_VERSION_V1,
-    RESEARCH_PROVENANCE_RECEIPT_SCHEMA_V1, RESEARCH_REPRODUCIBILITY_MANIFEST_SCHEMA_V1,
-    RESEARCH_RERUN_LINEAGE_SCHEMA_V1, RESEARCH_REVIEW_BATCH_SCHEMA_V1,
-    RESEARCH_REVIEW_FINDING_SCHEMA_V1, RESEARCH_RUN_SCHEMA_V1, RESEARCH_WIRE_KIND_DESCRIPTORS_V1,
-    RESEARCH_WORKFLOW_PLAN_SCHEMA_V1, RESEARCH_WORKFLOW_STEP_SCHEMA_V1,
-};
 #[doc(hidden)]
 pub use rl_trajectory::RlTrajectoryRecorder;
 pub use rl_trajectory::{RlTrajectoryConfig, RlTrajectoryMode};
@@ -500,19 +397,6 @@ pub use session_review::{
     SessionReviewAnchorV1, SessionReviewSeverityV1, SessionReviewStatusV1, SessionReviewStoreV1,
     SCENARIO_REPLY_TRANSCRIPT, SESSION_REVIEW_FINDING_SCHEMA_V1, SESSION_REVIEW_STORE_SCHEMA_V1,
 };
-#[cfg(feature = "state-graph")]
-#[doc(hidden)]
-pub use state_graph::{
-    graph_event_head, Behavior, BehaviorContext, BehaviorError, EventFilter, FileGraphEventStore,
-    FnBehavior, GraphDiff, GraphEventStore, GraphObject, GraphRelation, GraphSaveOutcome,
-    MemoryGraphEventStore, ObjectId, PatchOperation, RelationId, StateGraph,
-    GRAPH_EVENT_SCHEMA_VERSION,
-};
-#[cfg(feature = "state-graph")]
-pub use state_graph::{
-    ExternalEvent, ExternalProjectionOutcome, GraphEvent, GraphEventRecord, GraphPatch,
-    GraphRuntime, ReplayError, RuntimeError as GraphRuntimeError, RuntimeLimits,
-};
 pub use subagent::{
     AgentDefinition, AgentRegistry, ConfirmationInheritance, WorkerAgentKind, WorkerAgentSpec,
 };
@@ -547,22 +431,6 @@ pub use tools::{
 };
 #[doc(hidden)]
 pub use tools::{ToolCapabilities, ToolOutputKind, ToolResultTrustV1};
-#[cfg(feature = "apofasi")]
-#[doc(hidden)]
-pub use typed_decision::TokenUsage as ApofasiTokenUsage;
-#[cfg(feature = "apofasi")]
-#[doc(hidden)]
-pub use typed_decision::{
-    admit_goal_achievement, admit_planning_pre_analysis, analyse, build_typed_decision_receipt,
-    compose_host_decision, enforce_ineligible, gate_answer, gate_system_one_response,
-    load_neural_engine, parse_host_evidence, validate_system_one_request, Answer, CheckpointId,
-    Criteria, DecisionKind, Detection, Escalation, GateAction, GatePolicy, GatedAnswer,
-    GatedDecision, GenerationAdmission, HostDecisionEvidence, HostEvidenceError, NeuralDevice,
-    NeuralEngineHandle, Question, RouteDecision, State, SystemOneRequest, SystemOneResponse,
-    TemperatureTable, TypedDecisionComposition, TypedDecisionEngine, TypedDecisionError,
-    TypedDecisionReceiptV1, TypedDecisionResult, TypedDecisionService, APOFASI_VERSION,
-    TYPED_DECISION_RECEIPT_SCHEMA_V1,
-};
 #[doc(hidden)]
 pub use use_runtime_tasks::{
     UsePlanScope, UsePlanScopeKind, UseProjectedLifecycleIdentity, UseRuntimeTaskDispatcher,
@@ -575,14 +443,9 @@ pub use use_runtime_tasks::{
 pub use work_policy::WorkPolicyV1;
 #[doc(hidden)]
 pub use work_policy::{WorkPolicyError, WorkPolicyRefusal, WorkPolicyRefusalParseError};
-#[cfg(feature = "s3")]
-pub use workspace::S3BackendConfig;
-#[cfg(feature = "s3")]
-#[doc(hidden)]
-pub use workspace::S3WorkspaceBackend;
 pub use workspace::{
     ChunkCatalogLimits, ChunkingConfig, FixedWindowChunkingOptions, RecursiveChunkingOptions,
-    RemoteGitBackendConfig, WorkspaceChunk, WorkspaceChunkCatalog, WorkspaceChunkingError,
+    WorkspaceChunk, WorkspaceChunkCatalog, WorkspaceChunkingError,
     WorkspaceChunkingStrategy, WorkspaceEmbeddingBatchMetrics, WorkspaceHybridChannelRank,
     WorkspaceHybridChannelStatus, WorkspaceHybridSearchHit, WorkspaceHybridSearchRequest,
     WorkspaceHybridSearchResult, WorkspaceLexicalEngine, WorkspacePath, WorkspaceRerankAlgorithm,
@@ -598,7 +461,7 @@ pub use workspace::{
     LexicalSearchHit, LexicalSearchRequest, LexicalSearchResult, LocalWorkspaceAccessPolicy,
     LocalWorkspaceBackend, LocalWorkspaceFile, LocalWorkspaceFileStatus, LocalWorkspaceManifest,
     LocalWorkspaceManifestSnapshot, ManifestWorkspaceBackend, RecentWorkspaceFile,
-    RemoteGitBackend, RemoteGitConflict, SharedGrepCandidateIndex, UnconstrainedGrepCandidateIndex,
+    SharedGrepCandidateIndex, UnconstrainedGrepCandidateIndex,
     VirtualPathResolver, WorkspaceCapabilities, WorkspaceChunkId, WorkspaceChunkRange,
     WorkspaceChunkingInput, WorkspaceCommandRunner, WorkspaceDirEntry, WorkspaceEligibilityPolicy,
     WorkspaceError, WorkspaceFileChange, WorkspaceFileChangeKind, WorkspaceFileSystem,

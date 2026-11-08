@@ -188,6 +188,18 @@ try {
             Move-Item -LiteralPath (Join-Path $stage "new-$name") -Destination (Join-Path $Prefix $name) -Force
             $promoted += $name
         }
+        $embeddingSrc = Join-Path $unpack "embedding"
+        $embeddingDest = Join-Path $Prefix "embedding"
+        if (-not (Test-Path -LiteralPath (Join-Path $embeddingSrc "potion-code-16M-v2.safetensors"))) {
+            throw "archive did not contain embedding assets"
+        }
+        New-Item -ItemType Directory -Force -Path $embeddingDest | Out-Null
+        foreach ($name in @(
+                "potion-code-16M-v2.safetensors",
+                "potion-code-16M-v2.tokenizer.json",
+                "potion-code-16M-v2.config.json")) {
+            Copy-Item -LiteralPath (Join-Path $embeddingSrc $name) -Destination (Join-Path $embeddingDest $name) -Force
+        }
         $installed = $true
     } finally {
         $recovered = $true
@@ -220,6 +232,7 @@ try {
     }
     Write-Output "aster=$destAster"
     Write-Output "aster-acp=$destAcp"
+    Write-Output "embedding=$(Join-Path $Prefix 'embedding')"
 } finally {
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
 }

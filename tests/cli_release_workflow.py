@@ -14,7 +14,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
 NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
          [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]]
-EXPECTED_MACOS_MEMBERS = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}
+EXPECTED_MACOS_MEMBERS = {
+    "aster",
+    "aster-acp",
+    "BUILD_ID",
+    "SHA256SUMS",
+    "embedding/potion-code-16M-v2.safetensors",
+    "embedding/potion-code-16M-v2.tokenizer.json",
+    "embedding/potion-code-16M-v2.config.json",
+}
 
 
 def write_macos_pair_archive(path, version_label):
@@ -274,7 +282,7 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("CLI_PROFILE: release-dist", text)
         publisher = (ROOT / "scripts/publish-aster-cli.sh").read_text()
         self.assertNotIn("cli_sandbox_smoke", publisher)
-        self.assertIn('expected = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}', publisher)
+        self.assertIn("embedding/potion-code-16M-v2.safetensors", publisher)
         self.assertIn("verified archive members for", publisher)
         self.assertIn("unexpected archive members", publisher)
         publish_job = text.split("\n  publish:\n", 1)[1]

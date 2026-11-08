@@ -341,38 +341,6 @@ Feature: `headless-search`.
 - **Fail:** headless bypasses `safe_http`.
 - **Home:** `core/tests/test_web_search_headless.rs`. Add the denylist case if the file only checks that a page title parsed.
 
-## s3_workspace (S3)
-
-Feature: `s3`.
-
-### U-S3-01
-
-- **Invariant:** default build has no S3 backend. Selecting `workspace_backend:s3` without the feature is a typed error.
-- **Pre:** default features.
-- **Stimulus:** open an S3 workspace config.
-- **Oracle:** typed unavailable; no network call.
-- **Fail:** the client attempts a connection.
-- **Home:** feature cfg on `core/src/workspace/s3.rs`.
-
-### U-S3-02
-
-- **Invariant:** reads and writes are bounded. A key that escapes the prefix is denied.
-- **Pre:** hermetic S3 (`test_s3_backend`) with prefix `p/`.
-- **Stimulus:** get `../secret` and put an object over the size cap.
-- **Oracle:** both denied; no object written outside `p/`.
-- **Fail:** object at the raw key.
-- **Home:** `core/tests/test_s3_backend.rs`.
-
-### I-S3-01
-
-- **Invariant:** search on an S3 workspace returns only keys under the prefix, and credentials do not appear in errors.
-- **Pre:** hermetic bucket; forced 403.
-- **Stimulus:** search and a denied get.
-- **Oracle:** error text has no access key; hits are prefix-local.
-- **Fail:** access key in the error string.
-- **Home:** `denied_get_error_omits_credentials` in `core/src/workspace/s3/tests.rs` (`--features s3`). A local listener returns a mixed `ListObjectsV2` page and a 403 `GetObject`. Glob keeps `visible.txt` and drops `outside/secret.txt`. The classified get error contains `Failed to read S3 object` and neither the access key nor the secret. Live `ASTER_S3_TEST_ENDPOINT` remains the ignored round-trip in `core/tests/test_s3_backend.rs`.
-
-
 ## opentelemetry (OT)
 
 Feature: `telemetry`.

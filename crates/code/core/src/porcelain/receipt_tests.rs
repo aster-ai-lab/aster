@@ -354,10 +354,12 @@ async fn an_ignored_nested_workspace_boundary_change_or_lost_baseline_stays_unkn
 #[cfg(unix)]
 async fn harness_directory_components_do_not_hide_literal_unix_backslash_files() {
     use aster_effect::{ToolFileKind, ToolObservationCompleteness};
+    // On Unix a backslash is a literal filename byte, not a separator, so these
+    // are ordinary files — not the `.aster` / `.git` / `.kbox` harness trees.
     let names = [
         ".aster\\effect.txt",
-        ".aster\\effect.txt",
         ".git\\effect.txt",
+        ".kbox\\effect.txt",
     ];
     let payload = b"literal backslash file bytes\n";
     let expected_digest = format!("sha256:{:x}", Sha256::digest(payload));
@@ -372,7 +374,7 @@ async fn harness_directory_components_do_not_hide_literal_unix_backslash_files()
             fs::write(root.path().join(name), payload).unwrap();
             assert!(!is_harness_path(name));
         }
-        for metadata in [".aster", ".aster"] {
+        for metadata in [".aster", ".kbox"] {
             fs::create_dir(root.path().join(metadata)).unwrap();
             fs::write(root.path().join(metadata).join("internal"), "harness state").unwrap();
             assert!(is_harness_path(&format!("{metadata}/internal")));

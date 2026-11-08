@@ -38,10 +38,6 @@ pub(crate) fn sanitize_tool_error_kind(
             expected: text(expected),
             actual: actual.as_deref().map(text),
         },
-        ToolErrorKind::RemoteGitConflict { code, message } => ToolErrorKind::RemoteGitConflict {
-            code: text(code),
-            message: text(message),
-        },
         ToolErrorKind::NotFound { path } => ToolErrorKind::NotFound { path: text(path) },
         ToolErrorKind::TooLarge {
             path,
@@ -596,16 +592,6 @@ mod tests {
                     path: format!("path/{redacted}"),
                     expected: format!("expected: {redacted}"),
                     actual: Some(format!("actual: {redacted}")),
-                },
-            ),
-            (
-                ToolErrorKind::RemoteGitConflict {
-                    code: format!("code: {secret}"),
-                    message: format!("message: {secret}"),
-                },
-                ToolErrorKind::RemoteGitConflict {
-                    code: format!("code: {redacted}"),
-                    message: format!("message: {redacted}"),
                 },
             ),
             (

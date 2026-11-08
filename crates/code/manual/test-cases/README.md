@@ -107,7 +107,6 @@ Advanced (explicit Cargo feature or host injection):
 | `agent_protocol` | AP | always compiled | [advanced.md](advanced.md) |
 | `evaluation_substrate` | EV | `advanced-harness` | [advanced.md](advanced.md) |
 | `moli_runtime` | MO | `headless-search` | [advanced.md](advanced.md) |
-| `s3_workspace` | S3 | `s3` | [advanced.md](advanced.md) |
 | `opentelemetry` | OT | `telemetry` | [advanced.md](advanced.md) |
 
 `sdk_capabilities()` is the product id list. One compiled contract is not an

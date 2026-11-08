@@ -163,15 +163,7 @@ pub enum CodeError {
     #[error("Capability runtime error: {0}")]
     Capability(#[from] crate::capability::CapabilityRuntimeError),
 
-    /// Aster Flow definition, replay, store, or runtime failure.
-    #[cfg(feature = "dynamic-workflow")]
-    #[error("Flow error: {0}")]
-    Flow(#[from] aster_flow::FlowError),
 
-    /// Optional typed System-1 decision (Apofasi) failure.
-    #[cfg(feature = "apofasi")]
-    #[error("Typed decision error: {0}")]
-    TypedDecision(#[from] crate::typed_decision::TypedDecisionError),
 
     /// I/O error
     #[error("IO error: {0}")]
@@ -214,10 +206,6 @@ impl CodeError {
             Self::Mcp(_) => "MCP_ERROR",
             Self::Queue(_) => "QUEUE_ERROR",
             Self::Capability(_) => "CAPABILITY_RUNTIME_ERROR",
-            #[cfg(feature = "dynamic-workflow")]
-            Self::Flow(_) => "FLOW_ERROR",
-            #[cfg(feature = "apofasi")]
-            Self::TypedDecision(_) => "TYPED_DECISION_ERROR",
             Self::Io(_) => "IO_ERROR",
             Self::Serialization(_) => "SERIALIZATION_ERROR",
             Self::Internal(_) => "INTERNAL_ERROR",

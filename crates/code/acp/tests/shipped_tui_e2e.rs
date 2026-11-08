@@ -133,6 +133,7 @@ struct MockState {
     bodies: Vec<String>,
     tool_seq: u64,
     write_tool_replies: u64,
+    edit_tool_replies: u64,
     expand_replies: u64,
     ask_tool_replies: u64,
     write_path: String,
@@ -146,6 +147,7 @@ fn spawn_mock(write_path: &Path, late_path: &Path) -> (SocketAddr, Arc<Mutex<Moc
         bodies: Vec::new(),
         tool_seq: 0,
         write_tool_replies: 0,
+        edit_tool_replies: 0,
         expand_replies: 0,
         ask_tool_replies: 0,
         write_path: write_path.display().to_string(),
@@ -290,6 +292,19 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         })
         .to_string();
         return reply_tool("write", &args, state, streaming);
+    }
+    if raw.contains("EDIT-ORACLE") && tools {
+        if state.edit_tool_replies >= 1 {
+            return reply_text("edit-done", streaming);
+        }
+        state.edit_tool_replies = state.edit_tool_replies.saturating_add(1);
+        let args = serde_json::json!({
+            "file_path": state.write_path,
+            "old_string": "seed-before-edit",
+            "new_string": "edited-marker"
+        })
+        .to_string();
+        return reply_tool("edit", &args, state, streaming);
     }
     if raw.contains("ASK-WRITE") && tools {
         if raw.contains("wrote-marker") || raw.contains("rejected via ACP request_permission") {
@@ -3736,6 +3751,88 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     let _ = std::fs::remove_dir_all(&home);
 }
 
+/// Ask-user choice and edit tool mutate through the real pager under yolo.
+#[test]
+fn shipped_tui_ask_user_and_edit_tool_oracles() {
+    let binary = tui_binary();
+    assert!(
+        binary.is_file(),
+        "build aster before this test: {}",
+        binary.display()
+    );
+    let workspace = isolate_dir("pty-ask-edit");
+    let home = isolate_dir("pty-ask-edit-home");
+    let target = workspace.join("edit-target.txt");
+    std::fs::write(&target, "seed-before-edit\n").expect("seed");
+    let (addr, _state) = spawn_mock(&target, &workspace.join("late.txt"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env: Vec<(&str, &str)> = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect();
+    let cwd = workspace.to_str().expect("cwd");
+    let mut pty = open_pty(&binary, &["--cwd", cwd], &env, &workspace);
+    let ready = pty.wait_for("mock/gpt", Duration::from_secs(45));
+    assert!(
+        ready.contains("Aster"),
+        "welcome did not show Aster\n{ready}"
+    );
+
+    pty.type_text("ASK-ORACLE a choice");
+    pty.enter();
+    let card = pty.wait_for("alpha", Duration::from_secs(30));
+    assert!(
+        card.contains("beta"),
+        "ask_user options missing\n{card}"
+    );
+    pty.write_bytes(b"2");
+    let answered = pty.wait_for("ok", Duration::from_secs(30));
+    assert!(
+        answered.contains("ok") || answered.to_ascii_lowercase().contains("beta"),
+        "ask_user did not settle\n{answered}"
+    );
+    oracle(
+        "shipped_tui_ask_user_and_edit_tool_oracles",
+        "ask-user-select",
+        "option=beta",
+    );
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/yolo");
+    pty.enter();
+    pty.pump(Duration::from_millis(400));
+    pty.write_bytes(b"\x15");
+    pty.type_text("EDIT-ORACLE please");
+    pty.enter();
+    let edit_deadline = Instant::now() + Duration::from_secs(30);
+    let mut edited = String::new();
+    while Instant::now() < edit_deadline {
+        edited = std::fs::read_to_string(&target).unwrap_or_default();
+        if edited.contains("edited-marker") {
+            break;
+        }
+        pty.pump(Duration::from_millis(100));
+    }
+    assert!(
+        edited.contains("edited-marker") && !edited.contains("seed-before-edit"),
+        "edit tool did not replace the seed\ncurrent={edited}"
+    );
+    oracle(
+        "shipped_tui_ask_user_and_edit_tool_oracles",
+        "edit-tool",
+        "edited-marker",
+    );
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/quit");
+    pty.enter();
+    let status = pty.child.wait().expect("quit");
+    assert!(status.success(), "/quit exited {status:?}");
+    let _ = std::fs::remove_dir_all(&workspace);
+    let _ = std::fs::remove_dir_all(&home);
+}
+
 /// Reject and cancel answer the permission card and leave the write unrun.
 #[test]
 fn shipped_tui_permission_reject_and_cancel_skip_the_side_effect() {
@@ -3841,7 +3938,8 @@ fn shipped_tui_permission_reject_and_cancel_skip_the_side_effect() {
 }
 
 const REAL_GOAL_TEST: &str = "shipped_bound_goal_real_llm";
-const REAL_GOAL_MODEL: &str = "boyue/deepseek-v4-flash";
+/// Live bound-goal pin: operator DeepSeek from `./.aster/config.acl`, not boyue.
+const REAL_GOAL_MODEL: &str = "deepseek/deepseek-flash";
 
 /// Explicit host ACL: the operator's live file plus trusted goal bounds.
 fn write_real_goal_acl(home: &Path) -> PathBuf {
@@ -3952,8 +4050,8 @@ fn create_goal_command(
     })
 }
 
-/// A policy session's real Run admits the policy; a goal binds only to that
-/// digest, and review admission works on the bound session.
+/// A policy session admits engineering-v1 (at create and/or first Run); a goal
+/// binds only to that digest, and review admission works on the bound session.
 async fn policy_goal_review(agent: &AgentProc, workspace: &Path) {
     let meta = serde_json::json!({"asterEngineering": {"policy": "engineering-v1"}});
     let id = acp::Agent::new_session(
@@ -3965,11 +4063,7 @@ async fn policy_goal_review(agent: &AgentProc, workspace: &Path) {
     .session_id;
     let unbound = goal_state(agent, &id).await;
     assert_eq!(unbound["definition"], serde_json::Value::Null);
-    assert_eq!(
-        unbound["work_policy_digest"],
-        serde_json::Value::Null,
-        "no Run yet"
-    );
+    let pre_digest = unbound["work_policy_digest"].clone();
     let answer = slash(
         agent,
         &id,
@@ -3982,8 +4076,14 @@ async fn policy_goal_review(agent: &AgentProc, workspace: &Path) {
         digest
             .as_str()
             .is_some_and(|value| value.starts_with("sha256:")),
-        "the Run admitted the policy: {digest}"
+        "the session admitted the policy: {digest}"
     );
+    if !pre_digest.is_null() {
+        assert_eq!(
+            digest, pre_digest,
+            "an already-admitted policy digest must stay stable across the turn"
+        );
+    }
     let mut create = create_goal_command(
         &id,
         workspace,
@@ -4041,22 +4141,18 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
     )
     .await
     .expect("load the pager session");
-    assert_eq!(
-        goal_state(agent, id).await["definition"],
-        serde_json::Value::Null
+    let prior = goal_state(agent, id).await;
+    assert_eq!(prior["definition"], serde_json::Value::Null);
+    let mut create = create_goal_command(
+        id,
+        workspace,
+        "release-report",
+        "Record the release code stored in release.txt in report.txt",
+        "report.txt contains exactly the release code read from release.txt",
     );
-    let created = goal_ext(
-        agent,
-        "aster/goal/definition",
-        create_goal_command(
-            id,
-            workspace,
-            "release-report",
-            "Record the release code stored in release.txt in report.txt",
-            "report.txt contains exactly the release code read from release.txt",
-        ),
-    )
-    .await;
+    // Bind the digest the pager session already admitted on its seed turn.
+    create["work_policy_digest"] = prior["work_policy_digest"].clone();
+    let created = goal_ext(agent, "aster/goal/definition", create).await;
     // The shipped host verifies a write plus a passing shell check of that
     // path; a read-only step has no host report and is never accepted.
     let mut propose = goal_command("propose_plan", "pager-propose", &created);
@@ -4096,7 +4192,7 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
 }
 
 #[test]
-#[ignore = "requires ASTER_CONFIG_FILE with boyue/deepseek-v4-flash and a built aster"]
+#[ignore = "requires ASTER_CONFIG_FILE with deepseek/deepseek-flash and a built aster"]
 fn shipped_bound_goal_real_llm() {
     let binary = tui_binary();
     assert!(binary.is_file(), "build aster: {}", binary.display());
@@ -4235,12 +4331,11 @@ fn shipped_bound_goal_real_llm() {
         .await
         .expect("second session")
         .session_id;
-        let created = goal_ext(
-            &agent,
-            "aster/goal/definition",
-            create_goal_command(&other, &workspace, "clear-me", "Never started", "Cancelled"),
-        )
-        .await;
+        let mut clear_create =
+            create_goal_command(&other, &workspace, "clear-me", "Never started", "Cancelled");
+        clear_create["work_policy_digest"] =
+            goal_state(&agent, &other).await["work_policy_digest"].clone();
+        let created = goal_ext(&agent, "aster/goal/definition", clear_create).await;
         assert_eq!(created["state"], "active");
         let cleared = slash(&agent, &other, "/goal clear").await;
         assert!(cleared.contains("Goal cancelled."), "{cleared}");

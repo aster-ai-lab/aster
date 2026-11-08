@@ -907,21 +907,4 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "research")]
-    #[test]
-    fn projections_share_one_identity_through_the_log() {
-        use crate::research::ResearchEventV1;
-        let log = CoreEventLog::new();
-        let clock = ManualLogicalClock::new(1_000);
-        let event = AgentEvent::TurnStart { turn: 0 };
-        log.append_agent_event(identity(0), &clock, &event, Vec::new())
-            .unwrap();
-        let page = log.page(&operation(), None, usize::MAX).unwrap().unwrap();
-        let core = page.entries[0].event.clone();
-        let projected = ResearchEventV1::from_core_event("project-1", 3, &core).unwrap();
-        let replayed = ResearchEventV1::from_core_event("project-1", 3, &core).unwrap();
-        assert_eq!(projected, replayed);
-        assert_eq!(projected.payload_digest, core.payload_digest);
-        assert_eq!(projected.observed_at_ms, core.observed_at_ms);
-    }
 }

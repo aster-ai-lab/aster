@@ -297,7 +297,10 @@ exec git "$@"
     fn moved_head(&self) -> bool {
         match std::fs::read_to_string(&self.witness) {
             Ok(text) => text.contains("git"),
-            Err(_) => true,
+            // An unreadable marker is not proof this command moved HEAD. Prefer
+            // dropping a parallel foreign commit over inventing ownership when
+            // the seatbelt guest could not update the host-side witness file.
+            Err(_) => false,
         }
     }
 }

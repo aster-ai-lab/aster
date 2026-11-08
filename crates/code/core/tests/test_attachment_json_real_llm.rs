@@ -56,10 +56,7 @@ async fn attachment_message_round_trips_on_the_real_model() {
         session.send_with_attachments(
             "An image is attached. Reply with exactly the word ATTACHED if you can see any \
              image content, otherwise reply with exactly NOWORD. Do not use any tools.",
-            &[Attachment {
-                data: RED_PIXEL_PNG.to_vec(),
-                media_type: "image/png".to_string(),
-            }],
+            &[Attachment::png(RED_PIXEL_PNG.to_vec())],
             None,
         ),
     )

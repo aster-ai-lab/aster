@@ -186,7 +186,6 @@ cargo test -p aster-core --lib sdk_capabilities -- --nocapture
 | `evaluation_substrate` | `advanced-harness` | evaluation_* | host eval policy |
 | `typed_decisions` | `apofasi` (not in `local-code`) | `typed_decision` lib tests | [TYPED_DECISION_E2E_PLAN.md](TYPED_DECISION_E2E_PLAN.md) TD-C..TD-E |
 | `moli_runtime` | `headless-search` | `test_web_search_headless` | soak / packaging |
-| `s3_workspace` | `s3` (also via profile `server`) | `test_s3_backend` | hermetic-integrations |
 | `opentelemetry` | `telemetry` (also via profile `server`) | OTEL unit + collector-down | hermetic collector gate |
 
 Research wire values remain a compiled contract under `feature = "research"`
@@ -250,7 +249,6 @@ just harness-convergence-check          # A1–A4 thin + SDK align
 cargo test -p aster-core --test agent_protocol_v1
 cargo test -p aster-core --test session_checkpoint_v1
 cargo test -p aster-core --features advanced-harness --test test_state_graph_integration
-cargo test -p aster-core --features s3 --test test_s3_backend
 cargo test --locked -p aster-core --lib sdk_capabilities
 # Rust/ACP runtime: owning-package tests in the root workspace
 ```

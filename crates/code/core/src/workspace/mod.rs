@@ -3,8 +3,7 @@
 //! Built-in tools expose stable model-facing contracts (`read`, `write`, `ls`,
 //! `bash`, ...). The concrete place where those operations happen is supplied
 //! by a workspace capability backend. The default backend is the local
-//! filesystem (see [`LocalWorkspaceBackend`]); hosts can provide remote,
-//! browser, DFS, or container-backed implementations by assembling
+//! filesystem (see [`LocalWorkspaceBackend`]); hosts assemble
 //! [`WorkspaceServices`] through [`WorkspaceServicesBuilder`].
 
 #[cfg(test)]
@@ -16,10 +15,7 @@ mod local_access;
 mod manifest;
 mod path;
 mod read_overlay;
-mod remote_git;
 pub(crate) mod retrieval;
-#[cfg(feature = "s3")]
-mod s3;
 mod services;
 mod source_egress;
 pub mod source_snapshot;
@@ -62,7 +58,6 @@ pub use read_overlay::{
     WorkspaceReadOverlay, WorkspaceReadOverlayError, WorkspaceReadOverlayErrorKind,
     WorkspaceReadOverlaySnapshot,
 };
-pub use remote_git::{RemoteGitBackend, RemoteGitBackendConfig, RemoteGitConflict};
 pub use retrieval::{
     capture_workspace_wiki_sources, WorkspaceWikiSourceCoverage, WorkspaceWikiSourceFile,
     WorkspaceWikiSourceFormat, WorkspaceWikiSourceLimits, WorkspaceWikiSourceSkip,
@@ -95,8 +90,6 @@ pub use retrieval::{
     WorkspaceCollectionQuery, WorkspaceCollectionRequest, WorkspaceCollectionSort,
     WorkspaceCollectionTextRange,
 };
-#[cfg(feature = "s3")]
-pub use s3::{S3BackendConfig, S3WorkspaceBackend};
 pub use services::{WorkspaceServices, WorkspaceServicesBuilder};
 pub use source_snapshot::{
     workspace_content_digest, WorkspaceSourceSnapshotError, WorkspaceSourceSnapshotV1,
@@ -534,14 +527,14 @@ pub trait WorkspaceTextReader: Send + Sync {
 pub struct WorkspaceVersionConflict {
     pub path: String,
     pub expected: String,
-    /// Backend-reported current version, if known. S3 does not return the
+    /// Backend-reported current version, if known. Some backends do not return the
     /// current ETag on `412 Precondition Failed`, so this is typically `None`.
     pub actual: Option<String>,
 }
 
 /// Optional compare-and-swap extensions to [`WorkspaceFileSystem`].
 ///
-/// Implemented by backends that expose object-level versioning (S3 ETag,
+/// Implemented by backends that expose object-level versioning (ETag,
 /// future GCS generation, ...) so tools that perform read-modify-write
 /// cycles can reject concurrent overwrites. Tools should access this through
 /// [`WorkspaceServices::fs_ext`] — when absent, callers fall back to plain
@@ -553,7 +546,7 @@ pub struct WorkspaceVersionConflict {
 #[async_trait]
 pub trait WorkspaceFileSystemExt: Send + Sync {
     /// Read text content together with an opaque version token. Tokens are
-    /// backend-specific (S3 returns the ETag) and treated as opaque by
+    /// backend-specific (for example an object ETag) and treated as opaque by
     /// callers — they are only ever compared for equality on the backend
     /// side.
     async fn read_text_with_version(

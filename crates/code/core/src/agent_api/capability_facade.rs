@@ -204,34 +204,6 @@ impl AgentSession {
         })?
     }
 
-    /// Register the Aster Flow-backed dynamic workflow tool for this live session.
-    ///
-    /// The tool is named `dynamic_workflow`. It accepts a sandboxed JavaScript
-    /// PTC workflow script and executes it through
-    /// [`crate::DynamicWorkflowRuntime`], so Aster Flow owns workflow replay while
-    /// the script can still call Aster Code tools.
-    #[cfg(feature = "dynamic-workflow")]
-    pub fn register_dynamic_workflow_runtime(&self) -> crate::error::Result<()> {
-        self.close_handle.mutate_immediate(|| {
-            self.ensure_compatibility_name_available(
-                crate::capability::CapabilityKind::Tool,
-                "dynamic_workflow",
-            )?;
-            crate::tools::register_dynamic_workflow(self.tool_executor.registry());
-            Ok(())
-        })?
-    }
-
-    /// Coding-only builds omit the dynamic workflow module; keep the method so
-    /// hosts fail closed instead of losing the API surface at compile time.
-    #[cfg(not(feature = "dynamic-workflow"))]
-    pub fn register_dynamic_workflow_runtime(&self) -> crate::error::Result<()> {
-        self.close_handle.mutate_immediate(|| {
-            Err(crate::error::CodeError::Config(
-                "dynamic_workflow requires the advanced-harness / dynamic-workflow feature".into(),
-            ))
-        })?
-    }
 
     /// Remove a previously host-registered dynamic tool by name (e.g. on logout).
     /// No-op if no tool of that name is registered.

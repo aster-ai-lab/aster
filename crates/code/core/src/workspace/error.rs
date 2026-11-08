@@ -34,12 +34,12 @@
 //! provided by `#[from]` on the `Backend` variant, this module supplies
 //! [`WorkspaceError::from_anyhow`] which **preserves the typed variant**
 //! when an `anyhow::Error` was originally constructed from a known
-//! conflict struct (`WorkspaceVersionConflict`, `RemoteGitConflict`).
+//! conflict struct (`WorkspaceVersionConflict`).
 //! The plain `Into::into` path drops the type information into the
 //! `Backend(_)` variant because `anyhow::Error` erases the source type
 //! at the value level.
 
-use super::{RemoteGitConflict, WorkspaceVersionConflict};
+use super::WorkspaceVersionConflict;
 use std::time::Duration;
 
 /// Error type returned by every [`WorkspaceFileSystem`](super::WorkspaceFileSystem)
@@ -56,8 +56,7 @@ use std::time::Duration;
 ///   variants in this category should also be structured.
 /// * **Typed conflicts** with their own payload structs that already
 ///   ship as part of the public API
-///   (`VersionConflict(WorkspaceVersionConflict)`,
-///   `RemoteGitConflict(RemoteGitConflict)`).
+///   (`VersionConflict(WorkspaceVersionConflict)`).
 /// * **`Backend(anyhow::Error)`** — the escape hatch. Any failure not
 ///   covered above wraps an `anyhow::Error`. Backends should prefer the
 ///   typed variants where they apply; `Backend` is for genuinely
@@ -84,13 +83,6 @@ pub enum WorkspaceError {
     /// the existing public [`WorkspaceVersionConflict`] struct verbatim.
     #[error(transparent)]
     VersionConflict(#[from] WorkspaceVersionConflict),
-
-    /// A remote git server returned 409 / 422 with a typed conflict
-    /// code (e.g. `BRANCH_EXISTS`, `WORKING_TREE_DIRTY`,
-    /// `NOTHING_TO_STASH`). Carries the existing public
-    /// [`RemoteGitConflict`] struct verbatim.
-    #[error(transparent)]
-    RemoteGitConflict(#[from] RemoteGitConflict),
 
     /// Caller passed an argument the backend cannot honour
     /// (empty version on a CAS write, malformed pattern on a search,
@@ -133,9 +125,7 @@ pub enum WorkspaceError {
 
     /// The backend explicitly does not support this operation.
     ///
-    /// Used by adapters that wrap a partial trait surface (e.g. the
-    /// remote git backend rejecting worktree operations even though
-    /// `WorkspaceGit` is implemented).
+    /// Used by adapters that wrap a partial trait surface.
     #[error("not supported by this backend: {0}")]
     Unsupported(String),
 
@@ -157,8 +147,7 @@ impl WorkspaceError {
     /// because at the value level `anyhow::Error` has type-erased its
     /// source. Use this helper instead when migrating code paths that
     /// today emit `anyhow::Error::new(WorkspaceVersionConflict { .. })`
-    /// or `anyhow::Error::new(RemoteGitConflict { .. })` — the typed
-    /// variant survives the round-trip.
+    /// — the typed variant survives the round-trip.
     ///
     /// ```ignore
     /// // Old code:
@@ -173,9 +162,6 @@ impl WorkspaceError {
     pub fn from_anyhow(err: anyhow::Error) -> Self {
         if let Some(conflict) = err.downcast_ref::<WorkspaceVersionConflict>() {
             return Self::VersionConflict(conflict.clone());
-        }
-        if let Some(conflict) = err.downcast_ref::<RemoteGitConflict>() {
-            return Self::RemoteGitConflict(conflict.clone());
         }
         Self::Backend(err)
     }
@@ -211,24 +197,6 @@ mod tests {
                 assert_eq!(v.actual.as_deref(), Some("etag-2"));
             }
             other => panic!("expected VersionConflict, got {other:?}"),
-        }
-    }
-
-    #[test]
-    fn anyhow_with_remote_git_conflict_round_trips_through_from_anyhow() {
-        let conflict = RemoteGitConflict {
-            code: "BRANCH_EXISTS".to_string(),
-            message: "branch 'feat/x' already exists".to_string(),
-        };
-        let err: anyhow::Error = anyhow::Error::new(conflict);
-
-        let typed = WorkspaceError::from_anyhow(err);
-        match typed {
-            WorkspaceError::RemoteGitConflict(c) => {
-                assert_eq!(c.code, "BRANCH_EXISTS");
-                assert!(c.message.contains("feat/x"));
-            }
-            other => panic!("expected RemoteGitConflict, got {other:?}"),
         }
     }
 
@@ -319,7 +287,7 @@ mod tests {
 
     #[test]
     fn unsupported_variant_names_the_operation() {
-        let err = WorkspaceError::Unsupported("worktree on remote git".into());
+        let err = WorkspaceError::Unsupported("worktree on this backend".into());
         let s = err.to_string();
         assert!(s.contains("not supported"), "got: {s}");
         assert!(s.contains("worktree"), "got: {s}");

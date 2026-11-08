@@ -504,8 +504,12 @@ pub(super) async fn prepare_tools_with_refusal(
             let output = tools.run(call.clone(), cancel.clone()).await;
             let mut effects = match observation {
                 Some(watch) => {
+                    // Parallel HEAD moves during this call are not this tool's
+                    // effect. CommandSpan already attributes a HEAD-moving bash
+                    // through its git witness; this outer watch catches
+                    // unpublished working-tree writers only.
                     watch
-                        .finish_effects_with_revision(tools.context.workspace.as_path(), true)
+                        .finish_effects_with_revision(tools.context.workspace.as_path(), false)
                         .await
                 }
                 None => crate::porcelain::observe_path_effects(

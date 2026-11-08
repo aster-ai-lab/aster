@@ -960,7 +960,6 @@ mod tests {
 
     /// U-OT-01: the default build has no OTLP exporter, so a session turn must
     /// not open the endpoint named by `OTEL_EXPORTER_OTLP_ENDPOINT`.
-    #[cfg(not(feature = "telemetry"))]
     #[tokio::test]
     async fn default_build_does_not_open_an_otlp_socket() {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();

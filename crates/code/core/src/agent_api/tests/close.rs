@@ -100,7 +100,6 @@ async fn test_immediate_capability_mutations_after_close_fail_closed() {
         session
             .register_dynamic_tool(Arc::new(NamedSessionTool(dynamic_name.to_string())))
             .unwrap_err(),
-        session.register_dynamic_workflow_runtime().unwrap_err(),
         session.unregister_dynamic_tool(dynamic_name).unwrap_err(),
         session
             .register_command(Arc::new(NoopSessionCommand))

@@ -1,6 +1,6 @@
 [package]
 name = "aster"
-version = "0.2.0"
+version = "0.2.1"
 license = "MIT"
 authors = ["Aster"]
 default-run = "aster"
@@ -62,7 +62,10 @@ libc = {workspace = true}
 # `#[global_allocator]`, cfg(all(feature = "jemalloc", unix))).
 # `stats` is binary-scoped only (not workspace-wide) so this CLI jemalloc
 # link gets --enable-stats for stats.allocated / stats.resident mallctl.
-tikv-jemallocator = {version = "0.7", features = ["profiling", "unprefixed_malloc_on_supported_platforms", "stats"], optional = true}
+# Shipped CLI keeps jemalloc + stats (memory trace / arena purge) but not
+# `profiling`: the prof heap-dump path is opt-in via `jemalloc-profiling` so
+# release-dist does not link jemalloc's profiler by default.
+tikv-jemallocator = {version = "0.7", features = ["unprefixed_malloc_on_supported_platforms", "stats"], optional = true}
 # Raw mallctl for the memory-cliff arena purge hook (see
 # `purge_jemalloc_retained_pages` + the `install_release_hook` call in
 # main.rs). Same version family as the
@@ -97,6 +100,9 @@ default-bazel = [
     "local-workspace",
     ]
 jemalloc = ["dep:tikv-jemallocator", "dep:tikv-jemalloc-sys", "dep:tikv-jemalloc-ctl"]
+# Opt-in jemalloc heap profiler (prof.active / prof.dump). Not part of
+# `default` or `release-dist`; enable locally when collecting heap dumps.
+jemalloc-profiling = ["jemalloc", "tikv-jemallocator/profiling"]
 # Propagate the aster-confine stub feature through pager and workspace.
 confine-noop = ["aster-pager/confine-noop", "aster-workspace/confine-noop"]
 local-workspace = ["aster-pager/local-workspace"]

@@ -213,6 +213,9 @@ case "$asset_name" in
     while IFS= read -r name; do
       case "$name" in
         aster|aster-acp|BUILD_ID|SHA256SUMS) ;;
+        embedding/potion-code-16M-v2.safetensors|\
+        embedding/potion-code-16M-v2.tokenizer.json|\
+        embedding/potion-code-16M-v2.config.json) ;;
         *)
           echo "error: archive member is not a release file" >&2; exit 1
           ;;
@@ -220,8 +223,18 @@ case "$asset_name" in
       if [[ "$seen" == *"|${name}|"* ]]; then echo "error: duplicate archive member" >&2; exit 1; fi
       seen="${seen}${name}|"
       count=$((count + 1))
-      [[ "$count" -le 4 ]] || { echo "error: too many archive members" >&2; exit 1; }
+      [[ "$count" -le 7 ]] || { echo "error: too many archive members" >&2; exit 1; }
     done < "$work/members"
+    for need in \
+      embedding/potion-code-16M-v2.safetensors \
+      embedding/potion-code-16M-v2.tokenizer.json \
+      embedding/potion-code-16M-v2.config.json
+    do
+      [[ "$seen" == *"|${need}|"* ]] || {
+        echo "error: archive did not contain embedding assets" >&2
+        exit 1
+      }
+    done
     tar -tvzf "$archive" > "$work/member-types"
     if LC_ALL=C grep -q '^[^-]' "$work/member-types"; then
       echo "error: release archive must contain regular files" >&2; exit 1
@@ -327,6 +340,12 @@ promoted_aster=1
 # shortcut: two renames cannot survive every power loss; use one version-directory pointer when crash-atomic upgrades are required.
 mv -f "$stage/new-acp" "$dest_acp"
 promoted_acp=1
+mkdir -p "${prefix}/embedding"
+cp -f \
+  "${unpack}/embedding/potion-code-16M-v2.safetensors" \
+  "${unpack}/embedding/potion-code-16M-v2.tokenizer.json" \
+  "${unpack}/embedding/potion-code-16M-v2.config.json" \
+  "${prefix}/embedding/"
 installed=1
 if [[ "$platform" == "macos" ]] && command -v xattr >/dev/null 2>&1; then
   xattr -d com.apple.quarantine "$dest_aster" 2>/dev/null || true
@@ -340,3 +359,4 @@ else
 fi
 echo "aster=${dest_aster}"
 echo "aster-acp=${dest_acp}"
+echo "embedding=${prefix}/embedding"

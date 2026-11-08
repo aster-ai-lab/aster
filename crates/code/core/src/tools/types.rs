@@ -315,8 +315,7 @@ struct ModelGenerationPermitReservation {
 
 impl ModelGenerationPermitReservation {
     /// Called from the `dynamic-workflow` surface.
-    #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
-    fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+        fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
         Self {
             permit: Mutex::new(Some(permit)),
         }
@@ -840,8 +839,7 @@ impl ToolContext {
     }
 
     /// Called from the `dynamic-workflow` surface.
-    #[cfg_attr(not(feature = "dynamic-workflow"), allow(dead_code))]
-    pub(crate) fn with_model_generation_permit(
+        pub(crate) fn with_model_generation_permit(
         mut self,
         admission: crate::llm::ModelGenerationAdmission,
         permit: Arc<crate::llm::ModelGenerationPermit>,
@@ -988,16 +986,12 @@ impl ToolContext {
 pub enum ToolErrorKind {
     /// Compare-and-swap write rejected by the backend because the file
     /// changed since the caller read it. Originates from
-    /// `WorkspaceError::VersionConflict` on the S3 / future versioning
-    /// backends.
+    /// `WorkspaceError::VersionConflict` on versioning backends.
     VersionConflict {
         path: String,
         expected: String,
         actual: Option<String>,
     },
-    /// Remote git server returned a typed 409 / 422 conflict code such
-    /// as `BRANCH_EXISTS` or `WORKING_TREE_DIRTY`.
-    RemoteGitConflict { code: String, message: String },
     /// Operation referenced a path that does not exist.
     NotFound { path: String },
     /// Caller passed an argument the tool / backend cannot honour
@@ -1011,8 +1005,7 @@ pub enum ToolErrorKind {
         retryable: bool,
         retry_after_ms: Option<u64>,
     },
-    /// The backend explicitly does not support this operation
-    /// (e.g. worktree on a remote-git workspace).
+    /// The backend explicitly does not support this operation.
     Unsupported { message: String },
     /// The operation's outer timeout fired before the backend responded.
     Timeout { op: String, duration_ms: u64 },
@@ -1047,10 +1040,6 @@ impl ToolErrorKind {
                 path: c.path.clone(),
                 expected: c.expected.clone(),
                 actual: c.actual.clone(),
-            }),
-            WE::RemoteGitConflict(c) => Some(Self::RemoteGitConflict {
-                code: c.code.clone(),
-                message: c.message.clone(),
             }),
             WE::InvalidArgument { message } => Some(Self::InvalidArgument {
                 message: message.clone(),

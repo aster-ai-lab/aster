@@ -2325,6 +2325,127 @@ async fn bash_checkout_keeps_the_switched_path() {
 }
 
 #[tokio::test]
+async fn sandboxed_readonly_git_without_local_write_ignores_parallel_commit() {
+    let root = tempfile::tempdir().unwrap();
+    bash_git_repo(root.path());
+    std::fs::write(root.path().join("README.md"), "base\n").unwrap();
+    bash_git(root.path(), &["add", "README.md"]);
+    bash_git(root.path(), &["commit", "-m", "base"]);
+
+    let sandbox = crate::sandbox::native::NativeBashSandbox::new(root.path()).unwrap();
+    let root_path = root.path().to_path_buf();
+    let committer = tokio::spawn(async move {
+        tokio::time::sleep(std::time::Duration::from_millis(300)).await;
+        std::fs::write(root_path.join("guest.txt"), "foreign\n").unwrap();
+        bash_git(&root_path, &["add", "guest.txt"]);
+        bash_git(&root_path, &["commit", "-m", "foreign"]);
+    });
+
+    let tool = BashTool;
+    let ctx = ToolContext::new(root.path().to_path_buf()).with_sandbox(std::sync::Arc::new(sandbox));
+    let command = r#"sleep 0.05
+git -c core.quotepath=false status --porcelain >/dev/null
+git ls-files >/dev/null
+i=0
+seen=0
+while [ "$i" -lt 40 ]; do
+  if git cat-file -e HEAD:guest.txt 2>/dev/null; then
+    seen=1
+    break
+  fi
+  i=$((i + 1))
+  sleep 0.1
+done
+git log -1 --oneline >/dev/null
+git check-ignore -q -- guest.txt || true
+if [ "$seen" = 1 ]; then
+  printf 'READONLY-SEEN\n'
+  exit 0
+fi
+exit 1
+"#;
+    let result = tool
+        .execute(
+            &serde_json::json!({
+                "command": command,
+                "timeout": 30_000
+            }),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    committer.await.unwrap();
+    assert!(result.success, "{result:?}");
+    let metadata = result.metadata.as_ref().unwrap();
+    assert_eq!(metadata["sandboxed"], true, "{metadata}");
+    let paths = changed_path_list(result.metadata.as_ref());
+    eprintln!("ORACLE sandboxed-readonly-no-write-paths={paths:?}");
+    assert!(
+        !paths.iter().any(|path| path == "guest.txt"),
+        "sandboxed read-only git took a parallel commit: {paths:?} meta={metadata}"
+    );
+}
+
+#[tokio::test]
+async fn sandboxed_readonly_git_does_not_take_a_parallel_commit() {
+    let root = tempfile::tempdir().unwrap();
+    bash_git_repo(root.path());
+    std::fs::write(root.path().join("README.md"), "base\n").unwrap();
+    bash_git(root.path(), &["add", "README.md"]);
+    bash_git(root.path(), &["commit", "-m", "base"]);
+
+    let sandbox = crate::sandbox::native::NativeBashSandbox::new(root.path()).unwrap();
+    let root_path = root.path().to_path_buf();
+    let committer = tokio::spawn(async move {
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+        std::fs::write(root_path.join("guest.txt"), "foreign\n").unwrap();
+        bash_git(&root_path, &["add", "guest.txt"]);
+        bash_git(&root_path, &["commit", "-m", "foreign"]);
+    });
+
+    let tool = BashTool;
+    let ctx = ToolContext::new(root.path().to_path_buf()).with_sandbox(Arc::new(sandbox));
+    let result = tool
+        .execute(
+            &serde_json::json!({
+                "command": r#"sleep 0.05
+git -c core.quotepath=false status --porcelain >/dev/null
+git ls-files >/dev/null
+i=0
+while [ "$i" -lt 40 ]; do
+  if git cat-file -e HEAD:guest.txt 2>/dev/null; then
+    printf seen > proof.txt
+    break
+  fi
+  i=$((i + 1))
+  sleep 0.1
+done
+git log -1 --oneline >/dev/null
+git check-ignore -q -- guest.txt || true
+"#,
+                "timeout": 30_000
+            }),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    committer.await.unwrap();
+    assert!(result.success, "{result:?}");
+    let metadata = result.metadata.as_ref().unwrap();
+    assert_eq!(metadata["sandboxed"], true, "{metadata}");
+    let paths = changed_path_list(result.metadata.as_ref());
+    eprintln!("ORACLE sandboxed-readonly-git-paths={}", paths.join(","));
+    assert!(
+        paths.iter().any(|path| path == "proof.txt"),
+        "command write missing from {paths:?}"
+    );
+    assert!(
+        !paths.iter().any(|path| path == "guest.txt"),
+        "sandboxed read-only git took a parallel commit: {paths:?} meta={metadata}"
+    );
+}
+
+#[tokio::test]
 async fn bash_readonly_git_does_not_take_a_parallel_commit() {
     let root = tempfile::tempdir().unwrap();
     bash_git_repo(root.path());

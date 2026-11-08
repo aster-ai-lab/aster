@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-# Pack the two aster-cli release binaries into one archive.
+# Pack the aster-cli release binaries and embedding assets into one archive.
 # Usage: scripts/package-aster-cli.sh <macos|linux|windows> <bin-dir> <out-file>
 #
 # `linux` targets x86_64, glibc 2.31. It refuses binaries that need a newer
 # glibc, because the archive would fail on the target machine
 # with a missing GLIBC_2.3x symbol rather than at packaging time.
+#
+# Embedding weights ship as `embedding/*` next to the binaries so `aster-acp`
+# release builds can omit `bundled-assets` without a network fetch.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
@@ -13,6 +16,8 @@ if [[ $# -ne 3 ]]; then
 fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd "${script_dir}/.." && pwd)"
+embedding_src="${repo_root}/crates/embedding/assets"
 platform="$1"
 bin_dir="$2"
 out="$3"
@@ -43,7 +48,19 @@ esac
 copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
 copy_file "${bin_dir}/aster-acp${suffix}" "${stage}/aster-acp${suffix}"
 chmod 755 "${stage}/aster${suffix}" "${stage}/aster-acp${suffix}"
+mkdir -p "${stage}/embedding"
+copy_file "${embedding_src}/potion-code-16M-v2.safetensors" \
+  "${stage}/embedding/potion-code-16M-v2.safetensors"
+copy_file "${embedding_src}/potion-code-16M-v2.tokenizer.json" \
+  "${stage}/embedding/potion-code-16M-v2.tokenizer.json"
+copy_file "${embedding_src}/potion-code-16M-v2.config.json" \
+  "${stage}/embedding/potion-code-16M-v2.config.json"
 release_files=("aster${suffix}" "aster-acp${suffix}")
+embedding_files=(
+  "embedding/potion-code-16M-v2.safetensors"
+  "embedding/potion-code-16M-v2.tokenizer.json"
+  "embedding/potion-code-16M-v2.config.json"
+)
 if [[ -n "$max_glibc" ]]; then
   if command -v python3 >/dev/null 2>&1; then
     py=(python3)
@@ -75,7 +92,10 @@ sha256_file() {
 ) > "${stage}/SHA256SUMS"
 case "$platform" in
   macos|linux)
-    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" "${release_files[@]}" BUILD_ID SHA256SUMS
+    # File members only (no directory entries) so installers that refuse
+    # non-regular members stay compatible.
+    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" \
+      "${release_files[@]}" BUILD_ID SHA256SUMS "${embedding_files[@]}"
     ;;
   windows)
     if command -v python3 >/dev/null 2>&1; then
@@ -90,8 +110,17 @@ case "$platform" in
 import sys, zipfile
 from pathlib import Path
 stage, out = Path(sys.argv[1]), Path(sys.argv[2])
+members = (
+    "aster.exe",
+    "aster-acp.exe",
+    "BUILD_ID",
+    "SHA256SUMS",
+    "embedding/potion-code-16M-v2.safetensors",
+    "embedding/potion-code-16M-v2.tokenizer.json",
+    "embedding/potion-code-16M-v2.config.json",
+)
 with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-    for name in ("aster.exe", "aster-acp.exe", "BUILD_ID", "SHA256SUMS"):
+    for name in members:
         archive.write(stage / name, name)
 PY
     ;;

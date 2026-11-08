@@ -50,7 +50,15 @@ tag = sys.argv[1]
 archive = Path("dist") / f"{tag}-macos.tar.gz"
 with tarfile.open(archive, "r:gz") as tf:
     names = set(tf.getnames())
-expected = {"aster", "aster-acp", "BUILD_ID", "SHA256SUMS"}
+expected = {
+    "aster",
+    "aster-acp",
+    "BUILD_ID",
+    "SHA256SUMS",
+    "embedding/potion-code-16M-v2.safetensors",
+    "embedding/potion-code-16M-v2.tokenizer.json",
+    "embedding/potion-code-16M-v2.config.json",
+}
 if names != expected:
     raise SystemExit(f"unexpected archive members: {sorted(names)}")
 print(f"verified archive members for {archive.name}")
@@ -64,7 +72,7 @@ printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","
 cat > notes.md <<EOF
 aster-cli v${version} — Core / ACP ${acp_version}
 
-Aster CLI ships the aster + aster-acp pair only. Process isolation uses the locked ksandbox dependency in Core, not companions or kbox MicroVM inside this archive.
+Aster CLI ships the aster + aster-acp pair plus the offline Model2Vec embedding assets under embedding/. Process isolation uses the locked ksandbox dependency in Core, not companions or kbox MicroVM inside this archive.
 Each archive contains the locked release build of Aster ${version} and ACP ${acp_version} from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
 The Linux archive uses x86_64 glibc 2.31.
 Update with \`aster update\`, or inspect with \`aster update --check\`, then restart the TUI to use the new pair.

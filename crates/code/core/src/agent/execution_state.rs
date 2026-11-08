@@ -490,14 +490,70 @@ mod tests {
             "index\n",
         )
         .unwrap();
+        std::fs::create_dir_all(workspace.path().join(".kbox/loops")).unwrap();
+        std::fs::write(workspace.path().join(".kbox/loops/state"), "sandbox\n").unwrap();
         let paths = state.unseen_workspace_paths(workspace.path()).await.paths;
         assert!(
             paths.iter().any(|path| path == "guest.txt"),
             "baseline missed an unpublished write: {paths:?}"
         );
         assert!(
-            paths.iter().all(|path| !path.contains(".aster")),
+            paths
+                .iter()
+                .all(|path| !path.contains(".aster") && !path.contains(".kbox")),
             "harness metadata was treated as source: {paths:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn baseline_ignores_a_parallel_foreign_commit() {
+        let workspace = tempfile::tempdir().unwrap();
+        let root = workspace.path();
+        for args in [
+            ["init", "-b", "main"][..].as_ref(),
+            ["config", "user.email", "test@example.com"][..].as_ref(),
+            ["config", "user.name", "test"][..].as_ref(),
+            ["config", "commit.gpgsign", "false"][..].as_ref(),
+        ] {
+            assert!(std::process::Command::new("git")
+                .args(args)
+                .current_dir(root)
+                .status()
+                .unwrap()
+                .success());
+        }
+        std::fs::write(root.join("README.md"), "base\n").unwrap();
+        assert!(std::process::Command::new("git")
+            .args(["add", "README.md"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        assert!(std::process::Command::new("git")
+            .args(["commit", "-m", "base"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        let mut state = ExecutionLoopState::new(&[]);
+        state.bind_run_watch(root).await;
+        std::fs::write(root.join("guest.txt"), "foreign\n").unwrap();
+        assert!(std::process::Command::new("git")
+            .args(["add", "guest.txt"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        assert!(std::process::Command::new("git")
+            .args(["commit", "-m", "foreign"])
+            .current_dir(root)
+            .status()
+            .unwrap()
+            .success());
+        let paths = state.unseen_workspace_paths(root).await.paths;
+        assert!(
+            !paths.iter().any(|path| path == "guest.txt"),
+            "parallel commit entered the run baseline: {paths:?}"
         );
     }
 

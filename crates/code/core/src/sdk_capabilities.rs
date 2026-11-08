@@ -6,8 +6,7 @@
 //!
 //! Capabilities are tagged with a [`CapabilityTier`]:
 //! - **baseline** — required for a governed local coding-agent harness
-//! - **advanced** — optional product surfaces (workflows, evaluation, serve,
-//!   S3, state graphs, research-adjacent contracts, and similar)
+//! - **advanced** — optional product surfaces (protocol, moli, host providers)
 
 use serde::{Deserialize, Serialize};
 
@@ -185,7 +184,7 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
     CapabilitySpec {
         id: "planning_delegation",
         category: "orchestration",
-        description: "Run plans, worker agents, and unified `task` delegation with bounded fan-out and cancellation. Model-visible `parallel_task` is removed (`HARNESS-CONV4`); use `session.tasks` / multi-item `task`. Host `session.parallel` / Flow workflows are Advanced `programmable_workflows`, not this baseline surface.",
+        description: "Run plans, worker agents, and unified `task` delegation with bounded fan-out and cancellation. Model-visible `parallel_task` is removed (`HARNESS-CONV4`); use `session.tasks` / multi-item `task`. Host Flow workflows are removed; use unified `task` for model-driven fan-out.",
         operations: &[
             "session.task",
             "session.tasks",
@@ -319,31 +318,6 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
         tier: CapabilityTier::Baseline,
     },
     CapabilitySpec {
-        id: "programmable_workflows",
-        category: "orchestration",
-        description: "Host-authored resumable parallel Workflow APIs and Flow-backed dynamic workflows (`advanced-harness`). Prefer unified `task` for model-driven coding fan-out. Does not include the baseline `program` tool.",
-        operations: &[
-            "session.parallel",
-            "session.parallel_resumable",
-            "session.workflow_step",
-        ],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
-        id: "state_graph",
-        category: "state",
-        description: "Maintain hash-linked state graph events, patches, forks, and deterministic diffs.",
-        operations: &[
-            "state_graph.create",
-            "state_graph.restore",
-            "state_graph.propose_patch",
-            "state_graph.diff",
-        ],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
         id: "agent_release_contract",
         category: "deployment",
         description: "Validate versioned asset manifests, provenance, and compatibility before activation.",
@@ -369,58 +343,10 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
         tier: CapabilityTier::Advanced,
     },
     CapabilitySpec {
-        id: "evaluation_substrate",
-        category: "evaluation",
-        description: "Project bounded evidence, isolated auxiliary lifecycle, restart-safe dispatch claims, and immutable evaluation records through versioned boundaries.",
-        operations: &[
-            "evaluation.evidence",
-            "evaluation.auxiliary",
-            "evaluation.dispatch_ledger",
-            "evaluation.result",
-            "evaluation.result_store",
-            "evaluation.wire_v1",
-        ],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
-        id: "typed_decisions",
-        category: "decision",
-        description: "In-process typed System-1 decisions via Apofasi (`choice` / `score` / `noul`) with host GatePolicy auto/escalate and digest-bound receipts. Requires Cargo feature `apofasi` (optional `apofasi-infer` / `apofasi-metal`). When enabled, Code refuses to replace planning pre-analysis and goal achievement: each returns more than one typed answer, and the call site refuses to skip the generation. Code does not add a keyword classifier and does not lower GatePolicy. The escalate prompt includes the task state. Not injected into the system prompt, not a generative model path, and not a Use-projected capability kind.",
-        operations: &[
-            "typed_decision.decide",
-            "typed_decision.decide_and_gate",
-            "typed_decision.receipt_v1",
-            "typed_decision.route",
-        ],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
         id: "moli_runtime",
         category: "web",
         description: "Use a verified packaged or shared-cache Moli runtime with cross-process installation locking.",
         operations: &["moli.default", "moli.ensure", "moli.packaged"],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
-        id: "s3_workspace",
-        category: "workspace",
-        description: "Use an S3-compatible workspace backend with bounded reads and search. Requires the SDK `s3` Cargo feature.",
-        operations: &[
-            "session.workspace_backend:s3",
-            "session.read_file",
-            "session.write_file",
-        ],
-        host_owned: true,
-        tier: CapabilityTier::Advanced,
-    },
-    CapabilitySpec {
-        id: "opentelemetry",
-        category: "observability",
-        description: "Export redacted runtime traces and metrics through the optional OTLP integration. Requires the Core `telemetry` Cargo feature.",
-        operations: &["telemetry.init", "session.trace_events"],
         host_owned: true,
         tier: CapabilityTier::Advanced,
     },
@@ -503,13 +429,12 @@ mod tests {
             );
         }
         let required_advanced = [
-            "evaluation_substrate",
-            "typed_decisions",
-            "state_graph",
-            "programmable_workflows",
-            "s3_workspace",
-            "opentelemetry",
+            "agent_release_contract",
+            "agent_protocol",
             "moli_runtime",
+            "code_intelligence",
+            "packages",
+            "use_runtime_tasks",
         ];
         for id in required_advanced {
             let capability = capabilities
@@ -522,17 +447,6 @@ mod tests {
                 "{id} must be advanced"
             );
         }
-        let programmable = capabilities
-            .iter()
-            .find(|item| item.id == "programmable_workflows")
-            .expect("programmable_workflows");
-        assert!(
-            !programmable
-                .operations
-                .iter()
-                .any(|operation| operation.contains("program")),
-            "baseline program must not be mixed into Advanced programmable_workflows"
-        );
         let web_search = capabilities
             .iter()
             .find(|item| item.id == "web_search")
@@ -573,7 +487,7 @@ mod tests {
         assert!(!baseline.iter().any(|capability| {
             matches!(
                 capability.id.as_str(),
-                "evaluation_substrate" | "state_graph" | "s3_workspace" | "programmable_workflows"
+                "agent_release_contract" | "agent_protocol" | "moli_runtime"
             )
         }));
         assert!(baseline.len() >= 12);

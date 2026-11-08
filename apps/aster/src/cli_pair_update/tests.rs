@@ -130,6 +130,15 @@ fn release_members_reject_escape_paths_and_sandbox_companions() {
         super::archive_member(Path::new(&format!("./{aster_name}"))).as_deref(),
         Some(aster_name)
     );
+    for name in super::EMBEDDING_MEMBERS {
+        assert_eq!(
+            super::archive_member(Path::new(name)).as_deref(),
+            Some(*name),
+            "{name}"
+        );
+        assert!(super::allowed_member(name), "{name}");
+    }
+    assert!(!super::allowed_member("embedding/other.bin"));
 }
 
 #[cfg(unix)]

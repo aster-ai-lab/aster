@@ -127,7 +127,12 @@ jobs:
           save-if: "true"
       - name: Build locked release
         shell: bash
-        run: env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster -p aster-acp
+        run: |
+          set -euo pipefail
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster
+          # CLI omits bundled-embedding; package-aster-cli.sh ships embedding/.
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster-acp \
+            --no-default-features --features svg-png,account-import
       - name: Package aster-cli archive
         shell: bash
         run: |
@@ -187,7 +192,11 @@ jobs:
           save-if: "true"
       - name: Build locked release
         shell: bash
-        run: env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster -p aster-acp
+        run: |
+          set -euo pipefail
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster-acp \
+            --no-default-features --features svg-png,account-import
       - name: Upload macOS CLI binaries
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -292,7 +301,9 @@ jobs:
         run: |
           set -euo pipefail
           . "$HOME/.cargo/env"
-          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster -p aster-acp
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster
+          env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster-acp \
+            --no-default-features --features svg-png,account-import
       - name: Package aster-cli archive
         shell: bash
         run: |

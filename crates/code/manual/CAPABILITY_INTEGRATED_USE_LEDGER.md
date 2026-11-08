@@ -77,7 +77,6 @@ See also: [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
 | `evaluation_substrate` | advanced | evaluation_* hermetic | host eval policy external | advanced-integ PASS | PASS |
 | `typed_decisions` | advanced | `typed_decision` unit (feature `apofasi`) | fail-closed empty; feature opt-in | Code substrate CI; host product routing external | PASS |
 | `moli_runtime` | advanced | `test_web_search_headless` | `headless-search` feature | L3 hermetic PASS | PASS |
-| `s3_workspace` | advanced | S3 unit + ignored live green | `s3` feature; profile `server` ≠ serve | advanced-integ PASS | PASS |
 | `opentelemetry` | advanced | telemetry unit + ignored green | `telemetry` feature | advanced-integ PASS | PASS |
 
 ## Layer gates

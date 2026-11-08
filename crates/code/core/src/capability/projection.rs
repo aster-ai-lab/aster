@@ -203,13 +203,6 @@ impl CapabilityProjection {
         }
     }
 
-    #[cfg(feature = "dynamic-workflow")]
-    pub fn flow(&self, id: &CapabilityId) -> Option<&crate::capability::FlowBinding> {
-        match self.values.get(id) {
-            Some(CapabilityValue::Flow(value)) => Some(value.as_ref()),
-            _ => None,
-        }
-    }
 
     pub fn knowledge(&self, id: &CapabilityId) -> Option<&PackageContextSession> {
         match self.values.get(id) {

@@ -14,7 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 PLATFORM = "macos"
 IDENTITY = "aster-cli-pair-v1:fixture-source:fixture-target"
 NAMES = ("aster", "aster-acp")
-EXPECTED_MEMBERS = {*NAMES, "BUILD_ID", "SHA256SUMS"}
+EMBEDDING_MEMBERS = (
+    "embedding/potion-code-16M-v2.safetensors",
+    "embedding/potion-code-16M-v2.tokenizer.json",
+    "embedding/potion-code-16M-v2.config.json",
+)
+EXPECTED_MEMBERS = {*NAMES, "BUILD_ID", "SHA256SUMS", *EMBEDDING_MEMBERS}
 
 
 @unittest.skipUnless(os.name == "posix", "Unix installer requires a Unix host")

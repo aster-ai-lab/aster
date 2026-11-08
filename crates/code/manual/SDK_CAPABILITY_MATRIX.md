@@ -44,20 +44,14 @@ SDK's method spelling. Public methods and types remain defined by
 | `packages` | advanced | `session.package_binding`, `session.current_package_binding` |
 | `use_runtime_tasks` | advanced | `session.tool:use_runtime_task` |
 | `program` | baseline | `session.program`, `session.tool:program` |
-| `programmable_workflows` | advanced | `session.parallel`, `session.parallel_resumable`, `session.workflow_step` |
-| `state_graph` | advanced | `state_graph.create`, `state_graph.restore`, `state_graph.propose_patch`, `state_graph.diff` |
 | `agent_release_contract` | advanced | `release.admit`, `release.bind_publication`, `release.verify` |
 | `agent_protocol` | advanced | `agent_protocol.start`, `agent_protocol.cancel`, `agent_protocol.recover`, `agent_protocol.events` |
-| `evaluation_substrate` | advanced | `evaluation.evidence`, `evaluation.auxiliary`, `evaluation.dispatch_ledger`, `evaluation.result`, `evaluation.result_store`, `evaluation.wire_v1` |
-| `typed_decisions` | advanced | `typed_decision.decide`, `typed_decision.decide_and_gate`, `typed_decision.receipt_v1`, `typed_decision.route` |
 | `moli_runtime` | advanced | `moli.default`, `moli.ensure`, `moli.packaged` |
-| `s3_workspace` | advanced | `session.workspace_backend:s3`, `session.read_file`, `session.write_file` |
-| `opentelemetry` | advanced | `telemetry.init`, `session.trace_events` |
 
 ## Activation and authority
 
-- Core defaults to `local-code`. Workflows/state graphs/evaluation use explicit
-  advanced features; S3, telemetry and typed decisions retain their own gates.
+- Core defaults to `local-code`. Browser search uses the explicit
+  `headless-search` feature.
 - Language services, packages and Use tasks require an authoritative
   host provider. A registry entry or model prompt does not supply that provider.
 - Semantic retrieval requires an explicit embedding route. Workspace configuration

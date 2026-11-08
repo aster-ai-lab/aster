@@ -7,14 +7,10 @@
 //! still considers current stays. This module does not scan, watch, or own
 //! an index. The manifest stays the scan authority.
 
-#[cfg(feature = "research")]
-use std::collections::BTreeSet;
 
 use crate::code_intelligence::{CodeQueryResult, SymbolInformation};
 use crate::content_digest::{digest_bytes, validate_digest};
 use crate::context::{ContextItem, ContextResult};
-#[cfg(feature = "research")]
-use crate::research::ResearchEvidenceFactV1;
 use crate::workspace::{
     LexicalSearchResult, WorkspaceSourceSnapshotError, WorkspaceSourceSnapshotV1,
 };
@@ -23,7 +19,6 @@ const SYMBOL_DIGEST_DOMAIN: &str = "aster.code.source-consumer.symbol.v1";
 const CONTEXT_DIGEST_DOMAIN: &str = "aster.code.source-consumer.context.v1";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-#[cfg_attr(not(feature = "research"), allow(dead_code))]
 pub(crate) enum SourceConsumerKind {
     SearchHit,
     SymbolResult,
@@ -38,7 +33,6 @@ pub(crate) struct SourceBoundConsumer {
     snapshot_digest: String,
 }
 
-#[cfg_attr(not(feature = "research"), allow(dead_code))]
 impl SourceBoundConsumer {
     pub(crate) fn kind(&self) -> SourceConsumerKind {
         self.kind
@@ -60,8 +54,6 @@ pub(crate) enum SourceConsumerError {
 }
 
 #[derive(Clone, Debug)]
-#[cfg(feature = "research")]
-pub(crate) struct DerivedSourceConsumers {
     snapshot: WorkspaceSourceSnapshotV1,
     search: Vec<SourceBoundConsumer>,
     symbols: Vec<SourceBoundConsumer>,
@@ -69,85 +61,12 @@ pub(crate) struct DerivedSourceConsumers {
     evidence: Vec<SourceBoundConsumer>,
 }
 
-#[cfg(feature = "research")]
-impl DerivedSourceConsumers {
-    pub(crate) fn snapshot_digest(&self) -> &str {
-        &self.snapshot.snapshot_digest
-    }
-
-    /// Consumers that may be presented as current. A stale or invalid live
-    /// snapshot yields an empty set, never a stale result labeled current.
-    pub(crate) fn present_current(
-        &self,
-        live: &WorkspaceSourceSnapshotV1,
-    ) -> PresentedSourceConsumers {
-        if live.validate().is_err() || self.snapshot.is_stale_against(live) {
-            return PresentedSourceConsumers {
-                consumers: Vec::new(),
-            };
-        }
-        let mut consumers = Vec::new();
-        consumers.extend(self.search.iter().cloned());
-        consumers.extend(self.symbols.iter().cloned());
-        consumers.extend(self.context.iter().cloned());
-        consumers.extend(self.evidence.iter().cloned());
-        PresentedSourceConsumers { consumers }
-    }
-}
 
 #[derive(Clone, Debug)]
-#[cfg(feature = "research")]
-pub(crate) struct PresentedSourceConsumers {
     consumers: Vec<SourceBoundConsumer>,
 }
 
-#[cfg(feature = "research")]
-impl PresentedSourceConsumers {
-    pub(crate) fn is_empty(&self) -> bool {
-        self.consumers.is_empty()
-    }
 
-    pub(crate) fn kinds(&self) -> BTreeSet<SourceConsumerKind> {
-        self.consumers
-            .iter()
-            .map(SourceBoundConsumer::kind)
-            .collect()
-    }
-
-    pub(crate) fn snapshot_digests(&self) -> BTreeSet<&str> {
-        self.consumers
-            .iter()
-            .map(SourceBoundConsumer::snapshot_digest)
-            .collect()
-    }
-
-    pub(crate) fn contains_item(&self, digest: &str) -> bool {
-        self.consumers
-            .iter()
-            .any(|consumer| consumer.item_digest == digest)
-    }
-}
-
-#[cfg(feature = "research")]
-pub(crate) fn bind_derived_consumers(
-    snapshot: &WorkspaceSourceSnapshotV1,
-    search: &LexicalSearchResult,
-    symbols: &CodeQueryResult<SymbolInformation>,
-    context: &ContextItem,
-    fact: &ResearchEvidenceFactV1,
-) -> Result<DerivedSourceConsumers, SourceConsumerError> {
-    let search = trace_search_hits(snapshot, search)?;
-    let symbols = trace_symbol_results(snapshot, symbols)?;
-    let context = vec![trace_model_context_item(snapshot, context)?];
-    let evidence = vec![trace_evidence_fact(snapshot, fact)?];
-    Ok(DerivedSourceConsumers {
-        snapshot: snapshot.clone(),
-        search,
-        symbols,
-        context,
-        evidence,
-    })
-}
 
 pub(crate) fn trace_search_hits(
     snapshot: &WorkspaceSourceSnapshotV1,
@@ -201,7 +120,6 @@ pub(crate) fn trace_symbol_results(
     Ok(bound)
 }
 
-#[cfg_attr(not(feature = "research"), allow(dead_code))]
 pub(crate) fn trace_model_context_item(
     snapshot: &WorkspaceSourceSnapshotV1,
     item: &ContextItem,
@@ -224,25 +142,6 @@ pub(crate) fn trace_model_context_item(
     })
 }
 
-#[cfg(feature = "research")]
-pub(crate) fn trace_evidence_fact(
-    snapshot: &WorkspaceSourceSnapshotV1,
-    fact: &ResearchEvidenceFactV1,
-) -> Result<SourceBoundConsumer, SourceConsumerError> {
-    snapshot.validate().map_err(SourceConsumerError::Snapshot)?;
-    fact.validate().map_err(|_| SourceConsumerError::Digest)?;
-    let Some(digest) = fact.source_snapshot_digest() else {
-        return Err(SourceConsumerError::MissingSnapshot);
-    };
-    if digest != snapshot.snapshot_digest {
-        return Err(SourceConsumerError::Digest);
-    }
-    Ok(SourceBoundConsumer {
-        kind: SourceConsumerKind::EvidenceFact,
-        item_digest: fact.fact_digest.clone(),
-        snapshot_digest: snapshot.snapshot_digest.clone(),
-    })
-}
 
 /// Keep unstamped context. Drop a stamped item whose digest is not the live
 /// snapshot. A stamped item is never presented as current against a different
@@ -286,7 +185,6 @@ fn symbol_item_digest(symbol: &SymbolInformation) -> String {
     digest_bytes(SYMBOL_DIGEST_DOMAIN, identity.as_bytes())
 }
 
-#[cfg(all(test, feature = "research"))]
 mod tests {
     use super::*;
     use crate::code_intelligence::{

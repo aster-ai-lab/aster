@@ -1,23 +1,34 @@
 //! The light-tier provider: Model2Vec static embeddings behind the core trait.
 
-use crate::assets;
+use crate::assets::{self, AssetSource, VerifiedAssets};
 
-/// A static embedding provider loaded from embedded bytes. No install chain,
-/// no network, no ONNX — a tokenizer lookup plus an average-pool.
+/// A static embedding provider loaded from verified asset bytes. No install
+/// chain beyond optional on-disk siblings, no network, no ONNX — a tokenizer
+/// lookup plus an average-pool.
 pub struct StaticEmbeddingProvider {
     model: model2vec_rs::model::StaticModel,
     dimension: usize,
+    source: AssetSource,
 }
 
 impl StaticEmbeddingProvider {
-    /// Load from the pinned in-repo assets. Refuses a digest drift or an
-    /// engine decode failure with a named reason.
+    /// Load from disk (env / `<exe>/embedding`) or the compile-time bundle.
+    /// Refuses a digest drift or an engine decode failure with a named reason.
     pub fn from_embedded() -> Result<Self, String> {
-        assets::verify()?;
+        Self::from_verified(assets::load_verified()?)
+    }
+
+    /// Load from an explicit asset directory (same pinned digests).
+    pub fn from_dir(dir: &std::path::Path) -> Result<Self, String> {
+        Self::from_verified(assets::load_from_dir(dir)?)
+    }
+
+    fn from_verified(assets: VerifiedAssets) -> Result<Self, String> {
+        let source = assets.source;
         let model = model2vec_rs::model::StaticModel::from_bytes(
-            assets::TOKENIZER_BYTES,
-            assets::MODEL_BYTES,
-            assets::CONFIG_BYTES,
+            &assets.tokenizer,
+            &assets.model,
+            &assets.config,
             Some(true),
         )
         .map_err(|error| format!("model2vec from_bytes failed: {error}"))?;
@@ -26,7 +37,11 @@ impl StaticEmbeddingProvider {
         if dimension == 0 {
             return Err("model2vec probe produced an empty vector".to_owned());
         }
-        Ok(Self { model, dimension })
+        Ok(Self {
+            model,
+            dimension,
+            source,
+        })
     }
 
     pub fn dimension(&self) -> usize {
@@ -35,6 +50,10 @@ impl StaticEmbeddingProvider {
 
     pub fn id(&self) -> &'static str {
         assets::MODEL_ID
+    }
+
+    pub fn source(&self) -> AssetSource {
+        self.source
     }
 
     /// Encode one batch. Empty input returns empty; each sentence yields one
@@ -80,5 +99,17 @@ mod provider_tests {
     #[test]
     fn digest_verification_passes_on_the_pinned_assets() {
         assert!(crate::assets::verify().is_ok());
+    }
+
+    #[test]
+    fn directory_load_matches_bundled_semantics() {
+        let manifest = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("assets");
+        let from_dir = StaticEmbeddingProvider::from_dir(&manifest).expect("dir load");
+        let from_default = StaticEmbeddingProvider::from_embedded().expect("default load");
+        assert_eq!(from_dir.dimension(), from_default.dimension());
+        assert_eq!(from_dir.source(), AssetSource::Directory);
+        let a = from_dir.encode_batch(&["fn main() {}"]);
+        let b = from_default.encode_batch(&["fn main() {}"]);
+        assert_eq!(a, b);
     }
 }

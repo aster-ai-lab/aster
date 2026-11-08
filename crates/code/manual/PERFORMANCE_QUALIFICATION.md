@@ -268,7 +268,6 @@ four-file/512-chunk native hybrid workload. See the
 
 | Boundary        | Controlled evidence                                                                                                                                                                                                                                                     | Result |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| S3 workspace    | A pinned local MinIO service completed write, read, list, edit, patch, and cleanup through `S3WorkspaceBackend`.                                                                                                                                                        | Pass   |
 | Headless search | Workflow-managed Chrome used the production CDP path and Google parser against a controlled HTTPS fixture. The request log contains `www.google.com` search, completion, and async endpoints; the public search-engine network was excluded and browser cleanup passed. | Pass   |
 | OpenTelemetry   | A pinned local Collector received service `aster-hermetic` and span `aster.telemetry.qualification`. Initialization took 0.651 ms and shutdown took 2.158 ms against a 10,000 ms deadline.                                                                             | Pass   |
 

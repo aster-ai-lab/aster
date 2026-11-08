@@ -24,18 +24,18 @@ The numbers below are the 2026-09-30 measurement of the retired
 
 Normal dependency closure, 23 packages: `aster-kernel`, `serde`,
 `serde_json`, `sha2`, `thiserror`, and their build dependencies. The closure
-does not contain `aster-search`, `aster-vec`, `aws-sdk-s3`, `chromiumoxide`,
+does not contain `aster-search`, `aster-vec`, `chromiumoxide`,
 `rquickjs`, or `opentelemetry`.
 
 | | |
 | --- | --- |
 | Debug rlib of the retired package | 1,085,184 bytes |
 | Release rlib (`opt-level = z`, fat LTO, strip) | 307,136 bytes |
-| Startup | No tokio runtime, HTTP client, browser, S3 client, or vector engine. `SystemLogicalClock::now_ms` reads the system clock when called. |
-| Memory | Identity values stay inside the published ceilings: 256-byte ids, 128-byte event types, 4 MiB payload bytes, 256-byte media types, and a 4 GiB artifact size field. The kernel stores digests, not browser, S3, or zvec buffers. |
+| Startup | No tokio runtime, HTTP client, browser, or vector engine. `SystemLogicalClock::now_ms` reads the system clock when called. |
+| Memory | Identity values stay inside the published ceilings: 256-byte ids, 128-byte event types, 4 MiB payload bytes, 256-byte media types, and a 4 GiB artifact size field. The kernel stores digests, not browser or zvec buffers. |
 
 That package is not linked by any facade profile. Profile features still
-must not add browser, S3, or zvec dependencies to identity types.
+must not add browser or zvec dependencies to identity types.
 
 ## Facade profiles
 
@@ -49,13 +49,13 @@ is not selected by a profile and is not part of the kernel. `aster-lane` brings
 
 Package counts are unique normal-dependency names.
 
-| Profile | Normal packages | zvec (`aster-vec`) | Browser (`headless` / `moli` / `lightpanda`, `chromiumoxide`) | S3 (`aws-sdk-s3`) | Code OTLP exporter | Startup and memory behavior |
-| --- | --- | --- | --- | --- | --- | --- |
-| `minimal` | 324 | no | no | no | no | Governed loop and identity only. No vector index, no S3 client, no browser download. QuickJS stays linked for program tools. |
-| `local-code` | 357 | yes | no | no | no | Adds the persistent lexical index, trigram grep pruning, and PDF text extraction. `aster-vec` loads when that index opens. |
-| `scientific` | 403 | yes | yes | no | no | Adds durable SQLite memory, Advanced harness modules, and browser-backed search. The first headless use can download Moli. |
-| `server` | 413 | yes | no | yes | yes | Adds the S3 workspace backend and OpenTelemetry OTLP export. Those clients start when the host enables them. |
-| `full` | 456 | yes | yes | yes | yes | Union of `scientific` and `server`. |
+| Profile | Normal packages | zvec (`aster-vec`) | Browser (`headless` / `moli` / `lightpanda`, `chromiumoxide`) | Code OTLP exporter | Startup and memory behavior |
+| --- | --- | --- | --- | --- | --- |
+| `minimal` | 324 | no | no | no | Governed loop and identity only. No vector index, no browser download. QuickJS stays linked for program tools. |
+| `local-code` | 357 | yes | no | no | Adds the persistent lexical index, trigram grep pruning, and PDF text extraction. `aster-vec` loads when that index opens. |
+| `scientific` | 403 | yes | yes | no | Adds durable SQLite memory, Advanced harness modules, and browser-backed search. The first headless use can download Moli. |
+| `server` | 413 | yes | no | yes | Adds OpenTelemetry OTLP export. The exporter starts when the host enables it. |
+| `full` | 456 | yes | yes | yes | Union of `scientific` and `server`. |
 
 `default` remains `local-code`. `server` is not the removed AgentDir HTTP
 serve surface.
