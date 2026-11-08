@@ -6490,9 +6490,4 @@ mod nested_tool_governance_tests {
                 if post.tool == "side_effect" && post.result.output == "side-effect-ok"
         )));
     }
-
-
-
-
-
 }

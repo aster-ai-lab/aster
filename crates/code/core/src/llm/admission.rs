@@ -335,7 +335,7 @@ impl ModelGenerationAdmission {
     /// workflow steps that impose a tighter local limit but must still count
     /// against the session/provider pool in the one shared scheduler actor.
     /// Called from the `dynamic-workflow` surface.
-        pub(crate) fn with_scheduler_quota_from(
+    pub(crate) fn with_scheduler_quota_from(
         self,
         source: &Self,
         label: impl Into<String>,

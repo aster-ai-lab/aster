@@ -163,8 +163,6 @@ pub enum CodeError {
     #[error("Capability runtime error: {0}")]
     Capability(#[from] crate::capability::CapabilityRuntimeError),
 
-
-
     /// I/O error
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),

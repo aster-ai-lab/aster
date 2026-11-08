@@ -2342,7 +2342,8 @@ async fn sandboxed_readonly_git_without_local_write_ignores_parallel_commit() {
     });
 
     let tool = BashTool;
-    let ctx = ToolContext::new(root.path().to_path_buf()).with_sandbox(std::sync::Arc::new(sandbox));
+    let ctx =
+        ToolContext::new(root.path().to_path_buf()).with_sandbox(std::sync::Arc::new(sandbox));
     let command = r#"sleep 0.05
 git -c core.quotepath=false status --porcelain >/dev/null
 git ls-files >/dev/null

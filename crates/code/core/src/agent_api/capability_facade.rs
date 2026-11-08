@@ -204,7 +204,6 @@ impl AgentSession {
         })?
     }
 
-
     /// Remove a previously host-registered dynamic tool by name (e.g. on logout).
     /// No-op if no tool of that name is registered.
     pub fn unregister_dynamic_tool(&self, name: &str) -> crate::error::Result<()> {

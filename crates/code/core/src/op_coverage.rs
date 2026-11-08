@@ -1390,7 +1390,6 @@ fn opcov_workflow_step() {
     op("session.workflow_step", "identity");
 }
 
-
 #[test]
 fn opcov_release_bind() {
     let raw = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
@@ -1437,9 +1436,6 @@ fn opcov_release_bind() {
     op("release.bind_publication", "artifact-digest");
 }
 
-
-
-
 impl crate::AuxiliaryExecutor for RecordingExecutor {
     async fn execute(
         &self,
@@ -1450,8 +1446,6 @@ impl crate::AuxiliaryExecutor for RecordingExecutor {
         }))
     }
 }
-
-
 
 #[test]
 fn opcov_moli() {
@@ -1514,4 +1508,3 @@ async fn opcov_moli_ensure() {
     assert!(!missing.exists());
     op("moli.ensure", "opcov-moli");
 }
-

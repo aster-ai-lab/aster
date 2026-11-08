@@ -203,7 +203,6 @@ impl CapabilityProjection {
         }
     }
 
-
     pub fn knowledge(&self, id: &CapabilityId) -> Option<&PackageContextSession> {
         match self.values.get(id) {
             Some(CapabilityValue::Knowledge(value)) => Some(value.as_ref()),

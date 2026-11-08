@@ -1341,14 +1341,6 @@ async fn case_program(commit: &str) {
     row(commit, "program", &model, "script-timeout");
 }
 
-
-
-
-
-
-
-
-
 #[cfg(feature = "headless-search")]
 async fn case_moli_runtime(commit: &str) {
     let model = pinned_completion("moli_runtime").await;
@@ -1392,8 +1384,6 @@ async fn case_moli_runtime(commit: &str) {
 async fn case_moli_runtime(_commit: &str) {
     panic!("feature required: headless-search");
 }
-
-
 
 fn git(root: &Path, args: &[&str]) {
     let status = std::process::Command::new("git")
@@ -1779,5 +1769,3 @@ async fn case_event_envelope(commit: &str) {
         "InvalidField-event",
     );
 }
-
-

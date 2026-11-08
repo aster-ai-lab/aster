@@ -3782,10 +3782,7 @@ fn shipped_tui_ask_user_and_edit_tool_oracles() {
     pty.type_text("ASK-ORACLE a choice");
     pty.enter();
     let card = pty.wait_for("alpha", Duration::from_secs(30));
-    assert!(
-        card.contains("beta"),
-        "ask_user options missing\n{card}"
-    );
+    assert!(card.contains("beta"), "ask_user options missing\n{card}");
     pty.write_bytes(b"2");
     let answered = pty.wait_for("ok", Duration::from_secs(30));
     assert!(

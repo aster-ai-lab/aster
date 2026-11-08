@@ -315,7 +315,7 @@ struct ModelGenerationPermitReservation {
 
 impl ModelGenerationPermitReservation {
     /// Called from the `dynamic-workflow` surface.
-        fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
         Self {
             permit: Mutex::new(Some(permit)),
         }
@@ -839,7 +839,7 @@ impl ToolContext {
     }
 
     /// Called from the `dynamic-workflow` surface.
-        pub(crate) fn with_model_generation_permit(
+    pub(crate) fn with_model_generation_permit(
         mut self,
         admission: crate::llm::ModelGenerationAdmission,
         permit: Arc<crate::llm::ModelGenerationPermit>,
