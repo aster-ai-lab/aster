@@ -20,6 +20,7 @@ on:
       - "tests/release_governance.py"
       - "tests/studio_checkout.py"
       - "tests/workspace_dependencies.py"
+      - "docs/release-governance.md"
   pull_request:
     paths:
       - "apps/aster/**"
@@ -38,6 +39,7 @@ on:
       - "tests/release_governance.py"
       - "tests/studio_checkout.py"
       - "tests/workspace_dependencies.py"
+      - "docs/release-governance.md"
 
 permissions:
   contents: read
