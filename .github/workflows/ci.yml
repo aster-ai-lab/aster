@@ -23,18 +23,6 @@ jobs:
         uses: ./.github/actions/checkout-studio
         with:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
-      - name: Fetch the pinned AIX test fixture
-        env:
-          GH_TOKEN: ${{ secrets.STUDIO_READ_TOKEN }}
-        run: |
-          set -euo pipefail
-          ref="$(git ls-tree HEAD apps/api | awk '{print $3}')"
-          test -n "$ref"
-          mkdir -p apps/api/vendor/web/public/cases
-          gh api "repos/aster-ai-lab/api/contents/vendor/web/public/cases/acp-cloud-agent.aix?ref=${ref}" \
-            --jq .content \
-            | python3 -c 'import base64,sys; sys.stdout.buffer.write(base64.b64decode(sys.stdin.read()))' \
-            > apps/api/vendor/web/public/cases/acp-cloud-agent.aix
       - name: Install Linux build tools
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler cmake pkg-config libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
@@ -54,7 +42,6 @@ jobs:
       - name: Format
         run: |
           cargo fmt --all -- --check
-          cargo fmt --all --manifest-path apps/control-plane/Cargo.toml -- --check
       - name: Install static guest targets
         run: rustup target add aarch64-unknown-linux-musl x86_64-unknown-linux-musl
       - name: Static guest linker hardening
@@ -96,11 +83,6 @@ jobs:
           python3 tests/desktop_channel_manifest.py
       - name: App icon ladder and desktop identity
         run: python3 tests/app_icon_assets.py
-      - name: Shared-crate drift ratchet
-        # Visibly skipped when the private submodules are not checked out;
-        # enforces everywhere they are (self-hosted, credentialed runners).
-        if: hashFiles('apps/api/crates/**/Cargo.toml') != '' && hashFiles('apps/cloud/crates/**/Cargo.toml') != ''
-        run: python3 tests/crate_drift_report.py --baseline tests/crate_drift_baseline.json
       - name: Compile workspace and tests
         run: cargo check --locked --workspace --all-targets
       - name: Check optional harness contracts

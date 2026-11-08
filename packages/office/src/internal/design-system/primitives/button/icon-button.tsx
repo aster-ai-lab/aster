@@ -1,10 +1,12 @@
+import { motion, type HTMLMotionProps } from 'motion/react'
+import { forwardRef, type ReactNode } from 'react'
+
 import { motionTokens } from '@aster-ai-lab/ui/components/arc/lib/motion-tokens'
 import { useReducedMotion } from '@aster-ai-lab/ui/lib/useReducedMotion'
-import { motion } from 'motion/react'
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
+
 import { OfficeTooltip } from './office-tooltip'
 
-type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label'> & {
+type IconButtonProps = Omit<HTMLMotionProps<'button'>, 'ref' | 'aria-label'> & {
   label: string
   tooltip?: string
   selected?: boolean

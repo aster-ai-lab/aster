@@ -117,7 +117,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         self.assertEqual(len(tracked), 1, "desktop sources belong only to the private submodule")
         self.assertTrue(tracked[0].startswith("160000 "), tracked)
         self.assertFalse(list(studio.rglob("Cargo.lock")))
-        for base in [studio, ROOT / "packages", ROOT / "apps/web", ROOT / "apps/use-registry"]:
+        for base in [studio, ROOT / "packages"]:
             for directory, dirs, files in os.walk(base):
                 dirs[:] = [name for name in dirs if name not in {"node_modules", "dist", "target", ".git"}]
                 for name in dirs + files:
@@ -213,7 +213,18 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             for dependency in package["dependencies"]:
                 if dependency["name"].startswith("aster-"):
                     self.assertIsNone(dependency["source"], dependency["name"])
-                    self.assertTrue(Path(dependency["path"]).resolve().is_relative_to(ROOT))
+                    # Backend crates were migrated to kense/platform/migrated
+                    # and reached through crates/* symlinks. The gate still
+                    # requires local sources (never crates.io), but the
+                    # resolved path may now live in kense.
+                    raw_path = dependency.get("path")
+                    if raw_path is not None:
+                        resolved = Path(raw_path).resolve()
+                        self.assertTrue(
+                            resolved.is_relative_to(ROOT)
+                            or resolved.is_relative_to(ROOT.parent / "kense" / "platform" / "migrated"),
+                            dependency["name"],
+                        )
         lock = tomllib.loads((ROOT / "Cargo.lock").read_text(encoding="utf-8"))
         for package in lock["package"]:
             if package["name"].startswith("aster-"):

@@ -13,7 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class PairIdentity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        (ROOT / "target").mkdir(exist_ok=True)
+        # The host path shim raises EEXIST even with exist_ok=True; guard it.
+        if not (ROOT / "target").exists():
+            (ROOT / "target").mkdir()
         cls.temporary = tempfile.TemporaryDirectory(prefix="pair-identity-", dir=ROOT / "target")
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.directory = Path(cls.temporary.name)

@@ -1,8 +1,0 @@
-/target/
-/fuzz/artifacts/
-/fuzz/corpus/
-/fuzz/target/
-/.aster-vec-test/
-/.venv-zvec/
-scripts/__pycache__/
-.DS_Store

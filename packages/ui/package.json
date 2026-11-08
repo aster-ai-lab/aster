@@ -15,6 +15,8 @@
     "./components/*": "./src/components/*",
     "./components/console/SearchSelect": "./src/components/console/SearchSelect.tsx",
     "./components/primitives/combobox": "./src/components/primitives/combobox.tsx",
+    "./components/arc/lib/motion-tokens": "./src/components/arc/lib/motion-tokens.ts",
+    "./components/primitives/selection-highlight": "./src/components/primitives/selection-highlight.tsx",
 
     "./chart": "./src/chart/index.ts",
     "./components/composites/code-editor": "./src/components/composites/code-editor/index.ts",
@@ -23,6 +25,7 @@
     "./utils": "./src/utils/index.ts",
     "./lib/utils": "./src/lib/utils.ts",
     "./lib/useReducedMotion": "./src/lib/useReducedMotion.ts",
+    "./lib/usePopupPresence": "./src/lib/usePopupPresence.ts",
     "./lib/*": "./src/lib/*",
     "./icons": "./src/components/icons/index.ts",
     "./icons/providers": "./src/components/icons/providers/index.ts",

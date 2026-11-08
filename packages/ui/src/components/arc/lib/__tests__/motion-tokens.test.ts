@@ -27,4 +27,22 @@ describe('motionTokens (DESIGN.md)', () => {
       bounce: 0
     })
   })
+
+  it('keeps every spring critically damped (DESIGN.md收紧)', () => {
+    for (const spring of Object.values(motionTokens.spring)) {
+      expect((spring as { bounce?: number }).bounce ?? 0).toBe(0)
+    }
+  })
+
+  it('keeps durations monotonically increasing', () => {
+    const { instant, fast, exit, standard, considered } = motionTokens.duration
+    expect([instant, fast, exit, standard, considered]).toEqual(
+      [...[instant, fast, exit, standard, considered]].sort((a, b) => a - b)
+    )
+  })
+
+  it('keeps stagger and blur inside the documented budget', () => {
+    expect(Math.max(...Object.values(motionTokens.stagger))).toBeLessThanOrEqual(0.08)
+    expect(Math.max(...Object.values(motionTokens.blur))).toBeLessThanOrEqual(8)
+  })
 })

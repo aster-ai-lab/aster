@@ -122,7 +122,6 @@ studio $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
       fi
     done
     export PATH
-    bun scripts/check-tenant.ts "${slug}" >/dev/null
     if [ "$(id -u)" -eq 0 ]; then
       echo "warning: Studio is starting as root; the fcitx immodule cannot commit composed text for a non-session uid, so IME input will not work. Start it as the session user." >&2
     fi
@@ -167,10 +166,6 @@ build-studio-release $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     cd apps/studio
     exec pnpm package:host
 
-# Export every Aster icon from apps/web/public/tenant/aster/logo.png.
-app-icons:
-    python3 scripts/app-icon-assets.py
-    python3 scripts/app-icon.py
 
 # Install this checkout as a desktop application: a launcher entry plus the
 # hicolor icon ladder under $XDG_DATA_HOME. Without it a dock has no entry to
@@ -205,61 +200,5 @@ dev $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
 # Start Aster Studio for this tenant. `just work:toyou` selects that tenant.
 work $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'): (studio slug)
 
-# Middleware plus the host processes that exist in this tree.
-# Default tenant is aster. `just up toyou` selects another public tenant.
-up $slug='aster':
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
-      echo "invalid tenant slug: ${slug}" >&2
-      exit 1
-    fi
-    bun scripts/check-tenant.ts "${slug}" >/dev/null
-    if ! command -v tilt >/dev/null 2>&1; then
-      echo "tilt not found — install from https://docs.tilt.dev/install.html" >&2
-      echo "  macOS: brew install tilt" >&2
-      exit 1
-    fi
-    export ASTER_TENANT_SLUG="${slug}"
-    tilt up
-
-# Non-interactive spine boot. Same tenant parameter as `just up`.
-up-ci $slug='aster':
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
-      echo "invalid tenant slug: ${slug}" >&2
-      exit 1
-    fi
-    bun scripts/check-tenant.ts "${slug}" >/dev/null
-    if ! command -v tilt >/dev/null 2>&1; then
-      echo "tilt not found — install from https://docs.tilt.dev/install.html" >&2
-      exit 1
-    fi
-    export ASTER_TENANT_SLUG="${slug}"
-    tilt ci
-
-# Stop everything started by `just up`. Leaves Postgres volumes in place.
-down:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if command -v tilt >/dev/null 2>&1; then
-      tilt down || true
-    fi
-    bash scripts/stop-web.sh || true
-    bash scripts/stop-billing.sh || true
-    bash scripts/stop-auth.sh || true
-    bash scripts/stop-cloud-containers.sh || true
-    bash scripts/stop-search.sh || true
-    bash scripts/stop-config.sh || true
-    docker compose down || true
-
-# Middleware only (Postgres, Redis, RustFS, Iggy, etcd) from the OS compose.
-middleware-up:
-    docker compose up -d
-
-# Run the layered backend test suites (hermetic members in parallel,
-# Postgres/S3 campaigns serially). Requires the middleware for campaigns.
-backend-test:
-    cargo test --locked -p aster-gateway -p aster-vec
-    cargo test --locked --manifest-path apps/control-plane/Cargo.toml -p aster-gateway-runtime -p aster-runner
+# Backend spine recipes (up / up-ci / down / middleware-up / backend-test)
+# were migrated to kense/incoming/spine. Client recipes only below.

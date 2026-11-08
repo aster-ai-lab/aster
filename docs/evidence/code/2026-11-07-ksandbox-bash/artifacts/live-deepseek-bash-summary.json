@@ -1,9 +1,0 @@
-{
-  "exit": 1,
-  "sentinel_exists": true,
-  "sentinel_text": "ksandbox-live-ok",
-  "has_bash_tool": true,
-  "has_refusal": false,
-  "has_live_done": false,
-  "note": "exit 1 is completion-gate verification debt after a successful sandboxed write; not native_process_lifetime_unqualified"
-}

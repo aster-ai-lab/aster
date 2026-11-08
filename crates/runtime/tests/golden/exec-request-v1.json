@@ -1,9 +1,0 @@
-{
-  "schema": "aster.runtime.exec-request.v1",
-  "request_id": "golden-exec",
-  "unit_id": "golden-service",
-  "generation": 3,
-  "command": ["/bin/sh", "-c", "printf ready"],
-  "timeout_ms": 5000,
-  "deadline_at_ms": 200000
-}

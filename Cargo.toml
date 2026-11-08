@@ -1,32 +1,20 @@
 [workspace]
 resolver = "3"
-exclude = [
-    "crates/power/third-party/magnitude/inference",
-    "apps/api",
-    "apps/cloud",
-    "apps/control-plane",
-]
+exclude = []
 members = [
     "crates/embedding",
     "crates/capture",
     "apps/aster",
-    "apps/tutorial-agent",
-    "crates/bge",
-    "crates/deepseek",
-    "crates/power",
+    "crates/office/crates/cli",
     "crates/third-party/serde-saphyr",
     "crates/third-party/saphyr-parser-bw",
     "crates/third-party/crossterm",
-    "crates/sentry",
-    "crates/updater",
     "crates/runtime",
-    "crates/sms",
     "crates/form-core",
     "apps/studio/src-tauri",
     "apps/studio/src-tauri/contract",
     "apps/studio/native/data-sqlite",
     "crates/acl",
-    "crates/apofasi",
     "crates/browser",
     "crates/code/acp",
     "crates/code/core",
@@ -71,7 +59,6 @@ members = [
     "crates/terminal/crates/codegen/aster-pager",
     "crates/terminal/crates/codegen/aster-pager-diff",
     "crates/terminal/crates/codegen/aster-pager-minimal",
-    "crates/terminal/crates/codegen/aster-pager-pty-harness",
     "crates/terminal/crates/codegen/aster-pager-render",
     "crates/terminal/crates/codegen/aster-paths",
     "crates/terminal/crates/codegen/aster-plugin-marketplace",
@@ -120,8 +107,6 @@ members = [
     "crates/terminal/crates/codegen/aster-tracing-macros",
     "crates/terminal/crates/codegen/aster-tty-utils",
     "crates/terminal/crates/codegen/aster-workflow",
-    "crates/terminal/crates/codegen/ptyctl",
-    "crates/terminal/crates/codegen/ptyctl-cli",
     "crates/terminal/crates/common/aster-circuit-breaker",
     "crates/terminal/crates/common/aster-compaction",
     "crates/terminal/crates/common/aster-computer-hub-core",
@@ -149,13 +134,8 @@ members = [
     "crates/ocr",
     "crates/use/extension",
     "crates/use/tool-acquire",
-    "crates/terminal/third_party/portable-pty-work",
-    "crates/third-party/async-openai",
-    "crates/third-party/async-openai-macros",
-    "crates/office/crates/cli",
     "crates/office/crates/core",
     "crates/office/crates/formula-parser",
-    "crates/office/crates/web-kernel",
 ]
 default-members = ["apps/aster", "crates/code/acp"]
 

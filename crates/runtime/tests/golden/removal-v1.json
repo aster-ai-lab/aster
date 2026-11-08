@@ -1,8 +1,0 @@
-{
-  "schema": "aster.runtime.removal.v1",
-  "request_id": "golden-remove",
-  "unit_id": "golden-service",
-  "generation": 3,
-  "removed_at_ms": 150000,
-  "already_absent": false
-}

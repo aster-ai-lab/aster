@@ -1,2 +1,0 @@
-#!/bin/sh
-printf '{"message":"cognitive package ready"}\n'

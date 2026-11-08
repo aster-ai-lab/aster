@@ -9,10 +9,10 @@ import {
 } from '@radix-ui/react-tooltip'
 import * as React from 'react'
 
-import arcTooltip from '../arc/tooltip/tooltip.module.css'
-
 import { cn } from '../../lib/utils'
 import { usePortalContainer } from './portal-container'
+
+import arcTooltip from '../arc/tooltip/tooltip.module.css'
 
 type Side = 'top' | 'bottom' | 'left' | 'right'
 type Align = 'start' | 'center' | 'end'
@@ -125,9 +125,9 @@ function useTooltipController(
  */
 function setupTooltipOrphanSweeper(): void {
   const pending = new WeakMap<Element, number>()
-  const observedRoots = new WeakSet<Document | Element>()
+  const observedRoots = new WeakSet<Document | Element | ShadowRoot>()
   // 已观察 shadow root 的弱引用清单，替代「全文档元素级遍历 + 逐元素递归」的引用搜索
-  const shadowRoots: WeakRef<Element>[] = []
+  const shadowRoots: WeakRef<Document | Element | ShadowRoot>[] = []
   /** 查找对某 contentId 的 trigger 引用：document 单查询 + 已观察 shadow root 逐个单查询。
    * 只覆盖已观察的 shadow root（宿主插入后迟 attach 的 root 为已知边界）；iframe 不可达。 */
   const hasActiveAriaReference = (tooltipId: string): boolean => {
@@ -241,7 +241,7 @@ function setupTooltipOrphanSweeper(): void {
     }
   })
   // shadow 边界不穿透：已挂 root 的宿主连同其内容一并纳入观察，嵌套宿主逐层递归
-  function scanShadowTree(root: Document | Element): void {
+  function scanShadowTree(root: Document | Element | ShadowRoot): void {
     ensureObserved(root)
     for (const el of root.querySelectorAll(SWEEPABLE_CONTENT_SELECTOR)) {
       maybeSweep(el)
@@ -250,7 +250,7 @@ function setupTooltipOrphanSweeper(): void {
       if (child.shadowRoot) scanShadowTree(child.shadowRoot)
     }
   }
-  function ensureObserved(root: Document | Element): void {
+  function ensureObserved(root: Document | Element | ShadowRoot): void {
     if (observedRoots.has(root)) return
     observedRoots.add(root)
     // Bun/happy-dom hermetic runners may lack ShadowRoot; skip weak tracking there.

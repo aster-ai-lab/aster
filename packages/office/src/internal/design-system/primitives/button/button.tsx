@@ -1,12 +1,13 @@
+import { motion, type HTMLMotionProps } from 'motion/react'
+import { forwardRef, type ReactNode } from 'react'
+
 import { motionTokens } from '@aster-ai-lab/ui/components/arc/lib/motion-tokens'
 import { useReducedMotion } from '@aster-ai-lab/ui/lib/useReducedMotion'
-import { motion } from 'motion/react'
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 export type ButtonTone = 'primary' | 'secondary' | 'quiet' | 'danger'
 export type ButtonSize = 'standard' | 'compact'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = Omit<HTMLMotionProps<'button'>, 'ref'> & {
   tone?: ButtonTone
   size?: ButtonSize
   loading?: boolean
@@ -14,15 +15,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  {
-    tone = 'secondary',
-    size = 'standard',
-    loading = false,
-    children,
-    className = '',
-    disabled,
-    ...props
-  },
+  { tone = 'secondary', size = 'standard', loading = false, children, className = '', disabled, ...props },
   ref
 ) {
   const reduced = useReducedMotion()

@@ -1,6 +1,0 @@
-model=deepseek/deepseek-flash
-source_acl=./.aster/config.acl (default_model rewritten for launch only)
-one_turn=pass
-cancel_recover=pass
-multi_turn_coding=pass
-long_task=pass

@@ -1,5 +1,0 @@
-test real_llm_tui_turn_shows_assistant_text ... 
-thread 'real_llm_tui_turn_shows_assistant_text' (19050210) panicked at apps/aster/tests/tui_913_real_llm.rs:439:5:
-FAILED
-    real_llm_tui_turn_shows_assistant_text
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 36 filtered out; finished in 224.99s

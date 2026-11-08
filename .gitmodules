@@ -1,16 +1,6 @@
-[submodule "cloud"]
-	path = apps/cloud
-	url = git@github.com:aster-ai-lab/cloud.git
-[submodule "api"]
-	path = apps/api
-	url = git@github.com:aster-ai-lab/api.git
 [submodule "studio"]
 	path = apps/studio
 	url = git@github.com:aster-ai-lab/studio.git
-	branch = main
-[submodule "dashboard"]
-	path = apps/dashboard
-	url = git@github.com:aster-ai-lab/dashboard.git
 	branch = main
 [submodule "plugins"]
 	path = plugins
