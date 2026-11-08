@@ -1,0 +1,846 @@
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+
+use crate::backend::Backend;
+use crate::error::Result;
+use crate::model::manifest::ModelManifest;
+use crate::model::storage;
+use crate::server::request_context::RequestContext;
+use crate::server::state::AppState;
+use crate::tee::encrypted_model::{
+    load_key, DecryptedModel, LayerStreamingDecryptedModel, MemoryDecryptedModel,
+};
+
+/// Result of an ensure_loaded call, including load timing.
+#[derive(Debug)]
+pub struct LoadResult {
+    /// Time spent loading the model. Zero if the model was already loaded (cache hit).
+    pub load_duration: Duration,
+    /// If true, the caller should unload the model after inference completes.
+    /// This is set when `keep_alive = "0"` — the model should be evicted
+    /// immediately after the current request finishes, not before it runs.
+    pub unload_after_use: bool,
+}
+
+/// Ensure a model is loaded before inference.
+///
+/// If the model is already loaded, updates its last-used time.
+/// If not loaded, evicts the LRU model when at capacity, then loads.
+/// An optional `keep_alive` duration from the request overrides the config default.
+pub async fn ensure_loaded(
+    state: &AppState,
+    model_name: &str,
+    manifest: &ModelManifest,
+    backend: &Arc<dyn Backend>,
+) -> Result<LoadResult> {
+    ensure_loaded_with_keep_alive(state, model_name, manifest, backend, None).await
+}
+/// Ensure a model is loaded with an optional per-request keep-alive override.
+pub async fn ensure_loaded_with_keep_alive(
+    state: &AppState,
+    model_name: &str,
+    manifest: &ModelManifest,
+    backend: &Arc<dyn Backend>,
+    keep_alive: Option<Duration>,
+) -> Result<LoadResult> {
+    if state.is_model_loaded(model_name) {
+        state.touch_model(model_name);
+        let unload_after_use = keep_alive == Some(Duration::ZERO);
+        return Ok(LoadResult {
+            load_duration: Duration::ZERO,
+            unload_after_use,
+        });
+    }
+
+    // Evict models: prefer evicting those whose keep_alive has expired first,
+    // then fall back to LRU eviction
+    while state.needs_eviction() {
+        if let Some(evictable) = state.evictable_lru_model() {
+            backend.unload(&evictable).await?;
+            state.mark_unloaded(&evictable);
+            state.metrics.increment_evictions();
+            state.metrics.remove_model_memory(&evictable);
+        } else if let Some(lru_name) = state.lru_model() {
+            backend.unload(&lru_name).await?;
+            state.mark_unloaded(&lru_name);
+            state.metrics.increment_evictions();
+            state.metrics.remove_model_memory(&lru_name);
+        } else {
+            break;
+        }
+    }
+
+    let load_start = Instant::now();
+
+    // Log memory estimate before loading (GGUF models only)
+    if manifest.format == crate::model::manifest::ModelFormat::Gguf && manifest.path.exists() {
+        match crate::model::gguf::estimate_memory(&manifest.path, 2048) {
+            Ok(estimate) => {
+                tracing::info!(
+                    model = %model_name,
+                    model_size = %format_bytes(estimate.model_size),
+                    kv_cache = %format_bytes(estimate.kv_cache_size),
+                    total_estimate = %estimate.total_display(),
+                    ctx_size = estimate.context_size,
+                    "Memory estimate before loading"
+                );
+            }
+            Err(e) => {
+                tracing::debug!(
+                    model = %model_name,
+                    error = %e,
+                    "Could not estimate memory requirements"
+                );
+            }
+        }
+    }
+
+    // Decrypt encrypted models (.enc) if key source is configured
+    let is_encrypted = manifest.path.extension().is_some_and(|ext| ext == "enc");
+    let load_manifest;
+    let mut encrypted_plaintext_hash = None;
+    let mut memory_plaintext = None;
+    let mut streaming_plaintext = None;
+    if is_encrypted {
+        // Resolve key: prefer key_provider in AppState, fall back to model_key_source config
+        let key = if let Some(ref kp) = state.key_provider {
+            kp.get_key().await.map_err(|e| {
+                crate::error::PowerError::Config(format!(
+                    "Key provider failed for model '{}': {e}",
+                    model_name
+                ))
+            })?
+        } else {
+            let key_source = state.config.model_key_source.as_ref().ok_or_else(|| {
+                crate::error::PowerError::Config(format!(
+                    "Model '{}' is encrypted (.enc) but no model_key_source configured",
+                    model_name
+                ))
+            })?;
+            load_key(key_source)?
+        };
+
+        tracing::info!(model = %model_name, in_memory = state.config.in_memory_decrypt, streaming = state.config.streaming_decrypt, "Decrypting encrypted model");
+
+        if state.config.streaming_decrypt {
+            if !backend.supports_streaming_decrypt_load(&manifest.format) {
+                return Err(unsupported_memory_decrypt_mode_error(
+                    model_name,
+                    "streaming_decrypt",
+                    backend.name(),
+                ));
+            }
+
+            let decrypted = LayerStreamingDecryptedModel::decrypt(&manifest.path, &key)?;
+            encrypted_plaintext_hash = Some(storage::compute_sha256(decrypted.as_bytes()));
+            streaming_plaintext = Some(decrypted);
+            load_manifest = manifest.clone();
+        } else if state.config.in_memory_decrypt {
+            if !backend.supports_memory_load(&manifest.format) {
+                return Err(unsupported_memory_decrypt_mode_error(
+                    model_name,
+                    "in_memory_decrypt",
+                    backend.name(),
+                ));
+            }
+
+            let decrypted = MemoryDecryptedModel::decrypt(&manifest.path, &key)?;
+            encrypted_plaintext_hash = Some(storage::compute_sha256(decrypted.as_bytes()));
+            memory_plaintext = Some(decrypted);
+            load_manifest = manifest.clone();
+        } else {
+            let decrypted = DecryptedModel::decrypt(&manifest.path, &key)?;
+            encrypted_plaintext_hash = Some(storage::compute_sha256_path(&decrypted.path)?);
+            let mut m = manifest.clone();
+            m.path = decrypted.path.clone();
+            state.store_decrypted(model_name, decrypted);
+            load_manifest = m;
+        }
+        state.metrics.increment_tee_model_decryption();
+    } else {
+        load_manifest = manifest.clone();
+    }
+
+    // Re-verify model integrity if a hash is configured for this model.
+    // This catches models added after startup (e.g. via pull) that were
+    // never checked at boot time.
+    if let Some(expected_hash) = state.config.model_hashes.get(model_name) {
+        let ok = if let Some(ref actual_hash) = encrypted_plaintext_hash {
+            actual_hash == expected_hash
+        } else {
+            crate::tee::model_seal::verify_model_manifest_integrity(&load_manifest, expected_hash)
+                .map_err(|e| {
+                crate::error::PowerError::Config(format!(
+                    "Integrity check failed for model '{model_name}': {e}"
+                ))
+            })?
+        };
+        if !ok {
+            return Err(crate::error::PowerError::Config(format!(
+                "Model '{model_name}' failed SHA-256 integrity check"
+            )));
+        }
+        tracing::debug!(model = %model_name, "Model integrity verified");
+    }
+
+    // Re-verify model signature if a signing key is configured.
+    if let Some(ref signing_key) = state.config.model_signing_key {
+        if let Some(ref plaintext_hash) = encrypted_plaintext_hash {
+            crate::tee::model_seal::verify_model_signature_hash(
+                model_name,
+                plaintext_hash,
+                &manifest.path,
+                signing_key,
+            )
+            .map_err(|e| {
+                crate::error::PowerError::Config(format!(
+                    "Signature verification failed for encrypted model '{model_name}': {e}"
+                ))
+            })?;
+        } else {
+            crate::tee::model_seal::verify_model_signature(&load_manifest.path, signing_key)
+                .map_err(|e| {
+                    crate::error::PowerError::Config(format!(
+                        "Signature verification failed for model '{model_name}': {e}"
+                    ))
+                })?;
+        }
+        tracing::debug!(model = %model_name, "Model signature verified");
+    }
+
+    if let Some(plaintext) = streaming_plaintext.take() {
+        backend
+            .load_from_streaming_decrypt(&load_manifest, plaintext)
+            .await?;
+    } else if let Some(plaintext) = memory_plaintext.take() {
+        backend.load_from_memory(&load_manifest, plaintext).await?;
+    } else {
+        backend.load(&load_manifest).await?;
+    }
+    let load_duration = load_start.elapsed();
+
+    // Record model load duration and estimated memory (file size as proxy)
+    state
+        .metrics
+        .record_model_load(model_name, load_duration.as_secs_f64());
+    state.metrics.set_model_memory(model_name, manifest.size);
+
+    match keep_alive {
+        Some(duration) => {
+            state.mark_loaded_with_keep_alive(model_name, duration);
+            let unload_after_use = duration == Duration::ZERO;
+            Ok(LoadResult {
+                load_duration,
+                unload_after_use,
+            })
+        }
+        None => {
+            state.mark_loaded(model_name);
+            Ok(LoadResult {
+                load_duration,
+                unload_after_use: false,
+            })
+        }
+    }
+}
+
+fn unsupported_memory_decrypt_mode_error(
+    model_name: &str,
+    mode: &str,
+    backend_name: &str,
+) -> crate::error::PowerError {
+    crate::error::PowerError::Config(format!(
+        "Model '{model_name}' requested {mode}=true for encrypted .enc loading, but backend \
+         '{backend_name}' cannot load from that decrypted plaintext source yet. Disable {mode} \
+         to use file-backed DecryptedModel loading, or use a backend path that explicitly \
+         consumes decrypted bytes."
+    ))
+}
+
+/// Unload a model after a request-scoped `keep_alive=0` inference completes.
+///
+/// The state is only marked unloaded after the backend confirms unload success.
+/// This avoids reporting the model as evicted while backend resources are still held.
+pub async fn unload_after_request(state: &AppState, model_name: &str, backend: &Arc<dyn Backend>) {
+    match backend.unload(model_name).await {
+        Ok(()) => {
+            state.mark_unloaded(model_name);
+            state.metrics.remove_model_memory(model_name);
+        }
+        Err(e) => {
+            tracing::warn!(
+                model = %model_name,
+                error = %e,
+                "Failed to unload model after request"
+            );
+        }
+    }
+}
+
+/// Clean up backend resources associated with one request.
+///
+/// Cleanup failures are logged and returned as `false`; callers should still
+/// finish normal response accounting because cleanup happens after inference.
+pub async fn cleanup_after_request(
+    model_name: &str,
+    ctx: &RequestContext,
+    backend: &Arc<dyn Backend>,
+) -> bool {
+    match backend.cleanup_request(model_name, ctx).await {
+        Ok(()) => true,
+        Err(e) => {
+            tracing::warn!(
+                model = %model_name,
+                request_id = %ctx.request_id,
+                error = %e,
+                "Failed to clean up request resources"
+            );
+            false
+        }
+    }
+}
+
+/// Format bytes as a human-readable string for log messages.
+fn format_bytes(bytes: u64) -> String {
+    const GB: u64 = 1_073_741_824;
+    const MB: u64 = 1_048_576;
+
+    if bytes >= GB {
+        format!("{:.1} GiB", bytes as f64 / GB as f64)
+    } else if bytes >= MB {
+        format!("{:.0} MiB", bytes as f64 / MB as f64)
+    } else {
+        format!("{bytes} B")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::backend::test_utils::{sample_manifest, test_state_with_mock, MockBackend};
+    use crate::backend::BackendRegistry;
+    use crate::config::PowerConfig;
+    use crate::model::manifest::ModelFormat;
+    use crate::model::registry::ModelRegistry;
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    fn test_state() -> AppState {
+        AppState::new(
+            Arc::new(ModelRegistry::new()),
+            Arc::new(BackendRegistry::new()),
+            Arc::new(PowerConfig::default()),
+        )
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    fn dummy_manifest() -> crate::model::manifest::ModelManifest {
+        crate::model::manifest::ModelManifest {
+            name: "test-model".to_string(),
+            format: ModelFormat::Gguf,
+            size: 0,
+            sha256: "abc".to_string(),
+            parameters: None,
+            created_at: chrono::Utc::now(),
+            path: std::path::PathBuf::from("/tmp/fake.gguf"),
+            system_prompt: None,
+            template_override: None,
+            default_parameters: None,
+            modelfile_content: None,
+            license: None,
+            adapter_path: None,
+            adapter_artifact: None,
+            external_draft: None,
+            projector_path: None,
+            projector_artifact: None,
+            messages: vec![],
+            family: None,
+            families: None,
+        }
+    }
+
+    fn encrypted_test_artifact(
+        model_name: &str,
+    ) -> (
+        tempfile::TempDir,
+        crate::model::manifest::ModelManifest,
+        crate::tee::encrypted_model::KeySource,
+    ) {
+        use crate::tee::encrypted_model::{encrypt_model_file, KeySource};
+
+        let dir = tempfile::tempdir().unwrap();
+        let plain_path = dir.path().join("model.gguf");
+        std::fs::write(&plain_path, b"fake model weights").unwrap();
+        let key = [0x42; 32];
+        let enc_path = encrypt_model_file(&plain_path, &key).unwrap();
+
+        let key_path = dir.path().join("model.key");
+        std::fs::write(&key_path, hex::encode(key)).unwrap();
+
+        let mut manifest = sample_manifest(model_name);
+        manifest.path = enc_path;
+
+        (dir, manifest, KeySource::File(key_path))
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    #[tokio::test]
+    async fn test_ensure_loaded_skips_when_already_loaded() {
+        let state = test_state();
+        let manifest = dummy_manifest();
+        let config = Arc::new(PowerConfig::default());
+        let backend = crate::backend::default_backends(config)
+            .find_for_format(&ModelFormat::Gguf)
+            .unwrap();
+
+        // Pre-mark the model as loaded — ensure_loaded should return Ok
+        // without calling backend.load().
+        state.mark_loaded("test-model");
+        let result = ensure_loaded(&state, "test-model", &manifest, &backend).await;
+        assert!(result.is_ok());
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    #[tokio::test]
+    async fn test_ensure_loaded_attempts_load_when_not_loaded() {
+        let state = test_state();
+        let manifest = dummy_manifest();
+        let config = Arc::new(PowerConfig::default());
+        let backend = crate::backend::default_backends(config)
+            .find_for_format(&ModelFormat::Gguf)
+            .unwrap();
+
+        // Model is not marked loaded, so ensure_loaded will call backend.load()
+        // which fails because there is no real model file — that's expected.
+        let result = ensure_loaded(&state, "test-model", &manifest, &backend).await;
+        assert!(result.is_err());
+        // Model should NOT be marked loaded on failure.
+        assert!(!state.is_model_loaded("test-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_evicts_lru_when_at_capacity() {
+        let state = test_state_with_mock(MockBackend::success());
+        // Default max_loaded_models is 1, so loading a second model should evict the first.
+        let manifest_a = sample_manifest("model-a");
+        let manifest_b = sample_manifest("model-b");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        // Load model-a
+        ensure_loaded(&state, "model-a", &manifest_a, &backend)
+            .await
+            .unwrap();
+        assert!(state.is_model_loaded("model-a"));
+        assert_eq!(state.loaded_model_count(), 1);
+
+        // Load model-b — should evict model-a
+        ensure_loaded(&state, "model-b", &manifest_b, &backend)
+            .await
+            .unwrap();
+        assert!(state.is_model_loaded("model-b"));
+        assert!(!state.is_model_loaded("model-a"));
+        assert_eq!(state.loaded_model_count(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_touches_on_cache_hit() {
+        let config = Arc::new(PowerConfig {
+            max_loaded_models: 3,
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::success()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+
+        let manifest_a = sample_manifest("model-a");
+        let manifest_b = sample_manifest("model-b");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        // Load both models
+        ensure_loaded(&state, "model-a", &manifest_a, &backend)
+            .await
+            .unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        ensure_loaded(&state, "model-b", &manifest_b, &backend)
+            .await
+            .unwrap();
+
+        // model-a is LRU
+        assert_eq!(state.lru_model(), Some("model-a".to_string()));
+
+        // Touch model-a via ensure_loaded (cache hit)
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        ensure_loaded(&state, "model-a", &manifest_a, &backend)
+            .await
+            .unwrap();
+
+        // Now model-b should be LRU
+        assert_eq!(state.lru_model(), Some("model-b".to_string()));
+    }
+
+    #[test]
+    fn test_format_bytes_gigabytes() {
+        assert_eq!(format_bytes(2_147_483_648), "2.0 GiB");
+        assert_eq!(format_bytes(1_073_741_824), "1.0 GiB");
+        assert_eq!(format_bytes(5_368_709_120), "5.0 GiB");
+    }
+
+    #[test]
+    fn test_format_bytes_megabytes() {
+        assert_eq!(format_bytes(1_048_576), "1 MiB");
+        assert_eq!(format_bytes(524_288_000), "500 MiB");
+    }
+
+    #[test]
+    fn test_format_bytes_bytes() {
+        assert_eq!(format_bytes(0), "0 B");
+        assert_eq!(format_bytes(1024), "1024 B");
+        assert_eq!(format_bytes(999_999), "999999 B");
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_with_keep_alive_marks_loaded() {
+        let state = test_state_with_mock(MockBackend::success());
+        let manifest = sample_manifest("ka-model");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded_with_keep_alive(
+            &state,
+            "ka-model",
+            &manifest,
+            &backend,
+            Some(Duration::from_secs(300)),
+        )
+        .await;
+        assert!(result.is_ok());
+        assert!(state.is_model_loaded("ka-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_with_keep_alive_zero_unloads_after_use() {
+        let state = test_state_with_mock(MockBackend::success());
+        let manifest = sample_manifest("zero-model");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded_with_keep_alive(
+            &state,
+            "zero-model",
+            &manifest,
+            &backend,
+            Some(Duration::ZERO),
+        )
+        .await;
+        assert!(result.is_ok());
+        // keep_alive=0 means unload AFTER inference, not before — model stays loaded here
+        assert!(state.is_model_loaded("zero-model"));
+        // The caller is responsible for unloading after inference
+        assert!(result.unwrap().unload_after_use);
+    }
+
+    #[tokio::test]
+    async fn test_unload_after_request_marks_unloaded_on_success() {
+        let state = test_state_with_mock(MockBackend::success());
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        state.mark_loaded("zero-model");
+        assert!(state.is_model_loaded("zero-model"));
+
+        unload_after_request(&state, "zero-model", &backend).await;
+        assert!(!state.is_model_loaded("zero-model"));
+    }
+
+    #[tokio::test]
+    async fn test_unload_after_request_keeps_state_loaded_on_failure() {
+        let state = test_state_with_mock(MockBackend::unload_fails());
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        state.mark_loaded("zero-model");
+        assert!(state.is_model_loaded("zero-model"));
+
+        unload_after_request(&state, "zero-model", &backend).await;
+        assert!(state.is_model_loaded("zero-model"));
+    }
+
+    #[tokio::test]
+    async fn test_cleanup_after_request_reports_success() {
+        let state = test_state_with_mock(MockBackend::success());
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+        let ctx = RequestContext::new(None);
+
+        assert!(cleanup_after_request("cleanup-model", &ctx, &backend).await);
+    }
+
+    #[tokio::test]
+    async fn test_cleanup_after_request_reports_failure() {
+        let state = test_state_with_mock(MockBackend::cleanup_fails());
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+        let ctx = RequestContext::new(None);
+
+        assert!(!cleanup_after_request("cleanup-model", &ctx, &backend).await);
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_cache_hit_returns_zero_duration() {
+        let state = test_state_with_mock(MockBackend::success());
+        let manifest = sample_manifest("cached");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        // First load
+        ensure_loaded(&state, "cached", &manifest, &backend)
+            .await
+            .unwrap();
+        assert!(state.is_model_loaded("cached"));
+
+        // Second call should be cache hit with zero duration
+        let result = ensure_loaded(&state, "cached", &manifest, &backend)
+            .await
+            .unwrap();
+        assert_eq!(result.load_duration, Duration::ZERO);
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_encrypted_model_no_key_source_fails() {
+        let state = test_state_with_mock(MockBackend::success());
+        // Create a manifest pointing to a .enc file but no key source configured
+        let mut manifest = sample_manifest("enc-model");
+        manifest.path = std::path::PathBuf::from("/tmp/fake-model.gguf.enc");
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded(&state, "enc-model", &manifest, &backend).await;
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(err.contains("model_key_source"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_in_memory_decrypt_fails_before_backend_load() {
+        let (_dir, manifest, key_source) = encrypted_test_artifact("mem-model");
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(key_source),
+            in_memory_decrypt: true,
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::load_fails()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded(&state, "mem-model", &manifest, &backend).await;
+
+        let err = result.unwrap_err().to_string();
+        assert!(err.contains("in_memory_decrypt=true"));
+        assert!(!err.contains("mock load failure"));
+        assert!(!state.is_model_loaded("mem-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_in_memory_decrypt_uses_memory_backend() {
+        let (_dir, manifest, key_source) = encrypted_test_artifact("mem-model");
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(key_source),
+            in_memory_decrypt: true,
+            ..Default::default()
+        });
+        let mock = MockBackend::success().with_memory_load();
+        let file_load_count = mock.load_count.clone();
+        let memory_load_count = mock.memory_load_count.clone();
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(mock));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+        let dec_path = manifest.path.with_extension("dec");
+
+        let result = ensure_loaded(&state, "mem-model", &manifest, &backend).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            file_load_count.load(std::sync::atomic::Ordering::Relaxed),
+            0
+        );
+        assert_eq!(
+            memory_load_count.load(std::sync::atomic::Ordering::Relaxed),
+            1
+        );
+        assert!(!dec_path.exists());
+        assert!(state.is_model_loaded("mem-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_streaming_decrypt_fails_before_backend_load() {
+        let (_dir, manifest, key_source) = encrypted_test_artifact("stream-model");
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(key_source),
+            streaming_decrypt: true,
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::load_fails()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded(&state, "stream-model", &manifest, &backend).await;
+
+        let err = result.unwrap_err().to_string();
+        assert!(err.contains("streaming_decrypt=true"));
+        assert!(!err.contains("mock load failure"));
+        assert!(!state.is_model_loaded("stream-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_streaming_decrypt_uses_streaming_backend() {
+        let (_dir, manifest, key_source) = encrypted_test_artifact("stream-model");
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(key_source),
+            streaming_decrypt: true,
+            ..Default::default()
+        });
+        let mock = MockBackend::success().with_streaming_load();
+        let file_load_count = mock.load_count.clone();
+        let memory_load_count = mock.memory_load_count.clone();
+        let streaming_load_count = mock.streaming_load_count.clone();
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(mock));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+        let dec_path = manifest.path.with_extension("dec");
+
+        let result = ensure_loaded(&state, "stream-model", &manifest, &backend).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            file_load_count.load(std::sync::atomic::Ordering::Relaxed),
+            0
+        );
+        assert_eq!(
+            memory_load_count.load(std::sync::atomic::Ordering::Relaxed),
+            0
+        );
+        assert_eq!(
+            streaming_load_count.load(std::sync::atomic::Ordering::Relaxed),
+            1
+        );
+        assert!(!dec_path.exists());
+        assert!(state.is_model_loaded("stream-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_encrypted_model_decrypts_and_loads() {
+        use crate::tee::encrypted_model::{encrypt_model_file, KeySource};
+
+        let dir = tempfile::tempdir().unwrap();
+
+        // Create a fake model file and encrypt it
+        let plain_path = dir.path().join("model.gguf");
+        std::fs::write(&plain_path, b"fake model weights").unwrap();
+        let mut key = [0u8; 32];
+        for (i, b) in key.iter_mut().enumerate() {
+            *b = i as u8;
+        }
+        let enc_path = encrypt_model_file(&plain_path, &key).unwrap();
+
+        // Write key file
+        let key_hex: String = key.iter().map(|b| format!("{b:02x}")).collect();
+        let key_path = dir.path().join("model.key");
+        std::fs::write(&key_path, &key_hex).unwrap();
+
+        // Create state with key source configured
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(KeySource::File(key_path)),
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::success()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+
+        let mut manifest = sample_manifest("enc-model");
+        manifest.path = enc_path;
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded(&state, "enc-model", &manifest, &backend).await;
+        assert!(result.is_ok());
+        assert!(state.is_model_loaded("enc-model"));
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_encrypted_model_integrity_uses_plaintext_hash() {
+        use crate::tee::encrypted_model::{encrypt_model_file, KeySource};
+
+        let dir = tempfile::tempdir().unwrap();
+        let plain_path = dir.path().join("model.gguf");
+        let plaintext = b"fake model weights";
+        std::fs::write(&plain_path, plaintext).unwrap();
+        let key = [0x42; 32];
+        let enc_path = encrypt_model_file(&plain_path, &key).unwrap();
+
+        let key_path = dir.path().join("model.key");
+        std::fs::write(&key_path, hex::encode(key)).unwrap();
+
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(KeySource::File(key_path)),
+            model_hashes: std::collections::HashMap::from([(
+                "enc-model".to_string(),
+                crate::model::storage::compute_sha256(plaintext),
+            )]),
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::success()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+
+        let mut manifest = sample_manifest("enc-model");
+        manifest.path = enc_path;
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        let result = ensure_loaded(&state, "enc-model", &manifest, &backend).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_ensure_loaded_encrypted_model_cleanup_on_unload() {
+        use crate::tee::encrypted_model::{encrypt_model_file, KeySource};
+
+        let dir = tempfile::tempdir().unwrap();
+
+        // Create and encrypt a fake model
+        let plain_path = dir.path().join("model.gguf");
+        std::fs::write(&plain_path, b"fake model weights for cleanup test").unwrap();
+        let mut key = [0u8; 32];
+        for (i, b) in key.iter_mut().enumerate() {
+            *b = i as u8;
+        }
+        let enc_path = encrypt_model_file(&plain_path, &key).unwrap();
+
+        let key_hex: String = key.iter().map(|b| format!("{b:02x}")).collect();
+        let key_path = dir.path().join("model.key");
+        std::fs::write(&key_path, &key_hex).unwrap();
+
+        let config = Arc::new(PowerConfig {
+            model_key_source: Some(KeySource::File(key_path)),
+            ..Default::default()
+        });
+        let mut backends = BackendRegistry::new();
+        backends.register(Arc::new(MockBackend::success()));
+        let state = AppState::new(Arc::new(ModelRegistry::new()), Arc::new(backends), config);
+
+        let mut manifest = sample_manifest("cleanup-model");
+        manifest.path = enc_path.clone();
+        let backend = state.backends.find_for_format(&ModelFormat::Gguf).unwrap();
+
+        ensure_loaded(&state, "cleanup-model", &manifest, &backend)
+            .await
+            .unwrap();
+
+        // The .dec file should exist while model is loaded
+        let dec_path = enc_path.with_extension("dec");
+        assert!(
+            dec_path.exists(),
+            "Decrypted file should exist while loaded"
+        );
+
+        // Unload triggers secure wipe
+        state.mark_unloaded("cleanup-model");
+        assert!(
+            !dec_path.exists(),
+            "Decrypted file should be wiped on unload"
+        );
+    }
+}

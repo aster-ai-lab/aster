@@ -1,0 +1,1000 @@
+use super::fault::FaultInjector;
+use super::test_support::{doc, schema};
+use super::{manifest, snapshot, wal, StorageHandle, WalOperation};
+use crate::config::{ConfigBuilder, Durability};
+use crate::doc::Doc;
+use crate::error::ErrorCode;
+use crate::schema::FieldSchema;
+use crate::types::DataType;
+use tempfile::tempdir;
+
+/// Rewrites a just-written version-5 segment as JSON frames at `version`.
+///
+/// The on-disk writer is `MessagePack`. Legacy replay is the JSON payload with
+/// an older header, not the same bytes with the version field edited.
+fn rewrite_segment_as_json(bytes: &[u8], version: u16) -> Vec<u8> {
+    let mut offset = 0usize;
+    let mut rewritten = Vec::with_capacity(bytes.len());
+    while offset < bytes.len() {
+        let len = usize::try_from(u32::from_le_bytes(
+            bytes[offset + 6..offset + 10]
+                .try_into()
+                .expect("WAL length is four bytes"),
+        ))
+        .expect("WAL length fits");
+        let payload_at = offset + 14;
+        let payload = &bytes[payload_at..payload_at + len];
+        let json = wal::legacy_json_from_frame(5, payload).expect("legacy WAL payload is JSON");
+        let crc = crc32fast::hash(&json);
+        rewritten.extend_from_slice(b"A3VW");
+        rewritten.extend_from_slice(&version.to_le_bytes());
+        let json_len = u32::try_from(json.len()).expect("JSON frame fits u32");
+        rewritten.extend_from_slice(&json_len.to_le_bytes());
+        rewritten.extend_from_slice(&crc.to_le_bytes());
+        rewritten.extend_from_slice(&json);
+        offset = payload_at + len;
+    }
+    rewritten
+}
+
+#[test]
+fn legacy_v3_snapshot_reopens_and_upgrades_on_checkpoint() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let schema = schema();
+    let stored_doc = doc("doc-1");
+    let storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let generation = storage.manifest.generation;
+    let checksum = snapshot::write_legacy(
+        &root,
+        &schema,
+        std::slice::from_ref(&stored_doc),
+        generation,
+        0,
+    )
+    .expect("legacy snapshot must be writable");
+    std::fs::remove_file(root.join(snapshot::binary_relative_path(generation)))
+        .expect("binary snapshot must be removable");
+    let mut legacy_manifest = storage.manifest.clone();
+    legacy_manifest.format_version = 3;
+    legacy_manifest.docs_checksum = checksum;
+    manifest::write_with_faults(&root, &legacy_manifest, true, &FaultInjector::default())
+        .expect("legacy manifest must be writable");
+    drop(storage);
+
+    let (mut recovered, recovered_schema, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("legacy snapshot must reopen");
+    assert_eq!(recovered.manifest.format_version, 3);
+    assert_eq!(recovered_schema, schema);
+    assert_eq!(docs.as_slice(), std::slice::from_ref(&stored_doc));
+    recovered
+        .checkpoint(&schema, &docs, 0, true)
+        .expect("checkpoint must upgrade the snapshot");
+    assert_eq!(recovered.manifest.format_version, manifest::FORMAT_VERSION);
+    assert!(root
+        .join(snapshot::binary_relative_path(
+            recovered.manifest.generation
+        ))
+        .exists());
+    assert!(!root
+        .join(snapshot::legacy_relative_path(generation))
+        .exists());
+    drop(recovered);
+
+    let (reopened, reopened_schema, reopened_docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("upgraded snapshot must reopen");
+    assert_eq!(reopened.manifest.format_version, manifest::FORMAT_VERSION);
+    assert_eq!(reopened_schema, schema);
+    assert_eq!(reopened_docs, [stored_doc]);
+}
+
+#[test]
+fn binary_snapshot_rejects_trailing_payload_with_a_matching_manifest_checksum() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let snapshot_path = root.join(snapshot::binary_relative_path(storage.manifest.generation));
+    drop(storage);
+
+    let mut bytes = std::fs::read(&snapshot_path).expect("snapshot must be readable");
+    bytes.push(0xc0);
+    std::fs::write(&snapshot_path, &bytes).expect("snapshot must be writable");
+    let mut persisted_manifest = manifest::read(&root).expect("manifest must be readable");
+    persisted_manifest.docs_checksum = manifest::checksum(&bytes);
+    manifest::write_with_faults(&root, &persisted_manifest, true, &FaultInjector::default())
+        .expect("manifest checksum must be writable");
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("trailing snapshot payload must fail closed");
+    assert!(error.message.contains("parse binary document snapshot"));
+}
+
+#[test]
+fn binary_snapshot_rejects_truncation_with_a_matching_manifest_checksum() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let snapshot_path = root.join(snapshot::binary_relative_path(storage.manifest.generation));
+    drop(storage);
+
+    let mut bytes = std::fs::read(&snapshot_path).expect("snapshot must be readable");
+    bytes.pop().expect("snapshot must not be empty");
+    std::fs::write(&snapshot_path, &bytes).expect("snapshot must be writable");
+    let mut persisted_manifest = manifest::read(&root).expect("manifest must be readable");
+    persisted_manifest.docs_checksum = manifest::checksum(&bytes);
+    manifest::write_with_faults(&root, &persisted_manifest, true, &FaultInjector::default())
+        .expect("manifest checksum must be writable");
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("truncated snapshot payload must fail closed");
+    assert!(error.message.contains("parse binary document snapshot"));
+}
+
+#[test]
+fn orphaned_snapshot_generation_does_not_replace_manifest_state() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let schema = schema();
+    let stored_doc = doc("doc-1");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![stored_doc.clone()],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("WAL append must commit");
+
+    snapshot::write(&root, &schema, &[stored_doc], 2, 1, true)
+        .expect("orphaned generation must be writable");
+    drop(storage);
+
+    let (recovered, recovered_schema, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("old manifest state must recover");
+    assert_eq!(recovered.manifest.generation, 1);
+    assert_eq!(recovered.manifest.revision, 1);
+    assert_eq!(recovered_schema, schema);
+    assert_eq!(docs.len(), 1);
+}
+
+#[test]
+fn partial_uncommitted_wal_tail_is_ignored_and_replaced_by_the_next_commit() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let schema = schema();
+    let storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let record = wal::WalRecord::new(
+        1,
+        WalOperation::Insert {
+            docs: vec![doc("uncommitted")],
+        },
+    )
+    .expect("test WAL record must be valid");
+    let frame_bytes = wal::append(&root, storage.manifest.wal_active_seq, 0, &record, true)
+        .expect("uncommitted WAL tail must be written");
+    let wal_path = wal::segment_path(&root, storage.manifest.wal_active_seq);
+    std::fs::OpenOptions::new()
+        .write(true)
+        .open(wal_path)
+        .expect("uncommitted WAL tail must be writable by the test")
+        .set_len(frame_bytes - 3)
+        .expect("test must leave a partial final frame");
+    drop(storage);
+
+    let (mut recovered, _, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("committed state must recover");
+    assert!(docs.is_empty());
+    assert_eq!(recovered.manifest.revision, 0);
+
+    recovered
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("committed")],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("next committed append must replace the tail");
+    drop(recovered);
+
+    let (recovered, _, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("new committed state must recover");
+    assert_eq!(recovered.manifest.revision, 1);
+    assert_eq!(docs.len(), 1);
+    assert_eq!(docs[0].get_pk(), Some("committed"));
+}
+
+#[test]
+fn schema_wal_record_recovers_schema_and_backfilled_documents() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let initial_schema = schema();
+    let mut next_schema = initial_schema.clone();
+    next_schema
+        .add_field(
+            &FieldSchema::new("category", DataType::String, false, 0)
+                .expect("test field schema must be valid"),
+        )
+        .expect("test schema change must be valid");
+    let mut stored_doc = doc("doc-1");
+    stored_doc
+        .add_string("category", "reference")
+        .expect("backfilled value must be valid");
+
+    let mut storage = StorageHandle::create(
+        &root,
+        &initial_schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Schema {
+                schema: next_schema.clone(),
+                docs: vec![stored_doc],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("schema WAL record must commit");
+    drop(storage);
+
+    let (recovered, recovered_schema, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("schema WAL must recover");
+    assert_eq!(recovered.manifest.revision, 1);
+    assert_eq!(recovered_schema, next_schema);
+    assert_eq!(docs.len(), 1);
+    assert_eq!(
+        docs[0]
+            .get_string("category")
+            .expect("recovered field type must match"),
+        Some("reference".to_string())
+    );
+}
+
+#[test]
+fn schema_only_wal_record_recovers_schema_without_replacing_documents() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let initial_schema = schema();
+    let mut next_schema = initial_schema.clone();
+    next_schema
+        .add_index(
+            "title",
+            &crate::schema::IndexParams::invert(false, false)
+                .expect("test index params must be valid"),
+        )
+        .expect("test index change must be valid");
+    let stored_doc = doc("doc-1");
+
+    let mut storage = StorageHandle::create(
+        &root,
+        &initial_schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![stored_doc.clone()],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("document WAL record must commit");
+    storage
+        .append(
+            2,
+            WalOperation::SchemaOnly {
+                schema: next_schema.clone(),
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("schema-only WAL record must commit");
+    drop(storage);
+
+    let (recovered, recovered_schema, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("schema-only WAL must recover");
+    assert_eq!(recovered.manifest.revision, 2);
+    assert_eq!(recovered_schema, next_schema);
+    assert_eq!(docs, [stored_doc]);
+}
+
+#[test]
+fn legacy_v3_wal_frames_replay_after_wal_format_upgrade() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let initial_schema = schema();
+    let mut next_schema = initial_schema.clone();
+    next_schema
+        .add_index(
+            "title",
+            &crate::schema::IndexParams::invert(false, false)
+                .expect("test index params must be valid"),
+        )
+        .expect("test index change must be valid");
+    let stored_doc = doc("doc-1");
+    let mut storage = StorageHandle::create(
+        &root,
+        &initial_schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![stored_doc.clone()],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("WAL append must commit");
+    storage
+        .append(
+            2,
+            WalOperation::Schema {
+                schema: next_schema.clone(),
+                docs: vec![stored_doc.clone()],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("legacy-compatible schema WAL append must commit");
+    let wal_path = wal::segment_path(&root, storage.manifest.wal_active_seq);
+    let bytes = std::fs::read(&wal_path).expect("WAL frame must be readable");
+    let legacy = rewrite_segment_as_json(&bytes, 3);
+    std::fs::write(&wal_path, &legacy).expect("legacy WAL frame must be writable");
+    storage.manifest.wal_bytes_since_checkpoint =
+        u64::try_from(legacy.len()).expect("legacy WAL fits u64");
+    manifest::write_with_faults(&root, &storage.manifest, true, &FaultInjector::default())
+        .expect("legacy manifest must record the JSON segment length");
+    drop(storage);
+
+    let (recovered, recovered_schema, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("version-3 WAL frames must remain readable");
+    assert_eq!(recovered.manifest.revision, 2);
+    assert_eq!(recovered_schema, next_schema);
+    assert_eq!(docs, [stored_doc]);
+}
+
+#[test]
+fn legacy_v3_wal_frame_rejects_schema_only_operations() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let mut next_schema = schema();
+    next_schema
+        .add_index(
+            "title",
+            &crate::schema::IndexParams::invert(false, false)
+                .expect("test index params must be valid"),
+        )
+        .expect("test index change must be valid");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::SchemaOnly {
+                schema: next_schema,
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("schema-only WAL append must commit");
+    let wal_path = wal::segment_path(&root, storage.manifest.wal_active_seq);
+    let bytes = std::fs::read(&wal_path).expect("WAL frame must be readable");
+    let legacy = rewrite_segment_as_json(&bytes, 3);
+    std::fs::write(&wal_path, &legacy).expect("legacy WAL frame must be writable");
+    storage.manifest.wal_bytes_since_checkpoint =
+        u64::try_from(legacy.len()).expect("legacy WAL fits u64");
+    manifest::write_with_faults(&root, &storage.manifest, true, &FaultInjector::default())
+        .expect("legacy manifest must record the JSON segment length");
+    drop(storage);
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("version-3 frames must not carry version-4 operations");
+    assert_eq!(error.code, crate::error::ErrorCode::NotSupported);
+    assert!(error
+        .message
+        .contains("schema-only WAL operations require frame version 4"));
+}
+
+#[test]
+fn committed_wal_checksum_corruption_is_rejected() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("doc-1")],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("WAL append must commit");
+    let wal_path = wal::segment_path(&root, storage.manifest.wal_active_seq);
+    drop(storage);
+
+    let mut bytes = std::fs::read(&wal_path).expect("committed WAL must be readable");
+    let last = bytes
+        .last_mut()
+        .expect("committed WAL frame must contain a payload");
+    *last ^= 0xff;
+    std::fs::write(&wal_path, bytes).expect("test must corrupt committed WAL payload");
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("checksum corruption inside committed WAL must fail recovery");
+    assert_eq!(error.code, ErrorCode::InternalError);
+    assert!(error.message.contains("WAL checksum mismatch"));
+}
+
+#[test]
+fn truncated_committed_wal_is_rejected() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("doc-1")],
+            },
+            &ConfigBuilder::default(),
+        )
+        .expect("WAL append must commit");
+    let committed_bytes = storage.manifest.wal_bytes_since_checkpoint;
+    let wal_path = wal::segment_path(&root, storage.manifest.wal_active_seq);
+    drop(storage);
+
+    std::fs::OpenOptions::new()
+        .write(true)
+        .open(&wal_path)
+        .expect("committed WAL must be writable by the test")
+        .set_len(committed_bytes - 1)
+        .expect("test must truncate committed WAL");
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("a physical WAL shorter than the manifest boundary must fail recovery");
+    assert_eq!(error.code, ErrorCode::InternalError);
+    assert!(error
+        .message
+        .contains("shorter than the committed boundary"));
+}
+
+#[test]
+fn oversized_snapshot_is_rejected_before_allocation() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let generation = storage.manifest.generation;
+    drop(storage);
+
+    let snapshot_path = root.join(snapshot::binary_relative_path(generation));
+    std::fs::OpenOptions::new()
+        .write(true)
+        .open(snapshot_path)
+        .expect("snapshot must be writable by the test")
+        .set_len(snapshot::MAX_SNAPSHOT_BYTES + 1)
+        .expect("test must create an oversized sparse snapshot");
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("oversized snapshots must be rejected before deserialization");
+    assert_eq!(error.code, ErrorCode::ResourceExhausted);
+    assert!(error.message.contains("recovery limit"));
+}
+
+#[test]
+fn interval_checkpoint_limits_are_consumed_by_storage() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let root = temporary.path().join("collection");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema(),
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("storage must be created");
+    let operation_limit = ConfigBuilder::default()
+        .durability(Durability::Interval)
+        .wal_max_ops(2);
+
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("doc-1")],
+            },
+            &operation_limit,
+        )
+        .expect("first WAL append must commit");
+    assert!(!storage.should_checkpoint(&operation_limit));
+    storage
+        .append(
+            2,
+            WalOperation::Insert {
+                docs: vec![doc("doc-2")],
+            },
+            &operation_limit,
+        )
+        .expect("second WAL append must commit");
+    assert!(storage.should_checkpoint(&operation_limit));
+
+    let byte_limit = ConfigBuilder::default()
+        .durability(Durability::Interval)
+        .wal_max_bytes(1);
+    assert!(storage.should_checkpoint(&byte_limit));
+}
+
+#[test]
+fn storage_handle_rejects_duplicate_create_missing_open_and_readonly_writes() {
+    let temporary = tempdir().expect("temp");
+    let root = temporary.path().join("collection");
+    let schema = schema();
+    let created = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    assert!(StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default()
+    )
+    .is_err());
+    drop(created);
+
+    let missing = temporary.path().join("missing");
+    assert!(StorageHandle::open(
+        &missing,
+        false,
+        crate::storage_ceilings::StorageCeilings::default()
+    )
+    .is_err());
+
+    let (exclusive, _, _docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("exclusive open");
+    exclusive
+        .write_index_cache(b"cache-bytes", false)
+        .expect("exclusive cache write");
+    exclusive
+        .write_diskann_file(b"diskann-bytes", false)
+        .expect("exclusive diskann write");
+    drop(exclusive);
+
+    let (readonly, _, _) = StorageHandle::open(
+        &root,
+        true,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("readonly open");
+    assert!(readonly
+        .write_index_cache(b"cache", false)
+        .expect_err("readonly cache")
+        .message
+        .contains("read-only"));
+    assert!(readonly
+        .write_diskann_file(b"diskann", false)
+        .expect_err("readonly diskann")
+        .message
+        .contains("read-only"));
+    drop(readonly);
+
+    let config = ConfigBuilder::new();
+    let (mut readonly_handle, schema_ro, readonly_docs) = StorageHandle::open(
+        &root,
+        true,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("ro");
+    assert!(readonly_handle
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("x")]
+            },
+            &config
+        )
+        .is_err());
+    assert!(readonly_handle
+        .checkpoint(&schema_ro, &readonly_docs, 0, false)
+        .is_err());
+    drop(readonly_handle);
+
+    let (mut exclusive, schema_ex, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("exclusive");
+    let next = exclusive.manifest.revision.saturating_add(2).max(2);
+    assert!(exclusive
+        .append(
+            next,
+            WalOperation::Insert {
+                docs: vec![doc("y")]
+            },
+            &config
+        )
+        .is_err());
+    if exclusive.manifest.revision > 0 {
+        assert!(exclusive
+            .checkpoint(&schema_ex, &docs, exclusive.manifest.revision - 1, false)
+            .is_err());
+    }
+}
+
+#[test]
+fn wal_replay_applies_upsert_update_delete_operations() {
+    let temporary = tempdir().expect("temp");
+    let root = temporary.path().join("wal-ops");
+    let schema = schema();
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    let config = ConfigBuilder::new();
+
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("a"), doc("b")],
+            },
+            &config,
+        )
+        .expect("insert");
+    storage
+        .append(
+            2,
+            WalOperation::Upsert {
+                docs: vec![doc("a"), doc("c")],
+            },
+            &config,
+        )
+        .expect("upsert");
+
+    let mut scored = doc("b");
+    scored.set_score(0.5).expect("score");
+    storage
+        .append(3, WalOperation::Update { docs: vec![scored] }, &config)
+        .expect("update");
+    storage
+        .append(
+            4,
+            WalOperation::Delete {
+                ids: vec!["c".into()],
+            },
+            &config,
+        )
+        .expect("delete");
+
+    // SchemaOnly with the same name keeps the collection openable.
+    storage
+        .append(
+            5,
+            WalOperation::SchemaOnly {
+                schema: schema.clone(),
+            },
+            &config,
+        )
+        .expect("schema only");
+
+    drop(storage);
+    let (_reopened, _, docs) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("reopen");
+    let ids: Vec<_> = docs.iter().filter_map(Doc::get_pk).collect();
+    assert!(ids.contains(&"a"));
+    assert!(ids.contains(&"b"));
+    assert!(!ids.contains(&"c"));
+    let b = docs.iter().find(|d| d.get_pk() == Some("b")).expect("b");
+    assert!((b.get_score() - 0.5).abs() < f32::EPSILON);
+}
+
+#[test]
+fn wal_replay_rejects_non_monotonic_revision_and_schema_name_mismatch() {
+    let temporary = tempdir().expect("temp");
+    let root = temporary.path().join("wal-bad");
+    let schema = schema();
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    let config = ConfigBuilder::new();
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("a")],
+            },
+            &config,
+        )
+        .expect("insert");
+    drop(storage);
+
+    // Corrupt the WAL frame revision by rewriting a second append with a gap
+    // through a fresh exclusive handle, then patching the manifest revision
+    // ahead of recoverable history.
+    let (mut storage, _, _) = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("open");
+    storage
+        .append(
+            2,
+            WalOperation::Insert {
+                docs: vec![doc("b")],
+            },
+            &config,
+        )
+        .expect("second insert");
+    let mut broken = storage.manifest.clone();
+    broken.revision = 9;
+    manifest::write_with_faults(&root, &broken, true, &FaultInjector::default())
+        .expect("write broken manifest");
+    drop(storage);
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("gap must fail closed");
+    assert!(
+        error.message.contains("not recoverable")
+            || error.message.contains("non-monotonic")
+            || error.message.contains("revision")
+    );
+}
+
+#[test]
+fn snapshot_checksum_and_generation_mismatches_fail_closed() {
+    let temporary = tempdir().expect("temp");
+    let root = temporary.path().join("snap-bad");
+    let schema = schema();
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("a")],
+            },
+            &ConfigBuilder::new(),
+        )
+        .expect("insert");
+    storage
+        .checkpoint(&schema, &[doc("a")], 1, true)
+        .expect("checkpoint");
+    let mut broken = storage.manifest.clone();
+    broken.docs_checksum ^= 0xffff_ffff;
+    manifest::write_with_faults(&root, &broken, true, &FaultInjector::default())
+        .expect("write broken checksum");
+    drop(storage);
+
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("checksum");
+    assert!(
+        error.message.contains("checksum mismatch") || error.message.contains("checksum"),
+        "{}",
+        error.message
+    );
+
+    // Restore a valid collection then corrupt generation identity.
+    let temporary = tempdir().expect("temp2");
+    let root = temporary.path().join("snap-gen");
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("b")],
+            },
+            &ConfigBuilder::new(),
+        )
+        .expect("insert");
+    storage
+        .checkpoint(&schema, &[doc("b")], 1, true)
+        .expect("checkpoint");
+    let mut broken = storage.manifest.clone();
+    broken.generation = broken.generation.saturating_add(9);
+    manifest::write_with_faults(&root, &broken, true, &FaultInjector::default())
+        .expect("write broken generation");
+    drop(storage);
+    let error = StorageHandle::open(
+        &root,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect_err("generation");
+    assert!(
+        error.message.contains("generation") || error.message.contains("snapshot"),
+        "{}",
+        error.message
+    );
+}
+
+#[test]
+fn checkpoint_rejects_read_only_and_regressive_revision() {
+    let temporary = tempdir().expect("temp");
+    let root = temporary.path().join("ckpt");
+    let schema = schema();
+    let mut storage = StorageHandle::create(
+        &root,
+        &schema,
+        false,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("create");
+    storage
+        .append(
+            1,
+            WalOperation::Insert {
+                docs: vec![doc("a")],
+            },
+            &ConfigBuilder::new(),
+        )
+        .expect("insert");
+    let error = storage
+        .checkpoint(&schema, &[doc("a")], 0, true)
+        .expect_err("regressive");
+    assert!(error.message.contains("precedes") || error.message.contains("revision"));
+    drop(storage);
+
+    let (mut readonly, _, _) = StorageHandle::open(
+        &root,
+        true,
+        crate::storage_ceilings::StorageCeilings::default(),
+    )
+    .expect("ro");
+    let error = readonly
+        .checkpoint(&schema, &[doc("a")], 1, true)
+        .expect_err("readonly");
+    assert_eq!(error.code, crate::error::ErrorCode::PermissionDenied);
+}

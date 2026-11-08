@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aster Office"
+  short_description: "Operate five Office editors and safely automate files"
+  default_prompt: "Use $aster-office to inspect, edit, and test this Office surface with native CLI and local UI evidence."

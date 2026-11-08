@@ -1,0 +1,261 @@
+use chrono::{DateTime, Utc};
+
+use crate::error::{FlowError, Result};
+use crate::model::{FlowEvent, ScheduledWakeup, ScheduledWakeupKind, WaitStatus};
+use crate::store::scheduled_wakeups_for_snapshot;
+
+use super::{
+    validation::is_event_conflict, FlowEngine, ScheduledRunOutcome, WaitResolutionOutcome,
+};
+
+impl FlowEngine {
+    /// Resume a wait once its timer has fired.
+    ///
+    /// Redelivery is idempotent after the existing wait has completed or its
+    /// run has become terminal. A resolved wait still drives recovery through
+    /// any committed continue-as-new boundary, but no second `wait_completed`
+    /// event is appended. Completion forces workflow replay so another open
+    /// timer, hook, or signal wait cannot hide the fired timer.
+    pub async fn resume_wait(&self, run_id: &str, wait_id: &str) -> Result<()> {
+        self.resume_wait_if_open(run_id, wait_id).await?;
+        Ok(())
+    }
+
+    /// Resume `wait_id` and report the driven leaf plus completion ownership.
+    pub(crate) async fn resume_wait_if_open(
+        &self,
+        run_id: &str,
+        wait_id: &str,
+    ) -> Result<WaitResolutionOutcome> {
+        self.resume_wait_if_open_at(run_id, wait_id, Utc::now())
+            .await
+    }
+
+    async fn resume_wait_if_open_at(
+        &self,
+        run_id: &str,
+        wait_id: &str,
+        now: DateTime<Utc>,
+    ) -> Result<WaitResolutionOutcome> {
+        let mut resumed = false;
+        for _ in 0..self.max_replay_iterations {
+            let snapshot = self.snapshot(run_id).await?;
+            let Some(wait) = snapshot.waits.get(wait_id) else {
+                if snapshot.status.is_terminal() {
+                    return Err(FlowError::RunTerminal(run_id.to_string()));
+                }
+                return Err(FlowError::InvalidTransition(format!(
+                    "wait {wait_id} does not exist for run {run_id}"
+                )));
+            };
+            if snapshot.status.is_terminal() {
+                match self
+                    .recover_and_drive_continuation_leaf_at(run_id, now)
+                    .await
+                {
+                    Ok(snapshot) => return Ok(wait_resolution(run_id, wait_id, snapshot, resumed)),
+                    Err(error) if is_event_conflict(&error) => continue,
+                    Err(error) => return Err(error),
+                }
+            }
+
+            match wait.status {
+                WaitStatus::Waiting => {
+                    if wait.resume_at > now {
+                        return Err(FlowError::InvalidTransition(format!(
+                            "wait {wait_id} for run {run_id} is not due until {}",
+                            wait.resume_at.to_rfc3339()
+                        )));
+                    }
+                    self.ensure_runtime_build_available(run_id, &snapshot.spec)?;
+                    match self
+                        .record_event_at(
+                            run_id,
+                            snapshot.last_sequence,
+                            FlowEvent::WaitCompleted {
+                                wait_id: wait_id.to_string(),
+                            },
+                        )
+                        .await
+                    {
+                        Ok(_) => resumed = true,
+                        Err(error) if is_event_conflict(&error) => continue,
+                        Err(error) => return Err(error),
+                    }
+                }
+                WaitStatus::Completed | WaitStatus::Cancelled => {
+                    self.ensure_runtime_build_available(run_id, &snapshot.spec)?;
+                }
+            }
+
+            match self.drive_forcing_workflow_replay_at(run_id, now).await {
+                Ok(snapshot) => return Ok(wait_resolution(run_id, wait_id, snapshot, resumed)),
+                Err(error) if is_event_conflict(&error) => continue,
+                Err(error) => return Err(error),
+            }
+        }
+
+        Err(FlowError::ReplayLimitExceeded(self.max_replay_iterations))
+    }
+
+    /// List active waits whose `resume_at` is at or before `now`.
+    ///
+    /// Scheduler integrations can use this to inspect due timers before
+    /// deciding how aggressively to drive them.
+    pub async fn list_due_waits(&self, now: DateTime<Utc>) -> Result<Vec<(String, String)>> {
+        let mut due = self
+            .list_due_wakeups(now)
+            .await?
+            .into_iter()
+            .filter(|wakeup| wakeup.kind == ScheduledWakeupKind::Wait)
+            .map(|wakeup| (wakeup.run_id, wakeup.subject_id))
+            .collect::<Vec<_>>();
+        due.sort();
+        Ok(due)
+    }
+
+    /// Complete every due wait and drive the affected workflows.
+    ///
+    /// Returns only the `(run_id, wait_id)` pairs completed by this call. A
+    /// wait completed or cancelled by another caller after the due scan is
+    /// safely skipped.
+    pub async fn resume_due_waits(&self, now: DateTime<Utc>) -> Result<Vec<(String, String)>> {
+        let due = self.list_due_waits(now).await?;
+        let mut resumed = Vec::with_capacity(due.len());
+        for (run_id, wait_id) in due {
+            let resolution = self.resume_wait_if_open_at(&run_id, &wait_id, now).await?;
+            if resolution.committed {
+                resumed.push((resolution.wait_run_id, resolution.wait_id));
+            }
+        }
+        Ok(resumed)
+    }
+
+    /// List pending step or activity retries whose `retry_after` is at or before `now`.
+    pub async fn list_due_retries(&self, now: DateTime<Utc>) -> Result<Vec<(String, String)>> {
+        let mut due = self
+            .list_due_wakeups(now)
+            .await?
+            .into_iter()
+            .filter(|wakeup| wakeup.kind.is_retry())
+            .map(|wakeup| (wakeup.run_id, wakeup.subject_id))
+            .collect::<Vec<_>>();
+        due.sort();
+        Ok(due)
+    }
+
+    /// List all due wait timers and delayed retries through the store boundary.
+    pub async fn list_due_wakeups(&self, now: DateTime<Utc>) -> Result<Vec<ScheduledWakeup>> {
+        let mut wakeups = self.store.list_due_wakeups(now).await?;
+        wakeups.sort_by(|left, right| {
+            (left.kind, left.run_id.as_str(), left.subject_id.as_str()).cmp(&(
+                right.kind,
+                right.run_id.as_str(),
+                right.subject_id.as_str(),
+            ))
+        });
+        Ok(wakeups)
+    }
+
+    /// Drive every run with a due step or activity retry.
+    pub async fn resume_due_retries(&self, now: DateTime<Utc>) -> Result<Vec<(String, String)>> {
+        let due = self.list_due_retries(now).await?;
+        let mut run_ids = Vec::new();
+        for (run_id, _) in &due {
+            if !run_ids.contains(run_id) {
+                run_ids.push(run_id.clone());
+            }
+        }
+        for run_id in run_ids {
+            self.drive_at(&run_id, now).await?;
+        }
+        Ok(due)
+    }
+
+    /// Resume the due waits and delayed retries for one targeted run.
+    ///
+    /// Unlike the compatibility-wide `resume_due_*` methods, this path loads
+    /// only `run_id` and never performs another global due-wakeup query. The
+    /// returned records describe the wakeups that were still due when the task
+    /// began handling.
+    pub async fn resume_scheduled_run(
+        &self,
+        run_id: &str,
+        now: DateTime<Utc>,
+    ) -> Result<Vec<ScheduledWakeup>> {
+        let outcome = self
+            .resume_scheduled_run_with_committed_waits(run_id, now)
+            .await?;
+        Ok(outcome.due)
+    }
+
+    /// Resume one scheduled run and report wait completions committed here.
+    ///
+    /// The due set is taken from [`Self::snapshot`], so a not-yet-due run does
+    /// not load its log with unbounded `list`. Driving a due wait or retry
+    /// still replays authoritative history.
+    pub(crate) async fn resume_scheduled_run_with_committed_waits(
+        &self,
+        run_id: &str,
+        now: DateTime<Utc>,
+    ) -> Result<ScheduledRunOutcome> {
+        let snapshot = self.snapshot(run_id).await?;
+        if snapshot.status.is_terminal() {
+            let snapshot = self
+                .recover_and_drive_continuation_leaf_at(run_id, now)
+                .await?;
+            return Ok(ScheduledRunOutcome {
+                snapshot,
+                due: Vec::new(),
+                resumed_waits: Vec::new(),
+            });
+        }
+        self.ensure_runtime_build_available(run_id, &snapshot.spec)?;
+        let due = scheduled_wakeups_for_snapshot(&snapshot)
+            .into_iter()
+            .filter(|wakeup| wakeup.scheduled_at <= now)
+            .collect::<Vec<_>>();
+
+        let due_wait_ids = due
+            .iter()
+            .filter(|wakeup| wakeup.kind == ScheduledWakeupKind::Wait)
+            .map(|wakeup| wakeup.subject_id.clone())
+            .collect::<Vec<_>>();
+        let has_due_retries = due.iter().any(|wakeup| wakeup.kind.is_retry());
+
+        let mut resumed_waits = Vec::with_capacity(due_wait_ids.len());
+        let mut driven_snapshot = snapshot;
+        for wait_id in due_wait_ids {
+            let resolution = self.resume_wait_if_open_at(run_id, &wait_id, now).await?;
+            driven_snapshot = resolution.snapshot;
+            if resolution.committed {
+                resumed_waits.push((resolution.wait_run_id, resolution.wait_id));
+            }
+        }
+        if has_due_retries {
+            driven_snapshot = self
+                .recover_and_drive_continuation_leaf_at(run_id, now)
+                .await?;
+        }
+
+        Ok(ScheduledRunOutcome {
+            snapshot: driven_snapshot,
+            due,
+            resumed_waits,
+        })
+    }
+}
+
+fn wait_resolution(
+    run_id: &str,
+    wait_id: &str,
+    snapshot: crate::WorkflowRunSnapshot,
+    committed: bool,
+) -> WaitResolutionOutcome {
+    WaitResolutionOutcome {
+        wait_run_id: run_id.to_string(),
+        wait_id: wait_id.to_string(),
+        snapshot,
+        committed,
+    }
+}

@@ -1,0 +1,651 @@
+#![cfg(feature = "postgres")]
+
+use std::time::Duration;
+
+use aster_orm::{
+    bound, cast, coalesce, count_all, insert_into, least, lock_table, min, orm_table, row_number,
+    scalar_subquery, select_from, select_from_as, sql_function, update_table, Database, Executor,
+    FromRow, InsertRow, Migration, MigrationError, Migrator, OrderDirection, PostgresDialect,
+    PostgresError, PostgresExecutor, PostgresTableLockMode, Query, SelectionExt, SqlArray,
+    Transaction, TransactionManager,
+};
+
+orm_table! {
+    struct Metric => "aster_orm_metric" {
+        id: i64 => "id",
+        small_value: i16 => "small_value",
+        count: i32 => "count",
+        enabled: bool => "enabled",
+        ratio: f32 => "ratio",
+        score: f64 => "score",
+        label: String => "label",
+        payload: Vec<u8> => "payload",
+        note: Option<String> => "note",
+    }
+}
+
+struct JsonPath;
+
+orm_table! {
+    struct UpsertRecord => "aster_orm_upsert_record" {
+        id: i64 => "id",
+        value: String => "value",
+    }
+}
+
+orm_table! {
+    struct LockProbe => "aster_orm_lock_probe" {
+        id: i64 => "id",
+        value: String => "value",
+        attempt_count: i32 => "attempt_count",
+    }
+}
+
+orm_table! {
+    struct LockCandidate => "aster_orm_lock_candidate" {
+        id: i64 => "id",
+    }
+}
+
+orm_table! {
+    struct ExtendedValue => "aster_orm_extended_value" {
+        id: uuid::Uuid => "id",
+        metadata: serde_json::Value => "metadata",
+        event_date: chrono::NaiveDate => "event_date",
+        event_time: chrono::NaiveTime => "event_time",
+        created_at: chrono::NaiveDateTime => "created_at",
+        observed_at: chrono::DateTime<chrono::Utc> => "observed_at",
+        amount: rust_decimal::Decimal => "amount",
+        tags: SqlArray<String> => "tags",
+        scores: SqlArray<Option<i32>> => "scores",
+    }
+}
+
+fn insert_metric(id: i64, label: &str) -> aster_orm::CompiledQuery {
+    insert_into::<Metric>()
+        .value(Metric::id(), id)
+        .value(Metric::small_value(), 12)
+        .value(Metric::count(), 34)
+        .value(Metric::enabled(), true)
+        .value(Metric::ratio(), 1.5)
+        .value(Metric::score(), 2.5)
+        .value(Metric::label(), label)
+        .value(Metric::payload(), vec![1, 2, 3])
+        .value(Metric::note(), None::<String>)
+        .compile(&PostgresDialect)
+        .unwrap()
+}
+
+orm_table! {
+    struct NarrowMetric => "aster_orm_metric" {
+        small_value: i64 => "small_value",
+    }
+}
+
+orm_table! {
+    struct MetricAlias => "metric_alias" {
+        id: i64 => "id",
+    }
+}
+
+orm_table! {
+    struct SelectedMetric => "selected_metric" {
+        id: i64 => "id",
+        label: String => "label",
+    }
+}
+
+#[tokio::test]
+async fn executes_typed_queries_against_postgres_pool() {
+    let Some(url) = std::env::var("ASTER_ORM_POSTGRES_URL").ok() else {
+        return;
+    };
+    let executor = PostgresExecutor::connect_no_tls(&url, 4).unwrap();
+    let client = executor.pool().get().await.unwrap();
+    client
+        .batch_execute(
+            "drop table if exists aster_orm_metric;
+             drop table if exists aster_orm_extended_value;
+             drop table if exists aster_orm_upsert_record;
+             drop table if exists aster_orm_migration_probe;
+             drop table if exists aster_orm_rollback_probe;
+             drop table if exists aster_orm_migrations;
+             create table aster_orm_metric (
+                id bigint primary key,
+                small_value smallint not null,
+                count integer not null,
+                enabled boolean not null,
+                ratio real not null,
+                score double precision not null,
+                label text not null,
+                payload bytea not null,
+                note text
+             );
+             create table aster_orm_extended_value (
+                id uuid primary key,
+                metadata jsonb not null,
+                event_date date not null,
+                event_time time not null,
+                created_at timestamp not null,
+                observed_at timestamptz not null,
+                amount numeric not null,
+                tags text[] not null,
+                scores integer[] not null
+             );
+             create table aster_orm_upsert_record (
+                id bigint primary key,
+                value text not null
+             )",
+        )
+        .await
+        .unwrap();
+    drop(client);
+
+    let migration_set = || {
+        vec![
+            Migration::new(
+                "001",
+                "create migration probe",
+                "create table aster_orm_migration_probe (id bigint primary key)",
+            ),
+            Migration::new(
+                "002",
+                "seed migration probe",
+                "insert into aster_orm_migration_probe (id) values (1)",
+            ),
+        ]
+    };
+    let left = Migrator::new(executor.clone());
+    let right = Migrator::new(executor.clone());
+    let (left, right) = tokio::join!(left.run(migration_set()), right.run(migration_set()));
+    assert_eq!(
+        left.unwrap().applied.len() + right.unwrap().applied.len(),
+        2
+    );
+
+    let drift = Migrator::new(executor.clone())
+        .run([
+            Migration::new("001", "changed", "select 1"),
+            migration_set().remove(1),
+        ])
+        .await
+        .unwrap_err();
+    assert!(matches!(
+        drift,
+        aster_orm::migration::MigrationRunError::Backend(
+            aster_orm::PostgresMigrationError::Migration(MigrationError::ChecksumMismatch { .. })
+        )
+    ));
+
+    let failed = Migrator::new(executor.clone())
+        .run([
+            migration_set().remove(0),
+            migration_set().remove(1),
+            Migration::new(
+                "003",
+                "broken migration",
+                "create table aster_orm_rollback_probe (id bigint); invalid sql",
+            ),
+        ])
+        .await;
+    let failed = failed.unwrap_err();
+    assert!(failed.to_string().contains("003"));
+    let client = executor.pool().get().await.unwrap();
+    let table: Option<String> = client
+        .query_one(
+            "select to_regclass('public.aster_orm_rollback_probe')::text",
+            &[],
+        )
+        .await
+        .unwrap()
+        .get(0);
+    assert!(table.is_none());
+    drop(client);
+
+    let database = Database::new(PostgresDialect, executor);
+    database
+        .execute(
+            insert_into::<Metric>()
+                .value(Metric::id(), 1)
+                .value(Metric::small_value(), 12)
+                .value(Metric::count(), 34)
+                .value(Metric::enabled(), true)
+                .value(Metric::ratio(), 1.5)
+                .value(Metric::score(), 2.5)
+                .value(Metric::label(), "production")
+                .value(Metric::payload(), vec![1, 2, 3])
+                .value(Metric::note(), None::<String>),
+        )
+        .await
+        .unwrap();
+
+    let rows = database
+        .fetch_all_as(select_from::<Metric>().select((
+            Metric::id(),
+            Metric::small_value(),
+            Metric::count(),
+            Metric::enabled(),
+            Metric::label(),
+            Metric::note(),
+        )))
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(
+        rows,
+        vec![(1_i64, 12_i16, 34_i32, true, "production".to_owned(), None)]
+    );
+
+    let selected = select_from::<Metric>()
+        .select((Metric::id(), Metric::label()))
+        .filter(Metric::count().gte(30))
+        .as_cte::<SelectedMetric>();
+    let eligible = select_from::<Metric>()
+        .select(Metric::id())
+        .filter(Metric::small_value().gt(10));
+    let rows = database
+        .fetch_all_as(
+            select_from::<SelectedMetric>()
+                .with(selected)
+                .select(SelectedMetric::label())
+                .filter(SelectedMetric::id().in_subquery(eligible)),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(rows, vec!["production".to_owned()]);
+
+    let total = database
+        .fetch_all_as(select_from::<Metric>().select(count_all().alias("metric_count")))
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(total, vec![1_i64]);
+
+    let minimum_metric = scalar_subquery(
+        select_from_as::<Metric, MetricAlias>()
+            .select(min(MetricAlias::id()))
+            .filter(MetricAlias::id().gte(1)),
+    );
+    let composed = database
+        .fetch_all_as(
+            select_from::<Metric>()
+                .select(Metric::id())
+                .inner_join_as::<Metric, MetricAlias>(Metric::id().eq_column(MetricAlias::id()))
+                .filter(Metric::id().lte_column(MetricAlias::id()))
+                .order_by_expression(
+                    least::<i64>([
+                        coalesce::<i64>([minimum_metric.expression(), Metric::id().expression()])
+                            .expression(),
+                        Metric::id().expression(),
+                    ]),
+                    OrderDirection::Asc,
+                ),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(composed, vec![1_i64]);
+
+    let extended_id = uuid::Uuid::parse_str("018f3f56-8d4a-7c2a-9f13-5ab3d245d701").unwrap();
+    let metadata = serde_json::json!({"kind": "production", "attempt": 2});
+    let event_date = chrono::NaiveDate::from_ymd_opt(2026, 7, 12).unwrap();
+    let event_time = chrono::NaiveTime::from_hms_opt(14, 30, 45).unwrap();
+    let created_at = event_date.and_time(event_time);
+    let observed_at = created_at.and_utc();
+    let amount = rust_decimal::Decimal::new(123456, 3);
+    database
+        .execute(
+            insert_into::<ExtendedValue>()
+                .value(ExtendedValue::id(), extended_id)
+                .value(ExtendedValue::metadata(), metadata.clone())
+                .value(ExtendedValue::event_date(), event_date)
+                .value(ExtendedValue::event_time(), event_time)
+                .value(ExtendedValue::created_at(), created_at)
+                .value(ExtendedValue::observed_at(), observed_at)
+                .value(ExtendedValue::amount(), amount)
+                .value(
+                    ExtendedValue::tags(),
+                    SqlArray::from(vec!["rust".to_owned(), "postgres".to_owned()]),
+                )
+                .value(
+                    ExtendedValue::scores(),
+                    SqlArray::from(vec![Some(10), None, Some(30)]),
+                ),
+        )
+        .await
+        .unwrap();
+    let scalar_values = database
+        .fetch_all_as(select_from::<ExtendedValue>().select((
+            ExtendedValue::id(),
+            ExtendedValue::metadata(),
+            ExtendedValue::event_date(),
+            ExtendedValue::event_time(),
+            ExtendedValue::created_at(),
+            ExtendedValue::observed_at(),
+            ExtendedValue::amount(),
+        )))
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(
+        scalar_values,
+        vec![(
+            extended_id,
+            metadata,
+            event_date,
+            event_time,
+            created_at,
+            observed_at,
+            amount,
+        )]
+    );
+    let json_matches = database
+        .fetch_all_as(
+            select_from::<ExtendedValue>()
+                .select(ExtendedValue::id())
+                .filter(
+                    sql_function::<bool>(
+                        "jsonb_path_exists",
+                        [
+                            ExtendedValue::metadata().expression(),
+                            cast::<String, JsonPath>(
+                                cast::<String, String>(
+                                    bound::<String>("$ ? (@.attempt < 3)"),
+                                    "text",
+                                ),
+                                "jsonpath",
+                            )
+                            .expression(),
+                        ],
+                    )
+                    .eq(true),
+                ),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(json_matches, vec![extended_id]);
+    let array_values = database
+        .fetch_all_as(
+            select_from::<ExtendedValue>().select((ExtendedValue::tags(), ExtendedValue::scores())),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(
+        array_values,
+        vec![(
+            SqlArray::from(vec!["rust".to_owned(), "postgres".to_owned()]),
+            SqlArray::from(vec![Some(10), None, Some(30)]),
+        )]
+    );
+
+    database
+        .execute(
+            insert_into::<UpsertRecord>().rows([
+                InsertRow::new()
+                    .value(UpsertRecord::id(), 1)
+                    .value(UpsertRecord::value(), "first"),
+                InsertRow::new()
+                    .value(UpsertRecord::id(), 2)
+                    .value(UpsertRecord::value(), "second"),
+            ]),
+        )
+        .await
+        .unwrap();
+    database
+        .execute(
+            insert_into::<UpsertRecord>()
+                .rows([
+                    InsertRow::new()
+                        .value(UpsertRecord::id(), 2)
+                        .value(UpsertRecord::value(), "updated"),
+                    InsertRow::new()
+                        .value(UpsertRecord::id(), 3)
+                        .value(UpsertRecord::value(), "third"),
+                ])
+                .on_conflict(UpsertRecord::id())
+                .do_update_from_excluded(UpsertRecord::value()),
+        )
+        .await
+        .unwrap();
+    let upserted = database
+        .fetch_all_as(
+            select_from::<UpsertRecord>()
+                .select((UpsertRecord::id(), UpsertRecord::value()))
+                .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(
+        upserted,
+        vec![
+            (1, "first".to_owned()),
+            (2, "updated".to_owned()),
+            (3, "third".to_owned()),
+        ]
+    );
+
+    let task_executor = database.executor().clone();
+    let (inserted_tx, inserted_rx) = tokio::sync::oneshot::channel();
+    let task = tokio::spawn(async move {
+        task_executor
+            .transaction(|transaction| {
+                Box::pin(async move {
+                    let query = insert_into::<UpsertRecord>()
+                        .value(UpsertRecord::id(), 4)
+                        .value(UpsertRecord::value(), "cancelled")
+                        .compile(&PostgresDialect)
+                        .unwrap();
+                    transaction.execute(&query).await.unwrap();
+                    inserted_tx.send(()).unwrap();
+                    std::future::pending::<Result<(), std::io::Error>>().await
+                })
+            })
+            .await
+    });
+    inserted_rx.await.unwrap();
+    task.abort();
+    assert!(task.await.unwrap_err().is_cancelled());
+    let cancelled = tokio::time::timeout(
+        Duration::from_secs(1),
+        database.fetch_optional_as(
+            select_from::<UpsertRecord>()
+                .select(UpsertRecord::id())
+                .filter(UpsertRecord::id().eq(4)),
+        ),
+    )
+    .await
+    .expect("pool connection remained unavailable after transaction cancellation")
+    .unwrap();
+    assert_eq!(cancelled, None);
+
+    let ranked = database
+        .fetch_all_as(
+            select_from::<UpsertRecord>()
+                .select((
+                    UpsertRecord::value(),
+                    row_number()
+                        .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc)
+                        .alias("position"),
+                ))
+                .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc),
+        )
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(
+        ranked,
+        vec![
+            ("first".to_owned(), 1_i64),
+            ("updated".to_owned(), 2_i64),
+            ("third".to_owned(), 3_i64),
+        ]
+    );
+
+    let mut combined = database
+        .fetch_all_as(
+            select_from::<Metric>()
+                .select(Metric::label())
+                .union(select_from::<UpsertRecord>().select(UpsertRecord::value())),
+        )
+        .await
+        .unwrap()
+        .rows;
+    combined.sort();
+    assert_eq!(
+        combined,
+        vec![
+            "first".to_owned(),
+            "production".to_owned(),
+            "third".to_owned(),
+            "updated".to_owned(),
+        ]
+    );
+
+    let error = database
+        .execute(insert_into::<NarrowMetric>().value(NarrowMetric::small_value(), i64::MAX))
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("smallint"));
+
+    let executor = database.executor();
+    executor
+        .transaction(|transaction| {
+            Box::pin(async move {
+                transaction
+                    .execute(&insert_metric(2, "committed"))
+                    .await
+                    .unwrap();
+                Ok::<_, std::io::Error>(())
+            })
+        })
+        .await
+        .unwrap();
+    let error = executor
+        .transaction(|transaction| {
+            Box::pin(async move {
+                transaction
+                    .execute(&insert_metric(3, "rolled back"))
+                    .await
+                    .unwrap();
+                Err::<(), _>(std::io::Error::other("reject transaction"))
+            })
+        })
+        .await
+        .unwrap_err();
+    assert!(error.to_string().contains("reject transaction"));
+
+    let rows = database
+        .fetch_all_as(select_from::<Metric>().select(Metric::id()))
+        .await
+        .unwrap()
+        .rows;
+    assert_eq!(rows, vec![1, 2]);
+}
+
+#[tokio::test]
+async fn postgres_row_and_advisory_locks_preserve_concurrency() {
+    let Some(url) = std::env::var("ASTER_ORM_POSTGRES_URL").ok() else {
+        return;
+    };
+    let executor = PostgresExecutor::connect_no_tls(&url, 4).unwrap();
+    let client = executor.pool().get().await.unwrap();
+    client
+        .batch_execute(
+            "drop table if exists aster_orm_lock_probe;
+             create table aster_orm_lock_probe (
+                id bigint primary key,
+                value text not null,
+                attempt_count integer not null
+             );
+             insert into aster_orm_lock_probe (id, value, attempt_count)
+             values (1, 'first', 0), (2, 'second', 0)",
+        )
+        .await
+        .unwrap();
+    drop(client);
+
+    let first = executor.begin().await.unwrap();
+    let first_lock = select_from::<LockProbe>()
+        .select(LockProbe::id())
+        .filter(LockProbe::id().eq(1))
+        .for_update()
+        .compile(&PostgresDialect)
+        .unwrap();
+    let first_rows = first.fetch_all(&first_lock).await.unwrap().rows;
+    assert_eq!(i64::from_row(&first_rows[0]).unwrap(), 1);
+
+    let second = executor.begin().await.unwrap();
+    let next_lock = select_from::<LockProbe>()
+        .select(LockProbe::id())
+        .order_by(LockProbe::id(), aster_orm::OrderDirection::Asc)
+        .limit(1)
+        .for_update_of::<LockProbe>()
+        .skip_locked()
+        .as_cte::<LockCandidate>();
+    let claim = update_table::<LockProbe>()
+        .with(next_lock)
+        .set(LockProbe::value(), "claimed")
+        .set_expression(LockProbe::attempt_count(), LockProbe::attempt_count() + 1)
+        .from::<LockCandidate>()
+        .filter(LockProbe::id().eq_column(LockCandidate::id()))
+        .returning((LockProbe::id(), LockProbe::attempt_count()))
+        .compile(&PostgresDialect)
+        .unwrap();
+    let claimed_rows = second.fetch_all(&claim).await.unwrap().rows;
+    assert_eq!(<(i64, i32)>::from_row(&claimed_rows[0]).unwrap(), (2, 1));
+    second.commit().await.unwrap();
+    first.commit().await.unwrap();
+
+    let table_owner = executor.begin().await.unwrap();
+    let table_lock = lock_table::<LockProbe>(PostgresTableLockMode::ShareRowExclusive)
+        .compile(&PostgresDialect)
+        .unwrap();
+    table_owner.execute(&table_lock).await.unwrap();
+    let shared_row_lock = select_from::<LockProbe>()
+        .select(LockProbe::id())
+        .filter(LockProbe::id().eq(1))
+        .for_share()
+        .compile(&PostgresDialect)
+        .unwrap();
+    assert_eq!(
+        i64::from_row(&table_owner.fetch_all(&shared_row_lock).await.unwrap().rows[0]).unwrap(),
+        1
+    );
+    table_owner.commit().await.unwrap();
+
+    let owner = executor.begin().await.unwrap();
+    owner
+        .advisory_xact_lock("aster.orm.integration", "same-key")
+        .await
+        .unwrap();
+    let contender = executor.clone();
+    let (acquired_tx, mut acquired_rx) = tokio::sync::oneshot::channel();
+    let task = tokio::spawn(async move {
+        contender
+            .transaction(|transaction| {
+                Box::pin(async move {
+                    transaction
+                        .advisory_xact_lock("aster.orm.integration", "same-key")
+                        .await?;
+                    acquired_tx.send(()).expect("lock acquisition receiver");
+                    Ok::<_, PostgresError>(())
+                })
+            })
+            .await
+    });
+    assert!(
+        tokio::time::timeout(Duration::from_millis(100), &mut acquired_rx)
+            .await
+            .is_err()
+    );
+    owner.commit().await.unwrap();
+    tokio::time::timeout(Duration::from_secs(2), &mut acquired_rx)
+        .await
+        .expect("contender acquired released advisory lock")
+        .expect("advisory lock acquisition sender");
+    task.await.unwrap().unwrap();
+}

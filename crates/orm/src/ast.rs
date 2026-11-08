@@ -1,0 +1,167 @@
+use crate::expression::{Expression, OrderDirection};
+use crate::query::PostgresTableLockMode;
+use crate::value::Value;
+
+#[derive(Clone, Debug)]
+pub(crate) struct TableNode {
+    pub name: &'static str,
+    pub alias: Option<&'static str>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct SelectNode {
+    pub ctes: Vec<CteNode>,
+    pub from: TableNode,
+    pub selections: Vec<Expression>,
+    pub joins: Vec<JoinNode>,
+    pub filter: Option<Expression>,
+    pub group_by: Vec<Expression>,
+    pub having: Option<Expression>,
+    pub set_operations: Vec<SetOperationNode>,
+    pub order_by: Vec<(Expression, OrderDirection)>,
+    pub limit: Option<u64>,
+    pub offset: Option<u64>,
+    pub distinct: bool,
+    pub lock: Option<SelectLockNode>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct SelectLockNode {
+    pub strength: SelectLockStrength,
+    pub tables: Vec<&'static str>,
+    pub wait: SelectLockWait,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SelectLockStrength {
+    Update,
+    NoKeyUpdate,
+    Share,
+    KeyShare,
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+pub(crate) enum SelectLockWait {
+    #[default]
+    Block,
+    NoWait,
+    SkipLocked,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct SetOperationNode {
+    pub kind: SetOperationKind,
+    pub query: Box<SelectNode>,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub(crate) enum SetOperationKind {
+    Union,
+    UnionAll,
+    Intersect,
+    Except,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct CteNode {
+    pub name: &'static str,
+    pub query: Box<SelectNode>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct JoinNode {
+    pub kind: JoinKind,
+    pub table: TableNode,
+    pub on: Expression,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub(crate) enum JoinKind {
+    Inner,
+    Left,
+    Right,
+    Full,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct InsertNode {
+    pub table: TableNode,
+    pub rows: Vec<Vec<Assignment>>,
+    pub conflict: Option<ConflictNode>,
+    pub returning: Vec<Expression>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct ConflictNode {
+    pub target: Vec<&'static str>,
+    pub action: Option<ConflictAction>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum ConflictAction {
+    DoNothing,
+    DoUpdate(Vec<ConflictAssignment>),
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct ConflictAssignment {
+    pub table: &'static str,
+    pub column: &'static str,
+    pub value: ConflictValue,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum ConflictValue {
+    Bound(Value),
+    Excluded {
+        table: &'static str,
+        column: &'static str,
+    },
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct UpdateNode {
+    pub ctes: Vec<CteNode>,
+    pub table: TableNode,
+    pub assignments: Vec<UpdateAssignment>,
+    pub from: Vec<TableNode>,
+    pub filter: Option<Expression>,
+    pub returning: Vec<Expression>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct UpdateAssignment {
+    pub table: &'static str,
+    pub column: &'static str,
+    pub value: Expression,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct DeleteNode {
+    pub table: TableNode,
+    pub filter: Option<Expression>,
+    pub returning: Vec<Expression>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct TableLockNode {
+    pub table: TableNode,
+    pub mode: PostgresTableLockMode,
+    pub no_wait: bool,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct Assignment {
+    pub table: &'static str,
+    pub column: &'static str,
+    pub value: Value,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum QueryNode {
+    Select(Box<SelectNode>),
+    Insert(InsertNode),
+    Update(UpdateNode),
+    Delete(DeleteNode),
+    TableLock(TableLockNode),
+}

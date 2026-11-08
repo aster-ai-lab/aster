@@ -1,0 +1,251 @@
+.aster-form-workflow-code-editor.code-editor {
+  --code-editor-font-size: 11px;
+  --code-editor-gutter-width: 38px;
+  --code-editor-line-height: 1.55;
+  --code-editor-min-height: 112px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--aster-form-line-strong, #d3d6dc);
+  border-radius: 9px;
+  background: var(--aster-form-panel, #fff);
+  color: var(--aster-form-ink, #17181a);
+  box-shadow: none;
+  font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
+}
+
+.aster-form-workflow-code-editor.code-editor[data-size="lg"] {
+  --code-editor-min-height: min(56vh, 520px);
+}
+
+.aster-form-workflow-code-editor.code-editor > header,
+.aster-form-workflow-code-editor.code-editor > footer {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 8px;
+  padding-inline: 9px;
+  border-color: var(--aster-form-line, #e2e4e8);
+  background: var(--aster-form-panel-soft, #f2f3f5);
+  color: var(--aster-form-muted, #62666e);
+}
+
+.aster-form-workflow-code-editor.code-editor > header {
+  min-height: 36px;
+}
+
+.aster-form-workflow-code-editor.code-editor > footer {
+  min-height: 32px;
+  font-family: var(--aster-ui-font, ui-sans-serif, sans-serif);
+  font-size: 12px;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-file],
+.aster-form-workflow-code-editor [data-code-editor-actions],
+.aster-form-workflow-code-editor [data-code-editor-info],
+.aster-form-workflow-code-editor [data-code-editor-meta] {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-file] {
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-family: var(--aster-ui-font, ui-sans-serif, sans-serif);
+  font-size: 13px;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-actions] {
+  flex: 0 1 auto;
+  justify-content: flex-end;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-file] strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-actions] button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--color-control-fill, var(--aster-form-panel-soft, #f3f4f6));
+  align-items: center;
+  gap: 6px;
+  color: var(--aster-form-ink, #17181a);
+  font-family: var(--aster-ui-font, ui-sans-serif, sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.aster-form-workflow-code-editor.code-editor > section {
+  min-width: 0;
+  min-height: var(--code-editor-min-height);
+  /* The runtime grows the line-number gutter to match the source. Bound that
+   * intrinsic height to the viewport so long values remain scrollable inside
+   * the editor instead of expanding the node panel indefinitely. */
+  max-height: min(70vh, 48rem);
+  overflow: hidden;
+  background: var(--aster-form-panel, #fff);
+}
+
+.aster-form-workflow-code-editor [data-code-editor-gutter] {
+  height: 100%;
+  max-height: 100%;
+  padding-block: 10px;
+  border-right: 1px solid var(--aster-form-line, #e2e4e8);
+  overflow: hidden;
+  background: color-mix(
+    in srgb,
+    var(--aster-form-panel-soft, #f2f3f5) 58%,
+    var(--aster-form-panel, #fff)
+  );
+  color: var(--aster-form-faint, #8a8f98);
+}
+
+.aster-form-workflow-code-editor [data-code-editor-gutter] > span {
+  padding-inline: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-info],
+.aster-form-workflow-code-editor [data-code-editor-meta] {
+  flex: 1 1 auto;
+  overflow: visible;
+  white-space: normal;
+}
+
+.aster-form-workflow-code-editor [data-code-editor-meta] {
+  justify-content: flex-end;
+}
+
+.aster-form-workflow-code-editor > footer :is(output, span) {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.aster-form-workflow-code-editor > footer [data-code-editor-message] {
+  max-width: min(32rem, 42vw);
+}
+
+.aster-form-workflow-code-editor.code-editor > section > textarea,
+.aster-form-flow-child-input
+  .aster-form-workflow-code-editor.code-editor
+  > section
+  > textarea {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: var(--code-editor-min-height);
+  max-height: 100%;
+  padding: 10px 12px;
+  resize: vertical;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: var(--aster-form-panel, #fff);
+  color: var(--aster-form-ink, #17181a);
+  box-shadow: none;
+  font-family: inherit;
+  font-size: var(--code-editor-font-size);
+  line-height: var(--code-editor-line-height);
+  tab-size: 2;
+  white-space: pre;
+}
+
+.aster-form-workflow-code-editor.code-editor[data-flow-invalid="true"],
+.aster-form-workflow-code-editor.code-editor[data-validation-state="invalid"] {
+  border-color: var(--aster-form-red, #c83f45);
+}
+
+.aster-form-workflow-code-editor.code-editor[data-disabled="true"] {
+  opacity: 0.72;
+}
+
+.aster-form-workflow-data-display-control
+  .aster-form-workflow-code-editor.code-editor {
+  --code-editor-min-height: 96px;
+}
+
+.aster-form-workflow-prompt-editor .aster-flow-variable-textarea > textarea {
+  width: 100%;
+  height: 150px;
+  min-height: 112px;
+  max-height: 260px;
+  resize: vertical;
+  field-sizing: fixed;
+}
+
+.aster-form-workflow-prompt-editor[data-expanded="true"]
+  .aster-flow-variable-textarea
+  > textarea {
+  height: min(56vh, 520px);
+  max-height: 520px;
+}
+
+.aster-form-flow-child-input > .aster-form-workflow-code-editor {
+  margin-top: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aster-form-workflow-code-editor * {
+    scroll-behavior: auto;
+  }
+}
+
+@container aster-form-workflow-panel (max-width: 420px) {
+  .aster-form-workflow-code-editor.code-editor > header,
+  .aster-form-workflow-code-editor.code-editor > footer {
+    align-items: flex-start;
+    padding-inline: 8px;
+    row-gap: 5px;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > header {
+    padding-block: 7px;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > header > [data-code-editor-file],
+  .aster-form-workflow-code-editor.code-editor > header > [data-code-editor-actions],
+  .aster-form-workflow-code-editor.code-editor > footer > [data-code-editor-info],
+  .aster-form-workflow-code-editor.code-editor > footer > [data-code-editor-meta] {
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > header > [data-code-editor-actions] {
+    overflow: visible;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > header > [data-code-editor-actions] .btn {
+    min-height: 34px;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > footer {
+    padding-block: 6px;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > footer > [data-code-editor-meta] {
+    gap: 5px 8px;
+  }
+
+  .aster-form-workflow-code-editor.code-editor > footer [data-code-editor-message] {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,22 @@
+[package]
+name = "aster-office-web-kernel"
+description = "Browser-safe layout kernel for Aster Office"
+version = "0.45.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/aster-ai-lab/Office"
+authors = ["Aster"]
+rust-version = "1.85"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+unicode-segmentation = {version = "1"}
+unicode-linebreak = {version = "0.1"}
+unicode-bidi = {version = "0.3"}
+serde_json = {version = "1"}
+serde = {version = "1", features = ["derive"]}
+rustybuzz = {version = "0.20"}
+aster-office-formula-parser = {path = "../formula-parser"}

@@ -1,0 +1,300 @@
+//! Wikipedia search engine implementation.
+
+use async_trait::async_trait;
+use serde::Deserialize;
+
+use crate::{Engine, EngineCategory, EngineConfig, HttpFetcher, Result, SearchQuery, SearchResult};
+
+/// Wikipedia search engine using the MediaWiki API.
+///
+/// Unlike other engines, Wikipedia uses a JSON API rather than HTML scraping,
+/// so it holds an `HttpFetcher` directly to access the underlying reqwest client.
+pub struct Wikipedia {
+    config: EngineConfig,
+    fetcher: HttpFetcher,
+    language: String,
+}
+
+impl Wikipedia {
+    /// Creates a new Wikipedia engine with a default HTTP fetcher.
+    pub fn new() -> Self {
+        Self::with_http_fetcher(HttpFetcher::new())
+    }
+
+    /// Creates a new Wikipedia engine with a custom HTTP fetcher.
+    ///
+    /// Use this to provide a fetcher configured with proxy support.
+    pub fn with_http_fetcher(fetcher: HttpFetcher) -> Self {
+        Self {
+            config: EngineConfig {
+                name: "Wikipedia".to_string(),
+                shortcut: "wiki".to_string(),
+                categories: vec![EngineCategory::General],
+                weight: 1.2,
+                timeout: 5,
+                enabled: true,
+                paging: false,
+                safesearch: false,
+            },
+            fetcher,
+            language: "en".to_string(),
+        }
+    }
+
+    /// Sets the Wikipedia language.
+    pub fn with_language(mut self, language: impl Into<String>) -> Self {
+        self.language = language.into();
+        self
+    }
+
+    /// Creates with custom configuration.
+    pub fn with_config(mut self, config: EngineConfig) -> Self {
+        self.config = config;
+        self
+    }
+}
+
+impl Default for Wikipedia {
+    fn default() -> Self {
+        Wikipedia::new()
+    }
+}
+
+#[derive(Deserialize)]
+struct WikiResponse {
+    query: Option<WikiQuery>,
+}
+
+#[derive(Deserialize)]
+struct WikiQuery {
+    search: Vec<WikiSearchResult>,
+}
+
+#[derive(Deserialize)]
+struct WikiSearchResult {
+    title: String,
+    snippet: String,
+    #[allow(dead_code)]
+    pageid: u64,
+}
+
+#[async_trait]
+impl Engine for Wikipedia {
+    fn config(&self) -> &EngineConfig {
+        &self.config
+    }
+
+    async fn search(&self, query: &SearchQuery) -> Result<Vec<SearchResult>> {
+        let language = query_language(query).unwrap_or(&self.language);
+        let mut url = format!(
+            "https://{}.wikipedia.org/w/api.php?action=query&list=search&srsearch={}&format=json&srlimit=10",
+            language,
+            urlencoding::encode(&query.query)
+        );
+        if query.page > 1 {
+            url.push_str(&format!("&sroffset={}", (query.page - 1) * 10));
+        }
+
+        let response =
+            crate::fetcher_http::checked_response(self.fetcher.client().get(&url).send().await?)?;
+        let wiki_response: WikiResponse = response.json().await?;
+
+        let results = wiki_response
+            .query
+            .map(|q| {
+                q.search
+                    .into_iter()
+                    .map(|item| {
+                        let url = format!(
+                            "https://{}.wikipedia.org/wiki/{}",
+                            language,
+                            item.title.replace(' ', "_")
+                        );
+                        let content = strip_html_tags(&item.snippet);
+                        SearchResult::new(url, item.title, content)
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+
+        Ok(results)
+    }
+}
+
+fn query_language(query: &SearchQuery) -> Option<&str> {
+    let language = query.language.as_deref()?;
+    language
+        .split(['-', '_'])
+        .next()
+        .filter(|language| !language.is_empty())
+}
+
+fn strip_html_tags(html: &str) -> String {
+    let mut result = String::new();
+    let mut in_tag = false;
+
+    for c in html.chars() {
+        match c {
+            '<' => in_tag = true,
+            '>' => in_tag = false,
+            _ if !in_tag => result.push(c),
+            _ => {}
+        }
+    }
+
+    result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::HttpFetcher;
+
+    #[test]
+    fn test_wikipedia_new() {
+        let engine = Wikipedia::new();
+        assert_eq!(engine.config.name, "Wikipedia");
+        assert_eq!(engine.config.shortcut, "wiki");
+        assert_eq!(engine.config.weight, 1.2);
+        assert_eq!(engine.language, "en");
+    }
+
+    #[test]
+    fn test_wikipedia_with_http_fetcher() {
+        let fetcher = HttpFetcher::new();
+        let engine = Wikipedia::with_http_fetcher(fetcher);
+        assert_eq!(engine.name(), "Wikipedia");
+    }
+
+    #[test]
+    fn test_wikipedia_default() {
+        let engine = Wikipedia::default();
+        assert_eq!(engine.name(), "Wikipedia");
+    }
+
+    #[test]
+    fn test_wikipedia_with_language() {
+        let engine = Wikipedia::new().with_language("zh");
+        assert_eq!(engine.language, "zh");
+    }
+
+    #[test]
+    fn test_query_language_uses_primary_subtag() {
+        let query = SearchQuery::new("rust").with_language("en-US");
+        assert_eq!(query_language(&query), Some("en"));
+    }
+
+    #[test]
+    fn test_query_language_empty_is_none() {
+        let query = SearchQuery::new("rust").with_language("");
+        assert_eq!(query_language(&query), None);
+    }
+
+    #[test]
+    fn test_wikipedia_with_config() {
+        let custom_config = EngineConfig {
+            name: "Custom Wiki".to_string(),
+            weight: 2.0,
+            ..Default::default()
+        };
+        let engine = Wikipedia::new().with_config(custom_config);
+        assert_eq!(engine.name(), "Custom Wiki");
+        assert_eq!(engine.weight(), 2.0);
+    }
+
+    #[test]
+    fn test_wikipedia_engine_trait() {
+        let engine = Wikipedia::new();
+        assert_eq!(engine.name(), "Wikipedia");
+        assert_eq!(engine.shortcut(), "wiki");
+        assert_eq!(engine.weight(), 1.2);
+        assert!(engine.is_enabled());
+    }
+
+    #[test]
+    fn test_strip_html_tags_simple() {
+        let html = "<b>bold</b> text";
+        assert_eq!(strip_html_tags(html), "bold text");
+    }
+
+    #[test]
+    fn test_strip_html_tags_nested() {
+        let html = "<div><span>nested</span></div>";
+        assert_eq!(strip_html_tags(html), "nested");
+    }
+
+    #[test]
+    fn test_strip_html_tags_no_tags() {
+        let html = "plain text";
+        assert_eq!(strip_html_tags(html), "plain text");
+    }
+
+    #[test]
+    fn test_strip_html_tags_empty() {
+        let html = "";
+        assert_eq!(strip_html_tags(html), "");
+    }
+
+    #[test]
+    fn test_strip_html_tags_only_tags() {
+        let html = "<br><hr>";
+        assert_eq!(strip_html_tags(html), "");
+    }
+
+    #[test]
+    fn test_strip_html_tags_with_attributes() {
+        let html = r#"<a href="url">link</a>"#;
+        assert_eq!(strip_html_tags(html), "link");
+    }
+
+    #[test]
+    fn test_wiki_response_deserialization_with_results() {
+        let json = r#"{
+            "query": {
+                "search": [
+                    {"title": "Rust (programming language)", "snippet": "<span class=\"searchmatch\">Rust</span> is a language", "pageid": 12345},
+                    {"title": "Rust", "snippet": "Rust is an iron oxide", "pageid": 67890}
+                ]
+            }
+        }"#;
+        let response: WikiResponse = serde_json::from_str(json).unwrap();
+        let query = response.query.unwrap();
+        assert_eq!(query.search.len(), 2);
+        assert_eq!(query.search[0].title, "Rust (programming language)");
+        assert_eq!(query.search[1].title, "Rust");
+    }
+
+    #[test]
+    fn test_wiki_response_deserialization_empty_results() {
+        let json = r#"{"query": {"search": []}}"#;
+        let response: WikiResponse = serde_json::from_str(json).unwrap();
+        let query = response.query.unwrap();
+        assert!(query.search.is_empty());
+    }
+
+    #[test]
+    fn test_wiki_response_deserialization_no_query() {
+        let json = r#"{}"#;
+        let response: WikiResponse = serde_json::from_str(json).unwrap();
+        assert!(response.query.is_none());
+    }
+
+    #[test]
+    fn test_strip_html_tags_mixed_content() {
+        let html = "Hello <b>world</b>, this is <i>a</i> test";
+        assert_eq!(strip_html_tags(html), "Hello world, this is a test");
+    }
+
+    #[test]
+    fn test_strip_html_tags_unclosed_tag() {
+        let html = "Hello <b>world";
+        assert_eq!(strip_html_tags(html), "Hello world");
+    }
+
+    #[test]
+    fn test_wikipedia_with_language_zh() {
+        let engine = Wikipedia::new().with_language("zh");
+        assert_eq!(engine.language, "zh");
+        assert_eq!(engine.name(), "Wikipedia");
+    }
+}

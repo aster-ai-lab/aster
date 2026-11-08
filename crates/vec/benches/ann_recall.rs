@@ -1,0 +1,580 @@
+//! Reproducible ANN recall/latency fixture.
+
+use aster_vec::{
+    Collection, CollectionOptions, CollectionSchema, DataType, DiskannQueryParams, Doc,
+    FieldSchema, HnswQueryParams, IndexParams, IoBackend, IvfQueryParams, IvfRabitqQueryParams,
+    MetricType, SearchQuery,
+};
+use std::fs;
+use std::hint::black_box;
+use std::path::Path;
+use std::time::{Duration, Instant};
+use tempfile::tempdir;
+
+const DOCUMENTS: usize = 2_000;
+const DIMENSIONS: usize = 32;
+const QUERIES: usize = 48;
+const ROUNDS: usize = 5;
+const TOPK: usize = 10;
+
+struct Measurement {
+    median_round: Duration,
+    p50: Duration,
+    p95: Duration,
+    p99: Duration,
+    rankings: Vec<Vec<String>>,
+}
+
+struct CosineBenchmark {
+    exact: Measurement,
+    hnsw: Measurement,
+    hnsw_payload: u64,
+    hnsw_rabitq: Measurement,
+    hnsw_rabitq_payload: u64,
+    ivf: Measurement,
+    ivf_payload: u64,
+    ivf_rabitq: Measurement,
+    ivf_rabitq_payload: u64,
+}
+
+struct BenchmarkReport {
+    exact: Measurement,
+    hnsw: Measurement,
+    hnsw_payload: u64,
+    hnsw_rabitq: Measurement,
+    hnsw_rabitq_payload: u64,
+    ivf: Measurement,
+    ivf_payload: u64,
+    ivf_rabitq: Measurement,
+    ivf_rabitq_payload: u64,
+    exact_l2: Measurement,
+    vamana: Measurement,
+    vamana_positioned: Measurement,
+    vamana_mmap: Measurement,
+    vamana_payload: u64,
+    vamana_sidecar: u64,
+    vamana_sectors_per_query: f64,
+    vamana_mmap_sectors_per_query: f64,
+    pq: Measurement,
+    pq_positioned: Measurement,
+    pq_mmap: Measurement,
+    pq_payload: u64,
+    pq_sidecar: u64,
+    pq_sectors_per_query: f64,
+    pq_mmap_sectors_per_query: f64,
+}
+
+fn vector_for(index: usize) -> Vec<f32> {
+    (0..DIMENSIONS)
+        .map(|dimension| {
+            let raw = (index * 31 + dimension * 17 + index * dimension * 3) % 1_009;
+            let raw = u16::try_from(raw).expect("fixture value fits u16");
+            (f32::from(raw) - 504.0) / 504.0
+        })
+        .collect()
+}
+
+fn query_vectors() -> Vec<Vec<f32>> {
+    (0..QUERIES)
+        .map(|index| vector_for((index * 37 + 11) % DOCUMENTS))
+        .collect()
+}
+
+fn run_queries(
+    collection: &Collection,
+    vectors: &[Vec<f32>],
+    configure: impl Fn(&mut SearchQuery),
+) -> Measurement {
+    if let Some(vector) = vectors.first() {
+        let mut warmup = SearchQuery::new(
+            "embedding",
+            vector,
+            i32::try_from(TOPK).expect("TOPK fits i32"),
+        )
+        .expect("warmup query must be valid");
+        configure(&mut warmup);
+        black_box(
+            collection
+                .query(&warmup)
+                .expect("warmup query must succeed"),
+        );
+    }
+    let mut round_durations = Vec::with_capacity(ROUNDS);
+    let mut query_durations = Vec::with_capacity(ROUNDS.saturating_mul(vectors.len()));
+    let mut rankings = Vec::new();
+    for _ in 0..ROUNDS {
+        let started = Instant::now();
+        rankings = vectors
+            .iter()
+            .map(|vector| {
+                let mut query = SearchQuery::new(
+                    "embedding",
+                    vector,
+                    i32::try_from(TOPK).expect("TOPK fits i32"),
+                )
+                .expect("benchmark query must be valid");
+                configure(&mut query);
+                let query_started = Instant::now();
+                let result = collection
+                    .query(black_box(&query))
+                    .expect("benchmark query must succeed");
+                query_durations.push(query_started.elapsed());
+                result
+                    .into_iter()
+                    .map(|doc| doc.get_pk().expect("result must have an id").to_string())
+                    .collect()
+            })
+            .collect();
+        round_durations.push(started.elapsed());
+    }
+    round_durations.sort_unstable();
+    query_durations.sort_unstable();
+    Measurement {
+        median_round: round_durations[ROUNDS / 2],
+        p50: percentile(&query_durations, 50),
+        p95: percentile(&query_durations, 95),
+        p99: percentile(&query_durations, 99),
+        rankings,
+    }
+}
+
+fn percentile(samples: &[Duration], percentile: usize) -> Duration {
+    let rank = samples.len().saturating_mul(percentile).saturating_add(99) / 100;
+    samples[rank.saturating_sub(1).min(samples.len().saturating_sub(1))]
+}
+
+fn recall(reference: &[Vec<String>], candidate: &[Vec<String>]) -> f64 {
+    let hits = reference
+        .iter()
+        .zip(candidate)
+        .map(|(expected, actual)| actual.iter().filter(|id| expected.contains(id)).count())
+        .sum::<usize>();
+    let total = reference.len().saturating_mul(TOPK);
+    count_to_f64(hits) / count_to_f64(total)
+}
+
+#[allow(clippy::cast_precision_loss)]
+fn count_to_f64(value: usize) -> f64 {
+    value as f64
+}
+
+#[allow(clippy::cast_precision_loss)]
+fn micros_per_query(duration: Duration) -> f64 {
+    micros(duration) / count_to_f64(QUERIES)
+}
+
+fn micros(duration: Duration) -> f64 {
+    duration.as_secs_f64() * 1_000_000.0
+}
+
+fn count_to_f64_checked(value: u64) -> f64 {
+    f64::from(u32::try_from(value).expect("benchmark count fits u32"))
+}
+
+fn estimated_payload_bytes(collection: &Collection) -> u64 {
+    collection
+        .stats_snapshot()
+        .expect("statistics must be available")
+        .indexes
+        .into_iter()
+        .find(|index| index.name == "embedding")
+        .and_then(|index| index.estimated_payload_bytes)
+        .unwrap_or_default()
+}
+
+fn run_vamana_fixture(
+    collection: &Collection,
+    queries: &[Vec<f32>],
+) -> (Measurement, Measurement, u64) {
+    let exact = run_queries(collection, queries, |query| {
+        query
+            .params
+            .insert("metric".into(), serde_json::json!("l2"));
+    });
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::vamana(MetricType::L2, 32, 96, 1.2)
+                .expect("Vamana descriptor must be valid"),
+        )
+        .expect("Vamana index must build");
+    let vamana = run_queries(collection, queries, |query| {
+        query
+            .set_diskann_params(DiskannQueryParams::new(64))
+            .expect("Vamana controls must be valid");
+    });
+    (exact, vamana, estimated_payload_bytes(collection))
+}
+
+fn run_pq_fixture(collection: &Collection, queries: &[Vec<f32>]) -> (Measurement, u64) {
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::diskann(MetricType::L2, 32, 96, 8)
+                .expect("DiskANN descriptor must be valid"),
+        )
+        .expect("DiskANN PQ index must build");
+    let measurement = run_queries(collection, queries, |query| {
+        query
+            .set_diskann_params(DiskannQueryParams::new(64))
+            .expect("DiskANN controls must be valid");
+    });
+    (measurement, estimated_payload_bytes(collection))
+}
+
+fn run_cosine_fixture(collection: &Collection, queries: &[Vec<f32>]) -> CosineBenchmark {
+    let exact = run_queries(collection, queries, |_| {});
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::hnsw(MetricType::Cosine, 16, 96).expect("HNSW descriptor must be valid"),
+        )
+        .expect("HNSW index must build");
+    let hnsw = run_queries(collection, queries, |query| {
+        query
+            .set_hnsw_params(HnswQueryParams::new(64, 0.0, false, true))
+            .expect("HNSW controls must be valid");
+    });
+    let hnsw_payload = estimated_payload_bytes(collection);
+
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::hnsw_rabitq(MetricType::Cosine, 16, 96)
+                .expect("HNSW RaBitQ descriptor must be valid"),
+        )
+        .expect("HNSW RaBitQ index must build");
+    let hnsw_rabitq = run_queries(collection, queries, |query| {
+        query
+            .set_hnsw_params(HnswQueryParams::new(64, 0.0, false, true))
+            .expect("HNSW RaBitQ controls must be valid");
+    });
+    let hnsw_rabitq_payload = estimated_payload_bytes(collection);
+
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::ivf(MetricType::Cosine, 64, 8, false)
+                .expect("IVF descriptor must be valid"),
+        )
+        .expect("IVF index must build");
+    let ivf = run_queries(collection, queries, |query| {
+        query
+            .set_ivf_params(IvfQueryParams::new(8, true, 8.0))
+            .expect("IVF controls must be valid");
+    });
+    let ivf_payload = estimated_payload_bytes(collection);
+
+    collection
+        .create_index(
+            "embedding",
+            &IndexParams::ivf_rabitq(MetricType::Cosine, 64, 7, 1_000)
+                .expect("IVF RaBitQ descriptor must be valid"),
+        )
+        .expect("IVF RaBitQ index must build");
+    let ivf_rabitq = run_queries(collection, queries, |query| {
+        let mut controls = IvfRabitqQueryParams::new(8, 0.0, false, true);
+        controls
+            .set_scale_factor(8.0)
+            .expect("IVF RaBitQ refinement scale must be valid");
+        query
+            .set_ivf_rabitq_params(controls)
+            .expect("IVF RaBitQ controls must be valid");
+    });
+    let ivf_rabitq_payload = estimated_payload_bytes(collection);
+
+    CosineBenchmark {
+        exact,
+        hnsw,
+        hnsw_payload,
+        hnsw_rabitq,
+        hnsw_rabitq_payload,
+        ivf,
+        ivf_payload,
+        ivf_rabitq,
+        ivf_rabitq_payload,
+    }
+}
+
+fn run_sidecar_fixture(
+    path: &Path,
+    queries: &[Vec<f32>],
+    io_backend: IoBackend,
+) -> (Measurement, f64) {
+    let mut read_only = CollectionOptions::new().expect("options must be valid");
+    read_only
+        .set_read_only(true)
+        .expect("read-only option must be valid");
+    read_only
+        .set_io_backend(io_backend)
+        .expect("I/O backend option must be valid");
+    let collection = Collection::open(
+        path.to_str().expect("benchmark path must be UTF-8"),
+        Some(&read_only),
+    )
+    .expect("collection must reopen from its derived cache");
+    assert!(
+        collection
+            .stats()
+            .expect("statistics must be available")
+            .index_cache_hit,
+        "sidecar traversal requires a validated graph cache hit"
+    );
+    assert_eq!(
+        collection
+            .stats()
+            .expect("statistics must be available")
+            .io_backend,
+        io_backend
+    );
+    let before = collection
+        .stats_snapshot()
+        .expect("statistics must be available");
+    let measurement = run_queries(&collection, queries, |query| {
+        query
+            .set_diskann_params(DiskannQueryParams::new(64))
+            .expect("DiskANN-family controls must be valid");
+    });
+    let after = collection
+        .stats_snapshot()
+        .expect("statistics must be available");
+    let query_count = after.diskann_query_count - before.diskann_query_count;
+    let expected_queries = u64::try_from(ROUNDS.saturating_mul(QUERIES).saturating_add(1))
+        .expect("benchmark query count fits u64");
+    assert_eq!(query_count, expected_queries);
+    let mmap_query_count = after.diskann_mmap_query_count - before.diskann_mmap_query_count;
+    assert_eq!(
+        mmap_query_count,
+        if io_backend == IoBackend::Mmap {
+            expected_queries
+        } else {
+            0
+        }
+    );
+    let sector_count = after.diskann_sector_read_count - before.diskann_sector_read_count;
+    (
+        measurement,
+        count_to_f64_checked(sector_count) / count_to_f64_checked(query_count),
+    )
+}
+
+fn sidecar_bytes(path: &Path) -> u64 {
+    fs::metadata(path.join("indexes/diskann-graph.bin"))
+        .expect("DiskANN sidecar metadata must be available")
+        .len()
+}
+
+fn print_report(report: &BenchmarkReport) {
+    println!(
+        "mode,metric,documents,dimensions,queries,rounds,recall_at_10,median_round_us,p50_us,p95_us,p99_us,estimated_payload_bytes,sidecar_bytes,sectors_per_query"
+    );
+    print_cosine_report(report);
+    print_l2_report(report);
+}
+
+fn print_cosine_report(report: &BenchmarkReport) {
+    println!(
+        "exact,cosine,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},1.0000,{:.2},{:.2},{:.2},{:.2},0,0,0.00",
+        micros_per_query(report.exact.median_round),
+        micros(report.exact.p50),
+        micros(report.exact.p95),
+        micros(report.exact.p99),
+    );
+    println!(
+        "hnsw_ef64,cosine,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact.rankings, &report.hnsw.rankings),
+        micros_per_query(report.hnsw.median_round),
+        micros(report.hnsw.p50),
+        micros(report.hnsw.p95),
+        micros(report.hnsw.p99),
+        report.hnsw_payload,
+    );
+    println!(
+        "ivf_nprobe8,cosine,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact.rankings, &report.ivf.rankings),
+        micros_per_query(report.ivf.median_round),
+        micros(report.ivf.p50),
+        micros(report.ivf.p95),
+        micros(report.ivf.p99),
+        report.ivf_payload,
+    );
+    println!(
+        "hnsw_rabitq7_ef64,cosine,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact.rankings, &report.hnsw_rabitq.rankings),
+        micros_per_query(report.hnsw_rabitq.median_round),
+        micros(report.hnsw_rabitq.p50),
+        micros(report.hnsw_rabitq.p95),
+        micros(report.hnsw_rabitq.p99),
+        report.hnsw_rabitq_payload,
+    );
+    println!(
+        "ivf_rabitq7_nprobe8_refine80,cosine,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact.rankings, &report.ivf_rabitq.rankings),
+        micros_per_query(report.ivf_rabitq.median_round),
+        micros(report.ivf_rabitq.p50),
+        micros(report.ivf_rabitq.p95),
+        micros(report.ivf_rabitq.p99),
+        report.ivf_rabitq_payload,
+    );
+}
+
+fn print_l2_report(report: &BenchmarkReport) {
+    println!(
+        "exact,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},1.0000,{:.2},{:.2},{:.2},{:.2},0,0,0.00",
+        micros_per_query(report.exact_l2.median_round),
+        micros(report.exact_l2.p50),
+        micros(report.exact_l2.p95),
+        micros(report.exact_l2.p99),
+    );
+    println!(
+        "vamana_memory_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact_l2.rankings, &report.vamana.rankings),
+        micros_per_query(report.vamana.median_round),
+        micros(report.vamana.p50),
+        micros(report.vamana.p95),
+        micros(report.vamana.p99),
+        report.vamana_payload,
+    );
+    println!(
+        "vamana_positioned_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},{},{:.2}",
+        recall(
+            &report.exact_l2.rankings,
+            &report.vamana_positioned.rankings
+        ),
+        micros_per_query(report.vamana_positioned.median_round),
+        micros(report.vamana_positioned.p50),
+        micros(report.vamana_positioned.p95),
+        micros(report.vamana_positioned.p99),
+        report.vamana_payload,
+        report.vamana_sidecar,
+        report.vamana_sectors_per_query,
+    );
+    println!(
+        "vamana_mmap_snapshot_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},{},{:.2}",
+        recall(&report.exact_l2.rankings, &report.vamana_mmap.rankings),
+        micros_per_query(report.vamana_mmap.median_round),
+        micros(report.vamana_mmap.p50),
+        micros(report.vamana_mmap.p95),
+        micros(report.vamana_mmap.p99),
+        report.vamana_payload,
+        report.vamana_sidecar,
+        report.vamana_mmap_sectors_per_query,
+    );
+    println!(
+        "diskann_pq8_memory_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},0,0.00",
+        recall(&report.exact_l2.rankings, &report.pq.rankings),
+        micros_per_query(report.pq.median_round),
+        micros(report.pq.p50),
+        micros(report.pq.p95),
+        micros(report.pq.p99),
+        report.pq_payload,
+    );
+    println!(
+        "diskann_pq8_positioned_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},{},{:.2}",
+        recall(&report.exact_l2.rankings, &report.pq_positioned.rankings),
+        micros_per_query(report.pq_positioned.median_round),
+        micros(report.pq_positioned.p50),
+        micros(report.pq_positioned.p95),
+        micros(report.pq_positioned.p99),
+        report.pq_payload,
+        report.pq_sidecar,
+        report.pq_sectors_per_query,
+    );
+    println!(
+        "diskann_pq8_mmap_snapshot_list64,l2,{DOCUMENTS},{DIMENSIONS},{QUERIES},{ROUNDS},{:.4},{:.2},{:.2},{:.2},{:.2},{},{},{:.2}",
+        recall(&report.exact_l2.rankings, &report.pq_mmap.rankings),
+        micros_per_query(report.pq_mmap.median_round),
+        micros(report.pq_mmap.p50),
+        micros(report.pq_mmap.p95),
+        micros(report.pq_mmap.p99),
+        report.pq_payload,
+        report.pq_sidecar,
+        report.pq_mmap_sectors_per_query,
+    );
+}
+
+fn main() {
+    let temporary = tempdir().expect("temporary directory must be available");
+    let collection_path = temporary.path().join("collection");
+    let dimension = u32::try_from(DIMENSIONS).expect("dimension fits u32");
+    let schema = CollectionSchema::builder("ann-benchmark")
+        .add_field(
+            FieldSchema::new("embedding", DataType::VectorFp32, false, dimension)
+                .expect("field must be valid"),
+        )
+        .build()
+        .expect("schema must be valid");
+    let collection = Collection::create(
+        collection_path
+            .to_str()
+            .expect("benchmark path must be UTF-8"),
+        &schema,
+        None,
+    )
+    .expect("collection must be created");
+    let docs: Vec<Doc> = (0..DOCUMENTS)
+        .map(|index| {
+            let mut doc = Doc::with_pk(format!("doc-{index:05}")).expect("document must be valid");
+            doc.add_vector_f32("embedding", &vector_for(index))
+                .expect("vector must be valid");
+            doc
+        })
+        .collect();
+    collection
+        .insert(&docs.iter().collect::<Vec<_>>())
+        .expect("documents must be inserted");
+    let queries = query_vectors();
+
+    let cosine = run_cosine_fixture(&collection, &queries);
+
+    let (exact_l2, vamana, vamana_payload) = run_vamana_fixture(&collection, &queries);
+    collection.close().expect("collection must close");
+    let (vamana_positioned, vamana_sectors_per_query) =
+        run_sidecar_fixture(&collection_path, &queries, IoBackend::Positioned);
+    let (vamana_mmap, vamana_mmap_sectors_per_query) =
+        run_sidecar_fixture(&collection_path, &queries, IoBackend::Mmap);
+    assert_eq!(vamana_mmap.rankings, vamana_positioned.rankings);
+    let vamana_sidecar = sidecar_bytes(&collection_path);
+
+    let collection = Collection::open(
+        collection_path
+            .to_str()
+            .expect("benchmark path must be UTF-8"),
+        None,
+    )
+    .expect("collection must reopen writable");
+    let (pq, pq_payload) = run_pq_fixture(&collection, &queries);
+    collection.close().expect("collection must close");
+    let (pq_positioned, pq_sectors_per_query) =
+        run_sidecar_fixture(&collection_path, &queries, IoBackend::Positioned);
+    let (pq_mmap, pq_mmap_sectors_per_query) =
+        run_sidecar_fixture(&collection_path, &queries, IoBackend::Mmap);
+    assert_eq!(pq_mmap.rankings, pq_positioned.rankings);
+    let pq_sidecar = sidecar_bytes(&collection_path);
+    print_report(&BenchmarkReport {
+        exact: cosine.exact,
+        hnsw: cosine.hnsw,
+        hnsw_payload: cosine.hnsw_payload,
+        hnsw_rabitq: cosine.hnsw_rabitq,
+        hnsw_rabitq_payload: cosine.hnsw_rabitq_payload,
+        ivf: cosine.ivf,
+        ivf_payload: cosine.ivf_payload,
+        ivf_rabitq: cosine.ivf_rabitq,
+        ivf_rabitq_payload: cosine.ivf_rabitq_payload,
+        exact_l2,
+        vamana,
+        vamana_positioned,
+        vamana_mmap,
+        vamana_payload,
+        vamana_sidecar,
+        vamana_sectors_per_query,
+        vamana_mmap_sectors_per_query,
+        pq,
+        pq_positioned,
+        pq_mmap,
+        pq_payload,
+        pq_sidecar,
+        pq_sectors_per_query,
+        pq_mmap_sectors_per_query,
+    });
+}

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Aster Power — bounded, verifiable inference</title>
+  <desc id="desc">A model-neutral Rust runtime that routes model-owned graphs and hosted API requests through bounded admission, accelerator execution, canonical receipts, and caller-owned verification.</desc>
+
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#6ca3ff"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#3ccf91"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="520" rx="24" fill="#101118"/>
+  <path d="M40 58H1160" stroke="#2a2d35"/>
+  <path d="M664 88V432" stroke="#2a2d35"/>
+
+  <g transform="translate(58 28)" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">
+    <rect width="30" height="30" rx="8" fill="#2864e8"/>
+    <path d="M8 23 15 7l8 16M10.5 18c3-1.8 6.4 2 10.5-.2" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="44" y="21" fill="#f2f3f5" font-size="15" font-weight="700" letter-spacing="1.6">Aster / POWER</text>
+    <text x="1054" y="21" fill="#9298a3" font-size="13" text-anchor="end" letter-spacing="1.4">RUST</text>
+  </g>
+
+  <g transform="translate(64 98)" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif">
+    <text x="0" y="0" fill="#6ca3ff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" font-weight="700" letter-spacing="2">MODEL-NEUTRAL INFERENCE</text>
+    <text x="-3" y="84" fill="#f2f3f5" font-size="72" font-weight="720" letter-spacing="-3.4">Aster Power</text>
+
+    <text x="0" y="135" fill="#a4a8b2" font-size="24">Bounded execution for model-owned graphs</text>
+    <text x="0" y="169" fill="#a4a8b2" font-size="24">and OpenAI-compatible services.</text>
+
+    <g transform="translate(0 214)" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" font-weight="700">
+      <rect width="128" height="40" rx="9" fill="#1e2637" stroke="#456ca9"/>
+      <circle cx="19" cy="20" r="4" fill="#6ca3ff"/>
+      <text x="33" y="25" fill="#b7d0ff">EMBEDDED</text>
+
+      <rect x="140" width="112" height="40" rx="9" fill="#1e2637" stroke="#456ca9"/>
+      <circle cx="159" cy="20" r="4" fill="#6ca3ff"/>
+      <text x="173" y="25" fill="#b7d0ff">HOSTED</text>
+
+      <rect x="264" width="130" height="40" rx="9" fill="#192a24" stroke="#267c5c"/>
+      <circle cx="283" cy="20" r="4" fill="#3ccf91"/>
+      <text x="297" y="25" fill="#91e3bd">VERIFIED</text>
+    </g>
+
+    <g transform="translate(0 302)">
+      <path d="M0 0H536" stroke="#2a2d35"/>
+      <path d="M268 20V77" stroke="#2a2d35"/>
+      <text x="0" y="34" fill="#9298a3" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700" letter-spacing="1.1">MODEL OWNS</text>
+      <text x="0" y="67" fill="#f2f3f5" font-size="18" font-weight="650">topology · tokenizer · quality</text>
+      <text x="300" y="34" fill="#9298a3" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700" letter-spacing="1.1">POWER OWNS</text>
+      <text x="300" y="67" fill="#f2f3f5" font-size="18" font-weight="650">devices · limits · evidence</text>
+    </g>
+  </g>
+
+  <g transform="translate(704 86)" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif">
+    <rect width="438" height="366" rx="18" fill="#171820" stroke="#3a3d48"/>
+    <path d="M0 52H438" stroke="#2a2d35"/>
+    <circle cx="22" cy="26" r="4" fill="#3a3d48"/>
+    <circle cx="38" cy="26" r="4" fill="#3a3d48"/>
+    <text x="62" y="32" fill="#a4a8b2" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" font-weight="700" letter-spacing="1.6">EXECUTION CONTRACT</text>
+
+    <g transform="translate(24 76)">
+      <g>
+        <circle cx="20" cy="20" r="20" fill="#1e2637" stroke="#456ca9"/>
+        <text x="20" y="26" fill="#b7d0ff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" font-weight="700" text-anchor="middle">01</text>
+        <text x="58" y="17" fill="#f2f3f5" font-size="21" font-weight="680">Admit</text>
+        <text x="58" y="39" fill="#9298a3" font-size="16">memory · queue · deadline</text>
+      </g>
+      <path d="M20 44V68" stroke="#6ca3ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+      <g transform="translate(0 78)">
+        <circle cx="20" cy="20" r="20" fill="#1e2637" stroke="#456ca9"/>
+        <text x="20" y="26" fill="#b7d0ff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" font-weight="700" text-anchor="middle">02</text>
+        <text x="58" y="17" fill="#f2f3f5" font-size="21" font-weight="680">Execute</text>
+        <text x="58" y="39" fill="#9298a3" font-size="16">CPU · CUDA · Metal</text>
+      </g>
+      <path d="M20 122V146" stroke="#6ca3ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+      <g transform="translate(0 156)">
+        <circle cx="20" cy="20" r="20" fill="#1e2637" stroke="#456ca9"/>
+        <text x="20" y="26" fill="#b7d0ff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" font-weight="700" text-anchor="middle">03</text>
+        <text x="58" y="17" fill="#f2f3f5" font-size="21" font-weight="680">Commit</text>
+        <text x="58" y="39" fill="#9298a3" font-size="16">canonical execution receipt</text>
+      </g>
+      <path d="M20 200V224" stroke="#3ccf91" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+      <g transform="translate(0 234)">
+        <circle cx="20" cy="20" r="20" fill="#192a24" stroke="#267c5c"/>
+        <path d="m11 20 6 6 12-14" fill="none" stroke="#3ccf91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="58" y="17" fill="#f2f3f5" font-size="21" font-weight="680">Verify</text>
+        <text x="58" y="39" fill="#91e3bd" font-size="16">caller-owned acceptance policy</text>
+      </g>
+    </g>
+  </g>
+</svg>

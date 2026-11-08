@@ -1,0 +1,28 @@
+{
+  "status": "found",
+  "schema": "aster.runtime.inspection.v1",
+  "observation": {
+    "schema": "aster.runtime.observation.v4",
+    "unit_id": "golden-service",
+    "generation": 3,
+    "spec_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "class": "service",
+    "state": "running",
+    "provider_resource_id": "golden/service/3",
+    "provider_build": "golden-runtime/1.2.3",
+    "observed_at_ms": 120000,
+    "started_at_ms": 100000,
+    "finished_at_ms": null,
+    "health": {
+      "state": "healthy",
+      "checked_at_ms": 119000,
+      "message": "ready"
+    },
+    "liveness": null,
+    "outputs": [],
+    "usage": null,
+    "evidence": null,
+    "provider_attestation": null,
+    "failure": null
+  }
+}

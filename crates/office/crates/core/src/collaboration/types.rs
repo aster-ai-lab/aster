@@ -1,0 +1,548 @@
+use std::path::PathBuf;
+use std::str::FromStr;
+
+use aster_use_core::UseError;
+use serde::{Deserialize, Serialize};
+
+use super::collaboration_error;
+
+mod mutation;
+mod presence;
+mod projection;
+
+pub use mutation::*;
+pub use presence::*;
+pub use projection::*;
+
+pub const NATIVE_OFFICE_COLLABORATION_PROTOCOL: &str = "aster.office.collaboration";
+pub const NATIVE_OFFICE_COLLABORATION_PROTOCOL_VERSION: u32 = 1;
+pub const NATIVE_OFFICE_COLLABORATION_NAMESPACE: &str = "aster.office";
+pub const NATIVE_OFFICE_COLLABORATION_STORE_FORMAT: &str = "aster.office.collaboration-replica";
+pub const NATIVE_OFFICE_COLLABORATION_STORE_SCHEMA_VERSION: u32 = 1;
+pub const MAX_NATIVE_OFFICE_COLLABORATION_UPDATE_BYTES: usize = 64 * 1024 * 1024;
+pub const MAX_NATIVE_OFFICE_COLLABORATION_STATE_VECTOR_BYTES: usize = 1024 * 1024;
+pub const MAX_NATIVE_OFFICE_COLLABORATION_EVENT_BATCH: usize = 256;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationArtifactKind {
+    Document,
+    Markdown,
+    Spreadsheet,
+    Presentation,
+    Pdf,
+}
+
+impl NativeOfficeCollaborationArtifactKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Document => "document",
+            Self::Markdown => "markdown",
+            Self::Spreadsheet => "spreadsheet",
+            Self::Presentation => "presentation",
+            Self::Pdf => "pdf",
+        }
+    }
+}
+
+impl FromStr for NativeOfficeCollaborationArtifactKind {
+    type Err = UseError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value {
+            "document" => Ok(Self::Document),
+            "markdown" => Ok(Self::Markdown),
+            "spreadsheet" => Ok(Self::Spreadsheet),
+            "presentation" => Ok(Self::Presentation),
+            "pdf" => Ok(Self::Pdf),
+            _ => Err(collaboration_error(
+                "office.collaboration.kind_invalid",
+                format!("The collaboration artifact kind '{value}' is invalid."),
+            )),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationMode {
+    View,
+    Comment,
+    Suggest,
+    Edit,
+}
+
+impl NativeOfficeCollaborationMode {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::View => "view",
+            Self::Comment => "comment",
+            Self::Suggest => "suggest",
+            Self::Edit => "edit",
+        }
+    }
+}
+
+impl FromStr for NativeOfficeCollaborationMode {
+    type Err = UseError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value {
+            "view" => Ok(Self::View),
+            "comment" => Ok(Self::Comment),
+            "suggest" => Ok(Self::Suggest),
+            "edit" => Ok(Self::Edit),
+            _ => Err(collaboration_error(
+                "office.collaboration.mode_invalid",
+                format!("The collaboration mode '{value}' is invalid."),
+            )),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationActorKind {
+    Human,
+    Agent,
+    System,
+}
+
+impl NativeOfficeCollaborationActorKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Human => "human",
+            Self::Agent => "agent",
+            Self::System => "system",
+        }
+    }
+}
+
+impl FromStr for NativeOfficeCollaborationActorKind {
+    type Err = UseError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value {
+            "human" => Ok(Self::Human),
+            "agent" => Ok(Self::Agent),
+            "system" => Ok(Self::System),
+            _ => Err(collaboration_error(
+                "office.collaboration.actor_invalid",
+                format!("The collaboration actor kind '{value}' is invalid."),
+            )),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationOperationKind {
+    Create,
+    Join,
+    Synchronize,
+    Mutate,
+    Checkpoint,
+    Leave,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationOriginKind {
+    Bootstrap,
+    Editor,
+    Agent,
+    Import,
+    System,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationOrigin {
+    pub protocol: String,
+    pub kind: NativeOfficeCollaborationOriginKind,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub actor_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub operation_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum NativeOfficeCollaborationTransportMessageType {
+    #[serde(rename = "sync-step-1")]
+    SyncStep1,
+    #[serde(rename = "sync-step-2")]
+    SyncStep2,
+    #[serde(rename = "update")]
+    Update,
+}
+
+/// A native representation of the browser host-channel envelope. Payloads are
+/// raw Yjs v1 state vectors or updates; the live session translates them
+/// through the standard y-sync framing implemented by the durable store.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationTransportMessage {
+    pub protocol: String,
+    pub version: u32,
+    pub artifact_id: String,
+    pub artifact_kind: NativeOfficeCollaborationArtifactKind,
+    pub namespace: String,
+    pub sender_client_id: u64,
+    #[serde(rename = "type")]
+    pub message_type: NativeOfficeCollaborationTransportMessageType,
+    pub payload: Vec<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<NativeOfficeCollaborationOrigin>,
+}
+
+#[derive(Debug, Clone)]
+pub struct NativeOfficeCollaborationTransportReceiveRequest {
+    pub message: NativeOfficeCollaborationTransportMessage,
+    /// Stable host delivery identity. Required for SyncStep2 and Update.
+    pub operation_id: Option<String>,
+    pub if_state_vector: Option<Vec<u8>>,
+}
+
+/// Trusted participant identity supplied by a host after it authenticates a
+/// collaboration connection. Browser envelopes never populate this value.
+/// Hosts use it with `receive_authorized` to enforce ticket modes before a
+/// remote Yjs update reaches durable state.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NativeOfficeCollaborationTransportAuthorization {
+    pub actor_id: String,
+    pub actor_kind: NativeOfficeCollaborationActorKind,
+    pub actor_name: String,
+    pub mode: NativeOfficeCollaborationMode,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationTransportReceiveResult {
+    pub kind: NativeOfficeCollaborationTransportMessageType,
+    pub ignored: bool,
+    pub response: Option<NativeOfficeCollaborationTransportMessage>,
+    pub apply: Option<NativeOfficeCollaborationApplyResult>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationTransportPollResult {
+    pub starting_sequence: u64,
+    pub cursor_sequence: u64,
+    pub current_sequence: u64,
+    pub has_more: bool,
+    /// True when compaction made incremental replay unsafe and `messages`
+    /// contains a complete Update followed by a fresh SyncStep1 handshake.
+    pub resynchronized: bool,
+    pub messages: Vec<NativeOfficeCollaborationTransportMessage>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationManifest {
+    pub format: String,
+    pub schema_version: u32,
+    pub protocol: String,
+    pub protocol_version: u32,
+    pub namespace: String,
+    pub artifact_id: String,
+    pub kind: NativeOfficeCollaborationArtifactKind,
+    pub actor_id: String,
+    pub actor_kind: NativeOfficeCollaborationActorKind,
+    pub mode: NativeOfficeCollaborationMode,
+    pub client_id: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationMetadata {
+    pub protocol: String,
+    pub version: u32,
+    pub artifact_id: String,
+    pub kind: NativeOfficeCollaborationArtifactKind,
+    pub initialized: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationStateVectorEntry {
+    pub client_id: u64,
+    pub clock: u32,
+}
+
+#[derive(Debug, Clone)]
+pub struct NativeOfficeCollaborationCreateRequest {
+    pub store: PathBuf,
+    pub artifact_id: String,
+    pub kind: NativeOfficeCollaborationArtifactKind,
+    pub actor_id: String,
+    pub actor_kind: NativeOfficeCollaborationActorKind,
+    pub mode: NativeOfficeCollaborationMode,
+    pub operation_id: String,
+    pub namespace: Option<String>,
+    pub client_id: Option<u64>,
+    pub initial_update: Option<Vec<u8>>,
+}
+
+#[derive(Debug, Clone)]
+pub struct NativeOfficeCollaborationApplyRequest {
+    pub operation_id: String,
+    pub actor_id: String,
+    pub mode: NativeOfficeCollaborationMode,
+    pub expected_artifact_id: String,
+    pub expected_kind: NativeOfficeCollaborationArtifactKind,
+    pub update: Vec<u8>,
+    pub if_state_vector: Option<Vec<u8>>,
+    /// Optional authenticated source attribution supplied by a host
+    /// transport. This is audit metadata, not an authorization token.
+    pub origin: Option<NativeOfficeCollaborationOrigin>,
+}
+
+#[derive(Debug, Clone)]
+pub struct NativeOfficeCollaborationCheckpointRequest {
+    pub operation_id: String,
+    pub actor_id: String,
+    pub mode: NativeOfficeCollaborationMode,
+    pub expected_artifact_id: String,
+    pub expected_kind: NativeOfficeCollaborationArtifactKind,
+    pub if_state_vector: Option<Vec<u8>>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct NativeOfficeCollaborationEventsRequest {
+    /// `None` starts at the current durable sequence and observes new events.
+    pub after_sequence: Option<u64>,
+    pub limit: usize,
+}
+
+impl Default for NativeOfficeCollaborationEventsRequest {
+    fn default() -> Self {
+        Self {
+            after_sequence: None,
+            limit: MAX_NATIVE_OFFICE_COLLABORATION_EVENT_BATCH,
+        }
+    }
+}
+
+/// Caret carried by the same collaboration frame as the document update.
+/// It is not a follow-up presence message and it is not replica content.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum NativeOfficeCollaborationFrameCaret {
+    Markdown {
+        index_utf16: u32,
+    },
+    /// End of a `document-splice` inside the same paragraph and Word text node.
+    Document {
+        paragraph_id: String,
+        text_id: String,
+        index_utf16: u32,
+    },
+    /// Cell written by a spreadsheet frame. `indexUtf16` is present only for
+    /// `spreadsheet-splice` inside that cell's plain text.
+    Spreadsheet {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Scene element touched by a presentation edit. `indexUtf16` is present
+    /// only for a splice inside that element's text fragment.
+    Presentation {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// PDF form field written by `pdf-set-form-value`. No text offset.
+    PdfField {
+        field_id: String,
+    },
+    /// PDF annotation written by a create or update. No text offset.
+    PdfAnnotation {
+        annotation_id: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationApplyResult {
+    pub operation_id: String,
+    pub duplicate: bool,
+    pub state_changed: bool,
+    pub sequence: Option<u64>,
+    pub update_sha256: String,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+    pub checkpointed: bool,
+    /// End position of this frame. Absent when the mutation is not a caret edit.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub caret: Option<NativeOfficeCollaborationFrameCaret>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationCheckpointResult {
+    pub operation_id: String,
+    pub duplicate: bool,
+    pub sequence: u64,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+    pub compacted_updates: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationSyncResult {
+    pub update: Vec<u8>,
+    pub update_sha256: String,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationSyncStepResult {
+    pub message: Vec<u8>,
+    pub message_sha256: String,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationSyncMessageKind {
+    SyncStep1,
+    SyncStep2,
+    Update,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationSyncMessageResult {
+    pub kind: NativeOfficeCollaborationSyncMessageKind,
+    pub response: Option<Vec<u8>>,
+    pub response_sha256: Option<String>,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+    pub apply: Option<NativeOfficeCollaborationApplyResult>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationUpdateEvent {
+    pub sequence: u64,
+    pub operation_id: String,
+    pub operation_kind: NativeOfficeCollaborationOperationKind,
+    pub actor_id: String,
+    pub actor_kind: NativeOfficeCollaborationActorKind,
+    pub mode: NativeOfficeCollaborationMode,
+    pub artifact_id: String,
+    pub artifact_kind: NativeOfficeCollaborationArtifactKind,
+    pub payload_sha256: String,
+    pub update: Vec<u8>,
+    pub update_bytes: u64,
+    pub update_sha256: String,
+    pub before_state_vector_sha256: String,
+    pub after_state_vector_sha256: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<NativeOfficeCollaborationOrigin>,
+    /// Caret from the same frame as `update`. Absent for mutations that are not caret edits.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub caret: Option<NativeOfficeCollaborationFrameCaret>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationResetEvent {
+    pub sequence: u64,
+    pub update: Vec<u8>,
+    pub update_bytes: u64,
+    pub update_sha256: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationEventBatch {
+    pub starting_sequence: u64,
+    pub cursor_sequence: u64,
+    pub checkpoint_sequence: u64,
+    pub current_sequence: u64,
+    pub has_more: bool,
+    pub current_state_vector: Vec<u8>,
+    pub current_state_vector_sha256: String,
+    pub reset: Option<NativeOfficeCollaborationResetEvent>,
+    pub updates: Vec<NativeOfficeCollaborationUpdateEvent>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationInspection {
+    pub store: PathBuf,
+    pub manifest: NativeOfficeCollaborationManifest,
+    pub metadata: Option<NativeOfficeCollaborationMetadata>,
+    pub metadata_fields_present: usize,
+    pub metadata_complete: bool,
+    pub bootstrap_initializer_count: Option<u32>,
+    pub bootstrap_valid: Option<bool>,
+    pub root_names: Vec<String>,
+    pub state_vector: Vec<u8>,
+    pub state_vector_sha256: String,
+    pub state_vector_entries: Vec<NativeOfficeCollaborationStateVectorEntry>,
+    pub document_state_sha256: String,
+    pub pending_updates: bool,
+    pub checkpoint_sequence: u64,
+    pub current_sequence: u64,
+    pub update_count: usize,
+    pub update_bytes: u64,
+    pub operation_count: usize,
+}
+
+/// One Document text match in the same walk `document-replace-text` uses.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationDocumentTextMatch {
+    pub occurrence: u32,
+    pub text: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paragraph_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub text_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sheet_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub row: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub column: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container_kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub element_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub field_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotation_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub page_index: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotation_type: Option<u32>,
+    pub index_utf16: u32,
+}
+
+/// Read-only Document text match list for a live Writer replica.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeOfficeCollaborationDocumentTextFindResult {
+    pub search: String,
+    pub match_count: usize,
+    pub truncated: bool,
+    pub matches: Vec<NativeOfficeCollaborationDocumentTextMatch>,
+}

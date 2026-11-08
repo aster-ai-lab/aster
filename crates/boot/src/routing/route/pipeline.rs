@@ -1,0 +1,235 @@
+use super::definition::RouteDefinition;
+use crate::pipeline::{
+    ExecutionInterceptorAdapter, PipelineComponent, PipelineComponents, PipelineOverrides,
+};
+use crate::{
+    body_validator, body_validator_with_options, params_validator, params_validator_with_options,
+    query_validator, query_validator_with_options, BootErrorKind, ExceptionFilter,
+    ExecutionInterceptor, Guard, Interceptor, Middleware, Pipe, Validate, ValidationOptions,
+    ValidationSchema,
+};
+use serde::{de::DeserializeOwned, Serialize};
+use std::sync::Arc;
+
+impl RouteDefinition {
+    pub(crate) fn with_pipeline_prefix(mut self, pipeline: &PipelineComponents) -> Self {
+        self.middleware = prepend_arc(&pipeline.middleware, self.middleware);
+        self.pipes = prepend_component(&pipeline.pipes, self.pipes);
+        self.guards = prepend_component(&pipeline.guards, self.guards);
+        self.interceptors = prepend_component(&pipeline.interceptors, self.interceptors);
+        self.filters = prepend_component(&pipeline.filters, self.filters);
+        if !self.validation_disabled {
+            self.validation_enabled = pipeline.validation_enabled || self.validation_enabled;
+            self.validation_options = pipeline.validation_options.merge(self.validation_options);
+        }
+        self
+    }
+
+    pub fn with_pipe<P>(mut self, pipe: P) -> Self
+    where
+        P: Pipe,
+    {
+        self.pipes.push(PipelineComponent::<dyn Pipe>::new(pipe));
+        self
+    }
+
+    pub fn with_middleware<M>(mut self, middleware: M) -> Self
+    where
+        M: Middleware,
+    {
+        self.middleware.push(Arc::new(middleware));
+        self
+    }
+
+    pub(crate) fn with_middleware_prefix_arc(mut self, middleware: &[Arc<dyn Middleware>]) -> Self {
+        self.middleware = prepend_arc(middleware, self.middleware);
+        self
+    }
+
+    pub(crate) fn insert_middleware_prefix_at(
+        mut self,
+        index: usize,
+        middleware: Arc<dyn Middleware>,
+    ) -> Self {
+        self.middleware
+            .insert(index.min(self.middleware.len()), middleware);
+        self
+    }
+
+    pub fn with_guard<G>(mut self, guard: G) -> Self
+    where
+        G: Guard,
+    {
+        self.guards.push(PipelineComponent::<dyn Guard>::new(guard));
+        self
+    }
+
+    pub(crate) fn insert_pipe_prefix_at(
+        mut self,
+        index: usize,
+        pipe: PipelineComponent<dyn Pipe>,
+    ) -> Self {
+        self.pipes.insert(index.min(self.pipes.len()), pipe);
+        self
+    }
+
+    pub(crate) fn insert_guard_prefix_at(
+        mut self,
+        index: usize,
+        guard: PipelineComponent<dyn Guard>,
+    ) -> Self {
+        self.guards.insert(index.min(self.guards.len()), guard);
+        self
+    }
+
+    pub fn with_interceptor<I>(mut self, interceptor: I) -> Self
+    where
+        I: Interceptor,
+    {
+        self.interceptors
+            .push(PipelineComponent::<dyn Interceptor>::new(interceptor));
+        self
+    }
+
+    pub(crate) fn insert_interceptor_prefix_at(
+        mut self,
+        index: usize,
+        interceptor: PipelineComponent<dyn Interceptor>,
+    ) -> Self {
+        self.interceptors
+            .insert(index.min(self.interceptors.len()), interceptor);
+        self
+    }
+
+    pub fn with_execution_interceptor<I>(self, interceptor: I) -> Self
+    where
+        I: ExecutionInterceptor,
+    {
+        self.with_interceptor(ExecutionInterceptorAdapter::new(interceptor))
+    }
+
+    pub(crate) fn with_pipeline_overrides(mut self, overrides: &PipelineOverrides) -> Self {
+        overrides.apply_to_pipes(&mut self.pipes);
+        overrides.apply_to_guards(&mut self.guards);
+        overrides.apply_to_interceptors(&mut self.interceptors);
+        overrides.apply_to_filters(&mut self.filters);
+        self
+    }
+
+    pub fn with_filter<F>(mut self, filter: F) -> Self
+    where
+        F: ExceptionFilter,
+    {
+        self.filters
+            .push(PipelineComponent::<dyn ExceptionFilter>::new(filter));
+        self
+    }
+
+    pub(crate) fn insert_filter_prefix_at(
+        mut self,
+        index: usize,
+        filter: PipelineComponent<dyn ExceptionFilter>,
+    ) -> Self {
+        self.filters.insert(index.min(self.filters.len()), filter);
+        self
+    }
+
+    pub fn with_catch_filter<I, F>(self, kinds: I, filter: F) -> Self
+    where
+        I: IntoIterator<Item = BootErrorKind>,
+        F: ExceptionFilter,
+    {
+        self.with_filter(crate::catch_errors(kinds, filter))
+    }
+
+    pub fn with_validation(mut self) -> Self {
+        self.validation_enabled = true;
+        self.validation_disabled = false;
+        self
+    }
+
+    pub fn with_validation_options(mut self, options: ValidationOptions) -> Self {
+        self.validation_enabled = true;
+        self.validation_disabled = false;
+        self.validation_options = self.validation_options.merge(options);
+        self
+    }
+
+    pub fn without_validation(mut self) -> Self {
+        self.validation_enabled = false;
+        self.validation_disabled = true;
+        self
+    }
+
+    pub fn with_body_validation<T>(mut self) -> Self
+    where
+        T: DeserializeOwned + Validate + 'static,
+    {
+        self.validators.push(body_validator::<T>());
+        self
+    }
+
+    pub fn with_body_validation_options<T>(mut self, options: ValidationOptions) -> Self
+    where
+        T: DeserializeOwned + Serialize + Validate + ValidationSchema + 'static,
+    {
+        self.validators
+            .push(body_validator_with_options::<T>(options));
+        self
+    }
+
+    pub fn with_params_validation<T>(mut self) -> Self
+    where
+        T: DeserializeOwned + Validate + 'static,
+    {
+        self.validators.push(params_validator::<T>());
+        self
+    }
+
+    pub fn with_params_validation_options<T>(mut self, options: ValidationOptions) -> Self
+    where
+        T: DeserializeOwned + Serialize + Validate + ValidationSchema + 'static,
+    {
+        self.validators
+            .push(params_validator_with_options::<T>(options));
+        self
+    }
+
+    pub fn with_query_validation<T>(mut self) -> Self
+    where
+        T: DeserializeOwned + Validate + 'static,
+    {
+        self.validators.push(query_validator::<T>());
+        self
+    }
+
+    pub fn with_query_validation_options<T>(mut self, options: ValidationOptions) -> Self
+    where
+        T: DeserializeOwned + Serialize + Validate + ValidationSchema + 'static,
+    {
+        self.validators
+            .push(query_validator_with_options::<T>(options));
+        self
+    }
+}
+
+fn prepend_arc<T>(prefix: &[Arc<T>], values: Vec<Arc<T>>) -> Vec<Arc<T>>
+where
+    T: ?Sized,
+{
+    let mut merged = prefix.to_vec();
+    merged.extend(values);
+    merged
+}
+
+fn prepend_component<T>(
+    prefix: &[PipelineComponent<T>],
+    values: Vec<PipelineComponent<T>>,
+) -> Vec<PipelineComponent<T>>
+where
+    T: ?Sized,
+{
+    let mut merged = prefix.to_vec();
+    merged.extend(values);
+    merged
+}

@@ -1,0 +1,751 @@
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_json::Value as JsonValue;
+
+use super::{NativeOfficeCollaborationArtifactKind, NativeOfficeCollaborationMode};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationParagraphPosition {
+    Before,
+    After,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationPresentationContainerKind {
+    Slide,
+    Master,
+    Layout,
+}
+
+impl NativeOfficeCollaborationPresentationContainerKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Slide => "slide",
+            Self::Master => "master",
+            Self::Layout => "layout",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct NativeOfficeCollaborationPdfRect {
+    pub left: f64,
+    pub top: f64,
+    pub right: f64,
+    pub bottom: f64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationPdfAnnotationSource {
+    Base,
+    Created,
+}
+
+impl NativeOfficeCollaborationPdfAnnotationSource {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Base => "base",
+            Self::Created => "created",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationPdfReviewTargetKind {
+    Redaction,
+    PageOperation,
+}
+
+impl NativeOfficeCollaborationPdfReviewTargetKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Redaction => "redaction",
+            Self::PageOperation => "page-operation",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationPdfReviewDecision {
+    Approve,
+    Reject,
+}
+
+impl NativeOfficeCollaborationPdfReviewDecision {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Approve => "approve",
+            Self::Reject => "reject",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationDocumentChangeKind {
+    Insertion,
+    Deletion,
+    Formatting,
+    ParagraphFormatting,
+    Numbering,
+    Move,
+}
+
+impl NativeOfficeCollaborationDocumentChangeKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Insertion => "insertion",
+            Self::Deletion => "deletion",
+            Self::Formatting => "formatting",
+            Self::ParagraphFormatting => "paragraph-formatting",
+            Self::Numbering => "numbering",
+            Self::Move => "move",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationDocumentSuggestionKind {
+    Insertion,
+    Deletion,
+}
+
+impl From<NativeOfficeCollaborationDocumentSuggestionKind>
+    for NativeOfficeCollaborationDocumentChangeKind
+{
+    fn from(value: NativeOfficeCollaborationDocumentSuggestionKind) -> Self {
+        match value {
+            NativeOfficeCollaborationDocumentSuggestionKind::Insertion => Self::Insertion,
+            NativeOfficeCollaborationDocumentSuggestionKind::Deletion => Self::Deletion,
+        }
+    }
+}
+
+impl NativeOfficeCollaborationDocumentSuggestionKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Insertion => "insertion",
+            Self::Deletion => "deletion",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum NativeOfficeCollaborationDocumentSuggestionDecision {
+    Accept,
+    Reject,
+}
+
+impl NativeOfficeCollaborationDocumentSuggestionDecision {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Accept => "accept",
+            Self::Reject => "reject",
+        }
+    }
+}
+
+/// Exact suggestion identity observed in a native Document projection.
+///
+/// Decisions match every field instead of trusting the stable ID alone, so a
+/// stale or colliding review request fails without changing shared state.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct NativeOfficeCollaborationDocumentSuggestionMatch {
+    pub id: String,
+    pub kind: NativeOfficeCollaborationDocumentSuggestionKind,
+    pub expected_actor_id: Option<String>,
+    pub expected_author: String,
+    pub expected_created_at: String,
+    pub expected_text: String,
+}
+
+/// One guarded cell transition inside an atomic Spreadsheet batch.
+///
+/// A missing `expectedCell` represents a coordinate observed as blank. The
+/// `nextCell` field must be present; `nextCell: null` deletes the coordinate
+/// and therefore requires a present `expectedCell`.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct NativeOfficeCollaborationSpreadsheetCellChange {
+    pub row: u32,
+    pub column: u32,
+    pub expected_cell: Option<JsonValue>,
+    #[serde(deserialize_with = "deserialize_present_optional_json")]
+    pub next_cell: Option<JsonValue>,
+}
+
+fn deserialize_present_optional_json<'de, D>(deserializer: D) -> Result<Option<JsonValue>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Option::<JsonValue>::deserialize(deserializer)
+}
+
+/// One scene element's group path inside a single group frame.
+/// The path is ordered from the outermost group inward.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct NativeOfficeCollaborationPresentationGroupMember {
+    pub element_id: String,
+    /// Observed path. Empty means `groupIds` is absent.
+    pub expected_group_ids: Vec<String>,
+    /// Path to write. Empty removes `groupIds`.
+    pub next_group_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "type",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase",
+    deny_unknown_fields
+)]
+pub enum NativeOfficeCollaborationMutation {
+    /// Compare-and-swap the canonical Markdown source. `expected_markdown`
+    /// must equal the current Y.Text; a drifted base fails closed and writes
+    /// nothing. The accepted write keeps the longest common prefix and suffix.
+    /// Prefer `markdown-replace-text` or `markdown-splice` for incremental edits.
+    MarkdownReplace {
+        expected_markdown: String,
+        markdown: String,
+    },
+    /// Splice the canonical Markdown Y.Text using browser-compatible UTF-16
+    /// offsets. `expected_slice` must equal the current text in
+    /// `[index_utf16, index_utf16 + delete_utf16)`, or be empty when nothing
+    /// is deleted. A drifted slice fails closed and writes nothing, so a stale
+    /// whole-source splice cannot overwrite a concurrent edit. Surrogate pairs
+    /// may not be split.
+    MarkdownSplice {
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Replace an exact number of non-overlapping text matches inside the
+    /// canonical Markdown Y.Text. Locate first with `collab find` /
+    /// `office_collaboration_find`, then pass `matchCount` as
+    /// `expectedMatches` and optional 1-based `occurrence`.
+    /// Optional `indexUtf16` from the find hit makes that occurrence
+    /// place-safe under concurrent peers; omit it to keep the count-only
+    /// contract.
+    MarkdownReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        /// 1-based match. Omitted means every match after the count check.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        /// Optional UTF-16 start index from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Replace an exact number of non-overlapping text matches inside the
+    /// canonical ProseMirror `Y.XmlFragment`. Matches may span formatting
+    /// runs inside one `Y.XmlText`, but never cross an embedded object or XML
+    /// text-node boundary.
+    ///
+    /// Locate first with `collab find` / `office_collaboration_find`, then pass
+    /// `matchCount` as `expectedMatches` and optional 1-based `occurrence`.
+    /// Optional find-hit anchors (`paragraphId`, `textId`, `indexUtf16`) make
+    /// the selected occurrence place-safe under concurrent peers; omit them to
+    /// keep the count-only contract.
+    DocumentReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        /// 1-based match. Omitted means every match after the count check.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        /// Optional paragraph identity from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        paragraph_id: Option<String>,
+        /// Optional Word text identity from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        text_id: Option<String>,
+        /// Optional UTF-16 start index from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Splice one `Y.XmlText` inside a stable paragraph. `expected_slice` must
+    /// equal the UTF-16 range being deleted, or be empty when `delete_utf16`
+    /// is 0. A drifted slice or `text_id` writes nothing. Insert and delete
+    /// that stay inside the node do not rotate `text_id`.
+    DocumentSplice {
+        paragraph_id: String,
+        text_id: String,
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Replace the complete visible text of one stable plain paragraph after
+    /// matching its current Word text identity and exact text. This is the
+    /// preferred conflict-local operation after reading a native projection.
+    DocumentReplaceParagraph {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+        replacement: String,
+    },
+    /// Set the conflict-local Document page-color option.
+    DocumentSetPageColor { page_color: String },
+    /// Explicitly clear the conflict-local Document page-color option.
+    DocumentClearPageColor {},
+    /// Set the conflict-local Document track-changes option.
+    DocumentSetTrackChanges { track_changes: bool },
+    /// Explicitly clear the conflict-local Document track-changes option.
+    DocumentClearTrackChanges {},
+    /// Insert one plain paragraph next to a uniquely identified paragraph in
+    /// a supported section, list-item, table-cell, or blockquote container.
+    /// New Word identities are explicit so independent native replicas encode
+    /// the same logical operation.
+    DocumentInsertParagraph {
+        anchor_paragraph_id: String,
+        position: NativeOfficeCollaborationParagraphPosition,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one plain paragraph from a supported structural container after
+    /// verifying its current Word text identity and complete visible text.
+    DocumentDeleteParagraph {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one single-cell table row beside an observed row. The anchor
+    /// row's text identity must still match. Ancestor rows rotate in the same
+    /// transaction. A drifted identity writes nothing.
+    DocumentInsertTableRow {
+        anchor_row_id: String,
+        expected_row_text_id: String,
+        position: NativeOfficeCollaborationParagraphPosition,
+        row_id: String,
+        row_text_id: String,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one table row that still has the observed identity and exactly
+    /// one plain paragraph. A drifted identity, the table's last row, or a row
+    /// that is not a single plain paragraph writes nothing.
+    DocumentDeleteTableRow {
+        row_id: String,
+        expected_row_text_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one list item beside the item whose first block is the observed
+    /// paragraph. A drifted text identity, or an anchor that is not that first
+    /// block, writes nothing. A list inside a table cell rotates ancestor row
+    /// identities in the same transaction.
+    DocumentInsertListItem {
+        anchor_paragraph_id: String,
+        expected_text_id: String,
+        position: NativeOfficeCollaborationParagraphPosition,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one list item that still has the observed identity and exactly
+    /// one plain paragraph. The list's last item writes nothing.
+    DocumentDeleteListItem {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one section beside an observed top-level section. The new
+    /// section holds one plain paragraph. A missing section, or a drifted
+    /// paragraph identity inside it, writes nothing.
+    DocumentInsertSection {
+        anchor_section_id: String,
+        expected_paragraph_id: String,
+        expected_text_id: String,
+        position: NativeOfficeCollaborationParagraphPosition,
+        section_id: String,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one section that still holds the observed plain paragraph.
+    /// The document's last section, or a section that is not one plain
+    /// paragraph, writes nothing.
+    DocumentDeleteSection {
+        section_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Append one attributable Document comment and its browser-compatible
+    /// ProseMirror mark after matching a stable paragraph identity, exact
+    /// UTF-16 selection, and selected text.
+    DocumentCommentCreate {
+        comment_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        start_utf16: u32,
+        end_utf16: u32,
+        expected_text: String,
+        author: String,
+        created_at: String,
+        text: String,
+    },
+    /// Append one attributable reply to an existing Document comment.
+    DocumentCommentReply {
+        comment_id: String,
+        reply_id: String,
+        author: String,
+        created_at: String,
+        text: String,
+    },
+    /// Set the current resolution state of an existing Document comment.
+    DocumentCommentSetResolved { comment_id: String, resolved: bool },
+    /// Delete one Document comment, or one reply when `replyId` is supplied.
+    /// Comment-mode replicas may delete only records owned by their actor.
+    DocumentCommentDelete {
+        comment_id: String,
+        reply_id: Option<String>,
+    },
+    /// Propose one insertion, deletion, or atomic replacement in a stable
+    /// plain Document paragraph. An insertion ID is required when
+    /// `replacement` is non-empty; a deletion ID is required when the guarded
+    /// range is non-empty. Replacement proposals therefore carry both IDs.
+    DocumentSuggestionCreate {
+        paragraph_id: String,
+        expected_text_id: String,
+        start_utf16: u32,
+        end_utf16: u32,
+        expected_text: String,
+        replacement: String,
+        insertion_id: Option<String>,
+        deletion_id: Option<String>,
+        author: String,
+        created_at: String,
+    },
+    /// Accept or reject one or more exact tracked changes atomically and
+    /// append immutable browser-compatible audit records. A replacement can
+    /// be decided as one operation by supplying its insertion and deletion
+    /// identities together.
+    DocumentSuggestionDecide {
+        suggestions: Vec<NativeOfficeCollaborationDocumentSuggestionMatch>,
+        decision: NativeOfficeCollaborationDocumentSuggestionDecision,
+        decided_by: String,
+        decided_at: String,
+    },
+    /// Create or update one Spreadsheet cell through the browser-compatible
+    /// field-addressed cell map. `expectedCell` is absent when the caller
+    /// observed a blank coordinate. Recursive optimistic guards allow
+    /// unrelated concurrent leaf edits to merge while same-leaf conflicts
+    /// fail closed.
+    SpreadsheetSetCell {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        expected_cell: Option<JsonValue>,
+        next_cell: JsonValue,
+    },
+    /// Delete one Spreadsheet cell after matching its complete current JSON
+    /// value. Dense projection dimensions are retained; sparse and empty
+    /// sheets remain sparse.
+    SpreadsheetDeleteCell {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        expected_cell: JsonValue,
+    },
+    /// Apply one user gesture to distinct cells in a single sheet and Yjs
+    /// transaction. Every optimistic guard is checked against the same shared
+    /// snapshot before any field, presence marker, or dense dimension changes.
+    SpreadsheetBatchCells {
+        sheet_id: String,
+        changes: Vec<NativeOfficeCollaborationSpreadsheetCellChange>,
+    },
+    /// Splice the plain text of one cell. `expectedSlice` must equal the
+    /// deleted UTF-16 range, or be empty when `deleteUtf16` is 0. Formula
+    /// cells, cached numbers, and styles stay field-addressed and are not
+    /// spliced. A drifted slice writes nothing.
+    SpreadsheetSplice {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Insert `count` rows at the 0-based index `at` and rewrite formula
+    /// references in the same transaction. Cells at and below `at` move down.
+    /// Cached formula values are not recalculated. A reference the rewriter
+    /// cannot shift fails the whole mutation and writes nothing.
+    SpreadsheetInsertRows {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Delete `count` rows starting at the 0-based index `at`. References that
+    /// pointed into the deleted rows become `#REF!` in the same transaction.
+    SpreadsheetDeleteRows {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Insert `count` columns at the 0-based index `at` and rewrite formula
+    /// references in the same transaction. Cells at and to the right of `at`
+    /// move right.
+    SpreadsheetInsertColumns {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Delete `count` columns starting at the 0-based index `at`. References
+    /// that pointed into the deleted columns become `#REF!` in the same
+    /// transaction.
+    SpreadsheetDeleteColumns {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Reorder rows inside one rectangle. `source_rows[destination]` is the
+    /// source row offset. Formula text moves with its cell. A stale observed
+    /// cell, or a merge, table, or pivot that meets the rectangle, writes
+    /// nothing.
+    SpreadsheetSortRows {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        row_count: u32,
+        column_count: u32,
+        source_rows: Vec<u32>,
+        expected_cells: Vec<Option<JsonValue>>,
+    },
+    /// Create one table record in the browser-convergent `tables` map.
+    /// The creation claim reserves the ID. A different record for that ID
+    /// writes nothing.
+    SpreadsheetCreateTable { sheet_id: String, table: JsonValue },
+    /// Replace one table record after its complete observed JSON matches.
+    /// A drifted record writes nothing. The creation claim stays as written.
+    SpreadsheetUpdateTable {
+        sheet_id: String,
+        table_id: String,
+        expected_table: JsonValue,
+        next_table: JsonValue,
+    },
+    /// Remove one table record and its order entry after the complete observed
+    /// JSON matches. The creation claim stays, so the ID cannot be reused for
+    /// a different record.
+    SpreadsheetDeleteTable {
+        sheet_id: String,
+        table_id: String,
+        expected_table: JsonValue,
+    },
+    /// Create one scene element inside a slide, master, or layout. The full
+    /// element is fingerprinted in the browser-compatible record-claims root,
+    /// preventing different records from converging under one stable ID.
+    PresentationCreateElement {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element: JsonValue,
+        after_element_id: Option<String>,
+    },
+    /// Update top-level fields of one scene element with optimistic guards.
+    /// Independent field edits merge, while stale edits to the same field
+    /// fail closed. Element IDs and types are immutable.
+    PresentationUpdateElement {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        expected_element: JsonValue,
+        next_element: JsonValue,
+    },
+    /// Tombstone one scene element after matching its complete current JSON
+    /// value. Tombstoned IDs remain reserved and cannot be reused.
+    PresentationDeleteElement {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        expected_element: JsonValue,
+    },
+    /// Move one active scene element in its container z-order. Stable
+    /// predecessor identities guard the observed source position and express
+    /// the requested destination; `None` means the first order-array position.
+    PresentationMoveElement {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        expected_after_element_id: Option<String>,
+        after_element_id: Option<String>,
+    },
+    /// Insert or delete inside one scene element's collaborative text fragment.
+    /// The address is the element. `expectedSlice` is the deleted UTF-16 range,
+    /// empty when `deleteUtf16` is 0. The caret is the index after the insert
+    /// in that same fragment. This does not replace the element record.
+    PresentationSplice {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Replace non-overlapping matches inside scene-element `text` fields.
+    /// Locate first with `collab find` / `office_collaboration_find`, then pass
+    /// `matchCount` as `expectedMatches` and optional 1-based `occurrence`.
+    /// Optional find-hit anchors (`containerKind`, `containerId`, `elementId`,
+    /// `indexUtf16`) make the selected occurrence place-safe under concurrent
+    /// peers; omit them to keep the count-only contract.
+    /// Only the `text` field is written; geometry and other fields stay put.
+    PresentationReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        /// 1-based match. Omitted means every match after the count check.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        /// Optional scene-container kind from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        container_kind: Option<NativeOfficeCollaborationPresentationContainerKind>,
+        /// Optional scene-container identity from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        container_id: Option<String>,
+        /// Optional scene-element identity from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        element_id: Option<String>,
+        /// Optional UTF-16 start index from the find hit.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Move one slide in `slide-order`. Shape records stay put. `None` means
+    /// the first position. A predecessor that is not the observed one writes
+    /// nothing.
+    PresentationMoveSlide {
+        slide_id: String,
+        expected_after_slide_id: Option<String>,
+        after_slide_id: Option<String>,
+    },
+    /// Replace every listed scene element's group path in one transaction.
+    /// Paths are outermost group first. An empty path means the field is
+    /// absent. One member whose observed path does not match writes nothing.
+    PresentationSetGroup {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        members: Vec<NativeOfficeCollaborationPresentationGroupMember>,
+    },
+    /// Replace the `background` field of one slide, master, or layout.
+    /// `None` means the field is absent. Element text stays put. A background
+    /// that is not the observed one writes nothing.
+    PresentationSetBackground {
+        container_kind: NativeOfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        expected_background: Option<String>,
+        next_background: Option<String>,
+    },
+    /// Create one portable PDF annotation with a caller-owned stable ID.
+    /// Native creation always records `source: "created"` and accepts only
+    /// annotation types supported by the browser projection.
+    PdfCreateAnnotation {
+        annotation_id: String,
+        page_index: u32,
+        annotation: JsonValue,
+    },
+    /// Update mutable leaves of one portable PDF annotation. The expected
+    /// value provides a recursive optimistic guard, so unrelated concurrent
+    /// leaf edits merge while conflicting edits fail closed.
+    /// Optional `search` plus `indexUtf16` from `collab find` treat
+    /// `nextAnnotation.contents` as a FreeText span replacement and fail
+    /// closed when that span drifts. Omit both to keep the whole-contents
+    /// contract.
+    PdfUpdateAnnotation {
+        annotation_id: String,
+        expected_annotation: JsonValue,
+        next_annotation: JsonValue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        search: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Irreversibly tombstone one PDF annotation after matching its immutable
+    /// source, page, and annotation-type identity.
+    PdfDeleteAnnotation {
+        annotation_id: String,
+        expected_source: NativeOfficeCollaborationPdfAnnotationSource,
+        expected_page_index: u32,
+        expected_type: u32,
+    },
+    /// Set one PDF form value by its stable fully-qualified field name.
+    /// `expected_value` must equal the current value, or `""` when the field
+    /// is absent. A drifted base fails closed and writes nothing. New fields
+    /// are added to the typed presence/fields/order collection; an existing
+    /// field changes only its conflict-local value leaf. Optional `search`
+    /// plus `indexUtf16` from `collab find` then replace only that span.
+    PdfSetFormValue {
+        field_id: String,
+        expected_value: String,
+        value: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        search: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Append one attributable PDF redaction proposal. The replica actor is
+    /// recorded as `proposedBy`; callers provide stable identity, geometry,
+    /// and a deterministic UTC timestamp.
+    PdfProposeRedaction {
+        proposal_id: String,
+        page_index: u32,
+        rects: Vec<NativeOfficeCollaborationPdfRect>,
+        proposed_at: String,
+        reason: Option<String>,
+        text: Option<String>,
+    },
+    /// Append one attributable request to rotate a non-empty set of source
+    /// pages clockwise by 90, 180, or 270 degrees.
+    PdfProposePageRotation {
+        page_operation_id: String,
+        page_indices: Vec<u32>,
+        degrees: u16,
+        proposed_at: String,
+    },
+    /// Append one attributable request to delete a non-empty proper subset of
+    /// source pages. At least one source page must remain.
+    PdfProposePageDeletion {
+        page_operation_id: String,
+        page_indices: Vec<u32>,
+        proposed_at: String,
+    },
+    /// Append one attributable request to reorder every source page using a
+    /// complete zero-based permutation.
+    PdfProposePageReorder {
+        page_operation_id: String,
+        page_order: Vec<u32>,
+        proposed_at: String,
+    },
+    /// Append the single final decision for a redaction or page operation.
+    /// The replica actor is recorded as `actorId`.
+    PdfDecideReview {
+        decision_id: String,
+        target_kind: NativeOfficeCollaborationPdfReviewTargetKind,
+        target_id: String,
+        decision: NativeOfficeCollaborationPdfReviewDecision,
+        created_at: String,
+    },
+}
+
+#[derive(Debug, Clone)]
+pub struct NativeOfficeCollaborationMutationRequest {
+    pub operation_id: String,
+    pub actor_id: String,
+    pub mode: NativeOfficeCollaborationMode,
+    pub expected_artifact_id: String,
+    pub expected_kind: NativeOfficeCollaborationArtifactKind,
+    pub mutation: NativeOfficeCollaborationMutation,
+    pub if_state_vector: Option<Vec<u8>>,
+}

@@ -1,0 +1,43 @@
+[package]
+name = "aster-durable-memory"
+version = "0.1.5"
+edition = "2021"
+authors = ["Aster Team"]
+license = "MIT"
+repository = "https://github.com/aster-ai-lab/Memory"
+description = "Aster Memory - Pluggable memory storage for AI agents"
+publish = false
+
+[lib]
+name = "aster_durable_memory"
+path = "src/lib.rs"
+
+[features]
+# SQLite-backed memory store and durable vector index
+sqlite = ["dep:rusqlite", "dep:windows-sys"]
+# Vector-similarity search via sqlite-vec (requires sqlite feature)
+sqlite-vec = ["sqlite", "dep:sqlite-vec"]
+
+[dependencies]
+async-trait = {workspace = true}
+anyhow = "1.0"
+chrono = {version = "0.4", features = ["serde"]}
+fs2 = {workspace = true}
+serde = {version = "1.0", features = ["derive"]}
+serde_json = "1.0"
+sha2 = {workspace = true}
+tokio = {version = "1", features = ["sync", "fs", "rt", "io-util"]}
+uuid = {version = "1.6", features = ["v4", "serde"]}
+
+# SQLite (bundled build includes FTS5; optional)
+rusqlite = {workspace = true, optional = true}
+
+# Vector extension for semantic search (optional)
+sqlite-vec = {version = "0.1.7-alpha.10", optional = true}
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = {version = "0.61", features = ["Win32_Foundation", "Win32_Storage_FileSystem"], optional = true}
+
+[dev-dependencies]
+tempfile = "3.10"
+tokio = {version = "1", features = ["rt", "macros"]}

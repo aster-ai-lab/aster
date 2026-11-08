@@ -1,0 +1,524 @@
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
+
+use async_trait::async_trait;
+use chrono::{Duration, Utc};
+use tokio::sync::Notify;
+use uuid::Uuid;
+
+use super::super::*;
+use crate::backend::types::{CompletionRequest, CompletionResponseChunk};
+use crate::error::{PowerError, Result};
+
+fn digest(character: char) -> String {
+    character.to_string().repeat(64)
+}
+
+pub(crate) fn profile(role: DisaggregatedServingRole, timeout_ms: u64) -> ServingExecutionProfile {
+    ServingExecutionProfile::prefill_decode(PrefillDecodeExecutionProfile {
+        role,
+        model: "internal/model-v1".to_string(),
+        model_sha256: digest('1'),
+        backend: "test-backend".to_string(),
+        backend_sha256: digest('2'),
+        execution_sha256: digest('3'),
+        device_sha256: digest('4'),
+        layout_sha256: digest('5'),
+        peer_set_sha256: digest('6'),
+        generation: 7,
+        protocol: StateTransferProtocol::DirectDeviceMemoryPullV1,
+        state_kind: StateKind::KvCache,
+        max_state_bytes: 1024,
+        max_inflight_transfers: 2,
+        transfer_timeout_ms: timeout_ms,
+        cancellation_timeout_ms: timeout_ms.min(10),
+        privacy: ServingPrivacyMode::AuthenticatedEncryptedTransport,
+        privacy_policy_sha256: digest('7'),
+        attestation_policy_sha256: None,
+        weight_cache: PhaseWeightCacheMode::SharedWeightHierarchy,
+        residency_policy_sha256: None,
+        session_pool: PhaseSessionPoolMode::SharedSessionPool,
+        session_pool_policy_sha256: None,
+        transport: None,
+        phase_executor: None,
+        state_ownership: None,
+        phase_execution: None,
+    })
+    .unwrap()
+}
+
+pub(crate) fn binding() -> StateTransferBinding {
+    StateTransferBinding {
+        model_sha256: digest('1'),
+        execution_sha256: digest('3'),
+        layout_sha256: digest('5'),
+        state_kind: StateKind::KvCache,
+        token_count: 16,
+        state_bytes: 512,
+    }
+}
+
+pub(crate) fn request() -> PhaseRequest {
+    PhaseRequest::Completion(
+        serde_json::from_value::<CompletionRequest>(serde_json::json!({
+            "prompt": "private prompt",
+            "stream": true
+        }))
+        .unwrap(),
+    )
+}
+
+/// Controllable decode `execute` outcome after prepare+consume succeed.
+///
+/// Prefill execute always remains Ready in these fixtures; only the decode
+/// path injects typed non-Ready decisions to prove transfer receipt is not
+/// decode success.
+#[derive(Clone, Copy, Debug, Default)]
+pub(crate) enum DecodeExecuteFixture {
+    #[default]
+    ReadyStream,
+    /// Stream that never yields a token chunk; used for mid-stream cancel.
+    HangBeforeFirstChunk,
+    Recompute(RecomputeReason),
+    RetryableUnavailable {
+        reason: RetryableUnavailableReason,
+        retry_after_ms: Option<u64>,
+    },
+    TerminalFailure(TerminalFailureReason),
+}
+
+/// Controllable consume-receipt corruption for distributed fail-closed tests.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub(crate) enum CorruptConsumeReceipt {
+    #[default]
+    None,
+    ShortBytes,
+    InvalidIntegrityDigest,
+}
+
+/// Shared hooks for mid-transfer / mid-stream cancellation fixtures.
+#[derive(Default)]
+pub(crate) struct TransferHooks {
+    pub(crate) block_consume: AtomicBool,
+    pub(crate) consume_started: Notify,
+    pub(crate) block_prepare_destination: AtomicBool,
+    pub(crate) prepare_destination_started: Notify,
+    pub(crate) stream_started: Notify,
+}
+
+#[derive(Clone)]
+pub(crate) struct FixtureBehavior {
+    pub prepared_expiry_delta: Duration,
+    pub block_prepare: bool,
+    pub retryable_prepare: bool,
+    pub fail_abort: bool,
+    pub decode_execute: DecodeExecuteFixture,
+    pub corrupt_consume_receipt: CorruptConsumeReceipt,
+    pub transfer_hooks: Arc<TransferHooks>,
+}
+
+impl Default for FixtureBehavior {
+    fn default() -> Self {
+        Self {
+            prepared_expiry_delta: Duration::zero(),
+            block_prepare: false,
+            retryable_prepare: false,
+            fail_abort: false,
+            decode_execute: DecodeExecuteFixture::ReadyStream,
+            corrupt_consume_receipt: CorruptConsumeReceipt::None,
+            transfer_hooks: Arc::new(TransferHooks::default()),
+        }
+    }
+}
+
+#[derive(Default)]
+pub(crate) struct Calls {
+    values: Mutex<Vec<&'static str>>,
+    pub(crate) phase_aborts: AtomicUsize,
+    pub(crate) transfer_aborts: AtomicUsize,
+}
+
+impl Calls {
+    fn push(&self, value: &'static str) {
+        self.values.lock().unwrap().push(value);
+    }
+
+    pub(crate) fn values(&self) -> Vec<&'static str> {
+        self.values.lock().unwrap().clone()
+    }
+}
+
+pub(crate) struct TestTransferDriver {
+    pub(crate) capabilities: StateTransferCapabilities,
+    pub(crate) calls: Arc<Calls>,
+    pub(crate) corrupt_consume_receipt: CorruptConsumeReceipt,
+    pub(crate) hooks: Arc<TransferHooks>,
+}
+
+#[async_trait]
+impl StateTransferService for TestTransferDriver {
+    fn capabilities(&self) -> StateTransferCapabilities {
+        self.capabilities.clone()
+    }
+
+    fn health(&self) -> TransferHealth {
+        TransferHealth::Ready
+    }
+
+    async fn prepare_destination(
+        &self,
+        command: PrepareStateTransfer,
+    ) -> Result<StateTransferTarget> {
+        self.calls.push("transfer.prepare");
+        self.hooks.prepare_destination_started.notify_waiters();
+        if self.hooks.block_prepare_destination.load(Ordering::SeqCst) {
+            std::future::pending::<()>().await;
+        }
+        Ok(StateTransferTarget {
+            schema: STATE_TRANSFER_TARGET_SCHEMA.to_string(),
+            transfer_id: command.transfer_id,
+            destination_worker_epoch: command.local_worker_epoch,
+            deployment: ServingDeploymentIdentity {
+                generation: 7,
+                peer_set_sha256: digest('6'),
+            },
+            binding: command.binding,
+            protocol: StateTransferProtocol::DirectDeviceMemoryPullV1,
+            prepared_at: Utc::now(),
+            expires_at: command.expires_at,
+            ticket: "target-ticket".to_string(),
+        })
+    }
+
+    async fn publish_source(&self, command: PublishStateTransfer) -> Result<StateTransferSource> {
+        self.calls.push("transfer.publish");
+        Ok(StateTransferSource {
+            schema: STATE_TRANSFER_SOURCE_SCHEMA.to_string(),
+            transfer_id: command.target.transfer_id,
+            source_worker_epoch: command.local_worker_epoch,
+            destination_worker_epoch: command.target.destination_worker_epoch,
+            deployment: command.target.deployment.clone(),
+            binding: command.target.binding,
+            protocol: command.target.protocol,
+            published_at: Utc::now(),
+            expires_at: command.target.expires_at,
+            ticket: "source-ticket".to_string(),
+        })
+    }
+
+    async fn consume_source(&self, command: ConsumeStateTransfer) -> Result<StateTransferReceipt> {
+        self.calls.push("transfer.consume");
+        self.hooks.consume_started.notify_waiters();
+        if self.hooks.block_consume.load(Ordering::SeqCst) {
+            std::future::pending::<()>().await;
+        }
+        let bytes_transferred = match self.corrupt_consume_receipt {
+            CorruptConsumeReceipt::ShortBytes => command
+                .source
+                .binding
+                .state_bytes
+                .checked_sub(1)
+                .expect("fixture binding must leave room to shorten"),
+            CorruptConsumeReceipt::None | CorruptConsumeReceipt::InvalidIntegrityDigest => {
+                command.source.binding.state_bytes
+            }
+        };
+        let integrity = match self.corrupt_consume_receipt {
+            CorruptConsumeReceipt::InvalidIntegrityDigest => StateTransferIntegrity::Sha256 {
+                digest: "ZZ".repeat(32),
+            },
+            CorruptConsumeReceipt::None | CorruptConsumeReceipt::ShortBytes => {
+                StateTransferIntegrity::TransportVerified
+            }
+        };
+        Ok(StateTransferReceipt {
+            schema: STATE_TRANSFER_RECEIPT_SCHEMA.to_string(),
+            transfer_id: command.source.transfer_id,
+            source_worker_epoch: command.source.source_worker_epoch,
+            destination_worker_epoch: command.local_worker_epoch,
+            deployment: command.source.deployment.clone(),
+            binding: command.source.binding,
+            protocol: command.source.protocol,
+            bytes_transferred,
+            integrity,
+            completed_at: Utc::now(),
+        })
+    }
+
+    async fn abort(&self, _command: AbortStateTransfer) -> Result<()> {
+        self.calls.push("transfer.abort");
+        self.calls.transfer_aborts.fetch_add(1, Ordering::SeqCst);
+        Ok(())
+    }
+}
+
+struct TestPhaseExecutor {
+    capabilities: PhaseExecutorCapabilities,
+    profile_sha256: String,
+    behavior: FixtureBehavior,
+    calls: Arc<Calls>,
+}
+
+#[async_trait]
+impl ServingPhaseExecutor for TestPhaseExecutor {
+    fn capabilities(&self) -> PhaseExecutorCapabilities {
+        self.capabilities.clone()
+    }
+
+    fn health(&self) -> PhaseExecutorHealth {
+        PhaseExecutorHealth::Ready
+    }
+
+    async fn prepare(
+        &self,
+        command: PreparePhaseExecution,
+    ) -> Result<PhaseDecision<PreparedPhaseExecution>> {
+        self.calls.push("phase.prepare");
+        if self.behavior.block_prepare {
+            std::future::pending::<()>().await;
+        }
+        if self.behavior.retryable_prepare {
+            return PhaseDecision::retryable_unavailable(
+                RetryableUnavailableReason::AdmissionPressure,
+                Some(5),
+            );
+        }
+        let execution = PhaseExecutionHandle::new("phase-handle")?;
+        let expires_at = command.expires_at + self.behavior.prepared_expiry_delta;
+        let prepared = match self.capabilities.phase {
+            ServingPhase::Prefill => PreparedPhaseExecution::Prefill(PreparedPrefillPhase::new(
+                command.execution_id,
+                command.local_worker_epoch,
+                self.profile_sha256.clone(),
+                execution,
+                expires_at,
+            )?),
+            ServingPhase::Decode => PreparedPhaseExecution::Decode(PreparedDecodePhase::new(
+                command.execution_id,
+                command.local_worker_epoch,
+                self.profile_sha256.clone(),
+                execution,
+                ModelStateHandle::new(format!("decode-destination-{}", command.execution_id))?,
+                binding(),
+                expires_at,
+            )?),
+            ServingPhase::Aggregated => {
+                return Err(PowerError::InvalidRequest(
+                    "test executor cannot prepare aggregated work".to_string(),
+                ));
+            }
+        };
+        Ok(PhaseDecision::ready(prepared))
+    }
+
+    async fn execute(
+        &self,
+        command: ExecutePhaseExecution,
+    ) -> Result<PhaseDecision<PhaseExecutionOutput>> {
+        self.calls.push("phase.execute");
+        match command {
+            ExecutePhaseExecution::Prefill { prepared } => Ok(PhaseDecision::ready(
+                PhaseExecutionOutput::Prefill(ProducedModelState::new(
+                    prepared.execution_id(),
+                    prepared.local_worker_epoch(),
+                    self.profile_sha256.clone(),
+                    ModelStateHandle::new("prefill-source")?,
+                    binding(),
+                )?),
+            )),
+            ExecutePhaseExecution::Decode { .. } => match self.behavior.decode_execute {
+                DecodeExecuteFixture::ReadyStream => {
+                    let stream = futures::stream::once(async {
+                        Ok(PhaseResponseChunk::Completion(CompletionResponseChunk {
+                            text: "token".to_string(),
+                            done: true,
+                            prompt_tokens: Some(16),
+                            done_reason: Some("stop".to_string()),
+                            prompt_eval_duration_ns: None,
+                            token_id: Some(7),
+                        }))
+                    });
+                    Ok(PhaseDecision::ready(PhaseExecutionOutput::Decode(
+                        Box::pin(stream),
+                    )))
+                }
+                DecodeExecuteFixture::HangBeforeFirstChunk => {
+                    let hooks = Arc::clone(&self.behavior.transfer_hooks);
+                    let stream = futures::stream::unfold(false, move |started| {
+                        let hooks = Arc::clone(&hooks);
+                        async move {
+                            if !started {
+                                hooks.stream_started.notify_waiters();
+                            }
+                            std::future::pending::<()>().await;
+                            None::<(Result<PhaseResponseChunk>, bool)>
+                        }
+                    });
+                    Ok(PhaseDecision::ready(PhaseExecutionOutput::Decode(
+                        Box::pin(stream),
+                    )))
+                }
+                DecodeExecuteFixture::Recompute(reason) => Ok(PhaseDecision::recompute(reason)),
+                DecodeExecuteFixture::RetryableUnavailable {
+                    reason,
+                    retry_after_ms,
+                } => PhaseDecision::retryable_unavailable(reason, retry_after_ms),
+                DecodeExecuteFixture::TerminalFailure(reason) => {
+                    Ok(PhaseDecision::terminal_failure(reason))
+                }
+            },
+        }
+    }
+
+    async fn abort(&self, _command: AbortPhaseExecution) -> Result<()> {
+        self.calls.push("phase.abort");
+        self.calls.phase_aborts.fetch_add(1, Ordering::SeqCst);
+        if self.behavior.fail_abort {
+            Err(PowerError::BackendNotAvailable(
+                "test phase cleanup failed".to_string(),
+            ))
+        } else {
+            Ok(())
+        }
+    }
+}
+
+pub(crate) fn runtime(
+    profile: &ServingExecutionProfile,
+    epoch: Uuid,
+    calls: Arc<Calls>,
+) -> DistributedServingRuntime {
+    runtime_with_behavior(profile, epoch, calls, FixtureBehavior::default())
+}
+
+pub(crate) fn runtime_with_expiry_delta(
+    profile: &ServingExecutionProfile,
+    epoch: Uuid,
+    calls: Arc<Calls>,
+    prepared_expiry_delta: Duration,
+) -> DistributedServingRuntime {
+    runtime_with_behavior(
+        profile,
+        epoch,
+        calls,
+        FixtureBehavior {
+            prepared_expiry_delta,
+            ..FixtureBehavior::default()
+        },
+    )
+}
+
+pub(crate) fn runtime_with_behavior(
+    profile: &ServingExecutionProfile,
+    epoch: Uuid,
+    calls: Arc<Calls>,
+    behavior: FixtureBehavior,
+) -> DistributedServingRuntime {
+    let capabilities = StateTransferCapabilities {
+        execution_profile_sha256: profile.sha256().unwrap(),
+        phases: vec![ServingPhase::Prefill, ServingPhase::Decode],
+        protocols: vec![StateTransferProtocol::DirectDeviceMemoryPullV1],
+        max_transfer_bytes: 1024,
+        max_inflight_transfers: 2,
+    };
+    let transfer = BoundedStateTransferService::new(
+        profile.clone(),
+        epoch,
+        Arc::new(TestTransferDriver {
+            capabilities,
+            calls: calls.clone(),
+            corrupt_consume_receipt: behavior.corrupt_consume_receipt,
+            hooks: Arc::clone(&behavior.transfer_hooks),
+        }),
+    )
+    .unwrap();
+    DistributedServingRuntime::new(
+        profile.clone(),
+        Arc::new(transfer),
+        Arc::new(TestPhaseExecutor {
+            capabilities: PhaseExecutorCapabilities::for_profile(profile).unwrap(),
+            profile_sha256: profile.sha256().unwrap(),
+            behavior,
+            calls,
+        }),
+    )
+    .unwrap()
+}
+
+pub(crate) async fn prepare_decode_source(
+    runtime: &DistributedServingRuntime,
+    epoch: Uuid,
+    execution_id: Uuid,
+    expires_at: chrono::DateTime<Utc>,
+) -> StateTransferSource {
+    let prepared = runtime
+        .prepare_decode(DecodePhaseRequest {
+            execution_id,
+            model: "internal/model-v1".to_string(),
+            request: request(),
+            expires_at,
+        })
+        .await
+        .unwrap();
+    let target = match prepared {
+        PhaseDecision::Ready(PreparedDecodeTransfer { target }) => target,
+        _ => panic!("expected a prepared decode target"),
+    };
+    StateTransferSource {
+        schema: STATE_TRANSFER_SOURCE_SCHEMA.to_string(),
+        transfer_id: target.transfer_id,
+        source_worker_epoch: Uuid::new_v4(),
+        destination_worker_epoch: epoch,
+        deployment: ServingDeploymentIdentity {
+            generation: 7,
+            peer_set_sha256: digest('6'),
+        },
+        binding: target.binding,
+        protocol: target.protocol,
+        published_at: Utc::now(),
+        expires_at: target.expires_at,
+        ticket: "source-ticket".to_string(),
+    }
+}
+
+pub(crate) async fn start_decode(
+    runtime: &DistributedServingRuntime,
+    epoch: Uuid,
+    execution_id: Uuid,
+    expires_at: chrono::DateTime<Utc>,
+) -> PhaseResponseStream {
+    let source = prepare_decode_source(runtime, epoch, execution_id, expires_at).await;
+    match runtime.execute_decode(execution_id, source).await.unwrap() {
+        PhaseDecision::Ready(stream) => stream,
+        _ => panic!("expected a decode stream"),
+    }
+}
+
+pub(crate) async fn wait_for_count(counter: &AtomicUsize, expected: usize) {
+    tokio::time::timeout(std::time::Duration::from_secs(1), async {
+        while counter.load(Ordering::SeqCst) != expected {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .expect("cleanup should complete");
+}
+
+/// Prove a cancelled/expired execution freed capacity for a new lease.
+pub(crate) async fn assert_lease_capacity_reclaimed(
+    runtime: &DistributedServingRuntime,
+    timeout_ms: u64,
+) {
+    let probe = Uuid::new_v4();
+    let lifetime = timeout_ms.clamp(20, 80);
+    runtime
+        .prepare_decode(DecodePhaseRequest {
+            execution_id: probe,
+            model: "internal/model-v1".to_string(),
+            request: request(),
+            expires_at: Utc::now() + Duration::milliseconds(lifetime as i64),
+        })
+        .await
+        .expect("cancelled execution must free runtime lease capacity");
+    runtime.abort(probe).await.unwrap();
+}

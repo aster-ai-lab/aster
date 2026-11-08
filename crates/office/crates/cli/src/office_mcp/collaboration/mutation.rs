@@ -1,0 +1,1225 @@
+use aster_office::{
+    NativeOfficeCollaborationDocumentSuggestionDecision,
+    NativeOfficeCollaborationDocumentSuggestionKind,
+    NativeOfficeCollaborationDocumentSuggestionMatch, NativeOfficeCollaborationMutation,
+    NativeOfficeCollaborationParagraphPosition, NativeOfficeCollaborationPdfAnnotationSource,
+    NativeOfficeCollaborationPdfRect, NativeOfficeCollaborationPdfReviewDecision,
+    NativeOfficeCollaborationPdfReviewTargetKind,
+    NativeOfficeCollaborationPresentationContainerKind,
+    NativeOfficeCollaborationPresentationGroupMember,
+    NativeOfficeCollaborationSpreadsheetCellChange,
+};
+use schemars::JsonSchema;
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_json::Value as JsonValue;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationParagraphPosition {
+    Before,
+    After,
+}
+
+impl From<OfficeCollaborationParagraphPosition> for NativeOfficeCollaborationParagraphPosition {
+    fn from(value: OfficeCollaborationParagraphPosition) -> Self {
+        match value {
+            OfficeCollaborationParagraphPosition::Before => Self::Before,
+            OfficeCollaborationParagraphPosition::After => Self::After,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationDocumentSuggestionKind {
+    Insertion,
+    Deletion,
+}
+
+impl From<OfficeCollaborationDocumentSuggestionKind>
+    for NativeOfficeCollaborationDocumentSuggestionKind
+{
+    fn from(value: OfficeCollaborationDocumentSuggestionKind) -> Self {
+        match value {
+            OfficeCollaborationDocumentSuggestionKind::Insertion => Self::Insertion,
+            OfficeCollaborationDocumentSuggestionKind::Deletion => Self::Deletion,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationDocumentSuggestionDecision {
+    Accept,
+    Reject,
+}
+
+impl From<OfficeCollaborationDocumentSuggestionDecision>
+    for NativeOfficeCollaborationDocumentSuggestionDecision
+{
+    fn from(value: OfficeCollaborationDocumentSuggestionDecision) -> Self {
+        match value {
+            OfficeCollaborationDocumentSuggestionDecision::Accept => Self::Accept,
+            OfficeCollaborationDocumentSuggestionDecision::Reject => Self::Reject,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub(in crate::office_mcp) struct OfficeCollaborationDocumentSuggestionMatch {
+    id: String,
+    kind: OfficeCollaborationDocumentSuggestionKind,
+    expected_actor_id: Option<String>,
+    expected_author: String,
+    expected_created_at: String,
+    expected_text: String,
+}
+
+impl From<OfficeCollaborationDocumentSuggestionMatch>
+    for NativeOfficeCollaborationDocumentSuggestionMatch
+{
+    fn from(value: OfficeCollaborationDocumentSuggestionMatch) -> Self {
+        Self {
+            id: value.id,
+            kind: value.kind.into(),
+            expected_actor_id: value.expected_actor_id,
+            expected_author: value.expected_author,
+            expected_created_at: value.expected_created_at,
+            expected_text: value.expected_text,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub(in crate::office_mcp) struct OfficeCollaborationSpreadsheetCellChange {
+    row: u32,
+    column: u32,
+    expected_cell: Option<JsonValue>,
+    /// Next cell JSON. When `"f"` is present, also supply cached `"v"` and
+    /// `"m"`; collaboration replicas do not run
+    /// `recalculate-spreadsheet-formulas`.
+    #[serde(deserialize_with = "deserialize_present_optional_json")]
+    #[schemars(required)]
+    next_cell: Option<JsonValue>,
+}
+
+fn deserialize_present_optional_json<'de, D>(deserializer: D) -> Result<Option<JsonValue>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Option::<JsonValue>::deserialize(deserializer)
+}
+
+impl From<OfficeCollaborationSpreadsheetCellChange>
+    for NativeOfficeCollaborationSpreadsheetCellChange
+{
+    fn from(value: OfficeCollaborationSpreadsheetCellChange) -> Self {
+        Self {
+            row: value.row,
+            column: value.column,
+            expected_cell: value.expected_cell,
+            next_cell: value.next_cell,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationPresentationContainerKind {
+    Slide,
+    Master,
+    Layout,
+}
+
+impl From<OfficeCollaborationPresentationContainerKind>
+    for NativeOfficeCollaborationPresentationContainerKind
+{
+    fn from(value: OfficeCollaborationPresentationContainerKind) -> Self {
+        match value {
+            OfficeCollaborationPresentationContainerKind::Slide => Self::Slide,
+            OfficeCollaborationPresentationContainerKind::Master => Self::Master,
+            OfficeCollaborationPresentationContainerKind::Layout => Self::Layout,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub(in crate::office_mcp) struct OfficeCollaborationPresentationGroupMember {
+    element_id: String,
+    expected_group_ids: Vec<String>,
+    next_group_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub(in crate::office_mcp) struct OfficeCollaborationPdfRect {
+    left: f64,
+    top: f64,
+    right: f64,
+    bottom: f64,
+}
+
+impl From<OfficeCollaborationPdfRect> for NativeOfficeCollaborationPdfRect {
+    fn from(value: OfficeCollaborationPdfRect) -> Self {
+        Self {
+            left: value.left,
+            top: value.top,
+            right: value.right,
+            bottom: value.bottom,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationPdfReviewTargetKind {
+    Redaction,
+    PageOperation,
+}
+
+impl From<OfficeCollaborationPdfReviewTargetKind> for NativeOfficeCollaborationPdfReviewTargetKind {
+    fn from(value: OfficeCollaborationPdfReviewTargetKind) -> Self {
+        match value {
+            OfficeCollaborationPdfReviewTargetKind::Redaction => Self::Redaction,
+            OfficeCollaborationPdfReviewTargetKind::PageOperation => Self::PageOperation,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationPdfReviewDecision {
+    Approve,
+    Reject,
+}
+
+impl From<OfficeCollaborationPdfReviewDecision> for NativeOfficeCollaborationPdfReviewDecision {
+    fn from(value: OfficeCollaborationPdfReviewDecision) -> Self {
+        match value {
+            OfficeCollaborationPdfReviewDecision::Approve => Self::Approve,
+            OfficeCollaborationPdfReviewDecision::Reject => Self::Reject,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "kebab-case")]
+pub(in crate::office_mcp) enum OfficeCollaborationPdfAnnotationSource {
+    Base,
+    Created,
+}
+
+impl From<OfficeCollaborationPdfAnnotationSource> for NativeOfficeCollaborationPdfAnnotationSource {
+    fn from(value: OfficeCollaborationPdfAnnotationSource) -> Self {
+        match value {
+            OfficeCollaborationPdfAnnotationSource::Base => Self::Base,
+            OfficeCollaborationPdfAnnotationSource::Created => Self::Created,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, JsonSchema)]
+#[serde(
+    tag = "type",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase",
+    deny_unknown_fields
+)]
+pub(in crate::office_mcp) enum OfficeCollaborationMutation {
+    /// Compare-and-swap the canonical Markdown source. `expectedMarkdown` must
+    /// equal the current source; a drifted base fails closed and writes
+    /// nothing. Prefer `markdown-replace-text` or `markdown-splice`.
+    MarkdownReplace {
+        expected_markdown: String,
+        markdown: String,
+    },
+    /// Splice Markdown using browser-compatible UTF-16 code-unit offsets.
+    /// `expectedSlice` must equal the current text in that range, or be empty
+    /// when `deleteUtf16` is 0. A drifted slice fails closed and writes nothing.
+    MarkdownSplice {
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Replace an exact number of non-overlapping Markdown Y.Text matches.
+    /// Optional `indexUtf16` from the find hit makes the selected occurrence
+    /// place-safe under concurrent peers.
+    MarkdownReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        /// 1-based match. Omit it to replace every match after the count check.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Replace an exact number of non-overlapping Document Y.XmlText matches.
+    /// Optional find-hit anchors (`paragraphId`, `textId`, `indexUtf16`) make
+    /// the selected occurrence place-safe under concurrent peers.
+    DocumentReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        /// 1-based match. Omit it to replace every match after the count check.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        paragraph_id: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        text_id: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Replace one stable plain paragraph after matching its exact current identity and text.
+    DocumentReplaceParagraph {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+        replacement: String,
+    },
+    /// Set the conflict-local Document page-color option.
+    DocumentSetPageColor { page_color: String },
+    /// Explicitly clear the conflict-local Document page-color option.
+    DocumentClearPageColor {},
+    /// Set the conflict-local Document track-changes option.
+    DocumentSetTrackChanges { track_changes: bool },
+    /// Explicitly clear the conflict-local Document track-changes option.
+    DocumentClearTrackChanges {},
+    /// Insert a plain paragraph beside a stable paragraph in a supported block container.
+    DocumentInsertParagraph {
+        anchor_paragraph_id: String,
+        position: OfficeCollaborationParagraphPosition,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete a plain paragraph from a supported block container with exact guards.
+    DocumentDeleteParagraph {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one single-cell table row beside an observed row.
+    DocumentInsertTableRow {
+        anchor_row_id: String,
+        expected_row_text_id: String,
+        position: OfficeCollaborationParagraphPosition,
+        row_id: String,
+        row_text_id: String,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one table row that is still a single plain paragraph.
+    DocumentDeleteTableRow {
+        row_id: String,
+        expected_row_text_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one list item beside the item whose first block is the observed paragraph.
+    DocumentInsertListItem {
+        anchor_paragraph_id: String,
+        expected_text_id: String,
+        position: OfficeCollaborationParagraphPosition,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one list item that is still a single plain paragraph.
+    DocumentDeleteListItem {
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Insert one section beside an observed top-level section.
+    DocumentInsertSection {
+        anchor_section_id: String,
+        expected_paragraph_id: String,
+        expected_text_id: String,
+        position: OfficeCollaborationParagraphPosition,
+        section_id: String,
+        paragraph_id: String,
+        text_id: String,
+        text: String,
+    },
+    /// Delete one section that is still a single plain paragraph.
+    DocumentDeleteSection {
+        section_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        expected_text: String,
+    },
+    /// Append one attributable comment and exact UTF-16 selection anchor.
+    DocumentCommentCreate {
+        comment_id: String,
+        paragraph_id: String,
+        expected_text_id: String,
+        start_utf16: u32,
+        end_utf16: u32,
+        expected_text: String,
+        author: String,
+        created_at: String,
+        text: String,
+    },
+    /// Append one attributable reply to an existing Document comment.
+    DocumentCommentReply {
+        comment_id: String,
+        reply_id: String,
+        author: String,
+        created_at: String,
+        text: String,
+    },
+    /// Set the current resolution state of one Document comment.
+    DocumentCommentSetResolved { comment_id: String, resolved: bool },
+    /// Delete one comment, or one reply when replyId is supplied.
+    DocumentCommentDelete {
+        comment_id: String,
+        reply_id: Option<String>,
+    },
+    /// Propose one insertion, deletion, or atomic replacement in suggest mode.
+    DocumentSuggestionCreate {
+        paragraph_id: String,
+        expected_text_id: String,
+        start_utf16: u32,
+        end_utf16: u32,
+        expected_text: String,
+        replacement: String,
+        insertion_id: Option<String>,
+        deletion_id: Option<String>,
+        author: String,
+        created_at: String,
+    },
+    /// Accept or reject exact tracked changes atomically in edit mode.
+    DocumentSuggestionDecide {
+        suggestions: Vec<OfficeCollaborationDocumentSuggestionMatch>,
+        decision: OfficeCollaborationDocumentSuggestionDecision,
+        decided_by: String,
+        decided_at: String,
+    },
+    /// Create or recursively patch one conflict-local Spreadsheet cell.
+    /// When `nextCell` includes `"f"`, also supply cached `"v"` and `"m"`;
+    /// collaboration replicas do not run `recalculate-spreadsheet-formulas`.
+    SpreadsheetSetCell {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        expected_cell: Option<JsonValue>,
+        next_cell: JsonValue,
+    },
+    /// Delete one Spreadsheet cell after matching its complete current value.
+    SpreadsheetDeleteCell {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        expected_cell: JsonValue,
+    },
+    /// Apply distinct cell changes in one sheet and one atomic transaction.
+    /// When a change's `nextCell` includes `"f"`, also supply cached `"v"` and
+    /// `"m"`; collaboration replicas do not run
+    /// `recalculate-spreadsheet-formulas`.
+    SpreadsheetBatchCells {
+        sheet_id: String,
+        changes: Vec<OfficeCollaborationSpreadsheetCellChange>,
+    },
+    /// Splice one cell's plain text. Formula cells, cached numbers, and styles
+    /// stay on `spreadsheet-set-cell`.
+    SpreadsheetSplice {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        index_utf16: u32,
+        delete_utf16: u32,
+        expected_slice: String,
+        insert: String,
+    },
+    /// Insert rows at a 0-based index and rewrite formula references together.
+    SpreadsheetInsertRows {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Delete rows at a 0-based index and rewrite formula references together.
+    SpreadsheetDeleteRows {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Insert columns at a 0-based index and rewrite formula references together.
+    SpreadsheetInsertColumns {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Delete columns at a 0-based index and rewrite formula references together.
+    SpreadsheetDeleteColumns {
+        sheet_id: String,
+        at: u32,
+        count: u32,
+    },
+    /// Reorder rows inside one rectangle by a source-row permutation.
+    SpreadsheetSortRows {
+        sheet_id: String,
+        row: u32,
+        column: u32,
+        row_count: u32,
+        column_count: u32,
+        source_rows: Vec<u32>,
+        expected_cells: Vec<Option<JsonValue>>,
+    },
+    /// Create one browser-convergent Spreadsheet table record.
+    SpreadsheetCreateTable { sheet_id: String, table: JsonValue },
+    /// Replace one Spreadsheet table record after its observed JSON matches.
+    SpreadsheetUpdateTable {
+        sheet_id: String,
+        table_id: String,
+        expected_table: JsonValue,
+        next_table: JsonValue,
+    },
+    /// Remove one Spreadsheet table record after its observed JSON matches.
+    SpreadsheetDeleteTable {
+        sheet_id: String,
+        table_id: String,
+        expected_table: JsonValue,
+    },
+    /// Create one scene element in a slide, master, or layout with a stable ID.
+    PresentationCreateElement {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element: JsonValue,
+        after_element_id: Option<String>,
+    },
+    /// Merge top-level scene-element fields using optimistic expectations.
+    PresentationUpdateElement {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        expected_element: JsonValue,
+        next_element: JsonValue,
+    },
+    /// Tombstone one scene element after matching its complete current value.
+    PresentationDeleteElement {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        expected_element: JsonValue,
+    },
+    /// Move one active scene element after its stable observed predecessor.
+    PresentationMoveElement {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        element_id: String,
+        expected_after_element_id: Option<String>,
+        after_element_id: Option<String>,
+    },
+    /// Replace non-overlapping matches in scene-element text fields only.
+    /// Optional find-hit anchors keep the selected occurrence place-safe.
+    PresentationReplaceText {
+        search: String,
+        replacement: String,
+        expected_matches: u32,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        occurrence: Option<u32>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        container_kind: Option<OfficeCollaborationPresentationContainerKind>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        container_id: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        element_id: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Move one slide in the slide-order array. Shape records stay put.
+    PresentationMoveSlide {
+        slide_id: String,
+        expected_after_slide_id: Option<String>,
+        after_slide_id: Option<String>,
+    },
+    /// Replace every listed scene element's group path in one transaction.
+    PresentationSetGroup {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        members: Vec<OfficeCollaborationPresentationGroupMember>,
+    },
+    /// Replace one slide, master, or layout background field.
+    PresentationSetBackground {
+        container_kind: OfficeCollaborationPresentationContainerKind,
+        container_id: String,
+        expected_background: Option<String>,
+        next_background: Option<String>,
+    },
+    /// Create one supported portable PDF annotation with a stable ID.
+    PdfCreateAnnotation {
+        annotation_id: String,
+        page_index: u32,
+        annotation: JsonValue,
+    },
+    /// Merge mutable annotation leaves using an exact recursive expectation.
+    /// Optional `search` and find-hit `indexUtf16` treat `nextAnnotation.contents`
+    /// as a FreeText span replacement and fail closed when that span drifts.
+    PdfUpdateAnnotation {
+        annotation_id: String,
+        expected_annotation: JsonValue,
+        next_annotation: JsonValue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        search: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Irreversibly tombstone one annotation after matching immutable identity.
+    PdfDeleteAnnotation {
+        annotation_id: String,
+        expected_source: OfficeCollaborationPdfAnnotationSource,
+        expected_page_index: u32,
+        expected_type: u32,
+    },
+    /// Set one PDF form value by its stable fully-qualified field name.
+    /// `expectedValue` must equal the current value, or be empty when the
+    /// field is absent. A drifted base fails closed and writes nothing.
+    /// Optional `search` and find-hit `indexUtf16` then replace only that span.
+    PdfSetFormValue {
+        field_id: String,
+        expected_value: String,
+        value: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        search: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        index_utf16: Option<u32>,
+    },
+    /// Append one attributable PDF redaction proposal with immutable geometry.
+    PdfProposeRedaction {
+        proposal_id: String,
+        page_index: u32,
+        rects: Vec<OfficeCollaborationPdfRect>,
+        proposed_at: String,
+        reason: Option<String>,
+        text: Option<String>,
+    },
+    /// Append an attributable request to rotate selected source pages.
+    PdfProposePageRotation {
+        page_operation_id: String,
+        page_indices: Vec<u32>,
+        degrees: u16,
+        proposed_at: String,
+    },
+    /// Append an attributable request to delete a proper subset of source pages.
+    PdfProposePageDeletion {
+        page_operation_id: String,
+        page_indices: Vec<u32>,
+        proposed_at: String,
+    },
+    /// Append an attributable request containing a complete source-page permutation.
+    PdfProposePageReorder {
+        page_operation_id: String,
+        page_order: Vec<u32>,
+        proposed_at: String,
+    },
+    /// Append the single final review decision for a PDF redaction or page operation.
+    PdfDecideReview {
+        decision_id: String,
+        target_kind: OfficeCollaborationPdfReviewTargetKind,
+        target_id: String,
+        decision: OfficeCollaborationPdfReviewDecision,
+        created_at: String,
+    },
+}
+
+impl From<OfficeCollaborationMutation> for NativeOfficeCollaborationMutation {
+    fn from(value: OfficeCollaborationMutation) -> Self {
+        match value {
+            OfficeCollaborationMutation::MarkdownReplace {
+                expected_markdown,
+                markdown,
+            } => Self::MarkdownReplace {
+                expected_markdown,
+                markdown,
+            },
+            OfficeCollaborationMutation::MarkdownSplice {
+                index_utf16,
+                delete_utf16,
+                expected_slice,
+                insert,
+            } => Self::MarkdownSplice {
+                index_utf16,
+                delete_utf16,
+                expected_slice,
+                insert,
+            },
+            OfficeCollaborationMutation::MarkdownReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                index_utf16,
+            } => Self::MarkdownReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                index_utf16,
+            },
+            OfficeCollaborationMutation::DocumentReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                paragraph_id,
+                text_id,
+                index_utf16,
+            } => Self::DocumentReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                paragraph_id,
+                text_id,
+                index_utf16,
+            },
+            OfficeCollaborationMutation::DocumentReplaceParagraph {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+                replacement,
+            } => Self::DocumentReplaceParagraph {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+                replacement,
+            },
+            OfficeCollaborationMutation::DocumentSetPageColor { page_color } => {
+                Self::DocumentSetPageColor { page_color }
+            }
+            OfficeCollaborationMutation::DocumentClearPageColor { .. } => {
+                Self::DocumentClearPageColor {}
+            }
+            OfficeCollaborationMutation::DocumentSetTrackChanges { track_changes } => {
+                Self::DocumentSetTrackChanges { track_changes }
+            }
+            OfficeCollaborationMutation::DocumentClearTrackChanges { .. } => {
+                Self::DocumentClearTrackChanges {}
+            }
+            OfficeCollaborationMutation::DocumentInsertParagraph {
+                anchor_paragraph_id,
+                position,
+                paragraph_id,
+                text_id,
+                text,
+            } => Self::DocumentInsertParagraph {
+                anchor_paragraph_id,
+                position: position.into(),
+                paragraph_id,
+                text_id,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentDeleteParagraph {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            } => Self::DocumentDeleteParagraph {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            },
+            OfficeCollaborationMutation::DocumentInsertTableRow {
+                anchor_row_id,
+                expected_row_text_id,
+                position,
+                row_id,
+                row_text_id,
+                paragraph_id,
+                text_id,
+                text,
+            } => Self::DocumentInsertTableRow {
+                anchor_row_id,
+                expected_row_text_id,
+                position: position.into(),
+                row_id,
+                row_text_id,
+                paragraph_id,
+                text_id,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentDeleteTableRow {
+                row_id,
+                expected_row_text_id,
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            } => Self::DocumentDeleteTableRow {
+                row_id,
+                expected_row_text_id,
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            },
+            OfficeCollaborationMutation::DocumentInsertListItem {
+                anchor_paragraph_id,
+                expected_text_id,
+                position,
+                paragraph_id,
+                text_id,
+                text,
+            } => Self::DocumentInsertListItem {
+                anchor_paragraph_id,
+                expected_text_id,
+                position: position.into(),
+                paragraph_id,
+                text_id,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentDeleteListItem {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            } => Self::DocumentDeleteListItem {
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            },
+            OfficeCollaborationMutation::DocumentInsertSection {
+                anchor_section_id,
+                expected_paragraph_id,
+                expected_text_id,
+                position,
+                section_id,
+                paragraph_id,
+                text_id,
+                text,
+            } => Self::DocumentInsertSection {
+                anchor_section_id,
+                expected_paragraph_id,
+                expected_text_id,
+                position: position.into(),
+                section_id,
+                paragraph_id,
+                text_id,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentDeleteSection {
+                section_id,
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            } => Self::DocumentDeleteSection {
+                section_id,
+                paragraph_id,
+                expected_text_id,
+                expected_text,
+            },
+            OfficeCollaborationMutation::DocumentCommentCreate {
+                comment_id,
+                paragraph_id,
+                expected_text_id,
+                start_utf16,
+                end_utf16,
+                expected_text,
+                author,
+                created_at,
+                text,
+            } => Self::DocumentCommentCreate {
+                comment_id,
+                paragraph_id,
+                expected_text_id,
+                start_utf16,
+                end_utf16,
+                expected_text,
+                author,
+                created_at,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentCommentReply {
+                comment_id,
+                reply_id,
+                author,
+                created_at,
+                text,
+            } => Self::DocumentCommentReply {
+                comment_id,
+                reply_id,
+                author,
+                created_at,
+                text,
+            },
+            OfficeCollaborationMutation::DocumentCommentSetResolved {
+                comment_id,
+                resolved,
+            } => Self::DocumentCommentSetResolved {
+                comment_id,
+                resolved,
+            },
+            OfficeCollaborationMutation::DocumentCommentDelete {
+                comment_id,
+                reply_id,
+            } => Self::DocumentCommentDelete {
+                comment_id,
+                reply_id,
+            },
+            OfficeCollaborationMutation::DocumentSuggestionCreate {
+                paragraph_id,
+                expected_text_id,
+                start_utf16,
+                end_utf16,
+                expected_text,
+                replacement,
+                insertion_id,
+                deletion_id,
+                author,
+                created_at,
+            } => Self::DocumentSuggestionCreate {
+                paragraph_id,
+                expected_text_id,
+                start_utf16,
+                end_utf16,
+                expected_text,
+                replacement,
+                insertion_id,
+                deletion_id,
+                author,
+                created_at,
+            },
+            OfficeCollaborationMutation::DocumentSuggestionDecide {
+                suggestions,
+                decision,
+                decided_by,
+                decided_at,
+            } => Self::DocumentSuggestionDecide {
+                suggestions: suggestions.into_iter().map(Into::into).collect(),
+                decision: decision.into(),
+                decided_by,
+                decided_at,
+            },
+            OfficeCollaborationMutation::SpreadsheetSetCell {
+                sheet_id,
+                row,
+                column,
+                expected_cell,
+                next_cell,
+            } => Self::SpreadsheetSetCell {
+                sheet_id,
+                row,
+                column,
+                expected_cell,
+                next_cell,
+            },
+            OfficeCollaborationMutation::SpreadsheetDeleteCell {
+                sheet_id,
+                row,
+                column,
+                expected_cell,
+            } => Self::SpreadsheetDeleteCell {
+                sheet_id,
+                row,
+                column,
+                expected_cell,
+            },
+            OfficeCollaborationMutation::SpreadsheetBatchCells { sheet_id, changes } => {
+                Self::SpreadsheetBatchCells {
+                    sheet_id,
+                    changes: changes.into_iter().map(Into::into).collect(),
+                }
+            }
+            OfficeCollaborationMutation::SpreadsheetSplice {
+                sheet_id,
+                row,
+                column,
+                index_utf16,
+                delete_utf16,
+                expected_slice,
+                insert,
+            } => Self::SpreadsheetSplice {
+                sheet_id,
+                row,
+                column,
+                index_utf16,
+                delete_utf16,
+                expected_slice,
+                insert,
+            },
+            OfficeCollaborationMutation::SpreadsheetInsertRows {
+                sheet_id,
+                at,
+                count,
+            } => Self::SpreadsheetInsertRows {
+                sheet_id,
+                at,
+                count,
+            },
+            OfficeCollaborationMutation::SpreadsheetDeleteRows {
+                sheet_id,
+                at,
+                count,
+            } => Self::SpreadsheetDeleteRows {
+                sheet_id,
+                at,
+                count,
+            },
+            OfficeCollaborationMutation::SpreadsheetInsertColumns {
+                sheet_id,
+                at,
+                count,
+            } => Self::SpreadsheetInsertColumns {
+                sheet_id,
+                at,
+                count,
+            },
+            OfficeCollaborationMutation::SpreadsheetDeleteColumns {
+                sheet_id,
+                at,
+                count,
+            } => Self::SpreadsheetDeleteColumns {
+                sheet_id,
+                at,
+                count,
+            },
+            OfficeCollaborationMutation::SpreadsheetSortRows {
+                sheet_id,
+                row,
+                column,
+                row_count,
+                column_count,
+                source_rows,
+                expected_cells,
+            } => Self::SpreadsheetSortRows {
+                sheet_id,
+                row,
+                column,
+                row_count,
+                column_count,
+                source_rows,
+                expected_cells,
+            },
+            OfficeCollaborationMutation::SpreadsheetCreateTable { sheet_id, table } => {
+                Self::SpreadsheetCreateTable { sheet_id, table }
+            }
+            OfficeCollaborationMutation::SpreadsheetUpdateTable {
+                sheet_id,
+                table_id,
+                expected_table,
+                next_table,
+            } => Self::SpreadsheetUpdateTable {
+                sheet_id,
+                table_id,
+                expected_table,
+                next_table,
+            },
+            OfficeCollaborationMutation::SpreadsheetDeleteTable {
+                sheet_id,
+                table_id,
+                expected_table,
+            } => Self::SpreadsheetDeleteTable {
+                sheet_id,
+                table_id,
+                expected_table,
+            },
+            OfficeCollaborationMutation::PresentationCreateElement {
+                container_kind,
+                container_id,
+                element,
+                after_element_id,
+            } => Self::PresentationCreateElement {
+                container_kind: container_kind.into(),
+                container_id,
+                element,
+                after_element_id,
+            },
+            OfficeCollaborationMutation::PresentationUpdateElement {
+                container_kind,
+                container_id,
+                element_id,
+                expected_element,
+                next_element,
+            } => Self::PresentationUpdateElement {
+                container_kind: container_kind.into(),
+                container_id,
+                element_id,
+                expected_element,
+                next_element,
+            },
+            OfficeCollaborationMutation::PresentationDeleteElement {
+                container_kind,
+                container_id,
+                expected_element,
+            } => Self::PresentationDeleteElement {
+                container_kind: container_kind.into(),
+                container_id,
+                expected_element,
+            },
+            OfficeCollaborationMutation::PresentationMoveElement {
+                container_kind,
+                container_id,
+                element_id,
+                expected_after_element_id,
+                after_element_id,
+            } => Self::PresentationMoveElement {
+                container_kind: container_kind.into(),
+                container_id,
+                element_id,
+                expected_after_element_id,
+                after_element_id,
+            },
+            OfficeCollaborationMutation::PresentationMoveSlide {
+                slide_id,
+                expected_after_slide_id,
+                after_slide_id,
+            } => Self::PresentationMoveSlide {
+                slide_id,
+                expected_after_slide_id,
+                after_slide_id,
+            },
+            OfficeCollaborationMutation::PresentationSetGroup {
+                container_kind,
+                container_id,
+                members,
+            } => Self::PresentationSetGroup {
+                container_kind: container_kind.into(),
+                container_id,
+                members: members
+                    .into_iter()
+                    .map(|member| NativeOfficeCollaborationPresentationGroupMember {
+                        element_id: member.element_id,
+                        expected_group_ids: member.expected_group_ids,
+                        next_group_ids: member.next_group_ids,
+                    })
+                    .collect(),
+            },
+            OfficeCollaborationMutation::PresentationSetBackground {
+                container_kind,
+                container_id,
+                expected_background,
+                next_background,
+            } => Self::PresentationSetBackground {
+                container_kind: container_kind.into(),
+                container_id,
+                expected_background,
+                next_background,
+            },
+            OfficeCollaborationMutation::PresentationReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                container_kind,
+                container_id,
+                element_id,
+                index_utf16,
+            } => Self::PresentationReplaceText {
+                search,
+                replacement,
+                expected_matches,
+                occurrence,
+                container_kind: container_kind.map(Into::into),
+                container_id,
+                element_id,
+                index_utf16,
+            },
+            OfficeCollaborationMutation::PdfCreateAnnotation {
+                annotation_id,
+                page_index,
+                annotation,
+            } => Self::PdfCreateAnnotation {
+                annotation_id,
+                page_index,
+                annotation,
+            },
+            OfficeCollaborationMutation::PdfUpdateAnnotation {
+                annotation_id,
+                expected_annotation,
+                next_annotation,
+                search,
+                index_utf16,
+            } => Self::PdfUpdateAnnotation {
+                annotation_id,
+                expected_annotation,
+                next_annotation,
+                search,
+                index_utf16,
+            },
+            OfficeCollaborationMutation::PdfDeleteAnnotation {
+                annotation_id,
+                expected_source,
+                expected_page_index,
+                expected_type,
+            } => Self::PdfDeleteAnnotation {
+                annotation_id,
+                expected_source: expected_source.into(),
+                expected_page_index,
+                expected_type,
+            },
+            OfficeCollaborationMutation::PdfSetFormValue {
+                field_id,
+                expected_value,
+                value,
+                search,
+                index_utf16,
+            } => Self::PdfSetFormValue {
+                field_id,
+                expected_value,
+                value,
+                search,
+                index_utf16,
+            },
+            OfficeCollaborationMutation::PdfProposeRedaction {
+                proposal_id,
+                page_index,
+                rects,
+                proposed_at,
+                reason,
+                text,
+            } => Self::PdfProposeRedaction {
+                proposal_id,
+                page_index,
+                rects: rects.into_iter().map(Into::into).collect(),
+                proposed_at,
+                reason,
+                text,
+            },
+            OfficeCollaborationMutation::PdfProposePageRotation {
+                page_operation_id,
+                page_indices,
+                degrees,
+                proposed_at,
+            } => Self::PdfProposePageRotation {
+                page_operation_id,
+                page_indices,
+                degrees,
+                proposed_at,
+            },
+            OfficeCollaborationMutation::PdfProposePageDeletion {
+                page_operation_id,
+                page_indices,
+                proposed_at,
+            } => Self::PdfProposePageDeletion {
+                page_operation_id,
+                page_indices,
+                proposed_at,
+            },
+            OfficeCollaborationMutation::PdfProposePageReorder {
+                page_operation_id,
+                page_order,
+                proposed_at,
+            } => Self::PdfProposePageReorder {
+                page_operation_id,
+                page_order,
+                proposed_at,
+            },
+            OfficeCollaborationMutation::PdfDecideReview {
+                decision_id,
+                target_kind,
+                target_id,
+                decision,
+                created_at,
+            } => Self::PdfDecideReview {
+                decision_id,
+                target_kind: target_kind.into(),
+                target_id,
+                decision: decision.into(),
+                created_at,
+            },
+        }
+    }
+}

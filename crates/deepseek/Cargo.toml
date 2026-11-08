@@ -1,0 +1,40 @@
+[package]
+name = "aster-deepseek"
+version = "0.1.0"
+edition = "2021"
+license = "MIT AND Apache-2.0"
+publish = false
+description = "Model-owned native DeepSeek execution components using the local Power runtime"
+
+[features]
+default = []
+cuda = ["aster-power/embedded-cuda", "candle-core/cuda", "candle-nn/cuda"]
+server = ["aster-power/server", "dep:async-trait", "dep:futures", "dep:chrono", "tokio/rt-multi-thread"]
+# Explicit experimental binary profile; never enabled by an execution error.
+xq-fused-sinkhorn = ["cuda"]
+xq-fused-validation = ["cuda"]
+xq-validation-cache = ["xq-fused-validation"]
+xq-fused-activation-codecs = ["cuda"]
+xq-borrowed-kernel-inputs = ["cuda"]
+
+[dependencies]
+aster-acl = { version = "=0.3.0", path = "../acl" }
+async-trait = { version = "0.1", optional = true }
+futures = { version = "0.3", optional = true }
+chrono = { version = "0.4", optional = true }
+aster-power = { path = "../power", default-features = false, features = ["embedded-inference"] }
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.10"
+tokio-util = { version = "0.7", default-features = false, features = ["rt"] }
+tokio = { version = "1", default-features = false, features = ["rt", "sync", "time", "macros"] }
+candle-core = { version = "0.10.2", default-features = false }
+candle-nn = { version = "0.10.2", default-features = false }
+tokenizers = { version = "0.22.2", default-features = false, features = ["onig"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[[example]]
+name = "serve_xq_native"
+required-features = ["server"]

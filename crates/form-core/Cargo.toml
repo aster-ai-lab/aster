@@ -1,0 +1,26 @@
+[package]
+name = "aster-form-core"
+publish = false
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+description = "Portable semantic core for Aster Form"
+repository = "https://github.com/aster-ai-lab/UI"
+
+[dependencies]
+aster-acl = { workspace = true }
+ryu-js = "1.0.3"
+regress = "0.10.4"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.149", features = ["float_roundtrip"] }
+sha2 = "0.10.9"
+thiserror = "2.0.18"
+url = "2.5.7"
+
+[[bin]]
+name = "aster-form-core"
+path = "src/bin/aster-form-core.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

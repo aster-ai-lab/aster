@@ -1,0 +1,688 @@
+use super::types::ChatMessage;
+
+/// HuggingFace-compatible `raise_exception` function for Jinja2 templates.
+///
+/// Many GGUF models (Llama 3.x, Qwen, etc.) use `raise_exception("message")` in their
+/// chat templates to signal unsupported message roles or invalid configurations.
+fn raise_exception(msg: String) -> Result<String, minijinja::Error> {
+    Err(minijinja::Error::new(
+        minijinja::ErrorKind::InvalidOperation,
+        format!("template error: {msg}"),
+    ))
+}
+
+/// HuggingFace-compatible `strftime_now` function for Jinja2 templates.
+///
+/// Some models (e.g., Llama 3.2) embed the current date/time in the system prompt
+/// via `strftime_now("%d %b %Y")`. Returns the formatted current local time.
+fn strftime_now(fmt: String) -> String {
+    chrono::Local::now().format(&fmt).to_string()
+}
+
+/// Python/Jinja2-compatible string methods used by modern GGUF chat templates
+/// (Qwen3.5, etc.): `str.startswith` / `str.endswith`.
+fn unknown_method_callback(
+    _state: &minijinja::State,
+    value: &minijinja::Value,
+    method: &str,
+    args: &[minijinja::Value],
+) -> Result<minijinja::Value, minijinja::Error> {
+    use minijinja::value::{from_args, ValueKind};
+    use minijinja::{Error, ErrorKind, Value};
+
+    if value.kind() != ValueKind::String {
+        return Err(Error::from(ErrorKind::UnknownMethod));
+    }
+    let haystack = value.as_str().unwrap_or("");
+
+    match method {
+        "startswith" => {
+            let (prefix,): (Value,) = from_args(args)?;
+            Ok(Value::from(string_matches_prefix_or_suffix(
+                haystack, &prefix, true,
+            )?))
+        }
+        "endswith" => {
+            let (suffix,): (Value,) = from_args(args)?;
+            Ok(Value::from(string_matches_prefix_or_suffix(
+                haystack, &suffix, false,
+            )?))
+        }
+        _ => Err(Error::from(ErrorKind::UnknownMethod)),
+    }
+}
+
+fn string_matches_prefix_or_suffix(
+    haystack: &str,
+    needle: &minijinja::Value,
+    prefix: bool,
+) -> Result<bool, minijinja::Error> {
+    use minijinja::value::ValueKind;
+    use minijinja::{Error, ErrorKind};
+
+    match needle.kind() {
+        ValueKind::String => {
+            let needle = needle.as_str().unwrap_or("");
+            Ok(if prefix {
+                haystack.starts_with(needle)
+            } else {
+                haystack.ends_with(needle)
+            })
+        }
+        ValueKind::Seq => {
+            for item in needle.try_iter()? {
+                if item.kind() != ValueKind::String {
+                    return Err(Error::new(
+                        ErrorKind::InvalidOperation,
+                        "tuple for startswith/endswith must contain only strings",
+                    ));
+                }
+                let part = item.as_str().unwrap_or("");
+                let matched = if prefix {
+                    haystack.starts_with(part)
+                } else {
+                    haystack.ends_with(part)
+                };
+                if matched {
+                    return Ok(true);
+                }
+            }
+            Ok(false)
+        }
+        _ => Err(Error::new(
+            ErrorKind::InvalidOperation,
+            "startswith/endswith argument must be a string or a tuple of strings",
+        )),
+    }
+}
+
+/// Recognized chat template formats for prompt construction.
+///
+/// Used as fallback when no raw Jinja2 template string is available.
+#[derive(Debug, Clone, PartialEq)]
+pub enum ChatTemplateKind {
+    /// ChatML: `<|im_start|>role\ncontent<|im_end|>`
+    ChatMl,
+    /// Llama: `[INST] ... [/INST]`
+    Llama,
+    /// Phi: `<|system|>\ncontent<|end|>`
+    Phi,
+    /// Generic fallback: `role: content\n`
+    Generic,
+}
+
+/// Detect the chat template kind from a raw template string (e.g. from GGUF metadata).
+pub fn detect(template_str: &str) -> ChatTemplateKind {
+    if template_str.contains("<|im_start|>") {
+        ChatTemplateKind::ChatMl
+    } else if template_str.contains("[INST]") {
+        ChatTemplateKind::Llama
+    } else if template_str.contains("<|system|>") && template_str.contains("<|end|>") {
+        ChatTemplateKind::Phi
+    } else {
+        ChatTemplateKind::Generic
+    }
+}
+
+/// Render a chat prompt using a raw Jinja2 template string.
+///
+/// The template receives `messages` (array of `{role, content}` objects) and
+/// `add_generation_prompt` (bool). This matches the HuggingFace/Ollama convention.
+///
+/// Returns an error if parsing or rendering fails. Callers must not silently
+/// replace a model-provided raw template with a different prompt policy.
+pub fn render_jinja(
+    template_str: &str,
+    messages: &[ChatMessage],
+    add_generation_prompt: bool,
+) -> Result<String, String> {
+    let mut env = minijinja::Environment::new();
+    // Limit recursion depth to prevent pathological templates from hanging
+    env.set_recursion_limit(64);
+    // Enable fuel to cap total template operations and prevent infinite loops
+    env.set_fuel(Some(50_000));
+
+    // Register HuggingFace-compatible custom functions used by many GGUF templates
+    // (e.g., Llama 3.x, Qwen, etc.)
+    env.add_function("raise_exception", raise_exception);
+    env.add_function("strftime_now", strftime_now);
+    // Qwen3.5 and other HF templates call Python string methods such as
+    // `content.startswith(...)` which minijinja does not expose by default.
+    env.set_unknown_method_callback(unknown_method_callback);
+
+    // Build messages as simple Value objects for the template
+    let msg_values: Vec<minijinja::Value> = messages
+        .iter()
+        .map(|m| {
+            let mut map = std::collections::BTreeMap::new();
+            map.insert("role".to_string(), minijinja::Value::from(m.role.as_str()));
+            map.insert(
+                "content".to_string(),
+                minijinja::Value::from(m.content.text()),
+            );
+            minijinja::Value::from_object(map)
+        })
+        .collect();
+
+    let result = env.render_str(
+        template_str,
+        minijinja::context! {
+            messages => msg_values,
+            add_generation_prompt => add_generation_prompt,
+            bos_token => "<s>",
+            eos_token => "</s>",
+        },
+    );
+
+    match result {
+        Ok(rendered) => Ok(rendered),
+        Err(e) => Err(format!("Jinja2 chat template rendering failed: {e}")),
+    }
+}
+
+/// Format chat messages into a prompt string.
+///
+/// If a raw Jinja2 template string is provided, it is authoritative and
+/// rendering errors fail closed. Hardcoded template kinds are used only when no
+/// raw template is available.
+pub fn format_chat_prompt(
+    messages: &[ChatMessage],
+    kind: &ChatTemplateKind,
+    raw_template: Option<&str>,
+) -> Result<String, String> {
+    if let Some(template_str) = raw_template {
+        return render_jinja(template_str, messages, true);
+    }
+
+    let prompt = match kind {
+        ChatTemplateKind::ChatMl => format_chatml(messages),
+        ChatTemplateKind::Llama => format_llama(messages),
+        ChatTemplateKind::Phi => format_phi(messages),
+        ChatTemplateKind::Generic => format_generic(messages),
+    };
+    Ok(prompt)
+}
+
+fn format_chatml(messages: &[ChatMessage]) -> String {
+    let mut prompt = String::new();
+    for msg in messages {
+        prompt.push_str(&format!(
+            "<|im_start|>{}\n{}<|im_end|>\n",
+            msg.role,
+            msg.content.text()
+        ));
+    }
+    prompt.push_str("<|im_start|>assistant\n");
+    prompt
+}
+
+fn format_llama(messages: &[ChatMessage]) -> String {
+    let mut prompt = String::new();
+    let mut system_text = String::new();
+
+    for msg in messages {
+        match msg.role.as_str() {
+            "system" => {
+                system_text = msg.content.text();
+            }
+            "user" => {
+                prompt.push_str("<s>[INST] ");
+                if !system_text.is_empty() {
+                    prompt.push_str(&format!("<<SYS>>\n{}\n<</SYS>>\n\n", system_text));
+                    system_text.clear();
+                }
+                prompt.push_str(&format!("{} [/INST]", msg.content.text()));
+            }
+            "assistant" => {
+                prompt.push_str(&format!(" {} </s>", msg.content.text()));
+            }
+            _ => {
+                prompt.push_str(&format!("{}: {}\n", msg.role, msg.content.text()));
+            }
+        }
+    }
+    prompt
+}
+
+fn format_phi(messages: &[ChatMessage]) -> String {
+    let mut prompt = String::new();
+    for msg in messages {
+        prompt.push_str(&format!(
+            "<|{}|>\n{}<|end|>\n",
+            msg.role,
+            msg.content.text()
+        ));
+    }
+    prompt.push_str("<|assistant|>\n");
+    prompt
+}
+
+fn format_generic(messages: &[ChatMessage]) -> String {
+    let mut prompt = String::new();
+    for msg in messages {
+        prompt.push_str(&format!("{}: {}\n", msg.role, msg.content.text()));
+    }
+    prompt.push_str("assistant: ");
+    prompt
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::backend::types::MessageContent;
+
+    fn sample_messages() -> Vec<ChatMessage> {
+        vec![
+            ChatMessage {
+                role: "system".to_string(),
+                content: MessageContent::Text("You are helpful.".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            },
+            ChatMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("Hello".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            },
+        ]
+    }
+
+    #[test]
+    fn test_detect_chatml() {
+        let template = "{% for message in messages %}<|im_start|>{{ message.role }}\n{{ message.content }}<|im_end|>\n{% endfor %}";
+        assert_eq!(detect(template), ChatTemplateKind::ChatMl);
+    }
+
+    #[test]
+    fn test_detect_llama() {
+        let template = "{% if messages[0]['role'] == 'system' %}[INST] <<SYS>>{{ messages[0]['content'] }}<</SYS>>{% endif %}";
+        assert_eq!(detect(template), ChatTemplateKind::Llama);
+    }
+
+    #[test]
+    fn test_detect_phi() {
+        let template = "<|system|>\n{{ system_message }}<|end|>\n<|user|>\n{{ user_message }}<|end|>\n<|assistant|>\n";
+        assert_eq!(detect(template), ChatTemplateKind::Phi);
+    }
+
+    #[test]
+    fn test_detect_generic_fallback() {
+        let template = "some unknown template format";
+        assert_eq!(detect(template), ChatTemplateKind::Generic);
+    }
+
+    #[test]
+    fn test_format_chatml() {
+        let msgs = sample_messages();
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, None).unwrap();
+        assert!(prompt.contains("<|im_start|>system\nYou are helpful.<|im_end|>"));
+        assert!(prompt.contains("<|im_start|>user\nHello<|im_end|>"));
+        assert!(prompt.ends_with("<|im_start|>assistant\n"));
+    }
+
+    #[test]
+    fn test_format_llama() {
+        let msgs = sample_messages();
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Llama, None).unwrap();
+        assert!(prompt.contains("<<SYS>>"));
+        assert!(prompt.contains("You are helpful."));
+        assert!(prompt.contains("[INST]"));
+        assert!(prompt.contains("Hello [/INST]"));
+    }
+
+    #[test]
+    fn test_format_phi() {
+        let msgs = sample_messages();
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Phi, None).unwrap();
+        assert!(prompt.contains("<|system|>\nYou are helpful.<|end|>"));
+        assert!(prompt.contains("<|user|>\nHello<|end|>"));
+        assert!(prompt.ends_with("<|assistant|>\n"));
+    }
+
+    #[test]
+    fn test_format_generic() {
+        let msgs = sample_messages();
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Generic, None).unwrap();
+        assert!(prompt.contains("system: You are helpful."));
+        assert!(prompt.contains("user: Hello"));
+        assert!(prompt.ends_with("assistant: "));
+    }
+
+    #[test]
+    fn test_format_empty_messages() {
+        let msgs: Vec<ChatMessage> = vec![];
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, None).unwrap();
+        assert_eq!(prompt, "<|im_start|>assistant\n");
+
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Phi, None).unwrap();
+        assert_eq!(prompt, "<|assistant|>\n");
+
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Generic, None).unwrap();
+        assert_eq!(prompt, "assistant: ");
+    }
+
+    #[test]
+    fn test_format_multimodal_message_extracts_text() {
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Parts(vec![
+                crate::backend::types::ContentPart::Text {
+                    text: "Describe this image".to_string(),
+                    unsupported: Default::default(),
+                },
+                crate::backend::types::ContentPart::ImageUrl {
+                    image_url: crate::backend::types::ImageUrl {
+                        url: "https://example.com/img.jpg".to_string(),
+                        detail: None,
+                        unsupported: Default::default(),
+                    },
+                    unsupported: Default::default(),
+                },
+            ]),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, None).unwrap();
+        assert!(prompt.contains("Describe this image"));
+        assert!(!prompt.contains("example.com"));
+    }
+
+    #[test]
+    fn test_format_tool_message_extracts_text() {
+        let msgs = vec![
+            ChatMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("weather?".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            },
+            ChatMessage {
+                role: "tool".to_string(),
+                content: MessageContent::Text("72F sunny".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: Some("call_1".to_string()),
+                images: None,
+            },
+        ];
+
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, None).unwrap();
+        assert!(prompt.contains("weather?"));
+        assert!(prompt.contains("72F sunny"));
+    }
+
+    #[test]
+    fn test_format_message_with_name_field() {
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text("hello".to_string()),
+            name: Some("Alice".to_string()),
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+
+        // Name field doesn't affect template formatting, just content
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::Phi, None).unwrap();
+        assert!(prompt.contains("hello"));
+    }
+
+    // ========================================================================
+    // Jinja2 template rendering tests
+    // ========================================================================
+
+    #[test]
+    fn test_render_jinja_chatml_template() {
+        let template = "{% for message in messages %}<|im_start|>{{ message.role }}\n{{ message.content }}<|im_end|>\n{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.contains("<|im_start|>system\nYou are helpful.<|im_end|>"));
+        assert!(rendered.contains("<|im_start|>user\nHello<|im_end|>"));
+        assert!(rendered.contains("<|im_start|>assistant\n"));
+    }
+
+    #[test]
+    fn test_render_jinja_phi_template() {
+        let template = "{% for message in messages %}<|{{ message.role }}|>\n{{ message.content }}<|end|>\n{% endfor %}{% if add_generation_prompt %}<|assistant|>\n{% endif %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.contains("<|system|>\nYou are helpful.<|end|>"));
+        assert!(rendered.contains("<|user|>\nHello<|end|>"));
+        assert!(rendered.contains("<|assistant|>"));
+    }
+
+    #[test]
+    fn test_render_jinja_with_bos_eos_tokens() {
+        let template = "{{ bos_token }}{% for message in messages %}{{ message.role }}: {{ message.content }}\n{% endfor %}{{ eos_token }}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.starts_with("<s>"));
+        assert!(rendered.ends_with("</s>"));
+    }
+
+    #[test]
+    fn test_render_jinja_empty_messages() {
+        let template = "{% for message in messages %}{{ message.role }}: {{ message.content }}\n{% endfor %}{% if add_generation_prompt %}assistant: {% endif %}";
+        let msgs: Vec<ChatMessage> = vec![];
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "assistant: ");
+    }
+
+    #[test]
+    fn test_render_jinja_invalid_template_returns_error() {
+        let template = "{% invalid syntax %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_format_chat_prompt_prefers_jinja_over_fallback() {
+        let template =
+            "{% for message in messages %}[{{ message.role }}] {{ message.content }}\n{% endfor %}";
+        let msgs = sample_messages();
+        // Even though kind is ChatMl, the raw template should be used
+        let prompt = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, Some(template)).unwrap();
+        assert!(prompt.contains("[system] You are helpful."));
+        assert!(prompt.contains("[user] Hello"));
+        // Should NOT contain ChatML markers
+        assert!(!prompt.contains("<|im_start|>"));
+    }
+
+    #[test]
+    fn test_format_chat_prompt_rejects_bad_raw_jinja() {
+        let bad_template = "{% invalid %}";
+        let msgs = sample_messages();
+        let err = format_chat_prompt(&msgs, &ChatTemplateKind::ChatMl, Some(bad_template))
+            .expect_err("raw Jinja template errors must fail closed");
+        assert!(err.contains("Jinja2 chat template rendering failed"));
+    }
+
+    #[test]
+    fn test_render_jinja_supports_python_startswith() {
+        let template = "{% if messages[1].content.startswith('Hel') %}yes{% else %}no{% endif %}";
+        let msgs = sample_messages();
+        let rendered = render_jinja(template, &msgs, false).unwrap();
+        assert_eq!(rendered, "yes");
+    }
+
+    #[test]
+    fn test_render_jinja_supports_python_endswith_tuple() {
+        let template =
+            "{% if messages[1].content.endswith(('lo', 'xyz')) %}yes{% else %}no{% endif %}";
+        let msgs = sample_messages();
+        let rendered = render_jinja(template, &msgs, false).unwrap();
+        assert_eq!(rendered, "yes");
+    }
+
+    #[test]
+    fn test_render_jinja_llama3_style_template() {
+        // Llama 3 uses a different template style
+        let template = "{% for message in messages %}{% if message.role == 'system' %}<|start_header_id|>system<|end_header_id|>\n\n{{ message.content }}<|eot_id|>{% elif message.role == 'user' %}<|start_header_id|>user<|end_header_id|>\n\n{{ message.content }}<|eot_id|>{% elif message.role == 'assistant' %}<|start_header_id|>assistant<|end_header_id|>\n\n{{ message.content }}<|eot_id|>{% endif %}{% endfor %}{% if add_generation_prompt %}<|start_header_id|>assistant<|end_header_id|>\n\n{% endif %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.contains("<|start_header_id|>system<|end_header_id|>"));
+        assert!(rendered.contains("You are helpful."));
+        assert!(rendered.contains("<|start_header_id|>user<|end_header_id|>"));
+        assert!(rendered.contains("Hello"));
+        assert!(rendered.ends_with("<|start_header_id|>assistant<|end_header_id|>\n\n"));
+    }
+
+    #[test]
+    fn test_render_jinja_gemma_style_template() {
+        let template = "{% for message in messages %}<start_of_turn>{{ message.role }}\n{{ message.content }}<end_of_turn>\n{% endfor %}{% if add_generation_prompt %}<start_of_turn>model\n{% endif %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.contains("<start_of_turn>system\nYou are helpful.<end_of_turn>"));
+        assert!(rendered.contains("<start_of_turn>user\nHello<end_of_turn>"));
+        assert!(rendered.ends_with("<start_of_turn>model\n"));
+    }
+
+    #[test]
+    fn test_render_jinja_without_generation_prompt() {
+        let template = "{% for message in messages %}{{ message.role }}: {{ message.content }}\n{% endfor %}{% if add_generation_prompt %}assistant: {% endif %}";
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(!rendered.ends_with("assistant: "));
+    }
+
+    #[test]
+    fn test_render_jinja_multimodal_extracts_text() {
+        let template =
+            "{% for message in messages %}{{ message.role }}: {{ message.content }}\n{% endfor %}";
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Parts(vec![
+                crate::backend::types::ContentPart::Text {
+                    text: "Describe this".to_string(),
+                    unsupported: Default::default(),
+                },
+                crate::backend::types::ContentPart::ImageUrl {
+                    image_url: crate::backend::types::ImageUrl {
+                        url: "https://example.com/img.jpg".to_string(),
+                        detail: None,
+                        unsupported: Default::default(),
+                    },
+                    unsupported: Default::default(),
+                },
+            ]),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_ok());
+        assert!(result.unwrap().contains("Describe this"));
+    }
+
+    // ========================================================================
+    // HuggingFace custom function tests (raise_exception, strftime_now)
+    // ========================================================================
+
+    #[test]
+    fn test_render_jinja_raise_exception_returns_error() {
+        // Llama 3.x templates use raise_exception for unsupported roles
+        let template = "{% if messages[0].role == 'bad' %}{{ raise_exception('Unsupported role') }}{% endif %}OK";
+        let msgs = vec![ChatMessage {
+            role: "bad".to_string(),
+            content: MessageContent::Text("hi".to_string()),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+        // raise_exception should cause render to fail gracefully
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_render_jinja_raise_exception_not_triggered() {
+        let template =
+            "{% if messages[0].role == 'bad' %}{{ raise_exception('fail') }}{% endif %}OK";
+        let msgs = sample_messages();
+        // raise_exception not triggered, should render fine
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "OK");
+    }
+
+    #[test]
+    fn test_render_jinja_strftime_now() {
+        // Llama 3.2 embeds current date in system prompt
+        let template = "Today is {{ strftime_now('%Y') }}.";
+        let msgs: Vec<ChatMessage> = vec![];
+        let result = render_jinja(template, &msgs, false);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        // Should contain a 4-digit year
+        assert!(rendered.starts_with("Today is 20"));
+        assert!(rendered.ends_with('.'));
+    }
+
+    #[test]
+    fn test_render_jinja_llama32_style_template() {
+        // Simplified Llama 3.2 template that uses both custom functions
+        let template = concat!(
+            "{{ bos_token }}",
+            "{% for message in messages %}",
+            "{% if message.role == 'system' %}",
+            "<|start_header_id|>system<|end_header_id|>\n\n",
+            "Cutting Knowledge Date: December 2023\n",
+            "Today Date: {{ strftime_now('%d %b %Y') }}\n\n",
+            "{{ message.content }}<|eot_id|>",
+            "{% elif message.role == 'user' %}",
+            "<|start_header_id|>user<|end_header_id|>\n\n",
+            "{{ message.content }}<|eot_id|>",
+            "{% endif %}",
+            "{% endfor %}",
+            "{% if add_generation_prompt %}",
+            "<|start_header_id|>assistant<|end_header_id|>\n\n",
+            "{% endif %}",
+        );
+        let msgs = sample_messages();
+        let result = render_jinja(template, &msgs, true);
+        assert!(result.is_ok());
+        let rendered = result.unwrap();
+        assert!(rendered.starts_with("<s>"));
+        assert!(rendered.contains("Cutting Knowledge Date: December 2023"));
+        assert!(rendered.contains("Today Date:"));
+        assert!(rendered.contains("You are helpful."));
+        assert!(rendered.contains("Hello"));
+        assert!(rendered.ends_with("<|start_header_id|>assistant<|end_header_id|>\n\n"));
+    }
+
+    #[test]
+    fn test_render_jinja_fuel_limit_prevents_hang() {
+        // A template with an excessive loop should be stopped by the fuel limit
+        let template = "{% for i in range(999999) %}x{% endfor %}";
+        let msgs: Vec<ChatMessage> = vec![];
+        let result = render_jinja(template, &msgs, false);
+        // Should return an error because fuel is exhausted, not hang.
+        assert!(result.is_err());
+    }
+}

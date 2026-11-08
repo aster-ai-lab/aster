@@ -1,0 +1,51 @@
+{
+  "schema": "aster.runtime.observation.v4",
+  "unit_id": "golden-task",
+  "generation": 7,
+  "spec_digest": "sha256:2d45e69ff2dd43f933cc5b733eda674c30048578c27b5b5bfe1503dbc19d0723",
+  "class": "task",
+  "state": "succeeded",
+  "provider_resource_id": "golden/task/7",
+  "provider_build": "golden-runtime/1.2.3",
+  "observed_at_ms": 120000,
+  "started_at_ms": 100000,
+  "finished_at_ms": 120000,
+  "health": null,
+  "liveness": null,
+  "outputs": [
+    {
+      "name": "result",
+      "artifact": {
+        "uri": "artifact://outputs/result@sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "media_type": "application/json"
+      },
+      "size_bytes": 1024
+    }
+  ],
+  "usage": {
+    "wall_time_ms": 20000,
+    "cpu_time_ms": 10000,
+    "peak_memory_bytes": 67108864,
+    "network_rx_bytes": 1024,
+    "network_tx_bytes": 2048,
+    "storage_read_bytes": 4096,
+    "storage_write_bytes": 8192
+  },
+  "evidence": {
+    "provider_build": "golden-runtime/1.2.3",
+    "spec_digest": "sha256:2d45e69ff2dd43f933cc5b733eda674c30048578c27b5b5bfe1503dbc19d0723",
+    "semantics_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "identity_attachment_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "claims": {
+      "isolation": "sandbox",
+      "runtime": "golden-runtime"
+    }
+  },
+  "provider_attestation": {
+    "uri": "attestation://golden/task/7@sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "media_type": "application/vnd.aster.attestation.v1+json"
+  },
+  "failure": null
+}

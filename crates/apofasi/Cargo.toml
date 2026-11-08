@@ -1,0 +1,57 @@
+[package]
+name = "aster-apofasi"
+version = "0.1.1"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT"
+authors = ["Aster"]
+repository = "https://github.com/aster-ai-lab/Apofasi"
+homepage = "https://github.com/aster-ai-lab/Apofasi"
+documentation = "https://docs.rs/aster-apofasi"
+readme = "README.md"
+description = "Typed System-1 decision engine for Aster hosts"
+keywords = ["aster", "decision", "routing", "calibration", "system-one"]
+categories = ["science", "algorithms"]
+publish = false
+
+[features]
+default = ["router"]
+# Pure routing over script/language detection (no ML framework).
+router = []
+# Candle neural inference (off by default to keep artifacts small).
+infer = ["dep:candle-core", "dep:candle-nn", "dep:tokenizers"]
+metal = ["infer", "candle-core/metal", "candle-nn/metal"]
+# Apple MLX decision forward (links a prebuilt libmlx; see build.rs).
+mlx = ["infer"]
+cuda = ["infer", "candle-core/cuda", "candle-nn/cuda"]
+# RLCD train helpers + publish layout (pulls infer for checkpoint IO).
+train = ["infer"]
+# CLI binary `aster-apofasi` (smoke / bench).
+cli = ["infer"]
+
+[dependencies]
+indexmap = {workspace = true}
+serde = {workspace = true}
+serde_json = {version = "1", features = ["preserve_order"]}
+thiserror = {workspace = true}
+candle-core = {version = "0.9.1", optional = true}
+candle-nn = {version = "0.9.1", optional = true}
+tokenizers = {version = "0.21", optional = true}
+
+[build-dependencies]
+cc = "1"
+
+[dev-dependencies]
+
+[[bin]]
+name = "aster-apofasi"
+path = "src/bin/apofasi.rs"
+required-features = ["cli"]
+
+[[example]]
+name = "suite"
+required-features = ["infer"]
+
+[[example]]
+name = "host_gate"
+

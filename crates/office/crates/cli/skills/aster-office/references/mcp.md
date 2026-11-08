@@ -1,0 +1,1196 @@
+# Native Office MCP
+
+## Contents
+
+- [Session Workflow](#session-workflow)
+- [Real-time Collaboration](#real-time-collaboration)
+- [Typed Mutations](#typed-mutations)
+- [Views and Compatibility](#views-and-compatibility)
+
+## Session Workflow
+
+In an Aster Code `use` worker, the host has already started the native server.
+Call the available `mcp__use_office__office_*` tools; do not start a process or
+run a shell command. Tool names below omit the host prefix for readability.
+
+In a CLI-only MCP host, start the explicit native standard MCP server:
+
+```bash
+aster use mcp serve office-native
+```
+
+Use its typed tools rather than passing shell command strings:
+
+- `office_validate` checks one file without opening a session.
+- `office_create` and `office_open` register bounded in-memory sessions.
+- `office_find` lists 1-based text matches in a scope without writing. Pass
+  that `occurrence` to `replace-text`.
+- `office_get`, `office_query`, and `office_view` read the current session.
+- `office_apply_batch` applies typed mutations atomically in memory.
+- `office_raw_xml` inspects one bounded XML part.
+- `office_merge_template` writes a distinct merged output.
+- `office_save` persists a mutable session.
+- `office_close` refuses unsaved changes unless `discard=true` is explicit.
+- `office_list` reports sessions owned by this server process.
+- `office_install_compat` prepares the optional pinned compatibility provider;
+  in Code it must pass parent confirmation before network access.
+- `office_collaboration_create`, `office_collaboration_inspect`,
+  `office_collaboration_read`, `office_collaboration_find`,
+  `office_collaboration_diff`, `office_collaboration_events`,
+  `office_collaboration_apply`, `office_collaboration_mutate`, and
+  `office_collaboration_checkpoint` expose a durable Yjs/Yrs replica without
+  opening an OOXML session.
+
+Mutations remain unsaved until `office_save`. Do not discard a dirty session
+unless the user explicitly accepts losing its changes. Release the session as
+soon as the workflow finishes.
+
+## Real-time Collaboration
+
+Collaboration tools operate on the same durable replica as `aster-office collab`
+and are intentionally independent from in-memory OOXML sessions. They exchange
+standard Yjs v1 updates and state vectors; room transport, awareness, identity
+authentication, and authorization remain host responsibilities.
+
+Read the stable edit address from `collab read` or `office_collaboration_read`,
+then patch only that address with `office_collaboration_mutate`. Do not overwrite the whole document. Document addresses use `paragraphId` with
+`startUtf16`; Spreadsheet addresses use `sheetId`; Presentation addresses use
+`elementId`; PDF addresses use `fieldId`.
+
+Call `office_collaboration_read` before a local edit. It returns exact
+canonical Markdown source or an Office-owned Document projection with stable
+paragraph/text identities, projection-v3 comments/replies/anchors, live
+suggestions, immutable change decisions, and the state vector required for a
+fail-closed mutation. For Document or Markdown text locate-edit, call
+`office_collaboration_find` first and pass its `matchCount` /
+`occurrence` into `document-replace-text` or `markdown-replace-text`. For live
+Document edits under concurrent peers, also pass the hit's `paragraphId`,
+`textId`, and `indexUtf16`. For a
+Spreadsheet replica, the same find returns one cell (`sheetId`, `row`,
+`column`); edit that coordinate with `spreadsheet-set-cell` and pass
+`expectedCell` equal to the current leaf, or `null`/absent when blank (writes
+nothing when that base drifted). For a
+Presentation replica, pass that same count to `presentation-replace-text` and
+optionally the hit's `containerKind`, `containerId`, `elementId`, and
+`indexUtf16`; it rewrites only the matched scene-element text. Use
+`presentation-update-element` with `expectedElement` equal to the current
+element when geometry or other fields change (writes nothing when that base
+drifted). For a PDF
+replica, find returns `fieldId` for form values or `annotationId`, `pageIndex`,
+and `annotationType` for FreeText (`type` 3) contents; edit with
+`pdf-set-form-value` or `pdf-update-annotation`. `pdf-set-form-value` requires
+`expectedValue` equal to the current field value, or empty when the field is
+absent, and writes nothing when that base drifted. `pdf-update-annotation`
+requires `expectedAnnotation` equal to the current annotation and writes
+nothing when that base drifted. For a form value or FreeText
+annotation under concurrent peers, pass the hit `indexUtf16` and matched
+`search` so `pdf-set-form-value` / `pdf-update-annotation` rewrite only that
+span and fail closed on drift. There is no PDF body replace-text. Do not decode
+Office collaboration roots in the host.
+
+Create an empty replica, or include `initialUpdateBase64` to join state received
+from a browser peer:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "artifactId": "report",
+  "kind": "document",
+  "actorId": "agent-7",
+  "actorKind": "agent",
+  "mode": "edit",
+  "operationId": "join-1",
+  "initialUpdateBase64": "..."
+}
+```
+
+Call `office_collaboration_events` repeatedly. Omit `afterSequence` only on the
+first call to start atomically at the current durable sequence. Thereafter pass
+the last successfully consumed `cursorSequence`:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "afterSequence": 42,
+  "limit": 64,
+  "includeUpdates": true
+}
+```
+
+Persist a cursor only after handling every returned update. If `hasMore=true`,
+poll immediately; otherwise wait according to the host's cancellation and
+backoff policy. A `reset` means checkpoint compaction removed the requested
+incremental history. With `includeUpdates=true`, rebuild the local Yjs state
+from its complete `updateBase64`, then persist the reset cursor.
+
+Deliver a local or remote update with a stable operation ID. Exact replay is
+idempotent; reusing the ID for another payload fails closed. Supply
+`ifStateVectorBase64` when the agent's decision must fail if shared state has
+changed since inspection:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "operationId": "agent-edit-43",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "report",
+  "kind": "document",
+  "updateBase64": "...",
+  "ifStateVectorBase64": "..."
+}
+```
+
+For local canonical Markdown, Document, Spreadsheet, Presentation, or PDF
+changes, prefer `office_collaboration_mutate` over constructing Yjs bytes. Markdown accepts
+closed `markdown-replace`, `markdown-replace-text`, and `markdown-splice` variants.
+`markdown-replace` is a compare-and-swap: `expectedMarkdown` must equal the
+current source, and a drifted base writes nothing. Prefer
+`markdown-replace-text` (with find-hit `indexUtf16` under concurrent peers) or
+`markdown-splice` so a live replica is not overwritten. `markdown-splice`
+requires `expectedSlice` equal to the UTF-16 range being deleted, or empty when
+`deleteUtf16` is 0; a drifted slice writes nothing. The same result carries
+`caret` (`kind: markdown`, `indexUtf16` just after the inserted text). Do not
+send a follow-up location message. A stale `ifStateVectorBase64` fails closed
+so a concurrent insert before that caret is re-read instead of landing on the
+old index. Splice positions are
+UTF-16 code-unit offsets and may not split a surrogate pair:
+
+```json
+{
+  "store": ".aster/notes.replica",
+  "operationId": "agent-edit-44",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "notes",
+  "kind": "markdown",
+  "mutation": {
+    "type": "markdown-splice",
+    "indexUtf16": 4,
+    "deleteUtf16": 0,
+    "expectedSlice": "",
+    "insert": " shared"
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+`document-splice` edits one `Y.XmlText` inside `paragraphId` / `textId`. It returns
+`caret` (`kind: document`, same `paragraphId` and `textId`, `indexUtf16` just
+after the inserted text) in that result. It does not rotate `textId`. A drifted
+`textId` or `expectedSlice` writes nothing. Do not send a follow-up location
+message. `document-replace-text` remains the substitution that rotates `textId`.
+
+Document exact replacement edits ProseMirror `Y.XmlText` in place and fails
+unless `expectedMatches` equals the current non-overlapping match count. Locate
+that count first with `office_collaboration_find` (CLI `collab find`); its
+1-based `occurrence` values match `document-replace-text`. That count is the
+conflict check for replacing every match. Add `"occurrence": 2` to change only
+that 1-based match after the count still matches. Under concurrent peers, also
+pass the find hit's `paragraphId`, `textId`, and `indexUtf16` so a drifted span
+fails closed even when the match count is unchanged. To change one stable
+paragraph instead, use `document-replace-paragraph` with its paragraph id and
+text id. Markdown replicas use the same find → `markdown-replace-text` path on
+the canonical Y.Text source. Under concurrent peers, also pass the hit's
+`indexUtf16` so a drifted span fails closed even when the match count is
+unchanged. File-level Word, Spreadsheet, and Presentation
+edits use `office_find` and native `replace-text` with the same `occurrence`.
+Document replacement may cross formatting runs inside one text node, preserves
+the first replaced character's attributes, rotates the affected Word `textId`
+once, and never crosses an XML-node or inline-atom boundary:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "operationId": "agent-edit-45",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "report",
+  "kind": "document",
+  "mutation": {
+    "type": "document-replace-text",
+    "search": "Draft",
+    "replacement": "Final",
+    "expectedMatches": 1,
+    "occurrence": 1,
+    "paragraphId": "00000001",
+    "textId": "00000002",
+    "indexUtf16": 0
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+```json
+{
+  "store": ".aster/notes.replica",
+  "operationId": "agent-edit-46",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "notes",
+  "kind": "markdown",
+  "mutation": {
+    "type": "markdown-replace-text",
+    "search": "Draft",
+    "replacement": "Final",
+    "expectedMatches": 1,
+    "occurrence": 1
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+For a complete plain paragraph, prefer `document-replace-paragraph` with the
+`paragraphId`, `expectedTextId`, and complete `expectedText` returned by the
+latest projection. A concurrent user edit then fails closed instead of
+replacing unrelated document state.
+
+Insert a plain paragraph beside a stable paragraph, heading, or document
+caption in a bounded top-level section, nested list-item, table-cell/header, or
+blockquote path. Word identities are explicit uppercase eight-digit positive
+31-bit hexadecimal values:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "operationId": "agent-edit-46",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "report",
+  "kind": "document",
+  "mutation": {
+    "type": "document-insert-paragraph",
+    "anchorParagraphId": "00000001",
+    "position": "after",
+    "paragraphId": "00000012",
+    "textId": "00000013",
+    "text": "Native paragraph"
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+Delete through `document-delete-paragraph` only after inspecting and supplying
+`paragraphId`, `expectedTextId`, and the complete `expectedText`. It rejects a
+stale identity/text pair, deletion of a required container block or
+list-leading paragraph, inline atoms/embeds, and comment or tracked-change
+marks. Text and structural edits inside a table rotate every identified
+ancestor row's `rowTextId`; an incomplete row identity rejects the entire
+mutation before writing.
+
+Use `document-set-page-color` with `pageColor` and
+`document-set-track-changes` with `trackChanges`. Clear a value only through
+`document-clear-page-color` or `document-clear-track-changes`; the explicit
+variants prevent a missing set field from silently removing shared state.
+
+For review-only participation, create or join a separate Document replica with
+`mode: "comment"`, then read it immediately before choosing an anchor. Create
+one stable selection thread with the exact paragraph/text identity, UTF-16
+range, and selected text returned by projection version 3:
+
+```json
+{
+  "store": ".aster/report-review.replica",
+  "operationId": "agent-comment-create-1",
+  "actorId": "agent-7",
+  "mode": "comment",
+  "artifactId": "report",
+  "kind": "document",
+  "mutation": {
+    "type": "document-comment-create",
+    "commentId": "comment-1",
+    "paragraphId": "00000001",
+    "expectedTextId": "00000002",
+    "startUtf16": 6,
+    "endUtf16": 12,
+    "expectedText": "review",
+    "author": "Ada Reviewer",
+    "createdAt": "2026-08-17T00:00:00.000Z",
+    "text": "Clarify this review point."
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+The `author` must equal the display name authenticated by the room ticket; the
+replica manifest supplies `actorId`. Append a reply, resolve or reopen, and
+delete an owned reply or whole thread with the remaining closed variants:
+
+```json
+{
+  "type": "document-comment-reply",
+  "commentId": "comment-1",
+  "replyId": "reply-1",
+  "author": "Ada Reviewer",
+  "createdAt": "2026-08-17T00:01:00.000Z",
+  "text": "Suggested wording is ready."
+}
+```
+
+```json
+{
+  "type": "document-comment-set-resolved",
+  "commentId": "comment-1",
+  "resolved": true
+}
+```
+
+```json
+{
+  "type": "document-comment-delete",
+  "commentId": "comment-1",
+  "replyId": "reply-1"
+}
+```
+
+Send `resolved: false` to reopen. Omit `replyId` to delete the whole thread.
+In comment mode, deletion is allowed only when the stored record actor matches
+the replica actor. Creation writes the thread, order entry, immutable claim,
+and exact browser `documentComment` mark atomically; identical stable-ID retries
+are no-ops, while conflicting IDs, stale text/ranges, and malformed anchors fail
+without a durable event. Projection v3 returns comments, replies, resolution,
+`detached`, and every anchor's `paragraphId`, `textId`, `startUtf16`,
+`endUtf16`, and current `text`. If a later authorized content edit removes the
+anchor, the thread remains readable with `detached: true`.
+
+For an attributed text proposal, create or join a separate actor-scoped
+Document replica with `mode: "suggest"`. Read projection v3 immediately before
+the proposal, then call `office_collaboration_mutate` with the exact stable
+paragraph/text identity, browser-compatible UTF-16 range, and selected text.
+An empty range creates an insertion, an empty replacement creates a deletion,
+and non-empty values on both sides create one atomic replacement pair:
+
+```json
+{
+  "store": ".aster/report-suggest.replica",
+  "operationId": "agent-suggestion-create-1",
+  "actorId": "agent-7",
+  "mode": "suggest",
+  "artifactId": "report",
+  "kind": "document",
+  "mutation": {
+    "type": "document-suggestion-create",
+    "paragraphId": "00000001",
+    "expectedTextId": "00000002",
+    "startUtf16": 6,
+    "endUtf16": 8,
+    "expectedText": "😀",
+    "replacement": "reviewed",
+    "insertionId": "agent-7-replacement-insertion-1",
+    "deletionId": "agent-7-replacement-deletion-1",
+    "author": "Aster Agent",
+    "createdAt": "2026-08-17T11:00:00.000Z"
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+The replica manifest supplies the authenticated suggestion actor ID; caller
+JSON cannot inject it. Stable-ID exact retries are no-ops. Reuse with different
+identity or content, stale text IDs, ranges that split surrogate pairs,
+overlapping suggestions, and rich paragraph structures outside the supported
+plain-paragraph boundary fail before a durable event.
+
+After synchronizing the proposal, read projection v3 from an `edit` replica.
+Copy each complete suggestion identity and text into one decision batch. A
+replacement should include both its deletion and insertion so the visible
+result and both immutable audit records commit atomically:
+
+```json
+{
+  "store": ".aster/report.replica",
+  "operationId": "editor-suggestion-accept-1",
+  "actorId": "editor-2",
+  "mode": "edit",
+  "artifactId": "report",
+  "kind": "document",
+  "mutation": {
+    "type": "document-suggestion-decide",
+    "suggestions": [
+      {
+        "id": "agent-7-replacement-deletion-1",
+        "kind": "deletion",
+        "expectedActorId": "agent-7",
+        "expectedAuthor": "Aster Agent",
+        "expectedCreatedAt": "2026-08-17T11:00:00.000Z",
+        "expectedText": "😀"
+      },
+      {
+        "id": "agent-7-replacement-insertion-1",
+        "kind": "insertion",
+        "expectedActorId": "agent-7",
+        "expectedAuthor": "Aster Agent",
+        "expectedCreatedAt": "2026-08-17T11:00:00.000Z",
+        "expectedText": "reviewed"
+      }
+    ],
+    "decision": "accept",
+    "decidedBy": "Grace Editor",
+    "decidedAt": "2026-08-17T11:01:00.000Z"
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+Use `"decision": "reject"` for rejection. The manifest supplies the decider
+actor ID. A decision rotates affected paragraph and ancestor-row text IDs,
+removes the live marks according to accept/reject semantics, and appends
+browser-compatible immutable `changeDecisions`. Exact retries are idempotent;
+a mismatched or already-differently-decided suggestion fails the whole batch.
+
+Locate display text with `office_collaboration_find` first. Each hit is one
+cell. Spreadsheet cell mutations use a stable sheet identity plus zero-based
+coordinates. Create or recursively patch one cell with
+`spreadsheet-set-cell`; pass `expectedCell: null` only when the coordinate was
+observed blank:
+
+```json
+{
+  "store": ".aster/plan.replica",
+  "operationId": "agent-cell-47",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "plan",
+  "kind": "spreadsheet",
+  "mutation": {
+    "type": "spreadsheet-set-cell",
+    "sheetId": "sheet-data",
+    "row": 1,
+    "column": 0,
+    "expectedCell": { "v": 10, "m": "10" },
+    "nextCell": { "v": 12, "m": "12", "f": "=6*2" }
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+Use `spreadsheet-batch-cells` for one paste, fill, or other bounded gesture.
+Every coordinate must be distinct; `nextCell: null` is an exact guarded
+deletion:
+
+```json
+{
+  "store": ".aster/plan.replica",
+  "operationId": "agent-cell-batch-48",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "plan",
+  "kind": "spreadsheet",
+  "mutation": {
+    "type": "spreadsheet-batch-cells",
+    "sheetId": "sheet-data",
+    "changes": [
+      {
+        "row": 1,
+        "column": 0,
+        "expectedCell": { "v": 12, "m": "12", "f": "=6*2" },
+        "nextCell": { "v": 14, "m": "14", "f": "=7*2" }
+      },
+      {
+        "row": 1,
+        "column": 1,
+        "expectedCell": null,
+        "nextCell": { "v": 20, "m": "20" }
+      },
+      {
+        "row": 2,
+        "column": 0,
+        "expectedCell": { "v": "obsolete", "m": "obsolete" },
+        "nextCell": null
+      }
+    ]
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+Set compares the expected, current, and next cell recursively and writes only
+changed leaves. Unrelated concurrent leaves merge; a stale same-leaf edit fails
+without a durable update. `spreadsheet-delete-cell` instead requires the exact
+complete current cell in `expectedCell`. Dense sheets retain their matrix row
+lengths, sparse sheets remain `celldata`, and an empty sheet's first write is
+sparse. Batch accepts 1 to 4,096 changes, evaluates every guard against one
+shared snapshot, and commits fields, presence, and dense dimensions in one Yjs
+transaction. One invalid or conflicting change produces no partial result or
+durable event. Do not construct or mutate the internal presence, field,
+projection, or row-length roots directly.
+
+Presentation scene-element mutations use a stable container kind (`slide`,
+`master`, or `layout`) and ID. Create one complete element with
+`presentation-create-element`; `afterElementId` optionally places it after an
+active element in the container:
+
+```json
+{
+  "store": ".aster/deck.replica",
+  "operationId": "agent-element-48",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "deck",
+  "kind": "presentation",
+  "mutation": {
+    "type": "presentation-create-element",
+    "containerKind": "slide",
+    "containerId": "slide-1",
+    "afterElementId": "title-1",
+    "element": {
+      "id": "summary-1",
+      "type": "shape",
+      "x": 20,
+      "y": 24,
+      "width": 40,
+      "height": 16,
+      "text": "Approved"
+    }
+  },
+  "ifStateVectorBase64": "..."
+}
+```
+
+Creation appends a canonical immutable claim. An identical retry is a no-op;
+different same-ID content, a tombstoned ID, or a missing anchor fails closed.
+Locate the scene element with `office_collaboration_find` before changing it.
+`presentation-replace-text` changes only the matched text.
+`presentation-update-element` accepts `elementId` plus complete
+`expectedElement` and `nextElement` values. It writes only changed top-level
+fields, merges unrelated concurrent fields, and rejects a stale same-field
+edit. ID and type are immutable. `presentation-move-element` accepts the
+caller's stable observed predecessor in `expectedAfterElementId` and the
+requested predecessor in `afterElementId`; either may be `null` for the first
+element-order position. An already-satisfied destination is idempotent even if
+the observation is stale. Otherwise a stale source predecessor or a
+missing/deleted destination anchor fails without a durable update:
+
+```json
+{
+  "store": ".aster/deck.replica",
+  "operationId": "agent-element-move-49",
+  "actorId": "agent-7",
+  "mode": "edit",
+  "artifactId": "deck",
+  "kind": "presentation",
+  "mutation": {
+    "type": "presentation-move-element",
+    "containerKind": "slide",
+    "containerId": "slide-1",
+    "elementId": "summary-1",
+    "expectedAfterElementId": "title-1",
+    "afterElementId": null
+  }
+}
+```
+
+Move removes and reinserts only that element's order entry; it does not rewrite
+the object record or container. `presentation-delete-element` accepts the exact
+complete current `expectedElement`, removes visible order, and writes a durable
+tombstone that prevents ID reuse. Do not construct or mutate internal element
+order, record, claim, or tombstone roots directly.
+
+Typed canonical content mutations require `edit`. Document comment mutations
+accept `edit` or `comment`; comment-mode deletion is ownership restricted. Raw
+received updates remain applicable in every mode so receive-only replicas still
+converge. Document `document-suggestion-create` requires `suggest`, while
+`document-suggestion-decide` requires `edit`. Suggest and comment modes on
+non-Document formats do not expose local mutations.
+
+The MCP JSON transport accepts update inputs up to 4 MiB and all structured
+results remain under the server's 8 MiB bound. Reduce the event `limit` when a
+batch is too large. Use the CLI binary-file route for larger updates or full
+state snapshots. `office_collaboration_checkpoint` compacts covered entries;
+set `leave=true` only when recording an explicit durable leave operation.
+
+## Typed Mutations
+
+Rich-text changes use the typed `set-text-format` mutation inside
+`office_apply_batch`; do not send generic property maps:
+
+```json
+{
+  "session": "report",
+  "mutations": [{
+    "operation": "set-text-format",
+    "path": "/body/p[1]/r[1]",
+    "format": {
+      "bold": true,
+      "underline": "double",
+      "script": "superscript",
+      "strikethrough": true,
+      "doubleStrikethrough": false,
+      "textCase": "small-caps",
+      "highlight": "yellow",
+      "language": "en-US",
+      "fontFamily": "Aptos",
+      "fontSizeCentipoints": 1400,
+      "textColor": { "red": 18, "green": 52, "blue": 86 }
+    }
+  }]
+}
+```
+
+Use a run path for Word/Presentation character properties, a paragraph path
+for their alignment, and a cell or bounded range path for Spreadsheet.
+Underline accepts `none`, `single`, or `double`; script accepts `baseline`,
+`superscript`, or `subscript`. Strikethrough is native for Word and Spreadsheet
+and is rejected for Presentation. `textCase`, `highlight`, and `language` are
+native for Word and Presentation runs. `doubleStrikethrough` is native only for
+Word. Unsupported format/property combinations fail the whole batch through a
+typed error.
+
+Spreadsheet cell presentation uses the separate typed `set-cell-format`
+mutation. Do not put these properties in `set-text-format`:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "set-cell-format",
+    "path": "/Sheet1/A1:C3",
+    "format": {
+      "numberFormat": "currency",
+      "fill": {
+        "kind": "solid",
+        "color": { "red": 255, "green": 242, "blue": 204 }
+      },
+      "border": {
+        "left": {
+          "kind": "line",
+          "style": "thin",
+          "color": { "red": 128, "green": 128, "blue": 128 }
+        },
+        "right": { "kind": "line", "style": "thin" },
+        "top": { "kind": "line", "style": "thin" },
+        "bottom": { "kind": "line", "style": "double" },
+        "diagonalUp": false,
+        "diagonalDown": false
+      },
+      "verticalAlignment": "center",
+      "wrapText": true,
+      "textRotation": 0,
+      "indent": 1,
+      "shrinkToFit": false,
+      "readingOrder": "left-to-right"
+    }
+  }]
+}
+```
+
+Use `{ "kind": "none" }` to remove a fill. `numberFormat` accepts a validated
+Excel format code or the native aliases documented in
+[spreadsheet.md](spreadsheet.md). Each border side is an explicit `none` or
+`line` object. A line contains one typed SpreadsheetML style and an optional
+RGB color; `diagonalUp` and `diagonalDown` control the shared diagonal line.
+Rotation accepts 0–180 or 255, indentation is 0–255, and reading order is
+`context`, `left-to-right`, or `right-to-left`.
+The same `office_apply_batch` call may also include content and text-format
+mutations. Unknown fields, invalid values, empty format objects, and
+non-Spreadsheet targets fail the entire in-memory batch; no change persists
+until `office_save`.
+
+Spreadsheet cell formulas use `set-cell-value` with
+`{"type":"formula","expression":"SUM(A1:B2)"}`. One optional leading `=` is
+removed before storage. The bounded native parser validates literals,
+operators, calls, names, structured references, qualified A1 references, and
+range/intersection/union syntax. Invalid syntax returns
+`use.office.spreadsheet_formula_invalid` with zero-based `byteOffset` and
+`characterOffset` details and rolls back every mutation in that
+`office_apply_batch`. Successful writes invalidate stale calculation caches and
+request recalculation; they do not calculate implicitly.
+
+Add the explicit recalculation mutation after dependent formula writes when
+fresh cached values are required:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [
+    {
+      "operation": "set-cell-value",
+      "path": "/Sheet1/C1",
+      "value": {"type": "formula", "expression": "SEQUENCE(2,2,1,1)"}
+    },
+    {
+      "operation": "recalculate-spreadsheet-formulas"
+    }
+  ]
+}
+```
+
+The result includes one `spreadsheetCalculations` receipt with
+`formulaCount`, `spillCellCount`, deterministic `calculationOrder`, and typed
+calculated cells. Calculation and OOXML cache/spill writeback are part of the
+same atomic in-memory batch; a cycle, unsupported function, qualified function,
+missing structured-reference table, column, or requested header/totals row,
+external-workbook reference, or blocked storage condition rolls back every
+sibling mutation. `Table[Column]`, contiguous table column ranges, common
+`#All`/`#Data`/`#Headers`/`#Totals` row items, current-row `@` forms, and
+table-local current-row references from inside a table are supported.
+Spreadsheet error results remain typed cell values. Dynamic-array spill
+children are read-only; mutate their formula anchor. The closed native registry
+is the same list as [spreadsheet.md](spreadsheet.md#values-and-formulas),
+including `SUBTOTAL`. The server never invokes a shell, script runtime, or
+external workbook.
+
+Spreadsheet merged cells use the separate `merge-cells` and `unmerge-cells`
+mutations:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "merge-cells",
+    "path": "/Sheet1/A1:C1"
+  }]
+}
+```
+
+The path is normalized. An exact repeated merge is idempotent; a geometric
+overlap or ListObject table intersection fails the complete batch. Use
+`unmerge-cells` only with one exact existing range. Any non-exact intersecting
+range fails with `use.office.spreadsheet_merge_not_exact` and reports `validRanges`; it
+never sweeps multiple merges. Merge state can share one `office_apply_batch`
+call with content, text-format, cell-format, and hyperlink mutations. Query
+`mergeCell` for stable nodes, or read a covered cell to inspect `merge` and
+`mergeAnchor`. Blank covered cells remain virtual. All changes stay unsaved
+until `office_save`, and unknown merge collection data is preserved or causes a
+fail-closed error when exact removal cannot be lossless.
+
+Spreadsheet data validation uses the separate `add-data-validation` and
+`set-data-validation` mutations:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "add-data-validation",
+    "sheet": "/Sheet1",
+    "validation": {
+      "type": "list",
+      "ranges": ["A2:A20", "C2:C20"],
+      "formula1": "Draft,Review,Approved",
+      "allowBlank": true,
+      "showInput": true,
+      "showError": true,
+      "promptTitle": "Status",
+      "prompt": "Choose a workflow state",
+      "errorTitle": "Invalid status",
+      "error": "Choose a listed state",
+      "errorStyle": "stop",
+      "inCellDropdown": true
+    }
+  }]
+}
+```
+
+Use `set-data-validation` with a stable `path` such as
+`/Sheet1/dataValidation[1]` and a complete `validation` value. Set is not a
+partial property patch. Delete with the ordinary `remove` mutation. The seven
+types are `list`, `whole`, `decimal`, `date`, `time`, `textLength`, and
+`custom`; operators and error styles are closed camelCase enums. List and
+custom reject operators and `formula2`. The five comparison types require an
+operator, and only `between` or `notBetween` accept and require `formula2`.
+
+Rules and ranges are bounded, normalized, and globally non-overlapping within
+one worksheet. Invalid formulas, flags, messages, XML text, ranges, or overlap
+fail the complete `office_apply_batch`. Inline lists, ISO dates, and clock
+times are normalized, but data-validation formula predicates are not executed
+by the validation feature or the cell-formula recalculation pass. Query
+`dataValidation[type=list]` or call `office_get` on the returned path for
+unsaved semantic readback. Covered observed and virtual blank cells expose
+`dataValidation` and `validationType`. Updates retain unknown attributes and
+fail closed when unknown children or final collection data cannot be preserved.
+All mutations remain in memory until `office_save`.
+
+Spreadsheet conditional formatting uses the separate
+`add-conditional-format` and `set-conditional-format` mutations:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "add-conditional-format",
+    "sheet": "/Sheet1",
+    "conditionalFormat": {
+      "ranges": ["A2:A20", "C2:C20"],
+      "stopIfTrue": true,
+      "rule": {
+        "type": "cellIs",
+        "operator": "greaterThan",
+        "formula1": "80",
+        "format": {
+          "fill": {"red": 198, "green": 239, "blue": 206},
+          "fontColor": {"red": 0, "green": 97, "blue": 0},
+          "bold": true
+        }
+      }
+    }
+  }]
+}
+```
+
+Use `set-conditional-format` with a stable path such as `/Sheet1/cf[1]` and a
+complete `conditionalFormat` value. MCP set is not a partial patch. Delete with
+the ordinary `remove` mutation. Classic rule types cover cell comparison,
+expression formula, contains/not-contains/begins-with/ends-with text,
+top/bottom, above/below average, duplicate/unique values, blanks, errors, and
+date windows. Their only differential-format properties are `fill`,
+`fontColor`, and `bold`.
+
+Visual rule types are `dataBar`, `colorScale`, and `iconSet`. They use closed
+RGB colors and min/max/number/percent/percentile/formula thresholds. Data bars
+own value visibility and optional lengths. Color scales require midpoint and
+midpoint color together for a three-color scale. Icon sets accept only standard
+legacy 3/4/5-icon names and exactly the corresponding threshold count, or an
+empty threshold array that generates percent defaults. Unknown fields and
+unsupported rule variants fail MCP schema decoding before mutation.
+
+Each rule owns 1–1,024 internally disjoint A1 areas; different rules may
+overlap and remain ordered by priority. Query `conditionalFormatting` or
+`conditionalFormatting[type=dataBar]`, then inspect `nativeMutable` before
+updating imported content. Unsupported extension rules remain readable with
+`nativeMutable=false`. Unknown child or collection content, or a range change
+to one child in an imported shared-range carrier, fails the complete batch
+rather than dropping sibling or extension data. Rule formulas are stored but
+not evaluated, and semantic views do not prove Excel rendering. Mutations stay
+unsaved until `office_save`.
+
+Spreadsheet defined names use the separate `add-named-range` and
+`set-named-range` mutations:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "add-named-range",
+    "namedRange": {
+      "name": "Revenue",
+      "ref": "'Sheet1'!$A$2:$A$20",
+      "scope": "workbook",
+      "comment": "Workbook revenue",
+      "volatile": false
+    }
+  }]
+}
+```
+
+Use `set-named-range` with the canonical scoped `path` returned by the batch or
+an `office_query` call and one complete `namedRange` value. The scope is
+`workbook` or an existing worksheet name. Delete with the ordinary typed
+`remove` mutation. Name-only compatibility paths are ambiguous when the same
+name exists at workbook and worksheet scope, so prefer
+`/namedrange[@name=NAME][@scope=SCOPE]`.
+Use the explicit scope `worksheet:workbook` for a worksheet literally named
+`workbook`; the same escaped label appears in semantic readback and its
+canonical path.
+
+Identifiers, refs, comments, collection size, case-insensitive `(name, scope)`
+identity, ListObject table-name collisions, reserved `_xlnm.*`/`Slicer_*`
+names, and unsupported cross-workbook refs are validated before mutation.
+Workbook-scoped bare A1 refs are rejected; worksheet-local bare A1 refs are
+qualified automatically by the domain layer. The mutation requests workbook
+recalculation but does not calculate by itself; a later explicit native
+recalculation resolves supported names referenced by cell formulas. Unknown
+OOXML attributes are retained, while unknown content that cannot be preserved
+fails the whole batch. Call `office_get` or `office_query` before `office_save`
+to verify the unsaved scoped value, then save explicitly. Closing a dirty
+session still requires save or explicit discard.
+
+Spreadsheet worksheet AutoFilters use the separate
+`add-spreadsheet-auto-filter` and `set-spreadsheet-auto-filter` mutations.
+ListObject table `filters` use the same filter-column values:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "add-spreadsheet-auto-filter",
+    "sheet": "/Sheet1",
+    "filter": {
+      "range": "A1:C20",
+      "columns": [
+        {
+          "column": 0,
+          "criteria": {
+            "type": "values",
+            "values": ["Open", "Closed"],
+            "includeBlanks": true
+          }
+        },
+        {
+          "column": 2,
+          "criteria": {"type": "greater-than", "value": "100"}
+        }
+      ]
+    }
+  }]
+}
+```
+
+Use `set-spreadsheet-auto-filter` with the stable `/Sheet/autofilter` path and
+one complete `filter` value; MCP set is not a partial patch. Delete with
+ordinary typed `remove`. Columns are unique zero-based offsets inside the
+normalized range. Closed criteria cover exact values/blanks, text and ordered
+comparisons, between/not-between, blanks/non-blanks, top/bottom count or
+percentage, and dynamic average/date/month/quarter families. A worksheet
+accepts one filter and rejects table or merge overlap. Use `office_get` with
+depth 2 or `office_query` for `autofilter`/`filtercolumn` before saving. Do not
+replace a node whose semantic `nativeMutable` flag is false. Date-group,
+color/icon, extension, unknown-content, and embedded sort-state imports fail
+closed. Physical sorting is the separate mutation below and does not flatten an
+unsupported imported AutoFilter.
+
+Spreadsheet delimited import embeds bounded UTF-8 content directly in the
+typed mutation; filesystem paths remain at the CLI boundary:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "import-spreadsheet-delimited",
+    "sheet": "/Sheet1",
+    "import": {
+      "content": "Name,Amount,Date\nAlpha,42,2026-07-17",
+      "format": "csv",
+      "header": true,
+      "startCell": "A1"
+    }
+  }]
+}
+```
+
+`format` is `csv` or `tsv`; omitted `startCell` defaults to `A1`. Input is
+limited to 8 MiB and a 100,000-cell rectangular extent. Malformed quoting,
+invalid geometry or typed values, and unsupported target state fail the whole
+in-memory batch. Explicit empty fields clear existing target values; ragged
+missing trailing fields preserve them. Formula, finite-number, boolean, and ISO
+date/time inference is deterministic, but import does not implicitly calculate
+formulas. Append `recalculate-spreadsheet-formulas` to the same batch when
+fresh caches are required.
+
+When `header=true`, the import atomically adds or replaces the worksheet
+AutoFilter and canonical frozen pane. Inspect `/Sheet1/autofilter` and
+`/Sheet1/freeze` before using header mode on a populated worksheet. A pane can
+also be set independently:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "set-spreadsheet-frozen-pane",
+    "sheet": "/Sheet1",
+    "pane": {
+      "frozenRows": 1,
+      "frozenColumns": 0,
+      "topLeftCell": "A2"
+    }
+  }]
+}
+```
+
+Use `office_get` or `office_query` for unsaved readback and ordinary typed
+`remove` on `/Sheet1/freeze` for deletion. Do not mutate a pane whose semantic
+`nativeMutable` value is false. See
+[spreadsheet.md](spreadsheet.md#delimited-import-and-frozen-panes) for parsing,
+typing, and preservation boundaries.
+
+Spreadsheet physical sorting uses `sort-spreadsheet-range` inside the same
+atomic `office_apply_batch` boundary:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "sort-spreadsheet-range",
+    "path": "/Sheet1/A1:D100",
+    "sort": {
+      "keys": [
+        {"column": "B", "direction": "descending"},
+        {"column": "C", "direction": "ascending"}
+      ],
+      "header": true,
+      "caseSensitive": false
+    }
+  }]
+}
+```
+
+The path may be a worksheet to auto-detect its used range or an explicit range.
+Keys are ordered unique absolute `A:XFD` columns inside that range; the first
+has highest precedence. Sorting is stable, numbers precede text, blanks remain
+last in both directions, and equal records preserve source order. A
+partial-column range moves only selected cells, leaving outside cells and
+destination row properties fixed. Requests accept 1–64 keys and at most
+100,000 cells.
+
+Use `office_get` on `/Sheet1/sort` with depth 1 or `office_query` for `sortkey`
+before saving. The returned `/Sheet1/sort` and `/Sheet1/sort/key[N]` nodes expose
+the persisted range, header/case flags, directions, and `nativeMutable`.
+Ordinary typed `remove` on `/Sheet1/sort` removes metadata only; it never
+reconstructs the old physical order. The physical change and metadata migration
+remain unsaved until `office_save`.
+
+Exact mutable table and worksheet-AutoFilter ranges, or their exact data ranges,
+are supported. Totals rows, formulas, intersecting merges, pivots, unsupported
+existing sort state, partial table/filter overlap, and non-lossless drawing
+movement fail the whole batch. Hyperlinks, comments/VML notes, validations,
+conditional formats, protected ranges, ignored errors, and supported drawing
+anchors follow the record permutation; the used dimension is recomputed and
+chart caches are cleared. See
+[spreadsheet.md](spreadsheet.md#sorting) for the complete boundary.
+
+Spreadsheet ListObject tables use the separate `add-spreadsheet-table` and
+`set-spreadsheet-table` mutations:
+
+```json
+{
+  "session": "workbook",
+  "mutations": [{
+    "operation": "add-spreadsheet-table",
+    "sheet": "/Sheet1",
+    "table": {
+      "name": "Sales",
+      "range": "F1:H4",
+      "columns": [
+        {"name": "Name"},
+        {"name": "Qty"},
+        {"name": "Price"}
+      ],
+      "filters": [
+        {"column": 1, "criteria": {"type": "top", "count": 10}}
+      ],
+      "headerRow": true,
+      "totalsRow": false,
+      "style": {"family": "medium", "number": 4},
+      "showFirstColumn": false,
+      "showLastColumn": false,
+      "showRowStripes": true,
+      "showColumnStripes": false
+    }
+  }]
+}
+```
+
+Use `set-spreadsheet-table` with the stable `/Sheet/table[N]` path and one
+complete `table` value; MCP set is not a partial patch. Delete with ordinary
+typed `remove`. `range` is final and includes enabled header/totals rows, its
+width must match the ordered column list, and at least one data row must remain.
+Names, columns, built-in style families/numbers, flags, table/defined-name
+identity, table/merge/worksheet-AutoFilter overlap, and relationship ownership
+are validated before mutation.
+
+When table aliases or position-mapped columns change, `set-spreadsheet-table`
+atomically rewrites common structured references in cells, defined names,
+conditional formats, data validations, charts, and table-formula carriers.
+String literals and external-workbook references are preserved. Unsafe
+table-local rewrites or geometry changes fail with
+`use.office.spreadsheet_table_formula_rewrite_unsupported`; removing a table
+with a remaining structured reference fails with
+`use.office.spreadsheet_table_referenced`.
+
+Use `office_get` with depth 1 or `office_query` with `table[name=Sales]` to
+inspect the unsaved table and its column children. Do not replace a node whose
+semantic `nativeMutable` flag is false. Header stamping, OPC table parts, and
+the typed table-owned AutoFilter stay inside the same editor transaction.
+Calculated columns, totals functions, date-group/color/icon filters,
+unsupported embedded/imported sort state, custom styles, external data, and
+query-table data remain outside the typed table value. Exact mutable table/data
+ranges without totals rows may use the separate sort mutation. See
+[spreadsheet.md](spreadsheet.md#tables) for the complete boundary.
+
+General find/replace uses the typed `replace-text` mutation. Keep `mode`
+explicit and prefer `literal` for ordinary text:
+
+```json
+{
+  "session": "report",
+  "mutations": [{
+    "operation": "replace-text",
+    "path": "/body",
+    "replacement": {
+      "find": "Q([1-4]) 2025",
+      "replace": "Q$1 2026",
+      "mode": "regex"
+    }
+  }]
+}
+```
+
+The batch receipt includes `textReplacements` with `matchCount`, `changed`, and
+`changedParts`. Add `"occurrence": 2` to change only that 1-based match in the
+scope's existing walk order. Omit `occurrence` to replace every match. A
+missing occurrence fails the batch before writing and returns
+`use.office.text_occurrence_missing`. A Spreadsheet shared string used by more
+than one selected cell returns `use.office.text_occurrence_ambiguous`; narrow
+the path to one cell first. Zero matches without `occurrence` are successful
+and unchanged. Regex matches must
+consume text. Spreadsheet cell/range scopes protect unselected shared-string
+references; Word and Presentation replacements preserve split-run formatting.
+
+Hyperlinks use the typed `set-hyperlink` mutation:
+
+```json
+{
+  "session": "report",
+  "mutations": [{
+    "operation": "set-hyperlink",
+    "path": "/body/p[1]",
+    "hyperlink": {
+      "target": {
+        "kind": "external",
+        "uri": "https://example.com/report"
+      },
+      "display": "Open report",
+      "tooltip": "Aster report"
+    }
+  }]
+}
+```
+
+Use an internal target with `"location"` for a Word bookmark, Spreadsheet
+workbook location, or Presentation `slide[N]`/`/slide[N]` jump. Word accepts
+body, header, and footer paragraphs. Spreadsheet accepts a cell or bounded
+rectangular range and rejects overlapping link ranges. Presentation accepts a
+shape-wide link and no separate display text. External targets accept only
+absolute HTTP, HTTPS, or mailto URIs without credentials and remain inert.
+Query `hyperlink` to discover stable paths and remove one with the ordinary
+typed `remove` mutation. Hyperlink changes remain unsaved until `office_save`.
+
+Legacy comments use typed `add-comment` and `set-comment` mutations:
+
+```json
+{
+  "session": "deck",
+  "mutations": [{
+    "operation": "add-comment",
+    "parent": "/slide[1]",
+    "comment": {
+      "author": "Alice",
+      "text": "Review this slide",
+      "initials": "AL",
+      "position": { "xEmu": 914400, "yEmu": 457200 }
+    }
+  }]
+}
+```
+
+Use `set-comment` with a partial `update` and a stable path returned by the add
+mutation or a `comment` query. Word accepts main-document paragraph/run
+anchors, Spreadsheet accepts classic cell notes, and Presentation accepts
+legacy slide comments with optional coordinates. Remove a comment with the
+ordinary `remove` mutation. Modern threaded comments and replies are outside
+this contract. Comment changes remain unsaved until `office_save`.
+
+## Views and Compatibility
+
+`office_view` supports text, bounded annotated entries, outline, stats, issues,
+all-format HTML/SVG, and all-format semantic screenshots. Annotated and issue
+output accept a `limit` from 1 through 1,000; issue output is also filterable.
+Annotated reads include unsaved mutations in the current typed session.
+Screenshot output requires a no-clobber `.png` path and a ready Aster Browser
+provider; other native Office tools do not require Browser or OfficeCLI.
+
+In an Aster Code `use` worker, use an available
+`mcp__use_office_compat__*` tool only when the native vocabulary lacks the
+requested operation. In a CLI-only MCP host, `aster use mcp serve office-compat`
+starts the pinned OfficeCLI compatibility server; the legacy
+`aster use mcp serve office` alias remains supported. It is a separate standard
+MCP target and is not the native session engine.

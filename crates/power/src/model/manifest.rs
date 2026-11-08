@@ -1,0 +1,610 @@
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+
+use serde::{Deserialize, Serialize};
+
+use crate::error::{PowerError, Result};
+
+pub use super::artifact::AuxiliaryModelArtifact;
+pub use super::external_draft::{ExternalDraftArtifact, ExternalDraftKind};
+
+/// Describes a locally stored model and its metadata.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModelManifest {
+    /// Model name, e.g. "llama3.2:3b"
+    pub name: String,
+
+    /// File format of the model weights
+    pub format: ModelFormat,
+
+    /// Total size in bytes
+    pub size: u64,
+
+    /// SHA-256 hash of the model file for integrity verification
+    pub sha256: String,
+
+    /// Model parameters and metadata
+    pub parameters: Option<ModelParameters>,
+
+    /// Timestamp when the model was pulled/created locally
+    pub created_at: chrono::DateTime<chrono::Utc>,
+
+    /// Path to the model blob on disk (content-addressed)
+    pub path: PathBuf,
+
+    /// System prompt from Modelfile (if set)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub system_prompt: Option<String>,
+
+    /// Chat template override from Modelfile
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template_override: Option<String>,
+
+    /// Default generation parameters from Modelfile
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default_parameters: Option<HashMap<String, serde_json::Value>>,
+
+    /// Raw Modelfile content (if model was created via Modelfile)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modelfile_content: Option<String>,
+
+    /// License text from Ollama registry (if available)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub license: Option<String>,
+
+    /// Legacy path-only LoRA/QLoRA adapter reference.
+    ///
+    /// Strict TEE deployments reject this field unless `adapter_artifact`
+    /// provides a matching content identity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adapter_path: Option<String>,
+
+    /// Content-addressed LoRA/QLoRA adapter used by inference.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adapter_artifact: Option<AuxiliaryModelArtifact>,
+
+    /// Optional content-addressed external speculative-draft model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub external_draft: Option<ExternalDraftArtifact>,
+
+    /// Legacy path-only multimodal projector reference.
+    ///
+    /// Strict TEE deployments reject this field unless `projector_artifact`
+    /// provides a matching content identity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projector_path: Option<String>,
+
+    /// Content-addressed multimodal projector used by inference.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projector_artifact: Option<AuxiliaryModelArtifact>,
+
+    /// Pre-seeded conversation messages (from Modelfile MESSAGE directive)
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub messages: Vec<ManifestMessage>,
+
+    /// Model family (e.g. "llama", "phi", "gemma") from Ollama registry config
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub family: Option<String>,
+
+    /// Model families for multimodal models (e.g. ["llama", "clip"])
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub families: Option<Vec<String>>,
+}
+
+/// A pre-seeded message stored in the manifest.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestMessage {
+    pub role: String,
+    pub content: String,
+}
+
+/// Supported model file formats.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ModelFormat {
+    Gguf,
+    SafeTensors,
+    /// HuggingFace-format model directory (safetensors weights + tokenizer + config).
+    /// Used for embedding models loaded via `EmbeddingModelBuilder`.
+    /// `ModelManifest::path` points to the local model directory.
+    HuggingFace,
+    /// Vision/multimodal model directory (safetensors weights + tokenizer + config).
+    /// Loaded via `VisionModelBuilder`; supports image inputs in chat requests.
+    /// `ModelManifest::path` points to the local model directory.
+    Vision,
+    /// Remote model served by an upstream OpenAI-compatible server (vLLM, TGI,
+    /// SGLang, ...). Inference is proxied; the upstream URL is resolved from
+    /// `PowerConfig::proxy_upstreams` by model name. No local weights.
+    Remote,
+}
+
+impl std::fmt::Display for ModelFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ModelFormat::Gguf => write!(f, "GGUF"),
+            ModelFormat::SafeTensors => write!(f, "SafeTensors"),
+            ModelFormat::HuggingFace => write!(f, "HuggingFace"),
+            ModelFormat::Vision => write!(f, "Vision"),
+            ModelFormat::Remote => write!(f, "Remote"),
+        }
+    }
+}
+
+/// Optional parameter metadata about a model.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModelParameters {
+    /// Maximum context length in tokens
+    pub context_length: Option<u32>,
+
+    /// Embedding dimension size
+    pub embedding_length: Option<u32>,
+
+    /// Total number of model parameters
+    pub parameter_count: Option<u64>,
+
+    /// Quantization level, e.g. "Q4_K_M", "Q8_0"
+    pub quantization: Option<String>,
+}
+
+impl ModelManifest {
+    /// Validate path/content-identity pairs for every auxiliary inference artifact.
+    ///
+    /// `require_content_addressed` rejects legacy path-only adapter and projector
+    /// references. External speculative drafts are always content-addressed.
+    pub fn validate_auxiliary_artifact_bindings(
+        &self,
+        require_content_addressed: bool,
+    ) -> Result<()> {
+        validate_auxiliary_artifact_binding(
+            "LoRA adapter",
+            self.adapter_path.as_deref(),
+            self.adapter_artifact.as_ref(),
+            require_content_addressed,
+        )?;
+        validate_auxiliary_artifact_binding(
+            "multimodal projector",
+            self.projector_path.as_deref(),
+            self.projector_artifact.as_ref(),
+            require_content_addressed,
+        )?;
+        if let Some(draft) = &self.external_draft {
+            draft
+                .validate_for_target(&self.sha256)
+                .map_err(PowerError::Config)?;
+        }
+        Ok(())
+    }
+
+    /// Verify every declared content-addressed auxiliary artifact on disk.
+    pub fn verify_auxiliary_artifacts(&self, require_content_addressed: bool) -> Result<()> {
+        self.verify_adapter_and_projector_artifacts(require_content_addressed)?;
+        if let Some(draft) = &self.external_draft {
+            draft.verify_for_target_file(&self.path, self.size, &self.sha256)?;
+        }
+        Ok(())
+    }
+
+    /// Verify auxiliaries after the caller has already re-hashed the target.
+    pub fn verify_auxiliary_artifacts_for_verified_target(
+        &self,
+        verified_target_sha256: &str,
+        require_content_addressed: bool,
+    ) -> Result<()> {
+        self.verify_adapter_and_projector_artifacts(require_content_addressed)?;
+        if let Some(draft) = &self.external_draft {
+            draft.verify_for_verified_target_sha256(verified_target_sha256)?;
+        }
+        Ok(())
+    }
+
+    /// Verify adapter and projector bytes without re-reading an external draft.
+    pub fn verify_adapter_and_projector_artifacts(
+        &self,
+        require_content_addressed: bool,
+    ) -> Result<()> {
+        self.validate_auxiliary_artifact_bindings(require_content_addressed)?;
+        if let Some(adapter) = &self.adapter_artifact {
+            adapter.verify("LoRA adapter")?;
+        }
+        if let Some(projector) = &self.projector_artifact {
+            projector.verify("Multimodal projector")?;
+        }
+        Ok(())
+    }
+
+    /// Resolve the adapter path after checking legacy/content-addressed agreement.
+    pub fn resolved_adapter_path(&self) -> Result<Option<&Path>> {
+        self.validate_auxiliary_artifact_bindings(false)?;
+        Ok(self
+            .adapter_artifact
+            .as_ref()
+            .map(|artifact| artifact.path.as_path())
+            .or_else(|| self.adapter_path.as_deref().map(Path::new)))
+    }
+
+    /// Resolve the projector path after checking legacy/content-addressed agreement.
+    pub fn resolved_projector_path(&self) -> Result<Option<&Path>> {
+        self.validate_auxiliary_artifact_bindings(false)?;
+        Ok(self
+            .projector_artifact
+            .as_ref()
+            .map(|artifact| artifact.path.as_path())
+            .or_else(|| self.projector_path.as_deref().map(Path::new)))
+    }
+
+    /// Build a manifest for a remote (proxied) model. The upstream URL lives in
+    /// `PowerConfig::proxy_upstreams`; this carries no local weights.
+    pub fn remote(name: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            format: ModelFormat::Remote,
+            size: 0,
+            sha256: String::new(),
+            parameters: None,
+            created_at: chrono::Utc::now(),
+            path: PathBuf::new(),
+            system_prompt: None,
+            template_override: None,
+            default_parameters: None,
+            modelfile_content: None,
+            license: None,
+            adapter_path: None,
+            adapter_artifact: None,
+            external_draft: None,
+            projector_path: None,
+            projector_artifact: None,
+            messages: Vec::new(),
+            family: None,
+            families: None,
+        }
+    }
+
+    /// Returns the sanitized filename for the manifest file.
+    /// Replaces ':' and '/' with '-' to produce a safe filename.
+    pub fn manifest_filename(&self) -> String {
+        let safe = self.name.replace([':', '/'], "-");
+        format!("{safe}.json")
+    }
+
+    /// Returns a human-readable size string (e.g. "4.2 GB").
+    pub fn size_display(&self) -> String {
+        const GB: u64 = 1_000_000_000;
+        const MB: u64 = 1_000_000;
+        const KB: u64 = 1_000;
+
+        if self.size >= GB {
+            format!("{:.1} GB", self.size as f64 / GB as f64)
+        } else if self.size >= MB {
+            format!("{:.1} MB", self.size as f64 / MB as f64)
+        } else if self.size >= KB {
+            format!("{:.1} KB", self.size as f64 / KB as f64)
+        } else {
+            format!("{} B", self.size)
+        }
+    }
+}
+
+fn validate_auxiliary_artifact_binding(
+    label: &str,
+    legacy_path: Option<&str>,
+    artifact: Option<&AuxiliaryModelArtifact>,
+    require_content_addressed: bool,
+) -> Result<()> {
+    if let Some(path) = legacy_path {
+        if path.trim().is_empty() {
+            return Err(PowerError::Config(format!(
+                "{label} path must not be empty"
+            )));
+        }
+    }
+    if let Some(artifact) = artifact {
+        artifact.validate(label)?;
+        if let Some(legacy_path) = legacy_path {
+            if Path::new(legacy_path) != artifact.path {
+                return Err(PowerError::Config(format!(
+                    "{label} has conflicting paths: legacy path {} does not match content-addressed path {}",
+                    Path::new(legacy_path).display(),
+                    artifact.path.display()
+                )));
+            }
+        }
+    } else if require_content_addressed && legacy_path.is_some() {
+        return Err(PowerError::Config(format!(
+            "{label} requires a content-addressed artifact identity in strict TEE mode"
+        )));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sample_manifest() -> ModelManifest {
+        ModelManifest {
+            name: "llama3.2:3b".to_string(),
+            format: ModelFormat::Gguf,
+            size: 2_000_000_000,
+            sha256: "abc123".to_string(),
+            parameters: Some(ModelParameters {
+                context_length: Some(4096),
+                embedding_length: Some(3200),
+                parameter_count: Some(3_000_000_000),
+                quantization: Some("Q4_K_M".to_string()),
+            }),
+            created_at: chrono::Utc::now(),
+            path: PathBuf::from("/tmp/blobs/sha256-abc123"),
+            system_prompt: None,
+            template_override: None,
+            default_parameters: None,
+            modelfile_content: None,
+            license: None,
+            adapter_path: None,
+            adapter_artifact: None,
+            external_draft: None,
+            projector_path: None,
+            projector_artifact: None,
+            messages: vec![],
+            family: None,
+            families: None,
+        }
+    }
+
+    #[test]
+    fn test_manifest_filename() {
+        let manifest = sample_manifest();
+        assert_eq!(manifest.manifest_filename(), "llama3.2-3b.json");
+    }
+
+    #[test]
+    fn test_manifest_filename_with_slash() {
+        let mut manifest = sample_manifest();
+        manifest.name = "library/llama3:latest".to_string();
+        assert_eq!(manifest.manifest_filename(), "library-llama3-latest.json");
+    }
+
+    #[test]
+    fn test_size_display_gb() {
+        let manifest = sample_manifest();
+        assert_eq!(manifest.size_display(), "2.0 GB");
+    }
+
+    #[test]
+    fn test_size_display_mb() {
+        let mut manifest = sample_manifest();
+        manifest.size = 500_000_000;
+        assert_eq!(manifest.size_display(), "500.0 MB");
+    }
+
+    #[test]
+    fn test_size_display_kb() {
+        let mut manifest = sample_manifest();
+        manifest.size = 1_500;
+        assert_eq!(manifest.size_display(), "1.5 KB");
+    }
+
+    #[test]
+    fn test_size_display_bytes() {
+        let mut manifest = sample_manifest();
+        manifest.size = 512;
+        assert_eq!(manifest.size_display(), "512 B");
+    }
+
+    #[test]
+    fn test_model_format_display() {
+        assert_eq!(ModelFormat::Gguf.to_string(), "GGUF");
+        assert_eq!(ModelFormat::SafeTensors.to_string(), "SafeTensors");
+        assert_eq!(ModelFormat::HuggingFace.to_string(), "HuggingFace");
+    }
+
+    #[test]
+    fn test_manifest_serialization_roundtrip() {
+        let manifest = sample_manifest();
+        let json = serde_json::to_string(&manifest).unwrap();
+        let deserialized: ModelManifest = serde_json::from_str(&json).unwrap();
+        assert_eq!(deserialized.name, manifest.name);
+        assert_eq!(deserialized.format, manifest.format);
+        assert_eq!(deserialized.size, manifest.size);
+        assert_eq!(deserialized.sha256, manifest.sha256);
+    }
+
+    #[test]
+    fn test_manifest_optional_fields_serialization() {
+        let mut manifest = sample_manifest();
+        manifest.system_prompt = Some("You are helpful.".to_string());
+        manifest.template_override = Some("{{ .System }}".to_string());
+        manifest.license = Some("MIT".to_string());
+        manifest.adapter_path = Some("/tmp/adapter.bin".to_string());
+        manifest.adapter_artifact = Some(AuxiliaryModelArtifact {
+            path: PathBuf::from("/tmp/adapter.bin"),
+            size: 64,
+            sha256: "a".repeat(64),
+        });
+        manifest.external_draft = Some(ExternalDraftArtifact {
+            kind: ExternalDraftKind::Dspark,
+            path: PathBuf::from("/tmp/dspark.gguf"),
+            size: 1_104_594_816,
+            sha256: "1".repeat(64),
+            target_sha256: "2".repeat(64),
+            source: Some("https://example.invalid/dspark".to_string()),
+            revision: Some("immutable-revision".to_string()),
+            license: Some("Apache-2.0".to_string()),
+        });
+        manifest.projector_path = Some("/tmp/projector.bin".to_string());
+        manifest.projector_artifact = Some(AuxiliaryModelArtifact {
+            path: PathBuf::from("/tmp/projector.bin"),
+            size: 128,
+            sha256: "b".repeat(64),
+        });
+        manifest.family = Some("llama".to_string());
+        manifest.families = Some(vec!["llama".to_string(), "clip".to_string()]);
+        manifest.messages = vec![
+            ManifestMessage {
+                role: "user".to_string(),
+                content: "hi".to_string(),
+            },
+            ManifestMessage {
+                role: "assistant".to_string(),
+                content: "hello".to_string(),
+            },
+        ];
+
+        let json = serde_json::to_string(&manifest).unwrap();
+        let deserialized: ModelManifest = serde_json::from_str(&json).unwrap();
+        assert_eq!(
+            deserialized.system_prompt.as_deref(),
+            Some("You are helpful.")
+        );
+        assert_eq!(
+            deserialized.template_override.as_deref(),
+            Some("{{ .System }}")
+        );
+        assert_eq!(deserialized.license.as_deref(), Some("MIT"));
+        assert_eq!(
+            deserialized.adapter_path.as_deref(),
+            Some("/tmp/adapter.bin")
+        );
+        assert_eq!(deserialized.adapter_artifact.as_ref().unwrap().size, 64);
+        let external_draft = deserialized.external_draft.as_ref().unwrap();
+        assert_eq!(external_draft.kind, ExternalDraftKind::Dspark);
+        assert_eq!(external_draft.size, 1_104_594_816);
+        assert_eq!(
+            deserialized.projector_path.as_deref(),
+            Some("/tmp/projector.bin")
+        );
+        assert_eq!(deserialized.projector_artifact.as_ref().unwrap().size, 128);
+        assert_eq!(deserialized.family.as_deref(), Some("llama"));
+        assert_eq!(deserialized.families.as_ref().unwrap().len(), 2);
+        assert_eq!(deserialized.messages.len(), 2);
+        assert_eq!(deserialized.messages[0].role, "user");
+    }
+
+    #[test]
+    fn test_manifest_default_parameters_serialization() {
+        let mut manifest = sample_manifest();
+        let mut params = HashMap::new();
+        params.insert("temperature".to_string(), serde_json::json!(0.7));
+        params.insert("top_p".to_string(), serde_json::json!(0.9));
+        manifest.default_parameters = Some(params);
+
+        let json = serde_json::to_string(&manifest).unwrap();
+        let deserialized: ModelManifest = serde_json::from_str(&json).unwrap();
+        let defaults = deserialized.default_parameters.unwrap();
+        assert_eq!(defaults["temperature"], 0.7);
+        assert_eq!(defaults["top_p"], 0.9);
+    }
+
+    #[test]
+    fn test_manifest_skip_serializing_none_fields() {
+        let manifest = sample_manifest();
+        let json = serde_json::to_string(&manifest).unwrap();
+        // None fields with skip_serializing_if should not appear
+        assert!(!json.contains("system_prompt"));
+        assert!(!json.contains("template_override"));
+        assert!(!json.contains("license"));
+        assert!(!json.contains("adapter_path"));
+        assert!(!json.contains("adapter_artifact"));
+        assert!(!json.contains("external_draft"));
+        assert!(!json.contains("projector_path"));
+        assert!(!json.contains("projector_artifact"));
+    }
+
+    #[test]
+    fn auxiliary_artifact_binding_rejects_path_only_strict_manifests() {
+        let mut manifest = sample_manifest();
+        manifest.projector_path = Some("/tmp/mmproj.gguf".to_string());
+
+        let error = manifest
+            .validate_auxiliary_artifact_bindings(true)
+            .unwrap_err();
+
+        assert!(error.to_string().contains("multimodal projector"));
+        assert!(error.to_string().contains("content-addressed"));
+    }
+
+    #[test]
+    fn auxiliary_artifact_binding_accepts_matching_content_identity() {
+        let mut manifest = sample_manifest();
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("mmproj.gguf");
+        manifest.projector_path = Some(path.display().to_string());
+        manifest.projector_artifact = Some(AuxiliaryModelArtifact {
+            path: path.clone(),
+            size: 42,
+            sha256: "a".repeat(64),
+        });
+
+        manifest.validate_auxiliary_artifact_bindings(true).unwrap();
+        assert_eq!(
+            manifest.resolved_projector_path().unwrap(),
+            Some(path.as_path())
+        );
+    }
+
+    #[test]
+    fn auxiliary_artifact_binding_rejects_conflicting_paths() {
+        let mut manifest = sample_manifest();
+        let directory = tempfile::tempdir().unwrap();
+        let legacy_path = directory.path().join("legacy.gguf");
+        let pinned_path = directory.path().join("pinned.gguf");
+        manifest.adapter_path = Some(legacy_path.display().to_string());
+        manifest.adapter_artifact = Some(AuxiliaryModelArtifact {
+            path: pinned_path,
+            size: 42,
+            sha256: "b".repeat(64),
+        });
+
+        let error = manifest
+            .validate_auxiliary_artifact_bindings(false)
+            .unwrap_err();
+
+        assert!(error.to_string().contains("conflicting paths"));
+    }
+
+    #[test]
+    fn test_model_format_serde() {
+        let gguf_json = serde_json::to_string(&ModelFormat::Gguf).unwrap();
+        assert_eq!(gguf_json, "\"gguf\"");
+        let st_json = serde_json::to_string(&ModelFormat::SafeTensors).unwrap();
+        assert_eq!(st_json, "\"safetensors\"");
+        let hf_json = serde_json::to_string(&ModelFormat::HuggingFace).unwrap();
+        assert_eq!(hf_json, "\"huggingface\"");
+
+        let gguf: ModelFormat = serde_json::from_str("\"gguf\"").unwrap();
+        assert_eq!(gguf, ModelFormat::Gguf);
+        let st: ModelFormat = serde_json::from_str("\"safetensors\"").unwrap();
+        assert_eq!(st, ModelFormat::SafeTensors);
+        let hf: ModelFormat = serde_json::from_str("\"huggingface\"").unwrap();
+        assert_eq!(hf, ModelFormat::HuggingFace);
+    }
+
+    #[test]
+    fn test_model_parameters_all_none() {
+        let params = ModelParameters {
+            context_length: None,
+            embedding_length: None,
+            parameter_count: None,
+            quantization: None,
+        };
+        let json = serde_json::to_string(&params).unwrap();
+        let deserialized: ModelParameters = serde_json::from_str(&json).unwrap();
+        assert!(deserialized.context_length.is_none());
+        assert!(deserialized.embedding_length.is_none());
+        assert!(deserialized.parameter_count.is_none());
+        assert!(deserialized.quantization.is_none());
+    }
+
+    #[test]
+    fn test_manifest_filename_no_special_chars() {
+        let mut manifest = sample_manifest();
+        manifest.name = "simple-model".to_string();
+        assert_eq!(manifest.manifest_filename(), "simple-model.json");
+    }
+
+    #[test]
+    fn test_size_display_zero() {
+        let mut manifest = sample_manifest();
+        manifest.size = 0;
+        assert_eq!(manifest.size_display(), "0 B");
+    }
+}

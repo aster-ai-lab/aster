@@ -1,0 +1,105 @@
+//! `aster-vec` is Aster's native Rust in-process vector database.
+//!
+//! The crate provides the collection, document, schema, query, index, and
+//! durability primitives needed by an embedded vector store.  It follows the
+//! zvec Rust API vocabulary while keeping the implementation free of a C/C++
+//! runtime dependency, which makes the same source usable on Apple Silicon,
+//! current Intel macOS (deployment target 15.0), Linux, and Windows. macOS 12
+//! Monterey Intel is unsupported.
+//!
+//! A collection's document snapshot and WAL are authoritative. Flat queries
+//! execute against that snapshot; revision-tagged HNSW, IVF, metric-aware
+//! Vamana, and product-quantized `DiskANN` generations select bounded
+//! candidates before exact re-ranking. Each Vamana/DiskANN base also has an Aster-native,
+//! sector-aligned recovery sidecar. Native
+//! numeric vector encodings are preserved at rest and remain distinct from index-only
+//! FP16/INT8/INT4 scalar quantization. Revisioned scalar and full-text indexes
+//! accelerate structured and lexical retrieval, including Unicode n-grams,
+//! ordered token filters, boolean groups, required/prohibited clauses, and
+//! wildcard/fuzzy/range terms, boosts, and ordered phrase proximity. HNSW and
+//! IVF also provide multi-bit `RaBitQ` families with exact re-ranking. `DiskANN`
+//! uses deterministic PQ training, ADC graph traversal, and a typed choice of
+//! positioned reads or a validated immutable anonymous mmap snapshot. With the
+//! `async` feature, query, multi-query, and group-by entry points run that same
+//! work on Tokio's blocking pool. Writable collections can also opt into one
+//! explicitly owned standard-thread maintenance scheduler, while public health
+//! snapshots distinguish authoritative revision failures from derived-index
+//! degradation and normal WAL checkpoint lag. Native async file reads and
+//! direct file-backed mmap remain explicit future optimizations.
+//!
+//! Filter parsing, tokenization, and index quantization live in this crate.
+//! They are not part of the stable Aster API:
+//!
+//! ```compile_fail
+//! use aster_vec::core;
+//! ```
+
+mod collection;
+mod config;
+mod doc;
+mod embedding;
+mod error;
+mod filter;
+mod index;
+mod iterator;
+mod multi_query;
+mod query;
+mod schema;
+mod score_f64;
+mod stats;
+mod storage;
+mod storage_ceilings;
+mod text;
+mod types;
+
+pub use collection::{
+    Collection, CollectionHealth, CollectionHealthStatus, CollectionMaintenanceHealth,
+    CollectionMaintenanceOptions, CollectionMaintenancePhase, CollectionMaintenanceRuntime,
+    CollectionOptions, CollectionResourceLimits, CollectionStats, DocWriteResult, IndexStat,
+    WriteResult,
+};
+pub use config::{
+    check_version, default_config, initialize, is_initialized, shutdown, version, version_major,
+    version_minor, version_patch, ConfigBuilder, Durability, IoBackend,
+};
+pub use doc::{Doc, FieldValue, VectorValue};
+pub use embedding::{DenseEmbedding, EmbeddingInput, QueryExecutor, SparseEmbedding};
+pub use error::{Error, ErrorCode, Result};
+pub use iterator::DocIterator;
+pub use multi_query::{MultiQuery, RerankMethod, SubQuery};
+pub use query::{
+    DiskannQueryParams, FlatQueryParams, Fts, FtsQueryParams, GroupBySearchQuery, HnswQueryParams,
+    IvfQueryParams, IvfRabitqQueryParams, SearchQuery, SearchQueryBuilder, VectorQuery,
+};
+pub use schema::{
+    AddColumnOption, AlterColumnOption, CollectionSchema, CollectionSchemaBuilder,
+    DiskANNIndexParam, DiskAnnIndexParam, FieldSchema, FlatIndexParam, FtsIndexParam,
+    HnswIndexParam, IVFIndexParam, IndexParams, IndexParamsBuilder, InvertIndexParam,
+    IvfIndexParam, IvfRabitqIndexParam, VamanaIndexParam, VectorSchema,
+};
+pub use stats::StatsSnapshot;
+pub use storage_ceilings::{
+    StorageCeilings, DEFAULT_DISKANN_FILE_BYTES, DEFAULT_INDEX_CACHE_BYTES, DEFAULT_SNAPSHOT_BYTES,
+    DEFAULT_WAL_REPLAY_BYTES, INDEX_CACHE_FILE_OVERHEAD_BYTES,
+};
+pub use types::{DataType, DocOperator, IndexType, MetricType, QuantizeType};
+
+/// Convenient import for the common collection workflow.
+pub mod prelude {
+    pub use crate::{
+        initialize, is_initialized, version, Collection, CollectionMaintenanceOptions,
+        CollectionOptions, CollectionResourceLimits, CollectionSchema, ConfigBuilder, DataType,
+        Doc, DocIterator, Error, ErrorCode, FieldSchema, IndexParams, IoBackend, MetricType,
+        MultiQuery, QuantizeType, Result, SearchQuery, StorageCeilings, VectorSchema, WriteResult,
+    };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn public_version_is_nonempty() {
+        assert!(!version().is_empty());
+    }
+}

@@ -1,0 +1,738 @@
+//! Allocation-conscious deterministic HNSW traversal.
+
+use crate::index::ordinal_map::OrdinalMap;
+use crate::index::ordinals::OrdinalTable;
+use rayon::prelude::*;
+use std::cell::RefCell;
+use std::cmp::{Ordering, Reverse};
+use std::collections::{BinaryHeap, HashSet};
+
+const DENSE_VISITED_MAX_SLOTS: usize = 1 << 24;
+/// Neighbors scored before a prefetch issued now is consumed. The lead time
+/// overlaps a DRAM fill with distance work. Prefetching the whole neighbor
+/// list first was slower: the hints displaced lines that were about to be
+/// scored. Apple Silicon benefits from a longer runway than the `x86_64` path.
+#[cfg(target_arch = "aarch64")]
+const PREFETCH_AHEAD: usize = 8;
+#[cfg(not(target_arch = "aarch64"))]
+const PREFETCH_AHEAD: usize = 4;
+
+/// Asks the CPU to pull one `f32` cache line before a later distance read.
+///
+/// This is the only `unsafe` in the crate. It does not load or store through
+/// the pointer, so it cannot change a score, a candidate set, or recall.
+/// The hint has to stay in the neighbor loop; an outlined call misses the
+/// lead time the prefetch is there to provide.
+#[allow(clippy::inline_always)]
+#[inline(always)]
+pub(super) fn serial_neighbor_batch(
+    _neighbors: &[u64],
+    _out: &mut [Option<f64>],
+    _floor: f64,
+) -> bool {
+    false
+}
+
+pub(super) fn prefetch_f32_at(values: &[f32], index: usize) {
+    if index >= values.len() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    {
+        // SAFETY: `index` is inside `values`, so the address is within that
+        // allocation. `_mm_prefetch` is a cache hint and does not dereference.
+        #[allow(unsafe_code)]
+        unsafe {
+            std::arch::x86_64::_mm_prefetch(
+                values.as_ptr().add(index).cast::<i8>(),
+                std::arch::x86_64::_MM_HINT_T0,
+            );
+        }
+    }
+    #[cfg(target_arch = "aarch64")]
+    {
+        // SAFETY: `index` is inside `values`. `prfm pldl1keep` is a read
+        // prefetch hint and does not load or store through the pointer, so it
+        // cannot change scores, candidate sets, or recall. Stable Rust does
+        // not yet expose `_prefetch` on aarch64 without a feature gate.
+        #[allow(unsafe_code)]
+        unsafe {
+            let ptr = values.as_ptr().add(index);
+            core::arch::asm!(
+                "prfm pldl1keep, [{ptr}]",
+                ptr = in(reg) ptr,
+                options(readonly, nostack, preserves_flags)
+            );
+        }
+    }
+}
+
+/// Tracks graph membership with a compact ordinal bitset for bounded ordinal
+/// spaces. Large or unbounded spaces retain the hash-set fallback so a query
+/// cannot allocate an attacker-sized bitmap. The dense buffer is reused on
+/// the calling thread: construction searches once per inserted vector, and a
+/// fresh bitmap each time is allocator traffic, not search work.
+enum VisitedSet {
+    Dense(Vec<u64>),
+    Sparse(HashSet<u64>),
+}
+
+thread_local! {
+    static VISITED_WORDS: RefCell<Vec<u64>> = const { RefCell::new(Vec::new()) };
+}
+
+impl VisitedSet {
+    fn new(slot_count: usize, capacity: usize) -> Self {
+        if slot_count > 0 && slot_count <= DENSE_VISITED_MAX_SLOTS {
+            Self::Dense(take_visited_words(slot_count.saturating_add(63) / 64))
+        } else {
+            Self::Sparse(HashSet::with_capacity(capacity))
+        }
+    }
+
+    fn insert(&mut self, ordinal: u64) -> bool {
+        match self {
+            Self::Dense(bits) => {
+                let Ok(index) = usize::try_from(ordinal) else {
+                    return false;
+                };
+                let word = index / 64;
+                let mask = 1_u64 << (index % 64);
+                let Some(value) = bits.get_mut(word) else {
+                    return false;
+                };
+                let was_new = *value & mask == 0;
+                *value |= mask;
+                was_new
+            }
+            Self::Sparse(values) => values.insert(ordinal),
+        }
+    }
+}
+
+impl Drop for VisitedSet {
+    fn drop(&mut self) {
+        if let Self::Dense(bits) = self {
+            recycle_visited_words(std::mem::take(bits));
+        }
+    }
+}
+
+fn take_visited_words(words: usize) -> Vec<u64> {
+    VISITED_WORDS.with(|slot| {
+        let mut bits = std::mem::take(&mut *slot.borrow_mut());
+        if bits.len() < words {
+            bits.resize(words, 0);
+        }
+        bits[..words].fill(0);
+        bits
+    })
+}
+
+fn recycle_visited_words(bits: Vec<u64>) {
+    VISITED_WORDS.with(|slot| {
+        let mut recycled = slot.borrow_mut();
+        if bits.capacity() > recycled.capacity() {
+            *recycled = bits;
+        }
+    });
+}
+
+#[derive(Clone, Copy, Debug)]
+struct ScoredNode<'a> {
+    ordinal: u64,
+    score: f64,
+    /// Integer image of `f64::total_cmp` for `score`. Heap order stays the
+    /// same as comparing the original values, without calling `total_cmp`
+    /// on every sift.
+    rank: u64,
+    ordinals: &'a OrdinalTable,
+}
+
+fn total_rank(score: f64) -> u64 {
+    let bits = score.to_bits();
+    if bits & (1_u64 << 63) == 0 {
+        bits | (1_u64 << 63)
+    } else {
+        !bits
+    }
+}
+
+impl PartialEq for ScoredNode<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.cmp(other) == Ordering::Equal
+    }
+}
+
+impl Eq for ScoredNode<'_> {}
+
+impl PartialOrd for ScoredNode<'_> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for ScoredNode<'_> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.rank
+            .cmp(&other.rank)
+            // Resolve primary keys only for exact score ties. The old eager
+            // lookup paid for a persistent reverse-map access on every heap
+            // comparison, even when scores were distinct.
+            .then_with(|| {
+                other
+                    .ordinals
+                    .id(other.ordinal)
+                    .unwrap_or_default()
+                    .cmp(self.ordinals.id(self.ordinal).unwrap_or_default())
+            })
+            .then_with(|| other.ordinal.cmp(&self.ordinal))
+    }
+}
+
+#[inline]
+fn scored_node(ordinal: u64, score: f64, ordinals: &OrdinalTable) -> ScoredNode<'_> {
+    ScoredNode {
+        ordinal,
+        score,
+        rank: total_rank(score),
+        ordinals,
+    }
+}
+
+pub(super) fn greedy_search_by(
+    layer: &OrdinalMap<Vec<u64>>,
+    ordinals: &OrdinalTable,
+    entry: u64,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    parallel: bool,
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+) -> u64 {
+    let mut current = entry;
+    let mut current_score = score_for(entry).unwrap_or(f64::NEG_INFINITY);
+    loop {
+        let mut best = scored_node(current, current_score, ordinals);
+        for_each_scored_neighbor(
+            layer,
+            current,
+            parallel,
+            score_for,
+            prefetch_for,
+            batch_score,
+            f64::NEG_INFINITY,
+            |neighbor, score| {
+                let Some(score) = score else {
+                    return;
+                };
+                let candidate = scored_node(neighbor, score, ordinals);
+                if candidate > best {
+                    best = candidate;
+                }
+            },
+        );
+        if best.ordinal == current {
+            return current;
+        }
+        current = best.ordinal;
+        current_score = best.score;
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub(super) fn search_layer_by(
+    layer: &OrdinalMap<Vec<u64>>,
+    entries: &[u64],
+    ef: usize,
+    ordinals: &OrdinalTable,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    parallel: bool,
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+) -> Vec<(u64, f64)> {
+    bounded_graph_search(
+        layer,
+        entries,
+        ef,
+        ordinals,
+        score_for,
+        prefetch_for,
+        parallel,
+        batch_score,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+pub(super) fn search_layer_filtered_by(
+    layer: &OrdinalMap<Vec<u64>>,
+    entries: &[u64],
+    result_limit: usize,
+    traversal_limit: usize,
+    ordinals: &OrdinalTable,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    is_allowed: &impl Fn(u64) -> bool,
+    parallel: bool,
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+) -> Vec<u64> {
+    bounded_filtered_graph_search(
+        layer,
+        entries,
+        result_limit,
+        traversal_limit,
+        ordinals,
+        score_for,
+        prefetch_for,
+        is_allowed,
+        parallel,
+        batch_score,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+fn bounded_graph_search(
+    layer: &OrdinalMap<Vec<u64>>,
+    entries: &[u64],
+    ef: usize,
+    ordinals: &OrdinalTable,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    parallel: bool,
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+) -> Vec<(u64, f64)> {
+    let ef = ef.max(1);
+    let expansion_limit = ef.saturating_mul(8).max(entries.len());
+    let mut visited = VisitedSet::new(layer.slot_count(), expansion_limit.min(layer.len()));
+    let mut frontier = BinaryHeap::with_capacity(ef.saturating_mul(2).min(layer.len()));
+    let mut best = BinaryHeap::with_capacity(ef.saturating_add(1));
+    for ordinal in entries.iter().copied() {
+        if !visited.insert(ordinal) {
+            continue;
+        }
+        let Some(score) = score_for(ordinal) else {
+            continue;
+        };
+        let candidate = scored_node(ordinal, score, ordinals);
+        frontier.push(candidate);
+        retain_best(&mut best, candidate, ef);
+    }
+    let mut expanded = 0;
+
+    while expanded < expansion_limit {
+        let Some(current) = frontier.pop() else {
+            break;
+        };
+        if best.len() >= ef && best.peek().is_some_and(|Reverse(worst)| current < *worst) {
+            break;
+        }
+        expanded += 1;
+        // A repeated neighbor is discarded after its first score, so the
+        // distance is not part of the candidate set. Record it before scoring.
+        let floor = result_floor(&best, ef);
+        expand_unvisited(
+            layer,
+            current.ordinal,
+            &mut visited,
+            parallel,
+            score_for,
+            prefetch_for,
+            batch_score,
+            floor,
+            |neighbor, candidate_score| {
+                consider_candidate(
+                    &mut frontier,
+                    &mut best,
+                    scored_node(neighbor, candidate_score, ordinals),
+                    ef,
+                    true,
+                );
+            },
+        );
+    }
+    ordered_scored(best)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn bounded_filtered_graph_search(
+    layer: &OrdinalMap<Vec<u64>>,
+    entries: &[u64],
+    result_limit: usize,
+    traversal_limit: usize,
+    ordinals: &OrdinalTable,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    is_allowed: impl Fn(u64) -> bool,
+    parallel: bool,
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+) -> Vec<u64> {
+    let result_limit = result_limit.max(1);
+    let traversal_limit = traversal_limit.max(result_limit);
+    let expansion_limit = traversal_limit.saturating_mul(8).max(entries.len());
+    let mut visited = VisitedSet::new(layer.slot_count(), expansion_limit.min(layer.len()));
+    let mut frontier =
+        BinaryHeap::with_capacity(traversal_limit.saturating_mul(2).min(layer.len()));
+    let mut best = BinaryHeap::with_capacity(result_limit.saturating_add(1));
+    for ordinal in entries.iter().copied() {
+        if !visited.insert(ordinal) {
+            continue;
+        }
+        let Some(score) = score_for(ordinal) else {
+            continue;
+        };
+        let candidate = scored_node(ordinal, score, ordinals);
+        frontier.push(candidate);
+        if is_allowed(ordinal) {
+            retain_best(&mut best, candidate, result_limit);
+        }
+    }
+    let mut expanded = 0;
+
+    while expanded < expansion_limit {
+        let Some(current) = frontier.pop() else {
+            break;
+        };
+        if best.len() >= result_limit && best.peek().is_some_and(|Reverse(worst)| current < *worst)
+        {
+            break;
+        }
+        expanded += 1;
+        let allowed = &is_allowed;
+        expand_unvisited(
+            layer,
+            current.ordinal,
+            &mut visited,
+            parallel,
+            score_for,
+            prefetch_for,
+            batch_score,
+            f64::NEG_INFINITY,
+            |neighbor, candidate_score| {
+                consider_candidate(
+                    &mut frontier,
+                    &mut best,
+                    scored_node(neighbor, candidate_score, ordinals),
+                    result_limit,
+                    allowed(neighbor),
+                );
+            },
+        );
+    }
+    ordered_ordinals(best)
+}
+
+/// Scores one neighbor list without changing visit order.
+///
+/// Parallel scoring is order-preserving and falls back to the serial `f64`
+/// walk when the list is a single neighbor or this thread already belongs to
+/// the Rayon pool. Prefetch lead time on the serial path stays in front of
+/// each score.
+fn neighbor_scores(
+    neighbors: &[u64],
+    parallel: bool,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+) -> Vec<Option<f64>> {
+    let primed = PREFETCH_AHEAD.min(neighbors.len());
+    for neighbor in neighbors.iter().copied().take(primed) {
+        prefetch_for(neighbor);
+    }
+    // One worker cannot overlap these distance calls. A `par_iter` on that
+    // pool only pays scheduling, and the ordered zip below already publishes
+    // the same neighbor set as the serial loop.
+    let parallel = parallel
+        && neighbors.len() >= 2
+        && rayon::current_num_threads() > 1
+        && rayon::current_thread_index().is_none();
+    if parallel {
+        for neighbor in neighbors.iter().copied().skip(primed) {
+            prefetch_for(neighbor);
+        }
+        neighbors
+            .par_iter()
+            .map(|neighbor| score_for(*neighbor))
+            .collect()
+    } else {
+        let mut scores = Vec::with_capacity(neighbors.len());
+        for (index, neighbor) in neighbors.iter().copied().enumerate() {
+            if let Some(ahead) = neighbors.get(index.saturating_add(PREFETCH_AHEAD)).copied() {
+                prefetch_for(ahead);
+            }
+            scores.push(score_for(neighbor));
+        }
+        scores
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn for_each_scored_neighbor(
+    layer: &OrdinalMap<Vec<u64>>,
+    ordinal: u64,
+    parallel: bool,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+    floor: f64,
+    visit: impl FnMut(u64, Option<f64>),
+) {
+    let Some(neighbors) = layer.get(ordinal) else {
+        return;
+    };
+    score_admitted(
+        neighbors,
+        parallel,
+        score_for,
+        prefetch_for,
+        batch_score,
+        floor,
+        visit,
+    );
+}
+
+/// Scores neighbors the first time they are reached.
+///
+/// `visited.insert` records the neighbor before the distance call. A later
+/// copy of that neighbor has no path into the result heap, so skipping its
+/// distance leaves the admitted `(ordinal, score)` pairs unchanged.
+#[allow(clippy::too_many_arguments)]
+fn expand_unvisited(
+    layer: &OrdinalMap<Vec<u64>>,
+    ordinal: u64,
+    visited: &mut VisitedSet,
+    parallel: bool,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+    floor: f64,
+    mut visit: impl FnMut(u64, f64),
+) {
+    let mut stacked = [0_u64; 64];
+    let mut stacked_len = 0_usize;
+    let mut spilled: Option<Vec<u64>> = None;
+    {
+        let Some(neighbors) = layer.get(ordinal) else {
+            return;
+        };
+        if neighbors.len() <= stacked.len() {
+            for neighbor in neighbors {
+                if visited.insert(*neighbor) {
+                    stacked[stacked_len] = *neighbor;
+                    stacked_len += 1;
+                }
+            }
+        } else {
+            let mut ids = Vec::with_capacity(neighbors.len());
+            for neighbor in neighbors {
+                if visited.insert(*neighbor) {
+                    ids.push(*neighbor);
+                }
+            }
+            spilled = Some(ids);
+        }
+    }
+    let admitted: &[u64] = match spilled.as_deref() {
+        Some(ids) => ids,
+        None => &stacked[..stacked_len],
+    };
+    if admitted.is_empty() {
+        return;
+    }
+    score_admitted(
+        admitted,
+        parallel,
+        score_for,
+        prefetch_for,
+        batch_score,
+        floor,
+        |neighbor, score| {
+            if let Some(score) = score {
+                visit(neighbor, score);
+            }
+        },
+    );
+}
+
+fn result_floor(best: &BinaryHeap<Reverse<ScoredNode<'_>>>, limit: usize) -> f64 {
+    if best.len() >= limit {
+        best.peek()
+            .map_or(f64::NEG_INFINITY, |Reverse(node)| node.score)
+    } else {
+        f64::NEG_INFINITY
+    }
+}
+
+fn score_admitted(
+    neighbors: &[u64],
+    parallel: bool,
+    score_for: &(impl Fn(u64) -> Option<f64> + Sync),
+    prefetch_for: &impl Fn(u64),
+    batch_score: &impl Fn(&[u64], &mut [Option<f64>], f64) -> bool,
+    floor: f64,
+    mut visit: impl FnMut(u64, Option<f64>),
+) {
+    if neighbors.len() <= 64 {
+        let mut stacked = [None; 64];
+        if batch_score(neighbors, &mut stacked[..neighbors.len()], floor) {
+            for (neighbor, score) in neighbors.iter().copied().zip(stacked) {
+                visit(neighbor, score);
+            }
+            return;
+        }
+    }
+    let scores = neighbor_scores(neighbors, parallel, score_for, prefetch_for);
+    for (neighbor, score) in neighbors.iter().copied().zip(scores) {
+        visit(neighbor, score);
+    }
+}
+
+#[inline]
+fn consider_candidate<'a>(
+    frontier: &mut BinaryHeap<ScoredNode<'a>>,
+    best: &mut BinaryHeap<Reverse<ScoredNode<'a>>>,
+    candidate: ScoredNode<'a>,
+    limit: usize,
+    admitted: bool,
+) {
+    // The result threshold only tightens. A neighbor already worse than the
+    // worst retained hit cannot be expanded later, so skipping both heaps
+    // keeps the same candidate set.
+    let dominated =
+        best.len() >= limit && best.peek().is_some_and(|Reverse(worst)| candidate < *worst);
+    if dominated {
+        return;
+    }
+    frontier.push(candidate);
+    if admitted {
+        retain_best(best, candidate, limit);
+    }
+}
+
+fn retain_best<'a>(
+    best: &mut BinaryHeap<Reverse<ScoredNode<'a>>>,
+    candidate: ScoredNode<'a>,
+    limit: usize,
+) {
+    best.push(Reverse(candidate));
+    if best.len() > limit {
+        best.pop();
+    }
+}
+
+fn ordered_scored(best: BinaryHeap<Reverse<ScoredNode<'_>>>) -> Vec<(u64, f64)> {
+    let mut nodes: Vec<ScoredNode<'_>> = best.into_iter().map(|Reverse(node)| node).collect();
+    nodes.sort_unstable_by(|left, right| right.cmp(left));
+    nodes
+        .into_iter()
+        .map(|node| (node.ordinal, node.score))
+        .collect()
+}
+
+fn ordered_ordinals(best: BinaryHeap<Reverse<ScoredNode<'_>>>) -> Vec<u64> {
+    ordered_scored(best)
+        .into_iter()
+        .map(|(ordinal, _)| ordinal)
+        .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{ordered_ordinals, retain_best, ScoredNode, VisitedSet};
+    use crate::doc::{Doc, DocumentMap};
+    use crate::index::ordinals::OrdinalTable;
+    use std::collections::BinaryHeap;
+    use std::sync::Arc;
+
+    #[test]
+    fn total_rank_matches_f64_total_cmp() {
+        let values = [
+            0.0,
+            -0.0,
+            1.0,
+            -1.0,
+            f64::MIN,
+            f64::MAX,
+            f64::INFINITY,
+            f64::NEG_INFINITY,
+            f64::NAN,
+            f64::from_bits(0x7ff8_0000_0000_0001),
+            f64::from_bits(0xfff8_0000_0000_0001),
+            1.0e-200,
+            -1.0e-200,
+        ];
+        for left in values {
+            for right in values {
+                let order = super::total_rank(left).cmp(&super::total_rank(right));
+                assert_eq!(order, left.total_cmp(&right), "{left} vs {right}");
+            }
+        }
+    }
+
+    #[test]
+    fn heaps_order_scores_then_primary_keys_deterministically() {
+        let docs: DocumentMap = ["doc-a", "doc-b", "doc-high", "doc-low"]
+            .into_iter()
+            .map(|id| {
+                let doc = Doc::with_pk(id).expect("document ID must be valid");
+                (id.to_string(), Arc::new(doc))
+            })
+            .collect();
+        let table = OrdinalTable::build(&docs).expect("ordinal table must build");
+        let mut best = BinaryHeap::new();
+        for candidate in [
+            ScoredNode {
+                ordinal: table.ordinal("doc-b").expect("doc-b ordinal"),
+                score: 1.0,
+                rank: super::total_rank(1.0),
+                ordinals: &table,
+            },
+            ScoredNode {
+                ordinal: table.ordinal("doc-low").expect("doc-low ordinal"),
+                score: 0.0,
+                rank: super::total_rank(0.0),
+                ordinals: &table,
+            },
+            ScoredNode {
+                ordinal: table.ordinal("doc-a").expect("doc-a ordinal"),
+                score: 1.0,
+                rank: super::total_rank(1.0),
+                ordinals: &table,
+            },
+            ScoredNode {
+                ordinal: table.ordinal("doc-high").expect("doc-high ordinal"),
+                score: 2.0,
+                rank: super::total_rank(2.0),
+                ordinals: &table,
+            },
+        ] {
+            retain_best(&mut best, candidate, 3);
+        }
+        assert_eq!(
+            ordered_ordinals(best),
+            vec![
+                table.ordinal("doc-high").expect("doc-high ordinal"),
+                table.ordinal("doc-a").expect("doc-a ordinal"),
+                table.ordinal("doc-b").expect("doc-b ordinal"),
+            ]
+        );
+    }
+
+    #[test]
+    fn visited_set_deduplicates_dense_ordinals() {
+        let mut visited = VisitedSet::new(130, 8);
+        assert!(visited.insert(0));
+        assert!(visited.insert(64));
+        assert!(visited.insert(129));
+        assert!(!visited.insert(64));
+        assert!(!visited.insert(0));
+    }
+
+    #[test]
+    fn visited_set_uses_hash_fallback_for_empty_or_huge_spaces() {
+        let mut empty = VisitedSet::new(0, 8);
+        assert!(empty.insert(u64::MAX));
+        assert!(!empty.insert(u64::MAX));
+
+        let mut huge = VisitedSet::new(super::DENSE_VISITED_MAX_SLOTS + 1, 8);
+        assert!(huge.insert(17));
+        assert!(!huge.insert(17));
+    }
+}

@@ -1,0 +1,206 @@
+//! Per-collection options and resolution of process defaults.
+
+use super::CollectionResourceLimits;
+use crate::config::{current_config, ConfigBuilder, Durability, IoBackend};
+use crate::error::{Error, Result};
+use crate::storage_ceilings::StorageCeilings;
+use std::num::NonZeroU64;
+
+/// Supported options for creating or opening a collection.
+///
+/// Storage layout, buffer, and segment knobs remain outside the public
+/// contract:
+///
+/// ```compile_fail
+/// use aster_vec::CollectionOptions;
+///
+/// let mut options = CollectionOptions::new().unwrap();
+/// options.set_max_buffer_size(1024).unwrap();
+/// options.set_segment_num(2).unwrap();
+/// ```
+#[derive(Debug, Clone, Default)]
+pub struct CollectionOptions {
+    pub(super) read_only: bool,
+    pub(super) durability: Option<Durability>,
+    pub(super) io_backend: Option<IoBackend>,
+    pub(super) resource_limits: CollectionResourceLimits,
+    pub(super) storage_ceilings: Option<StorageCeilings>,
+    wal_checkpoint_thresholds: Option<(NonZeroU64, NonZeroU64)>,
+}
+
+impl CollectionOptions {
+    pub fn new() -> Result<Self> {
+        Ok(Self::default())
+    }
+
+    pub fn set_read_only(&mut self, read_only: bool) -> Result<()> {
+        self.read_only = read_only;
+        Ok(())
+    }
+
+    pub fn read_only(&self) -> bool {
+        self.read_only
+    }
+
+    pub fn set_durability(&mut self, value: Durability) -> Result<()> {
+        self.durability = Some(value);
+        Ok(())
+    }
+
+    pub fn durability(&self) -> Option<Durability> {
+        self.durability
+    }
+
+    /// Overrides both checkpoint triggers captured by this collection.
+    ///
+    /// Always and Interval evaluate the triggers after each committed mutation.
+    /// One admitted mutation may cross a trigger; storage ceilings remain the
+    /// hard admission boundary and can require earlier checkpoints. Manual
+    /// still requires an explicit flush.
+    ///
+    /// # Errors
+    /// Returns `InvalidArgument` if either threshold is zero, leaving the
+    /// existing override unchanged.
+    pub fn set_wal_checkpoint_thresholds(&mut self, max_ops: u64, max_bytes: u64) -> Result<()> {
+        let operations = NonZeroU64::new(max_ops).ok_or_else(|| {
+            Error::invalid_argument("WAL checkpoint operation threshold must be positive")
+        })?;
+        let bytes = NonZeroU64::new(max_bytes).ok_or_else(|| {
+            Error::invalid_argument("WAL checkpoint byte threshold must be positive")
+        })?;
+        self.wal_checkpoint_thresholds = Some((operations, bytes));
+        Ok(())
+    }
+
+    /// Overrides the process-wide derived-sidecar I/O backend for this handle.
+    ///
+    /// When absent, the backend configured through [`crate::ConfigBuilder`] is
+    /// captured when the collection is created or opened.
+    pub fn set_io_backend(&mut self, value: IoBackend) -> Result<()> {
+        self.io_backend = Some(value);
+        Ok(())
+    }
+
+    /// Returns this handle's explicit I/O backend override, if any.
+    pub fn io_backend(&self) -> Option<IoBackend> {
+        self.io_backend
+    }
+
+    /// Applies a typed collection-local resource policy.
+    pub fn set_resource_limits(&mut self, value: CollectionResourceLimits) -> Result<()> {
+        self.resource_limits = value;
+        Ok(())
+    }
+
+    /// Returns the resource policy that this handle will capture.
+    pub fn resource_limits(&self) -> CollectionResourceLimits {
+        self.resource_limits
+    }
+
+    /// Overrides process-wide persistence `DoS` ceilings for this handle.
+    ///
+    /// When absent, the ceilings configured through [`crate::ConfigBuilder`]
+    /// (or product defaults) are captured at create/open. Values are never
+    /// inferred from host RAM or free disk.
+    pub fn set_storage_ceilings(&mut self, value: StorageCeilings) -> Result<()> {
+        self.storage_ceilings = Some(value);
+        Ok(())
+    }
+
+    /// Returns this handle's explicit storage-ceiling override, if any.
+    pub fn storage_ceilings(&self) -> Option<StorageCeilings> {
+        self.storage_ceilings
+    }
+}
+
+pub(super) fn options_config(options: &CollectionOptions) -> ConfigBuilder {
+    resolve_options_config(options, current_config())
+}
+
+/// Resolves the persistence ceilings captured by a new collection handle.
+pub(super) fn resolved_storage_ceilings(options: &CollectionOptions) -> StorageCeilings {
+    options
+        .storage_ceilings
+        .unwrap_or_else(|| current_config().storage_ceilings)
+}
+
+fn resolve_options_config(
+    options: &CollectionOptions,
+    mut process_config: ConfigBuilder,
+) -> ConfigBuilder {
+    if let Some(durability) = options.durability {
+        process_config.durability = durability;
+    }
+    if let Some((operations, bytes)) = options.wal_checkpoint_thresholds {
+        process_config.wal_max_ops = Some(operations.get());
+        process_config.wal_max_bytes = Some(bytes.get());
+    }
+    if let Some(io_backend) = options.io_backend {
+        process_config.io_backend = io_backend;
+    }
+    if let Some(storage_ceilings) = options.storage_ceilings {
+        process_config.storage_ceilings = storage_ceilings;
+    }
+    process_config
+}
+
+#[cfg(test)]
+#[path = "configuration_wal_tests.rs"]
+mod wal_tests;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::Durability;
+
+    #[test]
+    fn process_durability_is_used_without_a_collection_override() {
+        let process = ConfigBuilder::default().durability(Durability::Interval);
+        let resolved = resolve_options_config(&CollectionOptions::default(), process);
+
+        assert_eq!(resolved.durability, Durability::Interval);
+    }
+
+    #[test]
+    fn collection_durability_overrides_the_process_default() {
+        let process = ConfigBuilder::default()
+            .durability(Durability::Interval)
+            .wal_max_ops(3)
+            .wal_max_bytes(1024);
+        let mut options = CollectionOptions::default();
+        options
+            .set_durability(Durability::Manual)
+            .expect("durability override must be valid");
+        let resolved = resolve_options_config(&options, process);
+
+        assert_eq!(resolved.durability, Durability::Manual);
+        assert_eq!(resolved.wal_max_ops, Some(3));
+        assert_eq!(resolved.wal_max_bytes, Some(1024));
+    }
+
+    #[test]
+    fn collection_storage_ceilings_override_the_process_default() {
+        let process = ConfigBuilder::default().storage_ceilings(
+            StorageCeilings::new()
+                .try_with_max_snapshot_bytes(1_024)
+                .expect("process ceiling must be valid"),
+        );
+        let mut options = CollectionOptions::default();
+        options
+            .set_storage_ceilings(
+                StorageCeilings::new()
+                    .try_with_max_snapshot_bytes(4_096)
+                    .expect("collection ceiling must be valid"),
+            )
+            .expect("storage ceilings must be accepted");
+        let resolved = resolve_options_config(&options, process);
+        assert_eq!(resolved.storage_ceilings.max_snapshot_bytes(), 4_096);
+    }
+
+    #[test]
+    fn process_io_backend_is_used_without_a_collection_override() {
+        let process = ConfigBuilder::default().io_backend(IoBackend::Mmap);
+        let resolved = resolve_options_config(&CollectionOptions::default(), process.clone());
+        assert_eq!(resolved.io_backend, process.io_backend);
+    }
+}

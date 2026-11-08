@@ -1,0 +1,96 @@
+use super::{
+    VectorIndexChangeToken, VectorIndexDescriptor, VectorIndexError, VectorIndexObservation,
+    VectorIndexStatus, VectorMutationConsistency, VectorRecord, VectorResult, VectorRevision,
+    VectorSearchRequest, VectorSearchResult,
+};
+
+/// A bounded vector index whose content and lifecycle are owned by its caller.
+///
+/// Partitions are the atomic mutation unit. Implementations must make a
+/// successful replacement visible in one revision and must not expose a
+/// partially constructed partition to concurrent searches.
+#[async_trait::async_trait]
+pub trait VectorIndex: Send + Sync {
+    /// Return the immutable shape and resource limits of this index.
+    fn descriptor(&self) -> &VectorIndexDescriptor;
+
+    /// Return the latest locally observed status without waiting for I/O.
+    ///
+    /// This compatibility accessor can be stale for durable or remote
+    /// backends. Use [`Self::observe`] when the result guards correctness.
+    fn status(&self) -> VectorIndexStatus;
+
+    /// Return exact evidence for the current revision of one index history.
+    ///
+    /// The default preserves source compatibility but provides no continuity
+    /// proof. A backend may return `Some` only when every content mutation
+    /// advances the revision and its history identity changes whenever storage
+    /// is independently recreated or restored onto a divergent history.
+    fn change_token(&self) -> Option<VectorIndexChangeToken> {
+        None
+    }
+
+    /// Observe one self-consistent published revision.
+    ///
+    /// The conservative default exposes only the status compatibility view.
+    /// Backends must override this method to expose an exact history token;
+    /// doing so asserts that the status and token were read atomically.
+    async fn observe(&self) -> VectorResult<VectorIndexObservation> {
+        let observation = VectorIndexObservation {
+            status: self.status(),
+            change_token: None,
+        };
+        observation.verify()?;
+        Ok(observation)
+    }
+
+    /// Return the strongest partition-mutation ordering contract implemented
+    /// by this backend.
+    fn mutation_consistency(&self) -> VectorMutationConsistency {
+        VectorMutationConsistency::PartitionAtomic
+    }
+
+    /// Atomically replace every record in `partition`.
+    ///
+    /// Replacing an existing partition with an empty record list removes it.
+    /// Replacing a missing partition with an empty list is a no-op.
+    async fn replace_partition(
+        &self,
+        partition: &str,
+        records: Vec<VectorRecord>,
+    ) -> VectorResult<VectorIndexStatus>;
+
+    /// Atomically replace one partition only when the complete index still has
+    /// `expected_revision`.
+    ///
+    /// Implementations advertising `IndexRevisionCas` must compare and mutate
+    /// at one linearization point. The default fails closed so a custom backend
+    /// cannot accidentally claim cross-writer ordering from a check-then-write.
+    async fn replace_partition_if_revision(
+        &self,
+        _partition: &str,
+        _expected_revision: VectorRevision,
+        _records: Vec<VectorRecord>,
+    ) -> VectorResult<VectorIndexStatus> {
+        Err(VectorIndexError::ConditionalMutationUnsupported)
+    }
+
+    /// Atomically remove one partition. Missing partitions are a no-op.
+    async fn remove_partition(&self, partition: &str) -> VectorResult<VectorIndexStatus>;
+
+    /// Atomically remove one partition only when the complete index still has
+    /// `expected_revision`.
+    async fn remove_partition_if_revision(
+        &self,
+        _partition: &str,
+        _expected_revision: VectorRevision,
+    ) -> VectorResult<VectorIndexStatus> {
+        Err(VectorIndexError::ConditionalMutationUnsupported)
+    }
+
+    /// Search one immutable index revision.
+    async fn search(&self, request: VectorSearchRequest) -> VectorResult<VectorSearchResult>;
+
+    /// Remove every partition. Clearing an empty index is a no-op.
+    async fn clear(&self) -> VectorResult<VectorIndexStatus>;
+}

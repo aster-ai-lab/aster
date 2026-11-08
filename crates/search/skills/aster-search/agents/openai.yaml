@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aster Search"
+  short_description: "Retrieve structured results from multiple web sources"
+  default_prompt: "Use $aster-search to retrieve current web results, then evaluate and verify them independently."

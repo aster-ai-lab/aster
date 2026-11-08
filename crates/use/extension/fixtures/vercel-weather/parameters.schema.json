@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "city": {
+      "type": "string",
+      "title": "城市",
+      "maxLength": 80
+    }
+  },
+  "required": ["city"]
+}

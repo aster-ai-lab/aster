@@ -1,0 +1,891 @@
+//! Thread-safe collection handle and transaction coordinator.
+
+mod checkpoint;
+#[cfg(test)]
+mod checkpoint_wal_tests;
+mod configuration;
+mod index_api;
+mod maintenance;
+mod mutation;
+mod query_api;
+mod query_contract;
+mod query_engine;
+mod resource;
+mod validation;
+
+#[cfg(feature = "async")]
+mod async_api;
+
+use crate::config::{ConfigBuilder, IoBackend};
+use crate::doc::{Doc, DocumentMap};
+use crate::error::{Error, Result};
+use crate::index::IndexRegistry;
+use crate::schema::{AddColumnOption, AlterColumnOption, CollectionSchema, FieldSchema};
+use crate::stats::{assess_collection_health, CollectionHealthInput, StatsRegistry, StatsSnapshot};
+pub use crate::stats::{CollectionHealth, CollectionHealthStatus, IndexStat};
+use crate::storage::StorageHandle;
+use crate::storage_ceilings::StorageCeilings;
+use checkpoint::{
+    append_prepared_schema_change, persist_index_cache, publish_prepared_schema_change,
+};
+pub use configuration::CollectionOptions;
+use configuration::{options_config, resolved_storage_ceilings};
+pub use maintenance::{
+    CollectionMaintenanceHealth, CollectionMaintenanceOptions, CollectionMaintenancePhase,
+    CollectionMaintenanceRuntime,
+};
+pub use mutation::{DocWriteResult, WriteResult};
+use rayon::prelude::*;
+pub use resource::CollectionResourceLimits;
+use resource::ResourceUsage;
+use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering as AtomicOrdering};
+use std::sync::{Arc, Mutex, RwLock};
+use validation::{normalize_doc, parse_default_expression, validate_doc};
+
+/// Hard ceiling for a schema-evolution worker pool. Schema changes are
+/// collection-local maintenance work; allowing an untrusted `u32` directly
+/// into Rayon could otherwise reserve thousands of workers for a small batch.
+const MAX_SCHEMA_WORKERS: usize = 256;
+
+/// Public collection statistics (the fields used by the official SDK are kept
+/// first; additional counters are additive).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CollectionStats {
+    pub doc_count: u64,
+    pub indexes: Vec<IndexStat>,
+    pub revision: u64,
+    #[serde(default)]
+    pub index_cache_hit: bool,
+    /// Resolved sidecar backend for this collection handle. A cache miss may
+    /// rebuild indexes in memory without exercising the configured backend.
+    #[serde(default)]
+    pub io_backend: IoBackend,
+    pub read_only: bool,
+    pub wal_active_seq: u64,
+    pub wal_checkpoint_seq: u64,
+    pub wal_ops_since_checkpoint: u64,
+    pub wal_bytes_since_checkpoint: u64,
+    /// Deterministic serialized size of the authoritative document map.
+    #[serde(default)]
+    pub accounted_document_bytes: u64,
+    /// Sum of deterministic derived-index payload estimates.
+    #[serde(default)]
+    pub estimated_index_bytes: u64,
+    /// Authoritative document accounting plus derived-index estimates.
+    #[serde(default)]
+    pub accounted_bytes: u64,
+    /// Collection-local limits captured when this handle was opened.
+    #[serde(default)]
+    pub resource_limits: CollectionResourceLimits,
+    /// Persistence `DoS` ceilings captured when this handle was opened.
+    #[serde(default)]
+    pub storage_ceilings: StorageCeilings,
+    /// Operations rejected by this handle's resource policy.
+    #[serde(default)]
+    pub resource_limit_rejections: u64,
+}
+
+#[derive(Debug, Clone)]
+struct CollectionState {
+    path: PathBuf,
+    schema: CollectionSchema,
+    docs: Arc<DocumentMap>,
+    revision: u64,
+    options: CollectionOptions,
+    config: ConfigBuilder,
+    stats: Arc<StatsRegistry>,
+    indexes: Arc<IndexRegistry>,
+    index_cache_hit: bool,
+    resource_usage: ResourceUsage,
+}
+
+#[derive(Debug, Clone)]
+struct CollectionSnapshot {
+    schema: CollectionSchema,
+    docs: Arc<DocumentMap>,
+    revision: u64,
+    stats: Arc<StatsRegistry>,
+    indexes: Arc<IndexRegistry>,
+    resource_limits: CollectionResourceLimits,
+}
+
+#[derive(Debug)]
+struct CollectionInner {
+    state: RwLock<CollectionState>,
+    storage: Mutex<StorageHandle>,
+    writer: Mutex<()>,
+    closed: AtomicBool,
+    maintenance_claimed: AtomicBool,
+}
+
+/// Cheap, cloneable, thread-safe handle to one collection.
+#[derive(Clone, Debug)]
+pub struct Collection {
+    inner: Arc<CollectionInner>,
+}
+
+impl Collection {
+    pub fn create_and_open(
+        path: &str,
+        schema: &CollectionSchema,
+        options: Option<&CollectionOptions>,
+    ) -> Result<Self> {
+        let options = options.cloned().unwrap_or_default();
+        let config = options_config(&options);
+        let ceilings = resolved_storage_ceilings(&options);
+        let root = Path::new(path);
+        schema.validate()?;
+        let docs = DocumentMap::new();
+        let indexes = IndexRegistry::build(schema, &docs, 0)?;
+        let resource_usage = options
+            .resource_limits
+            .enforce_state(schema, &docs, &indexes)?;
+        let storage = StorageHandle::create(root, schema, options.read_only, ceilings)?;
+        let state = CollectionState {
+            path: root.to_path_buf(),
+            schema: schema.clone(),
+            docs: Arc::new(docs),
+            revision: 0,
+            options,
+            config,
+            stats: Arc::new(StatsRegistry::default()),
+            indexes: Arc::new(indexes),
+            index_cache_hit: false,
+            resource_usage,
+        };
+        Ok(Self {
+            inner: Arc::new(CollectionInner {
+                state: RwLock::new(state),
+                storage: Mutex::new(storage),
+                writer: Mutex::new(()),
+                closed: AtomicBool::new(false),
+                maintenance_claimed: AtomicBool::new(false),
+            }),
+        })
+    }
+
+    pub fn create(
+        path: &str,
+        schema: &CollectionSchema,
+        options: Option<&CollectionOptions>,
+    ) -> Result<Self> {
+        Self::create_and_open(path, schema, options)
+    }
+
+    pub fn open(path: &str, options: Option<&CollectionOptions>) -> Result<Self> {
+        let options = options.cloned().unwrap_or_default();
+        let config = options_config(&options);
+        let ceilings = resolved_storage_ceilings(&options);
+        let (storage, schema, docs) =
+            StorageHandle::open(Path::new(path), options.read_only, ceilings)?;
+        if schema.name.trim().is_empty() {
+            return Err(Error::internal("persisted collection has an empty name"));
+        }
+        let revision = storage.manifest.revision;
+        let mut recovered_docs = DocumentMap::new();
+        for doc in docs {
+            let doc = normalize_doc(&schema, &doc).map_err(|error| {
+                Error::internal(format!(
+                    "persisted document cannot be normalized: {}",
+                    error.message
+                ))
+            })?;
+            validate_doc(&schema, &doc, true).map_err(|error| {
+                Error::internal(format!("persisted document is invalid: {}", error.message))
+            })?;
+            let id = doc
+                .get_pk()
+                .ok_or_else(|| Error::internal("persisted document has no primary key"))?
+                .to_string();
+            if recovered_docs.insert(id.clone(), Arc::new(doc)).is_some() {
+                return Err(Error::internal(format!(
+                    "persisted collection contains duplicate primary key '{id}'"
+                )));
+            }
+        }
+        let docs = recovered_docs;
+        let cached_indexes = storage.read_index_cache().ok().flatten().and_then(|bytes| {
+            let diskann_file = storage.open_diskann_file().ok().flatten();
+            IndexRegistry::restore_cache(
+                &bytes,
+                diskann_file,
+                config.io_backend,
+                &schema,
+                &docs,
+                revision,
+                &storage.index_cache_identity(),
+                storage.ceilings,
+            )
+        });
+        let index_cache_hit = cached_indexes.is_some();
+        let indexes = cached_indexes.map_or_else(
+            || {
+                IndexRegistry::build(&schema, &docs, revision).map_err(|error| {
+                    Error::internal(format!(
+                        "rebuild persisted indexes at revision {revision}: {}",
+                        error.message
+                    ))
+                })
+            },
+            Ok,
+        )?;
+        let resource_usage = options
+            .resource_limits
+            .enforce_state(&schema, &docs, &indexes)?;
+        if !index_cache_hit && !options.read_only {
+            persist_index_cache(&storage, &schema, &indexes, revision, false);
+        }
+        let state = CollectionState {
+            path: PathBuf::from(path),
+            schema: schema.clone(),
+            docs: Arc::new(docs),
+            revision,
+            options,
+            config,
+            stats: Arc::new(StatsRegistry::default()),
+            indexes: Arc::new(indexes),
+            index_cache_hit,
+            resource_usage,
+        };
+        Ok(Self {
+            inner: Arc::new(CollectionInner {
+                state: RwLock::new(state),
+                storage: Mutex::new(storage),
+                writer: Mutex::new(()),
+                closed: AtomicBool::new(false),
+                maintenance_claimed: AtomicBool::new(false),
+            }),
+        })
+    }
+
+    pub fn path(&self) -> PathBuf {
+        self.inner
+            .state
+            .read()
+            .map(|state| state.path.clone())
+            .unwrap_or_default()
+    }
+
+    pub fn is_open(&self) -> bool {
+        !self.inner.closed.load(AtomicOrdering::Acquire)
+    }
+
+    pub fn flush(&self) -> Result<()> {
+        self.ensure_open()?;
+        let _writer = self
+            .inner
+            .writer
+            .lock()
+            .map_err(|_| Error::internal("writer lock poisoned"))?;
+        let (schema, docs, indexes, revision) = {
+            let state = self
+                .inner
+                .state
+                .read()
+                .map_err(|_| Error::internal("collection state lock poisoned"))?;
+            (
+                state.schema.clone(),
+                Arc::clone(&state.docs),
+                Arc::clone(&state.indexes),
+                state.revision,
+            )
+        };
+        let mut storage = self
+            .inner
+            .storage
+            .lock()
+            .map_err(|_| Error::internal("storage lock poisoned"))?;
+        storage.checkpoint(&schema, docs.as_ref(), revision, true)?;
+        persist_index_cache(&storage, &schema, &indexes, revision, true);
+        Ok(())
+    }
+
+    pub fn close(self) -> Result<()> {
+        if self.is_open() {
+            let read_only = self
+                .inner
+                .state
+                .read()
+                .map_err(|_| Error::internal("collection state lock poisoned"))?
+                .options
+                .read_only;
+            if !read_only {
+                self.flush()?;
+            }
+            self.inner.closed.store(true, AtomicOrdering::Release);
+        }
+        Ok(())
+    }
+
+    pub fn destroy(self) -> Result<()> {
+        let path = self.path();
+        self.close()?;
+        if path.exists() {
+            std::fs::remove_dir_all(&path)
+                .map_err(|e| Error::internal(format!("destroy collection: {e}")))?;
+        }
+        Ok(())
+    }
+
+    pub fn schema(&self) -> Result<CollectionSchema> {
+        self.ensure_open()?;
+        self.inner
+            .state
+            .read()
+            .map(|state| state.schema.clone())
+            .map_err(|_| Error::internal("collection state lock poisoned"))
+    }
+
+    pub fn stats(&self) -> Result<CollectionStats> {
+        self.ensure_open()?;
+        self.collect_stats().map(|(stats, _)| stats)
+    }
+
+    /// Assesses authoritative revision agreement and derived-index readiness.
+    ///
+    /// A pending WAL is reported but remains healthy because interval/manual
+    /// durability intentionally permits checkpoint lag. Unlike other data
+    /// methods, health remains observable after the shared handle is closed.
+    pub fn health(&self) -> Result<CollectionHealth> {
+        let (stats, storage_revision) = self.collect_stats()?;
+        Ok(assess_collection_health(CollectionHealthInput {
+            is_open: self.is_open(),
+            revision: stats.revision,
+            storage_revision,
+            doc_count: stats.doc_count,
+            indexes: &stats.indexes,
+            read_only: stats.read_only,
+            wal_ops_since_checkpoint: stats.wal_ops_since_checkpoint,
+            wal_bytes_since_checkpoint: stats.wal_bytes_since_checkpoint,
+            maintenance_active: self.inner.maintenance_claimed.load(AtomicOrdering::Acquire),
+        }))
+    }
+
+    fn collect_stats(&self) -> Result<(CollectionStats, u64)> {
+        let state = self
+            .inner
+            .state
+            .read()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        let storage = self
+            .inner
+            .storage
+            .lock()
+            .map_err(|_| Error::internal("storage lock poisoned"))?;
+        let mut indexes = state
+            .indexes
+            .stats(&state.schema, &state.docs, state.revision);
+        indexes.sort_by(|left, right| left.name.cmp(&right.name));
+        let usage = state.resource_usage;
+        Ok((
+            CollectionStats {
+                doc_count: state.docs.len() as u64,
+                indexes,
+                revision: state.revision,
+                index_cache_hit: state.index_cache_hit,
+                io_backend: state.config.io_backend,
+                read_only: state.options.read_only,
+                wal_active_seq: storage.manifest.wal_active_seq,
+                wal_checkpoint_seq: storage.manifest.wal_checkpoint_seq,
+                wal_ops_since_checkpoint: storage.manifest.wal_ops_since_checkpoint,
+                wal_bytes_since_checkpoint: storage.manifest.wal_bytes_since_checkpoint,
+                accounted_document_bytes: usage.documents,
+                estimated_index_bytes: usage.indexes,
+                accounted_bytes: usage.total,
+                resource_limits: state.options.resource_limits,
+                storage_ceilings: storage.ceilings,
+                resource_limit_rejections: state
+                    .stats
+                    .resource_limit_rejections
+                    .load(AtomicOrdering::Relaxed),
+            },
+            storage.manifest.revision,
+        ))
+    }
+
+    pub fn stats_snapshot(&self) -> Result<StatsSnapshot> {
+        let basic = self.stats()?;
+        let state = self
+            .inner
+            .state
+            .read()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        let registry = Arc::clone(&state.stats);
+        Ok(StatsSnapshot {
+            collection_name: state.schema.name.clone(),
+            revision: basic.revision,
+            doc_count: basic.doc_count,
+            query_count: registry.query_count.load(AtomicOrdering::Relaxed),
+            fts_query_count: registry.fts_query_count.load(AtomicOrdering::Relaxed),
+            fts_index_query_count: registry.fts_index_query_count.load(AtomicOrdering::Relaxed),
+            ann_query_count: registry.ann_query_count.load(AtomicOrdering::Relaxed),
+            diskann_query_count: registry.diskann_query_count.load(AtomicOrdering::Relaxed),
+            diskann_mmap_query_count: registry
+                .diskann_mmap_query_count
+                .load(AtomicOrdering::Relaxed),
+            diskann_sector_read_count: registry
+                .diskann_sector_read_count
+                .load(AtomicOrdering::Relaxed),
+            exact_query_count: registry.exact_query_count.load(AtomicOrdering::Relaxed),
+            filtered_query_count: registry.filtered_query_count.load(AtomicOrdering::Relaxed),
+            scalar_index_query_count: registry
+                .scalar_index_query_count
+                .load(AtomicOrdering::Relaxed),
+            radius_query_count: registry.radius_query_count.load(AtomicOrdering::Relaxed),
+            candidates_scanned: registry.candidates_scanned.load(AtomicOrdering::Relaxed),
+            indexed_field_count: basic.indexes.len(),
+            indexes: basic.indexes,
+            index_cache_hit: basic.index_cache_hit,
+            io_backend: basic.io_backend,
+            read_only: basic.read_only,
+            wal_active_seq: basic.wal_active_seq,
+            wal_checkpoint_seq: basic.wal_checkpoint_seq,
+            wal_ops_since_checkpoint: basic.wal_ops_since_checkpoint,
+            wal_bytes_since_checkpoint: basic.wal_bytes_since_checkpoint,
+            accounted_document_bytes: basic.accounted_document_bytes,
+            estimated_index_bytes: basic.estimated_index_bytes,
+            accounted_bytes: basic.accounted_bytes,
+            resource_limits: basic.resource_limits,
+            resource_limit_rejections: basic.resource_limit_rejections,
+        })
+    }
+
+    pub fn count(&self) -> Result<usize> {
+        self.ensure_open()?;
+        self.inner
+            .state
+            .read()
+            .map(|state| state.docs.len())
+            .map_err(|_| Error::internal("collection state lock poisoned"))
+    }
+
+    // ---------------------------------------------------------------------
+    // Index and schema management
+    // ---------------------------------------------------------------------
+
+    pub fn add_column(&self, field_schema: &FieldSchema, default_expr: Option<&str>) -> Result<()> {
+        self.add_column_with_options(field_schema, default_expr, AddColumnOption::default())
+    }
+
+    pub fn add_column_with_options(
+        &self,
+        field_schema: &FieldSchema,
+        default_expr: Option<&str>,
+        option: AddColumnOption,
+    ) -> Result<()> {
+        self.ensure_open()?;
+        let _writer = self
+            .inner
+            .writer
+            .lock()
+            .map_err(|_| Error::internal("writer lock poisoned"))?;
+        let state = self
+            .inner
+            .state
+            .write()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        ensure_writable(&state.options)?;
+        let mut next = state.clone();
+        next.schema.add_field(field_schema)?;
+        let default = default_expr
+            .map(|expression| parse_default_expression(expression, field_schema.data_type))
+            .transpose()?;
+        if let Some(value) = default {
+            next.docs = Arc::new(transform_documents_with_concurrency(
+                &next.docs,
+                option.concurrency,
+                |doc| doc.set_field_value(&field_schema.name, value.clone()),
+            )?);
+        }
+        validate_documents_with_concurrency(&next.schema, &next.docs, option.concurrency)?;
+        let config = state.config.clone();
+        let previous_docs = Arc::clone(&state.docs);
+        let previous_revision = state.revision;
+        let previous_schema = state.schema.clone();
+        drop(state);
+        finish_schema_commit(
+            self,
+            &previous_docs,
+            previous_revision,
+            &previous_schema,
+            next,
+            &config,
+        )
+    }
+
+    pub fn drop_column(&self, name: &str) -> Result<()> {
+        self.ensure_open()?;
+        let _writer = self
+            .inner
+            .writer
+            .lock()
+            .map_err(|_| Error::internal("writer lock poisoned"))?;
+        let state = self
+            .inner
+            .state
+            .write()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        ensure_writable(&state.options)?;
+        let mut next = state.clone();
+        next.schema.drop_field(name)?;
+        next.docs = Arc::new(transform_documents(&next.docs, |doc| {
+            doc.remove_field(name)
+        })?);
+        let config = state.config.clone();
+        let previous_docs = Arc::clone(&state.docs);
+        let previous_revision = state.revision;
+        let previous_schema = state.schema.clone();
+        drop(state);
+        finish_schema_commit(
+            self,
+            &previous_docs,
+            previous_revision,
+            &previous_schema,
+            next,
+            &config,
+        )
+    }
+
+    pub fn rename_column(&self, old_name: &str, new_name: &str) -> Result<()> {
+        if old_name.trim().is_empty() || old_name.contains('\0') {
+            return Err(Error::invalid_argument("old field name is invalid"));
+        }
+        if new_name.trim().is_empty() || new_name.contains('\0') {
+            return Err(Error::invalid_argument("new field name is invalid"));
+        }
+        if old_name == new_name {
+            return Ok(());
+        }
+        self.ensure_open()?;
+        let _writer = self
+            .inner
+            .writer
+            .lock()
+            .map_err(|_| Error::internal("writer lock poisoned"))?;
+        let state = self
+            .inner
+            .state
+            .write()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        ensure_writable(&state.options)?;
+        let mut next = state.clone();
+        if next.schema.has_field(new_name) {
+            return Err(Error::already_exists(format!(
+                "field '{new_name}' already exists"
+            )));
+        }
+        if let Some(field) = next
+            .schema
+            .fields
+            .iter_mut()
+            .find(|field| field.name == old_name)
+        {
+            field.name = new_name.to_string();
+        } else if let Some(field) = next
+            .schema
+            .vectors
+            .iter_mut()
+            .find(|field| field.name == old_name)
+        {
+            field.name = new_name.to_string();
+        } else {
+            return Err(Error::not_found(format!("field '{old_name}' not found")));
+        }
+        next.docs = Arc::new(transform_documents(&next.docs, |doc| {
+            if let Some(value) = doc.field(old_name).cloned() {
+                doc.remove_field(old_name)?;
+                doc.set_field_value(new_name, value)?;
+            } else if let Some(value) = doc.vector(old_name).cloned() {
+                doc.remove_field(old_name)?;
+                doc.set_vector_value(new_name, value)?;
+            }
+            Ok(())
+        })?);
+        let config = state.config.clone();
+        let previous_docs = Arc::clone(&state.docs);
+        let previous_revision = state.revision;
+        let previous_schema = state.schema.clone();
+        drop(state);
+        finish_schema_commit(
+            self,
+            &previous_docs,
+            previous_revision,
+            &previous_schema,
+            next,
+            &config,
+        )
+    }
+
+    pub fn alter_column(
+        &self,
+        field_schema: &FieldSchema,
+        option: AlterColumnOption,
+    ) -> Result<()> {
+        self.ensure_open()?;
+        let _writer = self
+            .inner
+            .writer
+            .lock()
+            .map_err(|_| Error::internal("writer lock poisoned"))?;
+        let state = self
+            .inner
+            .state
+            .write()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        ensure_writable(&state.options)?;
+        let mut next = state.clone();
+        let target = next
+            .schema
+            .fields
+            .iter_mut()
+            .find(|field| field.name == field_schema.name)
+            .ok_or_else(|| Error::not_found(format!("field '{}' not found", field_schema.name)))?;
+        if target.data_type != field_schema.data_type || target.dimension != field_schema.dimension
+        {
+            return Err(Error::invalid_argument(
+                "altering a field's data type or dimension would invalidate existing data",
+            ));
+        }
+        *target = field_schema.clone();
+        next.schema.validate()?;
+        validate_documents_with_concurrency(&next.schema, &next.docs, option.concurrency)?;
+        let config = state.config.clone();
+        let previous_docs = Arc::clone(&state.docs);
+        let previous_revision = state.revision;
+        let previous_schema = state.schema.clone();
+        drop(state);
+        finish_schema_commit(
+            self,
+            &previous_docs,
+            previous_revision,
+            &previous_schema,
+            next,
+            &config,
+        )
+    }
+
+    fn snapshot_state(&self) -> Result<CollectionSnapshot> {
+        let state = self
+            .inner
+            .state
+            .read()
+            .map_err(|_| Error::internal("collection state lock poisoned"))?;
+        Ok(CollectionSnapshot {
+            schema: state.schema.clone(),
+            docs: state.docs.clone(),
+            revision: state.revision,
+            stats: Arc::clone(&state.stats),
+            indexes: state.indexes.clone(),
+            resource_limits: state.options.resource_limits,
+        })
+    }
+
+    fn ensure_open(&self) -> Result<()> {
+        if self.inner.closed.load(AtomicOrdering::Acquire) {
+            Err(Error::failed_precondition("collection is closed"))
+        } else {
+            Ok(())
+        }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn test_arm_wal_sync_stall(&self) -> crate::storage::StallGate {
+        let storage = self.inner.storage.lock().expect("storage lock poisoned");
+        storage.arm_wal_sync_stall()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn test_arm_diskann_write_fault(&self) {
+        let storage = self.inner.storage.lock().expect("storage lock poisoned");
+        storage.arm_diskann_write_fault();
+    }
+
+    #[cfg(test)]
+    pub(crate) fn test_diskann_write_fault_fired(&self) -> bool {
+        let storage = self.inner.storage.lock().expect("storage lock poisoned");
+        storage.diskann_write_fault_fired()
+    }
+}
+
+fn ensure_writable(options: &CollectionOptions) -> Result<()> {
+    if options.read_only {
+        Err(Error::permission_denied("collection is read-only"))
+    } else {
+        Ok(())
+    }
+}
+
+fn ensure_same_generation(current: &CollectionState, expected: &CollectionState) -> Result<()> {
+    if current.revision == expected.revision && current.schema == expected.schema {
+        Ok(())
+    } else {
+        Err(Error::failed_precondition(
+            "collection generation changed during index construction",
+        ))
+    }
+}
+
+fn transform_documents(
+    docs: &DocumentMap,
+    transform: impl Fn(&mut Doc) -> Result<()> + Send + Sync,
+) -> Result<DocumentMap> {
+    transform_documents_with_concurrency(docs, 0, transform)
+}
+
+/// Applies a schema backfill using an optional, collection-local Rayon pool.
+///
+/// The input `OrdMap` is first materialized in its deterministic key order and
+/// the transformed results are collected in that same order before rebuilding
+/// the persistent map.  This keeps revision contents and error selection
+/// deterministic while allowing callers to bound the worker count explicitly.
+fn transform_documents_with_concurrency(
+    docs: &DocumentMap,
+    concurrency: u32,
+    transform: impl Fn(&mut Doc) -> Result<()> + Send + Sync,
+) -> Result<DocumentMap> {
+    let entries: Vec<(String, Arc<Doc>)> = docs
+        .iter()
+        .map(|(id, doc)| (id.clone(), Arc::clone(doc)))
+        .collect();
+    let transform_one = |(id, doc): &(String, Arc<Doc>)| {
+        let mut next = doc.as_ref().clone();
+        let result = transform(&mut next).map(|()| next);
+        (id.clone(), result)
+    };
+    let transformed: Vec<(String, Result<Doc>)> =
+        if let Some(threads) = schema_worker_count(concurrency, entries.len())? {
+            let pool = rayon::ThreadPoolBuilder::new()
+                .num_threads(threads)
+                .build()
+                .map_err(|error| {
+                    Error::resource_exhausted(format!("build schema worker pool: {error}"))
+                })?;
+            pool.install(|| entries.par_iter().map(transform_one).collect())
+        } else {
+            entries.iter().map(transform_one).collect()
+        };
+    let mut output = DocumentMap::new();
+    for (id, result) in transformed {
+        output.insert(id, Arc::new(result?));
+    }
+    Ok(output)
+}
+
+/// Validates every document against a candidate schema, optionally in a
+/// bounded local pool.  Results are reduced in input order so callers receive
+/// stable errors even when validation runs concurrently.
+fn validate_documents_with_concurrency(
+    schema: &CollectionSchema,
+    docs: &DocumentMap,
+    concurrency: u32,
+) -> Result<()> {
+    let entries: Vec<Arc<Doc>> = docs.values().cloned().collect();
+    let validate_one = |doc: &Arc<Doc>| validate_doc(schema, doc, true);
+    let Some(threads) = schema_worker_count(concurrency, entries.len())? else {
+        for doc in &entries {
+            validate_one(doc)?;
+        }
+        return Ok(());
+    };
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .build()
+        .map_err(|error| Error::resource_exhausted(format!("build schema worker pool: {error}")))?;
+    let results: Vec<Result<()>> = pool.install(|| entries.par_iter().map(validate_one).collect());
+    for result in results {
+        result?;
+    }
+    Ok(())
+}
+
+/// Resolves a requested schema worker count without allowing the public `u32`
+/// option to turn into an unbounded process-level thread request. A zero
+/// request retains the serial path; small collections and single-core hosts
+/// also avoid creating a private pool. The effective count is bounded by the
+/// amount of work, host parallelism, and a conservative engine ceiling.
+fn schema_worker_count(concurrency: u32, work_items: usize) -> Result<Option<usize>> {
+    if concurrency == 0 || work_items < 2 {
+        return Ok(None);
+    }
+    let requested = usize::try_from(concurrency)
+        .map_err(|_| Error::resource_exhausted("schema concurrency exceeds this platform"))?;
+    let available = std::thread::available_parallelism().map_or(1, std::num::NonZeroUsize::get);
+    let threads = requested
+        .min(work_items)
+        .min(available)
+        .min(MAX_SCHEMA_WORKERS);
+    Ok((threads > 1).then_some(threads))
+}
+
+fn finish_schema_commit(
+    collection: &Collection,
+    previous_docs: &Arc<DocumentMap>,
+    previous_revision: u64,
+    previous_schema: &CollectionSchema,
+    next: CollectionState,
+    config: &ConfigBuilder,
+) -> Result<()> {
+    let next = prepare_schema_change(next)?;
+    {
+        let mut storage = collection
+            .inner
+            .storage
+            .lock()
+            .map_err(|_| Error::internal("storage lock poisoned"))?;
+        append_prepared_schema_change(
+            &mut storage,
+            previous_docs,
+            previous_revision,
+            &next,
+            config,
+        )?;
+    }
+    let mut state = collection
+        .inner
+        .state
+        .write()
+        .map_err(|_| Error::internal("collection state lock poisoned"))?;
+    if state.revision != previous_revision || state.schema != *previous_schema {
+        return Err(Error::failed_precondition(
+            "collection generation changed during index construction",
+        ));
+    }
+    let mut storage = collection
+        .inner
+        .storage
+        .lock()
+        .map_err(|_| Error::internal("storage lock poisoned"))?;
+    publish_prepared_schema_change(&mut storage, &mut state, next, config)
+}
+
+fn prepare_schema_change(mut next: CollectionState) -> Result<CollectionState> {
+    let revision = next_revision(next.revision)?;
+    next.revision = revision;
+    next.indexes = Arc::new(IndexRegistry::build(&next.schema, &next.docs, revision)?);
+    next.resource_usage =
+        match next
+            .options
+            .resource_limits
+            .enforce_state(&next.schema, &next.docs, &next.indexes)
+        {
+            Ok(usage) => usage,
+            Err(error) => {
+                next.stats.record_resource_limit_rejection();
+                return Err(error);
+            }
+        };
+    Ok(next)
+}
+
+fn next_revision(current: u64) -> Result<u64> {
+    current
+        .checked_add(1)
+        .ok_or_else(|| Error::resource_exhausted("collection revision overflow"))
+}
+
+#[cfg(test)]
+mod ga_contract;
+#[cfg(test)]
+mod tests;

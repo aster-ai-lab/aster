@@ -1,0 +1,416 @@
+{
+  "source_repository": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "source_revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "source_sha256": "13231c592e958fb39e2af6001dae69d90e7a36b265702b9b390236fb387599e2",
+  "scope": "text roles system/user/assistant; no tools, reasoning_content or images",
+  "cases": [
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "chat",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>你好，2+2等于几？<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "chat",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>你好，2+2等于几？<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "chat",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>你好，2+2等于几？<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 1 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>你好，2+2等于几？<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 75 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>你好，2+2等于几？<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "你好，2+2等于几？"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 100 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>你好，2+2等于几？<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "chat",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Answer precisely.<｜User｜>Hello<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "chat",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Answer precisely.<｜User｜>Hello<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "chat",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Answer precisely.<｜User｜>Hello<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 1 (range 1-100, the higher the value, the more thorough the reasoning)\n\nAnswer precisely.<｜User｜>Hello<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 75 (range 1-100, the higher the value, the more thorough the reasoning)\n\nAnswer precisely.<｜User｜>Hello<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer precisely."
+        },
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 100 (range 1-100, the higher the value, the more thorough the reasoning)\n\nAnswer precisely.<｜User｜>Hello<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "chat",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "chat",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "chat",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 1 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 75 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "a"
+        },
+        {
+          "role": "assistant",
+          "content": "b"
+        },
+        {
+          "role": "user",
+          "content": "c"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 100 (range 1-100, the higher the value, the more thorough the reasoning)\n\n<｜User｜>a<｜Assistant｜></think>b<｜end▁of▁sentence｜><｜User｜>c<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "chat",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>start<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "chat",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>start<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "chat",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>start<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜></think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 1,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 1 (range 1-100, the higher the value, the more thorough the reasoning)\n\nstart<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 75,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 75 (range 1-100, the higher the value, the more thorough the reasoning)\n\nstart<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜><think>"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "start"
+        },
+        {
+          "role": "user",
+          "content": "one"
+        },
+        {
+          "role": "assistant",
+          "content": "two"
+        },
+        {
+          "role": "system",
+          "content": "new instruction"
+        }
+      ],
+      "mode": "thinking",
+      "effort": 100,
+      "prompt": "<｜begin▁of▁sentence｜><｜System｜>Reasoning Effort: 100 (range 1-100, the higher the value, the more thorough the reasoning)\n\nstart<｜User｜>one<｜Assistant｜></think>two<｜end▁of▁sentence｜><｜System｜>new instruction<｜Assistant｜><think>"
+    }
+  ]
+}

@@ -1,0 +1,968 @@
+//! SQLite-backed `MemoryStore` with dual-track storage.
+//!
+//! # Storage tracks
+//!
+//! 1. **SQLite database** (`memory.db`) — structured store with FTS5 full-text
+//!    search.  All `MemoryStore` trait methods operate on this DB.
+//!
+//! 2. **Markdown files** — human-readable append-only logs:
+//!    - `MEMORY.md` for high-importance items (≥ 0.7)
+//!    - `memory/YYYY-MM-DD.md` for episodic items (diary style)
+//!
+//! # Async bridge
+//!
+//! `rusqlite::Connection` is `Send` but not `Sync`.  All database operations
+//! are dispatched via `tokio::task::spawn_blocking` with a shared
+//! `Arc<Mutex<Connection>>`.
+//!
+//! # Optional: vector search
+//!
+//! When built with the `sqlite-vec` feature, `store_with_embedding` and
+//! `search_semantic` are available for cosine-similarity nearest-neighbour
+//! search over float32 embeddings.
+
+pub mod markdown;
+pub mod schema;
+#[cfg(feature = "sqlite-vec")]
+mod vector;
+
+use crate::{
+    memories_are_store_duplicates, merge_duplicate_memory_item, normalize_item_for_store,
+    MemoryItem, MemoryStore, MemoryType, PrunePolicy, RelevanceConfig, ValidatedPrunePolicy,
+};
+use anyhow::{Context, Result};
+use async_trait::async_trait;
+use chrono::{DateTime, SubsecRound, TimeZone, Utc};
+use rusqlite::{params, Connection};
+use std::{
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex},
+};
+
+// ── SqliteMemoryStore ────────────────────────────────────────────────────────
+
+/// SQLite-backed memory store with FTS5 search and Markdown export.
+pub struct SqliteMemoryStore {
+    conn: Arc<Mutex<Connection>>,
+    base_dir: PathBuf,
+    relevance: RelevanceConfig,
+}
+
+impl std::fmt::Debug for SqliteMemoryStore {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SqliteMemoryStore")
+            .field("base_dir", &self.base_dir)
+            .finish()
+    }
+}
+
+impl SqliteMemoryStore {
+    /// Open (or create) a store rooted at `base_dir`.
+    ///
+    /// The SQLite file is `<base_dir>/memory.db`.
+    pub async fn new(base_dir: impl AsRef<Path>) -> Result<Self> {
+        let base_dir = base_dir.as_ref().to_path_buf();
+        tokio::fs::create_dir_all(&base_dir)
+            .await
+            .with_context(|| format!("Cannot create memory dir {}", base_dir.display()))?;
+
+        let db_path = base_dir.join("memory.db");
+        let conn = tokio::task::spawn_blocking(move || -> Result<Connection> {
+            #[cfg(feature = "sqlite-vec")]
+            vector::register_auto_extension()?;
+
+            let conn = Connection::open(&db_path)
+                .with_context(|| format!("Cannot open SQLite DB at {}", db_path.display()))?;
+            schema::apply(&conn)?;
+
+            #[cfg(feature = "sqlite-vec")]
+            conn.execute_batch(
+                "CREATE VIRTUAL TABLE IF NOT EXISTS memories_vec USING vec0(
+                     memory_id TEXT PRIMARY KEY,
+                     embedding FLOAT[1536]
+                 );",
+            )?;
+
+            Ok(conn)
+        })
+        .await
+        .context("spawn_blocking panicked")??;
+
+        Ok(Self {
+            conn: Arc::new(Mutex::new(conn)),
+            base_dir,
+            relevance: RelevanceConfig::default(),
+        })
+    }
+
+    /// Override the relevance-scoring config used by `search` and `get_recent`.
+    pub fn with_relevance(mut self, cfg: RelevanceConfig) -> Self {
+        self.relevance = cfg;
+        self
+    }
+
+    // ── Extended API ─────────────────────────────────────────────────────
+
+    /// Append a structured event to the session log.
+    pub async fn log_session_event(
+        &self,
+        session_id: &str,
+        event_type: &str,
+        data: &serde_json::Value,
+    ) -> Result<()> {
+        let now_ms = Utc::now().timestamp_millis();
+        let data_json = serde_json::to_string(data)?;
+        let session_id = session_id.to_string();
+        let event_type = event_type.to_string();
+        let conn = self.conn.clone();
+        tokio::task::spawn_blocking(move || -> Result<()> {
+            let c = conn
+                .lock()
+                .map_err(|_| anyhow::anyhow!("sqlite lock poisoned"))?;
+            c.execute(
+                "INSERT INTO session_log (session_id, event_type, data_json, timestamp_ms)
+                 VALUES (?1, ?2, ?3, ?4)",
+                params![session_id, event_type, data_json, now_ms],
+            )?;
+            Ok(())
+        })
+        .await
+        .context("spawn_blocking panicked")?
+    }
+
+    /// Return all session-log rows for `session_id` as JSON values, oldest first.
+    pub async fn export_session_log(&self, session_id: &str) -> Result<Vec<serde_json::Value>> {
+        let session_id = session_id.to_string();
+        let conn = self.conn.clone();
+        tokio::task::spawn_blocking(move || -> Result<Vec<serde_json::Value>> {
+            let c = conn
+                .lock()
+                .map_err(|_| anyhow::anyhow!("sqlite lock poisoned"))?;
+            let mut stmt = c.prepare(
+                "SELECT event_type, data_json, timestamp_ms
+                 FROM session_log
+                 WHERE session_id = ?1
+                 ORDER BY timestamp_ms ASC",
+            )?;
+            let rows = stmt.query_map(params![session_id], |row| {
+                Ok((
+                    row.get::<_, String>(0)?,
+                    row.get::<_, String>(1)?,
+                    row.get::<_, i64>(2)?,
+                ))
+            })?;
+            let mut out = Vec::new();
+            for row in rows {
+                let (event_type, data_json, ts) = row?;
+                let data: serde_json::Value =
+                    serde_json::from_str(&data_json).unwrap_or(serde_json::Value::Null);
+                out.push(serde_json::json!({
+                    "event_type": event_type,
+                    "data": data,
+                    "timestamp_ms": ts,
+                }));
+            }
+            Ok(out)
+        })
+        .await
+        .context("spawn_blocking panicked")?
+    }
+
+    // ── Private helpers ──────────────────────────────────────────────────
+
+    async fn with_conn<F, R>(&self, f: F) -> Result<R>
+    where
+        F: FnOnce(&Connection) -> Result<R> + Send + 'static,
+        R: Send + 'static,
+    {
+        let conn = self.conn.clone();
+        tokio::task::spawn_blocking(move || {
+            let c = conn
+                .lock()
+                .map_err(|_| anyhow::anyhow!("sqlite lock poisoned"))?;
+            f(&c)
+        })
+        .await
+        .context("spawn_blocking panicked")?
+    }
+}
+
+// ── MemoryStore impl ─────────────────────────────────────────────────────────
+
+#[async_trait]
+impl MemoryStore for SqliteMemoryStore {
+    async fn store(&self, item: MemoryItem) -> Result<()> {
+        self.store_and_return(item).await.map(|_| ())
+    }
+
+    async fn store_and_return(&self, item: MemoryItem) -> Result<MemoryItem> {
+        let item = normalize_item_for_store(item);
+        let (stored, append_markdown) = self
+            .with_conn(move |c| {
+                let mut stmt = c.prepare(
+                    "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                            metadata, access_count, last_accessed_ms
+                     FROM memories",
+                )?;
+                let existing_items: Vec<MemoryItem> = stmt
+                    .query_map([], row_to_item)?
+                    .collect::<rusqlite::Result<_>>()?;
+                if let Some(existing) = existing_items
+                    .into_iter()
+                    .find(|existing| memories_are_store_duplicates(existing, &item))
+                {
+                    if existing.id != item.id {
+                        let merged = merge_duplicate_memory_item(existing, item.clone());
+                        upsert_memory_item(c, &merged)?;
+                        if item.id != merged.id {
+                            c.execute("DELETE FROM memories WHERE id = ?1", params![item.id])?;
+                        }
+                        return Ok((merged, false));
+                    }
+                }
+
+                upsert_memory_item(c, &item)?;
+                Ok((item, true))
+            })
+            .await?;
+
+        if append_markdown {
+            if let Err(e) = markdown::append(&self.base_dir, &stored).await {
+                eprintln!(
+                    "[aster-memory] markdown write failed for {}: {e}",
+                    stored.id
+                );
+            }
+        }
+
+        Ok(stored)
+    }
+
+    async fn retrieve(&self, id: &str) -> Result<Option<MemoryItem>> {
+        let id = id.to_string();
+        let now = Utc::now().trunc_subsecs(3);
+        let now_ms = now.timestamp_millis();
+
+        self.with_conn(move |c| {
+            let result = c.query_row(
+                "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                        metadata, access_count, last_accessed_ms
+                 FROM memories WHERE id = ?1",
+                params![id],
+                row_to_item,
+            );
+            match result {
+                Ok(mut item) => {
+                    // Update access stats
+                    let _ = c.execute(
+                        "UPDATE memories
+                         SET access_count = access_count + 1, last_accessed_ms = ?1
+                         WHERE id = ?2",
+                        params![now_ms, item.id],
+                    );
+                    item.access_count += 1;
+                    item.last_accessed = Some(now);
+                    Ok(Some(item))
+                }
+                Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+                Err(error) => {
+                    let message = format!("retrieve({id}): {error}");
+                    Err(anyhow::Error::new(error).context(message))
+                }
+            }
+        })
+        .await
+    }
+
+    async fn search(&self, query: &str, limit: usize) -> Result<Vec<MemoryItem>> {
+        let query = query.to_string();
+        self.with_conn(move |c| {
+            // Use FTS5 BM25 ranking, then join back for all columns.
+            let mut stmt = c.prepare(
+                "SELECT m.id, m.content, m.timestamp_ms, m.importance, m.tags,
+                        m.memory_type, m.metadata, m.access_count, m.last_accessed_ms
+                 FROM memories_fts
+                 JOIN memories m ON memories_fts.rowid = m.rowid
+                 WHERE memories_fts MATCH ?1
+                 ORDER BY bm25(memories_fts)
+                 LIMIT ?2",
+            )?;
+            let items = stmt
+                .query_map(params![query, limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
+            Ok(items)
+        })
+        .await
+    }
+
+    async fn search_by_tags(&self, tags: &[String], limit: usize) -> Result<Vec<MemoryItem>> {
+        if tags.is_empty() || limit == 0 {
+            return Ok(Vec::new());
+        }
+
+        let tags_owned: Vec<String> = tags.to_vec();
+        self.with_conn(move |c| {
+            let mut stmt = c.prepare(
+                "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                        metadata, access_count, last_accessed_ms
+                 FROM memories
+                 ORDER BY timestamp_ms DESC",
+            )?;
+            let rows = stmt.query_map([], row_to_item)?;
+            let mut items = Vec::new();
+            for row in rows {
+                let item = row?;
+                if tags_owned.iter().any(|tag| item.tags.contains(tag)) {
+                    items.push(item);
+                    if items.len() == limit {
+                        break;
+                    }
+                }
+            }
+            Ok(items)
+        })
+        .await
+    }
+
+    async fn get_recent(&self, limit: usize) -> Result<Vec<MemoryItem>> {
+        self.with_conn(move |c| {
+            let mut stmt = c.prepare(
+                "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                        metadata, access_count, last_accessed_ms
+                 FROM memories
+                 ORDER BY timestamp_ms DESC
+                 LIMIT ?1",
+            )?;
+            let items = stmt
+                .query_map(params![limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
+            Ok(items)
+        })
+        .await
+    }
+
+    async fn get_important(&self, threshold: f32, limit: usize) -> Result<Vec<MemoryItem>> {
+        self.with_conn(move |c| {
+            let mut stmt = c.prepare(
+                "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                        metadata, access_count, last_accessed_ms
+                 FROM memories
+                 WHERE importance >= ?1
+                 ORDER BY importance DESC
+                 LIMIT ?2",
+            )?;
+            let items = stmt
+                .query_map(params![threshold, limit as i64], row_to_item)?
+                .collect::<rusqlite::Result<_>>()?;
+            Ok(items)
+        })
+        .await
+    }
+
+    async fn delete(&self, id: &str) -> Result<()> {
+        let id = id.to_string();
+        self.with_conn(move |c| {
+            c.execute("DELETE FROM memories WHERE id = ?1", params![id])?;
+            Ok(())
+        })
+        .await
+    }
+
+    async fn clear(&self) -> Result<()> {
+        self.with_conn(move |c| {
+            c.execute_batch(
+                "DELETE FROM memories;
+                 INSERT INTO memories_fts(memories_fts) VALUES ('rebuild');",
+            )?;
+            Ok(())
+        })
+        .await
+    }
+
+    async fn count(&self) -> Result<usize> {
+        self.with_conn(move |c| {
+            let n: i64 = c.query_row("SELECT COUNT(*) FROM memories", [], |row| row.get(0))?;
+            Ok(n as usize)
+        })
+        .await
+    }
+
+    async fn prune(&self, policy: &PrunePolicy) -> Result<usize> {
+        let policy = ValidatedPrunePolicy::try_new(policy, Utc::now().trunc_subsecs(3))?;
+        self.with_conn(move |c| {
+            let mut stmt = c.prepare(
+                "SELECT id, content, timestamp_ms, importance, tags, memory_type,
+                        metadata, access_count, last_accessed_ms
+                 FROM memories",
+            )?;
+            let items = stmt
+                .query_map([], row_to_item)?
+                .collect::<rusqlite::Result<Vec<_>>>()?;
+            let delete_ids = policy.select(&items)?;
+            let mut deleted = 0;
+            for id in delete_ids {
+                deleted += c.execute("DELETE FROM memories WHERE id = ?1", params![id])?;
+            }
+            Ok(deleted)
+        })
+        .await
+    }
+}
+
+fn upsert_memory_item(c: &Connection, item: &MemoryItem) -> Result<()> {
+    let tags_json = serde_json::to_string(&item.tags)?;
+    let meta_json = serde_json::to_string(&item.metadata)?;
+    let ts_ms = item.timestamp.timestamp_millis();
+    let last_acc_ms = item.last_accessed.map(|t| t.timestamp_millis());
+    let mtype = memory_type_to_str(&item.memory_type).to_string();
+
+    c.execute(
+        "INSERT OR REPLACE INTO memories
+         (id, content, timestamp_ms, importance, tags, memory_type, metadata,
+          access_count, last_accessed_ms)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+        params![
+            item.id,
+            item.content,
+            ts_ms,
+            item.importance,
+            tags_json,
+            mtype,
+            meta_json,
+            item.access_count,
+            last_acc_ms,
+        ],
+    )?;
+    Ok(())
+}
+
+// ── Row deserialization ──────────────────────────────────────────────────────
+
+fn row_to_item(row: &rusqlite::Row<'_>) -> rusqlite::Result<MemoryItem> {
+    let id: String = row.get(0)?;
+    let content: String = row.get(1)?;
+    let ts_ms: i64 = row.get(2)?;
+    let importance: f32 = row.get(3)?;
+    let tags_json: String = row.get(4)?;
+    let mtype_str: String = row.get(5)?;
+    let meta_json: String = row.get(6)?;
+    let access_count: u32 = row.get(7)?;
+    let last_acc_ms: Option<i64> = row.get(8)?;
+
+    let tags: Vec<String> = serde_json::from_str(&tags_json).map_err(|error| {
+        rusqlite::Error::FromSqlConversionFailure(4, rusqlite::types::Type::Text, Box::new(error))
+    })?;
+    let metadata: std::collections::HashMap<String, String> = serde_json::from_str(&meta_json)
+        .map_err(|error| {
+            rusqlite::Error::FromSqlConversionFailure(
+                6,
+                rusqlite::types::Type::Text,
+                Box::new(error),
+            )
+        })?;
+    let memory_type = str_to_memory_type(&mtype_str)?;
+    let timestamp = ms_to_dt(ts_ms, 2)?;
+    let last_accessed = last_acc_ms.map(|ms| ms_to_dt(ms, 8)).transpose()?;
+    let content_lower = content.to_lowercase();
+
+    Ok(MemoryItem {
+        id,
+        content,
+        timestamp,
+        importance,
+        tags,
+        memory_type,
+        metadata,
+        access_count,
+        last_accessed,
+        content_lower,
+    })
+}
+
+fn ms_to_dt(ms: i64, column: usize) -> rusqlite::Result<DateTime<Utc>> {
+    Utc.timestamp_millis_opt(ms).single().ok_or_else(|| {
+        rusqlite::Error::FromSqlConversionFailure(
+            column,
+            rusqlite::types::Type::Integer,
+            Box::new(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "memory timestamp exceeds the supported datetime range",
+            )),
+        )
+    })
+}
+
+fn memory_type_to_str(t: &MemoryType) -> &'static str {
+    match t {
+        MemoryType::Episodic => "episodic",
+        MemoryType::Semantic => "semantic",
+        MemoryType::Procedural => "procedural",
+        MemoryType::Working => "working",
+    }
+}
+
+fn str_to_memory_type(s: &str) -> rusqlite::Result<MemoryType> {
+    match s {
+        "episodic" => Ok(MemoryType::Episodic),
+        "semantic" => Ok(MemoryType::Semantic),
+        "procedural" => Ok(MemoryType::Procedural),
+        "working" => Ok(MemoryType::Working),
+        _ => Err(rusqlite::Error::FromSqlConversionFailure(
+            5,
+            rusqlite::types::Type::Text,
+            Box::new(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "memory kind must be episodic, semantic, procedural or working",
+            )),
+        )),
+    }
+}
+
+// ── Tests ────────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod retention_tests;
+
+#[cfg(test)]
+mod read_error_tests;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::MemoryItem;
+    use tempfile::TempDir;
+
+    fn make_item(id: &str, content: &str, importance: f32) -> MemoryItem {
+        MemoryItem {
+            id: id.to_string(),
+            content: content.to_string(),
+            importance,
+            memory_type: MemoryType::Semantic,
+            ..MemoryItem::new(content.to_string())
+        }
+    }
+
+    async fn store(dir: &TempDir) -> SqliteMemoryStore {
+        SqliteMemoryStore::new(dir.path()).await.unwrap()
+    }
+
+    #[tokio::test]
+    async fn test_store_and_retrieve() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        let item = make_item("id1", "hello world", 0.5);
+        s.store(item.clone()).await.unwrap();
+
+        let got = s.retrieve("id1").await.unwrap().expect("should exist");
+        assert_eq!(got.content, "hello world");
+        assert_eq!(got.access_count, 1);
+    }
+
+    #[tokio::test]
+    async fn test_retrieve_missing_returns_none() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        assert!(s.retrieve("no-such-id").await.unwrap().is_none());
+    }
+
+    #[tokio::test]
+    async fn test_count_and_delete() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("a", "foo", 0.5)).await.unwrap();
+        s.store(make_item("b", "bar", 0.5)).await.unwrap();
+        assert_eq!(s.count().await.unwrap(), 2);
+
+        s.delete("a").await.unwrap();
+        assert_eq!(s.count().await.unwrap(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_clear() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("x", "content", 0.8)).await.unwrap();
+        s.clear().await.unwrap();
+        assert_eq!(s.count().await.unwrap(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_fts_search() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("1", "The quick brown fox", 0.5))
+            .await
+            .unwrap();
+        s.store(make_item("2", "lazy dog barks", 0.5))
+            .await
+            .unwrap();
+
+        let results = s.search("fox", 10).await.unwrap();
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].id, "1");
+    }
+
+    #[tokio::test]
+    async fn test_search_by_tags() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        let mut item = make_item("1", "tagged", 0.5);
+        item.tags = vec!["rust".to_string(), "ai".to_string()];
+        s.store(item).await.unwrap();
+
+        let mut item2 = make_item("2", "other", 0.5);
+        item2.tags = vec!["python".to_string()];
+        s.store(item2).await.unwrap();
+
+        let results = s.search_by_tags(&["rust".to_string()], 10).await.unwrap();
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].id, "1");
+    }
+
+    #[tokio::test]
+    async fn test_store_deduplicates_durable_content() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        let mut first = make_item(
+            "first",
+            "Run focused memory extraction tests after parser changes.",
+            0.3,
+        );
+        first.tags = vec!["memory".to_string()];
+        s.store(first).await.unwrap();
+
+        let mut duplicate = make_item(
+            "duplicate",
+            "  run focused MEMORY extraction tests after parser changes.  ",
+            0.9,
+        );
+        duplicate.tags = vec!["tests".to_string()];
+        duplicate
+            .metadata
+            .insert("supersedes".to_string(), "old-memory".to_string());
+        let stored = s.store_and_return(duplicate).await.unwrap();
+
+        assert_eq!(stored.id, "first");
+        assert_eq!(s.count().await.unwrap(), 1);
+        let recalled = s.retrieve("first").await.unwrap().unwrap();
+        assert_eq!(recalled.importance, 0.9);
+        assert!(recalled.tags.contains(&"memory".to_string()));
+        assert!(recalled.tags.contains(&"tests".to_string()));
+        assert_eq!(
+            recalled.metadata.get("duplicate_count").map(String::as_str),
+            Some("1")
+        );
+        assert!(s.retrieve("duplicate").await.unwrap().is_none());
+    }
+
+    #[tokio::test]
+    async fn test_store_keeps_distinct_related_content() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        let mut first = make_item(
+            "first",
+            "Run focused memory store tests after parser changes.",
+            0.35,
+        );
+        first.memory_type = MemoryType::Procedural;
+        first.tags = vec!["memory".to_string()];
+        s.store(first).await.unwrap();
+
+        let mut related = make_item(
+            "related",
+            "Run focused memory store regression tests after parser changes.",
+            0.9,
+        );
+        related.memory_type = MemoryType::Procedural;
+        related.tags = vec!["tests".to_string()];
+        let stored = s.store_and_return(related).await.unwrap();
+
+        assert_eq!(stored.id, "related");
+        assert_eq!(s.count().await.unwrap(), 2);
+        let recalled = s.retrieve("first").await.unwrap().unwrap();
+        assert!(recalled.tags.contains(&"memory".to_string()));
+        assert!(!recalled.tags.contains(&"tests".to_string()));
+        assert!(!recalled.metadata.contains_key("duplicate_count"));
+        assert!(s.retrieve("related").await.unwrap().is_some());
+    }
+
+    #[tokio::test]
+    async fn test_store_keeps_opposite_instructions_distinct() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        s.store(make_item(
+            "use",
+            "Use file memory store for local sessions.",
+            0.5,
+        ))
+        .await
+        .unwrap();
+        s.store(make_item(
+            "avoid",
+            "Do not use file memory store for local sessions.",
+            0.5,
+        ))
+        .await
+        .unwrap();
+
+        assert_eq!(s.count().await.unwrap(), 2);
+        assert!(s.retrieve("use").await.unwrap().is_some());
+        assert!(s.retrieve("avoid").await.unwrap().is_some());
+    }
+
+    #[tokio::test]
+    async fn test_get_important() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("lo", "low", 0.3)).await.unwrap();
+        s.store(make_item("hi", "high", 0.9)).await.unwrap();
+
+        let results = s.get_important(0.7, 10).await.unwrap();
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].id, "hi");
+    }
+
+    #[tokio::test]
+    async fn test_get_recent_order() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("old", "old content", 0.5)).await.unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+        s.store(make_item("new", "new content", 0.5)).await.unwrap();
+
+        let results = s.get_recent(2).await.unwrap();
+        assert_eq!(results[0].id, "new");
+    }
+
+    #[tokio::test]
+    async fn test_persistence_across_reopen() {
+        let dir = TempDir::new().unwrap();
+        {
+            let s = store(&dir).await;
+            s.store(make_item("persist", "durable data", 0.6))
+                .await
+                .unwrap();
+        }
+        let s2 = SqliteMemoryStore::new(dir.path()).await.unwrap();
+        let got = s2.retrieve("persist").await.unwrap();
+        assert!(got.is_some());
+        assert_eq!(got.unwrap().content, "durable data");
+    }
+
+    #[tokio::test]
+    async fn test_session_log_roundtrip() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.log_session_event("sess1", "tool_use", &serde_json::json!({"tool": "Read"}))
+            .await
+            .unwrap();
+        s.log_session_event("sess1", "response", &serde_json::json!({"len": 42}))
+            .await
+            .unwrap();
+
+        let log = s.export_session_log("sess1").await.unwrap();
+        assert_eq!(log.len(), 2);
+        assert_eq!(log[0]["event_type"], "tool_use");
+        assert_eq!(log[1]["event_type"], "response");
+    }
+
+    #[tokio::test]
+    async fn test_markdown_important_written() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        let mut item = make_item("imp", "very important note", 0.9);
+        item.memory_type = MemoryType::Semantic;
+        s.store(item).await.unwrap();
+
+        // Give async write a moment to flush
+        std::thread::sleep(std::time::Duration::from_millis(20));
+
+        let md_path = dir.path().join("MEMORY.md");
+        assert!(md_path.exists(), "MEMORY.md should be created");
+        let content = tokio::fs::read_to_string(&md_path).await.unwrap();
+        assert!(content.contains("very important note"));
+    }
+
+    #[tokio::test]
+    async fn test_prune_removes_old_low_importance() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        let mut old_item = make_item("old_low", "stale memory", 0.2);
+        // Force a timestamp 100 days in the past via direct insert
+        let cutoff_ms = (chrono::Utc::now() - chrono::Duration::days(100)).timestamp_millis();
+        {
+            let conn = s.conn.clone();
+            tokio::task::spawn_blocking(move || {
+                let c = conn.lock().unwrap();
+                c.execute(
+                    "UPDATE memories SET timestamp_ms = ?1 WHERE id = ?2",
+                    params![cutoff_ms, "old_low"],
+                )
+                .unwrap();
+            })
+            .await
+            .unwrap();
+        }
+        old_item.timestamp = chrono::Utc::now() - chrono::Duration::days(100);
+        s.store(old_item).await.unwrap();
+        // Update the timestamp to be in the past (store sets now)
+        {
+            let conn = s.conn.clone();
+            let ts = cutoff_ms - 1;
+            tokio::task::spawn_blocking(move || {
+                let c = conn.lock().unwrap();
+                c.execute(
+                    "UPDATE memories SET timestamp_ms = ?1 WHERE id = 'old_low'",
+                    params![ts],
+                )
+                .unwrap();
+            })
+            .await
+            .unwrap();
+        }
+
+        use crate::PrunePolicy;
+        let policy = PrunePolicy {
+            max_age_days: 90,
+            min_importance_to_keep: 0.5,
+            max_items: 0,
+        };
+        let deleted = s.prune(&policy).await.unwrap();
+        assert_eq!(deleted, 1);
+        assert_eq!(s.count().await.unwrap(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_prune_protects_curated_memories() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+
+        let mut pinned = make_item("pinned", "Pinned low-importance memory.", 0.1);
+        pinned.tags = vec!["pinned".to_string()];
+        pinned.timestamp = chrono::Utc::now() - chrono::Duration::days(120);
+        s.store(pinned).await.unwrap();
+
+        let mut accessed = make_item(
+            "accessed",
+            "Frequently recalled low-importance memory.",
+            0.1,
+        );
+        accessed.timestamp = chrono::Utc::now() - chrono::Duration::days(120);
+        accessed.record_access();
+        accessed.record_access();
+        accessed.record_access();
+        s.store(accessed).await.unwrap();
+
+        let mut related = make_item("related", "Conflict memory should remain auditable.", 0.1);
+        related.timestamp = chrono::Utc::now() - chrono::Duration::days(120);
+        related
+            .metadata
+            .insert("conflicts_with".to_string(), "legacy-memory".to_string());
+        s.store(related).await.unwrap();
+
+        let mut stale = make_item("stale", "Unprotected stale memory.", 0.1);
+        stale.timestamp = chrono::Utc::now() - chrono::Duration::days(120);
+        s.store(stale).await.unwrap();
+
+        let policy = PrunePolicy {
+            max_age_days: 90,
+            min_importance_to_keep: 0.5,
+            max_items: 2,
+        };
+        let deleted = s.prune(&policy).await.unwrap();
+
+        assert_eq!(deleted, 1);
+        assert_eq!(s.count().await.unwrap(), 3);
+        assert!(s.retrieve("pinned").await.unwrap().is_some());
+        assert!(s.retrieve("accessed").await.unwrap().is_some());
+        assert!(s.retrieve("related").await.unwrap().is_some());
+        assert!(s.retrieve("stale").await.unwrap().is_none());
+    }
+
+    #[tokio::test]
+    async fn test_prune_keeps_high_importance() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        s.store(make_item("hi", "important", 0.9)).await.unwrap();
+        // Force old timestamp
+        {
+            let conn = s.conn.clone();
+            let ts = (chrono::Utc::now() - chrono::Duration::days(100)).timestamp_millis();
+            tokio::task::spawn_blocking(move || {
+                let c = conn.lock().unwrap();
+                c.execute(
+                    "UPDATE memories SET timestamp_ms = ?1 WHERE id = 'hi'",
+                    params![ts],
+                )
+                .unwrap();
+            })
+            .await
+            .unwrap();
+        }
+
+        use crate::PrunePolicy;
+        let policy = PrunePolicy {
+            max_age_days: 90,
+            min_importance_to_keep: 0.5,
+            max_items: 0,
+        };
+        let deleted = s.prune(&policy).await.unwrap();
+        assert_eq!(deleted, 0);
+        assert_eq!(s.count().await.unwrap(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_prune_max_items() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        for i in 0..10u32 {
+            s.store(make_item(
+                &format!("id{i}"),
+                &format!("content {i}"),
+                i as f32 * 0.1,
+            ))
+            .await
+            .unwrap();
+        }
+        use crate::PrunePolicy;
+        let policy = PrunePolicy {
+            max_age_days: 9999,
+            min_importance_to_keep: 0.0,
+            max_items: 5,
+        };
+        let deleted = s.prune(&policy).await.unwrap();
+        assert_eq!(deleted, 5);
+        assert_eq!(s.count().await.unwrap(), 5);
+    }
+
+    #[tokio::test]
+    async fn test_markdown_episodic_daily_log() {
+        let dir = TempDir::new().unwrap();
+        let s = store(&dir).await;
+        let mut item = make_item("ep", "today's activity log", 0.3);
+        item.memory_type = MemoryType::Episodic;
+        s.store(item).await.unwrap();
+
+        std::thread::sleep(std::time::Duration::from_millis(20));
+
+        let daily_dir = dir.path().join("memory");
+        assert!(daily_dir.exists(), "memory/ directory should exist");
+        let mut has_today = false;
+        if let Ok(mut rd) = tokio::fs::read_dir(&daily_dir).await {
+            while let Ok(Some(entry)) = rd.next_entry().await {
+                let content = tokio::fs::read_to_string(entry.path())
+                    .await
+                    .unwrap_or_default();
+                if content.contains("today's activity log") {
+                    has_today = true;
+                }
+            }
+        }
+        assert!(has_today, "Episodic item should appear in daily log");
+    }
+}

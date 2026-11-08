@@ -1,0 +1,588 @@
+mod dialect;
+mod validation;
+
+pub use dialect::{Dialect, MysqlDialect, PostgresDialect, SqliteDialect};
+
+use crate::ast::{
+    ConflictAction, ConflictValue, CteNode, DeleteNode, InsertNode, JoinKind, QueryNode,
+    SelectLockStrength, SelectLockWait, SelectNode, SetOperationKind, TableLockNode, TableNode,
+    UpdateNode,
+};
+use crate::error::{Error, Result};
+use crate::expression::{
+    BinaryOperator, Expression, OrderDirection, UnaryOperator, WindowBoundary, WindowFrameUnits,
+};
+use crate::query::PostgresTableLockMode;
+use crate::value::Value;
+use validation::{
+    validate_identifier, validate_sql_type, verify_insert_rows, verify_select_lock,
+    verify_update_assignments,
+};
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct CompiledQuery {
+    pub sql: String,
+    pub parameters: Vec<Value>,
+}
+
+pub(crate) fn compile(query: QueryNode, dialect: &impl Dialect) -> Result<CompiledQuery> {
+    let mut compiler = Compiler {
+        dialect,
+        sql: String::new(),
+        parameters: Vec::new(),
+    };
+    match query {
+        QueryNode::Select(node) => compiler.select(*node)?,
+        QueryNode::Insert(node) => compiler.insert(node)?,
+        QueryNode::Update(node) => compiler.update(node)?,
+        QueryNode::Delete(node) => compiler.delete(node)?,
+        QueryNode::TableLock(node) => compiler.table_lock(node)?,
+    }
+    Ok(CompiledQuery {
+        sql: compiler.sql,
+        parameters: compiler.parameters,
+    })
+}
+
+struct Compiler<'a, D: Dialect> {
+    dialect: &'a D,
+    sql: String,
+    parameters: Vec<Value>,
+}
+
+impl<D: Dialect> Compiler<'_, D> {
+    fn select(&mut self, mut node: SelectNode) -> Result<()> {
+        if node.selections.is_empty() {
+            return Err(Error::EmptySelection);
+        }
+        verify_select_lock(&node)?;
+        self.ctes(std::mem::take(&mut node.ctes))?;
+        self.sql.push_str("select ");
+        if node.distinct {
+            self.sql.push_str("distinct ");
+        }
+        self.expression_list(&node.selections)?;
+        self.sql.push_str(" from ");
+        self.table(&node.from)?;
+        for join in node.joins {
+            self.sql.push(' ');
+            self.sql.push_str(match join.kind {
+                JoinKind::Inner => "inner join ",
+                JoinKind::Left => "left join ",
+                JoinKind::Right => "right join ",
+                JoinKind::Full => "full join ",
+            });
+            self.table(&join.table)?;
+            self.sql.push_str(" on ");
+            self.expression(&join.on)?;
+        }
+        self.filter(node.filter.as_ref())?;
+        if !node.group_by.is_empty() {
+            self.sql.push_str(" group by ");
+            self.expression_list(&node.group_by)?;
+        }
+        if let Some(having) = node.having.as_ref() {
+            self.sql.push_str(" having ");
+            self.expression(having)?;
+        }
+        for operation in node.set_operations {
+            if !operation.query.ctes.is_empty()
+                || !operation.query.order_by.is_empty()
+                || operation.query.limit.is_some()
+                || operation.query.offset.is_some()
+                || operation.query.lock.is_some()
+            {
+                return Err(Error::UnsupportedSetOperand);
+            }
+            self.sql.push_str(match operation.kind {
+                SetOperationKind::Union => " union ",
+                SetOperationKind::UnionAll => " union all ",
+                SetOperationKind::Intersect => " intersect ",
+                SetOperationKind::Except => " except ",
+            });
+            self.select(*operation.query)?;
+        }
+        if !node.order_by.is_empty() {
+            self.sql.push_str(" order by ");
+            for (index, (expression, direction)) in node.order_by.iter().enumerate() {
+                if index > 0 {
+                    self.sql.push_str(", ");
+                }
+                self.expression(expression)?;
+                self.sql.push_str(match direction {
+                    OrderDirection::Asc => " asc",
+                    OrderDirection::Desc => " desc",
+                });
+            }
+        }
+        if let Some(limit) = node.limit {
+            self.sql.push_str(" limit ");
+            self.parameter(Value::U64(limit));
+        }
+        if let Some(offset) = node.offset {
+            self.sql.push_str(" offset ");
+            self.parameter(Value::U64(offset));
+        }
+        if let Some(lock) = node.lock {
+            if !self.dialect.supports_select_row_locking() {
+                return Err(Error::Compilation(format!(
+                    "{} does not support select row locking",
+                    self.dialect.name()
+                )));
+            }
+            self.sql.push_str(match lock.strength {
+                SelectLockStrength::Update => " for update",
+                SelectLockStrength::NoKeyUpdate => " for no key update",
+                SelectLockStrength::Share => " for share",
+                SelectLockStrength::KeyShare => " for key share",
+            });
+            if !lock.tables.is_empty() {
+                self.sql.push_str(" of ");
+                for (index, table) in lock.tables.iter().enumerate() {
+                    if index > 0 {
+                        self.sql.push_str(", ");
+                    }
+                    self.identifier(table)?;
+                }
+            }
+            match lock.wait {
+                SelectLockWait::Block => {}
+                SelectLockWait::NoWait => self.sql.push_str(" nowait"),
+                SelectLockWait::SkipLocked => self.sql.push_str(" skip locked"),
+            }
+        }
+        Ok(())
+    }
+
+    fn insert(&mut self, node: InsertNode) -> Result<()> {
+        if node.rows.is_empty() || node.rows[0].is_empty() {
+            return Err(Error::EmptyInsert);
+        }
+        verify_insert_rows(&node)?;
+        self.sql.push_str("insert into ");
+        self.table(&node.table)?;
+        self.sql.push_str(" (");
+        for (index, assignment) in node.rows[0].iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.identifier(assignment.column)?;
+        }
+        self.sql.push_str(") values ");
+        for (row_index, row) in node.rows.into_iter().enumerate() {
+            if row_index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.sql.push('(');
+            for (column_index, assignment) in row.into_iter().enumerate() {
+                if column_index > 0 {
+                    self.sql.push_str(", ");
+                }
+                self.parameter(assignment.value);
+            }
+            self.sql.push(')');
+        }
+        if let Some(conflict) = node.conflict {
+            if !self.dialect.supports_on_conflict() {
+                return Err(Error::Compilation(format!(
+                    "{} does not support on conflict clauses",
+                    self.dialect.name()
+                )));
+            }
+            self.sql.push_str(" on conflict (");
+            for (index, column) in conflict.target.iter().enumerate() {
+                if index > 0 {
+                    self.sql.push_str(", ");
+                }
+                self.identifier(column)?;
+            }
+            self.sql.push_str(") ");
+            match conflict.action {
+                Some(ConflictAction::DoNothing) => self.sql.push_str("do nothing"),
+                Some(ConflictAction::DoUpdate(assignments)) => {
+                    self.sql.push_str("do update set ");
+                    for (index, assignment) in assignments.into_iter().enumerate() {
+                        if index > 0 {
+                            self.sql.push_str(", ");
+                        }
+                        self.identifier(assignment.column)?;
+                        self.sql.push_str(" = ");
+                        match assignment.value {
+                            ConflictValue::Bound(value) => self.parameter(value),
+                            ConflictValue::Excluded { column, .. } => {
+                                self.sql.push_str("excluded.");
+                                self.identifier(column)?;
+                            }
+                        }
+                    }
+                }
+                None => return Err(Error::MissingConflictAction),
+            }
+        }
+        self.returning(&node.returning)
+    }
+
+    fn update(&mut self, mut node: UpdateNode) -> Result<()> {
+        if node.assignments.is_empty() {
+            return Err(Error::EmptyUpdate);
+        }
+        verify_update_assignments(&node.table, &node.assignments)?;
+        if !node.from.is_empty() && !self.dialect.supports_update_from() {
+            return Err(Error::Compilation(format!(
+                "{} does not support update from clauses",
+                self.dialect.name()
+            )));
+        }
+        self.ctes(std::mem::take(&mut node.ctes))?;
+        self.sql.push_str("update ");
+        self.table(&node.table)?;
+        self.sql.push_str(" set ");
+        for (index, assignment) in node.assignments.into_iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.identifier(assignment.column)?;
+            self.sql.push_str(" = ");
+            self.expression(&assignment.value)?;
+        }
+        if !node.from.is_empty() {
+            self.sql.push_str(" from ");
+            for (index, table) in node.from.iter().enumerate() {
+                if index > 0 {
+                    self.sql.push_str(", ");
+                }
+                self.table(table)?;
+            }
+        }
+        self.filter(node.filter.as_ref())?;
+        self.returning(&node.returning)
+    }
+
+    fn ctes(&mut self, ctes: Vec<CteNode>) -> Result<()> {
+        if ctes.is_empty() {
+            return Ok(());
+        }
+        let mut names = std::collections::HashSet::with_capacity(ctes.len());
+        for cte in &ctes {
+            if !names.insert(cte.name) {
+                return Err(Error::DuplicateCte(cte.name.to_owned()));
+            }
+        }
+        self.sql.push_str("with ");
+        for (index, cte) in ctes.into_iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.identifier(cte.name)?;
+            self.sql.push_str(" as (");
+            self.select(*cte.query)?;
+            self.sql.push(')');
+        }
+        self.sql.push(' ');
+        Ok(())
+    }
+
+    fn delete(&mut self, node: DeleteNode) -> Result<()> {
+        self.sql.push_str("delete from ");
+        self.table(&node.table)?;
+        self.filter(node.filter.as_ref())?;
+        self.returning(&node.returning)
+    }
+
+    fn table_lock(&mut self, node: TableLockNode) -> Result<()> {
+        if !self.dialect.supports_table_locking() {
+            return Err(Error::Compilation(format!(
+                "{} does not support table locking",
+                self.dialect.name()
+            )));
+        }
+        self.sql.push_str("lock table ");
+        self.table(&node.table)?;
+        self.sql.push_str(" in ");
+        self.sql.push_str(match node.mode {
+            PostgresTableLockMode::AccessShare => "access share",
+            PostgresTableLockMode::RowShare => "row share",
+            PostgresTableLockMode::RowExclusive => "row exclusive",
+            PostgresTableLockMode::ShareUpdateExclusive => "share update exclusive",
+            PostgresTableLockMode::Share => "share",
+            PostgresTableLockMode::ShareRowExclusive => "share row exclusive",
+            PostgresTableLockMode::Exclusive => "exclusive",
+            PostgresTableLockMode::AccessExclusive => "access exclusive",
+        });
+        self.sql.push_str(" mode");
+        if node.no_wait {
+            self.sql.push_str(" nowait");
+        }
+        Ok(())
+    }
+
+    fn returning(&mut self, expressions: &[Expression]) -> Result<()> {
+        if expressions.is_empty() {
+            return Ok(());
+        }
+        if !self.dialect.supports_returning() {
+            return Err(Error::Compilation(format!(
+                "{} does not support returning clauses",
+                self.dialect.name()
+            )));
+        }
+        self.sql.push_str(" returning ");
+        self.expression_list(expressions)
+    }
+
+    fn filter(&mut self, expression: Option<&Expression>) -> Result<()> {
+        if let Some(expression) = expression {
+            self.sql.push_str(" where ");
+            self.expression(expression)?;
+        }
+        Ok(())
+    }
+
+    fn expression_list(&mut self, expressions: &[Expression]) -> Result<()> {
+        for (index, expression) in expressions.iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.expression(expression)?;
+        }
+        Ok(())
+    }
+
+    fn expression(&mut self, expression: &Expression) -> Result<()> {
+        match expression {
+            Expression::Column { table, name } => {
+                self.identifier(table)?;
+                self.sql.push('.');
+                if *name == "*" {
+                    self.sql.push('*');
+                } else {
+                    self.identifier(name)?;
+                }
+            }
+            Expression::Value(value) => self.parameter(value.clone()),
+            Expression::Subquery(query) => self.subquery(&query.0, true)?,
+            Expression::Function { name, arguments } => {
+                self.identifier(name)?;
+                self.sql.push('(');
+                self.expression_list(arguments)?;
+                self.sql.push(')');
+            }
+            Expression::Coalesce(arguments) => {
+                if arguments.is_empty() {
+                    return Err(Error::Compilation(
+                        "coalesce requires at least one expression".to_owned(),
+                    ));
+                }
+                self.sql.push_str("coalesce(");
+                self.expression_list(arguments)?;
+                self.sql.push(')');
+            }
+            Expression::Least(arguments) => {
+                if arguments.is_empty() {
+                    return Err(Error::Compilation(
+                        "least requires at least one expression".to_owned(),
+                    ));
+                }
+                self.sql.push_str("least(");
+                self.expression_list(arguments)?;
+                self.sql.push(')');
+            }
+            Expression::Cast {
+                expression,
+                sql_type,
+            } => {
+                validate_sql_type(sql_type)?;
+                self.sql.push_str("cast(");
+                self.expression(expression)?;
+                self.sql.push_str(" as ");
+                self.identifier(sql_type)?;
+                self.sql.push(')');
+            }
+            Expression::Alias { expression, alias } => {
+                self.expression(expression)?;
+                self.sql.push_str(" as ");
+                self.identifier(alias)?;
+            }
+            Expression::Wildcard => self.sql.push('*'),
+            Expression::Window {
+                expression,
+                partition_by,
+                order_by,
+                frame,
+            } => {
+                self.expression(expression)?;
+                self.sql.push_str(" over (");
+                let mut needs_space = false;
+                if !partition_by.is_empty() {
+                    self.sql.push_str("partition by ");
+                    self.expression_list(partition_by)?;
+                    needs_space = true;
+                }
+                if !order_by.is_empty() {
+                    if needs_space {
+                        self.sql.push(' ');
+                    }
+                    self.sql.push_str("order by ");
+                    self.order_list(order_by)?;
+                    needs_space = true;
+                }
+                if let Some(frame) = frame {
+                    if matches!(frame.start, WindowBoundary::UnboundedFollowing)
+                        || matches!(frame.end, WindowBoundary::UnboundedPreceding)
+                    {
+                        return Err(Error::InvalidWindowFrame);
+                    }
+                    if needs_space {
+                        self.sql.push(' ');
+                    }
+                    self.sql.push_str(match frame.units {
+                        WindowFrameUnits::Rows => "rows",
+                        WindowFrameUnits::Range => "range",
+                        WindowFrameUnits::Groups => "groups",
+                    });
+                    self.sql.push_str(" between ");
+                    self.window_boundary(frame.start);
+                    self.sql.push_str(" and ");
+                    self.window_boundary(frame.end);
+                }
+                self.sql.push(')');
+            }
+            Expression::Binary {
+                left,
+                operator,
+                right,
+            } => {
+                self.sql.push('(');
+                self.expression(left)?;
+                self.sql.push_str(match operator {
+                    BinaryOperator::Eq => " = ",
+                    BinaryOperator::NotEq => " <> ",
+                    BinaryOperator::GreaterThan => " > ",
+                    BinaryOperator::GreaterThanOrEq => " >= ",
+                    BinaryOperator::LessThan => " < ",
+                    BinaryOperator::LessThanOrEq => " <= ",
+                    BinaryOperator::Like => " like ",
+                    BinaryOperator::In => " in ",
+                    BinaryOperator::Is => " is ",
+                    BinaryOperator::IsNot => " is not ",
+                    BinaryOperator::Add => " + ",
+                });
+                self.expression(right)?;
+                self.sql.push(')');
+            }
+            Expression::Unary {
+                operator,
+                expression,
+            } => match operator {
+                UnaryOperator::IsNull => {
+                    self.expression(expression)?;
+                    self.sql.push_str(" is null");
+                }
+                UnaryOperator::IsNotNull => {
+                    self.expression(expression)?;
+                    self.sql.push_str(" is not null");
+                }
+                UnaryOperator::Not => {
+                    self.sql.push_str("not (");
+                    self.expression(expression)?;
+                    self.sql.push(')');
+                }
+                UnaryOperator::Exists => {
+                    self.sql.push_str("exists ");
+                    match expression.as_ref() {
+                        Expression::Subquery(query) => self.subquery(&query.0, false)?,
+                        expression => self.expression(expression)?,
+                    }
+                }
+            },
+            Expression::And(expressions) => self.boolean_group(expressions, " and ")?,
+            Expression::Or(expressions) => self.boolean_group(expressions, " or ")?,
+        }
+        Ok(())
+    }
+
+    fn subquery(&mut self, query: &SelectNode, scalar: bool) -> Result<()> {
+        if scalar && query.selections.len() != 1 {
+            return Err(Error::InvalidScalarSubquery(query.selections.len()));
+        }
+        self.sql.push('(');
+        self.select(query.clone())?;
+        self.sql.push(')');
+        Ok(())
+    }
+
+    fn boolean_group(&mut self, expressions: &[Expression], separator: &str) -> Result<()> {
+        if expressions.is_empty() {
+            return Err(Error::Compilation(
+                "boolean expression group cannot be empty".to_string(),
+            ));
+        }
+        self.sql.push('(');
+        for (index, expression) in expressions.iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(separator);
+            }
+            self.expression(expression)?;
+        }
+        self.sql.push(')');
+        Ok(())
+    }
+
+    fn order_list(&mut self, order_by: &[(Expression, OrderDirection)]) -> Result<()> {
+        for (index, (expression, direction)) in order_by.iter().enumerate() {
+            if index > 0 {
+                self.sql.push_str(", ");
+            }
+            self.expression(expression)?;
+            self.sql.push_str(match direction {
+                OrderDirection::Asc => " asc",
+                OrderDirection::Desc => " desc",
+            });
+        }
+        Ok(())
+    }
+
+    fn window_boundary(&mut self, boundary: WindowBoundary) {
+        match boundary {
+            WindowBoundary::UnboundedPreceding => self.sql.push_str("unbounded preceding"),
+            WindowBoundary::Preceding(value) => {
+                self.sql.push_str(&value.to_string());
+                self.sql.push_str(" preceding");
+            }
+            WindowBoundary::CurrentRow => self.sql.push_str("current row"),
+            WindowBoundary::Following(value) => {
+                self.sql.push_str(&value.to_string());
+                self.sql.push_str(" following");
+            }
+            WindowBoundary::UnboundedFollowing => self.sql.push_str("unbounded following"),
+        }
+    }
+
+    fn table(&mut self, table: &TableNode) -> Result<()> {
+        self.identifier(table.name)?;
+        if let Some(alias) = table.alias {
+            self.sql.push_str(" as ");
+            self.identifier(alias)?;
+        }
+        Ok(())
+    }
+
+    fn identifier(&mut self, identifier: &str) -> Result<()> {
+        validate_identifier(identifier)?;
+        self.sql.push(self.dialect.identifier_quote());
+        for character in identifier.chars() {
+            if character == self.dialect.identifier_quote() {
+                self.sql.push(character);
+            }
+            self.sql.push(character);
+        }
+        self.sql.push(self.dialect.identifier_quote());
+        Ok(())
+    }
+
+    fn parameter(&mut self, value: Value) {
+        self.parameters.push(value);
+        self.sql
+            .push_str(&self.dialect.placeholder(self.parameters.len()));
+    }
+}

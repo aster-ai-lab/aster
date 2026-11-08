@@ -1,0 +1,2730 @@
+//! picolm inference backend — pure Rust layer-streaming GGUF inference.
+//!
+//! Streams transformer layers one at a time through a single working buffer.
+//! Peak RAM stays at O(layer_size) rather than O(model_size), enabling 7B+
+//! models inside a 512MB TEE EPC budget.
+//!
+//! Supported: GGUF v2/v3, LLaMA-architecture models, Q4_K_M / Q8_0 / F16 / F32.
+//! Not supported: embeddings, vision, SafeTensors, HuggingFace format.
+//!
+//! # TEE supply-chain note
+//!
+//! This backend has zero C dependencies. The entire inference path is pure Rust
+//! and can be audited without a C/C++ toolchain.
+
+use std::pin::Pin;
+use std::sync::Arc;
+
+#[cfg(feature = "picolm")]
+use std::collections::HashMap;
+#[cfg(feature = "picolm")]
+use std::sync::Mutex;
+
+use async_trait::async_trait;
+use futures::Stream;
+
+#[cfg(feature = "picolm")]
+use tokio::sync::mpsc;
+#[cfg(feature = "picolm")]
+use tokio_stream::wrappers::ReceiverStream;
+
+use crate::backend::types::{
+    ChatMessage, ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk,
+    EffectivePromptDigest, EmbeddingRequest, EmbeddingResponse, MessageContent,
+};
+use crate::backend::Backend;
+use crate::config::PowerConfig;
+use crate::error::{PowerError, Result};
+use crate::model::manifest::{ModelFormat, ModelManifest};
+use crate::server::request_context::RequestContext;
+use crate::tee::encrypted_model::{LayerStreamingDecryptedModel, MemoryDecryptedModel};
+
+#[cfg(feature = "picolm")]
+use super::gguf_stream::{GgufArchitecture, GgufFile, GgufMeta};
+#[cfg(feature = "picolm")]
+use super::picolm_ops::attention::ModelConfig;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::buffers::ForwardBuffers;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::ffn::FfnActivation;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::kv_cache::KvCache;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::qwen35::Qwen35TensorLayout;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::rope::RopeTable;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::tensor_cache::TensorCache;
+#[cfg(feature = "picolm")]
+use super::picolm_ops::tokenizer::BpeTokenizer;
+
+// ── Loaded model state ────────────────────────────────────────────────────────
+
+#[cfg(feature = "picolm")]
+struct LoadedModel {
+    gguf: Arc<GgufFile>,
+    cfg: ModelConfig,
+    tokenizer: Arc<BpeTokenizer>,
+    activation: FfnActivation,
+    /// Pre-computed RoPE cos/sin tables (eliminates powf/sin/cos from hot path).
+    rope_table: Arc<RopeTable>,
+    /// Pre-dequantized output norm weights only (`n_embd` floats).
+    /// Per-layer norms are dequantized on-the-fly during the forward pass.
+    output_norm: Arc<Vec<f32>>,
+    /// Per-layer tensor pointer cache — eliminates HashMap lookups from the hot path.
+    tensor_cache: Arc<TensorCache>,
+    /// Jinja2 chat template from GGUF metadata (None = ChatML fallback).
+    chat_template: Option<String>,
+    /// Maximum sequence length for this model (from GGUF metadata, capped).
+    max_seq_len: usize,
+    /// Session-keyed KV caches for multi-turn reuse.
+    sessions: HashMap<String, KvCache>,
+}
+
+#[cfg(feature = "picolm")]
+fn take_kv_cache_slot(slot: &Mutex<Option<KvCache>>) -> Result<Option<KvCache>> {
+    slot.lock()
+        .map(|mut guard| guard.take())
+        .map_err(|_| PowerError::InferenceFailed("picolm: KV cache slot lock poisoned".to_string()))
+}
+
+#[cfg(feature = "picolm")]
+fn store_kv_cache_slot(slot: &Mutex<Option<KvCache>>, kv: KvCache) -> Result<()> {
+    let mut guard = slot.lock().map_err(|_| {
+        PowerError::InferenceFailed("picolm: KV cache slot lock poisoned".to_string())
+    })?;
+    *guard = Some(kv);
+    Ok(())
+}
+
+#[cfg(feature = "picolm")]
+fn send_picolm_chat_result(
+    tx: &mpsc::Sender<Result<ChatResponseChunk>>,
+    result: Result<ChatResponseChunk>,
+) -> bool {
+    match tx.blocking_send(result) {
+        Ok(()) => true,
+        Err(e) => {
+            tracing::debug!(
+                error = %e,
+                "picolm chat receiver dropped; stopping inference"
+            );
+            false
+        }
+    }
+}
+
+#[cfg(feature = "picolm")]
+fn observe_picolm_release_result(layer: u32, target: &str, result: Result<()>) -> bool {
+    match result {
+        Ok(()) => true,
+        Err(e) => {
+            tracing::warn!(
+                layer,
+                target,
+                error = %e,
+                "picolm failed to release layer pages"
+            );
+            false
+        }
+    }
+}
+
+#[cfg(feature = "picolm")]
+#[derive(Debug)]
+struct PicolmModelShape {
+    cfg: ModelConfig,
+    max_seq: usize,
+    kv_mem: usize,
+    derived_mem: usize,
+}
+
+#[cfg(feature = "picolm")]
+fn require_nonzero(value: usize, name: &str) -> Result<usize> {
+    if value == 0 {
+        return Err(PowerError::InvalidFormat(format!(
+            "picolm: GGUF metadata field {name} must be greater than zero"
+        )));
+    }
+    Ok(value)
+}
+
+#[cfg(feature = "picolm")]
+fn checked_shape_product(values: &[usize], context: &str) -> Result<usize> {
+    values.iter().try_fold(1usize, |acc, value| {
+        acc.checked_mul(*value)
+            .ok_or_else(|| PowerError::InvalidFormat(format!("picolm: {context} overflows usize")))
+    })
+}
+
+#[cfg(feature = "picolm")]
+fn checked_shape_sum(values: &[usize], context: &str) -> Result<usize> {
+    values.iter().try_fold(0usize, |acc, value| {
+        acc.checked_add(*value)
+            .ok_or_else(|| PowerError::InvalidFormat(format!("picolm: {context} overflows usize")))
+    })
+}
+
+#[cfg(feature = "picolm")]
+fn checked_token_id(value: i32, name: &str) -> Result<u32> {
+    u32::try_from(value).map_err(|_| {
+        PowerError::InvalidFormat(format!(
+            "picolm: GGUF metadata field {name} must be non-negative"
+        ))
+    })
+}
+
+#[cfg(feature = "picolm")]
+fn require_positive_f32(value: f32, name: &str) -> Result<f32> {
+    if !value.is_finite() || value <= 0.0 {
+        return Err(PowerError::InvalidFormat(format!(
+            "picolm: GGUF metadata field {name} must be a finite positive number"
+        )));
+    }
+    Ok(value)
+}
+
+#[cfg(feature = "picolm")]
+fn build_picolm_model_shape(meta: &GgufMeta, max_seq_cap: usize) -> Result<PicolmModelShape> {
+    let n_embd = require_nonzero(meta.n_embd as usize, "embedding_length")?;
+    let n_heads = require_nonzero(meta.n_heads as usize, "attention.head_count")?;
+    let n_kv_heads = require_nonzero(meta.n_kv_heads as usize, "attention.head_count_kv")?;
+    let n_layers = require_nonzero(meta.n_layers as usize, "block_count")?;
+    let n_ff = require_nonzero(meta.n_ff as usize, "feed_forward_length")?;
+    let vocab_size = require_nonzero(meta.vocab_size as usize, "tokenizer.ggml.tokens")?;
+    let context_length = require_nonzero(meta.context_length as usize, "context_length")?;
+    let max_seq_cap = require_nonzero(max_seq_cap, "backend.max_seq_len")?;
+
+    if n_embd % n_heads != 0 {
+        return Err(PowerError::InvalidFormat(format!(
+            "picolm: embedding_length ({n_embd}) must be divisible by attention.head_count ({n_heads})"
+        )));
+    }
+    let head_dim = n_embd / n_heads;
+    if n_heads % n_kv_heads != 0 {
+        return Err(PowerError::InvalidFormat(format!(
+            "picolm: attention.head_count ({n_heads}) must be divisible by attention.head_count_kv ({n_kv_heads})"
+        )));
+    }
+
+    let rope_dim = match meta.rope_dim {
+        Some(value) => {
+            let value = require_nonzero(value as usize, "rope.dimension_count")?;
+            if value > head_dim {
+                return Err(PowerError::InvalidFormat(format!(
+                    "picolm: rope.dimension_count ({value}) must not exceed head_dim ({head_dim})"
+                )));
+            }
+            value
+        }
+        None => head_dim,
+    };
+
+    let max_seq = context_length.min(max_seq_cap);
+    let q_dim = checked_shape_product(&[n_heads, head_dim], "query buffer size")?;
+    let kv_dim = checked_shape_product(&[n_kv_heads, head_dim], "KV buffer size")?;
+    let f32_bytes = std::mem::size_of::<f32>();
+    let f16_bytes = std::mem::size_of::<half::f16>();
+    let usize_bytes = std::mem::size_of::<usize>();
+    let kv_mem = checked_shape_product(
+        &[n_layers, 2, n_kv_heads, head_dim, max_seq, f16_bytes],
+        "KV cache memory estimate",
+    )?;
+
+    let forward_f32_elements = checked_shape_sum(
+        &[
+            n_embd, q_dim, kv_dim, kv_dim, q_dim, max_seq, n_embd, n_ff, n_ff, n_embd, n_embd,
+            vocab_size, head_dim, vocab_size,
+        ],
+        "forward buffer element count",
+    )?;
+    let forward_f32_bytes =
+        checked_shape_product(&[forward_f32_elements, f32_bytes], "forward buffer size")?;
+    let sampler_index_bytes =
+        checked_shape_product(&[vocab_size, usize_bytes], "sampler index buffer size")?;
+    let rope_half_dim = rope_dim.min(head_dim) / 2;
+    let rope_entries = checked_shape_product(&[max_seq, rope_half_dim], "RoPE table size")?;
+    let rope_bytes = checked_shape_product(&[rope_entries, 2, f32_bytes], "RoPE table bytes")?;
+    let norm_cache_bytes = checked_shape_product(
+        &[n_layers, 2, n_embd, f32_bytes],
+        "per-layer norm cache bytes",
+    )?;
+    let worst_case_prefill_bytes =
+        checked_shape_product(&[max_seq, n_embd, f32_bytes], "prefill hidden-state bytes")?;
+    let derived_mem = checked_shape_sum(
+        &[
+            forward_f32_bytes,
+            sampler_index_bytes,
+            rope_bytes,
+            norm_cache_bytes,
+            worst_case_prefill_bytes,
+            kv_mem,
+        ],
+        "derived picolm memory estimate",
+    )?;
+
+    Ok(PicolmModelShape {
+        cfg: ModelConfig {
+            n_embd,
+            n_heads,
+            n_kv_heads,
+            head_dim,
+            n_layers: meta.n_layers,
+            n_ff,
+            vocab_size,
+            norm_eps: require_positive_f32(meta.norm_eps, "attention.layer_norm_rms_epsilon")?,
+            rope_theta: require_positive_f32(meta.rope_theta, "rope.freq_base")?,
+            rope_dim,
+            context_length,
+            bos_token_id: checked_token_id(meta.bos_token_id, "tokenizer.ggml.bos_token_id")?,
+            eos_token_id: checked_token_id(meta.eos_token_id, "tokenizer.ggml.eos_token_id")?,
+        },
+        max_seq,
+        kv_mem,
+        derived_mem,
+    })
+}
+
+// ── Startup self-test ────────────────────────────────────────────────────────
+
+/// Verify inference kernels produce correct results at model load time.
+/// In TEE, there's no debugger — if memory corruption or a bad build causes
+/// wrong output, this catches it immediately instead of silently producing garbage.
+#[cfg(feature = "picolm")]
+fn startup_self_test() -> Result<()> {
+    use super::picolm_ops::{norm, vec_dot};
+
+    // Test 1: RMS norm with known input/output.
+    let mut x = [1.0f32, 2.0, 3.0, 4.0];
+    let w = [1.0f32, 1.0, 1.0, 1.0];
+    norm::rms_norm_f32(&mut x, &w, 1e-5);
+    // RMS = sqrt(mean([1,4,9,16])) = sqrt(7.5) ≈ 2.7386
+    // normalized = [1/2.7386, 2/2.7386, 3/2.7386, 4/2.7386] ≈ [0.3651, 0.7303, 1.0954, 1.4606]
+    if (x[0] - 0.3651).abs() > 0.01 || (x[3] - 1.4606).abs() > 0.01 {
+        return Err(PowerError::InferenceFailed(format!(
+            "picolm self-test FAILED: rms_norm produced [{:.4}, {:.4}, {:.4}, {:.4}], \
+             expected [0.3651, 0.7303, 1.0954, 1.4606]",
+            x[0], x[1], x[2], x[3]
+        )));
+    }
+
+    // Test 2: F32 vec_dot with known input/output.
+    let mut row = Vec::new();
+    for v in [1.0f32, 2.0, 3.0] {
+        row.extend_from_slice(&v.to_le_bytes());
+    }
+    let xv = [4.0f32, 5.0, 6.0];
+    let dot = vec_dot::vec_dot(&row, &xv, 3, 0);
+    // 1*4 + 2*5 + 3*6 = 32
+    if (dot - 32.0).abs() > 0.01 {
+        return Err(PowerError::InferenceFailed(format!(
+            "picolm self-test FAILED: vec_dot_f32 produced {dot:.4}, expected 32.0"
+        )));
+    }
+
+    // Test 3: Q8_0 vec_dot with known input/output.
+    let scale = half::f16::from_f32(2.0);
+    let mut block = [0u8; 34];
+    block[0..2].copy_from_slice(&scale.to_le_bytes());
+    for j in 0..32 {
+        block[2 + j] = 1u8; // quant = 1
+    }
+    let ones = [1.0f32; 32];
+    let q8_dot = vec_dot::vec_dot(&block, &ones, 32, 8);
+    // scale=2.0, sum(1*1 for 32 elements) = 32, result = 2.0 * 32 = 64.0
+    if (q8_dot - 64.0).abs() > 0.5 {
+        return Err(PowerError::InferenceFailed(format!(
+            "picolm self-test FAILED: vec_dot_q8_0 produced {q8_dot:.4}, expected 64.0"
+        )));
+    }
+
+    tracing::debug!("picolm: startup self-test passed (norm, f32_dot, q8_0_dot)");
+    Ok(())
+}
+
+// ── Sampler ───────────────────────────────────────────────────────────────────
+
+/// Minimal top-p + temperature sampler operating on a logit vector.
+#[cfg(feature = "picolm")]
+fn apply_repeat_penalty(
+    logits: &mut [f32],
+    recent_tokens: &[u32],
+    repeat_penalty: f32,
+    frequency_penalty: f32,
+    presence_penalty: f32,
+) {
+    if (repeat_penalty - 1.0).abs() < f32::EPSILON
+        && frequency_penalty == 0.0
+        && presence_penalty == 0.0
+    {
+        return;
+    }
+
+    // Deduplicate + count without HashMap allocation.
+    // For a 64-token window, linear scan is faster than HashMap overhead.
+    let mut seen: [(u32, u32); 64] = [(0, 0); 64];
+    let mut n_seen = 0usize;
+
+    for &tok in recent_tokens {
+        let mut found = false;
+        for entry in seen[..n_seen].iter_mut() {
+            if entry.0 == tok {
+                entry.1 += 1;
+                found = true;
+                break;
+            }
+        }
+        if !found && n_seen < 64 {
+            seen[n_seen] = (tok, 1);
+            n_seen += 1;
+        }
+    }
+
+    for &(tok, count) in &seen[..n_seen] {
+        let idx = tok as usize;
+        if idx >= logits.len() {
+            continue;
+        }
+        if logits[idx] > 0.0 {
+            logits[idx] /= repeat_penalty;
+        } else {
+            logits[idx] *= repeat_penalty;
+        }
+        logits[idx] -= frequency_penalty * count as f32;
+        logits[idx] -= presence_penalty;
+    }
+}
+
+#[cfg(feature = "picolm")]
+fn sample_token(
+    logits: &[f32],
+    temperature: f32,
+    top_p: f32,
+    rng_state: &mut u64,
+    probs_buf: &mut [f32],
+    indices_buf: &mut [usize],
+) -> usize {
+    let vocab_size = logits.len();
+
+    if temperature <= 0.0 {
+        return logits
+            .iter()
+            .enumerate()
+            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
+            .map(|(i, _)| i)
+            .unwrap_or(0);
+    }
+
+    let max_logit = logits.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
+    let probs = &mut probs_buf[..vocab_size];
+    for (i, &l) in logits.iter().enumerate() {
+        probs[i] = ((l - max_logit) / temperature).exp();
+    }
+
+    let sum: f32 = probs.iter().sum();
+    let inv_sum = 1.0 / sum;
+    for p in probs.iter_mut() {
+        *p *= inv_sum;
+    }
+
+    let sorted_indices = &mut indices_buf[..vocab_size];
+    for (i, idx) in sorted_indices.iter_mut().enumerate() {
+        *idx = i;
+    }
+    sorted_indices.sort_unstable_by(|&a, &b| {
+        probs[b]
+            .partial_cmp(&probs[a])
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+
+    // Nucleus (top-p) sampling — no Vec allocation, just scan sorted_indices.
+    let mut cumulative = 0.0f32;
+    let mut nucleus_len = 0usize;
+    for &idx in sorted_indices.iter() {
+        nucleus_len += 1;
+        cumulative += probs[idx];
+        if cumulative >= top_p {
+            break;
+        }
+    }
+
+    // xorshift64 PRNG
+    *rng_state ^= *rng_state << 13;
+    *rng_state ^= *rng_state >> 7;
+    *rng_state ^= *rng_state << 17;
+    let r = (*rng_state as f32) / (u64::MAX as f32);
+
+    let mut threshold = r * cumulative;
+    for &idx in &sorted_indices[..nucleus_len] {
+        threshold -= probs[idx];
+        if threshold <= 0.0 {
+            return idx;
+        }
+    }
+    sorted_indices[0]
+}
+
+// ── Generation parameters ────────────────────────────────────────────────────
+
+#[cfg(feature = "picolm")]
+struct GenerateParams<'a> {
+    gguf: &'a GgufFile,
+    tensor_cache: &'a TensorCache,
+    tokenizer: &'a BpeTokenizer,
+    cfg: &'a ModelConfig,
+    activation: FfnActivation,
+    kv_cache: &'a mut KvCache,
+    rope_table: &'a RopeTable,
+    /// Pre-dequantized output norm only (`n_embd` floats).
+    output_norm: &'a [f32],
+    input_ids: &'a [u32],
+    max_new_tokens: u32,
+    max_seq_len: usize,
+    temperature: f32,
+    top_p: f32,
+    seed: u64,
+    /// Stop sequences — generation stops when any is found in the output.
+    stop: Vec<String>,
+    /// Repeat penalty (llama.cpp style, multiplicative). 1.0 = disabled.
+    repeat_penalty: f32,
+    /// Frequency penalty (OpenAI style, proportional to count). 0.0 = disabled.
+    frequency_penalty: f32,
+    /// Presence penalty (OpenAI style, flat if token appeared). 0.0 = disabled.
+    presence_penalty: f32,
+    /// Whether the request included tool definitions (triggers tool call parsing).
+    has_tools: bool,
+    /// Response format constraint (JSON schema or "json" for generic JSON).
+    response_format: Option<serde_json::Value>,
+    /// Speculative-decoding mode (server config).
+    spec_mode: super::picolm_ops::speculative::SpecMode,
+    /// Maximum zero-weight draft length (shared speculative config).
+    spec_draft_max: usize,
+}
+
+// ── Forward pass ─────────────────────────────────────────────────────────────
+
+#[cfg(feature = "picolm")]
+fn forward_pass_streaming(
+    params: &mut GenerateParams<'_>,
+    tx: &mpsc::Sender<Result<ChatResponseChunk>>,
+) {
+    use super::picolm_ops::{attention, ffn, matmul, norm, speculative};
+
+    let cfg = params.cfg;
+    let gguf = params.gguf;
+    let tc = params.tensor_cache;
+    let tokenizer = params.tokenizer;
+    let activation = params.activation;
+    let kv_cache = &mut params.kv_cache;
+    let rope_table = params.rope_table;
+    let output_norm_w = params.output_norm;
+    let input_ids = params.input_ids;
+    let n_embd = cfg.n_embd;
+
+    // Grammar-constrained sampling for structured output (JSON).
+    let mut grammar_sampler = if params.response_format.is_some() {
+        Some(super::picolm_ops::grammar::JsonGrammarSampler::new())
+    } else {
+        None
+    };
+
+    // Single hidden-state buffer reused across all tokens.
+    let mut hidden = vec![0.0f32; n_embd];
+
+    // Pre-allocated working buffers — zero heap allocation in the hot path.
+    let mut buf = ForwardBuffers::new(
+        cfg.n_embd,
+        cfg.n_heads,
+        cfg.n_kv_heads,
+        cfg.head_dim,
+        cfg.n_ff,
+        cfg.vocab_size,
+        params.max_seq_len,
+    );
+
+    // Pre-dequantize all layer norm weights at load time.
+    // This eliminates 2×n_layers string formats, HashMap lookups, and dequantizations
+    // per generated token. Norm tensors are tiny (n_embd floats each), so the total
+    // memory cost is 2 × n_layers × n_embd × 4 bytes (e.g., 2×24×896×4 = 172 KB).
+    let mut attn_norm_weights: Vec<Vec<f32>> = Vec::with_capacity(cfg.n_layers as usize);
+    let mut ffn_norm_weights: Vec<Vec<f32>> = Vec::with_capacity(cfg.n_layers as usize);
+    for layer in 0..cfg.n_layers {
+        let mut attn_buf = vec![0.0f32; n_embd];
+        let mut ffn_buf = vec![0.0f32; n_embd];
+        let attn_name = format!("blk.{layer}.attn_norm.weight");
+        let ffn_name = format!("blk.{layer}.ffn_norm.weight");
+        match gguf.tensor_bytes(&attn_name) {
+            Ok(raw) => {
+                let t = gguf.tensor_type(&attn_name).unwrap_or(0);
+                matmul::extract_row(raw, t, n_embd, 0, &mut attn_buf);
+            }
+            Err(e) => {
+                send_picolm_chat_result(tx, Err(e));
+                return;
+            }
+        }
+        match gguf.tensor_bytes(&ffn_name) {
+            Ok(raw) => {
+                let t = gguf.tensor_type(&ffn_name).unwrap_or(0);
+                matmul::extract_row(raw, t, n_embd, 0, &mut ffn_buf);
+            }
+            Err(e) => {
+                send_picolm_chat_result(tx, Err(e));
+                return;
+            }
+        }
+        attn_norm_weights.push(attn_buf);
+        ffn_norm_weights.push(ffn_buf);
+    }
+
+    let mut rng_state: u64 = if params.seed == 0 {
+        0xDEAD_BEEF_CAFE_1234
+    } else {
+        params.seed
+    };
+
+    // Embedding tensor — looked up once, reused every token.
+    let embd_raw = match gguf.tensor_bytes("token_embd.weight") {
+        Ok(r) => r,
+        Err(e) => {
+            send_picolm_chat_result(tx, Err(e));
+            return;
+        }
+    };
+    let embd_type = match gguf.tensor_type("token_embd.weight") {
+        Ok(t) => t,
+        Err(e) => {
+            send_picolm_chat_result(tx, Err(e));
+            return;
+        }
+    };
+
+    // Output projection tensors — looked up once.
+    let (out_raw, out_type) = match gguf.tensor_bytes("output.weight") {
+        Ok(r) => (r, gguf.tensor_type("output.weight").unwrap_or(embd_type)),
+        Err(_) => (embd_raw, embd_type), // weight tying
+    };
+
+    let start_pos = kv_cache.seq_len();
+
+    // Prefill: process all input tokens through each layer (batch prefill).
+    //
+    // Layer-outer, token-inner ordering: each layer's mmap pages are loaded once,
+    // all tokens are processed, then pages are released. This is O(n_layers) page
+    // faults instead of O(n_layers × n_tokens) with the naive token-outer ordering.
+    let prefill_start = std::time::Instant::now();
+    let n_prefill = input_ids.len();
+
+    if n_prefill > 0 {
+        // Extract all token embeddings into a flat [n_tokens × n_embd] matrix.
+        let mut hidden_states = vec![0.0f32; n_prefill * n_embd];
+        for (i, &token_id) in input_ids.iter().enumerate() {
+            matmul::extract_row(
+                embd_raw,
+                embd_type,
+                n_embd,
+                token_id as usize,
+                &mut hidden_states[i * n_embd..(i + 1) * n_embd],
+            );
+        }
+
+        // Process all tokens through each layer before moving to the next.
+        for layer in 0..cfg.n_layers {
+            let attn_norm_w = &attn_norm_weights[layer as usize];
+            let ffn_norm_w = &ffn_norm_weights[layer as usize];
+
+            for i in 0..n_prefill {
+                let pos = start_pos + i;
+                let h = &mut hidden_states[i * n_embd..(i + 1) * n_embd];
+
+                if let Err(e) = attention::attention_layer(
+                    h,
+                    tc,
+                    layer,
+                    pos,
+                    kv_cache.layer_mut(layer),
+                    cfg,
+                    rope_table,
+                    attn_norm_w,
+                    &mut buf,
+                ) {
+                    send_picolm_chat_result(tx, Err(e));
+                    return;
+                }
+                if let Err(e) = ffn::ffn_layer(h, tc, layer, cfg, activation, ffn_norm_w, &mut buf)
+                {
+                    send_picolm_chat_result(tx, Err(e));
+                    return;
+                }
+            }
+
+            // Release physical pages for this layer's weights + norms (once per layer).
+            observe_picolm_release_result(layer, "layer weights", tc.release_layer(gguf, layer));
+            let attn_name = format!("blk.{layer}.attn_norm.weight");
+            let ffn_name = format!("blk.{layer}.ffn_norm.weight");
+            observe_picolm_release_result(layer, &attn_name, gguf.advise_dontneed(&attn_name));
+            observe_picolm_release_result(layer, &ffn_name, gguf.advise_dontneed(&ffn_name));
+        }
+
+        // Copy the last token's hidden state for decode phase.
+        hidden.copy_from_slice(&hidden_states[(n_prefill - 1) * n_embd..n_prefill * n_embd]);
+    }
+    let prefill_elapsed = prefill_start.elapsed();
+    let prefill_tok_per_sec = if prefill_elapsed.as_secs_f64() > 0.0 {
+        input_ids.len() as f64 / prefill_elapsed.as_secs_f64()
+    } else {
+        0.0
+    };
+    tracing::debug!(
+        tokens = input_ids.len(),
+        elapsed_ms = prefill_elapsed.as_millis() as u64,
+        tok_per_sec = format!("{:.1}", prefill_tok_per_sec),
+        "picolm: prefill complete"
+    );
+
+    // Generate tokens.
+    let mut gen_pos = start_pos + input_ids.len();
+    let decode_start = std::time::Instant::now();
+    let mut decode_count = 0u32;
+    let mut generated_text = String::new();
+
+    // Recent token ring buffer for repeat/frequency/presence penalty.
+    // Tracks last 64 generated tokens (sufficient for most repetition patterns).
+    let mut recent_tokens: Vec<u32> = Vec::with_capacity(64);
+
+    // Track all generated token IDs for speculative decoding n-gram matching.
+    let mut generated_token_ids: Vec<u32> = Vec::new();
+
+    // ── Profiling accumulators (zero-cost when not logged) ──
+    let mut prof_embed_ns = 0u64;
+    let mut prof_attn_ns = 0u64;
+    let mut prof_ffn_ns = 0u64;
+    let mut prof_logit_ns = 0u64;
+    let mut prof_sample_ns = 0u64;
+
+    // Speculative decoding state — persists across the decode loop.
+    // `Off` yields no drafter; grammar-constrained output also disables it.
+    let spec_drafter = params.spec_mode.drafter();
+    let spec_draft_max = params.spec_draft_max.max(1);
+    let mut adaptive_k =
+        speculative::AdaptiveK::new(speculative::DRAFT_K.min(spec_draft_max), 1, spec_draft_max);
+
+    for _step in 0..params.max_new_tokens {
+        // Speculation can emit several tokens per step; stop once the budget is met.
+        if decode_count >= params.max_new_tokens {
+            break;
+        }
+        // Final norm — write into buf.normed_final, then copy to buf.normed_final.
+        buf.normed_final[..n_embd].copy_from_slice(&hidden);
+        norm::rms_norm_f32(&mut buf.normed_final[..n_embd], output_norm_w, cfg.norm_eps);
+
+        // Logit projection into pre-allocated buf.logits.
+        let _tl = std::time::Instant::now();
+        matmul::matvec(
+            out_raw,
+            out_type,
+            cfg.vocab_size,
+            n_embd,
+            &buf.normed_final[..n_embd],
+            &mut buf.logits,
+        );
+        prof_logit_ns += _tl.elapsed().as_nanos() as u64;
+
+        // Apply repeat/frequency/presence penalty before sampling.
+        apply_repeat_penalty(
+            &mut buf.logits,
+            &recent_tokens,
+            params.repeat_penalty,
+            params.frequency_penalty,
+            params.presence_penalty,
+        );
+
+        // Apply grammar constraint for structured output (JSON).
+        if let Some(ref gs) = grammar_sampler {
+            gs.mask_logits(&mut buf.logits, tokenizer);
+        }
+
+        // Sample.
+        let _ts = std::time::Instant::now();
+        let next_token = sample_token(
+            &buf.logits,
+            params.temperature,
+            params.top_p,
+            &mut rng_state,
+            &mut buf.sampler_probs,
+            &mut buf.sampler_indices,
+        ) as u32;
+        prof_sample_ns += _ts.elapsed().as_nanos() as u64;
+
+        // Track recent tokens for penalty (ring buffer, keep last 64).
+        if recent_tokens.len() >= 64 {
+            recent_tokens.remove(0);
+        }
+        recent_tokens.push(next_token);
+        generated_token_ids.push(next_token);
+
+        // Decode and send.
+        decode_count += 1;
+        match tokenizer.decode(next_token) {
+            None => {
+                let decode_elapsed = decode_start.elapsed();
+                let decode_tok_per_sec = if decode_elapsed.as_secs_f64() > 0.0 {
+                    decode_count as f64 / decode_elapsed.as_secs_f64()
+                } else {
+                    0.0
+                };
+                tracing::debug!(
+                    tokens = decode_count,
+                    elapsed_ms = decode_elapsed.as_millis() as u64,
+                    tok_per_sec = format!("{:.1}", decode_tok_per_sec),
+                    "picolm: decode complete (eos)"
+                );
+                if decode_count > 0 {
+                    let total_us = decode_elapsed.as_micros() as u64;
+                    let embed_pct = prof_embed_ns as f64 / (total_us as f64 * 10.0);
+                    let attn_pct = prof_attn_ns as f64 / (total_us as f64 * 10.0);
+                    let ffn_pct = prof_ffn_ns as f64 / (total_us as f64 * 10.0);
+                    let logit_pct = prof_logit_ns as f64 / (total_us as f64 * 10.0);
+                    let sample_pct = prof_sample_ns as f64 / (total_us as f64 * 10.0);
+                    tracing::debug!(
+                        embed = format!("{:.1}%", embed_pct),
+                        attn = format!("{:.1}%", attn_pct),
+                        ffn = format!("{:.1}%", ffn_pct),
+                        logit = format!("{:.1}%", logit_pct),
+                        sample = format!("{:.1}%", sample_pct),
+                        "picolm: decode profile breakdown"
+                    );
+                }
+                let tool_calls = if params.has_tools {
+                    super::tool_parser::parse_tool_calls(&generated_text)
+                } else {
+                    None
+                };
+                send_picolm_chat_result(
+                    tx,
+                    Ok(ChatResponseChunk {
+                        content: String::new(),
+                        thinking_content: None,
+                        done: true,
+                        prompt_tokens: Some(input_ids.len() as u32),
+                        done_reason: Some("stop".to_string()),
+                        prompt_eval_duration_ns: None,
+                        tool_calls,
+                        upstream_timings: None,
+                    }),
+                );
+                return;
+            }
+            Some(piece) => {
+                generated_text.push_str(&piece);
+
+                // Feed generated characters to grammar sampler for structured output.
+                if let Some(ref mut gs) = grammar_sampler {
+                    for ch in piece.chars() {
+                        gs.feed(ch);
+                    }
+                    // If grammar is complete (valid JSON produced), stop generation.
+                    if gs.is_complete() {
+                        // Send the final piece, then the done chunk.
+                        if !send_picolm_chat_result(
+                            tx,
+                            Ok(ChatResponseChunk {
+                                content: piece,
+                                thinking_content: None,
+                                done: false,
+                                prompt_tokens: None,
+                                done_reason: None,
+                                prompt_eval_duration_ns: None,
+                                tool_calls: None,
+                                upstream_timings: None,
+                            }),
+                        ) {
+                            return;
+                        }
+                        let decode_elapsed = decode_start.elapsed();
+                        let decode_tok_per_sec = if decode_elapsed.as_secs_f64() > 0.0 {
+                            decode_count as f64 / decode_elapsed.as_secs_f64()
+                        } else {
+                            0.0
+                        };
+                        tracing::debug!(
+                            tokens = decode_count,
+                            elapsed_ms = decode_elapsed.as_millis() as u64,
+                            tok_per_sec = format!("{:.1}", decode_tok_per_sec),
+                            "picolm: decode complete (grammar complete)"
+                        );
+                        send_picolm_chat_result(
+                            tx,
+                            Ok(ChatResponseChunk {
+                                content: String::new(),
+                                thinking_content: None,
+                                done: true,
+                                prompt_tokens: Some(input_ids.len() as u32),
+                                done_reason: Some("stop".to_string()),
+                                prompt_eval_duration_ns: None,
+                                tool_calls: None,
+                                upstream_timings: None,
+                            }),
+                        );
+                        return;
+                    }
+                }
+
+                // Check stop sequences
+                let mut hit_stop = false;
+                for stop_seq in &params.stop {
+                    if let Some(pos) = generated_text.find(stop_seq.as_str()) {
+                        // Trim the piece to exclude the stop sequence
+                        let overshoot = generated_text.len() - pos;
+                        let trimmed = if overshoot <= piece.len() {
+                            &piece[..piece.len() - overshoot]
+                        } else {
+                            ""
+                        };
+                        if !trimmed.is_empty()
+                            && !send_picolm_chat_result(
+                                tx,
+                                Ok(ChatResponseChunk {
+                                    content: trimmed.to_string(),
+                                    thinking_content: None,
+                                    done: false,
+                                    prompt_tokens: None,
+                                    done_reason: None,
+                                    prompt_eval_duration_ns: None,
+                                    tool_calls: None,
+                                    upstream_timings: None,
+                                }),
+                            )
+                        {
+                            return;
+                        }
+                        hit_stop = true;
+                        break;
+                    }
+                }
+
+                if hit_stop {
+                    let decode_elapsed = decode_start.elapsed();
+                    let decode_tok_per_sec = if decode_elapsed.as_secs_f64() > 0.0 {
+                        decode_count as f64 / decode_elapsed.as_secs_f64()
+                    } else {
+                        0.0
+                    };
+                    tracing::debug!(
+                        tokens = decode_count,
+                        elapsed_ms = decode_elapsed.as_millis() as u64,
+                        tok_per_sec = format!("{:.1}", decode_tok_per_sec),
+                        "picolm: decode complete (stop sequence)"
+                    );
+                    let tool_calls = if params.has_tools {
+                        super::tool_parser::parse_tool_calls(&generated_text)
+                    } else {
+                        None
+                    };
+                    send_picolm_chat_result(
+                        tx,
+                        Ok(ChatResponseChunk {
+                            content: String::new(),
+                            thinking_content: None,
+                            done: true,
+                            prompt_tokens: Some(input_ids.len() as u32),
+                            done_reason: Some("stop".to_string()),
+                            prompt_eval_duration_ns: None,
+                            tool_calls,
+                            upstream_timings: None,
+                        }),
+                    );
+                    return;
+                }
+
+                if !send_picolm_chat_result(
+                    tx,
+                    Ok(ChatResponseChunk {
+                        content: piece,
+                        thinking_content: None,
+                        done: false,
+                        prompt_tokens: None,
+                        done_reason: None,
+                        prompt_eval_duration_ns: None,
+                        tool_calls: None,
+                        upstream_timings: None,
+                    }),
+                ) {
+                    return;
+                }
+            }
+        }
+
+        // Forward pass for the new token.
+        let _t0 = std::time::Instant::now();
+        matmul::extract_row(
+            embd_raw,
+            embd_type,
+            n_embd,
+            next_token as usize,
+            &mut hidden,
+        );
+        prof_embed_ns += _t0.elapsed().as_nanos() as u64;
+
+        for layer in 0..cfg.n_layers {
+            let attn_norm_w = &attn_norm_weights[layer as usize];
+            let ffn_norm_w = &ffn_norm_weights[layer as usize];
+
+            let _ta = std::time::Instant::now();
+            if let Err(e) = attention::attention_layer(
+                &mut hidden,
+                tc,
+                layer,
+                gen_pos,
+                kv_cache.layer_mut(layer),
+                cfg,
+                rope_table,
+                attn_norm_w,
+                &mut buf,
+            ) {
+                send_picolm_chat_result(tx, Err(e));
+                return;
+            }
+            prof_attn_ns += _ta.elapsed().as_nanos() as u64;
+
+            let _tf = std::time::Instant::now();
+            if let Err(e) = ffn::ffn_layer(
+                &mut hidden,
+                tc,
+                layer,
+                cfg,
+                activation,
+                ffn_norm_w,
+                &mut buf,
+            ) {
+                send_picolm_chat_result(tx, Err(e));
+                return;
+            }
+            prof_ffn_ns += _tf.elapsed().as_nanos() as u64;
+
+            // Release physical pages for this layer's weights.
+            observe_picolm_release_result(layer, "layer weights", tc.release_layer(gguf, layer));
+        }
+
+        gen_pos += 1;
+
+        // ── Speculative decoding (batched layer-streaming verify) ─────────
+        // Draft a block of likely continuation tokens, then verify the WHOLE
+        // block in one layer-streaming pass: each layer's weights are loaded
+        // once (layer-outer, token-inner, like prefill) instead of once per
+        // token. On the memory-bandwidth-bound streaming path this turns K
+        // tokens into ~one weight-streaming pass. Drafts are accepted by
+        // lossless rejection sampling — every emitted token equals a sample
+        // from the target distribution at its position, so output is identical
+        // to plain decoding (same seed). Disabled for grammar-constrained
+        // output: speculative drafts cannot respect the live JSON mask.
+        if let (Some(drafter), true) = (spec_drafter.as_deref(), grammar_sampler.is_none()) {
+            // Bound draft length by the adaptive controller, the remaining token
+            // budget (reserve 1 slot for the correction), and KV capacity.
+            let remaining_tokens = params.max_new_tokens.saturating_sub(decode_count) as usize;
+            let remaining_context = params.max_seq_len.saturating_sub(gen_pos.saturating_add(1));
+            let k = crate::speculative::bounded_draft_len(
+                adaptive_k.current(),
+                remaining_tokens,
+                remaining_context,
+            );
+            let draft_tokens = if k == 0 {
+                Vec::new()
+            } else {
+                drafter.draft(input_ids, &generated_token_ids, k)
+            };
+
+            if !draft_tokens.is_empty() {
+                let k = draft_tokens.len();
+                let kv_pos_before = gen_pos;
+
+                // Batched verify forward (layer-outer, token-inner). Collect each
+                // draft position's output hidden state into `hs`.
+                let mut hs = vec![0.0f32; k * n_embd];
+                for (i, &tok) in draft_tokens.iter().enumerate() {
+                    matmul::extract_row(
+                        embd_raw,
+                        embd_type,
+                        n_embd,
+                        tok as usize,
+                        &mut hs[i * n_embd..(i + 1) * n_embd],
+                    );
+                }
+                for layer in 0..cfg.n_layers {
+                    let attn_norm_w = &attn_norm_weights[layer as usize];
+                    let ffn_norm_w = &ffn_norm_weights[layer as usize];
+                    for i in 0..k {
+                        let pos = kv_pos_before + i;
+                        let h = &mut hs[i * n_embd..(i + 1) * n_embd];
+                        if let Err(e) = attention::attention_layer(
+                            h,
+                            tc,
+                            layer,
+                            pos,
+                            kv_cache.layer_mut(layer),
+                            cfg,
+                            rope_table,
+                            attn_norm_w,
+                            &mut buf,
+                        ) {
+                            send_picolm_chat_result(tx, Err(e));
+                            return;
+                        }
+                        if let Err(e) =
+                            ffn::ffn_layer(h, tc, layer, cfg, activation, ffn_norm_w, &mut buf)
+                        {
+                            send_picolm_chat_result(tx, Err(e));
+                            return;
+                        }
+                    }
+                    observe_picolm_release_result(
+                        layer,
+                        "layer weights",
+                        tc.release_layer(gguf, layer),
+                    );
+                }
+
+                // Lossless acceptance: at each draft position resample the target
+                // from the previous hidden state using the SAME penalties and
+                // sampler the main loop uses, and accept while the draft matches.
+                let mut spec_recent = recent_tokens.clone();
+                let mut n_accepted = 0usize;
+                let mut correction: u32 = 0;
+                for i in 0..k {
+                    {
+                        // Logits predicting draft position i come from the previous
+                        // hidden: pre-speculation `hidden` for i==0, else hs[i-1].
+                        let prev: &[f32] = if i == 0 {
+                            &hidden
+                        } else {
+                            &hs[(i - 1) * n_embd..i * n_embd]
+                        };
+                        buf.normed_final[..n_embd].copy_from_slice(prev);
+                    }
+                    norm::rms_norm_f32(
+                        &mut buf.normed_final[..n_embd],
+                        output_norm_w,
+                        cfg.norm_eps,
+                    );
+                    matmul::matvec(
+                        out_raw,
+                        out_type,
+                        cfg.vocab_size,
+                        n_embd,
+                        &buf.normed_final[..n_embd],
+                        &mut buf.logits,
+                    );
+                    apply_repeat_penalty(
+                        &mut buf.logits,
+                        &spec_recent,
+                        params.repeat_penalty,
+                        params.frequency_penalty,
+                        params.presence_penalty,
+                    );
+                    let target = sample_token(
+                        &buf.logits,
+                        params.temperature,
+                        params.top_p,
+                        &mut rng_state,
+                        &mut buf.sampler_probs,
+                        &mut buf.sampler_indices,
+                    ) as u32;
+                    if target == draft_tokens[i] {
+                        n_accepted += 1;
+                        if spec_recent.len() >= 64 {
+                            spec_recent.remove(0);
+                        }
+                        spec_recent.push(target);
+                    } else {
+                        correction = target;
+                        break;
+                    }
+                }
+                // All drafts accepted → one free bonus token from the last hidden.
+                if n_accepted == k {
+                    buf.normed_final[..n_embd].copy_from_slice(&hs[(k - 1) * n_embd..k * n_embd]);
+                    norm::rms_norm_f32(
+                        &mut buf.normed_final[..n_embd],
+                        output_norm_w,
+                        cfg.norm_eps,
+                    );
+                    matmul::matvec(
+                        out_raw,
+                        out_type,
+                        cfg.vocab_size,
+                        n_embd,
+                        &buf.normed_final[..n_embd],
+                        &mut buf.logits,
+                    );
+                    apply_repeat_penalty(
+                        &mut buf.logits,
+                        &spec_recent,
+                        params.repeat_penalty,
+                        params.frequency_penalty,
+                        params.presence_penalty,
+                    );
+                    correction = sample_token(
+                        &buf.logits,
+                        params.temperature,
+                        params.top_p,
+                        &mut rng_state,
+                        &mut buf.sampler_probs,
+                        &mut buf.sampler_indices,
+                    ) as u32;
+                }
+
+                adaptive_k.update(n_accepted, k);
+
+                // Drop rejected draft KV entries; keep the accepted prefix.
+                kv_cache.truncate(kv_pos_before + n_accepted);
+                gen_pos = kv_pos_before + n_accepted;
+
+                if n_accepted > 0 {
+                    tracing::trace!(
+                        drafted = k,
+                        accepted = n_accepted,
+                        "picolm: speculative accepted"
+                    );
+                }
+
+                // Emit accepted drafts followed by the lossless correction/bonus.
+                let emit: Vec<u32> = draft_tokens[..n_accepted]
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(correction))
+                    .collect();
+                for &tok in &emit {
+                    decode_count += 1;
+                    generated_token_ids.push(tok);
+                    if recent_tokens.len() >= 64 {
+                        recent_tokens.remove(0);
+                    }
+                    recent_tokens.push(tok);
+                    match tokenizer.decode(tok) {
+                        None => {
+                            let tool_calls = if params.has_tools {
+                                super::tool_parser::parse_tool_calls(&generated_text)
+                            } else {
+                                None
+                            };
+                            send_picolm_chat_result(
+                                tx,
+                                Ok(ChatResponseChunk {
+                                    content: String::new(),
+                                    thinking_content: None,
+                                    done: true,
+                                    prompt_tokens: Some(input_ids.len() as u32),
+                                    done_reason: Some("stop".to_string()),
+                                    prompt_eval_duration_ns: None,
+                                    tool_calls,
+                                    upstream_timings: None,
+                                }),
+                            );
+                            return;
+                        }
+                        Some(piece) => {
+                            generated_text.push_str(&piece);
+                            let mut hit_stop = false;
+                            for stop_seq in &params.stop {
+                                if generated_text.contains(stop_seq.as_str()) {
+                                    hit_stop = true;
+                                    break;
+                                }
+                            }
+                            if hit_stop {
+                                let tool_calls = if params.has_tools {
+                                    super::tool_parser::parse_tool_calls(&generated_text)
+                                } else {
+                                    None
+                                };
+                                send_picolm_chat_result(
+                                    tx,
+                                    Ok(ChatResponseChunk {
+                                        content: String::new(),
+                                        thinking_content: None,
+                                        done: true,
+                                        prompt_tokens: Some(input_ids.len() as u32),
+                                        done_reason: Some("stop".to_string()),
+                                        prompt_eval_duration_ns: None,
+                                        tool_calls,
+                                        upstream_timings: None,
+                                    }),
+                                );
+                                return;
+                            }
+                            if !send_picolm_chat_result(
+                                tx,
+                                Ok(ChatResponseChunk {
+                                    content: piece,
+                                    thinking_content: None,
+                                    done: false,
+                                    prompt_tokens: None,
+                                    done_reason: None,
+                                    prompt_eval_duration_ns: None,
+                                    tool_calls: None,
+                                    upstream_timings: None,
+                                }),
+                            ) {
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Forward the correction/bonus token so `hidden` predicts the
+                // token *after* it for the next iteration, and write its KV.
+                matmul::extract_row(
+                    embd_raw,
+                    embd_type,
+                    n_embd,
+                    correction as usize,
+                    &mut hidden,
+                );
+                for layer in 0..cfg.n_layers {
+                    let attn_norm_w = &attn_norm_weights[layer as usize];
+                    let ffn_norm_w = &ffn_norm_weights[layer as usize];
+                    if let Err(e) = attention::attention_layer(
+                        &mut hidden,
+                        tc,
+                        layer,
+                        gen_pos,
+                        kv_cache.layer_mut(layer),
+                        cfg,
+                        rope_table,
+                        attn_norm_w,
+                        &mut buf,
+                    ) {
+                        send_picolm_chat_result(tx, Err(e));
+                        return;
+                    }
+                    if let Err(e) = ffn::ffn_layer(
+                        &mut hidden,
+                        tc,
+                        layer,
+                        cfg,
+                        activation,
+                        ffn_norm_w,
+                        &mut buf,
+                    ) {
+                        send_picolm_chat_result(tx, Err(e));
+                        return;
+                    }
+                    observe_picolm_release_result(
+                        layer,
+                        "layer weights",
+                        tc.release_layer(gguf, layer),
+                    );
+                }
+                gen_pos += 1;
+            }
+        }
+    }
+
+    // Max tokens reached.
+    let decode_elapsed = decode_start.elapsed();
+    let decode_tok_per_sec = if decode_elapsed.as_secs_f64() > 0.0 {
+        decode_count as f64 / decode_elapsed.as_secs_f64()
+    } else {
+        0.0
+    };
+    tracing::debug!(
+        tokens = decode_count,
+        elapsed_ms = decode_elapsed.as_millis() as u64,
+        tok_per_sec = format!("{:.1}", decode_tok_per_sec),
+        "picolm: decode complete (max tokens)"
+    );
+    if decode_count > 0 {
+        let total_us = decode_elapsed.as_micros() as u64;
+        let embed_pct = prof_embed_ns as f64 / (total_us as f64 * 10.0);
+        let attn_pct = prof_attn_ns as f64 / (total_us as f64 * 10.0);
+        let ffn_pct = prof_ffn_ns as f64 / (total_us as f64 * 10.0);
+        let logit_pct = prof_logit_ns as f64 / (total_us as f64 * 10.0);
+        let sample_pct = prof_sample_ns as f64 / (total_us as f64 * 10.0);
+        tracing::debug!(
+            embed = format!("{:.1}%", embed_pct),
+            attn = format!("{:.1}%", attn_pct),
+            ffn = format!("{:.1}%", ffn_pct),
+            logit = format!("{:.1}%", logit_pct),
+            sample = format!("{:.1}%", sample_pct),
+            "picolm: decode profile breakdown"
+        );
+    }
+    let tool_calls = if params.has_tools {
+        super::tool_parser::parse_tool_calls(&generated_text)
+    } else {
+        None
+    };
+    send_picolm_chat_result(
+        tx,
+        Ok(ChatResponseChunk {
+            content: String::new(),
+            thinking_content: None,
+            done: true,
+            prompt_tokens: Some(input_ids.len() as u32),
+            done_reason: Some("length".to_string()),
+            prompt_eval_duration_ns: None,
+            tool_calls,
+            upstream_timings: None,
+        }),
+    );
+}
+
+// ── Backend implementation ────────────────────────────────────────────────────
+
+#[cfg(feature = "picolm")]
+fn validate_legacy_architecture(arch: &str) -> Result<()> {
+    if arch.starts_with("qwen35") {
+        return Err(PowerError::BackendNotAvailable(format!(
+            "picolm does not implement the native execution graph for Qwen3.5 variant '{arch}'"
+        )));
+    }
+
+    let supported = ["llama", "mistral", "phi", "gemma", "qwen"];
+    if supported.iter().any(|candidate| arch.contains(candidate)) {
+        Ok(())
+    } else {
+        Err(PowerError::InvalidFormat(format!(
+            "picolm only supports LLaMA-compatible architectures, got '{arch}'."
+        )))
+    }
+}
+
+/// picolm inference backend — pure Rust, layer-streaming, zero C dependencies.
+pub struct PicolmBackend {
+    #[cfg(feature = "picolm")]
+    loaded: Arc<Mutex<HashMap<String, LoadedModel>>>,
+    #[cfg(feature = "picolm")]
+    max_seq_len: usize,
+    #[cfg(feature = "picolm")]
+    spec_mode: Option<super::picolm_ops::speculative::SpecMode>,
+    #[cfg(feature = "picolm")]
+    spec_draft_max: usize,
+}
+
+impl PicolmBackend {
+    pub fn new(config: Arc<PowerConfig>) -> Self {
+        tracing::info!("picolm backend initialized — pure Rust layer-streaming inference");
+        #[cfg(feature = "picolm")]
+        let spec_mode = crate::speculative::SpeculativeStrategy::parse(&config.spec_mode)
+            .and_then(|strategy| {
+                let capabilities = crate::speculative::SpeculativeCapabilities::none()
+                    .with(crate::speculative::SpeculativeStrategy::PromptLookup)
+                    .with(crate::speculative::SpeculativeStrategy::NgramContext);
+                capabilities
+                    .resolve(
+                        strategy,
+                        crate::speculative::SpeculativeStrategy::PromptLookup,
+                    )
+                    .ok()
+            })
+            .and_then(crate::speculative::SpeculativeStrategy::zero_weight_mode);
+        #[cfg(not(feature = "picolm"))]
+        let _ = &config;
+        Self {
+            #[cfg(feature = "picolm")]
+            loaded: Arc::new(Mutex::new(HashMap::new())),
+            #[cfg(feature = "picolm")]
+            max_seq_len: 32768,
+            #[cfg(feature = "picolm")]
+            spec_mode,
+            #[cfg(feature = "picolm")]
+            // Preserve picolm's established adaptive range when the shared
+            // option is omitted; model-backed adapters may choose a different
+            // default without changing this backend's behavior.
+            spec_draft_max: config.spec_draft_max.unwrap_or(8) as usize,
+        }
+    }
+
+    #[cfg(feature = "picolm")]
+    fn load_gguf_model(&self, name: String, gguf: GgufFile) -> Result<()> {
+        let max_seq_cap = self.max_seq_len;
+
+        let meta = &gguf.meta;
+        let arch = meta.architecture.name();
+        if matches!(meta.architecture, GgufArchitecture::Qwen35(_)) {
+            let layout = Qwen35TensorLayout::validate(meta)?;
+            return Err(PowerError::BackendNotAvailable(
+                format!(
+                    "picolm validated qwen35 tensor layout ({} trunk, {} recurrent, {} full-attention, {} MTP blocks), but the native execution graph is not implemented yet",
+                    layout.trunk_layers,
+                    layout.recurrent_layers,
+                    layout.full_attention_layers,
+                    layout.mtp_layers
+                ),
+            ));
+        }
+        validate_legacy_architecture(arch)?;
+
+        let shape = build_picolm_model_shape(meta, max_seq_cap)?;
+        let cfg = shape.cfg;
+        let head_dim = cfg.head_dim;
+        let rope_dim = cfg.rope_dim;
+        let max_seq = shape.max_seq;
+        let kv_mem = shape.kv_mem;
+        let derived_mem = shape.derived_mem;
+
+        // Determine activation
+        let activation = if arch.contains("gemma") {
+            FfnActivation::Gelu
+        } else {
+            FfnActivation::Silu
+        };
+
+        // Build tokenizer from GGUF metadata
+        let tokenizer = BpeTokenizer::from_gguf(
+            &meta.vocab_tokens,
+            &meta.vocab_scores,
+            &meta.vocab_types,
+            cfg.bos_token_id,
+            cfg.eos_token_id,
+        );
+
+        // Use model's context length from GGUF metadata, capped by backend limit.
+        // This avoids the hardcoded 2048 that silently truncated long-context models.
+        // Pre-compute RoPE cos/sin tables (eliminates powf/sin/cos from hot path)
+        let rope_table = RopeTable::new(max_seq, head_dim, rope_dim, cfg.rope_theta);
+
+        // Pre-dequantize only the output norm (used every token).
+        // Per-layer norms are dequantized on-the-fly in the forward pass —
+        // they are tiny (n_embd floats) and take microseconds each.
+        let n_embd = cfg.n_embd;
+        let out_norm_name = "output_norm.weight";
+        let out_norm_raw = gguf.tensor_bytes(out_norm_name).map_err(|e| {
+            PowerError::InferenceFailed(format!("picolm: missing {out_norm_name}: {e}"))
+        })?;
+        let out_norm_type = gguf.tensor_type(out_norm_name).map_err(|e| {
+            PowerError::InferenceFailed(format!("picolm: missing {out_norm_name} type: {e}"))
+        })?;
+        let mut output_norm = vec![0.0f32; n_embd];
+        super::picolm_ops::matmul::extract_row(
+            out_norm_raw,
+            out_norm_type,
+            n_embd,
+            0,
+            &mut output_norm,
+        );
+
+        // Build per-layer tensor pointer cache (eliminates HashMap lookups from hot path).
+        let tensor_cache =
+            super::picolm_ops::tensor_cache::TensorCache::build(&gguf, meta.n_layers).map_err(
+                |e| PowerError::InferenceFailed(format!("picolm: tensor cache build failed: {e}")),
+            )?;
+
+        // Startup self-test: verify inference kernels produce correct results.
+        // In TEE, there's no debugger — if memory corruption causes wrong output,
+        // this catches it at load time instead of silently producing garbage.
+        startup_self_test()?;
+
+        // Clone metadata fields before moving gguf into Arc.
+        let model_chat_template = meta.chat_template.clone();
+        let log_arch = meta.architecture.name().to_string();
+        let log_n_layers = meta.n_layers;
+        let log_n_embd = meta.n_embd;
+        let log_n_ff = meta.n_ff;
+        let log_vocab_size = meta.vocab_size;
+
+        tracing::info!(
+            model = %name,
+            arch = %log_arch,
+            n_layers = log_n_layers,
+            n_embd = log_n_embd,
+            n_ff = log_n_ff,
+            vocab_size = log_vocab_size,
+            max_seq_len = max_seq,
+            kv_cache_mb = kv_mem / (1024 * 1024),
+            derived_mem_mb = derived_mem / (1024 * 1024),
+            "picolm: model loaded (layer-streaming mode, optimized)"
+        );
+
+        let mut loaded = self.loaded.lock().map_err(|_| {
+            PowerError::InferenceFailed("picolm: loaded models lock poisoned".to_string())
+        })?;
+        loaded.insert(
+            name,
+            LoadedModel {
+                gguf: Arc::new(gguf),
+                cfg,
+                tokenizer: Arc::new(tokenizer),
+                activation,
+                rope_table: Arc::new(rope_table),
+                output_norm: Arc::new(output_norm),
+                tensor_cache: Arc::new(tensor_cache),
+                chat_template: model_chat_template,
+                max_seq_len: max_seq,
+                sessions: HashMap::new(),
+            },
+        );
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl Backend for PicolmBackend {
+    fn name(&self) -> &str {
+        "picolm"
+    }
+
+    fn supports(&self, format: &ModelFormat) -> bool {
+        matches!(format, ModelFormat::Gguf)
+    }
+
+    fn supports_manifest(&self, manifest: &ModelManifest) -> bool {
+        if crate::backend::is_reserved_gguf_manifest(manifest) {
+            return false;
+        }
+        self.supports(&manifest.format)
+    }
+
+    async fn load(&self, manifest: &ModelManifest) -> Result<()> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = manifest;
+            return Err(PowerError::BackendNotAvailable(
+                "picolm feature not enabled — rebuild with --features picolm".to_string(),
+            ));
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            let path = manifest.path.clone();
+            let name = manifest.name.clone();
+
+            let gguf = tokio::task::spawn_blocking(move || GgufFile::open(&path))
+                .await
+                .map_err(|e| PowerError::InferenceFailed(format!("picolm load task: {e}")))?
+                .map_err(|e| {
+                    PowerError::InferenceFailed(format!("picolm: failed to open GGUF: {e}"))
+                })?;
+
+            self.load_gguf_model(name, gguf)
+        }
+    }
+
+    fn supports_memory_load(&self, format: &ModelFormat) -> bool {
+        #[cfg(feature = "picolm")]
+        {
+            self.supports(format)
+        }
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = format;
+            false
+        }
+    }
+
+    async fn load_from_memory(
+        &self,
+        manifest: &ModelManifest,
+        plaintext: MemoryDecryptedModel,
+    ) -> Result<()> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = manifest;
+            drop(plaintext);
+            return Err(PowerError::BackendNotAvailable(
+                "picolm feature not enabled — rebuild with --features picolm".to_string(),
+            ));
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            let name = manifest.name.clone();
+            let gguf =
+                tokio::task::spawn_blocking(move || GgufFile::from_memory_decrypted(plaintext))
+                    .await
+                    .map_err(|e| {
+                        PowerError::InferenceFailed(format!("picolm memory load task: {e}"))
+                    })?
+                    .map_err(|e| {
+                        PowerError::InferenceFailed(format!(
+                            "picolm: failed to parse in-memory GGUF: {e}"
+                        ))
+                    })?;
+
+            self.load_gguf_model(name, gguf)
+        }
+    }
+
+    fn supports_streaming_decrypt_load(&self, format: &ModelFormat) -> bool {
+        #[cfg(feature = "picolm")]
+        {
+            self.supports(format)
+        }
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = format;
+            false
+        }
+    }
+
+    async fn load_from_streaming_decrypt(
+        &self,
+        manifest: &ModelManifest,
+        plaintext: LayerStreamingDecryptedModel,
+    ) -> Result<()> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = manifest;
+            drop(plaintext);
+            return Err(PowerError::BackendNotAvailable(
+                "picolm feature not enabled — rebuild with --features picolm".to_string(),
+            ));
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            let name = manifest.name.clone();
+            let gguf = tokio::task::spawn_blocking(move || {
+                GgufFile::from_layer_streaming_decrypted(plaintext)
+            })
+            .await
+            .map_err(|e| {
+                PowerError::InferenceFailed(format!("picolm streaming decrypt load task: {e}"))
+            })?
+            .map_err(|e| {
+                PowerError::InferenceFailed(format!(
+                    "picolm: failed to parse layer-streaming decrypted GGUF: {e}"
+                ))
+            })?;
+
+            self.load_gguf_model(name, gguf)
+        }
+    }
+
+    async fn unload(&self, model_name: &str) -> Result<()> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = model_name;
+            return Ok(());
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            let mut loaded = self.loaded.lock().map_err(|_| {
+                PowerError::InferenceFailed("picolm: loaded models lock poisoned".to_string())
+            })?;
+            if loaded.remove(model_name).is_some() {
+                tracing::debug!(model = %model_name, "picolm: model unloaded");
+            }
+            Ok(())
+        }
+    }
+
+    async fn chat(
+        &self,
+        model_name: &str,
+        request: ChatRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = (model_name, request);
+            return Err(PowerError::BackendNotAvailable(
+                "picolm feature not enabled".to_string(),
+            ));
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            if request.has_image_inputs() {
+                return Err(PowerError::InvalidFormat(
+                    "picolm does not support image inputs; use a vision-capable backend"
+                        .to_string(),
+                ));
+            }
+
+            let (
+                gguf,
+                cfg,
+                tokenizer,
+                activation,
+                kv_cache,
+                rope_table,
+                output_norm,
+                tensor_cache,
+                chat_template,
+                max_seq_len,
+            ) = {
+                let mut loaded = self.loaded.lock().map_err(|_| {
+                    PowerError::InferenceFailed("picolm: loaded models lock poisoned".to_string())
+                })?;
+                let model = loaded
+                    .get_mut(model_name)
+                    .ok_or_else(|| PowerError::ModelNotFound(model_name.to_string()))?;
+
+                let model_max_seq = model.max_seq_len;
+
+                // Get or create KV cache for this session
+                let session_key = request.session_id.clone().unwrap_or_default();
+                let kv = if session_key.is_empty() {
+                    // Transient: new cache per request
+                    KvCache::new(
+                        model.cfg.n_layers,
+                        model.cfg.n_kv_heads,
+                        model.cfg.head_dim,
+                        model_max_seq,
+                    )
+                } else {
+                    model.sessions.remove(&session_key).unwrap_or_else(|| {
+                        KvCache::new(
+                            model.cfg.n_layers,
+                            model.cfg.n_kv_heads,
+                            model.cfg.head_dim,
+                            model_max_seq,
+                        )
+                    })
+                };
+
+                (
+                    Arc::clone(&model.gguf),
+                    model.cfg.clone(),
+                    Arc::clone(&model.tokenizer),
+                    model.activation,
+                    kv,
+                    Arc::clone(&model.rope_table),
+                    Arc::clone(&model.output_norm),
+                    Arc::clone(&model.tensor_cache),
+                    model.chat_template.clone(),
+                    model_max_seq,
+                )
+            };
+
+            let prompt = build_prompt(&request.messages, chat_template.as_deref())?;
+            let input_ids = tokenizer.encode(&prompt);
+            let temperature = request.temperature.unwrap_or(0.8);
+            let top_p = request.top_p.unwrap_or(0.95);
+            let max_new_tokens = request.max_tokens.unwrap_or(512);
+            let seed = request.seed.map(|s| s as u64).unwrap_or(0);
+            let stop = request.stop.clone().unwrap_or_default();
+            let repeat_penalty = request.repeat_penalty.unwrap_or(1.0);
+            let frequency_penalty = request.frequency_penalty.unwrap_or(0.0);
+            let presence_penalty = request.presence_penalty.unwrap_or(0.0);
+            let has_tools = request.tools.as_ref().is_some_and(|t| !t.is_empty());
+            let response_format = request.response_format.clone();
+            let spec_mode = self.spec_mode.ok_or_else(|| {
+                PowerError::Config(
+                    "picolm spec_mode must be one of: auto, off, prompt-lookup, ngram-context"
+                        .to_string(),
+                )
+            })?;
+            let spec_draft_max = self.spec_draft_max;
+
+            let (tx, rx) = mpsc::channel::<Result<ChatResponseChunk>>(128);
+
+            let session_key = request.session_id.clone().unwrap_or_default();
+            let model_name_owned = model_name.to_string();
+
+            // Shuttle the KV cache through the blocking task via a shared slot.
+            let kv_slot = Arc::new(Mutex::new(Some(kv_cache)));
+            let kv_return = Arc::clone(&kv_slot);
+
+            let blocking_handle = tokio::task::spawn_blocking(move || {
+                let mut kv = match take_kv_cache_slot(&kv_return) {
+                    Ok(Some(kv)) => kv,
+                    Ok(None) => {
+                        send_picolm_chat_result(
+                            &tx,
+                            Err(PowerError::InferenceFailed(
+                                "picolm: KV cache slot unexpectedly empty".to_string(),
+                            )),
+                        );
+                        return;
+                    }
+                    Err(e) => {
+                        send_picolm_chat_result(&tx, Err(e));
+                        return;
+                    }
+                };
+                let mut params = GenerateParams {
+                    gguf: &gguf,
+                    tensor_cache: &tensor_cache,
+                    tokenizer: &tokenizer,
+                    cfg: &cfg,
+                    activation,
+                    kv_cache: &mut kv,
+                    rope_table: &rope_table,
+                    output_norm: &output_norm,
+                    input_ids: &input_ids,
+                    max_new_tokens,
+                    max_seq_len,
+                    temperature,
+                    top_p,
+                    seed,
+                    stop,
+                    repeat_penalty,
+                    frequency_penalty,
+                    presence_penalty,
+                    has_tools,
+                    response_format,
+                    spec_mode,
+                    spec_draft_max,
+                };
+                forward_pass_streaming(&mut params, &tx);
+                // Put KV cache back into the slot so the return task can pick it up.
+                if let Err(e) = store_kv_cache_slot(&kv_return, kv) {
+                    tracing::warn!(
+                        error = %e,
+                        "picolm: failed to return KV cache after generation"
+                    );
+                }
+            });
+
+            // Return the KV cache to the session map once generation finishes.
+            if !session_key.is_empty() {
+                let loaded_arc = Arc::clone(&self.loaded);
+                tokio::spawn(async move {
+                    if let Err(e) = blocking_handle.await {
+                        tracing::warn!("picolm: blocking generation task failed: {e}");
+                    }
+
+                    let kv = match take_kv_cache_slot(&kv_slot) {
+                        Ok(Some(kv)) => kv,
+                        Ok(None) => {
+                            tracing::warn!(
+                                model = %model_name_owned,
+                                "picolm: KV cache slot empty; session cache not updated"
+                            );
+                            return;
+                        }
+                        Err(e) => {
+                            tracing::warn!(
+                                error = %e,
+                                "picolm: failed to recover KV cache for session reuse"
+                            );
+                            return;
+                        }
+                    };
+
+                    match loaded_arc.lock() {
+                        Ok(mut map) => {
+                            if let Some(model) = map.get_mut(&model_name_owned) {
+                                model.sessions.insert(session_key, kv);
+                            }
+                        }
+                        Err(_) => {
+                            tracing::warn!(
+                                model = %model_name_owned,
+                                "picolm: loaded models lock poisoned; session cache not updated"
+                            );
+                        }
+                    }
+                });
+            }
+
+            Ok(Box::pin(ReceiverStream::new(rx)))
+        }
+    }
+
+    async fn effective_chat_prompt_digest(
+        &self,
+        model_name: &str,
+        request: &ChatRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        #[cfg(not(feature = "picolm"))]
+        {
+            let _ = (model_name, request);
+            Ok(None)
+        }
+
+        #[cfg(feature = "picolm")]
+        {
+            if request.has_image_inputs() {
+                return Ok(None);
+            }
+
+            let chat_template = {
+                let loaded = self.loaded.lock().map_err(|_| {
+                    PowerError::InferenceFailed("picolm: loaded models lock poisoned".to_string())
+                })?;
+                let model = loaded
+                    .get(model_name)
+                    .ok_or_else(|| PowerError::ModelNotFound(model_name.to_string()))?;
+                model.chat_template.clone()
+            };
+
+            let prompt = build_prompt(&request.messages, chat_template.as_deref())?;
+            Ok(Some(EffectivePromptDigest::chat_rendered_prompt(
+                "picolm", &prompt,
+            )))
+        }
+    }
+
+    async fn effective_completion_prompt_digest(
+        &self,
+        model_name: &str,
+        request: &CompletionRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        let chat_req = completion_to_chat(request.clone());
+        self.effective_chat_prompt_digest(model_name, &chat_req)
+            .await
+    }
+
+    async fn complete(
+        &self,
+        model_name: &str,
+        request: CompletionRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<CompletionResponseChunk>> + Send>>> {
+        let chat_req = completion_to_chat(request);
+        let chat_stream = self.chat(model_name, chat_req).await?;
+
+        use futures::StreamExt;
+        let stream = chat_stream.map(|r| {
+            r.map(|chunk| CompletionResponseChunk {
+                text: chunk.content,
+                done: chunk.done,
+                prompt_tokens: chunk.prompt_tokens,
+                done_reason: chunk.done_reason,
+                prompt_eval_duration_ns: chunk.prompt_eval_duration_ns,
+                token_id: None,
+            })
+        });
+        Ok(Box::pin(stream))
+    }
+
+    async fn embed(
+        &self,
+        _model_name: &str,
+        _request: EmbeddingRequest,
+    ) -> Result<EmbeddingResponse> {
+        Err(PowerError::BackendNotAvailable(
+            "picolm does not support embeddings; use mistralrs with a HuggingFace embedding model"
+                .to_string(),
+        ))
+    }
+
+    async fn cleanup_request(&self, _model_name: &str, _ctx: &RequestContext) -> Result<()> {
+        Ok(())
+    }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+#[cfg(any(feature = "picolm", test))]
+fn build_prompt(messages: &[ChatMessage], chat_template: Option<&str>) -> Result<String> {
+    if let Some(tmpl) = chat_template {
+        return render_jinja_template(tmpl, messages).map_err(|e| {
+            PowerError::InferenceFailed(format!("picolm: chat template rendering failed: {e}"))
+        });
+    }
+    // ChatML fallback
+    let mut out = String::new();
+    for msg in messages {
+        let content = msg.content.text();
+        out.push_str(&format!(
+            "<|im_start|>{}\n{}<|im_end|>\n",
+            msg.role, content
+        ));
+    }
+    out.push_str("<|im_start|>assistant\n");
+    Ok(out)
+}
+
+/// Render a Jinja2 chat template with the given messages.
+#[cfg(any(feature = "picolm", test))]
+fn render_jinja_template(
+    template_str: &str,
+    messages: &[ChatMessage],
+) -> std::result::Result<String, String> {
+    let env = minijinja::Environment::new();
+    let tmpl = env
+        .template_from_str(template_str)
+        .map_err(|e| format!("template parse error: {e}"))?;
+
+    // Build messages array for the template context
+    let msgs: Vec<minijinja::Value> = messages
+        .iter()
+        .map(|m| {
+            let mut map = std::collections::BTreeMap::new();
+            map.insert("role".to_string(), minijinja::Value::from(m.role.as_str()));
+            map.insert(
+                "content".to_string(),
+                minijinja::Value::from(m.content.text()),
+            );
+            minijinja::Value::from_serialize(&map)
+        })
+        .collect();
+
+    let ctx = minijinja::context! {
+        messages => msgs,
+        add_generation_prompt => true,
+        bos_token => "<s>",
+        eos_token => "</s>",
+    };
+
+    tmpl.render(ctx)
+        .map_err(|e| format!("template render error: {e}"))
+}
+
+fn completion_to_chat(req: CompletionRequest) -> ChatRequest {
+    ChatRequest {
+        messages: vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text(req.prompt),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }],
+        session_id: req.session_id,
+        temperature: req.temperature,
+        top_p: req.top_p,
+        max_tokens: req.max_tokens,
+        stop: req.stop,
+        stream: req.stream,
+        top_k: req.top_k,
+        min_p: req.min_p,
+        repeat_penalty: req.repeat_penalty,
+        frequency_penalty: req.frequency_penalty,
+        presence_penalty: req.presence_penalty,
+        seed: req.seed,
+        num_ctx: req.num_ctx,
+        mirostat: req.mirostat,
+        mirostat_tau: req.mirostat_tau,
+        mirostat_eta: req.mirostat_eta,
+        tfs_z: req.tfs_z,
+        typical_p: req.typical_p,
+        response_format: req.response_format,
+        stream_options: req.stream_options,
+        tools: None,
+        tool_choice: None,
+        parallel_tool_calls: None,
+        repeat_last_n: req.repeat_last_n,
+        penalize_newline: req.penalize_newline,
+        num_batch: req.num_batch,
+        num_thread: req.num_thread,
+        num_thread_batch: req.num_thread_batch,
+        flash_attention: req.flash_attention,
+        num_gpu: req.num_gpu,
+        main_gpu: req.main_gpu,
+        use_mmap: req.use_mmap,
+        use_mlock: req.use_mlock,
+        num_parallel: req.num_parallel,
+        images: req.images,
+    }
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_config() -> Arc<PowerConfig> {
+        Arc::new(PowerConfig::default())
+    }
+
+    #[cfg(feature = "picolm")]
+    fn test_chat_request() -> ChatRequest {
+        ChatRequest {
+            messages: vec![ChatMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("Hello".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            }],
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            stop: None,
+            stream: false,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: None,
+            stream_options: None,
+            tools: None,
+            tool_choice: None,
+            parallel_tool_calls: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            images: None,
+            session_id: None,
+        }
+    }
+
+    #[test]
+    fn test_backend_name() {
+        assert_eq!(PicolmBackend::new(test_config()).name(), "picolm");
+    }
+
+    #[test]
+    fn test_supports_gguf_only() {
+        let b = PicolmBackend::new(test_config());
+        assert!(b.supports(&ModelFormat::Gguf));
+        assert!(!b.supports(&ModelFormat::SafeTensors));
+        assert!(!b.supports(&ModelFormat::HuggingFace));
+        assert!(!b.supports(&ModelFormat::Vision));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_unknown_spec_mode_does_not_fallback_to_default() {
+        let backend = PicolmBackend::new(Arc::new(PowerConfig {
+            spec_mode: "warp-speed".to_string(),
+            ..Default::default()
+        }));
+
+        assert_eq!(backend.spec_mode, None);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_backend_resolves_auto_but_rejects_model_backed_strategy() {
+        let automatic = PicolmBackend::new(Arc::new(PowerConfig {
+            spec_mode: "auto".to_string(),
+            ..Default::default()
+        }));
+        assert_eq!(
+            automatic.spec_mode,
+            Some(crate::speculative::SpecMode::PromptLookup)
+        );
+        assert_eq!(automatic.spec_draft_max, 8);
+
+        let dspark = PicolmBackend::new(Arc::new(PowerConfig {
+            spec_mode: "dspark".to_string(),
+            ..Default::default()
+        }));
+        assert_eq!(dspark.spec_mode, None);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[tokio::test]
+    async fn test_picolm_chat_rejects_image_inputs() {
+        let backend = PicolmBackend::new(test_config());
+        let mut request = test_chat_request();
+        request.images = Some(vec!["request-base64-image".to_string()]);
+
+        let err = match backend.chat("not-loaded", request).await {
+            Ok(_) => panic!("expected picolm image request to fail"),
+            Err(err) => err,
+        };
+
+        assert!(err.to_string().contains("does not support image inputs"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[tokio::test]
+    async fn test_picolm_effective_prompt_absent_for_image_inputs() {
+        let backend = PicolmBackend::new(test_config());
+        let mut request = test_chat_request();
+        request.images = Some(vec!["request-base64-image".to_string()]);
+
+        let digest = backend
+            .effective_chat_prompt_digest("not-loaded", &request)
+            .await
+            .unwrap();
+
+        assert!(digest.is_none());
+    }
+
+    #[test]
+    fn test_completion_to_chat_preserves_extended_sampling_controls() {
+        let request = CompletionRequest {
+            prompt: "Hello".to_string(),
+            session_id: Some("session-1".to_string()),
+            temperature: Some(0.2),
+            top_p: Some(0.9),
+            max_tokens: Some(128),
+            stop: Some(vec!["</s>".to_string()]),
+            stream: true,
+            top_k: Some(40),
+            min_p: Some(0.5),
+            repeat_penalty: Some(1.25),
+            frequency_penalty: Some(0.1),
+            presence_penalty: Some(0.2),
+            seed: Some(7),
+            num_ctx: Some(4096),
+            mirostat: Some(2),
+            mirostat_tau: Some(5.0),
+            mirostat_eta: Some(0.25),
+            tfs_z: Some(0.75),
+            typical_p: Some(0.5),
+            response_format: Some(serde_json::json!("json")),
+            stream_options: None,
+            images: Some(vec!["request-base64-image".to_string()]),
+            projector_path: None,
+            repeat_last_n: Some(64),
+            penalize_newline: Some(true),
+            num_batch: Some(256),
+            num_thread: Some(4),
+            num_thread_batch: Some(2),
+            flash_attention: Some(true),
+            num_gpu: Some(0),
+            main_gpu: Some(0),
+            use_mmap: Some(true),
+            use_mlock: Some(false),
+            num_parallel: Some(2),
+            suffix: Some("suffix".to_string()),
+            context: Some(vec![1, 2, 3]),
+        };
+
+        let chat = completion_to_chat(request);
+
+        assert_eq!(chat.mirostat, Some(2));
+        assert_eq!(chat.mirostat_tau, Some(5.0));
+        assert_eq!(chat.mirostat_eta, Some(0.25));
+        assert_eq!(chat.tfs_z, Some(0.75));
+        assert_eq!(chat.typical_p, Some(0.5));
+        assert_eq!(chat.top_k, Some(40));
+        assert_eq!(chat.repeat_last_n, Some(64));
+        assert_eq!(
+            chat.images.as_deref(),
+            Some(&["request-base64-image".to_string()][..])
+        );
+    }
+
+    #[cfg(feature = "picolm")]
+    fn test_meta() -> GgufMeta {
+        GgufMeta {
+            architecture: GgufArchitecture::Named("llama".to_string()),
+            n_layers: 2,
+            n_embd: 16,
+            n_heads: 4,
+            n_kv_heads: 2,
+            context_length: 128,
+            vocab_size: 8,
+            bos_token_id: 1,
+            eos_token_id: 2,
+            n_ff: 32,
+            norm_eps: 1e-5,
+            rope_theta: 10000.0,
+            rope_dim: None,
+            chat_template: None,
+            vocab_tokens: vec!["<s>".to_string(), "</s>".to_string()],
+            vocab_scores: Vec::new(),
+            vocab_types: Vec::new(),
+            tensor_data_offset: 0,
+            tensors: std::collections::HashMap::new(),
+        }
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_qwen35_variants_fail_closed_before_legacy_graph_construction() {
+        let err = validate_legacy_architecture("qwen35moe").unwrap_err();
+
+        assert!(matches!(err, PowerError::BackendNotAvailable(_)));
+        assert!(err.to_string().contains("Qwen3.5"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_accepts_valid_metadata() {
+        let shape = build_picolm_model_shape(&test_meta(), 64).unwrap();
+
+        assert_eq!(shape.cfg.head_dim, 4);
+        assert_eq!(shape.cfg.rope_dim, 4);
+        assert_eq!(shape.max_seq, 64);
+        assert_eq!(shape.kv_mem, 2 * 2 * 2 * 4 * 64 * 2);
+        assert!(shape.derived_mem > shape.kv_mem);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_zero_heads() {
+        let mut meta = test_meta();
+        meta.n_heads = 0;
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("attention.head_count"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_non_divisible_embedding() {
+        let mut meta = test_meta();
+        meta.n_embd = 10;
+        meta.n_heads = 4;
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("must be divisible"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_invalid_kv_grouping() {
+        let mut meta = test_meta();
+        meta.n_heads = 4;
+        meta.n_kv_heads = 3;
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("attention.head_count_kv"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_rope_dim_over_head_dim() {
+        let mut meta = test_meta();
+        meta.rope_dim = Some(8);
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("rope.dimension_count"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_kv_memory_overflow() {
+        let mut meta = test_meta();
+        meta.n_layers = u32::MAX;
+        meta.n_embd = u32::MAX;
+        meta.n_heads = 1;
+        meta.n_kv_heads = 1;
+        meta.context_length = u32::MAX;
+        meta.rope_dim = None;
+
+        let err = build_picolm_model_shape(&meta, usize::MAX).unwrap_err();
+
+        assert!(err.to_string().contains("KV cache memory estimate"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_norm_cache_overflow() {
+        let mut meta = test_meta();
+        meta.n_layers = u32::MAX;
+        meta.n_embd = u32::MAX;
+        meta.n_heads = u32::MAX;
+        meta.n_kv_heads = 1;
+        meta.context_length = 1;
+        meta.rope_dim = None;
+
+        let err = build_picolm_model_shape(&meta, 1).unwrap_err();
+
+        assert!(err.to_string().contains("per-layer norm cache bytes"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_negative_token_ids() {
+        let mut meta = test_meta();
+        meta.eos_token_id = -1;
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("eos_token_id"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_build_picolm_model_shape_rejects_non_finite_float_metadata() {
+        let mut meta = test_meta();
+        meta.rope_theta = f32::NAN;
+
+        let err = build_picolm_model_shape(&meta, 64).unwrap_err();
+
+        assert!(err.to_string().contains("rope.freq_base"));
+    }
+
+    #[test]
+    fn test_build_prompt_ends_with_assistant() {
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text("Hello".to_string()),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+        let p = build_prompt(&msgs, None).unwrap();
+        assert!(p.ends_with("<|im_start|>assistant\n"));
+        assert!(p.contains("Hello"));
+    }
+
+    #[tokio::test]
+    async fn test_embed_returns_error() {
+        let b = PicolmBackend::new(test_config());
+        let r = b
+            .embed(
+                "m",
+                EmbeddingRequest {
+                    input: vec!["x".into()],
+                },
+            )
+            .await;
+        assert!(r.is_err());
+        assert!(r.unwrap_err().to_string().contains("embeddings"));
+    }
+
+    #[tokio::test]
+    async fn test_unload_nonexistent_is_ok() {
+        assert!(PicolmBackend::new(test_config())
+            .unload("ghost")
+            .await
+            .is_ok());
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_sample_greedy_picks_max() {
+        let logits = vec![0.1f32, 0.9, 0.3, 0.2];
+        let mut rng = 42u64;
+        let mut probs = vec![0.0f32; 4];
+        let mut indices = vec![0usize; 4];
+        assert_eq!(
+            sample_token(&logits, 0.0, 1.0, &mut rng, &mut probs, &mut indices),
+            1
+        );
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_sample_returns_valid_index() {
+        let logits = vec![0.1f32, 0.9, 0.3, 0.2];
+        let mut rng = 99999u64;
+        let mut probs = vec![0.0f32; 4];
+        let mut indices = vec![0usize; 4];
+        let t = sample_token(&logits, 0.8, 0.95, &mut rng, &mut probs, &mut indices);
+        assert!(t < logits.len());
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_kv_cache_session_insert_remove() {
+        // Verify the HashMap insert/remove pattern used for session KV reuse.
+        let mut sessions: HashMap<String, KvCache> = HashMap::new();
+        let key = "session-abc".to_string();
+
+        // First turn: no existing cache → create fresh.
+        let kv = sessions
+            .remove(&key)
+            .unwrap_or_else(|| KvCache::new(2, 4, 64, 128));
+        assert_eq!(kv.seq_len(), 0);
+
+        // Simulate generation completing: put cache back.
+        sessions.insert(key.clone(), kv);
+        assert!(sessions.contains_key(&key));
+
+        // Second turn: existing cache is retrieved and removed.
+        let kv2 = sessions
+            .remove(&key)
+            .unwrap_or_else(|| KvCache::new(2, 4, 64, 128));
+        // Cache was returned, so it should be gone from the map now.
+        assert!(!sessions.contains_key(&key));
+        drop(kv2);
+
+        // Transient (empty session key): never inserted.
+        let transient_key = String::new();
+        assert!(transient_key.is_empty());
+        let _kv = sessions
+            .remove(&transient_key)
+            .unwrap_or_else(|| KvCache::new(2, 4, 64, 128));
+        // Empty key must never be stored back.
+        assert!(!sessions.contains_key(&transient_key));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_kv_cache_slot_take_and_store() {
+        let slot = Mutex::new(Some(KvCache::new(2, 4, 64, 128)));
+
+        let kv = take_kv_cache_slot(&slot).unwrap();
+        assert!(kv.is_some());
+        assert!(take_kv_cache_slot(&slot).unwrap().is_none());
+
+        store_kv_cache_slot(&slot, KvCache::new(2, 4, 64, 128)).unwrap();
+        assert!(take_kv_cache_slot(&slot).unwrap().is_some());
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_kv_cache_slot_returns_error_when_lock_poisoned() {
+        let slot = Arc::new(Mutex::new(Some(KvCache::new(2, 4, 64, 128))));
+        let poison_slot = Arc::clone(&slot);
+        let _ = std::panic::catch_unwind(move || {
+            let _guard = poison_slot.lock().unwrap();
+            panic!("poison KV slot");
+        });
+
+        let err = match take_kv_cache_slot(&slot) {
+            Ok(_) => panic!("expected poisoned KV cache slot error"),
+            Err(err) => err,
+        };
+        assert!(err.to_string().contains("KV cache slot lock poisoned"));
+    }
+
+    #[cfg(feature = "picolm")]
+    fn test_chat_chunk(done: bool) -> ChatResponseChunk {
+        ChatResponseChunk {
+            content: String::new(),
+            thinking_content: None,
+            done,
+            prompt_tokens: None,
+            done_reason: None,
+            prompt_eval_duration_ns: None,
+            tool_calls: None,
+            upstream_timings: None,
+        }
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_send_picolm_chat_result_sends_when_receiver_open() {
+        let (tx, mut rx) = mpsc::channel(1);
+
+        assert!(send_picolm_chat_result(&tx, Ok(test_chat_chunk(true))));
+
+        let sent = rx.blocking_recv().unwrap().unwrap();
+        assert!(sent.done);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_send_picolm_chat_result_reports_closed_receiver() {
+        let (tx, rx) = mpsc::channel(1);
+        drop(rx);
+
+        assert!(!send_picolm_chat_result(&tx, Ok(test_chat_chunk(false))));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_observe_picolm_release_result_reports_success() {
+        assert!(observe_picolm_release_result(1, "layer weights", Ok(())));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_observe_picolm_release_result_reports_failure() {
+        let err = PowerError::InferenceFailed("release failed".to_string());
+
+        assert!(!observe_picolm_release_result(
+            2,
+            "blk.2.attn_norm.weight",
+            Err(err)
+        ));
+    }
+
+    #[test]
+    fn test_build_prompt_chatml_fallback() {
+        // When no template is provided, should use ChatML format
+        let msgs = vec![
+            ChatMessage {
+                role: "system".to_string(),
+                content: MessageContent::Text("You are helpful.".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            },
+            ChatMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("Hi".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            },
+        ];
+        let p = build_prompt(&msgs, None).unwrap();
+        assert!(p.contains("<|im_start|>system"));
+        assert!(p.contains("<|im_start|>user"));
+        assert!(p.ends_with("<|im_start|>assistant\n"));
+    }
+
+    #[test]
+    fn test_build_prompt_jinja_template() {
+        // Llama 3 style template
+        let template = "{% for message in messages %}<|start_header_id|>{{ message.role }}<|end_header_id|>\n\n{{ message.content }}<|eot_id|>{% endfor %}{% if add_generation_prompt %}<|start_header_id|>assistant<|end_header_id|>\n\n{% endif %}";
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text("Hello".to_string()),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+        let p = build_prompt(&msgs, Some(template)).unwrap();
+        assert!(p.contains("<|start_header_id|>user<|end_header_id|>"));
+        assert!(p.contains("Hello"));
+        assert!(p.contains("<|start_header_id|>assistant<|end_header_id|>"));
+    }
+
+    #[test]
+    fn test_build_prompt_invalid_raw_template_fails_closed() {
+        let msgs = vec![ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text("Hi".to_string()),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        }];
+        let err = build_prompt(&msgs, Some("{% invalid jinja %}")).unwrap_err();
+        assert!(err.to_string().contains("chat template rendering failed"));
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_repeat_penalty_reduces_repeated_token_logit() {
+        let mut logits = vec![1.0f32, 2.0, 3.0, 4.0, 5.0];
+        let recent = vec![2u32, 2, 3]; // token 2 appears twice, token 3 once
+        apply_repeat_penalty(&mut logits, &recent, 1.5, 0.0, 0.0);
+        // Token 2 (positive logit 3.0) should be divided by 1.5 → 2.0
+        assert!((logits[2] - 2.0).abs() < 0.01);
+        // Token 3 (positive logit 4.0) should be divided by 1.5 → ~2.67
+        assert!((logits[3] - 4.0 / 1.5).abs() < 0.01);
+        // Token 0 and 1 should be unchanged
+        assert!((logits[0] - 1.0).abs() < 0.01);
+        assert!((logits[1] - 2.0).abs() < 0.01);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_frequency_penalty_proportional_to_count() {
+        let mut logits = vec![5.0f32, 5.0, 5.0];
+        let recent = vec![0u32, 0, 0, 1]; // token 0 appears 3x, token 1 appears 1x
+        apply_repeat_penalty(&mut logits, &recent, 1.0, 0.5, 0.0);
+        // Token 0: 5.0 - 0.5*3 = 3.5
+        assert!((logits[0] - 3.5).abs() < 0.01);
+        // Token 1: 5.0 - 0.5*1 = 4.5
+        assert!((logits[1] - 4.5).abs() < 0.01);
+        // Token 2: unchanged
+        assert!((logits[2] - 5.0).abs() < 0.01);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_presence_penalty_flat() {
+        let mut logits = vec![5.0f32, 5.0, 5.0];
+        let recent = vec![0u32, 0, 0, 1]; // token 0 appears 3x, token 1 appears 1x
+        apply_repeat_penalty(&mut logits, &recent, 1.0, 0.0, 1.0);
+        // Token 0: 5.0 - 1.0 = 4.0 (flat, regardless of count)
+        assert!((logits[0] - 4.0).abs() < 0.01);
+        // Token 1: 5.0 - 1.0 = 4.0
+        assert!((logits[1] - 4.0).abs() < 0.01);
+        // Token 2: unchanged
+        assert!((logits[2] - 5.0).abs() < 0.01);
+    }
+
+    #[cfg(feature = "picolm")]
+    #[test]
+    fn test_no_penalty_when_defaults() {
+        let mut logits = vec![1.0f32, 2.0, 3.0];
+        let original = logits.clone();
+        apply_repeat_penalty(&mut logits, &[0, 1, 2], 1.0, 0.0, 0.0);
+        assert_eq!(logits, original);
+    }
+}

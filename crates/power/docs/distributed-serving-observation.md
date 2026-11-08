@@ -1,0 +1,459 @@
+# Distributed Serving Worker Observation
+
+Power exposes execution facts; it does not decide where a request runs. The
+`worker` object in `GET /health` is the versioned boundary used by a certified
+control plane to build a scheduling snapshot for Gateway.
+
+The current schema is `aster.power.worker-observation.v1`. Each observation is a
+closed JSON object containing:
+
+- a random process epoch and a monotonic observation generation;
+- observation and expiry timestamps;
+- supported and currently ready execution phases;
+- active and waiting request counts plus the configured active limit;
+- aggregate prompt-cache support, occupancy, capacity, and bounded pressure;
+- state-transfer capability and health.
+
+The default server advertises only the `aggregated` phase. A disaggregated
+composition root must inject both a typed `StateTransferService` and a typed
+`ServingPhaseExecutor`, and both must bind the exact execution-profile digest
+and configured role. Only that complete pair projects `prefill` or `decode` as
+a capability. The phase is ready only while both services can accept work and both report
+`AdapterProvisionState::Injected` under `ProductionAdapterContract::REQUIRED`.
+A missing, mismatched, invalid, unsupported, or Empty placeholder member fails
+closed without falling back to an aggregated capability that the process was
+not configured to execute. Worker observation therefore never lists `prefill`
+or `decode` in `ready_phases` when composition or readiness contracts are
+unmet.
+
+## Production adapter capability contract
+
+Injected transfer and phase-executor ports declare one closed software
+ownership contract (`ProductionAdapterContract::REQUIRED`):
+
+- **Memory ownership** — `AdapterOwnedRegistration`. The adapter registers and
+  frees device/host memory. Power holds only opaque local handles and
+  content-free declared-byte accounting (`registeredAdapterBytes`); it never
+  copies or retains KV payloads.
+- **Transport integrity** — `AdapterOwned`. Authentication, encryption,
+  RDMA/HSN drivers, and ticket bytes stay adapter-owned. Transport completion
+  is never decode success.
+- **Cleanup** — `ConfirmedReclaim`. Abort, timeout, and compensating cleanup
+  must reclaim adapter-owned registration; unconfirmed cleanup taints the
+  process-local transfer wrapper Unavailable for the remainder of the
+  generation.
+
+`EmptyStateTransferService` / `EmptyServingPhaseExecutor` bind the profile
+capability shape but always report Unavailable and refuse work.
+`AdapterProvisionState::Empty` fails composition and runtime construction —
+Empty is the fail-closed default until a concrete adapter is injected. This
+contract documents ownership obligations only; it does not claim high-speed
+network evidence, live replica lifecycle reuse, or production readiness.
+Wire tickets stay intentionally unsealed opaque metadata (host buffers seal).
+
+Power ships one injectable product-surface buffered-host loopback pair for
+profiles that pin `BufferedHostMemoryPullV1` and
+`AuthenticatedEncryptedTransport`:
+
+- `BufferedHostLoopbackStateTransfer` moves opaque adapter-owned host buffers
+  over authenticated AES-GCM loopback TCP, reports
+  `Injected` + `ProductionAdapterContract::REQUIRED`, and reclaims
+  reservations on abort. Transfer AAD v2 binds privacy mode,
+  `privacy_policy_sha256`, and optional `attestation_policy_sha256` so peers
+  with matching model/layout bindings but mismatched privacy fail closed.
+- `BufferedHostLoopbackPhaseExecutor` (via `paired_for_profile` / `pair_with`)
+  owns opaque conformance fixture handles—not model-semantic KV—and never
+  returns Ready decode from a transfer receipt alone; missing or corrupt
+  adapter-owned bytes map to `Recompute`.
+
+Together they are a real composition injection used by the cross-process
+conformance suite via ACL `transport = "buffered-host-loopback"`, and still are
+not high-speed-network, llama.cpp P/D, or model-backend evidence. Incomplete
+pairs (transfer-only, Empty phase, or Empty transfer) fail closed. Composition
+installs the pair when ACL sets
+`serving_execution.transport = "buffered-host-loopback"` or when a builder
+calls `with_buffered_host_loopback_transport` / injects both ports explicitly;
+protocol alone never auto-wires. The aggregated default still refuses any
+transfer injection and never advertises P/D readiness.
+
+For profiles that pin `DirectDeviceMemoryPullV1`, Power also ships a named
+product port (`DirectDeviceMemoryPullStateTransfer` +
+`DirectDeviceMemoryPullPhaseExecutor`) via ACL
+`transport = "direct-device-memory-pull"` or
+`with_direct_device_memory_pull_transport`. The pair is Injected +
+`ProductionAdapterContract::REQUIRED` so composition can install it instead of
+Empty, but health stays Unavailable, data-path methods refuse work, and
+`ready_phases` never lists prefill/decode. This is the high-speed product
+surface, not high-speed-network evidence.
+
+For the open concrete backend phase path, Power ships
+`BackendOwnedPhaseExecutor` via ACL `transport = "buffered-host-loopback"` with
+`phase_executor = "backend-owned"` (or
+`with_backend_owned_phase_on_buffered_host_loopback`). It pairs with Ready
+`BufferedHostLoopbackStateTransfer`, reports Injected + required contract, and
+defaults to Empty `BackendPhaseStateOwnership` (Unavailable). Binding a
+non-Empty ownership surface validates opaque `state_layout_sha256` against
+profile `layout_sha256` (plus optional related digests) fail-closed, then
+advances to Eligible. Eligible still refuses Ready prepare/execute until a
+Ready-capable `BackendPhaseExecution` is bound; transfer alone and matching
+layout registration alone are never decode success. The trait's import/export
+hooks are opaque byte↔handle only—not llama.cpp KV semantics. Power also ships
+`ProfileBoundBackendPhaseStateOwnership` as an honest interim product
+surface: it mirrors exact closed profile digests (including the closed
+backend artifact digest) so the executor can bind to Eligible without a real
+KV owner. ACL `state_ownership = "profile-bound"` (with
+`phase_executor = "backend-owned"`) wires that surface at composition; default
+Empty ownership stays Unavailable. Opaque import/export on that surface fail
+closed; it is not a llama.cpp / picolm adapter and does not claim
+model-semantic P/D. Eligible still refuses `accepts_work`, so worker
+`ready_phases` never lists prefill/decode while only Eligible. ACL
+`phase_execution = "pending"` installs `PendingBackendPhaseExecution` so
+Eligible ownership can advance to Ready health and delegate prepare/execute;
+pending unlocks Ready health only and still fails closed on work. Pending /
+Empty hollow Ready never advertise. ACL `state_ownership = "llamacpp"` +
+`phase_execution = "llamacpp"` on buffered-host may advertise P/D when
+runtime Injected+REQUIRED+Ready holds and (decode) a decode-token port is
+bound. Wrong transport is refused. DirectDeviceMemoryPull never advertises
+without HSN evidence. This advances the named backend phase product port;
+live GGUF over HTTP and HSN remain open.
+
+## State-transfer port
+
+Power owns a model-neutral, pull-oriented transfer lifecycle:
+
+1. the decode side prepares an exact destination state handle;
+2. the prefill side publishes an exact source state handle against that target;
+3. the decode side consumes the published source; and
+4. either side can abort the bounded attempt and reclaim adapter state.
+
+Targets, sources, and receipts bind one transfer ID, both process epochs, model,
+execution and state-layout SHA-256 identities, state kind, token count, byte
+count, protocol, and a maximum five-minute expiry. Adapter-owned connection
+metadata is carried only in a trimmed, control-free, 16 KiB ticket. Local model
+state handles are not serializable, and both local handles and wire tickets
+redact their debug representation. Tickets must not embed sealed-model-state
+persistence bytes (schema name or envelope MAGIC in ASCII / Base64 / hex) or
+oversized / control-bearing payloads that could smuggle KV bytes. Host-buffered
+opaque transfer state reuses `SealedStateEnvelope` / `SealedStateStore` through
+`seal_transfer_host_buffer` / `open_transfer_host_buffer` (when
+`embedded-inference` is enabled) so Power does not invent a second peer-tier
+ciphertext format. The sealed identity (`transfer-host-buffer.v2`) binds
+privacy mode, `privacy_policy_sha256`, and optional `attestation_policy_sha256`
+alongside transfer identity and generation so a privacy/attestation mismatch
+fails closed on open. Wire tickets are intentionally **not** force-sealed with
+`SealedStateEnvelope`: host buffers seal; tickets stay opaque adapter connection
+metadata. Wire transport encryption remains adapter-owned.
+
+Server composition wraps every injected data path in
+`BoundedStateTransferService`. The wrapper projects only the configured local
+role and ACL limits even when the underlying transport supports more. It binds
+commands to the current random worker epoch, admits no more than the configured
+in-flight count through Power's shared fail-fast `AdmissionController`
+(`waiting_limit == 0`; construction refuses any other queue shape as a second
+admission policy), makes identical prepare/publish retries idempotent, retains
+registered leases until consume or compensating abort, and reaps them at their
+monotonic deadline without requiring another request. Each active lease registers
+the binding's declared `state_bytes` as adapter-owned memory and pins one opaque
+local handle; a second lease for the same handle fails closed, and consume,
+abort, timeout, or compensating cleanup reclaim the registration. Power never
+copies KV payloads into the wrapper — only handles and content-free counters.
+Operation drop, timeout, explicit abort, and invalid adapter output all trigger
+abort under the separate cancellation timeout. Corrupt authenticated ticket or
+receipt bytes (control characters, integrity digest failures, byte-count or
+identity mismatches) fail closed as `InvalidRequest`, never commit a successful
+consume, and reclaim registered adapter bytes. In-flight capacity exhaustion
+increments the shared admission `queue_rejections` counter (projected as
+`capacity_rejections`) and returns a typed unavailable outcome without
+growing registration; bindings above the ACL `max_state_bytes` limit are rejected
+before driver admission. An unconfirmed cleanup marks the
+wrapper unavailable for the rest of the process generation. Its snapshot contains
+only bounded, content-free counters, including `registeredAdapterBytes`.
+
+The protocol distinguishes direct device-memory pull from buffered host-memory
+pull without making the Power core depend on NIXL, UCX, libfabric, or another
+transport library. A concrete adapter owns memory registration, transport
+integrity, and driver cleanup. The Power wrapper owns the common admission,
+deadline, lease, registration-accounting, and cleanup-verification policy.
+Gateway selects and orchestrates workers; Cloud certifies compatible deployment
+generations. Neither receives KV bytes.
+
+When both ports are injected, the composition root assembles one
+`DistributedServingRuntime`; AppState and worker observation retain that runtime
+as the single source of distributed readiness. It reserves one bounded local
+lease per execution ID under the same ACL fail-fast `AdmissionController`
+policy as transfer (separate lease domain, identical
+`max_inflight_transfers` / `waiting_limit == 0` limits; composition fails closed
+on mismatch), prepares a decode destination before state movement,
+publishes prefill state only after phase execution, consumes verified state
+before decode execution, and owns cancellation until the returned stream ends.
+Worker observation for that matching runtime projects the shared fail-fast phase
+admission snapshot (`active_limit` / `active` / `waiting`) rather than the HTTP
+`max_concurrent_requests` limiter, so Gateway does not see a second capacity
+surface. Observation generation remains positive and monotonic within
+`worker_epoch` across cancel and cleanup-taint transitions while `ready_phases`
+clears. In-flight transfer prepare, publish, and consume honor the same caller-cancel
+and deadline abort contract as phase prepare/execute: cancel or timeout aborts
+the step without opening a Ready/NDJSON success path, and compensating phase
+plus transfer cleanup reclaim the lease. Expiry, caller cancellation, non-ready
+decisions, invalid adapter output, and explicit abort all trigger compensating
+phase and transfer cleanup. An unconfirmed cleanup permanently suppresses new
+work for that process epoch. The runtime and phase-executor port do not invent a
+second session-replica pool or weight hierarchy. Prefill/decode profiles bind
+`weight_cache = shared-weight-hierarchy` (private-cache identities fail closed)
+and may pin `residency_policy_sha256`; with `embedded-inference`,
+`DistributedServingRuntime::validate_weight_hierarchy` requires that digest to
+match the process `ResidencyPolicy` before a hierarchy is accepted.
+Prefill/decode profiles also bind `session_pool = shared-session-pool`
+(private-pool identities fail closed) and may pin `session_pool_policy_sha256`;
+with `embedded-inference`, `DistributedServingRuntime::validate_session_pool`
+requires that digest to match the process `ModelSessionPoolPolicy` before a
+pool is accepted. Matching distributed runtimes project the same content-free
+transfer and fail-fast phase-admission counters through Service `GET /metrics`
+as label-free Prometheus series; aggregated profiles omit those series so P/D
+does not invent a second labeled metrics schema. Optional digest-only
+`DistributedOperationEvidence` (`aster.power.distributed-operation.v1`) may bind a
+validated transfer consume receipt without folding it into microbatch
+receipt-v4. State-transfer targets, sources, and receipts now carry
+`ServingDeploymentIdentity` (`generation`, `peer_set_sha256`) on the
+`aster.power.state-transfer-*.v2` schemas so peers fail closed on stale Cloud
+deployment generation or a foreign peer set before the adapter data path runs;
+process epoch alone cannot admit cross-generation transfers when model /
+execution / layout bindings still match. Wire tickets stay intentionally
+unsealed opaque metadata (host buffers seal; sealed-persistence markers fail
+closed). High-speed DirectDeviceMemoryPull advertisement is explicitly
+excluded from the v1 production matrix (machine-enforced non-advertise; does
+not claim HSN works). Attested-fabric readiness remains open. Live
+buffered-host llama.cpp P/D now also binds and
+exercises the shared session-pool / weight-hierarchy ports
+(`validate_session_pool` / `validate_weight_hierarchy`) under
+`DistributedServingRuntime` (`tests/llamacpp_phase_state_live.rs`).
+
+The default Power backends inject neither port. The named Unavailable
+DirectDeviceMemoryPull product port may be composed but never advertises
+P/D under the v1 exclusion. The internal request-flow
+endpoint is present but fails closed without a matching composed runtime.
+Gateway must therefore continue to reject HSN P/D dispatch; only buffered-host
+paths may advertise when honestly Ready.
+
+## Cross-process conformance boundary
+
+`tests/distributed_serving_cross_process.rs` provides executable evidence for
+the process boundary itself. The parent test launches independent prefill and
+decode Power HTTP processes, acts only as the request orchestrator, and passes
+the opaque target and source tickets unchanged. Each worker loads an ACL document
+with `serving_execution.transport = "buffered-host-loopback"` and installs the
+product `BufferedHostLoopbackStateTransfer` +
+`BufferedHostLoopbackPhaseExecutor` pair (the same composition path as startup
+resolve)—not a test-only fixture adapter. Opaque conformance handles move over
+the product authenticated AES-GCM loopback channel. The suite verifies a
+successful decode stream (`loopback-conformance-token`), explicit cleanup, peer
+disappearance during transfer, process restart, rejection of the stale worker
+epoch, and fail-closed rejection of a stale Cloud deployment generation or
+foreign peer set when the orchestrator tampers with transfer descriptors
+(prefill publish and decode consume) without opening Ready/NDJSON success.
+
+This is loopback conformance evidence for Power's product composition and wire
+contracts across processes. It is not a high-speed network implementation and
+supplies no model-semantic parity evidence. A deployment must still inject and
+certify a concrete model/backend adapter and a transport that enforces the
+selected privacy profile before it advertises production prefill/decode
+readiness.
+
+## Immutable execution profile
+
+Power accepts exactly one `serving_execution` block from Aster ACL. Omitting the
+block is equivalent to the safe `aggregated` default. There is deliberately no
+environment-variable override for this policy-bearing value.
+
+A `prefill-decode` profile selects one local role and binds the exact model,
+backend artifact, backend-owned phase execution contract, device declaration,
+state layout, certified peer set, deployment generation, transfer protocol,
+state kind, byte and concurrency limits, operation and cancellation deadlines,
+privacy policy, optional attestation policy, shared weight-cache mode, and
+optional residency-policy digest. All SHA-256 values are
+canonical lowercase hex. The profile has its own stable digest; an injected
+adapter must report that digest in `execution_profile_sha256`, and the same
+profile digest is included in Power's canonical inference-execution policy.
+
+~~~acl
+api_keys = ["<Gateway service-key SHA-256>"]
+
+serving_execution {
+  profile = "prefill-decode"
+  role = "decode"
+  model = "internal/model-v1"
+  model_sha256 = "<64 lowercase hex characters>"
+  backend = "llama.cpp"
+  backend_sha256 = "<64 lowercase hex characters>"
+  execution_sha256 = "<backend-owned phase contract SHA-256>"
+  device_sha256 = "<device declaration SHA-256>"
+  layout_sha256 = "<model-owned state layout SHA-256>"
+  peer_set_sha256 = "<Cloud-certified peer set SHA-256>"
+  generation = 7
+  protocol = "direct-device-memory-pull-v1"
+  state_kind = "kv-cache"
+  max_state_bytes = 8589934592
+  max_inflight_transfers = 32
+  transfer_timeout_ms = 30000
+  cancellation_timeout_ms = 5000
+  privacy = "authenticated-encrypted-transport"
+  privacy_policy_sha256 = "<64 lowercase hex characters>"
+  attestation_policy_sha256 = "<64 lowercase hex characters>"
+}
+~~~
+
+Static profile parsing and attestation binding do not make the phase runnable.
+Startup remains fail-closed until the composition root supplies both an exact
+profile-bound transfer adapter and a verified phase executor, either by
+builder injection or by an honest ACL opt-in:
+`transport = "buffered-host-loopback"` (product loopback pair when `protocol` /
+`privacy` match) or `transport = "direct-device-memory-pull"` (Unavailable HSN
+product port when protocol is `DirectDeviceMemoryPullV1`). Protocol alone never
+auto-wires, and aggregated defaults still advertise no P/D. DirectDeviceMemoryPull
+never lists prefill/decode in `ready_phases`.
+
+~~~acl
+api_keys = ["<Gateway service-key SHA-256>"]
+
+serving_execution {
+  profile = "prefill-decode"
+  role = "decode"
+  model = "internal/model-v1"
+  model_sha256 = "<64 lowercase hex characters>"
+  backend = "buffered-host-loopback"
+  backend_sha256 = "<64 lowercase hex characters>"
+  execution_sha256 = "<backend-owned phase contract SHA-256>"
+  device_sha256 = "<device declaration SHA-256>"
+  layout_sha256 = "<model-owned state layout SHA-256>"
+  peer_set_sha256 = "<Cloud-certified peer set SHA-256>"
+  generation = 7
+  protocol = "buffered-host-memory-pull-v1"
+  state_kind = "kv-cache"
+  max_state_bytes = 1024
+  max_inflight_transfers = 2
+  transfer_timeout_ms = 30000
+  cancellation_timeout_ms = 5000
+  privacy = "authenticated-encrypted-transport"
+  privacy_policy_sha256 = "<64 lowercase hex characters>"
+  transport = "buffered-host-loopback"
+}
+~~~
+
+The ACL example above is a loopback conformance composition path only. It does
+not claim high-speed-network transport or production llama.cpp P/D.
+
+## Phase-executor port
+
+`ServingPhaseExecutor` is the backend-owned boundary for one configured
+`prefill` or `decode` role. It receives the existing local Power chat or text
+request, but request values and process-local execution handles are not
+serializable and their debug representation is redacted. The backend adapter,
+not Power, owns tokenization, KV or recurrent layout, phase arithmetic,
+reservation state, response generation, and cleanup.
+
+The lifecycle separates preparation from execution. Preparation validates the
+model, process epoch, profile digest, role, and an expiry no longer than the ACL
+transfer timeout before any response bytes can be generated. A prefill
+execution produces only an opaque local state handle plus the exact bounded
+state binding; it is not transferable until the independent transfer adapter
+publishes it. A decode preparation names the exact destination handle and
+binding. `ImportedModelState` can be constructed only after the consume command
+and receipt prove the same destination process, source, binding, protocol,
+byte count, integrity result, and completion within the current local attempt.
+Power bounds consumption by the profile timeout and invokes adapter abort under
+the separately bound cancellation timeout before reporting a timeout.
+
+Every pre-response operation returns one closed `PhaseDecision`: `ready`,
+`recompute`, `retryable-unavailable` with an optional bounded delay, or
+`terminal-failure`. Recompute and failure reasons are closed enums rather than
+backend text. A transfer receipt proves state movement only; decode succeeds
+only when the backend executor subsequently returns a response stream.
+Fixture-driven unit and authenticated HTTP tests inject non-`Ready` decode
+`execute` outcomes after a successful prepare+consume path and assert the
+internal boundary returns the typed JSON decision (with status mapping and
+binding fields), never `application/x-ndjson` or generated-token frames, while
+compensating cleanup reclaims the lease. The same fixtures also prove corrupt
+source tickets and consume receipts fail closed as protocol `InvalidRequest`
+before any token stream, and that `ResourcePressure` / `AdmissionPressure`
+decisions map to typed `RetryableUnavailable` with cleanup. Additional runtime
+fixtures prove caller abort and deadline abort during blocked transfer
+prepare/consume, and caller abort mid-decode-stream before any success token:
+no Ready stream after cancel, compensating cleanup, and reclaimed lease
+capacity. That evidence is contract and cleanup coverage only: it does not
+claim a production backend adapter or high-speed network path.
+
+Phase abort accepts either an in-progress preparation without a backend handle
+or a completed reservation with its opaque handle. Prepared phase lifetimes
+must exactly equal the caller-bound execution lifetime; an adapter cannot
+silently shorten or extend a distributed request lease.
+
+## Internal request-flow protocol
+
+Gateway calls the service-to-service boundary under
+`/internal/v1/distributed-serving`. It is not a public OpenAI API and receives
+no permissive CORS policy or public request-rate bucket. All four operations
+require `Authorization: Bearer <key>` backed by `api_keys`; a
+`prefill-decode` configuration with no keys is rejected at startup, and the
+middleware still fails closed when a state is assembled manually without an
+authentication provider.
+
+The request schema is `aster.power.distributed-serving.v1` and exposes four
+`POST` operations:
+
+- `/decode/prepare` reserves decode execution and returns a bounded opaque
+  `StateTransferTarget`;
+- `/prefill/execute` runs the selected model-owned prefill phase against that
+  exact target and returns a bounded opaque `StateTransferSource`;
+- `/decode/execute` consumes the source and produces
+  `application/x-ndjson`; and
+- `/abort` idempotently reclaims phase and transfer ownership.
+
+Every document binds one non-nil execution ID, the selected process epoch, and
+the exact execution-profile SHA-256. Schema mismatch, stale process identity,
+profile mismatch, malformed JSON, missing runtime, and runtime failures use
+closed, content-free error codes and messages. Bodies are capped at 8 MiB.
+The request payload carries a closed chat-completions or completions envelope;
+the presentation layer validates the supported OpenAI fields and translates it
+into the existing process-local `PhaseRequest`. Neither serializable domain
+commands nor a second inference request type are introduced.
+If prefix reuse is requested, Gateway must replace the caller's cache key with
+`aster-gw-pcache-v1:<64 lowercase hex characters>` after domain-separating its
+tenant/authentication identity, endpoint, model, and caller key. Power rejects
+raw or malformed cache keys at this boundary so one Gateway service credential
+cannot collapse multiple tenant cache domains.
+
+Decode output uses `aster.power.distributed-serving-stream.v1`. The first frame is
+`ready`, followed by monotonically sequenced response chunks and exactly one
+`completed` or `failed` terminal frame. The HTTP body polls the backend-owned
+stream directly, preserving backpressure. Client disconnect drops the guarded
+stream and triggers the same bounded compensating cleanup as local
+cancellation. Wire DTO debug output redacts prompts, generated content, and
+adapter tickets; golden fixtures under `tests/fixtures/distributed-serving-v1`
+pin the JSON shape consumed by Gateway.
+
+## Ownership boundary
+
+The observation contains no target, deployment, replica, tenant, credential,
+prompt, cache key, token, KV byte count, model identifier, or unbounded metric
+label. Cloud owns the association between an observation and a rollout unit,
+and Gateway accepts only a complete, unexpired snapshot with that association.
+
+Power remains responsible for local admission, execution, cache/state safety,
+and truthful measurement. Gateway owns request admission and endpoint choice;
+Cloud owns placement, rollout, desired replicas, and autoscaling. Consumers
+must fail closed when the schema, epoch/generation binding, transfer
+compatibility, phase readiness, or expiry cannot be verified.
+
+## Configuration
+
+`worker_observation_ttl_seconds` controls the exclusive validity interval. Its
+default is 120 seconds and the closed ACL validator accepts only `1..=300`.
+This is a freshness bound, not a polling interval or a lease: no consumer may
+extend it locally.
+
+## Compatibility
+
+The `worker` field is additive to the existing health response. New semantics
+require a new schema value; existing fields in v1 are not repurposed. The
+process epoch changes on restart and the generation increases for every
+observation within that epoch, so consumers can reject replay and regression.

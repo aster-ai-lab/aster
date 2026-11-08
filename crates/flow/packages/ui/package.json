@@ -1,0 +1,79 @@
+{
+  "name": "@aster-ai-lab/flow-ui",
+  "version": "1.0.0",
+  "description": "Kense Flow authoring components, React and Vue hooks, and workflow CLI.",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "sideEffects": [
+    "./dist/styles.css"
+  ],
+  "files": [
+    "dist",
+    "skills"
+  ],
+  "bin": {
+    "kense-flow": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./src/react.ts",
+      "bun": "./src/react.ts",
+      "import": "./dist/react.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./workflow-updates": {
+      "types": "./dist/flow-cli-workflow.d.ts",
+      "import": "./dist/flow-cli-workflow.js"
+    },
+    "./skill": "./skills/kense-flow/SKILL.md"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs && tsc -p tsconfig.build.json",
+    "check": "npm run typecheck && npm test && npm run build && npm run smoke:cli",
+    "smoke:cli": "node scripts/smoke-cli.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@aster-ai-lab/form": "workspace:*",
+    "@aster-ai-lab/ce": "workspace:*",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "vue": ">=3.4"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@aster-ai-lab/form": "workspace:*",
+    "@phosphor-icons/react": "^2.1.10",
+    "@aster-ai-lab/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@aster-ai-lab/form": "workspace:*",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.8.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "cac": "^6.7.14",
+    "esbuild": "^0.25.12",
+    "jsdom": "^26.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4",
+    "vue": "^3.5.25"
+  }
+}

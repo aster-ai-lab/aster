@@ -1,0 +1,25 @@
+extension "aster/vercel-weather" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "vercel-weather"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  agent "aster-vercel-weather" {
+    harness      = "package"
+    runtime      = "cloud"
+    entry        = "agent/run.mjs"
+    instructions = "agents/aster-vercel-weather/INSTRUCTIONS.md"
+    parameters   = "parameters.schema.json"
+
+    resources {
+      cpu_millis   = 500
+      memory_bytes = 268435456
+    }
+  }
+}

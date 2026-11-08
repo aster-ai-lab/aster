@@ -1,0 +1,1258 @@
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+use std::collections::BTreeMap;
+
+// ============================================================================
+// Vision / Multimodal types
+// ============================================================================
+
+/// Message content - either plain text or multimodal parts.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum MessageContent {
+    Text(String),
+    Parts(Vec<ContentPart>),
+}
+
+impl MessageContent {
+    /// Extract text content, ignoring non-text parts (images, etc.).
+    pub fn text(&self) -> String {
+        match self {
+            MessageContent::Text(s) => s.clone(),
+            MessageContent::Parts(parts) => parts
+                .iter()
+                .filter_map(|p| match p {
+                    ContentPart::Text { text, .. } => Some(text.clone()),
+                    ContentPart::ImageUrl { .. } => {
+                        tracing::warn!("Image URLs not yet supported in llama.cpp backend");
+                        None
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n"),
+        }
+    }
+}
+
+impl Default for MessageContent {
+    fn default() -> Self {
+        MessageContent::Text(String::new())
+    }
+}
+
+/// A single part of a multimodal message.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum ContentPart {
+    #[serde(rename = "text")]
+    Text {
+        text: String,
+        /// Unknown content-part fields are preserved so API layers can reject
+        /// unsupported multimodal policy instead of silently dropping it.
+        #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+        unsupported: BTreeMap<String, serde_json::Value>,
+    },
+    #[serde(rename = "image_url")]
+    ImageUrl {
+        image_url: ImageUrl,
+        /// Unknown content-part fields are preserved so API layers can reject
+        /// unsupported multimodal policy instead of silently dropping it.
+        #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+        unsupported: BTreeMap<String, serde_json::Value>,
+    },
+}
+
+impl ContentPart {
+    /// Return a stable list of unsupported content-part field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        match self {
+            ContentPart::Text { unsupported, .. } | ContentPart::ImageUrl { unsupported, .. } => {
+                unsupported.keys().map(String::as_str).collect()
+            }
+        }
+    }
+
+    /// Return a validation message when unsupported content-part fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            let supported = match self {
+                ContentPart::Text { .. } => "type and text",
+                ContentPart::ImageUrl { .. } => "type and image_url",
+            };
+            Some(format!(
+                "unsupported content part field(s): {}; supported fields are {supported}",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+/// An image URL reference within a content part.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ImageUrl {
+    pub url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub detail: Option<String>,
+    /// Unknown image URL fields are preserved so API layers can reject
+    /// unsupported image input policy instead of silently dropping it.
+    #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+    pub unsupported: BTreeMap<String, serde_json::Value>,
+}
+
+impl ImageUrl {
+    /// Return a stable list of unsupported `image_url` field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        self.unsupported.keys().map(String::as_str).collect()
+    }
+
+    /// Return a validation message when unsupported image URL fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            Some(format!(
+                "unsupported image_url field(s): {}; supported fields are url and detail",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+// ============================================================================
+// Tool / Function calling types
+// ============================================================================
+
+/// A tool definition for function calling.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Tool {
+    #[serde(rename = "type")]
+    pub tool_type: String,
+    pub function: FunctionDefinition,
+    /// Unknown tool fields are preserved so API layers can reject unsupported
+    /// tool policies instead of silently dropping them before proxying or
+    /// receipt hashing.
+    #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+    pub unsupported: BTreeMap<String, serde_json::Value>,
+}
+
+impl Tool {
+    /// Return a stable list of unsupported top-level tool field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        self.unsupported.keys().map(String::as_str).collect()
+    }
+
+    /// Return a validation message when unsupported top-level tool fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            Some(format!(
+                "unsupported tool field(s): {}; supported fields are type and function",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+/// A function definition within a tool.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FunctionDefinition {
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    pub parameters: serde_json::Value,
+    /// OpenAI structured-output flag for strict function argument schemas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Unknown function fields are preserved so request validation can fail
+    /// closed instead of silently weakening a tool schema policy.
+    #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+    pub unsupported: BTreeMap<String, serde_json::Value>,
+}
+
+impl FunctionDefinition {
+    /// Return a stable list of unsupported tool function field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        self.unsupported.keys().map(String::as_str).collect()
+    }
+
+    /// Return a validation message when unsupported function fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            Some(format!(
+                "unsupported tool function field(s): {}; supported fields are name, description, parameters, and strict",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+/// How the model should choose tools.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ToolChoice {
+    String(String),
+    Specific(ToolChoiceSpecific),
+}
+
+/// A specific tool choice directing the model to call a particular function.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ToolChoiceSpecific {
+    #[serde(rename = "type")]
+    pub tool_type: String,
+    pub function: FunctionChoice,
+    /// Unknown tool-choice fields are preserved so API layers can reject
+    /// unsupported selection policy instead of silently dropping it.
+    #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+    pub unsupported: BTreeMap<String, serde_json::Value>,
+}
+
+impl ToolChoiceSpecific {
+    /// Return a stable list of unsupported top-level tool-choice field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        self.unsupported.keys().map(String::as_str).collect()
+    }
+
+    /// Return a validation message when unsupported top-level tool-choice fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            Some(format!(
+                "unsupported tool_choice field(s): {}; supported fields are type and function",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+/// Identifies a specific function to call.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FunctionChoice {
+    pub name: String,
+    /// Unknown function-choice fields are preserved so API layers can reject
+    /// unsupported selection policy instead of silently dropping it.
+    #[serde(default, flatten, skip_serializing_if = "BTreeMap::is_empty")]
+    pub unsupported: BTreeMap<String, serde_json::Value>,
+}
+
+impl FunctionChoice {
+    /// Return a stable list of unsupported tool-choice function field names.
+    pub fn unsupported_fields(&self) -> Vec<&str> {
+        self.unsupported.keys().map(String::as_str).collect()
+    }
+
+    /// Return a validation message when unsupported tool-choice function fields exist.
+    pub fn unsupported_fields_message(&self) -> Option<String> {
+        let fields = self.unsupported_fields();
+        if fields.is_empty() {
+            None
+        } else {
+            Some(format!(
+                "unsupported tool_choice.function field(s): {}; supported field is name",
+                fields.join(", ")
+            ))
+        }
+    }
+}
+
+/// A tool call generated by the model.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ToolCall {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub tool_type: String,
+    pub function: FunctionCall,
+    /// Index of this tool call in the list (used for OpenAI streaming delta format).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub index: Option<u32>,
+}
+
+/// A function invocation within a tool call.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FunctionCall {
+    pub name: String,
+    pub arguments: String,
+}
+
+// ============================================================================
+// Chat types
+// ============================================================================
+
+/// A single message in a chat conversation.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatMessage {
+    pub role: String,
+    pub content: MessageContent,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tool_calls: Option<Vec<ToolCall>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
+    /// Base64-encoded images for multimodal models (Ollama-native format).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+}
+
+impl ChatMessage {
+    /// Return true when this message carries any image input.
+    pub fn has_image_inputs(&self) -> bool {
+        self.images
+            .as_ref()
+            .is_some_and(|images| !images.is_empty())
+            || matches!(&self.content, MessageContent::Parts(parts)
+                if parts.iter().any(|part| matches!(part, ContentPart::ImageUrl { .. })))
+    }
+}
+
+/// Request for chat-based inference.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatRequest {
+    pub messages: Vec<ChatMessage>,
+    /// Session identifier for KV cache reuse across turns.
+    ///
+    /// When set, the KV cache is keyed by this ID so that only requests from
+    /// the same session can reuse each other's cached context. When `None`,
+    /// no KV cache is reused (anonymous / stateless request).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
+    #[serde(default)]
+    pub temperature: Option<f32>,
+    #[serde(default)]
+    pub top_p: Option<f32>,
+    #[serde(default)]
+    pub max_tokens: Option<u32>,
+    #[serde(default)]
+    pub stop: Option<Vec<String>>,
+    #[serde(default)]
+    pub stream: bool,
+    #[serde(default)]
+    pub top_k: Option<i32>,
+    #[serde(default)]
+    pub min_p: Option<f32>,
+    #[serde(default)]
+    pub repeat_penalty: Option<f32>,
+    #[serde(default)]
+    pub frequency_penalty: Option<f32>,
+    #[serde(default)]
+    pub presence_penalty: Option<f32>,
+    #[serde(default)]
+    pub seed: Option<i64>,
+    #[serde(default)]
+    pub num_ctx: Option<u32>,
+    #[serde(default)]
+    pub mirostat: Option<u32>,
+    #[serde(default)]
+    pub mirostat_tau: Option<f32>,
+    #[serde(default)]
+    pub mirostat_eta: Option<f32>,
+    #[serde(default)]
+    pub tfs_z: Option<f32>,
+    #[serde(default)]
+    pub typical_p: Option<f32>,
+    /// Response format constraint: `"json"` for generic JSON, or a JSON Schema object.
+    #[serde(default)]
+    pub response_format: Option<serde_json::Value>,
+    /// Streaming protocol options, forwarded to OpenAI-compatible remote backends.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stream_options: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tools: Option<Vec<Tool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_choice: Option<ToolChoice>,
+    /// Whether the model may generate multiple tool calls in parallel.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parallel_tool_calls: Option<bool>,
+    /// Last N tokens to consider for repetition penalty (0 = disabled, -1 = ctx_size).
+    #[serde(default)]
+    pub repeat_last_n: Option<i32>,
+    /// Whether to penalize newline tokens.
+    #[serde(default)]
+    pub penalize_newline: Option<bool>,
+    /// Number of tokens to process in parallel (batch size).
+    #[serde(default)]
+    pub num_batch: Option<u32>,
+    /// Number of threads for generation.
+    #[serde(default)]
+    pub num_thread: Option<u32>,
+    /// Number of threads for batch processing.
+    #[serde(default)]
+    pub num_thread_batch: Option<u32>,
+    /// Enable flash attention.
+    #[serde(default)]
+    pub flash_attention: Option<bool>,
+    /// Number of GPU layers to offload (-1 = all, 0 = none).
+    #[serde(default)]
+    pub num_gpu: Option<i32>,
+    /// Index of the primary GPU.
+    #[serde(default)]
+    pub main_gpu: Option<i32>,
+    /// Whether to use memory-mapped files.
+    #[serde(default)]
+    pub use_mmap: Option<bool>,
+    /// Whether to lock model in memory.
+    #[serde(default)]
+    pub use_mlock: Option<bool>,
+    /// Number of parallel decode slots (concurrent inference sequences). 1 = serial.
+    #[serde(default)]
+    pub num_parallel: Option<u32>,
+    /// Base64-encoded images for multimodal/vision models.
+    /// Each entry is a base64-encoded image (with or without data URI prefix).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+}
+
+impl ChatRequest {
+    /// Return true when the request carries any top-level or per-message image input.
+    pub fn has_image_inputs(&self) -> bool {
+        self.images
+            .as_ref()
+            .is_some_and(|images| !images.is_empty())
+            || self.messages.iter().any(ChatMessage::has_image_inputs)
+    }
+}
+
+/// Closed claim kinds for `effective_prompt` receipt fields.
+///
+/// Multimodal kinds are reserved so APIs and verifiers can name the future
+/// exact representation without inventing digests today. Image-bearing chat
+/// receipts must abstain (`effective_prompt` absent) until a backend can emit
+/// an emitible multimodal claim over the exact post-template representation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum EffectivePromptClaimKind {
+    /// Exact rendered chat-template prompt bytes (text-only).
+    #[serde(rename = "chat.rendered-prompt")]
+    ChatRenderedPrompt,
+    /// Domain-separated digest of chat prompt token IDs (text-only).
+    #[serde(rename = "chat.prompt-token-ids")]
+    ChatPromptTokenIds,
+    /// Exact text-completion prompt bytes.
+    #[serde(rename = "text.prompt")]
+    TextPrompt,
+    /// Exact post-template multimodal chat prompt representation.
+    ///
+    /// Reserved: digests of this kind are not emitible until a backend exposes
+    /// the exact bytes or token sequence submitted to the model. Receipts must
+    /// abstain rather than attach a text-only stand-in.
+    #[serde(rename = "chat.multimodal-rendered-prompt")]
+    ChatMultimodalRenderedPrompt,
+}
+
+impl EffectivePromptClaimKind {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::ChatRenderedPrompt => "chat.rendered-prompt",
+            Self::ChatPromptTokenIds => "chat.prompt-token-ids",
+            Self::TextPrompt => "text.prompt",
+            Self::ChatMultimodalRenderedPrompt => "chat.multimodal-rendered-prompt",
+        }
+    }
+
+    pub fn parse(value: &str) -> std::result::Result<Self, String> {
+        match value.trim() {
+            "chat.rendered-prompt" => Ok(Self::ChatRenderedPrompt),
+            "chat.prompt-token-ids" => Ok(Self::ChatPromptTokenIds),
+            "text.prompt" => Ok(Self::TextPrompt),
+            "chat.multimodal-rendered-prompt" => Ok(Self::ChatMultimodalRenderedPrompt),
+            other => Err(format!("unknown effective prompt claim kind '{other}'")),
+        }
+    }
+
+    /// Whether a digest of this kind may appear on a receipt today.
+    pub const fn digest_emitible(self) -> bool {
+        !matches!(self, Self::ChatMultimodalRenderedPrompt)
+    }
+
+    /// Text-only chat kinds that must not bind image-bearing chat receipts.
+    pub const fn is_text_only_chat_claim(self) -> bool {
+        matches!(self, Self::ChatRenderedPrompt | Self::ChatPromptTokenIds)
+    }
+
+    /// Reserved multimodal chat claim kinds.
+    pub const fn is_multimodal_chat_claim(self) -> bool {
+        matches!(self, Self::ChatMultimodalRenderedPrompt)
+    }
+}
+
+impl std::fmt::Display for EffectivePromptClaimKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Digest of the exact prompt representation a backend submits to the model.
+///
+/// This is optional because not every backend exposes or owns prompt rendering.
+/// Backends should only emit this when they can compute the same prompt bytes
+/// or token IDs that are used for inference. Multimodal claim kinds exist as
+/// typed names but are not emitible until that exact representation exists.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EffectivePromptDigest {
+    /// Backend that produced the prompt representation, e.g. `llama.cpp`.
+    pub backend: String,
+    /// Semantic kind of the digested prompt representation.
+    pub kind: EffectivePromptClaimKind,
+    /// SHA-256 of the effective prompt representation as lowercase hex.
+    pub sha256: String,
+}
+
+impl EffectivePromptDigest {
+    /// Build a digest only for emitible claim kinds.
+    ///
+    /// Reserved multimodal kinds fail closed so callers abstain instead of
+    /// inventing digests before the exact representation exists.
+    pub fn try_new(
+        backend: impl Into<String>,
+        kind: EffectivePromptClaimKind,
+        sha256: impl Into<String>,
+    ) -> std::result::Result<Self, String> {
+        if !kind.digest_emitible() {
+            return Err(format!(
+                "effective prompt claim kind '{}' is reserved; receipts must abstain until the exact representation exists",
+                kind.as_str()
+            ));
+        }
+        Ok(Self {
+            backend: backend.into(),
+            kind,
+            sha256: sha256.into(),
+        })
+    }
+
+    pub fn chat_rendered_prompt(backend: impl Into<String>, prompt: &str) -> Self {
+        Self {
+            backend: backend.into(),
+            kind: EffectivePromptClaimKind::ChatRenderedPrompt,
+            sha256: hex::encode(Sha256::digest(prompt.as_bytes())),
+        }
+    }
+
+    pub fn text_prompt(backend: impl Into<String>, prompt: &str) -> Self {
+        Self {
+            backend: backend.into(),
+            kind: EffectivePromptClaimKind::TextPrompt,
+            sha256: hex::encode(Sha256::digest(prompt.as_bytes())),
+        }
+    }
+
+    pub fn chat_prompt_token_ids(backend: impl Into<String>, token_ids: &[u32]) -> Self {
+        let mut hasher = Sha256::new();
+        hasher.update(b"aster.power.chat.prompt-token-ids.v1\0");
+        for token_id in token_ids {
+            hasher.update(token_id.to_le_bytes());
+        }
+        Self {
+            backend: backend.into(),
+            kind: EffectivePromptClaimKind::ChatPromptTokenIds,
+            sha256: hex::encode(hasher.finalize()),
+        }
+    }
+}
+
+/// A streamed chunk from a chat completion.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatResponseChunk {
+    pub content: String,
+    /// Reasoning/thinking content from models like DeepSeek-R1, QwQ.
+    /// Populated when the model emits `<think>...</think>` blocks.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub thinking_content: Option<String>,
+    pub done: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt_tokens: Option<u32>,
+    /// "stop" when EOS/stop-sequence hit, "length" when max_tokens reached
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub done_reason: Option<String>,
+    /// Time spent evaluating the prompt, in nanoseconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt_eval_duration_ns: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tool_calls: Option<Vec<ToolCall>>,
+    /// Upstream-reported Prism / llama-server timings (source labeled in JSON).
+    /// Not a Power-verified draft digest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upstream_timings: Option<serde_json::Value>,
+}
+
+// ============================================================================
+// Completion types
+// ============================================================================
+
+/// Request for text completion inference.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompletionRequest {
+    pub prompt: String,
+    /// Session identifier for KV cache reuse across turns.
+    ///
+    /// When set, the KV cache is keyed by this ID so that only requests from
+    /// the same session can reuse each other's cached context. When `None`,
+    /// no KV cache is reused (anonymous / stateless request).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
+    #[serde(default)]
+    pub temperature: Option<f32>,
+    #[serde(default)]
+    pub top_p: Option<f32>,
+    #[serde(default)]
+    pub max_tokens: Option<u32>,
+    #[serde(default)]
+    pub stop: Option<Vec<String>>,
+    #[serde(default)]
+    pub stream: bool,
+    #[serde(default)]
+    pub top_k: Option<i32>,
+    #[serde(default)]
+    pub min_p: Option<f32>,
+    #[serde(default)]
+    pub repeat_penalty: Option<f32>,
+    #[serde(default)]
+    pub frequency_penalty: Option<f32>,
+    #[serde(default)]
+    pub presence_penalty: Option<f32>,
+    #[serde(default)]
+    pub seed: Option<i64>,
+    #[serde(default)]
+    pub num_ctx: Option<u32>,
+    #[serde(default)]
+    pub mirostat: Option<u32>,
+    #[serde(default)]
+    pub mirostat_tau: Option<f32>,
+    #[serde(default)]
+    pub mirostat_eta: Option<f32>,
+    #[serde(default)]
+    pub tfs_z: Option<f32>,
+    #[serde(default)]
+    pub typical_p: Option<f32>,
+    /// Response format constraint: `"json"` for generic JSON, or a JSON Schema object.
+    #[serde(default)]
+    pub response_format: Option<serde_json::Value>,
+    /// Streaming protocol options, forwarded to OpenAI-compatible remote backends.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stream_options: Option<serde_json::Value>,
+    /// Base64-encoded images for multimodal inference.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+    /// Path to multimodal projector file (internal, not serialized over API).
+    #[serde(skip)]
+    pub projector_path: Option<String>,
+    /// Last N tokens to consider for repetition penalty (0 = disabled, -1 = ctx_size).
+    #[serde(default)]
+    pub repeat_last_n: Option<i32>,
+    /// Whether to penalize newline tokens.
+    #[serde(default)]
+    pub penalize_newline: Option<bool>,
+    /// Number of tokens to process in parallel (batch size).
+    #[serde(default)]
+    pub num_batch: Option<u32>,
+    /// Number of threads for generation.
+    #[serde(default)]
+    pub num_thread: Option<u32>,
+    /// Number of threads for batch processing.
+    #[serde(default)]
+    pub num_thread_batch: Option<u32>,
+    /// Enable flash attention.
+    #[serde(default)]
+    pub flash_attention: Option<bool>,
+    /// Number of GPU layers to offload (-1 = all, 0 = none).
+    #[serde(default)]
+    pub num_gpu: Option<i32>,
+    /// Index of the primary GPU.
+    #[serde(default)]
+    pub main_gpu: Option<i32>,
+    /// Whether to use memory-mapped files.
+    #[serde(default)]
+    pub use_mmap: Option<bool>,
+    /// Whether to lock model in memory.
+    #[serde(default)]
+    pub use_mlock: Option<bool>,
+    /// Number of parallel decode slots (concurrent inference sequences). 1 = serial.
+    #[serde(default)]
+    pub num_parallel: Option<u32>,
+    /// Suffix for fill-in-the-middle completion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
+    /// Context tokens from a previous generate call (for conversation continuity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub context: Option<Vec<u32>>,
+}
+
+/// A streamed chunk from a text completion.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompletionResponseChunk {
+    pub text: String,
+    pub done: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt_tokens: Option<u32>,
+    /// "stop" when EOS/stop-sequence hit, "length" when max_tokens reached
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub done_reason: Option<String>,
+    /// Time spent evaluating the prompt, in nanoseconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt_eval_duration_ns: Option<u64>,
+    /// Token ID for this chunk (used to build context for conversation continuity).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token_id: Option<u32>,
+}
+
+// ============================================================================
+// Embedding types
+// ============================================================================
+
+/// Request for embedding generation.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmbeddingRequest {
+    pub input: Vec<String>,
+}
+
+/// Response containing generated embeddings.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmbeddingResponse {
+    pub embeddings: Vec<Vec<f32>>,
+}
+
+// ============================================================================
+// System One (Jev-shaped) decision scoring
+// ============================================================================
+
+/// Backend request for typed System One decision scoring.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemOneRequest {
+    pub state: String,
+    pub questions: BTreeMap<String, SystemOneQuestionSpec>,
+}
+
+/// Backend question specification.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "lowercase")]
+pub enum SystemOneQuestionSpec {
+    Choice {
+        instructions: String,
+        criteria: BTreeMap<String, String>,
+    },
+    Noul {
+        instructions: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        criteria: Option<BTreeMap<String, String>>,
+    },
+    Score {
+        instructions: String,
+        criteria: Vec<String>,
+    },
+}
+
+/// Backend response for System One scoring.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemOneResponse {
+    pub answers: BTreeMap<String, SystemOneAnswerSpec>,
+    pub input_tokens: u32,
+}
+
+/// Backend answer specification (mirrors the Jev wire shape).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "lowercase")]
+pub enum SystemOneAnswerSpec {
+    Choice {
+        choice: String,
+        confidence: f64,
+        probabilities: BTreeMap<String, f64>,
+    },
+    Noul {
+        noul: f64,
+    },
+    Score {
+        score: f64,
+        confidence: f64,
+        legend: BTreeMap<String, String>,
+        probabilities: BTreeMap<String, f64>,
+    },
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_chat_message_serialize() {
+        let msg = ChatMessage {
+            role: "user".to_string(),
+            content: MessageContent::Text("hello".to_string()),
+            name: None,
+            tool_calls: None,
+            tool_call_id: None,
+            images: None,
+        };
+        let json = serde_json::to_string(&msg).unwrap();
+        assert!(json.contains("user"));
+        assert!(json.contains("hello"));
+    }
+
+    #[test]
+    fn test_chat_message_text_content() {
+        let json = r#"{"role":"user","content":"hello"}"#;
+        let msg: ChatMessage = serde_json::from_str(json).unwrap();
+        assert_eq!(msg.content.text(), "hello");
+    }
+
+    #[test]
+    fn test_chat_message_multimodal_content() {
+        let json = r#"{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What is this?"},
+                {"type": "image_url", "image_url": {"url": "https://example.com/img.jpg"}}
+            ]
+        }"#;
+        let msg: ChatMessage = serde_json::from_str(json).unwrap();
+        assert_eq!(msg.content.text(), "What is this?");
+    }
+
+    #[test]
+    fn test_chat_request_has_image_inputs_covers_all_sources() {
+        let mut request: ChatRequest =
+            serde_json::from_str(r#"{"messages":[{"role":"user","content":"hello"}]}"#).unwrap();
+
+        assert!(!request.has_image_inputs());
+
+        request.messages[0].images = Some(vec!["message-base64-image".to_string()]);
+        assert!(request.has_image_inputs());
+
+        request.messages[0].images = None;
+        request.messages[0].content = MessageContent::Parts(vec![ContentPart::ImageUrl {
+            image_url: ImageUrl {
+                url: "data:image/png;base64,part-base64-image".to_string(),
+                detail: None,
+                unsupported: Default::default(),
+            },
+            unsupported: Default::default(),
+        }]);
+        assert!(request.has_image_inputs());
+
+        request.messages[0].content = MessageContent::Text("hello".to_string());
+        request.images = Some(vec!["request-base64-image".to_string()]);
+        assert!(request.has_image_inputs());
+    }
+
+    #[test]
+    fn test_effective_prompt_token_ids_digest_is_domain_separated() {
+        let rendered = EffectivePromptDigest::chat_rendered_prompt("test", "\x01\0\0\0");
+        let tokens = EffectivePromptDigest::chat_prompt_token_ids("test", &[1]);
+        assert_eq!(tokens.kind, EffectivePromptClaimKind::ChatPromptTokenIds);
+        assert_eq!(tokens.sha256.len(), 64);
+        assert_ne!(tokens.sha256, rendered.sha256);
+    }
+
+    #[test]
+    fn test_effective_prompt_token_ids_digest_changes_with_order() {
+        let a = EffectivePromptDigest::chat_prompt_token_ids("test", &[1, 2]);
+        let b = EffectivePromptDigest::chat_prompt_token_ids("test", &[2, 1]);
+        assert_ne!(a.sha256, b.sha256);
+    }
+
+    #[test]
+    fn test_effective_text_prompt_digest_uses_text_kind() {
+        let digest = EffectivePromptDigest::text_prompt("test", "hello");
+
+        assert_eq!(digest.backend, "test");
+        assert_eq!(digest.kind, EffectivePromptClaimKind::TextPrompt);
+        assert_eq!(
+            digest.sha256,
+            hex::encode(Sha256::digest("hello".as_bytes()))
+        );
+    }
+
+    #[test]
+    fn test_multimodal_claim_kind_is_reserved_not_emitible() {
+        assert!(!EffectivePromptClaimKind::ChatMultimodalRenderedPrompt.digest_emitible());
+        assert!(EffectivePromptClaimKind::ChatMultimodalRenderedPrompt.is_multimodal_chat_claim());
+        assert!(EffectivePromptClaimKind::ChatRenderedPrompt.is_text_only_chat_claim());
+
+        let err = EffectivePromptDigest::try_new(
+            "test",
+            EffectivePromptClaimKind::ChatMultimodalRenderedPrompt,
+            "aa".repeat(32),
+        )
+        .unwrap_err();
+        assert!(err.contains("reserved"));
+        assert!(err.contains("abstain"));
+    }
+
+    #[test]
+    fn test_effective_prompt_claim_kind_round_trips_wire_names() {
+        for kind in [
+            EffectivePromptClaimKind::ChatRenderedPrompt,
+            EffectivePromptClaimKind::ChatPromptTokenIds,
+            EffectivePromptClaimKind::TextPrompt,
+            EffectivePromptClaimKind::ChatMultimodalRenderedPrompt,
+        ] {
+            let json = serde_json::to_string(&kind).unwrap();
+            assert_eq!(json, format!("\"{}\"", kind.as_str()));
+            let parsed: EffectivePromptClaimKind = serde_json::from_str(&json).unwrap();
+            assert_eq!(parsed, kind);
+            assert_eq!(
+                EffectivePromptClaimKind::parse(kind.as_str()).unwrap(),
+                kind
+            );
+        }
+
+        assert!(EffectivePromptClaimKind::parse("chat.invented").is_err());
+    }
+
+    #[test]
+    fn test_chat_request_defaults() {
+        let json = r#"{"messages": []}"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        assert!(req.temperature.is_none());
+        assert!(req.top_p.is_none());
+        assert!(req.max_tokens.is_none());
+        assert!(!req.stream);
+        assert!(req.top_k.is_none());
+        assert!(req.min_p.is_none());
+        assert!(req.repeat_penalty.is_none());
+        assert!(req.frequency_penalty.is_none());
+        assert!(req.presence_penalty.is_none());
+        assert!(req.seed.is_none());
+        assert!(req.num_ctx.is_none());
+        assert!(req.mirostat.is_none());
+        assert!(req.response_format.is_none());
+        assert!(req.tools.is_none());
+        assert!(req.tool_choice.is_none());
+        // Anonymous by default — no session_id means no KV cache reuse
+        assert!(req.session_id.is_none());
+    }
+
+    #[test]
+    fn test_chat_request_session_id_parsed() {
+        let json = r#"{"messages": [], "session_id": "user-abc-123"}"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        assert_eq!(req.session_id.as_deref(), Some("user-abc-123"));
+    }
+
+    #[test]
+    fn test_chat_request_session_id_omitted_in_serialization_when_none() {
+        let json = r#"{"messages": []}"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        let out = serde_json::to_string(&req).unwrap();
+        assert!(
+            !out.contains("session_id"),
+            "session_id must be omitted when None"
+        );
+    }
+
+    #[test]
+    fn test_completion_request_session_id_parsed() {
+        let json = r#"{"prompt": "hi", "session_id": "sess-xyz"}"#;
+        let req: CompletionRequest = serde_json::from_str(json).unwrap();
+        assert_eq!(req.session_id.as_deref(), Some("sess-xyz"));
+    }
+
+    #[test]
+    fn test_completion_request_session_id_none_by_default() {
+        let json = r#"{"prompt": "hi"}"#;
+        let req: CompletionRequest = serde_json::from_str(json).unwrap();
+        assert!(req.session_id.is_none());
+    }
+
+    #[test]
+    fn test_chat_request_with_tools() {
+        let json = r#"{
+            "messages": [],
+            "tools": [{
+                "type": "function",
+                "function": {
+                    "name": "get_weather",
+                    "description": "Get weather",
+                    "parameters": {"type": "object", "properties": {"location": {"type": "string"}}}
+                }
+            }],
+            "tool_choice": "auto"
+        }"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        assert!(req.tools.is_some());
+        let tools = req.tools.unwrap();
+        assert_eq!(tools.len(), 1);
+        assert_eq!(tools[0].function.name, "get_weather");
+    }
+
+    #[test]
+    fn test_chat_response_chunk() {
+        let chunk = ChatResponseChunk {
+            content: "hi".to_string(),
+            thinking_content: None,
+            done: false,
+            prompt_tokens: None,
+            done_reason: None,
+            prompt_eval_duration_ns: None,
+            tool_calls: None,
+            upstream_timings: None,
+        };
+        let json = serde_json::to_string(&chunk).unwrap();
+        let parsed: ChatResponseChunk = serde_json::from_str(&json).unwrap();
+        assert_eq!(parsed.content, "hi");
+        assert!(!parsed.done);
+        assert!(!json.contains("prompt_tokens"));
+        assert!(!json.contains("done_reason"));
+        assert!(!json.contains("tool_calls"));
+        assert!(!json.contains("thinking_content"));
+    }
+
+    #[test]
+    fn test_chat_response_chunk_with_tool_calls() {
+        let chunk = ChatResponseChunk {
+            content: String::new(),
+            thinking_content: None,
+            done: true,
+            prompt_tokens: Some(10),
+            done_reason: Some("tool_calls".to_string()),
+            prompt_eval_duration_ns: None,
+            tool_calls: Some(vec![ToolCall {
+                id: "call_1".to_string(),
+                tool_type: "function".to_string(),
+                function: FunctionCall {
+                    name: "get_weather".to_string(),
+                    arguments: r#"{"location":"SF"}"#.to_string(),
+                },
+                index: Some(0),
+            }]),
+            upstream_timings: None,
+        };
+        let json = serde_json::to_string(&chunk).unwrap();
+        assert!(json.contains("get_weather"));
+        assert!(json.contains("call_1"));
+    }
+
+    #[test]
+    fn test_message_content_text_extraction() {
+        let text = MessageContent::Text("hello".to_string());
+        assert_eq!(text.text(), "hello");
+
+        let parts = MessageContent::Parts(vec![
+            ContentPart::Text {
+                text: "part1".to_string(),
+                unsupported: Default::default(),
+            },
+            ContentPart::Text {
+                text: "part2".to_string(),
+                unsupported: Default::default(),
+            },
+        ]);
+        assert_eq!(parts.text(), "part1\npart2");
+    }
+
+    #[test]
+    fn test_tool_call_serialize() {
+        let tc = ToolCall {
+            id: "call_abc".to_string(),
+            tool_type: "function".to_string(),
+            function: FunctionCall {
+                name: "test_fn".to_string(),
+                arguments: "{}".to_string(),
+            },
+            index: None,
+        };
+        let json = serde_json::to_string(&tc).unwrap();
+        assert!(json.contains("call_abc"));
+        assert!(json.contains("test_fn"));
+    }
+
+    #[test]
+    fn test_tool_choice_string() {
+        let json = r#""auto""#;
+        let choice: ToolChoice = serde_json::from_str(json).unwrap();
+        match choice {
+            ToolChoice::String(s) => assert_eq!(s, "auto"),
+            _ => panic!("Expected string variant"),
+        }
+    }
+
+    #[test]
+    fn test_tool_choice_specific() {
+        let json = r#"{"type":"function","function":{"name":"get_weather"}}"#;
+        let choice: ToolChoice = serde_json::from_str(json).unwrap();
+        match choice {
+            ToolChoice::Specific(s) => {
+                assert_eq!(s.function.name, "get_weather");
+                assert!(s.unsupported.is_empty());
+                assert!(s.function.unsupported.is_empty());
+            }
+            _ => panic!("Expected specific variant"),
+        }
+    }
+
+    #[test]
+    fn test_tool_choice_specific_collects_unsupported_fields() {
+        let json = r#"{
+            "type":"function",
+            "function":{"name":"get_weather","strict":true},
+            "cache_control": true
+        }"#;
+        let choice: ToolChoice = serde_json::from_str(json).unwrap();
+        match choice {
+            ToolChoice::Specific(s) => {
+                assert_eq!(s.unsupported_fields(), vec!["cache_control"]);
+                assert_eq!(s.function.unsupported_fields(), vec!["strict"]);
+            }
+            _ => panic!("Expected specific variant"),
+        }
+    }
+
+    #[test]
+    fn test_completion_request_defaults() {
+        let json = r#"{"prompt": "test"}"#;
+        let req: CompletionRequest = serde_json::from_str(json).unwrap();
+        assert_eq!(req.prompt, "test");
+        assert!(!req.stream);
+    }
+
+    #[test]
+    fn test_completion_response_chunk() {
+        let chunk = CompletionResponseChunk {
+            text: "token".to_string(),
+            done: true,
+            prompt_tokens: Some(10),
+            done_reason: Some("stop".to_string()),
+            prompt_eval_duration_ns: Some(5_000_000),
+            token_id: Some(123),
+        };
+        let json = serde_json::to_string(&chunk).unwrap();
+        let parsed: CompletionResponseChunk = serde_json::from_str(&json).unwrap();
+        assert_eq!(parsed.text, "token");
+        assert!(parsed.done);
+        assert_eq!(parsed.prompt_tokens, Some(10));
+        assert_eq!(parsed.done_reason.as_deref(), Some("stop"));
+        assert_eq!(parsed.prompt_eval_duration_ns, Some(5_000_000));
+        assert_eq!(parsed.token_id, Some(123));
+    }
+
+    #[test]
+    fn test_completion_response_chunk_token_id_skipped_when_none() {
+        let chunk = CompletionResponseChunk {
+            text: "hi".to_string(),
+            done: false,
+            prompt_tokens: None,
+            done_reason: None,
+            prompt_eval_duration_ns: None,
+            token_id: None,
+        };
+        let json = serde_json::to_string(&chunk).unwrap();
+        assert!(
+            !json.contains("token_id"),
+            "token_id should be skipped when None"
+        );
+    }
+
+    #[test]
+    fn test_completion_response_chunk_token_id_present_when_set() {
+        let chunk = CompletionResponseChunk {
+            text: "hi".to_string(),
+            done: false,
+            prompt_tokens: None,
+            done_reason: None,
+            prompt_eval_duration_ns: None,
+            token_id: Some(99),
+        };
+        let json = serde_json::to_string(&chunk).unwrap();
+        assert!(
+            json.contains("\"token_id\":99"),
+            "token_id should be present when set"
+        );
+    }
+
+    #[test]
+    fn test_completion_response_chunk_deserialize_without_token_id() {
+        // Backward compatibility: old JSON without token_id should still deserialize
+        let json = r#"{"text":"hi","done":false}"#;
+        let chunk: CompletionResponseChunk = serde_json::from_str(json).unwrap();
+        assert_eq!(chunk.text, "hi");
+        assert_eq!(chunk.token_id, None);
+    }
+
+    #[test]
+    fn test_embedding_request() {
+        let req = EmbeddingRequest {
+            input: vec!["hello".to_string(), "world".to_string()],
+        };
+        let json = serde_json::to_string(&req).unwrap();
+        assert!(json.contains("hello"));
+        assert!(json.contains("world"));
+    }
+
+    #[test]
+    fn test_embedding_response() {
+        let resp = EmbeddingResponse {
+            embeddings: vec![vec![0.1, 0.2, 0.3]],
+        };
+        let json = serde_json::to_string(&resp).unwrap();
+        let parsed: EmbeddingResponse = serde_json::from_str(&json).unwrap();
+        assert_eq!(parsed.embeddings.len(), 1);
+        assert_eq!(parsed.embeddings[0].len(), 3);
+    }
+
+    #[test]
+    fn test_chat_message_with_tool_calls() {
+        let json = r#"{
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [{
+                "id": "call_1",
+                "type": "function",
+                "function": {"name": "get_weather", "arguments": "{\"location\":\"SF\"}"}
+            }]
+        }"#;
+        let msg: ChatMessage = serde_json::from_str(json).unwrap();
+        assert_eq!(msg.role, "assistant");
+        assert!(msg.tool_calls.is_some());
+        let calls = msg.tool_calls.unwrap();
+        assert_eq!(calls[0].function.name, "get_weather");
+    }
+
+    #[test]
+    fn test_chat_message_tool_result() {
+        let json = r#"{
+            "role": "tool",
+            "content": "72°F and sunny",
+            "tool_call_id": "call_1"
+        }"#;
+        let msg: ChatMessage = serde_json::from_str(json).unwrap();
+        assert_eq!(msg.role, "tool");
+        assert_eq!(msg.tool_call_id.as_deref(), Some("call_1"));
+        assert_eq!(msg.content.text(), "72°F and sunny");
+    }
+
+    #[test]
+    fn test_chat_request_num_parallel_defaults_to_none() {
+        let json = r#"{"messages": []}"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        assert!(req.num_parallel.is_none());
+    }
+
+    #[test]
+    fn test_chat_request_num_parallel_parsed() {
+        let json = r#"{"messages": [], "num_parallel": 4}"#;
+        let req: ChatRequest = serde_json::from_str(json).unwrap();
+        assert_eq!(req.num_parallel, Some(4));
+    }
+
+    #[test]
+    fn test_completion_request_num_parallel_defaults_to_none() {
+        let json = r#"{"prompt": "hi"}"#;
+        let req: CompletionRequest = serde_json::from_str(json).unwrap();
+        assert!(req.num_parallel.is_none());
+    }
+
+    #[test]
+    fn test_completion_request_num_parallel_parsed() {
+        let json = r#"{"prompt": "hi", "num_parallel": 2}"#;
+        let req: CompletionRequest = serde_json::from_str(json).unwrap();
+        assert_eq!(req.num_parallel, Some(2));
+    }
+}

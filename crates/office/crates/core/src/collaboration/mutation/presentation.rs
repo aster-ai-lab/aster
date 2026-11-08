@@ -1,0 +1,102 @@
+use aster_use_core::UseResult;
+
+use super::super::{
+    collaboration_error, NativeOfficeCollaborationManifest, NativeOfficeCollaborationMutation,
+    NativeOfficeCollaborationPresentationContainer,
+    NativeOfficeCollaborationPresentationContainerKind,
+    NativeOfficeCollaborationPresentationElementAddress, NativeOfficeCollaborationProjectedContent,
+};
+
+mod deck;
+mod element;
+mod find;
+mod json;
+mod order;
+mod state;
+mod text_fragment;
+
+pub(in crate::collaboration) use find::find_presentation_text;
+
+pub(super) fn validate_presentation_mutation(
+    mutation: &NativeOfficeCollaborationMutation,
+) -> UseResult<()> {
+    match mutation {
+        NativeOfficeCollaborationMutation::PresentationMoveElement { .. } => {
+            order::validate_element_order_mutation(mutation)
+        }
+        NativeOfficeCollaborationMutation::PresentationMoveSlide { .. }
+        | NativeOfficeCollaborationMutation::PresentationSetGroup { .. }
+        | NativeOfficeCollaborationMutation::PresentationSetBackground { .. } => {
+            deck::validate_deck_mutation(mutation)
+        }
+        _ => element::validate_element_mutation(mutation),
+    }
+}
+
+pub(in crate::collaboration) fn project_presentation_content(
+    doc: &yrs::Doc,
+    manifest: &NativeOfficeCollaborationManifest,
+) -> UseResult<NativeOfficeCollaborationProjectedContent> {
+    let kinds = [
+        NativeOfficeCollaborationPresentationContainerKind::Slide,
+        NativeOfficeCollaborationPresentationContainerKind::Master,
+        NativeOfficeCollaborationPresentationContainerKind::Layout,
+    ];
+    let mut containers = Vec::new();
+    for container_kind in kinds {
+        for container_id in state::ordered_container_ids(doc, manifest, container_kind)? {
+            let sheet = state::read_element_state(doc, manifest, container_kind, &container_id)?;
+            let mut elements = Vec::with_capacity(sheet.active_order.len());
+            for element_id in &sheet.active_order {
+                let Some(record) = sheet.records.get(element_id) else {
+                    continue;
+                };
+                if record.tombstoned {
+                    continue;
+                }
+                elements.push(NativeOfficeCollaborationPresentationElementAddress {
+                    element_id: element_id.clone(),
+                    element: record.value.clone(),
+                });
+            }
+            containers.push(NativeOfficeCollaborationPresentationContainer {
+                container_kind,
+                container_id,
+                elements,
+            });
+        }
+    }
+    Ok(NativeOfficeCollaborationProjectedContent::Presentation { containers })
+}
+
+pub(super) fn apply_presentation_mutation(
+    doc: &yrs::Doc,
+    manifest: &NativeOfficeCollaborationManifest,
+    mutation: &NativeOfficeCollaborationMutation,
+) -> UseResult<()> {
+    match mutation {
+        NativeOfficeCollaborationMutation::PresentationMoveElement { .. } => {
+            order::apply_element_order_mutation(doc, manifest, mutation)
+        }
+        NativeOfficeCollaborationMutation::PresentationMoveSlide { .. }
+        | NativeOfficeCollaborationMutation::PresentationSetGroup { .. }
+        | NativeOfficeCollaborationMutation::PresentationSetBackground { .. } => {
+            deck::apply_deck_mutation(doc, manifest, mutation)
+        }
+        _ => element::apply_element_mutation(doc, manifest, mutation),
+    }
+}
+
+fn invalid_presentation_mutation(message: impl Into<String>) -> aster_use_core::UseError {
+    collaboration_error("office.collaboration.mutation_invalid", message)
+}
+
+fn presentation_match_conflict(message: impl Into<String>) -> aster_use_core::UseError {
+    collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
+        "Read the latest collaborative Presentation scene element and z-order, then retry.",
+    )
+}
+
+fn invalid_shared_presentation(message: impl Into<String>) -> aster_use_core::UseError {
+    collaboration_error("office.collaboration.content_invalid", message)
+}

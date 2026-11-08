@@ -1,0 +1,43 @@
+[package]
+name = "aster-office-cli"
+description = "Command-line interface for native Aster Office document operations"
+version = "0.45.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/aster-ai-lab/Office"
+authors = ["Aster"]
+rust-version = "1.85"
+publish = false
+
+[lib]
+name = "aster_office_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "aster-office"
+path = "src/main.rs"
+
+[features]
+default = ["browser"]
+browser = ["dep:aster-use-browser"]
+
+[dependencies]
+aster-office = {path = "../core"}
+url = {version = "2"}
+tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "signal", "sync", "time"]}
+tempfile = {version = "3"}
+sha2 = {version = "0.10"}
+serde_json = {version = "1"}
+serde = {version = "1", features = ["derive"]}
+schemars = {version = "1.2"}
+rmcp = {version = "=0.8.5", default-features = false, features = ["base64", "macros", "server", "transport-io"]}
+getrandom = {version = "0.3"}
+futures-util = {version = "0.3"}
+base64 = {version = "0.22"}
+axum = {version = "0.8"}
+aster-use-core = {path = "../../../use/core"}
+aster-use-browser = {optional = true, path = "../../../browser"}
+[dev-dependencies]
+yrs = {version = "=0.27.3", features = ["sync"]}
+reqwest = {version = "0.12", default-features = false, features = ["rustls-tls", "stream"]}
+async-trait = {version = "0.1"}

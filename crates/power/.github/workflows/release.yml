@@ -1,0 +1,423 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re)build release assets for"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: aster-power
+  BUILD_FEATURES: "--features hf,hw-verify,embedded-inference,magnitude"
+  LINUX_CPU_FEATURES: "--no-default-features --features server,llamacpp,mistralrs,embedded-inference,tls,vsock,hf,hw-verify,picolm"
+  # This exact revision is shared with CI and is guarded by a source test.
+  CROSS_GIT_REV: "8c1a8aa4b661711f4b7b6ac07c2e8929ce2f7d27"
+  ACL_GIT_REV: "5317e166222495585909d81f2caffdca90273c99"
+  RUNTIME_GIT_REV: "dbe2ee9b73c995c4dafbcec16e40be3b2362eb0a"
+
+jobs:
+  # ───────────────────────────────────────────────
+  # Gate: CI checks must pass before any publishing
+  # ───────────────────────────────────────────────
+  ci:
+    name: CI Checks
+    runs-on: ubuntu-latest
+    outputs:
+      source_commit: ${{ steps.production-evidence.outputs.source_commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Checkout local dependency sources
+        run: |
+          git clone --quiet https://github.com/aster-ai-lab/ACL.git ../acl
+          git -C ../acl checkout --detach "${ACL_GIT_REV}"
+          git clone --quiet https://github.com/aster-ai-lab/Runtime.git ../runtime
+          git -C ../runtime checkout --detach "${RUNTIME_GIT_REV}"
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Verify release identity
+        env:
+          RELEASE_TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: |
+          RELEASE_TAG="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            RELEASE_TAG="${RELEASE_TAG_INPUT}"
+          fi
+          CRATE_VERSION="$(cargo metadata --locked --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "aster-power") | .version')"
+          if [ -z "${CRATE_VERSION}" ] || [ "${RELEASE_TAG}" != "v${CRATE_VERSION}" ]; then
+            echo "release tag ${RELEASE_TAG} does not match aster-power v${CRATE_VERSION}" >&2
+            exit 1
+          fi
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: false
+
+      - name: Format check
+        run: cargo fmt -- --check
+
+      - name: Clippy
+        run: cargo clippy --locked --all-targets --features hf,hw-verify,embedded-inference,magnitude --no-deps -- -D warnings
+
+      - name: Tests
+        run: cargo test --locked --lib
+
+      - name: Magnitude native backend tests
+        run: cargo test --locked --no-default-features --features magnitude --lib
+
+      - name: Confidential release promotion tests
+        run: cargo test --locked --no-default-features --features server,embedded-inference,hw-verify --bin aster-power-verify
+
+      - name: Release capture and handoff tests
+        run: cargo test --locked --no-default-features --features embedded-inference --test release_capture_cli --test release_handoff_cli
+
+      - name: Release evidence commit layout test
+        run: bash tools/test-release-evidence-commit.sh
+
+      - name: Release candidate preflight test
+        run: bash tools/test-release-candidate.sh
+
+      - name: Release workflow contract test
+        run: bash tools/test-release-workflow-contract.sh
+
+      - name: Verify production release evidence
+        id: production-evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: |
+          CRATE_VERSION="$(cargo metadata --locked --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "aster-power") | .version')"
+          MAJOR_VERSION="${CRATE_VERSION%%.*}"
+          if [ "${MAJOR_VERSION}" = "0" ]; then
+            echo "Pre-v1 release: strict production evidence gate is not required."
+            echo "source_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          RELEASE_TAG="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            RELEASE_TAG="${RELEASE_TAG_INPUT}"
+          fi
+          TAG_REF_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}")"
+          if [ "$(jq -r '.object.type' <<< "${TAG_REF_JSON}")" != "tag" ]; then
+            echo "production releases require an annotated, GitHub-verified tag" >&2
+            exit 1
+          fi
+          TAG_OBJECT_SHA="$(jq -r '.object.sha' <<< "${TAG_REF_JSON}")"
+          TAG_OBJECT_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/${TAG_OBJECT_SHA}")"
+          if [ "$(jq -r '.tag' <<< "${TAG_OBJECT_JSON}")" != "${RELEASE_TAG}" ] || \
+             [ "$(jq -r '.object.type' <<< "${TAG_OBJECT_JSON}")" != "commit" ] || \
+             [ "$(jq -r '.verification.verified' <<< "${TAG_OBJECT_JSON}")" != "true" ]; then
+            echo "production release tag must directly identify a commit and have a GitHub-verified signature" >&2
+            exit 1
+          fi
+          TAG_COMMIT="$(jq -r '.object.sha' <<< "${TAG_OBJECT_JSON}")"
+          if [ "${TAG_COMMIT}" != "$(git rev-parse HEAD)" ]; then
+            echo "checked-out release commit does not match the signed tag target" >&2
+            exit 1
+          fi
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          if ! git merge-base --is-ancestor "${TAG_COMMIT}" refs/remotes/origin/main; then
+            echo "production evidence commit must be reachable from origin/main" >&2
+            exit 1
+          fi
+
+          POWER_COMMIT="$(bash tools/verify-release-candidate.sh \
+            --evidence-ref "${TAG_COMMIT}" \
+            --main-ref refs/remotes/origin/main)"
+          echo "source_commit=${POWER_COMMIT}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Linux CPU feature dependencies
+        run: sudo apt-get update && sudo apt-get install -y clang libclang-dev cmake
+
+      # CUDA and Metal need different native runners/toolchains, so a Linux
+      # release gate must not combine both through Cargo's --all-features.
+      - name: Linux CPU feature tests
+        run: cargo test --locked $LINUX_CPU_FEATURES --lib
+
+      - name: TEE minimal clippy
+        run: cargo clippy --locked --all-targets --no-default-features --features tee-minimal -- -D warnings
+
+      - name: TEE minimal tests
+        run: cargo test --locked --no-default-features --features tee-minimal --tests
+
+  # ───────────────────────────────────────────────
+  # Build release binaries for all platforms
+  # ───────────────────────────────────────────────
+  build:
+    needs: ci
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            use_cross: false
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            use_cross: false
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            use_cross: true
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            use_cross: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.ci.outputs.source_commit }}
+
+      - name: Checkout local dependency sources
+        run: |
+          git clone --quiet https://github.com/aster-ai-lab/ACL.git ../acl
+          git -C ../acl checkout --detach "${ACL_GIT_REV}"
+          git clone --quiet https://github.com/aster-ai-lab/Runtime.git ../runtime
+          git -C ../runtime checkout --detach "${RUNTIME_GIT_REV}"
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+
+      - name: Install cross
+        if: matrix.use_cross
+        run: >-
+          cargo install cross --git https://github.com/cross-rs/cross
+          --rev "${CROSS_GIT_REV}" --locked
+
+      - name: Build release binary
+        run: |
+          if [ "${{ matrix.use_cross }}" = "true" ]; then
+            cross build --locked --release --target ${{ matrix.target }} ${{ env.BUILD_FEATURES }}
+          else
+            cargo build --locked --release --target ${{ matrix.target }} ${{ env.BUILD_FEATURES }}
+          fi
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package binaries
+        id: package
+        run: |
+          TAG="${{ steps.tag.outputs.version }}"
+          ARCHIVE="${BINARY_NAME}-${TAG}-${{ matrix.target }}.tar.gz"
+          RELEASE_DIR="target/${{ matrix.target }}/release"
+
+          cp "${RELEASE_DIR}/${BINARY_NAME}" "${BINARY_NAME}"
+          cp "${RELEASE_DIR}/${BINARY_NAME}-verify" "${BINARY_NAME}-verify"
+
+          tar czf "${ARCHIVE}" "${BINARY_NAME}" "${BINARY_NAME}-verify"
+          shasum -a 256 "${ARCHIVE}" > "${ARCHIVE}.sha256"
+          echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.target }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
+
+  # ───────────────────────────────────────────────
+  # Create GitHub Release
+  # ───────────────────────────────────────────────
+  github-release:
+    name: GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Collect release assets
+        run: |
+          mkdir -p release-assets
+          find artifacts -type f \( -name '*.tar.gz' -o -name '*.sha256' \) -exec cp {} release-assets/ \;
+          TAG="${{ steps.tag.outputs.version }}"
+          VERSION="${TAG#v}"
+          MAJOR_VERSION="${VERSION%%.*}"
+          if [ "${MAJOR_VERSION}" != "0" ]; then
+            EVIDENCE_DIR="release/v${VERSION}"
+            cp "${EVIDENCE_DIR}/release-evidence.json" \
+              "release-assets/aster-power-${TAG}-release-evidence.json"
+            cp "${EVIDENCE_DIR}/release-evidence.sha256" \
+              "release-assets/aster-power-${TAG}-release-evidence.sha256"
+          fi
+          ls -lh release-assets/
+
+      - name: Generate release notes
+        run: |
+          PREV_TAG=$(git tag --sort=-v:refname | grep '^v' | head -2 | tail -1)
+          if [ -z "$PREV_TAG" ]; then
+            NOTES="Initial release"
+          else
+            NOTES=$(git log "${PREV_TAG}..HEAD" --oneline --no-merges --pretty=format:"- %s" | head -50)
+          fi
+          echo "$NOTES" > /tmp/release-notes.md
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.tag.outputs.version }}"
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            echo "Release ${TAG} exists — uploading assets (overwriting duplicates)..."
+            gh release upload "${TAG}" release-assets/* --clobber
+          else
+            echo "Creating release ${TAG}..."
+            gh release create "${TAG}" release-assets/* \
+              --title "${TAG}" \
+              --notes-file /tmp/release-notes.md
+          fi
+
+  # ───────────────────────────────────────────────
+  # Update Homebrew formula
+  # ───────────────────────────────────────────────
+  homebrew:
+    name: Homebrew
+    needs: github-release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Determine tag
+        id: tag
+        run: echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute SHA256 values
+        id: sha
+        run: |
+          TAG="${{ steps.tag.outputs.version }}"
+          VERSION="${TAG#v}"
+          for target in aarch64-apple-darwin x86_64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do
+            ARCHIVE="aster-power-${TAG}-${target}.tar.gz"
+            SHA=$(sha256sum "artifacts/${target}/${ARCHIVE}" | awk '{print $1}')
+            KEY=$(echo "${target}" | tr '-' '_')
+            echo "${KEY}=${SHA}" >> "$GITHUB_OUTPUT"
+          done
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Update Homebrew formula
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          FORMULA_TAG: ${{ steps.tag.outputs.version }}
+          FORMULA_VERSION: ${{ steps.sha.outputs.version }}
+          SHA_AARCH64_DARWIN: ${{ steps.sha.outputs.aarch64_apple_darwin }}
+          SHA_X86_64_DARWIN: ${{ steps.sha.outputs.x86_64_apple_darwin }}
+          SHA_AARCH64_LINUX: ${{ steps.sha.outputs.aarch64_unknown_linux_gnu }}
+          SHA_X86_64_LINUX: ${{ steps.sha.outputs.x86_64_unknown_linux_gnu }}
+        run: |
+          git clone https://x-access-token:${GH_TOKEN}@github.com/aster-ai-lab/homebrew-tap.git tap
+          cd tap
+
+          python3 -c "
+          import os
+          tag = os.environ['FORMULA_TAG']
+          ver = os.environ['FORMULA_VERSION']
+          shas = {
+              'aarch64_darwin': os.environ['SHA_AARCH64_DARWIN'],
+              'x86_64_darwin': os.environ['SHA_X86_64_DARWIN'],
+              'aarch64_linux': os.environ['SHA_AARCH64_LINUX'],
+              'x86_64_linux': os.environ['SHA_X86_64_LINUX'],
+          }
+          base = f'https://github.com/aster-ai-lab/Power/releases/download/{tag}/aster-power-{tag}'
+          formula = f'''class AsterPower < Formula
+            desc \"Model-neutral verifiable inference for confidential systems\"
+            homepage \"https://github.com/aster-ai-lab/Power\"
+            version \"{ver}\"
+            license \"MIT\"
+
+            on_macos do
+              on_arm do
+                url \"{base}-aarch64-apple-darwin.tar.gz\"
+                sha256 \"{shas['aarch64_darwin']}\"
+              end
+              on_intel do
+                url \"{base}-x86_64-apple-darwin.tar.gz\"
+                sha256 \"{shas['x86_64_darwin']}\"
+              end
+            end
+
+            on_linux do
+              on_arm do
+                url \"{base}-aarch64-unknown-linux-gnu.tar.gz\"
+                sha256 \"{shas['aarch64_linux']}\"
+              end
+              on_intel do
+                url \"{base}-x86_64-unknown-linux-gnu.tar.gz\"
+                sha256 \"{shas['x86_64_linux']}\"
+              end
+            end
+
+            def install
+              bin.install \"aster-power\"
+              bin.install \"aster-power-verify\"
+            end
+
+            test do
+              assert_match \"aster-power\", shell_output(\"#{{bin}}/aster-power --version\")
+            end
+          end
+          '''
+          import textwrap
+          with open('Formula/aster-power.rb', 'w') as f:
+              f.write(textwrap.dedent(formula))
+          "
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/aster-power.rb
+          git commit -m "chore: update aster-power to ${FORMULA_TAG}"
+          git push

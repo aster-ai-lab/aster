@@ -1,0 +1,642 @@
+# Aster Power
+
+<p align="center">
+  <a href="https://aster-lab.github.io/Power/"><img src="./site/docs/public/aster-os-logo.png" width="72" alt="Aster OS"></a>
+</p>
+
+
+<p align="center">
+  <strong>Language / 语言:</strong>
+  <a href="README.md">English</a> ·
+  <a href="README.zh-CN.md">中文</a>
+</p>
+
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Power routes model-owned graphs and hosted API requests through bounded admission, accelerator execution, canonical receipts, and caller-owned verification">
+</p>
+
+<p align="center">
+  <a href="https://github.com/aster-ai-lab/Power/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Power/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
+  <a href="https://github.com/aster-ai-lab/Power/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Power/pages.yml?branch=main&amp;style=flat-square&amp;label=docs" alt="Documentation deployment status"></a>
+  <a href="https://aster-lab.github.io/Power/"><img src="https://img.shields.io/badge/docs-ZH-2864e8?style=flat-square" alt="Aster Power Chinese documentation"></a>
+  <a href="https://aster-lab.github.io/Power/en/"><img src="https://img.shields.io/badge/docs-EN-2864e8?style=flat-square" alt="Aster Power English documentation"></a>
+  <a href="https://crates.io/crates/aster-power"><img src="https://img.shields.io/crates/v/aster-power?style=flat-square&amp;color=2864e8" alt="aster-power on crates.io"></a>
+  <a href="https://docs.rs/aster-power"><img src="https://img.shields.io/docsrs/aster-power?style=flat-square" alt="aster-power API documentation"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-17181a?style=flat-square" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#release-status-2026-10-30">Release status</a> &middot;
+  <a href="#measured-not-promised">Evidence</a> &middot;
+  <a href="#choose-the-boundary">Surfaces</a> &middot;
+  <a href="#quick-start">Quick start</a> &middot;
+  <a href="#one-runtime-contract">Architecture</a> &middot;
+  <a href="#optimization-without-hidden-shortcuts">Optimization</a> &middot;
+  <a href="#verification-and-release-gates">Verification</a> &middot;
+  <a href="https://aster-lab.github.io/Power/">Documentation</a>
+</p>
+
+Aster Power is a model-neutral Rust execution layer for inference. Model crates
+keep their topology, tokenizer, preprocessing, mutable state, and quality
+policy. Power supplies the shared boundary around them: artifact identity,
+device placement, admission, cancellation, bounded state, execution receipts,
+and independent verification.
+
+The same contracts support a listener-free embedded library, an
+OpenAI-compatible service, verified artifact provisioning, and a minimal
+layer-streaming TEE profile. The runtime core does not dispatch on Qwen or any
+other model family.
+
+> [!IMPORTANT]
+> **Current release is v0.11.0.** It includes the scoped Magnitude native GGUF
+> Chat profile and is past the frozen parent. **The complete v1.0.0 production
+> release has not been published.**
+
+## Release status (2026-10-30)
+
+| Item | Status |
+| --- | --- |
+| Package / changelog | `Cargo.toml` `0.11.0`; dated `[0.11.0] - 2026-10-30` |
+| What v0.11.0 adds | Magnitude native GGUF Chat, streaming, tools, JSON Schema, CPU / Metal selection, and bounded production guidance |
+| Frozen source parent `S` for production v1 | `514031dc74edd72da7c3bfee40144a38d2d91434` |
+| Development / ROADMAP P0–P6 | Complete (software plan exit). Scale 0 / Phase R has not exited |
+| Exact-parent CPU + CUDA contract captures | Checked in under [release-contract-windows-20260910](docs/benchmarks/release-contract-windows-20260910/README.md) |
+| Capture / assemble operator scripts | [tools/release-capture](tools/release-capture/README.md) |
+| Exact-parent Metal capture | **Missing** (needs real Apple Silicon) |
+| Exact-parent SEV-SNP confidential-GPU capture | **Missing** (needs confidential hardware + NRAS promotion) |
+| `release/v1.0.0/` evidence child on `main` | **Absent** |
+| Annotated production tag `v1.0.0` | **Not published** |
+| This release tag | `v0.11.0` (pre-v1; scoped native Chat evidence, not the complete production evidence gate) |
+
+A production `v1.0.0` tag exists only when an evidence-only child of `S` adds
+exactly `release/v1.0.0/release-evidence.{json,sha256}` for all four platforms
+and a GitHub-verified annotated tag points at that child. Partial Windows
+CPU/CUDA evidence does not authorize the tag.
+
+See [v1 support matrix](docs/v1-support-matrix.md) and
+[production release gate](docs/release-evidence-gate.md).
+
+
+## Measured, not promised
+
+Power records performance through its real streaming API and publishes the
+inputs, raw samples, environment receipts, output identities, and offline
+verifiers. The Qwen3.8-27B results below are one pinned llama.cpp/CUDA
+integration on Windows 11, an RTX 4090, and an Intel Xeon w5-2445. They are
+evidence for those exact workloads, not the scope of the engine or a service
+SLA.
+
+The target in every active row is the same untouched 22,884,408,288-byte Q6_K
+artifact. A Q4 file appears only as an auxiliary proposer where stated.
+
+| Path | Measured result | Acceptance boundary |
+| --- | ---: | --- |
+| Q6_K autoregressive control | 23.642 request-wide token/s | 3 x 100 fixed tasks; 67/100 lenient and 60/100 strict |
+| Q6_K full-vocabulary MTP | **41.035 request-wide token/s; 1.736x** | Same 3 x 100 tasks and same target bytes; 67/100 lenient, 58/100 strict; opt-in |
+| Q6_K MTP/FR peak shape | **174.413 token/s median; 172.723 minimum** | Nine 1,024-token runs with one output digest; not a stable 175 token/s floor |
+| Target-only prefix reuse | **23.5299x backend prefill; 13.1593x TTFT** | Five cold/warm pairs reusing 9,740 prompt tokens; repeated-context latency only |
+| Q6_K + DFlash2 proposer | **144.453 decode; 63.182 end-to-end token/s** | Five exact synthetic pairs; broader 12-task run kept 12/12 answers but only 7/12 complete outputs |
+| Bonsai-2 27B ternary + DFlash2 (RTX 4090) | **137.72 request-wide token/s mean; 1.86×** vs same-binary PQ2 baseline (74.21); max 151.5; **98.6%** draft accept | Power OpenAI e2e, `prism_profile=dflash`, SM89 patched runtime, reasoning off; vendor ternary retains ~98.2% aggregate vs FP16 (~9× smaller weights) |
+
+These rows use different workload shapes and must not be compared as if they
+were one benchmark. Fixed-task scores are quality proxies, not intelligence
+measurements. Exact target verification proves target authority for committed
+tokens; it does not promise byte-identical prose.
+
+[Benchmark index](docs/benchmarks/qwen3.8-27b-q6k-rtx4090/README.md) ·
+[Q6_K-only offline evidence](docs/benchmarks/qwen3.8-27b-q6k-rtx4090/quality/pure-q6-rtx4090-3x.evidence.json) ·
+[Exact reproduction](docs/benchmarks/qwen3.8-27b-q6k-rtx4090/REPRODUCE.md) ·
+[Bonsai-2 DFlash / MTP peak (RTX 4090)](docs/benchmarks/bonsai2-27b-ptq1-rtx4090/README.md) ·
+[Bonsai ternary packing / TTFT (RTX 4090)](docs/benchmarks/bonsai2-27b-packing-rtx4090/README.md) ·
+[Embedded CUDA fusion + resident chains](docs/benchmarks/cuda-fusion-rtx4090/README.md) ·
+[Performance documentation](https://aster-lab.github.io/Power/en/performance)
+
+## Choose the boundary
+
+Pick the narrowest surface that fits the product.
+
+| Surface | Use it when | Network behavior |
+| --- | --- | --- |
+| **Embedded runtime** | A Rust model crate owns a reviewed graph and needs shared devices, scheduling, state, and receipts. | No listener, model hub, download, or child process. |
+| **Hosted service** | Existing clients need chat, completions, embeddings, model lifecycle, metrics, or attestation. | Explicit HTTP, RA-TLS, or vsock transport. |
+| **Artifact provisioner** | A product installs an exact revision-locked model bundle. | Policy-gated download; verified blobs remain reusable offline. |
+| **Minimal TEE service** | A constrained enclave needs a pure-Rust, layer-streaming GGUF path. | Transport remains an explicit feature choice. |
+
+## Quick start
+
+### Run the current hosted service
+
+On Apple Silicon, install the current v0.11.0 release below. For another
+platform, use its matching archive from the same GitHub Release.
+
+~~~bash
+curl -fLO https://github.com/aster-ai-lab/Power/releases/download/v0.11.0/aster-power-v0.11.0-aarch64-apple-darwin.tar.gz
+tar xzf aster-power-v0.11.0-aarch64-apple-darwin.tar.gz
+export PATH="$PWD:$PATH"
+aster-power serve --host 127.0.0.1 --port 11434
+~~~
+
+In another terminal:
+
+~~~bash
+aster-power models pull Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+aster-power chat Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+~~~
+
+For the previous published CLI:
+
+~~~bash
+cargo install aster-power --version 0.9.0 --locked
+~~~
+
+Models and content-addressed blobs live under `~/.aster/power` by default. Set
+`ASTER_POWER_HOME` to move the store.
+
+For Jev-shaped local decision scoring (`POST /v1/systemone`) with Qwen3.5-4B
+**Q8_0** on an RTX 4090-class GPU, see
+[`docs/systemone.md`](docs/systemone.md) and
+[`docs/examples/systemone-qwen35-4b/`](docs/examples/systemone-qwen35-4b/).
+
+### Embed the current runtime
+
+~~~toml
+[dependencies]
+aster-power = { git = "https://github.com/aster-ai-lab/Power.git", branch = "main", default-features = false, features = ["embedded-inference"] }
+~~~
+
+~~~rust
+use aster_power::inference::{DevicePreference, EmbeddedRuntime, InferenceLimits};
+
+fn main() -> Result<(), aster_power::error::PowerError> {
+    let runtime = EmbeddedRuntime::new(
+        DevicePreference::Auto,
+        InferenceLimits::default(),
+    )?;
+
+    println!("execution device: {}", runtime.device().name());
+    Ok(())
+}
+~~~
+
+Constructing `EmbeddedRuntime` never opens a listener or downloads a model.
+The caller supplies a reviewed graph and retains semantic state; Power supplies
+the bounded execution and evidence contracts.
+
+### Send an OpenAI-compatible request
+
+~~~bash
+curl http://127.0.0.1:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "your-model",
+    "messages": [{"role": "user", "content": "Explain capability-based security."}],
+    "prompt_cache_key": "shared-agent-prefix-v1",
+    "stream": true
+  }'
+~~~
+
+Streaming responses emit the execution receipt before `[DONE]`.
+
+## One runtime contract
+
+~~~text
+model-owned graph                   OpenAI-compatible client
+        |                                      |
+   embedded API                           hosted service
+        \                                      /
+         +--------- shared Power core --------+
+                            |
+           artifact identity + bounded admission
+                            |
+              placement + reviewed execution
+                            |
+                   CPU / CUDA / Metal
+                            |
+                  canonical receipt
+                            |
+               independent verification
+~~~
+
+| Power owns | Model-owning crates own |
+| --- | --- |
+| Typed devices, bounded graph execution, opaque resident tensors, and aggregate memory budgets | Architecture, topology, layers, kernels, and arithmetic |
+| Admission, microbatching, session replicas, cancellation, deadlines, and placement | Tokenization, preprocessing, postprocessing, and generation policy |
+| Artifact identities, mirrors, residency plans, and execution receipts | Asset revisions, conversion, tensor contracts, and quality gates |
+| TEE privacy, attestation binding, sealed state, and verifier inputs | KV or recurrent layout and semantic mutable state |
+
+This split is deliberate. Shape-profile names, model-family strings, and
+session identities are opaque to the core. Language, vision, OCR, embedding,
+audio, multimodal, scientific, and caller-owned graphs can share the runtime
+without adding architecture dispatch to Power.
+
+### Three first principles
+
+| Constraint | Runtime consequence |
+| --- | --- |
+| Memory, compute, queues, and transfers are finite. | Requests enter through explicit limits, share one physical-device gate, remain cancellable, and cannot silently overcommit declared state. |
+| A model name does not identify an execution. | Receipts bind artifact, policy, device path, input, output, and fallback identities with canonical digests. |
+| A server cannot be the trust root for its own claims. | The client chooses acceptable measurements, hashes, runtime policy, GPU evidence, and receipt fields. |
+
+Read [Embedded Inference Architecture](docs/embedded-inference-architecture.md)
+for the complete contract model.
+
+## Optimization without hidden shortcuts
+
+Power does not expose one vague “fast mode.” Each layer has its own owner,
+measurement, fallback, and receipt identity.
+
+| Layer | Mechanism | Rule |
+| --- | --- | --- |
+| Graphs and kernels | Finite shape profiles, CUDA Graph reuse, profile-specific Flash Attention, and reviewed fused paths | The model defines shape meaning; missing or oversized shapes fail or use an explicit digest-bound fallback. |
+| Tensor movement | Deterministic microbatching, execution batches, device-resident graph chains, and one final materialization | Incompatible devices never trigger a hidden cross-device copy. |
+| Speculative decoding | Prompt lookup, n-gram, draft model, MTP, DFlash, DFlash2, or DSpark with exact target verification | Only accepted tokens commit; unsupported explicit strategies fail closed. |
+| Prefix reuse | Tenant-, endpoint-, and model-scoped KV/recurrent contexts with bounded LRU and TTL | `prompt_cache_key` is explicit; unsupported backends return an error instead of ignoring it. |
+| Distributed request lifecycle | A bounded runtime composes typed phase prepare/execute/abort with state prepare/publish/consume/abort under one execution ID | The default server advertises no P/D capability; reviewed injected adapters must own model execution, registered memory, transport integrity, and cleanup. |
+| Scheduling | Shared device admission, bounded queues, cancellation, deadlines, session replicas, and host controls | Replica declarations reserve their full resident budget before loading. |
+| Weights and storage | Content-addressed artifacts, mmap/mlock policy, verified mirrors, prefetch, and bounded residency | Fallback returns to the original artifact without changing tensor identity. |
+| Rollout | Two-order A/B runs, output hashes, representative quality gates, hardware receipts, and offline replay | A faster profile does not become the default until its acceptance policy passes. |
+
+Native MTP and keyed llama.cpp prompt-cache sessions do not compose yet:
+explicit MTP fails closed for keyed requests, while `auto` selects target-only.
+DFlash, DFlash2, and DSpark are alternative external-draft contracts, not
+stackable modes.
+
+[Optimization playbook](docs/optimization-playbook.md) ·
+[First-principles perf gate](docs/perf-first-principles.md) ·
+[Speculative decoding](docs/speculative-decoding.md) ·
+[Prompt-prefix cache](docs/prompt-prefix-cache.md) ·
+[Shape profiles](docs/shape-profiles.md) ·
+[Session replicas](docs/session-replicas.md) ·
+[Device-resident graphs](docs/device-resident-graphs.md)
+
+## Backends are capabilities
+
+Backends implement model-specific work behind the same resource and evidence
+contracts. They do not define the architecture of the Power core.
+
+| Feature | Capability | Native requirement |
+| --- | --- | --- |
+| `mistralrs` | Default GGUF, SafeTensors, vision, and embedding backend | No C++ inference engine |
+| `magnitude` | Optional Magnitude / Seismic native GGUF Chat backend; in-process inference with a Prepare worker for first-load tuning | Pinned local Magnitude source and platform backends |
+| `llamacpp` | Mature GGUF backend with native MTP support | CMake, C++ compiler, and libclang |
+| Prism (`prism_upstream` / `prism_profile`) | Fail-closed admission for PrismML / Bonsai packs; acceleration profiles `baseline`\|`dspark`\|`mtp`\|`dflash`\|`kv4` via upstream Prism `llama-server` | External Prism runtime (`docs/prism-acceleration-runbook.md`) |
+| Xolotl (`xolotl`) | Fail-closed admission for one DeepSeek-V4.1-Flash-1017 XQ pack on eight H200s, or on one GeForce RTX 4090 as the single-card expert cache (`--experts gpu` plus rank, no layer split). Forwards one non-streaming request to `serve_ds41.py`. Does not spawn `ds41_generate`. | External Xolotl `ds41_generate` (`docs/xolotl-h200-xq.md`) |
+| `llamacpp-cuda` | CUDA execution for llama.cpp | CUDA toolkit |
+| `llamacpp-external-draft` | Typed DFlash, DFlash2, and DSpark artifact contracts | Reviewed patches for the pinned llama.cpp source |
+| `llamacpp-mtp-fr` | Experimental reduced-vocabulary draft projection | Reviewed patch for the pinned llama.cpp source |
+| `picolm` | Pure-Rust layer-streaming GGUF for constrained TEE memory | No C or C++ inference engine |
+| `embedded-cuda` / `embedded-metal` | Accelerators for model-owned embedded graphs | Platform toolkit |
+| `tls` / `vsock` / `hw-verify` | RA-TLS, guest-host transport, and AMD SEV-SNP verification | Platform-specific dependencies and trust roots |
+
+See the [Magnitude native backend production guide](docs/magnitude-backend.md)
+for the supported profile, configuration, and acceptance evidence. The adapter
+currently serves Chat only. It rejects keyed prompt caching, image input,
+Completion, embeddings, SystemOne, manifest prompt overrides, and confidential
+in-memory loading instead of silently changing their semantics. Set
+`magnitude_device = "auto"` for automatic accelerator selection, or `"cpu"`,
+`"metal"`, `"cuda"`, `"vulkan"`, or an exact Seismic selector to require one
+device. llama.cpp-specific placement overrides are not accepted.
+
+<details>
+<summary>Build profiles</summary>
+
+~~~bash
+# Default hosted service
+cargo build --locked --release
+
+# Listener-free embedded runtime
+cargo build --locked --release --no-default-features --features embedded-inference
+
+# Pure-Rust layer-streaming TEE service
+cargo build --locked --release --no-default-features --features tee-minimal
+
+# llama.cpp with CUDA
+cargo build --locked --release --no-default-features --features llamacpp-cuda
+
+# Magnitude native Chat backend
+cargo build --locked --release --no-default-features --features magnitude
+
+# Strict verifier and release-promotion path
+cargo build --locked --release --no-default-features \
+  --features server,embedded-inference,hw-verify \
+  --bin aster-power-verify
+~~~
+
+On Windows, enable Git long paths before the first pinned llama.cpp checkout:
+
+~~~powershell
+git config --global core.longpaths true
+~~~
+
+</details>
+
+## Policy is explicit
+
+The service reads Aster ACL from `~/.aster/power/config.acl` or from the path
+passed to `aster-power serve --config`.
+
+~~~acl
+host = "127.0.0.1"
+port = 11434
+max_loaded_models = 1
+prompt_cache_max_entries = 1
+prompt_cache_ttl_seconds = 300
+worker_observation_ttl_seconds = 120
+keep_alive = "5m"
+
+serving_execution {
+  profile = "aggregated"
+}
+
+flash_attention = true
+num_parallel = 1
+max_concurrent_requests = 1
+max_queued_requests = 8
+queue_timeout_ms = 1000
+
+gpu {
+  gpu_layers = -1
+  main_gpu = 0
+}
+~~~
+
+HTTP admission is bounded independently of engine slots. The defaults above
+allow one active call and eight queued calls; a full queue or a 1000 ms queue
+deadline returns HTTP 429 without an internal retry. Active capacity must be
+positive; `max_concurrent_requests = 0` is refused. The same limits apply to
+chat, completions, embeddings and SystemOne. See
+[serving qualification](docs/serving-qualification.md) for metrics and external
+Prism runtime boundaries.
+
+Invalid ACL, ranges, hashes, strategies, execution profiles, or unsupported
+explicit backends fail before inference. `prefill-decode` is accepted only as
+one closed `serving_execution` block and cannot be overridden by environment
+variables. Its exact profile digest is part of the canonical inference policy
+used by attestation. TEE deployments add verifier-owned model hashes,
+measurements, and strict policy; simulated attestation never passes strict
+verification.
+
+The built-in composition remains aggregated. A downstream disaggregated build
+must either inject an exact profile-bound `StateTransferService` and
+`ServingPhaseExecutor` through `PowerServerBuilder`, or set an honest ACL
+opt-in: `serving_execution.transport = "buffered-host-loopback"` (programmatic
+equivalent: `with_buffered_host_loopback_transport`) for the product loopback
+pair, or `serving_execution.transport = "direct-device-memory-pull"`
+(programmatic equivalent: `with_direct_device_memory_pull_transport`) for the
+Unavailable HSN product port. Either service alone is a startup error; protocol alone
+never auto-wires. Empty/Unavailable placeholders
+(`EmptyStateTransferService` / `EmptyServingPhaseExecutor`) also fail closed
+until a concrete adapter is injected. Injected ports declare
+`ProductionAdapterContract::REQUIRED` (adapter-owned memory registration,
+adapter-owned transport integrity, confirmed reclaim); that contract is a
+software ownership boundary, not high-speed-network or production-readiness
+evidence. For profiles that pin `BufferedHostMemoryPullV1` and
+`AuthenticatedEncryptedTransport`, Power ships an injectable product pair—
+`BufferedHostLoopbackStateTransfer` plus `BufferedHostLoopbackPhaseExecutor`
+(`paired_for_profile`)—that moves opaque host buffers over authenticated
+loopback TCP and verifies opaque conformance bytes before Ready decode.
+Transfer AAD v2 binds privacy mode, `privacy_policy_sha256`, and optional
+`attestation_policy_sha256` so mismatched peer privacy fails closed even when
+model/layout bindings match. When `embedded-inference` is enabled, sealed
+host-buffer identity v2 binds those same digests into the
+`SealedStateEnvelope` state-id so reopen with privacy/attestation drift fails
+closed. Transfer receipt alone is never decode success;
+incomplete pairs and Empty placeholders still fail closed. This is not HSN,
+llama.cpp P/D, or model-backend evidence. For profiles that pin
+`DirectDeviceMemoryPullV1`, Power ships a named product port—
+`DirectDeviceMemoryPullStateTransfer` plus
+`DirectDeviceMemoryPullPhaseExecutor`—via ACL
+`transport = "direct-device-memory-pull"`. That pair is Injected + required
+contract so composition can start, but health stays Unavailable, data-path
+methods refuse work, and worker `ready_phases` never list prefill/decode.
+v1 explicitly excludes DirectDeviceMemoryPull / HSN advertisement from the
+production support matrix (same OR pattern as Intel TDX): this port stays
+Unavailable forever until a real high-speed adapter and evidence suite exist,
+and `DirectDeviceMemoryPullV1` never advertises even via builder injection.
+This is the HSN product port under a fail-closed exclusion, not a claim that
+HSN works. For the concrete backend phase path, ACL
+`transport = "buffered-host-loopback"` with `phase_executor = "backend-owned"`
+(or `with_backend_owned_phase_on_buffered_host_loopback`) installs Ready
+buffered-host loopback transfer plus `BackendOwnedPhaseExecutor`
+(Injected + required contract). Default Empty ownership stays Unavailable;
+binding `BackendPhaseStateOwnership` validates opaque `state_layout_sha256`
+against profile `layout_sha256` fail-closed before Eligible. Eligible still
+refuses Ready work until a Ready-capable `BackendPhaseExecution` is bound
+(ACL `phase_execution = "pending"` unlocks Ready health only; prepare/execute
+still fail closed), refuses wrong transport, and does not advertise P/D from
+layout registration alone—Eligible/Pending hollow Ready is not llama.cpp /
+picolm readiness.
+`ProfileBoundBackendPhaseStateOwnership` is the honest
+interim product surface: it mirrors closed profile digests (including the
+closed backend artifact digest) so composition can reach Eligible without a
+real KV owner via ACL `state_ownership = "profile-bound"` (with
+`phase_executor = "backend-owned"`); absent keeps Empty → Unavailable.
+Opaque import/export fail closed and it is not a backend adapter. Eligible
+still has executor `accepts_work == false` and worker `ready_phases` never
+list P/D. Pending Ready-unlock still suppresses worker advertising
+(`may_advertise_prefill_decode` stays false for Empty/profile-bound/pending).
+`state_ownership = "llamacpp"` + `phase_execution = "llamacpp"` binds live
+`LlamaContext` snapshot APIs (`SharedLlamaCppContextStateApi`). Set
+`ASTER_POWER_LLAMACPP_PHASE_STATE_MODEL` to a GGUF to run
+`tests/llamacpp_phase_state_live.rs` (fails if the path is missing). That
+proves capture → buffered-host → restore on a real context, Ready decode via
+live greedy sample after restore, and authenticated HTTP Ready prefill +
+Ready NDJSON decode after restore (`LlamaCppLiveDecodeTokenPort`). Fixture
+authenticated HTTP typed-outcome evidence
+(`distributed_serving_llamacpp_http_tests`) proves Ready prefill and
+Ready NDJSON decode after consume+restore+`ControlledLlamaCppDecodeTokenPort`.
+Worker `ready_phases` may list P/D for that honest product pair when runtime
+is Injected+REQUIRED+Ready and (decode) a decode-token port is bound;
+DirectDeviceMemoryPull and Empty/Pending hollow Ready never advertise.
+HSN DirectDeviceMemoryPull advertisement is explicitly excluded from the
+v1 production matrix (machine-enforced non-advertise). Attested-private-fabric
+readiness is likewise excluded: `AttestedPrivateFabric` may bind
+`attestation_policy_sha256` for AAD / sealed host-buffer digests but never
+advertises prefill/decode. Reuse / opaque-state / typed-outcome
+are closed by the live session-pool / weight-hierarchy binding evidence and
+HTTP Ready path above (`llamacpp` + `embedded-inference`).
+The composition root wraps and
+assembles injected pairs into one
+`DistributedServingRuntime`, which is the single request-level lifecycle and
+readiness source. Power publishes the configured P/D role only when the runtime
+matches the immutable profile and can accept work. Transport completion alone
+never counts as successful decode.
+Every injected transfer adapter is wrapped by `BoundedStateTransferService`,
+which narrows advertised capabilities to the immutable local role and enforces
+the process epoch, fail-fast inflight admission via the shared
+`AdmissionController` (`waiting_limit == 0`, ACL `max_inflight_transfers`),
+idempotent leases, monotonic
+deadlines, expiry reaping, bounded abort, and fail-closed cleanup health. The
+wrapped adapter still owns registered memory and the real data path.
+The runtime prepares decode destinations before transfer, publishes prefill
+state only after phase execution, consumes verified state before starting
+decode, and retains stream cancellation ownership until termination. Phase and
+transfer leases remain separate domains but refuse any second admission policy
+shape at composition. When the runtime matches the immutable profile, worker
+observation projects that shared fail-fast inflight admission snapshot rather
+than the HTTP request limiter, and observation generation stays monotonic after
+cancel or cleanup taint. The
+authenticated internal request-flow API exposes those operations to Gateway,
+binding every call to the current worker epoch and execution-profile digest.
+The cross-process conformance suite launches separate prefill and decode Power
+processes whose ACL sets `serving_execution.transport = "buffered-host-loopback"`,
+installing the product `BufferedHostLoopback` pair (not a test-only fixture
+adapter). It proves the authenticated HTTP flow, encrypted opaque state
+handoff, peer-loss failure, restart epoch invalidation, stale Cloud deployment
+generation / foreign peer-set rejection, and graceful cleanup over that
+product loopback path. This remains loopback conformance only—not HSN,
+llama.cpp P/D, or an end-to-end llm-d deployment claim.
+
+## API surface
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Readiness, loaded models, TEE status, and the versioned worker observation |
+| `POST` | `/v1/chat/completions` | Chat, tools, structured output, vision, and SSE |
+| `POST` | `/v1/completions` | Text completion and SSE |
+| `POST` | `/v1/embeddings` | Embedding inference |
+| `POST` | `/v1/systemone` | Jev-shaped option-logit decision scoring (llama.cpp) |
+| `POST` | `/internal/v1/distributed-serving/decode/prepare` | Prepare a profile-bound decode destination |
+| `POST` | `/internal/v1/distributed-serving/prefill/execute` | Execute prefill and publish opaque model state |
+| `POST` | `/internal/v1/distributed-serving/decode/execute` | Consume state and return versioned NDJSON decode output |
+| `POST` | `/internal/v1/distributed-serving/abort` | Idempotently reclaim one distributed execution |
+| `GET` | `/v1/models` | Registered models |
+| `POST` | `/v1/models` | Register weights and typed auxiliary artifacts |
+| `POST` | `/v1/models/pull` | Resumable ModelScope or Hugging Face pull |
+| `GET` | `/v1/attestation` | Nonce- and model-bound TEE evidence |
+| `GET` | `/metrics` | Prometheus metrics |
+
+GGUF registration accepts typed adapter, projector, and external-draft objects.
+Power measures the files itself and records exact lengths and SHA-256
+identities; strict TEE startup rejects legacy path-only auxiliary artifacts.
+
+## Verification and release gates
+
+~~~text
+model bytes + resolved runtime policy
+                  |
+        canonical claims + fresh nonce
+                  |
+       CPU TEE report + GPU evidence
+                  |
+       request + prompt + output receipt
+                  |
+       independent client accepts or rejects
+~~~
+
+~~~bash
+aster-power-verify \
+  --url http://127.0.0.1:11434 \
+  --nonce <client-nonce-hex> \
+  --model-hash <artifact-sha256-hex> \
+  --inference-execution-digest <resolved-policy-sha256> \
+  --auxiliary-artifacts-digest <portable-auxiliary-set-sha256> \
+  --expected-measurement <launch-measurement-hex>
+~~~
+
+Power verifies AMD SEV-SNP signatures, binds policy-visible fields to the exact
+signed report, checks nonce freshness and RA-TLS binding, and can verify
+NVIDIA GPU/NVSwitch evidence and NRAS verdicts. Intel TDX currently emits a
+local TDREPORT but fails strict verification until a reviewed DCAP Quote/QVL
+path exists.
+
+The strict v1 release policy requires four distinct captures: CPU, CUDA,
+native Apple Silicon Metal, and proof-promoted SEV-SNP/NVIDIA confidential
+GPU. The tag must point to an evidence-only child of the frozen source, and it
+must be an annotated signature that GitHub verifies. Hosted or virtual Metal,
+local CUDA relabeled as confidential, mixed source/evidence commits, and
+lightweight or unverified tags all fail closed.
+
+**Current gap:** same-parent Metal and confidential-GPU captures for
+`514031dc74edd72da7c3bfee40144a38d2d91434` are still missing, so there is no
+production `v1.0.0` tag. Use [tools/release-capture](tools/release-capture/README.md)
+on the external hosts, then
+[`assemble-evidence-child.sh`](tools/release-capture/assemble-evidence-child.sh)
+from a clean checkout of `S`.
+
+[Production release gate](docs/release-evidence-gate.md) ·
+[v1 support matrix](docs/v1-support-matrix.md) ·
+[External hardware capture](docs/external-release-capture.md) ·
+[Hardware verifier operations](docs/hardware-verifier-operations.md)
+
+### Security boundaries
+
+- Simulated TEE mode is development-only.
+- CPU TEE placement does not make ordinary GPU offload confidential.
+- Effective-prompt digests exist only for deterministic text paths.
+- Reduced-vocabulary FR and auxiliary proposers are performance techniques,
+  not universal quality guarantees.
+- Performance evidence from one model, host, or workload does not transfer to
+  another without a new capture.
+
+## Documentation
+
+| Start here | What it answers |
+| --- | --- |
+| [Documentation home - Chinese](https://aster-lab.github.io/Power/) | Default `next` documentation |
+| [Documentation home - English](https://aster-lab.github.io/Power/en/) | English `next` documentation |
+| [Getting started](https://aster-lab.github.io/Power/en/getting-started) | Installation, embedded use, service use, and first request |
+| [Architecture](https://aster-lab.github.io/Power/en/architecture) | Ownership, execution, state, and receipt boundaries |
+| [Optimization](https://aster-lab.github.io/Power/en/optimization) | Graph, tensor, speculation, scheduling, storage, and evidence methods |
+| [Performance](https://aster-lab.github.io/Power/en/performance) | Current measurements, quality boundaries, and limitations |
+| [Reproduction](https://aster-lab.github.io/Power/en/reproduction) | Offline verification and full hardware replay |
+| [Verification](https://aster-lab.github.io/Power/en/verification) | Attestation claims, client policy, and failure behavior |
+| [Operations](https://aster-lab.github.io/Power/en/operations) | Feature profiles and deployment controls |
+
+The repository also keeps the detailed contracts close to the code:
+
+- [Eight-H200 Xolotl XQ admission](docs/xolotl-h200-xq.md)
+- [Model-owned shape profiles](docs/shape-profiles.md)
+- [Model-neutral session replicas](docs/session-replicas.md)
+- [Device-resident reviewed graph chains](docs/device-resident-graphs.md)
+- [Keyed prompt-prefix cache](docs/prompt-prefix-cache.md)
+- [Distributed-serving worker observation](docs/distributed-serving-observation.md)
+- [Model-neutral speculative decoding](docs/speculative-decoding.md)
+- [Supply-chain audit](docs/supply-chain.md)
+- [Storage benchmark](docs/storage-benchmark.md)
+- [Tensor-batch cost benchmark](docs/tensor-batch-benchmark.md)
+- [Windows 2026-09-10 exact-parent CPU/CUDA release contracts](docs/benchmarks/release-contract-windows-20260910/README.md)
+  (partial; Metal and confidential GPU still required)
+- [Release capture operator scripts](tools/release-capture/README.md)
+- [Roadmap](ROADMAP.md) and [changelog](CHANGELOG.md)
+
+The checked-in `site/docs/v1.0.0` tree is a documentation snapshot for the
+frozen source line. It is not evidence that the v1 production tag has passed.
+
+## Development
+
+Run checks from this crate, not from the monorepo root:
+
+~~~bash
+cargo fmt --all -- --check
+cargo test --locked --lib
+cargo test --locked --no-default-features --features embedded-inference --lib
+cargo test --locked --no-default-features --features picolm --lib
+cargo clippy --locked --all-targets -- -D warnings
+
+npm ci --prefix site
+npm run typecheck --prefix site
+npm run build --prefix site
+npm run check:site --prefix site
+~~~
+
+CI checks formatting, Clippy feature matrices, focused and integration tests,
+listener-free embedded builds, release contracts, benchmark evidence, and the
+GitHub Pages artifact.
+
+## Aster ecosystem
+
+| Project | Relationship |
+| --- | --- |
+| [Aster Box](https://github.com/aster-ai-lab/Box) | Hosts Power inside SEV-SNP or TDX MicroVMs |
+| [Aster Gateway](https://github.com/aster-ai-lab/Gateway) | Routes inference traffic |
+| [Aster Runtime](https://github.com/aster-ai-lab/Runtime) | Supplies deployment-unit contracts |
+| [Aster Code](https://github.com/aster-ai-lab/Code) | Consumes local inference and verified bundles |
+| [Aster Event](https://github.com/aster-ai-lab/Event) | Distributes platform events |
+
+Questions and design discussions are welcome on
+[Discord](https://discord.gg/XVg6Hu6H).
+
+## License
+
+[MIT](LICENSE)
