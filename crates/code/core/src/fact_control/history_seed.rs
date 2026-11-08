@@ -643,8 +643,6 @@ pub(super) fn recorded_tool_calls_in(
                 #[serde(default, rename = "toolCallId")]
                 tool_call_id: Option<String>,
                 ok: bool,
-                #[serde(default)]
-                output: String,
             }
             let output = super::fact_reads::tool_result_fact_output(&fact.payload).to_owned();
             let payload: ResultPayload = serde_json::from_value(fact.payload).map_err(|error| {

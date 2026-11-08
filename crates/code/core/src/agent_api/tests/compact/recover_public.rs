@@ -199,12 +199,19 @@ async fn lossy_manual_compaction_retains_exact_public_source_for_existing_read()
     )
     .await;
     let facts = crate::fact_control::read_workspace_facts(root.path(), "public-compact").unwrap();
-    assert!(facts.iter().any(|fact| fact.kind == "tool.result"
-        && fact.payload["toolCallId"] == "read-archive"
-        && fact.payload["ok"] == true
-        && fact.payload["output"]
+    assert!(facts.iter().any(|fact| {
+        if fact.kind != "tool.result"
+            || fact.payload["toolCallId"] != "read-archive"
+            || fact.payload["ok"] != true
+        {
+            return false;
+        }
+        let top = fact.payload["output"].as_str().unwrap_or_default();
+        let receipt = fact.payload["receipt"]["output"]
             .as_str()
-            .is_some_and(|output| output.contains(token))));
+            .unwrap_or_default();
+        top.contains(token) || receipt.contains(token)
+    }));
     finish_stream(&session, "Continue once more.").await;
     session.compact_conversation(None).await.unwrap();
     let latest = session.history()[0].text();
