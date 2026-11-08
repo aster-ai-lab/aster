@@ -61,3 +61,6 @@ __pycache__/
 
 # Local CLI release staging (never commit archives)
 /dist/
+
+# Local wiki workspace (runtime-maintained, never product evidence).
+/wiki/
