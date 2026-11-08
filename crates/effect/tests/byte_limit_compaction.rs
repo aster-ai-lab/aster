@@ -15,7 +15,9 @@ use tokio_util::sync::CancellationToken;
 
 const THREAD: &str = "unattended";
 const LIMIT: u32 = 1_000_000;
-const OUTPUT_BYTES: usize = 400 * 1024;
+// Sized so ~30 single-written tool results still cross FileLog's 16 MiB cap
+// after typed receipts stopped dual-writing top-level `output`.
+const OUTPUT_BYTES: usize = 600 * 1024;
 const BATCH: usize = 3;
 
 fn call(id: String) -> ToolCall {
@@ -225,7 +227,8 @@ async fn long_run_past_the_byte_limit_keeps_running_across_compactions() {
 /// facts which counted it, exactly as a log that never prunes does.
 #[tokio::test]
 async fn tool_allowance_is_the_same_with_and_without_pruning() {
-    // 3 MiB per round: ten rounds cross the byte limit well before the allowance ends.
+    // ~1.8 MiB per round (3 × 600 KiB): ten rounds cross the 16 MiB byte limit
+    // well before the allowance ends, even without dual-written top-level output.
     let budget = || {
         HarnessConfig::new(30, 1_000_000, 1, 1, vec!["system".into()], Vec::new())
             .unwrap()
