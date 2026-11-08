@@ -23,9 +23,8 @@
 ## Qualification and delivery
 
 Core remains a private/local Rust SDK. Source and ACP platform archives use
-`aster-acp-v9.2.0` with `--latest=false`. Aster CLI continues on its own
-namespace (`aster-cli-v*`) and will pick up this Core/ACP revision in a later
-CLI release.
+`aster-acp-v9.2.0` with `--latest=false`. Aster CLI picks up this Core/ACP
+revision in `aster-cli-v0.3.0`.
 
 Before publication: clean-commit branch qualification via `qualify-code.yml`,
 matching Core and ACP Cargo versions, and `crates/code/manual/RELEASE_9.2.0.md`.
