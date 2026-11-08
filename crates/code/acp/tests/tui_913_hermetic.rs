@@ -965,7 +965,9 @@ fn cli_model_override_outranks_workspace_default_model() {
         "workspace/ACL default_model leaked past CLI --model\n{}",
         redact(&screen)
     );
-    eprintln!("ORACLE case=a1-cli-model-pin pin={ALT_MODEL} acl_default={ACL_MODEL} models={models:?}");
+    eprintln!(
+        "ORACLE case=a1-cli-model-pin pin={ALT_MODEL} acl_default={ACL_MODEL} models={models:?}"
+    );
 }
 
 /// B1: Esc dismisses an incomplete `/effort` draft so prose cannot concatenate into `/effortReply`.
@@ -1004,10 +1006,7 @@ fn effort_slash_esc_clears_draft_before_prose() {
                 break last;
             }
             if Instant::now() >= deadline {
-                panic!(
-                    "Esc did not dismiss /effort draft\n{}",
-                    redact(&last)
-                );
+                panic!("Esc did not dismiss /effort draft\n{}", redact(&last));
             }
             std::thread::sleep(Duration::from_millis(40));
         }
