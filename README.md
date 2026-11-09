@@ -12,9 +12,11 @@
 
   <p>
     <a href="https://aster-ai-lab.github.io/aster/">下载官网</a> ·
-    <a href="#快速开始">快速开始</a> ·
+    <a href="#安装">安装</a> ·
+    <a href="#配置">配置</a> ·
+    <a href="#更新">更新</a> ·
+    <a href="#卸载">卸载</a> ·
     <a href="#项目架构">项目架构</a> ·
-    <a href="#执行与恢复">执行与恢复</a> ·
     <a href="#参与开发">参与开发</a>
   </p>
 </div>
@@ -82,43 +84,42 @@ Cloud、API 和边缘服务承担可选的服务端职责。
 
 ## 快速开始
 
-目标：安装 CLI → 写好默认模型 → 进入工作区直接开干。
+安装 CLI → 配置模型 → 进入项目目录运行。默认安装目录：macOS / Linux 为 `~/.local/bin`，Windows 为 `%LOCALAPPDATA%\Aster\bin`。脚本会安装成对的 `aster`、`aster-acp` 与同目录 `embedding/`，并校验 SHA-256。
 
-### 1. 一键安装 CLI
+### 安装
 
-macOS / Linux（稳定通道，安装 `aster` + `aster-acp` 到 `~/.local/bin`）：
+macOS / Linux：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh \
   | bash -s -- --prefix "$HOME/.local/bin"
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc   # bash 用户写入 ~/.bashrc
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc   # bash：写入 ~/.bashrc
 export PATH="$HOME/.local/bin:$PATH"
 aster --version
 ```
 
-Windows PowerShell：
+Windows（PowerShell）：
 
 ```powershell
 irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\aster-install.ps1"
-powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\aster-install.ps1" -Prefix "$env:LOCALAPPDATA\Aster\bin"
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\aster-install.ps1"
 $bin = Join-Path $env:LOCALAPPDATA 'Aster\bin'
 [Environment]::SetEnvironmentVariable('Path', "$bin;" + [Environment]::GetEnvironmentVariable('Path', 'User'), 'User')
 $env:Path = "$bin;$env:Path"
 aster --version
 ```
 
-也可从[官网下载页](https://aster-ai-lab.github.io/aster/download/)取安装包。
-脚本会校验归档 SHA-256；固定版本加 `--version X.Y.Z`（PowerShell：`-Version X.Y.Z`）。
+| 需求 | 做法 |
+| --- | --- |
+| 固定版本 | Unix：`--version X.Y.Z`；Windows：`-Version X.Y.Z` |
+| 换安装目录 | Unix：改 `--prefix`；Windows：`-Prefix "D:\tools\aster"` |
+| 只要安装包 | [官网下载页](https://aster-ai-lab.github.io/aster/download/) |
 
-> [!IMPORTANT]
-> `aster` 与 `aster-acp` 必须在同一目录并成对更新。
-> macOS 安装完整归档，保留同目录的 `sandbox/`。
-> 另指定 ACP 路径时设置 `ASTER_ACP_AGENT_BIN`。
-> Linux 发布基线：glibc 2.31；归档按架构拆分（`linux` = x86_64，`linux-arm64` = aarch64）。详见[发布规范](docs/release-governance.md)。
+Linux 自动按架构选归档（x86_64 / arm64，glibc ≥ 2.31）。`aster` 与 `aster-acp` 必须同目录；另指定 ACP 时设 `ASTER_ACP_AGENT_BIN`。
 
-### 2. 配置默认模型
+### 配置
 
-一次写入 `~/.aster/config.acl`（没有该文件就新建）。`default_model` 使用 `provider/model` 形式：
+首次使用写入 `~/.aster/config.acl`（Windows：`%USERPROFILE%\.aster\config.acl`）：
 
 ```bash
 mkdir -p ~/.aster
@@ -136,47 +137,27 @@ EOF
 export OPENAI_API_KEY="你的 API 密钥"
 ```
 
-OpenAI 兼容网关：改 `base_url`、模型 id，以及 `default_model = "openai/<模型id>"`。
-更多提供商写法见 [ACL 示例](crates/code/agent.example.acl)。
+OpenAI 兼容网关：改 `base_url`、模型 id，以及 `default_model = "openai/<模型id>"`。更多写法见 [ACL 示例](crates/code/agent.example.acl)。
 
 | 需求 | 做法 |
 | --- | --- |
 | 换默认模型 | 改 `default_model`，或会话内 `/model`、`/config` |
-| 本会话临时换模型 | `aster --model provider/model-id`（覆盖配置文件默认值） |
+| 本会话临时换模型 | `aster --model provider/model-id` |
 | 换配置文件 | `export ASTER_CONFIG=/abs/path/to/config.acl` |
 
-### 3. 选定默认工作区并启动
-
-**默认工作区 = 当前目录。** 先 `cd` 到项目，再运行 `aster`：
+### 使用
 
 ```bash
 cd /path/to/your/project
 aster
 ```
 
-指定其它目录（不必先 cd）：
-
 ```bash
 aster --cwd /path/to/your/project
-```
-
-带首条提示：
-
-```bash
 aster --cwd /path/to/your/project "列出仓库结构并说明主要入口"
 ```
 
-Windows：
-
-```powershell
-$env:OPENAI_API_KEY = "你的 API 密钥"
-cd C:\path\to\project
-aster
-# 或: aster --cwd C:\path\to\project
-```
-
-首次在目录中运行时，按提示确认是否信任该工作区。
-项目内工具版本与环境变量见[环境管理](docs/cli-environments.md)。
+首次在目录中运行时，按提示确认是否信任该工作区。项目内工具版本与环境变量见[环境管理](docs/cli-environments.md)。
 
 ### 更新
 
@@ -185,20 +166,26 @@ aster update --check
 aster update
 ```
 
-更新器读取 CLI 通道并校验归档摘要。指定版本：`aster update --version X.Y.Z`。
-若提示归档布局过新或通道清单无法解析，用一键安装脚本重装（跨越大版本布局变更时更稳妥）：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh \
-  | bash -s -- --prefix "$HOME/.local/bin"
-```
-
-手动替换时须同时更新 `aster`、`aster-acp` 与同目录的 `embedding/`。
+指定版本：`aster update --version X.Y.Z`。若提示布局过新或清单无法解析，重新跑上面的安装命令（会覆盖同目录 pair 与 `embedding/`）。
 
 ### 卸载
 
-删除安装目录中的 `aster` 与 `aster-acp`；macOS 一并删除同目录 `sandbox/`。
-`~/.aster` 下的配置与数据可保留。
+macOS / Linux（默认前缀）：
+
+```bash
+rm -f ~/.local/bin/aster ~/.local/bin/aster-acp
+rm -rf ~/.local/bin/embedding
+```
+
+Windows（默认前缀，PowerShell）：
+
+```powershell
+$bin = Join-Path $env:LOCALAPPDATA 'Aster\bin'
+Remove-Item -Force -ErrorAction SilentlyContinue "$bin\aster.exe", "$bin\aster-acp.exe"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$bin\embedding"
+```
+
+配置与会话数据在 `~/.aster`（Windows：`%USERPROFILE%\.aster`），可按需保留或整目录删除。
 
 ## 执行与恢复
 
