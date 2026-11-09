@@ -2028,6 +2028,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "aster-office-web-kernel"
+version = "0.45.0"
+dependencies = [
+ "aster-office-formula-parser",
+ "rustybuzz",
+ "serde",
+ "serde_json",
+ "unicode-bidi",
+ "unicode-linebreak",
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "aster-okf"
 version = "0.1.0"
 dependencies = [

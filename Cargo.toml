@@ -136,6 +136,7 @@ members = [
     "crates/use/tool-acquire",
     "crates/office/crates/core",
     "crates/office/crates/formula-parser",
+    "crates/office/crates/web-kernel",
 ]
 default-members = ["apps/aster", "crates/code/acp"]
 
