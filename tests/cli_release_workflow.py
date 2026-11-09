@@ -297,11 +297,13 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("shared-key: aster-cli-release-dist-windows", text)
         self.assertIn("shared-key: aster-cli-release-dist-macos-bins", text)
         self.assertNotIn("shared-key: aster-cli-release-dist-macos-sandbox", text)
-        self.assertIn("shared-key: aster-cli-release-dist-linux", text)
+        self.assertIn("cache_key: aster-cli-release-dist-linux", text)
+        self.assertIn("cache_key: aster-cli-release-dist-linux-arm64", text)
+        self.assertIn("shared-key: ${{ matrix.cache_key }}", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-windows.zip", text)
         self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-macos.tar.gz", text)
-        self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-linux.tar.gz", text)
-        self.assertIn('package-aster-cli.sh linux "$bin_dir" "$CLI_ASSET_NAME"', text)
+        self.assertIn("CLI_ASSET_NAME: ${{ github.ref_name }}-${{ matrix.platform }}.tar.gz", text)
+        self.assertIn('package-aster-cli.sh "$CLI_PLATFORM" "$bin_dir" "$CLI_ASSET_NAME"', text)
         self.assertIn('run-id: ${{ inputs.artifact_run_id != \'\' && inputs.artifact_run_id || github.run_id }}', text)
 
     def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):
