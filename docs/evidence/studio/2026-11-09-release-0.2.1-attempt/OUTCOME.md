@@ -221,3 +221,33 @@
 - 包为 **arm64 only**（`lipo -archs` = arm64，SDK 26.5，`minos 11.0`，Info.plist 声明 10.13）；Intel Mac 无法运行，macOS < 11 也不支持。本机为 macOS 26.6.2 / arm64。
 - 线上资产已重新下载实算：SHA-256 `6aaca20ae4bcae31705b4204596e2172dd7f79445df054bb0e52f2fdc27c4d99`，与本地 `cmp` 字节完全一致；若另一台机器上的文件是 `b29229e8529ffabbe5cc5791c24becf49a375dea964acfee8c44ddb1f423ff55`，则是替换前的坏包（§10），在任何机器上都会 `update_integrity_failed`。
 - 用隔离 HOME 模拟全新机器运行修复后的 DMG：20s 持续运行、能启动，renderer 正常从 `tauri://` 加载。因此「全新用户目录」本身不是闪退原因。
+
+---
+
+## 12. 第二次修订：用户可见文案净化 + 重新发布（18:3x–19:2x）
+
+用户截图指出消息流里出现 `question call_<id>:` 与错误卡片里的 `completion gate: workspace mutation <hash> (…)`，要求「不要给用户展示任何内部过程信息」。交互确认：**再次替换 v0.2.1 资产** + **隐藏工具活动里的内部绝对路径**。
+
+### 代码修复
+
+| 文件 | 内容 |
+| --- | --- |
+| `utils/userFacingText.ts`（新增） | `stripInternalProcessText`（去 question 前缀、删门禁整行、跳过 fenced code）、`isInternalProcessError`、`redactInternalPaths`（绝对路径只保留末段） |
+| `TaskConversationMessage.tsx` / `MainTextBlock.tsx` | 接入文本净化；工具摘要与目录卡片路径脱敏 |
+| `ErrorBlock.tsx` | 门禁错误换成中英友好文案，hover 预览也净化；详情弹窗与复制日志保留原始诊断 |
+| i18n | 新增 `error.agent.rpc.internal.message`（zh-CN / en-US） |
+
+提交：studio `818b3ac5a1`、`7b20a40966`；父仓库 `48f563e3e`、`56e59abf1`。
+
+验证：首轮 27/27 通过；加入路径脱敏后 170/171（唯一失败为既有基线），i18n 25296 条通过。另 3 个失败（tooltip `data-delay-duration`、diff `radiogroup`）经「临时还原到未修改 HEAD 再跑」确认与改动无关。
+
+### 重新打包与发布
+
+- renderer 通过 `custom-protocol` 内嵌进 Rust 二进制，必须重编译：前半段 `FRONT_EXIT=0`（14m）、完整后半段 `FINAL3_EXIT=0`（pin 复验、公证 `Accepted`、归档验证通过）。
+- 新 DMG：`aster_0.2.1_aarch64.dmg`，SHA-256 `41609b3b310cc20d3227cb8de01351af8d890561dd92d5b58ede53feb214162c`；交付清单 100/100、实测启动 12s 不退出、签名公证 staple 通过。
+- `gh release upload v0.2.1 --clobber` 替换 dmg 与 `.sha256`；Release 说明更新为「第二次修订」提示；`desktop-stable` 同步新 `Aster-darwin-aarch64-v0.2.1.zip`（SHA `ff2bed82…`）与清单（version 0.2.1、history 9 版、`check` 通过）；网站 `--refresh` 无 diff。
+- 本机 `/Applications/Aster.app` 已换成同一构建并重启（0.2.1、`codesign OK`、`spctl accepted`、清单 100/100）。
+
+### 治理偏差
+
+用户明确选择「再次替换 v0.2.1 资产」，与 `docs/release-governance.md`「不得替换已发布二进制」相冲突；按用户决策执行，并把资产、SHA、通道清单全部同步，避免同一版本出现两个不一致的二进制。历次 DMG SHA：`b29229e8…`（首次，闪退）→ `6aaca20a…`（第一次修订，可启动）→ `41609b3b…`（最终）。
