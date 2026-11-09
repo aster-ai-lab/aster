@@ -82,13 +82,18 @@ Cloud、API 和边缘服务承担可选的服务端职责。
 
 ## 快速开始
 
-### 1. 下载 CLI
+目标：安装 CLI → 写好默认模型 → 进入工作区直接开干。
 
-从[官网](https://aster-ai-lab.github.io/aster/#download)选择对应系统的安装包。
-macOS / Linux 也可通过脚本安装稳定通道中的 CLI：
+### 1. 一键安装 CLI
+
+macOS / Linux（稳定通道，安装 `aster` + `aster-acp` 到 `~/.local/bin`）：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin"
+curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh \
+  | bash -s -- --prefix "$HOME/.local/bin"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc   # bash 用户写入 ~/.bashrc
+export PATH="$HOME/.local/bin:$PATH"
+aster --version
 ```
 
 Windows PowerShell：
@@ -96,58 +101,82 @@ Windows PowerShell：
 ```powershell
 irm "https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.ps1" -OutFile "$env:TEMP\aster-install.ps1"
 powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\aster-install.ps1" -Prefix "$env:LOCALAPPDATA\Aster\bin"
+$bin = Join-Path $env:LOCALAPPDATA 'Aster\bin'
+[Environment]::SetEnvironmentVariable('Path', "$bin;" + [Environment]::GetEnvironmentVariable('Path', 'User'), 'User')
+$env:Path = "$bin;$env:Path"
+aster --version
 ```
 
-脚本校验归档的 SHA-256。
-固定版本时，分别使用 `--version X.Y.Z` 或 `-Version X.Y.Z`。
+也可从[官网下载页](https://aster-ai-lab.github.io/aster/download/)取安装包。
+脚本会校验归档 SHA-256；固定版本加 `--version X.Y.Z`（PowerShell：`-Version X.Y.Z`）。
 
 > [!IMPORTANT]
-> `aster` 与 `aster-acp` 必须放在同一目录并成对更新。
-> macOS 还需要完整的 `sandbox/` 组件，请安装完整归档。
-> 指定其他 ACP 位置时，可设置 `ASTER_ACP_AGENT_BIN`。
+> `aster` 与 `aster-acp` 必须在同一目录并成对更新。
+> macOS 安装完整归档，保留同目录的 `sandbox/`。
+> 另指定 ACP 路径时设置 `ASTER_ACP_AGENT_BIN`。
+> Linux 发布基线：x86_64、glibc 2.31。详见[发布规范](docs/release-governance.md)。
 
-当前 Linux 构建统一使用 x86_64、glibc 2.31 基线。
-平台构建与发布条件见[发布规范](docs/release-governance.md)。
+### 2. 配置默认模型
 
-### 2. 配置模型
+一次写入 `~/.aster/config.acl`（没有该文件就新建）。`default_model` 使用 `provider/model` 形式：
 
-创建或编辑 `~/.aster/config.acl`。以下示例使用 OpenAI 兼容接口，
-请把接口地址和 `your-model` 替换为服务实际提供的值：
-
-```acl
-default_model = "openai/your-model"
+```bash
+mkdir -p ~/.aster
+cat > ~/.aster/config.acl <<'EOF'
+default_model = "openai/gpt-4o"
 
 providers "openai" {
-  base_url = "https://your-api.example/v1"
+  base_url = "https://api.openai.com/v1"
   api_key = env("OPENAI_API_KEY")
-  models "your-model" {}
+  models "gpt-4o" {
+    name = "GPT-4o"
+  }
 }
-```
-
-密钥通过环境变量提供。更多配置见 [ACL 示例](crates/code/agent.example.acl)。
-`ASTER_CONFIG` 可以指定其他配置文件，终端内的 `/config` 用于管理模型配置。
-
-### 3. 启动项目
-
-使用上述安装目录，并将项目路径替换为实际路径。
-
-macOS / Linux：
-
-```sh
+EOF
 export OPENAI_API_KEY="你的 API 密钥"
-"$HOME/.local/bin/aster" --cwd /path/to/project
 ```
 
-Windows PowerShell：
+OpenAI 兼容网关：改 `base_url`、模型 id，以及 `default_model = "openai/<模型id>"`。
+更多提供商写法见 [ACL 示例](crates/code/agent.example.acl)。
+
+| 需求 | 做法 |
+| --- | --- |
+| 换默认模型 | 改 `default_model`，或会话内 `/model`、`/config` |
+| 本会话临时换模型 | `aster --model provider/model-id`（覆盖配置文件默认值） |
+| 换配置文件 | `export ASTER_CONFIG=/abs/path/to/config.acl` |
+
+### 3. 选定默认工作区并启动
+
+**默认工作区 = 当前目录。** 先 `cd` 到项目，再运行 `aster`：
+
+```bash
+cd /path/to/your/project
+aster
+```
+
+指定其它目录（不必先 cd）：
+
+```bash
+aster --cwd /path/to/your/project
+```
+
+带首条提示：
+
+```bash
+aster --cwd /path/to/your/project "列出仓库结构并说明主要入口"
+```
+
+Windows：
 
 ```powershell
 $env:OPENAI_API_KEY = "你的 API 密钥"
-$env:ASTER_CONFIG = Join-Path $HOME '.aster/config.acl'
-& "$env:LOCALAPPDATA\Aster\bin\aster.exe" --cwd C:\path\to\project
+cd C:\path\to\project
+aster
+# 或: aster --cwd C:\path\to\project
 ```
 
-将安装目录加入 `PATH` 后，可直接运行 `aster`。
-项目工具版本与环境变量的配置见[环境管理](docs/cli-environments.md)。
+首次在目录中运行时，按提示确认是否信任该工作区。
+项目内工具版本与环境变量见[环境管理](docs/cli-environments.md)。
 
 ### 更新
 
@@ -156,13 +185,13 @@ aster update --check
 aster update
 ```
 
-更新器从 CLI 通道读取版本并校验归档摘要。
-指定版本可运行 `aster update --version X.Y.Z`。
-手动更新时，也需要一起替换两个程序和所需的沙箱组件。
+更新器读取 CLI 通道并校验归档摘要。指定版本：`aster update --version X.Y.Z`。
+手动替换时须同时更新 `aster`、`aster-acp` 及所需沙箱组件。
 
 ### 卸载
 
-删除安装的 `aster` 与 `aster-acp`。macOS 还需删除安装器放在同目录的 `sandbox/`。`~/.aster` 中的本地配置与数据可保留。
+删除安装目录中的 `aster` 与 `aster-acp`；macOS 一并删除同目录 `sandbox/`。
+`~/.aster` 下的配置与数据可保留。
 
 ## 执行与恢复
 

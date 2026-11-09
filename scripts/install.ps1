@@ -233,6 +233,16 @@ try {
     Write-Output "aster=$destAster"
     Write-Output "aster-acp=$destAcp"
     Write-Output "embedding=$(Join-Path $Prefix 'embedding')"
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    if ($userPath -and ((";$userPath;") -like "*;$Prefix;*")) {
+        Write-Output "User PATH already includes $Prefix"
+    } else {
+        Write-Output "Add $Prefix to your user PATH, then open a new shell:"
+        Write-Output "  [Environment]::SetEnvironmentVariable('Path', '$Prefix;' + [Environment]::GetEnvironmentVariable('Path', 'User'), 'User')"
+        Write-Output "  `$env:Path = '$Prefix;' + `$env:Path"
+    }
+    Write-Output "Next: write ~/.aster/config.acl (default_model + providers), then run:"
+    Write-Output "  cd C:\path\to\project; aster"
 } finally {
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
 }

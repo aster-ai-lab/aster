@@ -360,3 +360,17 @@ fi
 echo "aster=${dest_aster}"
 echo "aster-acp=${dest_acp}"
 echo "embedding=${prefix}/embedding"
+
+# Tell the user how to put the pair on PATH when the prefix is not already searched.
+case ":${PATH}:" in
+  *":${prefix}:"*)
+    echo "PATH already includes ${prefix}"
+    ;;
+  *)
+    echo "Add ${prefix} to PATH, then open a new shell:"
+    echo "  echo 'export PATH=\"${prefix}:\$PATH\"' >> ~/.zshrc   # bash: ~/.bashrc"
+    echo "  export PATH=\"${prefix}:\$PATH\""
+    ;;
+esac
+echo "Next: write ~/.aster/config.acl (default_model + providers), then run:"
+echo "  cd /path/to/project && aster"
