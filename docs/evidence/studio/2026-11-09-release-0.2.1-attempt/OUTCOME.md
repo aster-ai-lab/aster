@@ -130,3 +130,52 @@
 - 用户选择「版本化 dmg」，因此**未更新** `desktop-stable` 滚动通道：`desktop-latest.json` 仍指向 0.1.11。治理文档 §72-74 要求确认该通道；`target/release/bundle/macos/Aster.zip` 已产出并通过 `verify-archive`，可另行发布 `Aster-darwin-aarch64-v0.2.1.zip`。
 - 治理保留窗口（只留当前 + 上一版）：`v0.1.11` 及更早桌面版本化 Release / tag 未删除；删除属破坏性外部操作，未擅自执行。
 - 真窗口 first-run 的 `Runtime plugin pin identity mismatch` 产品根因仍未在产品代码中修复；本次是通过对齐 lock 让发布产物携带与当前组件清单一致的真实 pin。
+
+---
+
+## 8. 后续永久修复（2026-11-09 17:4x）
+
+发布完成后，把「本机临时 fixture」升级为仓库内的永久修复，回答「如何修复问题」。
+
+### 8.1 已落地（本地改动，尚待推送）
+
+| 文件 | 修复 |
+| --- | --- |
+| `apps/studio/resources/runtime-components.lock.json` | 删除 `kbox` 条目，与 3 组件 `COMPONENTS` 对齐 |
+| `plugins/registry/locks/runtime/darwin-arm64.json` | 删除 `aster-sandbox` 条目（本地 registry 镜像） |
+| `apps/studio/scripts/package_runtime_components.py` | `validate_pin` 拆分为逐项校验并输出 `extra=... / missing=...`，不再抛笼统的 `invalid runtime plugin pin` |
+| `tests/runtime_component_locks.py`（新增） | 校验 lock 与 `COMPONENTS` 组件集合、`validate_pin` 结构合法性、各 lock 间 SHA 身份一致 |
+| `docs/release-governance.md` | 新增「运行时组件锁与打包链路」规范 |
+
+验证：`python3 -m unittest discover -s tests -p runtime_component_locks.py -v` **3/3 通过**；用修复后的子模块 lock 对官方 registry 跑 `verify_runtime_registry.py` → `verified fresh anonymous runtime plugin installation`。三个保留组件的 SHA-256 一字未改。
+
+### 8.2 分层结论：哪些必须改产品，哪些不该改
+
+| 层 | 性质 | 治本方式 |
+| --- | --- | --- |
+| runtime lock 与 `COMPONENTS` 不一致 | **真 bug** | §8.1 仓库修复 + 门禁测试，并同步官方 `aster-ai-lab/plugins` 的 lock |
+| `package-host.sh` 默认 `ASTER_DEFER_RUNTIME_COMPONENTS=1`，而 CI `release-aster-desktop.yml` 默认 `defer_runtime_components=false` | 结构性不一致，本地被迫依赖 lock | 统一默认值，或让本地默认跟随 CI 的 full bootstrap |
+| SwiftPM 嵌套 `sandbox-exec`、会话级 50 次删除保护、Node 22 撞 `engines>=24.12` | **智能体会话级限制**，CI 与普通终端不存在 | 不得往产品构建脚本里加沙箱绕过；可发布版本优先走 CI；本机应急只用 `/tmp` fixture |
+| `v0.2.0` 用 debug `.app` 直接打 dmg 也能发 Release | 流程漏洞 | 发布前强制 `package:host` + 公证 + 下载地址 `--check`，CI 门禁拦截非 release 产物 |
+| 一轮内两次 `rslib` 清理 972 个 `.d.ts` | 重复构建 + 会话删除上限叠加 | 构建编排去重（去掉 postinstall 与脚本内重复的 `build:office`），不改产品断言 |
+| `desktop-stable` 未更新 / 旧 Release 未清理 / untracked 目录 | 治理遗留 | 需用户授权的外部动作 |
+
+### 8.3 已授权并推送（2026-11-09 17:5x）
+
+用户选择「三个仓库全推」与「补发 desktop-stable、清理旧桌面 Release」。
+
+| 仓库 | commit | 内容 |
+| --- | --- | --- |
+| `aster-ai-lab/studio` | `0e1e366cc5` | lock 删除 `kbox` 条目 + `validate_pin` 明确报错 |
+| `aster-ai-lab/plugins` | `a9a9e44` | 官方 registry lock 删除 `aster-sandbox` 条目；先 rebase 到远程并发提交 `1db3517` 再推送，无冲突 |
+| `aster-ai-lab/aster` | 本次提交 | 两个 gitlink 前进 + `tests/runtime_component_locks.py` + 治理文档 + 本证据 |
+
+推送顺序刻意为先子模块后父仓库，保证父仓库 gitlink 指向真实存在的提交；否则新门禁测试在 CI 检出旧子模块时会红。
+
+---
+
+## 9. 发布治理收尾
+
+- **desktop-stable 通道**：上传 `Aster-darwin-aarch64-v0.2.1.zip`（140,207,587 B，SHA-256 `f4b03a2d1e07b259…`），用 `desktop_release_manifest.py generate --existing / --notes-en / --notes-zh-cn` 生成 `desktop-latest.json`（version 0.2.1，中英双语 notes，history 9 个版本），`check` 通过后 `gh release upload desktop-stable ... --clobber` 成功。自动更新通道现指向 0.2.1。
+- **保留窗口**：删除 `v0.1.11`、`v0.1.10` 的版本化 Release 与远程 tag（`gh release delete --yes --cleanup-tag`），保留 `v0.2.1`（仓库 Latest）与 `v0.2.0`（上一版）。Core/ACP 历史 tag `v9.1.6`、CLI/ACP 命名空间、`desktop-stable` 通道内的历史归档均未改动。
+- **清理后复核**：`build_releases.mjs --refresh` 结果无变化（desktop 0.2.1 / CLI 0.3.1，`git diff` 为空），`--check` 通过，`desktop_release_manifest.py check` 通过，网站测试 **37/37 通过**，Latest 仍为 v0.2.1，远程 `refs/tags/v0.1.*` 为空。

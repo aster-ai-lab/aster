@@ -93,3 +93,11 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 禁止把 `release/*` 当作第二个长期集成线。发布专用修复应先回到 `main`，或确认已打进版本化 tag 后再删分支。仓库应开启「PR 合并后自动删除头部分支」，避免再堆积已合并分支。
 
 `tests/release_governance.py` 固化上述命名空间、通道地址、保留策略和 CLI 通道发布行为；主 CI 与 CLI 发布预检都必须运行该测试。
+
+## 运行时组件锁与打包链路
+
+`package_runtime_components.py` 的 `COMPONENTS` 与所有 runtime component lock 必须**同步修改**：组件从清单移除时，lock 中对应条目必须删除，不能只改名。0.2.1 发布事故即由此产生——`99aa11588f` 移除了 sandbox 组件，却只把 lock 条目从 `aster-sandbox` 改名为 `kbox`，`validate_pin` 因组件集合不符在打包最后一步拒绝所有 lock。三份 lock 需保持一致：`apps/studio/resources/runtime-components.lock.json`、`plugins/registry/locks/runtime/darwin-arm64.json`（本地 registry 镜像）与官方 `aster-ai-lab/plugins` 仓库的 `registry/locks/runtime/darwin-arm64.json`；保留组件的 SHA-256 身份不得改动。
+
+`tests/runtime_component_locks.py` 校验 lock 与 `COMPONENTS` 的组件集合、结构合法性以及各 lock 间 SHA 身份一致。任何改动组件清单的提交都必须运行该测试，并至少用 `verify_runtime_registry.py` 对官方 registry 做一次真实匿名安装复验。
+
+本机在智能体沙箱内打包时，SwiftPM 的嵌套 `sandbox-exec` 与批量删除保护属于**会话级环境限制**，不是产品缺陷，不得为此在产品构建脚本中加入沙箱绕过逻辑。可发布版本优先由 `release-aster-desktop.yml`（`macos-14` + Node 24.12）构建；本机应急只允许使用临时 fixture（构建进程 PATH 注入 `swift build --disable-sandbox`、把构建产物目录移走备份而不是删除），且 fixture 不得进入产品源码或已发布二进制。
