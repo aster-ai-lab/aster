@@ -36,7 +36,10 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 | `/model` persists another catalog model | `shipped_tui_launch_resume_and_visible_commands` | `model` |
 | `/expand` reprints folded tool output in minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `expand-marker` |
 | `/fullscreen` returns from minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `fullscreen` |
-| ACP `/memory` and `/tasks` inspect host state | `shipped_tui_launch_resume_and_visible_commands` | `/memory`, `/tasks` |
+| ACP `/memory` list/read/delete after seeded store | `shipped_tui_launch_resume_and_visible_commands` | `/memory`, `/memory-read`, `/memory-delete` |
+| `/flush` typed outcome | `shipped_tui_launch_resume_and_visible_commands` | `Memory flushed` |
+| `/dream` typed outcome | `shipped_tui_launch_resume_and_visible_commands` | `Nothing to consolidate` |
+| ACP `/tasks` inspect host state | `shipped_tui_launch_resume_and_visible_commands` | `/tasks` |
 | `/context` reports turns and tokens | `shipped_tui_launch_resume_and_visible_commands` | `context` |
 | `/jump` previews a prior turn | `shipped_tui_launch_resume_and_visible_commands` | `jump-turn` |
 | `/edit-prompt` launches the editor | `shipped_tui_launch_resume_and_visible_commands` | `edit-prompt` |
@@ -86,7 +89,7 @@ These names stay out of this historical agent palette. The pass record is `hidde
 | queue | absent |
 | resume | absent |
 | rename | absent |
-| history | absent (local handler; not ACP-advertised) |
+| history | offered via Core ACP catalog (`Show conversation stats`); local handler stays Aster-unavailable |
 | transcript | absent |
 | rewind | absent |
 | workflows | absent |
@@ -108,8 +111,6 @@ These names stay out of this historical agent palette. The pass record is `hidde
 | share | absent |
 | release-notes | absent |
 | announcements | absent |
-| dream | absent |
-| flush | absent |
 | loop | absent |
 | auto | absent |
 | cd | absent outside the dashboard (`cd-agent-palette`); dashboard itself is Aster-unavailable |
@@ -188,3 +189,25 @@ does not write that file. The checker source does not mention
 
 The CLI crate pins Core 9.1.4 (`apps/cli`). Its release pager and ACP use the
 same publicly fetchable Code revision; local development builds can be newer.
+
+## Deep usage (memory and context compaction)
+
+Each row requires a trigger, an observable outcome, and at least one follow-on.
+Bare `!effects.is_empty()` is not accepted as the sole oracle for these rows.
+
+| Scenario | Test | Oracle |
+| --- | --- | --- |
+| Manual compact on empty session | `shipped_tui_launch_resume_and_visible_commands` | `compact-empty` → `Nothing to compact yet` |
+| Manual compact with history | `shipped_tui_launch_resume_and_visible_commands` | `compact-done` + `compaction.done` fact |
+| Compact summary kept on next turn | wire section of `shipped_tui_e2e` | `compact-summary-kept` |
+| Focus-note compact keeps summary | wire section of `shipped_tui_e2e` | `compact-focus-note-kept` |
+| Focus-note compact prompt includes host focus | `aster-core` `compact_conversation_writes_a_summary_fact` | focus prompt contains `Host focus` + `auth` |
+| Auto-compact re-arms across cycles | `aster-core` `test_auto_compact_rearms_and_continues_across_cycles` | two summaries + both continuation prompts |
+| Auto-compact timeout does not block end | `aster-core` `test_auto_compact_timeout_does_not_block_end_event` | no false `ContextCompacted` |
+| Auto-compact failure keeps tool evidence | `aster-core` `auto_compact_failure_keeps_original_tool_evidence` | original tool evidence retained |
+| Root UI: started / failed / completed / no double-complete wedge | `aster-pager` `root_session_auto_compact_cycle_failure_and_double_complete_do_not_wedge` | CompactionStarted → CompactionFailed → CompactionCompleted; one deferred flush |
+| `/context` turns/tokens after product prompts | `shipped_tui_launch_resume_and_visible_commands` | `context` turns + non-zero tokens |
+| Memory list → read → delete (revision mismatch) | `aster-acp` `deep_memory_inspect_cycle_then_flush_and_dream_without_a_model` + `terminal_memory_commands_use_revision_guards_and_do_not_call_the_model` | list/read/conflict/delete/empty; flush=`flushed`; dream=`no_work` |
+| Seeded `/memory` list/read/delete in PTY | `shipped_tui_launch_resume_and_visible_commands` | `/memory`, `/memory-read`, `/memory-delete` |
+| `/flush` typed outcome | PTY + wire | `Memory flushed` / `disposition=flushed` |
+| `/dream` typed outcome | PTY + wire | `Nothing to consolidate` / `disposition=no_work` |

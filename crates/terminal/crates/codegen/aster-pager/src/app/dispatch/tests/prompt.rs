@@ -7212,16 +7212,24 @@ fn command_changes_the_screen(name: &str) -> bool {
     }
     let mut app = test_app_with_agent();
     app.apply_aster_slash_gate();
-    // `/goal` is ACP-backed, not a pager builtin: aster-acp advertises it in
-    // the session catalog (gate `BuiltinGate::Goal`), so mirror that sync here.
-    if name == "goal" {
+    // ACP-advertised names: `/goal` and `/memory` replace unavailable local
+    // handlers; `/flush` and `/dream` unhide shell-gated local builtins that
+    // call `aster/memory/*`. Mirror the session catalog sync here.
+    if matches!(name, "goal" | "memory" | "flush" | "dream") {
         let agent = agent_ref(&app, AgentId(0));
         let models = agent.session.models.clone();
+        let description = match name {
+            "goal" => "Set, manage, or check an autonomous goal",
+            "memory" => "Inspect and manage stored memories",
+            "flush" => "Save this session's memory to disk now",
+            "dream" => "Consolidate memory now (merge observations into topics)",
+            _ => unreachable!(),
+        };
         let agent = app.agents.get_mut(&AgentId(0)).unwrap();
         agent.prompt.sync_acp_commands(
             &[agent_client_protocol::AvailableCommand::new(
-                "goal".to_string(),
-                "Set, manage, or check an autonomous goal".to_string(),
+                name.to_string(),
+                description.to_string(),
             )],
             None,
             &models,

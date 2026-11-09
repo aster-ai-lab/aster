@@ -1,0 +1,70 @@
+---
+interface Props {
+  kind: 'terms' | 'privacy';
+  title: string;
+  description: string;
+  eyebrow: string;
+  summaryTitle: string;
+  summary: string;
+}
+const { kind, title, description, eyebrow, summaryTitle, summary } = Astro.props;
+const terms = kind === 'terms';
+const otherHref = terms ? '../privacy/' : '../terms/';
+const otherLabel = terms ? '隐私政策' : '用户协议';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <title>{title}</title>
+    <link rel="icon" href="../tenant/aster/favicon.png" type="image/png" />
+    <link rel="canonical" href={`https://aster-ai-lab.github.io/aster/${kind}/`} />
+    <link rel="stylesheet" href="../transitions.css" />
+    <link rel="stylesheet" href="../docs/styles.css" />
+    <link rel="stylesheet" href="../legal/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">跳到主要内容</a>
+    <header class="docs-header legal-header">
+      <a class="docs-brand" href="../" aria-label="Aster 首页"><img src="../tenant/aster/logo.svg" alt="" width="30" height="30" />Aster</a>
+      <span class="header-divider" aria-hidden="true">/</span>
+      <span class="docs-wordmark">法律与隐私</span>
+      <nav class="header-links" aria-label="网站导航">
+        <a href="../">官网</a>
+        <a href="https://github.com/aster-ai-lab/aster">GitHub ↗</a>
+        <a href={otherHref}>{otherLabel}</a>
+      </nav>
+    </header>
+    <div class="legal-layout">
+      <aside class="legal-nav" aria-label="法律文件">
+        <span class="legal-nav-label">法律文件</span>
+        <a href="../terms/" aria-current={terms ? 'page' : undefined}>用户协议</a>
+        <a href="../privacy/" aria-current={terms ? undefined : 'page'}>隐私政策</a>
+        <p class="legal-nav-note">{terms ? '适用于 Aster 桌面版与命令行工具。版本功能以实际发布内容为准。' : '本页区分本地处理、您主动使用的第三方服务与静态公开网页。'}</p>
+      </aside>
+      <main id="content" class="legal-document">
+        <header class="legal-heading">
+          <p class="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          <p class="article-description">{description}</p>
+          <p class="legal-meta"><span>更新日期：<time datetime="2026-10-29">2026 年 10 月 29 日</time></span><span>生效日期：2026 年 10 月 29 日</span></p>
+        </header>
+        <article class="prose">
+          <div class="callout"><strong>{summaryTitle}</strong><p>{summary}</p></div>
+          <slot />
+        </article>
+        <footer class="legal-footer">
+          <span>Aster · 法律与隐私</span>
+          <nav aria-label="相关链接"><a href={otherHref}>查看{otherLabel}</a><a href="https://github.com/aster-ai-lab/aster/issues">GitHub Issues ↗</a></nav>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

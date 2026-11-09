@@ -555,6 +555,11 @@ pub(crate) const ASTER_UNAVAILABLE_COMMANDS: &[&str] = &[
     "import-claude",
     "remember",
     "tasks",
+    // `/memory` local modal needs shell `aster/memory/list`; Aster keeps the
+    // builtin unavailable so ACP inspection (`/memory list|read|delete`) can
+    // replace it when advertised. Reachability is still asserted via
+    // `ASTER_EFFECTIVE_COMMANDS` + ACP sync in coverage, and FULLSCREEN e2e.
+    "memory",
     // Media / voice / announcements (also fail-closed; keep explicit under aster)
     "imagine",
     "imagine-video",
@@ -564,9 +569,6 @@ pub(crate) const ASTER_UNAVAILABLE_COMMANDS: &[&str] = &[
     "share",
     "release-notes",
     "announcements",
-    "dream",
-    "flush",
-    "memory",
     "loop",
     "auto",
 ];
@@ -581,6 +583,9 @@ pub(crate) const ASTER_EFFECTIVE_COMMANDS: &[&str] = &[
     "effort",
     "goal",
     "compact",
+    "memory",
+    "flush",
+    "dream",
     "model",
     "context",
     "jump",

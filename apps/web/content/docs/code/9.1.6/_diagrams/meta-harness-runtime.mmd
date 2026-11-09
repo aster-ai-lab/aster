@@ -1,0 +1,15 @@
+flowchart TB
+  accTitle: Meta Harness 怎样推进一次运行
+  accDescr: 组件从事实日志重建状态。调度器选择下一动作，Core 按动作检查权限或完成条件。获准的动作产生新事实，再进入下一轮。
+  facts["① 读取事实日志<br/>已有事件与回执"]
+  state["② 重建组件状态<br/>initial / step / output"]
+  choose["③ infer 选择动作<br/>模型 / 工具 / 确认 / 压缩"]
+  guard["④ Core 按动作检查<br/>工具权限 / 完成门禁"]
+  act["⑤ 执行获准动作<br/>写入新事实"]
+  done["满足完成条件<br/>等待资源收尾后结束"]
+  facts --> state
+  state --> choose
+  choose --> guard
+  guard --> act
+  act -. 下一轮 .-> facts
+  guard --> done

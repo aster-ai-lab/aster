@@ -1,0 +1,73 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+---
+
+<LegalLayout
+  kind="terms"
+  title="Aster 用户协议"
+  description="Aster 用户协议：说明桌面版与 CLI 的使用规则、模型输出、文件工具、第三方服务与责任边界。"
+  eyebrow="ASTER / LEGAL"
+  summaryTitle="请先阅读"
+  summary="Aster 可以连接模型、本地文件和工具。模型输出可能不准确，工具操作可能修改您的环境；执行任务前请确认权限，交付前请检查结果。"
+>
+  <section aria-labelledby="terms-acceptance">
+    <h2 id="terms-acceptance">一、协议的接受</h2>
+    <p>欢迎使用 Aster。本协议由 Aster 项目组（以下简称“我们”）与访问、下载、安装或使用 Aster 桌面版、命令行工具及相关公开页面的用户（以下简称“您”）共同遵守。</p>
+    <p>当您开始使用上述产品，即表示您已阅读并同意本协议。若您不同意本协议的任何内容，请停止使用并删除已安装的软件。</p>
+  </section>
+  <section aria-labelledby="terms-service">
+    <h2 id="terms-service">二、服务内容</h2>
+    <p>Aster 提供任务规划、模型对话、文件处理、开发协作、结果审查及相关工具能力。具体功能取决于您使用的版本、操作系统、配置和所连接的第三方服务。</p>
+    <p>我们可能根据安全、兼容性或产品演进调整功能。页面中的介绍不构成对所有环境、所有模型或所有任务均适用的承诺。</p>
+  </section>
+  <section aria-labelledby="terms-account">
+    <h2 id="terms-account">三、配置与凭证</h2>
+    <p>部分功能需要您提供模型服务地址、API Key、访问令牌或其他配置。您应确保拥有合法使用权，妥善保管凭证，并及时撤销不再使用或已经泄露的凭证。</p>
+    <p>请勿在公开 issue、截图、日志或示例中提交密码、私钥、访问令牌及其他敏感信息。</p>
+  </section>
+  <section aria-labelledby="terms-use">
+    <h2 id="terms-use">四、使用规则</h2>
+    <p>您应遵守适用法律法规和第三方服务规则，不得利用 Aster：</p>
+    <ul>
+      <li>实施未经授权的访问、攻击、破坏、绕过安全措施或干扰他人系统；</li>
+      <li>制作、传播恶意软件，或从事欺诈、侵权及其他违法活动；</li>
+      <li>处理您无权使用的文件、数据、账号或知识产权；</li>
+      <li>将模型输出作为无需人工复核即可执行的专业结论或高风险操作依据。</li>
+    </ul>
+  </section>
+  <section aria-labelledby="terms-output">
+    <h2 id="terms-output">五、模型输出与人工复核</h2>
+    <p>模型生成内容可能包含错误、遗漏、过时信息或不适当建议。您应根据任务风险进行事实核查、代码审查、测试和其他必要验证。</p>
+    <p>涉及医疗、法律、金融、生产环境、数据删除或其他重要事项时，应由具备相应能力的人员作出最终判断。Aster 不替代专业意见。</p>
+  </section>
+  <section aria-labelledby="terms-tools">
+    <h2 id="terms-tools">六、文件、命令与工具权限</h2>
+    <p>工具可能读取、创建、修改或删除文件，也可能执行命令、访问网络或调用您配置的外部服务。您应理解所授予的权限，保持必要备份，并在执行前确认工作区、参数和影响范围。</p>
+    <p>因任务需求而进行的实际操作，以您的配置、确认和运行环境为准。请不要对包含重要数据的唯一副本执行未经验证的批量操作。</p>
+  </section>
+  <section aria-labelledby="terms-third-party">
+    <h2 id="terms-third-party">七、第三方模型与服务</h2>
+    <p>Aster 可以接入由第三方提供的模型、搜索、存储、协作或其他服务。该等服务由相应运营方独立提供，其可用性、费用、内容规则和数据处理受第三方条款约束。</p>
+    <p>您应自行阅读并遵守所选服务的协议。第三方服务发生变更、中断或终止时，相关功能可能受到影响。</p>
+  </section>
+  <section aria-labelledby="terms-ip">
+    <h2 id="terms-ip">八、知识产权与开源</h2>
+    <p>Aster 源代码及附属材料按照仓库中列明的许可证提供；第三方组件适用其各自许可证。使用本软件时，请保留并遵守相关许可证和声明。</p>
+    <p>您保留对自有文件、数据和输入内容的合法权利。模型输出的权利归属及使用限制可能受适用法律和模型服务条款影响，您应自行确认。</p>
+  </section>
+  <section aria-labelledby="terms-changes">
+    <h2 id="terms-changes">九、更新与协议变更</h2>
+    <p>我们可能发布功能更新、安全修复或新的协议版本。协议发生实质变更时，本页会更新日期；在法律要求的情况下，我们会以适当方式另行提示。</p>
+    <p>变更生效后继续使用 Aster，即表示您接受更新后的协议。若不同意，请停止使用。</p>
+  </section>
+  <section aria-labelledby="terms-liability">
+    <h2 id="terms-liability">十、免责声明与责任限制</h2>
+    <p>在适用法律允许的范围内，Aster 按现有状态提供，不对持续无错误运行、特定用途适用性或模型输出准确性作明示或默示保证。</p>
+    <p>在适用法律允许的范围内，我们不对因使用或无法使用 Aster、第三方服务或模型输出而产生的间接、附带或后果性损失承担责任。本条款不排除或限制法律规定不得排除或限制的权利与责任。</p>
+  </section>
+  <section aria-labelledby="terms-contact">
+    <h2 id="terms-contact">十一、停止使用与联系</h2>
+    <p>您可以随时停止使用并卸载 Aster。与软件、协议或许可证有关的问题，可通过 Aster GitHub 仓库提交公开 issue。</p>
+    <p>提交问题时请使用可公开的最小示例，不要附带个人信息、私有文件或访问凭证。</p>
+  </section>
+</LegalLayout>

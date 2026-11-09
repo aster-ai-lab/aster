@@ -1,0 +1,17 @@
+---
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { documentPages, projects } from '../../../scripts/docs_catalog.mjs';
+
+export async function getStaticPaths() {
+  return documentPages(projects).map((chapter) => ({
+    params: { slug: chapter.route ? chapter.route.replace(/\/$/, '') : undefined },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const html = await readFile(path.join(process.cwd(), 'node_modules/.cache/aster-docs', chapter.route, 'index.html'), 'utf8');
+---
+
+<Fragment set:html={html} />

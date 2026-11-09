@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Memory 的证据、存储与派生索引边界
+  accDescr: 宿主负责提取、Embedding 和上下文准入。MemoryStore 保存 MemoryItem。Repository 管理命名空间、证据和修订。VectorIndex 是独立的派生检索索引。
+  host["宿主语义策略<br/>提取 / 激活 / Embedding / 准入"] --> store["MemoryStore<br/>MemoryItem"]
+  host --> repository["Repository V2<br/>Namespace / Evidence / Revision"]
+  host --> vector["VectorIndex<br/>调用方向量与精确 Top-K"]
+  store --> local["内存或本地持久化"]
+  repository --> local
+  repository -. 派生索引，不是记忆事实 .-> vector

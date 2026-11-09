@@ -1,0 +1,10 @@
+flowchart LR
+  accTitle: 自己的终端智能体需要哪些部分
+  accDescr: 界面显示事件。宿主持有会话和确认管理器。
+  ui["终端界面<br/>键盘与消息"]
+  host["Rust 宿主<br/>会话与存储"]
+  session["Core 会话<br/>AgentSession"]
+  events["运行事件<br/>增量与回执"]
+  ui --> host
+  host --> session
+  session --> events

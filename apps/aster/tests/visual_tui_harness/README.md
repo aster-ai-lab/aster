@@ -60,6 +60,7 @@ Additional Layer-C companions (same DeepSeek pin):
 - `drive_lh_retrieval.py` — needle token search → fix nested file; decoy must stay
 - `drive_al_compact.py` — AL-V1: HOLD → `/compact` → resume → GATE
 - `drive_sr_semantic.py` — SR: host ACL + `workspace_retrieval` local_cpu; meaning search
+- `drive_control_loop.py` — control-loop visual (R1 write sensor, R2 `/goal` pause/resume, R3 `--continue` reopen); companion to `test_control_loop_deepseek_e2e`
 
 ```bash
 python3 apps/aster/tests/visual_tui_harness/drive_lh_parallel_hard.py \

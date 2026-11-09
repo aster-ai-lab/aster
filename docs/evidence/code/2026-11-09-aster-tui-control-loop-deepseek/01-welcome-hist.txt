@@ -1,0 +1,91 @@
+Last login: Mon Nov  9 14:30:19 on tty??
+/Users/roylin/code/aster/docs/evidence/code/2026-11-09-aster-tui-control-loop-deepseek/launch_aster.sh ; exit;
+➜  ~ /Users/roylin/code/aster/docs/evidence/code/2026-11-09-aster-tui-control-loop-deepseek/launch_aster.sh ; exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /p/t/a/work/ws
+
+
+            ╭───────────────────────────────────────────────────────────────────────────────────────────────╮
+            │                                                                                               │
+            │                    +                  Aster  0.3.1 (aa5cd435501c)                             │
+            │                   *#        +#        Thanks for trying Aster, give feedback with /feedback!  │
+            │                  *###                                                                         │
+            │                +*#####+..........     New worktree                                    ctrl+w  │
+            │            .+*####**####*+    ::.     Resume session                                  ctrl+r  │
+            │       ....**#####*  +######*+::       Changelog                                               │
+            │     ...       *###++###*+:            Quit                                            ctrl+q  │
+            │     :::::::oo***+####*                                                                        │
+            │                  +*#+                                                                         │
+            │                   *#                                                                          │
+            │                    +                                                                          │
+            │                                                                                               │
+            ╰───────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+
+   → Type a message...
+
+                                                                                 deepseek/DeepSeek Flash (max) · yolo
+
+
+
+

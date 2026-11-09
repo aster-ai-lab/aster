@@ -1,0 +1,7 @@
+flowchart TB
+  accTitle: Boot 的协议中立应用边界
+  accDescr: 模块和 Provider 提供应用结构。Controller、Gateway 和消息模式进入统一管线。HTTP 与消息适配器负责协议连接。
+  modules["Module + 类型化 Provider"] --> handlers["Controller / Gateway / Message Pattern"]
+  handlers --> pipeline["协议中立管线<br/>Guard / Interceptor / Pipe / Filter"]
+  pipeline --> http["Axum HTTP 与 WebSocket 适配器"]
+  pipeline --> transport["MessageTransport<br/>进程内或可选网络后端"]

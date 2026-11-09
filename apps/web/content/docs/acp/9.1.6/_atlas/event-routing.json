@@ -1,0 +1,33 @@
+{
+  "title": "事件怎样变成界面中的一行",
+  "description": "文字、推理和工具输出分别映射。工具行复用原始调用 ID。",
+  "steps": [
+    {
+      "title": "文本增量直接流向界面",
+      "body": "TextDelta 形成用户可见消息增量。",
+      "focus": [
+        "core",
+        "adapter"
+      ],
+      "source": {
+        "path": "crates/code/acp/src/agent/turn.rs",
+        "match": "pub(super) async fn handle_event("
+      }
+    },
+    {
+      "title": "参数就绪后建立工具行",
+      "body": "ToolStart 只有预告。ToolExecutionStart 才带实际参数。",
+      "focus": [
+        "adapter",
+        "client"
+      ]
+    },
+    {
+      "title": "用原 ID 更新结果",
+      "body": "ToolEnd 更新同一工具行。重复预告不会新增一次执行。",
+      "focus": [
+        "client"
+      ]
+    }
+  ]
+}

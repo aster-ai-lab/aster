@@ -1,0 +1,10 @@
+flowchart TB
+  accTitle: Event 的 Provider 中立发布订阅边界
+  accDescr: 应用通过 EventBus 发布和订阅统一事件。EventProvider 连接 Memory、NATS、Iggy 或自定义后端。Schema、DLQ 和指标在 Event 层，重试和分区由 Provider 负责。
+  app["应用事件"] --> bus["EventBus<br/>发布 / 订阅 / 历史 / 管理"]
+  bus --> provider["EventProvider"]
+  provider --> memory["Memory<br/>进程内 Broadcast"]
+  provider --> nats["NATS JetStream"]
+  provider --> iggy["Apache Iggy"]
+  provider --> custom["自定义后端"]
+  bus --> services["Schema / DLQ / StateStore / Metrics"]

@@ -180,6 +180,69 @@ impl AsterCodeAgent {
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         Ok(acp::ExtResponse::new(raw.into()))
     }
+
+    /// `aster/memory/flush`: pager `/flush`. Core durable memory is already
+    /// file-backed; acknowledge the session and report a flushed disposition
+    /// compatible with the pager's `MemoryFlushResponse`.
+    pub(super) async fn handle_memory_flush(
+        &self,
+        args: &acp::ExtRequest,
+    ) -> acp::Result<acp::ExtResponse> {
+        let session_id = memory_command_session_id(args)?;
+        self.require_live_session(&session_id).await?;
+        ext_json(serde_json::json!({
+            "flushed": true,
+            "disposition": "flushed",
+        }))
+    }
+
+    /// `aster/memory/dream`: pager `/dream`. Aster Core has no observation
+    /// consolidation queue; report `no_work` so the pager shows a typed outcome.
+    pub(super) async fn handle_memory_dream(
+        &self,
+        args: &acp::ExtRequest,
+    ) -> acp::Result<acp::ExtResponse> {
+        let session_id = memory_command_session_id(args)?;
+        self.require_live_session(&session_id).await?;
+        ext_json(serde_json::json!({
+            "disposition": "no_work",
+            "observation_count": 0,
+            "topics_affected": 0,
+        }))
+    }
+
+    async fn require_live_session(&self, session_id: &str) -> acp::Result<()> {
+        if session_id.is_empty() || session_id.len() > 4096 {
+            return Err(acp::Error::invalid_params().data("memory command: session_id"));
+        }
+        let sessions = self.sessions.lock().await;
+        if sessions.contains_key(session_id) {
+            Ok(())
+        } else {
+            Err(acp::Error::invalid_params().data("unknown session id"))
+        }
+    }
+}
+
+#[derive(serde::Deserialize)]
+struct MemoryCommandParams {
+    session_id: String,
+}
+
+fn memory_command_session_id(args: &acp::ExtRequest) -> acp::Result<String> {
+    if args.params.get().len() > 8192 {
+        return Err(acp::Error::invalid_params().data("memory command params too large"));
+    }
+    let params: MemoryCommandParams = serde_json::from_str(args.params.get()).map_err(|error| {
+        acp::Error::invalid_params().data(format!("memory command params: {error}"))
+    })?;
+    Ok(params.session_id)
+}
+
+fn ext_json(value: serde_json::Value) -> acp::Result<acp::ExtResponse> {
+    let raw = serde_json::value::to_raw_value(&value)
+        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+    Ok(acp::ExtResponse::new(raw.into()))
 }
 
 #[cfg(test)]

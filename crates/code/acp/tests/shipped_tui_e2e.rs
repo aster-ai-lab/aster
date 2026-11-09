@@ -74,9 +74,8 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("marketplace", "View marketplace"),
     ("import-claude", "Claude settings import"),
     ("remember", "Save a memory note"),
-    // `memory` / `tasks` are ACP-advertised (see FULLSCREEN_PALETTE); do not list
-    // them here with a different description — that dual oracle can false-pass.
-    ("history", "Show conversation stats"),
+    // `memory` / `flush` / `dream` / `tasks` / Core `/history` are ACP-advertised
+    // (see FULLSCREEN_PALETTE); do not list them here — dual oracles false-pass.
     ("imagine", "imagine"),
     ("imagine-video", "imagine-video"),
     ("voice", "voice"),
@@ -85,8 +84,6 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("share", "Share this session via URL"),
     ("release-notes", "release notes"),
     ("announcements", "announcements"),
-    ("dream", "Consolidate memory"),
-    ("flush", "memory to disk"),
     ("loop", "recurring interval"),
     ("auto", "classifier approves safe tools"),
 ];
@@ -97,6 +94,9 @@ const UNAVAILABLE: &[(&str, &str)] = &[
 const FULLSCREEN_PALETTE: &[(&str, &str)] = &[
     ("fork", "Branch the current session"),
     ("memory", "Inspect and manage stored memories"),
+    ("flush", "Save this session's memory to disk now"),
+    ("dream", "Consolidate memory now (merge observations into topics)"),
+    ("history", "Show conversation stats"),
     ("tasks", "Inspect background tasks or stop a task"),
     ("settings", "Open the settings modal"),
     ("config", "Add and configure providers and models"),
@@ -1310,6 +1310,95 @@ async fn shipped_agent_session_wire() {
                     message_bytes(&after)
                 ),
             );
+
+            // Focus-note compact: seed a new session, compact with userContext, keep summary.
+            let focus_session = acp::Agent::new_session(
+                agent.conn.as_ref(),
+                acp::NewSessionRequest::new(workspace.clone()),
+            )
+            .await
+            .expect("focus compact session")
+            .session_id;
+            for text in [
+                "auth bug in login.rs needs the middleware fix",
+                "keep the session middleware patch after compact",
+            ] {
+                acp::Agent::prompt(agent.conn.as_ref(), user_prompt(&focus_session, text))
+                    .await
+                    .expect("focus seed");
+            }
+            let focus_params = serde_json::value::to_raw_value(&serde_json::json!({
+                "sessionId": focus_session.0.as_ref(),
+                "userContext": "auth",
+            }))
+            .expect("focus params");
+            acp::Agent::ext_method(
+                agent.conn.as_ref(),
+                acp::ExtRequest::new(
+                    "aster/compact_conversation",
+                    std::sync::Arc::from(focus_params),
+                ),
+            )
+            .await
+            .expect("focus compact");
+            let focus_facts = log_text(&workspace);
+            assert!(
+                focus_facts.contains("compaction.done"),
+                "focus compact missing compaction.done: {focus_facts}"
+            );
+            let focus_start = state.lock().expect("mock").bodies.len();
+            acp::Agent::prompt(
+                agent.conn.as_ref(),
+                user_prompt(&focus_session, "continue after focus compact"),
+            )
+            .await
+            .expect("post focus compact");
+            let focus_after = bodies_since(&state.lock().expect("mock"), focus_start);
+            assert!(
+                focus_after
+                    .iter()
+                    .any(|body| body.contains(COMPACT_SUMMARY)),
+                "focus compact next turn dropped the summary"
+            );
+            oracle(WIRE_TEST, "compact-focus-note-kept", COMPACT_SUMMARY);
+
+            // Flush/dream host methods on the live session (typed pager dispositions).
+            // Seeded list/read/delete are covered by PTY + hermetic ACP deep tests.
+            let flush_session = acp::Agent::new_session(
+                agent.conn.as_ref(),
+                acp::NewSessionRequest::new(workspace.clone()),
+            )
+            .await
+            .expect("flush session")
+            .session_id;
+            let flush_params = serde_json::value::to_raw_value(&serde_json::json!({
+                "session_id": flush_session.0.as_ref(),
+            }))
+            .expect("flush params");
+            let flush = acp::Agent::ext_method(
+                agent.conn.as_ref(),
+                acp::ExtRequest::new("aster/memory/flush", std::sync::Arc::from(flush_params)),
+            )
+            .await
+            .expect("memory flush");
+            let flush_body: serde_json::Value =
+                serde_json::from_str(flush.0.get()).expect("flush json");
+            assert_eq!(flush_body["disposition"], "flushed");
+            oracle(WIRE_TEST, "memory-flush", "disposition=flushed");
+            let dream_params = serde_json::value::to_raw_value(&serde_json::json!({
+                "session_id": flush_session.0.as_ref(),
+            }))
+            .expect("dream params");
+            let dream = acp::Agent::ext_method(
+                agent.conn.as_ref(),
+                acp::ExtRequest::new("aster/memory/dream", std::sync::Arc::from(dream_params)),
+            )
+            .await
+            .expect("memory dream");
+            let dream_body: serde_json::Value =
+                serde_json::from_str(dream.0.get()).expect("dream json");
+            assert_eq!(dream_body["disposition"], "no_work");
+            oracle(WIRE_TEST, "memory-dream", "disposition=no_work");
 
             // status / pause / clear do not start a model turn. set stores the objective.
             let goal_session = acp::Agent::new_session(
@@ -2754,6 +2843,23 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     let home = isolate_dir("pty-home");
     let write_path = workspace.join("side-effect.txt");
     let late_path = workspace.join("late.txt");
+    // Seed durable memory before any ACP process opens the collection lock.
+    {
+        let memory_dir = aster_core::state_root::workspace_state_dir(&workspace).join("memory");
+        let memory_store = aster_core::durable_memory_vec::VecMemoryStore::open(&memory_dir)
+            .expect("pty memory store");
+        memory_store
+            .put(&aster_core::durable_memory_vec::MemoryRecord {
+                id: "pty-deep-note".into(),
+                content: "pty-seeded durable memory for deep inspect".into(),
+                tags: vec!["pty".into()],
+                importance: 0.6,
+                memory_type: "\"procedural\"".into(),
+                timestamp: "2026-11-09T00:00:00Z".into(),
+                meta: "{}".into(),
+            })
+            .expect("seed pty memory");
+    }
     let (addr, state) = spawn_mock(&write_path, &late_path);
     let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
     let grok_home = home.join("grok");
@@ -2937,27 +3043,105 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.escape();
     pty.pump(Duration::from_millis(80));
     pty.write_bytes(b"\x15");
+
     let before_inspection = state.lock().expect("mock").bodies.len();
-    for (command, expected) in [
-        ("/memory", "Stored memories: 0"),
-        ("/tasks", "No background tasks."),
-    ] {
-        pty.write_bytes(b"\x15");
-        pty.type_text(command);
-        pty.enter();
-        let screen = pty.wait_for(expected, Duration::from_secs(8));
-        assert!(screen.contains(expected), "{screen}");
-        assert_eq!(
-            state.lock().expect("mock").bodies.len(),
-            before_inspection,
-            "{command} must use the current host contract without a model request"
-        );
-        oracle(
-            PTY_TEST,
-            command,
-            "current host inspection, zero model requests",
-        );
-    }
+    pty.write_bytes(b"\x15");
+    pty.type_text("/memory list pty-seeded");
+    pty.enter();
+    let memory_list = pty.wait_for("Stored memories:", Duration::from_secs(8));
+    assert!(
+        memory_list.contains("Stored memories: 1") && memory_list.contains("pty-deep-note"),
+        "seeded /memory list missing note\n{memory_list}"
+    );
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        before_inspection,
+        "/memory list must use the host contract without a model request"
+    );
+    oracle(PTY_TEST, "/memory", "seeded list, zero model requests");
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/memory read pty-deep-note");
+    pty.enter();
+    // Read output includes a Revision line; list preview does not.
+    let memory_read = pty.wait_for("Revision:", Duration::from_secs(8));
+    assert!(
+        memory_read.contains("pty-seeded durable memory for deep inspect")
+            && memory_read.contains("Revision:"),
+        "seeded /memory read missing content\n{memory_read}"
+    );
+    // TUI wrap can put the 64-hex revision on the line after `Revision:`.
+    let revision = {
+        let lines: Vec<&str> = memory_read.lines().collect();
+        let mut found = None;
+        for (index, line) in lines.iter().enumerate() {
+            if let Some(rest) = line.split("Revision:").nth(1) {
+                let same_line: String = rest.chars().filter(|ch| ch.is_ascii_hexdigit()).collect();
+                if same_line.len() == 64 {
+                    found = Some(same_line);
+                    break;
+                }
+                if let Some(next) = lines.get(index + 1) {
+                    let next_line: String =
+                        next.chars().filter(|ch| ch.is_ascii_hexdigit()).collect();
+                    if next_line.len() == 64 {
+                        found = Some(next_line);
+                        break;
+                    }
+                }
+            }
+        }
+        found.unwrap_or_else(|| {
+            panic!("revision missing from /memory read screen\n{memory_read}");
+        })
+    };
+    oracle(PTY_TEST, "/memory-read", "seeded content");
+
+    pty.write_bytes(b"\x15");
+    pty.type_text(&format!("/memory delete pty-deep-note {revision}"));
+    pty.enter();
+    let deleted = pty.wait_for("Deleted memory", Duration::from_secs(8));
+    assert!(
+        deleted.contains("Deleted memory"),
+        "seeded /memory delete missing confirmation\n{deleted}"
+    );
+    oracle(PTY_TEST, "/memory-delete", "deleted seeded note");
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/tasks");
+    pty.enter();
+    let tasks = pty.wait_for("No background tasks.", Duration::from_secs(8));
+    assert!(tasks.contains("No background tasks."), "{tasks}");
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        before_inspection,
+        "/tasks must use the host contract without a model request"
+    );
+    oracle(
+        PTY_TEST,
+        "/tasks",
+        "current host inspection, zero model requests",
+    );
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/flush");
+    pty.enter();
+    let flush = pty.wait_for("Memory flushed", Duration::from_secs(12));
+    assert!(
+        flush.contains("Memory flushed"),
+        "/flush did not report a typed outcome\n{flush}"
+    );
+    oracle(PTY_TEST, "/flush", "Memory flushed");
+
+    pty.write_bytes(b"\x15");
+    pty.type_text("/dream");
+    pty.enter();
+    let dream = pty.wait_for("Nothing to consolidate", Duration::from_secs(12));
+    assert!(
+        dream.contains("Nothing to consolidate"),
+        "/dream did not report a typed outcome\n{dream}"
+    );
+    oracle(PTY_TEST, "/dream", "Nothing to consolidate");
     pty.write_bytes(b"\x15");
     let bodies_before_doctor = state.lock().expect("mock").bodies.len();
     pty.type_text("/doctor");

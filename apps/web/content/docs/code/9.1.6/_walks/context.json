@@ -1,0 +1,39 @@
+{
+  "title": "上下文装配源码漫游",
+  "intro": "观察同一来源的旧内容怎样被替换，以及预算怎样限制模型输入。",
+  "steps": [
+    {
+      "title": "从来源结果开始装配",
+      "body": "装配器先保留每个来源的最新结果。",
+      "takeaway": "旧上下文不会因重复注入而不断累积。",
+      "source": {
+        "path": "crates/code/core/src/context/assembler.rs",
+        "match": "pub fn assemble(&self, results: &[ContextResult]) -> ContextAssembly {",
+        "before": 0,
+        "after": 27
+      }
+    },
+    {
+      "title": "排序后选择条目",
+      "body": "条目依据必需标记、优先级、评分和成本排序。",
+      "takeaway": "必需条目的处理规则也在同一装配器里。",
+      "source": {
+        "path": "crates/code/core/src/context/assembler.rs",
+        "match": "let mut items = deduped.into_values().collect::<Vec<_>>();",
+        "before": 0,
+        "after": 30
+      }
+    },
+    {
+      "title": "压缩时保留原始目标",
+      "body": "压缩模板明确要求保留原始目标和当前状态。",
+      "takeaway": "摘要是可核实的历史，不是新的授权来源。",
+      "source": {
+        "path": "crates/code/core/prompts/common/context_compact.md",
+        "match": "Pinned original goal (copy verbatim under ## Goal; leave empty only if unknown):",
+        "before": 6,
+        "after": 5
+      }
+    }
+  ]
+}

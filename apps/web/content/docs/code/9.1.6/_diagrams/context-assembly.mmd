@@ -1,0 +1,14 @@
+flowchart LR
+  accTitle: 模型看到的上下文怎样选出
+  accDescr: 上下文是模型输入的投影。裁剪上下文不会删除事实日志。
+  sources["收集来源<br/>ContextResult"]
+  latest["保留最新贡献<br/>按来源替换"]
+  dedupe["合并重复条目<br/>内容身份"]
+  rank["排序候选<br/>优先级与评分"]
+  budget["应用预算<br/>条目与令牌"]
+  frame["形成模型输入<br/>本轮上下文"]
+  sources --> latest
+  latest --> dedupe
+  dedupe --> rank
+  rank --> budget
+  budget --> frame

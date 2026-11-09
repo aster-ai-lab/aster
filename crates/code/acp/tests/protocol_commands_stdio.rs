@@ -500,7 +500,10 @@ impl Agent {
         let global_commands = initialized["result"]["_meta"]["availableCommands"]
             .as_array()
             .expect("initialize global command metadata");
-        assert_eq!(command_names(global_commands), ["goal", "memory", "tasks"]);
+        assert_eq!(
+            command_names(global_commands),
+            ["goal", "memory", "flush", "dream", "tasks"]
+        );
     }
 
     async fn open_session(&mut self) -> (String, usize) {
@@ -590,7 +593,7 @@ async fn persist_empty_snapshot(root: &Path, workspace: &Path, session_id: &str)
 fn assert_current_session_catalog(commands: &[Value]) {
     let names = command_names(commands);
     for expected in [
-        "goal", "help", "compact", "memory", "model", "tasks", "tools",
+        "dream", "flush", "goal", "help", "compact", "memory", "model", "tasks", "tools",
     ] {
         assert!(
             names.contains(&expected),

@@ -1,0 +1,62 @@
+export const meta = {
+  title: 'Effect 恢复与运行验证',
+  description: '事实折叠、Transition 幂等性、等待恢复、结构化并发和测试。',
+  label: '恢复与验证',
+  updated: '2026-10-29',
+};
+
+Actor 的恢复依据是不可变事实日志。进程重启后，Runtime 重新折叠日志，而不是恢复进程内等待器。
+
+## 日志决定下一步
+
+`resume` 先折叠已保存事实。每个 Component 的 `step` 更新自己的状态，`output` 再给出视图和可执行 Transition。
+
+如果某个 Transition Key 已经是事实的 Cause，Runtime 不会再次选择它。重复恢复完成的 Turn 不会追加事实，也不会重复调用模型。
+
+两个 Component 同时声明同一个 Key 时，Projection 在执行任何 Effect 前返回 `ActorError::DuplicateTransition`。命名空间用于避免组合冲突。
+
+## 等待与恢复
+
+<DocTable caption="Coding Scheduler 的等待恢复" headers={['等待状态', '结束事实', '后续行为']} rows={[
+  ['CodingPhase::Confirm', 'confirmation.answered', '批准后执行一次 Tool，拒绝则结束 Turn'],
+  ['CodingPhase::Question', 'question.answered', '执行下一次模型 Turn'],
+]} />
+
+Question 视图保留模型返回的 `allow_free_text`。等待期间没有可用 Transition，恢复调用不会推进状态。
+
+拒绝确认不会调用 Tool。批准确认和回答问题都只通过对应事实触发一次后续 Transition。
+
+## 重试、并发与资源
+
+`retry` 只重复 `Exit::Fail`。`Exit::Die` 即使还有重试次数也只执行一次。
+
+`zip_par` 和 `race` 使用结构化取消。一个分支不再需要时，Runtime 取消兄弟分支。`bracket` 在成功、预期失败、缺陷和取消路径上释放资源。
+
+`Effect::with_span` 记录 Runtime Span。Trace 只描述执行，不改变事实日志的恢复语义。
+
+## 验证清单
+
+1. 构造 Effect 时确认服务调用仍为零。
+2. 验证 `retry` 不重复 `Exit::Die`。
+3. 重复恢复完成的 Turn，确认没有新事实。
+4. 注入重复 Transition Key，确认 Effect 尚未执行就被拒绝。
+5. 在等待确认和问题时恢复，确认执行零步。
+6. 追加回答事实，确认后续 Transition 只执行一次。
+7. 在成功、失败和取消路径核对资源释放。
+
+## 开发检查
+
+从 `crates/effect` 目录运行：
+
+```bash
+cargo test
+cargo fmt --all -- --check
+```
+
+测试应覆盖事实解析、日志恢复、Transition 幂等性和取消清理。不要只用进程内状态验证恢复。
+
+## 实现依据
+
+- [日志折叠与等待合同](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/README.md)
+- [Effect 并发与资源实现](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/effect.rs)
+- [公开导出](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/lib.rs)

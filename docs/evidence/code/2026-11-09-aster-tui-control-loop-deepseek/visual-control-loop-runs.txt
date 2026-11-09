@@ -1,0 +1,8 @@
+token=CL-VIS-5064ec21-0dda-4ab5-a60b-0aeb09b791ed
+deepseek_pin=True
+r1=True
+r2_paused=True
+r2_bound=True
+r3_bytes=True
+r3_goal=True
+pass=True

@@ -1,0 +1,118 @@
+export const meta = {
+  title: '系统提示词装配与代码约束',
+  description: '默认提示文件、SystemPromptSlots、角色选择、工作策略、验证清单与本轮语言。',
+  label: '系统提示词设计', updated: '2026-10-28',
+};
+
+## 提示词负责指导，运行时负责执行约束
+
+系统提示词描述模型应怎样工作。
+Core 代码判定模型提出的动作能否执行。
+两者分别处理“应该做什么”和“实际允许什么”。
+模型读到“验证结果”，也要产生真实检查记录。
+
+<PeleAtlasDiagram name="prompt-stack" />
+
+默认提示文件位于 `crates/code/core/prompts/`。
+Rust 常量用 `include_str!` 编入提示文本。
+因此，修改磁盘上的模板后需要重新构建程序。
+已经发布的程序继续使用编译时的文本。
+
+## 四组提示文件各自承担什么职责
+
+| 目录 | 内容 | 使用边界 |
+| --- | --- | --- |
+| `common/` | 默认行为、运行契约、工具用法、安全边界、压缩模板 | 共同契约进入各角色的装配路径 |
+| `agents/` | Explore、Plan、CodeReview、Verification 的默认角色文本 | 角色文本与实际权限叠加分别生效 |
+| `planning/` | 计划生成、目标提取、目标检查的结构化提示 | 模型输出仍要经过类型化准入 |
+| `analysis/` | 意图分类与预分析 | 分类输出不直接授予工具能力 |
+
+入口：<SourceRef path="crates/code/core/src/prompts.rs" match="pub const RUNTIME_CONTRACT: &amp;str = include_str!">提示注册表</SourceRef>。
+
+## 一次装配的准确顺序
+
+`SystemPromptSlots::build_with_style` 先选基础角色。
+装配器将模板中的 CRLF 归一为 LF。
+随后按下表拼接文本。
+
+| 次序 | 装配内容 | 宿主如何影响 |
+| --- | --- | --- |
+| 1 | 基础角色与行为 | GeneralPurpose 的自定义角色替换默认身份行 |
+| 2 | 运行契约 | 装配器始终加入 |
+| 3 | 对应角色的仓库工具契约 | 只读角色使用只读版本 |
+| 4 | 共同安全边界 | 装配器始终加入 |
+| 5 | 输出语言的回退契约 | `output_language` 有值时加入 |
+| 6 | 自定义答复格式 | 先去掉默认格式，再加入 `response_style` |
+| 7 | 角色准则和宿主准则 | 合并到 Guidelines 部分 |
+| 8 | 附加文本 | `extra` 放在槽装配末尾 |
+
+非 GeneralPurpose 角色保留自身身份文本。
+自定义角色会前置到该角色文本前。
+这与替换通用角色的默认身份行不同。
+
+<SourceWalk name="system-prompts" />
+
+## 主会话角色选择与辅助函数为何不同
+
+`build_with_message` 支持按消息检测角色。
+主会话运行路径采用更明确的选择方式。
+宿主已指定角色时，运行使用该角色。
+宿主未指定时，主会话保留 GeneralPurpose。
+本地检测结果只写入调试记录。
+
+“计划”一词不代表主会话切成只读角色。
+阅读注释时，应核对实际调用路径。
+角色权限叠加的入口是
+<SourceRef path="crates/code/core/src/prompts.rs" match="pub fn uses_readonly_tool_contract">只读角色判定</SourceRef>。
+
+共同契约存在，不代表模型必然遵守。
+需要硬约束的能力由运行时检查。
+角色的实际工具限制见
+<SourceRef path="crates/code/core/src/permissions/style_specialty.rs" match="pub fn specialty_permission_policy">角色权限叠加</SourceRef>。
+
+## 工作策略如何进入系统文本
+
+`WorkPolicyV1` 是带身份和版本的宿主工作要求。
+运行时把策略文本追加到 `guidelines`。
+策略进入事实日志，并绑定原会话。
+恢复时换用另一份策略会触发冲突检查。
+
+例如，工程策略要求先读调用方，再修改并检查。
+策略说明工作方法，权限策略判定实际调用。
+策略文本本身不会生成检查通过的报告。
+
+参见 <SourceRef path="crates/code/core/src/agent/prompt_runtime.rs" match="fn append_work_policy(&amp;self, slots: &amp;mut crate::SystemPromptSlots) {">工作策略注入</SourceRef>。
+
+## 验证清单怎样避免模型猜命令
+
+宿主先准入验证合同。
+合同包含检查 ID、命令和覆盖范围。
+`with_verification_context` 把清单投影到系统文本。
+模型应使用完整的原始命令。
+额外拼接的参数、重定向或管道不继承检查身份。
+
+这层投影解决“模型应该运行哪个检查”。
+权限与沙箱仍判定“该命令是否允许执行”。
+完成门禁再检查“报告是否对应最新修改”。
+三项判断缺一项，都会留下具体缺口。
+
+## 本轮语言为何还要再说明一次
+
+会话级提示词可能经过缓存。
+本轮用户输入可能换用另一种语言。
+运行时在调用附近追加本轮语言契约。
+代码、路径、命令和引用保留原文。
+工具返回的语言不会自动替代用户语言。
+
+## 怎样定位提示词引起的偏差
+
+| 现象 | 先核对什么 | 再检查哪里 |
+| --- | --- | --- |
+| 主会话突然只读 | 宿主是否显式设置 `style` | 角色的权限叠加 |
+| 格式要求没有生效 | `response_style` 与 `guidelines` 是否矛盾 | 最终装配文本 |
+| 模型改写检查命令 | 验证清单是否已准入 | 原始调用参数与报告身份 |
+| 恢复后工作要求冲突 | 原会话策略摘要 | 恢复时提供的策略 |
+| 模型跟随工具中的指令 | 来源是否按资料注入 | `runtime_contract.md` 的权责约定 |
+
+只改提示词，无法修复工具准入或完成门禁的缺陷。
+下一章解释[模型实际读到哪些上下文](../context/)。

@@ -1,0 +1,33 @@
+{
+  "title": "一次确认如何回到原调用",
+  "description": "策略决定 Ask 后，宿主等待明确回答。计时器不会生成批准。",
+  "steps": [
+    {
+      "title": "先绑定调用",
+      "body": "确认请求携带会话、工具 ID 和实际参数。",
+      "focus": [
+        "core",
+        "host"
+      ],
+      "source": {
+        "path": "crates/code/acp/src/agent/permission_ask.rs",
+        "match": "pub(super) fn tool_permission_ask("
+      }
+    },
+    {
+      "title": "再取得回答",
+      "body": "界面显示本次调用。回答必须返回原请求。",
+      "focus": [
+        "host",
+        "user"
+      ]
+    },
+    {
+      "title": "最后恢复原调用",
+      "body": "Core 接收匹配回答后继续判定。超时保持未授权。",
+      "focus": [
+        "core"
+      ]
+    }
+  ]
+}

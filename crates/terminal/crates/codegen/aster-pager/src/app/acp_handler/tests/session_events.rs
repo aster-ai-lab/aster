@@ -3,6 +3,127 @@
 
     // ── apply_session_event ────────────────────────────────────────────
 
+    /// Deep root-session auto-compact cycle: started paints status, completed
+    /// defers then flushes, failure posts an error, and a second completed after
+    /// idle does not wedge the session or duplicate the outcome line.
+    #[test]
+    fn root_session_auto_compact_cycle_failure_and_double_complete_do_not_wedge() {
+        let mut session = make_session(Some("root-auto-compact"));
+        let mut scrollback = ScrollbackState::new();
+        session.in_flight_prompt = Some(InFlightPrompt {
+            text: "continue the task".into(),
+            images: Vec::new(),
+            scrollback_entry: EntryId::new(1),
+            combined_scrollback_entries: Vec::new(),
+            chip_elements: Vec::new(),
+        });
+
+        let started = AsterSessionUpdate::AutoCompactStarted {
+            tokens_used: 90_000,
+            context_window: 100_000,
+            percentage: 90,
+            reason: "threshold".into(),
+        };
+        assert!(apply_session_event(&started, &mut session, &mut scrollback, false));
+        assert!(
+            session.compact_held_prompt.is_some(),
+            "threshold auto-compact must hold the in-flight prompt"
+        );
+        match last_session_event(&scrollback) {
+            Some(SessionEvent::CompactionStarted { percentage, reason }) => {
+                assert_eq!(percentage, 90);
+                assert_eq!(reason, "threshold");
+            }
+            other => panic!("expected CompactionStarted, got {other:?}"),
+        }
+
+        let failed = AsterSessionUpdate::AutoCompactFailed {
+            error: "compaction timed out".into(),
+        };
+        assert!(apply_session_event(&failed, &mut session, &mut scrollback, false));
+        match last_session_event(&scrollback) {
+            Some(SessionEvent::CompactionFailed { error }) => {
+                assert!(
+                    error.contains("compaction timed out"),
+                    "failure must surface the host error, got {error}"
+                );
+            }
+            other => panic!("expected CompactionFailed, got {other:?}"),
+        }
+
+        // Re-arm: a later cycle can still start and complete.
+        let restarted = AsterSessionUpdate::AutoCompactStarted {
+            tokens_used: 92_000,
+            context_window: 100_000,
+            percentage: 92,
+            reason: "threshold".into(),
+        };
+        assert!(apply_session_event(&restarted, &mut session, &mut scrollback, false));
+        session.set_compaction_activity(Some(TurnActivity::AutoCompacting));
+        let completed = AsterSessionUpdate::AutoCompactCompleted {
+            tokens_before: Some(92_000),
+            tokens_after: 12_000,
+            elapsed_ms: Some(40),
+            summary_preview: Some("kept the open task".into()),
+        };
+        assert!(apply_session_event(&completed, &mut session, &mut scrollback, false));
+        let len_before_finish = scrollback.len();
+        session.finish_turn(&mut scrollback);
+        match last_session_event(&scrollback) {
+            Some(SessionEvent::CompactionCompleted {
+                tokens_before,
+                tokens_after,
+                ..
+            }) => {
+                assert_eq!(tokens_before, Some(92_000));
+                assert_eq!(tokens_after, 12_000);
+            }
+            other => panic!("expected CompactionCompleted after finish_turn, got {other:?}"),
+        }
+        let len_after_first = scrollback.len();
+        assert!(len_after_first > len_before_finish);
+        assert!(
+            session.state.is_idle(),
+            "finish_turn must return the root session to idle after auto-compact"
+        );
+        assert!(
+            session.tracker.activity() != Some(TurnActivity::AutoCompacting),
+            "auto-compact activity must clear after the completed cycle"
+        );
+
+        // Two completes before finish_turn: deferred slot is replaced, not stacked.
+        session.set_compaction_activity(Some(TurnActivity::AutoCompacting));
+        let first = AsterSessionUpdate::AutoCompactCompleted {
+            tokens_before: Some(80_000),
+            tokens_after: 20_000,
+            elapsed_ms: Some(10),
+            summary_preview: None,
+        };
+        let second = AsterSessionUpdate::AutoCompactCompleted {
+            tokens_before: Some(80_000),
+            tokens_after: 15_000,
+            elapsed_ms: Some(12),
+            summary_preview: None,
+        };
+        assert!(apply_session_event(&first, &mut session, &mut scrollback, false));
+        assert!(apply_session_event(&second, &mut session, &mut scrollback, false));
+        let before_flush = scrollback.len();
+        session.finish_turn(&mut scrollback);
+        assert_eq!(
+            scrollback.len(),
+            before_flush + 1,
+            "double AutoCompactCompleted must flush one deferred outcome, not two"
+        );
+        match last_session_event(&scrollback) {
+            Some(SessionEvent::CompactionCompleted { tokens_after, .. }) => {
+                assert_eq!(tokens_after, 15_000, "later complete replaces the deferred slot");
+            }
+            other => panic!("expected single CompactionCompleted, got {other:?}"),
+        }
+        assert!(session.state.is_idle());
+        assert!(session.tracker.activity() != Some(TurnActivity::AutoCompacting));
+    }
+
     #[test]
     fn apply_compaction_started_sets_activity() {
         let mut session = make_session(Some("s1"));

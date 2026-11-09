@@ -1,0 +1,383 @@
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s
+     Running tests/test_control_loop_deepseek_e2e.rs (target/debug/deps/test_control_loop_deepseek_e2e-b3e89798feaa77c7)
+
+running 4 tests
+test r1_deepseek_verified_write_completes ... pinning default_model to deepseek/deepseek-flash (config had Some("glm-01/glm-5.3"))
+CONTROL-LOOP using default_model=deepseek/deepseek-flash
+ok
+test r2_deepseek_advance_reconcile_and_budget ... pinning default_model to deepseek/deepseek-flash (config had Some("glm-01/glm-5.3"))
+CONTROL-LOOP using default_model=deepseek/deepseek-flash
+
+thread 'r2_deepseek_advance_reconcile_and_budget' (51763356) panicked at crates/code/core/tests/test_control_loop_deepseek_e2e.rs:568:5:
+assertion `left == right` failed: R2e: budget must exhaust after the single admitted slice
+  left: Complete
+ right: BudgetExhausted
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test r2_deepseek_wait_evidence_pause_resume ... pinning default_model to deepseek/deepseek-flash (config had Some("glm-01/glm-5.3"))
+CONTROL-LOOP using default_model=deepseek/deepseek-flash
+CONTROL-LOOP slice op=wake-inspect secs=6.7 status=Completed text=Some("Step `inspect` complete — independently verified.\n\n- **Check:** `source.txt` bytes match the host expected value (status: `passed`, required).\n- **Current source value (exact):** `VERIFIED-81dabf13-e08f-41e9-8841-4366e96bc3ff`\n\nI stopped here as instructed. The next step, `release-code`, remains blocked pending the owner's answer; the release code has not been reported.")
+CONTROL-LOOP pause retry after Session error: goal.conflict: goal is terminal or control references are stale or invalid
+ok
+test r3_deepseek_write_goal_across_reopen ... pinning default_model to deepseek/deepseek-flash (config had Some("glm-01/glm-5.3"))
+CONTROL-LOOP using default_model=deepseek/deepseek-flash
+CONTROL-LOOP slice op=slice-1 secs=4.9 status=Completed text=Some("completed")
+CONTROL-LOOP R3 after-reopen decision=Complete
+
+thread 'r3_deepseek_write_goal_across_reopen' (51763892) panicked at crates/code/core/tests/test_control_loop_deepseek_e2e.rs:933:10:
+called `Result::unwrap()` on an `Err` value: Internal(goal.conflict: tick operation differs from its original Run source)
+FAILED
+
+failures:
+
+failures:
+    r2_deepseek_advance_reconcile_and_budget
+    r3_deepseek_write_goal_across_reopen
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 23.81s
+
+error: test failed, to rerun pass `-p aster-core --test test_control_loop_deepseek_e2e`
+error: unexpected argument 'r3_deepseek_write_goal_across_reopen' found
+
+Usage: cargo test [OPTIONS] [TESTNAME] [-- [ARGS]...]
+
+For more information, try '--help'.
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+   Compiling aster-core v9.2.1 (/Users/roylin/code/aster/crates/code/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.40s
+     Running tests/test_control_loop_deepseek_e2e.rs (target/debug/deps/test_control_loop_deepseek_e2e-b3e89798feaa77c7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running tests/test_control_loop_deepseek_e2e.rs (target/debug/deps/test_control_loop_deepseek_e2e-b3e89798feaa77c7)
+
+running 1 test
+test r2_deepseek_advance_reconcile_and_budget ... pinning default_model to deepseek/deepseek-flash (config had Some("glm-01/glm-5.3"))
+CONTROL-LOOP using default_model=deepseek/deepseek-flash
+
+thread 'r2_deepseek_advance_reconcile_and_budget' (51767789) panicked at crates/code/core/tests/test_control_loop_deepseek_e2e.rs:600:5:
+assertion `left == right` failed: R2e: exhausted tick must not call the model again
+  left: 3
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    r2_deepseek_advance_reconcile_and_budget
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 8.22s
+
+error: test failed, to rerun pass `-p aster-core --test test_control_loop_deepseek_e2e`

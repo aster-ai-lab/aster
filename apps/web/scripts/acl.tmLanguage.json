@@ -1,0 +1,22 @@
+{
+  "name": "acl",
+  "scopeName": "source.acl",
+  "patterns": [
+    { "name": "comment.line.acl", "match": "[#/].*$" },
+    {
+      "name": "string.quoted.double.acl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.character.escape.acl", "match": "\\\\." }]
+    },
+    {
+      "name": "string.quoted.single.acl",
+      "begin": "'",
+      "end": "'",
+      "patterns": [{ "name": "constant.character.escape.acl", "match": "\\\\." }]
+    },
+    { "name": "constant.language.acl", "match": "\\b(true|false|null)\\b" },
+    { "name": "constant.numeric.acl", "match": "(?<![\\w.])-?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?\\b" },
+    { "name": "keyword.operator.assignment.acl", "match": "\\+=|=" }
+  ]
+}

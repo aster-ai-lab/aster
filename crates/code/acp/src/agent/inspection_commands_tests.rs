@@ -80,6 +80,103 @@ fn a_filtered_next_page_command_keeps_the_real_cursor_and_filter() {
     assert!(next_cursor.is_none());
 }
 
+/// Deep usage: seed → list → read → stale delete refused → delete → empty list,
+/// then `/flush` and `/dream` host methods return pager-compatible dispositions
+/// without calling a model.
+#[tokio::test]
+async fn deep_memory_inspect_cycle_then_flush_and_dream_without_a_model() {
+    use aster_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().canonicalize().unwrap();
+    let memory_dir = root.path().join("memory");
+    {
+        let store = VecMemoryStore::open(&memory_dir).unwrap();
+        store
+            .put(&MemoryRecord {
+                id: "deep-note".into(),
+                content: "Prefer hermetic memory inspect oracles".into(),
+                tags: vec!["deep".into()],
+                importance: 0.7,
+                memory_type: "\"procedural\"".into(),
+                timestamp: "2026-11-09T00:00:00Z".into(),
+                meta: "{}".into(),
+            })
+            .unwrap();
+    }
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = workspace.clone();
+    for provider in &mut launch.config.providers {
+        provider.base_url = Some("http://127.0.0.1:9/v1".into());
+    }
+    launch.config.memory_dir = Some(memory_dir);
+    let host = AsterCodeAgent::new(launch);
+    let id = host
+        .new_session(acp::NewSessionRequest::new(&workspace))
+        .await
+        .unwrap()
+        .session_id;
+    let session = host.sessions.lock().await[id.0.as_ref()].session.clone();
+    let run = |text: &str| parse(text).unwrap();
+    let listed = host
+        .handle_inspection_command(&session, run("/memory list hermetic"))
+        .await
+        .unwrap();
+    assert!(listed.contains("Stored memories: 1"), "{listed}");
+    assert!(listed.contains("deep-note"), "{listed}");
+    let read = host
+        .handle_inspection_command(&session, run("/memory read deep-note"))
+        .await
+        .unwrap();
+    assert!(read.contains("Prefer hermetic memory inspect oracles"), "{read}");
+    let revision = read
+        .lines()
+        .find_map(|line| line.strip_prefix("Revision: "))
+        .expect("revision");
+    let stale = host
+        .handle_inspection_command(
+            &session,
+            run(&format!("/memory delete deep-note {}", "0".repeat(64))),
+        )
+        .await
+        .unwrap_err();
+    assert!(stale
+        .data
+        .as_ref()
+        .and_then(|value| value.as_str())
+        .is_some_and(|text| text.contains("conflict")));
+    host.handle_inspection_command(
+        &session,
+        run(&format!("/memory delete deep-note {revision}")),
+    )
+    .await
+    .unwrap();
+    let empty = host
+        .handle_inspection_command(&session, run("/memory"))
+        .await
+        .unwrap();
+    assert!(empty.contains("Stored memories: 0"), "{empty}");
+
+    let flush = acp::ExtRequest::new(
+        "aster/memory/flush",
+        serde_json::value::to_raw_value(&serde_json::json!({ "session_id": id.0.as_ref() }))
+            .unwrap()
+            .into(),
+    );
+    let flush_body: serde_json::Value =
+        serde_json::from_str(host.handle_memory_flush(&flush).await.unwrap().0.get()).unwrap();
+    assert_eq!(flush_body["disposition"], "flushed");
+    let dream = acp::ExtRequest::new(
+        "aster/memory/dream",
+        serde_json::value::to_raw_value(&serde_json::json!({ "session_id": id.0.as_ref() }))
+            .unwrap()
+            .into(),
+    );
+    let dream_body: serde_json::Value =
+        serde_json::from_str(host.handle_memory_dream(&dream).await.unwrap().0.get()).unwrap();
+    assert_eq!(dream_body["disposition"], "no_work");
+    session.close().await;
+}
+
 #[tokio::test]
 async fn terminal_memory_commands_use_revision_guards_and_do_not_call_the_model() {
     let root = tempfile::tempdir().unwrap();

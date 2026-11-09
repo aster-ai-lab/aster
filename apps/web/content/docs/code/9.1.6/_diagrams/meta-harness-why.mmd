@@ -1,0 +1,14 @@
+flowchart TB
+  accTitle: 为什么需要 Meta Harness
+  accDescr: 改变执行方式时，直接修改执行程序还要重新核对整套运行约束。Meta Harness 让宿主只替换需要比较的组件，并复用 Core 的固定约束和事实记录。
+  change["要改变执行方式<br/>提示、工具流程或调度"]
+  rewrite["直接修改执行程序<br/>每个变体单独维护"]
+  recheck["重新核对整套约束<br/>权限 / 恢复 / 完成"]
+  compose["用 Meta Harness 组合<br/>只替换目标组件"]
+  fixed["复用 Core 固定约束<br/>运行边界保持一致"]
+  evidence["使用同一事实日志<br/>比较真实执行结果"]
+  change --> rewrite
+  rewrite --> recheck
+  change --> compose
+  compose --> fixed
+  fixed --> evidence

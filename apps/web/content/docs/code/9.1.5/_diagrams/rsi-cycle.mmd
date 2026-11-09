@@ -1,0 +1,13 @@
+flowchart TB
+  accTitle: 宿主组织的递归改进实验
+  accDescr: 固定基线和评估依据后提出候选，由宿主检查并在隔离会话中运行，根据完整结果比较、采纳或保留原基线。
+  baseline[固定基线 / 任务集 / 验收与预算] --> propose[提出候选策略]
+  propose --> admission[宿主检查 / 构建 / 接纳]
+  admission --> experiment[隔离工作区 / 新会话 / 候选编号]
+  experiment --> evidence[运行与验证 / 等待资源收尾]
+  evidence --> comparison{宿主比较完整结果}
+  baseline -. 固定评估依据 .-> comparison
+  comparison -- 证据支持 --> adoption[记录采纳 / 保留回滚基线]
+  comparison -- 失败或无改善 --> retained[保留原基线 / 记录失败]
+  adoption --> propose
+  retained --> propose

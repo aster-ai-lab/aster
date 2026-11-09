@@ -1,0 +1,14 @@
+{
+  "visual_control_loop": true,
+  "model": "deepseek/deepseek-flash",
+  "token": "CL-VIS-5064ec21-0dda-4ab5-a60b-0aeb09b791ed",
+  "deepseek_visible_on_welcome": true,
+  "r1_loop_out_exact": true,
+  "r2_paused_visible": true,
+  "r2_status_bound": true,
+  "r3_loop_out_survived": true,
+  "r3_goal_still_bound": true,
+  "goal_out_written": true,
+  "goal_out_exact": true,
+  "pass": true
+}

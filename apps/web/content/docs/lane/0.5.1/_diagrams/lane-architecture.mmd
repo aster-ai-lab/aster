@@ -1,0 +1,8 @@
+flowchart TB
+  accTitle: Lane 的优先级准入与执行边界
+  accDescr: 任务按 Priority 和 FIFO 等待。Lane 按并发限制准入，Priority 不抢占活动 Future。事件与指标记录执行过程，Job Backend 管理持久状态与租约。
+  pending["等待项<br/>Priority + FIFO"] --> lanes["命名 Lane<br/>并发 / Rate Limit / Boost"]
+  lanes --> active["活动 Command 或 Job<br/>显式取消与结算"]
+  active --> result["完成 / 失败 / 重试 / DLQ"]
+  result --> events["Event / Metrics / Alert"]
+  backend["JobQueueBackend<br/>Local 或 Redis"] -. 状态与租约 .-> active

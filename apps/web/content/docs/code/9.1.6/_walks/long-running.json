@@ -1,0 +1,103 @@
+{
+  "title": "长期目标源码漫游",
+  "intro": "每一站对应一次目标控制判断。例子不启动模型或工具。",
+  "steps": [
+    {
+      "title": "定义长期目标的闭集",
+      "body": "GoalState 与 GoalTickDecisionV1 表达不同概念。",
+      "takeaway": "目标保存状态，tick 返回此刻的推进决定。",
+      "source": {
+        "path": "crates/code/core/src/goal_control.rs",
+        "match": "closed_set!(GoalState {",
+        "before": 0,
+        "after": 12
+      }
+    },
+    {
+      "title": "先核对旧切片",
+      "body": "有未结清的原始运行时，preview_tick 返回 Reconcile。",
+      "takeaway": "重复 tick 不会偷偷创建第二个运行。",
+      "source": {
+        "path": "crates/code/core/src/goal_control/continuation.rs",
+        "match": "if original_run_unsettled || super::facts::slice_unsettled(facts) {",
+        "before": 0,
+        "after": 15
+      }
+    },
+    {
+      "title": "检查输入与等待",
+      "body": "未接受计划时返回 NeedsInput。没有就绪步骤时检查等待与完成条件。",
+      "takeaway": "时间到期与确认回答属于不同条件。",
+      "source": {
+        "path": "crates/code/core/src/goal_control/continuation.rs",
+        "match": "if !view.plan_accepted {",
+        "before": 0,
+        "after": 28
+      }
+    },
+    {
+      "title": "检查有限的宿主上限",
+      "body": "缺少可信续跑策略时，Core 返回 BudgetExhausted。",
+      "takeaway": "SDK 默认不会启动自动续跑。",
+      "source": {
+        "path": "crates/code/core/src/goal_control/continuation.rs",
+        "match": "// Absent trusted host bounds mean automatic continuation is disabled.",
+        "before": 0,
+        "after": 22
+      }
+    },
+    {
+      "title": "在原接口接纳一轮",
+      "body": "stream_goal_tick 与 tick_goal 共用原始准入路径。",
+      "takeaway": "一个 tick 最多接纳一个 Run。",
+      "source": {
+        "path": "crates/code/core/src/agent_api/goal_facade.rs",
+        "match": "pub async fn stream_goal_tick(",
+        "before": 0,
+        "after": 22
+      }
+    },
+    {
+      "title": "先收集原始步骤证据",
+      "body": "步骤评估先读取原日志与当前工作区报告。取消或强制停止时跳过接受。",
+      "takeaway": "准备评估与接受步骤分开。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/goal_evidence.rs",
+        "match": "pub(crate) async fn assess_goal_step(",
+        "after": 31
+      }
+    },
+    {
+      "title": "再读取结构化语义判断",
+      "body": "模型判断使用当前步骤条件和原运行观察。接受还要求剩余条件为空。",
+      "takeaway": "另一轮模型判断不等于独立测试。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/goal_evidence.rs",
+        "match": "let accepted = judgment.achieved && judgment.remaining_criteria.is_empty();",
+        "before": 21,
+        "after": 12
+      }
+    },
+    {
+      "title": "提交前重新核对身份",
+      "body": "接受记录只能由原始活动 Run 提交。提交还要核对版本和工作区依据。",
+      "takeaway": "判断返回后，旧证据仍可能失效。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/goal_evidence.rs",
+        "match": "pub(crate) fn commit_goal_step(",
+        "after": 40
+      }
+    },
+    {
+      "title": "用原事实关闭整个目标",
+      "body": "closure 检查全部步骤、等待、切片与未结效果。",
+      "takeaway": "完整目标的完成条件比一次答复结束更强。",
+      "source": {
+        "path": "crates/code/core/src/goal_control/facts/complete.rs",
+        "match": "fn closure(",
+        "before": 0,
+        "after": 32
+      }
+    }
+  ]
+}

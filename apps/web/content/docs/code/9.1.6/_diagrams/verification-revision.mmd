@@ -1,0 +1,10 @@
+flowchart LR
+  accTitle: 旧报告为什么不能证明新修改
+  accDescr: A 与 B 表示两份不同的修改摘要。图示不代表一次实际运行。
+  a["修改 A<br/>effect_digest A"]
+  va["A 已验证<br/>报告绑定 A"]
+  b["再次修改 B<br/>effect_digest B"]
+  vb["B 待验证<br/>需要对应新依据"]
+  a -->|检查通过| va
+  va -->|继续修改| b
+  b -->|旧报告不匹配| vb

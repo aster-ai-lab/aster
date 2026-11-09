@@ -22,6 +22,13 @@ pub(super) fn acp_commands() -> Vec<acp::AvailableCommand> {
                 "list [query] | next <cursor> [query] | read <id> | delete <id> <revision>",
             )),
         ),
+        // Advertised so the pager unhides shell-gated local `/flush` and `/dream`
+        // handlers that call `aster/memory/flush` and `aster/memory/dream`.
+        acp::AvailableCommand::new("flush", "Save this session's memory to disk now"),
+        acp::AvailableCommand::new(
+            "dream",
+            "Consolidate memory now (merge observations into topics)",
+        ),
         acp::AvailableCommand::new("tasks", "Inspect background tasks or stop a task").input(
             acp::AvailableCommandInput::Unstructured(acp::UnstructuredCommandInput::new(
                 "[stop <task-id>]",
@@ -107,7 +114,10 @@ mod tests {
     #[test]
     fn an_empty_core_catalog_contains_only_acp_commands() {
         let commands = merge_commands(Vec::new()).expect("empty Core catalog");
-        assert_eq!(names(&commands), ["goal", "memory", "tasks"]);
+        assert_eq!(
+            names(&commands),
+            ["dream", "flush", "goal", "memory", "tasks"]
+        );
     }
 
     #[test]
@@ -123,12 +133,14 @@ mod tests {
         .expect("Core catalog");
         assert_eq!(
             names(&commands),
-            ["goal", "help", "memory", "model", "tasks"]
+            ["dream", "flush", "goal", "help", "memory", "model", "tasks"]
         );
-        assert_eq!(commands[1].description, "List available commands");
-        assert!(commands[1].input.is_none());
-        assert_eq!(commands[3].description, "Show or switch the current model");
-        let Some(acp::AvailableCommandInput::Unstructured(input)) = &commands[3].input else {
+        let help = commands.iter().find(|c| c.name == "help").expect("help");
+        assert_eq!(help.description, "List available commands");
+        assert!(help.input.is_none());
+        let model = commands.iter().find(|c| c.name == "model").expect("model");
+        assert_eq!(model.description, "Show or switch the current model");
+        let Some(acp::AvailableCommandInput::Unstructured(input)) = &model.input else {
             panic!("model usage must be unstructured input");
         };
         assert_eq!(input.hint, "/model [provider/model]");
@@ -142,12 +154,16 @@ mod tests {
             Some("core usage".into()),
         )])
         .expect("ACP owns goal");
-        assert_eq!(names(&commands), ["goal", "memory", "tasks"]);
         assert_eq!(
-            commands[0].description,
+            names(&commands),
+            ["dream", "flush", "goal", "memory", "tasks"]
+        );
+        let goal = commands.iter().find(|c| c.name == "goal").expect("goal");
+        assert_eq!(
+            goal.description,
             "Set, pause, resume, or clear a durable goal"
         );
-        let Some(acp::AvailableCommandInput::Unstructured(input)) = &commands[0].input else {
+        let Some(acp::AvailableCommandInput::Unstructured(input)) = &goal.input else {
             panic!("goal usage must be retained");
         };
         assert_eq!(input.hint, "<objective> | status | pause | resume | clear");

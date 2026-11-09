@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Use 的 AIX 包与计划应用边界
+  accDescr: AIX 包和 Registry 信任证据经过校验，形成包含包身份与摘要的计划。应用计划后，Use 在指定作用域发布五类表面。
+  package["AIX 包<br/>Manifest + 文件清单"] --> validate["结构与身份校验"]
+  registry["Registry TUF 与 Target 摘要"] --> validate
+  validate --> plan["可审查计划<br/>Operation ID + Plan Digest"]
+  plan --> apply["显式 apply-plan<br/>user 或 workspace 作用域"]
+  apply --> surfaces["Tool / MCP / Skill / OKF / UI"]
+  host["宿主授权与进程生命周期"] -. 边界 .-> apply

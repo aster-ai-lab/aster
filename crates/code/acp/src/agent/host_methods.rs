@@ -20,6 +20,8 @@ pub(super) enum HostMethod {
     WorkspaceSearch,
     MemoryManage,
     MemorySnapshot,
+    MemoryFlush,
+    MemoryDream,
     CompactConversation,
     Interject,
     SessionInfo,
@@ -36,7 +38,7 @@ pub(super) enum HostMethod {
 
 impl HostMethod {
     #[cfg(test)]
-    pub(super) const ALL: [Self; 22] = [
+    pub(super) const ALL: [Self; 24] = [
         Self::ModelsList,
         Self::FollowUp,
         Self::GoalImport,
@@ -47,6 +49,8 @@ impl HostMethod {
         Self::WorkspaceSearch,
         Self::MemoryManage,
         Self::MemorySnapshot,
+        Self::MemoryFlush,
+        Self::MemoryDream,
         Self::CompactConversation,
         Self::Interject,
         Self::SessionInfo,
@@ -79,6 +83,8 @@ impl HostMethod {
             "aster/workspace/search/v1" => Self::WorkspaceSearch,
             "aster/memory/manage" => Self::MemoryManage,
             "aster/memory/snapshot" => Self::MemorySnapshot,
+            "aster/memory/flush" => Self::MemoryFlush,
+            "aster/memory/dream" => Self::MemoryDream,
             "aster/session/info" => Self::SessionInfo,
             "aster/session/list" => Self::SessionList,
             "aster/session/delete" => Self::SessionDelete,
@@ -108,6 +114,8 @@ impl HostMethod {
             Self::WorkspaceSearch => "aster/workspace/search/v1",
             Self::MemoryManage => "aster/memory/manage",
             Self::MemorySnapshot => "aster/memory/snapshot",
+            Self::MemoryFlush => "aster/memory/flush",
+            Self::MemoryDream => "aster/memory/dream",
             Self::CompactConversation => "aster/compact_conversation",
             Self::Interject => "aster/interject",
             Self::SessionInfo => "aster/session/info",
@@ -375,6 +383,8 @@ impl AsterCodeAgent {
             HostMethod::WorkspaceSearch => self.handle_workspace_search(args).await,
             HostMethod::MemoryManage => self.handle_memory_management(args).await,
             HostMethod::MemorySnapshot => self.handle_memory_snapshot(args).await,
+            HostMethod::MemoryFlush => self.handle_memory_flush(args).await,
+            HostMethod::MemoryDream => self.handle_memory_dream(args).await,
             HostMethod::CompactConversation => self.handle_compact_extension(args).await,
             HostMethod::Interject => self.handle_interject(args).await,
             HostMethod::SessionInfo => self.handle_session_info(args).await,

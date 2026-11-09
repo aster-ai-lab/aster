@@ -1,0 +1,37 @@
+{
+  "title": "一次候选改进怎样接受检查",
+  "description": "这是宿主组织的实验路径。图示不声称模型质量已有提升。",
+  "steps": [
+    {
+      "title": "固定比较依据",
+      "body": "宿主保留原输入、检查器和基线。",
+      "focus": [
+        "base"
+      ]
+    },
+    {
+      "title": "执行与记录",
+      "body": "候选仍经过原有权限和运行约束。",
+      "focus": [
+        "candidate",
+        "run"
+      ],
+      "source": {
+        "path": "crates/code/core/src/fact_control.rs",
+        "match": "pub struct FactRun {"
+      }
+    },
+    {
+      "title": "依据证据决策",
+      "body": "检查失败或证据缺失时，宿主保留失败结果。",
+      "focus": [
+        "evidence",
+        "choose"
+      ],
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "pub(crate) fn decide_with_contracts("
+      }
+    }
+  ]
+}

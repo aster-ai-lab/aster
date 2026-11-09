@@ -1,0 +1,91 @@
+Last login: Mon Nov  9 14:30:19 on tty??
+/Users/roylin/code/aster/docs/evidence/code/2026-11-09-aster-tui-control-loop-deepseek/launch_aster.sh ; exit;
+➜  ~ /Users/roylin/code/aster/docs/evidence/code/2026-11-09-aster-tui-control-loop-deepseek/launch_aster.sh ; exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /p/t/a/work/ws                                                                                            18K / 1.0M
+
+
+     ❯ /goal pause                                                                                           2:33 PM
+                                                                                                             
+                                                                                                             
+     Goal paused. Completed 0 of 1 steps. Use /goal resume to continue.                                      2:33 PM
+                                                                                                                        
+     Worked for 0.0s                                                                                                    
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+                                                                                                                       █
+
+                                                                                                                 
+   → Add a follow-up                                                                           
+   
+  Σ 136.7k tokens · — tok/s                                                      deepseek/DeepSeek Flash (max) · yolo
+
+  Shift+Tab:mode  │  Ctrl+x:shortcuts                                                 
+
+

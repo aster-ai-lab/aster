@@ -1,0 +1,39 @@
+{
+  "title": "恢复源码漫游",
+  "intro": "恢复流程先核对来源，再恢复控制投影。",
+  "steps": [
+    {
+      "title": "保存已提交的检查点",
+      "body": "检查点从原日志事实构造消息与关联。",
+      "takeaway": "缓存是投影，原始事实仍是依据。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/checkpoints.rs",
+        "match": "pub(super) async fn save_committed(",
+        "before": 0,
+        "after": 23
+      }
+    },
+    {
+      "title": "标记无法证明的恢复",
+      "body": "recovery.unproved 记录缺失证据的来源身份。",
+      "takeaway": "这个标记不会批准重试，也不会清除执行欠项。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/recovery_unproved.rs",
+        "match": "pub(super) const RECOVERY_UNPROVED_FACT_KIND:",
+        "before": 0,
+        "after": 18
+      }
+    },
+    {
+      "title": "关闭失去执行者的切片",
+      "body": "reconcile_goal_slices 核对旧切片，保留原始效果结算要求。",
+      "takeaway": "核对失联切片与重放外部操作是不同动作。",
+      "source": {
+        "path": "crates/code/core/src/agent_api/goal_facade.rs",
+        "match": "pub fn reconcile_goal_slices(&self) -> Result<usize> {",
+        "before": 0,
+        "after": 28
+      }
+    }
+  ]
+}

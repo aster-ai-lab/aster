@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Effect 的程序值与事实日志循环
+  accDescr: Actor 折叠不可变事实，得到视图和允许的 Transition。Effect run 执行后追加新事实。恢复重新读取同一日志。
+  log["不可变事实日志"] --> fold["Component Fold<br/>视图 + 可用 Transition"]
+  fold --> run["Effect::run<br/>服务 / 重试 / 取消 / 释放"]
+  run --> facts["追加新事实"]
+  facts --> log
+  fold -. 无可用 Transition .-> parked["确认或问题等待<br/>resume 执行零步"]
+  answer["回答事实到达"] --> log

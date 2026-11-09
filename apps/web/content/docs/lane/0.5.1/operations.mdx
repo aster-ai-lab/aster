@@ -1,0 +1,62 @@
+export const meta = {
+  title: 'Lane 可靠性与运行验证',
+  description: 'DLQ、持久 Backend、Worker 租约、指标和故障恢复。',
+  label: '可靠性与验证',
+  updated: '2026-10-29',
+};
+
+Lane 把队列状态、执行结果和运行观测分开。部署方需要按所选 Backend 验证持久性、租约和故障恢复。
+
+## DLQ 与本地存储
+
+`DeadLetterQueue` 保存失败命令供运行后检查。`LocalStorage` 为 QueueManager 提供本地持久化，自定义后端实现 `Storage`。
+
+存储接口区分 Command、Dead Letter 和清理操作。写入结果与业务副作用不属于同一个事务，处理器需要自己的幂等策略。
+
+## 通用 Job Backend
+
+<DocTable caption="JobQueueBackend 的选择" headers={['Backend', '当前用途', '边界']} rows={[
+  ['InMemoryJobQueue', '测试、嵌入式运行和参考语义', '进程内状态'],
+  ['LocalJobQueue', '需要本地重启恢复的 JSON Job', 'JSON Snapshot，不是多进程共享队列'],
+  ['RedisJobQueue', '多进程 Worker 与共享状态', '需要 redis-backend 和实际 Redis 验收'],
+  ['PostgreSQL / NATS', '计划中', '当前不能作为可用后端声明'],
+]} />
+
+`JobWorker` 通过 `JobProcessorRouter` 按 Job 名称调用异步处理器。Worker 支持超时、进度、日志、续租和 Stalled Recovery。
+
+通用 Job Runtime 与 Flow、Repeat API 仍在演进。部署前必须核对当前 Backend 是否实现所需操作，不能只按 API 名称推断完整 BullMQ 兼容性。
+
+## Worker 租约
+
+Redis 的 Complete、Fail、Release、Delay 和 Renew 都必须证明 Claim Token 所有权。过期 Worker 不能完成或失败已被其他 Worker 接管的任务。
+
+活动任务不能直接通过普通管理 API 删除。租约过期后先执行 Stalled Recovery，再处理任务状态。
+
+长任务使用 `JobContext::has_lost_lease()` 或 `ensure_lease()` 检查租约。失去租约后，进度和日志写入也会被拒绝。
+
+租约只保护队列状态。外部副作用需要独立幂等和恢复设计。
+
+## 指标与告警
+
+`QueueMetrics::local()` 提供内存指标，Snapshot 包含每 Lane 的提交、完成、失败、超时、重试和 DLQ 计数，以及延迟分布。
+
+`OtelMetricsBackend` 通过 `telemetry` 导出 OpenTelemetry。自定义后端实现 `MetricsBackend`。
+
+`AlertManager` 处理 Warning 和 Critical 阈值。`QueueMonitor` 按间隔读取 Pending 与 Active，不会替代 Worker 自身的租约检查。
+
+## 故障验收
+
+1. 验证相同 Priority 的 FIFO 或显式 LIFO。
+2. 确认 Priority 不抢占活动 Future。
+3. 验证 Retry、Timeout 和 DLQ 的终态。
+4. 在关闭时验证停止 Submit 与有界 Drain。
+5. 重启 LocalJobQueue 并核对 Snapshot 恢复。
+6. 让 Redis Worker 过期并验证 Stalled Recovery。
+7. 确认 Runtime 拒绝过期 Worker 的结果写入。
+8. 验证重复执行不会产生额外业务副作用。
+
+## 实现依据
+
+- [可靠性与可观测性](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [Local 与 Redis Backend](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [JobWorker 与租约](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)

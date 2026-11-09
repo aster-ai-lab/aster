@@ -1,0 +1,182 @@
+export const meta = {
+  title: '长期任务的有界续跑',
+  description: '目标、计划、切片、tick、等待、进展依据、停滞限制与全局完成。',
+  label: '长期任务设计', updated: '2026-10-28',
+};
+
+## 目标比一次运行活得更久
+
+假设日期导出修复分为实现、测试和说明三个步骤。
+一次 Run 可能只完成其中一步。
+长期目标保存原始要求和已接受计划。
+宿主按条件唤醒下一轮执行。
+每轮仍使用原有 Run、权限与完成门禁。
+
+<PeleAtlasDiagram name="goal-lifecycle" />
+
+这里把目标的一次执行称为“切片”。
+一个切片对应原运行路径中的一次 Run。
+目标控制层没有另建后台任务引擎。
+
+## 四个概念各自保存什么
+
+| 概念 | 保存或决定什么 | 不承担什么 |
+| --- | --- | --- |
+| WorkPolicy | 宿主工作要求及版本 | 不授予工具权限 |
+| Goal definition | 原始目标、接受条件与身份 | 保存定义不启动模型 |
+| Execution plan | 步骤、依赖与已接受版本 | 提议计划不等于接受计划 |
+| Goal tick | 此刻是否接纳一个切片 | 预览不授予执行权 |
+
+定义、计划、等待和执行使用独立命令。
+每个命令绑定会话、工作区和策略摘要。
+修订号与序列号约束命令所依据的状态。
+旧版本命令拒绝写入新的执行事实。
+
+接口：<SourceRef path="crates/code/core/src/agent_api/goal_facade.rs" match="pub fn apply_goal_definition(">目标定义准入</SourceRef>、
+<SourceRef path="crates/code/core/src/agent_api/goal_facade.rs" match="pub fn apply_goal_plan(&amp;self, command: GoalPlanCommandV1)">计划准入</SourceRef>。
+
+## 从创建到下一轮的调用顺序
+
+1. 提交目标定义。
+2. 提交计划提议。
+3. 接受指定的计划提议。
+4. 预览当前 tick 决定。
+5. 调用 `tick_goal` 或 `stream_goal_tick`。
+6. 消费本轮事件并等待结清。
+7. 读取当前目标定义。
+
+只有执行接口支持接纳原始 Run。
+预览之后，状态仍可能变化。
+执行接口会重新核对当前条件。
+宿主不能把旧预览当成永久的执行许可。
+
+<SourceWalk name="long-running" />
+
+## 七种推进决定怎样处理
+
+<PeleAtlasDiagram name="goal-decisions" />
+
+| 决定 | 当前含义 | 宿主的后续处理 |
+| --- | --- | --- |
+| `Advance` | 当前条件支持接纳一轮 | 提交当前版本命令并消费事件 |
+| `Wait` | 等待宿主可观察的条件 | 停止续跑，等待匹配观察 |
+| `NeedsInput` | 计划、回答或停滞需要处理 | 显示缺口并接收明确输入 |
+| `Paused` | 原目标已暂停 | 等待明确恢复命令 |
+| `BudgetExhausted` | 当前策略禁止或耗尽续跑 | 显示额度与期限 |
+| `Reconcile` | 原切片或效果仍需核对 | 先核对原始运行 |
+| `Complete` | 原目标已有完成状态 | 结束续跑并保留历史 |
+
+截止时间过期还可能返回 `goal.deadline_expired` 错误。
+该错误不应被当成可重复重试的临时故障。
+源码中的决定分支与拒绝错误分别处理。
+
+## 等待必须由对应种类的证据解除
+
+| 等待种类 | 谁提供依据 | 解除后意味着什么 |
+| --- | --- | --- |
+| `question_answer` | 针对原问题的回答 | 对应步骤重新就绪 |
+| `confirmation_answer` | 针对原确认的回答 | 仍保留工具权限检查 |
+| `source_revision` | 同一对象的新来源摘要 | 原材料发生可核对变化 |
+| `utc_due` | 宿主当前时钟 | 已到指定 UTC 时刻 |
+
+观察等待条件不会接受步骤进展。
+观察也不会直接启动 Run。
+尚未到期或来源未变的观察不会追加事实。
+计时器不能代替确认回答。
+实现：<SourceRef path="crates/code/core/src/goal_control/facts/wait.rs" match="pub(crate) fn slice_unsettled(facts:">等待与旧切片检查</SourceRef>。
+
+## 进展不是“工具成功次数”
+
+当前新接纳的来源使用 `turn_progress_delta_v3`。
+历史来源保留其原有进展依据。
+重放时不会把旧记录改写成新语义。
+入口：<SourceRef path="crates/code/core/src/agent_api/goal_facade.rs" match="fn goal_tick_source(&amp;self)">当前来源选择</SourceRef>。
+
+V3 使用原始切片证据评估进展。
+工作区变化要形成连贯、净变化且未见过的状态。
+重复写入原内容不构成新的工作区状态。
+在旧内容之间来回切换，也不能持续刷新进展。
+步骤接受和其他进展维度仍按原始证据判定。
+
+| V3 接受的依据 | 原始来源 | 哪种情况仍缺少进展 |
+| --- | --- | --- |
+| 新的净工作区状态 | 连贯的原始修改观察 | 相同内容重写，或回到已见状态 |
+| 已接受的原始步骤 | 本切片的 `step_sequence` | 仅修改计划文字 |
+| `information_delta > 0` | 原运行的新信息回执 | 仅有成功退出码 |
+| `uncertainty_delta > 0` | 未决事项减少的记录 | 只增加未决事项 |
+
+V3 不单独采用 `mutation_delta` 或 `plan_delta`。
+真实工作区状态与原始步骤记录承担对应判断。
+来源：<SourceRef path="crates/code/core/src/goal_control/facts/settle.rs" match="let progressed = mutated">切片进展判定</SourceRef>。
+
+源码：<SourceRef path="crates/code/core/src/goal_control/facts/run/mutation_progress.rs" match="pub(crate) fn observe(">工作区状态观察</SourceRef>、
+<SourceRef path="crates/code/core/src/goal_control/facts/run/continuation.rs" match="closed_set!(ProgressBasis {">进展依据版本</SourceRef>。
+
+## 预算与停滞限制怎样防止无限续跑
+
+`GoalContinuationPolicyV1` 包含四个必填字段。
+
+| 字段 | 单位与含义 | 关键边界 |
+| --- | --- | --- |
+| `automatic_enabled` | 是否允许自动续跑 | 关闭时保留读取和控制能力 |
+| `max_slices` | 本目标已接纳切片的总上限 | 新策略不超过 1000 |
+| `max_no_progress_slices` | 连续缺少进展的切片上限 | 必须为正数 |
+| `deadline_unix_ms` | 绝对 UTC 毫秒时间戳 | 新准入期限不超过宿主时钟后 30 天 |
+
+1000 是准入上限，不是推荐工作额度。
+宿主应按任务选择有限额度。
+
+Core 与 Rust SDK 缺少策略时关闭自动续跑。
+ACP 产品会提供有限默认策略。
+可信 ACL 的显式声明覆盖产品默认值。
+工作区 ACL 无权提高宿主上限。
+
+达到停滞边界时，改变已接受计划支持额外一次机会。
+这次机会仍计入预算。
+继续改计划不会无限刷新该机会。
+实现：<SourceRef path="crates/code/core/src/goal_control/facts/run/continuation.rs" match="let replanned = since_progress == stall">停滞后的有限重规划</SourceRef>。
+
+暂停、恢复和重新打开会话都保留原始历史。
+因此，恢复执行不会把使用额度清零。
+
+## 步骤判断怎样避免只接受一句“完成”
+
+步骤评估先从原日志准备当前证据。
+取消或强制停止的运行跳过步骤接受。
+工作区验证条件满足后，评估器整理当前步骤条件。
+最后一步还会加入整个目标的接受条件。
+
+| 阶段 | 输入与检查 | 输出 |
+| --- | --- | --- |
+| 准备证据 | 原 Run 事实、当前报告、步骤版本 | 尚未提交的步骤接受候选 |
+| 构造判断 | 步骤条件、答复、原工具观察与验证 | 另一轮受治理的模型请求 |
+| 解析判断 | `achieved` 为真，且 `remaining_criteria` 为空 | 支持继续提交的候选 |
+| 提交接受 | 原活动 Run、当前修订与工作区证据 | 原日志中的步骤接受事实 |
+| 结清目标 | 全部步骤、等待、切片和效果 | 满足条件时写入目标完成事实 |
+
+模型判断使用独立的一次调用。
+这次语义判断不等于独立测试。
+原始报告与提交检查仍由代码约束。
+返回判断后，代码累计该次调用的使用量。
+判断未达成时，代码保留尚未接受的步骤。
+
+结构化请求最多允许 2 次输出修复尝试。
+输出修复不会授权再次执行工具。
+源码：<SourceRef path="crates/code/core/src/planning/llm_planner.rs" match="schema_name: &quot;goal_achievement&quot;.to_string(),">结构化评审请求</SourceRef>。
+
+判断器不能要求先收到 `GoalAchieved` 才认定完成。
+该事件是判断的输出。
+用输出作为前置证据会形成循环条件。
+上方源码漫游包含该评审提示的实际调用路径。
+
+## 整个目标何时关闭
+
+步骤接受需要原始 Run 的证据与步骤判断。
+所有步骤接受后，还要核对目标自身的接受条件。
+最后一步的记录必须绑定当前目标与计划版本。
+全部等待和全部切片也必须结清。
+这些条件共同决定是否写入目标完成事实。
+
+“模型给出了最终答复”无法替代上述条件。
+一次已验证的修改也未必覆盖整个目标。
+相关机制见[完成判定](../completion/)与[ACP 续跑适配](../../../../acp/9.1.6/internals/goals/)。

@@ -1,0 +1,50 @@
+{
+  "title": "事实驱动执行源码漫游",
+  "intro": "从一次 Run 的权威状态看到工具与结束检查。",
+  "steps": [
+    {
+      "title": "创建一次运行的权威关联",
+      "body": "FactRun 持有原始日志、运行组件、准入工具与权限快照。",
+      "takeaway": "准入后的工具集合不会被后来的提示词改写。",
+      "source": {
+        "path": "crates/code/core/src/fact_control.rs",
+        "match": "pub struct FactRun {",
+        "before": 0,
+        "after": 29
+      }
+    },
+    {
+      "title": "绑定原始能力身份",
+      "body": "模型调用前读取原 Run 的能力关联。缺失身份时返回明确错误。",
+      "takeaway": "续跑也必须沿用原始执行身份。",
+      "source": {
+        "path": "crates/code/core/src/fact_control/model_call.rs",
+        "match": "pub(super) fn run_execution_cycle(",
+        "before": 0,
+        "after": 31
+      }
+    },
+    {
+      "title": "控制请求进入原运行",
+      "body": "steer 增补用户要求。interrupt 协作式停止当前运行。",
+      "takeaway": "force 也不会跳过清理与治理。",
+      "source": {
+        "path": "crates/code/core/src/run_control.rs",
+        "match": "pub enum RunControlCommand {",
+        "before": 0,
+        "after": 17
+      }
+    },
+    {
+      "title": "最终答复还要经过门禁",
+      "body": "完成判定先处理未决效果，再核对完整修改与检查依据。",
+      "takeaway": "模型说完成，只是进入判定的一个输入。",
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "pub(crate) fn decide_with_contracts(",
+        "before": 0,
+        "after": 20
+      }
+    }
+  ]
+}

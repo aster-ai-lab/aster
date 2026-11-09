@@ -184,3 +184,48 @@ async fn management_works_without_model_or_session_and_refuses_another_workspace
         .await
         .is_err());
 }
+
+#[tokio::test]
+async fn memory_flush_and_dream_require_a_live_session_and_return_pager_shapes() {
+    use acp::Agent as _;
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().canonicalize().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = workspace.clone();
+    let host = AsterCodeAgent::new(launch);
+    let id = host
+        .new_session(acp::NewSessionRequest::new(&workspace))
+        .await
+        .unwrap()
+        .session_id;
+    let flush = acp::ExtRequest::new(
+        "aster/memory/flush",
+        serde_json::value::to_raw_value(&serde_json::json!({ "session_id": id.0.as_ref() }))
+            .unwrap()
+            .into(),
+    );
+    let flush_body: serde_json::Value =
+        serde_json::from_str(host.handle_memory_flush(&flush).await.unwrap().0.get()).unwrap();
+    assert_eq!(flush_body["flushed"], true);
+    assert_eq!(flush_body["disposition"], "flushed");
+
+    let dream = acp::ExtRequest::new(
+        "aster/memory/dream",
+        serde_json::value::to_raw_value(&serde_json::json!({ "session_id": id.0.as_ref() }))
+            .unwrap()
+            .into(),
+    );
+    let dream_body: serde_json::Value =
+        serde_json::from_str(host.handle_memory_dream(&dream).await.unwrap().0.get()).unwrap();
+    assert_eq!(dream_body["disposition"], "no_work");
+    assert_eq!(dream_body["observation_count"], 0);
+    assert_eq!(dream_body["topics_affected"], 0);
+
+    let missing = acp::ExtRequest::new(
+        "aster/memory/flush",
+        serde_json::value::to_raw_value(&serde_json::json!({ "session_id": "missing-session" }))
+            .unwrap()
+            .into(),
+    );
+    assert!(host.handle_memory_flush(&missing).await.is_err());
+}

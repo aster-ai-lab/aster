@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Power 的模型中立执行边界
+  accDescr: 模型 crate 和 OpenAI 服务共享 Power 核心。Power 管理制品身份、设备放置、准入、取消、有界状态和执行回执。
+  model["模型 crate<br/>拓扑 / tokenizer / 状态语义"] --> embedded["嵌入式接口"]
+  client["OpenAI 客户端或 Gateway"] --> service["OpenAI 与内部服务接口"]
+  embedded --> core["Power 共享核心<br/>制品 / 设备 / 准入 / 取消 / 状态"]
+  service --> core
+  core --> device["CPU / CUDA / Metal"]
+  core --> receipt["执行回执与独立验证"]

@@ -1,0 +1,14 @@
+sequenceDiagram
+  accTitle: ACP 确认请求的完整往返
+  accDescr: 展示、回答和执行分别记录。取消确认也必须回到原请求。
+  autonumber
+  participant core as Core
+  participant adapter as ACP 适配器
+  participant client as 客户端
+  participant user as 用户
+  core->>adapter: ConfirmationRequired
+  adapter->>client: request_permission
+  client->>user: 显示本次工具参数
+  user-->>client: 选择确认结果
+  client-->>adapter: 返回原始选项 ID
+  adapter-->>core: 提交匹配回答
