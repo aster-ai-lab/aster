@@ -1,0 +1,299 @@
+extension "aster/presenton" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "presenton"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  skill "presenton" {
+    path          = "skills/presenton/SKILL.md"
+    requires_tool = []
+    requires_mcp  = []
+    optional      = false
+  }
+
+  agent "presenton" {
+    harness        = "package"
+    runtime        = "edge"
+    entry          = "agent/run.mjs"
+    instructions   = "agents/presenton/INSTRUCTIONS.md"
+    requires_skill = ["presenton"]
+    optional       = false
+
+    resources {
+      cpu_millis   = 500
+      memory_bytes = 268435456
+    }
+  }
+
+  ui "workbench" {
+    title            = "演示文稿"
+    description      = "输入主题，编辑大纲、选模板，逐页生成后在编辑器里修改并直接演示。每次生成由本包 edge agent 经 aster 网关调用模型。"
+    icon             = "panels"
+    entry            = "ui/workbench/index.html"
+    root             = "ui/workbench"
+    styles           = ["ui/workbench/app.css", "ui/workbench/chrome.css"]
+    scripts          = ["ui/workbench/app.js"]
+    skill            = "presenton"
+    presentation     = "webview"
+    point            = "studio.applets"
+    contract_version = 1
+    mode             = "append"
+    optional         = false
+  }
+
+  composer_mode "slides" {
+    contract_version = 1
+    title = "幻灯片"
+    description = "在首页输入框里按主题生成演示文稿"
+    icon = "panels"
+    agent = "presenton"
+    editor = "workbench"
+    kept_notice = "draft"
+    scope = "workspace"
+    context = ["workspace"]
+    order = 20
+    prompt = "输入演示文稿的主题"
+
+    control "n_slides" {
+      kind = "number"
+      label = "页数"
+      min = 1
+      max = 20
+    }
+
+    control "language" {
+      kind = "select"
+      label = "语言"
+      initial = "Chinese (Simplified - 中文, 汉语)"
+      options = [
+      "Auto (English)",
+      "English",
+      "Spanish (Español)",
+      "French (Français)",
+      "German (Deutsch)",
+      "Portuguese (Português)",
+      "Italian (Italiano)",
+      "Dutch (Nederlands)",
+      "Russian (Русский)",
+      "Chinese (Simplified - 中文, 汉语)",
+      "Chinese (Traditional - 中文, 漢語)",
+      "Japanese (日本語)",
+      "Korean (한국어)",
+      "Arabic (العربية)",
+      "Hindi (हिन्दी)",
+      "Bengali (বাংলা)",
+      "Polish (Polski)",
+      "Czech (Čeština)",
+      "Slovak (Slovenčina)",
+      "Hungarian (Magyar)",
+      "Romanian (Română)",
+      "Bulgarian (Български)",
+      "Greek (Ελληνικά)",
+      "Serbian (Српски / Srpski)",
+      "Croatian (Hrvatski)",
+      "Bosnian (Bosanski)",
+      "Slovenian (Slovenščina)",
+      "Finnish (Suomi)",
+      "Swedish (Svenska)",
+      "Danish (Dansk)",
+      "Norwegian (Norsk)",
+      "Icelandic (Íslenska)",
+      "Lithuanian (Lietuvių)",
+      "Latvian (Latviešu)",
+      "Estonian (Eesti)",
+      "Maltese (Malti)",
+      "Welsh (Cymraeg)",
+      "Irish (Gaeilge)",
+      "Scottish Gaelic (Gàidhlig)",
+      "Ukrainian (Українська)",
+      "Hebrew (עברית)",
+      "Persian/Farsi (فارسی)",
+      "Turkish (Türkçe)",
+      "Kurdish (Kurdî / کوردی)",
+      "Pashto (پښتو)",
+      "Dari (دری)",
+      "Uzbek (Oʻzbek)",
+      "Kazakh (Қазақша)",
+      "Tajik (Тоҷикӣ)",
+      "Turkmen (Türkmençe)",
+      "Azerbaijani (Azərbaycan dili)",
+      "Urdu (اردو)",
+      "Tamil (தமிழ்)",
+      "Telugu (తెలుగు)",
+      "Marathi (मराठी)",
+      "Punjabi (ਪੰਜਾਬੀ / پنجابی)",
+      "Gujarati (ગુજરાતી)",
+      "Malayalam (മലയാളം)",
+      "Kannada (ಕನ್ನಡ)",
+      "Odia (ଓଡ଼ିଆ)",
+      "Sinhala (සිංහල)",
+      "Nepali (नेपाली)",
+      "Thai (ไทย)",
+      "Vietnamese (Tiếng Việt)",
+      "Lao (ລາວ)",
+      "Khmer (ភាសាខ្មែរ)",
+      "Burmese (မြန်မာစာ)",
+      "Tagalog/Filipino (Tagalog/Filipino)",
+      "Javanese (Basa Jawa)",
+      "Sundanese (Basa Sunda)",
+      "Malay (Bahasa Melayu)",
+      "Mongolian (Монгол)",
+      "Swahili (Kiswahili)",
+      "Hausa (Hausa)",
+      "Yoruba (Yorùbá)",
+      "Igbo (Igbo)",
+      "Amharic (አማርኛ)",
+      "Zulu (isiZulu)",
+      "Xhosa (isiXhosa)",
+      "Shona (ChiShona)",
+      "Somali (Soomaaliga)",
+      "Basque (Euskara)",
+      "Catalan (Català)",
+      "Galician (Galego)",
+      "Quechua (Runasimi)",
+      "Nahuatl (Nāhuatl)",
+      "Hawaiian (ʻŌlelo Hawaiʻi)",
+      "Maori (Te Reo Māori)",
+      "Tahitian (Reo Tahiti)",
+      "Samoan (Gagana Samoa)"
+      ]
+      option_labels = [
+      "自动（英语）",
+      "英语",
+      "西班牙语",
+      "法语",
+      "德语",
+      "葡萄牙语",
+      "意大利语",
+      "荷兰语",
+      "俄语",
+      "简体中文",
+      "繁体中文",
+      "日语",
+      "韩语",
+      "阿拉伯语",
+      "印地语",
+      "孟加拉语",
+      "波兰语",
+      "捷克语",
+      "斯洛伐克语",
+      "匈牙利语",
+      "罗马尼亚语",
+      "保加利亚语",
+      "希腊语",
+      "塞尔维亚语",
+      "克罗地亚语",
+      "波斯尼亚语",
+      "斯洛文尼亚语",
+      "芬兰语",
+      "瑞典语",
+      "丹麦语",
+      "挪威语",
+      "冰岛语",
+      "立陶宛语",
+      "拉脱维亚语",
+      "爱沙尼亚语",
+      "马耳他语",
+      "威尔士语",
+      "爱尔兰语",
+      "苏格兰盖尔语",
+      "乌克兰语",
+      "希伯来语",
+      "波斯语",
+      "土耳其语",
+      "库尔德语",
+      "普什图语",
+      "达里语",
+      "乌兹别克语",
+      "哈萨克语",
+      "塔吉克语",
+      "土库曼语",
+      "阿塞拜疆语",
+      "乌尔都语",
+      "泰米尔语",
+      "泰卢固语",
+      "马拉地语",
+      "旁遮普语",
+      "古吉拉特语",
+      "马拉雅拉姆语",
+      "卡纳达语",
+      "奥里亚语",
+      "僧伽罗语",
+      "尼泊尔语",
+      "泰语",
+      "越南语",
+      "老挝语",
+      "高棉语",
+      "缅甸语",
+      "他加禄语",
+      "爪哇语",
+      "巽他语",
+      "马来语",
+      "蒙古语",
+      "斯瓦希里语",
+      "豪萨语",
+      "约鲁巴语",
+      "伊博语",
+      "阿姆哈拉语",
+      "祖鲁语",
+      "科萨语",
+      "绍纳语",
+      "索马里语",
+      "巴斯克语",
+      "加泰罗尼亚语",
+      "加利西亚语",
+      "克丘亚语",
+      "纳瓦特尔语",
+      "夏威夷语",
+      "毛利语",
+      "塔希提语",
+      "萨摩亚语"
+      ]
+    }
+
+    control "tone" {
+      kind = "select"
+      label = "语气"
+      initial = "default"
+      options = [
+      "default",
+      "casual",
+      "professional",
+      "funny",
+      "educational",
+      "sales_pitch"
+      ]
+      option_labels = ["默认", "轻松", "专业", "幽默", "教学", "销售推介"]
+    }
+
+    control "verbosity" {
+      kind = "select"
+      label = "详略"
+      initial = "standard"
+      options = [
+      "concise",
+      "standard",
+      "text-heavy"
+      ]
+      option_labels = ["简洁", "标准", "详尽"]
+    }
+
+    control "include_title_slide" {
+      kind = "toggle"
+      label = "标题页"
+      initial = true
+    }
+
+    control "instructions" {
+      kind = "text"
+      label = "补充说明"
+      max = 4000
+    }
+  }
+}

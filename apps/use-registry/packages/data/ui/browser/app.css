@@ -1,0 +1,18 @@
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: #ffffff;
+  color: #171717;
+}
+
+#root {
+  display: flex;
+  min-height: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
