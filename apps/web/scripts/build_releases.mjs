@@ -10,7 +10,8 @@ export const targets = [
   // Desktop Windows/Linux installers are not currently published; site surfaces CLI for those platforms.
   { key: 'desktop.macos', product: 'desktop', platform: 'macos', arch: 'aarch64', formats: [['aster_', '_aarch64.dmg', 'DMG'], ['Aster-darwin-aarch64-v', '.zip', 'ZIP', 'desktop-stable']] },
   { key: 'cli.macos', product: 'cli', platform: 'macos', arch: 'release archive', formats: [['aster-cli-v', '-macos.tar.gz', 'TAR.GZ']] },
-  { key: 'cli.linux', product: 'cli', platform: 'linux', arch: 'release archive', formats: [['aster-cli-v', '-linux.tar.gz', 'TAR.GZ']] },
+  { key: 'cli.linux', product: 'cli', platform: 'linux', arch: 'x86_64', formats: [['aster-cli-v', '-linux.tar.gz', 'TAR.GZ']] },
+  { key: 'cli.linux-arm64', product: 'cli', platform: 'linux-arm64', arch: 'aarch64', formats: [['aster-cli-v', '-linux-arm64.tar.gz', 'TAR.GZ']] },
   { key: 'cli.windows', product: 'cli', platform: 'windows', arch: 'release archive', formats: [['aster-cli-v', '-windows.zip', 'ZIP']] },
 ];
 

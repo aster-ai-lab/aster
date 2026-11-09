@@ -10,7 +10,12 @@ function release(tag, names, extra = {}) {
 }
 const base = () => [
   release('v0.9.0', ['aster_0.9.0_aarch64.dmg']),
-  release('aster-cli-v0.9.0', ['aster-cli-v0.9.0-macos.tar.gz','aster-cli-v0.9.0-linux.tar.gz','aster-cli-v0.9.0-windows.zip']),
+  release('aster-cli-v0.9.0', [
+    'aster-cli-v0.9.0-macos.tar.gz',
+    'aster-cli-v0.9.0-linux.tar.gz',
+    'aster-cli-v0.9.0-linux-arm64.tar.gz',
+    'aster-cli-v0.9.0-windows.zip',
+  ]),
 ];
 
 test('latest downloads follow numeric versions per product/platform and exclude SDK, draft and prerelease assets', () => {
@@ -19,8 +24,10 @@ test('latest downloads follow numeric versions per product/platform and exclude 
     release('v0.99.0', ['aster_0.99.0_aarch64.dmg'], { draft: true }),
     release('v0.98.0', ['aster_0.98.0_aarch64.dmg'], { prerelease: true })];
   const selected = selectDownloads(data);
-  assert.deepEqual(selected.map(({ version }) => version), ['0.10.0','0.9.0','0.9.0','0.9.0']);
+  assert.deepEqual(selected.map(({ version }) => version), ['0.10.0','0.9.0','0.9.0','0.9.0','0.9.0']);
   assert.equal(selected[0].url, `${repository}/releases/download/v0.10.0/aster_0.10.0_aarch64.dmg`);
+  assert.equal(selected[2].key, 'cli.linux');
+  assert.equal(selected[3].key, 'cli.linux-arm64');
   assert.equal(selectDownloads([...base(), release(undefined, ['aster_0.99.0_aarch64.dmg'])])[0].version, '0.9.0');
 });
 
