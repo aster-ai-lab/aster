@@ -38,8 +38,8 @@ use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
 use aster_core::workspace::WorkspaceServices;
 use aster_core::{
-    Agent, AgentEvent, AgentRunSpawn, AgentSession, CodeConfig, CompletionAttestor, GoalTickAdmission,
-    MutatedPathRecord, PlanningMode, SessionOptions,
+    Agent, AgentEvent, AgentRunSpawn, AgentSession, CodeConfig, CompletionAttestor,
+    GoalTickAdmission, MutatedPathRecord, PlanningMode, SessionOptions,
 };
 
 mod support;
@@ -65,11 +65,7 @@ struct TokenFileAttestor {
 }
 
 impl CompletionAttestor for TokenFileAttestor {
-    fn attest(
-        &self,
-        digest: &str,
-        paths: &[MutatedPathRecord],
-    ) -> Option<VerificationReport> {
+    fn attest(&self, digest: &str, paths: &[MutatedPathRecord]) -> Option<VerificationReport> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         if paths.is_empty() || digest.is_empty() {
             return None;
@@ -731,10 +727,7 @@ async fn r2_deepseek_wait_evidence_pause_resume() {
     // R2f: pause while the slice is live.
     let mut pause = tick_request(&session, "pause");
     pause.kind = GoalCommandKindV1::Pause;
-    let paused = match session
-        .control_goal(pause, Duration::from_secs(30))
-        .await
-    {
+    let paused = match session.control_goal(pause, Duration::from_secs(30)).await {
         Ok(paused) => paused,
         Err(error) => {
             eprintln!("CONTROL-LOOP pause retry after {error}");

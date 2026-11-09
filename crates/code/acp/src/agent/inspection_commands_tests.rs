@@ -127,7 +127,10 @@ async fn deep_memory_inspect_cycle_then_flush_and_dream_without_a_model() {
         .handle_inspection_command(&session, run("/memory read deep-note"))
         .await
         .unwrap();
-    assert!(read.contains("Prefer hermetic memory inspect oracles"), "{read}");
+    assert!(
+        read.contains("Prefer hermetic memory inspect oracles"),
+        "{read}"
+    );
     let revision = read
         .lines()
         .find_map(|line| line.strip_prefix("Revision: "))

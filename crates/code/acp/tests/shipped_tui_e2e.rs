@@ -95,7 +95,10 @@ const FULLSCREEN_PALETTE: &[(&str, &str)] = &[
     ("fork", "Branch the current session"),
     ("memory", "Inspect and manage stored memories"),
     ("flush", "Save this session's memory to disk now"),
-    ("dream", "Consolidate memory now (merge observations into topics)"),
+    (
+        "dream",
+        "Consolidate memory now (merge observations into topics)",
+    ),
     ("history", "Show conversation stats"),
     ("tasks", "Inspect background tasks or stop a task"),
     ("settings", "Open the settings modal"),
