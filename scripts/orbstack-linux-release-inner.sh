@@ -28,5 +28,6 @@ cd "${repo_root}"
 bash scripts/package-aster-cli.sh "${platform}" "$HOME/${target_name}/release-dist" "$HOME/${out_name}"
 cp -f "$HOME/${out_name}" "${repo_root}/dist/${out_name}"
 ls -la "${repo_root}/dist/${out_name}"
-file "$HOME/${target_name}/release-dist/aster"
+ls -la "$HOME/${target_name}/release-dist/aster"
 "$HOME/${target_name}/release-dist/aster" --version
+"$HOME/${target_name}/release-dist/aster" --build-id

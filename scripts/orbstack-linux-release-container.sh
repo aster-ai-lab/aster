@@ -34,6 +34,9 @@ env -u GROK_VERSION cargo build --locked --profile release-dist -p aster
 env -u GROK_VERSION cargo build --locked --profile release-dist -p aster-acp \
   --no-default-features --features svg-png,account-import
 
-file /target/release-dist/aster /target/release-dist/aster-acp
+# ubuntu:20.04 minimal has no `file(1)`; identity comes from --version/--build-id.
+ls -la /target/release-dist/aster /target/release-dist/aster-acp
 /target/release-dist/aster --version
 /target/release-dist/aster-acp --version
+/target/release-dist/aster --build-id
+/target/release-dist/aster-acp --build-id
