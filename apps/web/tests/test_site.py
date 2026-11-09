@@ -317,7 +317,7 @@ class SiteTest(unittest.TestCase):
             check_site(self.public)
 
     def test_stage_contains_only_public_allowlist_and_project_relative_homepage(self):
-        other = self.public / 'tenant/toyou/private.txt'
+        other = self.public / 'tenant/legacy/private.txt'
         other.parent.mkdir(parents=True)
         other.write_text('not this public product')
         destination = self.root / 'staged'
@@ -329,7 +329,7 @@ class SiteTest(unittest.TestCase):
         self.assertIn('href="./privacy/"', homepage)
         for name in SITE_FILES:
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
-        self.assertFalse((destination / 'tenant/toyou').exists())
+        self.assertFalse((destination / 'tenant/legacy').exists())
         self.assertEqual(check_site(destination)['status'], 'passed')
 
     def test_existing_stage_is_preserved_and_bad_source_cannot_activate_output(self):
@@ -366,7 +366,7 @@ class SiteTest(unittest.TestCase):
                 homepage = response.read()
                 self.assertIn(b'home.css', homepage)
                 self.assertIn('让想法落地'.encode(), homepage)
-            for relative in ('tenant/toyou/INFO.md', 'src/private.js', 'content/docs/catalog.json', 'content/docs/code/index.mdx', 'content/docs/code/9.2.1/index.mdx', 'content/docs/code/9.2.1/_components.mjs', 'content/docs/code/9.2.1/_diagrams/architecture.mmd'):
+            for relative in ('tenant/legacy/INFO.md', 'src/private.js', 'content/docs/catalog.json', 'content/docs/code/index.mdx', 'content/docs/code/9.2.1/index.mdx', 'content/docs/code/9.2.1/_components.mjs', 'content/docs/code/9.2.1/_diagrams/architecture.mmd'):
                 with self.subTest(relative=relative), self.assertRaises(HTTPError) as refused:
                     urlopen(origin + relative, timeout=2)
                 self.assertEqual(refused.exception.code, 404)
