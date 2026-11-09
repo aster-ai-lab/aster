@@ -33,7 +33,7 @@ pub(super) fn is_max_tier(subscription_tier: Option<&str>) -> bool {
 
 /// URL for upgrading the subscription tier.
 pub(crate) const UPSELL_URL_UPGRADE: &str =
-    "https://github.com/kense-labs/aster?referrer=grok-build";
+    "https://github.com/kense-labs/aster?referrer=aster-build";
 
 /// URL for managing pay-as-you-go or on-demand spending and purchasing credits.
 pub(crate) const UPSELL_URL_PAYG: &str = "https://github.com/kense-labs/aster?_s=usage";
@@ -558,7 +558,7 @@ pub(super) fn dispatch_open_supergrok_url(app: &mut AppView) -> Vec<Effect> {
     // Funnel attribution: tag Aster Code upsell clicks from the CLI with `referrer=aster-build`, matching the OAuth consent flow and aster/cli links
     // It applies even when the URL came from remote settings's `gate_url`, so nothing depends on the remote flag being configured correctly
     // If the URL already specifies a referrer it's left alone
-    let url = crate::app::link_opener::ensure_query_param(url, "referrer", "grok-build");
+    let url = crate::app::link_opener::ensure_query_param(url, "referrer", "aster-build");
     super::ctx::open_url_or_show(app, &url);
     vec![]
 }

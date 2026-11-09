@@ -164,7 +164,7 @@ fn require_aster_auth_for_share(
     super::auth_gate::require_aster_auth(
         auth_manager,
         "Authentication required to share session",
-        "Share session is disabled. Run `grok login` to authenticate.",
+        "Share session is disabled. Run `aster login` to authenticate.",
     )
 }
 
@@ -268,7 +268,7 @@ mod tests {
 
         assert_eq!(
             data,
-            "Share session is disabled. Run `grok login` to authenticate."
+            "Share session is disabled. Run `aster login` to authenticate."
         );
     }
 }

@@ -1,11 +1,11 @@
 //! Home-directory resolution generally: USERPROFILE-first `home_dir`, plus
-//! aster-home (`$ASTER_HOME`, else `$GROK_HOME`, else `<home>/.aster`). Shared by `aster-config`
+//! aster-home (`$ASTER_HOME`, else `$GROK_HOME` legacy, else `<home>/.aster`). Shared by `aster-config`
 //! and `aster-fast-worktree`.
 //!
 //! Which function to call:
 //! - [`grok_home`]: the usual choice, a cached, created path to build on.
 //! - [`user_grok_home`]: `None` instead of a cwd fallback when no home resolves.
-//! - [`default_grok_home`]: the `<home>/.aster` default, ignoring `$GROK_HOME`, so callers can detect an override.
+//! - [`default_grok_home`]: the `<home>/.aster` default, ignoring `$ASTER_HOME`/`$GROK_HOME`, so callers can detect an override.
 //! - [`resolve_grok_home`]: a fresh, uncached resolve.
 //! - [`resolve_grok_home_with_source`]: [`resolve_grok_home`] plus where the path came from.
 //! - [`home_dir`]: the home directory itself, for sibling dot dirs (`~/.claude`, `~/.agents`, ...).
@@ -26,7 +26,7 @@ use std::sync::OnceLock;
 pub enum GrokHomeSource {
     /// A non-empty `$ASTER_HOME`. The value is the product directory itself.
     ProductEnv,
-    /// A non-empty `$GROK_HOME` override.
+    /// A non-empty `$GROK_HOME` legacy override.
     EnvOverride,
     /// `<home>/.aster` derived from the home directory.
     HomeDefault,
@@ -48,7 +48,7 @@ fn grok_home_in(home: &Path) -> PathBuf {
         .join(".aster")
 }
 
-/// `$ASTER_HOME` verbatim when non-empty, else `$GROK_HOME`, else `<home>/.aster`.
+/// `$ASTER_HOME` verbatim when non-empty, else `$GROK_HOME` legacy, else `<home>/.aster`.
 ///
 /// `$ASTER_HOME` is the product directory itself, matching the CLI. Env values
 /// are not canonicalized, so literal prefix checks still see the original
@@ -81,13 +81,13 @@ pub fn resolve_grok_home_with_source() -> Option<(PathBuf, GrokHomeSource)> {
     )
 }
 
-/// The default `<home>/.aster`, used when `$GROK_HOME` is unset.
+/// The default `<home>/.aster`, used when `$ASTER_HOME`/`$GROK_HOME` are unset.
 pub fn default_grok_home() -> PathBuf {
     grok_home_in(&home_dir().unwrap_or_else(|| PathBuf::from(".")))
 }
 
 /// The aster home, created if missing and cached for the process; falls back to
-/// [`default_grok_home`] when neither `$GROK_HOME` nor a home resolves.
+/// [`default_grok_home`] when neither `$ASTER_HOME`/`$GROK_HOME` nor a home resolves.
 pub fn grok_home() -> PathBuf {
     static GROK_HOME: OnceLock<PathBuf> = OnceLock::new();
     GROK_HOME

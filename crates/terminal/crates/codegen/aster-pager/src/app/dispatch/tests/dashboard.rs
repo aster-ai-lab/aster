@@ -3589,6 +3589,30 @@ fn dashboard_cycle_mode_rotates_through_modes() {
 }
 #[serial_test::serial(GROK_AGENT_DASHBOARD)]
 #[test]
+fn dashboard_cycle_mode_skips_plan_under_aster() {
+    use crate::views::dashboard::DashboardDispatchMode;
+    use std::sync::atomic::Ordering;
+    struct Restore(bool);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            crate::app::ASTER_ACTIVE.store(self.0, Ordering::Release);
+        }
+    }
+    let mut app = test_app();
+    let _restore = Restore(crate::app::ASTER_ACTIVE.swap(true, Ordering::AcqRel));
+    open_dashboard(&mut app);
+    for _ in 0..6 {
+        let _ = dispatch(Action::DashboardCycleMode, &mut app);
+        assert_ne!(
+            app.dashboard.as_ref().unwrap().pending_mode,
+            DashboardDispatchMode::Plan,
+            "Aster dashboard Shift+Tab must not stage Plan"
+        );
+    }
+}
+
+#[serial_test::serial(GROK_AGENT_DASHBOARD)]
+#[test]
 fn dashboard_cycle_mode_skips_auto_when_gated_off() {
     use crate::views::dashboard::DashboardDispatchMode;
     let mut app = test_app();

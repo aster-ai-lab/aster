@@ -719,7 +719,7 @@ mod tests {
         match result {
             ToolOutput::Text(t) => {
                 assert!(t.text.contains("Aster Code"), "got: {}", t.text);
-                assert!(t.text.contains("supergrok?referrer=grok-build"));
+                assert!(t.text.contains("supergrok?referrer=aster-build"));
             }
             other => panic!("expected Text upsell, got {other:?}"),
         }

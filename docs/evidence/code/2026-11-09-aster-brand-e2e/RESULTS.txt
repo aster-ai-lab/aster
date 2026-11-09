@@ -1,0 +1,3118 @@
+=== title ===
++ cargo test -p aster-pager --lib --locked notifications::title:: -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_pager-4fa56373b06b29f9)
+
+running 35 tests
+test notifications::title::tests::action_required_blinks_across_ticks ... ok
+test notifications::title::tests::empty_session_name_skipped ... ok
+test notifications::title::tests::activity_label_thinking ... ok
+test notifications::title::tests::activity_hidden_when_idle ... ok
+test notifications::title::tests::activity_shows_waiting_when_busy_without_activity ... ok
+test notifications::title::tests::activity_label_tool_running_empty_title ... ok
+test notifications::title::tests::action_required_visible_on_first_tick ... ok
+test notifications::title::tests::empty_items_produces_grok_fallback ... ok
+test notifications::title::tests::cwd_shows_last_component ... ok
+test notifications::title::tests::default_config_active_turn_with_permissions ... ok
+test notifications::title::tests::activity_prefers_specific_activity_over_waiting ... ok
+test notifications::title::tests::default_config_idle_no_session ... ok
+test notifications::title::tests::all_items_present_in_order ... ok
+test notifications::title::tests::activity_label_tool_running_with_title ... ok
+test notifications::title::tests::action_required_hidden_when_no_permissions ... ok
+test notifications::title::tests::activity_label_responding ... ok
+test notifications::title::tests::dedup_skips_emission_when_unchanged ... ok
+test notifications::title::tests::grok_only_produces_just_grok ... ok
+test notifications::title::tests::missing_session_name_skipped ... ok
+test notifications::title::tests::model_item_hidden_when_none ... ok
+test notifications::title::tests::model_item_shown_when_present ... ok
+test notifications::title::tests::reset_clears_state_and_emits_grok ... ok
+test notifications::title::tests::session_name_and_grok_joined_with_separator ... ok
+test notifications::title::tests::short_session_name_not_truncated ... ok
+test notifications::title::tests::spinner_holds_frame_for_divisor_ticks ... ok
+test notifications::title::tests::spinner_wraps_around ... ok
+test notifications::title::tests::turn_timer_hidden_when_under_one_second ... ok
+test notifications::title::tests::tool_title_truncated_in_activity ... ok
+test notifications::title::tests::long_session_name_truncated_with_ellipsis ... ok
+test notifications::title::tests::turn_timer_shown_when_above_one_second ... ok
+test notifications::title::tests::title_escape_strips_control_characters ... ok
+test notifications::title::tests::spinner_only_shown_when_active ... ok
+test notifications::title::tests::spinner_shown_when_busy_without_activity ... ok
+test notifications::title::tests::activity_label_retrying ... ok
+test notifications::title::tests::spinner_advances_with_divisor ... ok
+
+test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 10305 filtered out; finished in 0.02s
+
+PASS: title
+=== billing ===
++ cargo test -p aster-pager --lib --locked upsell_non_max_upgrade_url -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_pager-4fa56373b06b29f9)
+
+running 1 test
+test app::dispatch::tests::billing::upsell_non_max_upgrade_url_is_supergrok ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10339 filtered out; finished in 0.23s
+
+PASS: billing
+=== cta ===
++ cargo test -p aster-pager --lib --locked cta_e2e -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-pager` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_pager-4fa56373b06b29f9)
+
+running 59 tests
+test app::dispatch::tests::cta_e2e::cta_impression_edge_only_on_new_appearance ... ok
+test app::dispatch::tests::cta_e2e::cta_install_error_category_maps_outcome ... ok
+test app::dispatch::tests::cta_e2e::cta_install_relative_path_prefers_candidate_then_falls_back ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::dismissed_plugin_suppressed_on_next_recompute ... ok
+test app::dispatch::tests::cta_e2e::cta_installed_dismiss_timeout_ignored_when_phase_moved_on ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_err_sets_error ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_ignored_when_not_installing ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_ok_no_reload_enters_awaiting_mcps ... ok
+test app::dispatch::tests::cta_e2e::cta_installed_dismiss_timeout_hides_when_unchanged ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_ignored_for_different_plugin ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_ok_requires_reload_enters_awaiting_reload ... ok
+test app::dispatch::tests::cta_e2e::cta_install_done_non_success_sets_error_with_sanitized_message ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_empty_list_keeps_waiting_not_absent_settle ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_ignored_for_stale_phase_or_plugin ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_err_sets_error ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_no_plugin_servers_yet_keeps_waiting ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_initializing_keeps_waiting_and_retries ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_absent_servers_settles_without_full_poll ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_skips_wait_when_not_expecting_mcp ... ok
+test app::dispatch::tests::cta_e2e::cta_reload_done_err_sets_error ... ok
+test app::dispatch::tests::cta_e2e::cta_reload_done_ignored_for_stale_phase_or_plugin ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_times_out_to_installed_after_budget ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_unavailable_keeps_waiting ... ok
+test app::dispatch::tests::cta_e2e::cta_reload_done_non_success_sets_error ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_catalog_err_preserves_cache ... ok
+test app::dispatch::tests::cta_e2e::cta_reload_done_ok_enters_awaiting_mcps ... ok
+test app::dispatch::tests::cta_e2e::cta_mcps_loaded_handoff_requires_section_name_parity ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::flag_off_or_source_absent_hides_regardless_of_text ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::skills_only_install_settles_installed_without_fetch ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::plugin_name_parity_mismatch_degrades_to_installed ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::reload_error_settles_error ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::install_error_settles_error ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::no_reload_path_enters_awaiting_mcps_directly ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::mcps_error_settles_error ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_catalog_reload_empty_candidates_preserves_installed_checkmark ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::plugin_name_parity_match_hands_off ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_catalog_loaded_sanitizes_components_at_ingestion ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::happy_path_with_auth_handoff ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_debounce_ignores_stale_generation ... ok
+test app::dispatch::tests::cta_e2e::cta_e2e::no_auth_path_settles_installed_without_modal ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_catalog_load_recomputes_match_for_typed_draft ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_debounce_sets_hidden_when_feature_disabled ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_catalog_keeps_official_not_installed_only ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_hidden_for_github_homepage_url ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_hidden_when_dismissed ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_hidden_when_feature_disabled ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_hidden_when_official_source_absent ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_hidden_when_no_keyword_match ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_matched_when_keyword_hits ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_phase_matched_on_pasted_domain_url ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_default_name_only_official_mirror_selected ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_default_prefers_url_verified_official_over_impostor ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_duplicate_named_sources_first_wins ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_override_excludes_official_source ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_override_absent_source_hides_cta ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_override_naming_official_selects_it ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_override_selects_named_source ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_marketplace_override_install_targets_named_source ... ok
+test app::dispatch::tests::cta_e2e::plugin_cta_debounce_preserves_in_flight_states ... ok
+
+test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 10281 filtered out; finished in 0.18s
+
+PASS: cta
+=== home_paths ===
++ cargo test -p aster-pager --test grok_home_paths --locked -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+   Compiling aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.45s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/grok_home_paths.rs (target/debug/deps/grok_home_paths-7966d53f5eedb5e8)
+
+running 2 tests
+Nothing on disk yet at $ASTER_HOME.
+{
+  "schema_version": 2,
+  "grok_home": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/.tmpKoY1Nk/ghost-home",
+  "total_bytes": 0,
+  "volume_capacity_bytes": null,
+  "volume_available_bytes": null,
+  "top_level_dirs": [],
+  "root_files_bytes": 0,
+  "redirections_bytes": 0,
+  "orphaned_redirections": [],
+  "unattributed_redirect_dirs": [],
+  "skipped_entries": 0,
+  "unreadable_dirs": 0,
+  "unstatable_entries": 0,
+  "other_filesystem_dirs": 0,
+  "unfollowed_dir_symlinks": 0,
+  "worktrees_outside_managed_roots": 0,
+  "registry": "absent",
+  "registry_path": "",
+  "worktrees": []
+}
+test disk_usage_run_creates_no_grok_home ... ok
+test grok_home_override_path_helpers ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+PASS: home_paths
+=== winget ===
++ cargo test -p aster-update --lib --locked winget -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+   Compiling aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+   Compiling aster-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-update)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 10s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_update-24132bf392849258)
+
+running 5 tests
+test winget::tests::pinned_hand_off_forces_install_and_notes_ignored_channel ... ok
+test winget::tests::reinstall_hand_off_forces_install_without_a_version ... ok
+test winget::tests::stable_hand_off_upgrades_without_channel_note ... ok
+test winget::tests::non_utf8_path_still_matches ... ok
+test winget::tests::winget_package_paths_are_matched_by_directory ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 146 filtered out; finished in 0.00s
+
+PASS: winget
+=== sampling ===
++ cargo test -p aster-shell --lib --locked format_rate_limited -- --nocapture
+   Compiling portable-atomic v1.15.0
+   Compiling aws-smithy-types v1.3.4
+   Compiling fs-err v3.3.2
+   Compiling dtor-proc-macro v0.0.5
+   Compiling jsonwebtoken v10.3.0
+   Compiling tinytemplate v1.2.1
+   Compiling ctor-proc-macro v0.0.6
+   Compiling criterion v0.6.0
+   Compiling dtor v0.0.6
+   Compiling aws-smithy-eventstream v0.60.13
+   Compiling aws-smithy-json v0.61.7
+   Compiling aws-smithy-query v0.60.8
+   Compiling aws-smithy-json v0.60.7
+   Compiling once_cell v1.21.4
+   Compiling tracing-core v0.1.36
+   Compiling rustls v0.23.46
+   Compiling gix-features v0.48.0
+   Compiling tempfile v3.27.0
+   Compiling dashmap v6.2.1
+   Compiling ahash v0.8.12
+   Compiling protobuf v3.7.2
+   Compiling prometheus-parse v0.2.5
+   Compiling read-fonts v0.41.0
+   Compiling quanta v0.12.3
+   Compiling serial_test v3.3.1
+   Compiling aster-feedback v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-feedback)
+   Compiling pprof v0.15.0
+   Compiling notify-debouncer-mini v0.6.0
+   Compiling ctor v0.4.3
+   Compiling moka v0.12.8
+   Compiling tracing v0.1.44
+   Compiling tracing-log v0.2.0
+   Compiling tracing-serde v0.2.0
+   Compiling gix-hash v0.25.0
+   Compiling gix-fs v0.21.1
+   Compiling gix-glob v0.26.0
+   Compiling gix-transport v0.57.0
+   Compiling rhai v1.27.0
+   Compiling cached v0.56.0
+   Compiling referencing v0.30.0
+   Compiling h2 v0.4.20
+   Compiling tower v0.5.3
+   Compiling axum-core v0.5.2
+   Compiling aws-smithy-runtime-api v1.9.2
+   Compiling tracing-subscriber v0.3.23
+   Compiling opentelemetry v0.32.0
+   Compiling gix-hashtable v0.15.0
+   Compiling aster-dirs v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-dirs)
+   Compiling gix-tempfile v23.0.0
+   Compiling gix-commitgraph v0.37.0
+   Compiling aster-env v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-env)
+   Compiling prometheus v0.14.0
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.6.2
+   Compiling gix-object v0.60.0
+   Compiling gix-lock v23.0.0
+   Compiling tungstenite v0.28.0
+   Compiling aster-config v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config)
+   Compiling tower-http v0.6.11
+   Compiling opentelemetry_sdk v0.32.1
+   Compiling aws-credential-types v1.2.10
+   Compiling aws-smithy-http v0.62.5
+   Compiling aws-smithy-observability v0.1.4
+   Compiling tracing-opentelemetry v0.33.0
+   Compiling aws-smithy-http v0.60.12
+   Compiling gix-attributes v0.33.0
+   Compiling aster-compaction v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-compaction)
+   Compiling harfrust v0.12.0
+   Compiling sentry-tracing v0.42.0
+   Compiling gix-ignore v0.21.0
+   Compiling gix-revwalk v0.31.0
+   Compiling tokio-tungstenite v0.28.0
+   Compiling aws-types v1.3.10
+   Compiling aws-sigv4 v1.3.6
+   Compiling aws-smithy-runtime v1.9.4
+   Compiling hyper v1.12.0
+   Compiling aws-smithy-checksums v0.60.13
+   Compiling gix-ref v0.63.0
+   Compiling gix-pathspec v0.18.0
+   Compiling aster-confine v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine)
+   Compiling async-lsp v0.2.4
+   Compiling tracing-appender v0.2.5
+   Compiling gix-traverse v0.57.0
+   Compiling tracing-chrome v0.7.2
+   Compiling aster-session-events v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-events)
+   Compiling gix-revision v0.45.0
+   Compiling gix-filter v0.30.0
+   Compiling fastrace-opentelemetry v0.18.0
+   Compiling gix-pack v0.70.0
+   Compiling gix-shallow v0.12.0
+   Compiling aster-sqlite-journal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sqlite-journal)
+   Compiling aster-acp-lib v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-acp-lib)
+   Compiling gix-index v0.51.0
+   Compiling gix-discover v0.51.0
+   Compiling hyper-util v0.1.19
+   Compiling aws-runtime v1.5.16
+   Compiling gix-config v0.56.0
+   Compiling gix-refspec v0.41.0
+   Compiling gix-protocol v0.61.0
+   Compiling aster-codebase-graph v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-codebase-graph)
+   Compiling aster-fuzzy-file-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fuzzy-file-search)
+   Compiling aster-fsnotify v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fsnotify)
+   Compiling aster-shared v0.0.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shared)
+   Compiling pdf_oxide v0.3.77
+   Compiling gix-odb v0.80.0
+   Compiling process-wrap v9.0.0
+   Compiling aster-workflow v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workflow)
+   Compiling aster-foreign-sessions v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-foreign-sessions)
+   Compiling gix-worktree v0.52.0
+   Compiling aster-bundle v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-bundle)
+   Compiling hyper-rustls v0.27.2
+   Compiling axum v0.8.4
+   Compiling hyper-timeout v0.5.2
+   Compiling aws-sdk-sts v1.94.0
+   Compiling reqwest v0.12.28
+   Compiling reqwest v0.13.5
+   Compiling aws-sdk-ssooidc v1.92.0
+   Compiling aws-sdk-sso v1.90.0
+   Compiling aws-smithy-http-client v1.1.4
+   Compiling aws-sdk-s3 v1.24.0
+   Compiling gix-diff v0.63.0
+   Compiling gix-dir v0.25.0
+   Compiling gix-submodule v0.30.0
+   Compiling axum-server v0.8.0
+   Compiling aster-test-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-test-utils)
+   Compiling gix-status v0.30.0
+   Compiling bm25 v2.3.2
+   Compiling aster-file-lock v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-lock)
+   Compiling aster-agent-lifecycle v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent-lifecycle)
+   Compiling opentelemetry-http v0.32.0
+   Compiling reqwest-middleware v0.4.2
+   Compiling reqwest-eventsource v0.6.0
+   Compiling aster-extra-ca v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-extra-ca)
+   Compiling fastrace-reqwest v0.2.0
+   Compiling gcloud-metadata v1.0.2
+   Compiling reqwest-middleware v0.5.2
+   Compiling aws-config v1.8.11
+   Compiling sentry v0.42.0
+   Compiling aster-mixpanel v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mixpanel)
+   Compiling gix v0.83.0
+   Compiling aster-auth v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-auth)
+   Compiling oauth2 v5.0.0
+   Compiling tonic v0.14.9
+   Compiling async-openai v0.33.1 (/Users/roylin/code/aster/crates/third-party/async-openai)
+   Compiling aster-diag-server v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-diag-server)
+   Compiling gcloud-auth v1.4.0
+   Compiling aster-shell-base v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-base)
+   Compiling jsonschema v0.30.0
+   Compiling rmcp v3.8.0
+   Compiling tonic-prost v0.14.9
+   Compiling tonic-types v0.14.5
+   Compiling opentelemetry-proto v0.32.0
+   Compiling aster-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools-api)
+   Compiling aster-gix-status v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-gix-status)
+   Compiling gcloud-storage v1.3.0
+   Compiling aster-fast-worktree v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fast-worktree)
+   Compiling aster-hunk-tracker v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hunk-tracker)
+   Compiling opentelemetry-otlp v0.32.0
+   Compiling aster-test-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-test-support)
+   Compiling aster-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tool-runtime)
+   Compiling aster-tracing v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tracing)
+   Compiling aster-otel v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-otel)
+   Compiling aster-sampling-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sampling-types)
+   Compiling aster-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-core)
+   Compiling aster-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-sdk)
+   Compiling aster-sampler v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sampler)
+   Compiling aster-compaction-transcript v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-compaction-transcript)
+   Compiling aster-chat-state v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-chat-state)
+   Compiling aster-file-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-utils)
+   Compiling aster-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-client)
+   Compiling aster-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-mcp-adapter)
+   Compiling aster-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-daemon)
+   Compiling aster-telemetry v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-telemetry)
+   Compiling aster-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools)
+   Compiling aster-session-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-search)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling aster-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks)
+   Compiling aster-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mcp)
+   Compiling aster-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-announcements)
+   Compiling aster-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent)
+   Compiling aster-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config-types)
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+   Compiling aster-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-subagent-resolution)
+   Compiling aster-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-plugin-marketplace)
+   Compiling aster-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace)
+   Compiling aster-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-http)
+   Compiling aster-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-terminal)
+   Compiling aster-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-memory)
+   Compiling aster-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-session-support)
+   Compiling aster-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-login)
+   Compiling aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-shell` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 24s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_shell-ab741d57f6b37dde)
+
+running 5 tests
+test sampling::error::tests::format_rate_limited_free_usage_uses_paywall_copy ... ok
+test sampling::error::tests::format_rate_limited_empty_detail_uses_auth_aware_fallback ... ok
+test sampling::error::tests::format_rate_limited_strips_api_error_display_prefix ... ok
+test sampling::error::tests::format_rate_limited_api_key_rewrites_consumer_subscription_upsell ... ok
+test sampling::error::tests::format_rate_limited_surfaces_nonempty_server_detail ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 7058 filtered out; finished in 0.00s
+
+PASS: sampling
+=== login ===
++ cargo test -p aster-login --lib --locked oidc::protocol:: -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.20s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_login-42aac75270840789)
+
+running 18 tests
+test oidc::protocol::tests::resolve_login_principal_policy_uses_force_login_team_only ... ok
+test oidc::protocol::tests::rejects_unsupported_id_token_alg ... ok
+test oidc::protocol::tests::callback_timeout_error_is_user_friendly ... ok
+test oidc::protocol::tests::validate_state_rejects_mismatch ... ok
+test oidc::protocol::tests::enforce_login_principal_matrix ... ok
+test oidc::protocol::tests::authorize_url_includes_team_principal_params ... ok
+test oidc::protocol::tests::authorize_url_uses_oauth2_referrer_override_once ... ok
+test oidc::protocol::tests::authorize_url_includes_required_oidc_params ... ok
+test oidc::protocol::tests::extract_user_info_allows_team_without_id_token ... ok
+test oidc::protocol::tests::pkce_s256_challenge_matches_verifier ... ok
+test oidc::protocol::tests::peek_access_token_principal_id_does_not_require_type ... ok
+test oidc::protocol::tests::peek_access_token_principal_matrix ... ok
+test oidc::protocol::tests::refresh_tokens_does_not_retry_terminal_invalid_grant ... ok
+test oidc::protocol::tests::discover_uses_cache_within_ttl ... ok
+test oidc::protocol::tests::refresh_tokens_retries_on_transient_5xx ... ok
+test oidc::protocol::tests::refresh_tokens_retries_on_coded_transient_error ... ok
+test oidc::protocol::tests::id_token_validation_fails_on_nonce_mismatch ... ok
+test oidc::protocol::tests::id_token_validation_fails_on_audience_mismatch ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 458 filtered out; finished in 2.06s
+
+PASS: login
+=== project_config ===
++ cargo test -p aster-workspace --lib --locked find_project_configs -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-workspace` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/aster_workspace-3a9c35953411aafa)
+
+running 1 test
+test project_config::tests::find_project_configs_excludes_user_grok_config_file ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2143 filtered out; finished in 0.01s
+
+PASS: project_config
+LIB_FAILS=0
+=== cli_p0 ===
++ cargo test -p aster --test cli_p0 --locked shipped_cli_p0_oracles -- --nocapture
+   Compiling aster-config v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config)
+   Compiling aster-file-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-utils)
+   Compiling aster-fast-worktree v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fast-worktree)
+   Compiling aster-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-client)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling aster-foreign-sessions v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-foreign-sessions)
+   Compiling aster-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mermaid)
+   Compiling aster-voice v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-voice)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-crash-handler v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-crash-handler)
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+   Compiling aster-shared v0.0.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shared)
+   Compiling aster-bundle v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-bundle)
+   Compiling aster-dashboard-store v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-dashboard-store)
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+   Compiling aster-active-sessions v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-active-sessions)
+   Compiling aster-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools)
+   Compiling aster-telemetry v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-telemetry)
+   Compiling aster-shell-base v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-base)
+   Compiling aster-session-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-search)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling aster-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks)
+   Compiling aster-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-announcements)
+   Compiling aster-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mcp)
+   Compiling aster-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-diff)
+   Compiling aster-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent)
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+   Compiling aster-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-subagent-resolution)
+   Compiling aster-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-plugin-marketplace)
+   Compiling aster-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config-types)
+   Compiling aster-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace)
+   Compiling aster-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-http)
+   Compiling aster-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-terminal)
+   Compiling aster-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-render)
+   Compiling aster-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-memory)
+   Compiling aster-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-session-support)
+   Compiling aster-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-login)
+   Compiling aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+   Compiling aster-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-update)
+   Compiling aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+   Compiling aster-pager-minimal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-minimal)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster` (bin "aster") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 57.58s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/cli_p0.rs (target/debug/deps/cli_p0-c96ba577b665f7e2)
+
+running 1 test
+ORACLE name=version detail={"product":"Aster","currentVersion":"0.3.1 (0f0b898ce1a9)","channel":"unknown"}
+ORACLE name=doctor detail=json diagnostic report
+ORACLE name=inspect detail=json configuration report
+ORACLE name=setup detail={   "source": null,   "configured": false,   "deploymentId": null,   "teamId": null,   "managedConfig": null,   "requirements": null,   "failClosed": false }
+ORACLE name=update-check detail={"currentVersion":"0.3.1 (0f0b898ce1a9)","latestVersion":"0.3.1","updateAvailable":false,"installer":"aster-cli","channel":"unknown","autoUpdate":false,"error":null}
+ORACLE name=share detail=exit=1 Error: Session sharing is temporarily disabled
+ORACLE name=completions detail=zsh script registers aster
+ORACLE name=sessions detail=local list
+ORACLE name=usage-missing detail=fail closed
+ORACLE name=export-missing detail=fail closed
+ORACLE name=memory detail=Nothing to clear: no memory files found.
+ORACLE name=mcp detail=local server list
+ORACLE name=plugin detail=local plugin list
+ORACLE name=worktree detail=exit=1 
+ORACLE name=du detail=local home report
+ORACLE name=leader detail=local leader list
+ORACLE name=logout detail=No cached session to log out of.
+ORACLE name=trace detail=missing session fail closed
+
+thread 'shipped_cli_p0_oracles' (51214073) panicked at apps/aster/tests/cli_p0.rs:943:5:
+Model 'fixture/local' is using its own API key.
+
+
+Error: Aster and its ACP companion have different build identities; rebuild or reinstall both together
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test shipped_cli_p0_oracles ... FAILED
+
+failures:
+
+failures:
+    shipped_cli_p0_oracles
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.39s
+
+error: test failed, to rerun pass `-p aster --test cli_p0`
+FAIL(101): cli_p0
+=== tui_one_agent ===
++ cargo test -p aster --test tui_one_agent --locked shipped_tui_one_agent_connects_acp_and_keeps_serve_in_process -- --nocapture
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster` (bin "aster") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.25s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/tui_one_agent.rs (target/debug/deps/tui_one_agent-4f4c6ef0ea1e4c98)
+
+running 1 test
+CAPTURE manual check reports a newer Aster release with autoUpdate=false; remote overrides refused
+CAPTURE missing companion failed closed and named aster-acp while ASTER_ACP_AGENT_BIN was unset
+
+thread 'shipped_tui_one_agent_connects_acp_and_keeps_serve_in_process' (51215526) panicked at apps/aster/tests/tui_one_agent.rs:236:13:
+aster exited 1 before the ACP session
+]0;aster[?1049h[?1000h[?1002h[?1003h[?1015h[?1006h[?1004h[?2004h[?25l]12;rgb:ee/ee/ee[2J]9;4;0;0[?2026l]112[?1000l[?1002l[?1003l[?1015l[?1006l[?2004l[?1004l[?25h[?1049lError: Aster and its ACP companion have different build identities; rebuild or reinstall both together
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test shipped_tui_one_agent_connects_acp_and_keeps_serve_in_process ... FAILED
+
+failures:
+
+failures:
+    shipped_tui_one_agent_connects_acp_and_keeps_serve_in_process
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.20s
+
+error: test failed, to rerun pass `-p aster --test tui_one_agent`
+FAIL(101): tui_one_agent
+=== acp_identity ===
++ cargo test -p aster-acp --test shipped_tui_e2e --locked shipped_agent_sends_aster_identity_to_the_model -- --nocapture
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mermaid)
+   Compiling aster-acp v9.2.1 (/Users/roylin/code/aster/crates/code/acp)
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.00s
+     Running tests/shipped_tui_e2e.rs (target/debug/deps/shipped_tui_e2e-2bad0f88a90e0338)
+
+running 1 test
+test shipped_agent_sends_aster_identity_to_the_model ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 3.86s
+
+PASS: acp_identity
+=== install_refuse_xai ===
+refuse_code=1
+--- stderr ---
+Invalid version format: --prefix (expected X.Y.Z or X.Y.Z-suffix)
+FAIL: install_refuse_xai
+BIN_FAILS=3
+=== rebuild aster+aster-acp together ===
+   Compiling aster-file-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-utils)
+   Compiling aster-fast-worktree v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fast-worktree)
+   Compiling aster-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-client)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+   Compiling aster-shared v0.0.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shared)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+   Compiling aster-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mermaid)
+   Compiling aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster-acp v9.2.1 (/Users/roylin/code/aster/crates/code/acp)
+   Compiling aster-shell-base v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-base)
+   Compiling aster-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools)
+   Compiling aster-telemetry v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-telemetry)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+   Compiling aster-session-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-search)
+warning: `aster-acp` (lib) generated 4 warnings
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+   Compiling aster-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks)
+   Compiling aster-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mcp)
+   Compiling aster-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-announcements)
+   Compiling aster-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-diff)
+   Compiling aster-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent)
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+   Compiling aster-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-subagent-resolution)
+   Compiling aster-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-plugin-marketplace)
+   Compiling aster-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config-types)
+   Compiling aster-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace)
+   Compiling aster-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-http)
+   Compiling aster-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-terminal)
+   Compiling aster-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-render)
+   Compiling aster-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-memory)
+   Compiling aster-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-session-support)
+   Compiling aster-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-login)
+   Compiling aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+   Compiling aster-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-update)
+   Compiling aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+   Compiling aster-pager-minimal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-minimal)
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+warning: `aster` (bin "aster") generated 1 warning (1 duplicate)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 54.32s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+BUILD_EXIT:0
+-rwxr-xr-x@ 1 lyon  staff  901684968 11月  9 12:15 target/debug/aster
+-rwxr-xr-x@ 1 lyon  staff  308901128 11月  9 12:14 target/debug/aster-acp
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+   Compiling aster-acp v9.2.1 (/Users/roylin/code/aster/crates/code/acp)
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster-acp` (bin "aster-acp") generated 1 warning
+warning: `aster` (bin "aster") generated 1 warning (1 duplicate)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.00s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+pair aster=aster-cli-pair-v1:29e382a89fcabf3104ac76f46fa7fa0d2db1a6e4:aarch64-apple-darwin
+pair acp=aster-cli-pair-v1:29e382a89fcabf3104ac76f46fa7fa0d2db1a6e4:aarch64-apple-darwin
+=== cli_p0 (paired) ===
+   Compiling aster-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools-api)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+   Compiling aster-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tool-runtime)
+   Compiling aster-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-core)
+   Compiling aster-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-sdk)
+   Compiling aster-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools)
+   Compiling aster-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-client)
+   Compiling aster-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-daemon)
+   Compiling aster-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-mcp-adapter)
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+   Compiling aster-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks)
+   Compiling aster-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mcp)
+   Compiling aster-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-announcements)
+   Compiling aster-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-diff)
+   Compiling aster-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent)
+   Compiling aster-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config-types)
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+   Compiling aster-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-plugin-marketplace)
+   Compiling aster-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-subagent-resolution)
+   Compiling aster-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace)
+   Compiling aster-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-http)
+   Compiling aster-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-terminal)
+   Compiling aster-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-render)
+   Compiling aster-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-memory)
+   Compiling aster-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-session-support)
+   Compiling aster-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-login)
+   Compiling aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+   Compiling aster-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-update)
+   Compiling aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+   Compiling aster-pager-minimal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-minimal)
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `aster` (bin "aster") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 33.29s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/cli_p0.rs (target/debug/deps/cli_p0-c96ba577b665f7e2)
+
+running 1 test
+ORACLE name=version detail={"product":"Aster","currentVersion":"0.3.1 (0f0b898ce1a9)","channel":"unknown"}
+ORACLE name=doctor detail=json diagnostic report
+ORACLE name=inspect detail=json configuration report
+ORACLE name=setup detail={   "source": null,   "configured": false,   "deploymentId": null,   "teamId": null,   "managedConfig": null,   "requirements": null,   "failClosed": false }
+ORACLE name=update-check detail={"currentVersion":"0.3.1 (0f0b898ce1a9)","latestVersion":"0.3.1","updateAvailable":false,"installer":"aster-cli","channel":"unknown","autoUpdate":false,"error":null}
+ORACLE name=share detail=exit=1 Error: Session sharing is temporarily disabled
+ORACLE name=completions detail=zsh script registers aster
+ORACLE name=sessions detail=local list
+ORACLE name=usage-missing detail=fail closed
+ORACLE name=export-missing detail=fail closed
+ORACLE name=memory detail=Nothing to clear: no memory files found.
+ORACLE name=mcp detail=local server list
+ORACLE name=plugin detail=local plugin list
+ORACLE name=worktree detail=exit=1 
+ORACLE name=du detail=local home report
+ORACLE name=leader detail=local leader list
+ORACLE name=logout detail=No cached session to log out of.
+ORACLE name=trace detail=missing session fail closed
+ORACLE name=models detail=Model 'fixture/local' is using its own API key.  Default model: fixture/local  Available models:   * fixture/local (default)
+ORACLE name=headless-create detail=session=f1f4655d-75bb-4ce8-b080-c457045c3c44 token=PONG-ORIGIN
+ORACLE name=sessions-list detail=origin is listed
+ORACLE name=usage detail=persisted usage json
+ORACLE name=trace-local detail=status=exported url=null bytes=1356
+ORACLE name=export detail=transcript contains the turn
+ORACLE name=continue detail=reattached f1f4655d-75bb-4ce8-b080-c457045c3c44 token=PONG-CONTINUE
+ORACLE name=resume-id detail=reattached f1f4655d-75bb-4ce8-b080-c457045c3c44 token=PONG-RESUME
+ORACLE name=resume-title detail=ambiguous title refused
+ORACLE name=fork detail=new=8a01572f-a089-4e88-8bb9-0983c71cd1f9 original=f1f4655d-75bb-4ce8-b080-c457045c3c44 token=PONG-FORK
+ORACLE name=delete detail=f1f4655d-75bb-4ce8-b080-c457045c3c44 is gone from list, export, usage, and resume
+ORACLE name=sandbox-resume detail=stored profile workspace; error: cannot resume this session under sandbox profile 'read-only' — it was created with 'workspace'. Omit --sandbox to resume with 'workspace', or start a new session to use 'read-only'.
+ORACLE name=shell-workspace-boundary detail=out-of-workspace marker absent; p","memory","model","tasks","tools"]} {"type":"tool_call","toolCallId":"call_7af27ad724084e08b958463b690e118c","title":"bash","kind":"execute","status":"in_progress","toolName":"bash","rawInput":{"command":"printf side-effect > '/var/folders/3d
+ORACLE name=isolated-home detail=developer homes unchanged
+test shipped_cli_p0_oracles ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.03s
+
+PASS: cli_p0
+post-cli_p0 aster=aster-cli-pair-v1:29e382a89fcabf3104ac76f46fa7fa0d2db1a6e4:aarch64-apple-darwin acp=aster-cli-pair-v1:29e382a89fcabf3104ac76f46fa7fa0d2db1a6e4:aarch64-apple-darwin
+=== tui_one_agent (paired) ===
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    |
+143 |             .temperature(0.1)
+    |                          ^^^ help: explicitly specify the type as `f32`: `0.1_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    = note: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied
+   --> crates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    |
+144 |             .top_p(0.95)
+    |                    ^^^^ help: explicitly specify the type as `f32`: `0.95_f32`
+    |
+    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    = note: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+warning: `aster-tools` (lib) generated 2 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+warning: unexpected `cfg` condition name: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:11
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |           ^^^^^^
+    |
+    = help: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unexpected `cfg` condition value: `winapi`
+   --> crates/third-party/crossterm/src/lib.rs:256:23
+    |
+256 | #[cfg(all(winapi, not(feature = "winapi")))]
+    |                       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition name: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:11
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |           ^^^^^^^^^^^^^^^^
+    |
+    = help: consider using a Cargo feature instead
+    = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unexpected `cfg` condition value: `crossterm_winapi`
+   --> crates/third-party/crossterm/src/lib.rs:259:33
+    |
+259 | #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    = help: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+warning: unnecessary parentheses around closure body
+  --> crates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   |
+85 |     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   |                                                  ^                            ^
+   |
+   = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+   |
+85 -     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+85 +     let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   |
+
+warning: struct `InternalEventFilter` is never constructed
+  --> crates/third-party/crossterm/src/event/filter.rs:65:19
+   |
+65 | pub(crate) struct InternalEventFilter;
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RuntimeUnitSpec`
+ --> crates/runtime/src/driver.rs:4:62
+  |
+4 |     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  |                                                              ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+warning: linker stderr: ld: __eh_frame section too large (max 16MB) to encode dwarf unwind offsets in compact unwind table, performance of exception handling might be affected
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+   Compiling aster v0.3.1 (/Users/roylin/code/aster/apps/aster)
+warning: `aster` (bin "aster") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/tui_one_agent.rs (target/debug/deps/tui_one_agent-4f4c6ef0ea1e4c98)
+
+running 1 test
+CAPTURE manual check reports a newer Aster release with autoUpdate=false; remote overrides refused
+CAPTURE missing companion failed closed and named aster-acp while ASTER_ACP_AGENT_BIN was unset
+CAPTURE default spawned the ACP companion command_tool=bash model=fixture/from-acl and did not construct the in-process shell agent
+CAPTURE prompt model from ACL fixture/from-acl; TOML theme and vim_mode did not select toml/not-this
+CAPTURE leader spawned the ACP companion command_tool=bash model=fixture/from-acl and did not construct the in-process shell agent
+CAPTURE serve constructed in-process shell agent
+test shipped_tui_one_agent_connects_acp_and_keeps_serve_in_process ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 24.72s
+
+PASS: tui_one_agent
+=== install_refuse_xai (root scripts/install.sh) ===
+refuse_code=1
+--- stderr ---
+error: this installer does not download that binary
+PASS: install_refuse_xai
+RETRY_FAILS=0

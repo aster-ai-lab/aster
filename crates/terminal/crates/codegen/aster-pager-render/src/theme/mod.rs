@@ -4,7 +4,7 @@
 //!
 //! ## Color support
 //!
-//! GrokNight is defined in `Color::Rgb` (truecolor).
+//! AsterNight is defined in `Color::Rgb` (truecolor).
 //! At startup, [`Theme::current()`] quantizes every color to the terminal's detected capability level via [`Theme::quantized`].
 //! Runtime-generated colors (syntax highlighting, blending) are also quantized via [`color_support::quantize`].
 
@@ -28,8 +28,8 @@ use std::sync::LazyLock;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ThemeKind {
-    GrokNight = 0,
-    GrokDay = 1,
+    AsterNight = 0,
+    AsterDay = 1,
     TokyoNight = 2,
     RosePineMoon = 3,
     OscuraMidnight = 5,
@@ -43,8 +43,8 @@ pub enum ThemeKind {
 impl ThemeKind {
     /// All theme kinds (including those that may not work on the current terminal).
     pub const ALL: &[ThemeKind] = &[
-        ThemeKind::GrokNight,
-        ThemeKind::GrokDay,
+        ThemeKind::AsterNight,
+        ThemeKind::AsterDay,
         ThemeKind::TokyoNight,
         ThemeKind::RosePineMoon,
         ThemeKind::OscuraMidnight,
@@ -97,9 +97,9 @@ impl ThemeKind {
 
     pub fn display_name(self) -> &'static str {
         match self {
-            Self::GrokNight => "groknight",
+            Self::AsterNight => "groknight",
             Self::TokyoNight => "tokyonight",
-            Self::GrokDay => "grokday",
+            Self::AsterDay => "grokday",
             Self::RosePineMoon => "rosepine-moon",
             Self::OscuraMidnight => "oscura-midnight",
             Self::Terminal => "terminal",
@@ -110,9 +110,9 @@ impl ThemeKind {
     /// TokyoNight's blue-tinted backgrounds lose their character below truecolor; neutral grays survive quantization.
     pub fn requires_truecolor(self) -> bool {
         match self {
-            Self::GrokNight => false,
+            Self::AsterNight => false,
             Self::TokyoNight => true,
-            Self::GrokDay => false,
+            Self::AsterDay => false,
             Self::RosePineMoon => true,
             Self::OscuraMidnight => true,
             // Reset plus named ANSI-16 entries only — nothing to quantize.
@@ -131,9 +131,9 @@ impl ThemeKind {
     /// Alternate lowercase spellings accepted by [`from_name`](Self::from_name), excluding [`display_name`](Self::display_name).
     pub fn aliases(self) -> &'static [&'static str] {
         match self {
-            Self::GrokNight => &["grok-night", "aster-night", "dark"],
+            Self::AsterNight => &["grok-night", "aster-night", "dark"],
             Self::TokyoNight => &["tokyo-night", "tokyo"],
-            Self::GrokDay => &["grok-day", "aster-day", "light", "day"],
+            Self::AsterDay => &["grok-day", "aster-day", "light", "day"],
             Self::RosePineMoon => &["rosepine", "rose-pine", "rose-pine-moon"],
             Self::OscuraMidnight => &["oscura"],
             Self::Terminal => &["terminal-default", "transparent", "native"],
@@ -305,14 +305,14 @@ impl Theme {
             return Self::terminal().quantized(level);
         }
         let base = match kind {
-            ThemeKind::GrokNight => Self::groknight(),
+            ThemeKind::AsterNight => Self::groknight(),
             ThemeKind::TokyoNight => Self::tokyonight(),
-            ThemeKind::GrokDay => Self::grokday(),
+            ThemeKind::AsterDay => Self::grokday(),
             ThemeKind::RosePineMoon => Self::rosepine_moon(),
             ThemeKind::OscuraMidnight => Self::oscura_midnight(),
             // Handled by the early return above.
             ThemeKind::Terminal => Self::terminal(),
-            // Auto is resolved to a concrete theme before being stored; if reached, fall back to GrokNight
+            // Auto is resolved to a concrete theme before being stored; if reached, fall back to AsterNight
             ThemeKind::Auto => Self::groknight(),
         };
         // Sample polarity before quantizing
@@ -359,7 +359,7 @@ impl Theme {
 
     fn clamp_to_terminal(kind: ThemeKind) -> ThemeKind {
         if kind.requires_truecolor() && !color_support::detect().has_truecolor() {
-            ThemeKind::GrokNight
+            ThemeKind::AsterNight
         } else {
             kind
         }
@@ -486,7 +486,7 @@ impl Theme {
         Self {
             // ── Elevated surfaces: one step off the canvas ──────────────
             // Hover/highlight/visual-selection rows need to read as a distinct "raised" band against the body
-            // Without this every GrokNight bg field quantizes to Color::Black and these become invisible
+            // Without this every AsterNight bg field quantizes to Color::Black and these become invisible
             bg_light: elevated_bg,
             bg_highlight: elevated_bg,
             bg_hover: elevated_bg,
@@ -551,7 +551,7 @@ impl Theme {
             path: yellow,
             accent_plan: yellow,
 
-            // Markdown content: naive Basic quantize lands GrokNight md_code / md_muted / h4-h6 on DarkGray (ANSI 8)
+            // Markdown content: naive Basic quantize lands AsterNight md_code / md_muted / h4-h6 on DarkGray (ANSI 8)
             // Many palettes tune that slot near the background, so inline code and table borders vanish in tmux over ssh
             // `md_muted` uses muted_fg, not dim_fg: format_table also stacks DIM on table borders
             // Graphite themes take the same chromatic roles as truecolor (Codex transcript parity); only the slot count differs.
@@ -677,7 +677,7 @@ mod tests {
             other => panic!("expected RGB, got {other:?}"),
         };
         let night = Theme::groknight();
-        let faint = night.faint().fg.expect("GrokNight blends to a hard colour");
+        let faint = night.faint().fg.expect("AsterNight blends to a hard colour");
         assert!(luma(night.bg_base) < luma(faint) && luma(faint) < luma(night.gray_dim));
 
         let terminal = Theme::terminal_default();
@@ -729,8 +729,8 @@ mod tests {
 
     #[test]
     fn is_auto_returns_false_for_concrete_variants() {
-        assert!(!ThemeKind::GrokNight.is_auto());
-        assert!(!ThemeKind::GrokDay.is_auto());
+        assert!(!ThemeKind::AsterNight.is_auto());
+        assert!(!ThemeKind::AsterDay.is_auto());
         assert!(!ThemeKind::TokyoNight.is_auto());
         assert!(!ThemeKind::RosePineMoon.is_auto());
         assert!(!ThemeKind::OscuraMidnight.is_auto());
@@ -1020,7 +1020,7 @@ mod tests {
     #[test]
     fn ansi16_overrides_canvas_matching_surfaces_use_theme_polarity() {
         // Sunken bg, code-block bg, paste chip bg, and scrollbar track must match the theme polarity (Black for dark themes, White for light)
-        // Color::Reset would defer to the user's terminal canvas, which can disagree with the theme (e.g. GrokNight on a white-canvas terminal).
+        // Color::Reset would defer to the user's terminal canvas, which can disagree with the theme (e.g. AsterNight on a white-canvas terminal).
         use ratatui::style::Color;
         let t_dark = Theme::groknight().ansi16_chrome_overrides(true);
         assert_eq!(t_dark.bg_dark, Color::Black);
@@ -1079,8 +1079,8 @@ mod tests {
         };
         for &kind in ThemeKind::ALL {
             let theme = match kind {
-                ThemeKind::GrokNight => Theme::groknight(),
-                ThemeKind::GrokDay => Theme::grokday(),
+                ThemeKind::AsterNight => Theme::groknight(),
+                ThemeKind::AsterDay => Theme::grokday(),
                 ThemeKind::TokyoNight => Theme::tokyonight(),
                 ThemeKind::RosePineMoon => Theme::rosepine_moon(),
                 ThemeKind::OscuraMidnight => Theme::oscura_midnight(),
@@ -1110,7 +1110,7 @@ mod tests {
 
     #[test]
     fn ansi16_quantize_without_override_collapses_groknight_backgrounds() {
-        // Ratchet: naive Basic maps every dark GrokNight bg to Black. If a mid-tone level appears, revisit the override.
+        // Ratchet: naive Basic maps every dark AsterNight bg to Black. If a mid-tone level appears, revisit the override.
         use ratatui::style::Color;
         let q = Theme::groknight().quantized(color_support::ColorLevel::Basic);
         for (name, color) in [
@@ -1235,20 +1235,20 @@ mod tests {
         assert_eq!(Theme::grokday().path, Color::Rgb(63, 63, 63));
         assert_eq!(
             ThemeKind::from_name("aster-night"),
-            Some(ThemeKind::GrokNight)
+            Some(ThemeKind::AsterNight)
         );
-        assert_eq!(ThemeKind::from_name("aster-day"), Some(ThemeKind::GrokDay));
+        assert_eq!(ThemeKind::from_name("aster-day"), Some(ThemeKind::AsterDay));
     }
 
     #[test]
     fn from_name_concrete_variants_still_work() {
         assert_eq!(
             ThemeKind::from_name("groknight"),
-            Some(ThemeKind::GrokNight)
+            Some(ThemeKind::AsterNight)
         );
-        assert_eq!(ThemeKind::from_name("dark"), Some(ThemeKind::GrokNight));
-        assert_eq!(ThemeKind::from_name("grokday"), Some(ThemeKind::GrokDay));
-        assert_eq!(ThemeKind::from_name("light"), Some(ThemeKind::GrokDay));
+        assert_eq!(ThemeKind::from_name("dark"), Some(ThemeKind::AsterNight));
+        assert_eq!(ThemeKind::from_name("grokday"), Some(ThemeKind::AsterDay));
+        assert_eq!(ThemeKind::from_name("light"), Some(ThemeKind::AsterDay));
         assert_eq!(
             ThemeKind::from_name("tokyonight"),
             Some(ThemeKind::TokyoNight)
@@ -1274,16 +1274,16 @@ mod tests {
         let cases = [
             ("auto", ThemeKind::Auto),
             ("system", ThemeKind::Auto),
-            ("groknight", ThemeKind::GrokNight),
-            ("grok-night", ThemeKind::GrokNight),
-            ("dark", ThemeKind::GrokNight),
+            ("groknight", ThemeKind::AsterNight),
+            ("grok-night", ThemeKind::AsterNight),
+            ("dark", ThemeKind::AsterNight),
             ("tokyonight", ThemeKind::TokyoNight),
             ("tokyo-night", ThemeKind::TokyoNight),
             ("tokyo", ThemeKind::TokyoNight),
-            ("grokday", ThemeKind::GrokDay),
-            ("grok-day", ThemeKind::GrokDay),
-            ("light", ThemeKind::GrokDay),
-            ("day", ThemeKind::GrokDay),
+            ("grokday", ThemeKind::AsterDay),
+            ("grok-day", ThemeKind::AsterDay),
+            ("light", ThemeKind::AsterDay),
+            ("day", ThemeKind::AsterDay),
             ("rosepine", ThemeKind::RosePineMoon),
             ("rose-pine", ThemeKind::RosePineMoon),
             ("rosepine-moon", ThemeKind::RosePineMoon),

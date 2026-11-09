@@ -4,7 +4,7 @@ use super::super::settings_writes::{write_dashboard_preview, write_feature_overr
 use super::*;
 use toml::Value as TomlValue;
 use toml::map::Map as TomlMap;
-/// First-run `ensure` creates a 0-byte `$GROK_HOME/config.toml`.
+/// First-run `ensure` creates a 0-byte `$ASTER_HOME/config.toml`.
 /// Empty and whitespace-only files must parse as an empty table so the first settings write is not "refusing to overwrite unparseable".
 /// Non-empty garbage still refuses.
 #[test]

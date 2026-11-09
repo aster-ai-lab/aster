@@ -13,7 +13,7 @@ const TTL_SECONDS_BEFORE_AUTO_UPDATE: Duration = Duration::from_secs(60 * 30);
 const NPM_PACKAGE: &str = "@aster-official/grok";
 pub const GH_RELEASE_REPO: &str = "aster-ai-lab/aster";
 
-/// Primary CLI base URL: Cloudflare-fronted x.ai endpoint with edge caching for binaries and origin-respecting no-cache for channel pointers.
+/// Primary CLI base URL: Cloudflare-fronted Aster endpoint with edge caching for binaries and origin-respecting no-cache for channel pointers.
 pub(crate) const CLI_BASE_URL_PRIMARY: &str = "https://github.com/aster-ai-lab/aster/cli";
 
 /// Fallback CLI base URL: direct GCS, used when the primary is unreachable (Cloudflare outage, regional CF egress issue, DNS hijack, etc.).

@@ -1,12 +1,12 @@
 # Project Rules (AGENTS.md)
 
-Project rules let you configure Grok per project or directory. By placing an AGENTS.md file in your repository, you can set coding conventions, build instructions, style guides, and any other instructions that Grok should follow when working in that codebase. Startup loading requires folder trust (`--trust` or an interactive grant).
+Project rules let you configure Aster per project or directory. By placing an AGENTS.md file in your repository, you can set coding conventions, build instructions, style guides, and any other instructions that Aster should follow when working in that codebase. Startup loading requires folder trust (`--trust` or an interactive grant).
 
 ---
 
 ## What Are Project Rules?
 
-Project rules are Markdown files that Grok reads and adds to its context. Grok follows their content for every interaction in that tree.
+Project rules are Markdown files that Aster reads and adds to its context. Aster follows their content for every interaction in that tree.
 
 This is the primary mechanism for teaching Aster Code about your project's conventions, so you need not restate them each session.
 
@@ -14,7 +14,7 @@ This is the primary mechanism for teaching Aster Code about your project's conve
 
 ## Supported File Names
 
-Grok checks for these filenames (in this order) within each directory:
+Aster checks for these filenames (in this order) within each directory:
 
 - `Agents.md`
 - `Claude.md`
@@ -23,23 +23,23 @@ Grok checks for these filenames (in this order) within each directory:
 - `AGENT.md`
 - `AGENTS.md`
 
-Grok loads every matching file in a directory, so a folder that contains both `AGENTS.md` and `CLAUDE.md` contributes both. On case-insensitive filesystems, names that resolve to the same file (such as `Agents.md` and `AGENTS.md`) are deduplicated and counted once. `Claude.md`, `CLAUDE.md`, and `CLAUDE.local.md` are supported for compatibility with Claude Code workflows. When Claude compatibility is enabled (the default), Grok also scans your home-level `~/.claude/` directory for these filenames and, at each directory level, checks `.claude/CLAUDE.md` and `.claude/CLAUDE.local.md` -- the locations Claude Code uses for project memory. With Cursor compatibility enabled, the home-level `~/.cursor/` directory is scanned the same way.
+Aster loads every matching file in a directory, so a folder that contains both `AGENTS.md` and `CLAUDE.md` contributes both. On case-insensitive filesystems, names that resolve to the same file (such as `Agents.md` and `AGENTS.md`) are deduplicated and counted once. `Claude.md`, `CLAUDE.md`, and `CLAUDE.local.md` are supported for compatibility with Claude Code workflows. When Claude compatibility is enabled (the default), Aster also scans your home-level `~/.claude/` directory for these filenames and, at each directory level, checks `.claude/CLAUDE.md` and `.claude/CLAUDE.local.md` -- the locations Claude Code uses for project memory. With Cursor compatibility enabled, the home-level `~/.cursor/` directory is scanned the same way.
 
 ### Rules Directories
 
-In addition to AGENTS.md files, Grok scans for `*.md` files in rules directories at each level (`<dir>`) from the repo root to the current working directory:
+In addition to AGENTS.md files, Aster scans for `*.md` files in rules directories at each level (`<dir>`) from the repo root to the current working directory:
 
 | Location | Notes |
 |----------|-------|
-| `<dir>/.grok/rules/` | Always scanned |
+| `<dir>/.aster/rules/` | Always scanned |
 | `<dir>/.claude/rules/` | Claude compatibility (configurable) |
 | `<dir>/.cursor/rules/` | Cursor compatibility (configurable) |
 
-Grok also scans home-level rules, regardless of where it starts. These roots are already vendor-specific, so rules live directly under `rules/`:
+Aster also scans home-level rules, regardless of where it starts. These roots are already vendor-specific, so rules live directly under `rules/`:
 
 | Location | Notes |
 |----------|-------|
-| `$GROK_HOME/rules/` (default `~/.grok/rules/`) | Always scanned; applies to all projects |
+| `$GROK_HOME/rules/` (default `~/.aster/rules/`) | Always scanned; applies to all projects |
 | `~/.claude/rules/` | Controlled by `compat.claude.rules` |
 | `~/.cursor/rules/` | Controlled by `compat.cursor.rules` |
 | Each entry of `[paths] extra_rule_dirs` | Any absolute directory you list in `config.toml`; `~` is expanded |
@@ -48,16 +48,16 @@ Home rules load first, in the table order, followed by project files from repo r
 
 ```toml
 [paths]
-extra_rule_dirs = ["~/team-rules", "/opt/company/grok-rules"]
+extra_rule_dirs = ["~/team-rules", "/opt/company/aster-rules"]
 ```
 
-Every `*.md` directly inside a listed directory is loaded as a rule (subdirectories are not scanned), in every project and regardless of folder trust, the repository's `.gitignore`, or the compatibility cells; the model receives them as user rules and `grok inspect` lists them as `global`. Entries must be absolute or start with `~/`; a relative or missing entry loads nothing. `/import-claude` writes your existing `~/.claude/rules/` here so it keeps loading after the Claude compatibility scan is turned off. The vendor `rules` cells control both home and project rules independently of the corresponding `agents` cells. Claude's `agents` cell controls named files under `~/.claude/` and project `<dir>/.claude/CLAUDE*.md`; generic top-level names such as `Claude.md`, `CLAUDE.md`, and `CLAUDE.local.md` remain recognized. See [Configuration](05-configuration.md#harness-compatibility).
+Every `*.md` directly inside a listed directory is loaded as a rule (subdirectories are not scanned), in every project and regardless of folder trust, the repository's `.gitignore`, or the compatibility cells; the model receives them as user rules and `aster inspect` lists them as `global`. Entries must be absolute or start with `~/`; a relative or missing entry loads nothing. `/import-claude` writes your existing `~/.claude/rules/` here so it keeps loading after the Claude compatibility scan is turned off. The vendor `rules` cells control both home and project rules independently of the corresponding `agents` cells. Claude's `agents` cell controls named files under `~/.claude/` and project `<dir>/.claude/CLAUDE*.md`; generic top-level names such as `Claude.md`, `CLAUDE.md`, and `CLAUDE.local.md` remain recognized. See [Configuration](05-configuration.md#harness-compatibility).
 
 ---
 
 ## How Discovery Works
 
-Grok scans for project rules in this order:
+Aster scans for project rules in this order:
 
 1. **Home rules**: `$GROK_HOME`, then enabled `~/.claude/` and `~/.cursor/` sources, then `[paths] extra_rule_dirs`
 2. **Repo rules**: If inside a git repo, every directory from the repo root down to the current working directory (inclusive)
@@ -76,7 +76,7 @@ Given this project structure:
       AGENTS.md          # "Use CSS modules for styling."
 ```
 
-When Grok runs in `~/projects/my-app/src/components/`, it loads all three files. The instructions accumulate, so Grok sees all of them.
+When Aster runs in `~/projects/my-app/src/components/`, it loads all three files. The instructions accumulate, so Aster sees all of them.
 
 ### Deeper Files Take Precedence
 
@@ -84,8 +84,8 @@ Aster Code orders the files from the repo root to the current working directory,
 
 ### Auto-Loading Behavior
 
-- Grok loads the files from the repo root to the current working directory automatically at session start.
-- When Grok reads, lists, or edits files in directories outside that initial set, it detects any project instruction files there, notes their paths, and reads them when they apply to the task.
+- Aster loads the files from the repo root to the current working directory automatically at session start.
+- When Aster reads, lists, or edits files in directories outside that initial set, it detects any project instruction files there, notes their paths, and reads them when they apply to the task.
 
 ---
 
@@ -171,18 +171,18 @@ my-monorepo/
 To add rules for a single session without editing files, pass `--rules` (alias `--append-system-prompt`):
 
 ```bash
-grok --rules "Always use TypeScript. Prefer functional components."
+aster --rules "Always use TypeScript. Prefer functional components."
 ```
 
 Aster Code appends this text to the session's system prompt. Use it for session-specific customization.
 
-To replace the system prompt entirely, pass `--system-prompt-override` (alias `--system-prompt`). Grok uses the text verbatim and skips both the default system prompt and `--rules`. (Text passed with `--rules`, by contrast, is wrapped in a `<human_rules>` block and appended to the default prompt.)
+To replace the system prompt entirely, pass `--system-prompt-override` (alias `--system-prompt`). Aster uses the text verbatim and skips both the default system prompt and `--rules`. (Text passed with `--rules`, by contrast, is wrapped in a `<human_rules>` block and appended to the default prompt.)
 
 ---
 
 ## File Size
 
-Grok loads each project instruction file in full; there is no character cap and no truncation. Even so, keep instructions concise and focused. Shorter, specific rules are easier for Grok to follow than long ones, and every file you load consumes context.
+Aster loads each project instruction file in full; there is no character cap and no truncation. Even so, keep instructions concise and focused. Shorter, specific rules are easier for Aster to follow than long ones, and every file you load consumes context.
 
 ---
 
@@ -195,22 +195,22 @@ Files ignored by `.gitignore` are skipped during discovery. To keep personal ove
 CLAUDE.local.md
 ```
 
-As top-level instruction files, Grok discovers only the recognized filenames listed under [Supported File Names](#supported-file-names) — not custom names such as `AGENTS.local.md` or `notes.md`. (Inside a rules directory such as `.grok/rules/`, every `*.md` file is loaded regardless of name.)
+As top-level instruction files, Aster discovers only the recognized filenames listed under [Supported File Names](#supported-file-names) — not custom names such as `AGENTS.local.md` or `notes.md`. (Inside a rules directory such as `.aster/rules/`, every `*.md` file is loaded regardless of name.)
 
 ---
 
 ## The .aster/ Project Directory
 
-Beyond AGENTS.md files, the `.grok/` directory in your project root can contain additional project-level configuration:
+Beyond AGENTS.md files, the `.aster/` directory in your project root can contain additional project-level configuration:
 
 | Path | Purpose |
 |------|---------|
-| `.grok/config.toml` | Project-scoped MCP servers, plugins, and permission rules (other settings load only from `~/.grok/config.toml`) |
-| `.grok/skills/` | Project-scoped skill definitions |
-| `.grok/plugins/` | Project-scoped plugins |
-| `.grok/agents/` | Project-scoped agent definitions |
-| `.grok/hooks/` | Project-scoped lifecycle hooks |
-| `.grok/lsp.json` | LSP server configuration |
+| `.aster/config.toml` | Project-scoped MCP servers, plugins, and permission rules (other settings load only from `~/.aster/config.toml`) |
+| `.aster/skills/` | Project-scoped skill definitions |
+| `.aster/plugins/` | Project-scoped plugins |
+| `.aster/agents/` | Project-scoped agent definitions |
+| `.aster/hooks/` | Project-scoped lifecycle hooks |
+| `.aster/lsp.json` | LSP server configuration |
 
 These are all optional. See the respective guides for details on each.
 
@@ -218,13 +218,13 @@ These are all optional. See the respective guides for details on each.
 
 ## Inspecting Loaded Rules
 
-Use `grok inspect` to see all loaded project instructions:
+Use `aster inspect` to see all loaded project instructions:
 
 ```bash
-grok inspect
+aster inspect
 ```
 
-This shows each project instruction file it finds, with its path and approximate token count. Use it to confirm Grok picks up your rules.
+This shows each project instruction file it finds, with its path and approximate token count. Use it to confirm Aster picks up your rules.
 
 ---
 
@@ -238,7 +238,7 @@ This shows each project instruction file it finds, with its path and approximate
 
 4. **Use subdirectory scoping for large repos.** Different parts of a monorepo may have different conventions. Use per-directory AGENTS.md to scope rules appropriately.
 
-5. **Version control your rules.** Commit AGENTS.md to the repository so the whole team benefits. User-specific overrides belong in `~/.grok/` (global rules).
+5. **Version control your rules.** Commit AGENTS.md to the repository so the whole team benefits. User-specific overrides belong in `~/.aster/` (global rules).
 
 6. **Do not duplicate documentation.** AGENTS.md should contain actionable instructions, not a copy of your project's README. Link to external docs if needed.
 

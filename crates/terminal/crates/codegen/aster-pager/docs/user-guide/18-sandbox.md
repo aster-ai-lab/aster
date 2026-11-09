@@ -10,13 +10,13 @@ Sandbox mode is off by default.
 
 ```bash
 # Run with workspace sandbox (read everywhere, write to CWD + temp dirs + ~/.aster/)
-grok --sandbox workspace
+aster --sandbox workspace
 
 # Read-only mode (read everywhere, write only to ~/.aster/ + temp dirs)
-grok --sandbox read-only
+aster --sandbox read-only
 
 # Most restrictive profile (read CWD + system paths + ~/.aster, write CWD + ~/.aster/sessions + temp dirs, no child network)
-grok --sandbox strict
+aster --sandbox strict
 ```
 
 ---
@@ -26,10 +26,10 @@ grok --sandbox strict
 | Profile               | FS Read                        | FS Write                                       | Child Network | Use Case                          |
 | --------------------- | ------------------------------ | ---------------------------------------------- | ------------- | --------------------------------- |
 | `off` (default)       | Unrestricted                   | Unrestricted                                   | Unrestricted  | No sandbox                        |
-| `workspace`           | Everywhere                     | CWD + `~/.grok/` + `/tmp` + `/var/tmp`         | Allowed       | Normal development                |
+| `workspace`           | Everywhere                     | CWD + `~/.aster/` + `/tmp` + `/var/tmp`         | Allowed       | Normal development                |
 | `devbox`              | Everywhere                     | All top-level dirs except `/data`              | Allowed       | Disposable dev VMs                |
-| `read-only`           | Everywhere                     | `~/.grok/` + `/tmp` + `/var/tmp`               | Blocked¹      | Exploration, code review          |
-| `strict`              | CWD + system paths + `~/.grok` | CWD + `~/.grok/sessions` + `/tmp` + `/var/tmp` | Blocked¹      | Untrusted code                    |
+| `read-only`           | Everywhere                     | `~/.aster/` + `/tmp` + `/var/tmp`               | Blocked¹      | Exploration, code review          |
+| `strict`              | CWD + system paths + `~/.aster` | CWD + `~/.aster/sessions` + `/tmp` + `/var/tmp` | Blocked¹      | Untrusted code                    |
 
 ¹ Child-network blocking is enforced on **Linux only** (via seccomp). On macOS it is a no-op — these profiles do not restrict child-process network there.
 
@@ -37,26 +37,26 @@ To block specific files (e.g. `.env` or credential paths) on top of a profile, d
 
 ### Profile Details
 
-**workspace** -- The recommended profile for everyday development. The agent can read any file on the system (for understanding dependencies, system libraries, etc.) but can only write to the current working directory, `~/.grok/`, and temp directories (`/tmp`, `/var/tmp`, plus the macOS temp dirs). Network access is allowed for tools like `web_search` and MCP servers.
+**workspace** -- The recommended profile for everyday development. The agent can read any file on the system (for understanding dependencies, system libraries, etc.) but can only write to the current working directory, `~/.aster/`, and temp directories (`/tmp`, `/var/tmp`, plus the macOS temp dirs). Network access is allowed for tools like `web_search` and MCP servers.
 
 **devbox** -- A reserved built-in profile for disposable development VMs. The agent can read everywhere and write to every top-level directory except `/data` and the virtual filesystems (`/proc`, `/sys`, `/dev`), including the home directory. Network access is allowed. `--sandbox devbox` runs the built-in profile, which shadows any `[profiles.devbox]` you define in `sandbox.toml`.
 
-**read-only** -- Use when you want the agent to analyze code without modifying your project files. The agent can read everything but can only write to `~/.grok/` (needed for session persistence) and temp directories. Child-process network access is blocked on Linux (no-op on macOS).
+**read-only** -- Use when you want the agent to analyze code without modifying your project files. The agent can read everything but can only write to `~/.aster/` (needed for session persistence) and temp directories. Child-process network access is blocked on Linux (no-op on macOS).
 
-**strict** -- The most restrictive profile, for reviewing untrusted code. The agent can read the current working directory, essential system paths, and `~/.grok`. Writes are limited to CWD, `~/.grok/sessions`, and temp directories — not the whole `~/.grok` tree. Child-process network access is blocked on Linux (no-op on macOS).
+**strict** -- The most restrictive profile, for reviewing untrusted code. The agent can read the current working directory, essential system paths, and `~/.aster`. Writes are limited to CWD, `~/.aster/sessions`, and temp directories — not the whole `~/.aster` tree. Child-process network access is blocked on Linux (no-op on macOS).
 
 ### Direct global write protection
 
-Under `workspace`, `read-only`, and `strict` (and custom profiles that extend those bases), the kernel **write-denies** the Grok-owned direct disk paths used as user-global hook sources, plus its configuration and trust files (they stay readable when granted). Built-in `strict` can read `~/.grok` (they stay readable); writes are CWD + `~/.grok/sessions` + temp, not the whole tree. Write-deny still applies where the profile grants write:
+Under `workspace`, `read-only`, and `strict` (and custom profiles that extend those bases), the kernel **write-denies** the Grok-owned direct disk paths used as user-global hook sources, plus its configuration and trust files (they stay readable when granted). Built-in `strict` can read `~/.aster` (they stay readable); writes are CWD + `~/.aster/sessions` + temp, not the whole tree. Write-deny still applies where the profile grants write:
 
-- `~/.grok/hooks/` (hook directory)
-- `~/.grok/hooks-paths` (registry file; not loaded as hook JSON — only its absolute targets are)
+- `~/.aster/hooks/` (hook directory)
+- `~/.aster/hooks-paths` (registry file; not loaded as hook JSON — only its absolute targets are)
 - Absolute targets listed in `hooks-paths` (relative lines are ignored; missing targets refuse sandbox start)
-- `~/.grok/config.toml`, `~/.grok/trusted_folders.toml`, `~/.grok/managed_config.toml`, `~/.grok/requirements.toml`, `~/.grok/sandbox.toml` (settings, folder trust, managed policy, requirements, and sandbox profiles)
+- `~/.aster/config.toml`, `~/.aster/trusted_folders.toml`, `~/.aster/managed_config.toml`, `~/.aster/requirements.toml`, `~/.aster/sandbox.toml` (settings, folder trust, managed policy, requirements, and sandbox profiles)
 
-Because these files are read-only under these profiles, a change that would be saved to them applies to the current session only. Accepting a folder-trust prompt, switching the model with `/model`, and changing the permission mode (`/auto` or Shift+Tab) take effect for the session but are not saved. To save folder trust, run `grok --trust` in the directory before starting the sandbox. To change the default model or permission mode, edit `~/.grok/config.toml` directly.
+Because these files are read-only under these profiles, a change that would be saved to them applies to the current session only. Accepting a folder-trust prompt, switching the model with `/model`, and changing the permission mode (`/auto` or Shift+Tab) take effect for the session but are not saved. To save folder trust, run `aster --trust` in the directory before starting the sandbox. To change the default model or permission mode, edit `~/.aster/config.toml` directly.
 
-On first launch under these profiles, Grok creates a real empty `hooks/` directory and empty `hooks-paths` file when they are missing (never symlinks or wrong types). Claude/Cursor global settings are **not** covered by this write-deny; discovery of those vendors remains separately gated by compatibility settings.
+On first launch under these profiles, Aster creates a real empty `hooks/` directory and empty `hooks-paths` file when they are missing (never symlinks or wrong types). Claude/Cursor global settings are **not** covered by this write-deny; discovery of those vendors remains separately gated by compatibility settings.
 
 A symlinked `$GROK_HOME` or a `hooks-paths` entry with a symlink component is refused at sandbox start (prevents retargeting). Existing parent directories of protected paths are pinned so they cannot be renamed out from under the deny (siblings remain writable). On Linux, nested user namespaces are disabled inside bubblewrap so mount binds cannot be rearranged. Project hooks remain gated by folder trust. The `devbox` profile does not apply this protection (disposable VMs). Profiles that require it refuse to start if the kernel policy cannot be applied (including Linux without verified read-only mounts).
 
@@ -64,7 +64,7 @@ A symlinked `$GROK_HOME` or a `hooks-paths` entry with a symlink component is re
 
 ## Custom Profiles
 
-Create custom sandbox profiles in `~/.grok/sandbox.toml` (global) or `.grok/sandbox.toml` (per-project):
+Create custom sandbox profiles in `~/.aster/sandbox.toml` (global) or `.aster/sandbox.toml` (per-project):
 
 ```toml
 [profiles.project]
@@ -85,12 +85,12 @@ deny = ["/data/shared-secrets", "**/.env", "**/*.pem"]
 Use the custom profile:
 
 ```bash
-grok --sandbox project
+aster --sandbox project
 ```
 
 A custom profile can't reuse a built-in name. `--sandbox devbox` always runs the built-in `devbox` profile, shadowing any `[profiles.devbox]` you define.
 
-If the user and project files define the same custom profile differently, Grok uses the user profile and shows a startup warning. Run `/doctor` to see both file locations and how to resolve the conflict. Identical definitions do not produce a warning.
+If the user and project files define the same custom profile differently, Aster uses the user profile and shows a startup warning. Run `/doctor` to see both file locations and how to resolve the conflict. Identical definitions do not produce a warning.
 
 ### Custom Profile Fields
 
@@ -139,7 +139,7 @@ If the user and project files define the same custom profile differently, Grok u
 > forms `[]…]` (literal `]` first) and POSIX `[[:…:]]` are **not** supported,
 > so the two platforms
 > can never interpret a glob differently. A glob using an unsupported
-> metacharacter, or one that is malformed, makes Grok **refuse to start** (fail
+> metacharacter, or one that is malformed, makes Aster **refuse to start** (fail
 > closed) on **both** platforms — write `*.pem` and `*.key` as separate entries
 > rather than `*.{pem,key}`.
 >
@@ -150,13 +150,13 @@ If the user and project files define the same custom profile differently, Grok u
 > differs by platform:
 >
 > - **macOS is airtight:** each glob becomes a Seatbelt regex applied at runtime,
->   so matching files are denied **even if created after Grok starts**.
+>   so matching files are denied **even if created after Aster starts**.
 > - **Linux is best-effort:** a mount namespace can't glob at runtime, so each
 >   glob is expanded to the files that **exist at launch** and those are bound
 >   over. Files created **later** that match a glob are **not** covered — name
 >   exact paths for anything that must be airtight on Linux. A matched symlink
 >   is masked together with its resolved target. A glob that matches too many
->   files, or whose tree is too deep or broad to scan, makes Grok **refuse to
+>   files, or whose tree is too deep or broad to scan, makes Aster **refuse to
 >   start** rather than under-enforce; the error names the globs and the
 >   directory where the scan stopped. The launch scan starts at each glob's
 >   literal prefix and includes gitignored and hidden files, so on very large
@@ -167,7 +167,7 @@ If the user and project files define the same custom profile differently, Grok u
 
 ## How It Works
 
-The sandbox is applied to the **entire grok process** at startup using kernel primitives -- not per-command wrapping. This means all tool operations are covered:
+The sandbox is applied to the **entire aster process** at startup using kernel primitives -- not per-command wrapping. This means all tool operations are covered:
 
 - `read_file`, `search_replace`, `list_dir` -- restricted by Landlock/Seatbelt in-process
 - `bash` commands, `grep` (rg) -- child processes inherit FS restrictions automatically
@@ -176,8 +176,8 @@ The sandbox is applied to the **entire grok process** at startup using kernel pr
 When a non-`off` sandbox profile is **requested** (CLI, `GROK_SANDBOX`, config, or a managed requirement):
 
 - The agent runs **in-process**, not through the shared leader, so tool calls stay in this process when the profile is enforced. If leader mode would otherwise have been on, a one-line note at startup says so
-- If a built-in profile fails to apply, Grok warns and continues without enforcement (see [Platform Support](#platform-support)), but still refuses the leader so tools are not delegated elsewhere
-- `grok workspace start`, `restart`, and `resume` are unavailable; `pause`, `stop`, and `status` still work
+- If a built-in profile fails to apply, Aster warns and continues without enforcement (see [Platform Support](#platform-support)), but still refuses the leader so tools are not delegated elsewhere
+- `aster workspace start`, `restart`, and `resume` are unavailable; `pause`, `stop`, and `status` still work
 
 Disable the profile at the source that selected it to use the refused commands.
 
@@ -188,8 +188,8 @@ The sandbox is **irreversible** once applied. The agent cannot relax restriction
 ## Resuming Sessions
 
 The profile a session was started with is saved with the session and is **fixed
-for the life of the session**. When you resume it (`grok --resume <id>`,
-`grok --continue`, or `grok -r`), Grok restores that same profile automatically —
+for the life of the session**. When you resume it (`aster --resume <id>`,
+`aster --continue`, or `aster -r`), Aster restores that same profile automatically —
 so a session started with `--sandbox workspace` won't silently come back under a
 stricter default and break commands that previously worked.
 
@@ -218,7 +218,7 @@ Profile resolution order for a **new** session:
 | Linux    | Landlock  | Kernel 5.13 or later   |
 | macOS    | Seatbelt  | macOS (all versions)   |
 
-If the sandbox cannot be applied (e.g., unsupported kernel, missing entitlements), Grok logs a warning and continues without enforcement. The exception is an explicitly-requested **custom profile**: on **both macOS and Linux**, if it cannot be applied (unknown profile, malformed `sandbox.toml`, or — on Linux — `bubblewrap` unavailable for a non-empty `deny`), Grok refuses to start rather than run with its denied paths exposed.
+If the sandbox cannot be applied (e.g., unsupported kernel, missing entitlements), Aster logs a warning and continues without enforcement. The exception is an explicitly-requested **custom profile**: on **both macOS and Linux**, if it cannot be applied (unknown profile, malformed `sandbox.toml`, or — on Linux — `bubblewrap` unavailable for a non-empty `deny`), Aster refuses to start rather than run with its denied paths exposed.
 
 ---
 
@@ -246,7 +246,7 @@ include_only = ["PATH", "HOME"]  # if set, keep only these names
 set = { MY_FLAG = "1" }          # force these values
 ```
 
-Grok builds the child environment in order: it starts from `inherit` (`all` keeps everything, `core` keeps a small platform set such as `PATH` and `HOME`, `none` starts empty); drops the built-in secret patterns `*KEY*`, `*SECRET*`, and `*TOKEN*` unless `ignore_default_excludes = true`; drops any `exclude` matches; applies `set`; and, when `include_only` is non-empty, keeps only the matching names. Patterns are case-insensitive globs (`*`, `?`).
+Aster builds the child environment in order: it starts from `inherit` (`all` keeps everything, `core` keeps a small platform set such as `PATH` and `HOME`, `none` starts empty); drops the built-in secret patterns `*KEY*`, `*SECRET*`, and `*TOKEN*` unless `ignore_default_excludes = true`; drops any `exclude` matches; applies `set`; and, when `include_only` is non-empty, keeps only the matching names. Patterns are case-insensitive globs (`*`, `?`).
 
 The default (`inherit = "all"`, `ignore_default_excludes = true`) leaves the environment untouched, so nothing changes until you configure a policy. On the non-persistent backend the policy also filters variables captured from your login shell, so an `.rc` file export cannot slip a secret past `exclude` or `include_only`. The persistent shell is one exception: it applies the policy to its base environment, but variables that an `.rc` file exports during login are replayed from a snapshot and are not re-filtered, so keep secrets out of shell startup files there. Enforcement covers the bash tool and terminals on macOS, Linux, and Windows.
 
@@ -254,7 +254,7 @@ The default (`inherit = "all"`, `ignore_default_excludes = true`) leaves the env
 
 ## Event Logging
 
-Sandbox events are logged to `~/.grok/sessions` for debugging. Events include:
+Sandbox events are logged to `~/.aster/sessions` for debugging. Events include:
 
 - Profile applied (which profile, timestamp)
 - Violations (attempted access to denied paths)

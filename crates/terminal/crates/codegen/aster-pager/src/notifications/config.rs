@@ -78,7 +78,7 @@ impl Default for TitleConfig {
                 TitleItem::Spinner,
                 TitleItem::Activity,
                 TitleItem::SessionName,
-                TitleItem::Grok,
+                TitleItem::Aster,
             ],
         }
     }
@@ -93,7 +93,8 @@ pub enum TitleItem {
     Cwd,
     Model,
     TurnTimer,
-    Grok,
+    #[serde(alias = "grok")]
+    Aster,
     ActionRequired,
 }
 
@@ -200,7 +201,7 @@ mod tests {
             session_recap_threshold_secs: 90,
             title: TitleConfig {
                 enabled: false,
-                items: vec![TitleItem::Grok, TitleItem::Cwd],
+                items: vec![TitleItem::Aster, TitleItem::Cwd],
             },
             hooks: vec![NotificationHook {
                 command: "notify-send".into(),

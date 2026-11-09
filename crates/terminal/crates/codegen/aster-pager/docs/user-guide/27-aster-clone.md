@@ -1,15 +1,15 @@
 # aster clone
 
-`grok clone` fetches a Git repository into a Grove content store and mounts a
+`aster clone` fetches a Git repository into a Grove content store and mounts a
 projected working tree (NFS on macOS, FUSE on Linux). Each invocation reads
-`GROK_CLONE` / `GROVE_CLONE` in this process, then grok enable-all
-(`GROK_GROVE` or `[cli] grove` in `~/.grok/config.toml`), then `[clone] enabled`
+`GROK_CLONE` / `GROVE_CLONE` in this process, then aster enable-all
+(`GROK_GROVE` or `[cli] grove` in `~/.aster/config.toml`), then `[clone] enabled`
 authorize Clone IPC.
 
 This does **not** enable Grove for session / `-w` worktrees. Those use a
 separate gate (`GROK_WORKTREE_TYPE` and `[cli] grove_worktree` in
-`~/.grok/config.toml`; see [Configuration reference](26-config-reference.md)).
-`GROK_WORKTREE_TYPE` and `[cli] grove_worktree` do **not** enable `grok clone`.
+`~/.aster/config.toml`; see [Configuration reference](26-config-reference.md)).
+`GROK_WORKTREE_TYPE` and `[cli] grove_worktree` do **not** enable `aster clone`.
 `GROK_CLONE` / `GROVE_CLONE` / `[clone] enabled` do **not** enable session /
 `-w` Grove.
 
@@ -23,11 +23,11 @@ export GROK_GROVE=1
 ```
 
 Specific knobs still win: `GROK_WORKTREE_TYPE=copy` keeps session worktrees on
-copy while clone can stay on; `GROK_CLONE=0` keeps `grok clone` off while
+copy while clone can stay on; `GROK_CLONE=0` keeps `aster clone` off while
 worktrees can stay on.
 
 ```bash
-grok clone <url> [dir] [--branch NAME] [--full-history]
+aster clone <url> [dir] [--branch NAME] [--full-history]
 ```
 
 ## History
@@ -70,12 +70,12 @@ The two are separate worlds:
 
 | World | Covers | Commands | Store |
 |-------|--------|----------|-------|
-| Grok | the model and API | `grok login`, `grok logout` | `~/.grok/auth.json` |
+| Aster | the model and API | `aster login`, `aster logout` | `~/.aster/auth.json` |
 
-`grok clone` never reads `~/.grok/auth.json` for Git. Signing into Grok does not
+`aster clone` never reads `~/.aster/auth.json` for Git. Signing into Aster does not
 give the daemon a credential for the remote, and neither does
 `[clone] enabled = true`: that flag is a **product gate** deciding whether
-`grok clone` runs at all, not authorization for GitHub.
+`aster clone` runs at all, not authorization for GitHub.
 
 When Grove classifies a failure as a credential problem, the clone prints the
 class and the commands that own it, without the remote URL:
@@ -126,10 +126,10 @@ carrier token, configure `git credential` or `gh auth` first, then reload.
 
 ## Daemon
 
-`grok` does not take the daemon or its mounts down) and waits for the socket.
+`aster` does not take the daemon or its mounts down) and waits for the socket.
 
 The `grove` binary is resolved from `PATH`, then from the directory of the
-`grok` executable (for example `~/.grok/bin/grove` next to `grok`). There is
+`aster` executable (for example `~/.aster/bin/grove` next to `aster`). There is
 no separate install location. macOS has no PATH package for grove; build it
 from the monorepo:
 

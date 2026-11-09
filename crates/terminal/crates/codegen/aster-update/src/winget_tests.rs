@@ -42,9 +42,9 @@ fn non_utf8_path_still_matches() {
 fn pinned_hand_off_forces_install_and_notes_ignored_channel() {
     let expected = "Aster Code was installed with WinGet, so WinGet manages its updates.\n\
         WinGet ships only the stable channel, so the alpha channel does not apply to this install.\n\
-        Quit all running Grok sessions (`grok leader kill` stops a background leader), then run:\n  \
+        Quit all running Aster sessions (`aster leader kill` stops a background leader), then run:\n  \
         winget install --id Aster.GrokBuild -e --version 1.0.40 --force\n\
-        Use an administrator terminal if WinGet installed Grok for all users.\n\
+        Use an administrator terminal if WinGet installed Aster for all users.\n\
         New releases can take a few days to reach WinGet. \
         If WinGet does not list the version yet, try again later.\n";
     assert_eq!(expected, hand_off_message(Target::Exact("1.0.40"), "alpha"));

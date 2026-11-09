@@ -20,8 +20,8 @@ pub const RATE_LIMITED_USER_MESSAGE_OAUTH: &str =
 
 /// API key / team rate-limit copy.
 /// Personal aster upgrades do not raise API team limits; admins purchase credits or a higher spend-based tier.
-/// See https://docs.x.ai/developers/rate-limits#rate-limit-tiers
-pub const RATE_LIMITED_USER_MESSAGE_API_KEY: &str = "You\u{2019}ve hit your team\u{2019}s API rate limit. Ask a team admin to purchase more credits for higher limits, or try again later. See https://docs.x.ai/developers/rate-limits#rate-limit-tiers";
+/// See your Aster API plan documentation for rate-limit tiers
+pub const RATE_LIMITED_USER_MESSAGE_API_KEY: &str = "You\u{2019}ve hit your team\u{2019}s API rate limit. Ask a team admin to purchase more credits for higher limits, or try again later.";
 
 /// Well-known free-usage exhaustion code CCP returns on HTTP 429.
 /// Matches `prod_util_well_known_errors::SUBSCRIPTION_FREE_USAGE_EXHAUSTED`.
@@ -81,7 +81,10 @@ fn strip_sampling_api_error_prefix(detail: &str) -> &str {
 /// That is wrong for API-key / team auth: higher limits come from credits and spend-based rate-limit tiers, not a personal Aster Code plan.
 fn pushes_consumer_subscription_upsell(detail: &str) -> bool {
     let d = detail.to_ascii_lowercase();
-    d.contains("aster/supergrok") || d.contains("upgrade to a grok subscription")
+    d.contains("aster/supergrok")
+        || d.contains("upgrade to a grok subscription")
+        || d.contains("upgrade to an aster code subscription")
+        || d.contains("upgrade to an aster subscription")
 }
 
 /// User-facing copy for capacity/overload failures (stream `overloaded_error`, HTTP 529, proxy-wrapped 5xx).
@@ -126,7 +129,7 @@ pub(crate) fn map_sampling_err_to_acp(err: SamplingError) -> acp::Error {
                     format!(
                         "{message}\n\nYou have an API key set (ASTER_API_KEY). \
                          Your cached OAuth session is being used instead. \
-                         To use your API key, run `grok logout` or type /logout in the TUI."
+                         To use your API key, run `aster logout` or type /logout in the TUI."
                     )
                 } else {
                     message
@@ -544,7 +547,7 @@ mod tests {
         assert!(RATE_LIMITED_USER_MESSAGE_API_KEY.contains("credits"));
         assert!(
             RATE_LIMITED_USER_MESSAGE_API_KEY
-                .contains("https://docs.x.ai/developers/rate-limits#rate-limit-tiers")
+                .contains("rate limit")
         );
         assert!(!RATE_LIMITED_USER_MESSAGE_API_KEY.contains("Upgrade your account"));
     }

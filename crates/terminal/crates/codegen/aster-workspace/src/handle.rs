@@ -4510,7 +4510,7 @@ pub(crate) async fn build_local_workspace(
     let _maintenance = crate::file_system::client_fs::spawn_staged_upload_maintenance(&ws_handle);
     Ok(ws_handle)
 }
-/// Resolve `$GROK_WORKSPACE_HOME`, the workspace-owned on-disk state root. `<grok_home>/workspace`, where `<grok_home>` honours `$GROK_HOME` and otherwise falls back to `~/.aster` (see [`aster_config::grok_home`]).
+/// Resolve `$GROK_WORKSPACE_HOME`, the workspace-owned on-disk state root. `<grok_home>/workspace`, where `<grok_home>` honours `$ASTER_HOME` and otherwise falls back to `~/.aster` (see [`aster_config::grok_home`]).
 pub fn resolve_workspace_home() -> std::path::PathBuf {
     if let Ok(p) = std::env::var("GROK_WORKSPACE_HOME")
         && !p.trim().is_empty()

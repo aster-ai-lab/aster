@@ -1,6 +1,6 @@
 # Authentication
 
-Grok supports several authentication methods, including interactive browser login, enterprise single sign-on (SSO), and headless CI/CD runners.
+Aster supports several authentication methods, including interactive browser login, enterprise single sign-on (SSO), and headless CI/CD runners.
 
 ---
 
@@ -9,14 +9,14 @@ Grok supports several authentication methods, including interactive browser logi
 On first launch, Aster Code opens your browser to authenticate with aster:
 
 ```bash
-grok
+aster
 ```
 
-Aster Code stores credentials in `~/.grok/auth.json` and reuses them across sessions. Aster Code refreshes access tokens automatically in the background. When a token can't be refreshed, Aster Code prompts you to sign in again. Credentials without a server-provided expiry fall back to a 30-day lifetime.
+Aster Code stores credentials in `~/.aster/auth.json` and reuses them across sessions. Aster Code refreshes access tokens automatically in the background. When a token can't be refreshed, Aster Code prompts you to sign in again. Credentials without a server-provided expiry fall back to a 30-day lifetime.
 
 ### Credential storage
 
-Tokens in `~/.grok/auth.json` (and MCP OAuth tokens in `~/.grok/mcp_credentials.json`) are written with owner-only permissions (`0600` on Unix). Anyone with filesystem access to those paths can use the credentials, so:
+Tokens in `~/.aster/auth.json` (and MCP OAuth tokens in `~/.aster/mcp_credentials.json`) are written with owner-only permissions (`0600` on Unix). Anyone with filesystem access to those paths can use the credentials, so:
 
 - Prefer full-disk encryption (FileVault, BitLocker, LUKS, or equivalent).
 - Do not copy `auth.json` or `mcp_credentials.json` into shared directories, tickets, or chat.
@@ -27,17 +27,17 @@ Tokens in `~/.grok/auth.json` (and MCP OAuth tokens in `~/.grok/mcp_credentials.
 To switch accounts or resolve an authentication problem, run:
 
 ```bash
-grok login
+aster login
 ```
 
-Running `grok login` starts the sign-in flow again, replacing your cached session. By default, it opens your browser and signs in through Aster OAuth at `auth.aster`. Pass a flag to select a different flow:
+Running `aster login` starts the sign-in flow again, replacing your cached session. By default, it opens your browser and signs in through Aster OAuth at `auth.aster`. Pass a flag to select a different flow:
 
 | Flag | Description |
 |------|-------------|
 | `--oauth` | Sign in through Aster OAuth at `auth.aster`. This is the default, so the flag is optional. |
 | `--device-auth` (alias `--device-code`) | Sign in with the device-code flow for headless or remote environments. |
 
-To sign out, run `grok logout`. It takes no flags and clears your cached credentials.
+To sign out, run `aster logout`. It takes no flags and clears your cached credentials.
 
 ---
 
@@ -47,10 +47,10 @@ For CI/CD, automation, or environments without browser access, use an API key fr
 
 ```bash
 export ASTER_API_KEY="aster-..."
-grok
+aster
 ```
 
-Grok uses the API key as a fallback when no session token is active. If you have already signed in interactively, the stored session token takes precedence. To fall back to the API key, run `grok logout` or delete `~/.grok/auth.json`.
+Aster uses the API key as a fallback when no session token is active. If you have already signed in interactively, the stored session token takes precedence. To fall back to the API key, run `aster logout` or delete `~/.aster/auth.json`.
 
 ---
 
@@ -61,7 +61,7 @@ Authenticate developers through your own Identity Provider (IdP) -- such as Okta
 ### 1. Register a public client in your IdP
 
 - Grant type: Authorization Code with PKCE (Proof Key for Code Exchange)
-- Redirect URI: `http://127.0.0.1/callback` -- a loopback address. Grok binds a random port at sign-in time, and most IdPs treat the loopback redirect as port-agnostic per [RFC 8252](https://tools.ietf.org/html/rfc8252).
+- Redirect URI: `http://127.0.0.1/callback` -- a loopback address. Aster binds a random port at sign-in time, and most IdPs treat the loopback redirect as port-agnostic per [RFC 8252](https://tools.ietf.org/html/rfc8252).
 - No client secret. PKCE replaces it.
 
 ### 2. Configure the CLI
@@ -85,12 +85,12 @@ export GROK_OIDC_CLIENT_ID="0oa1b2c3d4e5f6g7h8i9"
 You can also override the API endpoint to point at your own proxy:
 
 ```bash
-export GROK_CLI_CHAT_PROXY_BASE_URL="https://grok-proxy.acme.com/v1"
+export GROK_CLI_CHAT_PROXY_BASE_URL="https://aster-proxy.acme.com/v1"
 ```
 
 ### 3. Run `aster`
 
-The CLI discovers endpoints via `{issuer}/.well-known/openid-configuration`, opens the IdP login page, and stores tokens in `~/.grok/auth.json`. Tokens auto-refresh silently via the stored `refresh_token`.
+The CLI discovers endpoints via `{issuer}/.well-known/openid-configuration`, opens the IdP login page, and stores tokens in `~/.aster/auth.json`. Tokens auto-refresh silently via the stored `refresh_token`.
 
 ### Optional fields
 
@@ -109,7 +109,7 @@ When browser-based login isn't possible -- for example, on sandboxed VMs, CI run
 
 ```
 +--------------+     sh -c     +------------------------+
-|     Grok     |-------------->|  your auth binary      |
+|     Aster     |-------------->|  your auth binary      |
 |              |               |                        |
 |  reads       |<-- stdout ----|  prints token          |
 |  auth.json   |               |                        |
@@ -119,18 +119,18 @@ When browser-based login isn't possible -- for example, on sandboxed VMs, CI run
 
 1. Aster Code runs your command via `sh -c "<command>"`
 2. Your binary runs whatever auth flow it needs (SSO, device code, certificate exchange)
-3. **stderr** carries human-readable output, such as login URLs and status messages. Grok reads stderr and surfaces it to the user; in the TUI, it turns the first `https://` URL into a clickable sign-in link.
-4. **stdout** is captured by Grok and saved as the access token
-5. Exit 0 = success; exit non-zero = Grok falls back to interactive login
+3. **stderr** carries human-readable output, such as login URLs and status messages. Aster reads stderr and surfaces it to the user; in the TUI, it turns the first `https://` URL into a clickable sign-in link.
+4. **stdout** is captured by Aster and saved as the access token
+5. Exit 0 = success; exit non-zero = Aster falls back to interactive login
 
 ### The stdout / stderr Contract
 
 | Stream | What to print | Who sees it |
 |--------|---------------|-------------|
-| **stdout** | The token -- nothing else | Grok (parsed and stored in auth.json) |
-| **stderr** | Login URLs, status messages, errors | The user (Grok reads stderr and shows the sign-in URL as a clickable link in the TUI) |
+| **stdout** | The token -- nothing else | Aster (parsed and stored in auth.json) |
+| **stderr** | Login URLs, status messages, errors | The user (Aster reads stderr and shows the sign-in URL as a clickable link in the TUI) |
 
-**Do not print anything to stdout except the token.** No progress messages, no debug output. Grok reads stdout, trims surrounding whitespace, and parses the result as a token.
+**Do not print anything to stdout except the token.** No progress messages, no debug output. Aster reads stdout, trims surrounding whitespace, and parses the result as a token.
 
 ### stdout Token Format
 
@@ -146,14 +146,14 @@ eyJhbGciOiJSUzI1NiIs...
 {"access_token": "eyJhbGciOi...", "refresh_token": "ref-tok", "expires_in": 3600, "issuer": "https://idp.example.com"}
 ```
 
-Use JSON if your tokens expire and you want Grok to automatically re-run the binary before expiry.
+Use JSON if your tokens expire and you want Aster to automatically re-run the binary before expiry.
 
 JSON fields:
 
 | Field | Required | Meaning |
 |-------|----------|---------|
-| `access_token` | yes | Bearer token Grok sends to the Aster API |
-| `refresh_token` | no | Stored for reference. Grok refreshes by re-running your binary, not with an OAuth refresh grant |
+| `access_token` | yes | Bearer token Aster sends to the Aster API |
+| `refresh_token` | no | Stored for reference. Aster refreshes by re-running your binary, not with an OAuth refresh grant |
 | `expires_in` | no | Token lifetime in seconds; enables proactive refresh before expiry |
 | `issuer` | no | Identifies the token's issuer |
 
@@ -179,23 +179,23 @@ export GROK_AUTH_TOKEN_TTL=3600
 
 ### Token Refresh
 
-Grok runs your binary on two different contracts, and `GROK_AUTH_EXPIRED` is how
+Aster runs your binary on two different contracts, and `GROK_AUTH_EXPIRED` is how
 it tells them apart. Each run fully replaces the stored credential, so emit the
 same JSON fields (such as `issuer`) on every invocation, including refreshes.
 
-- **`GROK_AUTH_EXPIRED=1` — a headless refresh.** Grok is re-minting over a
+- **`GROK_AUTH_EXPIRED=1` — a headless refresh.** Aster is re-minting over a
   credential it already holds: a near-expiry rotation, or a token the server
   rejected. Nobody is watching. stdin is closed, your stderr is swallowed, and
   the binary is given a few seconds before it is killed. Mint silently or exit
   non-zero — never block.
-- **Unset — a sign-in.** `grok login`, the sign-in screen, or the escalation
+- **Unset — a sign-in.** `aster login`, the sign-in screen, or the escalation
   Aster Code performs when a headless run couldn't mint. A user is waiting, your
   stderr reaches them, and you have 300 seconds — enough for a browser round
   trip or a device code.
 
 ```bash
 #!/bin/sh
-if [ "$GROK_AUTH_EXPIRED" = "1" ]; then
+if [ "$ASTER_AUTH_EXPIRED" = "1" ]; then
     # Headless: silent refresh only. Declining is the fast, correct answer
     # when your SSO session has lapsed and only the user can renew it.
     echo "Refreshing token..." >&2
@@ -228,7 +228,7 @@ run has the variable unset, like a sign-in. A binary that mints without help
 (service account, keytab, mounted token) succeeds there and the session heals
 itself. One that must prompt just sits, up to the 300s sign-in ceiling —
 nothing waits on it, the sign-in screen is already up, and that run's stderr
-goes to `~/.grok/leader.log` rather than to you.
+goes to `~/.aster/leader.log` rather than to you.
 
 ### Environment Variables
 
@@ -247,10 +247,10 @@ goes to `~/.grok/leader.log` rather than to you.
 For headless environments (SSH sessions, Docker containers, remote VMs) where no browser is available locally:
 
 ```bash
-grok login --device-auth    # or: grok login --device-code
+aster login --device-auth    # or: aster login --device-code
 ```
 
-This prints a URL and code to the terminal. Open the URL on any device, enter the code, and complete authentication. Grok polls until the login is confirmed.
+This prints a URL and code to the terminal. Open the URL on any device, enter the code, and complete authentication. Aster polls until the login is confirmed.
 
 You can also implement the device-code flow through an [External Auth Provider](#external-auth-provider) for full control.
 
@@ -258,11 +258,11 @@ You can also implement the device-code flow through an [External Auth Provider](
 
 ## Automatic Credential Refresh
 
-Grok automatically refreshes expired credentials:
+Aster automatically refreshes expired credentials:
 
-- **Before expiry:** If your auth provider returned `expires_in` (JSON output) or you set `auth_token_ttl`, Grok re-runs the auth binary ~5 minutes before expiry.
-- **On auth error:** If the server returns 401 Unauthorized, Grok refreshes the credentials and retries the request.
-- **OIDC:** If a `refresh_token` is available, Grok silently refreshes via your IdP without re-opening the browser.
+- **Before expiry:** If your auth provider returned `expires_in` (JSON output) or you set `auth_token_ttl`, Aster re-runs the auth binary ~5 minutes before expiry.
+- **On auth error:** If the server returns 401 Unauthorized, Aster refreshes the credentials and retries the request.
+- **OIDC:** If a `refresh_token` is available, Aster silently refreshes via your IdP without re-opening the browser.
 
 Tune the refresh buffer:
 
@@ -278,19 +278,19 @@ export GROK_AUTH_EARLY_INVALIDATION_SECS=0
 
 ## Hot Reload
 
-Grok picks up changes to `~/.grok/auth.json` automatically. If you update credentials externally (for example, with a script that writes new tokens), Grok uses the new credentials on the next API call without a restart.
+Aster picks up changes to `~/.aster/auth.json` automatically. If you update credentials externally (for example, with a script that writes new tokens), Aster uses the new credentials on the next API call without a restart.
 
 ---
 
 ## Auth Precedence
 
-Grok resolves credentials for each request in this order, highest to lowest:
+Aster resolves credentials for each request in this order, highest to lowest:
 
 1. **Per-model `api_key` or `env_key`** -- set under `[model.<name>]` in `config.toml`. Wins whenever present.
-2. **Active session token** -- obtained through browser, OIDC/OAuth2, or external-provider login and stored in `~/.grok/auth.json`.
+2. **Active session token** -- obtained through browser, OIDC/OAuth2, or external-provider login and stored in `~/.aster/auth.json`.
 3. **`ASTER_API_KEY`** -- fallback when no session token is active.
 
-When more than one login flow is configured, Grok populates the session token from the first available source, highest to lowest:
+When more than one login flow is configured, Aster populates the session token from the first available source, highest to lowest:
 
 1. **External auth provider** (`auth_provider_command`)
 2. **Enterprise OIDC** -- when OIDC is configured, through `[grok_com_config.oidc]` in `config.toml` or the `GROK_OIDC_ISSUER` and `GROK_OIDC_CLIENT_ID` environment variables
@@ -303,7 +303,7 @@ During a session, the active method handles all mid-session refreshes.
 ## Grove Git credentials (not this page's `aster login`)
 
 
-**`~/.grok/auth.json` is never read for Git.** `grok login` does not create a Git credential and `grok logout` does not revoke one; the daemon builds its own credential cell from `auth_mode` in Grove config. Those credentials are managed with `grove status` and `grove reload-credentials` -- see [grok clone](27-grok-clone.md#authentication) for the failure classes and their next steps.
+**`~/.aster/auth.json` is never read for Git.** `aster login` does not create a Git credential and `aster logout` does not revoke one; the daemon builds its own credential cell from `auth_mode` in Grove config. Those credentials are managed with `grove status` and `grove reload-credentials` -- see [aster clone](27-aster-clone.md#authentication) for the failure classes and their next steps.
 
 ---
 
@@ -338,8 +338,8 @@ Set `RUST_LOG` to control the verbosity of the file log and headless stderr outp
 In the TUI, set `GROK_LOG_FILE` to an absolute path to write logs to that file:
 
 ```bash
-GROK_LOG_FILE=/tmp/grok.log RUST_LOG=debug grok
-tail -f /tmp/grok.log
+GROK_LOG_FILE=/tmp/aster.log RUST_LOG=debug aster
+tail -f /tmp/aster.log
 ```
 
 `GROK_LOG_FILE` is treated as a literal file path. A relative value such as `1` writes a file named `1` in the current directory.
@@ -347,22 +347,22 @@ tail -f /tmp/grok.log
 In headless mode, logs go to stderr. Redirect them to a file:
 
 ```bash
-RUST_LOG=debug grok -p "hello" 2> /tmp/grok.log
+RUST_LOG=debug aster -p "hello" 2> /tmp/aster.log
 ```
 
 ### Common log messages
 
 | Log message | What it means |
 |-------------|---------------|
-| `auth: running external auth provider (headless refresh)` / `(interactive login)` | Grok is running your binary, and on which contract |
-| `auth: external auth provider returned fresh token` | Grok parsed and stored the token |
+| `auth: running external auth provider (headless refresh)` / `(interactive login)` | Aster is running your binary, and on which contract |
+| `auth: external auth provider returned fresh token` | Aster parsed and stored the token |
 | `auth: external auth provider failed` | Binary exited non-zero or stdout was empty |
 | `auth: external auth provider timed out (likely needs interactive auth), killing` | Binary did not exit before the timeout and was killed |
 | `auth: failed to start external auth provider` | Command could not be spawned (binary not found) |
 
 ### Common fixes
 
-- **"Authentication failed"** -- Run `grok logout` to clear cached credentials, then `grok login` to sign in again.
+- **"Authentication failed"** -- Run `aster logout` to clear cached credentials, then `aster login` to sign in again.
 - **Token expires too quickly** -- Set `auth_token_ttl` or return `expires_in` in your auth provider's JSON output.
 - **OIDC redirect fails** -- Ensure your IdP allows loopback redirect URIs (`http://127.0.0.1/callback`).
 - **External auth provider not found** -- Check that the `auth_provider_command` path is correct and the binary is executable.

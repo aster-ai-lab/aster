@@ -1,15 +1,15 @@
 # Permissions and safety
 
-Control what Grok can access and do: permission modes, allow/ask/deny rules, hooks, and the optional OS-level sandbox.
+Control what Aster can access and do: permission modes, allow/ask/deny rules, hooks, and the optional OS-level sandbox.
 
-- **Modes** set how often Grok asks for approval (always-approve, auto, ask, and related).
+- **Modes** set how often Aster asks for approval (always-approve, auto, ask, and related).
 - **Rules** set which tools are allowed, asked about, or blocked within that baseline.
 
 ---
 
 ## Permission modes
 
-When Grok edits a file, runs a command, or calls an external tool, it may pause for approval. Permission modes control how often that happens.
+When Aster edits a file, runs a command, or calls an external tool, it may pause for approval. Permission modes control how often that happens.
 
 Modes set a baseline. Allow, ask, and deny [rules](#configuring-permissions) still apply on top of any mode.
 
@@ -21,9 +21,9 @@ Modes set a baseline. Allow, ask, and deny [rules](#configuring-permissions) sti
 | Scripts, SDKs, CI, agent servers | Always-approve; add [deny rules](#configuring-permissions) or hooks for hard limits |
 
 ```bash
-grok -p "Run the tests" --always-approve
-grok agent --always-approve stdio
-grok agent --always-approve serve --bind 127.0.0.1:2419 --secret <token>
+aster -p "Run the tests" --always-approve
+aster agent --always-approve stdio
+aster agent --always-approve serve --bind 127.0.0.1:2419 --secret <token>
 ```
 
 ACP clients can set `"_meta": { "yoloMode": true }` on `session/new`. See [Agent mode](15-agent-mode.md#automation-and-sdks).
@@ -48,9 +48,9 @@ ACP clients can set `"_meta": { "yoloMode": true }` on `session/new`. See [Agent
 **CLI:**
 
 ```bash
-grok --always-approve -p "Run the test suite"
-grok --permission-mode auto
-grok agent --always-approve serve --bind 127.0.0.1:2419 --secret <token>
+aster --always-approve -p "Run the test suite"
+aster --permission-mode auto
+aster agent --always-approve serve --bind 127.0.0.1:2419 --secret <token>
 ```
 
 **Config:**
@@ -90,20 +90,20 @@ deny = [
 ```
 
 ```bash
-grok -p "Deploy the service" --always-approve --deny 'Bash(rm -rf *)'
+aster -p "Deploy the service" --always-approve --deny 'Bash(rm -rf *)'
 ```
 
 Deny always wins over allow and over always-approve’s normal pass-through. See [Configuring permissions](#configuring-permissions).
 
 ### Auto mode
 
-Reduces interactive prompts by checking many tool calls before they run. Routine local work often proceeds. A call the classifier will not auto-allow surfaces a permission prompt so you can allow or reject it. In non-interactive sessions (`grok -p`, unidentified stdio), that same call fails and is reported to the model (for example `Auto mode blocked this action …`).
+Reduces interactive prompts by checking many tool calls before they run. Routine local work often proceeds. A call the classifier will not auto-allow surfaces a permission prompt so you can allow or reject it. In non-interactive sessions (`aster -p`, unidentified stdio), that same call fails and is reported to the model (for example `Auto mode blocked this action …`).
 
 For automation that must run tools without interactive approval, use always-approve (and deny rules if you need hard blocks) rather than auto alone.
 
 ### Disable always-approve (administrators)
 
-Organizations can prevent always-approve from being enabled via CLI, TUI, or `/always-approve`. Set this in `requirements.toml` (user-level under `~/.grok/`, or system-wide under `/etc/grok/` for enforcement users cannot remove):
+Organizations can prevent always-approve from being enabled via CLI, TUI, or `/always-approve`. Set this in `requirements.toml` (user-level under `~/.aster/`, or system-wide under `/etc/aster/` for enforcement users cannot remove):
 
 ```toml
 [ui]
@@ -112,7 +112,7 @@ disable_bypass_permissions_mode = true
 
 Do not use `permission_mode` for this lock; that key is a switchable default. The legacy `[ui] yolo = false` key in `requirements.toml` also disables always-approve for compatibility.
 
-Grok can still load Claude-style permission **rules** from managed settings; always-approve is locked with `requirements.toml` as shown above.
+Aster can still load Claude-style permission **rules** from managed settings; always-approve is locked with `requirements.toml` as shown above.
 
 ---
 
@@ -188,19 +188,19 @@ Permission rules can be global (all projects), project-scoped (one repository), 
 
 | Scope | File | Shared with teammates |
 |-------|------|-----------------------|
-| Global (all projects) | `~/.grok/config.toml` | No |
-| Project (committed) | `<project>/.grok/config.toml` | Yes (commit it) |
+| Global (all projects) | `~/.aster/config.toml` | No |
+| Project (committed) | `<project>/.aster/config.toml` | Yes (commit it) |
 | Project (personal) | `<project>/.claude/settings.local.json` | No (gitignore it) |
-| Interactive grants | Stored internally by Grok, per project | No |
+| Interactive grants | Stored internally by Aster, per project | No |
 
 Notes on scoping:
 
-- Aster Code discovers a `.grok/config.toml` at every directory level from the repository root down to your working directory, so a subdirectory can add rules on top of the repo root's.
+- Aster Code discovers a `.aster/config.toml` at every directory level from the repository root down to your working directory, so a subdirectory can add rules on top of the repo root's.
 - Rules from all scopes are merged into one rule set; `deny` > `ask` > `allow` applies across scopes, so a global `deny` cannot be overridden by a project `allow`.
-- Grok has no native `config.local.toml`. For personal, uncommitted rules in a project, use `.claude/settings.local.json`; Grok reads it directly (see [Claude Code Compatibility](#3-claude-code-compatibility-claudesettingsjson)).
+- Aster has no native `config.local.toml`. For personal, uncommitted rules in a project, use `.claude/settings.local.json`; Aster reads it directly (see [Claude Code Compatibility](#3-claude-code-compatibility-claudesettingsjson)).
 - Interactive "Always allow" decisions are stored outside the repository, scoped to the project (see [Interactive Approvals](#interactive-approvals-and-where-they-persist)).
 
-To stop prompts for a specific command in one project, add a narrow allow rule to that project's `.grok/config.toml` (or `.claude/settings.json`):
+To stop prompts for a specific command in one project, add a narrow allow rule to that project's `.aster/config.toml` (or `.claude/settings.json`):
 
 ```toml
 [permission]
@@ -212,7 +212,7 @@ This approves only the listed commands. Always-approve mode, by contrast, approv
 ### 1. CLI Flags
 
 ```bash
-grok -p "Review the API changes" \
+aster -p "Review the API changes" \
   --allow 'Bash(git *)' \
   --allow 'Bash(gh *)' \
   --allow 'Read' \
@@ -251,9 +251,9 @@ The structured `tool` field accepts the lowercase names `bash`, `read`, `edit`, 
 
 Because `deny` always wins, you cannot combine these `allow` rules with a catch-all `deny` on `bash` to mean "only allow git/gh"; a `deny tool = "bash"` rule would block `git` and `gh` too. For deny-by-default, use `defaultMode: "dontAsk"` in `.claude/settings.json` or a `PreToolUse` hook (below).
 
-Rules from the global `~/.grok/config.toml` and every project `.grok/config.toml` (from the repo root down to your working directory) are merged into one rule set, alongside any `.claude/settings.json` rules.
+Rules from the global `~/.aster/config.toml` and every project `.aster/config.toml` (from the repo root down to your working directory) are merged into one rule set, alongside any `.claude/settings.json` rules.
 
-Managed configuration deployed by your organization also contributes `[permission]` rules: the system `/etc/grok/managed_config.toml`, and a user-level copy that Grok maintains automatically at `~/.grok/managed_config.toml`. Managed rules merge like rules from any other source, with two properties specific to managed `allow` rules: your own `deny` and `ask` rules win over a managed `allow` (severity ordering), and a catch-all managed `allow` is ignored when always-approve is locked off. For rules that users cannot edit away, use the root-owned system `/etc/grok/requirements.toml`.
+Managed configuration deployed by your organization also contributes `[permission]` rules: the system `/etc/aster/managed_config.toml`, and a user-level copy that Aster maintains automatically at `~/.aster/managed_config.toml`. Managed rules merge like rules from any other source, with two properties specific to managed `allow` rules: your own `deny` and `ask` rules win over a managed `allow` (severity ordering), and a catch-all managed `allow` is ignored when always-approve is locked off. For rules that users cannot edit away, use the root-owned system `/etc/aster/requirements.toml`.
 
 Permission rules from every source are read once, when a session starts. Changes apply to the next session.
 
@@ -276,7 +276,7 @@ allow = [
 
 ### 3. Claude Code Compatibility (`.claude/settings.json`)
 
-Grok reads `~/.claude/settings.json` and `~/.claude/settings.local.json`, plus the project-level `<project>/.claude/settings.json` and `settings.local.json` (walking up to the repo root). The native `.grok` source for permission rules is `config.toml`, described in the section above.
+Aster reads `~/.claude/settings.json` and `~/.claude/settings.local.json`, plus the project-level `<project>/.claude/settings.json` and `settings.local.json` (walking up to the repo root). The native `.aster` source for permission rules is `config.toml`, described in the section above.
 
 Example:
 
@@ -297,7 +297,7 @@ Example:
 }
 ```
 
-Supported `defaultMode` values include `default`, `auto`, `acceptEdits`, `bypassPermissions`, `dontAsk`, and `plan`. Grok reads `defaultMode` from its canonical location under `permissions`; a top-level `defaultMode` is also accepted when the nested key is absent.
+Supported `defaultMode` values include `default`, `auto`, `acceptEdits`, `bypassPermissions`, `dontAsk`, and `plan`. Aster reads `defaultMode` from its canonical location under `permissions`; a top-level `defaultMode` is also accepted when the nested key is absent.
 
 `permissions.allow`, `permissions.deny`, and `permissions.ask` entries are translated into native rules and then matched with the semantics in the [Rule Matching Reference](#rule-matching-reference). Translation notes:
 
@@ -324,7 +324,7 @@ Matching is case-sensitive. Leading whitespace in the command is trimmed before 
 
 A trailing `:*` suffix on a Bash rule is stripped to a plain prefix: `Bash(git commit:*)` becomes prefix `git commit`. Because prefixes have no word boundary, a `deny` written as `Bash(sed:*)` also blocks commands such as `sed-custom`.
 
-**Chained commands.** Grok parses each command like a shell and splits it on `&&`, `||`, `;`, `|`, and newlines. The rule actions treat segments differently:
+**Chained commands.** Aster parses each command like a shell and splits it on `&&`, `||`, `;`, `|`, and newlines. The rule actions treat segments differently:
 
 - `deny` and `ask` rules are checked against every segment, and against the whole string. One denied segment rejects the entire command.
 - `allow` rules are conjunctive: the command is auto-approved by rule only when **every** segment independently matches an allow rule. `Bash(git *)` approves `git status && git diff`, but not `git status && rm -rf /` — the `rm` segment matches no allow rule, so the command falls through to the mode's normal handling (a prompt in `default` mode; the classifier in `auto` mode, which may still approve or block it; a denial under `dontAsk`). A single allow rule can therefore never approve a chain that smuggles in an unrelated command.
@@ -363,7 +363,7 @@ Path patterns are globs matched against the tool path after lexical normalizatio
 
 ### MCP Rules
 
-`MCPTool(...)` patterns match the full Grok tool name in `server__tool` form, with glob support: `MCPTool(linear__*)` matches every tool from the `linear` server. Grok tool names carry no `mcp__` prefix.
+`MCPTool(...)` patterns match the full Aster tool name in `server__tool` form, with glob support: `MCPTool(linear__*)` matches every tool from the `linear` server. Aster tool names carry no `mcp__` prefix.
 
 The `mcp__` rule spelling used in `.claude/settings.json` files is also accepted and rewritten onto the same matcher: `mcp__linear` (every tool on the `linear` server), `mcp__linear__get_issue` (one tool), `mcp__linear__*` (every tool on the server), and `mcp__*` (every MCP tool).
 
@@ -417,9 +417,9 @@ Commands on the [dangerous list](#dangerous-commands) (for example `git push` an
 
 Interactive grants are stored in Aster Code's own state directory under your home directory, scoped to the git repository you launched Aster Code in (its repository root), so a grant accepted at the repo root also applies in sessions started from a subdirectory of the same repository. Outside a git repository, grants are scoped to the launch directory, and each git worktree keeps its own grants. A grant made in one project never applies in another, grants are not written into the repository, and they are not meant to be hand-edited.
 
-To inspect or reset a project's grants, open the `sessions` subdirectory of your Aster Code home (the `.grok` directory under your home directory, or `$GROK_HOME`): each project directory there (URL-encoded scope root) holds a `permission.toml` (plus per-client `permission_<client>.toml` variants) listing the remembered command prefixes, globs, MCP tools/servers, web-fetch domains, and "never allow" entries. Deleting the file resets that project's grants; the next matching tool call prompts again. Treat it as read-only state — to *add* rules, use the declarative `[permission]` configuration instead.
+To inspect or reset a project's grants, open the `sessions` subdirectory of your Aster Code home (the `.aster` directory under your home directory, or `$ASTER_HOME` / `$GROK_HOME`): each project directory there (URL-encoded scope root) holds a `permission.toml` (plus per-client `permission_<client>.toml` variants) listing the remembered command prefixes, globs, MCP tools/servers, web-fetch domains, and "never allow" entries. Deleting the file resets that project's grants; the next matching tool call prompts again. Treat it as read-only state — to *add* rules, use the declarative `[permission]` configuration instead.
 
-Interactive grants are personal, per-machine state. For an allowlist you can review in code review and share with teammates, use declarative rules in the project's `.grok/config.toml` instead.
+Interactive grants are personal, per-machine state. For an allowlist you can review in code review and share with teammates, use declarative rules in the project's `.aster/config.toml` instead.
 
 ---
 
@@ -431,7 +431,7 @@ A `PreToolUse` hook can enforce an allow list on the `Bash` tool that applies in
 
 ### Example: Allow Only `git` and `gh`
 
-**`~/.grok/hooks/git-gh-only.json`**
+**`~/.aster/hooks/git-gh-only.json`**
 
 ```json
 {
@@ -452,7 +452,7 @@ A `PreToolUse` hook can enforce an allow list on the `Bash` tool that applies in
 }
 ```
 
-**`~/.grok/hooks/git-gh-only.sh`**
+**`~/.aster/hooks/git-gh-only.sh`**
 
 ```bash
 #!/bin/sh
@@ -489,7 +489,7 @@ done
 ```
 
 ```bash
-chmod +x ~/.grok/hooks/git-gh-only.sh
+chmod +x ~/.aster/hooks/git-gh-only.sh
 ```
 
 This hook denies every `Bash` command unless each chained segment starts with `git` or `gh`, and rejects command substitution, backgrounding, and redirection outright because it cannot verify what they execute. It works in every permission mode.
@@ -503,7 +503,7 @@ For hook installation, the JSON format, the trust model for project hooks, and o
 ### Headless git and gh Only (CI and Automation)
 
 ```bash
-grok -p "Implement the feature using only git and GitHub CLI" \
+aster -p "Implement the feature using only git and GitHub CLI" \
   --allow 'Read' \
   --allow 'Grep' \
   --allow 'Bash(git *)' \
@@ -556,7 +556,7 @@ Recommended combination for untrusted code:
 
 1. **Prefer narrow patterns.** `Bash(git *)` grants less access than a bare `Bash` allow rule.
 2. **Combine layers.** `dontAsk`, narrow allow rules, a restrictive hook, and the sandbox each restrict independently.
-3. **Review project configuration from unfamiliar sources.** Folder trust gates project permission rules in `.grok/config.toml` and `.claude/settings.json`, plus startup loading of project instructions and skills. Headless startup with these sources requires `--trust` or a prior grant. Review them and any project hooks before trusting an unfamiliar checkout (see [10-hooks.md](10-hooks.md)).
+3. **Review project configuration from unfamiliar sources.** Folder trust gates project permission rules in `.aster/config.toml` and `.claude/settings.json`, plus startup loading of project instructions and skills. Headless startup with these sources requires `--trust` or a prior grant. Review them and any project hooks before trusting an unfamiliar checkout (see [10-hooks.md](10-hooks.md)).
 4. **Test your policy.** With `defaultMode: "dontAsk"` set (or your `PreToolUse` hook installed), run representative commands and confirm what is blocked.
 5. **Treat the read-only command list as a convenience, not a security boundary.**
 

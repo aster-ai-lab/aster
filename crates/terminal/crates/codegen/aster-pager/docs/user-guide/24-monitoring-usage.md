@@ -67,7 +67,7 @@ export OTEL_LOGS_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf  # or grpc
 export OTEL_EXPORTER_OTLP_ENDPOINT=https://collector.corp.example:4318
 export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <collector-token>"
-grok
+aster
 ```
 
 `GROK_EXTERNAL_OTEL=1` alone enables **nothing** — you must also select at
@@ -201,7 +201,7 @@ A fleet policy that arrives afterwards still applies; it can only ever
 something your local configuration did not.
 
 If your collector receives nothing at all, check the debug log
-(`grok --debug`) for `external otel:` lines — they record whether the stream
+(`aster --debug`) for `external otel:` lines — they record whether the stream
 resolved its configuration, and whether it is exporting or suppressed.
 
 ## Resource attributes
@@ -252,7 +252,7 @@ and `session_create` phases appear in the log timeline and the summary
 strings, not in this metric. `stuck_in` on a timeout names the step that had
 not finished. That is often not the step that took the longest, because a step
 that runs without pausing finishes before the timeout is recorded. The error
-message Grok prints names the longest step instead, so the two can name
+message Aster prints names the longest step instead, so the two can name
 different steps for the same timeout. Use `phase_duration` to compare them.
 `auth_mode` is `personal`, `team`, `deployment`, or `unknown`:
 startup cost differs by kind, so split by it before comparing.

@@ -38,7 +38,7 @@ pub(crate) fn find_mcp_json_files_in(chain_dirs: &[PathBuf]) -> Vec<PathBuf> {
         .collect()
 }
 
-/// True when `config_path` is `$GROK_HOME/config.toml` (user tier, not project).
+/// True when `config_path` is `$ASTER_HOME/config.toml` (user tier, not project).
 fn is_user_grok_config_file(config_path: &Path) -> bool {
     let Some(user_home) = aster_config::user_grok_home() else {
         return false;
@@ -63,12 +63,20 @@ pub fn find_project_configs(cwd: &Path) -> Vec<PathBuf> {
 /// [`find_project_configs`] over a precomputed [`RepoDirChain`], repo-root-first.
 /// Excludes user-global config so `cwd == $HOME` is not a project overlay. `pub(crate)` for the folder-trust gate.
 pub(crate) fn find_project_configs_in(chain_dirs: &[PathBuf]) -> Vec<PathBuf> {
-    // `dirs` is cwd-first; reverse so repo root comes first (lowest priority) and cwd last (highest)
+    // `dirs` is cwd-first; reverse so repo root comes first (lowest priority) and cwd last (highest).
+    // Prefer `.aster/config.toml`; accept legacy `.grok/config.toml` when Aster is absent.
     chain_dirs
         .iter()
         .rev()
-        .map(|dir| dir.join(".grok").join("config.toml"))
-        .filter(|config_path| config_path.is_file() && !is_user_grok_config_file(config_path))
+        .filter_map(|dir| {
+            let aster = dir.join(".aster").join("config.toml");
+            if aster.is_file() {
+                return Some(aster);
+            }
+            let legacy = dir.join(".grok").join("config.toml");
+            legacy.is_file().then_some(legacy)
+        })
+        .filter(|config_path| !is_user_grok_config_file(config_path))
         .collect()
 }
 
@@ -94,13 +102,24 @@ mod tests {
 
         let tmp = tempfile::tempdir().unwrap();
         let project = tmp.path().join("repo");
-        std::fs::create_dir_all(project.join(".grok")).unwrap();
-        std::fs::write(project.join(".grok/config.toml"), "# project\n").unwrap();
+        std::fs::create_dir_all(project.join(".aster")).unwrap();
+        std::fs::write(project.join(".aster/config.toml"), "# project\n").unwrap();
         let found = find_project_configs(&project);
         assert_eq!(found.len(), 1);
         let Some(first) = found.first() else {
             panic!("expected one project config: {found:?}");
         };
         assert!(!is_user_grok_config_file(first));
+        assert_eq!(first.file_name().and_then(|n| n.to_str()), Some("config.toml"));
+        assert_eq!(
+            first.parent().and_then(|p| p.file_name()).and_then(|n| n.to_str()),
+            Some(".aster")
+        );
+
+        let legacy = tmp.path().join("legacy");
+        std::fs::create_dir_all(legacy.join(".grok")).unwrap();
+        std::fs::write(legacy.join(".grok/config.toml"), "# legacy\n").unwrap();
+        let found_legacy = find_project_configs(&legacy);
+        assert_eq!(found_legacy.len(), 1);
     }
 }

@@ -472,8 +472,8 @@ mod tests {
 
     #[test]
     fn ensure_query_param_appends_when_missing() {
-        let out = ensure_query_param("https://aster/supergrok", "referrer", "grok-build");
-        assert_eq!(out, "https://aster/supergrok?referrer=grok-build");
+        let out = ensure_query_param("https://aster/supergrok", "referrer", "aster-build");
+        assert_eq!(out, "https://aster/supergrok?referrer=aster-build");
     }
 
     #[test]
@@ -481,35 +481,35 @@ mod tests {
         let out = ensure_query_param(
             "https://aster/supergrok?referrer=other",
             "referrer",
-            "grok-build",
+            "aster-build",
         );
         assert_eq!(out, "https://aster/supergrok?referrer=other");
     }
 
     #[test]
     fn ensure_query_param_keeps_other_query_pairs() {
-        let out = ensure_query_param("https://aster/supergrok?heavy=1", "referrer", "grok-build");
-        assert_eq!(out, "https://aster/supergrok?heavy=1&referrer=grok-build");
+        let out = ensure_query_param("https://aster/supergrok?heavy=1", "referrer", "aster-build");
+        assert_eq!(out, "https://aster/supergrok?heavy=1&referrer=aster-build");
     }
 
     #[test]
     fn ensure_query_param_preserves_fragment() {
         // The current remote settings value uses a hash fragment for client-side routing (`aster/#supergrok`)
         // We still want the referrer attached
-        let out = ensure_query_param("https://aster/#supergrok", "referrer", "grok-build");
-        assert_eq!(out, "https://aster/?referrer=grok-build#supergrok");
+        let out = ensure_query_param("https://aster/#supergrok", "referrer", "aster-build");
+        assert_eq!(out, "https://aster/?referrer=aster-build#supergrok");
     }
 
     #[test]
     fn ensure_query_param_returns_unchanged_on_parse_failure() {
-        let out = ensure_query_param("not a url", "referrer", "grok-build");
+        let out = ensure_query_param("not a url", "referrer", "aster-build");
         assert_eq!(out, "not a url");
     }
 
     #[test]
     fn ensure_query_param_url_encodes_value() {
-        let out = ensure_query_param("https://aster/supergrok", "referrer", "grok build");
-        assert_eq!(out, "https://aster/supergrok?referrer=grok+build");
+        let out = ensure_query_param("https://aster/supergrok", "referrer", "aster build");
+        assert_eq!(out, "https://aster/supergrok?referrer=aster+build");
     }
 
     #[test]

@@ -152,12 +152,12 @@ mod test_seam {
         let bytes = match std::fs::read(&path) {
             Ok(bytes) => bytes,
             Err(e) => {
-                eprintln!("grok test-seams: cannot read {path}: {e}");
+                eprintln!("aster test-seams: cannot read {path}: {e}");
                 return;
             }
         };
         let Some(separator) = bytes.iter().position(|byte| *byte == b'\n') else {
-            eprintln!("grok test-seams: pubkey file lacks a key_id separator");
+            eprintln!("aster test-seams: pubkey file lacks a key_id separator");
             return;
         };
         let (key_id, rest) = bytes.split_at(separator);
@@ -165,7 +165,7 @@ mod test_seam {
             return;
         };
         let Ok(key_id) = std::str::from_utf8(key_id) else {
-            eprintln!("grok test-seams: key_id is not utf8");
+            eprintln!("aster test-seams: key_id is not utf8");
             return;
         };
         let key_id = key_id.trim();
@@ -307,13 +307,14 @@ async fn run_setup_command(json: bool) {
         eprintln!("or set a deployment key:");
         eprintln!();
         if cfg!(unix) {
-            eprintln!("  export GROK_DEPLOYMENT_KEY=<your-key>");
+            eprintln!("  export ASTER_DEPLOYMENT_KEY=<your-key>");
+            eprintln!("  # legacy alias: GROK_DEPLOYMENT_KEY");
         } else {
-            eprintln!("  $env:GROK_DEPLOYMENT_KEY=\"<your-key>\"");
+            eprintln!("  $env:ASTER_DEPLOYMENT_KEY=\"<your-key>\"");
         }
         eprintln!("  aster setup");
         eprintln!();
-        eprintln!("Or add the key to ~/.grok/config.toml:");
+        eprintln!("Or add the key to ~/.aster/config.toml:");
         eprintln!();
         eprintln!("  [endpoints]");
         eprintln!("  deployment_key = \"<your-key>\"");
@@ -408,7 +409,7 @@ async fn kill_leaders() -> Result<()> {
         };
         if !aster_shell::util::is_grok_process(pid) {
             if let Some(ref lock) = d.lock_path {
-                eprintln!("  PID {pid} is not a grok process, removing stale lock");
+                eprintln!("  PID {pid} is not an aster process, removing stale lock");
                 let _ = std::fs::remove_file(lock);
                 cleaned += 1;
             }
@@ -695,7 +696,7 @@ async fn connect_leader_control(
     .map_err(|e| {
         anyhow::anyhow!(
             "no running leader for this environment ({e}). \
-             Start a grok session, or run `{} start`.",
+             Start an aster session, or run `{} start`.",
             door.name
         )
     })
@@ -726,7 +727,7 @@ async fn spawn_and_connect_leader(
     if !use_leader {
         anyhow::bail!(
             "`{}` requires leader mode ({}).\n\
-             Enable it with `[cli] use_leader = true` in ~/.grok/config.toml, or pass --leader.",
+             Enable it with `[cli] use_leader = true` in ~/.aster/config.toml, or pass --leader.",
             door.name,
             door.leader_mode_reason
         );
@@ -1746,7 +1747,7 @@ fn flag_dashboard_at_startup_if_requested(args: &mut PagerArgs) -> Result<()> {
     if !aster_pager::views::dashboard::dashboard_enabled() {
         anyhow::bail!(
             "the Agent Dashboard is disabled. Enable it by removing \
-             `[dashboard] enabled = false` from ~/.grok/config.toml and \
+             `[dashboard] enabled = false` from ~/.aster/config.toml and \
              unsetting GROK_AGENT_DASHBOARD=0."
         );
     }

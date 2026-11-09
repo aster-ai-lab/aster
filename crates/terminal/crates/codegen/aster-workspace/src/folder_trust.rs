@@ -199,7 +199,7 @@ impl fmt::Display for GrantRefuse {
             Self::Unreadable => write!(
                 f,
                 "Couldn't save folder trust: the trust store could not be read. \
-                 Fix or delete ~/.grok/trusted_folders.toml, then start Aster Code again and press y."
+                 Fix or delete ~/.aster/trusted_folders.toml, then start Aster Code again and press y."
             ),
             Self::KeyMoved => write!(
                 f,
@@ -245,8 +245,8 @@ impl fmt::Display for GrantOutcome {
                 ..
             } => write!(
                 f,
-                "Couldn't save folder trust. Check that ~/.grok is writable, \
-                 then run `grok --trust` in this folder."
+                "Couldn't save folder trust. Check that ~/.aster is writable, \
+                 then run `aster --trust` in this folder."
             ),
             Self::Refused { reason } => write!(f, "{reason}"),
             Self::Granted { .. } | Self::AlreadyDurable { .. } => {
@@ -1454,7 +1454,7 @@ mod tests {
         let text = unread.to_string();
         assert!(text.contains("trust store could not be read"), "{text}");
         assert!(
-            text.contains("Fix or delete ~/.grok/trusted_folders.toml"),
+            text.contains("Fix or delete ~/.aster/trusted_folders.toml"),
             "{text}"
         );
         let no_home = GrantOutcome::Refused {

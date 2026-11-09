@@ -15,12 +15,12 @@ pub fn ignore_broken_pipe(result: std::io::Result<()>) -> std::io::Result<()> {
     }
 }
 
-/// Path to `$GROK_HOME/pager.toml`.
+/// Path to `$ASTER_HOME/pager.toml`.
 pub fn pager_toml_path() -> PathBuf {
     grok_home().join("pager.toml")
 }
 
-/// `~/.aster` or `$GROK_HOME`, decided by the resolved home rather than by
+/// `~/.aster` or `$ASTER_HOME`, decided by the resolved home rather than by
 /// whether `GROK_HOME` is set in the environment.
 pub fn display_grok_home_prefix() -> String {
     display_grok_home_prefix_for(&grok_home())
@@ -31,7 +31,7 @@ pub fn display_grok_home_prefix_for(home: &Path) -> String {
     if home == default || home == dunce::canonicalize(&default).unwrap_or(default) {
         "~/.aster".to_string()
     } else {
-        "$GROK_HOME".to_string()
+        "$ASTER_HOME".to_string()
     }
 }
 
@@ -408,7 +408,7 @@ mod tests {
         let path = display_user_grok_path(aster_config::USER_CONFIG_FILENAME);
         assert!(path.ends_with("/config.toml") || path.ends_with("\\config.toml"));
         assert!(
-            path.contains(".aster") || path.contains("$GROK_HOME") || path.contains("$ASTER_HOME")
+            path.contains(".aster") || path.contains("$ASTER_HOME") || path.contains("$ASTER_HOME")
         );
     }
 
@@ -417,11 +417,11 @@ mod tests {
         let custom = std::env::temp_dir().join("grok-home-display-regression");
         assert_eq!(
             display_user_grok_path_for(&custom, aster_config::USER_CONFIG_FILENAME),
-            "$GROK_HOME/config.toml"
+            "$ASTER_HOME/config.toml"
         );
         assert_eq!(
             display_user_grok_path_for(&custom, aster_config::SANDBOX_CONFIG_FILENAME),
-            format!("$GROK_HOME/{}", aster_config::SANDBOX_CONFIG_FILENAME)
+            format!("$ASTER_HOME/{}", aster_config::SANDBOX_CONFIG_FILENAME)
         );
     }
 

@@ -203,7 +203,7 @@ fn plugin_cta_marketplace_override_selects_named_source() {
         sources: vec![aster_hooks_plugins_types::MarketplaceScanResult {
             source_name: "Aster Marketplace".into(),
             source_kind: "path".into(),
-            source_url_or_path: "/srv/spacex-marketplace".into(),
+            source_url_or_path: "/srv/aster-marketplace".into(),
             plugins: vec![
                 cta_entry("starlink", "not_installed"),
                 cta_entry("dragon", "installed"),
@@ -225,7 +225,7 @@ fn plugin_cta_marketplace_override_selects_named_source() {
     assert_eq!(names, vec!["starlink"]);
     assert_eq!(
         cta.source_url_or_path.as_deref(),
-        Some("/srv/spacex-marketplace"),
+        Some("/srv/aster-marketplace"),
         "named source counts as present"
     );
 }
@@ -243,14 +243,14 @@ fn plugin_cta_marketplace_duplicate_named_sources_first_wins() {
             aster_hooks_plugins_types::MarketplaceScanResult {
                 source_name: "Aster Marketplace".into(),
                 source_kind: "path".into(),
-                source_url_or_path: "/srv/spacex-marketplace".into(),
+                source_url_or_path: "/srv/aster-marketplace".into(),
                 plugins: vec![cta_entry("starlink", "not_installed")],
                 error: None,
             },
             aster_hooks_plugins_types::MarketplaceScanResult {
                 source_name: "Aster Marketplace".into(),
                 source_kind: "git".into(),
-                source_url_or_path: "https://github.com/impostor/spacex.git".into(),
+                source_url_or_path: "https://github.com/impostor/aster-plugins.git".into(),
                 plugins: vec![cta_entry("impostor", "not_installed")],
                 error: None,
             },
@@ -269,7 +269,7 @@ fn plugin_cta_marketplace_duplicate_named_sources_first_wins() {
     assert_eq!(names, vec!["starlink"]);
     assert_eq!(
         cta.source_url_or_path.as_deref(),
-        Some("/srv/spacex-marketplace")
+        Some("/srv/aster-marketplace")
     );
 }
 
@@ -284,16 +284,16 @@ fn plugin_cta_marketplace_override_install_targets_named_source() {
         let agent = app.agents.get_mut(&id).unwrap();
         agent.session.session_id = Some("sess-1".to_string().into());
         // Unique name so a real config's dismissed set can't suppress the match.
-        agent.prompt.set_text("try zzspacexcta now");
+        agent.prompt.set_text("try zzastercta now");
     }
 
-    let mut entry = cta_entry("zzspacexcta", "not_installed");
-    entry.keywords = vec!["zzspacexcta".into()];
+    let mut entry = cta_entry("zzastercta", "not_installed");
+    entry.keywords = vec!["zzastercta".into()];
     let response = aster_hooks_plugins_types::MarketplaceListResponse {
         sources: vec![aster_hooks_plugins_types::MarketplaceScanResult {
             source_name: "Aster Marketplace".into(),
             source_kind: "path".into(),
-            source_url_or_path: "/srv/spacex-marketplace".into(),
+            source_url_or_path: "/srv/aster-marketplace".into(),
             plugins: vec![entry],
             error: None,
         }],
@@ -309,7 +309,7 @@ fn plugin_cta_marketplace_override_install_targets_named_source() {
     let agent = app.agents.get_mut(&id).unwrap();
     assert!(matches!(
         &agent.plugin_cta.phase,
-        CtaPhase::Matched { name, .. } if name == "zzspacexcta"
+        CtaPhase::Matched { name, .. } if name == "zzastercta"
     ));
     agent.connect_matched_plugin();
     assert_eq!(agent.pending_effects.len(), 1);
@@ -322,8 +322,8 @@ fn plugin_cta_marketplace_override_install_targets_named_source() {
             plugin_relative_path,
             ..
         } => {
-            assert_eq!(source_url_or_path, "/srv/spacex-marketplace");
-            assert_eq!(plugin_relative_path, "plugins/zzspacexcta");
+            assert_eq!(source_url_or_path, "/srv/aster-marketplace");
+            assert_eq!(plugin_relative_path, "plugins/zzastercta");
         }
         other => panic!("expected InstallPluginFromCta, got {other:?}"),
     }
@@ -380,7 +380,7 @@ fn plugin_cta_marketplace_override_excludes_official_source() {
             aster_hooks_plugins_types::MarketplaceScanResult {
                 source_name: "Aster Marketplace".into(),
                 source_kind: "path".into(),
-                source_url_or_path: "/srv/spacex-marketplace".into(),
+                source_url_or_path: "/srv/aster-marketplace".into(),
                 plugins: vec![cta_entry("starlink", "not_installed")],
                 error: None,
             },

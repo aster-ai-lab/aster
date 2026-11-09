@@ -31,8 +31,12 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 | `/new` opens a different session | `shipped_tui_launch_resume_and_visible_commands` | `new` |
 | `/effort` changes the thinking budget and tool rounds | `shipped_tui_launch_resume_and_visible_commands` | `effort` |
 | `/goal` sets, pauses, resumes, and clears a durable goal | `shipped_tui_launch_resume_and_visible_commands` | `goal-status`, `goal-set`, `goal-pause`, `goal-resume`, `goal-clear` |
+| `/fork` branches the current session | `shipped_tui_launch_resume_and_visible_commands` | `palette-fork` |
 | `/compact` reports an empty session, then compacts a real one | `shipped_tui_launch_resume_and_visible_commands` | `compact-empty`, `compact-done` |
 | `/model` persists another catalog model | `shipped_tui_launch_resume_and_visible_commands` | `model` |
+| `/expand` reprints folded tool output in minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `expand-marker` |
+| `/fullscreen` returns from minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `fullscreen` |
+| ACP `/memory` and `/tasks` inspect host state | `shipped_tui_launch_resume_and_visible_commands` | `/memory`, `/tasks` |
 | `/context` reports turns and tokens | `shipped_tui_launch_resume_and_visible_commands` | `context` |
 | `/jump` previews a prior turn | `shipped_tui_launch_resume_and_visible_commands` | `jump-turn` |
 | `/edit-prompt` launches the editor | `shipped_tui_launch_resume_and_visible_commands` | `edit-prompt` |
@@ -54,8 +58,6 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 | `/delete` removes the session | `shipped_tui_launch_resume_and_visible_commands` | `delete` |
 | `/help` opens the command list and does not call the model | `shipped_tui_launch_resume_and_visible_commands` | `help` |
 | `/quit` exits 0 | `shipped_tui_launch_resume_and_visible_commands` | `quit` |
-| `/expand` reprints folded tool output in minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `expand-marker` |
-| `/fullscreen` returns from minimal mode | `shipped_tui_launch_resume_and_visible_commands` | `fullscreen` |
 | Form required-field rejection | `shipped_native_form_submit_cancel_and_reject` | `empty-field` `required` |
 | Form limit rejection (`max 5`) | `shipped_native_form_submit_cancel_and_reject` | `range` `max 5` |
 | Form submit | `shipped_native_form_submit_cancel_and_reject` | `FORM-SUBMITTED` |
@@ -82,10 +84,9 @@ These names stay out of this historical agent palette. The pass record is `hidde
 | btw | absent |
 | feedback | absent |
 | queue | absent |
-| fork | absent |
 | resume | absent |
 | rename | absent |
-| history | absent |
+| history | absent (local handler; not ACP-advertised) |
 | transcript | absent |
 | rewind | absent |
 | workflows | absent |
@@ -99,7 +100,6 @@ These names stay out of this historical agent palette. The pass record is `hidde
 | marketplace | absent |
 | import-claude | absent |
 | remember | absent |
-| tasks | absent |
 | imagine | absent |
 | imagine-video | absent |
 | voice | absent |
@@ -110,10 +110,10 @@ These names stay out of this historical agent palette. The pass record is `hidde
 | announcements | absent |
 | dream | absent |
 | flush | absent |
-| memory | absent |
 | loop | absent |
 | auto | absent |
-| cd | absent outside the dashboard (`cd-agent-palette`) |
+| cd | absent outside the dashboard (`cd-agent-palette`); dashboard itself is Aster-unavailable |
+| plan / view-plan | absent; Aster Shift+Tab (agent + dashboard) also excludes Plan |
 
 ## Other hermetic rows
 

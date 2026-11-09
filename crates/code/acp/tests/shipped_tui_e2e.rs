@@ -74,10 +74,9 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("marketplace", "View marketplace"),
     ("import-claude", "Claude settings import"),
     ("remember", "Save a memory note"),
-    (
-        "tasks",
-        "List background tasks, subagents, and scheduled tasks",
-    ),
+    // `memory` / `tasks` are ACP-advertised (see FULLSCREEN_PALETTE); do not list
+    // them here with a different description — that dual oracle can false-pass.
+    ("history", "Show conversation stats"),
     ("imagine", "imagine"),
     ("imagine-video", "imagine-video"),
     ("voice", "voice"),
@@ -88,15 +87,15 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("announcements", "announcements"),
     ("dream", "Consolidate memory"),
     ("flush", "memory to disk"),
-    ("memory", "manage your memories"),
     ("loop", "recurring interval"),
     ("auto", "classifier approves safe tools"),
 ];
 
 /// Offered in the fullscreen agent session, with the palette description.
+/// Keep aligned with pager `ASTER_EFFECTIVE_COMMANDS` plus ACP-advertised
+/// `memory` / `tasks`. `cd` is dashboard-only (asserted absent below).
 const FULLSCREEN_PALETTE: &[(&str, &str)] = &[
     ("fork", "Branch the current session"),
-    ("history", "Show conversation stats"),
     ("memory", "Inspect and manage stored memories"),
     ("tasks", "Inspect background tasks or stop a task"),
     ("settings", "Open the settings modal"),
@@ -2938,24 +2937,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.escape();
     pty.pump(Duration::from_millis(80));
     pty.write_bytes(b"\x15");
-    let before_history = state.lock().expect("mock").bodies.len();
-    pty.type_text("/history");
-    pty.enter();
-    let history = pty.wait_for("Messages:", Duration::from_secs(8));
-    assert!(
-        history.contains("Tokens:") && history.contains("Session:"),
-        "{history}"
-    );
-    assert_eq!(
-        state.lock().expect("mock").bodies.len(),
-        before_history,
-        "the Core history command must not become a model prompt"
-    );
-    oracle(
-        PTY_TEST,
-        "history",
-        "Core conversation stats, zero model requests",
-    );
+    let before_inspection = state.lock().expect("mock").bodies.len();
     for (command, expected) in [
         ("/memory", "Stored memories: 0"),
         ("/tasks", "No background tasks."),
@@ -2967,7 +2949,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         assert!(screen.contains(expected), "{screen}");
         assert_eq!(
             state.lock().expect("mock").bodies.len(),
-            before_history,
+            before_inspection,
             "{command} must use the current host contract without a model request"
         );
         oracle(

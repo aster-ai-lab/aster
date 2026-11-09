@@ -2414,7 +2414,7 @@ mod tests {
             let home = aster_dirs::home_dir().expect("home resolves in tests");
             assert_eq!(
                 display_copy_path(&home.join(".grok").join("last-copy.txt")),
-                "~/.grok/last-copy.txt"
+                "~/.aster/last-copy.txt"
             );
         }
         // Non-home paths pass through untouched, including multi-byte UTF-8 components (must never slice at a non-char boundary)

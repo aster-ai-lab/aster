@@ -15,22 +15,22 @@ fn grok_home_override_path_helpers() {
         aster_pager::util::pager_toml_path(),
         grok_home.join("pager.toml")
     );
-    assert_eq!(aster_pager::util::display_grok_home_prefix(), "$GROK_HOME");
+    assert_eq!(aster_pager::util::display_grok_home_prefix(), "$ASTER_HOME");
     assert_eq!(
         aster_pager::util::display_user_grok_path("config.toml"),
-        "$GROK_HOME/config.toml"
+        "$ASTER_HOME/config.toml"
     );
 
     let memory_path = grok_home.join("memory/MEMORY.md");
     assert_eq!(
         aster_pager::util::abbreviate_path(&memory_path.display().to_string()),
-        "$GROK_HOME/memory/MEMORY.md"
+        "$ASTER_HOME/memory/MEMORY.md"
     );
 
-    // The copy toast abbreviates paths the same way, so a custom $GROK_HOME outside $HOME still shows the short form
+    // The copy toast abbreviates paths the same way, so a custom $ASTER_HOME outside $HOME still shows the short form
     assert_eq!(
         aster_pager::clipboard::display_copy_path(&grok_home.join("last-copy.txt")),
-        "$GROK_HOME/last-copy.txt"
+        "$ASTER_HOME/last-copy.txt"
     );
 
     assert!(aster_pager::util::is_under_user_grok_home(&memory_path));

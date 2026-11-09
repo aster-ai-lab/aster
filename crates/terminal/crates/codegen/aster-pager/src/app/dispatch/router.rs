@@ -1490,12 +1490,13 @@ fn dispatch_inner(action: Action, app: &mut AppView) -> Vec<Effect> {
         Action::DashboardCycleMode => {
             let policy_block = app.yolo_policy_block;
             let auto_mode_gate = app.auto_mode_gate;
+            let exclude_plan = crate::app::aster_active();
             if let Some(d) = app.dashboard.as_mut() {
-                d.pending_mode = d.pending_mode.cycle(auto_mode_gate);
+                d.pending_mode = d.pending_mode.cycle(auto_mode_gate, exclude_plan);
                 if d.pending_mode == crate::views::dashboard::DashboardDispatchMode::AlwaysApprove
                     && let Some(warning) = policy_block
                 {
-                    d.pending_mode = d.pending_mode.cycle(auto_mode_gate);
+                    d.pending_mode = d.pending_mode.cycle(auto_mode_gate, exclude_plan);
                     d.set_error_toast(warning);
                 }
             }

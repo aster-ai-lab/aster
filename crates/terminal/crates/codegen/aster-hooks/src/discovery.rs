@@ -960,7 +960,7 @@ mod tests {
             HookProvenance::Requirements
         );
 
-        // Managed-vs-managed pair: `$GROK_HOME/requirements.toml` arrives before `/etc/aster`, but the root-owned tier outranks it
+        // Managed-vs-managed pair: `$ASTER_HOME/requirements.toml` arrives before `/etc/aster`, but the root-owned tier outranks it
         // The no-disable rule and pinned fields must not resolve under the user-writable copy
         let registry = registry_from_specs_deduped(vec![
             spec(
@@ -993,7 +993,7 @@ mod tests {
                 .is_managed_policy()
         );
 
-        // The signed cloud cache outranks the user-writable `$GROK_HOME` tiers it shares a directory with, and yields to root-owned policy
+        // The signed cloud cache outranks the user-writable `$ASTER_HOME` tiers it shares a directory with, and yields to root-owned policy
         let registry = registry_from_specs_deduped(vec![
             spec("managed:pre[0]", HookProvenance::Managed, 1),
             spec(

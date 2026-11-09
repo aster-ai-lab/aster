@@ -3189,7 +3189,7 @@ fn set_theme_emits_persist_setting_with_correct_payload() {
     with_theme_test_env(|| {
         let mut app = test_app_with_agent();
         assert_eq!(app.current_ui.theme, None);
-        crate::theme::cache::set(crate::theme::ThemeKind::GrokNight);
+        crate::theme::cache::set(crate::theme::ThemeKind::AsterNight);
         let effects = dispatch(Action::SetTheme("grokday".into()), &mut app);
         assert_eq!(effects.len(), 1);
         match effects.first() {
@@ -3308,7 +3308,7 @@ fn preview_auto_light_theme_emits_no_persist_and_no_current_ui_mutation() {
 }
 /// Auto-theme commit applies the live theme **only** when `theme="auto"` AND the system is in the matching mode.
 /// Scenario: `theme="groknight"` (concrete) while the system is Dark, and the user commits `auto_dark_theme="grokday"`.
-/// The setting is dormant (parent theme is concrete, not auto), so the live display must stay on GrokNight.
+/// The setting is dormant (parent theme is concrete, not auto), so the live display must stay on AsterNight.
 #[test]
 fn set_auto_dark_theme_does_not_apply_when_theme_is_not_auto() {
     with_theme_test_env(|| {
@@ -3319,20 +3319,20 @@ fn set_auto_dark_theme_does_not_apply_when_theme_is_not_auto() {
         let _ = dispatch(Action::SetTheme("groknight".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokNight,
+            crate::theme::ThemeKind::AsterNight,
         );
         let _ = dispatch(Action::SetAutoDarkTheme("grokday".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokNight,
+            crate::theme::ThemeKind::AsterNight,
             "auto_dark_theme commit must NOT change live display when theme is not auto",
         );
         assert_eq!(app.current_ui.auto_dark_theme.as_deref(), Some("grokday"));
     });
 }
 /// Auto-theme commit DOES apply the live theme when both (a) the parent theme is auto AND (b) the system matches.
-/// Uses `GrokDay` (non-truecolor-requiring) for the dark-mode fixture: the test environment may not report truecolor support.
-/// `Theme::apply_kind` clamps truecolor-only themes (TokyoNight, RosePineMoon) to GrokNight, so a non-truecolor theme avoids the clamp.
+/// Uses `AsterDay` (non-truecolor-requiring) for the dark-mode fixture: the test environment may not report truecolor support.
+/// `Theme::apply_kind` clamps truecolor-only themes (TokyoNight, RosePineMoon) to AsterNight, so a non-truecolor theme avoids the clamp.
 #[test]
 fn set_auto_dark_theme_applies_when_theme_is_auto_and_system_is_dark() {
     with_theme_test_env(|| {
@@ -3344,19 +3344,19 @@ fn set_auto_dark_theme_applies_when_theme_is_auto_and_system_is_dark() {
         assert!(crate::theme::cache::is_auto_mode());
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokNight,
+            crate::theme::ThemeKind::AsterNight,
         );
         let _ = dispatch(Action::SetAutoDarkTheme("grokday".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokDay,
+            crate::theme::ThemeKind::AsterDay,
             "auto_dark_theme commit must update live display when theme=auto + system=Dark",
         );
     });
 }
 /// Auto-theme commit does NOT apply when system is in the non-matching mode (auto_dark_theme while the system is Light).
 /// Uses `groknight` for the auto_dark_theme value to avoid `clamp_to_terminal` ambiguity.
-/// We want a concrete kind that's clearly different from GrokDay, the active resolved theme.
+/// We want a concrete kind that's clearly different from AsterDay, the active resolved theme.
 #[test]
 fn set_auto_dark_theme_does_not_apply_when_system_is_light() {
     with_theme_test_env(|| {
@@ -3367,12 +3367,12 @@ fn set_auto_dark_theme_does_not_apply_when_system_is_light() {
         let _ = dispatch(Action::SetTheme("auto".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokDay,
+            crate::theme::ThemeKind::AsterDay,
         );
         let _ = dispatch(Action::SetAutoDarkTheme("groknight".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokDay,
+            crate::theme::ThemeKind::AsterDay,
             "auto_dark_theme commit must NOT change live display when system=Light",
         );
         assert_eq!(app.current_ui.auto_dark_theme.as_deref(), Some("groknight"),);
@@ -3390,12 +3390,12 @@ fn set_auto_light_theme_applies_when_theme_is_auto_and_system_is_light() {
         let _ = dispatch(Action::SetTheme("auto".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokDay,
+            crate::theme::ThemeKind::AsterDay,
         );
         let _ = dispatch(Action::SetAutoLightTheme("groknight".into()), &mut app);
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokNight,
+            crate::theme::ThemeKind::AsterNight,
             "auto_light_theme must update display when theme=auto + system=Light",
         );
     });
@@ -3511,7 +3511,7 @@ fn rollback_theme_reverts_current_ui_and_cache() {
         assert_eq!(app.current_ui.theme.as_deref(), Some("grokday"));
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokDay,
+            crate::theme::ThemeKind::AsterDay,
         );
         let _ = dispatch(
             Action::TaskComplete(TaskResult::SettingPersistFailed {
@@ -3528,7 +3528,7 @@ fn rollback_theme_reverts_current_ui_and_cache() {
         );
         assert_eq!(
             crate::theme::cache::current_kind(),
-            crate::theme::ThemeKind::GrokNight,
+            crate::theme::ThemeKind::AsterNight,
             "rollback must update the live theme cache too",
         );
     });

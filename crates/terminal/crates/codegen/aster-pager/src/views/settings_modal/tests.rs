@@ -567,7 +567,7 @@ fn render_setting_row_selected_is_reversed_on_terminal_theme() {
         );
     }
 
-    crate::theme::cache::set(crate::theme::ThemeKind::GrokNight);
+    crate::theme::cache::set(crate::theme::ThemeKind::AsterNight);
     let theme = Theme::current();
     let mut buf = Buffer::empty(area);
     render_setting_row(
@@ -6739,7 +6739,7 @@ fn max_thoughts_width_preview_content_is_italic() {
 
 /// Test 4: the title row distinguishes itself from the content rows via two independent signals.
 /// "Darker" is not the contract; on the dark themes `bg_visual` is lighter than `bg_highlight`, and
-/// only GrokDay renders the title darker.
+/// only AsterDay renders the title darker.
 #[test]
 fn max_thoughts_width_preview_title_styling_distinguishes_from_content() {
     let area = Rect {
@@ -6785,9 +6785,9 @@ fn max_thoughts_width_preview_title_styling_distinguishes_from_content() {
     // Contrast assertion: regardless of the active palette, the raw / un-quantized theme tokens differ
     // We use the raw theme directly so this assertion survives `NO_COLOR` / 256-color quantization
     let raw_theme = match crate::theme::Theme::current_kind() {
-        crate::theme::ThemeKind::GrokNight => crate::theme::Theme::groknight(),
+        crate::theme::ThemeKind::AsterNight => crate::theme::Theme::groknight(),
         crate::theme::ThemeKind::TokyoNight => crate::theme::Theme::tokyonight(),
-        crate::theme::ThemeKind::GrokDay => crate::theme::Theme::grokday(),
+        crate::theme::ThemeKind::AsterDay => crate::theme::Theme::grokday(),
         crate::theme::ThemeKind::RosePineMoon => crate::theme::Theme::rosepine_moon(),
         // Resolved via `Theme::current()` rather than a constructor because `theme::oscura` is a private module
         crate::theme::ThemeKind::OscuraMidnight => crate::theme::Theme::current(),

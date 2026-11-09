@@ -4,7 +4,7 @@ use super::*;
 use crate::slash::mid_text_hoist::MID_TEXT_GOAL_NOTICE;
 use pretty_assertions::assert_eq;
 
-const TESLA: &str = "here are the crashes\n\n/goal figure out why these sessions crash";
+const SAMPLE_PROMPT: &str = "here are the crashes\n\n/goal figure out why these sessions crash";
 
 fn register_goal(app: &mut AppView, id: AgentId) {
     let agent = app.agents.get_mut(&id).unwrap();
@@ -44,11 +44,11 @@ fn mid_text_goal_toasts_and_does_not_send() {
     let mut app = test_app_with_agent();
     let id = AgentId(0);
     register_goal(&mut app, id);
-    test_agent_mut(&mut app, id).prompt.set_text(TESLA);
+    test_agent_mut(&mut app, id).prompt.set_text(SAMPLE_PROMPT);
 
-    let effects = dispatch(Action::SendPrompt(TESLA.to_owned()), &mut app);
+    let effects = dispatch(Action::SendPrompt(SAMPLE_PROMPT.to_owned()), &mut app);
 
-    assert_mid_text_goal_refused(&app, id, &effects, TESLA);
+    assert_mid_text_goal_refused(&app, id, &effects, SAMPLE_PROMPT);
 }
 
 /// A refused submission sends nothing, so an unbound `[Image #1]` in it raises no image notice: the
@@ -121,13 +121,13 @@ fn mid_text_goal_without_acp_command_stays_a_prompt() {
     let mut app = test_app_with_agent();
     let id = AgentId(0);
 
-    let effects = dispatch(Action::SendPrompt(TESLA.to_owned()), &mut app);
+    let effects = dispatch(Action::SendPrompt(SAMPLE_PROMPT.to_owned()), &mut app);
 
     assert!(toast_text(&app, id).is_none());
     assert!(
         matches!(
             effects.as_slice(),
-            [Effect::SendPrompt { text, .. }] if text == TESLA
+            [Effect::SendPrompt { text, .. }] if text == SAMPLE_PROMPT
         ),
         "unknown /goal is ordinary chat, got {effects:?}"
     );
@@ -139,13 +139,13 @@ fn literal_follow_up_with_goal_is_not_toasted() {
     let id = AgentId(0);
     register_goal(&mut app, id);
 
-    let effects = dispatch(Action::SubmitFollowUp(TESLA.to_owned()), &mut app);
+    let effects = dispatch(Action::SubmitFollowUp(SAMPLE_PROMPT.to_owned()), &mut app);
 
     assert!(toast_text(&app, id).is_none());
     assert!(
         matches!(
             effects.as_slice(),
-            [Effect::SendPrompt { text, .. }] if text == TESLA
+            [Effect::SendPrompt { text, .. }] if text == SAMPLE_PROMPT
         ),
         "{effects:?}"
     );
@@ -158,7 +158,7 @@ fn mid_text_goal_in_minimal_is_a_system_line() {
     let id = AgentId(0);
     register_goal(&mut app, id);
 
-    let effects = dispatch(Action::SendPrompt(TESLA.to_owned()), &mut app);
+    let effects = dispatch(Action::SendPrompt(SAMPLE_PROMPT.to_owned()), &mut app);
 
     assert!(effects.is_empty(), "{effects:?}");
     assert!(toast_text(&app, id).is_none());

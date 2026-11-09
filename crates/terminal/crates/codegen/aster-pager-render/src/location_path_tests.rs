@@ -3,12 +3,12 @@ use super::*;
 #[test]
 fn shorten_location_path_kerem_grok_home() {
     assert_eq!(
-        shorten_location_path("~/.grok/worktrees/code-aster/dashboard-design").as_ref(),
+        shorten_location_path("~/.aster/worktrees/code-aster/dashboard-design").as_ref(),
         "~/.g/w/code-aster/dashboard-design"
     );
     assert_eq!(
-        shorten_location_path("$GROK_HOME/worktrees/code-aster/dashboard-design").as_ref(),
-        "$GROK_HOME/w/code-aster/dashboard-design"
+        shorten_location_path("$ASTER_HOME/worktrees/code-aster/dashboard-design").as_ref(),
+        "$ASTER_HOME/w/code-aster/dashboard-design"
     );
 }
 
@@ -30,15 +30,15 @@ fn shorten_location_path_short_paths_leave_alone() {
     assert_eq!(shorten_location_path("~").as_ref(), "~");
     assert_eq!(shorten_location_path("~/src").as_ref(), "~/src");
     assert_eq!(shorten_location_path("~/src/repo").as_ref(), "~/src/repo");
-    assert_eq!(shorten_location_path("~/.grok").as_ref(), "~/.grok");
+    assert_eq!(shorten_location_path("~/.aster").as_ref(), "~/.aster");
     assert_eq!(
-        shorten_location_path("~/.grok/worktrees").as_ref(),
-        "~/.grok/worktrees"
+        shorten_location_path("~/.aster/worktrees").as_ref(),
+        "~/.aster/worktrees"
     );
-    assert_eq!(shorten_location_path("$GROK_HOME").as_ref(), "$GROK_HOME");
+    assert_eq!(shorten_location_path("$ASTER_HOME").as_ref(), "$ASTER_HOME");
     assert_eq!(
-        shorten_location_path("$GROK_HOME/worktrees").as_ref(),
-        "$GROK_HOME/worktrees"
+        shorten_location_path("$ASTER_HOME/worktrees").as_ref(),
+        "$ASTER_HOME/worktrees"
     );
     assert_eq!(shorten_location_path("/work/aster").as_ref(), "/work/aster");
     assert_eq!(shorten_location_path("relative").as_ref(), "relative");
@@ -152,7 +152,7 @@ fn shorten_location_path_unix_backslash_stays_in_component() {
 #[test]
 fn shorten_location_path_does_not_eat_grok_home_lookalike() {
     assert_eq!(
-        shorten_location_path("$GROK_HOME_BACKUP/a/b/c").as_ref(),
+        shorten_location_path("$ASTER_HOME_BACKUP/a/b/c").as_ref(),
         "$/a/b/c"
     );
 }

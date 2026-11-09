@@ -7314,5 +7314,28 @@ fn shift_tab_never_selects_plan() -> bool {
             return false;
         }
     }
-    cycled
+    if !cycled {
+        return false;
+    }
+
+    // Dashboard staging must follow the same Aster Plan exclusion.
+    super::open_dashboard(&mut app);
+    if let Some(dashboard) = app.dashboard.as_mut() {
+        dashboard.pending_mode = crate::views::dashboard::DashboardDispatchMode::Plan;
+    }
+    app.apply_aster_slash_gate();
+    if app.dashboard.as_ref().is_some_and(|dashboard| {
+        dashboard.pending_mode == crate::views::dashboard::DashboardDispatchMode::Plan
+    }) {
+        return false;
+    }
+    for _ in 0..8 {
+        let _ = dispatch(Action::DashboardCycleMode, &mut app);
+        if app.dashboard.as_ref().is_some_and(|dashboard| {
+            dashboard.pending_mode == crate::views::dashboard::DashboardDispatchMode::Plan
+        }) {
+            return false;
+        }
+    }
+    true
 }

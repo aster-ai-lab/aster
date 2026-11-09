@@ -2,7 +2,7 @@
 license = "Apache-2.0"
 name = "aster-dirs"
 version = "0.1.0"
-description = "Home-directory resolution generally: USERPROFILE-first home_dir, plus aster-home ($ASTER_HOME, else $GROK_HOME, else <home>/.aster)"
+description = "Home-directory resolution generally: USERPROFILE-first home_dir, plus aster-home ($ASTER_HOME, else $GROK_HOME legacy, else <home>/.aster)"
 edition = "2024"
 publish = false
 

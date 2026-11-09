@@ -17,7 +17,7 @@ enum RequiredRangeDecision {
 pub(crate) enum VersionPolicyError {
     #[error(
         "Cannot install Aster Code {target}: the minimum allowed version is {minimum}. \
-         Run `grok update` to install the latest allowed version."
+         Run `aster update` to install the latest allowed version."
     )]
     TargetBelowFloor { target: String, minimum: String },
 }
@@ -81,13 +81,13 @@ fn required_range_message(decision: &RequiredRangeDecision) -> Option<String> {
             "This version of Aster Code ({current}) is older than the minimum required \
              by your organization ({minimum}).\n\n\
              Update to an approved version through your organization's approved \
-             method (for example, run `grok update`)."
+             method (for example, run `aster update`)."
         )),
         RequiredRangeDecision::Above { current, maximum } => Some(format!(
             "This version of Aster Code ({current}) is newer than the maximum allowed \
              by your organization ({maximum}).\n\n\
              Install an approved version through your organization's approved \
-             method (for example, run `grok update --version {maximum}`)."
+             method (for example, run `aster update --version {maximum}`)."
         )),
     }
 }

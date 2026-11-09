@@ -2,9 +2,9 @@
 //!
 //! Merge order (lowest to highest priority):
 //! 1. `/etc/aster/managed_config.toml`
-//! 2. `$GROK_HOME/managed_config.toml`
-//! 3. `$GROK_HOME/config.toml`
-//! 4. `$GROK_HOME/requirements.toml` (cloud cache; Ed25519-signed at rest once a key is embedded, see [`signed_policy`])
+//! 2. `$ASTER_HOME/managed_config.toml`
+//! 3. `$ASTER_HOME/config.toml`
+//! 4. `$ASTER_HOME/requirements.toml` (cloud cache; Ed25519-signed at rest once a key is embedded, see [`signed_policy`])
 //! 5. `/etc/aster/requirements.toml`
 //! 6. macOS MDM managed preferences (`ai.x.aster`, admin-forced), macOS only
 //!

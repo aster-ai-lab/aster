@@ -30,6 +30,10 @@ pub(super) fn dispatch_enter_plan_mode(
     app: &mut AppView,
     description: Option<String>,
 ) -> Vec<Effect> {
+    if crate::app::aster_active() {
+        app.show_toast("Plan mode is unavailable with the Aster backend.");
+        return vec![];
+    }
     let ActiveView::Agent(id) = app.active_view else {
         return vec![];
     };
@@ -114,6 +118,12 @@ pub(super) fn set_plan_mode(
     app: &mut AppView,
     kind: crate::app::actions::PlanModeKind,
 ) -> Vec<Effect> {
+    // Aster hides `/plan` and Plan from Shift+Tab; refuse the action path too.
+    // Leaving Plan (Off) still needs to work if a session was already in Plan.
+    if crate::app::aster_active() && kind.to_bool() {
+        app.show_toast("Plan mode is unavailable with the Aster backend.");
+        return vec![];
+    }
     let ActiveView::Agent(id) = app.active_view else {
         return vec![];
     };
@@ -599,6 +609,10 @@ fn cycle_refuses(app: &AppView) -> bool {
 /// publishes its own modes. Returns `None` when the ordinary cycle should run instead.
 /// Agent-view only, so a peeked agent's unseen nudge never changes its cycle.
 fn jump_to_published_plan_for_nudge(app: &mut AppView) -> Option<Vec<Effect>> {
+    // Aster hides `/plan` and the plan nudge; Shift+Tab must not jump into Plan either.
+    if crate::app::aster_active() {
+        return None;
+    }
     let ActiveView::Agent(id) = app.active_view else {
         return None;
     };
@@ -729,6 +743,37 @@ fn dispatch_cycle_mode_inner(app: &mut AppView) -> Vec<Effect> {
         let in_plan = agent.plan_mode_pending.unwrap_or(agent.plan_mode_active);
         let in_yolo = agent.session.is_yolo();
         let persist_canonical: Option<&'static str> = match (in_plan, in_auto, in_yolo) {
+            // Aster: Plan is not on the Shift+Tab ring (same as builtin_mode_choices).
+            // Normal → Auto (or Always-Approve when Auto is gated off).
+            (false, false, false) if crate::app::aster_active() => {
+                if auto_gate {
+                    agent.session.yolo_mode = false;
+                    app.default_yolo = false;
+                    app.current_ui.permission_mode = Some("auto".into());
+                    agent.show_mode_switch_banner("Auto");
+                    tracing::info!("Mode cycle (pre-session): Normal → Auto (aster)");
+                    Some("auto")
+                } else if let Some(warning) = yolo_locked {
+                    app.current_ui.permission_mode = Some("ask".into());
+                    agent.session.yolo_mode = false;
+                    app.default_yolo = false;
+                    agent.show_toast(warning);
+                    agent.show_mode_switch_banner("Normal");
+                    tracing::info!(
+                        "Mode cycle (pre-session): Normal → Normal (aster, auto gated, policy)"
+                    );
+                    Some("ask")
+                } else {
+                    agent.session.yolo_mode = true;
+                    app.default_yolo = true;
+                    app.current_ui.permission_mode = Some("yolo".into());
+                    agent.show_mode_switch_banner(yolo_mode_label());
+                    tracing::info!(
+                        "Mode cycle (pre-session): Normal → Always-Approve (aster, auto gated)"
+                    );
+                    Some("yolo")
+                }
+            }
             // Normal to Plan
             (false, false, false) => {
                 agent.plan_mode_pending = Some(true);
@@ -924,6 +969,12 @@ fn mode_choices(
 ) -> Vec<(ModeChoice, String)> {
     let mut choices = published_mode_choices(agent);
     choices.retain(|(choice, _)| auto_gate || *choice != ModeChoice::Auto);
+    // Aster keeps Plan off the Shift+Tab ring even when ACP still advertises it.
+    // Leaving an already-active Plan still works: next_choice falls through to the
+    // first remaining entry when the current mode is absent from the ring.
+    if crate::app::aster_active() {
+        choices.retain(|(choice, _)| !matches!(choice, ModeChoice::Session(SessionMode::Plan)));
+    }
     if choices.is_empty() {
         choices = builtin_mode_choices(auto_gate);
     }

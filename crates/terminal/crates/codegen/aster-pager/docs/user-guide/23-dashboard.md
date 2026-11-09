@@ -14,7 +14,7 @@ disk), or the workflows run UI (`/workflow runs`).
 
 ## Opening the dashboard
 
-- **`grok dashboard`** — launch the TUI into the dashboard.
+- **`aster dashboard`** — launch the TUI into the dashboard.
 - **`/dashboard`** (aliases **`/agents-dashboard`**, **`/sessions`**) — open
   from inside a session.
 - **`Ctrl+\`** — same view as the slash command.
@@ -305,7 +305,7 @@ Prefixes (only inside search mode):
 
 ## Persistence
 
-Per-user preferences under `[dashboard]` in `~/.grok/config.toml`:
+Per-user preferences under `[dashboard]` in `~/.aster/config.toml`:
 
 ```toml
 [dashboard]

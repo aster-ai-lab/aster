@@ -94,7 +94,7 @@ pub static DEFAULT_ALLOWED_DOMAINS: &[&str] = &[
     // Aster
     "x.ai",
     "docs.aster.ai",
-    "docs.x.ai",
+    "docs.aster.example",
     "api.aster",
     // Programming languages
     "docs.python.org",

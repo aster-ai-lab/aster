@@ -1,6 +1,6 @@
 # Background Tasks and Monitoring
 
-Grok runs long-lived processes without blocking the conversation. This document covers background commands, the `/loop` command, the `monitor` tool, and the scheduler.
+Aster runs long-lived processes without blocking the conversation. This document covers background commands, the `/loop` command, the `monitor` tool, and the scheduler.
 
 ---
 
@@ -137,7 +137,7 @@ Stop persistent monitors with `kill_command_or_subagent(task_id)`.
 
 ### Volume Control
 
-If a monitor produces too many events, Grok stops it automatically. When this happens, restart the monitor with a tighter filter. Prefer `grep --line-buffered`, `awk`, or a wrapper script that emits only the events you care about.
+If a monitor produces too many events, Aster stops it automatically. When this happens, restart the monitor with a tighter filter. Prefer `grep --line-buffered`, `awk`, or a wrapper script that emits only the events you care about.
 
 ---
 

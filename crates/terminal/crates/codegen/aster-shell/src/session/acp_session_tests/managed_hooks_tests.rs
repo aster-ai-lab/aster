@@ -1,7 +1,7 @@
 //! A managed-policy hook must not be disabled through `handle_hooks_action`.
 //!
 //! These tests drive the shipped `handle_hooks_action` with a real registry whose hook carries a managed-policy provenance
-//! (the root-owned `/etc/aster` tier and the signed synced `$GROK_HOME/requirements.toml`).
+//! (the root-owned `/etc/aster` tier and the signed synced `$ASTER_HOME/requirements.toml`).
 //! The per-hook `Disable` action must be refused and the bulk `ToggleSource` must skip it, both before writing any disable state.
 //! The dispatcher-level exemption and the display predicate are covered with a sandboxed `GROK_HOME` in `aster_hooks::dispatcher` tests.
 

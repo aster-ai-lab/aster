@@ -928,15 +928,15 @@ async fn legacy_auth_hint_on_404_model_not_found() {
             );
             assert!(
                 msg.contains("grok update"),
-                "hint must mention `grok update` before re-login, got: {msg}"
+                "hint must mention `aster update` before re-login, got: {msg}"
             );
             assert!(
                 msg.contains("grok logout"),
-                "hint must mention `grok logout`, got: {msg}"
+                "hint must mention `aster logout`, got: {msg}"
             );
             assert!(
                 msg.contains("grok login"),
-                "hint must mention `grok login`, got: {msg}"
+                "hint must mention `aster login`, got: {msg}"
             );
             let update_at = msg.find("grok update").expect("grok update");
             let logout_at = msg.find("grok logout").expect("grok logout");
@@ -1008,15 +1008,15 @@ async fn legacy_auth_hint_on_401_unauthorized() {
             );
             assert!(
                 msg.contains("grok update"),
-                "hint must mention `grok update` before re-login, got: {msg}"
+                "hint must mention `aster update` before re-login, got: {msg}"
             );
             assert!(
                 msg.contains("grok logout"),
-                "hint must mention `grok logout`, got: {msg}"
+                "hint must mention `aster logout`, got: {msg}"
             );
             assert!(
                 msg.contains("grok login"),
-                "hint must mention `grok login`, got: {msg}"
+                "hint must mention `aster login`, got: {msg}"
             );
             let update_at = msg.find("grok update").expect("grok update");
             let logout_at = msg.find("grok logout").expect("grok logout");

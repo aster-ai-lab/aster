@@ -8,12 +8,12 @@ const CLAUDE_MANAGED_SETTINGS_PATH: &str =
 #[cfg(target_os = "linux")]
 const CLAUDE_MANAGED_SETTINGS_PATH: &str = "/etc/claude-code/managed-settings.json";
 
-/// Canonical aster application path: `$GROK_HOME/bin/aster` (Unix) or `aster.exe` (Windows).
+/// Canonical aster application path: `$ASTER_HOME/bin/aster` (Unix) or `aster.exe` (Windows).
 pub fn grok_application() -> PathBuf {
     grok_application_in(&grok_home())
 }
 
-/// [`grok_application`] under an explicit home instead of `$GROK_HOME`.
+/// [`grok_application`] under an explicit home instead of `$ASTER_HOME`.
 pub fn grok_application_in(home: &std::path::Path) -> PathBuf {
     let name = if cfg!(windows) { "grok.exe" } else { "grok" };
     home.join("bin").join(name)

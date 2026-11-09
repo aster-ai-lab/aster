@@ -522,7 +522,7 @@ fn protected_edit_reason(path: &Path) -> Option<ProtectedEditReason> {
 }
 
 /// Aster Code config files that alter permissions or sandbox restrictions; a silent edit would let the agent loosen its own guardrails.
-/// Matched directly inside any `.aster` dir (user-global default and workspace overlays) and directly under a custom `$GROK_HOME`.
+/// Matched directly inside any `.aster` dir (user-global default and workspace overlays) and directly under a custom `$ASTER_HOME`.
 /// A custom home has no `.aster` component, so the component match alone cannot see it.
 fn protected_grok_config_file(path: &Path, components: &[&str]) -> Option<ProtectedEditReason> {
     protected_grok_config_file_with_home(
@@ -1660,7 +1660,7 @@ mod tests {
         }
     }
 
-    /// A custom `$GROK_HOME` has no `.aster` path component, so the live `config.toml` / `sandbox.toml` must be caught by the home-prefix branch.
+    /// A custom `$ASTER_HOME` has no `.aster` path component, so the live `config.toml` / `sandbox.toml` must be caught by the home-prefix branch.
     #[test]
     fn grok_config_files_under_custom_grok_home_are_protected() {
         let home = tempfile::tempdir().unwrap();
@@ -1688,7 +1688,7 @@ mod tests {
             assert_eq!(
                 protected_grok_config_file_with_home(&path, &components, Some(home_path)),
                 Some(reason),
-                "{file} directly under $GROK_HOME must be protected"
+                "{file} directly under $ASTER_HOME must be protected"
             );
         }
         let grant = home_path
@@ -1702,7 +1702,7 @@ mod tests {
                 Some(home_path)
             ),
             Some(ProtectedEditReason::GrokConfig),
-            "per-client grant store under $GROK_HOME/sessions must be protected"
+            "per-client grant store under $ASTER_HOME/sessions must be protected"
         );
         // Same file names elsewhere (or with no resolvable home) stay ordinary.
         let elsewhere = home_path
@@ -1727,7 +1727,7 @@ mod tests {
     }
 
     /// The resolved-symlink arm of the aster-home match must decide.
-    /// `$GROK_HOME` points at a symlink while the edit targets the physical home directory, so the lexical parent-equality arm cannot fire.
+    /// `$ASTER_HOME` points at a symlink while the edit targets the physical home directory, so the lexical parent-equality arm cannot fire.
     #[test]
     #[cfg(unix)]
     fn grok_config_under_symlinked_grok_home_is_protected() {

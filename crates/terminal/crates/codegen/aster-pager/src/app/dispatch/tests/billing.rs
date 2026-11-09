@@ -441,7 +441,7 @@ fn upsell_non_max_upgrade_url_is_supergrok() {
         .as_deref()
         .unwrap();
     assert!(url.contains("kense-labs/aster"), "got: {url}");
-    assert!(url.contains("referrer=grok-build"), "got: {url}");
+    assert!(url.contains("referrer=aster-build"), "got: {url}");
 }
 
 #[test]

@@ -361,7 +361,7 @@ pub(super) fn build_authorize_url(
     let referrer = oauth2
         .and_then(|o| o.referrer.as_deref())
         .filter(|r| !r.is_empty())
-        .unwrap_or("grok-build");
+        .unwrap_or("aster-build");
     url.push_str(&format!("&referrer={}", urlencoding::encode(referrer)));
     url
 }
@@ -785,7 +785,7 @@ mod tests {
             nonce_q.as_str(),
             "scope=openid",
             "audience=api",
-            "referrer=grok-build",
+            "referrer=aster-build",
         ] {
             assert!(url.contains(required), "missing param: {required}");
         }
@@ -809,7 +809,7 @@ mod tests {
             scopes: vec!["offline_access".into(), "grok-cli:access".into()],
             principal_type: Some("Team".into()),
             principal_id: Some("team-123".into()),
-            referrer: Some("grok-build".into()),
+            referrer: Some("aster-build".into()),
         };
         let discovery = Discovery {
             authorization_endpoint: "https://auth.aster/authorize".into(),
@@ -832,7 +832,7 @@ mod tests {
         );
         assert!(url.contains("principal_type=Team"));
         assert!(url.contains("principal_id=team-123"));
-        assert!(url.contains("referrer=grok-build"));
+        assert!(url.contains("referrer=aster-build"));
         assert_eq!(
             url.matches("referrer=").count(),
             1,
@@ -875,7 +875,7 @@ mod tests {
             &test_nonce(),
         );
         assert!(url.contains("referrer=grok-desktop"));
-        assert!(!url.contains("referrer=grok-build"));
+        assert!(!url.contains("referrer=aster-build"));
         assert_eq!(
             url.matches("referrer=").count(),
             1,

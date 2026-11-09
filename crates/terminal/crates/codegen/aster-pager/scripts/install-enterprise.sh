@@ -1,18 +1,18 @@
 #!/bin/bash
 #
-# Grok CLI installer (enterprise channel) — https://x.ai/cli/enterprise-install.sh
+# Aster CLI installer (enterprise channel) — https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh
 #
 # Standalone installer for the enterprise channel. This is intentionally a full
 # copy of the install logic (not a wrapper around install.sh) so that changes to
 # the stable installer cannot accidentally break enterprise deployments.
 #
-# Auth: GROK_DEPLOYMENT_KEY (takes precedence) or ~/.grok/auth.json from `grok login`.
+# Auth: GROK_DEPLOYMENT_KEY (takes precedence) or ~/.aster/auth.json from `aster login`.
 # Env: GROK_BIN_DIR, GROK_PROXY_URL
 #
 # Usage:
-#   curl -fsSL https://x.ai/cli/enterprise-install.sh | bash            # latest enterprise
-#   curl -fsSL https://x.ai/cli/enterprise-install.sh | bash -s 0.1.42  # specific version
-#   GROK_DEPLOYMENT_KEY=<key> bash <(curl -fsSL https://x.ai/cli/enterprise-install.sh)
+#   curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash            # latest enterprise
+#   curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s 0.1.42  # specific version
+#   GROK_DEPLOYMENT_KEY=<key> bash <(curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh
 #
 # Windows: run under Git for Windows / MSYS2 Bash (same curl | bash flow); WSL
 # uses the Linux binary.
@@ -111,7 +111,7 @@ json_get() {
         | sed -e 's/\\"/"/g' -e 's/\\n/\'$'\n''/g' -e 's/\\t/\'$'\t''/g' -e 's/\\\\/\\/g'
 }
 
-# Read a token from ~/.grok/auth.json for the given scope key.
+# Read a token from ~/.aster/auth.json for the given scope key.
 # Format: {"scope_url": {"key": "token"}, ...}
 read_grok_token() {
     local auth_file="$HOME/.grok/auth.json"
@@ -122,8 +122,8 @@ read_grok_token() {
 }
 
 # Resolve auth: GROK_DEPLOYMENT_KEY > OIDC token > legacy token
-OIDC_SCOPE="https://auth.x.ai::b1a00492-073a-47ea-816f-4c329264a828"
-LEGACY_SCOPE="https://accounts.x.ai/sign-in"
+OIDC_SCOPE="https://auth.aster.invalid::b1a00492-073a-47ea-816f-4c329264a828"
+LEGACY_SCOPE="https://accounts.aster.invalid/sign-in"
 AUTH_SOURCE=""
 
 if [ -n "$GROK_DEPLOYMENT_KEY" ]; then
@@ -134,10 +134,10 @@ else
     LEGACY_TOKEN=$(read_grok_token "$LEGACY_SCOPE" 2>/dev/null) || true
     if [ -n "$OIDC_TOKEN" ]; then
         AUTH_SOURCE="auth.json (oidc)"
-        echo "Auth: using OIDC token from ~/.grok/auth.json." >&2
+        echo "Auth: using OIDC token from ~/.aster/auth.json." >&2
     elif [ -n "$LEGACY_TOKEN" ]; then
         AUTH_SOURCE="auth.json (legacy)"
-        echo "Auth: using legacy token from ~/.grok/auth.json." >&2
+        echo "Auth: using legacy token from ~/.aster/auth.json." >&2
     fi
 fi
 
@@ -168,7 +168,7 @@ if [ "$os" = "macos" ] && [ "$arch" = "x86_64" ]; then
     fi
 fi
 
-BASE_URL_PRIMARY="https://x.ai/cli"
+BASE_URL_PRIMARY="https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh"
 BASE_URL_FALLBACK="https://storage.googleapis.com/grok-build-public-artifacts/cli"
 DOWNLOAD_DIR="$HOME/.grok/downloads"
 BIN_DIR="${GROK_BIN_DIR:-$HOME/.grok/bin}"
@@ -177,7 +177,7 @@ mkdir -p "$DOWNLOAD_DIR" "$BIN_DIR"
 platform="${os}-${arch}"
 CHANNEL="enterprise"
 
-# Pick a working BASE_URL: try Cloudflare-fronted x.ai first, fall back to
+# Pick a working BASE_URL: try Aster release CDN first, fall back to
 # direct GCS if it's unreachable. The probe doubles as the channel-pointer
 # fetch when no explicit TARGET was passed, so the happy path costs zero
 # extra HTTP requests.
@@ -207,9 +207,9 @@ if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9._]+)?$ ]]; then
 fi
 
 if [ -n "$AUTH_SOURCE" ]; then
-    echo "Installing Grok $version ($platform, $AUTH_SOURCE)..." >&2
+    echo "Installing Aster $version ($platform, $AUTH_SOURCE)..." >&2
 else
-    echo "Installing Grok $version ($platform)..." >&2
+    echo "Installing Aster $version ($platform)..." >&2
 fi
 
 binary_path="$DOWNLOAD_DIR/grok-$platform"
@@ -293,7 +293,7 @@ fi
 
 # Fetch managed_config.toml + requirements.toml from server (deployment key only).
 if [ -n "$GROK_DEPLOYMENT_KEY" ]; then
-    PROXY_URL="${GROK_PROXY_URL:-https://cli-chat-proxy.grok.com/v1}"
+    PROXY_URL="${GROK_PROXY_URL:-https://api.aster.invalid/v1}"
     # Refuse cleartext / userinfo / empty-host proxies before attaching the key.
     proxy_authority="${PROXY_URL#*://}"
     proxy_authority="${proxy_authority%%[/?#]*}"
@@ -371,7 +371,7 @@ if [ "$os" != "windows" ] && ! path_has_dir "$BIN_DIR"; then
     done
 fi
 
-# Also update shell config so ~/.grok/bin is on PATH for future sessions
+# Also update shell config so ~/.aster/bin is on PATH for future sessions
 user_shell="$(basename "${SHELL:-}")"
 config_file=""
 
@@ -411,7 +411,7 @@ fish_add_path $HOME/.grok/bin
     elif [ "$user_shell" = "zsh" ]; then
         new_block='# >>> grok installer >>>
 export PATH="$HOME/.grok/bin:$PATH"
-fpath=(~/.grok/completions/zsh $fpath)
+fpath=(~/.aster/completions/zsh $fpath)
 autoload -Uz compinit && compinit -C
 # <<< grok installer <<<'
     else

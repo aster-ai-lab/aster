@@ -4176,10 +4176,10 @@
             "terminal theme keeps the solid plan accent"
         );
 
-        // GrokNight: dimmed toward bg at truecolor; where quantization makes
+        // AsterNight: dimmed toward bg at truecolor; where quantization makes
         // the palette named (blend inexpressible), the solid accent — never
         // the old gray fallback.
-        crate::theme::cache::set(crate::theme::ThemeKind::GrokNight);
+        crate::theme::cache::set(crate::theme::ThemeKind::AsterNight);
         let style = render();
         let theme = Theme::current();
         assert_ne!(style.fg, Some(theme.gray), "never drops to gray");
@@ -4286,7 +4286,7 @@
             );
         }
 
-        crate::theme::cache::set(crate::theme::ThemeKind::GrokNight);
+        crate::theme::cache::set(crate::theme::ThemeKind::AsterNight);
         let style = render("yolo");
         assert_eq!(style.fg, Some(Theme::current().gray), "RGB keeps gray fg");
         assert!(!style.add_modifier.contains(Modifier::DIM));
@@ -4482,7 +4482,7 @@
             "terminal-theme placeholder must be dimmed, got {terminal:?}"
         );
 
-        crate::theme::cache::set(crate::theme::ThemeKind::GrokNight);
+        crate::theme::cache::set(crate::theme::ThemeKind::AsterNight);
         let groknight = render(&mut PromptWidget::new());
         assert_eq!(
             groknight.fg,

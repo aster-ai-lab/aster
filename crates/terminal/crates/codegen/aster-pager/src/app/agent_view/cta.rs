@@ -708,7 +708,7 @@ mod plugin_cta_notify_tests {
         use crate::app::agent_view::CtaPhase;
         let mut agent = make_agent();
         agent.session.session_id = Some("sess-1".to_string().into());
-        agent.plugin_cta.source_url_or_path = Some("/srv/spacex-marketplace".into());
+        agent.plugin_cta.source_url_or_path = Some("/srv/aster-marketplace".into());
         agent.plugin_cta.phase = CtaPhase::Matched {
             plugin_relative_path: "plugins/starlink".into(),
             name: "starlink".into(),
@@ -723,7 +723,7 @@ mod plugin_cta_notify_tests {
         {
             Effect::InstallPluginFromCta {
                 source_url_or_path, ..
-            } => assert_eq!(source_url_or_path, "/srv/spacex-marketplace"),
+            } => assert_eq!(source_url_or_path, "/srv/aster-marketplace"),
             other => panic!("expected InstallPluginFromCta, got {other:?}"),
         }
     }

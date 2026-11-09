@@ -321,7 +321,7 @@ pub async fn run_headless(
     use crate::agent::relay::spawn_relay_connection_with_callback;
     use tokio_util::sync::CancellationToken;
     const HEADLESS_NO_SESSION: &str = "Headless mode requires a aster session. \
-        Run `grok login` to sign in, or use `grok agent stdio` for API-key access.";
+        Run `aster login` to sign in, or use `aster agent stdio` for API-key access.";
     aster_file_utils::queue::cleanup_orphaned_uploads(
         &grok_home::grok_home(),
         aster_file_utils::queue::DEFAULT_MAX_AGE,
@@ -680,7 +680,7 @@ pub struct LeaderRunOptions {
 }
 /// Another process is wedged inside its own open+flock of the leader lock (stalled aster home). Only `tracing`
 /// here: a socket probe, pid read, or log open under the aster home could wedge this process too. Best effort: a
-/// client-spawned leader's stderr is `$GROK_HOME/leader.log`, so even this line can park in `write(2)` there.
+/// client-spawned leader's stderr is `$ASTER_HOME/leader.log`, so even this line can park in `write(2)` there.
 fn refuse_in_flight_leader_lock(e: crate::leader::LockError) -> anyhow::Error {
     tracing::error!(
         error = %e,

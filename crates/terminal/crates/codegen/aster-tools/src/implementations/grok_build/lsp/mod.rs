@@ -96,7 +96,7 @@ impl aster_tool_runtime::Tool for LspTool {
                 .ok_or_else(|| {
                     aster_tool_runtime::ToolError::custom(
                         "process_manager",
-                        "LSP tool is unavailable. Configure ~/.grok/lsp.json or <cwd>/.grok/lsp.json and ensure the language server can start.",
+                        "LSP tool is unavailable. Configure ~/.aster/lsp.json or <cwd>/.grok/lsp.json and ensure the language server can start.",
                     )
                 })?
                 .clone();

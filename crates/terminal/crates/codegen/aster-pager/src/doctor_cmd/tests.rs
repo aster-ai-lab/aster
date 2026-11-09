@@ -144,8 +144,8 @@ fn mixed_report() -> DiagnosticReport {
     report.facts.color = ColorFacts {
         level: RuntimeFact::Available(ColorLevel::Ansi256),
         available_themes: vec![
-            ThemeKind::GrokNight,
-            ThemeKind::GrokDay,
+            ThemeKind::AsterNight,
+            ThemeKind::AsterDay,
             ThemeKind::Terminal,
         ],
         total_themes: ThemeKind::ALL.len(),

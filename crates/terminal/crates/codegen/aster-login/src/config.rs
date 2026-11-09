@@ -147,7 +147,7 @@ pub fn accounts_app_cors_layer(method: axum::http::Method) -> tower_http::cors::
 }
 /// Local-dev OAuth2 issuer (accounts-app running on localhost).
 const ASTER_OAUTH2_LOCAL_ISSUER: &str = "http://localhost:22255";
-const DEFAULT_OAUTH2_REFERRER: &str = "grok-build";
+const DEFAULT_OAUTH2_REFERRER: &str = "aster-build";
 /// Returns `true` when `GROK_LOCAL_AUTH=1` is set, indicating the local accounts-app should be used as the OAuth2 issuer.
 pub fn use_local_auth() -> bool {
     std::env::var("GROK_LOCAL_AUTH")
@@ -383,7 +383,7 @@ mod tests {
             scopes: default_team_oauth2_scopes(),
             principal_type: Some("Team".into()),
             principal_id: Some("team-abc".into()),
-            referrer: Some("grok-build".into()),
+            referrer: Some("aster-build".into()),
         };
         assert_eq!(cfg.auth_scope(), "https://auth.aster::client-123");
     }
@@ -404,7 +404,7 @@ mod tests {
             scopes: default_oauth2_scopes(),
             principal_type: None,
             principal_id: None,
-            referrer: Some("grok-build".into()),
+            referrer: Some("aster-build".into()),
         };
         assert_eq!(cfg.auth_scope(), "https://auth.aster::client-123");
     }

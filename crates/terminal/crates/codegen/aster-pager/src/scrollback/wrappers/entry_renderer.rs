@@ -1406,7 +1406,7 @@ mod tests {
     #[test]
     fn background_block_gutter_uses_block_background_fill() {
         // Background blocks own the gutter via the existing full-area fill, so the no-bg clear must not run for them
-        // Pinned so the band color (read from the process-global theme in user.rs build_lines) is GrokNight, not the developer's config
+        // Pinned so the band color (read from the process-global theme in user.rs build_lines) is AsterNight, not the developer's config
         // Asserted relationally (gutter == content cell from the same render) so the test doesn't encode the pinned palette's exact quantized value
         let _guard = pin_theme();
         let theme = Theme::current();

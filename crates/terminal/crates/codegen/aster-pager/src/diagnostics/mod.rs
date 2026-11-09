@@ -884,7 +884,7 @@ pub fn color_support_warning(
         warning.note = Some(format!(
             "Run `tmux source-file {tmux_config_path}`, then detach and reattach: the server \
              reads the option only on reload, and a client fixes its color depth only at attach. \
-             If Grok still reports less than truecolor afterwards, also add `set -g \
+             If Aster still reports less than truecolor afterwards, also add `set -g \
              default-terminal \"tmux-256color\"` and `export COLORTERM=truecolor` to your shell \
              startup file."
         ));

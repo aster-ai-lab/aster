@@ -2507,7 +2507,7 @@ fn classify_hook_source(source_dir: &str) -> HookSourceMeta {
             kind: HookSourceKind::Plugin,
         };
     }
-    // Global hooks under $GROK_HOME/hooks
+    // Global hooks under $ASTER_HOME/hooks
     let global_hooks = grok.join("hooks");
     let global_str = global_hooks.display().to_string();
     if source_dir == global_str || source_dir.starts_with(&format!("{global_str}/")) {

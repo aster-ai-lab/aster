@@ -1897,12 +1897,19 @@ impl AppView {
                 .peek_reply
                 .slash_controller
                 .set_usage_command_visible(false);
+            // Drop a staged Plan so Shift+Tab / spawn cannot re-enter it after the gate.
+            if dashboard.pending_mode == crate::views::dashboard::DashboardDispatchMode::Plan {
+                dashboard.pending_mode = crate::views::dashboard::DashboardDispatchMode::Normal;
+            }
         }
         // No Grok billing surface under aster-acp.
         self.usage_visible = false;
         self.sharing_enabled = false;
         // Voice STT / dictation has no aster-acp backing — hide `/voice` and settings rows.
         self.apply_voice_mode_enabled(false);
+        // Plan is not an Aster entry surface: clear launch `--plan` and the nudge flag.
+        self.plan_mode = false;
+        self.contextual_hints.plan_mode = false;
         self.sync_permission_mode_slash_gate();
         // Rebuild open settings so coding-data / Grok-only rows drop.
         for agent in self.agents.values_mut() {

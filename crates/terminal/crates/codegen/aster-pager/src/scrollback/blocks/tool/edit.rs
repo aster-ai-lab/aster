@@ -2766,13 +2766,13 @@ mod tests {
     type Rgb = (u8, u8, u8);
     type SyntectSpans = Vec<(Rgb, String)>;
 
-    /// Pins GrokNight via the shared test-lock guard.
+    /// Pins AsterNight via the shared test-lock guard.
     /// Hold it for the whole test so a concurrent theme flip can't skew the compared highlighter walks.
     fn pin_groknight_syntect() -> std::sync::MutexGuard<'static, ()> {
         let guard = crate::theme::cache::pin_theme();
         assert!(
             !Theme::groknight().diff_uses_line_fg(),
-            "GrokNight must be banded for Equal-line syntect path in render"
+            "AsterNight must be banded for Equal-line syntect path in render"
         );
         guard
     }
@@ -3080,7 +3080,7 @@ class ProcessQueueItem(BaseModel):
         );
 
         // Stale: the same paintable map baked under another theme is skipped
-        let stale = ThemeKind::GrokDay;
+        let stale = ThemeKind::AsterDay;
         assert_ne!(stale, crate::theme::cache::current_kind());
         block.highlight = EditHighlightPhase::FileScoped {
             by_new_line,

@@ -14,7 +14,7 @@ Agents and personas both customize behavior, but they operate at different level
 |---|---|---|
 | **What they configure** | The whole session: model, tools, prompt mode, system prompt | A behavioral overlay added to a subagent's prompt |
 | **Scope** | Primary session or subagent | Subagents only |
-| **How you set them** | At startup, or with agent definitions (`.md` files in `.grok/agents/` or `~/.grok/agents/`) | In `config.toml` (`[subagents.personas]`) or `.toml` files under `.grok/personas/`; applied during subagent resolution |
+| **How you set them** | At startup, or with agent definitions (`.md` files in `.aster/agents/` or `~/.aster/agents/`) | In `config.toml` (`[subagents.personas]`) or `.toml` files under `.aster/personas/`; applied during subagent resolution |
 | **What they control** | Model, tool availability, prompt body, skills | Tone, output format, task focus, and input/output contracts |
 | **Who edits them** | You -- create, delete, or toggle them in the agents modal or by editing files | You -- define custom personas in config or files; bundled personas are read-only |
 | **Examples** | `grok-build`, `explore`, `plan` | `researcher`, `concise` |
@@ -27,10 +27,10 @@ Manage both in the agents modal. Open it with `/config-agents` (alias `/agents`)
 
 ## Disabling Subagents
 
-Disable subagents with a CLI flag, an environment variable, or the config file (highest priority first). The same rules apply to the interactive `grok` TUI, `grok agent stdio`, and headless runs.
+Disable subagents with a CLI flag, an environment variable, or the config file (highest priority first). The same rules apply to the interactive `aster` TUI, `aster agent stdio`, and headless runs.
 
 ```bash
-grok --no-subagents                  # This session only
+aster --no-subagents                  # This session only
 export GROK_SUBAGENTS=0              # Environment variable
 ```
 
@@ -84,8 +84,8 @@ description = "Deep investigator."
 
 Aster Code discovers file-based personas from these locations, in priority order:
 
-- `.grok/personas/*.toml` (project)
-- `~/.grok/personas/*.toml` (user)
+- `.aster/personas/*.toml` (project)
+- `~/.aster/personas/*.toml` (user)
 - The bundled personas directory (lowest priority)
 
 Each file defines one persona, and the file name (without the extension) becomes the persona name. Inline `config.toml` personas take precedence over files. Only `.toml` files are discovered.
@@ -185,7 +185,7 @@ The transcript shows each send as a one-line `Message` row: a verb for the outco
 - `Message rejected · Subagent “find callers”` for a refused send, `Message unconfirmed · Subagent “find callers”` for one the shell could not confirm
 - `Message sent to parent` when a child messages its parent
 
-The collapsed row never shows the message or the reason. **Right** (or `l`/`e` in vim mode) expands the row to show the requested delivery, the full message text, and the reason of a rejected or unconfirmed send; **Left** (or `h`) collapses it again. **Enter**, **Ctrl+F**, or a double-click on the row opens that subagent's view, exactly as on its `Subagent` row (Right/Left still fold it). If the subagent was never spawned in this session (a headless `grok export`, or an id from another session), the row names it `subagent …xxxxxxxx` from the last 8 characters of its id, shows the raw `Subagent ID:` when expanded, and cannot open it.
+The collapsed row never shows the message or the reason. **Right** (or `l`/`e` in vim mode) expands the row to show the requested delivery, the full message text, and the reason of a rejected or unconfirmed send; **Left** (or `h`) collapses it again. **Enter**, **Ctrl+F**, or a double-click on the row opens that subagent's view, exactly as on its `Subagent` row (Right/Left still fold it). If the subagent was never spawned in this session (a headless `aster export`, or an id from another session), the row names it `subagent …xxxxxxxx` from the last 8 characters of its id, shows the raw `Subagent ID:` when expanded, and cannot open it.
 
 ---
 
@@ -286,8 +286,8 @@ The `spawn_subagent` tool offers the agent a `model` argument, and its descripti
 
 You can also toggle it from `/settings` → Models → **Subagent model inheritance**:
 
-- On: Grok cannot set models for subagents
-- Off: Grok may choose a different model for a subagent. Takes effect after restart.
+- On: Aster cannot set models for subagents
+- Off: Aster may choose a different model for a subagent. Takes effect after restart.
 - NOTE: This setting only applies when all models are Aster "model_family". You likely don't need to configure this setting.
 
 The row shows the value that applies after restart. Toggling writes `[features] subagent_model_inheritance = true` or `= false` (an explicit `false` overrides a remote `true`); `d` (reset) deletes the key so `managed_config.toml`, remote settings, or the default apply again. Agents already running keep the mode they started with. When a layer your `config.toml` cannot override decides the value — a `requirements.toml`/MDM pin, the environment variable, the `GROK_CONFIG` overlay, or an active campaign — both the toggle and the reset are refused with a toast that names that layer.
@@ -312,7 +312,7 @@ instructions = "Be concise. No filler words."
 # instructions_file = ".aster/personas/concise.md"  # or load from a file
 ```
 
-Aster Code also discovers roles from `.grok/roles/*.toml` and personas from `.grok/personas/*.toml`. Inline `config.toml` definitions take precedence over files.
+Aster Code also discovers roles from `.aster/roles/*.toml` and personas from `.aster/personas/*.toml`. Inline `config.toml` definitions take precedence over files.
 
 ---
 
@@ -388,7 +388,7 @@ If a prompt-queue overlay appears, it is a **read-only mirror**. You cannot edit
 
 - `q` or `Esc` from bare scrollback, or click [✗].
 - If scrollback search is open, `q` / `Esc` closes search first. A later press closes the view.
-- `Ctrl+Q` always quits Grok. It is never swallowed here.
+- `Ctrl+Q` always quits Aster. It is never swallowed here.
 
 The parent's scrollback keeps showing the subagent's status after you close.
 

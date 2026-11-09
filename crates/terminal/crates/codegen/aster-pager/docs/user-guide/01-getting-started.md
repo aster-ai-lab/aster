@@ -32,63 +32,63 @@ Install a specific version:
 $env:GROK_VERSION="0.1.42"; irm https://github.com/aster-ai-lab/aster/cli/install.ps1 | iex
 ```
 
-The PowerShell installer automatically adds `%USERPROFILE%\.grok\bin` to your User PATH. Alternatively, install via [Git for Windows](https://gitforwindows.org/) (Git Bash) or MSYS2 using the bash script above. WSL users get the Linux binary automatically.
+The PowerShell installer automatically adds `%USERPROFILE%\.aster\bin` to your User PATH. Alternatively, install via [Git for Windows](https://gitforwindows.org/) (Git Bash) or MSYS2 using the bash script above. WSL users get the Linux binary automatically.
 
 Verify the installation:
 
 ```bash
-grok --version
+aster --version
 ```
 
 Update to the latest version at any time:
 
 ```bash
-grok update
+aster update
 ```
 
 If you installed Aster Code with WinGet, update it with WinGet instead. Quit
-Grok first, then run:
+Aster first, then run:
 
 ```powershell
 winget upgrade --id Aster.GrokBuild -e
 ```
 
-On a WinGet install, `grok update` prints this command and changes nothing.
+On a WinGet install, `aster update` prints this command and changes nothing.
 The WinGet package tracks the stable channel, and new releases can take a few
 days to reach it.
 
 To fetch a repository through Grove (NFS on macOS, FUSE on Linux), enable
-`grok clone` with `[clone] enabled = true` in Grove config, `GROK_CLONE=1`,
+`aster clone` with `[clone] enabled = true` in Grove config, `GROK_CLONE=1`,
 or the enable-both convenience `GROK_GROVE=1` / `[cli] grove = true` in
-`~/.grok/config.toml`:
+`~/.aster/config.toml`:
 
 ```bash
-grok clone <url> [dir]
+aster clone <url> [dir]
 ```
 
 The default is a depth-1 checkout of the selected branch. Pass `--full-history`
 for a complete clone. Clone enablement is independent of session / `-w` Grove
 worktrees (the convenience above turns both on; the specific knobs still win).
-the aster sign-in below — see [grok clone](27-grok-clone.md#authentication)
+the aster sign-in below — see [aster clone](27-aster-clone.md#authentication)
 and [Configuration reference](26-config-reference.md).
 
 ---
 
 ## First Launch
 
-Start Grok by running:
+Start Aster by running:
 
 ```bash
-grok
+aster
 ```
 
-On first launch, Aster Code opens your browser to authenticate with aster. After you sign in, Grok stores your credentials in `~/.grok/auth.json`, where they persist across sessions. Grok refreshes your credentials automatically and prompts you to sign in again when they can no longer be renewed.
+On first launch, Aster Code opens your browser to authenticate with aster. After you sign in, Aster stores your credentials in `~/.aster/auth.json`, where they persist across sessions. Aster refreshes your credentials automatically and prompts you to sign in again when they can no longer be renewed.
 
 If you prefer API key authentication (e.g., for CI/CD or environments without a browser), set the `ASTER_API_KEY` environment variable instead:
 
 ```bash
 export ASTER_API_KEY="aster-..."
-grok
+aster
 ```
 
 See [Authentication](02-authentication.md) for the full set of auth options including OIDC, external auth providers, and device code flow.
@@ -97,12 +97,12 @@ See [Authentication](02-authentication.md) for the full set of auth options incl
 
 ## Basic Interaction
 
-Once authenticated, Grok presents a full-screen TUI with two main areas:
+Once authenticated, Aster presents a full-screen TUI with two main areas:
 
 - **Scrollback** -- the conversation history showing your prompts, Aster Code's responses, tool calls, file edits, and more.
 - **Prompt** -- the input area at the bottom where you type messages.
 
-Type a message and press `Enter` to send it. Grok reads files, runs commands, and edits code as needed. Each tool run streams into the scrollback in real time.
+Type a message and press `Enter` to send it. Aster reads files, runs commands, and edits code as needed. Each tool run streams into the scrollback in real time.
 
 Press `Tab` to move focus between the prompt and the scrollback. While a turn is running, `Ctrl+C` cancels it once the composer is empty — with a draft, the first press only clears it. `Esc` never cancels a turn; mid-turn it shows a reminder to use `Ctrl+C`. Idle, press `Esc` twice within 800ms to clear a non-empty prompt, or (with an empty prompt and conversation messages) to open rewind — see [Keyboard Shortcuts](03-keyboard-shortcuts.md#escape). With the scrollback focused, use the arrow keys to select entries and to collapse or expand them. To navigate with `j`/`k` and fold with `h`/`l` instead, enable Vim mode.
 
@@ -125,10 +125,10 @@ The `@` operator opens a fuzzy file picker. By default it respects `.gitignore` 
 
 ### Permissions
 
-By default, Grok asks for permission before executing shell commands or editing files. You can approve individually or toggle always-approve mode:
+By default, Aster asks for permission before executing shell commands or editing files. You can approve individually or toggle always-approve mode:
 
 - Press `Ctrl+O` to toggle always-approve mode
-- Use the `--yolo` flag at launch: `grok --yolo`
+- Use the `--yolo` flag at launch: `aster --yolo`
 - Type `/always-approve` in the prompt to toggle the mode
 
 ---
@@ -137,11 +137,11 @@ By default, Grok asks for permission before executing shell commands or editing 
 
 ### Sessions
 
-Every conversation is a **session**. Sessions are automatically saved to `~/.grok/sessions/` and can be resumed later. Each session tracks the full conversation history, tool calls, file edits, and task state.
+Every conversation is a **session**. Sessions are automatically saved to `~/.aster/sessions/` and can be resumed later. Each session tracks the full conversation history, tool calls, file edits, and task state.
 
 - Start a new session: `Ctrl+N` or `/new`
 - Resume a previous session: `/resume` in the TUI, or `--resume <ID>` from the CLI
-- Continue the most recent session: `grok -c`
+- Continue the most recent session: `aster -c`
 
 ### Scrollback
 
@@ -157,7 +157,7 @@ Collapse or expand the selected entry with the `Left`/`Right` arrow keys (or `h`
 
 ### Tools
 
-Grok has built-in tools for:
+Aster has built-in tools for:
 
 | Tool | Description |
 |------|-------------|
@@ -191,44 +191,44 @@ See [Slash Commands](04-slash-commands.md) for the complete reference.
 
 ```bash
 # Launch the interactive TUI and submit an initial prompt as the first turn
-grok "fix the failing auth test and run it"
+aster "fix the failing auth test and run it"
 
 # Initial prompt in a new git worktree. Use --worktree=<name> (with `=`) so the
 # prompt isn't swallowed as the worktree name — `aster -w "refactor module X"`
 # would treat "refactor module X" as the worktree label, not the prompt.
-grok --worktree=feat "refactor module X"
+aster --worktree=feat "refactor module X"
 
 # Base the worktree on a specific branch (e.g. main) instead of the current HEAD:
-grok -w --ref main "implement feature from main"
+aster -w --ref main "implement feature from main"
 
 
 # Start in a specific project directory
-grok --cwd ~/projects/my-app
+aster --cwd ~/projects/my-app
 
 # Add project-specific rules
-grok --rules "Always use TypeScript. Prefer functional components."
+aster --rules "Always use TypeScript. Prefer functional components."
 
 # Auto-approve all tool executions
-grok --yolo
+aster --yolo
 
 # Use a specific model
-grok -m grok-4.6
+aster -m grok-4.6
 
 # Resume a previous session
-grok --resume <session-id>
+aster --resume <session-id>
 
 # Continue the most recent session
-grok -c
+aster -c
 
 # Experimental scrollback-native render mode. Sticky: plain `aster` reopens in
 # the mode last chosen via --minimal/--fullscreen (or /minimal//fullscreen).
-grok --minimal
+aster --minimal
 
 # Back to the standard fullscreen TUI (and make it sticky again)
-grok --fullscreen
+aster --fullscreen
 
 # Headless mode (for scripts)
-grok -p "Explain this codebase"
+aster -p "Explain this codebase"
 ```
 
 ---
@@ -238,7 +238,7 @@ grok -p "Explain this codebase"
 Run Aster Code non-interactively for scripting, CI/CD, and automation:
 
 ```bash
-grok -p "Your prompt here"
+aster -p "Your prompt here"
 ```
 
 Output formats:
@@ -252,22 +252,22 @@ Output formats:
 Example CI/CD usage:
 
 ```bash
-grok -p "Review changes for bugs" --output-format json --yolo | jq -r '.text'
+aster -p "Review changes for bugs" --output-format json --yolo | jq -r '.text'
 ```
 
 ---
 
 ## Project Rules (AGENTS.md)
 
-Add per-project instructions by creating an `AGENTS.md` file in your repository. Grok reads these files and injects their contents as a project-instructions message at the start of the conversation:
+Add per-project instructions by creating an `AGENTS.md` file in your repository. Aster reads these files and injects their contents as a project-instructions message at the start of the conversation:
 
 ```
-~/.grok/AGENTS.md           # Global rules (apply to all projects)
+~/.aster/AGENTS.md           # Global rules (apply to all projects)
 <repo-root>/AGENTS.md       # Repository-level rules
 <cwd>/AGENTS.md             # Directory-level rules (highest priority)
 ```
 
-Deeper files take precedence. Grok also reads `CLAUDE.md` files for compatibility.
+Deeper files take precedence. Aster also reads `CLAUDE.md` files for compatibility.
 
 ---
 

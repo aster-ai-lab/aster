@@ -296,7 +296,7 @@ pub(crate) fn seed_hook_spec(
     spec: &serde_json::Value,
 ) {
     let hooks_dir = content.home().join(".grok").join("hooks");
-    std::fs::create_dir_all(&hooks_dir).expect("create ~/.grok/hooks");
+    std::fs::create_dir_all(&hooks_dir).expect("create ~/.aster/hooks");
     std::fs::write(
         hooks_dir.join(file_name),
         serde_json::to_vec_pretty(spec).expect("serialize hook spec"),

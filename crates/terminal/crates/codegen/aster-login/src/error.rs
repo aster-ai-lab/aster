@@ -108,15 +108,15 @@ impl RefreshTokenFailedReason {
     pub fn user_message(self) -> Cow<'static, str> {
         match self {
             Self::RefreshTokenRejected => {
-                "Your session has expired. Run `grok login` to sign in again.".into()
+                "Your session has expired. Run `aster login` to sign in again.".into()
             }
             Self::ClientRejected => {
-                "Authentication is temporarily unavailable. Run `grok login` if this persists."
+                "Authentication is temporarily unavailable. Run `aster login` if this persists."
                     .into()
             }
             Self::ProviderInteractiveRequired => provider_login_message(None),
             Self::Other => {
-                "Authentication could not be refreshed. Run `grok login` to sign in again.".into()
+                "Authentication could not be refreshed. Run `aster login` to sign in again.".into()
             }
         }
     }

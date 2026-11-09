@@ -67,9 +67,9 @@ pub(crate) fn hand_off_message(target: Target<'_>, channel: &str) -> String {
     format!(
         "Aster Code was installed with WinGet, so WinGet manages its updates.\n\
          {channel_note}\
-         Quit all running Grok sessions (`grok leader kill` stops a background leader), then run:\n  \
+         Quit all running Aster sessions (`aster leader kill` stops a background leader), then run:\n  \
          {command}\n\
-         Use an administrator terminal if WinGet installed Grok for all users.\n\
+         Use an administrator terminal if WinGet installed Aster for all users.\n\
          New releases can take a few days to reach WinGet. \
          If WinGet does not list the version yet, try again later.\n"
     )

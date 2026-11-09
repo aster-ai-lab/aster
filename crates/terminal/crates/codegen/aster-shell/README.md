@@ -11,13 +11,13 @@ Use it interactively as a TUI, or integrate it into your own apps via headless m
 curl -fsSL https://github.com/aster-ai-lab/aster/cli/install.sh | bash
 
 # Interactive TUI
-grok
+aster
 
 # Headless (for scripts/automation)
-grok -p "Explain this codebase"
+aster -p "Explain this codebase"
 
 # Agent mode (for IDE/app integration)
-grok agent stdio
+aster agent stdio
 ```
 
 ## Contents
@@ -44,7 +44,7 @@ grok agent stdio
   - [Memory](#memory) — cross-session knowledge persistence
   - [Sandbox](#sandbox) — OS-level filesystem/network isolation
 - **Reference**
-  - [Introspection (`grok inspect`)](#introspection)
+  - [Introspection (`aster inspect`)](#introspection)
   - [Claude Code Compatibility](#claude-code-compatibility)
   - [Built-in Tools](#built-in-tools)
   - [Session Persistence](#session-persistence) — storage layout, resume
@@ -68,13 +68,13 @@ curl -fsSL https://github.com/aster-ai-lab/aster/cli/install.sh | bash -s 0.1.42
 Verify installation:
 
 ```bash
-grok --version
+aster --version
 ```
 
 Update to the latest version:
 
 ```bash
-grok update
+aster update
 ```
 
 ---
@@ -86,17 +86,17 @@ grok update
 On first launch, Aster Code opens your browser to authenticate with aster:
 
 ```bash
-grok
+aster
 ```
 
-Credentials are stored in `~/.grok/auth.json` and persist across sessions. Tokens expire after 7 days; Grok will prompt you to re-authenticate when needed.
+Credentials are stored in `~/.aster/auth.json` and persist across sessions. Tokens expire after 7 days; Grok will prompt you to re-authenticate when needed.
 
 ### Re-authenticate
 
 To switch accounts or fix authentication issues:
 
 ```bash
-grok login
+aster login
 ```
 
 ### API Key
@@ -105,7 +105,7 @@ For CI/CD, automation, or environments without browser access, use an API key fr
 
 ```bash
 export ASTER_API_KEY="aster-..."
-grok
+aster
 ```
 
 The API key takes precedence over browser credentials.
@@ -139,7 +139,7 @@ Customers typically also override the API endpoint to point at their own proxy:
 export GROK_CLI_CHAT_PROXY_BASE_URL="https://grok-proxy.acme.com/v1"
 ```
 
-**3. Run `grok`.** The CLI discovers endpoints via `{issuer}/.well-known/openid-configuration`, opens the IdP login page, and stores tokens in `~/.grok/auth.json`. The OIDC token is sent as `Authorization: Bearer` to the configured proxy. Tokens auto-refresh silently via the stored `refresh_token`.
+**3. Run `aster`.** The CLI discovers endpoints via `{issuer}/.well-known/openid-configuration`, opens the IdP login page, and stores tokens in `~/.aster/auth.json`. The OIDC token is sent as `Authorization: Bearer` to the configured proxy. Tokens auto-refresh silently via the stored `refresh_token`.
 
 **Optional fields:**
 
@@ -169,7 +169,7 @@ Aster Code is provider-agnostic — it doesn't know or care how your binary auth
 1. Aster Code runs your command via `sh -c "<command>"`
 2. Your binary does whatever auth flow it needs (SSO login, device code, cert exchange, etc.)
 3. **stderr** → displayed directly to the user (use for login URLs, status messages, progress)
-4. **stdout** → captured by Grok and saved to `~/.grok/auth.json` as the access token
+4. **stdout** → captured by Grok and saved to `~/.aster/auth.json` as the access token
 5. exit 0 → success; exit non-zero → Grok falls through to interactive login
 
 #### The stdout / stderr Contract
@@ -236,7 +236,7 @@ The command runs through the platform shell — `sh -c` on macOS/Linux, `cmd /C`
 
 > **Windows:** write the path as a TOML *literal* string (single quotes) so backslashes survive: `auth_provider_command = 'C:\corp\grok-auth.exe'`. Inside a double-quoted TOML string `\t`, `\n`, `\r`, `\b` and `\f` are escape sequences, so `"C:\temp\auth.exe"` parses into a path containing a tab character and the provider fails to start — after which Aster Code falls back to browser login as if the setting were ignored.
 
-When `auth_provider_label` is set, the TUI welcome screen shows **"Login with Acme Corp"** instead of "Login with aster". In headless mode (`grok -p`), the label has no effect — stderr from your binary is printed directly to the terminal.
+When `auth_provider_label` is set, the TUI welcome screen shows **"Login with Acme Corp"** instead of "Login with aster". In headless mode (`aster -p`), the label has no effect — stderr from your binary is printed directly to the terminal.
 
 > **Enterprise setup:** For a complete enterprise `config.toml` combining external auth, corporate proxy, and telemetry settings, see [Enterprise Deployment](#enterprise-deployment) in the Configuration section.
 
@@ -272,7 +272,7 @@ Grok runs your binary on two different contracts, and `GROK_AUTH_EXPIRED` is how
 
 | | `GROK_AUTH_EXPIRED=1` | unset |
 |---|---|---|
-| **What it is** | A headless refresh over a credential Aster Code already holds — near-expiry rotation, or a token the server rejected | A sign-in: `grok login`, the sign-in screen, or the escalation after a headless run couldn't mint |
+| **What it is** | A headless refresh over a credential Aster Code already holds — near-expiry rotation, or a token the server rejected | A sign-in: `aster login`, the sign-in screen, or the escalation after a headless run couldn't mint |
 | **Is anyone watching?** | No. stdin is closed and nothing renders your prompts | Yes. A user is waiting, and your stderr reaches them |
 | **Budget** | A few seconds (7s), then Grok kills the process | 300s — enough for a browser round trip or a device code |
 | **So your binary should** | Mint silently, or **exit non-zero**. Never block | Do the full SSO flow, and always mint fresh |
@@ -301,7 +301,7 @@ echo "{\"access_token\": \"$TOKEN\", \"expires_in\": 3600}"
 
 Exiting promptly on `GROK_AUTH_EXPIRED=1` is what makes the handover to the sign-in screen fast: a binary that blocks instead pays the whole refresh timeout on every start with an expired token.
 
-One case stays ambiguous, and only in **leader mode** (`--leader`, or `[cli] use_leader = true`; off by default): with no credential at all, the leader makes one extra attempt in the background just after startup, and that run has the variable unset, like a sign-in. A binary that mints without help (service account, keytab, mounted token) succeeds there and the session heals itself. One that must prompt just sits, up to the 300s sign-in ceiling — nothing waits on it, the sign-in screen is already up, and its stderr goes to `~/.grok/leader.log` rather than to the user.
+One case stays ambiguous, and only in **leader mode** (`--leader`, or `[cli] use_leader = true`; off by default): with no credential at all, the leader makes one extra attempt in the background just after startup, and that run has the variable unset, like a sign-in. A binary that mints without help (service account, keytab, mounted token) succeeds there and the session heals itself. One that must prompt just sits, up to the 300s sign-in ceiling — nothing waits on it, the sign-in screen is already up, and its stderr goes to `~/.aster/leader.log` rather than to the user.
 
 `GROK_AUTH_EXPIRED` is optional — if your binary ignores it, Grok still works. It just runs the same flow for both login and refresh, and a flow that prompts will be killed on the headless run before it can finish.
 
@@ -327,7 +327,7 @@ export GROK_AUTH_EARLY_INVALIDATION_SECS=300
 ```
 
 **Keep in mind:**
-- When using `auth_provider_command`, you don't need to run `grok login` before starting — on first launch Aster Code runs your binary on the real terminal (URL and progress on stderr), then opens the UI already signed in. You _can_ run `grok login` to explicitly hydrate `auth.json` ahead of time if you prefer. Mid-session `/login` still uses the in-TUI copy-link overlay.
+- When using `auth_provider_command`, you don't need to run `aster login` before starting — on first launch Aster Code runs your binary on the real terminal (URL and progress on stderr), then opens the UI already signed in. You _can_ run `aster login` to explicitly hydrate `auth.json` ahead of time if you prefer. Mid-session `/login` still uses the in-TUI copy-link overlay.
 - If both OIDC and `auth_provider_command` are configured: at **login** time, Grok tries OIDC silent refresh first (if a `refresh_token` exists), then the external binary, then browser-based login. During a **session**, whichever method is configured is used exclusively — if `auth_provider_command` is set it handles all mid-session refreshes; otherwise OIDC silent refresh is used.
 - Your binary's stderr output is displayed to the user but interactive stdin is not supported. This works well for browser-based SSO flows where the binary displays a URL and you complete authentication in the browser.
 
@@ -336,8 +336,8 @@ export GROK_AUTH_EARLY_INVALIDATION_SECS=300
 Enable debug logging to trace the auth flow:
 
 ```bash
-grok --debug-file /tmp/grok-auth.log -p "hello"
-tail -f /tmp/grok-auth.log
+aster --debug-file /tmp/aster-auth.log -p "hello"
+tail -f /tmp/aster-auth.log
 ```
 
 Common log messages:
@@ -387,16 +387,16 @@ auth_provider = "litellm"
 
 **Interaction with other credentials:** a literal `api_key`/`env_key` on the model wins over its `auth_provider`. Provider-backed models are BYOK: your Aster session token is never sent to their endpoints, and a failing provider command fails the request rather than falling back to the session token.
 
-**Security:** provider commands execute code, so they are honored only from trusted config layers (`~/.grok/config.toml`, managed config, requirements). A project's `.grok/config.toml` can never define one. Whatever layer sets a model's `base_url` decides where that model's minted token is sent, and `base_url` (unlike the provider table) is not stripped from remote or campaign patches, the same as for a static `env_key`. Keep provider tables and the model `base_url` in layers you trust. The command inherits Aster Code's environment (so it sees `PATH`, `HOME`, and any other secrets there), but Aster Code's own first-party credentials (`ASTER_API_KEY`, `GROK_DEPLOYMENT_KEY`, and related keys) are removed so a BYOK helper never receives them; write helpers that read only what they need, and prefer the `GROK_AUTH_PROVIDER_*` handback for the prior credential.
+**Security:** provider commands execute code, so they are honored only from trusted config layers (`~/.aster/config.toml`, managed config, requirements). A project's `.grok/config.toml` can never define one. Whatever layer sets a model's `base_url` decides where that model's minted token is sent, and `base_url` (unlike the provider table) is not stripped from remote or campaign patches, the same as for a static `env_key`. Keep provider tables and the model `base_url` in layers you trust. The command inherits Aster Code's environment (so it sees `PATH`, `HOME`, and any other secrets there), but Aster Code's own first-party credentials (`ASTER_API_KEY`, `GROK_DEPLOYMENT_KEY`, and related keys) are removed so a BYOK helper never receives them; write helpers that read only what they need, and prefer the `GROK_AUTH_PROVIDER_*` handback for the prior credential.
 
 ### Using auth.json for API Access
 
-If you've authenticated with `grok login`, you can use the stored credentials to call the CLI chat proxy directly via curl. The proxy requires specific headers that mirror what the grok CLI sends internally:
+If you've authenticated with `aster login`, you can use the stored credentials to call the CLI chat proxy directly via curl. The proxy requires specific headers that mirror what the aster CLI sends internally:
 
 ```bash
 curl -s -N -X POST "https://api.aster/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $(jq -r '."https://accounts.aster.ai/sign-in".key' ~/.grok/auth.json)" \
+  -H "Authorization: Bearer $(jq -r '."https://accounts.aster.ai/sign-in".key' ~/.aster/auth.json)" \
   -H "X-Aster-Token-Auth: aster-cli" \
   -H "x-grok-model-override: grok-build" \
   -d '{
@@ -410,7 +410,7 @@ curl -s -N -X POST "https://api.aster/v1/chat/completions" \
 
 | Header                           | Required | Purpose                                                                                                                                                                                   |
 | -------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Authorization: Bearer <token>`  | Yes      | Session token from `~/.grok/auth.json` (set by `grok login`)                                                                                                                              |
+| `Authorization: Bearer <token>`  | Yes      | Session token from `~/.aster/auth.json` (set by `aster login`)                                                                                                                              |
 | `X-Aster-Token-Auth: aster-cli` | Yes      | Tells the auth middleware to validate as a CLI session token                                                                                                                              |
 | `x-grok-model-override: <model>` | Yes\*    | The proxy uses this header (not the JSON body) to route to the correct backend. \*Can be omitted for `grok-build` which is on the default route, but always safe to include. |
 
@@ -422,7 +422,7 @@ Most models behind the proxy only support streaming. Always use `"stream": true`
 | --------------------- | -------------- | ------------ |
 | `grok-build`    | ✅ Supported   | ✅ Supported |
 
-> **Note:** `auth.json` tokens expire after 7 days. Run `grok login` to refresh.
+> **Note:** `auth.json` tokens expire after 7 days. Run `aster login` to refresh.
 
 ---
 
@@ -433,7 +433,7 @@ The TUI (Terminal User Interface) provides a full interactive coding environment
 ### Launch
 
 ```bash
-grok [OPTIONS]
+aster [OPTIONS]
 ```
 
 ### Options
@@ -457,16 +457,16 @@ grok [OPTIONS]
 
 ```bash
 # Start in a specific project
-grok --cwd ~/projects/my-app
+aster --cwd ~/projects/my-app
 
 # Start with an initial task
-grok --prompt "Review this codebase and suggest improvements"
+aster --prompt "Review this codebase and suggest improvements"
 
 # Add project-specific rules
-grok --rules "Always use TypeScript. Prefer functional components."
+aster --rules "Always use TypeScript. Prefer functional components."
 
 # Auto-approve mode for trusted tasks
-grok --always-approve --prompt "Format all files"
+aster --always-approve --prompt "Format all files"
 ```
 
 ### Keyboard Shortcuts
@@ -564,7 +564,7 @@ Headless mode accepts a single prompt, executes it with full tool access, and re
 ### Basic Usage
 
 ```bash
-grok -p "Your prompt here"
+aster -p "Your prompt here"
 ```
 
 ### Options
@@ -608,13 +608,13 @@ Tool names correspond to the internal tool IDs shown below. For quick reference:
 
 ```bash
 # Only allow read-only tools
-grok -p "Explain this codebase" --tools "read_file,grep,list_dir"
+aster -p "Explain this codebase" --tools "read_file,grep,list_dir"
 
 # Remove web access and file editing
-grok -p "Review this code" --disallowed-tools "web_search,web_fetch,search_replace"
+aster -p "Review this code" --disallowed-tools "web_search,web_fetch,search_replace"
 
 # Remove shell access
-grok -p "Review this code" --disallowed-tools "run_terminal_cmd"
+aster -p "Review this code" --disallowed-tools "run_terminal_cmd"
 ```
 
 `--disallowed-tools` also supports special `Agent` entries to control subagent spawning:
@@ -627,10 +627,10 @@ grok -p "Review this code" --disallowed-tools "run_terminal_cmd"
 
 ```bash
 # Allow tools but prevent the agent from spawning any subagents
-grok -p "Fix this bug" --disallowed-tools "Agent"
+aster -p "Fix this bug" --disallowed-tools "Agent"
 
 # Block only the explore subagent
-grok -p "Refactor this module" --disallowed-tools "Agent(explore)"
+aster -p "Refactor this module" --disallowed-tools "Agent(explore)"
 ```
 
 When `--tools` is set, only the listed tools are available and default tool injection is disabled. When both flags are present, `--disallowed-tools` runs after `--tools` — use this to start from an allowlist and then remove specific entries.
@@ -657,19 +657,19 @@ Glob patterns support `*` (single-level wildcard) and `**` (recursive). A bare p
 
 ```bash
 # Deny all shell commands matching "rm*"
-grok -p "Clean up this project" --deny "Bash(rm*)"
+aster -p "Clean up this project" --deny "Bash(rm*)"
 
 # Allow npm commands, deny everything else dangerous
-grok -p "Set up the project" --allow "Bash(npm*)" --deny "Bash(sudo*)"
+aster -p "Set up the project" --allow "Bash(npm*)" --deny "Bash(sudo*)"
 
 # Deny edits outside src/
-grok -p "Refactor the code" --deny "Edit(/etc/**)"
+aster -p "Refactor the code" --deny "Edit(/etc/**)"
 
 # Allow all bash commands (auto-approve without prompting)
-grok -p "Build the project" --allow "Bash"
+aster -p "Build the project" --allow "Bash"
 
 # Combine: allow fetching docs sites, deny other URLs
-grok --allow "WebFetch(domain:docs.rs)" --deny "WebFetch(*)"
+aster --allow "WebFetch(domain:docs.rs)" --deny "WebFetch(*)"
 ```
 
 `--allow` and `--deny` can be repeated to add multiple rules. Deny rules take precedence over allow rules. These flags work in both TUI and headless mode.
@@ -678,26 +678,26 @@ grok --allow "WebFetch(domain:docs.rs)" --deny "WebFetch(*)"
 
 ```bash
 # Simple question
-grok -p "What does this project do?"
+aster -p "What does this project do?"
 
 # Use a specific model
-grok -p "Optimize this function" -m grok-build
+aster -p "Optimize this function" -m grok-build
 
 # Get JSON output for parsing
-grok -p "List all TODO comments in the codebase" --output-format json
+aster -p "List all TODO comments in the codebase" --output-format json
 
 # Streaming JSON for real-time processing
-grok -p "Explain the architecture" --output-format streaming-json
+aster -p "Explain the architecture" --output-format streaming-json
 
 # Multi-turn conversation (session ID is returned in JSON output)
-grok -p "Remember: the secret number is 42" --output-format json
-grok -p "What's the secret number?" --resume <sessionId>
+aster -p "Remember: the secret number is 42" --output-format json
+aster -p "What's the secret number?" --resume <sessionId>
 
 # Resume most recent session
-grok -p "Continue where we left off" -c
+aster -p "Continue where we left off" -c
 
 # Run in a different directory
-grok -p "Run the tests" --cwd ~/projects/other-app --always-approve
+aster -p "Run the tests" --cwd ~/projects/other-app --always-approve
 ```
 
 ### Scripting with Named Sessions
@@ -706,10 +706,10 @@ For CI and automation, `-s/--session-id` lets you choose your own session ID:
 
 ```bash
 # Start a session namespaced to a PR
-grok -p "Review the changes in this PR" -s "critique-myrepo-pr-123"
+aster -p "Review the changes in this PR" -s "critique-myrepo-pr-123"
 
 # Continue in the same session
-grok -p "Now check for security issues" -s "critique-myrepo-pr-123"
+aster -p "Now check for security issues" -s "critique-myrepo-pr-123"
 ```
 
 If the session exists it picks up where you left off; if not, a new one is created.
@@ -750,25 +750,25 @@ Here's a summary of the codebase...
 
 ```bash
 # Pipe output to a file
-grok -p "Generate a README" > README.md
+aster -p "Generate a README" > README.md
 
 # Parse JSON output with jq
-grok -p "List files" --output-format json | jq -r '.text'
+aster -p "List files" --output-format json | jq -r '.text'
 
 # CI/CD: automated code review
-grok -p "Review changes for bugs and security issues." \
+aster -p "Review changes for bugs and security issues." \
   --output-format json --always-approve | jq -r '.text' > review.md
 
 # Pipeline: chain with other tools
-git diff --staged | grok -p "Write a concise commit message for these changes"
+git diff --staged | aster -p "Write a concise commit message for these changes"
 
 # Batch: process multiple files
 for file in src/*.js; do
-  grok -p "Migrate $file from CommonJS to ES modules." --always-approve
+  aster -p "Migrate $file from CommonJS to ES modules." --always-approve
 done
 
 # Pre-commit hook
-grok -p "Review staged changes for obvious bugs. Reply OK if fine, or list issues." \
+aster -p "Review staged changes for obvious bugs. Reply OK if fine, or list issues." \
   --always-approve --output-format json | jq -r '.text' | grep -q "^OK" || exit 1
 ```
 
@@ -785,7 +785,7 @@ Run Aster Code as an ACP (Agent Client Protocol) agent for integration with IDEs
 For direct integration with ACP clients:
 
 ```bash
-grok agent stdio
+aster agent stdio
 ```
 
 Communication happens via JSON-RPC over stdin/stdout. This mode is used by:
@@ -808,7 +808,7 @@ Communication happens via JSON-RPC over stdin/stdout. This mode is used by:
 To expose the agent over the internet (instead of local network), run a WebSocket relay server and have the agent connect to it:
 
 ```bash
-grok agent headless --grok-ws-url wss://your-relay.example.com/ws
+aster agent headless --grok-ws-url wss://your-relay.example.com/ws
 ```
 
 The agent connects OUT to your relay, and your web clients connect to the same relay. Useful for building web UIs where browsers can't spawn local processes.
@@ -819,21 +819,21 @@ The agent connects OUT to your relay, and your web clients connect to the same r
 
 ## SSH Passthrough (`aster ssh`)
 
-Use `grok ssh` instead of plain `ssh` when connecting to remote hosts in terminals that lack native support (e.g. Apple Terminal) for local OSC 52 clipboard interception.
+Use `aster ssh` instead of plain `ssh` when connecting to remote hosts in terminals that lack native support (e.g. Apple Terminal) for local OSC 52 clipboard interception.
 
 ```bash
 # Basic usage (same args as ssh)
-grok ssh user@host
+aster ssh user@host
 
 # With SSH flags
-grok ssh -t user@host
-grok ssh -L 8080:localhost:8080 user@host
+aster ssh -t user@host
+aster ssh -L 8080:localhost:8080 user@host
 
 # With remote command
-grok ssh user@host -- tmux attach
+aster ssh user@host -- tmux attach
 ```
 
-On macOS, if the terminal doesn't natively handle OSC 52, `grok ssh` runs SSH inside a local PTY that intercepts clipboard sequences and writes them to `pbcopy`. Both plain OSC 52 and tmux DCS passthrough are handled. Terminals with native OSC 52 (iTerm2, Ghostty, Kitty, WezTerm, Alacritty) get a plain `ssh` exec with no wrapper.
+On macOS, if the terminal doesn't natively handle OSC 52, `aster ssh` runs SSH inside a local PTY that intercepts clipboard sequences and writes them to `pbcopy`. Both plain OSC 52 and tmux DCS passthrough are handled. Terminals with native OSC 52 (iTerm2, Ghostty, Kitty, WezTerm, Alacritty) get a plain `ssh` exec with no wrapper.
 
 This runs entirely locally.
 
@@ -852,7 +852,7 @@ Grok can be used as an OpenAI-compatible chat completion backend. Choose between
 
 ### Headless Mode (Simple Chat Completion)
 
-Use headless mode for simple integrations. Spawns `grok -p` and parses JSON output.
+Use headless mode for simple integrations. Spawns `aster -p` and parses JSON output.
 
 #### Python - Headless
 
@@ -1287,7 +1287,7 @@ Grok implements the [Agent Client Protocol (ACP)](https://agentclientprotocol.co
 └──────────────────┬──────────────────────┘
                    │ JSON-RPC over stdio
 ┌──────────────────▼──────────────────────┐
-│           grok agent stdio              │
+│           aster agent stdio              │
 │                                         │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐  │
 │  │ Session │  │  Tools  │  │   MCP   │  │
@@ -1325,7 +1325,7 @@ Grok implements the [Agent Client Protocol (ACP)](https://agentclientprotocol.co
 
 ## Configuration
 
-Aster Code reads configuration from `~/.grok/config.toml`. If the file doesn't exist, Aster Code uses sensible defaults. You only need to specify values you want to override.
+Aster Code reads configuration from `~/.aster/config.toml`. If the file doesn't exist, Aster Code uses sensible defaults. You only need to specify values you want to override.
 
 Each feature section below documents its own config. This section covers the general-purpose settings that don't have their own top-level section.
 
@@ -1396,7 +1396,7 @@ Reference: [Language Server Protocol](https://microsoft.github.io/language-serve
 Grok looks for server definitions in:
 
 - project config: `<repo>/.grok/lsp.json`
-- user config: `~/.grok/lsp.json`
+- user config: `~/.aster/lsp.json`
 
 If the same server name appears in both places, the project config wins.
 
@@ -1545,7 +1545,7 @@ telemetry = false
 timeout_secs = 120.0
 ```
 
-With this config, `grok` runs your auth binary, stores the token, and routes inference through your corporate proxy. See [Authentication](#authentication) for full auth setup details.
+With this config, `aster` runs your auth binary, stores the token, and routes inference through your corporate proxy. See [Authentication](#authentication) for full auth setup details.
 
 ---
 
@@ -1555,7 +1555,7 @@ Add project-specific instructions by creating an agent rules file (e.g., `AGENTS
 
 Grok scans for agent rules in this order:
 
-1. `~/.grok/` (global rules)
+1. `~/.aster/` (global rules)
 2. If inside a git repo: every directory from the repo root → current working directory (inclusive)
 3. If **not** inside a git repo: only the current working directory
 
@@ -1581,12 +1581,12 @@ Grok discovers skills from these directories (in priority order):
 | --------------------------- | ----- | -------- |
 | `./.grok/skills/`           | Local | Highest  |
 | `<repo_root>/.grok/skills/` | Repo  | Medium   |
-| `~/.grok/skills/`           | User  | Lowest   |
+| `~/.aster/skills/`           | User  | Lowest   |
 | `~/.claude/skills/`         | User  | Lowest   |
 
 Skills with the same name are deduplicated — higher priority locations override lower ones.
 
-Repo-scoped skills (Local and Repo) respect `.gitignore` and are filtered out if ignored. User-scoped skills (`~/.grok/skills/`) are outside the repo and never filtered.
+Repo-scoped skills (Local and Repo) respect `.gitignore` and are filtered out if ignored. User-scoped skills (`~/.aster/skills/`) are outside the repo and never filtered.
 
 ### Configuration
 
@@ -1603,7 +1603,7 @@ ignore = ["~/my-team-skills/wip"]     # paths to exclude
 Each skill lives in its own directory with a `SKILL.md` file:
 
 ```
-~/.grok/skills/
+~/.aster/skills/
 └── commit/
     └── SKILL.md
 ```
@@ -1658,7 +1658,7 @@ Users can reference skills as `/skill-name` (e.g., `/commit`). When you see this
 
 Agent profiles control the system prompt, toolset, and behavior of a session. A profile is a `.md` file with YAML frontmatter, or a named agent discovered from disk.
 
-Grok discovers agent definitions from `.grok/agents/` (project), `~/.grok/agents/` (user), and built-in agents. Priority (highest wins):
+Grok discovers agent definitions from `.grok/agents/` (project), `~/.aster/agents/` (user), and built-in agents. Priority (highest wins):
 
 1. `--agent-profile <PATH>` CLI flag
 2. `[agent]` section in `config.toml`
@@ -1673,7 +1673,7 @@ name = "my-custom-agent"             # Discovered by name
 ```
 
 ```bash
-grok --agent-profile ./my-agent.md
+aster --agent-profile ./my-agent.md
 # or
 export GROK_AGENT="my-custom-agent"
 ```
@@ -1743,7 +1743,7 @@ Plugins extend Grok with additional tools, skills, and MCP servers from external
 | Location                    | Scope   |
 | --------------------------- | ------- |
 | `.grok/plugins/`            | Project |
-| `~/.grok/plugins/`          | User    |
+| `~/.aster/plugins/`          | User    |
 | `--plugin-dir <PATH>` (CLI) | Session |
 
 ### Configuration
@@ -1800,7 +1800,7 @@ byte-identical copy in a lower layer cannot take over their provenance.
 - The **root-owned** system layers (`/etc/grok/requirements.toml`,
   `/etc/grok/managed_config.toml`). Enforcement relies on OS file ownership, so
   deploy these files root-owned (or via MDM).
-- The **signed** `$GROK_HOME/requirements.toml` the deployment sync writes.
+- The **signed** `$ASTER_HOME/requirements.toml` the deployment sync writes.
   Its hooks are enforced while the file's bytes match the server-signed
   envelope (`requirements/signed:` names); an edited copy, or one whose
   signature file is missing or unreadable, is the user's own file again
@@ -1809,7 +1809,7 @@ byte-identical copy in a lower layer cannot take over their provenance.
   refuses the session on an edited copy or a missing signature (an unreadable
   file is a read error, not tampering, and still starts).
 
-Hooks in the other `$GROK_HOME` layers (`managed_config.toml`, `config.toml`)
+Hooks in the other `$ASTER_HOME` layers (`managed_config.toml`, `config.toml`)
 remain convenience distribution, not an enforcement boundary: the user owns
 that directory and can edit or repoint it.
 
@@ -1874,7 +1874,7 @@ api_key = "sk-custom"
 
 > **Overriding with a custom model:** Setting `[models] web_search` alone is not
 > enough if the model isn't already in the catalog (built-in defaults or
-> `grok models` output). You also need a `[model.*]` entry so Grok knows
+> `aster models` output). You also need a `[model.*]` entry so Grok knows
 > how to reach it. Without both, web search is silently disabled.
 >
 > ```toml
@@ -1932,13 +1932,13 @@ env_key = "OPENAI_API_KEY"
 
 ```bash
 # List available models (including custom)
-grok models
+aster models
 
 # Use in TUI via slash command
 /model my-model
 
 # Use in headless mode
-grok -p "Hello" -m my-model
+aster -p "Hello" -m my-model
 
 # Set as default
 # In config.toml:
@@ -1963,14 +1963,14 @@ Point Grok at a custom OpenAI-compatible `/v1/models` endpoint instead of the de
 ```bash
 export GROK_MODELS_BASE_URL="https://api.acme.com/v1"
 export ASTER_API_KEY="aster-..."
-grok
+aster
 ```
 
 Grok fetches the model list from `{GROK_MODELS_BASE_URL}/models` on startup and sends inference requests to `GROK_MODELS_BASE_URL`. This follows the standard OpenAI-compatible convention used by OpenAI, Anthropic, OpenRouter, Groq, Together.ai, and others.
 
 If your model list endpoint differs from `{base_url}/models`, set `GROK_MODELS_LIST_URL` explicitly.
 
-**Combining with `[endpoints]` config:** You can also set endpoints in `~/.grok/config.toml`:
+**Combining with `[endpoints]` config:** You can also set endpoints in `~/.aster/config.toml`:
 
 ```toml
 [endpoints]
@@ -1983,7 +1983,7 @@ api_key = "my-api-key"
 
 When using `[endpoints]` with partial model overrides, the `base_url` is inherited from the endpoints config — you don't need to specify it in each `[model.*]` section.
 
-**Auth behavior:** When `models_base_url` is set, Grok uses API key auth (`Authorization: Bearer`) instead of session auth. `grok login` is not required — only the API key.
+**Auth behavior:** When `models_base_url` is set, Grok uses API key auth (`Authorization: Bearer`) instead of session auth. `aster login` is not required — only the API key.
 
 ---
 
@@ -1993,7 +1993,7 @@ Extend Aster Code's capabilities with [Model Context Protocol](https://modelcont
 
 ### Configuration
 
-MCP servers are configured in `~/.grok/config.toml`:
+MCP servers are configured in `~/.aster/config.toml`:
 
 ```toml
 [mcp_servers.<name>]
@@ -2013,7 +2013,7 @@ MCP servers can also be configured per-project in `.grok/config.toml`. Grok walk
 
 | Location                        | Scope             | Priority |
 | ------------------------------- | ----------------- | -------- |
-| `~/.grok/config.toml`           | All projects      | Lowest   |
+| `~/.aster/config.toml`           | All projects      | Lowest   |
 | `<repo-root>/.grok/config.toml` | This repository   | ↑        |
 | `<cwd>/.grok/config.toml`       | Current directory | Highest  |
 
@@ -2036,9 +2036,9 @@ command = "npx"
 args = ["-y", "mcp-remote", "https://mcp.linear.app/mcp"]
 ```
 
-If you also have a `linear` server in `~/.grok/config.toml`, the project version replaces it entirely.
+If you also have a `linear` server in `~/.aster/config.toml`, the project version replaces it entirely.
 
-> **Note:** Only `[mcp_servers]` is supported in project-scoped `.grok/config.toml`. Other config sections (models, etc.) are only read from `~/.grok/config.toml`.
+> **Note:** Only `[mcp_servers]` is supported in project-scoped `.grok/config.toml`. Other config sections (models, etc.) are only read from `~/.aster/config.toml`.
 
 ### Tool Naming
 
@@ -2112,10 +2112,10 @@ Cross-session memory lets Grok remember facts, decisions, code patterns, and deb
 
 ### How it works
 
-Memory is stored as Markdown files under `~/.grok/memory/`:
-- **Global** (`~/.grok/memory/MEMORY.md`) — facts that apply across all your projects
-- **Workspace** (`~/.grok/memory/<project-slug>-<hash8>/MEMORY.md`) — project-specific conventions and context
-- **Session logs** (`~/.grok/memory/<project-slug>-<hash8>/sessions/`) — per-session summaries
+Memory is stored as Markdown files under `~/.aster/memory/`:
+- **Global** (`~/.aster/memory/MEMORY.md`) — facts that apply across all your projects
+- **Workspace** (`~/.aster/memory/<project-slug>-<hash8>/MEMORY.md`) — project-specific conventions and context
+- **Session logs** (`~/.aster/memory/<project-slug>-<hash8>/sessions/`) — per-session summaries
 
 Workspace directories are suffixed with a short hash for uniqueness (e.g. `aster-a3f7b2c9/`). The hash is derived from the git remote URL so all clones and worktrees of the same repository share the same memory directory.
 
@@ -2126,7 +2126,7 @@ An SQLite index enables fast hybrid search (FTS5 keyword + optional vector KNN) 
 ```bash
 # Environment variable (persists for the shell session)
 export GROK_MEMORY=1
-grok
+aster
 
 # Config file (persists permanently)
 # ~/.aster/config.toml
@@ -2152,7 +2152,7 @@ This summary is searchable in future sessions but does **not** capture full cont
 
 ### Capturing rich knowledge with `/flush`
 
-For richer capture — decisions, patterns, debugging workflows, API discoveries — use `/flush` in the TUI. This triggers an LLM-generated summary of the current session's most important content and writes it to a dated session log under `~/.grok/memory/<project-slug>-<hash8>/sessions/`, where it is indexed and searchable in future sessions.
+For richer capture — decisions, patterns, debugging workflows, API discoveries — use `/flush` in the TUI. This triggers an LLM-generated summary of the current session's most important content and writes it to a dated session log under `~/.aster/memory/<project-slug>-<hash8>/sessions/`, where it is indexed and searchable in future sessions.
 
 Use `/flush` when you want to preserve important context before compaction or at any point during a productive session.
 
@@ -2185,24 +2185,24 @@ Read my workspace MEMORY.md
 
 ```bash
 # Open workspace MEMORY.md in $EDITOR / $VISUAL
-grok memory edit
+aster memory edit
 
 # Open global MEMORY.md
-grok memory edit --global
+aster memory edit --global
 
 # Show memory statistics: file count, chunk count, and index size
-grok memory stats
+aster memory stats
 ```
 
 ### Configuration reference
 
-Key options under `[memory]` in `~/.grok/config.toml`:
+Key options under `[memory]` in `~/.aster/config.toml`:
 
 | Key | Default | Description |
 |-----|---------|-------------|
 | `enabled` | `false` | Enable memory (can also be set via CLI flag or env var) |
 | `session.save_on_end` | `true` | Write the lightweight metadata summary on session end |
-| `watcher.enabled` | `true` | Watch `~/.grok/memory/` for external edits and reindex on search |
+| `watcher.enabled` | `true` | Watch `~/.aster/memory/` for external edits and reindex on search |
 | `search.max_results` | `6` | Default number of memory results to return |
 | `search.min_score` | `0.35` | Minimum relevance score threshold for explicit memory search and recovery paths |
 | `initial_injection.enabled` | `true` | Enable automatic first-turn memory injection |
@@ -2230,13 +2230,13 @@ Seatbelt on macOS). This is off by default.
 
 ```bash
 # Run with workspace sandbox (read everywhere, write only to CWD + /tmp)
-grok --sandbox workspace
+aster --sandbox workspace
 
 # Read-only mode (agent can read but not write anything)
-grok --sandbox read-only
+aster --sandbox read-only
 
 # Maximum isolation (read/write CWD only, no child network)
-grok --sandbox strict
+aster --sandbox strict
 ```
 
 ### Built-in Profiles
@@ -2244,16 +2244,16 @@ grok --sandbox strict
 | Profile         | FS Read            | FS Write                  | Child Network | Use Case                 |
 | --------------- | ------------------ | ------------------------- | ------------- | ------------------------ |
 | `off` (default) | Unrestricted       | Unrestricted              | Unrestricted  | No sandbox               |
-| `workspace`     | Everywhere         | CWD + `/tmp` + `~/.grok/` | Allowed       | Normal development       |
-| `read-only`     | Everywhere         | `~/.grok/` only           | Blocked       | Exploration, code review |
-| `strict`        | CWD + system paths | CWD + `/tmp` + `~/.grok/` | Blocked       | Untrusted code           |
+| `workspace`     | Everywhere         | CWD + `/tmp` + `~/.aster/` | Allowed       | Normal development       |
+| `read-only`     | Everywhere         | `~/.aster/` only           | Blocked       | Exploration, code review |
+| `strict`        | CWD + system paths | CWD + `/tmp` + `~/.aster/` | Blocked       | Untrusted code           |
 
-Sensitive paths (`~/.ssh/`, `~/.aws/`, `~/.gnupg/`, `~/.grok/auth/`) are always
+Sensitive paths (`~/.ssh/`, `~/.aws/`, `~/.gnupg/`, `~/.aster/auth/`) are always
 write-protected regardless of profile.
 
 ### Custom Profiles
 
-Create `~/.grok/sandbox.toml` (global) or `.grok/sandbox.toml` (per-project):
+Create `~/.aster/sandbox.toml` (global) or `.grok/sandbox.toml` (per-project):
 
 ```toml
 [profiles.devbox]
@@ -2275,12 +2275,12 @@ deny = ["/data/shared-secrets"]
 Use it:
 
 ```bash
-grok --sandbox devbox
+aster --sandbox devbox
 ```
 
 ### How It Works
 
-The sandbox is applied to the **entire grok process** at startup using kernel
+The sandbox is applied to the **entire aster process** at startup using kernel
 primitives — not per-command wrapping. This means all tool operations are
 covered:
 
@@ -2306,24 +2306,24 @@ model cannot convince the agent to relax restrictions at runtime.
 
 ### Event Logging
 
-Sandbox events (profile applied, violations) are logged to `~/.grok/sandbox-events.jsonl`
+Sandbox events (profile applied, violations) are logged to `~/.aster/sandbox-events.jsonl`
 for telemetry and debugging.
 
 ---
 
 ## Introspection
 
-Use `grok inspect` to see everything Grok discovers in the current directory:
+Use `aster inspect` to see everything Grok discovers in the current directory:
 
 ```bash
-grok inspect          # human-readable output
-grok inspect --json   # machine-readable JSON
+aster inspect          # human-readable output
+aster inspect --json   # machine-readable JSON
 ```
 
 The output shows all loaded configuration organized by type:
 
 - **Project Instructions** — AGENTS.md / CLAUDE.md files with token counts
-- **Skills** — from `.grok/skills/`, `~/.grok/skills/`, plugins, and config paths
+- **Skills** — from `.grok/skills/`, `~/.aster/skills/`, plugins, and config paths
 - **Agents** — built-in, user-defined, and plugin-provided subagents
 - **Plugins** — discovered plugins with what each provides (skills, agents, hooks, MCPs)
 - **MCP Servers** — from `config.toml`, plugins, `~/.claude.json`, and `.mcp.json`
@@ -2413,10 +2413,10 @@ Grok automatically persists conversations to disk. This works across all modes: 
 
 ### Storage Layout
 
-Sessions are stored under `~/.grok/sessions/`, organized by URL-encoded working directory:
+Sessions are stored under `~/.aster/sessions/`, organized by URL-encoded working directory:
 
 ```
-~/.grok/sessions/<encoded-cwd>/<session-id>/
+~/.aster/sessions/<encoded-cwd>/<session-id>/
   summary.json            # metadata: title, timestamps, model, message count
   updates.jsonl           # ACP session update stream (conversation + tool calls)
   chat_history.jsonl      # raw chat messages sent to the model
@@ -2446,23 +2446,23 @@ Control session behavior with flags:
 
 ```bash
 # New session each time (default)
-grok -p "Hello"
+aster -p "Hello"
 
 # Create or resume a named session
-grok -p "Remember: X=42" -s my-session
-grok -p "What is X?" -s my-session
+aster -p "Remember: X=42" -s my-session
+aster -p "What is X?" -s my-session
 
 # Resume existing session (errors if not found)
-grok -p "Continue" -r my-session
+aster -p "Continue" -r my-session
 
 # Continue most recent session in current directory
-grok -p "What were we doing?" -c
+aster -p "What were we doing?" -c
 ```
 
 Session ID is returned in JSON output:
 
 ```bash
-grok -p "Hello" --output-format json | jq -r '.sessionId'
+aster -p "Hello" --output-format json | jq -r '.sessionId'
 ```
 
 ### Agent stdio (ACP)
@@ -2492,13 +2492,13 @@ The agent persists all session updates automatically. Clients can reconnect and 
 
 | Path                  | Description                                         |
 | --------------------- | --------------------------------------------------- |
-| `~/.grok/config.toml` | Configuration file                                  |
-| `~/.grok/sessions/`   | Persisted sessions (organized by working directory) |
-| `~/.grok/auth.json`   | Authentication credentials (auto-managed)           |
-| `~/.grok/memory/`     | Cross-session memory files and index                |
-| `~/.grok/skills/`     | User-scoped skill definitions                       |
-| `~/.grok/plugins/`    | User-scoped plugins                                 |
-| `~/.grok/agents/`     | User-scoped agent definitions                       |
+| `~/.aster/config.toml` | Configuration file                                  |
+| `~/.aster/sessions/`   | Persisted sessions (organized by working directory) |
+| `~/.aster/auth.json`   | Authentication credentials (auto-managed)           |
+| `~/.aster/memory/`     | Cross-session memory files and index                |
+| `~/.aster/skills/`     | User-scoped skill definitions                       |
+| `~/.aster/plugins/`    | User-scoped plugins                                 |
+| `~/.aster/agents/`     | User-scoped agent definitions                       |
 | `.grok/config.toml`   | Project-scoped config (MCP servers)                 |
 | `.grok/skills/`       | Project-scoped skill definitions                    |
 | `.grok/plugins/`      | Project-scoped plugins                              |
@@ -2525,7 +2525,7 @@ The agent persists all session updates automatically. Clients can reconnect and 
 | `GROK_AUTH_EARLY_INVALIDATION_SECS` | Seconds before `expires_at` to consider a token expired (default: `300`). See [Automatic Credential Refresh](#automatic-credential-refresh) |
 | `GROK_OIDC_ISSUER`              | OIDC issuer URL (alternative to config file). See [OIDC](#oidc-customer-sso)                             |
 | `GROK_OIDC_CLIENT_ID`           | OIDC client ID (alternative to config file). See [OIDC](#oidc-customer-sso)                              |
-| `GROK_HOME`                     | Override config directory (default: `~/.grok`)                                                           |
+| `GROK_HOME`                     | Override config directory (default: `~/.aster`)                                                           |
 | `GROK_SUBAGENTS`                | Enable (`1`) or disable (`0`) subagent/task tool support                                                 |
 | `GROK_MEMORY`                   | Enable (`1`) or disable (`0`) cross-session memory                                                       |
 | `GROK_AGENT`                    | Custom agent definition path or name (see [Agent Profiles](#agent-profiles))                             |
@@ -2535,14 +2535,14 @@ The agent persists all session updates automatically. Clients can reconnect and 
 | `GROK_FEEDBACK_ENABLED`         | Enable (`1`) or disable (`0`) feedback system independently from telemetry                               |
 | `GROK_DEPLOYMENT_KEY`           | Management API key for enterprise deployments                                                            |
 | `GROK_LOG_FILE`                 | Enable file logging by providing a file path (the value is used verbatim as the path)                    |
-| `GROK_DEBUG_LOG`                | Debug firehose (set by `--debug`): truthy routes per-session logs to `~/.grok/debug/<sessionId>.txt`, a path writes that one file |
+| `GROK_DEBUG_LOG`                | Debug firehose (set by `--debug`): truthy routes per-session logs to `~/.aster/debug/<sessionId>.txt`, a path writes that one file |
 | `RUST_LOG`                      | Log filter for stderr (headless `-p` defaults to `off`, other non-TUI modes to `error`; TUI captures stderr) and for the `GROK_LOG_FILE` log; the `--debug` firehose ignores it |
 
 ---
 
 ## Shell Completions
 
-Generate completions for your shell and install them to enable tab completion for `grok` commands and flags.
+Generate completions for your shell and install them to enable tab completion for `aster` commands and flags.
 
 **Note:** The paths below are recommended defaults. Some environments do not automatically source the standard locations — you may need to adapt them to your shell framework or distro conventions.
 
@@ -2552,7 +2552,7 @@ Generate and install:
 
 ```bash
 mkdir -p ~/.local/share/bash-completion/completions
-grok completions bash > ~/.local/share/bash-completion/completions/grok
+aster completions bash > ~/.local/share/bash-completion/completions/grok
 ```
 
 Reload your shell or run `source ~/.bashrc`.
@@ -2560,8 +2560,8 @@ Reload your shell or run `source ~/.bashrc`.
 Alternative (Grok-managed location):
 
 ```bash
-mkdir -p ~/.grok/completions/bash
-grok completions bash > ~/.grok/completions/bash/grok.bash
+mkdir -p ~/.aster/completions/bash
+aster completions bash > ~/.aster/completions/bash/grok.bash
 ```
 
 Add to `~/.bashrc`:
@@ -2576,7 +2576,7 @@ Generate and install:
 
 ```bash
 mkdir -p ~/.zsh/completions
-grok completions zsh > ~/.zsh/completions/_grok
+aster completions zsh > ~/.zsh/completions/_grok
 ```
 
 Add to `~/.zshrc`:
@@ -2590,8 +2590,8 @@ compinit
 Alternative (Grok-managed location):
 
 ```bash
-mkdir -p ~/.grok/completions/zsh
-grok completions zsh > ~/.grok/completions/zsh/_grok
+mkdir -p ~/.aster/completions/zsh
+aster completions zsh > ~/.aster/completions/zsh/_grok
 ```
 
 Add to `~/.zshrc`:
@@ -2604,7 +2604,7 @@ compinit
 
 ### After Upgrading
 
-Regenerate completions after upgrading `grok` — the script reflects the CLI of the installed version.
+Regenerate completions after upgrading `aster` — the script reflects the CLI of the installed version.
 
 ---
 
@@ -2612,42 +2612,42 @@ Regenerate completions after upgrading `grok` — the script reflects the CLI of
 
 ### Debug logging
 
-Write logs to a file for debugging. The TUI captures stderr, so `RUST_LOG` alone won't produce visible output in production — use `grok --debug` or `GROK_LOG_FILE` instead:
+Write logs to a file for debugging. The TUI captures stderr, so `RUST_LOG` alone won't produce visible output in production — use `aster --debug` or `GROK_LOG_FILE` instead:
 
 ```bash
 # Per-session debug log (~/.aster/debug/<sessionId>.txt)
-grok --debug
+aster --debug
 
 # Log to a custom path
-GROK_LOG_FILE=/tmp/grok-debug.log grok
+GROK_LOG_FILE=/tmp/aster-debug.log grok
 
 # Tail the most-recently-opened session's log in another terminal (Unix symlink)
-tail -f ~/.grok/debug/latest.txt
+tail -f ~/.aster/debug/latest.txt
 ```
 
 The `--debug` firehose uses a fixed filter (first-party crates at `debug`) and is not narrowed by `RUST_LOG`. A `GROK_LOG_FILE` log defaults to `debug` and honors `RUST_LOG`, so you can set module-level filters for targeted debugging:
 
 ```bash
 # Debug auth, info for everything else
-GROK_LOG_FILE=/tmp/grok-debug.log RUST_LOG="info,aster_login=debug" grok
+GROK_LOG_FILE=/tmp/aster-debug.log RUST_LOG="info,aster_login=debug" grok
 ```
 
 ### Authentication fails
 
 ```bash
 # Clear credentials and re-login
-grok login
+aster login
 
 # Debug auth issues — check the log for "auth:" entries
-grok --debug-file /tmp/grok-auth.log -p "hello"
-grep "auth:" /tmp/grok-auth.log
+aster --debug-file /tmp/aster-auth.log -p "hello"
+grep "auth:" /tmp/aster-auth.log
 ```
 
 ### Model not found
 
 ```bash
 # List available models
-grok models
+aster models
 
 # Check config.toml for typos in [model.*] sections
 ```
@@ -2677,16 +2677,16 @@ Session files are plain JSON/JSONL and can be inspected directly:
 
 ```bash
 # Find sessions for the current directory
-ls ~/.grok/sessions/
+ls ~/.aster/sessions/
 
 # Read session metadata
-cat ~/.grok/sessions/<encoded-cwd>/<session-id>/summary.json | jq .
+cat ~/.aster/sessions/<encoded-cwd>/<session-id>/summary.json | jq .
 
 # View conversation history
-cat ~/.grok/sessions/<encoded-cwd>/<session-id>/updates.jsonl | head -20
+cat ~/.aster/sessions/<encoded-cwd>/<session-id>/updates.jsonl | head -20
 
 # Count turns in a session
-wc -l ~/.grok/sessions/<encoded-cwd>/<session-id>/chat_history.jsonl
+wc -l ~/.aster/sessions/<encoded-cwd>/<session-id>/chat_history.jsonl
 ```
 
 ### Context window full

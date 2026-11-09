@@ -12,6 +12,47 @@ impl Drop for CodeBackendGuard {
 }
 
 #[test]
+fn code_shift_tab_never_selects_published_plan() {
+    let mut app = test_app_with_agent();
+    let _guard = CodeBackendGuard(crate::app::ASTER_ACTIVE.swap(true, Ordering::AcqRel));
+    {
+        let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+        agent.available_modes = vec![
+            acp::SessionMode::new("default", "Normal"),
+            acp::SessionMode::new("ask", "Ask"),
+            acp::SessionMode::new("plan", "Plan"),
+            acp::SessionMode::new("yolo", "Always approve"),
+        ];
+    }
+
+    for _ in 0..8 {
+        let effects = dispatch(Action::CycleMode, &mut app);
+        assert!(
+            !effects.is_empty(),
+            "Aster Shift+Tab must still cycle when Plan is filtered out"
+        );
+        for effect in &effects {
+            if let Effect::SetSessionMode { mode_id, .. } = effect {
+                assert_ne!(
+                    mode_id.0.as_ref(),
+                    "plan",
+                    "Aster Shift+Tab must not select Plan, got {effects:?}"
+                );
+            }
+        }
+        assert_ne!(
+            test_agent(&app, AgentId(0)).published_mode_label(),
+            Some("plan")
+        );
+        assert!(
+            !test_agent(&app, AgentId(0))
+                .plan_mode_pending
+                .unwrap_or(test_agent(&app, AgentId(0)).plan_mode_active)
+        );
+    }
+}
+
+#[test]
 fn code_plan_yolo_exit_preserves_backend_posture() {
     let mut app = test_app_with_agent();
     let _guard = CodeBackendGuard(crate::app::ASTER_ACTIVE.swap(true, Ordering::AcqRel));

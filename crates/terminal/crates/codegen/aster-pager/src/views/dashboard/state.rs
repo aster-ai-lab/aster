@@ -583,8 +583,13 @@ pub enum DashboardDispatchMode {
 
 impl DashboardDispatchMode {
     /// Advance to the next mode in the Shift+Tab rotation.
-    pub fn cycle(self, auto_mode_gate: bool) -> Self {
+    ///
+    /// When `exclude_plan` is set (Aster), Plan is not a staging target — same
+    /// contract as the agent-view Shift+Tab ring under `aster_active()`.
+    pub fn cycle(self, auto_mode_gate: bool, exclude_plan: bool) -> Self {
         match self {
+            Self::Normal if exclude_plan && auto_mode_gate => Self::Auto,
+            Self::Normal if exclude_plan => Self::AlwaysApprove,
             Self::Normal => Self::Plan,
             Self::Plan if auto_mode_gate => Self::Auto,
             Self::Plan | Self::Auto => Self::AlwaysApprove,

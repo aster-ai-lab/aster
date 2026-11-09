@@ -19,10 +19,10 @@ Common use cases:
 
 1. Create the hooks directory:
    ```sh
-   mkdir -p ~/.grok/hooks
+   mkdir -p ~/.aster/hooks
    ```
 
-2. Create a simple hook file, e.g. `~/.grok/hooks/session-start.json`:
+2. Create a simple hook file, e.g. `~/.aster/hooks/session-start.json`:
    ```json
    {
      "hooks": {
@@ -47,7 +47,7 @@ Hooks are discovered from several places (all are merged):
 
 | Scope     | Path                              | Trusted?     | Notes |
 |-----------|-----------------------------------|--------------|-------|
-| Global    | `~/.grok/hooks/*.json`            | Always       | Best for personal hooks |
+| Global    | `~/.aster/hooks/*.json`            | Always       | Best for personal hooks |
 | Global    | `~/.claude/settings.json`         | Always       | Claude Code compatibility |
 | Project   | `<project>/.grok/hooks/*.json`    | Requires trust | Per-repo automation |
 | Project   | `<project>/.claude/settings.json` | Requires trust | Claude compatibility |
@@ -56,7 +56,7 @@ Hooks are discovered from several places (all are merged):
 
 Config-file hooks use the same schema in TOML form; see the [Hooks user guide](user-guide/10-hooks.md#hooks-in-config-files) for details.
 
-**Trusting a project**: The first time you open a project with hooks, open the hooks modal (`Ctrl+L` outside the VS Code family, or `/hooks` on any terminal) or run `/hooks-trust`. This is the same folder-trust gate as `--trust`, recorded in `~/.grok/trusted_folders.toml`. Trust prevents untrusted repos from running arbitrary code.
+**Trusting a project**: The first time you open a project with hooks, open the hooks modal (`Ctrl+L` outside the VS Code family, or `/hooks` on any terminal) or run `/hooks-trust`. This is the same folder-trust gate as `--trust`, recorded in `~/.aster/trusted_folders.toml`. Trust prevents untrusted repos from running arbitrary code.
 
 ## The Hook JSON Format
 
@@ -236,7 +236,7 @@ In the **Hooks** tab you can:
 - `r`: Remove.
 - `Space`: Expand groups.
 
-Hooks from `~/.grok/hooks/` appear under **Global**, project ones under **Project**, etc.
+Hooks from `~/.aster/hooks/` appear under **Global**, project ones under **Project**, etc.
 
 ## HTTP Hooks
 
@@ -258,7 +258,7 @@ The full event envelope is POSTed as JSON. Useful for webhooks, analytics, or se
 
 ## Security Notes
 
-- Global hooks (`~/.grok/...`) run with your user permissions. Treat them like shell scripts.
+- Global hooks (`~/.aster/...`) run with your user permissions. Treat them like shell scripts.
 - Project hooks require explicit trust (run `/hooks-trust` or use the modal) to prevent supply-chain attacks from malicious repos.
 - HTTP hooks send session data. Only use trusted endpoints.
 
@@ -268,7 +268,7 @@ The full event envelope is POSTed as JSON. Useful for webhooks, analytics, or se
 - **Project hooks ignored?** Trust the project first.
 - **Script not found?** Check the path is relative to the `.json` file and executable (`chmod +x`).
 - **`The argument '/.claude/hooks/….ps1' to the -File parameter does not exist`?** PowerShell treated `$CLAUDE_PROJECT_DIR` as empty. Aster Code rewrites it to `$env:CLAUDE_PROJECT_DIR` unless `GROK_SHELL=cmd`.
-- **See errors?** Check the pager logs (usually in the tracing pane or `~/.grok/logs`).
+- **See errors?** Check the pager logs (usually in the tracing pane or `~/.aster/logs`).
 
 ## More Examples
 
@@ -279,7 +279,7 @@ See the built-in examples in the `aster-hooks` crate:
 - [Session Audit Log](../../../aster-hooks/examples/hooks/session-log.json)
 - [Tool Activity Logger](../../../aster-hooks/examples/hooks/tool-logger.json)
 
-Copy them to `~/.grok/hooks/` and customize.
+Copy them to `~/.aster/hooks/` and customize.
 
 ## Full Reference
 
