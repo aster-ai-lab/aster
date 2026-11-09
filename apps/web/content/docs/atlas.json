@@ -2,123 +2,123 @@
   "diagrams": [
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "architecture",
       "readme": "aster-overview"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "workflow",
       "readme": "task-control-loop"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "meta-harness",
       "readme": "meta-harness-assembly"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "tutorial-architecture"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "tutorial-permissions"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "rsi-cycle"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "completion-gate",
       "readme": "verification-recovery"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "context-assembly"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "run-control"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "memory-lifecycle"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "prompt-stack"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "goal-lifecycle",
       "readme": "durable-goal"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "goal-decisions"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "recovery"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "extension-surfaces",
       "readme": "extension-surfaces"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "architecture"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "acp-boundary"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "event-routing"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "permission-roundtrip"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "protocol-lifecycle"
     },
     {
       "product": "acp",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "unattended"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "verification-revision"
     },
     {
       "product": "code",
-      "version": "9.1.6",
+      "version": "9.2.1",
       "name": "framework-layers"
     }
   ]

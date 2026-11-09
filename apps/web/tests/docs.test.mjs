@@ -221,7 +221,7 @@ test('Pele renders current architecture figures with labels and extracted styles
 });
 
 test('source citations resolve exact lines from the registered Git snapshot and refuse drift', () => {
-  const revision = projects.find((project) => project.id === 'code').versions.find((version) => version.id === '9.1.6').sourceRef;
+  const revision = projects.find((project) => project.id === 'code').versions.find((version) => version.id === '9.2.1').sourceRef;
   const { SourceRef, SourceList } = createSourceReferences(revision, root);
   const file = 'crates/code/core/src/agent_api/run_facade.rs';
   const citation = { path: file, match: 'pub async fn steer(\n        &self,' };
@@ -252,7 +252,7 @@ test('current reading paths expose ordered page sources at fixed revisions in ca
   for (const route of routes) {
     const [product, ...slug] = route.split('/');
     let expected;
-    for (const address of [route, `${product}/9.1.6/${slug.join('/')}`]) {
+    for (const address of [route, `${product}/9.2.1/${slug.join('/')}`]) {
       const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs', address, 'index.html'), 'utf8'));
       t.after(() => dom.window.close());
       const refs = [...dom.window.document.querySelectorAll('.prose .source-ref')].map((link) => link.href);
@@ -391,7 +391,7 @@ test('default aliases resolve cross-product and version links from their pinned 
     const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs', route, 'index.html'), 'utf8'), { url: `https://aster-ai-lab.github.io/aster/docs/${route}` });
     t.after(() => dom.window.close());
     const opposite = route.startsWith('code/') ? 'acp' : 'code';
-    const link = [...dom.window.document.querySelectorAll('.prose a')].find((node) => node.href.includes(`/docs/${opposite}/9.1.6/`));
+    const link = [...dom.window.document.querySelectorAll('.prose a')].find((node) => node.href.includes(`/docs/${opposite}/9.2.1/`));
     assert.ok(link, `${route}: missing pinned cross-product link`);
     assert.ok(!link.href.includes('/aster/acp/') && !link.href.includes('/aster/code/'));
   }
@@ -475,21 +475,21 @@ test('chapter navigation retains its scroll across page loads and isolates produ
     menu.addEventListener('click', (event) => event.preventDefault());
     return { dom, menu };
   };
-  const first = await open('code/9.1.6/tutorial/');
+  const first = await open('code/9.2.1/tutorial/');
   first.menu.scrollTop = 540;
   first.menu.querySelector('a[href$="tutorial/memory/"]').click();
-  const second = await open('code/9.1.6/tutorial/memory/');
+  const second = await open('code/9.2.1/tutorial/memory/');
   assert.equal(second.menu.scrollTop, 540);
   assert.equal(second.dom.window.scrollY, 0);
   assert.equal((await open('code/9.1.5/tutorial/memory/')).menu.scrollTop, 0);
-  assert.equal((await open('acp/9.1.6/')).menu.scrollTop, 0);
+  assert.equal((await open('acp/9.2.1/')).menu.scrollTop, 0);
   second.menu.scrollTop = 610;
   second.dom.window.dispatchEvent(new second.dom.window.Event('pagehide'));
-  assert.equal((await open('code/9.1.6/tutorial/')).menu.scrollTop, 610);
-  const mobile = await open('code/9.1.6/tutorial/', 0);
+  assert.equal((await open('code/9.2.1/tutorial/')).menu.scrollTop, 610);
+  const mobile = await open('code/9.2.1/tutorial/', 0);
   mobile.menu.scrollTop = 0;
   mobile.dom.window.dispatchEvent(new mobile.dom.window.Event('pagehide'));
-  assert.equal((await open('code/9.1.6/tutorial/')).menu.scrollTop, 610);
+  assert.equal((await open('code/9.2.1/tutorial/')).menu.scrollTop, 610);
 });
 
 test('navigation remains usable when session storage is unavailable or corrupt', async (t) => {
@@ -528,7 +528,7 @@ test('document search loads one index, filters project and version, and supports
     project, projectTitle: project === 'code' ? 'Aster Code' : 'Aster ACP', version, versionLabel: version,
     section: '指南', text: 'workspace write permission and confirmation',
   });
-  const fixture = { format: 1, documents: [entry('code', '9.1.6'), entry('code', '9.1.5'), entry('acp', '9.1.6')] };
+  const fixture = { format: 1, documents: [entry('code', '9.2.1'), entry('code', '9.1.5'), entry('acp', '9.2.1')] };
   let requests = 0;
   window.fetch = async (url) => {
     requests += 1;
@@ -547,14 +547,14 @@ test('document search loads one index, filters project and version, and supports
   input.value = 'permission';
   input.dispatchEvent(new window.Event('input', { bubbles: true }));
   assert.equal(list.querySelectorAll('a').length, 1);
-  assert.match(list.querySelector('a').href, /code\/9\.1\.6\/permissions\/$/);
+  assert.match(list.querySelector('a').href, /code\/9\.2\.1\/permissions\/$/);
   dialog.querySelector('[data-docs-search-project=""]').click();
   dialog.querySelector('[data-docs-search-version=""]').click();
   assert.equal(list.querySelectorAll('a').length, 3);
 
   dialog.querySelector('[data-docs-search-project="acp"]').click();
   assert.equal(list.querySelectorAll('a').length, 1);
-  assert.match(list.querySelector('a').href, /acp\/9\.1\.6\/permissions\/$/);
+  assert.match(list.querySelector('a').href, /acp\/9\.2\.1\/permissions\/$/);
   dialog.querySelector('[data-docs-search-version="9.1.5"]').click();
   assert.equal(list.querySelectorAll('a').length, 0);
   assert.match(dialog.querySelector('[data-docs-search-status]').textContent, /没有匹配/);
@@ -575,13 +575,13 @@ test('document search loads one index, filters project and version, and supports
   assert.equal(dialog.open, true);
   assert.equal(requests, 1);
   assert.equal(dialog.querySelector('[data-docs-search-project="code"]').getAttribute('aria-pressed'), 'true');
-  assert.equal(dialog.querySelector('[data-docs-search-version="9.1.6"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(dialog.querySelector('[data-docs-search-version="9.2.1"]').getAttribute('aria-pressed'), 'true');
   assert.equal(list.querySelectorAll('a').length, 1);
 });
 
 test('shared cross-document transitions are progressive and respect reduced motion', async () => {
   const css = await readFile(path.join(publicRoot, 'transitions.css'), 'utf8');
-  const page = await readFile(path.join(publicRoot, 'docs/code/9.1.6/index.html'), 'utf8');
+  const page = await readFile(path.join(publicRoot, 'docs/code/9.2.1/index.html'), 'utf8');
   assert.match(page, /<link rel="stylesheet" href="\.\.\/\.\.\/\.\.\/transitions\.css"\s*\/?>/);
   assert.match(css, /@view-transition\s*\{\s*navigation:\s*auto;\s*\}/);
   assert.match(css, /::view-transition-old\(root\)\s*\{\s*animation:\s*site-page-out\s+120ms/);

@@ -25,7 +25,7 @@ ACP 使用 Core 的目标接口接纳切片。
 来源变化后，旧预览不能直接接纳新内容。
 
 完整方法参见[工程目标接口](../../goals/)。
-Core 机制参见[长期任务设计](../../../../code/9.1.6/internals/long-running/)。
+Core 机制参见[长期任务设计](../../../../code/9.2.1/internals/long-running/)。
 
 ## ACP 的续跑循环在哪里停止
 
@@ -59,7 +59,7 @@ Paused、BudgetExhausted 和 Reconcile 也会停止。
 暂停、恢复和重新打开会话都保留额度。
 
 默认值入口见 <SourceRef path="crates/code/manual/HOST_GOAL_CONTROL.md" match="The declaration is optional.">宿主续跑合同</SourceRef>。
-当前进展依据见[Core 长任务章节](../../../../code/9.1.6/internals/long-running/)。
+当前进展依据见[Core 长任务章节](../../../../code/9.2.1/internals/long-running/)。
 
 ## 无人值守为什么还需要动作证据
 

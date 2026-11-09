@@ -12,7 +12,7 @@ const lines = [];
 const mapping = [];
 const text = (node) => node.type === 'inlineCode' ? `\`${node.value}\`` : node.value ?? (node.children ?? []).map(text).join('');
 for (const project of catalog.projects) {
-  const version = project.versions.find((item) => item.id === '9.1.6');
+  const version = project.versions.find((item) => item.id === '9.2.1');
   if (!version) continue;
   for (const page of version.pages.filter((item) => item.file.startsWith('internals/'))) {
     const filename = `${project.id}/${version.id}/${page.file}.mdx`;
@@ -39,7 +39,7 @@ for (const entry of atlas.diagrams) {
 }
 for (const [project, names] of [['code',['system-prompts','context','execution','long-running','recovery','completion']], ['acp',['runtime']]]) {
   for (const name of names) {
-    const filename = `${project}/9.1.6/_walks/${name}.json`;
+    const filename = `${project}/9.2.1/_walks/${name}.json`;
     const definition = JSON.parse(await readFile(path.join(contentRoot, filename), 'utf8'));
     for (const value of [definition.title, definition.intro, ...definition.steps.flatMap((step) => [step.title, step.body, step.takeaway])]) {
       mapping.push({ outputLine: lines.length + 1, file: filename }); lines.push(value, '');

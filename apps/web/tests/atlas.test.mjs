@@ -40,7 +40,7 @@ test('every migrated Pele diagram preserves original labels, node identities, re
     const directory = path.join(root, 'apps/web/content/docs', entry.product, entry.version);
     const definition = JSON.parse(await readFile(path.join(directory, '_atlas', `${entry.name}.json`), 'utf8'));
     const source = await readFile(path.join(directory, '_diagrams', `${entry.name}.mmd`), 'utf8');
-    const original = JSON.parse(execFileSync('git', ['show', `4faf25b927784f03f32777c05c3506228cdcb4cd:apps/web/content/docs/${entry.product}/${entry.version}/_atlas/${entry.name}.json`], { cwd: root, encoding: 'utf8' }));
+    const original = JSON.parse(execFileSync('git', ['show', `4faf25b927784f03f32777c05c3506228cdcb4cd:apps/web/content/docs/${entry.product}/${entry.version === '9.2.1' ? '9.1.6' : entry.version}/_atlas/${entry.name}.json`], { cwd: root, encoding: 'utf8' }));
     assert.equal(definition.title, original.spec.title);
     const branded = (value) => JSON.parse(JSON.stringify(value).replaceAll('a3s-', 'aster-').replaceAll('A3S ', 'Aster ').replaceAll('a3s/', 'aster/'));
     assert.deepEqual(definition.steps, branded(original.steps));
@@ -166,10 +166,10 @@ test('Spotlight preserves explicit selection while the document scrolls', async 
 test('static source walks retain every explanation and original code line without JavaScript', async () => {
   const originals = new Map();
   for (const [product, name] of [['code','system-prompts'],['code','execution'],['code','long-running'],['code','context'],['code','recovery'],['code','completion'],['acp','runtime']]) {
-    const route = product === 'acp' ? 'acp/9.1.6/internals' : `code/9.1.6/internals/${name}`;
+    const route = product === 'acp' ? 'acp/9.2.1/internals' : `code/9.2.1/internals/${name}`;
     const dom = new JSDOM(await readFile(path.join(publicRoot, route, 'index.html'), 'utf8'));
     try {
-      const definition = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs', product, '9.1.6/_walks', `${name}.json`), 'utf8'));
+      const definition = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs', product, '9.2.1/_walks', `${name}.json`), 'utf8'));
       const stops = [...dom.window.document.querySelectorAll('.walk-stop')];
       assert.equal(stops.length, definition.steps.length);
       for (const [index, stop] of stops.entries()) {
@@ -208,12 +208,12 @@ test('excerpt resolution refuses stale or ambiguous selections and invalid exten
 });
 
 test('new internal reading paths retain explicit product versions rather than default aliases', async () => {
-  for (const route of ['code/9.1.6/internals','code/9.1.6/internals/system-prompts','code/9.1.6/internals/context','code/9.1.6/internals/execution','code/9.1.6/internals/long-running','code/9.1.6/internals/recovery','code/9.1.6/internals/completion','acp/9.1.6/internals','acp/9.1.6/internals/events','acp/9.1.6/internals/goals']) {
+  for (const route of ['code/9.2.1/internals','code/9.2.1/internals/system-prompts','code/9.2.1/internals/context','code/9.2.1/internals/execution','code/9.2.1/internals/long-running','code/9.2.1/internals/recovery','code/9.2.1/internals/completion','acp/9.2.1/internals','acp/9.2.1/internals/events','acp/9.2.1/internals/goals']) {
     const dom = new JSDOM(await readFile(path.join(publicRoot, route, 'index.html'), 'utf8'), { url: `https://aster-ai-lab.github.io/aster/docs/${route}/` });
     try {
       for (const link of dom.window.document.querySelectorAll('.prose a')) {
         const url = new URL(link.href);
-        if (url.origin === dom.window.location.origin && url.pathname.endsWith('/')) assert.match(url.pathname, /^\/aster\/docs\/(code|acp)\/9\.1\.6\//, `${route}: ${url.pathname}`);
+        if (url.origin === dom.window.location.origin && url.pathname.endsWith('/')) assert.match(url.pathname, /^\/aster\/docs\/(code|acp)\/9\.2\.1\//, `${route}: ${url.pathname}`);
       }
     } finally { dom.window.close(); }
   }
@@ -273,7 +273,7 @@ test('clipboard boundary receives the exact source text and reports denied acces
 });
 
 test('compact page-source disclosure retains every pinned reference in first-use order', async () => {
-  const walk = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs/code/9.1.6/_walks/system-prompts.json'), 'utf8'));
+  const walk = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs/code/9.2.1/_walks/system-prompts.json'), 'utf8'));
   for (const count of [3, 4]) {
     const sources = createSourceReferences(revision, root);
     const selected = walk.steps.slice(0, count).map(step => step.source);

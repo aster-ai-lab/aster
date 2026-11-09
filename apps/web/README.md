@@ -54,7 +54,7 @@ npm --prefix apps/web run check
 
 新增或修改文档后，只编辑 `content/docs/` 中的源文件并运行构建。不要手写或提交缓存及 `dist/` 中的 HTML、CSS、SVG、JS 或 JSON。`assets/readme/` 中由同一 Mermaid 源生成的 README SVG 是唯一需要随源码提交的生成图。
 
-当前 Code 9.1.6 的 RSI 与 Meta Harness 章节增加可拖动的球形证据图谱。RSI 默认只显示图谱、轻量案例入口与操作；点击节点才展开内部细节与证据卡，关闭时返回。专注按钮将同一个图谱移入原生模态窗口，`?view=graph` 可直接进入专注视图。球面微点和网格是背景纹理，不代表实验记录；实际关系使用带方向光点的曲线，内部窥探保留全局图与跨层连接。动效与讲解可分别暂停，减少动态效果时保留静态关系，离开视口后停止绘制。
+当前 Code 9.2.1 的 RSI 与 Meta Harness 章节增加可拖动的球形证据图谱。RSI 默认只显示图谱、轻量案例入口与操作；点击节点才展开内部细节与证据卡，关闭时返回。专注按钮将同一个图谱移入原生模态窗口，`?view=graph` 可直接进入专注视图。球面微点和网格是背景纹理，不代表实验记录；实际关系使用带方向光点的曲线，内部窥探保留全局图与跨层连接。动效与讲解可分别暂停，减少动态效果时保留静态关系，离开视口后停止绘制。
 
 “演进历程”参考 [Arc UI Timeline](https://uiarc.dev/components/timeline)、[Stepper](https://uiarc.dev/components/stepper) 与 [Accordion](https://uiarc.dev/components/accordion) 的连接线、当前阶段环和展开交互，用现有原生 DOM / Web Animations 实现。默认收起，打开时仅展示当前案例的纵向时间轴；阶段切换同步图谱，来源按需展开。论文案例按算法阅读顺序呈现，不伪造事件时间、完成状态或运行指标。DGM、STOP 标为文献流程重建，Aster 预算修复标为工程记录，应用映射另行注明。案例数据在 `_rsi-cases.mjs`，展示组件与 Core 数据在 `_harness-demo.mjs`。静态 Pele 图和完整文字来源保留，关闭脚本后仍可阅读；浏览器增强复用 `navigation.js`，不增加运行时依赖，也不连接模型或会话。
 

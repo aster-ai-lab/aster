@@ -5,11 +5,11 @@
       "title": "Aster Code",
       "label": "智能体运行时",
       "description": "了解 Aster 如何调用模型、执行工具和检查任务结果，以及如何在 Rust 应用中使用这些能力。",
-      "defaultVersion": "9.1.6",
+      "defaultVersion": "9.2.1",
       "versions": [
         {
-          "id": "9.1.6",
-          "label": "9.1.6 · 文档快照（运行时 9.2.1）",
+          "id": "9.2.1",
+          "label": "9.2.1",
           "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
           "pages": [
             {
@@ -590,11 +590,11 @@
       "title": "Aster ACP",
       "label": "客户端接入",
       "description": "通过 stdio 接入 Core，处理会话、权限、模型、插件、Office 与长期目标。",
-      "defaultVersion": "9.1.6",
+      "defaultVersion": "9.2.1",
       "versions": [
         {
-          "id": "9.1.6",
-          "label": "9.1.6 · 文档快照（运行时 9.2.1）",
+          "id": "9.2.1",
+          "label": "9.2.1",
           "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
           "pages": [
             {

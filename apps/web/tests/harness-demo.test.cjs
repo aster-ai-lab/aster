@@ -7,8 +7,8 @@ const { JSDOM } = require(process.env.JS_DOM_MODULE || path.join(root, 'packages
 const script = fs.readFileSync(path.join(root, 'apps/web/dist/docs/navigation.js'), 'utf8');
 
 function boot(t, page = 'design/rsi', reduce = false, focus = false, measure = false) {
-  const html = fs.readFileSync(path.join(root, `apps/web/dist/docs/code/9.1.6/${page}/index.html`), 'utf8');
-  const dom = new JSDOM(html, { url: `https://aster-ai-lab.github.io/aster/docs/code/9.1.6/${page}/${focus?'?view=graph':''}`, runScripts: 'outside-only', pretendToBeVisual: true });
+  const html = fs.readFileSync(path.join(root, `apps/web/dist/docs/code/9.2.1/${page}/index.html`), 'utf8');
+  const dom = new JSDOM(html, { url: `https://aster-ai-lab.github.io/aster/docs/code/9.2.1/${page}/${focus?'?view=graph':''}`, runScripts: 'outside-only', pretendToBeVisual: true });
   t.after(() => dom.window.close());
   const w = dom.window, timers = new Map(), frames = new Map(), animations = [];
   let serial = 0, mediaChange, intersectionChange, clock=0;
@@ -44,7 +44,7 @@ function boot(t, page = 'design/rsi', reduce = false, focus = false, measure = f
 
 test('all real cases and Core contracts retain readable records, exact provenance and version isolation without script', () => {
   for(const [page,counts] of [['design/rsi',[9,9,9]],['meta-harness',[9]]]) {
-    const dom=new JSDOM(fs.readFileSync(path.join(root,`apps/web/dist/docs/code/9.1.6/${page}/index.html`),'utf8'));
+    const dom=new JSDOM(fs.readFileSync(path.join(root,`apps/web/dist/docs/code/9.2.1/${page}/index.html`),'utf8'));
     const widget=dom.window.document.querySelector('[data-harness-demo]'), cases=JSON.parse(widget.dataset.example).cases;
     assert.deepEqual(cases.map(c=>c.nodes.length),counts);
     let records=0;
@@ -308,7 +308,7 @@ test('a finished node narration can restart from its first record',t=>{
 });
 
 test('authoring refuses missing or duplicate category membership before publishing',async()=>{
-  const {attachGroups}=await import('../content/docs/code/9.1.6/_rsi-cases.mjs');
+  const {attachGroups}=await import('../content/docs/code/9.2.1/_rsi-cases.mjs');
   const nodes=[{id:'item',children:[{label:'first'},{label:'second'}]}];
   assert.throws(()=>attachGroups(nodes,{}),/Missing relationship groups: item/);
   assert.throws(()=>attachGroups(nodes,{item:[{label:'group',kind:'evidence',records:[0,0]}]}),/cover each record once: item/);
@@ -316,7 +316,7 @@ test('authoring refuses missing or duplicate category membership before publishi
 });
 
 test('each real case states its scenario, decisions, directed branches and outcomes explicitly',()=>{
-  const dom=new JSDOM(fs.readFileSync(path.join(root,'apps/web/dist/docs/code/9.1.6/design/rsi/index.html'),'utf8'));
+  const dom=new JSDOM(fs.readFileSync(path.join(root,'apps/web/dist/docs/code/9.2.1/design/rsi/index.html'),'utf8'));
   const cases=JSON.parse(dom.window.document.querySelector('[data-harness-demo]').dataset.example).cases;
   for(const item of cases){
     for(const name of ['title','goal','baseline','decision','outcome'])assert.ok(item.scenario[name]);
