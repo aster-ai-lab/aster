@@ -202,3 +202,22 @@
 - 新 DMG 内 app：交付清单 **100/100 匹配**，直接运行 **12s 持续不退出**（仅剩正常 i18n 警告）。
 - `gh release upload v0.2.1 ... --clobber` 替换同名 DMG 与 `.sha256`，线上 / 本地 SHA 一致；Release 说明顶部加了「请重新下载」提示；网站 `--refresh` 无 diff、`--check` 通过。
 - **`desktop-stable` 的 `Aster.zip` 未受影响**：它由 `package-host.sh` 直接归档原始 `.app`，100 个哈希全对、`verify-archive` 通过，通道清单仍指向 0.2.1。即自动更新拿到的包一直是好的，坏的只有 DMG 全新安装这一条路径。
+
+---
+
+## 11. 「是不是开发版本」核验与发布形态偏差（18:1x）
+
+用户质疑本机包是否为 dev 构建，并报告在另一台机器安装后仍闪退。
+
+**不是 dev/debug 构建**（硬证据）：
+- 主二进制来自 `target/release/Studio`（106M，arm64 Mach-O），`target/debug/Studio` 不存在；`package-host.sh` 全程 `cargo build --release --locked` + `tauri build --features custom-protocol`。
+- renderer 从 `tauri://localhost/static/js/index.d5c9b2e3a1.js` 加载（custom-protocol 打包资源）；dev 版会走 `http://127.0.0.1:4318` 的 rsbuild dev server。
+- `.app` 内 `studio-delivery.json` = `aster-studio / aster / 0.2.1 / 100 files`，`CFBundleShortVersionString=0.2.1`，`identifier=dev.aster.studio.aster`（该字符串是正式产品 id，不是 dev build 标志）。
+- Developer ID 签名 + Apple 公证 staple + `spctl accepted`；dev 构建不会公证。
+
+**但确实不是 CI 标准发布形态**：`package-host.sh` 本地默认 `ASTER_DEFER_RUNTIME_COMPONENTS=1`（slim），而 `.github/workflows/release-aster-desktop.yml` 的 `defer_runtime_components` 默认 **false**（full bootstrap），描述明确写着「Slim installer (enable after existing clients receive the component-aware bootstrap release)」。因此本包未内置 `document` / `ocr` / `agent/aster-office`，首次启动需从官方 registry 按需下载 3 个 AIX 组件——这是给已有 bootstrap 的客户端更新用的形态，不是为全新机器首次安装准备的。本机 `ASTER_OCR_MODELS` / `ASTER_OCR_NOTICES` 未设置、`crates/ocr/models` 无模型，本地无法直接切到 full bootstrap；正式修复应走 CI workflow（`defer_runtime_components=false`）。
+
+**另一台机器的排查线索**：
+- 包为 **arm64 only**（`lipo -archs` = arm64，SDK 26.5，`minos 11.0`，Info.plist 声明 10.13）；Intel Mac 无法运行，macOS < 11 也不支持。本机为 macOS 26.6.2 / arm64。
+- 线上资产已重新下载实算：SHA-256 `6aaca20ae4bcae31705b4204596e2172dd7f79445df054bb0e52f2fdc27c4d99`，与本地 `cmp` 字节完全一致；若另一台机器上的文件是 `b29229e8529ffabbe5cc5791c24becf49a375dea964acfee8c44ddb1f423ff55`，则是替换前的坏包（§10），在任何机器上都会 `update_integrity_failed`。
+- 用隔离 HOME 模拟全新机器运行修复后的 DMG：20s 持续运行、能启动，renderer 正常从 `tauri://` 加载。因此「全新用户目录」本身不是闪退原因。
