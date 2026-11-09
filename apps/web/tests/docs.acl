@@ -149,10 +149,8 @@ suite "aster-documentation" {
         expect "table-data" { target = css(".prose table tbody tr:first-child td:first-child") rendered_text = "单个或多个委派任务" }
         screenshot "markdown-desktop" { path = "screenshots/markdown-table-desktop.png" }
         click "versions" { target = css(".docs-switcher:last-child > summary") }
-        expect "missing-chapter-fallback" { target = css(".docs-switcher:last-child a[href$='code/9.1.5/']") rendered_text = "9.1.5 此版本无本篇，打开版本首页" }
-        click "old-version" { target = css(".docs-switcher:last-child a[href$='code/9.1.5/']") }
-        expect "old-home" { target = css("main h1") rendered_text = "理解 Aster 的 Harness" }
-        expect "old-version-stamp" { target = css(".docs-version") rendered_text = "Aster Code 9.1.5" }
+        expect "current-version-only" { target = css(".docs-switcher:last-child a[href$='code/9.2.1/reference/orchestration/']") rendered_text = "9.2.1 默认" }
+        expect "version-stamp" { target = css(".docs-version") rendered_text = "Aster Code 9.2.1" }
         click "products" { target = css(".docs-switcher:first-child > summary") }
         click "acp" { target = css(".docs-switcher:first-child a[href$='acp/9.2.1/']") }
         expect "acp-home" { target = css("main h1") rendered_text = "把 Aster 接进自己的客户端" }

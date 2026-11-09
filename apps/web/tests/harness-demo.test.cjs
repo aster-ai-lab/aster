@@ -73,8 +73,6 @@ test('all real cases and Core contracts retain readable records, exact provenanc
     if(cases.length>1){assert.match(widget.textContent,/人工组织/);assert.match(widget.textContent,/没有重新执行/);assert.match(widget.textContent,/文献流程重建/);}
     dom.window.close();
   }
-  const old=fs.readFileSync(path.join(root,'apps/web/dist/docs/code/9.1.5/design/rsi/index.html'),'utf8');
-  assert.ok(!old.includes('data-harness-demo'));
 });
 
 test('a real tool change opens its internal details and reverses to the same node with keyboard focus',t=>{

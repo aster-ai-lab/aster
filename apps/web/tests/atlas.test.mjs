@@ -15,7 +15,8 @@ const require = createRequire(import.meta.url);
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const { JSDOM } = require(process.env.JS_DOM_MODULE || path.join(root, 'packages/ui/node_modules/jsdom'));
 const publicRoot = path.join(root, 'apps/web/dist/docs');
-const revision = '8729d7c84a2d887c61dc206ba47bf8a63425e768';
+const catalog = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs/catalog.json'), 'utf8'));
+const revision = catalog.projects.find((project) => project.id === 'code').versions.find((version) => version.id === '9.2.1').sourceRef;
 
 async function page(t, route, { reduced = false, observe = false } = {}) {
   const dom = new JSDOM(await readFile(path.join(publicRoot, route, 'index.html'), 'utf8'), { url: `https://aster-ai-lab.github.io/aster/docs/${route}`, runScripts: 'outside-only' });

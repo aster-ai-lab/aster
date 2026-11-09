@@ -347,7 +347,7 @@ test('generated documents preserve project URLs, active navigation and accessibl
 test('current Core and ACP coverage indexes match the authoritative public contract sets', async () => {
   const core = projects.find((entry) => entry.id === 'code');
   const acp = projects.find((entry) => entry.id === 'acp');
-  assert.equal(core.versions.length, 2);
+  assert.equal(core.versions.length, 1);
   const cargoVersions = {};
   for (const [project, crate] of [[core, 'core'], [acp, 'acp']]) {
     const cargo = await readFile(path.join(root, `crates/code/${crate}/Cargo.toml`), 'utf8');
@@ -481,8 +481,7 @@ test('chapter navigation retains its scroll across page loads and isolates produ
   const second = await open('code/9.2.1/tutorial/memory/');
   assert.equal(second.menu.scrollTop, 540);
   assert.equal(second.dom.window.scrollY, 0);
-  assert.equal((await open('code/9.1.5/tutorial/memory/')).menu.scrollTop, 0);
-  assert.equal((await open('acp/9.2.1/')).menu.scrollTop, 0);
+    assert.equal((await open('acp/9.2.1/')).menu.scrollTop, 0);
   second.menu.scrollTop = 610;
   second.dom.window.dispatchEvent(new second.dom.window.Event('pagehide'));
   assert.equal((await open('code/9.2.1/tutorial/')).menu.scrollTop, 610);
@@ -528,7 +527,7 @@ test('document search loads one index, filters project and version, and supports
     project, projectTitle: project === 'code' ? 'Aster Code' : 'Aster ACP', version, versionLabel: version,
     section: '指南', text: 'workspace write permission and confirmation',
   });
-  const fixture = { format: 1, documents: [entry('code', '9.2.1'), entry('code', '9.1.5'), entry('acp', '9.2.1')] };
+  const fixture = { format: 1, documents: [entry('code', '9.2.1'), entry('acp', '9.2.1')] };
   let requests = 0;
   window.fetch = async (url) => {
     requests += 1;
@@ -550,20 +549,17 @@ test('document search loads one index, filters project and version, and supports
   assert.match(list.querySelector('a').href, /code\/9\.2\.1\/permissions\/$/);
   dialog.querySelector('[data-docs-search-project=""]').click();
   dialog.querySelector('[data-docs-search-version=""]').click();
-  assert.equal(list.querySelectorAll('a').length, 3);
+  assert.equal(list.querySelectorAll('a').length, 2);
 
   dialog.querySelector('[data-docs-search-project="acp"]').click();
   assert.equal(list.querySelectorAll('a').length, 1);
   assert.match(list.querySelector('a').href, /acp\/9\.2\.1\/permissions\/$/);
-  dialog.querySelector('[data-docs-search-version="9.1.5"]').click();
-  assert.equal(list.querySelectorAll('a').length, 0);
-  assert.match(dialog.querySelector('[data-docs-search-status]').textContent, /没有匹配/);
-  dialog.querySelector('[data-docs-search-project=""]').click();
+  dialog.querySelector('[data-docs-search-project="code"]').click();
   assert.equal(list.querySelectorAll('a').length, 1);
-  assert.match(list.querySelector('a').href, /code\/9\.1\.5\/permissions\/$/);
+  assert.match(list.querySelector('a').href, /code\/9\.2\.1\/permissions\/$/);
 
-  dialog.querySelector('[data-docs-search-version=""]').click();
-  assert.equal(list.querySelectorAll('a').length, 3);
+  dialog.querySelector('[data-docs-search-project=""]').click();
+  assert.equal(list.querySelectorAll('a').length, 2);
   input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
   assert.equal(document.activeElement, list.querySelector('a'));
   dialog.dispatchEvent(new window.Event('cancel', { bubbles: true, cancelable: true }));

@@ -8,7 +8,7 @@
       "takeaway": "Core 的能力与 ACP 已声明能力要分开判断。",
       "source": {
         "path": "crates/code/acp/src/agent/turn.rs",
-        "match": "pub(super) fn prompt_text(prompt: &[acp::ContentBlock]) -> acp::Result<String> {",
+        "match": "pub(super) fn prompt_content(",
         "before": 0,
         "after": 24
       }

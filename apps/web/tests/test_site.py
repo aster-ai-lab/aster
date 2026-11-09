@@ -366,7 +366,7 @@ class SiteTest(unittest.TestCase):
                 homepage = response.read()
                 self.assertIn(b'home.css', homepage)
                 self.assertIn('让想法落地'.encode(), homepage)
-            for relative in ('tenant/toyou/INFO.md', 'src/private.js', 'content/docs/catalog.json', 'content/docs/code/index.mdx', 'content/docs/code/9.1.5/index.mdx', 'content/docs/code/9.1.5/_components.mjs', 'content/docs/code/9.1.5/_diagrams/architecture.mmd'):
+            for relative in ('tenant/toyou/INFO.md', 'src/private.js', 'content/docs/catalog.json', 'content/docs/code/index.mdx', 'content/docs/code/9.2.1/index.mdx', 'content/docs/code/9.2.1/_components.mjs', 'content/docs/code/9.2.1/_diagrams/architecture.mmd'):
                 with self.subTest(relative=relative), self.assertRaises(HTTPError) as refused:
                     urlopen(origin + relative, timeout=2)
                 self.assertEqual(refused.exception.code, 404)

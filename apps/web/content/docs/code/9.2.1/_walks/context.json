@@ -30,7 +30,7 @@
       "takeaway": "摘要是可核实的历史，不是新的授权来源。",
       "source": {
         "path": "crates/code/core/prompts/common/context_compact.md",
-        "match": "Pinned original goal (copy verbatim under ## Goal; leave empty only if unknown):",
+        "match": "Pinned original goal (reference only; the host restores it verbatim):",
         "before": 6,
         "after": 5
       }
