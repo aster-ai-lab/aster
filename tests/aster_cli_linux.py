@@ -170,12 +170,18 @@ class LinuxChannelSelectionTest(unittest.TestCase):
         (self.assets / "latest.json").write_text(
             f'{{"version":"{VERSION}","tag":"aster-cli-v{VERSION}","assets":{{"linux":{{"name":"aster-cli-v{VERSION}-linux.tar.gz","sha256":"{digest}"}}}}}}\n'
         )
-        self.fake_tool("uname", 'printf "%s\\n" Linux')
+        self.fake_uname("x86_64")
 
     def fake_tool(self, name, body):
         path = self.fake / name
         path.write_text("#!/bin/sh\n" + body + "\n")
         path.chmod(0o755)
+
+    def fake_uname(self, machine):
+        self.fake_tool(
+            "uname",
+            f'case "$1" in -s) printf "Linux\\n" ;; -m) printf "{machine}\\n" ;; *) printf "Linux\\n" ;; esac',
+        )
 
     def environment(self):
         env = dict(os.environ, ASTER_RELEASE_BASE=str(self.assets), PATH=str(self.fake) + os.pathsep + os.environ["PATH"])
@@ -191,6 +197,21 @@ class LinuxChannelSelectionTest(unittest.TestCase):
                 result = subprocess.run(["bash", str(INSTALL), "--prefix", str(self.prefix)], env=self.environment(), capture_output=True, text=True, timeout=10)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"local release is missing aster-cli-v{VERSION}-linux.tar.gz", result.stderr)
+
+    def test_linux_arm64_hosts_request_the_arm64_archive(self):
+        digest = "0" * 64
+        (self.assets / "latest.json").write_text(
+            f'{{"version":"{VERSION}","tag":"aster-cli-v{VERSION}","assets":{{'
+            f'"linux":{{"name":"aster-cli-v{VERSION}-linux.tar.gz","sha256":"{digest}"}},'
+            f'"linux-arm64":{{"name":"aster-cli-v{VERSION}-linux-arm64.tar.gz","sha256":"{digest}"}}'
+            f'}}}}\n'
+        )
+        self.fake_uname("aarch64")
+        self.fake_tool("getconf", 'printf "%s\\n" "glibc 2.31"')
+        self.fake_tool("ldd", "exit 1")
+        result = subprocess.run(["bash", str(INSTALL), "--prefix", str(self.prefix)], env=self.environment(), capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(f"local release is missing aster-cli-v{VERSION}-linux-arm64.tar.gz", result.stderr)
 
     def test_retired_direct_archive_is_refused_before_network_access(self):
         marker = self.root / "network-called"

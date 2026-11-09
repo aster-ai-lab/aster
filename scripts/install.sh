@@ -163,8 +163,9 @@ if [[ -n "$manifest_json" ]]; then
     exit 1
   fi
   asset_name="aster-cli-v${version}-${platform}.${extension}"
-  entry="$(printf '%s' "$compact" | grep -oE "\"${platform}\":\{\"name\":\"[^\"]+\",\"sha256\":\"[0-9a-f]{64}\"\}" | head -1)"
-  expected_sha="$(printf '%s' "$entry" | grep -oE '[0-9a-f]{64}')"
+  # grep exits 1 when the platform key is absent; keep going so we can report it.
+  entry="$(printf '%s' "$compact" | grep -oE "\"${platform}\":\{\"name\":\"[^\"]+\",\"sha256\":\"[0-9a-f]{64}\"\}" | head -1 || true)"
+  expected_sha="$(printf '%s' "$entry" | grep -oE '[0-9a-f]{64}' || true)"
   if [[ "$entry" != "\"${platform}\":{\"name\":\"${asset_name}\",\"sha256\":\"${expected_sha}\"}" ]]; then
     echo "error: channel manifest has no ${asset_name}" >&2
     exit 1
