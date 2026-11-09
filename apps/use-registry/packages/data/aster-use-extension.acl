@@ -1,0 +1,74 @@
+extension "aster/data" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "data"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  agent "analyst" {
+    harness  = "builtin"
+    runtime  = "edge"
+    instructions = "agents/analyst/INSTRUCTIONS.md"
+    optional = false
+
+    resources {
+      cpu_millis   = 500
+      memory_bytes = 268435456
+    }
+  }
+
+  view_container "data" {
+    title    = "数据分析"
+    icon     = "database"
+    order    = 45
+    location = "activitybar"
+  }
+
+  ui "browser" {
+    title            = "数据"
+    description      = "连接数据库，列出表，运行 SQL，并保存数据源。"
+    icon             = "database"
+    entry            = "ui/browser/index.html"
+    root             = "ui"
+    styles           = ["ui/browser/app.css"]
+    scripts          = ["ui/shared/browser.js"]
+    container        = "data"
+    presentation     = "webview"
+    contract_version = 1
+    mode             = "append"
+    optional         = false
+  }
+
+  ui "analysis" {
+    title            = "数据分析"
+    description      = "用已保存的数据源查询，并显示这些行的数值合计。"
+    icon             = "database"
+    entry            = "ui/analysis/index.html"
+    root             = "ui"
+    styles           = ["ui/browser/app.css"]
+    scripts          = ["ui/shared/analysis.js"]
+    point            = "studio.applets"
+    presentation     = "webview"
+    contract_version = 1
+    mode             = "append"
+    optional         = false
+  }
+
+  composer_mode "analysis" {
+    contract_version = 1
+    title            = "数据分析"
+    description      = "查询已配置的数据源"
+    icon             = "database"
+    agent            = "analyst"
+    editor           = "analysis"
+    scope            = "workspace"
+    context          = ["workspace"]
+    order            = 30
+    prompt           = "查询已配置的数据源"
+  }
+}
