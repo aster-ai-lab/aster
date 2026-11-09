@@ -179,3 +179,26 @@
 - **desktop-stable 通道**：上传 `Aster-darwin-aarch64-v0.2.1.zip`（140,207,587 B，SHA-256 `f4b03a2d1e07b259…`），用 `desktop_release_manifest.py generate --existing / --notes-en / --notes-zh-cn` 生成 `desktop-latest.json`（version 0.2.1，中英双语 notes，history 9 个版本），`check` 通过后 `gh release upload desktop-stable ... --clobber` 成功。自动更新通道现指向 0.2.1。
 - **保留窗口**：删除 `v0.1.11`、`v0.1.10` 的版本化 Release 与远程 tag（`gh release delete --yes --cleanup-tag`），保留 `v0.2.1`（仓库 Latest）与 `v0.2.0`（上一版）。Core/ACP 历史 tag `v9.1.6`、CLI/ACP 命名空间、`desktop-stable` 通道内的历史归档均未改动。
 - **清理后复核**：`build_releases.mjs --refresh` 结果无变化（desktop 0.2.1 / CLI 0.3.1，`git diff` 为空），`--check` 通过，`desktop_release_manifest.py check` 通过，网站测试 **37/37 通过**，Latest 仍为 v0.2.1，远程 `refs/tags/v0.1.*` 为空。
+
+---
+
+## 10. 首次安装闪退事故（18:0x，已修复并重新发布）
+
+用户反馈「安装完点开就闪退」。复现与定位：
+
+| 步骤 | 结果 |
+| --- | --- |
+| 直接运行 DMG 内 `Contents/MacOS/Studio` | **EXIT 1**，stderr `just studio: update_integrity_failed` |
+| 把 DMG 内 `.app` 复制到可写卷再运行 | 同样失败 → 排除只读卷 / Gatekeeper / App Translocation |
+| 运行未打包进 DMG 的原始 release `.app` | 12s 持续运行、有 renderer 日志 → 正常 |
+| 逐个比对 `studio-delivery.json` 的 100 个哈希 | 原始 app **0 不匹配**；DMG 内 app **3 不匹配**：`Contents/Info.plist`、`Contents/MacOS/capture-helper`、`Contents/Resources/agent/aster-acp` |
+
+**根因**：`package-dmg.sh` 在 staging 里用 `PlistBuddy` 重写 `Info.plist`、用 `sign-resources` 重签嵌套 Mach-O、再 `codesign`，却**没有重算由 `package-host.sh` 冻结的 `studio-delivery.json`**。运行时 `app_updater/delivery_manifest.rs::validate()` 会对清单里每个文件做 `hash_file`，任一不符即 `UpdateFail::IntegrityFailed` → `exit(1)`。签名与公证本身都是好的（`codesign --verify`、`spctl`、`stapler` 全通过），Gatekeeper 不会拦，所以表现为「图标弹一下就消失」，且系统里没有新的崩溃报告。
+
+**修复**（`aster-ai-lab/studio` `17155330d0`）：在 `sign-resources` 之后、最终外层 `codesign` 之前，按 staged 后的实际字节重算清单中每个条目的 `sha256` / `size`。清单不记录自身、主二进制与 `_CodeSignature/CodeResources`（由最终代码签名封印），因此重算后仍自洽。
+
+**验证与重新发布**：
+- 重打 DMG：公证 `Accepted`、staple、`spctl accepted`；按规范改名 `aster_0.2.1_aarch64.dmg`，新 SHA-256 `6aaca20ae4bcae31705b4204596e2172dd7f79445df054bb0e52f2fdc27c4d99`（旧坏包已移到 `/tmp/aster-broken-0.2.1.dmg`）。
+- 新 DMG 内 app：交付清单 **100/100 匹配**，直接运行 **12s 持续不退出**（仅剩正常 i18n 警告）。
+- `gh release upload v0.2.1 ... --clobber` 替换同名 DMG 与 `.sha256`，线上 / 本地 SHA 一致；Release 说明顶部加了「请重新下载」提示；网站 `--refresh` 无 diff、`--check` 通过。
+- **`desktop-stable` 的 `Aster.zip` 未受影响**：它由 `package-host.sh` 直接归档原始 `.app`，100 个哈希全对、`verify-archive` 通过，通道清单仍指向 0.2.1。即自动更新拿到的包一直是好的，坏的只有 DMG 全新安装这一条路径。
