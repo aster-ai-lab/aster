@@ -1,0 +1,14 @@
+{
+  "visual_lh_h1_hard": true,
+  "model": "deepseek/deepseek-flash",
+  "config": "/Users/roylin/code/aster/.aster/config.acl",
+  "runs": [
+    "DUAL-HOLD",
+    "DUAL-GATE-7K"
+  ],
+  "rate": "def sticker_price(count):\n    return count * 8\n",
+  "fee": "def parcel_fee(count):\n    return count * 5\n",
+  "fail_before_pass": true,
+  "pass_count": 1,
+  "pass": true
+}

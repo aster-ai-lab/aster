@@ -53,5 +53,28 @@ python3 apps/aster/tests/visual_tui_harness/drive_shop_multiturn.py \
   --evidence /tmp/aster-visual-shop/evidence
 ```
 
+Additional Layer-C companions (same DeepSeek pin):
+
+- `drive_lh_parallel.py` — single-prompt parallel *intent* (soft; GATE may lack HOLD)
+- `drive_lh_parallel_hard.py` — ordered first-gate HOLD then GATE
+- `drive_lh_retrieval.py` — needle token search → fix nested file; decoy must stay
+- `drive_al_compact.py` — AL-V1: HOLD → `/compact` → resume → GATE
+- `drive_sr_semantic.py` — SR: host ACL + `workspace_retrieval` local_cpu; meaning search
+
+```bash
+python3 apps/aster/tests/visual_tui_harness/drive_lh_parallel_hard.py \
+  --bin-dir /path/to/bins --work-dir /tmp/aster-visual-lh-h1h \
+  --model deepseek/deepseek-flash \
+  --config /abs/path/to/repo/.aster/config.acl \
+  --evidence /tmp/aster-visual-lh-h1h/evidence
+
+python3 apps/aster/tests/visual_tui_harness/drive_lh_retrieval.py \
+  --bin-dir /path/to/bins --work-dir /tmp/aster-visual-lh-h3 \
+  --model deepseek/deepseek-flash \
+  --config /abs/path/to/repo/.aster/config.acl \
+  --evidence /tmp/aster-visual-lh-h3/evidence
+```
+
 The driver writes `launch_aster.sh` into the evidence dir and opens it with
-`open -a Terminal` so `ASTER_CONFIG` / cwd quoting stays intact.
+`open -a Terminal` so `ASTER_CONFIG` / cwd quoting stays intact. Window binding
+snapshots pre-launch `aster-acp` Terminal ids when the title omits cwd.

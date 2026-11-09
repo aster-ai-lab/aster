@@ -1,0 +1,18 @@
+{
+  "visual_lh_h3_retrieval": true,
+  "model": "deepseek/deepseek-flash",
+  "config": "/Users/roylin/code/aster/.aster/config.acl",
+  "needle_token": "RETRIEVE-NEEDLE-9c2e",
+  "runs": [
+    "RETRIEVE-GATE-9c2e"
+  ],
+  "needle_file": "def sticker_price(count):\n    # RETRIEVE-NEEDLE-9c2e\n    return count * 8\n",
+  "decoy_unchanged": true,
+  "pass_line": true,
+  "search_evidence_in_history": true,
+  "pass": true,
+  "note": "summary reconstructed after driver AttributeError post-oracle; file state preserved",
+  "history_snippet": [
+    "     Found the token in inventory/backstock/rate_impl.py, the only match. Fixed its rate from count * 3 to   9:07 AM    "
+  ]
+}

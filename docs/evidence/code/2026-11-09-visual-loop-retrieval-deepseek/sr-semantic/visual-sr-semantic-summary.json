@@ -1,0 +1,13 @@
+{
+  "visual_sr_semantic": true,
+  "model": "deepseek/deepseek-flash",
+  "config": "/Users/roylin/code/aster/docs/evidence/code/2026-11-09-visual-loop-retrieval-deepseek/sr-semantic/config.retrieval.acl",
+  "workspace_retrieval_appended": true,
+  "runs": [
+    "SEMANTIC-GATE-9c2e"
+  ],
+  "needle_file": "def compute_invoice_subtotal(lines):\n    \"\"\"Sum line amounts for the quarterly invoice reconciliation report.\"\"\"\n    return sum(x for x in lines)\n",
+  "decoy_unchanged": true,
+  "search_evidence_in_history": true,
+  "pass": true
+}

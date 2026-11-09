@@ -188,13 +188,18 @@ def write_fixture(ws: Path) -> None:
 
 
 def capture(ev: Path, wid: str, name: str) -> None:
-    out = json.loads(sh(["agent-desktop", "list-windows", "--app", "终端"]).stdout)
+    raw = sh(["agent-desktop", "list-windows", "--app", "终端"], check=False)
     bounds = None
-    for w in out.get("data", []):
-        if w.get("id") == wid:
-            b = w["bounds"]
-            bounds = f"{int(b['x'])},{int(b['y'])},{int(b['width'])},{int(b['height'])}"
-            break
+    if raw.returncode == 0 and (raw.stdout or "").strip():
+        try:
+            out = json.loads(raw.stdout)
+        except json.JSONDecodeError:
+            out = {}
+        for w in out.get("data", []):
+            if w.get("id") == wid:
+                b = w["bounds"]
+                bounds = f"{int(b['x'])},{int(b['y'])},{int(b['width'])},{int(b['height'])}"
+                break
     if not bounds:
         raise RuntimeError(f"window {wid} not found")
     screens = ev / "screens"
@@ -203,8 +208,32 @@ def capture(ev: Path, wid: str, name: str) -> None:
     (ev / f"{name}-hist.txt").write_text(terminal_history())
 
 
-def find_wid(marker: str) -> str:
+def list_aster_terminal_windows() -> list[dict]:
+    raw = sh(["agent-desktop", "list-windows", "--app", "终端"], check=False)
+    if raw.returncode != 0 or not (raw.stdout or "").strip():
+        return []
+    try:
+        out = json.loads(raw.stdout)
+    except json.JSONDecodeError:
+        return []
+    rows = []
+    for w in out.get("data", []):
+        title = w.get("title") or ""
+        if w.get("visible") and "aster-acp" in title:
+            rows.append(w)
+    return rows
+
+
+def find_wid(
+    marker: str,
+    title_tag: str | None = None,
+    before_ids: set[str] | None = None,
+) -> str:
     # macOS often shows /private/tmp/... while Path.resolve() may still be /tmp/...
+    # Some Terminal builds omit cwd from the title; callers may pass title_tag set
+    # via OSC 0 in launch_aster.sh so we can still bind the window. When aster
+    # overwrites the title, fall back to the newest aster-acp window not in
+    # before_ids (snapshot taken before `open -a Terminal`).
     markers = {marker, str(Path(marker))}
     try:
         markers.add(str(Path(marker).resolve()))
@@ -215,23 +244,35 @@ def find_wid(marker: str) -> str:
     resolved = str(Path(marker).resolve()) if Path(marker).exists() else marker
     if resolved.startswith("/private/tmp/"):
         markers.add(resolved.replace("/private/tmp/", "/tmp/", 1))
-    for _ in range(60):
-        out = json.loads(sh(["agent-desktop", "list-windows", "--app", "终端"]).stdout)
-        for w in out.get("data", []):
+    if title_tag:
+        markers.add(title_tag)
+    before_ids = before_ids or set()
+    leaf = Path(marker).name
+    parent = Path(marker).parent.name
+    for _ in range(90):
+        rows = list_aster_terminal_windows()
+        for w in rows:
             title = w.get("title") or ""
-            if not w.get("visible") or "aster-acp" not in title:
-                continue
             if any(m and m in title for m in markers):
                 return w["id"]
-            # Title may shorten the cwd; match a stable workspace leaf.
-            leaf = Path(marker).name
-            parent = Path(marker).parent.name
             if leaf and parent and f"{parent}/{leaf}" in title.replace("/private", ""):
                 return w["id"]
+        # New window since launch (title may no longer contain cwd/tag).
+        fresh = [w for w in rows if w.get("id") not in before_ids]
+        if len(fresh) == 1:
+            return fresh[0]["id"]
+        if len(fresh) > 1:
+            # Prefer DeepSeek-pinned launch line when several leftovers exist.
+            for w in fresh:
+                title = w.get("title") or ""
+                if "deepseek" in title.lower():
+                    return w["id"]
+            return fresh[0]["id"]
         time.sleep(0.4)
-    raise RuntimeError(f"no Terminal window matching {marker} (tried {sorted(markers)})")
-
-
+    raise RuntimeError(
+        f"no Terminal window matching {marker} "
+        f"(tried {sorted(markers)}; before={sorted(before_ids)})"
+    )
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--bin-dir", type=Path, required=True)
@@ -263,6 +304,7 @@ def main() -> int:
             raise SystemExit(f"--config not a file: {config}")
 
     marker = str(ws.resolve())
+    title_tag = f"ASTER-VIS-{ws.name}-{int(time.time())}"
     # Keep the launch line simple: the first successful DeepSeek visual run used
     # this quoting. Write a companion script only as evidence of intent.
     launch = ev / "launch_aster.sh"
@@ -275,6 +317,8 @@ def main() -> int:
                 f"export PATH='{bin_dir}':\"$PATH\"",
                 config_line,
                 f"cd '{ws}'",
+                # OSC 0: bind the window when Terminal omits cwd from the title.
+                f"printf '\\033]0;{title_tag}\\007'",
                 "clear",
                 f"exec aster --model '{args.model}' --no-plan --fullscreen",
                 "",
@@ -282,10 +326,12 @@ def main() -> int:
         )
     )
     launch.chmod(0o755)
+    before_ids = {w["id"] for w in list_aster_terminal_windows()}
     # Prefer `open -a Terminal` on the launch script — AppleScript `do script`
     # with nested path quotes has been observed to drop ASTER_CONFIG/cwd on macOS.
     subprocess.run(["open", "-a", "Terminal", str(launch)], check=True)
-    wid = find_wid(marker)
+    wid = find_wid(marker, title_tag=title_tag, before_ids=before_ids)
+    (ev / "title_tag.txt").write_text(title_tag)
     (ev / "wid.txt").write_text(wid)
     sh(["agent-desktop", "focus-window", "--app", "终端", "--window-id", wid], check=False)
     time.sleep(2)

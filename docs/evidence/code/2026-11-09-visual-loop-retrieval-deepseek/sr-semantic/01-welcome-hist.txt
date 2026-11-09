@@ -1,0 +1,89 @@
+Last login: Mon Nov  9 09:44:10 on tty??
+/Users/roylin/code/aster/docs/evidence/code/2026-11-09-visual-loop-retrieval-deepseek/sr-semantic/launch_aster.sh ; exit;
+➜  ~ /Users/roylin/code/aster/docs/evidence/code/2026-11-09-visual-loop-retrieval-deepseek/sr-semantic/launch_aster.sh ; exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /p/t/a/sr-sem/ws
+
+
+            ╭───────────────────────────────────────────────────────────────────────────────────────────────╮
+            │                                                                                               │
+            │                    +                  Aster  0.3.1 (1a34fc4a5be3)                             │
+            │                   *#        +#        Thanks for trying Aster, give feedback with /feedback!  │
+            │                  *###                                                                         │
+            │                +*#####+..........     New worktree                                    ctrl+w  │
+            │           ..+*####**####*+     :.     Resume session                                  ctrl+r  │
+            │       ....**#####*  +######*+::       Changelog                                               │
+            │     ..        *###++###*+::           Quit                                            ctrl+q  │
+            │     :::::::::o****###*                                                                        │
+            │                  +*#+                                                                         │
+            │                   *#                                                                          │
+            │                    +                                                                          │
+            │                                                                                               │
+            ╰───────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+
+   → Type a message...
+
+                                                                                 deepseek/DeepSeek Flash (max) · yolo
+
+
+
+

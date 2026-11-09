@@ -1,0 +1,91 @@
+import_accounts = ["codex", "cursor"]
+default_model = "glm-01/glm-5.3"
+skill_dirs = [".aster/skills"]
+
+providers "gateway" {
+  base_url = "http://117.162.0.179:8080/v1"
+  api_key = "a3s_gw_ba70dbad8c48d8287e2eda7633d0346267da3d22e7267afedc3662d6a9e0d0c1"
+
+  models "prism-27b" {
+    name = "qwen3.8-27B"
+  }
+
+  models "deepseek-v4.1-flash" {
+    name = "deepseek-v4.1-flash"
+  }
+}
+
+providers "kimi" {
+  api_key = "sk-kimi-B97FfRKHqGs2iq2JugGpOWb7OpkSetz5lbdbbSW3lgXLl2ZvIbSnChDzjOZZ5O2R"
+  base_url = "https://api.kimi.com/coding/v1"
+  models "k3.1-pro" {
+    name = "K3.1 Pro"
+  }
+}
+
+providers "deepseek" {
+  api_key = "sk-0bf9314f81c5467baf597169aa77d2f3"
+  base_url = "https://api.deepseek.com"
+  models "deepseek-flash" {
+    name = "DeepSeek Flash"
+  }
+}
+
+# Live Zhipu GLM Coding Plan accounts from CC Switch (probed 2026-10-31).
+# GLM 03/05 plan expired; 04/07 no balance; 06 duplicates 02's token — omitted.
+providers "glm-01" {
+  protocol = "anthropic"
+
+  api_key = "2ceb806e784a412cad792ca1b627d0ce.1RhuBfnPLoWc1qtU"
+  base_url = "https://open.bigmodel.cn/api/anthropic"
+  models "glm-5.3-flash" {
+    name = "Zhipu GLM 01 · glm-5.3-flash"
+    reasoning = true
+    tool_call = true
+  }
+
+  models "glm-5.3-flashx" {
+    name = "Zhipu GLM 01 · glm-5.3-flashx"
+    reasoning = true
+    tool_call = true
+  }
+
+  models "glm-5.2" {
+    name = "Zhipu GLM 01 · glm-5.2"
+    reasoning = true
+    tool_call = true
+  }
+
+  models "glm-5.3" {
+    name = "Zhipu GLM 01 · glm-5.3"
+    reasoning = true
+    tool_call = true
+  }
+}
+
+# Second live account (Anthropic-compatible BigModel endpoint).
+providers "glm-02" {
+  protocol = "anthropic"
+
+  api_key = "79e7da124257462a823df67ad335c844.pEAzuNBecsYJOXW5"
+  base_url = "https://open.bigmodel.cn/api/anthropic"
+  models "glm-5.3-flash" {
+    name = "Zhipu GLM 02 · glm-5.3-flash"
+    reasoning = true
+    tool_call = true
+  }
+
+  models "glm-5.3" {
+    name = "Zhipu GLM 02 · glm-5.3"
+    reasoning = true
+    tool_call = true
+  }
+}
+
+reasoning_effort = "max"
+
+
+workspace_retrieval {
+  enabled = true
+  local_cpu {}
+}

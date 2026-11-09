@@ -1,0 +1,8 @@
+OK welcome
+OK retrieve-repair
+Traceback (most recent call last):
+  File "/Users/roylin/code/aster/apps/aster/tests/visual_tui_harness/drive_lh_retrieval.py", line 207, in <module>
+    raise SystemExit(main())
+  File "/Users/roylin/code/aster/apps/aster/tests/visual_tui_harness/drive_lh_retrieval.py", line 181, in main
+    needle.lower(),
+AttributeError: 'function' object has no attribute 'lower'
