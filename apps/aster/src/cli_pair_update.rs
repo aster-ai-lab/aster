@@ -101,17 +101,18 @@ fn normalize_requested_version(text: &str) -> Option<Version> {
 }
 
 /// The release channel this host must install.
-fn channel_for(os: &str) -> &'static str {
-    match os {
-        "macos" => "macos",
-        "windows" => "windows",
-        "linux" => "linux",
+fn channel_for(os: &str, arch: &str) -> &'static str {
+    match (os, arch) {
+        ("macos", _) => "macos",
+        ("windows", _) => "windows",
+        ("linux", "x86_64") => "linux",
+        ("linux", "aarch64") => "linux-arm64",
         _ => "unsupported",
     }
 }
 
 fn platform_key() -> &'static str {
-    channel_for(std::env::consts::OS)
+    channel_for(std::env::consts::OS, std::env::consts::ARCH)
 }
 
 fn asset_name_for(version: Version, platform: &str) -> String {
@@ -329,8 +330,13 @@ fn parse_manifest(bytes: &[u8], tag_hint: &str) -> Result<Manifest> {
     };
     let mut parsed = Vec::new();
     for (platform, entry) in assets {
-        if !matches!(platform.as_str(), "macos" | "linux" | "windows") {
-            bail!("channel manifest has unsupported platform {platform}");
+        // Ignore unknown platforms so a newer channel cannot strand an older
+        // updater. Known platforms stay exact (name + sha256 shape).
+        if !matches!(
+            platform.as_str(),
+            "macos" | "linux" | "linux-arm64" | "windows"
+        ) {
+            continue;
         }
         let Some(entry) = entry.as_object() else {
             bail!("channel manifest asset {platform} is not an object");

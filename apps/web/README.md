@@ -9,7 +9,7 @@ apps/web/
   content/
     home.html                 # 首页 HTML 与下载占位符
     download.html             # 下载页 HTML 与下载占位符
-    releases.json             # 六个安装包的固定发布快照
+    releases.json             # 桌面与 CLI 安装包的固定发布快照
     docs/                     # MDX、产品注册表、Mermaid 与讲解数据
   src/pages/                  # 首页、下载页、法律页与文档 Astro 路由
   public/                     # 手工维护的 CSS、浏览器脚本、图片、字体和许可证
@@ -36,7 +36,7 @@ node apps/web/scripts/build_releases.mjs --refresh
 npm --prefix apps/web run check
 ```
 
-刷新命令只更新 `content/releases.json` 并验证模板，不写旧静态产物。选择逻辑排除草稿、预发布和未完成上传的资产，并保持六个桌面与 CLI 目标的顺序和版本一致。
+刷新命令只更新 `content/releases.json` 并验证模板，不写旧静态产物。选择逻辑排除草稿、预发布和未完成上传的资产，并保持桌面与 CLI 目标的顺序和版本一致（含 Linux x86_64 / arm64）。
 
 ## 文档站
 

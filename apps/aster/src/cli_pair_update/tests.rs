@@ -59,39 +59,50 @@ fn channel_manifest_reads_are_bounded_before_allocating_the_whole_input() {
 
 #[test]
 fn standard_platforms_use_one_canonical_archive_each() {
-    for (os, extension) in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")] {
-        assert_eq!(channel_for(os), os);
+    for (os, arch, platform, extension) in [
+        ("macos", "aarch64", "macos", "tar.gz"),
+        ("linux", "x86_64", "linux", "tar.gz"),
+        ("linux", "aarch64", "linux-arm64", "tar.gz"),
+        ("windows", "x86_64", "windows", "zip"),
+    ] {
+        assert_eq!(channel_for(os, arch), platform);
         assert_eq!(
-            asset_name_for(Version(0, 1, 3), channel_for(os)),
-            format!("aster-cli-v0.1.3-{os}.{extension}")
+            asset_name_for(Version(0, 1, 3), platform),
+            format!("aster-cli-v0.1.3-{platform}.{extension}")
         );
     }
-    assert_eq!(channel_for("freebsd"), "unsupported");
+    assert_eq!(channel_for("freebsd", "x86_64"), "unsupported");
+    assert_eq!(channel_for("linux", "riscv64"), "unsupported");
 }
 
 #[test]
-fn updater_accepts_the_three_platform_manifest_and_refuses_a_retired_channel() {
+fn updater_accepts_known_platforms_and_ignores_unknown_channel_keys() {
     let mut manifest = serde_json::json!({
         "version": "0.1.3",
         "tag": "aster-cli-v0.1.3",
         "assets": {}
     });
-    for (os, extension) in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")] {
+    for (platform, extension) in [
+        ("macos", "tar.gz"),
+        ("linux", "tar.gz"),
+        ("linux-arm64", "tar.gz"),
+        ("windows", "zip"),
+    ] {
         manifest
             .get_mut("assets")
             .unwrap()
             .as_object_mut()
             .unwrap()
             .insert(
-                os.into(),
+                platform.into(),
                 serde_json::json!({
-                    "name": format!("aster-cli-v0.1.3-{os}.{extension}"),
+                    "name": format!("aster-cli-v0.1.3-{platform}.{extension}"),
                     "sha256": "a".repeat(64)
                 }),
             );
     }
     let parsed = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "").unwrap();
-    assert_eq!(parsed.assets.len(), 3);
+    assert_eq!(parsed.assets.len(), 4);
     manifest
         .get_mut("assets")
         .unwrap()
@@ -104,10 +115,9 @@ fn updater_accepts_the_three_platform_manifest_and_refuses_a_retired_channel() {
                 "sha256": "a".repeat(64)
             }),
         );
-    let error = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "")
-        .err()
-        .unwrap();
-    assert!(error.to_string().contains("unsupported platform kylin"));
+    let parsed = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "").unwrap();
+    assert_eq!(parsed.assets.len(), 4);
+    assert!(parsed.assets.iter().all(|asset| !asset.name.contains("kylin")));
 }
 
 #[test]

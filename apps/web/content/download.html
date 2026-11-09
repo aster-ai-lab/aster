@@ -652,7 +652,11 @@
               ><a
                 class="quiet-button"
                 href="{{download.cli.linux.url}}"
-                >Linux</a
+                >Linux x86_64</a
+              ><a
+                class="quiet-button"
+                href="{{download.cli.linux-arm64.url}}"
+                >Linux arm64</a
               ><a
                 class="quiet-button"
                 href="{{download.cli.windows.url}}"
@@ -661,7 +665,7 @@
             </div>
             <ul>
               <li>CLI v{{download.cli.linux.version}} 公开归档，未签名</li>
-              <li>解压后将两个程序保留在同一目录</li>
+              <li>Linux 基线 glibc 2.31；解压后将两个程序保留在同一目录</li>
               <li>
                 <a href="https://github.com/aster-ai-lab/aster#开始使用">查看安装与模型配置说明</a>
               </li>
@@ -913,6 +917,11 @@
           href="{{download.cli.linux.url}}"
           ><svg class="icon"><use href="#i-terminal" /></svg
           ><span><strong>Linux CLI</strong><small>x86_64 · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span
+          ><svg class="icon"><use href="#i-download" /></svg></a
+        ><a
+          href="{{download.cli.linux-arm64.url}}"
+          ><svg class="icon"><use href="#i-terminal" /></svg
+          ><span><strong>Linux CLI</strong><small>arm64 · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         >
       </div>

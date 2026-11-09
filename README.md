@@ -114,7 +114,7 @@ aster --version
 > `aster` 与 `aster-acp` 必须在同一目录并成对更新。
 > macOS 安装完整归档，保留同目录的 `sandbox/`。
 > 另指定 ACP 路径时设置 `ASTER_ACP_AGENT_BIN`。
-> Linux 发布基线：x86_64、glibc 2.31。详见[发布规范](docs/release-governance.md)。
+> Linux 发布基线：glibc 2.31；归档按架构拆分（`linux` = x86_64，`linux-arm64` = aarch64）。详见[发布规范](docs/release-governance.md)。
 
 ### 2. 配置默认模型
 

@@ -150,7 +150,12 @@
               </a>
               <a class="download-option" data-download-platform="linux" href="{{download.cli.linux.url}}">
                 <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                <span class="download-option-text"><strong>Linux</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
+                <span class="download-option-text"><strong>Linux x86_64</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
+                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="download-option" data-download-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
+                <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                <span class="download-option-text"><strong>Linux arm64</strong><small>CLI · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span>
                 <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
               </a>
               <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
@@ -203,7 +208,12 @@
                   </a>
                   <a class="download-option" data-download-platform="linux" href="{{download.cli.linux.url}}">
                     <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                    <span class="download-option-text"><strong>Linux</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
+                    <span class="download-option-text"><strong>Linux x86_64</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
+                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="download-option" data-download-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
+                    <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                    <span class="download-option-text"><strong>Linux arm64</strong><small>CLI · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span>
                     <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
                   </a>
                   <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
@@ -480,6 +490,12 @@
                 <span class="platform-meta">x86_64 · v{{download.cli.linux.version}}</span>
                 <span class="download-action">下载 {{download.cli.linux.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
               </a>
+              <a class="download-card" data-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
+                <span class="platform-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
+                <span class="platform-name">Linux CLI</span>
+                <span class="platform-meta">arm64 · v{{download.cli.linux-arm64.version}}</span>
+                <span class="download-action">下载 {{download.cli.linux-arm64.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
+              </a>
               <a class="download-card download-card-cli" href="#cli-downloads">
                 <span class="platform-icon"><svg class="icon"><use href="#i-terminal" /></svg></span>
                 <span class="platform-name">Aster CLI</span>
@@ -502,7 +518,12 @@
               </a>
               <a href="{{download.cli.linux.url}}">
                 <svg class="icon"><use href="#i-terminal" /></svg>
-                <span><strong>Linux CLI</strong><small>{{download.cli.linux.format}} · v{{download.cli.linux.version}}</small></span>
+                <span><strong>Linux x86_64</strong><small>{{download.cli.linux.format}} · v{{download.cli.linux.version}}</small></span>
+                <svg class="icon icon-small"><use href="#i-download" /></svg>
+              </a>
+              <a href="{{download.cli.linux-arm64.url}}">
+                <svg class="icon"><use href="#i-terminal" /></svg>
+                <span><strong>Linux arm64</strong><small>{{download.cli.linux-arm64.format}} · v{{download.cli.linux-arm64.version}}</small></span>
                 <svg class="icon icon-small"><use href="#i-download" /></svg>
               </a>
               <a href="{{download.cli.windows.url}}">

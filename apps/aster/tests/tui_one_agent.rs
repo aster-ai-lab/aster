@@ -382,8 +382,13 @@ fn assert_auto_update_off() {
         .checked_add(1)
         .unwrap();
     let version = format!("{next_major}.0.0");
-    let platform = std::env::consts::OS;
-    assert!(matches!(platform, "macos" | "linux" | "windows"));
+    let platform = match (std::env::consts::OS, std::env::consts::ARCH) {
+        ("macos", _) => "macos",
+        ("windows", _) => "windows",
+        ("linux", "x86_64") => "linux",
+        ("linux", "aarch64") => "linux-arm64",
+        other => panic!("unsupported test host: {other:?}"),
+    };
     let extension = if platform == "windows" {
         "zip"
     } else {
