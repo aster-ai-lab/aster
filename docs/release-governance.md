@@ -37,6 +37,7 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 - 从仓库根目录使用固定 Rust 工具链和锁文件构建。
 - CLI 的 `aster` 与 `aster-acp` 必须从同一干净提交构建、验证并成对发布；归档同时携带共享 `BUILD_ID` 和 `SHA256SUMS`。
+- CLI Linux 归档按架构拆分：`linux` 为 x86_64，`linux-arm64` 为 aarch64；二者均以 glibc 2.31 为基线。
 - 桌面版通过 `release-aster-desktop.yml` 构建并更新 `desktop-stable`；安装包版本与 Core／ACP 版本相互独立。
 - Core／ACP 通过 `release-code.yml` 构建。只有 `aster-acp-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。归档文件名使用同一前缀（`aster-acp-vX.Y.Z-<platform>.*`）。
 - 不得从有未提交修改或未完成指定平台验证的工作树发布。发布记录必须能定位到准确源码提交。

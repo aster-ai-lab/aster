@@ -48,9 +48,9 @@ jobs:
           if manifest.get("version") != version or manifest.get("tag") != f"aster-cli-v{version}":
               raise SystemExit("channel manifest identity mismatch")
           assets = manifest.get("assets")
-          if not isinstance(assets, dict) or set(assets) != {"macos", "linux", "windows"}:
+          if not isinstance(assets, dict) or set(assets) != {"macos", "linux", "linux-arm64", "windows"}:
               raise SystemExit("channel manifest platform set mismatch")
-          for platform, extension in (("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")):
+          for platform, extension in (("macos", "tar.gz"), ("linux", "tar.gz"), ("linux-arm64", "tar.gz"), ("windows", "zip")):
               entry = assets[platform]
               expected = f"aster-cli-v{version}-{platform}.{extension}"
               if entry.get("name") != expected or not re.fullmatch(r"[0-9a-f]{64}", entry.get("sha256", "")):

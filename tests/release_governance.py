@@ -25,7 +25,12 @@ def workflow_script(name, step):
 
 def manifest(version=VERSION):
     assets = {}
-    for platform, extension in (("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")):
+    for platform, extension in (
+        ("macos", "tar.gz"),
+        ("linux", "tar.gz"),
+        ("linux-arm64", "tar.gz"),
+        ("windows", "zip"),
+    ):
         name = f"aster-cli-v{version}-{platform}.{extension}"
         assets[platform] = {
             "name": name,

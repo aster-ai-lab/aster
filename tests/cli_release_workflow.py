@@ -13,7 +13,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
 NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
-         [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]]
+         [("macos", "tar.gz"), ("linux", "tar.gz"), ("linux-arm64", "tar.gz"), ("windows", "zip")]]
 EXPECTED_MACOS_MEMBERS = {
     "aster",
     "aster-acp",
@@ -183,7 +183,7 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(manifest["version"], "0.1.6")
         self.assertEqual(manifest["tag"], "aster-cli-v0.1.6")
-        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
+        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "linux-arm64", "windows"})
         self.assertEqual(args[args.index("--target") + 1], SOURCE_SHA)
         self.assertIn("--draft", args)
         for entry in manifest["assets"].values():
@@ -204,7 +204,7 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
             with self.subTest(missing=missing, extra=extra):
                 result, manifest, args = self.assemble(missing=missing, extra=extra)
                 self.assertNotEqual(result.returncode, 0)
-                self.assertIn("expected 3 release archives", result.stderr)
+                self.assertIn("expected 4 release archives", result.stderr)
                 self.assertIsNone(manifest)
                 self.assertIsNone(args)
 
@@ -212,14 +212,14 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
         result, manifest, args = self.assemble(artifact_run_id="")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(args[args.index("--target") + 1], "b" * 40)
-        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
+        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "linux-arm64", "windows"})
 
     def test_matching_existing_draft_reuses_its_source_without_a_tag_lookup(self):
         result, manifest, args = self.assemble(existing_draft=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(args[:2], ["release", "upload"])
         self.assertIn("--clobber", args)
-        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
+        self.assertEqual(set(manifest["assets"]), {"macos", "linux", "linux-arm64", "windows"})
 
     def test_published_or_different_source_release_refuses_upload(self):
         for draft, source in [(False, SOURCE_SHA), (True, "b" * 40)]:

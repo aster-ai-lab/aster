@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
       usage
       ;;
     *://*)
-      if [[ "$1" =~ ^https://github\.com/aster-ai-lab/aster/releases/download/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+-(macos|linux|windows)\.(tar\.gz|zip)$ ]]; then
+      if [[ "$1" =~ ^https://github\.com/aster-ai-lab/aster/releases/download/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+-(macos|linux|linux-arm64|windows)\.(tar\.gz|zip)$ ]]; then
         direct_url="$1"
       else
         refuse
@@ -85,9 +85,19 @@ if [[ -n "$want_version" ]]; then
 fi
 
 uname_s="$(uname -s 2>/dev/null || true)"
+uname_m="$(uname -m 2>/dev/null || true)"
 case "$uname_s" in
   Darwin) platform=macos ;;
-  Linux) platform=linux ;;
+  Linux)
+    case "$uname_m" in
+      x86_64|amd64) platform=linux ;;
+      aarch64|arm64) platform=linux-arm64 ;;
+      *)
+        echo "error: unsupported Linux architecture: ${uname_m:-unknown}" >&2
+        exit 1
+        ;;
+    esac
+    ;;
   MINGW*|MSYS*|CYGWIN*) platform=windows ;;
   *)
     if [[ "${OS:-}" == "Windows_NT" ]]; then
@@ -100,7 +110,7 @@ case "$uname_s" in
 esac
 
 case "$platform" in
-  macos|linux) extension="tar.gz" ;;
+  macos|linux|linux-arm64) extension="tar.gz" ;;
   windows) extension="zip" ;;
 esac
 

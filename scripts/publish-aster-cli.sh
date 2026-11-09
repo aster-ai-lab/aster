@@ -6,8 +6,8 @@ set -euo pipefail
 ARTIFACT_RUN_ID="${ARTIFACT_RUN_ID:-}"
 shopt -s nullglob
 files=(dist/*)
-if [[ ${#files[@]} -ne 3 ]]; then
-  echo "expected 3 release archives, found ${#files[@]}" >&2
+if [[ ${#files[@]} -ne 4 ]]; then
+  echo "expected 4 release archives, found ${#files[@]}" >&2
   printf '%s\n' "${files[@]:-}" >&2
   exit 1
 fi
@@ -30,7 +30,7 @@ if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ || "$acp_version" != "$core_versi
   exit 1
 fi
 tag="aster-cli-v${version}"
-for asset in "${tag}-macos.tar.gz" "${tag}-linux.tar.gz" "${tag}-windows.zip"; do
+for asset in "${tag}-macos.tar.gz" "${tag}-linux.tar.gz" "${tag}-linux-arm64.tar.gz" "${tag}-windows.zip"; do
   if [[ ! -f "dist/$asset" ]]; then
     echo "missing CLI release archive: $asset" >&2
     exit 1
@@ -65,16 +65,17 @@ print(f"verified archive members for {archive.name}")
 PY
 macos_sha="$(shasum -a 256 -b "dist/${tag}-macos.tar.gz" | cut -d' ' -f1)"
 linux_sha="$(shasum -a 256 -b "dist/${tag}-linux.tar.gz" | cut -d' ' -f1)"
+linux_arm64_sha="$(shasum -a 256 -b "dist/${tag}-linux-arm64.tar.gz" | cut -d' ' -f1)"
 windows_sha="$(shasum -a 256 -b "dist/${tag}-windows.zip" | cut -d' ' -f1)"
 # Compact single-line manifest: scripts/install.sh parses this exact shape.
-printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","sha256":"%s"},"linux":{"name":"%s-linux.tar.gz","sha256":"%s"},"windows":{"name":"%s-windows.zip","sha256":"%s"}}}\n' \
-  "$version" "$tag" "$tag" "$macos_sha" "$tag" "$linux_sha" "$tag" "$windows_sha" > dist/latest.json
+printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","sha256":"%s"},"linux":{"name":"%s-linux.tar.gz","sha256":"%s"},"linux-arm64":{"name":"%s-linux-arm64.tar.gz","sha256":"%s"},"windows":{"name":"%s-windows.zip","sha256":"%s"}}}\n' \
+  "$version" "$tag" "$tag" "$macos_sha" "$tag" "$linux_sha" "$tag" "$linux_arm64_sha" "$tag" "$windows_sha" > dist/latest.json
 cat > notes.md <<EOF
 aster-cli v${version} — Core / ACP ${acp_version}
 
 Aster CLI ships the aster + aster-acp pair plus the offline Model2Vec embedding assets under embedding/. Process isolation uses the locked ksandbox dependency in Core, not companions or kbox MicroVM inside this archive.
 Each archive contains the locked release build of Aster ${version} and ACP ${acp_version} from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
-The Linux archive uses x86_64 glibc 2.31.
+Linux archives use glibc 2.31: \`linux\` is x86_64 and \`linux-arm64\` is aarch64.
 Update with \`aster update\`, or inspect with \`aster update --check\`, then restart the TUI to use the new pair.
 EOF
 printf 'Built from %s.\n' "$built" >> notes.md

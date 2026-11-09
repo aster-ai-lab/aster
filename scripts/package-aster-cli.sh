@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Pack the aster-cli release binaries and embedding assets into one archive.
-# Usage: scripts/package-aster-cli.sh <macos|linux|windows> <bin-dir> <out-file>
+# Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|windows> <bin-dir> <out-file>
 #
-# `linux` targets x86_64, glibc 2.31. It refuses binaries that need a newer
-# glibc, because the archive would fail on the target machine
-# with a missing GLIBC_2.3x symbol rather than at packaging time.
+# `linux` is x86_64 and `linux-arm64` is aarch64. Both target glibc 2.31. The
+# script refuses binaries that need a newer glibc, because the archive would
+# fail on the target machine with a missing GLIBC_2.3x symbol rather than at
+# packaging time.
 #
 # Embedding weights ship as `embedding/*` next to the binaries so `aster-acp`
 # release builds can omit `bundled-assets` without a network fetch.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
-  echo "Usage: scripts/package-aster-cli.sh <macos|linux|windows> <bin-dir> <out-file>" >&2
+  echo "Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|windows> <bin-dir> <out-file>" >&2
   exit 2
 fi
 
@@ -38,7 +39,7 @@ copy_file() {
 max_glibc=""
 case "$platform" in
   macos) suffix="" ;;
-  linux)
+  linux|linux-arm64)
     suffix=""
     max_glibc="2.31"
     ;;
@@ -91,7 +92,7 @@ sha256_file() {
   for name in "${release_files[@]}"; do sha256_file "$name"; done
 ) > "${stage}/SHA256SUMS"
 case "$platform" in
-  macos|linux)
+  macos|linux|linux-arm64)
     # File members only (no directory entries) so installers that refuse
     # non-regular members stay compatible.
     COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" \
