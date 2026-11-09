@@ -18,6 +18,11 @@
 //! `embedding/` Model2Vec asset files used by `aster-acp` `local_cpu` retrieval.
 //! The two-file form without metadata stays installable; the manifest
 //! digest still bounds it. Archives must not contain a `sandbox/` tree.
+//!
+//! Channel manifests may gain new platform keys; unknown keys are ignored so a
+//! newer channel cannot strand an older updater. New required archive members
+//! still need a reinstall (`scripts/install.sh` / `install.ps1`) from clients
+//! that predate them — skipping unknown members would install a broken pair.
 
 use anyhow::{Context, Result, bail};
 use sha2::Digest;
@@ -1033,15 +1038,10 @@ fn unpack_tar(archive: &Path, dest: &Path) -> Result<()> {
         let mut entry = entry.context("release archive is incomplete")?;
         let is_file = entry.header().entry_type().is_file();
         let size = entry.header().size().unwrap_or(MAX_ARCHIVE + 1);
-        let name = {
-            let path = entry
-                .path()
-                .context("archive member is not a release file")?;
-            archive_member(&path).context("archive member is not a release file")?
-        };
-        if !is_file {
-            bail!("archive member is not a release file");
-        }
+        let path = entry
+            .path()
+            .context("archive member is not a release file")?;
+        let name = admit_archive_member(&path, is_file)?;
         total = total
             .checked_add(size)
             .context("release archive is too large")?;
@@ -1072,17 +1072,14 @@ fn unpack_zip(archive: &Path, dest: &Path) -> Result<()> {
             .by_index(index)
             .context("release archive is incomplete")?;
         index += 1;
-        if !entry.is_file()
-            || entry
+        let is_file = entry.is_file()
+            && !entry
                 .unix_mode()
-                .is_some_and(|mode| !matches!(mode & 0o170_000, 0 | 0o100_000))
-        {
-            bail!("archive member is not a release file");
-        }
+                .is_some_and(|mode| !matches!(mode & 0o170_000, 0 | 0o100_000));
         let Some(path) = entry.enclosed_name() else {
             bail!("archive member is not a release file");
         };
-        let name = archive_member(&path).context("archive member is not a release file")?;
+        let name = admit_archive_member(&path, is_file)?;
         total = total
             .checked_add(entry.size())
             .context("release archive is too large")?;
@@ -1126,6 +1123,37 @@ fn archive_member(path: &Path) -> Option<String> {
     }
     let name = path.to_str()?;
     allowed_member(name).then(|| name.to_owned())
+}
+
+/// Admit a tar/zip member for extraction.
+///
+/// Known release files are accepted. Retired `sandbox/` trees and path
+/// escapes are refused. Unknown regular files fail with a reinstall hint:
+/// skipping them would leave a half-installed pair missing assets the new
+/// binaries expect.
+fn admit_archive_member(path: &Path, is_file: bool) -> Result<String> {
+    if !is_file {
+        bail!("archive member is not a release file");
+    }
+    let Some(name) = member_path_name(path) else {
+        bail!("archive member is not a release file");
+    };
+    if name == "sandbox" || name.starts_with("sandbox/") {
+        bail!("archive contains unexpected sandbox companions");
+    }
+    if allowed_member(&name) {
+        return Ok(name);
+    }
+    bail!(
+        "release archive uses a newer layout than this updater; reinstall with scripts/install.sh (Unix) or scripts/install.ps1 (Windows)"
+    );
+}
+
+fn member_path_name(path: &Path) -> Option<String> {
+    if let Some(name) = sole_name(path) {
+        return Some(name.to_owned());
+    }
+    path.to_str().map(str::to_owned)
 }
 
 fn sole_name(path: &Path) -> Option<&str> {

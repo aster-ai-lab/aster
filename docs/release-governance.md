@@ -52,12 +52,18 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 ### Aster CLI
 
-1. 用 `release-aster-cli.yml` 构建三个平台归档。Aster CLI 包含 `aster`、`aster-acp`，以及离线 Model2Vec 资产目录 `embedding/`（`aster-acp` 发行构建关闭 `bundled-embedding`，运行时从该目录加载）。进程命令隔离由锁定的 ksandbox 依赖提供，不再打包 sandbox companions 或 kbox MicroVM。
+1. 用 `release-aster-cli.yml` 构建平台归档。Aster CLI 包含 `aster`、`aster-acp`，以及离线 Model2Vec 资产目录 `embedding/`（`aster-acp` 发行构建关闭 `bundled-embedding`，运行时从该目录加载）。进程命令隔离由锁定的 ksandbox 依赖提供，不再打包 sandbox companions 或 kbox MicroVM。
    CLI 与 Studio 的 ACP feature 分叉：CLI 为 `--no-default-features --features svg-png,account-import`；Studio / 本地默认保留 `bundled-embedding`（及 Office 等桌面能力）。`aster-core` 在 ACP 上显式启用 `local-code`。
-   在发布机上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
+   在发布机上下载同一构建 run 的归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
    发布脚本先核对归档来源提交的分支资格与归档成员，再生成草稿。任一失败均禁止创建或上传 Release。
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。
 3. 运行 `release-aster-cli-channel.yml`，输入相同的 `X.Y.Z`。该流程拒绝草稿或预发布版本，验证清单后更新 `aster-cli-stable` 和 Aster Latest 上的旧客户端兼容清单。
+
+#### CLI 更新器兼容
+
+- **通道清单**：`latest.json` 的 `assets` 可增加新平台键；已发布更新器必须忽略未知键，不能因未知平台拒绝整份清单。先发布带该行为的 CLI，再把新平台键写入 `aster-cli-stable`。
+- **归档成员**：新增*必需*成员（如 `embedding/`）会使更旧的更新器无法解包。不要假设 `aster update` 能跨越这类布局变更；公告中写明用 `scripts/install.sh` / `scripts/install.ps1` 重装，或先发过渡版本。
+- **禁止**为迁就旧更新器而跳过未知归档成员后仍报告成功：会装出缺文件的半套 pair。
 
 ### Aster 桌面版
 

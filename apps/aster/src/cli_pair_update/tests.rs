@@ -302,8 +302,37 @@ fn unpacking_rejects_sandbox_archive_members() {
     let error = super::unpack_tar(&archive, &output)
         .unwrap_err()
         .to_string();
-    assert!(
-        error.contains("not a release file") || error.contains("unexpected sandbox"),
-        "{error}"
+    assert!(error.contains("unexpected sandbox"), "{error}");
+}
+
+#[test]
+fn unpacking_unknown_members_ask_for_a_reinstall_instead_of_a_half_pair() {
+    use std::{fs::File, io::Cursor};
+    let work = super::WorkDir::new().unwrap();
+    let archive = work.path.join("release.tar.gz");
+    let encoder = flate2::write::GzEncoder::new(
+        File::create(&archive).unwrap(),
+        flate2::Compression::default(),
     );
+    let mut tar = tar::Builder::new(encoder);
+    for (name, body) in [
+        (super::binary_names().0, b"aster".as_slice()),
+        (super::binary_names().1, b"acp".as_slice()),
+        ("future-sidecar.bin", b"new layout".as_slice()),
+    ] {
+        let mut header = tar::Header::new_gnu();
+        header.set_mode(0o755);
+        header.set_size(body.len() as u64);
+        header.set_cksum();
+        tar.append_data(&mut header, name, Cursor::new(body))
+            .unwrap();
+    }
+    tar.into_inner().unwrap().finish().unwrap();
+    let output = work.path.join("unpack");
+    std::fs::create_dir(&output).unwrap();
+    let error = super::unpack_tar(&archive, &output)
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("newer layout"), "{error}");
+    assert!(error.contains("install.sh"), "{error}");
 }

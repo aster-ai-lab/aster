@@ -186,7 +186,14 @@ aster update
 ```
 
 更新器读取 CLI 通道并校验归档摘要。指定版本：`aster update --version X.Y.Z`。
-手动替换时须同时更新 `aster`、`aster-acp` 及所需沙箱组件。
+若提示归档布局过新或通道清单无法解析，用一键安装脚本重装（跨越大版本布局变更时更稳妥）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh \
+  | bash -s -- --prefix "$HOME/.local/bin"
+```
+
+手动替换时须同时更新 `aster`、`aster-acp` 与同目录的 `embedding/`。
 
 ### 卸载
 
