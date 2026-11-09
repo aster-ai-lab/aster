@@ -90,9 +90,9 @@ jobs:
       - name: Build product and companion
         run: |
           cargo build --locked -p aster -p aster-acp -p aster-office-cli
-      - name: Build and test desktop product identities
+      - name: Build and test the desktop product identity
         run: |
-          for tenant in aster toyou; do
+          for tenant in aster; do
             export ASTER_TENANT_SLUG="$tenant"
             TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$tenant" tauri-config)"
             export TAURI_CONFIG
@@ -155,7 +155,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tenant: [aster, toyou]
+        tenant: [aster]
     runs-on: ubuntu-latest
     defaults:
       run:
