@@ -6,11 +6,11 @@
       "product": "desktop",
       "platform": "macos",
       "arch": "aarch64",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "format": "DMG",
-      "tag": "v0.2.1",
-      "asset": "aster_0.2.1_aarch64.dmg",
-      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.2.1/aster_0.2.1_aarch64.dmg"
+      "tag": "v0.2.2",
+      "asset": "aster_0.2.2_aarch64.dmg",
+      "url": "https://github.com/aster-ai-lab/aster/releases/download/v0.2.2/aster_0.2.2_aarch64.dmg"
     },
     {
       "key": "cli.macos",
