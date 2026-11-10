@@ -420,6 +420,15 @@ ul {
   background: #f4f4f6;
 }
 
+.download-option.is-soon {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.download-option.is-soon:hover {
+  background: transparent;
+}
+
 .download-option-icon {
   display: grid;
   width: 30px;
@@ -1458,6 +1467,21 @@ ul {
   border-color: #5d5d66;
   background: #1d1d21;
   transform: translateY(-4px);
+}
+
+.download-card.is-soon {
+  cursor: default;
+  opacity: 0.78;
+}
+
+.download-card.is-soon:hover {
+  border-color: var(--dark-line);
+  background: rgba(25, 25, 28, 0.86);
+  transform: none;
+}
+
+.download-card.is-soon .download-action {
+  color: #8d8d96;
 }
 
 .download-card.is-current {
@@ -2575,7 +2599,7 @@ ul {
 }
 
 .download-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -2596,6 +2620,12 @@ ul {
   border-color: #dcdce1;
   background: #f4f4f5;
   transform: translateY(-2px);
+}
+
+.download-card.is-soon:hover {
+  border-color: #ededf0;
+  background: #fafafa;
+  transform: none;
 }
 
 .download-card.is-current {
@@ -2851,6 +2881,12 @@ ul {
 .download-card:hover {
   border-color: rgba(255, 255, 255, 0.28);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)), rgba(18, 15, 30, 0.56);
+}
+
+.download-card.is-soon:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012)), rgba(10, 9, 18, 0.42);
+  transform: none;
 }
 
 .download-card.is-current {

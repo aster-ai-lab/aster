@@ -596,6 +596,24 @@
                 aria-controls="platform-panel-macos"
               >
                 macOS</button
+              ><button
+                id="platform-tab-windows"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="platform-panel-windows"
+                tabindex="-1"
+              >
+                Windows</button
+              ><button
+                id="platform-tab-linux"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="platform-panel-linux"
+                tabindex="-1"
+              >
+                Linux</button
               >
             </div>
             <div class="platform-panels">
@@ -613,6 +631,28 @@
                   data-download
                   >下载安装包</a
                 >
+              </div>
+              <div
+                class="platform-panel"
+                id="platform-panel-windows"
+                role="tabpanel"
+                aria-labelledby="platform-tab-windows"
+                tabindex="0"
+                hidden
+              >
+                <p class="platform-spec">桌面安装包尚未发布</p>
+                <span class="pill-button is-soon" aria-disabled="true">敬请期待</span>
+              </div>
+              <div
+                class="platform-panel"
+                id="platform-panel-linux"
+                role="tabpanel"
+                aria-labelledby="platform-tab-linux"
+                tabindex="0"
+                hidden
+              >
+                <p class="platform-spec">桌面安装包尚未发布</p>
+                <span class="pill-button is-soon" aria-disabled="true">敬请期待</span>
               </div>
             </div>
             <ul>
@@ -784,8 +824,8 @@
               支持哪些系统？<svg class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
-              当前公开桌面安装包包括 macOS Apple Silicon、Windows x64 和Linux x86_64；CLI 提供
-              macOS、Linux 和 Windows
+              当前公开桌面安装包仅有 macOS Apple Silicon；Windows 与 Linux 桌面版敬请期待。CLI
+              提供 macOS、Linux x86_64 / arm64 和 Windows
               归档。请在下载弹层中核对版本与架构，其他平台的支持以实际发行说明为准。
             </p>
           </details>
@@ -901,27 +941,43 @@
         </button>
       </div>
       <h2 id="download-title">下载 Aster</h2>
-      <p id="download-description">选择与你的系统匹配的安装包。</p>
+      <p id="download-description">桌面端与 CLI 分开选择；尚未发布的平台会显示敬请期待。</p>
       <div class="download-options">
+        <p class="download-options-label">桌面端</p>
         <a
           href="{{download.desktop.macos.url}}"
           ><svg class="icon"><use href="#i-laptop" /></svg
           ><span><strong>macOS</strong><small>Apple Silicon · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
-        ><a
-          href="{{download.cli.windows.url}}"
-          ><svg class="icon"><use href="#i-menu" /></svg
-          ><span><strong>Windows CLI</strong><small>x64 · v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span
+        >
+        <div class="download-option-soon" aria-disabled="true">
+          <svg class="icon"><use href="#i-menu" /></svg>
+          <span><strong>Windows</strong><small>敬请期待</small></span>
+        </div>
+        <div class="download-option-soon" aria-disabled="true">
+          <svg class="icon"><use href="#i-terminal" /></svg>
+          <span><strong>Linux</strong><small>敬请期待</small></span>
+        </div>
+        <p class="download-options-label">命令行</p>
+        <a
+          href="{{download.cli.macos.url}}"
+          ><svg class="icon"><use href="#i-terminal" /></svg
+          ><span><strong>macOS CLI</strong><small>v{{download.cli.macos.version}} · {{download.cli.macos.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         ><a
           href="{{download.cli.linux.url}}"
           ><svg class="icon"><use href="#i-terminal" /></svg
-          ><span><strong>Linux CLI</strong><small>x86_64 · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span
+          ><span><strong>Linux x86_64</strong><small>v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         ><a
           href="{{download.cli.linux-arm64.url}}"
           ><svg class="icon"><use href="#i-terminal" /></svg
-          ><span><strong>Linux CLI</strong><small>arm64 · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span
+          ><span><strong>Linux arm64</strong><small>v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span
+          ><svg class="icon"><use href="#i-download" /></svg></a
+        ><a
+          href="{{download.cli.windows.url}}"
+          ><svg class="icon"><use href="#i-menu" /></svg
+          ><span><strong>Windows CLI</strong><small>v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span
           ><svg class="icon"><use href="#i-download" /></svg></a
         >
       </div>

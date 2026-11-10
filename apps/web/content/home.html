@@ -143,21 +143,14 @@
                 <span class="download-option-text"><strong>Mac</strong><small>Apple 芯片 · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</small></span>
                 <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
               </a>
-              <a class="download-option" data-download-platform="windows" href="{{download.cli.windows.url}}">
+              <div class="download-option is-soon" data-download-platform="windows" aria-disabled="true">
                 <span class="download-option-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
-                <span class="download-option-text"><strong>Windows</strong><small>CLI · v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span>
-                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-              </a>
-              <a class="download-option" data-download-platform="linux" href="{{download.cli.linux.url}}">
+                <span class="download-option-text"><strong>Windows</strong><small>敬请期待</small></span>
+              </div>
+              <div class="download-option is-soon" data-download-platform="linux" aria-disabled="true">
                 <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                <span class="download-option-text"><strong>Linux x86_64</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
-                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-              </a>
-              <a class="download-option" data-download-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
-                <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                <span class="download-option-text"><strong>Linux arm64</strong><small>CLI · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span>
-                <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-              </a>
+                <span class="download-option-text"><strong>Linux</strong><small>敬请期待</small></span>
+              </div>
               <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
             </div>
           </div>
@@ -201,21 +194,14 @@
                     <span class="download-option-text"><strong>Mac</strong><small>Apple 芯片 · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</small></span>
                     <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
                   </a>
-                  <a class="download-option" data-download-platform="windows" href="{{download.cli.windows.url}}">
+                  <div class="download-option is-soon" data-download-platform="windows" aria-disabled="true">
                     <span class="download-option-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
-                    <span class="download-option-text"><strong>Windows</strong><small>CLI · v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span>
-                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-                  </a>
-                  <a class="download-option" data-download-platform="linux" href="{{download.cli.linux.url}}">
+                    <span class="download-option-text"><strong>Windows</strong><small>敬请期待</small></span>
+                  </div>
+                  <div class="download-option is-soon" data-download-platform="linux" aria-disabled="true">
                     <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                    <span class="download-option-text"><strong>Linux x86_64</strong><small>CLI · v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span>
-                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-                  </a>
-                  <a class="download-option" data-download-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
-                    <span class="download-option-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                    <span class="download-option-text"><strong>Linux arm64</strong><small>CLI · v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span>
-                    <svg class="icon icon-small option-arrow"><use href="#i-arrow" /></svg>
-                  </a>
+                    <span class="download-option-text"><strong>Linux</strong><small>敬请期待</small></span>
+                  </div>
                   <a class="download-all" href="#download" data-download-close>全部版本与 CLI<svg class="icon icon-small"><use href="#i-arrow" /></svg></a>
                 </div>
               </div>
@@ -468,7 +454,7 @@
 
           <div class="download-group">
             <div class="download-group-heading">
-              <h3>桌面端与 CLI</h3>
+              <h3>桌面端</h3>
               <span>DESKTOP WORKSPACE</span>
             </div>
             <div class="download-grid">
@@ -478,30 +464,18 @@
                 <span class="platform-meta">Apple 芯片 · v{{download.desktop.macos.version}}</span>
                 <span class="download-action">下载 {{download.desktop.macos.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
               </a>
-              <a class="download-card" data-platform="windows" href="{{download.cli.windows.url}}">
+              <div class="download-card is-soon" data-platform="windows" aria-disabled="true">
                 <span class="platform-icon"><svg class="icon"><use href="#i-windows" /></svg></span>
-                <span class="platform-name">Windows CLI</span>
-                <span class="platform-meta">x64 · v{{download.cli.windows.version}}</span>
-                <span class="download-action">下载 {{download.cli.windows.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
-              </a>
-              <a class="download-card" data-platform="linux" href="{{download.cli.linux.url}}">
+                <span class="platform-name">Windows</span>
+                <span class="platform-meta">桌面安装包尚未发布</span>
+                <span class="download-action">敬请期待</span>
+              </div>
+              <div class="download-card is-soon" data-platform="linux" aria-disabled="true">
                 <span class="platform-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                <span class="platform-name">Linux CLI</span>
-                <span class="platform-meta">x86_64 · v{{download.cli.linux.version}}</span>
-                <span class="download-action">下载 {{download.cli.linux.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
-              </a>
-              <a class="download-card" data-platform="linux-arm64" href="{{download.cli.linux-arm64.url}}">
-                <span class="platform-icon"><svg class="icon"><use href="#i-linux" /></svg></span>
-                <span class="platform-name">Linux CLI</span>
-                <span class="platform-meta">arm64 · v{{download.cli.linux-arm64.version}}</span>
-                <span class="download-action">下载 {{download.cli.linux-arm64.format}} <svg class="icon"><use href="#i-arrow" /></svg></span>
-              </a>
-              <a class="download-card download-card-cli" href="#cli-downloads">
-                <span class="platform-icon"><svg class="icon"><use href="#i-terminal" /></svg></span>
-                <span class="platform-name">Aster CLI</span>
-                <span class="platform-meta">macOS · Linux · Windows</span>
-                <span class="download-action">选择系统版本 <svg class="icon"><use href="#i-arrow" /></svg></span>
-              </a>
+                <span class="platform-name">Linux</span>
+                <span class="platform-meta">桌面安装包尚未发布</span>
+                <span class="download-action">敬请期待</span>
+              </div>
             </div>
           </div>
 

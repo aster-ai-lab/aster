@@ -134,8 +134,11 @@ test('no-JS release links and labelled screenshots remain; retired simulated Off
     const fragment = decodeURIComponent(anchor.getAttribute('href').slice(1));
     if (fragment) assert.ok(document.getElementById(fragment), `Missing #${fragment}`);
   }
-  assert.equal(document.querySelectorAll('a[href*="/releases/download/"]').length, 7);
-  assert.equal(new Set([...document.querySelectorAll('a[href*="/releases/download/"]')].map((anchor) => anchor.href)).size, 4);
+  assert.equal(document.querySelectorAll('a[href*="/releases/download/"]').length, 10);
+  assert.equal(new Set([...document.querySelectorAll('a[href*="/releases/download/"]')].map((anchor) => anchor.href)).size, 5);
+  assert.match(document.querySelector('#download-dialog').textContent, /敬请期待/);
+  assert.equal(document.querySelectorAll('#download-dialog .download-option-soon').length, 2);
+  assert.equal(document.querySelectorAll('.platform-switcher [role="tab"]').length, 3);
   assert.equal(document.body.textContent.includes('麒麟'), false);
   assert.equal(document.querySelector('noscript a').href, releaseUrl);
   const downloaders = [...document.querySelectorAll('[data-download]')];
