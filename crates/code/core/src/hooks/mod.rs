@@ -45,7 +45,9 @@ mod matcher;
 
 pub use binding::HookBinding;
 pub use command::{command_hook_home, command_hook_trust_path, CommandHookExecutor};
-pub use contract::{Hook, HookConfig, HookExecutor, HookHandler, HookOutcome, HookResult};
+pub use contract::{
+    Hook, HookActivity, HookConfig, HookExecutor, HookHandler, HookOutcome, HookResult,
+};
 pub use engine::HookEngine;
 pub(crate) use engine::{HookEngineSnapshotError, HookTaskDispatcher, HookTaskFuture};
 pub use events::{

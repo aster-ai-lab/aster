@@ -1,0 +1,81 @@
+{
+  "focused": {
+    "passed": 282,
+    "failed": 0,
+    "known_preexisting_test_excluded": "agent_api::conversation_runtime::receipt_restore_tests::detached_binding_uses_the_pinned_capability_package_and_control_identity"
+  },
+  "composed_hooks": {
+    "passed": 10,
+    "failed": 0
+  },
+  "initial_focused": {
+    "passed": 281,
+    "failed": 2,
+    "corrected_fixture": "The explicit escalation test lacked exact-call confirmation; authorization was added to the test only",
+    "preexisting_failure": "InvalidBinding: capability snapshot digest does not bind this package, generation, and Knowledge surface"
+  },
+  "core_format": "passed",
+  "core_clippy": "passed with existing warnings",
+  "paired_build": "passed",
+  "workspace_format": {
+    "status": "failed",
+    "unrelated_paths": [
+      "apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+      "apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+      "apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+      "apps/studio/src-tauri/src/authority.rs",
+      "apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+      "apps/studio/src-tauri/src/authority_resource_broker.rs",
+      "apps/studio/src-tauri/src/capabilities_registry.rs",
+      "apps/studio/src-tauri/src/model_control.rs",
+      "apps/studio/src-tauri/src/model_control_count.rs",
+      "apps/studio/src-tauri/src/model_control_http.rs",
+      "apps/studio/src-tauri/src/runtime_components_tests.rs",
+      "crates/embedding/src/assets.rs",
+      "crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+      "crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+      "crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+      "crates/use/tool-acquire/src/env_acl/tests.rs",
+      "crates/use/tool-acquire/src/http.rs"
+    ]
+  },
+  "screens": [
+    {
+      "file": "screens/native-stop-v2-running.png",
+      "sha256": "bce3cb0cd86481a2e659af5d9c0344b84eb1dbbc8acd7175480140f79e8cdc0f"
+    },
+    {
+      "file": "screens/native-stop-v2-recovered.png",
+      "sha256": "c1b9331ee06d69995b01b68be2cc8643fe4bab134af3c2b5b01f555c039f719b"
+    },
+    {
+      "file": "screens/native-ctrlc-v2-recovered.png",
+      "sha256": "5a3b136ace5bffe2a1fb3fbd5bd7d26ac07139a79f6b22696486fa3b4a77ac6b"
+    },
+    {
+      "file": "screens/native-queue-v2-queued.png",
+      "sha256": "923cb6f7586bde37e2b78dcc6f5291a76abccb8b40fa816290dc67ef8776e3a2"
+    },
+    {
+      "file": "screens/native-queue-v2-recovered.png",
+      "sha256": "59641d9311251340df8c49d8dadb73fe9abc748e04652d5591e166db104231af"
+    },
+    {
+      "file": "screens/recovery-02-no-tools-followup.png",
+      "sha256": "28aeca698f7be5c1471ebf01ade2201ece16f49238c364e153279152219bfb22"
+    },
+    {
+      "file": "screens/recovery-03-resume-popup.png",
+      "sha256": "a80560f1526afad4c872b48ea3ee2d10467fc515c3f55610dac6a9473f2c425f"
+    },
+    {
+      "file": "screens/recovery-07-history-id-filter.png",
+      "sha256": "63f968f2193fe20c4507a107a0cb8d4edd7ccc756c8d7da601543bdbe3c5d4a8"
+    },
+    {
+      "file": "screens/recovery-09-resumed-task-complete.png",
+      "sha256": "68bac0136b771f50c737594e4b7ee1367cd76b8291f82ce3d093a86f08777f4e"
+    }
+  ]
+}

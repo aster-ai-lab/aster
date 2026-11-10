@@ -1022,6 +1022,26 @@ impl WorkspaceCommandRunner for LocalWorkspaceBackend {
     }
 
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
+        self.run_command(request, None)
+            .await
+            .map(|(output, _)| output)
+    }
+
+    async fn exec_cancellable(
+        &self,
+        request: CommandRequest,
+        cancellation: &tokio_util::sync::CancellationToken,
+    ) -> Result<(CommandOutput, crate::tools::OwnedProcessTermination)> {
+        self.run_command(request, Some(cancellation)).await
+    }
+}
+
+impl LocalWorkspaceBackend {
+    async fn run_command(
+        &self,
+        request: CommandRequest,
+        cancellation: Option<&tokio_util::sync::CancellationToken>,
+    ) -> Result<(CommandOutput, crate::tools::OwnedProcessTermination)> {
         #[cfg(windows)]
         if let Some(output) =
             crate::tools::builtin::bash::maybe_execute_simple_windows_http_command(&request.command)
@@ -1034,11 +1054,14 @@ impl WorkspaceCommandRunner for LocalWorkspaceBackend {
                 .and_then(|v| v.as_i64())
                 .map(|v| v as i32)
                 .unwrap_or(if output.success { 0 } else { -1 });
-            return Ok(CommandOutput {
-                output: output.content,
-                exit_code,
-                timed_out: false,
-            });
+            return Ok((
+                CommandOutput {
+                    output: output.content,
+                    exit_code,
+                    timed_out: false,
+                },
+                crate::tools::OwnedProcessTermination::Completed,
+            ));
         }
 
         let mut child = crate::tools::builtin::bash::spawn_shell(
@@ -1048,20 +1071,47 @@ impl WorkspaceCommandRunner for LocalWorkspaceBackend {
         )
         .map_err(|e| anyhow!("Failed to spawn shell: {}", e))?;
 
-        let output = crate::tools::process::read_process_output(
+        let output = crate::tools::process::read_process_output_cancellable(
             &mut child,
             request.timeout_ms,
             request.output_observer.as_deref(),
+            cancellation,
         )
         .await
         .map_err(|error| anyhow!("Failed to capture shell output: {error}"))?;
-        let exit_code = output.status.and_then(|status| status.code()).unwrap_or(-1);
+        let exit_code = output
+            .status
+            .and_then(|status| {
+                if let Some(code) = status.code() {
+                    return Some(code);
+                }
+                #[cfg(unix)]
+                if output.cancelled {
+                    use std::os::unix::process::ExitStatusExt;
+                    return status.signal().map(|signal| 128 + signal);
+                }
+                None
+            })
+            .unwrap_or(-1);
+        let termination = if output.cancelled {
+            if exit_code < 0 {
+                bail!("cancelled command has no original exit status");
+            }
+            crate::tools::OwnedProcessTermination::Cancelled
+        } else if output.timed_out {
+            crate::tools::OwnedProcessTermination::TimedOut
+        } else {
+            crate::tools::OwnedProcessTermination::Completed
+        };
 
-        Ok(CommandOutput {
-            output: output.combined,
-            exit_code,
-            timed_out: output.timed_out,
-        })
+        Ok((
+            CommandOutput {
+                output: output.combined,
+                exit_code,
+                timed_out: output.timed_out,
+            },
+            termination,
+        ))
     }
 }
 

@@ -583,6 +583,24 @@ pub trait WorkspaceCommandRunner: Send + Sync {
     }
 
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput>;
+
+    /// Cooperatively cancel an owned command and return its original terminal.
+    /// Return `Cancelled` only after owned cleanup and the original child wait;
+    /// failures to establish that terminal remain errors.
+    /// Existing backends retain their normal execution and drop semantics.
+    async fn exec_cancellable(
+        &self,
+        request: CommandRequest,
+        _cancellation: &tokio_util::sync::CancellationToken,
+    ) -> Result<(CommandOutput, crate::tools::OwnedProcessTermination)> {
+        let output = self.exec(request).await?;
+        let termination = if output.timed_out {
+            crate::tools::OwnedProcessTermination::TimedOut
+        } else {
+            crate::tools::OwnedProcessTermination::Completed
+        };
+        Ok((output, termination))
+    }
 }
 
 /// Search operations available to `glob` and `grep`.

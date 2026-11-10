@@ -31,6 +31,7 @@ pub(super) fn runner_result_value(
         .and_then(serde_json::Value::as_bool)
         == Some(true);
     let images = tool_results::encode_fact_tool_images(images, effect_dir);
+    let cancelled = metadata.is_some_and(|value| value["command_cancelled"] == true);
     let mut envelope = serde_json::json!({
         "kind": FACT_TOOL_RESULT_KIND,
         "text": output,
@@ -38,6 +39,7 @@ pub(super) fn runner_result_value(
         "images": images,
         "exit_code": exit_code,
         "outcome": if evidence_incomplete { ToolExecutionOutcome::Unknown }
+            else if cancelled { ToolExecutionOutcome::Cancelled }
             else if is_error { ToolExecutionOutcome::Failed } else { ToolExecutionOutcome::Succeeded },
         "workspace_child": metadata.and_then(|value| value.get("workspace_child")).and_then(|value| value.as_str()),
         "observation_incomplete": metadata.and_then(|value| value.get("observation_incomplete")).and_then(|value| value.as_bool()).unwrap_or(false),
@@ -201,10 +203,10 @@ pub(super) async fn prepare_tools_with_refusal(
         if let Some(agent) = &tools.agent {
             let session = tools.context.session_id.clone().unwrap_or_default();
             hook_evaluated = true;
-            input_hook_ran = agent.hook_executor().is_some();
-            let decision = agent
+            let (decision, activity) = agent
                 .fire_pre_tool_use(&session, &request.call.name, &request.call.args, Vec::new())
                 .await;
+            input_hook_ran = activity == crate::hooks::HookActivity::Possible;
             if let Some(refused) = decision.denial {
                 denial = Some(format!(
                     "Hook denied {}: {}",
@@ -608,10 +610,10 @@ pub(super) async fn prepare_tools_with_refusal(
             if never_started {
                 effects = ToolEffectObservationV1::complete(Vec::new());
             }
-            if matches!(
-                outcome,
-                ToolExecutionOutcome::Cancelled | ToolExecutionOutcome::Unknown
-            ) && !read_only
+            if (outcome == ToolExecutionOutcome::Unknown
+                || (outcome == ToolExecutionOutcome::Cancelled
+                    && !tools.context.cancellation_settled(exit_code)))
+                && !read_only
             {
                 effects
                     .unresolved_external_operations

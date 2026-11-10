@@ -142,6 +142,13 @@ impl HookResult {
     }
 }
 
+/// Whether dispatch may have produced externally observable hook effects.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum HookActivity {
+    None,
+    Possible,
+}
+
 /// Rich Hook execution outcome used by governance-aware callers.
 #[derive(Debug, Clone)]
 #[non_exhaustive]
@@ -205,6 +212,13 @@ pub trait HookExecutor: Send + Sync + std::fmt::Debug + 'static {
 
     async fn fire_outcome(&self, event: &HookEvent) -> HookOutcome {
         self.fire(event).await.into()
+    }
+
+    /// Return policy feedback and whether a hook may have produced effects.
+    /// Opaque host executors remain conservative; an empty built-in dispatcher
+    /// can report that no external hook was invoked.
+    async fn fire_with_activity(&self, event: &HookEvent) -> (HookOutcome, HookActivity) {
+        (self.fire_outcome(event).await, HookActivity::Possible)
     }
 
     /// Dispatch an observational event without delaying protected work.

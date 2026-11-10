@@ -1002,6 +1002,14 @@ impl WorkspaceCommandRunner for ManifestWorkspaceBackend {
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
         self.local.exec(request).await
     }
+
+    async fn exec_cancellable(
+        &self,
+        request: CommandRequest,
+        cancellation: &tokio_util::sync::CancellationToken,
+    ) -> Result<(CommandOutput, crate::tools::OwnedProcessTermination)> {
+        self.local.exec_cancellable(request, cancellation).await
+    }
 }
 
 #[async_trait]

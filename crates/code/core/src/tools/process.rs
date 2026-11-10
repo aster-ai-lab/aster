@@ -150,6 +150,7 @@ pub(crate) struct CapturedProcessOutput {
     pub(crate) stderr: String,
     pub(crate) status: Option<ExitStatus>,
     pub(crate) timed_out: bool,
+    pub(crate) cancelled: bool,
 }
 
 /// How an owned executable invocation settled.
@@ -504,21 +505,66 @@ pub(crate) async fn read_process_output(
     timeout_ms: u64,
     observer: Option<&dyn CommandOutputObserver>,
 ) -> io::Result<CapturedProcessOutput> {
+    read_process_output_cancellable(child, timeout_ms, observer, None).await
+}
+
+pub(crate) async fn read_process_output_cancellable(
+    child: &mut Child,
+    timeout_ms: u64,
+    observer: Option<&dyn CommandOutputObserver>,
+    cancellation: Option<&CancellationToken>,
+) -> io::Result<CapturedProcessOutput> {
     let mut process_group = ProcessGroupGuard::for_child(child);
     let mut capture = BoundedCapture::new();
-    let execution = tokio::time::timeout(
+    let deadline = tokio::time::timeout(
         tokio::time::Duration::from_millis(timeout_ms),
         read_captured_output(child, &mut capture, observer),
-    )
-    .await;
+    );
+    let cancel = async {
+        match cancellation {
+            Some(token) => token.cancelled().await,
+            None => std::future::pending::<()>().await,
+        }
+    };
+    let execution = tokio::select! {
+        biased;
+        result = deadline => Some(result),
+        _ = cancel => None,
+    };
+    let cancelled = execution.is_none();
 
     let (status, timed_out, wait_error) = match execution {
-        Ok(Ok(status)) => {
+        Some(Ok(Ok(status))) => {
             process_group.disarm();
             (Some(status), false, None)
         }
-        Ok(Err(error)) => (None, false, Some(error)),
-        Err(_) => {
+        Some(Ok(Err(error))) => (None, false, Some(error)),
+        None => {
+            #[cfg(unix)]
+            let owned = process_group.process_group.is_some();
+            #[cfg(windows)]
+            let owned = process_group.job.is_some();
+            if !owned {
+                return Err(io::Error::other(
+                    "command cancellation has no process-group owner",
+                ));
+            }
+            let kill = process_group.try_kill();
+            let status = tokio::time::timeout(
+                tokio::time::Duration::from_millis(PROCESS_SETTLEMENT_MS),
+                child.wait(),
+            )
+            .await
+            .map_err(|_| {
+                io::Error::new(
+                    io::ErrorKind::TimedOut,
+                    "cancelled command cleanup did not settle",
+                )
+            })??;
+            kill?;
+            (Some(status), false, None)
+        }
+        Some(Err(_)) => {
             process_group.kill();
             child.start_kill().ok();
             let status = match tokio::time::timeout(
@@ -547,6 +593,7 @@ pub(crate) async fn read_process_output(
         stderr: capture.render_stream(OutputStream::Stderr),
         status,
         timed_out,
+        cancelled,
     })
 }
 

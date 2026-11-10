@@ -1,0 +1,13 @@
+{
+  "owned_pair_pids": {
+    "acp": 57209,
+    "cli": 57171
+  },
+  "owned_pair_exited": true,
+  "owned_window_closed": "w-52740",
+  "private_config_removed": true,
+  "private_config_final_sha256": "dc323bc27dc892e7bd126626d2fca276b1b53b338a3de17a1fc42c42bf2bb483",
+  "source_config_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "source_config_unchanged": true,
+  "original_input_source_restored": "Simplified Pinyin"
+}

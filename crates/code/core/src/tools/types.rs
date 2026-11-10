@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 use tokio::sync::{broadcast, mpsc, oneshot};
 use tokio_util::sync::CancellationToken;
 
@@ -262,6 +262,8 @@ pub struct ToolContext {
     /// Private evidence owned by one prepared invocation, never tool metadata.
     pub(crate) native_artifact_verifications:
         Option<Arc<Mutex<crate::harness_loop::MutationLedger>>>,
+    /// Fresh for one prepared invocation; only native command cleanup writes it.
+    settled_cancellation: Option<Arc<OnceLock<(aster_effect::ToolInvocationIdentityV1, i32)>>>,
     /// Permission boundary frozen by the agent run that owns this invocation.
     ///
     /// Child-run tools consult this value instead of the mutable session
@@ -432,6 +434,7 @@ impl ToolContext {
             fact_invocation: None,
             background_admission: None,
             native_artifact_verifications: None,
+            settled_cancellation: None,
             run_permission_checker: None,
             run_confirmation_manager: None,
             run_governance_bound: false,
@@ -790,7 +793,23 @@ impl ToolContext {
 
     pub(crate) fn with_native_artifact_verifications(mut self) -> Self {
         self.native_artifact_verifications = Some(Arc::new(Mutex::new(Default::default())));
+        self.settled_cancellation = Some(Arc::new(OnceLock::new()));
         self
+    }
+
+    pub(crate) fn record_cancelled_command(&self, exit_code: i32) {
+        if let (Some(proof), Some(identity)) = (&self.settled_cancellation, &self.fact_invocation) {
+            let _ = proof.set((identity.clone(), exit_code));
+        }
+    }
+
+    pub(crate) fn cancellation_settled(&self, exit_code: Option<i32>) -> bool {
+        self.settled_cancellation
+            .as_ref()
+            .and_then(|proof| proof.get())
+            .is_some_and(|(identity, code)| {
+                self.fact_invocation.as_ref() == Some(identity) && exit_code == Some(*code)
+            })
     }
 
     pub(crate) fn capability_context(
@@ -1246,6 +1265,33 @@ pub trait Tool: Send + Sync {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cancellation_proof_is_private_to_one_invocation() {
+        let root = tempfile::tempdir().unwrap();
+        let mut context =
+            ToolContext::new(root.path().to_path_buf()).with_native_artifact_verifications();
+        context.fact_invocation = Some(aster_effect::ToolInvocationIdentityV1 {
+            turn: 1,
+            cycle: 0,
+            tool_call_id: "original".into(),
+            batch_index: 0,
+            admission: None,
+        });
+        context.record_cancelled_command(137);
+        assert!(context.cancellation_settled(Some(137)));
+        assert!(!context.cancellation_settled(Some(1)));
+        assert!(!context.cancellation_settled(None));
+        let mut other = context.clone();
+        other.fact_invocation.as_mut().unwrap().tool_call_id = "other".into();
+        assert!(!other.cancellation_settled(Some(137)));
+        let next = context.clone().with_native_artifact_verifications();
+        assert!(!next.cancellation_settled(Some(137)));
+        let mut unprepared = ToolContext::new(root.path().to_path_buf());
+        unprepared.fact_invocation = context.fact_invocation.clone();
+        unprepared.record_cancelled_command(137);
+        assert!(!unprepared.cancellation_settled(Some(137)));
+    }
 
     #[test]
     fn search_circuit_state_is_shared_by_context_clones_but_isolated_by_session() {

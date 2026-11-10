@@ -258,6 +258,26 @@ pub trait BashSandbox: Send + Sync {
             .map(Into::into)
     }
 
+    /// Return an original execution result during cooperative cancellation.
+    /// `Cancelled` requires owned cleanup and an observed original exit code.
+    /// The default preserves custom backends whose cancellation is drop-only.
+    async fn exec_cancellable(
+        &self,
+        request: SandboxCommandRequest,
+        _cancellation: &tokio_util::sync::CancellationToken,
+    ) -> anyhow::Result<(
+        SandboxExecutionOutput,
+        crate::tools::OwnedProcessTermination,
+    )> {
+        let output = self.exec(request).await?;
+        let termination = if output.timed_out {
+            crate::tools::OwnedProcessTermination::TimedOut
+        } else {
+            crate::tools::OwnedProcessTermination::Completed
+        };
+        Ok((output, termination))
+    }
+
     /// Additional time to settle an executor's startup and owned cleanup.
     fn execution_overhead_ms(&self) -> u64 {
         0

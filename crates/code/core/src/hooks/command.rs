@@ -14,7 +14,7 @@ use std::process::Stdio;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
-use super::{HookEvent, HookExecutor, HookOutcome, HookResult};
+use super::{HookActivity, HookEvent, HookExecutor, HookOutcome, HookResult};
 use anyhow::{bail, Context};
 use async_trait::async_trait;
 use fs2::FileExt;
@@ -383,7 +383,7 @@ impl CommandHookExecutor {
         event_name: &str,
         matcher_target: &str,
         payload: Value,
-    ) -> HookOutcome {
+    ) -> (HookOutcome, HookActivity) {
         let trust = read_lock(&self.trust).clone();
         let mut hooks = read_lock(&self.hooks)
             .iter()
@@ -399,7 +399,7 @@ impl CommandHookExecutor {
             .collect::<Vec<_>>();
         hooks.sort_by(|left, right| left.id.cmp(&right.id));
         if hooks.is_empty() {
-            return HookOutcome::Continue(None);
+            return (HookOutcome::Continue(None), HookActivity::None);
         }
 
         let results = futures::future::join_all(
@@ -411,18 +411,26 @@ impl CommandHookExecutor {
         let mut merged = serde_json::Map::new();
         for result in results {
             match result {
-                HookOutcome::Block { reason } => return HookOutcome::Block { reason },
+                HookOutcome::Block { reason } => {
+                    return (HookOutcome::Block { reason }, HookActivity::Possible)
+                }
                 HookOutcome::Retry {
                     reason,
                     retry_after_ms,
                 } => {
-                    return HookOutcome::Retry {
-                        reason,
-                        retry_after_ms,
-                    };
+                    return (
+                        HookOutcome::Retry {
+                            reason,
+                            retry_after_ms,
+                        },
+                        HookActivity::Possible,
+                    );
                 }
                 HookOutcome::Escalate { reason, target } => {
-                    return HookOutcome::Escalate { reason, target };
+                    return (
+                        HookOutcome::Escalate { reason, target },
+                        HookActivity::Possible,
+                    );
                 }
                 HookOutcome::Continue(Some(Value::Object(object))) => merged.extend(object),
                 HookOutcome::Continue(Some(value)) => {
@@ -432,9 +440,12 @@ impl CommandHookExecutor {
             }
         }
         if merged.is_empty() {
-            HookOutcome::Continue(None)
+            (HookOutcome::Continue(None), HookActivity::Possible)
         } else {
-            HookOutcome::Continue(Some(Value::Object(merged)))
+            (
+                HookOutcome::Continue(Some(Value::Object(merged))),
+                HookActivity::Possible,
+            )
         }
     }
 }
@@ -446,6 +457,10 @@ impl HookExecutor for CommandHookExecutor {
     }
 
     async fn fire_outcome(&self, event: &HookEvent) -> HookOutcome {
+        self.fire_with_activity(event).await.0
+    }
+
+    async fn fire_with_activity(&self, event: &HookEvent) -> (HookOutcome, HookActivity) {
         let (name, target, payload) = describe_hook_event(event, &self.workspace);
         self.run_event(name, &target, payload).await
     }

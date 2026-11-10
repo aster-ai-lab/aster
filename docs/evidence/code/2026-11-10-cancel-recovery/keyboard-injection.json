@@ -1,0 +1,23 @@
+{
+  "command": "press",
+  "error": {
+    "code": "APP_UNRESPONSIVE",
+    "details": {
+      "complete": false,
+      "kind": "menu_modifier_value_invalid"
+    },
+    "disposition": {
+      "delivery": "not_delivered",
+      "retry": "safe"
+    },
+    "message": "AXMenuItemCmdModifiers had an invalid value",
+    "recovery": {
+      "requires_fresh_snapshot": true,
+      "retry_after_ms": 250,
+      "retryable": true,
+      "strategy": "inspect_state_then_retry_original"
+    }
+  },
+  "ok": false,
+  "version": "2.5"
+}

@@ -380,7 +380,7 @@ impl ToolRunner for ExecutorTools {
             let mut args = call.args.clone();
             if let Some(agent) = tools.agent.as_ref().filter(|_| !tools.pre_tool_hook_resolved) {
                 let session_id = tools.context.session_id.clone().unwrap_or_default();
-                let decision = agent
+                let (decision, _) = agent
                     .fire_pre_tool_use(&session_id, &call.name, &args, Vec::new())
                     .await;
                 if let Some(denial) = decision.denial {
@@ -557,7 +557,9 @@ impl ToolRunner for ExecutorTools {
                     event = next_host_event(&mut bridged) => tools.emit(event).await,
                 }
             };
-            if executed.as_ref().is_ok_and(|result| matches!(result.error_kind, Some(crate::tools::ToolErrorKind::Cancelled { .. }))) {
+            if executed.as_ref().is_ok_and(|result| matches!(result.error_kind, Some(crate::tools::ToolErrorKind::Cancelled { .. }))
+                && !(result.metadata.as_ref().is_some_and(|metadata| metadata["command_cancelled"] == true)
+                    && tools.context.cancellation_settled(Some(result.exit_code)))) {
                 let message = "cancelled".to_string();
                 tools.emit(crate::agent::AgentEvent::ToolEnd {
                     id: call.id.clone(), name: call.name.clone(), args: Some(args.clone()),

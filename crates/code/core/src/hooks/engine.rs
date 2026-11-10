@@ -3,8 +3,8 @@
 //! Core engine responsible for managing and executing hooks.
 
 use super::{
-    Hook, HookAction, HookBinding, HookEvent, HookExecutor, HookHandler, HookOutcome, HookResponse,
-    HookResult,
+    Hook, HookAction, HookActivity, HookBinding, HookEvent, HookExecutor, HookHandler, HookOutcome,
+    HookResponse, HookResult,
 };
 use async_trait::async_trait;
 use std::collections::{HashMap, HashSet};
@@ -234,14 +234,17 @@ impl HookEngine {
 
     /// Fire an event while preserving retry explanations.
     pub async fn fire_outcome(&self, event: &HookEvent) -> HookOutcome {
-        self.fire_outcome_with_policy(event, true).await
+        self.fire_outcome_with_policy(event, true).await.0
     }
 
     /// Fire an event from an already supervised observational task.
     ///
     /// Per-Hook asynchronous flags execute inline here so no nested detached
     /// task can race the owning Run's close transition.
-    pub(crate) async fn fire_outcome_inline_observers(&self, event: &HookEvent) -> HookOutcome {
+    pub(crate) async fn fire_outcome_inline_observers(
+        &self,
+        event: &HookEvent,
+    ) -> (HookOutcome, HookActivity) {
         self.fire_outcome_with_policy(event, false).await
     }
 
@@ -249,7 +252,7 @@ impl HookEngine {
         &self,
         event: &HookEvent,
         detach_observational_handlers: bool,
-    ) -> HookOutcome {
+    ) -> (HookOutcome, HookActivity) {
         // Send event to channel if available
         if let Some(ref tx) = self.event_tx {
             let _ = tx.send(event.clone()).await;
@@ -259,7 +262,14 @@ impl HookEngine {
         let matching_hooks = self.matching_hook_arcs(event);
 
         if matching_hooks.is_empty() {
-            return HookOutcome::Continue(None);
+            return (
+                HookOutcome::Continue(None),
+                if self.event_tx.is_some() {
+                    HookActivity::Possible
+                } else {
+                    HookActivity::None
+                },
+            );
         }
 
         // Execute each hook
@@ -276,14 +286,16 @@ impl HookEngine {
                         last_modified = modified;
                     }
                 }
-                block @ HookOutcome::Block { .. } => return block,
-                retry @ HookOutcome::Retry { .. } => return retry,
-                HookOutcome::Skip => return HookOutcome::Continue(None),
-                escalate @ HookOutcome::Escalate { .. } => return escalate,
+                block @ HookOutcome::Block { .. } => return (block, HookActivity::Possible),
+                retry @ HookOutcome::Retry { .. } => return (retry, HookActivity::Possible),
+                HookOutcome::Skip => return (HookOutcome::Continue(None), HookActivity::Possible),
+                escalate @ HookOutcome::Escalate { .. } => {
+                    return (escalate, HookActivity::Possible)
+                }
             }
         }
 
-        HookOutcome::Continue(last_modified)
+        (HookOutcome::Continue(last_modified), HookActivity::Possible)
     }
 
     /// Execute a single hook
@@ -509,6 +521,10 @@ impl HookExecutor for HookEngine {
 
     async fn fire_outcome(&self, event: &HookEvent) -> HookOutcome {
         HookEngine::fire_outcome(self, event).await
+    }
+
+    async fn fire_with_activity(&self, event: &HookEvent) -> (HookOutcome, HookActivity) {
+        self.fire_outcome_with_policy(event, true).await
     }
 }
 

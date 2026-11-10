@@ -1,0 +1,249 @@
+{
+  "status": "PASS_MACOS_YOLO_HOST_RECOVERY",
+  "model": "deepseek/deepseek-flash",
+  "effective_context_length": 1048576,
+  "session_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+  "cases": [
+    {
+      "label": "native-stop-v2",
+      "gesture": "mouse",
+      "route": "agent-desktop",
+      "original_run_id": "run-9803a050-9a41-4605-8bbe-73742ddcc7aa",
+      "original_status": "cancelled",
+      "original_pids": {
+        "parent": 38286,
+        "child": 38287
+      },
+      "observed_original_terminal_at": 1794317518.88966,
+      "sequence_started_at": 1794317518.7120562,
+      "sequence_to_terminal_seconds": 0.17760372161865234,
+      "replacement_run_id": "run-ab657cdd-75ea-44d5-bc60-66c3a25ef5a8",
+      "replacement_status": "completed",
+      "replacement_admissions": 1,
+      "replacement_bytes": "STOP-RECOVERED-83\n",
+      "parent_and_child_gone_at_recovery": true,
+      "late_markers": [],
+      "prepared_fact_sequence": 12,
+      "result_fact_sequence": 13,
+      "original_cancelled_receipt": {
+        "schema": "aster.code.tool-result.v1",
+        "identity": {
+          "turn": 1,
+          "cycle": 2,
+          "tool_call_id": "call_82d98038840e43b397f05e0d669259ac",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-9803a050-9a41-4605-8bbe-73742ddcc7aa",
+            "thread_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+            "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+          }
+        },
+        "prepared_digest": "sha256:8dd9a84cfede3554d5dc4493954708cccca0f1ec7ca0253c0b3f55b70138a3fc",
+        "outcome": "cancelled",
+        "exit_code": 137,
+        "output": "{\"kind\":\"aster.fact_tool_result\",\"text\":\"\\n\\n[Command cancelled]\",\"is_error\":true,\"images\":[],\"exit_code\":137,\"outcome\":\"cancelled\",\"observation_incomplete\":false,\"metadata\":{\"sandboxed\":false,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"aster.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"exit_code\":137,\"command_cancelled\":true,\"output_complete\":false,\"changed_paths\":[\"native-stop-v2.child-started\",\"native-stop-v2.started.json\"],\"aster_tool_result_evidence\":{\"schema\":\"aster.code.tool-result-evidence.v1\",\"original_bytes\":21,\"projected_bytes\":21,\"original_estimated_tokens\":6,\"projected_estimated_tokens\":6,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"content_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"projected_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"repeat_key\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"content_ref\":\"inline:sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"aster_tool_result_transform_binding\":{\"schema\":\"aster.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927\",\"binding_digest\":\"sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3\"}},\"observation_digest\":\"sha256:7b73d4d16e091f22e3ac6d2ddee583ca79b1cf21735905a7111c1fc948c393a3\"}",
+        "effects": {
+          "changes": [
+            {
+              "path": "native-stop-v2.child-started",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:d06c2ffbf00491f5e72e9719a6fb1b39499ebf960aa20ba96bea3c3ca6f30258",
+                "mode": 33188
+              }
+            },
+            {
+              "path": "native-stop-v2.started.json",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:b4340d1b1274b09778b2369f682add0d5ab16a6cba94bc5701f3a9e1c859475a",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        }
+      },
+      "last_app_control_action": {
+        "start": 1794317518.712064,
+        "end": 1794317518.786529,
+        "args": [
+          "--headed",
+          "mouse-click",
+          "--xy",
+          "1292,726"
+        ]
+      },
+      "last_app_control_to_observed_terminal_seconds": 0.10313081741333008
+    },
+    {
+      "label": "native-ctrlc-v2",
+      "gesture": "ctrlc",
+      "route": "System Events after agent-desktop not_delivered",
+      "original_run_id": "run-0a197449-3723-4053-9873-a03a8d9b2152",
+      "original_status": "cancelled",
+      "original_pids": {
+        "parent": 49173,
+        "child": 49174
+      },
+      "observed_original_terminal_at": 1794317622.05119,
+      "sequence_started_at": 1794317620.648501,
+      "sequence_to_terminal_seconds": 1.402688980102539,
+      "replacement_run_id": "run-d40bb3b2-1abe-4998-bb3f-5b44113c9e0b",
+      "replacement_status": "completed",
+      "replacement_admissions": 1,
+      "replacement_bytes": "CTRL-RECOVERED-61\n",
+      "parent_and_child_gone_at_recovery": true,
+      "late_markers": [],
+      "prepared_fact_sequence": 36,
+      "result_fact_sequence": 37,
+      "original_cancelled_receipt": {
+        "schema": "aster.code.tool-result.v1",
+        "identity": {
+          "turn": 3,
+          "cycle": 0,
+          "tool_call_id": "call_4745802933474542b7f8cef8099f3b8f",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-0a197449-3723-4053-9873-a03a8d9b2152",
+            "thread_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+            "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+          }
+        },
+        "prepared_digest": "sha256:85154ef49c68d187461529a686a7754b0e332213dc7d9e0202f0aa6a77eaa978",
+        "outcome": "cancelled",
+        "exit_code": 137,
+        "output": "{\"kind\":\"aster.fact_tool_result\",\"text\":\"\\n\\n[Command cancelled]\",\"is_error\":true,\"images\":[],\"exit_code\":137,\"outcome\":\"cancelled\",\"observation_incomplete\":false,\"metadata\":{\"sandboxed\":false,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"aster.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"exit_code\":137,\"command_cancelled\":true,\"output_complete\":false,\"changed_paths\":[\"native-ctrlc-v2.child-started\",\"native-ctrlc-v2.started.json\"],\"aster_tool_result_evidence\":{\"schema\":\"aster.code.tool-result-evidence.v1\",\"original_bytes\":21,\"projected_bytes\":21,\"original_estimated_tokens\":6,\"projected_estimated_tokens\":6,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"content_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"projected_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"repeat_key\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"content_ref\":\"inline:sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"aster_tool_result_transform_binding\":{\"schema\":\"aster.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927\",\"binding_digest\":\"sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3\"}},\"observation_digest\":\"sha256:7b73d4d16e091f22e3ac6d2ddee583ca79b1cf21735905a7111c1fc948c393a3\"}",
+        "effects": {
+          "changes": [
+            {
+              "path": "native-ctrlc-v2.child-started",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:4807c0ca3404092933f9daa67a72f45ddcb94596dc17d65b56d48ebe194b6a08",
+                "mode": 33188
+              }
+            },
+            {
+              "path": "native-ctrlc-v2.started.json",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:6e29c18413f7c7ba0771cc3c06170174cbf21fa28bb38c7d2bac5a202e82db77",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        }
+      }
+    },
+    {
+      "label": "native-queue-v2",
+      "gesture": "send-now",
+      "route": "agent-desktop",
+      "original_run_id": "run-5dc860b8-0fe1-4381-aacb-ca43b82adf2e",
+      "original_status": "cancelled",
+      "original_pids": {
+        "parent": 51249,
+        "child": 51250
+      },
+      "observed_original_terminal_at": 1794317655.642536,
+      "sequence_started_at": 1794317650.153549,
+      "sequence_to_terminal_seconds": 5.488986968994141,
+      "replacement_run_id": "run-943baebd-8908-4c72-8769-e55cce3688b7",
+      "replacement_status": "completed",
+      "replacement_admissions": 1,
+      "replacement_bytes": "QUEUE-RECOVERED-47\n",
+      "parent_and_child_gone_at_recovery": true,
+      "late_markers": [],
+      "prepared_fact_sequence": 54,
+      "result_fact_sequence": 55,
+      "original_cancelled_receipt": {
+        "schema": "aster.code.tool-result.v1",
+        "identity": {
+          "turn": 5,
+          "cycle": 0,
+          "tool_call_id": "call_ff7ab2282e464117bfa8c5352abe7837",
+          "batch_index": 0,
+          "admission": {
+            "run_id": "run-5dc860b8-0fe1-4381-aacb-ca43b82adf2e",
+            "thread_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+            "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+          }
+        },
+        "prepared_digest": "sha256:3667e07a7efc5dc1cf17c1b68ee6ecb669de9890aefe2a28a86b45a14927b501",
+        "outcome": "cancelled",
+        "exit_code": 137,
+        "output": "{\"kind\":\"aster.fact_tool_result\",\"text\":\"\\n\\n[Command cancelled]\",\"is_error\":true,\"images\":[],\"exit_code\":137,\"outcome\":\"cancelled\",\"observation_incomplete\":false,\"metadata\":{\"sandboxed\":false,\"output\":{\"total_bytes\":0,\"captured_bytes\":0,\"truncated\":false,\"timed_out\":false},\"shell_output_streams\":{\"schema\":\"aster.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"stderr\":{\"text_bytes\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}},\"exit_code\":137,\"command_cancelled\":true,\"output_complete\":false,\"changed_paths\":[\"native-queue-v2.child-started\",\"native-queue-v2.started.json\"],\"aster_tool_result_evidence\":{\"schema\":\"aster.code.tool-result-evidence.v1\",\"original_bytes\":21,\"projected_bytes\":21,\"original_estimated_tokens\":6,\"projected_estimated_tokens\":6,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"content_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"projected_digest\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"repeat_key\":\"sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"content_ref\":\"inline:sha256:269e41531ea86afe9dd0f22856c22352195817177be8248ac47437edceaae429\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"aster_tool_result_transform_binding\":{\"schema\":\"aster.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927\",\"binding_digest\":\"sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3\"}},\"observation_digest\":\"sha256:7b73d4d16e091f22e3ac6d2ddee583ca79b1cf21735905a7111c1fc948c393a3\"}",
+        "effects": {
+          "changes": [
+            {
+              "path": "native-queue-v2.child-started",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:f3e581005071b9c3f872f35560b3b8506ff1783c6ffaa178c0c2faf8a9df23c6",
+                "mode": 33188
+              }
+            },
+            {
+              "path": "native-queue-v2.started.json",
+              "before": {
+                "kind": "missing"
+              },
+              "after": {
+                "kind": "file",
+                "content_digest": "sha256:93149d821f130aef998ff2bcf112f77c99f9c6e1238f10a7bed763e5a8b52ffd",
+                "mode": 33188
+              }
+            }
+          ],
+          "completeness": "complete"
+        }
+      },
+      "last_app_control_action": {
+        "start": 1794317655.138379,
+        "end": 1794317655.432171,
+        "args": [
+          "--headed",
+          "press",
+          "return",
+          "--app",
+          "\u7ec8\u7aef"
+        ]
+      },
+      "last_app_control_to_observed_terminal_seconds": 0.21036481857299805
+    }
+  ],
+  "cold_resume": {
+    "session_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+    "run_id": "run-1e64419d-037d-4d76-9b71-ae037a0803d3",
+    "status": "completed",
+    "replacement_bytes": "RESUMED-RECOVERY-29\n",
+    "retained_cancelled_runs": 3
+  },
+  "canonical_fact_counts": {
+    "preparations": 19,
+    "results": 19,
+    "turn_complete": 5,
+    "incomplete_receipts": 0,
+    "unresolved_receipts": 0,
+    "duplicate_or_unmatched_receipts": 0
+  },
+  "frozen_waiter_sha256": "ba19da7b508667e1721d1e63bc405629db8237c15973d0247234528b996eb60c",
+  "frozen_plan_sha256": "313d94fc773a20878687b095e2be752daedc59c190db86ef1b92b896473c82b3"
+}

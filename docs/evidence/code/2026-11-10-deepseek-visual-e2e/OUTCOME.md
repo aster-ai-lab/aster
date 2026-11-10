@@ -2,6 +2,10 @@
 
 Date: 2026-11-10, macOS arm64, Terminal, Rust 1.97.1.
 
+Later YOLO host cancellation recovery is recorded in the
+[follow-up verification](../2026-11-10-cancel-recovery/OUTCOME.md). The failures
+below remain the results of the earlier candidates.
+
 ## Scope and current status
 
 agent-desktop operated a real native Terminal window running the source-built

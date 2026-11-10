@@ -242,6 +242,28 @@ async fn test_engine_fire_no_hooks() {
 }
 
 #[tokio::test]
+async fn activity_tracks_matching_dispatch() {
+    let engine = HookEngine::new();
+    let event = make_pre_tool_event("session", "write");
+    assert_eq!(
+        engine.fire_with_activity(&event).await.1,
+        HookActivity::None
+    );
+    engine.register(
+        Hook::new("other", HookEventType::PreToolUse).with_matcher(HookMatcher::tool("read")),
+    );
+    assert_eq!(
+        engine.fire_with_activity(&event).await.1,
+        HookActivity::None
+    );
+    engine.register(Hook::new("matching", HookEventType::PreToolUse));
+    engine.register_handler("matching", Arc::new(ContinueHandler));
+    let (outcome, activity) = engine.fire_with_activity(&event).await;
+    assert!(matches!(outcome, HookOutcome::Continue(None)));
+    assert_eq!(activity, HookActivity::Possible);
+}
+
+#[tokio::test]
 async fn test_engine_fire_no_handler() {
     let engine = HookEngine::new();
     engine.register(Hook::new("test-hook", HookEventType::PreToolUse));

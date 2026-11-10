@@ -1,0 +1,283 @@
+{
+  "snapshot": {
+    "id": "run-0b919d81-e435-4b67-91bb-39a199712fd2",
+    "session_id": "55269b30-ce83-4850-a346-e88b1dd18b6e",
+    "status": "completed",
+    "prompt": "Reply with exactly READY-AFTER-CANCEL. Do not call any tools.",
+    "capability_binding": {
+      "schema": "aster.code.run-capability-binding.v1",
+      "capabilitySetSchema": "aster.code.capability-set.v1",
+      "codeCatalogGeneration": 0,
+      "catalogDigest": "sha256:0ee13d13facb19a2f1b3f6ee16ae3bb47150c9c0b23397d13dde268e793e1c71",
+      "capabilityCeilingSchema": "aster.code.capability-ceiling.v1",
+      "capabilityCeilingDigest": "sha256:dbc5f29a02f74aebd3a08c592ae1b790acddeb273d56247433e83dd60e3a5b4c"
+    },
+    "created_at_ms": 1794317707440,
+    "updated_at_ms": 1794317709447,
+    "result_text": "READY-AFTER-CANCEL",
+    "event_count": 16
+  },
+  "events": [
+    {
+      "sequence": 0,
+      "timestamp_ms": 1794317707440,
+      "event": {
+        "type": "agent_start",
+        "prompt": "Reply with exactly READY-AFTER-CANCEL. Do not call any tools."
+      }
+    },
+    {
+      "sequence": 1,
+      "timestamp_ms": 1794317707546,
+      "event": {
+        "type": "turn_start",
+        "turn": 1
+      }
+    },
+    {
+      "sequence": 2,
+      "timestamp_ms": 1794317707563,
+      "event": {
+        "type": "run_capability_bound",
+        "call_sequence": 1,
+        "snapshot": {
+          "schema": "aster.code.run-capability-snapshot.v1",
+          "modelVisibleToolCount": 26,
+          "modelVisibleToolsDigest": "sha256:f22f32d08a0574150a80d9c4aa9422a56f72c0a385231d93ee6f04fdb2a1d4f1",
+          "workspace": {
+            "read": true,
+            "write": true,
+            "exec": true,
+            "search": true,
+            "git": true,
+            "codeIntelligence": true
+          },
+          "policy": {
+            "permissionCheckerBound": true,
+            "permissionPolicyDigest": null,
+            "confirmationManagerBound": true,
+            "confirmationPolicyDigest": "sha256:5d7348f203d7efdde8acec17fa426d82e20e70e1c3b0b5fc04c14a72f6805f87",
+            "budgetGuardBound": false,
+            "activeSkillToolRestrictions": false,
+            "maxToolRounds": 0,
+            "maxParallelTasks": 8,
+            "toolTimeoutMs": null,
+            "llmApiTimeoutMs": null,
+            "maxExecutionTimeMs": null
+          },
+          "retrieval": {
+            "enabled": false,
+            "phase": "disabled",
+            "catalogRevision": 0,
+            "sourceRevision": 0,
+            "vectorRevision": 0,
+            "coverageBps": 0,
+            "modelDigest": null
+          },
+          "snapshotDigest": "sha256:0afe4e05ec08f26ca0b9d63f55a706d63c84c747a24d393e4eb1331c4633b943"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "timestamp_ms": 1794317707563,
+      "event": {
+        "type": "model_presentation_bound",
+        "snapshot": {
+          "schema": "aster.code.model-presentation-snapshot.v1",
+          "callSequence": 1,
+          "profile": {
+            "schema": "aster.code.tool-presentation-profile.v1",
+            "mode": "adaptive"
+          },
+          "application": "profiled",
+          "sourceToolCount": 26,
+          "sourceToolDefinitionsDigest": "sha256:f22f32d08a0574150a80d9c4aa9422a56f72c0a385231d93ee6f04fdb2a1d4f1",
+          "sourceEstimatedTokens": 9833,
+          "presentedToolCount": 26,
+          "presentedToolDefinitionsDigest": "sha256:f22f32d08a0574150a80d9c4aa9422a56f72c0a385231d93ee6f04fdb2a1d4f1",
+          "presentedEstimatedTokens": 9833,
+          "snapshotDigest": "sha256:84ed2f7955bfcd450f663b3bd571f0fa41f8479a22eea37a3ff705135c952836"
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "timestamp_ms": 1794317707563,
+      "event": {
+        "type": "model_input_bound",
+        "snapshot": {
+          "schema": "aster.code.model-input-snapshot.v1",
+          "callSequence": 1,
+          "kind": "completion",
+          "messageCount": 41,
+          "contentBlockCount": 45,
+          "imageBlockCount": 0,
+          "toolResultCount": 16,
+          "toolCount": 26,
+          "retrievalResultCount": 0,
+          "retrievalResultBytes": 0,
+          "retrievalResultsDigest": null,
+          "systemBytes": 28213,
+          "messagePayloadBytes": 17605,
+          "toolDefinitionBytes": 40261,
+          "structuredOutputBytes": 0,
+          "payloadBytes": 86149,
+          "estimatedPromptTokens": 20259,
+          "messagesDigest": "sha256:e1b94f2d403874bad63d87db331f07dd488ec5011612db560a2b893a1fc08bbb",
+          "systemDigest": "sha256:6e588e160fd566919d1732bbacac8a8728bb949751730937826a5dce9773b44a",
+          "toolDefinitionsDigest": "sha256:f22f32d08a0574150a80d9c4aa9422a56f72c0a385231d93ee6f04fdb2a1d4f1",
+          "structuredOutputDigest": null,
+          "inputDigest": "sha256:dcdb7ef37e18db408d2b2babe9e993b4fa16acf94d110c7dc48a134f649fe765",
+          "capabilitySnapshotDigest": "sha256:0afe4e05ec08f26ca0b9d63f55a706d63c84c747a24d393e4eb1331c4633b943",
+          "snapshotDigest": "sha256:84e5e95906344fcda09c338b91b8b893e25187ff7f5968e3b7553aa2c2677669"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "timestamp_ms": 1794317709295,
+      "event": {
+        "type": "text_delta",
+        "text": "READ"
+      }
+    },
+    {
+      "sequence": 6,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "Y"
+      }
+    },
+    {
+      "sequence": 7,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "-A"
+      }
+    },
+    {
+      "sequence": 8,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "F"
+      }
+    },
+    {
+      "sequence": 9,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "TER"
+      }
+    },
+    {
+      "sequence": 10,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "-C"
+      }
+    },
+    {
+      "sequence": 11,
+      "timestamp_ms": 1794317709317,
+      "event": {
+        "type": "text_delta",
+        "text": "ANC"
+      }
+    },
+    {
+      "sequence": 12,
+      "timestamp_ms": 1794317709329,
+      "event": {
+        "type": "text_delta",
+        "text": "EL"
+      }
+    },
+    {
+      "sequence": 13,
+      "timestamp_ms": 1794317709330,
+      "event": {
+        "type": "model_usage_bound",
+        "snapshot": {
+          "schema": "aster.code.model-usage-snapshot.v1",
+          "callSequence": 1,
+          "inputSnapshotDigest": "sha256:84e5e95906344fcda09c338b91b8b893e25187ff7f5968e3b7553aa2c2677669",
+          "estimatedPromptTokens": 20259,
+          "reportedPromptTokens": 21355,
+          "reportedCompletionTokens": 9,
+          "reportedTotalTokens": 21364,
+          "reportedCacheReadTokens": 5248,
+          "reportedCacheWriteTokens": null,
+          "toolResults": {
+            "totalCount": 16,
+            "uniqueCount": 12,
+            "repeatedCount": 4,
+            "contentBytes": 3312,
+            "repeatedContentBytes": 320,
+            "estimatedTokens": 788,
+            "repeatedEstimatedTokens": 74,
+            "contentsDigest": "sha256:e738419130e1b6049262b81ce484f2ba1cf288f6b03cda1804f4c6d7b5071cc6",
+            "repeatedContentsDigest": "sha256:bb1f9128475fe30aaf4a5655568a95f2bddd070cf591dbdb6fc6a497f1b3f730"
+          },
+          "snapshotDigest": "sha256:4d0f744dadba80512a56878b4e5fb15cdb7308aa9bc16fa6e71524a4dc1721d4"
+        }
+      }
+    },
+    {
+      "sequence": 14,
+      "timestamp_ms": 1794317709330,
+      "event": {
+        "type": "turn_end",
+        "turn": 1,
+        "usage": {
+          "prompt_tokens": 21355,
+          "completion_tokens": 9,
+          "total_tokens": 21364,
+          "cache_read_tokens": 5248,
+          "cache_write_tokens": null
+        }
+      }
+    },
+    {
+      "sequence": 15,
+      "timestamp_ms": 1794317709447,
+      "event": {
+        "type": "agent_end",
+        "text": "READY-AFTER-CANCEL",
+        "usage": {
+          "prompt_tokens": 21355,
+          "completion_tokens": 9,
+          "total_tokens": 21364,
+          "cache_read_tokens": 5248,
+          "cache_write_tokens": null
+        },
+        "verification_summary": {
+          "status": "skipped",
+          "report_count": 0,
+          "required_check_count": 0,
+          "pending_required_check_count": 0,
+          "failed_check_count": 0,
+          "residual_risk_count": 0
+        },
+        "completion_terminal": {
+          "kind": "narrative"
+        },
+        "meta": {
+          "provider": "deepseek",
+          "request_model": "deepseek-flash",
+          "request_url": "https://api.deepseek.com/v1/chat/completions",
+          "response_id": "7877900b-b8db-461f-a433-e82783884907",
+          "response_model": "deepseek-flash",
+          "response_object": "chat.completion.chunk",
+          "first_token_ms": 665,
+          "duration_ms": 1764
+        }
+      }
+    }
+  ]
+}

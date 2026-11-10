@@ -90,7 +90,7 @@ impl ScopedToolInvoker {
         invocation: &mut ToolInvocation,
     ) -> Result<ToolGateDecision, String> {
         Self::canonicalize_invocation_name(invocation);
-        let hook_decision = self
+        let (hook_decision, _) = self
             .agent
             .fire_pre_tool_use(
                 &self.session_id,

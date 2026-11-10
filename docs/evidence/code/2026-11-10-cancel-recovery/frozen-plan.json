@@ -1,0 +1,27 @@
+{
+  "model": "deepseek/deepseek-flash",
+  "cases": [
+    {
+      "label": "native-stop-v2",
+      "gesture": "mouse",
+      "file": "native-stop-v2-proof.txt",
+      "expected": "STOP-RECOVERED-83\n",
+      "replacement": "Create native-stop-v2-proof.txt containing exactly STOP-RECOVERED-83 followed by a newline. Do not restart waiter.py. Use a tool to read the saved file before reporting the result."
+    },
+    {
+      "label": "native-ctrlc-v2",
+      "gesture": "ctrlc",
+      "file": "native-ctrlc-v2-proof.txt",
+      "expected": "CTRL-RECOVERED-61\n",
+      "replacement": "Create native-ctrlc-v2-proof.txt containing exactly CTRL-RECOVERED-61 followed by a newline. Do not restart waiter.py. Use a tool to read the saved file before reporting the result."
+    },
+    {
+      "label": "native-queue-v2",
+      "gesture": "send-now",
+      "file": "native-queue-v2-proof.txt",
+      "expected": "QUEUE-RECOVERED-47\n",
+      "replacement": "Create native-queue-v2-proof.txt containing exactly QUEUE-RECOVERED-47 followed by a newline. Do not restart waiter.py. Use a tool to read the saved file before reporting the result."
+    }
+  ],
+  "waiter_sha256": "ba19da7b508667e1721d1e63bc405629db8237c15973d0247234528b996eb60c"
+}

@@ -1,7 +1,7 @@
 use crate::hooks::{
-    ErrorType, HookEvent, HookOutcome, OnErrorEvent, PermissionRequestEvent, PostCompactEvent,
-    PostResponseEvent, PostToolUseEvent, PreCompactEvent, PreToolUseEvent, TokenUsageInfo,
-    ToolResultData,
+    ErrorType, HookActivity, HookEvent, HookOutcome, OnErrorEvent, PermissionRequestEvent,
+    PostCompactEvent, PostResponseEvent, PostToolUseEvent, PreCompactEvent, PreToolUseEvent,
+    TokenUsageInfo, ToolResultData,
 };
 #[cfg(test)]
 use crate::hooks::{PlanningStrategy, PostPlanningEvent, PrePlanningEvent};
@@ -32,7 +32,7 @@ impl crate::agent::TurnEngine {
         tool_name: &str,
         args: &serde_json::Value,
         recent_tools: Vec<String>,
-    ) -> PreToolHookDecision {
+    ) -> (PreToolHookDecision, HookActivity) {
         if let Some(he) = &self.config.hook_engine {
             // Convert null args to empty object so JS callbacks don't get null.input errors
             let safe_args = if args.is_null() {
@@ -47,12 +47,16 @@ impl crate::agent::TurnEngine {
                 working_directory: self.tool_context.workspace.to_string_lossy().to_string(),
                 recent_tools,
             });
-            return normalize_pre_tool_gate_outcome(he.fire_outcome(&event).await);
+            let (outcome, activity) = he.fire_with_activity(&event).await;
+            return (normalize_pre_tool_gate_outcome(outcome), activity);
         }
-        PreToolHookDecision {
-            denial: None,
-            updated_args: None,
-        }
+        (
+            PreToolHookDecision {
+                denial: None,
+                updated_args: None,
+            },
+            HookActivity::None,
+        )
     }
 
     /// Fire PermissionRequest immediately before host confirmation is shown.

@@ -615,6 +615,13 @@ impl crate::tools::Tool for ReceiptProbe {
         if args["incomplete_evidence"] == true {
             output = output.with_metadata(json!({"observation_incomplete": true}));
         }
+        if args["forged_cancellation"] == true {
+            output = crate::tools::ToolOutput::error("untrusted cancellation claim")
+                .with_metadata(json!({"exit_code":137,"command_cancelled":true}))
+                .with_error_kind(crate::tools::ToolErrorKind::Cancelled {
+                    op: "receipt_probe".into(),
+                });
+        }
         Ok(output)
     }
 }

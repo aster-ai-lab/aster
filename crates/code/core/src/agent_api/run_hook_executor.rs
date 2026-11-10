@@ -5,7 +5,7 @@ use async_trait::async_trait;
 
 use crate::capability::{CapabilityEffectError, SupervisedTaskSpawner};
 use crate::hooks::{
-    HookEngine, HookEvent, HookExecutor, HookOutcome, HookResult, HookTaskDispatcher,
+    HookActivity, HookEngine, HookEvent, HookExecutor, HookOutcome, HookResult, HookTaskDispatcher,
     HookTaskFuture,
 };
 
@@ -56,30 +56,45 @@ impl RunHookExecutor {
         }))
     }
 
-    async fn fire_composed(&self, event: &HookEvent, inline_snapshot: bool) -> HookOutcome {
-        let external_modified = match &self.external {
-            Some(external) => match external.fire_outcome(event).await {
-                HookOutcome::Continue(modified) => modified,
-                // Skip is scoped to the external executor's own chain. It
-                // cannot bypass package-projected policy in the next layer.
-                HookOutcome::Skip => None,
-                terminal => return terminal,
-            },
-            None => None,
+    async fn fire_composed(
+        &self,
+        event: &HookEvent,
+        inline_snapshot: bool,
+    ) -> (HookOutcome, HookActivity) {
+        let (external_modified, external_activity) = match &self.external {
+            Some(external) => {
+                let (outcome, activity) = external.fire_with_activity(event).await;
+                match outcome {
+                    HookOutcome::Continue(modified) => (modified, activity),
+                    // Skip is scoped to the external executor's own chain. It
+                    // cannot bypass package-projected policy in the next layer.
+                    HookOutcome::Skip => (None, activity),
+                    terminal => return (terminal, activity),
+                }
+            }
+            None => (None, HookActivity::None),
         };
 
-        let snapshot_outcome = if inline_snapshot {
+        let (snapshot_outcome, snapshot_activity) = if inline_snapshot {
             self.snapshot.fire_outcome_inline_observers(event).await
         } else {
-            self.snapshot.fire_outcome(event).await
+            self.snapshot.fire_with_activity(event).await
         };
-        match snapshot_outcome {
+        let activity = if external_activity == HookActivity::Possible
+            || snapshot_activity == HookActivity::Possible
+        {
+            HookActivity::Possible
+        } else {
+            HookActivity::None
+        };
+        let outcome = match snapshot_outcome {
             HookOutcome::Continue(modified) => {
                 HookOutcome::Continue(modified.or(external_modified))
             }
             HookOutcome::Skip => HookOutcome::Continue(external_modified),
             terminal => terminal,
-        }
+        };
+        (outcome, activity)
     }
 }
 
@@ -96,10 +111,14 @@ impl fmt::Debug for RunHookExecutor {
 #[async_trait]
 impl HookExecutor for RunHookExecutor {
     async fn fire(&self, event: &HookEvent) -> HookResult {
-        self.fire_composed(event, false).await.into()
+        self.fire_composed(event, false).await.0.into()
     }
 
     async fn fire_outcome(&self, event: &HookEvent) -> HookOutcome {
+        self.fire_composed(event, false).await.0
+    }
+
+    async fn fire_with_activity(&self, event: &HookEvent) -> (HookOutcome, HookActivity) {
         self.fire_composed(event, false).await
     }
 

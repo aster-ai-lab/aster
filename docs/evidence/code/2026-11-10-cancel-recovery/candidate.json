@@ -1,0 +1,67 @@
+{
+  "head": "4ced2b135225802e3c633b1b8d81cc7a947184ed",
+  "diff_sha256": "eb747ddb8174b8407d0fa1c0a3ce62b1ad5e78eca6e7424bdccaa248d8c30594",
+  "source_inputs": {
+    "crates/code/acp/src/agent.rs": "3a81e26a051d2cbdbd04f25d2ebc3f0f75431fbbabc42b408b2510a25aa8a092",
+    "crates/code/acp/src/agent/turn.rs": "4c4a022703f5df1aee93b9cf3f062b20d46e007b3d0524ae2fe9c62a5b54ebce",
+    "crates/code/acp/src/agent/turn_terminal_tests.rs": "24376a5fd3168560d789e737e36780075f7413cb8ae3b689e48646304399760d",
+    "crates/code/acp/src/agent_tests.rs": "9b2debd0a77a8c7f4da0ca3ae3cc14b4a94ee55bbd8ef8e1cb780b2660c707c4",
+    "crates/code/acp/src/turn_cancel.rs": "13bdd2c1222857f00d4713a82eb5645de83eafbf39e2ed47f469f4d08c652fe9",
+    "crates/code/core/src/agent/hook_runtime.rs": "8a319cbb3c82018953c588b4832db74e7479b0d6ba3ea5b9ca1c2724d389e015",
+    "crates/code/core/src/agent/tool_invoker.rs": "3d32dd6704110fc80ae78b6770535aa3fc1368172cda36c0948923fee1c8fe7a",
+    "crates/code/core/src/agent_api/run_hook_executor.rs": "3885e9eadda7d9120eec079dac519daec1617ce70226f821adb21cb1f3df151a",
+    "crates/code/core/src/fact_control/executor_tools.rs": "69ad4ddc8b7ba915e634b2ec7ecdc3c0b2207910de0e74dcc860214683432c6b",
+    "crates/code/core/src/fact_control/receipts.rs": "ce81d180c24e2d8df062f5dfe615ab69ae8befcb527f6a8e49685468b5ecb8e7",
+    "crates/code/core/src/fact_control/receipts/tests.rs": "fdf2a1c74544af9c1dbb163db7429da86377421cd7fa66d972ebb60a53d184ac",
+    "crates/code/core/src/fact_control/receipts/tests/event_cancellation.rs": "0c52fcbcf9a63661bdb0c015f83137675f4505ff1a277e568cf7144dc09e408e",
+    "crates/code/core/src/hooks/command.rs": "34437996c99786fb14fa18a3eefbba4773ca649ac4b8af3b4684bbcdcf353ae9",
+    "crates/code/core/src/hooks/contract.rs": "13d16cac0af5dd82ae8c3af1e313721e656675d31af7c21dcd880e91953a72d1",
+    "crates/code/core/src/hooks/engine.rs": "bd6d231ef473b0911e0bff335377a9a88322140af115ddcb41be13fe3e0d1fd3",
+    "crates/code/core/src/hooks/engine/tests.rs": "5895d7d0518d63e414ca8912971f3874724d4d7f0b16d4692af989cc1319b069",
+    "crates/code/core/src/hooks/mod.rs": "18b00b2cb29eb5f3da9887b0002c21ff28b0a410093c301eb82e97a27fe78a44",
+    "crates/code/core/src/sandbox.rs": "96c417dc883c7bf44b82ffa55bc0ecd15d191b5035afb19bc548d30bd766ee3e",
+    "crates/code/core/src/sandbox/host_access.rs": "901b97f210b0ce1eb1e4f387b5ebf66c6dbaf90178881cf0ba50d76af76d35df",
+    "crates/code/core/src/tools/builtin/bash.rs": "2fb3e5ad3c0e3247f9a86eb67abe2636168c1b875bc44344ac0d6d35e1607e2d",
+    "crates/code/core/src/tools/process.rs": "5dc7268417add30adea7d8a419b4219cec576fdaeae4ce1c58ced038252c8837",
+    "crates/code/core/src/tools/types.rs": "8c2b8d7a880ace24f42870e9bd199395ad29e5e55049ddc7788c5a5f955b48ac",
+    "crates/code/core/src/workspace/local.rs": "b169cec77ff0187e631e3de7396f9b2b025b37e03d4f3e61ac000cded19a277b",
+    "crates/code/core/src/workspace/manifest.rs": "732cc1328a23defa534e1c6bd19d0eecd56a01e97a9ee995d498c2bc890f58e9",
+    "crates/code/core/src/workspace/mod.rs": "e04af0e46c62334567130a9b9dbdd4115db269865661d974871f6091140ea2dc"
+  },
+  "binaries": {
+    "aster": {
+      "build_id": "aster-cli-pair-v1:9039f5f46a7c6c9ecb6bc21e3922675ed94d8847:aarch64-apple-darwin",
+      "sha256": "5eeb1146b61b7fe6a878ec0bf8501d8eda440d872e06b4bc96721e505f01542f"
+    },
+    "aster-acp": {
+      "build_id": "aster-cli-pair-v1:9039f5f46a7c6c9ecb6bc21e3922675ed94d8847:aarch64-apple-darwin",
+      "sha256": "36bd8147e169d3c63748cd78491957d690420695d3a92b7b555897276c53e8b5"
+    }
+  },
+  "model": "deepseek/deepseek-flash",
+  "source_config_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "launch": {
+    "argv": [
+      "/Users/roylin/code/aster/target/debug/aster",
+      "--model",
+      "deepseek/deepseek-flash",
+      "--no-plan",
+      "--fullscreen",
+      "--yolo"
+    ],
+    "environment_keys": [
+      "ASTER_CONFIG",
+      "ASTER_DISABLE_CODEX_ACCOUNT",
+      "ASTER_DISABLE_CURSOR_ACCOUNT",
+      "ASTER_DISABLE_GROK_ACCOUNT",
+      "ASTER_HOME",
+      "ASTER_LOG_DIR",
+      "COLORTERM",
+      "GROK_HOME",
+      "TERM"
+    ],
+    "working_directory": "/tmp/aster-tui-deepseek-e2e/workspace"
+  },
+  "window_id": "w-52575",
+  "preexisting_acp_patch": true
+}
