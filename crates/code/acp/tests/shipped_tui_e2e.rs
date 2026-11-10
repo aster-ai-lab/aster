@@ -3223,6 +3223,26 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     );
     oracle(PTY_TEST, "compact-empty", "Nothing to compact yet");
 
+    let bodies_before_context = state.lock().expect("mock").bodies.len();
+    pty.write_bytes(b"\x15");
+    pty.type_text("/context");
+    pty.enter();
+    let context = pty.wait_for("Usage not reported", Duration::from_secs(8));
+    assert!(context.contains("token window"), "{context}");
+    assert!(!context.contains("0 /"), "{context}");
+    assert!(!context.contains("100%"), "{context}");
+    assert_eq!(
+        state.lock().expect("mock").bodies.len(),
+        bodies_before_context,
+        "/context started a model turn"
+    );
+    oracle(
+        PTY_TEST,
+        "context-empty",
+        "usage unavailable, no fabricated free budget, zero model requests",
+    );
+    pty.dismiss();
+
     // A new explicit goal uses Core facts and the default bounded driver.
     pty.write_bytes(b"\x15");
     pty.type_text(&format!("/goal {GOAL_OBJECTIVE}"));
@@ -3508,9 +3528,11 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text("/context");
     pty.enter();
-    let context = pty.wait_for("System prompt", Duration::from_secs(8));
+    let context = pty.wait_for("Reported input", Duration::from_secs(8));
     assert!(
-        context.contains("System prompt") && context.contains("Auto-compact"),
+        !context.contains("System prompt")
+            && !context.contains("Reasoning/overhead")
+            && !context.contains("Auto-compact"),
         "context report missing\n{context}"
     );
     let context_turns = context.lines().find_map(|line| {
@@ -3528,14 +3550,27 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         Some(product_prompts),
         "context Turns is not the {product_prompts} prompts submitted in this session\n{context}"
     );
-    let context_used = context
-        .lines()
-        .any(|line| line.contains("tokens") && line.contains('/') && !line.contains("0 /"));
-    assert!(
+    let context_used = context.lines().find_map(|line| {
+        if !line.contains("tokens") {
+            return None;
+        }
+        line.split_once(" / ")?
+            .0
+            .split_whitespace()
+            .last()?
+            .parse::<u64>()
+            .ok()
+    });
+    assert_eq!(
         context_used,
-        "context after a completed turn still shows no tokens\n{context}"
+        Some(1),
+        "context must show the owned provider fixture's one reported prompt token\n{context}"
     );
-    oracle(PTY_TEST, "context", "turns and tokens");
+    oracle(
+        PTY_TEST,
+        "context",
+        "actual turns, one reported input token, no unmeasured categories or threshold",
+    );
     pty.dismiss();
 
     let before_compact = log_text(&workspace);

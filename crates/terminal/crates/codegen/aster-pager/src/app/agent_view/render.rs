@@ -1292,7 +1292,10 @@ impl AgentView {
                     &theme,
                     self.hit_goal_status.hovered,
                     tick,
-                    self.context_state.as_ref().map(|c| c.used),
+                    self.context_state
+                        .as_ref()
+                        .filter(|c| c.has_usage())
+                        .map(|c| c.used),
                     active_subagent_tokens,
                 ),
             );
@@ -1316,7 +1319,11 @@ impl AgentView {
                 Line::from(Span::styled(label, mode_style)),
             );
         }
-        let ctx_used = self.context_state.as_ref().map(|c| c.used);
+        let ctx_used = self
+            .context_state
+            .as_ref()
+            .filter(|c| c.has_usage())
+            .map(|c| c.used);
         let model_window = self.session.models.get_context_window();
         let ctx_total = self
             .context_state
@@ -2091,7 +2098,11 @@ impl AgentView {
                             watching_hovered: self.hit_watching_cue.hovered,
                         }),
                         has_running_execute,
-                        total_tokens: self.context_state.as_ref().map(|c| c.used),
+                        total_tokens: self
+                            .context_state
+                            .as_ref()
+                            .filter(|c| c.has_usage())
+                            .map(|c| c.used),
                         session_starting_since: self.session_starting_since,
                         is_bash_turn: self.bash_turn,
                         is_pending_user_input,
@@ -4257,7 +4268,10 @@ impl AgentView {
                 goal,
                 todos,
                 tick,
-                self.context_state.as_ref().map(|c| c.used),
+                self.context_state
+                    .as_ref()
+                    .filter(|c| c.has_usage())
+                    .map(|c| c.used),
                 active_subagent_tokens,
                 self.hit_goal_close.hovered,
             );

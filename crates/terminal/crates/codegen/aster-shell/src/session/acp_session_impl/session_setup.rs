@@ -641,6 +641,8 @@ impl SessionActor {
             turn_index,
             context: ContextInfo {
                 used: total_tokens,
+                breakdown_available: true,
+                usage_available: Some(true),
                 total: context_window,
                 system_prompt_tokens,
                 tool_definitions_count: tool_definitions_count as u64,

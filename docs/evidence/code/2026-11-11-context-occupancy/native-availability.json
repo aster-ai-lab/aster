@@ -1,0 +1,13 @@
+{
+  "checked_at": 1794342293.107863,
+  "IOConsoleLocked": true,
+  "session_screen_locked": true,
+  "physical_input_sent": false,
+  "display_observation": "agent-desktop primary display screenshot shows wallpaper only; Terminal has no addressable window",
+  "screenshot": "screens/desktop-unlock-check.png",
+  "pending_native": [
+    "context usage replay",
+    "timeout-owner replay"
+  ],
+  "test_pair_build_id": "aster-cli-pair-v1:4f545da722ae77266e8f9d3156627f34eb33817e:aarch64-apple-darwin"
+}

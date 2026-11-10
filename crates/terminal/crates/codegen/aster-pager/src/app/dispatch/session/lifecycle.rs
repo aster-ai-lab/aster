@@ -2034,7 +2034,11 @@ pub(in crate::app::dispatch) fn handle_switch_model_complete(
                 }
                 agent.session.models.set_current(model_id.clone(), effort);
                 let resolved_effort = agent.session.models.reasoning_effort;
-                if let Some(used) = agent.context_state.as_ref().map(|c| c.used)
+                if let Some(used) = agent
+                    .context_state
+                    .as_ref()
+                    .filter(|c| c.has_usage())
+                    .map(|c| c.used)
                     && let Some(window) = agent.session.models.get_context_window()
                 {
                     agent.apply_context_used(used, window);

@@ -1442,6 +1442,8 @@ mod searchable_text_tests {
     #[test]
     fn context_info_indexes_model_only() {
         let snapshot = ContextInfo {
+            breakdown_available: true,
+            usage_available: Some(true),
             used: 100,
             total: 1_000,
             system_prompt_tokens: 10,

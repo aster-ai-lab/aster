@@ -5484,7 +5484,11 @@ fn session_info_fields(
     let ctx = &info.data.context;
     push(
         "Context",
-        format!("{} / {} tokens ({}%)", ctx.used, ctx.total, ctx.usage_pct),
+        if ctx.has_usage() {
+            format!("{} / {} tokens ({}%)", ctx.used, ctx.total, ctx.usage_pct)
+        } else {
+            format!("{} token window · Usage not reported", ctx.total)
+        },
         true,
     );
     fields

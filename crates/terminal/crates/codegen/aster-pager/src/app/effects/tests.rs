@@ -2906,6 +2906,15 @@ fn format_session_info_shows_conversation_id_when_present() {
     assert!(text.contains("Conversation ID: conv_abc123"));
     assert!(text.contains("Session ID: test-session-id"));
 }
+
+#[test]
+fn session_info_preserves_unreported_usage() {
+    let mut info = make_session_info("fixture/model", None, 0, 1000);
+    info.data.context.usage_available = Some(false);
+    let text = format_session_info(&info, None, false, false, false);
+    assert!(text.contains("1000 token window · Usage not reported"), "{text}");
+    assert!(!text.contains("0 /"), "{text}");
+}
 #[test]
 fn format_session_info_displays_returned_permission_posture() {
     let without_mode = make_session_info("auto", None, 1000, 10000);

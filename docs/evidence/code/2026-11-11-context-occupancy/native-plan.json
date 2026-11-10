@@ -1,0 +1,24 @@
+{
+  "model": "deepseek/deepseek-flash",
+  "session": "5a297fa9-7e75-4e93-8d89-193aca28c5bc",
+  "scope": "native macOS Terminal with matching current source pair",
+  "steps": [
+    "Resume the owned populated session through /resume",
+    "Open /context without submitting a task",
+    "Compare displayed reported-input usage at its declared precision with the latest retained Core ModelUsageBound report in that session",
+    "Verify the effective limit agrees with the runtime model/session capability",
+    "Verify omitted category measurements, tool/compaction counts and threshold are not displayed as measured zeroes",
+    "Close the view and verify unchanged task/model-call counts",
+    "Read a new owned unseen canary with a real tool, then repeat the comparison after settlement"
+  ],
+  "oracle": [
+    "provider input report, not session cumulative usage",
+    "current session identity only; reversed admission order protects against late older Runs",
+    "source ACL unchanged; no prompt replay or queued resurrection",
+    "no model-specific formatter, capability name matcher, or changed fixture timeout"
+  ],
+  "canary_prompt": "Read context-canary.txt with the read tool and report its exact content. Do not edit files or call other tools.",
+  "open_deadline_seconds": 15,
+  "task_deadline_seconds": 120,
+  "frozen_before_native_run": true
+}

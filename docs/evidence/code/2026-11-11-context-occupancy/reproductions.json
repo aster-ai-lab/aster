@@ -1,0 +1,44 @@
+[
+  {
+    "log": "context-info-reproduced.log",
+    "classification": "FAIL_PRODUCT",
+    "observation": "The latest report was 131; the old session-info snapshot returned cumulative 408",
+    "sha256": "c809e51cc9bb3e51d9dea1c1a2bc4e9b8695d8a60f32f5f683a6d45abb2bdb5a"
+  },
+  {
+    "log": "context-view-red.log",
+    "classification": "FAIL_PRODUCT",
+    "observation": "An explicitly partial snapshot was painted as measured category zeroes",
+    "sha256": "1b80bd3788b0396be62f697b29c3eb27bdca2db8802e69c0d7410fcee19f1f47"
+  },
+  {
+    "log": "context-missing-red.log",
+    "classification": "FAIL_PRODUCT",
+    "observation": "Absent input usage was painted as zero used and a completely free window",
+    "sha256": "43f58fde04d47d9b1333f77ea8556a0765ed025ed4a735dab84d0ff3c6293719"
+  },
+  {
+    "log": "context-qualified-shipped.log",
+    "classification": "FAIL_PRODUCT",
+    "observation": "The modal omitted unreported usage but the fullscreen header still showed zero used",
+    "sha256": "e784ab9534c514474bc9bfe1c13dbe1c72c55b8a38f1bad10fc34fbecc8bd978"
+  },
+  {
+    "log": "context-empty-isolated.log",
+    "classification": "FAIL_PRODUCT",
+    "observation": "The fullscreen-header failure reproduced alone with the same entire-screen assertion",
+    "sha256": "cf7ea079b4fc9403dd33c6e63f71838be12b210720afb9c977ed4d4b1ce15d0e"
+  },
+  {
+    "log": "context-info-red.log",
+    "classification": "FAIL_SPEC",
+    "observation": "The original fixture assumed two provider calls; canonical fixture execution made four",
+    "sha256": "2806cb301ea7b3e2a3d5624ad72c9375dd02e53db73c91623dc0e825d8342d25"
+  },
+  {
+    "log": "context-wire-tests.log",
+    "classification": "FAIL_INFRA",
+    "observation": "Duplicate test module name prevented compilation; not an executed regression",
+    "sha256": "a5629d06b83ff2347b553fc866957c20086aa98d8a9e3882d535bbb9e887db9b"
+  }
+]

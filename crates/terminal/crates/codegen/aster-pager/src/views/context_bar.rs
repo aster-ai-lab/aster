@@ -158,7 +158,13 @@ pub fn context_bar_line_for_session(
     if gateway_chat {
         return None;
     }
-    let used = used_tokens?;
+    let Some(used) = used_tokens else {
+        let total = total_tokens.filter(|&total| total > 0)?;
+        return Some(Line::from(Span::styled(
+            format!("— / {}", fmt_tokens(total)),
+            Style::default().fg(theme.text_secondary).bg(theme.bg_base),
+        )));
+    };
     let Some(total) = total_tokens.filter(|&t| t > 0) else {
         return Some(Line::from(Span::styled(
             format!("{} / ?", fmt_tokens(used)),
@@ -199,6 +205,10 @@ pub fn context_bar_line_for_session(
         )))
     }
 }
+
+#[cfg(test)]
+#[path = "context_bar_tests.rs"]
+mod availability_tests;
 
 #[cfg(test)]
 mod tests {
@@ -384,7 +394,7 @@ mod tests {
         // Mirror across hover states so a future refactor that moves the unavailability checks into per-branch arms can't silently regress one path
         let theme = Theme::default();
         for hovered in [false, true] {
-            assert!(context_bar_line(None, Some(1_000_000), hovered, &theme).is_none());
+            assert!(context_bar_line(None, None, hovered, &theme).is_none());
             assert_eq!(
                 line_text(&context_bar_line(Some(1_000), None, hovered, &theme).unwrap()),
                 "1.0K / ?"

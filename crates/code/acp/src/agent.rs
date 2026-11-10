@@ -919,44 +919,50 @@ impl AsterCodeAgent {
         Ok(options.with_file_session_store(session_store_dir))
     }
 
-    /// Fact counts and token totals for one live session.
+    /// Fact counts and the latest reported model input for one live session.
     async fn snapshot_session_info(
         &self,
         session_id: &str,
-    ) -> acp::Result<Option<(String, String, String, u64, u64, u64)>> {
-        let sessions = self.sessions.lock().await;
-        let Some(live) = sessions.get(session_id) else {
-            return Ok(None);
+    ) -> acp::Result<Option<(String, String, String, u64, Option<u64>, u64)>> {
+        let (session, cwd, model_id, posture) = {
+            let sessions = self.sessions.lock().await;
+            let Some(live) = sessions.get(session_id) else {
+                return Ok(None);
+            };
+            let posture = live
+                .permissions
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .posture
+                .as_str()
+                .to_string();
+            (
+                Arc::clone(&live.session),
+                live.workspace.display().to_string(),
+                live.model_id.clone(),
+                posture,
+            )
         };
         // The fact scheduler increments its turn only on `user.message`.
         // Tool rounds and assistant tool lines are other fact kinds, and
         // the folded transcript stores those lines with role=user.
-        let turns = live
-            .session
+        let turns = session
             .user_prompt_count()
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        let (prompt_tokens, completion_tokens, total_tokens) = live.session.recorded_usage_tokens();
-        let used = if total_tokens > 0 {
-            total_tokens
-        } else {
-            prompt_tokens.saturating_add(completion_tokens)
-        };
-        let total = live.session.context_window_tokens() as u64;
-        let posture = live
-            .permissions
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .posture
-            .as_str()
-            .to_string();
-        Ok(Some((
-            live.workspace.display().to_string(),
-            live.model_id.clone(),
-            posture,
-            turns,
-            used,
-            total,
-        )))
+        let mut used = None;
+        'reported: for run in session.runs().await.into_iter().rev() {
+            if run.session_id != session.id() {
+                continue;
+            }
+            for record in session.run_events(&run.id).await.into_iter().rev() {
+                if let AgentEvent::ModelUsageBound { snapshot } = record.event {
+                    used = Some(snapshot.reported_prompt_tokens as u64);
+                    break 'reported;
+                }
+            }
+        }
+        let total = session.context_window_tokens() as u64;
+        Ok(Some((cwd, model_id, posture, turns, used, total)))
     }
 }
 

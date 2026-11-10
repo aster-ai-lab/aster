@@ -48,6 +48,7 @@ fn protocol_and_unknown_methods_are_outside_the_host_set() {
 
 struct WireModel {
     calls: AtomicUsize,
+    prompt_tokens: AtomicUsize,
     block_third: AtomicBool,
     started: Notify,
     release: broadcast::Sender<()>,
@@ -57,9 +58,21 @@ impl Default for WireModel {
     fn default() -> Self {
         Self {
             calls: AtomicUsize::new(0),
+            prompt_tokens: AtomicUsize::new(0),
             block_third: AtomicBool::new(false),
             started: Notify::new(),
             release: broadcast::channel(1).0,
+        }
+    }
+}
+
+impl WireModel {
+    fn usage(&self) -> TokenUsage {
+        let prompt_tokens = self.prompt_tokens.load(Ordering::SeqCst);
+        TokenUsage {
+            prompt_tokens,
+            total_tokens: prompt_tokens,
+            ..TokenUsage::default()
         }
     }
 }
@@ -79,7 +92,7 @@ impl LlmClient for WireModel {
         }
         Ok(LlmResponse {
             message: Message::assistant(format!("answer-{}", call + 1).as_str()),
-            usage: TokenUsage::default(),
+            usage: self.usage(),
             stop_reason: None,
             token_logprobs: Vec::new(),
             meta: None,
@@ -96,6 +109,7 @@ impl LlmClient for WireModel {
         let call = self.calls.fetch_add(1, Ordering::SeqCst);
         let (sender, receiver) = mpsc::channel(2);
         let blocking = call >= 2 && self.block_third.load(Ordering::SeqCst);
+        let usage = self.usage();
         let mut release = self.release.subscribe();
         tokio::spawn(async move {
             if blocking {
@@ -104,7 +118,7 @@ impl LlmClient for WireModel {
             let _ = sender
                 .send(StreamEvent::Done(LlmResponse {
                     message: Message::assistant(format!("answer-{}", call + 1).as_str()),
-                    usage: TokenUsage::default(),
+                    usage,
                     stop_reason: None,
                     token_logprobs: Vec::new(),
                     meta: None,
@@ -191,6 +205,40 @@ async fn ext(host: &AsterCodeAgent, method: &str, params: Value) -> acp::Result<
         .ext_method(acp::ExtRequest::new(method, raw.into()))
         .await?;
     Ok(serde_json::from_str(response.0.get()).unwrap())
+}
+
+#[tokio::test]
+async fn context_uses_the_latest_report() {
+    let fixture = wire_fixture().await;
+    fixture.model.prompt_tokens.store(73, Ordering::SeqCst);
+    fixture.source.send("measured-one", None).await.unwrap();
+    fixture.model.prompt_tokens.store(131, Ordering::SeqCst);
+    fixture.source.send("measured-two", None).await.unwrap();
+    assert!(fixture.source.recorded_usage_tokens().0 > 131);
+    let response = ext(
+        &fixture.host,
+        "aster/session/info",
+        json!({"sessionId":fixture.session_id}),
+    )
+    .await
+    .unwrap();
+    assert_eq!(response["result"]["context"]["used"], 131);
+    assert_eq!(response["result"]["turns"], 4);
+    assert_eq!(response["result"]["context"]["breakdownAvailable"], false);
+    assert_eq!(response["result"]["context"]["usageAvailable"], true);
+
+    fixture.model.prompt_tokens.store(0, Ordering::SeqCst);
+    fixture.source.send("reported-zero", None).await.unwrap();
+    let response = ext(
+        &fixture.host,
+        "aster/session/info",
+        json!({"sessionId":fixture.session_id}),
+    )
+    .await
+    .unwrap();
+    assert_eq!(response["result"]["context"]["used"], 0);
+    assert_eq!(response["result"]["context"]["usageAvailable"], true);
+    fixture.source.close().await;
 }
 
 #[tokio::test]

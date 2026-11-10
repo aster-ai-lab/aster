@@ -1,0 +1,322 @@
+[
+  {
+    "name": "context-availability-wire",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-shell",
+      "--lib",
+      "session::acp_types::context_tests::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "2942eb935c3cbafc7b334940ff346375f2e477915ec3cec9d45db6098ce42e0f",
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false
+  },
+  {
+    "name": "context-availability-view",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-pager",
+      "--lib",
+      "scrollback::blocks::context_info::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "f86a8301f73aabc6c44c34b48b3ced1e0a2309cb6255ebd5bad97d73037d5aad",
+    "passed": 38,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false
+  },
+  {
+    "name": "context-availability-bar",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-pager",
+      "--lib",
+      "views::context_bar::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "09ddec9b9fe375b4d583992b3c7761deb93d7c28f961444b7caec8b561c31da6",
+    "passed": 17,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false
+  },
+  {
+    "name": "context-availability-info",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-pager",
+      "--lib",
+      "session_info_preserves_unreported_usage",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "4e48a9c7fd982a4ad184eef7406ff2ad9ccda85ba76ce691e775bd59ac53fcb0",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false
+  },
+  {
+    "name": "context-availability-minimal",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-pager-minimal",
+      "--lib",
+      "prompt_info_",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "14bd3d64226bca27d55300a94370339de6a5a5bb82b969795efadaffe0d3334d",
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false
+  },
+  {
+    "name": "context-availability-host",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--lib",
+      "agent::host_methods_tests::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "8819a02ea39f2c720dca0e0c0f17559e8c4038b832c3b106d8317599ed2e4307",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": true
+  },
+  {
+    "name": "context-availability-host-executed",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--lib",
+      "host_methods_tests::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "09a1985bba3640c2c058b501c07c2b59095ac29db308e0d632b5e170816f94d4",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": true
+  },
+  {
+    "name": "context-availability-host-qualified",
+    "command": [
+      "target/debug/deps/aster_acp-989324f9e788fe46",
+      "agent::host_methods::tests::",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "d4056298259da365c78e99189af9724d2cac62aae1b210222982968ccde0c4f0",
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "zero_match": false,
+    "test_binary_sha256": "92bb7a403925b4c4bbd14971e95ff0abd55cf2b3b22223147182b0663d8dbb43"
+  },
+  {
+    "name": "model-catalog-qualified",
+    "command": [
+      "target/debug/deps/aster_acp-989324f9e788fe46",
+      "agent::model_discovery_tests::",
+      "--test-threads=1"
+    ],
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "exit_code": 0,
+    "log_sha256": "43280411e9a860e7ef8e9256683b300c2056ed4dc66440b7d7ddbac62fdec585",
+    "scope": "Controlled provider metadata; no real upstream model completion"
+  },
+  {
+    "name": "context-availability-clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "-p",
+      "aster-shell",
+      "-p",
+      "aster-pager",
+      "-p",
+      "aster-pager-minimal",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 193.87,
+    "log_sha256": "b3cea7af14db51210663560269d3210e53d9094a4e86bf49a70497a397ac61fd"
+  },
+  {
+    "name": "context-availability-shipped-compile",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--test",
+      "shipped_tui_e2e",
+      "--no-run"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 15.39,
+    "log_sha256": "02f2c09d286d1df6b014fa19281ca7fa74d64e25fef601e91393a888c86ff8ff"
+  },
+  {
+    "name": "context-availability-pair",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "-p",
+      "aster",
+      "-p",
+      "aster-acp",
+      "--bin",
+      "aster",
+      "--bin",
+      "aster-acp"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 113.97,
+    "log_sha256": "4bd0b8d832e269f81159281c94cd80c2184c7eb9fc85ac4eefc31cc73b6d2c3f"
+  },
+  {
+    "name": "context-availability-source",
+    "command": [
+      "python3",
+      ".runtime/tui-full-e2e/source_pair.py",
+      "context-source-reconciliation.json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 28.14,
+    "log_sha256": "e70ee50541631677a1672f580b2147cd9dbb8ab05e72578fee218b30b64d32f2"
+  },
+  {
+    "name": "context-empty-isolated-green",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--test",
+      "shipped_tui_e2e",
+      "shipped_tui_launch_resume_and_visible_commands",
+      "--",
+      "--exact",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 98.91,
+    "log_sha256": "e2f4eb553bf1bcfbfdba1e5da77b31ffb139bf158d2888eb5a504768985e8fa7",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "name": "context-current-shipped-suite",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-acp",
+      "--test",
+      "shipped_tui_e2e",
+      "--",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 185.41,
+    "log_sha256": "f8e9867d182c499d74629bcc5a0a75dfdecd609156873407c6c7a41ae4f2c2be",
+    "passed": 23,
+    "failed": 0,
+    "ignored": 1
+  },
+  {
+    "name": "model-discovery-contracts",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-core",
+      "--lib",
+      "llm::model_discovery::tests::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.81,
+    "log_sha256": "32675c01873371af7a9126e6910feeef6cf3338cae801be0c6760d3d4eda07ac",
+    "passed": 8,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "name": "reasoning-wire-contracts",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-core",
+      "--lib",
+      "llm::reasoning_contract_tests::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.93,
+    "log_sha256": "dd041074a7b50e7993ea06f57cd097ead6e85c4a66823881ea17b67f7e2091ce",
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  }
+]

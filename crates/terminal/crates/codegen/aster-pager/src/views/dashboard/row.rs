@@ -489,7 +489,11 @@ fn top_level_row(id: AgentId, agent: &AgentView, pinned: bool, home: Option<&str
         last_change_at,
         pinned,
         badges,
-        context_pct: agent.context_state.as_ref().map(|c| c.usage_pct),
+        context_pct: agent
+            .context_state
+            .as_ref()
+            .filter(|c| c.has_usage())
+            .map(|c| c.usage_pct),
     }
 }
 /// Wall-clock anchor used by both dashboard rows and workspace metadata sync.

@@ -586,7 +586,11 @@ fn render_minimal_status(
             drain_blocked,
             buttons: None,
             has_running_execute: false,
-            total_tokens: agent.context_state.as_ref().map(|c| c.used),
+            total_tokens: agent
+                .context_state
+                .as_ref()
+                .filter(|c| c.has_usage())
+                .map(|c| c.used),
             session_starting_since: minimal_api::session_starting_since(agent),
             is_bash_turn: agent.bash_turn,
             is_pending_user_input,
@@ -680,7 +684,11 @@ fn render_prompt_info(
                 flag.color.map_or(base, |color| base.fg(color)),
             ));
         }
-        let used = agent.context_state.as_ref().map(|c| c.used);
+        let used = agent
+            .context_state
+            .as_ref()
+            .filter(|c| c.has_usage())
+            .map(|c| c.used);
         let total = agent
             .context_state
             .as_ref()
@@ -694,6 +702,8 @@ fn render_prompt_info(
                 format!("{} / {} ({:.0}%)", fmt_tokens(used), fmt_tokens(total), pct),
                 base,
             ));
+        } else if let Some(total) = total.filter(|&total| total > 0) {
+            segs.push((format!("— / {}", fmt_tokens(total)), base));
         }
     }
     if queued > 0 {
@@ -770,9 +780,13 @@ fn now_millis() -> u128 {
         .unwrap_or(0)
 }
 #[cfg(test)]
+#[path = "live_context_tests.rs"]
+mod context_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
-    fn agent() -> aster_pager::app::agent_view::AgentView {
+    pub(super) fn agent() -> aster_pager::app::agent_view::AgentView {
         minimal_api::test_agent_view(Some("s1"), std::path::PathBuf::from("/tmp"))
     }
     #[test]

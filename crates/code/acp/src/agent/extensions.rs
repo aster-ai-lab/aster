@@ -315,6 +315,8 @@ impl AsterCodeAgent {
         };
         let body = match live {
             Some((cwd, model_id, posture, turns, used, total)) => {
+                let usage_available = used.is_some();
+                let used = used.unwrap_or(0);
                 let usage_pct = usage_percent(used, total);
                 serde_json::json!({
                     "result": {
@@ -329,6 +331,8 @@ impl AsterCodeAgent {
                         "context": {
                             "used": used,
                             "total": total,
+                            "breakdownAvailable": false,
+                            "usageAvailable": usage_available,
                             "usagePct": usage_pct,
                             "turnCount": turns,
                             "freeTokens": total.saturating_sub(used)

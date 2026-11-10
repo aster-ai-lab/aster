@@ -465,6 +465,12 @@ pub fn count_detail(count: u64, noun: &str) -> String {
 pub struct ContextInfo {
     pub used: u64,
     pub total: u64,
+    /// Explicit measurement availability; older snapshots use their existing data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage_available: Option<bool>,
+    /// False when category measurements and detailed counts were not reported.
+    #[serde(default = "default_breakdown_available")]
+    pub breakdown_available: bool,
     pub system_prompt_tokens: u64,
     pub tool_definitions_count: u64,
     pub tool_definitions_tokens: u64,
@@ -489,12 +495,19 @@ pub struct ContextInfo {
 }
 
 impl ContextInfo {
+    /// Whether the snapshot contains a reported or locally measured token count.
+    pub fn has_usage(&self) -> bool {
+        self.usage_available
+            .unwrap_or(self.breakdown_available || self.used > 0)
+    }
+
     /// Partial snapshot from a notification carrying only used and total.
-    /// Breakdown fields default to zero until the next full ContextInfo update.
+    /// Detailed measurements remain unavailable until a full ContextInfo update.
     pub fn from_notification(used: u64, total: u64) -> Self {
         Self {
             used,
             total,
+            usage_available: Some(true),
             usage_pct: aster_token_estimation::usage_percentage_u8(used, total),
             free_tokens: aster_token_estimation::free_tokens(total, used),
             auto_compact_threshold_percent: DEFAULT_AUTO_COMPACT_THRESHOLD_PERCENT,
@@ -502,6 +515,14 @@ impl ContextInfo {
         }
     }
 }
+
+fn default_breakdown_available() -> bool {
+    true
+}
+
+#[cfg(test)]
+#[path = "acp_types_tests.rs"]
+mod context_tests;
 
 /// Serde default for the threshold field (keeps old snapshots and partials deserializing without error and gives the historical default of 85).
 fn default_auto_compact_threshold() -> u8 {

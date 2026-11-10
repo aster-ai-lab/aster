@@ -1279,6 +1279,7 @@ impl AgentView {
         match self.context_state.as_mut() {
             Some(snap) => {
                 snap.used = used;
+                snap.usage_available = Some(true);
                 if total > 0 {
                     snap.total = total;
                 }

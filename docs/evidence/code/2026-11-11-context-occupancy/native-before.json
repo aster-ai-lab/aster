@@ -1,0 +1,18 @@
+{
+  "session_id": "5a297fa9-7e75-4e93-8d89-193aca28c5bc",
+  "build_id": "aster-cli-pair-v1:2a0d00d9ae724ea12f83b7dc1fe523aff1796342:aarch64-apple-darwin",
+  "model": "deepseek/deepseek-flash",
+  "last_run_id": "run-a19103e2-a2f9-46f0-98b6-0f26498117b3",
+  "latest_provider_prompt_tokens": 18515,
+  "latest_provider_total_tokens": 18715,
+  "snapshot_digest": "sha256:73b94bd918ac12f81a0fa272940ae641f287f996592fbeb678f6976abff1b0d7",
+  "session_cumulative_usage": {
+    "prompt_tokens": 112686,
+    "completion_tokens": 3680,
+    "total_tokens": 116366,
+    "cache_read_tokens": 80512,
+    "cache_write_tokens": null
+  },
+  "screenshot": "timeout-context-after-settlement.png",
+  "observed_modal": "116k /1.0m,11.10%; system/messages/tools defaulted to0"
+}

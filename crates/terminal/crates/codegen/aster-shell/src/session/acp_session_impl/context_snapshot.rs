@@ -352,6 +352,8 @@ mod tests {
             turns: 0,
             turn_index: 0,
             context: ContextInfo {
+                breakdown_available: true,
+                usage_available: Some(true),
                 used: 40_000,
                 total: 1_000_000,
                 system_prompt_tokens: 8_000,

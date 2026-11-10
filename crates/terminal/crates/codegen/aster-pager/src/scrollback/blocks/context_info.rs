@@ -228,13 +228,15 @@ impl ContextInfoBlock {
         let turn_count = snapshot.turn_count;
         let tool_call_count = snapshot.tool_call_count;
         let compaction_count = snapshot.compaction_count;
+        let breakdown = snapshot.breakdown_available;
+        let reported = snapshot.has_usage();
 
-        let tokens = window_tokens(
-            used,
-            total,
-            snapshot.system_prompt_tokens,
-            snapshot.message_tokens,
-        );
+        let (system, messages) = if breakdown {
+            (snapshot.system_prompt_tokens, snapshot.message_tokens)
+        } else {
+            (0, 0)
+        };
+        let tokens = window_tokens(used, total, system, messages);
         let system_tokens = tokens.system;
         let message_tokens = tokens.messages;
         let overhead_tokens = tokens.overhead;
@@ -311,23 +313,33 @@ impl ContextInfoBlock {
 
         // Tool definitions are already in Reasoning/overhead
         // Usage categories are already in Messages
-        let mut legend_rows = vec![
-            LegendRow {
-                glyph: system_glyph,
-                color: system_color,
-                label: "System prompt".to_string(),
-                tokens: system_tokens,
+        let mut legend_rows = if breakdown {
+            vec![
+                LegendRow {
+                    glyph: system_glyph,
+                    color: system_color,
+                    label: "System prompt".to_string(),
+                    tokens: system_tokens,
+                    detail: None,
+                },
+                LegendRow {
+                    glyph: messages_glyph,
+                    color: messages_color,
+                    label: "Messages".to_string(),
+                    tokens: message_tokens,
+                    detail: None,
+                },
+            ]
+        } else {
+            vec![LegendRow {
+                glyph: overhead_glyph,
+                color: overhead_color,
+                label: "Reported input".to_string(),
+                tokens: used,
                 detail: None,
-            },
-            LegendRow {
-                glyph: messages_glyph,
-                color: messages_color,
-                label: "Messages".to_string(),
-                tokens: message_tokens,
-                detail: None,
-            },
-        ];
-        if overhead_tokens > 0 {
+            }]
+        };
+        if breakdown && overhead_tokens > 0 {
             legend_rows.push(LegendRow {
                 glyph: overhead_glyph,
                 color: overhead_color,
@@ -343,21 +355,25 @@ impl ContextInfoBlock {
             tokens: free_tokens,
             detail: None,
         });
-        let info_rows: Vec<LegendRow> = std::iter::once(LegendRow {
-            glyph: tools_glyph,
-            color: tools_color,
-            label: "Tool definitions".to_string(),
-            tokens: tool_tokens,
-            detail: Some(count_detail(tool_count, "tool")),
-        })
-        .chain(snapshot.usage_categories.iter().map(|c| LegendRow {
-            glyph: tools_glyph,
-            color: tools_color,
-            label: c.label.clone(),
-            tokens: c.tokens,
-            detail: c.detail.clone(),
-        }))
-        .collect();
+        let info_rows: Vec<LegendRow> = if breakdown {
+            std::iter::once(LegendRow {
+                glyph: tools_glyph,
+                color: tools_color,
+                label: "Tool definitions".to_string(),
+                tokens: tool_tokens,
+                detail: Some(count_detail(tool_count, "tool")),
+            })
+            .chain(snapshot.usage_categories.iter().map(|c| LegendRow {
+                glyph: tools_glyph,
+                color: tools_color,
+                label: c.label.clone(),
+                tokens: c.tokens,
+                detail: c.detail.clone(),
+            }))
+            .collect()
+        } else {
+            Vec::new()
+        };
         let layout = RowLayout::measure(legend_rows.iter().chain(info_rows.iter()), total);
         let label_style = Style::default().fg(theme.text_secondary);
 
@@ -370,12 +386,16 @@ impl ContextInfoBlock {
             // at-a-glance numbers stand apart from the breakdown/footer rows. The percentage is recomputed from `used / total`
             // so we get two decimal places of precision.
             Line::from(Span::styled(
-                format!(
-                    "{} / {} tokens ({:.2}%)",
-                    fmt_tok_big(used),
-                    fmt_tok_big(total),
-                    precise_usage_percent(used, total),
-                ),
+                if reported {
+                    format!(
+                        "{} / {} tokens ({:.2}%)",
+                        fmt_tok_big(used),
+                        fmt_tok_big(total),
+                        precise_usage_percent(used, total),
+                    )
+                } else {
+                    format!("{} token window", fmt_tok_big(total))
+                },
                 Style::default().fg(theme.text_secondary),
             )),
             // Model name (one step dimmer than the tokens line so it reads as a supporting caption rather than the primary number)
@@ -386,23 +406,29 @@ impl ContextInfoBlock {
             // Blank space before the bar
             Line::from(""),
         ];
-        lines.extend(bar_lines);
-        lines.push(Line::from(""));
-        for row in &legend_rows {
-            lines.extend(layout.render(row, bar, total, label_style, muted));
-        }
-        lines.push(Line::from(""));
+        if reported {
+            lines.extend(bar_lines);
+            lines.push(Line::from(""));
+            for row in &legend_rows {
+                lines.extend(layout.render(row, bar, total, label_style, muted));
+            }
+            lines.push(Line::from(""));
 
-        lines.push(Line::from(Span::styled("Already counted above", muted)));
-        for row in &info_rows {
-            lines.extend(layout.render(row, bar, total, label_style, muted));
+            if !info_rows.is_empty() {
+                lines.push(Line::from(Span::styled("Already counted above", muted)));
+                for row in &info_rows {
+                    lines.extend(layout.render(row, bar, total, label_style, muted));
+                }
+                lines.push(Line::from(""));
+            }
+        } else {
+            lines.push(Line::from(Span::styled("Usage not reported", muted)));
         }
-        lines.push(Line::from(""));
 
         // `threshold_tokens` uses `div_ceil` rather than truncating integer division. Without `div_ceil`, tiny totals
         // could produce `remaining == 0` while `usage_pct < threshold_percent`. That would show `~0 tokens remaining` for
         // a context window that isn't actually at the threshold.
-        if total > 0 {
+        if breakdown && total > 0 {
             let threshold_percent = snapshot.auto_compact_threshold_percent;
             let threshold_tokens = total.saturating_mul(threshold_percent as u64).div_ceil(100);
             let remaining = threshold_tokens.saturating_sub(used);
@@ -427,17 +453,24 @@ impl ContextInfoBlock {
         }
 
         // Footer stats
-        lines.push(Line::from(Span::styled(
+        if breakdown {
+            lines.push(Line::from(Span::styled(
             format!(
                 "Turns: {turn_count} \u{00b7} Tool calls: {tool_call_count} \u{00b7} Compactions: {compaction_count}"
             ),
             muted,
         )));
+        } else if turn_count > 0 {
+            lines.push(Line::from(Span::styled(
+                format!("Turns: {turn_count}"),
+                muted,
+            )));
+        }
 
         // The tip about approaching auto-compact only shows in the gap between the "getting close" mark (80%) and the
         // actual auto-compact threshold. A second warning-styled tip suggesting a manual `/compact` would just stack
         // visually and contradict itself.
-        if (80..snapshot.auto_compact_threshold_percent).contains(&usage_pct) {
+        if breakdown && (80..snapshot.auto_compact_threshold_percent).contains(&usage_pct) {
             lines.push(Line::from(""));
             lines.push(Line::from(Span::styled(
                 "Tip: run /compact to free up context space.".to_string(),
@@ -587,12 +620,18 @@ impl BlockContent for ContextInfoBlock {
 }
 
 #[cfg(test)]
+#[path = "context_info_tests.rs"]
+mod availability_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use aster_shell::session::TokenUsageCategory;
 
     fn snapshot() -> ContextInfo {
         ContextInfo {
+            breakdown_available: true,
+            usage_available: Some(true),
             used: 36_700,
             total: 1_000_000,
             system_prompt_tokens: 1_200,
@@ -613,7 +652,7 @@ mod tests {
     /// Theme handle used by the unit tests.
     /// `Theme::current()` is the same resolver `output()` calls.
     /// The active theme doesn't matter here: the tests assert on text content and span counts, not colors.
-    fn test_theme() -> Theme {
+    pub(super) fn test_theme() -> Theme {
         Theme::current()
     }
 
@@ -626,7 +665,7 @@ mod tests {
     }
 
     /// Render a block and collapse all spans into a flat newline-joined string, useful for `contains` assertions.
-    fn all_text(lines: &[Line<'static>]) -> String {
+    pub(super) fn all_text(lines: &[Line<'static>]) -> String {
         lines
             .iter()
             .flat_map(|l| l.spans.iter().map(|s| s.content.as_ref()).chain(["\n"]))
@@ -965,6 +1004,8 @@ mod tests {
     #[test]
     fn bar_and_legend_reconcile_used_with_overhead_excluding_tools() {
         let snap = ContextInfo {
+            breakdown_available: true,
+            usage_available: Some(true),
             used: 100_000,
             total: 500_000,
             system_prompt_tokens: 5_000,
