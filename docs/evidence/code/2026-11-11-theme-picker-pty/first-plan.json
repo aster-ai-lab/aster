@@ -1,0 +1,52 @@
+{
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+  "model": "deepseek/deepseek-flash",
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "window_tokens": 1048576,
+  "startup_deadline_seconds": 45,
+  "quit_deadline_seconds": 10,
+  "scope": "Live fullscreen theme picker with different declared terminal capabilities",
+  "modes": [
+    "truecolor",
+    "ansi256",
+    "terminal-gated"
+  ],
+  "labels": {
+    "truecolor": [
+      "auto",
+      "aster-night",
+      "aster-day",
+      "tokyonight",
+      "rosepine-moon",
+      "oscura-midnight",
+      "terminal"
+    ],
+    "ansi256": [
+      "auto",
+      "aster-night",
+      "aster-day",
+      "terminal"
+    ],
+    "terminal-gated": [
+      "auto",
+      "aster-night",
+      "aster-day",
+      "tokyonight",
+      "rosepine-moon",
+      "oscura-midnight"
+    ]
+  },
+  "all_labels": [
+    "auto",
+    "aster-night",
+    "aster-day",
+    "tokyonight",
+    "rosepine-moon",
+    "oscura-midnight",
+    "terminal"
+  ],
+  "menu_deadline_seconds": 15,
+  "runner_sha256": "16fe20af9a86d6b5c8f34c9e02ead2a8625a92408fc10666983aef0e4adf25a2",
+  "relay_sha256": "3e53b51ad20d2050a921825c643d895139e36035cd3ff23765cd630cfc42aeac"
+}

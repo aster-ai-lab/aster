@@ -1,0 +1,124 @@
+{
+  "command": [
+    "python3",
+    ".runtime/tui-full-e2e/theme-pty/probe.py"
+  ],
+  "cases": [
+    {
+      "phase": "first",
+      "mode": "truecolor",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight",
+        "terminal"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "adcf385293beb3c2248eb8073405ec913044d10df3df3f223aba1a5c20d3c2eb",
+      "trace_sha256": "748b9f817074d22b5bab8d4a2bd03bfb7dddc215c354b6f644f8cb9d9d81682c",
+      "prompt_requests": 0
+    },
+    {
+      "phase": "first",
+      "mode": "ansi256",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "terminal"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "6ac9b4d91a2e3fcdbae2e06d217af5eb68eaf054beab414867b990a489d7b548",
+      "trace_sha256": "46c6b411cebf8d76316287fe83ccc92d639da3c7b68289a3e71746df7f4b0627",
+      "prompt_requests": 0
+    },
+    {
+      "phase": "first",
+      "mode": "terminal-gated",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "c8cede3bbacf7d9ebe582290b72de05eaadcc970cf831be57bbf42d0e5cb7af4",
+      "trace_sha256": "50621b73551fd72ddce8ea7075a69318ddf695b52604f677f07c9c44cbc0488e",
+      "prompt_requests": 0
+    },
+    {
+      "phase": "drained",
+      "mode": "truecolor",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight",
+        "terminal"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "99b2f8b3a1a96cc25e8e9dc0afcb9f69762e36945f5e132d69031b3c32f304af",
+      "trace_sha256": "a336ff984ae55fd55b256756386c2d80038e87e2b221fbf32132825fd5672fd0",
+      "prompt_requests": 0
+    },
+    {
+      "phase": "drained",
+      "mode": "ansi256",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "terminal"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "1df58251b0d6ecf68f12da89fda70db1f646253a7265a3a4eac0c3b6d615ffde",
+      "trace_sha256": "29078c5bd0aa5047c5b51b289b2c3f687551874483d54d91039ae8b46c940f9c",
+      "prompt_requests": 0
+    },
+    {
+      "phase": "drained",
+      "mode": "terminal-gated",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight"
+      ],
+      "legacy_text_visible": false,
+      "viewport_sha256": "9205e6a5b0900f779aebb3eb8ba679d40553d892cf6c2309f3cd13270804c468",
+      "trace_sha256": "9a8cf9ad2f78596efefe8a7b3ae267420c340b16147d3fd643feb698bdb3225f",
+      "prompt_requests": 0
+    }
+  ],
+  "private_files": [
+    {
+      "path": ".runtime/tui-full-e2e/theme-pty/first-run/probe.py",
+      "sha256": "16fe20af9a86d6b5c8f34c9e02ead2a8625a92408fc10666983aef0e4adf25a2"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/theme-pty/first-run/run.log",
+      "sha256": "423042362653ee3ea00d3092ff1b1a00d600de1725891361168b8d1a0b718350"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/theme-pty/probe.py",
+      "sha256": "72e5a1d29323ad1282a2ccd770f4b6e4c67b2404e49ac5b52ad977977c648a48"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/theme-pty/run.log",
+      "sha256": "6f1fb3430f96306e933f3465475470bf5da38aa081a4bfb3e89b5d6c2cb8d83f"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/theme-pty/acp_trace_proxy.py",
+      "sha256": "3e53b51ad20d2050a921825c643d895139e36035cd3ff23765cd630cfc42aeac"
+    }
+  ]
+}

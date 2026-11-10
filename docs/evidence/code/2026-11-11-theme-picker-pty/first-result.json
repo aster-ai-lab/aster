@@ -1,0 +1,34 @@
+{
+  "status": "FAIL",
+  "plan_sha256": "0ed041f6c8bd17e79ecfea43d025dfa87f5d1363bcafc90fd1eadbf23e90f042",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "cases": [
+    {
+      "mode": "truecolor",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight",
+        "terminal"
+      ],
+      "prompt_requests": 0,
+      "viewport_sha256": "adcf385293beb3c2248eb8073405ec913044d10df3df3f223aba1a5c20d3c2eb"
+    },
+    {
+      "mode": "ansi256",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "terminal"
+      ],
+      "prompt_requests": 0,
+      "viewport_sha256": "6ac9b4d91a2e3fcdbae2e06d217af5eb68eaf054beab414867b990a489d7b548"
+    }
+  ],
+  "error": "TimeoutExpired: Command '['/Users/roylin/code/aster/.runtime/tui-full-e2e/timeout-pty/bin/aster', '--model', 'deepseek/deepseek-flash', '--resume', 'd362a90e-677b-40be-814d-88a58b8b78b6', '--no-plan', '--no-subagents', '--fullscreen']' timed out after 5 seconds",
+  "source_acl_unchanged": true
+}

@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "plan_sha256": "ecf88f60bfa60d41530a6290d92100e1d4f00a507c86ef6b0890c53d97b643b2",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "cases": [
+    {
+      "mode": "truecolor",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight",
+        "terminal"
+      ],
+      "prompt_requests": 0,
+      "viewport_sha256": "99b2f8b3a1a96cc25e8e9dc0afcb9f69762e36945f5e132d69031b3c32f304af",
+      "quit_seconds": 0.04,
+      "quit_drained_bytes": 1411
+    },
+    {
+      "mode": "ansi256",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "terminal"
+      ],
+      "prompt_requests": 0,
+      "viewport_sha256": "1df58251b0d6ecf68f12da89fda70db1f646253a7265a3a4eac0c3b6d615ffde",
+      "quit_seconds": 0.044,
+      "quit_drained_bytes": 743
+    },
+    {
+      "mode": "terminal-gated",
+      "visible_labels": [
+        "auto",
+        "aster-night",
+        "aster-day",
+        "tokyonight",
+        "rosepine-moon",
+        "oscura-midnight"
+      ],
+      "prompt_requests": 0,
+      "viewport_sha256": "9205e6a5b0900f779aebb3eb8ba679d40553d892cf6c2309f3cd13270804c468",
+      "quit_seconds": 0.04,
+      "quit_drained_bytes": 1249
+    }
+  ],
+  "source_acl_unchanged": true
+}
