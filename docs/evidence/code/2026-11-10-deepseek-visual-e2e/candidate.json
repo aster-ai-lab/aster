@@ -32,5 +32,22 @@
       "sha256": "f9b9ca4d6842fe4235a032bc064b518b8621ce141cab95995bbbea394a92dd3e"
     }
   },
-  "final_diff_sha256": "6a3288471b0fa672990ab1ad1ca0002c30ffb95ff467cd08939ccd8b5786bd62"
+  "final_diff_sha256": "6a3288471b0fa672990ab1ad1ca0002c30ffb95ff467cd08939ccd8b5786bd62",
+  "latest_binaries": {
+    "aster": {
+      "build_id": "aster-cli-pair-v1:14200199ef0e08e1b6b4f5d38c0e96918dd4b815:aarch64-apple-darwin",
+      "sha256": "cc95d2bef0b5ceae96e0358be49167d62128d5b3bc7cc534e6f99ffafec0dd52"
+    },
+    "aster-acp": {
+      "build_id": "aster-cli-pair-v1:14200199ef0e08e1b6b4f5d38c0e96918dd4b815:aarch64-apple-darwin",
+      "sha256": "506f650428052a6a1906f09e08a6c1080d74aaa7395ade2894d295d581fd496c"
+    }
+  },
+  "minimal_fix_source": {
+    "head": "85fd93b13d03633c7dcc531ce1d0b9fdf47b0fd7",
+    "path": "crates/terminal/crates/codegen/aster-pager-minimal/src/live.rs",
+    "sha256": "45616935dd670a84198d819cf18490d77480c9be44163070d583f0265ce0115a",
+    "preexisting_uncommitted_acp_patch": true
+  },
+  "private_config_final_sha256": "dc323bc27dc892e7bd126626d2fca276b1b53b338a3de17a1fc42c42bf2bb483"
 }

@@ -28,6 +28,21 @@
   ],
   "scoped_fmt": "PASS",
   "workspace_fmt": "FAIL: 18 pre-existing files",
-  "gui_remaining": "BLOCKED: macOS loginwindow",
-  "source_config_unchanged": true
+  "gui_remaining": "Full catalogue not executed; native command recovery remains failed",
+  "source_config_unchanged": true,
+  "minimal-focused": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 31s",
+    "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 93 filtered out; finished in 0.75s"
+  ],
+  "minimal-clippy": [
+    "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 09s"
+  ],
+  "build-minimal-final": [
+    "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.25s"
+  ],
+  "selected_rust_tests_passed": 146,
+  "minimal_fmt": "PASS",
+  "headed_followup": "Recorded resume, effort, forms, IME, settings, themes, narrow layout and screen-mode scopes executed after unlock",
+  "native_cancel_recovery": "FAIL: authoritative replacement run ended with tool_effect_unresolved",
+  "copied_credentials_removed": true
 }

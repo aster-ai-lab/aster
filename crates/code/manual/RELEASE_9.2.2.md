@@ -11,6 +11,8 @@
   segments when joining provider model endpoints.
 - Product-authored permission labels use YOLO consistently. Built-in themes
   use Aster Night and Aster Day names.
+- Minimal mode reuses fullscreen permission flags and the effective reasoning
+  default, including independent plan/permission indicators.
 - Verification and tool refusals retain actionable diagnostics and current-run
   evidence instead of treating a narrative response as verified completion.
 - Cancellation preserves terminal receipts returned by the original tool during

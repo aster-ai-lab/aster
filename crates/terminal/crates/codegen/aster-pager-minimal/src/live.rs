@@ -662,7 +662,7 @@ fn render_prompt_info(
         segs.push((label.to_string(), base));
     } else {
         if let Some(model) = agent.session.models.current_model_name() {
-            let label = match agent.session.models.reasoning_effort {
+            let label = match agent.session.models.effective_reasoning_effort() {
                 Some(eff) => format!("{model} ({eff})"),
                 None => model,
             };
@@ -670,17 +670,15 @@ fn render_prompt_info(
         }
         let effective_plan =
             minimal_api::plan_mode_pending(agent).unwrap_or(minimal_api::plan_mode_active(agent));
-        let mode_flag: Option<(&str, Color)> = if effective_plan {
-            Some(("plan", theme.accent_plan))
-        } else if agent.session.is_yolo() {
-            Some(("yolo", theme.accent_verify))
-        } else if agent.session.is_auto() {
-            Some(("auto", theme.accent_system))
-        } else {
-            None
-        };
-        if let Some((label, color)) = mode_flag {
-            segs.push((label.to_string(), base.fg(color)));
+        for flag in aster_pager::views::prompt_widget::mode_flags(
+            effective_plan.then_some("plan"),
+            agent.session.permission_label(),
+            theme,
+        ) {
+            segs.push((
+                flag.text.to_string(),
+                flag.color.map_or(base, |color| base.fg(color)),
+            ));
         }
         let used = agent.context_state.as_ref().map(|c| c.used);
         let total = agent
@@ -1119,7 +1117,7 @@ mod tests {
         let mut a = agent();
         let text = render(&a);
         assert!(!text.contains("plan"), "normal shows no flag: {text:?}");
-        assert!(!text.contains("yolo"), "normal: {text:?}");
+        assert!(!text.contains("YOLO"), "normal: {text:?}");
         minimal_api::set_plan_mode_pending(&mut a, Some(true));
         assert!(render(&a).contains("plan"), "plan flag: {:?}", render(&a));
         minimal_api::set_plan_mode_pending(&mut a, None);
@@ -1127,7 +1125,14 @@ mod tests {
         minimal_api::set_yolo_mode_for_test(&mut a.session, true);
         minimal_api::set_auto_mode_for_test(&mut a.session, true);
         let text = render(&a);
-        assert!(text.contains("yolo"), "yolo flag: {text:?}");
+        assert!(text.contains("YOLO"), "yolo flag: {text:?}");
+        minimal_api::set_plan_mode_pending(&mut a, Some(true));
+        let text = render(&a);
+        assert!(
+            text.contains("plan") && text.contains("YOLO"),
+            "plan and permission: {text:?}"
+        );
+        minimal_api::set_plan_mode_pending(&mut a, None);
         minimal_api::set_yolo_mode_for_test(&mut a.session, false);
         let text = render(&a);
         assert!(text.contains("auto"), "auto flag: {text:?}");

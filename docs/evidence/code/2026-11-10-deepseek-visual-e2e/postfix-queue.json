@@ -1,0 +1,104 @@
+{
+  "session_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+  "status": "FAIL_RECOVERY",
+  "pair": "d0d68f2e29d3e85c41e0befd0acdfb18f61bc43d",
+  "pids": {
+    "parent": 5501,
+    "child": 5502
+  },
+  "before": " 5501 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python waiter.py postfix-queue\n 5502 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /private/tmp/aster-tui-deepseek-e2e/workspace/waiter.py postfix-queue child\n",
+  "after": "",
+  "late": [],
+  "replacement_admissions": 1,
+  "replacement_bytes": "POSTFIX-ONCE-58\n",
+  "fixture_unchanged": true,
+  "runs": [
+    {
+      "id": "run-3fdf9f79-4b1a-458f-9d70-595da3f46905",
+      "status": "cancelled"
+    },
+    {
+      "id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+      "status": "failed",
+      "error": "tool_effect_unresolved: 5 invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them."
+    }
+  ],
+  "unsettled": [
+    {
+      "identity": {
+        "turn": 5,
+        "cycle": 0,
+        "tool_call_id": "call_0d1de797e8a543ad936cd4de4462bc07",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-3fdf9f79-4b1a-458f-9d70-595da3f46905",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "cancelled",
+      "reason": "tool_effect_observation_incomplete: execution did not return complete evidence"
+    },
+    {
+      "identity": {
+        "turn": 6,
+        "cycle": 1,
+        "tool_call_id": "call_13eeeda3d1b94d43bb4f7360d0ac0f67",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "denied",
+      "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped"
+    },
+    {
+      "identity": {
+        "turn": 6,
+        "cycle": 4,
+        "tool_call_id": "call_85388b149fed40e99bafa8e70fb6dafa",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "denied",
+      "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped"
+    },
+    {
+      "identity": {
+        "turn": 6,
+        "cycle": 8,
+        "tool_call_id": "call_5766b128cbd841229a93cfc7e8560c03",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "denied",
+      "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped"
+    },
+    {
+      "identity": {
+        "turn": 6,
+        "cycle": 12,
+        "tool_call_id": "call_4812c298941e4bca91e9342a2c5b1242",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "denied",
+      "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped"
+    }
+  ],
+  "qualification": "Authoritative run snapshots settle cancellation/failure; failed or cancelled runs do not emit turn.complete. No process, marker or ordinary local scan was treated as reconciliation."
+}

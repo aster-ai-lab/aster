@@ -11,23 +11,29 @@ ToWork directory as `/Users/roylin/code/config.acl`. The source file was not
 edited. A private, byte-identical copy supplied the isolated test process.
 
 This is a scoped execution record, not completion of the 508-case TUI catalogue.
-The coding workflow and process-control observations below ran on the initial
-pair. The final rebuilt pair has passing focused checks and an observed welcome
-copy correction. Further headed interaction is **blocked by macOS loginwindow**:
-agent-desktop cannot focus the app and CoreGraphics reports no current display
-mode. Resume, post-fix forms, explicit effort selection, and Chinese IME
-acceptance remain unexecuted in this campaign. No login credentials were used
-or requested.
+The coding workflow and initial process-control observations ran on the initial
+pair. After an earlier loginwindow interruption, the operator unlocked the
+desktop. Headed follow-up exercised resume, explicit effort selection, forms,
+Chinese IME, settings, themes, mode changes and both screen modes. The latest
+rebuilt pair also verified the minimal footer correction and resumed effective
+context. No login credentials were used or requested.
+
+**Native command recovery remains failed.** A repeated send-now test on the
+receipt-fix pair stopped the original process pair and admitted the replacement
+once, but its final run status was `failed` with `tool_effect_unresolved`.
+A successful file write is not a recovery pass. This candidate is not a clean
+release build or a completed release qualification.
 
 ## Candidate identity
 
 - Repository baseline: `e553cf89c608`, with the pre-existing five-file ACP
   cancellation patch in the shared working tree
 - Initial pair: `aster-cli-pair-v1:b61531cd75633b0262d192e06a0a9feef2666413:aarch64-apple-darwin`
-- Final pair: `aster-cli-pair-v1:d0d68f2e29d3e85c41e0befd0acdfb18f61bc43d:aarch64-apple-darwin`
+- Receipt-fix pair: `aster-cli-pair-v1:d0d68f2e29d3e85c41e0befd0acdfb18f61bc43d:aarch64-apple-darwin`
+- Latest minimal-fix pair: `aster-cli-pair-v1:14200199ef0e08e1b6b4f5d38c0e96918dd4b815:aarch64-apple-darwin`
 - Versions: CLI 0.3.4; Core/ACP 9.2.2
 - Configuration and binary hashes: [candidate.json](candidate.json)
-- Native grid: 174 columns by 51 rows
+- Native grids: 174 columns by 51 rows and 110 columns by 35 rows
 
 Both builds used:
 
@@ -38,8 +44,10 @@ CARGO_TARGET_DIR=/Users/roylin/code/aster/target CARGO_INCREMENTAL=0 \
 
 The source tree was deliberately not treated as a clean release candidate. The
 pre-existing ACP patch was preserved and is not adopted as this task's code.
-The copied credentials, profiles, raw native automation logs and complete session
-stores stay outside the repository under `/tmp/aster-tui-deepseek-e2e`.
+Profiles, raw native automation logs and complete session stores stay outside the
+repository under `/tmp/aster-tui-deepseek-e2e`. UI changes affected the private
+configuration copy; the original ACL hash stayed unchanged. The private
+credential copy was removed after the owned pair exited.
 
 ## Actual native observations
 
@@ -68,6 +76,34 @@ The repeated observation required both exact processes to be alive immediately
 before cancellation. The original observation and its late marker were retained;
 they were not erased to obtain a passing result.
 
+## Headed follow-up
+
+Session `c477133c-35f0-4610-a3ea-cee4d93be7d5` completed its first four model
+turns. The subsequent foreground command was cancelled and its queued
+replacement failed. See [followup-session.json](followup-session.json).
+
+| Operation | Actual result | Evidence |
+| --- | --- | --- |
+| `/resume` | Opened, searched and restored the exact existing session without replaying tools | [Picker](screens/22-resume-popup.png), [restored ID](screens/23-resumed-session.png) |
+| Effort selection | `none` and `low` each produced a real DeepSeek response; `default` restored the reported high default | [None](screens/24-effort-none.png), [context after reset](screens/26-context-followup.png) |
+| Form validation | Empty required fields and amount 6 were rejected; the maximum remained 5 | [Required](screens/29-form-required-state.png), [range](screens/30-form-range.png) |
+| Form submit | Complete tool receipt and written JSON both contain exactly `Lin-42`, 4 and true; the frozen form stayed unchanged | [Submitted](screens/31-form-submitted.png), [forms.json](forms.json) |
+| Form cancel | OS Ctrl+C returned `form was cancelled by the user`; the receipt is complete and the model turn finished | [Cancelled](screens/33-form-cancelled.png), [forms.json](forms.json) |
+| Chinese IME | Pinyin Enter committed Latin `nihao`; Space selected `你好`; neither submitted a message or changed canonical facts | [Candidate](screens/36-ime-chinese-candidate.png), [ime.json](ime.json) |
+| Theme and settings | Search reached the theme picker; Aster Day was saved in isolated TOML and Aster Night was restored | [Choices](screens/41-theme-setting-picker.png), [saved day](screens/42-theme-day-saved.png), [themes.json](themes.json) |
+| Permission labels | Normal, Auto and YOLO cycled; the YOLO notice and fullscreen footer agreed | [YOLO](screens/44-mode-yolo-aligned.png), [modes.json](modes.json) |
+| Narrow layout | Resume search and the command palette were usable at 110 by 35 | [Search](screens/45-narrow-resume-search.png), [help](screens/46-narrow-help.png) |
+| Screen modes | Minimal hosted `/help` inline and returned to fullscreen; its lowercase permission and missing default effort exposed a footer defect | [Before fix](screens/47-minimal-screen.png), [inline help](screens/48-minimal-help.png) |
+| Rebuilt minimal footer | Latest pair displays `DeepSeek Flash (high) · YOLO` through the common formatter | [After fix](screens/54-minimal-labels-fixed.png), [minimal-labels.json](minimal-labels.json) |
+| Rebuilt resumed context | Same session ID, DeepSeek route, YOLO and 1048576-token context | [Context](screens/55-resumed-effective-context.png) |
+| Repeated send-now | Original process pair exited and replacement wrote exact bytes once, but its run failed with five incomplete receipt obligations | [Failure](screens/52-postfix-recovery-terminal.png), [postfix-queue.json](postfix-queue.json) |
+
+Failed and cancelled runs were checked against authoritative persisted run
+snapshots. They do not emit a successful `turn.complete` fact. Form cancellation
+uses the existing plain error receipt contract. These distinctions prevent a
+harness predicate from manufacturing a product failure or treating a partial
+artifact as successful completion.
+
 ## Defects corrected
 
 1. `execute_tool_with_deadline` awaited the original invocation during cancellation
@@ -83,6 +119,9 @@ they were not erased to obtain a passing result.
 4. Required all-target Clippy exposed a pre-existing schema-test generator passing
    a `String` to the current `Arc<str>` image field. Its construction now uses
    `.into()`; serialization assertions and generated values were not weakened.
+5. Minimal mode hardcoded lowercase permission flags and read only an explicit
+   reasoning selection. It now reuses fullscreen `mode_flags` and
+   `effective_reasoning_effort`, including independent plan/permission flags.
 
 ## Regression and non-overfitting checks
 
@@ -114,9 +153,11 @@ Cargo owner. Exact source command summaries are in [results.json](results.json).
 | Core receipt, cancellation and timeout tests | 114 passed |
 | Persisted schema roundtrip | 11 passed |
 | ACP terminal and imported-account tests | 17 passed |
+| Minimal prompt-info tests | 4 passed |
 | Core all-target Clippy | Completed; existing warnings remain |
-| Final paired build | Passed; build IDs match |
-| Scoped Core/ACP/pager formatting | Passed |
+| Minimal all-target Clippy | Completed; existing warnings remain |
+| Latest paired build | Passed; build IDs match |
+| Scoped Core/ACP/pager/minimal formatting | Passed |
 | Workspace formatting | Failed on 18 pre-existing files; unrelated code was not bulk formatted |
 | `git diff --check` | Passed |
 
@@ -133,13 +174,20 @@ The repository's existing macOS approach supplied bounded fallbacks for affected
 focus/ASCII-key operations and native window capture. These are not claimed as
 successful agent-desktop deliveries. Ordinary automation selected ABC and waited
 for the actual input-source change. A preedit commit was not treated as a
-submitted task. No clipboard write was used. Chinese IME acceptance still needs
-its own qualified post-build interaction run.
+submitted task. No clipboard write was used. The unlocked desktop also allowed
+native focus confirmation after an agent-desktop focus error. No fallback
+attempted to operate a locked desktop. A completed Terminal process was reopened
+in a new owned window before testing the latest pair. Chinese IME observations
+use the actual OS commit behavior.
+
+The owned CLI/ACP processes and Terminal window exited. The original input
+source was restored and the private credential copy was removed. The original
+ACL and failing sessions were preserved. See [cleanup.json](cleanup.json).
 
 ## Explicitly not claimed
 
 - Completion of all 508 cases, all commands/settings/forms, or another platform
-- A post-fix full headed campaign while the desktop is at loginwindow
+- A full 508-case headed campaign or universal model capability discovery
 - Automatic reconciliation of genuinely unknown native command effects, or
   successful completion of the queued turn that hit that guard
 - Native wire-parameter capture, maximum-context stress, universal discovery,

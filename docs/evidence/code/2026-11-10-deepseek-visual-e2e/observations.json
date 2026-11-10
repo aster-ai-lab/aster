@@ -57,6 +57,52 @@
   {
     "name": "remaining-headed-interactions",
     "status": "BLOCKED",
-    "oracle": "macOS loginwindow prevents verified foreground delivery; no authenticated login attempted"
+    "oracle": "macOS loginwindow prevents verified foreground delivery; no authenticated login attempted",
+    "historical": true
+  },
+  {
+    "name": "resume-identity",
+    "status": "PASS_SCOPED",
+    "oracle": "Exact saved session restored and searched without replaying its tools"
+  },
+  {
+    "name": "none-low-default",
+    "status": "PASS_SCOPED",
+    "oracle": "Native none and low selections produced actual DeepSeek responses; default restored high; wire and maximum horizon not captured"
+  },
+  {
+    "name": "form-validation-submit-cancel",
+    "status": "PASS_SCOPED",
+    "oracle": "Required and range refusal; exact original answered values and complete cancellation receipt"
+  },
+  {
+    "name": "chinese-ime",
+    "status": "PASS_SCOPED",
+    "oracle": "Real Pinyin Enter and Space commits; canonical facts and user admission count unchanged"
+  },
+  {
+    "name": "theme-settings-mode-labels",
+    "status": "PASS_SCOPED",
+    "oracle": "Filtered theme selection saved day and restored night; fullscreen YOLO notice and footer agree"
+  },
+  {
+    "name": "narrow-and-minimal",
+    "status": "PASS_SCOPED",
+    "oracle": "110x35 resume/help usable; minimal inline help and return to fullscreen observed"
+  },
+  {
+    "name": "minimal-footer-before",
+    "status": "FAIL_BEFORE_FIX",
+    "oracle": "Native minimal footer used lowercase yolo and omitted the effective default effort"
+  },
+  {
+    "name": "minimal-footer-latest",
+    "status": "PASS_SCOPED",
+    "oracle": "Latest paired build shows DeepSeek Flash (high) and YOLO; resumed context remains 1048576"
+  },
+  {
+    "name": "postfix-native-command-recovery",
+    "status": "FAIL_RECOVERY",
+    "oracle": "Original process pair stopped and replacement admitted once, but its authoritative run failed with five incomplete obligations"
   }
 ]

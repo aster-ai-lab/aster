@@ -1,0 +1,13 @@
+{
+  "choices": [
+    "auto",
+    "aster-night",
+    "aster-day",
+    "tokyonight",
+    "rosepine-moon",
+    "oscura-midnight"
+  ],
+  "changed": "aster-day",
+  "restored": "aster-night",
+  "isolated_profile": true
+}

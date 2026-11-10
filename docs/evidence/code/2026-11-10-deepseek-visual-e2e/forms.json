@@ -1,0 +1,50 @@
+{
+  "session_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+  "receipts": [
+    {
+      "identity": {
+        "turn": 3,
+        "cycle": 1,
+        "tool_call_id": "call_cf433b930967419082ea478dba3e1721",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-ef0d3088-236f-4cae-b864-3e94dadd08cd",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "succeeded",
+      "completeness": "complete",
+      "response": {
+        "schema": "aster.code.user-form.v1",
+        "question_id": "ask-form-c477133c-35f0-4610-a3ea-cee4d93be7d5-run-ef0d3088-236f-4cae-b864-3e94dadd08cd-1",
+        "status": "answered",
+        "values": {
+          "name": "Lin-42",
+          "amount": 4.0,
+          "ready": true
+        },
+        "permission_grant": false
+      }
+    },
+    {
+      "identity": {
+        "turn": 4,
+        "cycle": 1,
+        "tool_call_id": "call_29fc676f3d56410cb34899b8e3ae34e0",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-2a026654-646c-4950-a94c-3fc7971477f7",
+          "thread_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "failed",
+      "completeness": "complete",
+      "response": {
+        "text": "form was cancelled by the user",
+        "is_error": true
+      }
+    }
+  ]
+}

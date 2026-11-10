@@ -1,0 +1,20 @@
+[
+  {
+    "footer": "Σ 187.4k tokens · 19.9 tok/s                                                                                                               deepseek/DeepSeek Flash (high)",
+    "notices": [
+      "Switched to mode: Normal"
+    ]
+  },
+  {
+    "footer": "Σ 187.4k tokens · 19.9 tok/s                                                                                                        deepseek/DeepSeek Flash (high) · auto",
+    "notices": [
+      "Switched to mode: Auto"
+    ]
+  },
+  {
+    "footer": "Σ 187.4k tokens · 19.9 tok/s                                                                                                        deepseek/DeepSeek Flash (high) · YOLO",
+    "notices": [
+      "Switched to mode: YOLO"
+    ]
+  }
+]

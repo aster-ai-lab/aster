@@ -1,0 +1,37 @@
+{
+  "session_id": "c477133c-35f0-4610-a3ea-cee4d93be7d5",
+  "model": "deepseek/deepseek-flash",
+  "effective_context": 1048576,
+  "runs": [
+    {
+      "id": "run-f77daf07-318a-4476-875f-e438925bbbac",
+      "status": "completed"
+    },
+    {
+      "id": "run-f2303dc2-91a9-40d7-b3be-82e07b804a98",
+      "status": "completed"
+    },
+    {
+      "id": "run-ef0d3088-236f-4cae-b864-3e94dadd08cd",
+      "status": "completed"
+    },
+    {
+      "id": "run-2a026654-646c-4950-a94c-3fc7971477f7",
+      "status": "completed"
+    },
+    {
+      "id": "run-3fdf9f79-4b1a-458f-9d70-595da3f46905",
+      "status": "cancelled"
+    },
+    {
+      "id": "run-d2fd7e9e-212d-4577-be61-668f667cc750",
+      "status": "failed",
+      "error": "tool_effect_unresolved: 5 invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them."
+    }
+  ],
+  "none_response": "VISUAL-NONE-73",
+  "low_response": "VISUAL-LOW-28",
+  "reasoning_wire_verified": false,
+  "maximum_context_stress_tested": false,
+  "qualification": "Native selections and responses were observed; no universal capability or wire-parameter claim is made"
+}
