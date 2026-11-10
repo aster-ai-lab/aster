@@ -73,6 +73,46 @@ async fn unchanged_denials_identify_the_authority_without_claiming_a_rewrite() {
 }
 
 #[tokio::test]
+async fn a_refused_compound_command_reports_an_actionable_shape_hint() {
+    let root = tempfile::tempdir().unwrap();
+    let (base, executions, hooks) = argument_validation::schema_tools(root.path(), None);
+    let (events, _received) = tokio::sync::mpsc::channel(8);
+    let mut tools = base.as_ref().clone();
+    tools.permission = PermissionPolicy::new().allow("*");
+    tools.checker = Some(Arc::new(FixedChecker(PermissionDecision::Deny))
+        as Arc<dyn crate::permissions::PermissionChecker>);
+    tools.events = Some(events);
+    let tools = Arc::new(tools);
+    let args = json!({
+        "command": "& 'C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe' list runningvms; Get-ChildItem 'D:\\ISO\\kylin-test' | Select-Object Name"
+    });
+    let prepared = prepare_tools(
+        Arc::clone(&tools),
+        request("compound-denied", args),
+        Default::default(),
+    )
+    .await
+    .unwrap();
+    let identity = prepared.prepared.clone();
+    let result = execute_prepared(tools, prepared).await;
+    result.ensure_prepared(&identity).unwrap();
+    assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
+    let output = result.output.as_str().unwrap();
+    assert!(
+        output.contains("tool_effect_effective_arguments_unapproved"),
+        "{output}"
+    );
+    assert!(output.contains("host_checker_denied"), "{output}");
+    assert!(output.contains("hint=refused command shape"), "{output}");
+    assert!(output.contains("2 statements"), "{output}");
+    assert!(output.contains("1 pipe(s)"), "{output}");
+    assert!(output.contains("2 absolute drive path(s)"), "{output}");
+    assert!(output.contains("one short command"), "{output}");
+    assert_eq!(executions.load(Ordering::SeqCst), 0);
+    assert_eq!(hooks.load(Ordering::SeqCst), 0);
+}
+
+#[tokio::test]
 async fn child_ask_without_a_provider_is_distinct_from_a_checker_denial() {
     for (decision, expected) in [
         (PermissionDecision::Ask, "child_confirmation_unavailable"),

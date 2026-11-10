@@ -94,6 +94,10 @@ pub(super) async fn prepare_tools_with_refusal(
         .as_ref()
         .and_then(|agent| skill_denial(agent, &request.call.name))
         .map(|(output, _reason)| output);
+    // A refusal must tell the caller how to fix the invocation. The appended
+    // shape hint is diagnostic only: it never changes the reason or the
+    // decision, so every existing receipt assertion still holds.
+    let denial_hint = actionable_denial_hint(&request.call.args);
     // Deadlock exit: obligations from prior model turns settle into the
     // recorded, goal-visible set; only same-turn uncertainty still denies
     // mutating calls below.
@@ -114,7 +118,7 @@ pub(super) async fn prepare_tools_with_refusal(
     let original_permission = original_evaluation.decision();
     if let Some(reason) = original_evaluation.denial_reason() {
         denial = Some(format!(
-            "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed=false; execution_started=false; next_action=inspect the original denying authority"
+            "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed=false; execution_started=false; next_action=inspect the original denying authority{denial_hint}"
         ));
     }
     // A host backend may be unavailable before execution starts. Freeze that
@@ -316,7 +320,7 @@ pub(super) async fn prepare_tools_with_refusal(
                     "inspect the denying authority; do not retry without changed authorization"
                 };
                 denial = Some(format!(
-                    "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed={arguments_changed}; execution_started=false; next_action={next_action}"
+                    "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed={arguments_changed}; execution_started=false; next_action={next_action}{denial_hint}"
                 ));
             }
         }
@@ -733,6 +737,80 @@ pub(super) async fn prepare_tools_with_refusal(
         }
     });
     Ok(PreparedToolExecution { prepared, execute })
+}
+
+/// Describe the shape of a refused shell command so an agent can correct it in
+/// one retry instead of probing the denying authority with throwaway calls.
+///
+/// This is deliberately a static, side-effect-free read of the *declared*
+/// arguments. It keys off the `command` field rather than the tool name, so
+/// every shell-like tool benefits. It never guesses which rule fired (only the
+/// checker knows that), and returns an empty string when nothing concrete is
+/// available to report.
+fn actionable_denial_hint(args: &serde_json::Value) -> String {
+    let Some(command) = args.get("command").and_then(|value| value.as_str()) else {
+        return String::new();
+    };
+    let statements = command
+        .split(';')
+        .filter(|part| !part.trim().is_empty())
+        .count();
+    let pipes = command.matches('|').count();
+    let drive_paths = command
+        .as_bytes()
+        .windows(3)
+        .filter(|window| {
+            window[0].is_ascii_alphabetic()
+                && window[1] == b':'
+                && (window[2] == b'\\' || window[2] == b'/')
+        })
+        .count();
+    let mut findings = Vec::new();
+    if statements > 1 {
+        findings.push(format!("{statements} statements"));
+    }
+    if pipes > 0 {
+        findings.push(format!("{pipes} pipe(s)"));
+    }
+    if drive_paths > 0 {
+        findings.push(format!("{drive_paths} absolute drive path(s)"));
+    }
+    if command.len() > 200 {
+        findings.push(format!("{} chars", command.len()));
+    }
+    if findings.is_empty() {
+        return String::new();
+    }
+    format!(
+        "; hint=refused command shape: {}; retry as one short command, put multi-step logic in a script inside the workspace, and avoid paths outside cwd",
+        findings.join(", ")
+    )
+}
+
+#[cfg(test)]
+mod command_shape_hint_tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn compound_invocation_explains_why_it_was_refused() {
+        let command = "& \"C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe\" list runningvms; & \"D:\\tools\\vbox.exe\" show | Select-String VMState";
+        let hint = actionable_denial_hint(&json!({ "command": command }));
+        assert!(hint.contains("2 statements"), "{hint}");
+        assert!(hint.contains("1 pipe(s)"), "{hint}");
+        assert!(hint.contains("2 absolute drive path(s)"), "{hint}");
+        assert!(hint.contains("one short command"), "{hint}");
+    }
+
+    #[test]
+    fn simple_invocation_and_non_command_args_need_no_hint() {
+        assert_eq!(
+            actionable_denial_hint(&json!({ "command": "cmd /c drive-e2e.cmd" })),
+            ""
+        );
+        assert_eq!(actionable_denial_hint(&json!({ "path": "a; b | c" })), "");
+        assert_eq!(actionable_denial_hint(&json!({})), "");
+    }
 }
 
 fn terminal_without_execution(
