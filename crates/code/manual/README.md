@@ -24,8 +24,9 @@ How to use, configure, and operate Aster Code.
 
 Contracts, designs, test plans, and the qualification gates they define.
 
-Current TUI integration and acceptance are defined in the
-[Core/ACP integration plan](../../../specs/023-tui-core-acp-full-e2e/plan.md).
+Current TUI entry coverage and planned acceptance are recorded in the
+[2026-11-10 TUI E2E plan](tui-e2e/20261110/README.md). Planned cases are
+separate from executed qualification evidence.
 
 - [Aster Code Capability Verification and Performance Contract](CAPABILITY_VERIFICATION.md)
 - [Historical upstream capability integrated-use ledger](CAPABILITY_INTEGRATED_USE_LEDGER.md)
@@ -74,4 +75,5 @@ Product tags, build boundaries, release gates, and retention follow the
 - [9.1.8 / Aster CLI 0.1.8 candidate](RELEASE_9.1.8.md)
 - [9.2.0 / Aster CLI 0.3.0](RELEASE_9.2.0.md)
 - [9.2.1 / Aster CLI 0.3.1](RELEASE_9.2.1.md)
+- [9.2.2 / Aster CLI 0.3.4](RELEASE_9.2.2.md)
 - [Historical upstream 9.1.3 test contract](TEST_PLAN_9.1.3.md)

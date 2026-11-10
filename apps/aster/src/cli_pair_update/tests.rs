@@ -117,7 +117,12 @@ fn updater_accepts_known_platforms_and_ignores_unknown_channel_keys() {
         );
     let parsed = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "").unwrap();
     assert_eq!(parsed.assets.len(), 4);
-    assert!(parsed.assets.iter().all(|asset| !asset.name.contains("kylin")));
+    assert!(
+        parsed
+            .assets
+            .iter()
+            .all(|asset| !asset.name.contains("kylin"))
+    );
 }
 
 #[test]

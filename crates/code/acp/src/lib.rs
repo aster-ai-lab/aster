@@ -1,4 +1,4 @@
-//! ACP stdio agent over aster-core 9.2.1.
+//! ACP stdio agent over aster-core 9.2.2.
 //!
 //! Desktop hosts start this process for a session. The Aster terminal
 //! binary links `aster-pager` and `aster-shell` in-process.
