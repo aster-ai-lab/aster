@@ -228,3 +228,100 @@ fn resume_keeps_model_after_acl_default_changes() {
     pty.enter();
     assert!(pty.child.wait().unwrap().success());
 }
+
+#[test]
+fn delayed_catalog_keeps_draft_and_explicit_effort() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir_all(&workspace).unwrap();
+    std::fs::create_dir_all(&home).unwrap();
+    let path = workspace.join("unused");
+    let (address, initial) = spawn_mock(&path, &path);
+    let (notice, requested) = std::sync::mpsc::channel();
+    let (release, wait) = std::sync::mpsc::channel();
+    let mut gate = Some(wait);
+    let (slow_address, selected) = spawn_mock_with_catalog(&path, &path, move || {
+        let _ = notice.send(());
+        if let Some(gate) = gate.take() {
+            gate.recv_timeout(Duration::from_secs(8)).unwrap();
+        }
+    });
+    let config = write_acl(&home, &workspace, &format!("http://{address}/v1"));
+    let source = std::fs::read_to_string(&config).unwrap();
+    std::fs::write(
+        &config,
+        source
+            + &format!(
+                r#"
+providers "slow" {{
+  base_url = "http://{slow_address}/v1"
+  api_key = "test"
+  models "gpt" {{
+    reasoning_control = {{ mode = "effort", levels = ["none", "low", "high"] }}
+  }}
+}}
+memory {{ llm_extraction = false }}
+"#
+            ),
+    )
+    .unwrap();
+    let mut owned = child_env(&binaries::acp_binary(), &config, &home);
+    owned.push((
+        "ASTER_HOME".into(),
+        home.join(".aster").display().to_string(),
+    ));
+    owned.push(("ASTER_DISABLE_CODEX_ACCOUNT".into(), "1".into()));
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty_cleared(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for_frame(Duration::from_secs(45));
+    pty.wait_for("mock/gpt (high)", Duration::from_secs(20));
+    pty.type_text("/model slow/gpt");
+    pty.enter();
+    requested.recv_timeout(Duration::from_secs(5)).unwrap();
+    pty.wait_for("detecting", Duration::from_secs(2));
+    pty.focus_composer();
+    pty.type_text("/effort none");
+    pty.wait_for("/effort none", Duration::from_secs(2));
+    pty.enter();
+    let submitted = pty.pump(Duration::from_millis(300));
+    assert!(
+        !submitted.contains("/effort none"),
+        "effort command stayed in the composer\n{submitted}"
+    );
+    let marker = "CAPABILITY-PROBE-LOW";
+    pty.type_text(marker);
+    pty.wait_for(marker, Duration::from_secs(2));
+    assert!(initial.lock().unwrap().bodies.is_empty());
+    assert!(selected.lock().unwrap().bodies.is_empty());
+    release.send(()).unwrap();
+    let ready = pty.wait_for("slow/gpt (none)", Duration::from_secs(15));
+    assert!(
+        ready.contains(marker),
+        "the catalog update lost the draft\n{ready}"
+    );
+    pty.enter();
+    pty.wait_for(&format!("{marker}-DONE"), Duration::from_secs(20));
+    let body: Value = serde_json::from_str(&wait_body_all(
+        &selected,
+        &[marker],
+        Duration::from_secs(10),
+        true,
+    ))
+    .unwrap();
+    assert_eq!(body["model"], "gpt");
+    assert_eq!(body["reasoning_effort"], "none");
+    assert!(initial.lock().unwrap().bodies.is_empty());
+    assert!(matches!(
+        requested.try_recv(),
+        Err(std::sync::mpsc::TryRecvError::Empty)
+    ));
+}

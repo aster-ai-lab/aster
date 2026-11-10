@@ -147,6 +147,14 @@ struct MockState {
 }
 
 fn spawn_mock(write_path: &Path, late_path: &Path) -> (SocketAddr, Arc<Mutex<MockState>>) {
+    spawn_mock_with_catalog(write_path, late_path, || {})
+}
+
+fn spawn_mock_with_catalog(
+    write_path: &Path,
+    late_path: &Path,
+    mut on_catalog: impl FnMut() + Send + 'static,
+) -> (SocketAddr, Arc<Mutex<MockState>>) {
     let listener = TcpListener::bind("127.0.0.1:0").expect("bind mock");
     let addr = listener.local_addr().expect("mock addr");
     let state = Arc::new(Mutex::new(MockState {
@@ -166,6 +174,7 @@ fn spawn_mock(write_path: &Path, late_path: &Path) -> (SocketAddr, Arc<Mutex<Moc
             let _ = stream.set_read_timeout(Some(Duration::from_secs(20)));
             if let Some(body) = read_http_body(&mut stream) {
                 if body.is_empty() {
+                    on_catalog();
                     let catalog = serde_json::json!({"data":[{"id":"gpt","context_window":262144,"effort":{"supported_levels":["none","low","high"],"default_level":"high"}},{"id":"alt","context_window":131072,"effort":{"supported_levels":["low"],"default_level":"low"}}]});
                     let _ = write_http(&mut stream, &catalog.to_string());
                     continue;
