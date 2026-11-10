@@ -1,0 +1,8 @@
+{
+  "previous_failure": "switch_model_complete_persists_resolved_effort_from_catalog_meta",
+  "isolated_exit_code": 101,
+  "implementation_unchanged_from_head": true,
+  "function_sha256": "ce90f18d66b9c178b49307941f75352182a1d95f4965b1104725816338442a81",
+  "contract_revision": "b542eaffa3",
+  "fixture_correction": "Default selection clears the stale explicit catalog override; the advertised default remains display-only and is not persisted as an override"
+}

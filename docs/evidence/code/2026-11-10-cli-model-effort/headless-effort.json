@@ -1,0 +1,14 @@
+{
+  "scope": "headless PTY; no native GUI claim",
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster",
+    "--model",
+    "deepseek/deepseek-flash",
+    "--no-plan",
+    "--fullscreen"
+  ],
+  "config_before_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "binary_build_id": "aster-cli-pair-v1:8b24c6942896bc0d12b976c857c91cf780dfff8e:aarch64-apple-darwin",
+  "status": "PASS",
+  "config_after_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7"
+}

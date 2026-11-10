@@ -1527,6 +1527,7 @@ fn dashboard_confirm_worktree_applies_pending_model_and_plan() {
         Some(crate::app::agent::DeferredModelSwitch {
             model_id,
             effort: Some(aster_shell::sampling::types::ReasoningEffort::High),
+            skip_if_current: false,
             prev_model_id: None,
         }),
         "effort must be stashed for the shell",
@@ -3972,6 +3973,7 @@ fn dashboard_dispatch_applies_pending_model_and_plan() {
         Some(crate::app::agent::DeferredModelSwitch {
             model_id,
             effort: Some(aster_shell::sampling::types::ReasoningEffort::High),
+            skip_if_current: false,
             prev_model_id: None,
         }),
         "effort must be stashed for the shell"
@@ -4011,6 +4013,7 @@ fn dashboard_new_agent_button_applies_pending_model_and_plan() {
         Some(crate::app::agent::DeferredModelSwitch {
             model_id,
             effort: Some(aster_shell::sampling::types::ReasoningEffort::High),
+            skip_if_current: false,
             prev_model_id: None,
         }),
         "effort must be stashed for the shell"

@@ -1,0 +1,5 @@
+{
+  "mutated_profile_sha256": "dc323bc27dc892e7bd126626d2fca276b1b53b338a3de17a1fc42c42bf2bb483",
+  "source_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "regression": "A CLI model-only override changed the saved effort from max to default before any task"
+}

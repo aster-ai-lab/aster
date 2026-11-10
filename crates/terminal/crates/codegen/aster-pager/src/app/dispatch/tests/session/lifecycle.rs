@@ -1234,6 +1234,7 @@ fn switch_model_deferred_when_no_session_id() {
         Some(crate::app::agent::DeferredModelSwitch {
             model_id,
             effort: None,
+            skip_if_current: false,
             prev_model_id: None,
         })
     );
@@ -1281,6 +1282,7 @@ fn deferred_switch_prefers_authoritative_current_as_prev() {
     agent.session.deferred_model_switch = Some(crate::app::agent::DeferredModelSwitch {
         model_id: model_b.clone(),
         effort: None,
+        skip_if_current: false,
         prev_model_id: None,
     });
     agent.session.models.current = Some(server_model.clone());
@@ -1313,6 +1315,7 @@ fn deferred_model_switch_applied_on_session_created() {
         .deferred_model_switch = Some(crate::app::agent::DeferredModelSwitch {
         model_id: model_id.clone(),
         effort: None,
+        skip_if_current: false,
         prev_model_id: None,
     });
     let effects = dispatch(
@@ -1360,6 +1363,7 @@ fn deferred_model_switch_applied_on_worktree_session_created() {
         .deferred_model_switch = Some(crate::app::agent::DeferredModelSwitch {
         model_id: model_id.clone(),
         effort: None,
+        skip_if_current: false,
         prev_model_id: None,
     });
     let session_id: acp::SessionId = "wt-session".into();

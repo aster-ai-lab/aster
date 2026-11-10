@@ -1787,6 +1787,7 @@ impl AppView {
         Some(crate::app::agent::DeferredModelSwitch {
             model_id: self.cli_model_override.clone()?,
             effort: None,
+            skip_if_current: true,
             prev_model_id: None,
         })
     }

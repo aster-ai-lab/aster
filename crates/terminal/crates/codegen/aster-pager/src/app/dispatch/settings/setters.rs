@@ -1817,6 +1817,7 @@ pub(in crate::app::dispatch) fn set_default_model(
         agent.session.deferred_model_switch = Some(crate::app::agent::DeferredModelSwitch {
             model_id: new_id,
             effort: None,
+            skip_if_current: false,
             prev_model_id: prev_id,
         });
     }

@@ -1,0 +1,25 @@
+{
+  "phase": "PREFLIGHT_ONLY",
+  "head": "0f77fdf69fd3f41467bb9d9f4ee4c0cddb3edb3b",
+  "binaries": {
+    "aster": {
+      "sha256": "3228c1ed4fcfed37ab907c7703eff502925e8831c63fa52794d472410965c271",
+      "build_id": "aster-cli-pair-v1:f29df1b1756ac1987a80b008a204c5615cc6e666:aarch64-apple-darwin"
+    },
+    "aster-acp": {
+      "sha256": "3a3b7b827985b44a9d64d84eadfbdc31dab0d5da864b30f2e7d44c797f81390e",
+      "build_id": "aster-cli-pair-v1:f29df1b1756ac1987a80b008a204c5615cc6e666:aarch64-apple-darwin"
+    }
+  },
+  "window_id": "w-54022",
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster",
+    "--model",
+    "deepseek/deepseek-flash",
+    "--no-plan",
+    "--fullscreen"
+  ],
+  "profile_source_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "parallel_acp_patch_uncommitted": true,
+  "normal_cancel_fix_not_applied": true
+}

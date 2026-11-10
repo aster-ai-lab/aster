@@ -214,11 +214,79 @@ fn effort_only_errors_without_active_model() {
     );
 }
 
+#[test]
+fn cli_model_preserves_current_effort() {
+    let models = models_with_current(true);
+    let current = models.current.clone().unwrap();
+    let request = DeferredModelSwitch {
+        skip_if_current: true,
+        ..switch(current, None)
+    };
+    assert_eq!(
+        take_deferred_model_switch(Some(request), &models, None),
+        DeferredSwitchOutcome {
+            switch: None,
+            effort_error: None,
+        }
+    );
+}
+
+#[test]
+fn cli_model_still_switches_different_session() {
+    let models = models_with_current(true);
+    let request = DeferredModelSwitch {
+        skip_if_current: true,
+        ..switch(acp::ModelId::new(Arc::from("other-model")), None)
+    };
+    assert_eq!(
+        take_deferred_model_switch(Some(request.clone()), &models, None),
+        DeferredSwitchOutcome {
+            switch: Some(request),
+            effort_error: None,
+        }
+    );
+}
+
+#[test]
+fn cli_model_honors_explicit_effort() {
+    let models = models_with_current(true);
+    let request = DeferredModelSwitch {
+        skip_if_current: true,
+        ..switch(models.current.clone().unwrap(), None)
+    };
+    for (token, effort) in [("default", None), ("deep", Some(ReasoningEffort::Xhigh))] {
+        assert_eq!(
+            take_deferred_model_switch(Some(request.clone()), &models, Some(token)),
+            DeferredSwitchOutcome {
+                switch: Some(DeferredModelSwitch {
+                    effort,
+                    ..request.clone()
+                }),
+                effort_error: None,
+            }
+        );
+    }
+}
+
+#[test]
+fn manual_model_selection_keeps_default_reset() {
+    let models = models_with_current(true);
+    let request = switch(models.current.clone().unwrap(), None);
+    assert_eq!(
+        take_deferred_model_switch(Some(request.clone()), &models, None),
+        DeferredSwitchOutcome {
+            switch: Some(request),
+            effort_error: None,
+        }
+    );
+}
+
 /// Stash/outcome with no rollback target (carrying `prev_model_id` through is covered by the router/lifecycle tests).
 fn switch(model_id: acp::ModelId, effort: Option<ReasoningEffort>) -> DeferredModelSwitch {
     DeferredModelSwitch {
         model_id,
         effort,
+        skip_if_current: false,
         prev_model_id: None,
     }
 }

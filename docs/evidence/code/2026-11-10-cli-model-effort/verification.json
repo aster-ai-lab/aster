@@ -1,0 +1,106 @@
+{
+  "scope": "CLI deferred model intent; diagnostic native baseline; full campaign remains incomplete",
+  "tests": {
+    "command": "CARGO_TARGET_DIR=/Users/roylin/code/aster/target CARGO_INCREMENTAL=0 cargo test --locked -p aster-pager --lib app::dispatch::tests -- --test-threads=1",
+    "passed": 1780,
+    "failed": 0,
+    "sha256": "936964a522f6ba073e36e7a98a545d4ab8b937d187535c457de0531cb682f6d3"
+  },
+  "native_post_fix": "PENDING_AFTER_USER_UNLOCK",
+  "complete_campaign": "NOT_CLAIMED",
+  "clippy": {
+    "command": "CARGO_TARGET_DIR=/Users/roylin/code/aster/target CARGO_INCREMENTAL=0 cargo clippy --locked -p aster-pager --all-targets --no-deps",
+    "exit_code": 0,
+    "existing_package_warnings": {
+      "lib": 41,
+      "lib_test": 51
+    },
+    "sha256": "4847b603fdfda70a6a62e57aae748c056da68bbef7c9dcd817e9e59e11792629",
+    "review": "The only diagnostic in a touched file is collapsible_if in the unchanged switch completion handler. No new diagnostic points at the added code."
+  },
+  "format": {
+    "changed_files": "rustfmt --edition 2024 --config skip_children=true; passed",
+    "workspace_command": "cargo fmt --all -- --check",
+    "workspace_exit_code": 1,
+    "unrelated_paths": [
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_resource_broker.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/capabilities_registry.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_count.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_http.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/runtime_components_tests.rs",
+      "/Users/roylin/code/aster/crates/embedding/src/assets.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+      "/Users/roylin/code/aster/crates/use/tool-acquire/src/env_acl/tests.rs",
+      "/Users/roylin/code/aster/crates/use/tool-acquire/src/http.rs"
+    ]
+  },
+  "first_test_run": {
+    "passed": 1779,
+    "failed": 1,
+    "isolated_failed": 1,
+    "failure": "switch_model_complete_persists_resolved_effort_from_catalog_meta",
+    "explanation": "The unchanged completion handler already clears stale reasoningEffort for default selection. The fixture contradicted that committed contract; it now asserts explicit None, advertised effective high, and persisted None."
+  },
+  "paired_build": {
+    "command": "CARGO_TARGET_DIR=/Users/roylin/code/aster/target CARGO_INCREMENTAL=0 cargo build --locked -p aster -p aster-acp --bins",
+    "exit_code": 0,
+    "binaries": {
+      "aster": {
+        "sha256": "a8468ec3a1db16728d1ec09498ae32c503a546b0fe6ad53e0dba9700994eb99e",
+        "build_id": "aster-cli-pair-v1:8b24c6942896bc0d12b976c857c91cf780dfff8e:aarch64-apple-darwin",
+        "version": "aster 0.3.4 (0f77fdf69fd3)"
+      },
+      "aster-acp": {
+        "sha256": "572ac566bd2c9c38cb3328e1e0b8e3c225d575d8f4d64049d4754d1eb4c85007",
+        "build_id": "aster-cli-pair-v1:8b24c6942896bc0d12b976c857c91cf780dfff8e:aarch64-apple-darwin",
+        "version": "9.2.2"
+      }
+    },
+    "candidate": "diagnostic dirty tree, includes the pre-existing ACP patch"
+  },
+  "headless_live_catalog": {
+    "command": "python3 .runtime/tui-full-e2e/headless_effort.py",
+    "status": "PASS",
+    "checker_sha256": "d2dbbc9b38ccb4a6756a0252f95e77aac312771a4c84964bdc8738bd83680dfc",
+    "oracles": [
+      "max active after the authoritative provider catalog",
+      "reported Default (high) remains separate",
+      "none and low remain offered",
+      "private ACL SHA-256 unchanged after model-only initialization",
+      "source ACL unchanged",
+      "owned TUI exits zero and temporary credential copy is removed"
+    ],
+    "scope": "real DeepSeek metadata via actual CLI/ACP in a PTY; no submitted inference and no native GUI pass"
+  },
+  "shipped_pair": {
+    "first_run": {
+      "passed": 22,
+      "failed": 1,
+      "ignored": 1,
+      "failure": "Old test expected grokday; product correctly persisted aster-day"
+    },
+    "isolated_attempt": {
+      "passed": 0,
+      "failed": 1,
+      "qualification": "FAIL_INFRA: editing the Rust fixture changed the pair fingerprint; Cargo rebuilt ACP alone; the product correctly refused the mixed pair"
+    },
+    "paired_rerun": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "test": "shipped_tui_launch_resume_and_visible_commands",
+      "build_id": "aster-cli-pair-v1:b6e2bbf3ea0507db6dd7e22dd8845f050ac14d1f:aarch64-apple-darwin",
+      "log_sha256": "196434b32729fbe28b54c725d790ae15069df501d16624ea342afa2432cd47c6"
+    },
+    "scope": "23 distinct eligible shipped-pair tests passed across the full run and corrected paired rerun; the live bound-goal test was ignored"
+  }
+}

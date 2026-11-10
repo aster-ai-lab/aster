@@ -649,6 +649,8 @@ pub struct BlockedPromptContext {
 pub struct DeferredModelSwitch {
     pub model_id: acp::ModelId,
     pub effort: Option<ReasoningEffort>,
+    /// The CLI already forwarded this model to the sidecar; preserve its effort when no override is requested.
+    pub skip_if_current: bool,
     /// Displayed model at stash time, the rollback target (`Effect::SwitchModel.prev_model_id`) if the switch fails.
     pub prev_model_id: Option<acp::ModelId>,
 }

@@ -992,6 +992,7 @@ fn dispatch_inner(action: Action, app: &mut AppView) -> Vec<Effect> {
                     Some(crate::app::agent::DeferredModelSwitch {
                         model_id: model_id.clone(),
                         effort,
+                        skip_if_current: false,
                         prev_model_id: rollback_prev,
                     });
                 return if unchanged {

@@ -3373,14 +3373,14 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     let bodies_before_theme = state.lock().expect("mock").bodies.len();
     let before_theme = config_texts(&home);
     assert!(
-        !before_theme.contains("grokday"),
-        "theme was already grokday before /theme\n{before_theme}"
+        !before_theme.contains("theme = \"aster-day\""),
+        "theme was already aster-day before /theme\n{before_theme}"
     );
-    pty.type_text("/theme grokday");
+    pty.type_text("/theme aster-day");
     pty.enter();
     assert!(
-        wait_config(&home, "grokday", Duration::from_secs(3)),
-        "theme did not persist grokday\n{}",
+        wait_config(&home, "theme = \"aster-day\"", Duration::from_secs(3)),
+        "theme did not persist aster-day\n{}",
         config_texts(&home)
     );
     assert_eq!(
@@ -3388,7 +3388,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         bodies_before_theme,
         "/theme started a model turn"
     );
-    oracle(PTY_TEST, "theme", "grokday, zero model requests");
+    oracle(PTY_TEST, "theme", "aster-day, zero model requests");
 
     pty.write_bytes(b"\x15");
     let before_vim = config_texts(&home);

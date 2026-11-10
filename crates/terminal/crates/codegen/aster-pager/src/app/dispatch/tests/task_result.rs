@@ -1282,7 +1282,7 @@ fn switch_model_complete_skips_message_and_persist_when_unchanged() {
 }
 
 #[test]
-fn switch_model_complete_persists_resolved_effort_from_catalog_meta() {
+fn switch_model_default_clears_catalog_override() {
     use aster_shell::sampling::types::ReasoningEffort;
     let mut app = test_app_with_agent();
     let id = AgentId(0);
@@ -1296,6 +1296,14 @@ fn switch_model_complete_persists_resolved_effort_from_catalog_meta() {
     meta.insert(
         "reasoningEffort".into(),
         serde_json::Value::String("xhigh".into()),
+    );
+    meta.insert("defaultReasoningEffort".into(), "high".into());
+    meta.insert(
+        "reasoningEfforts".into(),
+        serde_json::json!([
+            { "id": "high", "value": "high", "label": "High" },
+            { "id": "xhigh", "value": "xhigh", "label": "Extra high" },
+        ]),
     );
     app.agents
         .get_mut(&id)
@@ -1318,16 +1326,20 @@ fn switch_model_complete_persists_resolved_effort_from_catalog_meta() {
         Action::TaskComplete(TaskResult::SwitchModelComplete {
             agent_id: id,
             model_id: model_id.clone(),
-            effort: None, // user typed `/model Blackbox 4.7` with no effort
+            effort: None,
             result: Ok(()),
             prev_model_id: None,
         }),
         &mut app,
     );
 
+    assert_eq!(expect_agent(&app, id).session.models.reasoning_effort, None);
     assert_eq!(
-        expect_agent(&app, id).session.models.reasoning_effort,
-        Some(ReasoningEffort::Xhigh)
+        expect_agent(&app, id)
+            .session
+            .models
+            .effective_reasoning_effort(),
+        Some(ReasoningEffort::High)
     );
 
     assert_eq!(effects.len(), 1);
@@ -1337,12 +1349,7 @@ fn switch_model_complete_persists_resolved_effort_from_catalog_meta() {
             reasoning_effort,
         }) => {
             assert_eq!(*mid, model_id);
-            assert_eq!(
-                *reasoning_effort,
-                Some(ReasoningEffort::Xhigh),
-                "persisted effort must mirror the live UI effort so a \
-                     fresh chat does not reset reasoning to a stale default",
-            );
+            assert_eq!(*reasoning_effort, None);
         }
         other => panic!("expected PersistPreferredModel, got {other:?}"),
     }

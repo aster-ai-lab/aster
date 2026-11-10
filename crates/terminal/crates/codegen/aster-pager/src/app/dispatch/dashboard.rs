@@ -1368,6 +1368,7 @@ pub(super) fn apply_pending_dispatch_config(
         agent.session.deferred_model_switch = m.effort.map(|e| DeferredModelSwitch {
             model_id: m.id.clone(),
             effort: Some(e),
+            skip_if_current: false,
             prev_model_id: None,
         });
     }
