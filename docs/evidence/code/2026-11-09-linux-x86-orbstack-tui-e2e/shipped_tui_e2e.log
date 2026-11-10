@@ -1,0 +1,429 @@
+=== e2e start 2026-11-09T19:40:48+08:00 ASTER_TUI_BIN=/home/lyon/aster-linux-x86-target/debug/aster ===
+aster 0.3.2 (0c59f2473daa)
+9.2.1
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:255:15
+    |
+255 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:318:8
+    |
+316 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+317 |     /// Called from the `dynamic-workflow` surface.
+318 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:842:19
+    |
+406 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+842 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: constant `CANCEL_SETTLE_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:18:18
+   |
+18 | pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   |                  ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CANCEL_ABORT_GRACE` is never used
+  --> crates/code/acp/src/turn_cancel.rs:21:18
+   |
+21 | pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   |                  ^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (lib) generated 4 warnings
+    Finished `test` profile [unoptimized] target(s) in 0.76s
+     Running tests/shipped_tui_e2e.rs (/home/lyon/aster-linux-x86-target/debug/deps/shipped_tui_e2e-c0c87483f3b4541d)
+
+running 20 tests
+test palette_rows_keep_the_declared_handler_description ... ok
+test pre_analysis_fixture_keeps_goal_stages_and_ordinary_steps_distinct ... ok
+test retrieval::shipped_retrieval_stdio_executes_embedded_semantic_search ... ORACLE test=shipped_retrieval_stdio name=embedded-local-semantic result=pass detail=actual tool result includes verified line 64; session-open-ms=2549; prompt-ms=474
+ok
+test retrieval::shipped_retrieval_stdio_missing_local_assets_keeps_hybrid ... ORACLE test=shipped_retrieval_stdio name=embedded-local-hybrid result=pass detail=actual tool result includes verified line 64; session-open-ms=2432; prompt-ms=453
+ok
+test retrieval::shipped_retrieval_stdio_without_semantic_model ... ORACLE test=shipped_retrieval_stdio name=model-free-hybrid result=pass detail=actual tool result includes verified line 64; session-open-ms=435; prompt-ms=473
+ok
+test shipped_agent_refuses_repeated_reads_without_new_progress ... ok
+test shipped_agent_sends_aster_identity_to_the_model ... ok
+test shipped_agent_session_wire ... ORACLE test=shipped_agent_session_wire name=initialize-acl-model result=pass detail=mock/gpt
+ORACLE test=shipped_agent_session_wire name=new-session-model result=pass detail=mock/gpt
+ORACLE test=shipped_agent_session_wire name=engineering-default result=pass detail=policy present once without selection metadata
+ORACLE test=shipped_agent_session_wire name=session-info-turn-usage result=pass detail=turn=1 used=4 prompts=1
+ORACLE test=shipped_agent_session_wire name=tool-call-name result=pass detail=low_thinking=2048
+ORACLE test=shipped_agent_session_wire name=effort-budget result=pass detail=low=2048 high=16384
+ORACLE test=shipped_agent_session_wire name=effort-none result=pass detail=thinking=1024; no finite tool-round ceiling
+ORACLE test=shipped_agent_session_wire name=permission-blocks-until-allow-once result=pass detail=completion-gate file=wrote-marker
+ORACLE test=shipped_agent_session_wire name=question-answered result=pass detail=option=alpha
+ORACLE test=shipped_agent_session_wire name=cancel-no-late-file result=pass detail=stop=Cancelled
+ORACLE test=shipped_agent_session_wire name=compact-summary-kept result=pass detail=COMPACT-SUMMARY-7f3a
+ORACLE test=shipped_agent_session_wire name=compact-tool-request-message-bytes result=pass detail=before=18215 after=19777 scope=last-request-with-tools token-count=unmeasured
+ORACLE test=shipped_agent_session_wire name=compact-focus-note-kept result=pass detail=COMPACT-SUMMARY-7f3a
+ORACLE test=shipped_agent_session_wire name=memory-flush result=pass detail=disposition=flushed
+ORACLE test=shipped_agent_session_wire name=memory-dream result=pass detail=disposition=no_work
+ORACLE test=shipped_agent_session_wire name=goal-binding-and-quiet-verbs result=pass detail=status/pause/clear added 0 bodies; set bound the objective and policy in original facts
+ORACLE test=shipped_agent_session_wire name=prompt-id-per-session result=pass detail=left=stamp-left right=stamp-right
+ORACLE test=shipped_agent_session_wire name=load-session-replay result=pass detail=DURABLE-TOKEN-42
+ok
+test shipped_bound_goal_real_llm ... ignored, requires ASTER_CONFIG_FILE with deepseek/deepseek-flash and a built aster
+test shipped_tui_ask_user_and_edit_tool_oracles ... ORACLE test=shipped_tui_ask_user_and_edit_tool_oracles name=ask-user-select result=pass detail=option=beta
+ORACLE test=shipped_tui_ask_user_and_edit_tool_oracles name=edit-tool result=pass detail=edited-marker
+ok
+test shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent ... ORACLE test=shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent name=live-agent-timeout result=pass detail=native and legacy overrides preserve the timeout and show the native retry command
+ok
+test shipped_tui_launch_resume_and_visible_commands ... ORACLE test=shipped_tui_launch_resume_and_visible_commands name=continue-same-session result=pass detail=session=cd82b02f-51bb-4166-8a11-929278104f17 model=mock/gpt
+---LAUNCH-1---
+                                                                                                                        
+  /tmp/aster-shipped-e2e-pty-58700-1794224497045621722                                                           0 / ?  
+                                                                                                                        
+     No active session                                                                                                  
+                                                                                                                        
+                     ┌────────────────────────────────────────────────────────────────────── [✗] ─┐                     
+                     │  Context usage  Usage limit  Session info                                  │                     
+                     │────────────────────────────────────────────────────────────────────────────│                     
+                     │  Session info   click or drag to copy                                      │                     
+                     │                                                                            │                     
+                     │  Title:                                                                    │                     
+                     │  mock/gpt                                                                  │                     
+                     │                                                                            │                     
+                     │  Shell version:                                                            │                     
+                     │  9.1.4                                                                     │                     
+                     │                                                                            │                     
+                     │  Session ID:                                                               │                     
+                     │  cd82b02f-51bb-4166-8a11-929278104f17                                      │                     
+                     │                                                                            │                     
+                     │  Working directory:                                                        │                     
+                     │  /tmp/aster-shipped-e2e-pty-58700-1794224497045621722                      │                     
+                     │                                                                            │                     
+                     │  Model: mock/gpt                                                           │                     
+                     │  Mode: default                                                             │                     
+                     │  Turn: 0                                                                   │                     
+                     │  Context: 0 / 128000 tokens (0%)                                           │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │       Tab switch  |  ↑/↓ scroll  |  c copy session ID  |  y copy all       │                     
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                 Esc close                                  │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Add a follow-up └────────────────────────────────────────────────────────────────────────────┘                     
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — tok/s                                                                                mock/gpt (high)   
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+---END-LAUNCH-1---
+---LAUNCH-2---
+                                                                                                                        
+  /tmp/aster-shipped-e2e-pty-58700-1794224497045621722                                                           0 / ?  
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                     ┌────────────────────────────────────────────────────────────────────── [✗] ─┐                     
+                     │  Context usage  Usage limit  Session info                                  │                     
+                     │────────────────────────────────────────────────────────────────────────────│                     
+                     │  Session info   click or drag to copy                                      │                     
+                     │                                                                            │                     
+                     │  Title:                                                                    │                     
+                     │  mock/gpt                                                                  │                     
+                     │                                                                            │                     
+                     │  Shell version:                                                            │                     
+                     │  9.1.4                                                                     │                     
+                     │                                                                            │                     
+                     │  Session ID:                                                               │                     
+                     │  cd82b02f-51bb-4166-8a11-929278104f17                                      │                     
+                     │                                                                            │                     
+                     │  Working directory:                                                        │                     
+                     │  /tmp/aster-shipped-e2e-pty-58700-1794224497045621722                      │                     
+                     │                                                                            │                     
+                     │  Model: mock/gpt                                                           │                     
+                     │  Mode: default                                                             │                     
+                     │  Turn: 0                                                                   │                     
+                     │  Context: 0 / 128000 tokens (0%)                                           │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │                                                                            │                     
+                     │       Tab switch  |  ↑/↓ scroll  |  c copy session ID  |  y copy all       │                     
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                 Esc close                                  │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+   → Add a follow-up └────────────────────────────────────────────────────────────────────────────┘                     
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+  Σ 0 tokens · — tok/s                                                                                mock/gpt (high)   
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+---END-LAUNCH-2---
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=continue-without-agent-env result=pass detail=session=f59129dd-f9a2-48cb-bda3-6a1ef6ad14cb model=mock/gpt
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=resume-durable-transcript result=pass detail=session=c5edd4cd-e677-4747-8010-28cf6fb8ed25 marker=RESUME-MARKER-9e4b
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=continue-durable-transcript result=pass detail=session=c5edd4cd-e677-4747-8010-28cf6fb8ed25 marker=RESUME-MARKER-9e4b
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=find-marker result=pass detail=RESUME-MARKER-9e4b
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=jump-turn result=pass detail=preview=marker prompts=2
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=expand-marker result=pass detail=EXPAND-MARKER
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-usage result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-view-plan result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-plan result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-tutorial result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-docs result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-privacy result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-login result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-logout result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-btw result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-feedback result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-queue result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-resume result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-rename result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-transcript result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-rewind result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-workflows result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-workflow result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-personas result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-config-agents result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-plugins result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-skills result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-mcps result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-hooks result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-marketplace result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-import-claude result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-remember result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-imagine result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-imagine-video result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-voice result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-dashboard result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-recap result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-share result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-release-notes result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-announcements result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-loop result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=hidden-auto result=pass detail=absent from palette
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=cd-agent-palette result=pass detail=absent outside the dashboard
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-fork result=pass detail=Branch the current session
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-memory result=pass detail=Inspect and manage stored memories
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-flush result=pass detail=Save this session's memory to disk now
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-dream result=pass detail=Consolidate memory now (merge observations into topics)
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-history result=pass detail=Show conversation stats
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-tasks result=pass detail=Inspect background tasks or stop a task
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-settings result=pass detail=Open the settings modal
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-config result=pass detail=Add and configure providers and models
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-new result=pass detail=Start a new session
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-effort result=pass detail=Set reasoning effort
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-goal result=pass detail=durable goal
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-compact result=pass detail=Compact conversation history
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-model result=pass detail=Switch the active model
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-context result=pass detail=View context usage
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-jump result=pass detail=Jump to a turn
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-edit-prompt result=pass detail=external editor
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-session-info result=pass detail=Show session info
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-export result=pass detail=Export the current conversation
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-copy result=pass detail=Copy last response
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-find result=pass detail=Search the conversation scrollback
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-theme result=pass detail=Switch the color theme
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-yolo result=pass detail=skip all permission prompts
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-vim-mode result=pass detail=vim-style scrollback
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-multiline result=pass detail=multiline input mode
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-compact-mode result=pass detail=less padding, more content
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-timestamps result=pass detail=message timestamps
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-toggle-mouse-reporting result=pass detail=terminal mouse reporting
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-minimal result=pass detail=scrollback-native
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-timeline result=pass detail=timeline sidebar
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-doctor result=pass detail=show available fixes
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-home result=pass detail=welcome screen
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-delete result=pass detail=Delete this session
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-help result=pass detail=keyboard shortcuts
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=palette-quit result=pass detail=Quit the application
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/memory result=pass detail=seeded list, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/memory-read result=pass detail=seeded content
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/memory-delete result=pass detail=deleted seeded note
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/tasks result=pass detail=current host inspection, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/flush result=pass detail=Memory flushed
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=/dream result=pass detail=Nothing to consolidate
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=doctor result=pass detail=terminal report, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=goal-status result=pass detail=empty objective, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=compact-empty result=pass detail=Nothing to compact yet
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=goal-set result=pass detail=default policy and native goal; stopped at the no-progress bound
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=goal-pause result=pass detail=persisted pause, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=goal-resume result=pass detail=resumed posture; the existing no-progress bound still stops execution
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=goal-clear result=pass detail=cancelled in original facts; history retained, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=export result=pass detail=file contains EXPORT-SOURCE
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=session-info result=pass detail=session=8ec0356e-b579-400f-969a-6369c6643748 turn=1 prompts=1 used=4
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=theme result=pass detail=grokday, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=vim-mode result=pass detail=vim_mode = true
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=timestamps result=pass detail=show_timestamps = false
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=multiline-on result=pass detail=Multiline:
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=compact-mode result=pass detail=compact_mode = true
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=timeline result=pass detail=show_timeline = true
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=help result=pass detail=Commands palette, zero model requests
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=settings result=pass detail=Settings modal
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=config result=pass detail=Providers and Models
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=context result=pass detail=turns and tokens
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=compact-done result=pass detail=COMPACT-SUMMARY-7f3a
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=find result=pass detail=search:
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=jump result=pass detail=picker
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=multiline-off result=pass detail=footer cleared
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=effort result=pass detail=low=2048 high=16384; no finite tool-round ceiling
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=model result=pass detail=mock/alt
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=ask-allow-once-gate result=pass detail=side-effect.txt
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=yolo-flag result=pass detail=yolo
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=yolo result=pass detail=new side-effect.txt, no permission prompt
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=copy result=pass detail=assistant reply file
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=edit-prompt result=pass detail=editor-ran
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=toggle-mouse-reporting result=pass detail=mouse capture changed
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=home result=pass detail=welcome, no active session
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=new result=pass detail=session=10a20baa-3a5f-4976-9baf-8b493b24e797
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=minimal result=pass detail=Switched to minimal mode
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=expand result=pass detail=Nothing to expand
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=fullscreen result=pass detail=Switched to fullscreen mode
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=delete result=pass detail=removed 10a20baa-3a5f-4976-9baf-8b493b24e797
+ORACLE test=shipped_tui_launch_resume_and_visible_commands name=quit result=pass detail=exit 0
+ok
+test shipped_tui_permission_reject_and_cancel_skip_the_side_effect ... ORACLE test=shipped_tui_permission_reject_and_cancel_skip_the_side_effect name=permission-reject result=pass detail=side-effect.txt absent
+ORACLE test=shipped_tui_permission_reject_and_cancel_skip_the_side_effect name=permission-cancel result=pass detail=side-effect.txt absent
+ok
+test shipped_tui_prefix_fork_inherits_history_and_resumes_the_child ... ORACLE test=shipped_tui_prefix_fork_inherits_history_and_resumes_the_child name=history-and-restart result=pass detail=source=bf1d9ce1-f34c-47bd-abce-bd5b50b25da6 child=21e69b30-b437-4a07-8f57-d17795c9e52f startup=1cd41954-4123-459a-bd93-127278a8c7e3
+ok
+test shipped_tui_reports_configuration_failure_before_the_connect_budget ... ORACLE test=shipped_tui_reports_configuration_failure_before_the_connect_budget name=agent-exit result=pass detail=configuration refusal closes startup with trusted-ACL guidance before the connect budget
+ok
+test shipped_tui_xai_key_keeps_acl_model ... ORACLE test=shipped_tui_xai_key_keeps_acl_model name=xai-key-keeps-acl-model result=pass detail=model=mock/gpt session=dce1e28d-82ec-4d30-937f-22f462157b9a
+ok
+test submitted_form_values_survive_the_tool_exit_status_prefix ... ok
+test tui_readiness::tests::a_resumed_session_uses_its_follow_up_composer_and_product_key_hints ... ok
+test tui_readiness::tests::welcome_readiness_refuses_partial_and_error_frames ... ok
+test tui_readiness::tests::welcome_readiness_uses_the_input_placeholder_instead_of_its_decoration ... ok
+
+test result: ok. 19 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 170.41s
+
+=== e2e done 2026-11-09T19:43:39+08:00 exit=0 ===

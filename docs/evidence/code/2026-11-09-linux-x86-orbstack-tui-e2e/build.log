@@ -1,0 +1,3013 @@
+=== build start 2026-11-09T19:14:03+08:00 uname=x86_64 ===
+[1m[92m    Updating[0m crates.io index
+[1m[92m    Updating[0m git repository `https://github.com/kense-labs/ksandbox.git`
+From https://github.com/kense-labs/ksandbox
+ * [new ref]         6c7c8bddc66325480342916e0387ab6580139316 -> refs/commit/6c7c8bddc66325480342916e0387ab6580139316
+[1m[92m    Updating[0m git repository `https://github.com/helix-editor/nucleo.git`
+From https://github.com/helix-editor/nucleo
+ * [new ref]         5b74652e482f7c07d827f18c6d21e7540c242c69 -> refs/commit/5b74652e482f7c07d827f18c6d21e7540c242c69
+[1m[92m Downloading[0m crates ...
+[1m[92m  Downloaded[0m adler2 v2.0.1
+[1m[92m  Downloaded[0m adler v1.0.2
+[1m[92m  Downloaded[0m addr2line v0.21.0
+[1m[92m  Downloaded[0m alloc-no-stdlib v2.0.4
+[1m[92m  Downloaded[0m aligned-vec v0.6.4
+[1m[92m  Downloaded[0m alloc-no-stdlib v3.0.0
+[1m[92m  Downloaded[0m ambient-authority v0.0.2
+[1m[92m  Downloaded[0m anstyle-query v1.1.1
+[1m[92m  Downloaded[0m async-stream v0.3.5
+[1m[92m  Downloaded[0m bit-set v0.8.0
+[1m[92m  Downloaded[0m base64-simd v0.8.0
+[1m[92m  Downloaded[0m aes-kw v0.2.1
+[1m[92m  Downloaded[0m alloc-stdlib v0.2.4
+[1m[92m  Downloaded[0m arrayref v0.3.9
+[1m[92m  Downloaded[0m debug_unsafe v0.1.4
+[1m[92m  Downloaded[0m aead v0.5.2
+[1m[92m  Downloaded[0m anstyle-lossy v1.1.5
+[1m[92m  Downloaded[0m darling v0.24.1
+[1m[92m  Downloaded[0m async-recursion v1.1.1
+[1m[92m  Downloaded[0m anstyle-syntect v1.0.5
+[1m[92m  Downloaded[0m alloc-stdlib v0.3.0
+[1m[92m  Downloaded[0m darling_macro v0.24.1
+[1m[92m  Downloaded[0m darling_macro v0.20.11
+[1m[92m  Downloaded[0m darling_macro v0.21.3
+[1m[92m  Downloaded[0m derive_builder_macro v0.20.2
+[1m[92m  Downloaded[0m async-channel v1.9.0
+[1m[92m  Downloaded[0m async-global-executor v2.4.1
+[1m[92m  Downloaded[0m bitfields v1.0.3
+[1m[92m  Downloaded[0m aws-smithy-query v0.60.8
+[1m[92m  Downloaded[0m async-stream-impl v0.3.5
+[1m[92m  Downloaded[0m atomic-waker v1.1.2
+[1m[92m  Downloaded[0m base16ct v0.2.0
+[1m[92m  Downloaded[0m defmt-parser v1.0.0
+[1m[92m  Downloaded[0m endi v1.1.1
+[1m[92m  Downloaded[0m document-features v0.2.12
+[1m[92m  Downloaded[0m downcast-rs v1.2.1
+[1m[92m  Downloaded[0m dyn-clone v1.0.20
+[1m[92m  Downloaded[0m dirs v5.0.1
+[1m[92m  Downloaded[0m documented v0.9.1
+[1m[92m  Downloaded[0m dunce v1.0.5
+[1m[92m  Downloaded[0m aws-smithy-observability v0.1.4
+[1m[92m  Downloaded[0m anstyle-parse v1.0.0
+[1m[92m  Downloaded[0m anstream v1.0.0
+[1m[92m  Downloaded[0m enumflags2_derive v0.7.12
+[1m[92m  Downloaded[0m equator v0.4.2
+[1m[92m  Downloaded[0m dark-light v2.0.0
+[1m[92m  Downloaded[0m dbl v0.3.2
+[1m[92m  Downloaded[0m debugid v0.8.0
+[1m[92m  Downloaded[0m defmt v0.3.100
+[1m[92m  Downloaded[0m dirs v6.0.0
+[1m[92m  Downloaded[0m fax v0.2.6
+[1m[92m  Downloaded[0m eventsource-stream v0.2.3
+[1m[92m  Downloaded[0m aws-smithy-checksums v0.60.13
+[1m[92m  Downloaded[0m documented-macros v0.9.1
+[1m[92m  Downloaded[0m dirs-sys v0.4.1
+[1m[92m  Downloaded[0m fallible-streaming-iterator v0.1.9
+[1m[92m  Downloaded[0m data-encoding v2.11.1
+[1m[92m  Downloaded[0m data-url v0.3.2
+[1m[92m  Downloaded[0m dtoa-short v0.3.5
+[1m[92m  Downloaded[0m equivalent v1.0.3
+[1m[92m  Downloaded[0m file-id v0.2.2
+[1m[92m  Downloaded[0m filedescriptor v0.8.3
+[1m[92m  Downloaded[0m enum-as-inner v0.6.1
+[1m[92m  Downloaded[0m equator-macro v0.4.2
+[1m[92m  Downloaded[0m event-listener v2.5.3
+[1m[92m  Downloaded[0m fax_derive v0.2.0
+[1m[92m  Downloaded[0m eax v0.5.0
+[1m[92m  Downloaded[0m ecb v0.1.2
+[1m[92m  Downloaded[0m enum-ordinalize-derive v4.3.1
+[1m[92m  Downloaded[0m event-listener-strategy v0.5.4
+[1m[92m  Downloaded[0m enum-ordinalize v4.3.0
+[1m[92m  Downloaded[0m defmt v1.1.1
+[1m[92m  Downloaded[0m fastrace-macro v0.7.17
+[1m[92m  Downloaded[0m fastrace-tonic v0.1.0
+[1m[92m  Downloaded[0m bitflags v1.3.2
+[1m[92m  Downloaded[0m digest v0.11.3
+[1m[92m  Downloaded[0m ecdsa v0.16.9
+[1m[92m  Downloaded[0m dary_heap v0.3.9
+[1m[92m  Downloaded[0m dashmap v6.2.1
+[1m[92m  Downloaded[0m derive_builder_core v0.20.2
+[1m[92m  Downloaded[0m anstyle v1.0.14
+[1m[92m  Downloaded[0m async-channel v2.5.0
+[1m[92m  Downloaded[0m anstyle-parse v0.2.5
+[1m[92m  Downloaded[0m async-trait v0.1.92
+[1m[92m  Downloaded[0m dsa v0.6.3
+[1m[92m  Downloaded[0m fastrace-reqwest v0.2.0
+[1m[92m  Downloaded[0m defmt-macros v1.1.1
+[1m[92m  Downloaded[0m dirs-sys v0.5.0
+[1m[92m  Downloaded[0m email_address v0.2.9
+[1m[92m  Downloaded[0m fastant v0.1.11
+[1m[92m  Downloaded[0m fastrand v2.5.0
+[1m[92m  Downloaded[0m darling v0.21.3
+[1m[92m  Downloaded[0m digest v0.10.7
+[1m[92m  Downloaded[0m ed25519 v2.2.3
+[1m[92m  Downloaded[0m ego-tree v0.10.0
+[1m[92m  Downloaded[0m env_filter v2.0.0
+[1m[92m  Downloaded[0m errno v0.3.14
+[1m[92m  Downloaded[0m fallible-iterator v0.3.0
+[1m[92m  Downloaded[0m ff v0.13.1
+[1m[92m  Downloaded[0m either v1.19.0
+[1m[92m  Downloaded[0m fax v0.3.0
+[1m[92m  Downloaded[0m env_logger v0.11.11
+[1m[92m  Downloaded[0m fastrace-opentelemetry v0.18.0
+[1m[92m  Downloaded[0m diff v0.1.13
+[1m[92m  Downloaded[0m enumflags2 v0.7.12
+[1m[92m  Downloaded[0m dtoa v1.0.10
+[1m[92m  Downloaded[0m darling v0.20.11
+[1m[92m  Downloaded[0m deranged v0.5.9
+[1m[92m  Downloaded[0m derive_builder v0.20.2
+[1m[92m  Downloaded[0m des v0.8.1
+[1m[92m  Downloaded[0m faster-hex v0.10.1
+[1m[92m  Downloaded[0m event-listener v5.4.2
+[1m[92m  Downloaded[0m fast-float2 v0.2.4
+[1m[92m  Downloaded[0m fastrace v0.7.17
+[1m[92m  Downloaded[0m fdeflate v0.3.5
+[1m[92m  Downloaded[0m dom_smoothie v0.18.2
+[1m[92m  Downloaded[0m elliptic-curve v0.13.8
+[1m[92m  Downloaded[0m darling_core v0.21.3
+[1m[92m  Downloaded[0m darling_core v0.24.1
+[1m[92m  Downloaded[0m darling_core v0.20.11
+[1m[92m  Downloaded[0m derive_more v0.99.20
+[1m[92m  Downloaded[0m educe v0.6.0
+[1m[92m  Downloaded[0m dom_query v0.28.0
+[1m[92m  Downloaded[0m der v0.7.10
+[1m[92m  Downloaded[0m derive_more v2.1.1
+[1m[92m  Downloaded[0m euclid v0.22.14
+[1m[92m  Downloaded[0m fancy-regex v0.14.0
+[1m[92m  Downloaded[0m ed25519-dalek v2.1.1
+[1m[92m  Downloaded[0m derive_more-impl v2.1.1
+[1m[92m  Downloaded[0m esaxx-rs v0.1.10
+[1m[92m  Downloaded[0m fancy-regex v0.18.0
+[1m[92m  Downloaded[0m deunicode v1.6.2
+[1m[92m  Downloaded[0m fast_image_resize v6.1.0
+[1m[92m  Downloaded[0m aws-smithy-json v0.60.7
+[1m[92m  Downloaded[0m async-executor v1.13.3
+[1m[92m  Downloaded[0m async-fs v2.1.3
+[1m[92m  Downloaded[0m argon2 v0.5.3
+[1m[92m  Downloaded[0m aws-smithy-http v0.60.12
+[1m[92m  Downloaded[0m anndists v0.1.5
+[1m[92m  Downloaded[0m autocfg v1.5.1
+[1m[92m  Downloaded[0m mac v0.1.1
+[1m[92m  Downloaded[0m io-close v0.3.7
+[1m[92m  Downloaded[0m itoa v1.0.18
+[1m[92m  Downloaded[0m macro_rules_attribute-proc_macro v0.2.3
+[1m[92m  Downloaded[0m maybe-owned v0.3.4
+[1m[92m  Downloaded[0m multimap v0.10.1
+[1m[92m  Downloaded[0m notify-debouncer-mini v0.6.0
+[1m[92m  Downloaded[0m io-lifetimes v3.0.1
+[1m[92m  Downloaded[0m notify-types v2.0.0
+[1m[92m  Downloaded[0m imagesize v0.14.0
+[1m[92m  Downloaded[0m ipnet v2.12.2
+[1m[92m  Downloaded[0m lock_api v0.4.14
+[1m[92m  Downloaded[0m macro_rules_attribute v0.2.3
+[1m[92m  Downloaded[0m maybe-async v0.2.11
+[1m[92m  Downloaded[0m num-rational v0.4.2
+[1m[92m  Downloaded[0m hyper-rustls v0.27.2
+[1m[92m  Downloaded[0m lru v0.18.5
+[1m[92m  Downloaded[0m notify-debouncer-full v0.5.0
+[1m[92m  Downloaded[0m num_enum_derive v0.7.2
+[1m[92m  Downloaded[0m matrixmultiply v0.3.10
+[1m[92m  Downloaded[0m ansi-to-tui v7.0.0
+[1m[92m  Downloaded[0m async-net v2.0.0
+[1m[92m  Downloaded[0m backoff v0.4.0
+[1m[92m  Downloaded[0m aws-smithy-xml v0.60.12
+[1m[92m  Downloaded[0m bitfields-impl v1.0.3
+[1m[92m  Downloaded[0m axum-core v0.5.2
+[1m[92m  Downloaded[0m bit-vec v0.8.0
+[1m[92m  Downloaded[0m nom v7.1.3
+[1m[92m  Downloaded[0m agent-client-protocol v0.10.4
+[1m[92m  Downloaded[0m async-signal v0.2.12
+[1m[92m  Downloaded[0m aws-smithy-json v0.61.7
+[1m[92m  Downloaded[0m async-process v2.4.0
+[1m[92m  Downloaded[0m base64ct v1.6.0
+[1m[92m  Downloaded[0m aws-smithy-async v1.2.6
+[1m[92m  Downloaded[0m nix v0.28.0
+[1m[92m  Downloaded[0m object v0.32.2
+[1m[92m  Downloaded[0m encoding_rs v0.8.35
+[1m[92m  Downloaded[0m openssl-probe v0.1.6
+[1m[92m  Downloaded[0m opentelemetry-http v0.32.0
+[1m[92m  Downloaded[0m opentelemetry_sdk v0.32.1
+[1m[92m  Downloaded[0m ordered-stream v0.2.0
+[1m[92m  Downloaded[0m os_pipe v1.2.3
+[1m[92m  Downloaded[0m parking_lot_core v0.9.12
+[1m[92m  Downloaded[0m password-hash v0.5.0
+[1m[92m  Downloaded[0m pem v3.0.6
+[1m[92m  Downloaded[0m pem-rfc7468 v0.7.0
+[1m[92m  Downloaded[0m phf v0.14.0
+[1m[92m  Downloaded[0m phf_codegen v0.11.3
+[1m[92m  Downloaded[0m phf_codegen v0.13.1
+[1m[92m  Downloaded[0m phf_generator v0.11.3
+[1m[92m  Downloaded[0m piper v0.2.5
+[1m[92m  Downloaded[0m pkcs1 v0.7.5
+[1m[92m  Downloaded[0m pkcs8 v0.10.2
+[1m[92m  Downloaded[0m precomputed-hash v0.1.1
+[1m[92m  Downloaded[0m proc-macro-crate v1.3.1
+[1m[92m  Downloaded[0m proc-macro-crate v3.4.0
+[1m[92m  Downloaded[0m proc-macro-error-attr2 v2.0.0
+[1m[92m  Downloaded[0m prost-types v0.14.1
+[1m[92m  Downloaded[0m qcms v0.3.0
+[1m[92m  Downloaded[0m quinn v0.11.12
+[1m[92m  Downloaded[0m pin-utils v0.1.1
+[1m[92m  Downloaded[0m prost v0.14.4
+[1m[92m  Downloaded[0m protobuf v3.7.2
+[1m[92m  Downloaded[0m pxfm v0.1.30
+[1m[92m  Downloaded[0m raw-cpuid v11.6.0
+[1m[92m  Downloaded[0m rawpointer v0.2.1
+[1m[92m  Downloaded[0m referencing v0.30.0
+[1m[92m  Downloaded[0m referencing v0.47.0
+[1m[92m  Downloaded[0m regex v1.12.4
+[1m[92m  Downloaded[0m aws-smithy-eventstream v0.60.13
+[1m[92m  Downloaded[0m bincode v1.3.3
+[1m[92m  Downloaded[0m reflink-copy v0.1.30
+[1m[92m  Downloaded[0m resvg v0.47.0
+[1m[92m  Downloaded[0m regex-automata v0.4.18
+[1m[92m  Downloaded[0m rustls-native-certs v0.8.5
+[1m[92m  Downloaded[0m sentry-debug-images v0.42.0
+[1m[92m  Downloaded[0m serde_repr v0.1.20
+[1m[92m  Downloaded[0m rmcp-macros v0.8.5
+[1m[92m  Downloaded[0m same-file v1.0.6
+[1m[92m  Downloaded[0m aws-credential-types v1.2.10
+[1m[92m  Downloaded[0m aws-smithy-http v0.62.5
+[1m[92m  Downloaded[0m anyhow v1.0.104
+[1m[92m  Downloaded[0m arrayvec v0.7.8
+[1m[92m  Downloaded[0m aws-types v1.3.10
+[1m[92m  Downloaded[0m async-broadcast v0.7.2
+[1m[92m  Downloaded[0m atoi_simd v0.18.1
+[1m[92m  Downloaded[0m rmp v0.8.14
+[1m[92m  Downloaded[0m strip-ansi-escapes v0.2.1
+[1m[92m  Downloaded[0m sha1 v0.10.7
+[1m[92m  Downloaded[0m sha256 v1.6.0
+[1m[92m  Downloaded[0m small_ctor v0.1.2
+[1m[92m  Downloaded[0m strsim v0.11.1
+[1m[92m  Downloaded[0m subtle v2.6.1
+[1m[92m  Downloaded[0m rmcp-macros v3.8.0
+[1m[92m  Downloaded[0m rustls-native-certs v0.7.3
+[1m[92m  Downloaded[0m serde_spanned v0.6.8
+[1m[92m  Downloaded[0m tdigests v1.0.1
+[1m[92m  Downloaded[0m rmp-serde v1.3.0
+[1m[92m  Downloaded[0m roxmltree v0.20.0
+[1m[92m  Downloaded[0m roxmltree v0.21.2
+[1m[92m  Downloaded[0m serde_core v1.0.229
+[1m[92m  Downloaded[0m sha2 v0.10.9
+[1m[92m  Downloaded[0m sha2 v0.11.0
+[1m[92m  Downloaded[0m simd-adler32 v0.3.10
+[1m[92m  Downloaded[0m simple_asn1 v0.6.4
+[1m[92m  Downloaded[0m smawk v0.3.3
+[1m[92m  Downloaded[0m spin v0.10.1
+[1m[92m  Downloaded[0m string_cache v0.9.0
+[1m[92m  Downloaded[0m sysctl v0.6.0
+[1m[92m  Downloaded[0m thin-vec v0.2.19
+[1m[92m  Downloaded[0m schemars v1.2.3
+[1m[92m  Downloaded[0m selectors v0.26.0
+[1m[92m  Downloaded[0m selectors v0.38.0
+[1m[92m  Downloaded[0m serde_derive v1.0.229
+[1m[92m  Downloaded[0m snafu v0.8.9
+[1m[92m  Downloaded[0m spin v0.9.9
+[1m[92m  Downloaded[0m stop-words v0.9.0
+[1m[92m  Downloaded[0m subsetter v0.2.2
+[1m[92m  Downloaded[0m tar v0.4.46
+[1m[92m  Downloaded[0m tiff v0.11.3
+[1m[92m  Downloaded[0m roaring v0.11.1
+[1m[92m  Downloaded[0m syn v3.0.9
+[1m[92m  Downloaded[0m tonic-prost v0.14.9
+[1m[92m  Downloaded[0m tower v0.5.3
+[1m[92m  Downloaded[0m tower-service v0.3.3
+[1m[92m  Downloaded[0m tracing-core v0.1.36
+[1m[92m  Downloaded[0m tracing-serde v0.2.0
+[1m[92m  Downloaded[0m try-lock v0.2.5
+[1m[92m  Downloaded[0m typenum v1.20.1
+[1m[92m  Downloaded[0m typeshare v1.0.5
+[1m[92m  Downloaded[0m typeshare-annotation v1.0.5
+[1m[92m  Downloaded[0m uname v0.1.1
+[1m[92m  Downloaded[0m unicode-truncate v1.1.0
+[1m[92m  Downloaded[0m unicode-xid v0.2.6
+[1m[92m  Downloaded[0m unicode_categories v0.1.1
+[1m[92m  Downloaded[0m unit-prefix v0.5.2
+[1m[92m  Downloaded[0m tree-sitter-javascript v0.25.0
+[1m[92m  Downloaded[0m typed-path v0.13.0
+[1m[92m  Downloaded[0m utf8_iter v1.0.4
+[1m[92m  Downloaded[0m async-task v4.7.1
+[1m[92m  Downloaded[0m unicode-width v0.2.0
+[1m[92m  Downloaded[0m castaway v0.2.4
+[1m[92m  Downloaded[0m zvariant_derive v5.8.0
+[1m[92m  Downloaded[0m byteorder-lite v0.1.0
+[1m[92m  Downloaded[0m cached_proc_macro_types v0.1.1
+[1m[92m  Downloaded[0m zvariant_utils v3.2.1
+[1m[92m  Downloaded[0m cached_proc_macro v0.25.0
+[1m[92m  Downloaded[0m cap-fs-ext v4.0.2
+[1m[92m  Downloaded[0m zstd v0.13.3
+[1m[92m  Downloaded[0m bitmaps v3.1.0
+[1m[92m  Downloaded[0m byteorder v1.5.0
+[1m[92m  Downloaded[0m cbc v0.1.2
+[1m[92m  Downloaded[0m bytes-utils v0.1.4
+[1m[92m  Downloaded[0m camino v1.2.6
+[1m[92m  Downloaded[0m bytemuck_derive v1.10.2
+[1m[92m  Downloaded[0m cap-std v4.0.2
+[1m[92m  Downloaded[0m blake2 v0.10.6
+[1m[92m  Downloaded[0m cassowary v0.3.0
+[1m[92m  Downloaded[0m zopfli v0.8.3
+[1m[92m  Downloaded[0m bzip2 v0.6.1
+[1m[92m  Downloaded[0m cast5 v0.11.1
+[1m[92m  Downloaded[0m bitflags v2.13.2
+[1m[92m  Downloaded[0m cached v0.56.0
+[1m[92m  Downloaded[0m bytes v1.12.1
+[1m[92m  Downloaded[0m camellia v0.1.0
+[1m[92m  Downloaded[0m cap-primitives v4.0.3
+[1m[92m  Downloaded[0m winnow v0.4.1
+[1m[92m  Downloaded[0m crossbeam-epoch v0.9.21
+[1m[92m  Downloaded[0m crossbeam-queue v0.3.14
+[1m[92m  Downloaded[0m bitvec v1.1.1
+[1m[92m  Downloaded[0m tree-sitter-typescript v0.23.2
+[1m[92m  Downloaded[0m curve25519-dalek-derive v0.1.1
+[1m[92m  Downloaded[0m fixedbitset v0.4.2
+[1m[92m  Downloaded[0m cssparser-macros v0.6.1
+[1m[92m  Downloaded[0m findshlibs v0.10.2
+[1m[92m  Downloaded[0m fluent-uri v0.4.1
+[1m[92m  Downloaded[0m font-types v0.12.7
+[1m[92m  Downloaded[0m fraction v0.15.4
+[1m[92m  Downloaded[0m axum-macros v0.5.0
+[1m[92m  Downloaded[0m ahash v0.8.12
+[1m[92m  Downloaded[0m allocator-api2 v0.2.21
+[1m[92m  Downloaded[0m backon v1.6.0
+[1m[92m  Downloaded[0m async-lock v3.4.1
+[1m[92m  Downloaded[0m gix-chunk v0.7.1
+[1m[92m  Downloaded[0m futures-macro v0.3.34
+[1m[92m  Downloaded[0m getrandom v0.2.17
+[1m[92m  Downloaded[0m gix-blame v0.13.0
+[1m[92m  Downloaded[0m getrandom v0.4.3
+[1m[92m  Downloaded[0m getrandom v0.3.4
+[1m[92m  Downloaded[0m gcloud-storage v1.3.0
+[1m[92m  Downloaded[0m futures-util v0.3.34
+[1m[92m  Downloaded[0m async-io v2.5.0
+[1m[92m  Downloaded[0m async-lsp v0.2.4
+[1m[92m  Downloaded[0m base64 v0.13.1
+[1m[92m  Downloaded[0m two-face v0.4.3
+[1m[92m  Downloaded[0m gix-shallow v0.12.0
+[1m[92m  Downloaded[0m gix-trace v0.1.19
+[1m[92m  Downloaded[0m gix-utils v0.3.2
+[1m[92m  Downloaded[0m gix-validate v0.11.1
+[1m[92m  Downloaded[0m hex v0.4.3
+[1m[92m  Downloaded[0m humantime v2.4.0
+[1m[92m  Downloaded[0m gix-worktree v0.52.0
+[1m[92m  Downloaded[0m hmac v0.12.1
+[1m[92m  Downloaded[0m hmac v0.13.0
+[1m[92m  Downloaded[0m humantime-serde v1.1.1
+[1m[92m  Downloaded[0m gix-worktree-state v0.30.0
+[1m[92m  Downloaded[0m hf-hub v0.4.3
+[1m[92m  Downloaded[0m hybrid-array v0.4.15
+[1m[92m  Downloaded[0m hyper-timeout v0.5.2
+[1m[92m  Downloaded[0m hyper v1.12.0
+[1m[92m  Downloaded[0m hyper-util v0.1.19
+[1m[92m  Downloaded[0m line-wrap v0.1.1
+[1m[92m  Downloaded[0m ident_case v1.0.1
+[1m[92m  Downloaded[0m linked-hash-map v0.5.6
+[1m[92m  Downloaded[0m lru v0.12.5
+[1m[92m  Downloaded[0m new_debug_unreachable v1.0.6
+[1m[92m  Downloaded[0m number_prefix v0.4.0
+[1m[92m  Downloaded[0m opaque-debug v0.3.1
+[1m[92m  Downloaded[0m openssl-probe v0.2.2
+[1m[92m  Downloaded[0m pico-args v0.5.0
+[1m[92m  Downloaded[0m nohash-hasher v0.2.0
+[1m[92m  Downloaded[0m idna_adapter v1.1.0
+[1m[92m  Downloaded[0m olpc-cjson v0.1.4
+[1m[92m  Downloaded[0m lru-slab v0.1.3
+[1m[92m  Downloaded[0m linkify v0.10.0
+[1m[92m  Downloaded[0m obfstr v0.4.6
+[1m[92m  Downloaded[0m ocb3 v0.1.0
+[1m[92m  Downloaded[0m pin-project-internal v1.1.10
+[1m[92m  Downloaded[0m onig v6.5.3
+[1m[92m  Downloaded[0m iana-time-zone v0.1.65
+[1m[92m  Downloaded[0m aes v0.8.4
+[1m[92m  Downloaded[0m arboard v3.7.0
+[1m[92m  Downloaded[0m backtrace v0.3.69
+[1m[92m  Downloaded[0m litrs v1.0.1
+[1m[92m  Downloaded[0m image-webp v0.2.0
+[1m[92m  Downloaded[0m log v0.4.35
+[1m[92m  Downloaded[0m opentelemetry v0.21.0
+[1m[92m  Downloaded[0m ignore v0.4.30
+[1m[92m  Downloaded[0m pin-project v1.1.10
+[1m[92m  Downloaded[0m oauth2 v5.0.0
+[1m[92m  Downloaded[0m idna v1.1.0
+[1m[92m  Downloaded[0m lopdf v0.42.0
+[1m[92m  Downloaded[0m aws-smithy-runtime-api v1.9.2
+[1m[92m  Downloaded[0m proc-macro2 v1.0.107
+[1m[92m  Downloaded[0m nix v0.26.4
+[1m[92m  Downloaded[0m pretty_assertions v1.4.1
+[1m[92m  Downloaded[0m image v0.25.10
+[1m[92m  Downloaded[0m prometheus v0.14.0
+[1m[92m  Downloaded[0m prodash v31.0.0
+[1m[92m  Downloaded[0m nix v0.30.1
+[1m[92m  Downloaded[0m nix v0.31.3
+[1m[92m  Downloaded[0m psl-types v2.0.11
+[1m[92m  Downloaded[0m replace_with v0.1.8
+[1m[92m  Downloaded[0m secrecy v0.10.3
+[1m[92m  Downloaded[0m rand_chacha v0.3.1
+[1m[92m  Downloaded[0m serdect v0.2.0
+[1m[92m  Downloaded[0m serde_ignored v0.1.14
+[1m[92m  Downloaded[0m shell-words v1.1.1
+[1m[92m  Downloaded[0m socks v0.3.4
+[1m[92m  Downloaded[0m rgb v0.8.53
+[1m[92m  Downloaded[0m siphasher v1.0.4
+[1m[92m  Downloaded[0m schemars_derive v1.2.3
+[1m[92m  Downloaded[0m sentry-tracing v0.42.0
+[1m[92m  Downloaded[0m signal-hook-registry v1.4.8
+[1m[92m  Downloaded[0m agent-client-protocol-schema v0.11.4
+[1m[92m  Downloaded[0m reqwest-middleware v0.4.2
+[1m[92m  Downloaded[0m quanta v0.12.3
+[1m[92m  Downloaded[0m ripemd v0.1.3
+[1m[92m  Downloaded[0m shellexpand v3.1.2
+[1m[92m  Downloaded[0m smartstring v1.0.1
+[1m[92m  Downloaded[0m semver v1.0.28
+[1m[92m  Downloaded[0m quinn-udp v0.5.14
+[1m[92m  Downloaded[0m rtrb v0.3.6
+[1m[92m  Downloaded[0m pulldown-cmark-to-cmark v21.1.0
+[1m[92m  Downloaded[0m smallvec v1.16.4
+[1m[92m  Downloaded[0m rapidhash v4.5.1
+[1m[92m  Downloaded[0m ryu-js v1.0.3
+[1m[92m  Downloaded[0m regex-lite v0.1.9
+[1m[92m  Downloaded[0m rustls-webpki v0.103.16
+[1m[92m  Downloaded[0m rand v0.10.3
+[1m[92m  Downloaded[0m async-compression v0.4.36
+[1m[92m  Downloaded[0m serde_json v1.0.151
+[1m[92m  Downloaded[0m rmcp v0.8.5
+[1m[92m  Downloaded[0m cssparser v0.37.0
+[1m[92m  Downloaded[0m rusqlite v0.37.0
+[1m[92m  Downloaded[0m aws-sdk-sso v1.90.0
+[1m[92m  Downloaded[0m base64 v0.23.1
+[1m[92m  Downloaded[0m base64 v0.21.7
+[1m[92m  Downloaded[0m tap v1.0.1
+[1m[92m  Downloaded[0m base64 v0.22.1
+[1m[92m  Downloaded[0m arc-swap v1.9.3
+[1m[92m  Downloaded[0m aws-sigv4 v1.3.6
+[1m[92m  Downloaded[0m aws-runtime v1.5.16
+[1m[92m  Downloaded[0m tikv-jemallocator v0.7.0
+[1m[92m  Downloaded[0m tokio-macros v2.7.2
+[1m[92m  Downloaded[0m thiserror-impl v2.0.20
+[1m[92m  Downloaded[0m tiny-skia-path v0.12.0
+[1m[92m  Downloaded[0m textwrap v0.16.1
+[1m[92m  Downloaded[0m tracing-chrome v0.7.2
+[1m[92m  Downloaded[0m untrusted v0.7.1
+[1m[92m  Downloaded[0m utf8-zero v0.8.1
+[1m[92m  Downloaded[0m triomphe v0.1.11
+[1m[92m  Downloaded[0m unicode-bom v2.0.3
+[1m[92m  Downloaded[0m unicode-ccc v0.4.0
+[1m[92m  Downloaded[0m aws-smithy-types v1.3.4
+[1m[92m  Downloaded[0m aws-smithy-http-client v1.1.4
+[1m[92m  Downloaded[0m vsimd v0.8.0
+[1m[92m  Downloaded[0m tracing-appender v0.2.5
+[1m[92m  Downloaded[0m walkdir v2.5.0
+[1m[92m  Downloaded[0m unicode-general-category v1.1.0
+[1m[92m  Downloaded[0m onig_sys v69.9.3
+[1m[92m  Downloaded[0m tracing-attributes v0.1.31
+[1m[92m  Downloaded[0m unicode-ident v1.0.27
+[1m[92m  Downloaded[0m tokio-util v0.7.19
+[1m[92m  Downloaded[0m tracing-log v0.2.0
+[1m[92m  Downloaded[0m unsafe-libyaml v0.2.11
+[1m[92m  Downloaded[0m tui-scrollbar v0.2.8
+[1m[92m  Downloaded[0m wildmatch v2.7.0
+[1m[92m  Downloaded[0m color_quant v1.1.0
+[1m[92m  Downloaded[0m xmlwriter v0.1.0
+[1m[92m  Downloaded[0m block-buffer v0.12.1
+[1m[92m  Downloaded[0m whoami v1.6.1
+[1m[92m  Downloaded[0m xmlparser v0.13.6
+[1m[92m  Downloaded[0m zbus_names v4.2.0
+[1m[92m  Downloaded[0m aes v0.9.2
+[1m[92m  Downloaded[0m cfb-mode v0.8.2
+[1m[92m  Downloaded[0m blowfish v0.9.1
+[1m[92m  Downloaded[0m bm25 v2.3.2
+[1m[92m  Downloaded[0m buffer-redux v1.0.2
+[1m[92m  Downloaded[0m cbc v0.2.1
+[1m[92m  Downloaded[0m clru v0.6.3
+[1m[92m  Downloaded[0m yaml-rust v0.4.5
+[1m[92m  Downloaded[0m zbus_macros v5.12.0
+[1m[92m  Downloaded[0m cfb v0.7.3
+[1m[92m  Downloaded[0m wayland-scanner v0.31.8
+[1m[92m  Downloaded[0m webbrowser v1.1.0
+[1m[92m  Downloaded[0m yansi v1.0.1
+[1m[92m  Downloaded[0m ttf-parser v0.25.1
+[1m[92m  Downloaded[0m cc v1.4.7
+[1m[92m  Downloaded[0m ratatui v0.29.0
+[1m[92m  Downloaded[0m ashpd v0.10.3
+[1m[92m  Downloaded[0m aws-smithy-runtime v1.9.4
+[1m[92m  Downloaded[0m aes-gcm v0.10.3
+[1m[92m  Downloaded[0m cssparser-macros v0.7.1
+[1m[92m  Downloaded[0m crc32c v0.6.8
+[1m[92m  Downloaded[0m cpubits v0.1.1
+[1m[92m  Downloaded[0m constant_time_eq v0.4.2
+[1m[92m  Downloaded[0m futures-task v0.3.34
+[1m[92m  Downloaded[0m crossbeam-deque v0.8.8
+[1m[92m  Downloaded[0m cookie_store v0.22.0
+[1m[92m  Downloaded[0m filetime v0.2.27
+[1m[92m  Downloaded[0m sha1-checked v0.10.0
+[1m[92m  Downloaded[0m futures-executor v0.3.34
+[1m[92m  Downloaded[0m futures-timer v3.0.4
+[1m[92m  Downloaded[0m fs_extra v1.3.0
+[1m[92m  Downloaded[0m crossbeam-channel v0.5.17
+[1m[92m  Downloaded[0m flate2 v1.1.10
+[1m[92m  Downloaded[0m office_oxide v0.1.16
+[1m[92m  Downloaded[0m ghash v0.5.1
+[1m[92m  Downloaded[0m fontdb v0.23.0
+[1m[92m  Downloaded[0m gix-bitmap v0.3.1
+[1m[92m  Downloaded[0m gix-config-value v0.18.0
+[1m[92m  Downloaded[0m aws-config v1.8.11
+[1m[92m  Downloaded[0m aws-sdk-ssooidc v1.92.0
+[1m[92m  Downloaded[0m heck v0.5.0
+[1m[92m  Downloaded[0m hmac-sha256 v1.1.15
+[1m[92m  Downloaded[0m gix-error v0.2.3
+[1m[92m  Downloaded[0m gix-refspec v0.41.0
+[1m[92m  Downloaded[0m gix-submodule v0.30.0
+[1m[92m  Downloaded[0m gix-features v0.48.0
+[1m[92m  Downloaded[0m gix-packetline v0.21.3
+[1m[92m  Downloaded[0m group v0.13.0
+[1m[92m  Downloaded[0m gix-status v0.30.0
+[1m[92m  Downloaded[0m gix-merge v0.16.0
+[1m[92m  Downloaded[0m hayro-jbig2 v0.3.0
+[1m[92m  Downloaded[0m syntect v5.3.0
+[1m[92m  Downloaded[0m aho-corasick v1.1.5
+[1m[92m  Downloaded[0m h2 v0.4.20
+[1m[92m  Downloaded[0m gix v0.83.0
+[1m[92m  Downloaded[0m jiff-static v0.2.38
+[1m[92m  Downloaded[0m keccak v0.1.6
+[1m[92m  Downloaded[0m md-5 v0.10.6
+[1m[92m  Downloaded[0m phf_shared v0.13.1
+[1m[92m  Downloaded[0m quick-error v2.0.1
+[1m[92m  Downloaded[0m pulldown-cmark-escape v0.11.0
+[1m[92m  Downloaded[0m httpdate v1.0.3
+[1m[92m  Downloaded[0m instant v0.1.13
+[1m[92m  Downloaded[0m mimalloc v0.1.52
+[1m[92m  Downloaded[0m axum v0.8.4
+[1m[92m  Downloaded[0m aws-sdk-sts v1.94.0
+[1m[92m  Downloaded[0m async-std v1.13.2
+[1m[92m  Downloaded[0m prometheus-parse v0.2.5
+[1m[92m  Downloaded[0m phf_macros v0.11.3
+[1m[92m  Downloaded[0m md-5 v0.11.0
+[1m[92m  Downloaded[0m inotify v0.11.5
+[1m[92m  Downloaded[0m kstring v2.0.0
+[1m[92m  Downloaded[0m ordered-float v4.6.0
+[1m[92m  Downloaded[0m polycool v0.4.0
+[1m[92m  Downloaded[0m proc-macro-error2 v2.0.1
+[1m[92m  Downloaded[0m io-extras v0.19.0
+[1m[92m  Downloaded[0m mmap-rs v0.7.0
+[1m[92m  Downloaded[0m plist v1.5.1
+[1m[92m  Downloaded[0m lsp-types v0.95.1
+[1m[92m  Downloaded[0m pprof v0.15.0
+[1m[92m  Downloaded[0m indicatif v0.17.8
+[1m[92m  Downloaded[0m lsp-types v0.97.0
+[1m[92m  Downloaded[0m num-bigint-dig v0.8.6
+[1m[92m  Downloaded[0m itertools v0.14.0
+[1m[92m  Downloaded[0m quick-xml v0.30.0
+[1m[92m  Downloaded[0m proptest v1.8.0
+[1m[92m  Downloaded[0m ndarray v0.15.6
+[1m[92m  Downloaded[0m gjson v0.8.1
+[1m[92m  Downloaded[0m ref-cast v1.0.25
+[1m[92m  Downloaded[0m rustc_version v0.4.1
+[1m[92m  Downloaded[0m sentry-backtrace v0.42.0
+[1m[92m  Downloaded[0m relative-path v2.0.2
+[1m[92m  Downloaded[0m rustversion v1.0.23
+[1m[92m  Downloaded[0m aws-lc-rs v1.19.0
+[1m[92m  Downloaded[0m rustls-platform-verifier v0.7.1
+[1m[92m  Downloaded[0m sentry-types v0.42.0
+[1m[92m  Downloaded[0m linux-raw-sys v0.4.15
+[1m[92m  Downloaded[0m strict-num v0.1.1
+[1m[92m  Downloaded[0m stable_deref_trait v1.2.1
+[1m[92m  Downloaded[0m tagptr v0.2.0
+[1m[92m  Downloaded[0m token-source v1.0.0
+[1m[92m  Downloaded[0m tokio-retry v0.3.0
+[1m[92m  Downloaded[0m serde_plain v1.0.2
+[1m[92m  Downloaded[0m shlex v2.0.1
+[1m[92m  Downloaded[0m sse-stream v0.2.6
+[1m[92m  Downloaded[0m streaming-iterator v0.1.9
+[1m[92m  Downloaded[0m string_cache v0.8.8
+[1m[92m  Downloaded[0m tonic-types v0.14.5
+[1m[92m  Downloaded[0m reqwest v0.12.28
+[1m[92m  Downloaded[0m serde_yaml v0.9.21
+[1m[92m  Downloaded[0m serde_yaml_ng v0.10.0
+[1m[92m  Downloaded[0m signal-hook v0.3.18
+[1m[92m  Downloaded[0m socket2 v0.5.10
+[1m[92m  Downloaded[0m slotmap v1.1.1
+[1m[92m  Downloaded[0m tree-sitter-go v0.25.0
+[1m[92m  Downloaded[0m tower-http v0.6.11
+[1m[92m  Downloaded[0m wait-timeout v0.2.1
+[1m[92m  Downloaded[0m sysinfo v0.30.13
+[1m[92m  Downloaded[0m universal-hash v0.5.1
+[1m[92m  Downloaded[0m utf-8 v0.7.6
+[1m[92m  Downloaded[0m wayland-sys v0.31.8
+[1m[92m  Downloaded[0m ctutils v0.4.2
+[1m[92m  Downloaded[0m rustybuzz v0.20.1
+[1m[92m  Downloaded[0m taffy v0.12.2
+[1m[92m  Downloaded[0m versions v8.0.1
+[1m[92m  Downloaded[0m web-time v1.1.0
+[1m[92m  Downloaded[0m jpeg-decoder v0.3.2
+[1m[92m  Downloaded[0m ureq-proto v0.5.3
+[1m[92m  Downloaded[0m zeroize_derive v1.4.3
+[1m[92m  Downloaded[0m zmij v1.0.23
+[1m[92m  Downloaded[0m blocking v1.6.2
+[1m[92m  Downloaded[0m const-random-macro v0.1.16
+[1m[92m  Downloaded[0m rustix v0.38.44
+[1m[92m  Downloaded[0m unicode-segmentation v1.12.0
+[1m[92m  Downloaded[0m compression-core v0.4.34
+[1m[92m  Downloaded[0m float-cmp v0.9.0
+[1m[92m  Downloaded[0m fs-set-times v0.20.3
+[1m[92m  Downloaded[0m flagset v0.4.7
+[1m[92m  Downloaded[0m crc24 v0.1.6
+[1m[92m  Downloaded[0m cpufeatures v0.3.1
+[1m[92m  Downloaded[0m cmake v0.1.54
+[1m[92m  Downloaded[0m convert_case v0.6.0
+[1m[92m  Downloaded[0m bytecount v0.6.9
+[1m[92m  Downloaded[0m zstd v0.14.3
+[1m[92m  Downloaded[0m unicode-normalization v0.1.24
+[1m[92m  Downloaded[0m const-hex v1.19.3
+[1m[92m  Downloaded[0m crc32fast v1.5.3
+[1m[92m  Downloaded[0m bytemuck v1.25.2
+[1m[92m  Downloaded[0m winnow v0.7.15
+[1m[92m  Downloaded[0m fxhash v0.2.1
+[1m[92m  Downloaded[0m gethostname v1.0.1
+[1m[92m  Downloaded[0m gix-quote v0.7.1
+[1m[92m  Downloaded[0m gix-actor v0.41.0
+[1m[92m  Downloaded[0m gix-ignore v0.21.0
+[1m[92m  Downloaded[0m gix-sec v0.14.0
+[1m[92m  Downloaded[0m brotli-decompressor v5.0.3
+[1m[92m  Downloaded[0m gix-hash v0.25.0
+[1m[92m  Downloaded[0m gix-url v0.36.0
+[1m[92m  Downloaded[0m hash32 v0.3.1
+[1m[92m  Downloaded[0m blake3 v1.8.7
+[1m[92m  Downloaded[0m gix-diff v0.63.0
+[1m[92m  Downloaded[0m rust-stemmers v1.2.0
+[1m[92m  Downloaded[0m curve25519-dalek v4.1.3
+[1m[92m  Downloaded[0m zerocopy v0.8.63
+[1m[92m  Downloaded[0m git2 v0.20.4
+[1m[92m  Downloaded[0m linux-raw-sys v0.12.1
+[1m[92m  Downloaded[0m rquickjs-sys v0.11.0
+[1m[92m  Downloaded[0m inout v0.2.5
+[1m[92m  Downloaded[0m markup5ever v0.38.0
+[1m[92m  Downloaded[0m is_ci v1.2.0
+[1m[92m  Downloaded[0m kasuari v0.4.9
+[1m[92m  Downloaded[0m httparse v1.10.1
+[1m[92m  Downloaded[0m matchit v0.8.4
+[1m[92m  Downloaded[0m nonempty v0.12.0
+[1m[92m  Downloaded[0m num_cpus v1.17.0
+[1m[92m  Downloaded[0m indicatif v0.18.4
+[1m[92m  Downloaded[0m mime_guess v2.0.5
+[1m[92m  Downloaded[0m num-integer v0.1.47
+[1m[92m  Downloaded[0m optfield v0.3.0
+[1m[92m  Downloaded[0m memchr v2.8.3
+[1m[92m  Downloaded[0m miniz_oxide v0.9.1
+[1m[92m  Downloaded[0m phf_generator v0.14.0
+[1m[92m  Downloaded[0m phf_shared v0.14.0
+[1m[92m  Downloaded[0m tokio v1.53.3
+[1m[92m  Downloaded[0m itertools v0.15.0
+[1m[92m  Downloaded[0m polling v3.10.0
+[1m[92m  Downloaded[0m powerfmt v0.2.0
+[1m[92m  Downloaded[0m p521 v0.13.3
+[1m[92m  Downloaded[0m nom v8.0.0
+[1m[92m  Downloaded[0m process-wrap v9.0.0
+[1m[92m  Downloaded[0m ref-cast-impl v1.0.25
+[1m[92m  Downloaded[0m ring v0.17.14
+[1m[92m  Downloaded[0m safemem v0.3.3
+[1m[92m  Downloaded[0m rand_core v0.6.4
+[1m[92m  Downloaded[0m rustix-linux-procfs v0.1.1
+[1m[92m  Downloaded[0m sentry-panic v0.42.0
+[1m[92m  Downloaded[0m signal-hook-mio v0.2.5
+[1m[92m  Downloaded[0m signature v2.2.0
+[1m[92m  Downloaded[0m supports-color v3.0.2
+[1m[92m  Downloaded[0m shlex v1.3.0
+[1m[92m  Downloaded[0m servo_arc v0.4.3
+[1m[92m  Downloaded[0m snafu-derive v0.8.9
+[1m[92m  Downloaded[0m ryu v1.0.20
+[1m[92m  Downloaded[0m rustls-platform-verifier v0.6.2
+[1m[92m  Downloaded[0m socket2 v0.6.5
+[1m[92m  Downloaded[0m thread_local v1.1.10
+[1m[92m  Downloaded[0m tiny-keccak v2.0.2
+[1m[92m  Downloaded[0m tower-layer v0.3.3
+[1m[92m  Downloaded[0m twofish v0.7.1
+[1m[92m  Downloaded[0m time-macros v0.2.32
+[1m[92m  Downloaded[0m jiff v0.2.38
+[1m[92m  Downloaded[0m tendril v0.5.1
+[1m[92m  Downloaded[0m unicode-properties v0.1.4
+[1m[92m  Downloaded[0m tinyvec v1.13.3
+[1m[92m  Downloaded[0m serde v1.0.229
+[1m[92m  Downloaded[0m pulldown-cmark v0.13.6
+[1m[92m  Downloaded[0m typed-path v0.12.4
+[1m[92m  Downloaded[0m reqwest v0.13.5
+[1m[92m  Downloaded[0m ratatui-core v0.1.2
+[1m[92m  Downloaded[0m quick-xml v0.38.4
+[1m[92m  Downloaded[0m petgraph v0.7.1
+[1m[92m  Downloaded[0m borrow-or-share v0.2.4
+[1m[92m  Downloaded[0m waitpid-any v0.3.0
+[1m[92m  Downloaded[0m cpufeatures v0.2.17
+[1m[92m  Downloaded[0m crunchy v0.2.4
+[1m[92m  Downloaded[0m cfg_aliases v0.2.2
+[1m[92m  Downloaded[0m web_atoms v0.2.6
+[1m[92m  Downloaded[0m command-fds v0.3.3
+[1m[92m  Downloaded[0m futures-sink v0.3.34
+[1m[92m  Downloaded[0m inotify-sys v0.1.8
+[1m[92m  Downloaded[0m regress v0.10.5
+[1m[92m  Downloaded[0m const-oid v0.9.6
+[1m[92m  Downloaded[0m xml5ever v0.38.0
+[1m[92m  Downloaded[0m fixedbitset v0.5.7
+[1m[92m  Downloaded[0m foldhash v0.2.0
+[1m[92m  Downloaded[0m unicode-width v0.1.14
+[1m[92m  Downloaded[0m glob v0.3.4
+[1m[92m  Downloaded[0m gix-revision v0.45.0
+[1m[92m  Downloaded[0m cookie v0.18.2
+[1m[92m  Downloaded[0m getopts v0.2.24
+[1m[92m  Downloaded[0m regex-syntax v0.8.11
+[1m[92m  Downloaded[0m fontconfig-parser v0.5.8
+[1m[92m  Downloaded[0m gif v0.14.2
+[1m[92m  Downloaded[0m cssparser v0.34.0
+[1m[92m  Downloaded[0m uuid v1.26.1
+[1m[92m  Downloaded[0m gix-imara-diff v0.2.1
+[1m[92m  Downloaded[0m clap v4.6.7
+[1m[92m  Downloaded[0m imbl-sized-chunks v0.1.3
+[1m[92m  Downloaded[0m heapless v0.8.0
+[1m[92m  Downloaded[0m zvariant v5.8.0
+[1m[92m  Downloaded[0m html5ever v0.38.0
+[1m[92m  Downloaded[0m syn v2.0.119
+[1m[92m  Downloaded[0m url v2.5.8
+[1m[92m  Downloaded[0m zip v2.6.1
+[1m[92m  Downloaded[0m aws-sdk-s3 v1.24.0
+[1m[92m  Downloaded[0m gix-pack v0.70.0
+[1m[92m  Downloaded[0m zip v7.3.0
+[1m[92m  Downloaded[0m hashbrown v0.14.5
+[1m[92m  Downloaded[0m clap_builder v4.6.7
+[1m[92m  Downloaded[0m tracing v0.1.44
+[1m[92m  Downloaded[0m webpki-roots v1.0.11
+[1m[92m  Downloaded[0m is_terminal_polyfill v1.48.2
+[1m[92m  Downloaded[0m memoffset v0.9.1
+[1m[92m  Downloaded[0m markup5ever v0.39.0
+[1m[92m  Downloaded[0m num-conv v0.2.2
+[1m[92m  Downloaded[0m pollster v0.4.0
+[1m[92m  Downloaded[0m num v0.4.3
+[1m[92m  Downloaded[0m monostate v0.1.16
+[1m[92m  Downloaded[0m pastey v0.2.3
+[1m[92m  Downloaded[0m phf_shared v0.11.3
+[1m[92m  Downloaded[0m gimli v0.28.1
+[1m[92m  Downloaded[0m prost-build v0.14.1
+[1m[92m  Downloaded[0m reqwest-middleware v0.5.2
+[1m[92m  Downloaded[0m k256 v0.13.4
+[1m[92m  Downloaded[0m opentelemetry-otlp v0.32.0
+[1m[92m  Downloaded[0m prettyplease v0.2.37
+[1m[92m  Downloaded[0m reqwest-eventsource v0.6.0
+[1m[92m  Downloaded[0m rangemap v1.6.0
+[1m[92m  Downloaded[0m bstr v1.13.1
+[1m[92m  Downloaded[0m rsa v0.9.10
+[1m[92m  Downloaded[0m jsonschema v0.30.0
+[1m[92m  Downloaded[0m libm v0.2.16
+[1m[92m  Downloaded[0m prost-reflect v0.16.2
+[1m[92m  Downloaded[0m minijinja v2.21.0
+[1m[92m  Downloaded[0m p384 v0.13.1
+[1m[92m  Downloaded[0m quinn-proto v0.11.19
+[1m[92m  Downloaded[0m scopeguard v1.2.0
+[1m[92m  Downloaded[0m rustls v0.23.46
+[1m[92m  Downloaded[0m strum v0.26.3
+[1m[92m  Downloaded[0m serde_derive_internals v0.30.0
+[1m[92m  Downloaded[0m serde_path_to_error v0.1.20
+[1m[92m  Downloaded[0m simplecss v0.2.1
+[1m[92m  Downloaded[0m thiserror-impl v1.0.69
+[1m[92m  Downloaded[0m svgtypes v0.16.1
+[1m[92m  Downloaded[0m pdf-inspector v1.15.0
+[1m[92m  Downloaded[0m tempfile v3.27.0
+[1m[92m  Downloaded[0m tonic-build v0.14.5
+[1m[92m  Downloaded[0m sentry v0.42.0
+[1m[92m  Downloaded[0m tokio-tungstenite v0.26.2
+[1m[92m  Downloaded[0m tokio-tungstenite v0.28.0
+[1m[92m  Downloaded[0m sharded-slab v0.1.7
+[1m[92m  Downloaded[0m tree-sitter-language v0.1.3
+[1m[92m  Downloaded[0m unarray v0.1.4
+[1m[92m  Downloaded[0m urlencoding v2.1.3
+[1m[92m  Downloaded[0m tungstenite v0.26.2
+[1m[92m  Downloaded[0m block-padding v0.4.2
+[1m[92m  Downloaded[0m tree-sitter-python v0.25.0
+[1m[92m  Downloaded[0m xattr v1.6.1
+[1m[92m  Downloaded[0m const-random v0.1.18
+[1m[92m  Downloaded[0m which v8.0.6
+[1m[92m  Downloaded[0m zune-core v0.5.0
+[1m[92m  Downloaded[0m cmac v0.7.2
+[1m[92m  Downloaded[0m concurrent-queue v2.5.0
+[1m[92m  Downloaded[0m cpu-time v1.0.0
+[1m[92m  Downloaded[0m bumpalo v3.20.3
+[1m[92m  Downloaded[0m cx448 v0.1.1
+[1m[92m  Downloaded[0m form_urlencoded v1.2.2
+[1m[92m  Downloaded[0m gix-command v0.9.0
+[1m[92m  Downloaded[0m gcloud-metadata v1.0.2
+[1m[92m  Downloaded[0m libgit2-sys v0.18.8+1.9.7
+[1m[92m  Downloaded[0m crypto-bigint v0.5.5
+[1m[92m  Downloaded[0m foldhash v0.1.5
+[1m[92m  Downloaded[0m gix-attributes v0.33.0
+[1m[92m  Downloaded[0m gix-negotiate v0.31.0
+[1m[92m  Downloaded[0m zerocopy-derive v0.8.63
+[1m[92m  Downloaded[0m memo-map v0.3.4
+[1m[92m  Downloaded[0m tree-sitter-rust v0.24.2
+[1m[92m  Downloaded[0m gix-revwalk v0.31.0
+[1m[92m  Downloaded[0m indoc v2.0.7
+[1m[92m  Downloaded[0m kv-log-macro v1.0.7
+[1m[92m  Downloaded[0m nu-ansi-term v0.50.3
+[1m[92m  Downloaded[0m globset v0.4.19
+[1m[92m  Downloaded[0m markup5ever v0.14.0
+[1m[92m  Downloaded[0m tree-sitter-bash v0.25.1
+[1m[92m  Downloaded[0m indexmap v1.9.3
+[1m[92m  Downloaded[0m notify v8.2.0
+[1m[92m  Downloaded[0m spm_precompiled v0.1.4
+[1m[92m  Downloaded[0m chrono v0.4.45
+[1m[92m  Downloaded[0m miniz_oxide v0.8.9
+[1m[92m  Downloaded[0m hayro-jpeg2000 v0.4.1
+[1m[92m  Downloaded[0m html2text v0.16.7
+[1m[92m  Downloaded[0m itertools v0.12.1
+[1m[92m  Downloaded[0m option-ext v0.2.0
+[1m[92m  Downloaded[0m paste v1.0.15
+[1m[92m  Downloaded[0m rand_core v0.9.5
+[1m[92m  Downloaded[0m pin-project-lite v0.2.17
+[1m[92m  Downloaded[0m polyval v0.6.2
+[1m[92m  Downloaded[0m safetensors v0.5.2
+[1m[92m  Downloaded[0m rquickjs v0.11.0
+[1m[92m  Downloaded[0m pgp v0.21.0
+[1m[92m  Downloaded[0m portable-atomic v1.15.0
+[1m[92m  Downloaded[0m serde_urlencoded v0.7.1
+[1m[92m  Downloaded[0m sha1_smol v1.0.1
+[1m[92m  Downloaded[0m toml_datetime v0.6.8
+[1m[92m  Downloaded[0m want v0.3.2
+[1m[92m  Downloaded[0m smallstr v0.3.1
+[1m[92m  Downloaded[0m gix-worktree-stream v0.32.0
+[1m[92m  Downloaded[0m grid v1.0.1
+[1m[92m  Downloaded[0m strum_macros v0.28.0
+[1m[92m  Downloaded[0m toml_writer v1.1.3+spec-1.1.0
+[1m[92m  Downloaded[0m crypto-common v0.1.7
+[1m[92m  Downloaded[0m fs2 v0.4.3
+[1m[92m  Downloaded[0m cfg_aliases v0.1.1
+[1m[92m  Downloaded[0m quick-xml v0.42.0
+[1m[92m  Downloaded[0m tendril v0.4.3
+[1m[92m  Downloaded[0m generic-array v0.14.7
+[1m[92m  Downloaded[0m cipher v0.4.4
+[1m[92m  Downloaded[0m hostname v0.4.2
+[1m[92m  Downloaded[0m unicode-script v0.5.8
+[1m[92m  Downloaded[0m wyz v0.5.1
+[1m[92m  Downloaded[0m chacha20 v0.10.2
+[1m[92m  Downloaded[0m clap_derive v4.6.7
+[1m[92m  Downloaded[0m crossbeam-utils v0.8.23
+[1m[92m  Downloaded[0m gix-archive v0.32.0
+[1m[92m  Downloaded[0m tracing-opentelemetry v0.33.0
+[1m[92m  Downloaded[0m gcloud-auth v1.4.0
+[1m[92m  Downloaded[0m wayland-backend v0.3.12
+[1m[92m  Downloaded[0m gix-tempfile v23.0.0
+[1m[92m  Downloaded[0m zune-jpeg v0.5.7
+[1m[92m  Downloaded[0m gix-ref v0.63.0
+[1m[92m  Downloaded[0m usvg v0.47.0
+[1m[92m  Downloaded[0m imbl v3.0.0
+[1m[92m  Downloaded[0m sqlite-vec v0.1.7-alpha.10
+[1m[92m  Downloaded[0m tracing-subscriber v0.3.23
+[1m[92m  Downloaded[0m is-terminal v0.4.17
+[1m[92m  Downloaded[0m harfrust v0.12.0
+[1m[92m  Downloaded[0m jsonwebtoken v10.3.0
+[1m[92m  Downloaded[0m monostate-impl v0.1.16
+[1m[92m  Downloaded[0m markup5ever_rcdom v0.38.0+unofficial
+[1m[92m  Downloaded[0m read-fonts v0.41.0
+[1m[92m  Downloaded[0m outref v0.5.2
+[1m[92m  Downloaded[0m phf_macros v0.13.1
+[1m[92m  Downloaded[0m primeorder v0.13.6
+[1m[92m  Downloaded[0m rmcp v3.8.0
+[1m[92m  Downloaded[0m rand_chacha v0.9.0
+[1m[92m  Downloaded[0m rand_xoshiro v0.6.0
+[1m[92m  Downloaded[0m rustc-demangle v0.1.28
+[1m[92m  Downloaded[0m rustls-pki-types v1.15.1
+[1m[92m  Downloaded[0m publicsuffix v2.3.0
+[1m[92m  Downloaded[0m petgraph v0.6.5
+[1m[92m  Downloaded[0m moxcms v0.8.1
+[1m[92m  Downloaded[0m sentry-contexts v0.42.0
+[1m[92m  Downloaded[0m sentry-core v0.42.0
+[1m[92m  Downloaded[0m slab v0.4.12
+[1m[92m  Downloaded[0m symlink v0.1.0
+[1m[92m  Downloaded[0m stringprep v0.1.5
+[1m[92m  Downloaded[0m tikv-jemalloc-ctl v0.7.0
+[1m[92m  Downloaded[0m unicase v2.10.0
+[1m[92m  Downloaded[0m unicode-bidi-mirroring v0.4.0
+[1m[92m  Downloaded[0m toml_edit v0.23.5
+[1m[92m  Downloaded[0m zstd-sys v2.1.2+zstd.1.5.7
+[1m[92m  Downloaded[0m libmimalloc-sys v0.1.49
+[1m[92m  Downloaded[0m crypto-common v0.2.2
+[1m[92m  Downloaded[0m gix-glob v0.26.0
+[1m[92m  Downloaded[0m ureq v2.10.1
+[1m[92m  Downloaded[0m block-padding v0.3.3
+[1m[92m  Downloaded[0m cfg-if v1.0.5
+[1m[92m  Downloaded[0m clap_lex v1.0.1
+[1m[92m  Downloaded[0m crossbeam v0.8.5
+[1m[92m  Downloaded[0m futf v0.1.5
+[1m[92m  Downloaded[0m convert_case v0.10.0
+[1m[92m  Downloaded[0m gix-date v0.15.3
+[1m[92m  Downloaded[0m ureq v3.2.1
+[1m[92m  Downloaded[0m gix-index v0.51.0
+[1m[92m  Downloaded[0m winnow v1.0.4
+[1m[92m  Downloaded[0m rfc6979 v0.4.0
+[1m[92m  Downloaded[0m protobuf-support v3.7.2
+[1m[92m  Downloaded[0m matchers v0.2.0
+[1m[92m  Downloaded[0m hayro-ccitt v0.3.0
+[1m[92m  Downloaded[0m hashlink v0.10.0
+[1m[92m  Downloaded[0m serde_spanned v1.1.2
+[1m[92m  Downloaded[0m string_cache_codegen v0.6.1
+[1m[92m  Downloaded[0m num-complex v0.4.6
+[1m[92m  Downloaded[0m tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+[1m[92m  Downloaded[0m zlib-rs v0.6.8
+[1m[92m  Downloaded[0m sync_wrapper v1.0.2
+[1m[92m  Downloaded[0m infer v0.19.0
+[1m[92m  Downloaded[0m phf v0.13.1
+[1m[92m  Downloaded[0m simdutf8 v0.1.5
+[1m[92m  Downloaded[0m inout v0.1.4
+[1m[92m  Downloaded[0m jsonschema-regex v0.47.0
+[1m[92m  Downloaded[0m html-escape v0.2.15
+[1m[92m  Downloaded[0m kanal v0.1.1
+[1m[92m  Downloaded[0m toml v0.8.20
+[1m[92m  Downloaded[0m utf8parse v0.2.2
+[1m[92m  Downloaded[0m png v0.18.1
+[1m[92m  Downloaded[0m unicode-truncate v2.0.1
+[1m[92m  Downloaded[0m idea v0.5.1
+[1m[92m  Downloaded[0m infer v0.15.0
+[1m[92m  Downloaded[0m jobserver v0.1.34
+[1m[92m  Downloaded[0m weezl v0.1.12
+[1m[92m  Downloaded[0m wl-clipboard-rs v0.9.5
+[1m[92m  Downloaded[0m jiff-core v0.1.1
+[1m[92m  Downloaded[0m core_maths v0.1.1
+[1m[92m  Downloaded[0m num-iter v0.1.46
+[1m[92m  Downloaded[0m tungstenite v0.28.0
+[1m[92m  Downloaded[0m cron v0.17.0
+[1m[92m  Downloaded[0m gix-fs v0.21.1
+[1m[92m  Downloaded[0m unicode-linebreak v0.1.5
+[1m[92m  Downloaded[0m mid v4.0.0
+[1m[92m  Downloaded[0m phf_macros v0.14.0
+[1m[92m  Downloaded[0m libbz2-rs-sys v0.2.6
+[1m[92m  Downloaded[0m html5ever v0.39.0
+[1m[92m  Downloaded[0m hashbrown v0.15.5
+[1m[92m  Downloaded[0m gix-discover v0.51.0
+[1m[92m  Downloaded[0m quote v1.0.47
+[1m[92m  Downloaded[0m uuid-simd v0.8.0
+[1m[92m  Downloaded[0m opentelemetry-proto v0.32.0
+[1m[92m  Downloaded[0m parking_lot v0.12.5
+[1m[92m  Downloaded[0m symbolic-common v12.14.0
+[1m[92m  Downloaded[0m version_check v0.9.5
+[1m[92m  Downloaded[0m http-body v1.1.0
+[1m[92m  Downloaded[0m mime v0.3.17
+[1m[92m  Downloaded[0m hnsw_rs v0.3.5
+[1m[92m  Downloaded[0m wayland-protocols-wlr v0.3.10
+[1m[92m  Downloaded[0m ctr v0.9.2
+[1m[92m  Downloaded[0m radium v0.7.0
+[1m[92m  Downloaded[0m rhai_codegen v3.3.0
+[1m[92m  Downloaded[0m rustls-pemfile v2.2.0
+[1m[92m  Downloaded[0m rustc-hash v2.1.1
+[1m[92m  Downloaded[0m cpp_demangle v0.4.5
+[1m[92m  Downloaded[0m gix-traverse v0.57.0
+[1m[92m  Downloaded[0m rand_pcg v0.10.2
+[1m[92m  Downloaded[0m http v1.5.0
+[1m[92m  Downloaded[0m webpki-roots v0.26.11
+[1m[92m  Downloaded[0m rand_core v0.10.1
+[1m[92m  Downloaded[0m toml_datetime v0.7.5+spec-1.1.0
+[1m[92m  Downloaded[0m block-buffer v0.10.4
+[1m[92m  Downloaded[0m colorchoice v1.0.2
+[1m[92m  Downloaded[0m pkg-config v0.3.34
+[1m[92m  Downloaded[0m spki v0.7.3
+[1m[92m  Downloaded[0m unicode-joining-type v1.0.0
+[1m[92m  Downloaded[0m thiserror v2.0.20
+[1m[92m  Downloaded[0m vte v0.14.1
+[1m[92m  Downloaded[0m tokio-rustls v0.26.6
+[1m[92m  Downloaded[0m http v0.2.12
+[1m[92m  Downloaded[0m once_cell v1.21.4
+[1m[92m  Downloaded[0m futures-core v0.3.34
+[1m[92m  Downloaded[0m find-msvc-tools v0.1.15
+[1m[92m  Downloaded[0m futures-io v0.3.34
+[1m[92m  Downloaded[0m gix-lock v23.0.0
+[1m[92m  Downloaded[0m combine v4.6.9
+[1m[92m  Downloaded[0m toml v0.9.12+spec-1.1.0
+[1m[92m  Downloaded[0m gix-hashtable v0.15.0
+[1m[92m  Downloaded[0m indexmap v2.13.1
+[1m[92m  Downloaded[0m tokio-stream v0.1.19
+[1m[92m  Downloaded[0m ppv-lite86 v0.2.21
+[1m[92m  Downloaded[0m sec1 v0.7.3
+[1m[92m  Downloaded[0m strum_macros v0.26.4
+[1m[92m  Downloaded[0m quick-xml v0.41.0
+[1m[92m  Downloaded[0m vte v0.15.0
+[1m[92m  Downloaded[0m value-bag v1.14.1
+[1m[92m  Downloaded[0m wayland-client v0.31.12
+[1m[92m  Downloaded[0m funty v2.0.0
+[1m[92m  Downloaded[0m futures-lite v2.6.1
+[1m[92m  Downloaded[0m gix-pathspec v0.18.0
+[1m[92m  Downloaded[0m num-cmp v0.1.0
+[1m[92m  Downloaded[0m snafu v0.9.2
+[1m[92m  Downloaded[0m memmap2 v0.9.11
+[1m[92m  Downloaded[0m futures v0.3.34
+[1m[92m  Downloaded[0m unicode-vo v0.1.0
+[1m[92m  Downloaded[0m scraper v0.22.0
+[1m[92m  Downloaded[0m jsonwebtoken v11.1.0
+[1m[92m  Downloaded[0m gix-dir v0.25.0
+[1m[92m  Downloaded[0m gix-filter v0.30.0
+[1m[92m  Downloaded[0m toml_parser v1.1.5+spec-1.1.0
+[1m[92m  Downloaded[0m portable-pty v0.9.0
+[1m[92m  Downloaded[0m strum v0.27.2
+[1m[92m  Downloaded[0m strum v0.28.0
+[1m[92m  Downloaded[0m time-core v0.1.9
+[1m[92m  Downloaded[0m half v2.7.1
+[1m[92m  Downloaded[0m num-traits v0.2.19
+[1m[92m  Downloaded[0m weezl v0.2.1
+[1m[92m  Downloaded[0m fnv v1.0.7
+[1m[92m  Downloaded[0m console v0.16.6
+[1m[92m  Downloaded[0m gix-object v0.60.0
+[1m[92m  Downloaded[0m gix-protocol v0.61.0
+[1m[92m  Downloaded[0m static_assertions v1.1.0
+[1m[92m  Downloaded[0m string_cache_codegen v0.5.4
+[1m[92m  Downloaded[0m zstd-safe v7.3.0
+[1m[92m  Downloaded[0m http-body v0.4.6
+[1m[92m  Downloaded[0m path-clean v1.0.1
+[1m[92m  Downloaded[0m gix-commitgraph v0.37.0
+[1m[92m  Downloaded[0m model2vec-rs v0.3.0
+[1m[92m  Downloaded[0m rand_xorshift v0.4.0
+[1m[92m  Downloaded[0m tree_magic_mini v3.2.0
+[1m[92m  Downloaded[0m gix-transport v0.57.0
+[1m[92m  Downloaded[0m rand v0.8.8
+[1m[92m  Downloaded[0m idna_mapping v1.1.0
+[1m[92m  Downloaded[0m gix-config v0.56.0
+[1m[92m  Downloaded[0m rayon-core v1.13.0
+[1m[92m  Downloaded[0m hashbrown v0.16.1
+[1m[92m  Downloaded[0m http-body-util v0.1.5
+[1m[92m  Downloaded[0m percent-encoding v2.3.2
+[1m[92m  Downloaded[0m x25519-dalek v2.0.1
+[1m[92m  Downloaded[0m opentelemetry v0.32.0
+[1m[92m  Downloaded[0m serial2 v0.2.39
+[1m[92m  Downloaded[0m parking v2.2.1
+[1m[92m  Downloaded[0m console v0.15.8
+[1m[92m  Downloaded[0m procfs v0.17.0
+[1m[92m  Downloaded[0m compression-codecs v0.4.46
+[1m[92m  Downloaded[0m snafu-derive v0.9.2
+[1m[92m  Downloaded[0m multer v3.1.0
+[1m[92m  Downloaded[0m pbjson-build v0.9.0
+[1m[92m  Downloaded[0m phf v0.11.3
+[1m[92m  Downloaded[0m num_enum v0.7.2
+[1m[92m  Downloaded[0m phf_generator v0.13.1
+[1m[92m  Downloaded[0m rand v0.9.5
+[1m[92m  Downloaded[0m unicode-normalization-alignments v0.1.12
+[1m[92m  Downloaded[0m minimal-lexical v0.2.1
+[1m[92m  Downloaded[0m fluent-uri v0.1.4
+[1m[92m  Downloaded[0m hkdf v0.12.4
+[1m[92m  Downloaded[0m thiserror v1.0.69
+[1m[92m  Downloaded[0m zstd-safe v8.2.0
+[1m[92m  Downloaded[0m kurbo v0.13.1
+[1m[92m  Downloaded[0m toml_edit v0.19.8
+[1m[92m  Downloaded[0m similar v2.7.0
+[1m[92m  Downloaded[0m scraper v0.23.1
+[1m[92m  Downloaded[0m zeroize v1.8.2
+[1m[92m  Downloaded[0m gix-odb v0.80.0
+[1m[92m  Downloaded[0m home v0.5.9
+[1m[92m  Downloaded[0m fluent-uri v0.3.2
+[1m[92m  Downloaded[0m strum_macros v0.27.2
+[1m[92m  Downloaded[0m hdrhistogram v7.5.4
+[1m[92m  Downloaded[0m untrusted v0.9.0
+[1m[92m  Downloaded[0m zip v3.0.0
+[1m[92m  Downloaded[0m p256 v0.13.2
+[1m[92m  Downloaded[0m cipher v0.5.2
+[1m[92m  Downloaded[0m micromap v0.3.0
+[1m[92m  Downloaded[0m clap_complete v4.0.7
+[1m[92m  Downloaded[0m hashbrown v0.12.3
+[1m[92m  Downloaded[0m procfs-core v0.17.0
+[1m[92m  Downloaded[0m rayon-cond v0.4.0
+[1m[92m  Downloaded[0m tonic-prost-build v0.14.5
+[1m[92m  Downloaded[0m prost-derive v0.14.4
+[1m[92m  Downloaded[0m miniz_oxide v0.7.4
+[1m[92m  Downloaded[0m mio v1.2.4
+[1m[92m  Downloaded[0m futures-channel v0.3.34
+[1m[92m  Downloaded[0m const-oid v0.10.2
+[1m[92m  Downloaded[0m compact_str v0.9.1
+[1m[92m  Downloaded[0m compact_str v0.8.2
+[1m[92m  Downloaded[0m unicode-bidi v0.3.18
+[1m[92m  Downloaded[0m rquickjs-core v0.11.0
+[1m[92m  Downloaded[0m tree-sitter v0.26.13
+[1m[92m  Downloaded[0m wayland-protocols v0.32.10
+[1m[92m  Downloaded[0m sentry-anyhow v0.42.0
+[1m[92m  Downloaded[0m toml_edit v0.22.24
+[1m[92m  Downloaded[0m tonic v0.14.9
+[1m[92m  Downloaded[0m zbus v5.12.0
+[1m[92m  Downloaded[0m html5ever v0.29.0
+[1m[92m  Downloaded[0m jsonschema v0.47.0
+[1m[92m  Downloaded[0m typed-path v0.9.3
+[1m[92m  Downloaded[0m tokenizers v0.21.4
+[1m[92m  Downloaded[0m num-bigint v0.4.8
+[1m[92m  Downloaded[0m tough v0.24.0
+[1m[92m  Downloaded[0m rhai v1.27.0
+[1m[92m  Downloaded[0m opentelemetry_sdk v0.21.2
+[1m[92m  Downloaded[0m vcpkg v0.2.15
+[1m[92m  Downloaded[0m brotli-decompressor v6.2.0
+[1m[92m  Downloaded[0m rustix v1.1.6
+[1m[92m  Downloaded[0m htmd v0.5.6
+[1m[92m  Downloaded[0m symbolic-demangle v12.14.0
+[1m[92m  Downloaded[0m x11rb v0.13.1
+[1m[92m  Downloaded[0m hashbrown v0.17.1
+[1m[92m  Downloaded[0m rayon v1.12.0
+[1m[92m  Downloaded[0m moka v0.12.8
+[1m[92m  Downloaded[0m tiny-skia v0.12.0
+[1m[92m  Downloaded[0m time v0.3.55
+[1m[92m  Downloaded[0m yrs v0.27.3
+[1m[92m  Downloaded[0m brotli v9.1.1
+[1m[92m  Downloaded[0m libc v0.2.189
+[1m[92m  Downloaded[0m brotli v8.0.4
+[1m[92m  Downloaded[0m instability v0.3.4
+[1m[92m  Downloaded[0m serdect v0.3.0
+[1m[92m  Downloaded[0m io-lifetimes v2.0.4
+[1m[92m  Downloaded[0m x11rb-protocol v0.13.1
+[1m[92m  Downloaded[0m gix-path v0.12.0
+[1m[92m  Downloaded[0m libz-sys v1.1.31
+[1m[92m  Downloaded[0m zip v9.1.3
+[1m[92m  Downloaded[0m lazy_static v1.5.1
+[1m[92m  Downloaded[0m cmov v0.5.4
+[1m[92m  Downloaded[0m itertools v0.13.0
+[1m[92m  Downloaded[0m sha3 v0.10.9
+[1m[92m  Downloaded[0m pdf_oxide v0.3.77
+[1m[92m  Downloaded[0m libsqlite3-sys v0.35.0
+[1m[92m  Downloaded[0m aws-lc-sys v0.47.0
+[1m[92m   Compiling[0m proc-macro2 v1.0.107
+[1m[92m   Compiling[0m quote v1.0.47
+[1m[92m   Compiling[0m unicode-ident v1.0.27
+[1m[92m   Compiling[0m cfg-if v1.0.5
+[1m[92m   Compiling[0m libc v0.2.189
+[1m[92m   Compiling[0m serde_core v1.0.229
+[1m[92m   Compiling[0m syn v2.0.119
+[1m[92m   Compiling[0m syn v3.0.9
+[1m[92m   Compiling[0m serde_derive v1.0.229
+[1m[92m   Compiling[0m serde v1.0.229
+[1m[92m   Compiling[0m memchr v2.8.3
+[1m[92m   Compiling[0m itoa v1.0.18
+[1m[92m   Compiling[0m smallvec v1.16.4
+[1m[92m   Compiling[0m equivalent v1.0.3
+[1m[92m   Compiling[0m portable-atomic v1.15.0
+[1m[92m   Compiling[0m value-bag v1.14.1
+[1m[92m   Compiling[0m log v0.4.35
+[1m[92m   Compiling[0m once_cell v1.21.4
+[1m[92m   Compiling[0m bitflags v2.13.2
+[1m[92m   Compiling[0m autocfg v1.5.1
+[1m[92m   Compiling[0m allocator-api2 v0.2.21
+[1m[92m   Compiling[0m version_check v0.9.5
+[1m[92m   Compiling[0m jobserver v0.1.34
+[1m[92m   Compiling[0m shlex v2.0.1
+[1m[92m   Compiling[0m find-msvc-tools v0.1.15
+[1m[92m   Compiling[0m scopeguard v1.2.0
+[1m[92m   Compiling[0m cc v1.4.7
+[1m[92m   Compiling[0m lock_api v0.4.14
+[1m[92m   Compiling[0m zeroize_derive v1.4.3
+[1m[92m   Compiling[0m parking_lot_core v0.9.12
+[1m[92m   Compiling[0m zeroize v1.8.2
+[1m[92m   Compiling[0m foldhash v0.2.0
+[1m[92m   Compiling[0m parking_lot v0.12.5
+[1m[92m   Compiling[0m getrandom v0.2.17
+[1m[92m   Compiling[0m pin-project-lite v0.2.17
+[1m[92m   Compiling[0m hashbrown v0.16.1
+[1m[92m   Compiling[0m thiserror v2.0.20
+[1m[92m   Compiling[0m thiserror-impl v2.0.20
+[1m[92m   Compiling[0m futures-core v0.3.34
+[1m[92m   Compiling[0m indexmap v2.13.1
+[1m[92m   Compiling[0m rand_core v0.6.4
+[1m[92m   Compiling[0m subtle v2.6.1
+[1m[92m   Compiling[0m typenum v1.20.1
+[1m[92m   Compiling[0m zmij v1.0.23
+[1m[92m   Compiling[0m tinyvec v1.13.3
+[1m[92m   Compiling[0m libm v0.2.16
+[1m[92m   Compiling[0m bytes v1.12.1
+[1m[92m   Compiling[0m generic-array v0.14.7
+[1m[92m   Compiling[0m num-traits v0.2.19
+[1m[92m   Compiling[0m errno v0.3.14
+[1m[92m   Compiling[0m signal-hook-registry v1.4.8
+[1m[92m   Compiling[0m percent-encoding v2.3.2
+[1m[92m   Compiling[0m crypto-common v0.1.7
+[1m[92m   Compiling[0m crc32fast v1.5.3
+[1m[92m   Compiling[0m unicode-normalization v0.1.24
+[1m[92m   Compiling[0m mio v1.2.4
+[1m[92m   Compiling[0m serde_json v1.0.151
+[1m[92m   Compiling[0m fnv v1.0.7
+[1m[92m   Compiling[0m slab v0.4.12
+[1m[92m   Compiling[0m regex-syntax v0.8.11
+[1m[92m   Compiling[0m futures-sink v0.3.34
+[1m[92m   Compiling[0m pkg-config v0.3.34
+[1m[92m   Compiling[0m futures-io v0.3.34
+[1m[92m   Compiling[0m tokio-macros v2.7.2
+[1m[92m   Compiling[0m socket2 v0.6.5
+[1m[92m   Compiling[0m const-oid v0.9.6
+[1m[92m   Compiling[0m tokio v1.53.3
+[1m[92m   Compiling[0m zlib-rs v0.6.8
+[1m[92m   Compiling[0m futures-task v0.3.34
+[1m[92m   Compiling[0m tracing-core v0.1.36
+[1m[92m   Compiling[0m futures-channel v0.3.34
+[1m[92m   Compiling[0m block-buffer v0.10.4
+[1m[92m   Compiling[0m tracing-attributes v0.1.31
+[1m[92m   Compiling[0m digest v0.10.7
+[1m[92m   Compiling[0m byteorder v1.5.0
+[1m[92m   Compiling[0m tracing v0.1.44
+[1m[92m   Compiling[0m aho-corasick v1.1.5
+[1m[92m   Compiling[0m futures-macro v0.3.34
+[1m[92m   Compiling[0m form_urlencoded v1.2.2
+[1m[92m   Compiling[0m futures-util v0.3.34
+[1m[92m   Compiling[0m regex-automata v0.4.18
+[1m[92m   Compiling[0m cpufeatures v0.2.17
+[1m[92m   Compiling[0m unicode-joining-type v1.0.0
+[1m[92m   Compiling[0m ryu v1.0.20
+[1m[92m   Compiling[0m adler2 v2.0.1
+[1m[92m   Compiling[0m getrandom v0.3.4
+[1m[92m   Compiling[0m idna_mapping v1.1.0
+[1m[92m   Compiling[0m utf8_iter v1.0.4
+[1m[92m   Compiling[0m unicode-bidi v0.3.18
+[1m[92m   Compiling[0m crossbeam-utils v0.8.23
+[1m[92m   Compiling[0m http v1.5.0
+[1m[92m   Compiling[0m time-core v0.1.9
+[1m[92m   Compiling[0m zerocopy v0.8.63
+[1m[92m   Compiling[0m num-conv v0.2.2
+[1m[92m   Compiling[0m tokio-util v0.7.19
+[1m[92m   Compiling[0m zerocopy-derive v0.8.63
+[1m[92m   Compiling[0m powerfmt v0.2.0
+[1m[92m   Compiling[0m simd-adler32 v0.3.10
+[1m[92m   Compiling[0m idna_adapter v1.1.0
+[1m[92m   Compiling[0m idna v1.1.0
+[1m[92m   Compiling[0m miniz_oxide v0.9.1
+[1m[92m   Compiling[0m time-macros v0.2.32
+[1m[92m   Compiling[0m deranged v0.5.9
+[1m[92m   Compiling[0m flate2 v1.1.10
+[1m[92m   Compiling[0m time v0.3.55
+[1m[92m   Compiling[0m url v2.5.8
+[1m[92m   Compiling[0m ring v0.17.14
+[1m[92m   Compiling[0m http-body v1.1.0
+[1m[92m   Compiling[0m fastrand v2.5.0
+[1m[92m   Compiling[0m dunce v1.0.5
+[1m[92m   Compiling[0m base64 v0.22.1
+[1m[92m   Compiling[0m untrusted v0.9.0
+[1m[92m   Compiling[0m atomic-waker v1.1.2
+[1m[92m   Compiling[0m http-body-util v0.1.5
+[1m[92m   Compiling[0m heck v0.5.0
+[1m[92m   Compiling[0m httparse v1.10.1
+[1m[92m   Compiling[0m tower-service v0.3.3
+[1m[92m   Compiling[0m cmake v0.1.54
+[1m[92m   Compiling[0m rustix v1.1.6
+[1m[92m   Compiling[0m fs_extra v1.3.0
+[1m[92m   Compiling[0m aws-lc-sys v0.47.0
+[1m[92m   Compiling[0m ppv-lite86 v0.2.21
+[1m[92m   Compiling[0m linux-raw-sys v0.12.1
+[1m[92m   Compiling[0m rustls-pki-types v1.15.1
+[1m[92m   Compiling[0m ipnet v2.12.2
+[1m[92m   Compiling[0m unicase v2.10.0
+[1m[92m   Compiling[0m rand_core v0.10.1
+[1m[92m   Compiling[0m try-lock v0.2.5
+[1m[92m   Compiling[0m getrandom v0.4.3
+[1m[92m   Compiling[0m aws-lc-rs v1.19.0
+[1m[92m   Compiling[0m want v0.3.2
+[1m[92m   Compiling[0m tower-layer v0.3.3
+[1m[92m   Compiling[0m zstd-sys v2.1.2+zstd.1.5.7
+[1m[92m   Compiling[0m untrusted v0.7.1
+[1m[92m   Compiling[0m sync_wrapper v1.0.2
+[1m[92m   Compiling[0m either v1.19.0
+[1m[92m   Compiling[0m rustls v0.23.46
+[1m[92m   Compiling[0m anyhow v1.0.104
+[1m[92m   Compiling[0m async-trait v0.1.92
+[1m[92m   Compiling[0m mime v0.3.17
+[1m[92m   Compiling[0m bstr v1.13.1
+[1m[92m   Compiling[0m same-file v1.0.6
+[1m[92m   Compiling[0m walkdir v2.5.0
+[1m[92m   Compiling[0m h2 v0.4.20
+[1m[92m   Compiling[0m httpdate v1.0.3
+[1m[92m   Compiling[0m siphasher v1.0.4
+[1m[92m   Compiling[0m sha1_smol v1.0.1
+[1m[92m   Compiling[0m uuid v1.26.1
+[1m[92m   Compiling[0m hyper v1.12.0
+[1m[92m   Compiling[0m socket2 v0.5.10
+[1m[92m   Compiling[0m zstd-safe v8.2.0
+[1m[92m   Compiling[0m hyper-util v0.1.19
+[1m[92m   Compiling[0m hdrhistogram v7.5.4
+[1m[92m   Compiling[0m openssl-probe v0.2.2
+[1m[92m   Compiling[0m rustls-native-certs v0.8.5
+[1m[92m   Compiling[0m tower v0.5.3
+[1m[92m   Compiling[0m sha1 v0.10.7
+[1m[92m   Compiling[0m zstd v0.14.3
+[1m[92m   Compiling[0m serde_urlencoded v0.7.1
+[1m[92m   Compiling[0m rustversion v1.0.23
+[1m[92m   Compiling[0m rand_core v0.9.5
+[1m[92m   Compiling[0m spin v0.9.9
+[1m[92m   Compiling[0m rand_chacha v0.9.0
+[1m[92m   Compiling[0m mime_guess v2.0.5
+[1m[92m   Compiling[0m webpki-roots v1.0.11
+[1m[92m   Compiling[0m iana-time-zone v0.1.65
+[1m[92m   Compiling[0m chrono v0.4.45
+[1m[92m   Compiling[0m webpki-roots v0.26.11
+[1m[92m   Compiling[0m rand v0.9.5
+[1m[92m   Compiling[0m alloc-no-stdlib v3.0.0
+[1m[92m   Compiling[0m alloc-stdlib v0.3.0
+[1m[92m   Compiling[0m brotli-decompressor v6.2.0
+[1m[92m   Compiling[0m semver v1.0.28
+[1m[92m   Compiling[0m brotli v9.1.1
+[1m[92m   Compiling[0m rustls-pemfile v2.2.0
+[1m[92m   Compiling[0m openssl-probe v0.1.6
+[1m[92m   Compiling[0m strsim v0.11.1
+[1m[92m   Compiling[0m compression-core v0.4.34
+[1m[92m   Compiling[0m compression-codecs v0.4.46
+[1m[92m   Compiling[0m rustls-native-certs v0.7.3
+[1m[92m   Compiling[0m num-integer v0.1.47
+[1m[92m   Compiling[0m async-compression v0.4.36
+[1m[92m   Compiling[0m encoding_rs v0.8.35
+[1m[92m   Compiling[0m stable_deref_trait v1.2.1
+[1m[92m   Compiling[0m tower-http v0.6.11
+[1m[92m   Compiling[0m sha2 v0.10.9
+[1m[92m   Compiling[0m hex v0.4.3
+[1m[92m   Compiling[0m crossbeam-channel v0.5.17
+[1m[92m   Compiling[0m litrs v1.0.1
+[1m[92m   Compiling[0m document-features v0.2.12
+[1m[92m   Compiling[0m thiserror v1.0.69
+[1m[92m   Compiling[0m thiserror-impl v1.0.69
+[1m[92m   Compiling[0m lazy_static v1.5.1
+[1m[92m   Compiling[0m regex v1.12.4
+[1m[92m   Compiling[0m futures-executor v0.3.34
+[1m[92m   Compiling[0m cookie v0.18.2
+[1m[92m   Compiling[0m ident_case v1.0.1
+[1m[92m   Compiling[0m unicode-segmentation v1.12.0
+[1m[92m   Compiling[0m jiff-core v0.1.1
+[1m[92m   Compiling[0m psl-types v2.0.11
+[1m[92m   Compiling[0m publicsuffix v2.3.0
+[1m[92m   Compiling[0m jiff v0.2.38
+[1m[92m   Compiling[0m rustls-webpki v0.103.16
+[1m[92m   Compiling[0m ref-cast v1.0.25
+[1m[92m   Compiling[0m cookie_store v0.22.0
+[1m[92m   Compiling[0m ref-cast-impl v1.0.25
+[1m[92m   Compiling[0m tokio-rustls v0.26.6
+[1m[92m   Compiling[0m hyper-rustls v0.27.2
+[1m[92m   Compiling[0m memmap2 v0.9.11
+[1m[92m   Compiling[0m reqwest v0.12.28
+[1m[92m   Compiling[0m winnow v0.7.15
+[1m[92m   Compiling[0m utf-8 v0.7.6
+[1m[92m   Compiling[0m tempfile v3.27.0
+[1m[92m   Compiling[0m tokio-stream v0.1.19
+[1m[92m   Compiling[0m vsimd v0.8.0
+[1m[92m   Compiling[0m outref v0.5.2
+[1m[92m   Compiling[0m futures v0.3.34
+[1m[92m   Compiling[0m cfg_aliases v0.2.2
+[1m[92m   Compiling[0m gix-trace v0.1.19
+[1m[92m   Compiling[0m gix-validate v0.11.1
+[1m[92m   Compiling[0m dyn-clone v1.0.20
+[1m[92m   Compiling[0m unicode-width v0.2.0
+[1m[92m   Compiling[0m data-encoding v2.11.1
+[1m[92m   Compiling[0m crossbeam-epoch v0.9.21
+[1m[92m   Compiling[0m hashbrown v0.14.5
+[1m[92m   Compiling[0m gix-path v0.12.0
+[1m[92m   Compiling[0m dashmap v6.2.1
+[1m[92m   Compiling[0m serde_derive_internals v0.30.0
+[1m[92m   Compiling[0m schemars_derive v1.2.3
+[1m[92m   Compiling[0m itertools v0.14.0
+[1m[92m   Compiling[0m darling_core v0.20.11
+[1m[92m   Compiling[0m rustc_version v0.4.1
+[1m[92m   Compiling[0m phf_shared v0.13.1
+[1m[92m   Compiling[0m gix-utils v0.3.2
+[1m[92m   Compiling[0m static_assertions v1.1.0
+[1m[92m   Compiling[0m crossbeam-deque v0.8.8
+[1m[92m   Compiling[0m darling_macro v0.20.11
+[1m[92m   Compiling[0m prost-derive v0.14.4
+[1m[92m   Compiling[0m schemars v1.2.3
+[1m[92m   Compiling[0m strum_macros v0.27.2
+[1m[92m   Compiling[0m memoffset v0.9.1
+[1m[92m   Compiling[0m pin-project-internal v1.1.10
+[1m[92m   Compiling[0m new_debug_unreachable v1.0.6
+[1m[92m   Compiling[0m cpufeatures v0.3.1
+[1m[92m   Compiling[0m base64ct v1.6.0
+[1m[92m   Compiling[0m winnow v1.0.4
+[1m[92m   Compiling[0m parking v2.2.1
+[1m[92m   Compiling[0m pin-project v1.1.10
+[1m[92m   Compiling[0m strum v0.27.2
+[1m[92m   Compiling[0m darling v0.20.11
+[1m[92m   Compiling[0m phf_generator v0.13.1
+[1m[92m   Compiling[0m nix v0.30.1
+[1m[92m   Compiling[0m rand_chacha v0.3.1
+[1m[92m   Compiling[0m prodash v31.0.0
+[1m[92m   Compiling[0m pin-utils v0.1.1
+[1m[92m   Compiling[0m rand v0.8.8
+[1m[92m   Compiling[0m gix-features v0.48.0
+[1m[92m   Compiling[0m http v0.2.12
+[1m[92m   Compiling[0m crunchy v0.2.4
+[1m[92m   Compiling[0m foldhash v0.1.5
+[1m[92m   Compiling[0m hashbrown v0.15.5
+[1m[92m   Compiling[0m http-body v0.4.6
+[1m[92m   Compiling[0m event-listener v5.4.2
+[1m[92m   Compiling[0m pem-rfc7468 v0.7.0
+[1m[92m   Compiling[0m base64-simd v0.8.0
+[1m[92m   Compiling[0m phf_shared v0.11.3
+[1m[92m   Compiling[0m bytes-utils v0.1.4
+[1m[92m   Compiling[0m hmac v0.12.1
+[1m[92m   Compiling[0m bytemuck_derive v1.10.2
+[1m[92m   Compiling[0m option-ext v0.2.0
+[1m[92m   Compiling[0m tiny-keccak v2.0.2
+[1m[92m   Compiling[0m precomputed-hash v0.1.1
+[1m[92m   Compiling[0m bytemuck v1.25.2
+[1m[92m   Compiling[0m aws-smithy-types v1.3.4
+[1m[92m   Compiling[0m der v0.7.10
+[1m[92m   Compiling[0m event-listener-strategy v0.5.4
+[1m[92m   Compiling[0m gix-error v0.2.3
+[1m[92m   Compiling[0m rayon-core v1.13.0
+[1m[92m   Compiling[0m urlencoding v2.1.3
+[1m[92m   Compiling[0m arrayvec v0.7.8
+[1m[92m   Compiling[0m spki v0.7.3
+[1m[92m   Compiling[0m phf_generator v0.11.3
+[1m[92m   Compiling[0m sharded-slab v0.1.7
+[1m[92m   Compiling[0m matchers v0.2.0
+[1m[92m   Compiling[0m tracing-serde v0.2.0
+[1m[92m   Compiling[0m tracing-log v0.2.0
+[1m[92m   Compiling[0m multer v3.1.0
+[1m[92m   Compiling[0m serde_path_to_error v0.1.20
+[1m[92m   Compiling[0m thread_local v1.1.10
+[1m[92m   Compiling[0m nu-ansi-term v0.50.3
+[1m[92m   Compiling[0m heapless v0.8.0
+[1m[92m   Compiling[0m minimal-lexical v0.2.1
+[1m[92m   Compiling[0m tracing-subscriber v0.3.23
+[1m[92m   Compiling[0m nom v7.1.3
+[1m[92m   Compiling[0m pkcs8 v0.10.2
+[1m[92m   Compiling[0m const-random-macro v0.1.16
+[1m[92m   Compiling[0m phf_codegen v0.13.1
+[1m[92m   Compiling[0m tungstenite v0.26.2
+[1m[92m   Compiling[0m hash32 v0.3.1
+[1m[92m   Compiling[0m ahash v0.8.12
+[1m[92m   Compiling[0m faster-hex v0.10.1
+[1m[92m   Compiling[0m utf8parse v0.2.2
+[1m[92m   Compiling[0m anstyle v1.0.14
+[1m[92m   Compiling[0m tokio-tungstenite v0.26.2
+[1m[92m   Compiling[0m rayon v1.12.0
+[1m[92m   Compiling[0m const-random v0.1.18
+[1m[92m   Compiling[0m rustls-platform-verifier v0.6.2
+[1m[92m   Compiling[0m axum-core v0.5.2
+[1m[92m   Compiling[0m axum-macros v0.5.0
+[1m[92m   Compiling[0m base64 v0.23.1
+[1m[92m   Compiling[0m matchit v0.8.4
+[1m[92m   Compiling[0m axum v0.8.4
+[1m[92m   Compiling[0m reqwest v0.13.5
+[1m[92m   Compiling[0m dirs-sys v0.5.0
+[1m[92m   Compiling[0m phf_macros v0.13.1
+[1m[92m   Compiling[0m sha1-checked v0.10.0
+[1m[92m   Compiling[0m aws-smithy-async v1.2.6
+[1m[92m   Compiling[0m signature v2.2.0
+[1m[92m   Compiling[0m is-terminal v0.4.17
+[1m[92m   Compiling[0m rustix v0.38.44
+[1m[92m   Compiling[0m is_terminal_polyfill v1.48.2
+[1m[92m   Compiling[0m aws-smithy-runtime-api v1.9.2
+[1m[92m   Compiling[0m phf v0.13.1
+[1m[92m   Compiling[0m dirs v6.0.0
+[1m[92m   Compiling[0m anstyle-parse v1.0.0
+[1m[92m   Compiling[0m string_cache_codegen v0.6.1
+[1m[92m   Compiling[0m convert_case v0.10.0
+[1m[92m   Compiling[0m linux-raw-sys v0.4.15
+[1m[92m   Compiling[0m colorchoice v1.0.2
+[1m[92m   Compiling[0m hashbrown v0.12.3
+[1m[92m   Compiling[0m unicode-xid v0.2.6
+[1m[92m   Compiling[0m anstyle-query v1.1.1
+[1m[92m   Compiling[0m derive_more-impl v2.1.1
+[1m[92m   Compiling[0m anstream v1.0.0
+[1m[92m   Compiling[0m web_atoms v0.2.6
+[1m[92m   Compiling[0m prost v0.14.4
+[1m[92m   Compiling[0m getopts v0.2.24
+[1m[92m   Compiling[0m num-bigint v0.4.8
+[1m[92m   Compiling[0m hyper-timeout v0.5.2
+[1m[92m   Compiling[0m hybrid-array v0.4.15
+[1m[92m   Compiling[0m fs2 v0.4.3
+[1m[92m   Compiling[0m vcpkg v0.2.15
+[1m[92m   Compiling[0m tonic v0.14.9
+[1m[92m   Compiling[0m derive_more v2.1.1
+[1m[92m   Compiling[0m gix-hash v0.25.0
+[1m[92m   Compiling[0m string_cache v0.9.0
+[1m[92m   Compiling[0m derive_builder_core v0.20.2
+[1m[92m   Compiling[0m weezl v0.1.12
+[1m[92m   Compiling[0m bumpalo v3.20.3
+[1m[92m   Compiling[0m derive_builder_macro v0.20.2
+[1m[92m   Compiling[0m zopfli v0.8.3
+[1m[92m   Compiling[0m phf_macros v0.11.3
+[1m[92m   Compiling[0m aster-tty-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tty-utils)
+[1m[92m   Compiling[0m tendril v0.5.1
+[1m[92m   Compiling[0m opentelemetry v0.32.0
+[1m[92m   Compiling[0m filetime v0.2.27
+[1m[92m   Compiling[0m unsafe-libyaml v0.2.11
+[1m[92m   Compiling[0m pulldown-cmark v0.13.6
+[1m[92m   Compiling[0m prettyplease v0.2.37
+[1m[92m   Compiling[0m prost-types v0.14.1
+[1m[92m   Compiling[0m phf v0.11.3
+[1m[92m   Compiling[0m derive_builder v0.20.2
+[1m[92m   Compiling[0m tonic-prost v0.14.9
+[1m[92m   Compiling[0m phf_codegen v0.11.3
+[1m[92m   Compiling[0m gix-date v0.15.3
+[1m[92m   Compiling[0m aster-tool-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tool-types)
+[1m[92m   Compiling[0m md-5 v0.10.6
+[1m[92m   Compiling[0m core_maths v0.1.1
+[1m[92m   Compiling[0m nom v8.0.0
+[1m[92m   Compiling[0m pulldown-cmark-escape v0.11.0
+[1m[92m   Compiling[0m aster-version v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-version)
+[1m[92m   Compiling[0m dtoa v1.0.10
+[1m[92m   Compiling[0m dtoa-short v0.3.5
+[1m[92m   Compiling[0m ttf-parser v0.25.1
+[1m[92m   Compiling[0m gix-actor v0.41.0
+[1m[92m   Compiling[0m gix-hashtable v0.15.0
+[1m[92m   Compiling[0m crypto-common v0.2.2
+[1m[92m   Compiling[0m toml_parser v1.1.5+spec-1.1.0
+[1m[92m   Compiling[0m arc-swap v1.9.3
+[1m[92m   Compiling[0m aster-dirs v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-dirs)
+[1m[92m   Compiling[0m miniz_oxide v0.8.9
+[1m[92m   Compiling[0m fdeflate v0.3.5
+[1m[92m   Compiling[0m indexmap v1.9.3
+[1m[92m   Compiling[0m serde_spanned v1.1.2
+[1m[92m   Compiling[0m toml_datetime v0.7.5+spec-1.1.0
+[1m[92m   Compiling[0m unicode-properties v0.1.4
+[1m[92m   Compiling[0m toml_writer v1.1.3+spec-1.1.0
+[1m[92m   Compiling[0m fixedbitset v0.5.7
+[1m[92m   Compiling[0m toml v0.9.12+spec-1.1.0
+[1m[92m   Compiling[0m petgraph v0.7.1
+[1m[92m   Compiling[0m png v0.18.1
+[1m[92m   Compiling[0m gix-object v0.60.0
+[1m[92m   Compiling[0m pulldown-cmark-to-cmark v21.1.0
+[1m[92m   Compiling[0m opentelemetry_sdk v0.32.1
+[1m[92m   Compiling[0m aws-smithy-eventstream v0.60.13
+[1m[92m   Compiling[0m globset v0.4.19
+[1m[92m   Compiling[0m half v2.7.1
+[1m[92m   Compiling[0m blake3 v1.8.7
+[1m[92m   Compiling[0m which v8.0.6
+[1m[92m   Compiling[0m rustc-hash v2.1.1
+[1m[92m   Compiling[0m web-time v1.1.0
+[1m[92m   Compiling[0m multimap v0.10.1
+[1m[92m   Compiling[0m prost-build v0.14.1
+[1m[92m   Compiling[0m tonic-build v0.14.5
+[1m[92m   Compiling[0m aws-smithy-http v0.62.5
+[1m[92m   Compiling[0m aws-credential-types v1.2.10
+[1m[92m   Compiling[0m string_cache_codegen v0.5.4
+[1m[92m   Compiling[0m aws-types v1.3.10
+[1m[92m   Compiling[0m reqwest-middleware v0.4.2
+[1m[92m   Compiling[0m servo_arc v0.4.3
+[1m[92m   Compiling[0m debugid v0.8.0
+[1m[92m   Compiling[0m const-hex v1.19.3
+[1m[92m   Compiling[0m serde_repr v0.1.20
+[1m[92m   Compiling[0m proc-macro-error-attr2 v2.0.0
+[1m[92m   Compiling[0m constant_time_eq v0.4.2
+[1m[92m   Compiling[0m cmov v0.5.4
+[1m[92m   Compiling[0m bitflags v1.3.2
+[1m[92m   Compiling[0m mac v0.1.1
+[1m[92m   Compiling[0m futf v0.1.5
+[1m[92m   Compiling[0m ctutils v0.4.2
+[1m[92m   Compiling[0m proc-macro-error2 v2.0.1
+[1m[92m   Compiling[0m opentelemetry-proto v0.32.0
+[1m[92m   Compiling[0m markup5ever v0.14.0
+[1m[92m   Compiling[0m tonic-types v0.14.5
+[1m[92m   Compiling[0m tonic-prost-build v0.14.5
+[1m[92m   Compiling[0m prod-mc-cli-chat-proxy-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/prod/mc/cli-chat-proxy-types)
+[1m[92m   Compiling[0m prost-reflect v0.16.2
+[1m[92m   Compiling[0m pbjson-build v0.9.0
+[1m[92m   Compiling[0m opentelemetry-http v0.32.0
+[1m[92m   Compiling[0m block-buffer v0.12.1
+[1m[92m   Compiling[0m aws-smithy-observability v0.1.4
+[1m[92m   Compiling[0m env_filter v2.0.0
+[1m[92m   Compiling[0m pem v3.0.6
+[1m[92m   Compiling[0m slotmap v1.1.1
+[1m[92m   Compiling[0m const-oid v0.10.2
+[1m[92m   Compiling[0m small_ctor v0.1.2
+[1m[92m   Compiling[0m zstd-safe v7.3.0
+[1m[92m   Compiling[0m fastant v0.1.11
+[1m[92m   Compiling[0m digest v0.11.3
+[1m[92m   Compiling[0m env_logger v0.11.11
+[1m[92m   Compiling[0m aws-smithy-runtime v1.9.4
+[1m[92m   Compiling[0m opentelemetry-otlp v0.32.0
+[1m[92m   Compiling[0m aster-proto-build v0.0.0 (/Users/roylin/code/aster/crates/terminal/crates/build/aster-proto-build)
+[1m[92m   Compiling[0m fastrace-macro v0.7.17
+[1m[92m   Compiling[0m tendril v0.4.3
+[1m[92m   Compiling[0m aws-sigv4 v1.3.6
+[1m[92m   Compiling[0m selectors v0.26.0
+[1m[92m   Compiling[0m tracing-opentelemetry v0.33.0
+[1m[92m   Compiling[0m markup5ever v0.38.0
+[1m[92m   Compiling[0m shellexpand v3.1.2
+[1m[92m   Compiling[0m string_cache v0.8.8
+[1m[92m   Compiling[0m dirs-sys v0.4.1
+[1m[92m   Compiling[0m lru v0.12.5
+[1m[92m   Compiling[0m gix-fs v0.21.1
+[1m[92m   Compiling[0m aster-env v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-env)
+[1m[92m   Compiling[0m fxhash v0.2.1
+[1m[92m   Compiling[0m block-padding v0.3.3
+[1m[92m   Compiling[0m cssparser-macros v0.6.1
+[1m[92m   Compiling[0m typeshare-annotation v1.0.5
+[1m[92m   Compiling[0m html5ever v0.29.0
+[1m[92m   Compiling[0m fax_derive v0.2.0
+[1m[92m   Compiling[0m rtrb v0.3.6
+[1m[92m   Compiling[0m float-cmp v0.9.0
+[1m[92m   Compiling[0m zune-core v0.5.0
+[1m[92m   Compiling[0m quick-error v2.0.1
+[1m[92m   Compiling[0m zune-jpeg v0.5.7
+[1m[92m   Compiling[0m strict-num v0.1.1
+[1m[92m   Compiling[0m fastrace v0.7.17
+[1m[92m   Compiling[0m fax v0.2.6
+[1m[92m   Compiling[0m typeshare v1.0.5
+[1m[92m   Compiling[0m cssparser v0.34.0
+[1m[92m   Compiling[0m inout v0.1.4
+[1m[92m   Compiling[0m aster-config v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config)
+[1m[92m   Compiling[0m dirs v5.0.1
+[1m[92m   Compiling[0m aws-runtime v1.5.16
+[1m[92m   Compiling[0m aster-tools-api v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools-api)
+[1m[92m   Compiling[0m ignore v0.4.30
+[1m[92m   Compiling[0m stringprep v0.1.5
+[1m[92m   Compiling[0m eventsource-stream v0.2.3
+[1m[92m   Compiling[0m gix-chunk v0.7.1
+[1m[92m   Compiling[0m strum_macros v0.26.4
+[1m[92m   Compiling[0m backtrace v0.3.69
+[1m[92m   Compiling[0m async-stream-impl v0.3.5
+[1m[92m   Compiling[0m derive_more v0.99.20
+[1m[92m   Compiling[0m instant v0.1.13
+[1m[92m   Compiling[0m gimli v0.28.1
+[1m[92m   Compiling[0m nonempty v0.12.0
+[1m[92m   Compiling[0m roxmltree v0.20.0
+[1m[92m   Compiling[0m color_quant v1.1.0
+[1m[92m   Compiling[0m rustc-demangle v0.1.28
+[1m[92m   Compiling[0m byteorder-lite v0.1.0
+[1m[92m   Compiling[0m arrayref v0.3.9
+[1m[92m   Compiling[0m futures-timer v3.0.4
+[1m[92m   Compiling[0m pxfm v0.1.30
+[1m[92m   Compiling[0m adler v1.0.2
+[1m[92m   Compiling[0m regex-lite v0.1.9
+[1m[92m   Compiling[0m moxcms v0.8.1
+[1m[92m   Compiling[0m miniz_oxide v0.7.4
+[1m[92m   Compiling[0m reqwest-eventsource v0.6.0
+[1m[92m   Compiling[0m tiny-skia-path v0.12.0
+[1m[92m   Compiling[0m image-webp v0.2.0
+[1m[92m   Compiling[0m gif v0.14.2
+[1m[92m   Compiling[0m fontconfig-parser v0.5.8
+[1m[92m   Compiling[0m addr2line v0.21.0
+[1m[92m   Compiling[0m backoff v0.4.0
+[1m[92m   Compiling[0m async-stream v0.3.5
+[1m[92m   Compiling[0m strum v0.26.3
+[1m[92m   Compiling[0m zstd v0.13.3
+[1m[92m   Compiling[0m cipher v0.4.4
+[1m[92m   Compiling[0m aster-tool-protocol v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tool-protocol)
+[1m[92m   Compiling[0m tiff v0.11.3
+[1m[92m   Compiling[0m gix-tempfile v23.0.0
+[1m[92m   Compiling[0m html5ever v0.38.0
+[1m[92m   Compiling[0m simple_asn1 v0.6.4
+[1m[92m   Compiling[0m gix-quote v0.7.1
+[1m[92m   Compiling[0m aws-smithy-json v0.61.7
+[1m[92m   Compiling[0m crc32c v0.6.8
+[1m[92m   Compiling[0m aster-extra-ca v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-extra-ca)
+[1m[92m   Compiling[0m secrecy v0.10.3
+[1m[92m   Compiling[0m aster-circuit-breaker v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-circuit-breaker)
+[1m[92m   Compiling[0m object v0.32.2
+[1m[92m   Compiling[0m async-openai-macros v0.1.1 (/Users/roylin/code/aster/crates/third-party/async-openai-macros)
+[1m[92m   Compiling[0m procfs v0.17.0
+[1m[92m   Compiling[0m xmlparser v0.13.6
+[1m[92m   Compiling[0m protobuf v3.7.2
+[1m[92m   Compiling[0m ego-tree v0.10.0
+[1m[92m   Compiling[0m aws-smithy-xml v0.60.12
+[1m[92m   Compiling[0m async-openai v0.33.1 (/Users/roylin/code/aster/crates/third-party/async-openai)
+[1m[92m   Compiling[0m gix-lock v23.0.0
+[1m[92m   Compiling[0m image v0.25.10
+[1m[92m   Compiling[0m fontdb v0.23.0
+[1m[92m   Compiling[0m xml5ever v0.38.0
+[1m[92m   Compiling[0m sha2 v0.11.0
+[1m[92m   Compiling[0m sentry-types v0.42.0
+[1m[92m   Compiling[0m serde_yaml v0.9.21
+[1m[92m   Compiling[0m libz-sys v1.1.31
+[1m[92m   Compiling[0m async-lock v3.4.1
+[1m[92m   Compiling[0m gix-glob v0.26.0
+[1m[92m   Compiling[0m tungstenite v0.28.0
+[1m[92m   Compiling[0m protobuf-support v3.7.2
+[1m[92m   Compiling[0m procfs-core v0.17.0
+[1m[92m   Compiling[0m xattr v1.6.1
+[1m[92m   Compiling[0m strum_macros v0.28.0
+[1m[92m   Compiling[0m pollster v0.4.0
+[1m[92m   Compiling[0m prometheus v0.14.0
+[1m[92m   Compiling[0m shell-words v1.1.1
+[1m[92m   Compiling[0m strum v0.28.0
+[1m[92m   Compiling[0m fastrace-opentelemetry v0.18.0
+[1m[92m   Compiling[0m tar v0.4.46
+[1m[92m   Compiling[0m tokio-tungstenite v0.28.0
+[1m[92m   Compiling[0m sentry-core v0.42.0
+[1m[92m   Compiling[0m markup5ever_rcdom v0.38.0+unofficial
+[1m[92m   Compiling[0m aster-tool-runtime v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tool-runtime)
+[1m[92m   Compiling[0m jsonwebtoken v11.1.0
+[1m[92m   Compiling[0m tiny-skia v0.12.0
+[1m[92m   Compiling[0m gix-commitgraph v0.37.0
+[1m[92m   Compiling[0m fastrace-tonic v0.1.0
+[1m[92m   Compiling[0m fastrace-reqwest v0.2.0
+[1m[92m   Compiling[0m hmac v0.13.0
+[1m[92m   Compiling[0m aster-auth v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-auth)
+[1m[92m   Compiling[0m aws-smithy-http v0.60.12
+[1m[92m   Compiling[0m block-padding v0.4.2
+[1m[92m   Compiling[0m gcloud-metadata v1.0.2
+[1m[92m   Compiling[0m aws-smithy-query v0.60.8
+[1m[92m   Compiling[0m async-broadcast v0.7.2
+[1m[92m   Compiling[0m aster-secrets v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-secrets)
+[1m[92m   Compiling[0m token-source v1.0.0
+[1m[92m   Compiling[0m itertools v0.12.1
+[1m[92m   Compiling[0m unicode-bom v2.0.3
+[1m[92m   Compiling[0m path-clean v1.0.1
+[1m[92m   Compiling[0m home v0.5.9
+[1m[92m   Compiling[0m similar v2.7.0
+[1m[92m   Compiling[0m gcloud-auth v1.4.0
+[1m[92m   Compiling[0m prometheus-parse v0.2.5
+[1m[92m   Compiling[0m aws-sdk-sts v1.94.0
+[1m[92m   Compiling[0m inout v0.2.5
+[1m[92m   Compiling[0m aws-smithy-checksums v0.60.13
+[1m[92m   Compiling[0m aster-tracing v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-tracing)
+[1m[92m   Compiling[0m gix-revwalk v0.31.0
+[1m[92m   Compiling[0m aster-computer-hub-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-core)
+[1m[92m   Compiling[0m htmd v0.5.6
+[1m[92m   Compiling[0m aws-sdk-sso v1.90.0
+[1m[92m   Compiling[0m aws-sdk-ssooidc v1.92.0
+[1m[92m   Compiling[0m reqwest-middleware v0.5.2
+[1m[92m   Compiling[0m aws-smithy-json v0.60.7
+[1m[92m   Compiling[0m phf_shared v0.14.0
+[1m[92m   Compiling[0m reflink-copy v0.1.30
+[1m[92m   Compiling[0m libgit2-sys v0.18.8+1.9.7
+[1m[92m   Compiling[0m findshlibs v0.10.2
+[1m[92m   Compiling[0m unicode-linebreak v0.1.5
+[1m[92m   Compiling[0m alloc-no-stdlib v2.0.4
+[1m[92m   Compiling[0m alloc-stdlib v0.2.4
+[1m[92m   Compiling[0m phf_generator v0.14.0
+[1m[92m   Compiling[0m aws-sdk-s3 v1.24.0
+[1m[92m   Compiling[0m gcloud-storage v1.3.0
+[1m[92m   Compiling[0m aws-config v1.8.11
+[1m[92m   Compiling[0m aster-computer-hub-sdk v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-sdk)
+[1m[92m   Compiling[0m cipher v0.5.2
+[1m[92m   Compiling[0m aster-otel v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-otel)
+[1m[92m   Compiling[0m aws-smithy-http-client v1.1.4
+[1m[92m   Compiling[0m font-types v0.12.7
+[1m[92m   Compiling[0m kstring v2.0.0
+[1m[92m   Compiling[0m nix v0.31.3
+[1m[92m   Compiling[0m aster-token-estimation v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-token-estimation)
+[1m[92m   Compiling[0m typed-path v0.13.0
+[1m[92m   Compiling[0m debug_unsafe v0.1.4
+[1m[92m   Compiling[0m atoi_simd v0.18.1
+[1m[92m   Compiling[0m zip v9.1.3
+[1m[92m   Compiling[0m gix-attributes v0.33.0
+[1m[92m   Compiling[0m read-fonts v0.41.0
+[1m[92m   Compiling[0m aster-file-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-utils)
+[1m[92m   Compiling[0m phf_macros v0.14.0
+[1m[92m   Compiling[0m brotli-decompressor v5.0.3
+[1m[92m   Compiling[0m sentry-backtrace v0.42.0
+[1m[92m   Compiling[0m aster-image v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-image)
+[1m[92m   Compiling[0m libsqlite3-sys v0.35.0
+[1m[92m   Compiling[0m cfb v0.7.3
+[1m[92m   Compiling[0m aster-compaction v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-compaction)
+[1m[92m   Compiling[0m gix-sec v0.14.0
+[1m[92m   Compiling[0m quick-xml v0.42.0
+[1m[92m   Compiling[0m enum-ordinalize-derive v4.3.1
+[1m[92m   Compiling[0m fast-float2 v0.2.4
+[1m[92m   Compiling[0m hayro-ccitt v0.3.0
+[1m[92m   Compiling[0m clap_lex v1.0.1
+[1m[92m   Compiling[0m cpubits v0.1.1
+[1m[92m   Compiling[0m paste v1.0.15
+[1m[92m   Compiling[0m grid v1.0.1
+[1m[92m   Compiling[0m inotify-sys v0.1.8
+[1m[92m   Compiling[0m git2 v0.20.4
+[1m[92m   Compiling[0m taffy v0.12.2
+[1m[92m   Compiling[0m aes v0.9.2
+[1m[92m   Compiling[0m clap_builder v4.6.7
+[1m[92m   Compiling[0m hayro-jbig2 v0.3.0
+[1m[92m   Compiling[0m office_oxide v0.1.16
+[1m[92m   Compiling[0m enum-ordinalize v4.3.0
+[1m[92m   Compiling[0m aster-sampling-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sampling-types)
+[1m[92m   Compiling[0m phf v0.14.0
+[1m[92m   Compiling[0m brotli v8.0.4
+[1m[92m   Compiling[0m aster-tools v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tools)
+[1m[92m   Compiling[0m harfrust v0.12.0
+[1m[92m   Compiling[0m cbc v0.2.1
+[1m[92m   Compiling[0m agent-client-protocol-schema v0.11.4
+[1m[92m   Compiling[0m gix-ref v0.63.0
+[1m[92m   Compiling[0m md-5 v0.11.0
+[1m[92m   Compiling[0m lsp-types v0.95.1
+[1m[92m   Compiling[0m subsetter v0.2.2
+[1m[92m   Compiling[0m jpeg-decoder v0.3.2
+[1m[92m   Compiling[0m aster-workspace-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-types)
+[1m[92m   Compiling[0m sentry-contexts v0.42.0
+[1m[92m   Compiling[0m gix-config-value v0.18.0
+[1m[92m   Compiling[0m fast_image_resize v6.1.0
+[1m[92m   Compiling[0m waitpid-any v0.3.0
+[1m[92m   Compiling[0m clap_derive v4.6.7
+[1m[92m   Compiling[0m concurrent-queue v2.5.0
+[1m[92m   Compiling[0m quick-xml v0.41.0
+[1m[92m   Compiling[0m vte v0.14.1
+[1m[92m   Compiling[0m weezl v0.2.1
+[1m[92m   Compiling[0m fax v0.3.0
+[1m[92m   Compiling[0m memo-map v0.3.4
+[1m[92m   Compiling[0m hayro-jpeg2000 v0.4.1
+[1m[92m   Compiling[0m qcms v0.3.0
+[1m[92m   Compiling[0m radium v0.7.0
+[1m[92m   Compiling[0m pdf_oxide v0.3.77
+[1m[92m   Compiling[0m minijinja v2.21.0
+[1m[92m   Compiling[0m strip-ansi-escapes v0.2.1
+[1m[92m   Compiling[0m clap v4.6.7
+[1m[92m   Compiling[0m async-lsp v0.2.4
+[1m[92m   Compiling[0m agent-client-protocol v0.10.4
+[1m[92m   Compiling[0m command-fds v0.3.3
+[1m[92m   Compiling[0m educe v0.6.0
+[1m[92m   Compiling[0m infer v0.19.0
+[1m[92m   Compiling[0m gix-traverse v0.57.0
+[1m[92m   Compiling[0m aster-feedback v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-feedback)
+[1m[92m   Compiling[0m gix-command v0.9.0
+[1m[92m   Compiling[0m scraper v0.23.1
+[1m[92m   Compiling[0m gix-packetline v0.21.3
+[1m[92m   Compiling[0m gix-bitmap v0.3.1
+[1m[92m   Compiling[0m hashlink v0.10.0
+[1m[92m   Compiling[0m aster-confine v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine)
+[1m[92m   Compiling[0m zip v3.0.0
+[1m[92m   Compiling[0m aster-interjection-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-interjection-core)
+[1m[92m   Compiling[0m uname v0.1.1
+[1m[92m   Compiling[0m hostname v0.4.2
+[1m[92m   Compiling[0m num_cpus v1.17.0
+[1m[92m   Compiling[0m fallible-iterator v0.3.0
+[1m[92m   Compiling[0m tap v1.0.1
+[1m[92m   Compiling[0m aster-message-delivery-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-message-delivery-core)
+[1m[92m   Compiling[0m fallible-streaming-iterator v0.1.9
+[1m[92m   Compiling[0m pastey v0.2.3
+[1m[92m   Compiling[0m wildmatch v2.7.0
+[1m[92m   Compiling[0m rusqlite v0.37.0
+[1m[92m   Compiling[0m wyz v0.5.1
+[1m[92m   Compiling[0m gix-index v0.51.0
+[1m[92m   Compiling[0m inotify v0.11.5
+[1m[92m   Compiling[0m gix-pathspec v0.18.0
+[1m[33mwarning[0m[1m: use of deprecated associated function `tokio::io::unix::AsyncFd::<T>::with_interest`: unsound due to lack of I/O safety; use `AsyncFd::register_with_interest` instead (see https://github.com/tokio-rs/tokio/pull/8587)[0m
+   [1m[94m--> [0mcrates/terminal/crates/codegen/aster-tools/src/computer/local/cgroup.rs:123:31
+    [1m[94m|[0m
+[1m[94m123[0m [1m[94m|[0m             let fd = AsyncFd::with_interest(owned, Interest::READABLE)?;
+    [1m[94m|[0m                               [1m[33m^^^^^^^^^^^^^[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mnote[0m: `#[warn(deprecated)]` on by default
+
+[1m[92m   Compiling[0m sentry-anyhow v0.42.0
+[1m[92m   Compiling[0m sentry-tracing v0.42.0
+[1m[33mwarning[0m[1m: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied[0m
+   [1m[94m--> [0mcrates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:143:26
+    [1m[94m|[0m
+[1m[94m143[0m [1m[94m|[0m             .temperature(0.1)
+    [1m[94m|[0m                          [1m[33m^^^[0m [1m[33mhelp: explicitly specify the type as `f32`: `0.1_f32`[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mwarning[0m: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    [1m[94m= [0m[1mnote[0m: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+    [1m[94m= [0m[1mnote[0m: `#[warn(float_literal_f32_fallback)]` (part of `#[warn(future_incompatible)]`) on by default
+
+[1m[33mwarning[0m[1m: falling back to `f32` as the trait bound `f32: From<f64>` is not satisfied[0m
+   [1m[94m--> [0mcrates/terminal/crates/codegen/aster-tools/src/implementations/web_search/client.rs:144:20
+    [1m[94m|[0m
+[1m[94m144[0m [1m[94m|[0m             .top_p(0.95)
+    [1m[94m|[0m                    [1m[33m^^^^[0m [1m[33mhelp: explicitly specify the type as `f32`: `0.95_f32`[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mwarning[0m: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+    [1m[94m= [0m[1mnote[0m: for more information, see issue #154024 <https://github.com/rust-lang/rust/issues/154024>
+
+[1m[92m   Compiling[0m sentry-panic v0.42.0
+[1m[92m   Compiling[0m sentry-debug-images v0.42.0
+[1m[92m   Compiling[0m gix-ignore v0.21.0
+[1m[92m   Compiling[0m futures-lite v2.6.1
+[1m[92m   Compiling[0m num-iter v0.1.46
+[1m[92m   Compiling[0m onig_sys v69.9.3
+[1m[92m   Compiling[0m hmac-sha256 v1.1.15
+[1m[92m   Compiling[0m symlink v0.1.0
+[1m[92m   Compiling[0m notify-types v2.0.0
+[1m[92m   Compiling[0m tree-sitter-language v0.1.3
+[1m[92m   Compiling[0m funty v2.0.0
+[1m[92m   Compiling[0m base16ct v0.2.0
+[1m[92m   Compiling[0m bitvec v1.1.1
+[1m[92m   Compiling[0m notify v8.2.0
+[1m[92m   Compiling[0m tracing-appender v0.2.5
+[1m[92m   Compiling[0m mid v4.0.0
+[1m[33mwarning[0m: `aster-tools` (lib) generated 3 warnings (run `cargo fix --lib -p aster-tools` to apply 2 suggestions)
+[1m[92m   Compiling[0m gix-worktree v0.52.0
+[1m[92m   Compiling[0m sentry v0.42.0
+[1m[92m   Compiling[0m aster-sampler v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sampler)
+[1m[92m   Compiling[0m aster-mixpanel v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mixpanel)
+[1m[92m   Compiling[0m tracing-chrome v0.7.2
+[1m[92m   Compiling[0m aster-session-events v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-events)
+[1m[92m   Compiling[0m gix-url v0.36.0
+[1m[92m   Compiling[0m unicode-width v0.1.14
+[1m[92m   Compiling[0m fixedbitset v0.4.2
+[1m[92m   Compiling[0m whoami v1.6.1
+[1m[92m   Compiling[0m aster-telemetry v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-telemetry)
+[1m[92m   Compiling[0m toml_edit v0.23.5
+[1m[92m   Compiling[0m petgraph v0.6.5
+[1m[92m   Compiling[0m ff v0.13.1
+[1m[92m   Compiling[0m serdect v0.2.0
+[1m[92m   Compiling[0m gix-filter v0.30.0
+[1m[92m   Compiling[0m gix-discover v0.51.0
+[1m[92m   Compiling[0m gix-revision v0.45.0
+[1m[92m   Compiling[0m darling_core v0.24.1
+[1m[92m   Compiling[0m castaway v0.2.4
+[1m[92m   Compiling[0m gix-imara-diff v0.2.1
+[1m[92m   Compiling[0m clru v0.6.3
+[1m[92m   Compiling[0m enumflags2_derive v0.7.12
+[1m[92m   Compiling[0m glob v0.3.4
+[1m[92m   Compiling[0m async-task v4.7.1
+[1m[92m   Compiling[0m darling_macro v0.24.1
+[1m[92m   Compiling[0m gix-pack v0.70.0
+[1m[92m   Compiling[0m gix-diff v0.63.0
+[1m[92m   Compiling[0m gix-refspec v0.41.0
+[1m[92m   Compiling[0m gix-dir v0.25.0
+[1m[92m   Compiling[0m sec1 v0.7.3
+[1m[92m   Compiling[0m group v0.13.0
+[1m[92m   Compiling[0m proc-macro-crate v3.4.0
+[1m[92m   Compiling[0m gix-transport v0.57.0
+[1m[92m   Compiling[0m async-channel v2.5.0
+[1m[92m   Compiling[0m gix-config v0.56.0
+[1m[92m   Compiling[0m gix-shallow v0.12.0
+[1m[92m   Compiling[0m hkdf v0.12.4
+[1m[92m   Compiling[0m zvariant_utils v3.2.1
+[1m[92m   Compiling[0m polling v3.10.0
+[1m[92m   Compiling[0m sse-stream v0.2.6
+[1m[92m   Compiling[0m wayland-sys v0.31.8
+[1m[92m   Compiling[0m crypto-bigint v0.5.5
+[1m[92m   Compiling[0m maybe-async v0.2.11
+[1m[92m   Compiling[0m downcast-rs v1.2.1
+[1m[92m   Compiling[0m base64 v0.21.7
+[1m[92m   Compiling[0m bit-vec v0.8.0
+[1m[92m   Compiling[0m bit-set v0.8.0
+[1m[92m   Compiling[0m gix-protocol v0.61.0
+[1m[92m   Compiling[0m elliptic-curve v0.13.8
+[1m[92m   Compiling[0m async-io v2.5.0
+[1m[92m   Compiling[0m zvariant_derive v5.8.0
+[1m[92m   Compiling[0m gix-submodule v0.30.0
+[1m[92m   Compiling[0m gix-status v0.30.0
+[1m[92m   Compiling[0m gix-odb v0.80.0
+[1m[92m   Compiling[0m darling v0.24.1
+[1m[92m   Compiling[0m aster-sqlite-journal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-sqlite-journal)
+[1m[92m   Compiling[0m piper v0.2.5
+[1m[92m   Compiling[0m wayland-backend v0.3.12
+[1m[92m   Compiling[0m libmimalloc-sys v0.1.49
+[1m[92m   Compiling[0m rmcp v3.8.0
+[1m[92m   Compiling[0m endi v1.1.1
+[1m[92m   Compiling[0m camino v1.2.6
+[1m[92m   Compiling[0m blocking v1.6.2
+[1m[92m   Compiling[0m gix v0.83.0
+[1m[92m   Compiling[0m rmcp-macros v3.8.0
+[1m[92m   Compiling[0m aster-hooks v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks)
+[1m[92m   Compiling[0m oauth2 v5.0.0
+[1m[92m   Compiling[0m tree-sitter v0.26.13
+[1m[92m   Compiling[0m rfc6979 v0.4.0
+[1m[92m   Compiling[0m crossbeam-queue v0.3.14
+[1m[92m   Compiling[0m olpc-cjson v0.1.4
+[1m[92m   Compiling[0m num-complex v0.4.6
+[1m[92m   Compiling[0m tree-sitter-go v0.25.0
+[1m[92m   Compiling[0m tree-sitter-javascript v0.25.0
+[1m[92m   Compiling[0m tree-sitter-rust v0.24.2
+[1m[92m   Compiling[0m tree-sitter-typescript v0.23.2
+[1m[92m   Compiling[0m tree-sitter-python v0.25.0
+[1m[92m   Compiling[0m quick-xml v0.38.4
+[1m[92m   Compiling[0m wait-timeout v0.2.1
+[1m[92m   Compiling[0m wayland-client v0.31.12
+[1m[92m   Compiling[0m borrow-or-share v0.2.4
+[1m[92m   Compiling[0m wayland-scanner v0.31.8
+[1m[92m   Compiling[0m crossbeam v0.8.5
+[1m[92m   Compiling[0m aster-agent v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent)
+[1m[92m   Compiling[0m aster-gix-status v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-gix-status)
+[1m[92m   Compiling[0m enumflags2 v0.7.12
+[1m[92m   Compiling[0m aes v0.8.4
+[1m[92m   Compiling[0m serde_yaml_ng v0.10.0
+[1m[92m   Compiling[0m nucleo-matcher v0.3.1 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+[1m[92m   Compiling[0m webbrowser v1.1.0
+[1m[92m   Compiling[0m hashbrown v0.17.1
+[1m[92m   Compiling[0m tree-sitter-bash v0.25.1
+[1m[92m   Compiling[0m signal-hook v0.3.18
+[1m[92m   Compiling[0m file-id v0.2.2
+[1m[92m   Compiling[0m io-lifetimes v2.0.4
+[1m[92m   Compiling[0m safemem v0.3.3
+[1m[92m   Compiling[0m io-lifetimes v3.0.1
+[1m[92m   Compiling[0m ryu-js v1.0.3
+[1m[92m   Compiling[0m streaming-iterator v0.1.9
+[1m[92m   Compiling[0m line-wrap v0.1.1
+[1m[92m   Compiling[0m notify-debouncer-full v0.5.0
+[1m[92m   Compiling[0m aster-mcp v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mcp)
+[1m[92m   Compiling[0m aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+[1m[92m   Compiling[0m nucleo v0.5.0 (https://github.com/helix-editor/nucleo.git?rev=5b74652#5b74652e)
+[1m[92m   Compiling[0m zvariant v5.8.0
+[1m[92m   Compiling[0m aster-paths v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-paths)
+[1m[92m   Compiling[0m mimalloc v0.1.52
+[1m[92m   Compiling[0m ecdsa v0.16.9
+[1m[92m   Compiling[0m async-executor v1.13.3
+[1m[92m   Compiling[0m aster-announcements v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-announcements)
+[1m[92m   Compiling[0m num-rational v0.4.2
+[1m[92m   Compiling[0m curve25519-dalek v4.1.3
+[1m[92m   Compiling[0m rapidhash v4.5.1
+[1m[92m   Compiling[0m quick-xml v0.30.0
+[1m[92m   Compiling[0m humantime v2.4.0
+[1m[92m   Compiling[0m nohash-hasher v0.2.0
+[1m[92m   Compiling[0m io-extras v0.19.0
+[1m[92m   Compiling[0m num-bigint-dig v0.8.6
+[1m[92m   Compiling[0m aster-codebase-graph v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-codebase-graph)
+[1m[92m   Compiling[0m humantime-serde v1.1.1
+[1m[92m   Compiling[0m aster-fast-worktree v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fast-worktree)
+[1m[92m   Compiling[0m num v0.4.3
+[1m[92m   Compiling[0m aster-config-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-config-types)
+[1m[92m   Compiling[0m wayland-protocols v0.32.10
+[1m[92m   Compiling[0m zbus_names v4.2.0
+[1m[92m   Compiling[0m aster-fuzzy-file-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fuzzy-file-search)
+[1m[92m   Compiling[0m aster-fsnotify v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-fsnotify)
+[1m[92m   Compiling[0m aster-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+[1m[92m   Compiling[0m aster-hunk-tracker v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hunk-tracker)
+[1m[92m   Compiling[0m async-signal v0.2.12
+[1m[92m   Compiling[0m primeorder v0.13.6
+[1m[92m   Compiling[0m compact_str v0.9.1
+[1m[92m   Compiling[0m onig v6.5.3
+[1m[92m   Compiling[0m aster-acp-lib v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-acp-lib)
+[1m[92m   Compiling[0m aster-workspace-daemon v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-daemon)
+[1m[92m   Compiling[0m aster-workspace-client v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace-client)
+[1m[92m   Compiling[0m aster-computer-hub-mcp-adapter v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/common/aster-computer-hub-mcp-adapter)
+[1m[92m   Compiling[0m ctr v0.9.2
+[1m[92m   Compiling[0m aster-diag-server v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-diag-server)
+[1m[92m   Compiling[0m selectors v0.38.0
+[1m[92m   Compiling[0m chacha20 v0.10.2
+[1m[92m   Compiling[0m universal-hash v0.5.1
+[1m[92m   Compiling[0m aead v0.5.2
+[1m[92m   Compiling[0m toml_datetime v0.6.8
+[1m[92m   Compiling[0m serde_spanned v0.6.8
+[1m[92m   Compiling[0m bincode v1.3.3
+[1m[92m   Compiling[0m cssparser-macros v0.7.1
+[1m[92m   Compiling[0m curve25519-dalek-derive v0.1.1
+[1m[92m   Compiling[0m zip v2.6.1
+[1m[92m   Compiling[0m linked-hash-map v0.5.6
+[1m[92m   Compiling[0m cap-primitives v4.0.3
+[1m[92m   Compiling[0m opaque-debug v0.3.1
+[1m[92m   Compiling[0m polyval v0.6.2
+[1m[92m   Compiling[0m yaml-rust v0.4.5
+[1m[92m   Compiling[0m cssparser v0.37.0
+[1m[92m   Compiling[0m toml_edit v0.22.24
+[1m[92m   Compiling[0m rand v0.10.3
+[1m[92m   Compiling[0m aster-workspace v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace)
+[1m[92m   Compiling[0m async-process v2.4.0
+[1m[92m   Compiling[0m fs-set-times v0.20.3
+[1m[92m   Compiling[0m signal-hook-mio v0.2.5
+[1m[92m   Compiling[0m zbus_macros v5.12.0
+[1m[92m   Compiling[0m wayland-protocols-wlr v0.3.10
+[1m[92m   Compiling[0m fraction v0.15.4
+[1m[92m   Compiling[0m tree_magic_mini v3.2.0
+[1m[92m   Compiling[0m markup5ever v0.39.0
+[1m[92m   Compiling[0m uuid-simd v0.8.0
+[1m[92m   Compiling[0m rustix-linux-procfs v0.1.1
+[1m[92m   Compiling[0m ordered-stream v0.2.0
+[1m[92m   Compiling[0m rquickjs-sys v0.11.0
+[1m[92m   Compiling[0m email_address v0.2.9
+[1m[92m   Compiling[0m rust-stemmers v1.2.0
+[1m[92m   Compiling[0m os_pipe v1.2.3
+[1m[92m   Compiling[0m ambient-authority v0.0.2
+[1m[92m   Compiling[0m yansi v1.0.1
+[1m[92m   Compiling[0m cpp_demangle v0.4.5
+[1m[92m   Compiling[0m html-escape v0.2.15
+[1m[92m   Compiling[0m diff v0.1.13
+[1m[92m   Compiling[0m unicode-general-category v1.1.0
+[1m[92m   Compiling[0m maybe-owned v0.3.4
+[1m[92m   Compiling[0m num-cmp v0.1.0
+[1m[92m   Compiling[0m bytecount v0.6.9
+[1m[92m   Compiling[0m cap-std v4.0.2
+[1m[92m   Compiling[0m x11rb-protocol v0.13.1
+[1m[92m   Compiling[0m x11rb v0.13.1
+[1m[92m   Compiling[0m pretty_assertions v1.4.1
+[1m[92m   Compiling[0m wl-clipboard-rs v0.9.5
+[1m[92m   Compiling[0m zbus v5.12.0
+[1m[92m   Compiling[0m html5ever v0.39.0
+[1m[92m   Compiling[0m crossterm v0.28.1 (/Users/roylin/code/aster/crates/third-party/crossterm)
+[1m[33mwarning[0m[1m: unexpected `cfg` condition name: `winapi`[0m
+   [1m[94m--> [0mcrates/third-party/crossterm/src/lib.rs:256:11
+    [1m[94m|[0m
+[1m[94m256[0m [1m[94m|[0m #[cfg(all(winapi, not(feature = "winapi")))]
+    [1m[94m|[0m           [1m[33m^^^^^^[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mhelp[0m: expected names are: `docsrs`, `feature`, and `test` and 32 more
+    [1m[94m= [0m[1mhelp[0m: consider using a Cargo feature instead
+    [1m[94m= [0m[1mhelp[0m: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(winapi)'] }
+    [1m[94m= [0m[1mhelp[0m: or consider adding `println!("cargo::rustc-check-cfg=cfg(winapi)");` to the top of the `build.rs`
+    [1m[94m= [0m[1mnote[0m: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    [1m[94m= [0m[1mnote[0m: `#[warn(unexpected_cfgs)]` on by default
+
+[1m[33mwarning[0m[1m: unexpected `cfg` condition value: `winapi`[0m
+   [1m[94m--> [0mcrates/third-party/crossterm/src/lib.rs:256:23
+    [1m[94m|[0m
+[1m[94m256[0m [1m[94m|[0m #[cfg(all(winapi, not(feature = "winapi")))]
+    [1m[94m|[0m                       [1m[33m^^^^^^^^^^^^^^^^^^[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mnote[0m: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    [1m[94m= [0m[1mhelp[0m: consider adding `winapi` as a feature in `Cargo.toml`
+    [1m[94m= [0m[1mnote[0m: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+[1m[33mwarning[0m[1m: unexpected `cfg` condition name: `crossterm_winapi`[0m
+   [1m[94m--> [0mcrates/third-party/crossterm/src/lib.rs:259:11
+    [1m[94m|[0m
+[1m[94m259[0m [1m[94m|[0m #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    [1m[94m|[0m           [1m[33m^^^^^^^^^^^^^^^^[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mhelp[0m: consider using a Cargo feature instead
+    [1m[94m= [0m[1mhelp[0m: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+             [lints.rust]
+             unexpected_cfgs = { level = "warn", check-cfg = ['cfg(crossterm_winapi)'] }
+    [1m[94m= [0m[1mhelp[0m: or consider adding `println!("cargo::rustc-check-cfg=cfg(crossterm_winapi)");` to the top of the `build.rs`
+    [1m[94m= [0m[1mnote[0m: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+[1m[33mwarning[0m[1m: unexpected `cfg` condition value: `crossterm_winapi`[0m
+   [1m[94m--> [0mcrates/third-party/crossterm/src/lib.rs:259:33
+    [1m[94m|[0m
+[1m[94m259[0m [1m[94m|[0m #[cfg(all(crossterm_winapi, not(feature = "crossterm_winapi")))]
+    [1m[94m|[0m                                 [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mnote[0m: expected values for `feature` are: `bracketed-paste`, `default`, `event-stream`, `events`, `filedescriptor`, `libc`, `serde`, `use-dev-tty`, and `windows`
+    [1m[94m= [0m[1mhelp[0m: consider adding `crossterm_winapi` as a feature in `Cargo.toml`
+    [1m[94m= [0m[1mnote[0m: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+
+[1m[33mwarning[0m[1m: unnecessary parentheses around closure body[0m
+  [1m[94m--> [0mcrates/third-party/crossterm/src/terminal/sys/unix.rs:85:50
+   [1m[94m|[0m
+[1m[94m85[0m [1m[94m|[0m     let file = File::open("/dev/tty").map(|file| (FileDesc::Owned(file.into())));
+   [1m[94m|[0m                                                  [1m[33m^[0m                            [1m[33m^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+[1m[96mhelp[0m: remove these parentheses
+   [1m[94m|[0m
+[1m[94m85[0m [91m- [0m    let file = File::open("/dev/tty").map(|file| [91m([0mFileDesc::Owned(file.into())[91m)[0m);
+[1m[94m85[0m [92m+ [0m    let file = File::open("/dev/tty").map(|file| FileDesc::Owned(file.into()));
+   [1m[94m|[0m
+
+[1m[33mwarning[0m[1m: struct `InternalEventFilter` is never constructed[0m
+  [1m[94m--> [0mcrates/third-party/crossterm/src/event/filter.rs:65:19
+   [1m[94m|[0m
+[1m[94m65[0m [1m[94m|[0m pub(crate) struct InternalEventFilter;
+   [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m: `crossterm` (lib) generated 6 warnings (run `cargo fix --lib -p crossterm` to apply 1 suggestion)
+[1m[92m   Compiling[0m ghash v0.5.1
+[1m[92m   Compiling[0m cbc v0.1.2
+[1m[92m   Compiling[0m ecb v0.1.2
+[1m[92m   Compiling[0m ed25519 v2.2.3
+[1m[92m   Compiling[0m pkcs1 v0.7.5
+[1m[92m   Compiling[0m polycool v0.4.0
+[1m[92m   Compiling[0m itertools v0.13.0
+[1m[92m   Compiling[0m equator-macro v0.4.2
+[1m[92m   Compiling[0m unicode-bidi-mirroring v0.4.0
+[1m[92m   Compiling[0m symbolic-demangle v12.14.0
+[1m[92m   Compiling[0m indoc v2.0.7
+[1m[92m   Compiling[0m rangemap v1.6.0
+[1m[92m   Compiling[0m cfg_aliases v0.1.1
+[1m[92m   Compiling[0m bitmaps v3.1.0
+[1m[92m   Compiling[0m cap-fs-ext v4.0.2
+[1m[92m   Compiling[0m imbl-sized-chunks v0.1.3
+[1m[92m   Compiling[0m nix v0.28.0
+[1m[92m   Compiling[0m instability v0.3.4
+[1m[92m   Compiling[0m lopdf v0.42.0
+[1m[92m   Compiling[0m unicode-truncate v1.1.0
+[1m[92m   Compiling[0m equator v0.4.2
+[1m[92m   Compiling[0m kurbo v0.13.1
+[1m[92m   Compiling[0m rsa v0.9.10
+[1m[92m   Compiling[0m ed25519-dalek v2.1.1
+[1m[92m   Compiling[0m aes-gcm v0.10.3
+[1m[92m   Compiling[0m plist v1.5.1
+[1m[92m   Compiling[0m dom_query v0.28.0
+[1m[92m   Compiling[0m arboard v3.7.0
+[1m[92m   Compiling[0m p384 v0.13.1
+[1m[92m   Compiling[0m p256 v0.13.2
+[1m[92m   Compiling[0m fluent-uri v0.4.1
+[1m[92m   Compiling[0m compact_str v0.8.2
+[1m[92m   Compiling[0m rmp v0.8.14
+[1m[92m   Compiling[0m symbolic-common v12.14.0
+[1m[92m   Compiling[0m opentelemetry v0.21.0
+[1m[92m   Compiling[0m aster-status-line v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-status-line)
+[1m[92m   Compiling[0m aster-models v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-models)
+[1m[92m   Compiling[0m ordered-float v4.6.0
+[1m[92m   Compiling[0m rand_xoshiro v0.6.0
+[1m[92m   Compiling[0m sqlite-vec v0.1.7-alpha.10
+[1m[92m   Compiling[0m smartstring v1.0.1
+[1m[92m   Compiling[0m unicode-script v0.5.8
+[1m[92m   Compiling[0m cassowary v0.3.0
+[1m[92m   Compiling[0m ordered_hashmap v0.0.3 (/Users/roylin/code/aster/crates/terminal/third_party/ordered_hashmap)
+[1m[92m   Compiling[0m micromap v0.3.0
+[1m[92m   Compiling[0m unicode-ccc v0.4.0
+[1m[92m   Compiling[0m gjson v0.8.1
+[1m[92m   Compiling[0m typed-path v0.12.4
+[1m[92m   Compiling[0m flagset v0.4.7
+[1m[92m   Compiling[0m pprof v0.15.0
+[1m[92m   Compiling[0m dom_smoothie v0.18.2
+[1m[92m   Compiling[0m zip v7.3.0
+[1m[92m   Compiling[0m rustybuzz v0.20.1
+[1m[92m   Compiling[0m referencing v0.47.0
+[1m[92m   Compiling[0m graphlib_rust v0.0.2 (/Users/roylin/code/aster/crates/terminal/third_party/graphlib_rust)
+[1m[92m   Compiling[0m ratatui v0.29.0
+[1m[92m   Compiling[0m opentelemetry_sdk v0.21.2
+[1m[92m   Compiling[0m imbl v3.0.0
+[1m[92m   Compiling[0m aster-shared v0.0.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shared)
+[1m[92m   Compiling[0m syntect v5.3.0
+[1m[92m   Compiling[0m rmp-serde v1.3.0
+[1m[92m   Compiling[0m rquickjs-core v0.11.0
+[1m[92m   Compiling[0m pdf-inspector v1.15.0
+[1m[92m   Compiling[0m svgtypes v0.16.1
+[1m[92m   Compiling[0m aligned-vec v0.6.4
+[1m[92m   Compiling[0m aster-http v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-http)
+[1m[92m   Compiling[0m fancy-regex v0.18.0
+[1m[92m   Compiling[0m scraper v0.22.0
+[1m[92m   Compiling[0m nix v0.26.4
+[1m[92m   Compiling[0m fluent-uri v0.1.4
+[1m[92m   Compiling[0m cron v0.17.0
+[1m[92m   Compiling[0m stop-words v0.9.0
+[1m[92m   Compiling[0m roaring v0.11.1
+[1m[92m   Compiling[0m jsonschema-regex v0.47.0
+[1m[92m   Compiling[0m regress v0.10.5
+[1m[92m   Compiling[0m spin v0.10.1
+[1m[92m   Compiling[0m simplecss v0.2.1
+[1m[92m   Compiling[0m roxmltree v0.21.2
+[1m[92m   Compiling[0m data-url v0.3.2
+[1m[92m   Compiling[0m unicode-vo v0.1.0
+[1m[92m   Compiling[0m imagesize v0.14.0
+[1m[92m   Compiling[0m pico-args v0.5.0
+[1m[92m   Compiling[0m xmlwriter v0.1.0
+[1m[92m   Compiling[0m aster-form-core v0.1.0 (/Users/roylin/code/aster/crates/form-core)
+[1m[92m   Compiling[0m usvg v0.47.0
+[1m[92m   Compiling[0m aster-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+[1m[92m   Compiling[0m jsonschema v0.47.0
+[1m[92m   Compiling[0m aster-lane v0.5.1 (/Users/roylin/code/aster/crates/lane)
+[1m[92m   Compiling[0m lsp-types v0.97.0
+[1m[92m   Compiling[0m aster-search v3.4.0 (/Users/roylin/code/aster/crates/search)
+[1m[92m   Compiling[0m aster-okf v0.1.0 (/Users/roylin/code/aster/crates/okf)
+[1m[92m   Compiling[0m rquickjs v0.11.0
+[1m[92m   Compiling[0m aster-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+[1m[92m   Compiling[0m two-face v0.4.3
+[1m[92m   Compiling[0m dagre_rust v0.0.5 (/Users/roylin/code/aster/crates/terminal/third_party/dagre_rust)
+[1m[92m   Compiling[0m toml v0.8.20
+[1m[92m   Compiling[0m lru v0.18.5
+[1m[92m   Compiling[0m unicode-truncate v2.0.1
+[1m[92m   Compiling[0m fluent-uri v0.3.2
+[1m[92m   Compiling[0m console v0.15.8
+[1m[92m   Compiling[0m html2text v0.16.7
+[1m[92m   Compiling[0m ksandbox v0.2.3 (https://github.com/kense-labs/ksandbox.git?rev=6c7c8bddc66325480342916e0387ab6580139316#6c7c8bdd)
+[1m[92m   Compiling[0m aster-durable-memory v0.1.5 (/Users/roylin/code/aster/crates/memory)
+[1m[92m   Compiling[0m rgb v0.8.53
+[1m[92m   Compiling[0m cached_proc_macro v0.25.0
+[1m[92m   Compiling[0m aster-common v0.1.1 (/Users/roylin/code/aster/crates/common)
+[1m[92m   Compiling[0m filedescriptor v0.8.3
+[1m[92m   Compiling[0m sha256 v1.6.0
+[1m[92m   Compiling[0m dbl v0.3.2
+[1m[92m   Compiling[0m kasuari v0.4.9
+[1m[92m   Compiling[0m esaxx-rs v0.1.10
+[1m[92m   Compiling[0m matrixmultiply v0.3.10
+[1m[92m   Compiling[0m raw-cpuid v11.6.0
+[1m[92m   Compiling[0m rhai_codegen v3.3.0
+[1m[92m   Compiling[0m serial2 v0.2.39
+[1m[92m   Compiling[0m event-listener v2.5.3
+[1m[92m   Compiling[0m moka v0.12.8
+[1m[92m   Compiling[0m smawk v0.3.3
+[1m[92m   Compiling[0m cached_proc_macro_types v0.1.1
+[1m[92m   Compiling[0m crc24 v0.1.6
+[1m[92m   Compiling[0m thin-vec v0.2.19
+[1m[92m   Compiling[0m keccak v0.1.6
+[1m[92m   Compiling[0m number_prefix v0.4.0
+[1m[92m   Compiling[0m sha3 v0.10.9
+[1m[92m   Compiling[0m indicatif v0.17.8
+[1m[92m   Compiling[0m rhai v1.27.0
+[1m[92m   Compiling[0m cached v0.56.0
+[1m[92m   Compiling[0m textwrap v0.16.1
+[1m[92m   Compiling[0m portable-pty v0.9.0
+[1m[92m   Compiling[0m async-channel v1.9.0
+[1m[92m   Compiling[0m quanta v0.12.3
+[1m[92m   Compiling[0m ratatui-core v0.1.2
+[1m[92m   Compiling[0m aster-core v9.2.1 (/Users/roylin/code/aster/crates/code/core)
+[1m[92m   Compiling[0m cmac v0.7.2
+[1m[92m   Compiling[0m resvg v0.47.0
+[1m[92m   Compiling[0m referencing v0.30.0
+[1m[33mwarning[0m[1m: unused import: `attachments_from_fact_tool_images`[0m
+  [1m[94m--> [0mcrates/code/core/src/fact_control.rs:86:5
+   [1m[94m|[0m
+[1m[94m86[0m [1m[94m|[0m     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   [1m[94m|[0m     [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: unused import: `ProgressBasis`[0m
+  [1m[94m--> [0mcrates/code/core/src/goal_control/facts.rs:45:75
+   [1m[94m|[0m
+[1m[94m45[0m [1m[94m|[0m pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   [1m[94m|[0m                                                                           [1m[33m^^^^^^^^^^^^^[0m
+
+[1m[92m   Compiling[0m mermaid-to-svg v0.1.0 (/Users/roylin/code/aster/crates/terminal/third_party/mermaid-to-svg)
+[1m[92m   Compiling[0m aster-memory v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-memory)
+[1m[92m   Compiling[0m aster-markdown v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-markdown)
+[1m[92m   Compiling[0m aster-shell-base v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-base)
+[1m[92m   Compiling[0m jsonwebtoken v10.3.0
+[1m[92m   Compiling[0m aster-system-power v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-system-power)
+[1m[92m   Compiling[0m async-global-executor v2.4.1
+[1m[92m   Compiling[0m async-net v2.0.0
+[1m[92m   Compiling[0m async-fs v2.1.3
+[1m[92m   Compiling[0m fancy-regex v0.14.0
+[1m[92m   Compiling[0m serdect v0.3.0
+[1m[92m   Compiling[0m aster-compaction-transcript v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-compaction-transcript)
+[1m[92m   Compiling[0m aster-shell v1.0.41 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell)
+[1m[92m   Compiling[0m process-wrap v9.0.0
+[1m[92m   Compiling[0m password-hash v0.5.0
+[1m[92m   Compiling[0m convert_case v0.6.0
+[1m[92m   Compiling[0m darling_core v0.21.3
+[1m[92m   Compiling[0m enum-as-inner v0.6.1
+[1m[92m   Compiling[0m snafu-derive v0.9.2
+[1m[92m   Compiling[0m backon v1.6.0
+[1m[92m   Compiling[0m socks v0.3.4
+[1m[92m   Compiling[0m blake2 v0.10.6
+[1m[92m   Compiling[0m bitfields-impl v1.0.3
+[1m[92m   Compiling[0m tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+[1m[92m   Compiling[0m kv-log-macro v1.0.7
+[1m[92m   Compiling[0m aster-hooks-plugins-types v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-hooks-plugins-types)
+[1m[92m   Compiling[0m num_enum_derive v0.7.2
+[1m[92m   Compiling[0m monostate-impl v0.1.16
+[1m[92m   Compiling[0m optfield v0.3.0
+[1m[92m   Compiling[0m tagptr v0.2.0
+[1m[92m   Compiling[0m is_ci v1.2.0
+[1m[92m   Compiling[0m obfstr v0.4.6
+[1m[92m   Compiling[0m deunicode v1.6.2
+[1m[92m   Compiling[0m dark-light v2.0.0
+[1m[92m   Compiling[0m triomphe v0.1.11
+[1m[92m   Compiling[0m macro_rules_attribute-proc_macro v0.2.3
+[1m[33mwarning[0m[1m: unreachable pattern[0m
+   [1m[94m--> [0mcrates/code/core/src/workspace/manifest/scanner.rs:459:19
+    [1m[94m|[0m
+[1m[94m458[0m [1m[94m|[0m                 | ".aster"
+    [1m[94m|[0m                   [1m[94m--------[0m [1m[94mmatches all the relevant values[0m
+[1m[94m459[0m [1m[94m|[0m                 | ".aster"
+    [1m[94m|[0m                   [1m[33m^^^^^^^^[0m [1m[33mno value can reach this[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mnote[0m: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+[1m[92m   Compiling[0m base64 v0.13.1
+[1m[33mwarning[0m[1m: unreachable pattern[0m
+  [1m[94m--> [0mcrates/code/core/src/workspace/source_egress.rs:65:19
+   [1m[94m|[0m
+[1m[94m64[0m [1m[94m|[0m                 | ".aster"
+   [1m[94m|[0m                   [1m[94m--------[0m [1m[94mmatches all the relevant values[0m
+[1m[94m65[0m [1m[94m|[0m                 | ".aster"
+   [1m[94m|[0m                   [1m[33m^^^^^^^^[0m [1m[33mno value can reach this[0m
+
+[1m[33mwarning[0m[1m: associated function `observed_mutations` is never used[0m
+  [1m[94m--> [0mcrates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   [1m[94m|[0m
+[1m[94m25[0m [1m[94m|[0m impl ContinuationSource {
+   [1m[94m|[0m [1m[94m-----------------------[0m [1m[94massociated function in this implementation[0m
+[1m[94m26[0m [1m[94m|[0m     pub(crate) fn observed_mutations(
+   [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: method `recorded_uncertainties` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/harness_loop.rs:746:19
+    [1m[94m|[0m
+[1m[94m366[0m [1m[94m|[0m impl MutationLedger {
+    [1m[94m|[0m [1m[94m-------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m746[0m [1m[94m|[0m     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: method `with_scheduler_quota_from` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/llm/admission.rs:338:19
+    [1m[94m|[0m
+[1m[94m257[0m [1m[94m|[0m impl ModelGenerationAdmission {
+    [1m[94m|[0m [1m[94m-----------------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m338[0m [1m[94m|[0m     pub(crate) fn with_scheduler_quota_from(
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: function `uses_anthropic_messages_api` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/llm/factory.rs:255:15
+    [1m[94m|[0m
+[1m[94m255[0m [1m[94m|[0m pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    [1m[94m|[0m               [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: function `lines` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/porcelain.rs:498:21
+    [1m[94m|[0m
+[1m[94m498[0m [1m[94m|[0m pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    [1m[94m|[0m                     [1m[33m^^^^^[0m
+
+[1m[33mwarning[0m[1m: associated function `new` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/tools/types.rs:318:8
+    [1m[94m|[0m
+[1m[94m316[0m [1m[94m|[0m impl ModelGenerationPermitReservation {
+    [1m[94m|[0m [1m[94m-------------------------------------[0m [1m[94massociated function in this implementation[0m
+[1m[94m317[0m [1m[94m|[0m     /// Called from the `dynamic-workflow` surface.
+[1m[94m318[0m [1m[94m|[0m     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    [1m[94m|[0m        [1m[33m^^^[0m
+
+[1m[33mwarning[0m[1m: method `with_model_generation_permit` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/tools/types.rs:842:19
+    [1m[94m|[0m
+[1m[94m406[0m [1m[94m|[0m impl ToolContext {
+    [1m[94m|[0m [1m[94m----------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m842[0m [1m[94m|[0m     pub(crate) fn with_model_generation_permit(
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: associated functions `default_catalog` and `default_catalog_with_engine` are never used[0m
+   [1m[94m--> [0mcrates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    [1m[94m|[0m
+[1m[94m153[0m [1m[94m|[0m impl WorkspaceChunkCatalog {
+    [1m[94m|[0m [1m[94m--------------------------[0m [1m[94massociated functions in this implementation[0m
+[1m[94m...[0m
+[1m[94m287[0m [1m[94m|[0m     pub(crate) fn default_catalog() -> Arc<Self> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^[0m
+[1m[94m...[0m
+[1m[94m295[0m [1m[94m|[0m     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[92m   Compiling[0m rawpointer v0.2.1
+[1m[92m   Compiling[0m shlex v1.3.0
+[1m[92m   Compiling[0m libbz2-rs-sys v0.2.6
+[1m[92m   Compiling[0m bzip2 v0.6.1
+[1m[92m   Compiling[0m aster-shell-terminal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-terminal)
+[1m[92m   Compiling[0m spm_precompiled v0.1.4
+[1m[92m   Compiling[0m macro_rules_attribute v0.2.3
+[1m[92m   Compiling[0m bm25 v2.3.2
+[1m[92m   Compiling[0m aster-login v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-login)
+[1m[92m   Compiling[0m supports-color v3.0.2
+[1m[92m   Compiling[0m documented-macros v0.9.1
+[1m[92m   Compiling[0m monostate v0.1.16
+[1m[92m   Compiling[0m num_enum v0.7.2
+[1m[92m   Compiling[0m aster-plugin-marketplace v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-plugin-marketplace)
+[1m[92m   Compiling[0m async-std v1.13.2
+[1m[33mwarning[0m: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+[1m[92m   Compiling[0m bitfields v1.0.3
+[1m[92m   Compiling[0m argon2 v0.5.3
+[1m[92m   Compiling[0m ureq v2.10.1
+[1m[92m   Compiling[0m snafu v0.9.2
+[1m[92m   Compiling[0m sysctl v0.6.0
+[1m[92m   Compiling[0m darling_macro v0.21.3
+[1m[92m   Compiling[0m aster-chat-state v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-chat-state)
+[1m[92m   Compiling[0m cx448 v0.1.1
+[1m[92m   Compiling[0m jsonschema v0.30.0
+[1m[92m   Compiling[0m ashpd v0.10.3
+[1m[92m   Compiling[0m aster-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mermaid)
+[1m[92m   Compiling[0m anstyle-syntect v1.0.5
+[1m[92m   Compiling[0m eax v0.5.0
+[1m[92m   Compiling[0m tui-scrollbar v0.2.8
+[1m[92m   Compiling[0m aster-workflow v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workflow)
+[1m[92m   Compiling[0m aster-shell-session-support v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell-session-support)
+[1m[92m   Compiling[0m dsa v0.6.3
+[1m[92m   Compiling[0m x25519-dalek v2.0.1
+[1m[92m   Compiling[0m ocb3 v0.1.0
+[1m[92m   Compiling[0m p521 v0.13.3
+[1m[92m   Compiling[0m k256 v0.13.4
+[1m[92m   Compiling[0m rayon-cond v0.4.0
+[1m[92m   Compiling[0m aes-kw v0.2.1
+[1m[92m   Compiling[0m aster-subagent-resolution v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-subagent-resolution)
+[1m[92m   Compiling[0m aster-session-search v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-session-search)
+[1m[92m   Compiling[0m aster-foreign-sessions v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-foreign-sessions)
+[1m[92m   Compiling[0m notify-debouncer-mini v0.6.0
+[1m[92m   Compiling[0m infer v0.15.0
+[1m[92m   Compiling[0m aster-bundle v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-bundle)
+[1m[92m   Compiling[0m cfb-mode v0.8.2
+[1m[92m   Compiling[0m des v0.8.1
+[1m[92m   Compiling[0m twofish v0.7.1
+[1m[92m   Compiling[0m idea v0.5.1
+[1m[92m   Compiling[0m blowfish v0.9.1
+[1m[92m   Compiling[0m camellia v0.1.0
+[1m[92m   Compiling[0m cast5 v0.11.1
+[1m[92m   Compiling[0m aster-markdown-core v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-markdown-core)
+[1m[92m   Compiling[0m anstyle-lossy v1.1.5
+[1m[92m   Compiling[0m anstyle-parse v0.2.5
+[1m[92m   Compiling[0m tokio-retry v0.3.0
+[1m[92m   Compiling[0m console v0.16.6
+[1m[92m   Compiling[0m aster-agent-lifecycle v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-agent-lifecycle)
+[1m[92m   Compiling[0m itertools v0.15.0
+[1m[92m   Compiling[0m gethostname v1.0.1
+[1m[92m   Compiling[0m snafu-derive v0.8.9
+[1m[92m   Compiling[0m aster-file-lock v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-file-lock)
+[1m[92m   Compiling[0m ripemd v0.1.3
+[1m[92m   Compiling[0m aster-prompt-queue v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-prompt-queue)
+[1m[92m   Compiling[0m combine v4.6.9
+[1m[92m   Compiling[0m kanal v0.1.1
+[1m[92m   Compiling[0m unicode-normalization-alignments v0.1.12
+[1m[92m   Compiling[0m dary_heap v0.3.9
+[1m[92m   Compiling[0m linkify v0.10.0
+[1m[92m   Compiling[0m buffer-redux v1.0.2
+[1m[92m   Compiling[0m serde_ignored v0.1.14
+[1m[92m   Compiling[0m cpu-time v1.0.0
+[1m[92m   Compiling[0m unicode_categories v0.1.1
+[1m[92m   Compiling[0m unit-prefix v0.5.2
+[1m[92m   Compiling[0m aster-tracing-macros v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tracing-macros)
+[1m[92m   Compiling[0m replace_with v0.1.8
+[1m[92m   Compiling[0m tdigests v1.0.1
+[1m[92m   Compiling[0m pgp v0.21.0
+[1m[92m   Compiling[0m indicatif v0.18.4
+[1m[92m   Compiling[0m tokenizers v0.21.4
+[1m[92m   Compiling[0m anndists v0.1.5
+[1m[92m   Compiling[0m mmap-rs v0.7.0
+[1m[92m   Compiling[0m snafu v0.8.9
+[1m[92m   Compiling[0m versions v8.0.1
+[1m[92m   Compiling[0m aster-ratatui-inline v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-ratatui-inline)
+[1m[92m   Compiling[0m aster-ratatui-textarea v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-ratatui-textarea)
+[1m[92m   Compiling[0m darling v0.21.3
+[1m[92m   Compiling[0m hf-hub v0.4.3
+[1m[92m   Compiling[0m documented v0.9.1
+[1m[92m   Compiling[0m ndarray v0.15.6
+[1m[92m   Compiling[0m aster-gboom v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-gboom)
+[1m[92m   Compiling[0m sysinfo v0.30.13
+[1m[92m   Compiling[0m vte v0.15.0
+[1m[92m   Compiling[0m rustls-platform-verifier v0.7.1
+[1m[92m   Compiling[0m safetensors v0.5.2
+[1m[92m   Compiling[0m smallstr v0.3.1
+[1m[92m   Compiling[0m serde_plain v1.0.2
+[1m[92m   Compiling[0m async-recursion v1.1.1
+[1m[92m   Compiling[0m simdutf8 v0.1.5
+[1m[92m   Compiling[0m typed-path v0.9.3
+[1m[92m   Compiling[0m tough v0.24.0
+[1m[92m   Compiling[0m ansi-to-tui v7.0.0
+[1m[92m   Compiling[0m yrs v0.27.3
+[1m[92m   Compiling[0m model2vec-rs v0.3.0
+[1m[92m   Compiling[0m aster-pager-render v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-render)
+[1m[92m   Compiling[0m aster-use-tool-acquire v0.2.4 (/Users/roylin/code/aster/crates/use/tool-acquire)
+[1m[92m   Compiling[0m rmcp-macros v0.8.5
+[1m[92m   Compiling[0m hnsw_rs v0.3.5
+[1m[92m   Compiling[0m aster-update v0.1.220-alpha.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-update)
+[1m[92m   Compiling[0m aster-dashboard-store v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-dashboard-store)
+[1m[92m   Compiling[0m aster-pager-diff v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-diff)
+[1m[92m   Compiling[0m aster-active-sessions v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-active-sessions)
+[1m[92m   Compiling[0m clap_complete v4.0.7
+[1m[92m   Compiling[0m aster-voice v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-voice)
+[1m[92m   Compiling[0m aster-crash-handler v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-crash-handler)
+[1m[92m   Compiling[0m aster-office-formula-parser v0.45.0 (/Users/roylin/code/aster/crates/office/crates/formula-parser)
+[1m[92m   Compiling[0m aster-acp v9.2.1 (/Users/roylin/code/aster/crates/code/acp)
+[1m[92m   Compiling[0m aster-office v0.45.0 (/Users/roylin/code/aster/crates/office/crates/core)
+[1m[92m   Compiling[0m aster-pager v9.1.4 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager)
+[1m[92m   Compiling[0m aster-embedding v0.1.0 (/Users/roylin/code/aster/crates/embedding)
+[1m[33mwarning[0m[1m: unused import: `sha2::Digest`[0m
+  [1m[94m--> [0mcrates/embedding/src/hygiene.rs:10:5
+   [1m[94m|[0m
+[1m[94m10[0m [1m[94m|[0m use sha2::Digest as _;
+   [1m[94m|[0m     [1m[33m^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: variable does not need to be mutable[0m
+  [1m[94m--> [0mcrates/embedding/src/vector/hnsw.rs:41:13
+   [1m[94m|[0m
+[1m[94m41[0m [1m[94m|[0m         let mut index =
+   [1m[94m|[0m             [1m[94m----[0m[1m[33m^^^^^[0m
+   [1m[94m|[0m             [1m[94m|[0m
+   [1m[94m|[0m             [1m[94mhelp: remove this `mut`[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: field `dimension` is never read[0m
+  [1m[94m--> [0mcrates/embedding/src/vector/hnsw.rs:21:5
+   [1m[94m|[0m
+[1m[94m17[0m [1m[94m|[0m pub struct HnswBackend {
+   [1m[94m|[0m            [1m[94m-----------[0m [1m[94mfield in this struct[0m
+[1m[94m...[0m
+[1m[94m21[0m [1m[94m|[0m     dimension: usize,
+   [1m[94m|[0m     [1m[33m^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+[1m[92m   Compiling[0m rmcp v0.8.5
+[1m[92m   Compiling[0m aster-use-extension v0.3.4 (/Users/roylin/code/aster/crates/use/extension)
+[1m[92m   Compiling[0m aster-use-reconcile v0.2.10 (/Users/roylin/code/aster/crates/use/reconcile)
+[1m[92m   Compiling[0m aster-runtime v0.8.0 (/Users/roylin/code/aster/crates/runtime)
+[1m[33mwarning[0m[1m: unused import: `RuntimeUnitSpec`[0m
+ [1m[94m--> [0mcrates/runtime/src/driver.rs:4:62
+  [1m[94m|[0m
+[1m[94m4[0m [1m[94m|[0m     RuntimeRemoval, RuntimeSnapshot, RuntimeSnapshotRequest, RuntimeUnitSpec,
+  [1m[94m|[0m                                                              [1m[33m^^^^^^^^^^^^^^^[0m
+  [1m[94m|[0m
+  [1m[94m= [0m[1mnote[0m: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m: `aster-runtime` (lib) generated 1 warning (run `cargo fix --lib -p aster-runtime` to apply 1 suggestion)
+[1m[92m   Compiling[0m aster v0.3.2 (/Users/roylin/code/aster/apps/aster)
+[1m[92m   Compiling[0m aster-use v0.3.4 (/Users/roylin/code/aster/crates/use)
+[1m[33mwarning[0m[1m: function `register_embedding_provider` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/agent/local_embedding.rs:42:8
+   [1m[94m|[0m
+[1m[94m42[0m [1m[94m|[0m pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   [1m[94m|[0m        [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: method `as_str` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/host_context.rs:64:12
+   [1m[94m|[0m
+[1m[94m57[0m [1m[94m|[0m impl CompletionAttestation {
+   [1m[94m|[0m [1m[94m--------------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m64[0m [1m[94m|[0m     pub fn as_str(self) -> &'static str {
+   [1m[94m|[0m            [1m[33m^^^^^^[0m
+
+[1m[33mwarning[0m[1m: constant `CANCEL_SETTLE_GRACE` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/turn_cancel.rs:18:18
+   [1m[94m|[0m
+[1m[94m18[0m [1m[94m|[0m pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   [1m[94m|[0m                  [1m[33m^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: constant `CANCEL_ABORT_GRACE` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/turn_cancel.rs:21:18
+   [1m[94m|[0m
+[1m[94m21[0m [1m[94m|[0m pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   [1m[94m|[0m                  [1m[33m^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m: `aster-acp` (lib) generated 4 warnings
+[1m[92m   Compiling[0m aster-pager-minimal v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-pager-minimal)
+[1m[92m   Compiling[0m tikv-jemallocator v0.7.0
+[1m[92m   Compiling[0m tikv-jemalloc-ctl v0.7.0
+[1m[92m    Finished[0m `dev` profile [unoptimized] target(s) in 22m 01s
+[1m[33mwarning[0m: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+[1m[92mnote[0m: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+=== build pair done 2026-11-09T19:36:06+08:00 ===
+/home/lyon/aster-linux-x86-target/debug/aster:     ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=d8ce798fd08306bcefd3e68f0aab16c602653c64, not stripped
+/home/lyon/aster-linux-x86-target/debug/aster-acp: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=1d0f2ca902e84ab7547dd18591e4749ec8cc956d, not stripped
+aster 0.3.2 (0c59f2473daa)
+9.2.1
+[1m[92m Downloading[0m crates ...
+[1m[92m  Downloaded[0m vt100 v0.15.2
+[1m[92m  Downloaded[0m vte_generate_state_changes v0.1.2
+[1m[92m  Downloaded[0m vte v0.11.1
+[1m[92m   Compiling[0m libc v0.2.189
+[1m[92m   Compiling[0m smallvec v1.16.4
+[1m[92m   Compiling[0m log v0.4.35
+[1m[92m   Compiling[0m lock_api v0.4.14
+[1m[92m   Compiling[0m parking_lot_core v0.9.12
+[1m[92m   Compiling[0m getrandom v0.2.17
+[1m[92m   Compiling[0m indexmap v2.13.1
+[1m[92m   Compiling[0m parking_lot v0.12.5
+[1m[92m   Compiling[0m rand_core v0.6.4
+[1m[92m   Compiling[0m cc v1.4.7
+[1m[92m   Compiling[0m serde_json v1.0.151
+[1m[92m   Compiling[0m num-traits v0.2.19
+[1m[92m   Compiling[0m crypto-common v0.1.7
+[1m[92m   Compiling[0m errno v0.3.14
+[1m[92m   Compiling[0m mio v1.2.4
+[1m[92m   Compiling[0m signal-hook-registry v1.4.8
+[1m[92m   Compiling[0m socket2 v0.6.5
+[1m[92m   Compiling[0m fastrand v2.5.0
+[1m[92m   Compiling[0m phf_generator v0.13.1
+[1m[92m   Compiling[0m tokio v1.53.3
+[1m[92m   Compiling[0m flate2 v1.1.10
+[1m[92m   Compiling[0m phf_codegen v0.13.1
+[1m[92m   Compiling[0m idna v1.1.0
+[1m[92m   Compiling[0m digest v0.10.7
+[1m[92m   Compiling[0m phf_macros v0.13.1
+[1m[92m   Compiling[0m tracing-core v0.1.36
+[1m[92m   Compiling[0m crossbeam-epoch v0.9.21
+[1m[92m   Compiling[0m phf v0.13.1
+[1m[92m   Compiling[0m string_cache_codegen v0.6.1
+[1m[92m   Compiling[0m web_atoms v0.2.6
+[1m[92m   Compiling[0m getrandom v0.3.4
+[1m[92m   Compiling[0m sha2 v0.10.9
+[1m[92m   Compiling[0m ring v0.17.14
+[1m[92m   Compiling[0m lazy_static v1.5.1
+[1m[92m   Compiling[0m tracing v0.1.44
+[1m[92m   Compiling[0m crossbeam-deque v0.8.8
+[1m[92m   Compiling[0m url v2.5.8
+[1m[92m   Compiling[0m tokio-util v0.7.19
+[1m[92m   Compiling[0m string_cache v0.9.0
+[1m[92m   Compiling[0m rustix v1.1.6
+[1m[92m   Compiling[0m linux-raw-sys v0.12.1
+[1m[92m   Compiling[0m time-macros v0.2.32
+[1m[92m   Compiling[0m rayon-core v1.13.0
+[1m[92m   Compiling[0m block-padding v0.3.3
+[1m[92m   Compiling[0m is-terminal v0.4.17
+[1m[92m   Compiling[0m rustls v0.23.46
+[1m[92m   Compiling[0m time v0.3.55
+[1m[92m   Compiling[0m is_terminal_polyfill v1.48.2
+[1m[92m   Compiling[0m inout v0.1.4
+[1m[92m   Compiling[0m rayon v1.12.0
+[1m[92m   Compiling[0m rustls-webpki v0.103.16
+[1m[92m   Compiling[0m getrandom v0.4.3
+[1m[92m   Compiling[0m bytemuck v1.25.2
+[1m[92m   Compiling[0m anstream v1.0.0
+[1m[92m   Compiling[0m cipher v0.4.4
+[1m[92m   Compiling[0m num-integer v0.1.47
+[1m[92m   Compiling[0m chrono v0.4.45
+[1m[92m   Compiling[0m derive_more-impl v2.1.1
+[1m[92m   Compiling[0m h2 v0.4.20
+[1m[92m   Compiling[0m derive_more v2.1.1
+[1m[92m   Compiling[0m jiff v0.2.38
+[1m[92m   Compiling[0m fs2 v0.4.3
+[1m[92m   Compiling[0m ahash v0.8.12
+[1m[92m   Compiling[0m compression-codecs v0.4.46
+[1m[92m   Compiling[0m nix v0.30.1
+[1m[92m   Compiling[0m zopfli v0.8.3
+[1m[92m   Compiling[0m hyper v1.12.0
+[1m[92m   Compiling[0m markup5ever v0.38.0
+[1m[92m   Compiling[0m env_filter v2.0.0
+[1m[92m   Compiling[0m selectors v0.38.0
+[1m[92m   Compiling[0m num-complex v0.4.6
+[1m[92m   Compiling[0m memmap2 v0.9.11
+[1m[92m   Compiling[0m socket2 v0.5.10
+[1m[92m   Compiling[0m publicsuffix v2.3.0
+[1m[92m   Compiling[0m tower v0.5.3
+[1m[92m   Compiling[0m hyper-util v0.1.19
+[1m[92m   Compiling[0m cssparser v0.37.0
+[1m[92m   Compiling[0m env_logger v0.11.11
+[1m[92m   Compiling[0m fs-set-times v0.20.3
+[1m[92m   Compiling[0m cookie v0.18.2
+[1m[92m   Compiling[0m rand v0.10.3
+[1m[92m   Compiling[0m async-compression v0.4.36
+[1m[92m   Compiling[0m tokio-rustls v0.26.6
+[1m[92m   Compiling[0m dirs-sys v0.5.0
+[1m[92m   Compiling[0m serde_yaml_ng v0.10.0
+[1m[92m   Compiling[0m num-bigint v0.4.8
+[1m[92m   Compiling[0m aes v0.8.4
+[1m[92m   Compiling[0m onig_sys v69.9.3
+[1m[92m   Compiling[0m rustix-linux-procfs v0.1.1
+[1m[92m   Compiling[0m markup5ever v0.39.0
+[1m[92m   Compiling[0m rand_core v0.9.5
+[1m[92m   Compiling[0m string_cache v0.8.8
+[1m[92m   Compiling[0m olpc-cjson v0.1.4
+[1m[92m   Compiling[0m rquickjs-sys v0.11.0
+[1m[92m   Compiling[0m slotmap v1.1.1
+[1m[92m   Compiling[0m cap-primitives v4.0.3
+[1m[92m   Compiling[0m aster-use-core v0.2.4 (/Users/roylin/code/aster/crates/use/core)
+[1m[92m   Compiling[0m dashmap v6.2.1
+[1m[92m   Compiling[0m cssparser v0.34.0
+[1m[92m   Compiling[0m markup5ever v0.14.0
+[1m[92m   Compiling[0m rand_chacha v0.9.0
+[1m[92m   Compiling[0m html5ever v0.39.0
+[1m[92m   Compiling[0m tower-http v0.6.11
+[1m[92m   Compiling[0m num-rational v0.4.2
+[1m[92m   Compiling[0m hyper-rustls v0.27.2
+[1m[92m   Compiling[0m dirs v6.0.0
+[1m[92m   Compiling[0m cookie_store v0.22.0
+[1m[92m   Compiling[0m console v0.15.8
+[1m[92m   Compiling[0m html5ever v0.38.0
+[1m[92m   Compiling[0m tempfile v3.27.0
+[1m[92m   Compiling[0m num-iter v0.1.46
+[1m[92m   Compiling[0m ecb v0.1.2
+[1m[92m   Compiling[0m cbc v0.1.2
+[1m[92m   Compiling[0m uuid v1.26.1
+[1m[92m   Compiling[0m rand_chacha v0.3.1
+[1m[92m   Compiling[0m sharded-slab v0.1.7
+[1m[92m   Compiling[0m universal-hash v0.5.1
+[1m[92m   Compiling[0m tracing-serde v0.2.0
+[1m[92m   Compiling[0m tracing-log v0.2.0
+[1m[92m   Compiling[0m md-5 v0.10.6
+[1m[92m   Compiling[0m esaxx-rs v0.1.10
+[1m[92m   Compiling[0m num_cpus v1.17.0
+[1m[92m   Compiling[0m borrow-or-share v0.2.4
+[1m[92m   Compiling[0m tiny-skia-path v0.12.0
+[1m[92m   Compiling[0m tracing-subscriber v0.3.23
+[1m[92m   Compiling[0m polyval v0.6.2
+[1m[92m   Compiling[0m clap_builder v4.6.7
+[1m[92m   Compiling[0m lopdf v0.42.0
+[1m[92m   Compiling[0m indicatif v0.17.8
+[1m[92m   Compiling[0m fluent-uri v0.4.1
+[1m[92m   Compiling[0m selectors v0.26.0
+[1m[92m   Compiling[0m reqwest v0.12.28
+[1m[92m   Compiling[0m rand v0.8.8
+[1m[92m   Compiling[0m num v0.4.3
+[1m[92m   Compiling[0m kurbo v0.13.1
+[1m[92m   Compiling[0m dom_query v0.28.0
+[1m[92m   Compiling[0m rand v0.9.5
+[1m[92m   Compiling[0m html5ever v0.29.0
+[1m[92m   Compiling[0m cap-std v4.0.2
+[1m[92m   Compiling[0m inotify-sys v0.1.8
+[1m[92m   Compiling[0m opentelemetry v0.21.0
+[1m[92m   Compiling[0m aster-acl v0.3.0 (/Users/roylin/code/aster/crates/acl)
+[1m[92m   Compiling[0m xml5ever v0.38.0
+[1m[92m   Compiling[0m rmp v0.8.14
+[1m[92m   Compiling[0m dirs-sys v0.4.1
+[1m[92m   Compiling[0m tokio-stream v0.1.19
+[1m[92m   Compiling[0m socks v0.3.4
+[1m[92m   Compiling[0m ordered-float v4.6.0
+[1m[92m   Compiling[0m rand_xoshiro v0.6.0
+[1m[92m   Compiling[0m bstr v1.13.1
+[1m[92m   Compiling[0m scraper v0.22.0
+[1m[92m   Compiling[0m globset v0.4.19
+[1m[92m   Compiling[0m uuid-simd v0.8.0
+[1m[92m   Compiling[0m referencing v0.47.0
+[1m[92m   Compiling[0m dom_smoothie v0.18.2
+[1m[92m   Compiling[0m rustybuzz v0.20.1
+[1m[92m   Compiling[0m zip v7.3.0
+[1m[92m   Compiling[0m libsqlite3-sys v0.35.0
+[1m[92m   Compiling[0m opentelemetry_sdk v0.21.2
+[1m[92m   Compiling[0m toml_edit v0.22.24
+[1m[92m   Compiling[0m imbl v3.0.0
+[1m[92m   Compiling[0m png v0.18.1
+[1m[92m   Compiling[0m ureq v2.10.1
+[1m[92m   Compiling[0m dirs v5.0.1
+[1m[92m   Compiling[0m rayon-cond v0.4.0
+[1m[92m   Compiling[0m clap v4.6.7
+[1m[92m   Compiling[0m sysctl v0.6.0
+[1m[92m   Compiling[0m rmp-serde v1.3.0
+[1m[92m   Compiling[0m markup5ever_rcdom v0.38.0+unofficial
+[1m[92m   Compiling[0m fontdb v0.23.0
+[1m[92m   Compiling[0m inotify v0.11.5
+[1m[92m   Compiling[0m cap-fs-ext v4.0.2
+[1m[92m   Compiling[0m rquickjs-core v0.11.0
+[1m[92m   Compiling[0m onig v6.5.3
+[1m[92m   Compiling[0m svgtypes v0.16.1
+[1m[92m   Compiling[0m fraction v0.15.4
+[1m[92m   Compiling[0m pdf-inspector v1.15.0
+[1m[92m   Compiling[0m ghash v0.5.1
+[1m[92m   Compiling[0m cron v0.17.0
+[1m[92m   Compiling[0m ctr v0.9.2
+[1m[92m   Compiling[0m roaring v0.11.1
+[1m[92m   Compiling[0m aead v0.5.2
+[1m[92m   Compiling[0m combine v4.6.9
+[1m[92m   Compiling[0m cpu-time v1.0.0
+[1m[92m   Compiling[0m simplecss v0.2.1
+[1m[92m   Compiling[0m unicode-normalization-alignments v0.1.12
+[1m[92m   Compiling[0m usvg v0.47.0
+[1m[92m   Compiling[0m tokenizers v0.21.4
+[1m[92m   Compiling[0m notify v8.2.0
+[1m[92m   Compiling[0m sha256 v1.6.0
+[1m[92m   Compiling[0m jsonschema v0.47.0
+[1m[92m   Compiling[0m aster-search v3.4.0 (/Users/roylin/code/aster/crates/search)
+[1m[92m   Compiling[0m schemars v1.2.3
+[1m[92m   Compiling[0m lsp-types v0.97.0
+[1m[92m   Compiling[0m aster-vec v0.1.8 (/Users/roylin/code/aster/crates/vec)
+[1m[92m   Compiling[0m anndists v0.1.5
+[1m[92m   Compiling[0m aster-form-core v0.1.0 (/Users/roylin/code/aster/crates/form-core)
+[1m[92m   Compiling[0m aster-okf v0.1.0 (/Users/roylin/code/aster/crates/okf)
+[1m[92m   Compiling[0m mmap-rs v0.7.0
+[1m[92m   Compiling[0m aes-gcm v0.10.3
+[1m[92m   Compiling[0m aster-lane v0.5.1 (/Users/roylin/code/aster/crates/lane)
+[1m[92m   Compiling[0m rquickjs v0.11.0
+[1m[92m   Compiling[0m aster-effect v0.2.1 (/Users/roylin/code/aster/crates/effect)
+[1m[92m   Compiling[0m htmd v0.5.6
+[1m[92m   Compiling[0m hf-hub v0.4.3
+[1m[92m   Compiling[0m ksandbox v0.2.3 (https://github.com/kense-labs/ksandbox.git?rev=6c7c8bddc66325480342916e0387ab6580139316#6c7c8bdd)
+[1m[92m   Compiling[0m tiny-skia v0.12.0
+[1m[92m   Compiling[0m toml v0.8.20
+[1m[92m   Compiling[0m zip v2.6.1
+[1m[92m   Compiling[0m ndarray v0.15.6
+[1m[92m   Compiling[0m ignore v0.4.30
+[1m[92m   Compiling[0m aster-common v0.1.1 (/Users/roylin/code/aster/crates/common)
+[1m[92m   Compiling[0m aster-durable-memory v0.1.5 (/Users/roylin/code/aster/crates/memory)
+[1m[92m   Compiling[0m html2text v0.16.7
+[1m[92m   Compiling[0m rgb v0.8.53
+[1m[92m   Compiling[0m safetensors v0.5.2
+[1m[92m   Compiling[0m smallstr v0.3.1
+[1m[92m   Compiling[0m aster-core v9.2.1 (/Users/roylin/code/aster/crates/code/core)
+[1m[92m   Compiling[0m yrs v0.27.3
+[1m[33mwarning[0m[1m: unused import: `attachments_from_fact_tool_images`[0m
+  [1m[94m--> [0mcrates/code/core/src/fact_control.rs:86:5
+   [1m[94m|[0m
+[1m[94m86[0m [1m[94m|[0m     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   [1m[94m|[0m     [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: unused import: `ProgressBasis`[0m
+  [1m[94m--> [0mcrates/code/core/src/goal_control/facts.rs:45:75
+   [1m[94m|[0m
+[1m[94m45[0m [1m[94m|[0m pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   [1m[94m|[0m                                                                           [1m[33m^^^^^^^^^^^^^[0m
+
+[1m[92m   Compiling[0m model2vec-rs v0.3.0
+[1m[92m   Compiling[0m resvg v0.47.0
+[1m[92m   Compiling[0m agent-client-protocol-schema v0.11.4
+[1m[92m   Compiling[0m hnsw_rs v0.3.5
+[1m[92m   Compiling[0m aster-tty-utils v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-tty-utils)
+[1m[92m   Compiling[0m which v8.0.6
+[1m[92m   Compiling[0m wait-timeout v0.2.1
+[1m[92m   Compiling[0m rusqlite v0.37.0
+[1m[92m   Compiling[0m aster-office v0.45.0 (/Users/roylin/code/aster/crates/office/crates/core)
+[1m[92m   Compiling[0m aster-mermaid v0.1.0 (/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-mermaid)
+[1m[92m   Compiling[0m agent-client-protocol v0.10.4
+[1m[92m   Compiling[0m aster-use-reconcile v0.2.10 (/Users/roylin/code/aster/crates/use/reconcile)
+[1m[92m   Compiling[0m vte_generate_state_changes v0.1.2
+[1m[92m   Compiling[0m vte v0.11.1
+[1m[92m   Compiling[0m nix v0.28.0
+[1m[33mwarning[0m[1m: unreachable pattern[0m
+   [1m[94m--> [0mcrates/code/core/src/workspace/manifest/scanner.rs:459:19
+    [1m[94m|[0m
+[1m[94m458[0m [1m[94m|[0m                 | ".aster"
+    [1m[94m|[0m                   [1m[94m--------[0m [1m[94mmatches all the relevant values[0m
+[1m[94m459[0m [1m[94m|[0m                 | ".aster"
+    [1m[94m|[0m                   [1m[33m^^^^^^^^[0m [1m[33mno value can reach this[0m
+    [1m[94m|[0m
+    [1m[94m= [0m[1mnote[0m: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: unreachable pattern[0m
+  [1m[94m--> [0mcrates/code/core/src/workspace/source_egress.rs:65:19
+   [1m[94m|[0m
+[1m[94m64[0m [1m[94m|[0m                 | ".aster"
+   [1m[94m|[0m                   [1m[94m--------[0m [1m[94mmatches all the relevant values[0m
+[1m[94m65[0m [1m[94m|[0m                 | ".aster"
+   [1m[94m|[0m                   [1m[33m^^^^^^^^[0m [1m[33mno value can reach this[0m
+
+[1m[33mwarning[0m[1m: associated function `observed_mutations` is never used[0m
+  [1m[94m--> [0mcrates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   [1m[94m|[0m
+[1m[94m25[0m [1m[94m|[0m impl ContinuationSource {
+   [1m[94m|[0m [1m[94m-----------------------[0m [1m[94massociated function in this implementation[0m
+[1m[94m26[0m [1m[94m|[0m     pub(crate) fn observed_mutations(
+   [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: method `recorded_uncertainties` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/harness_loop.rs:746:19
+    [1m[94m|[0m
+[1m[94m366[0m [1m[94m|[0m impl MutationLedger {
+    [1m[94m|[0m [1m[94m-------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m746[0m [1m[94m|[0m     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: method `with_scheduler_quota_from` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/llm/admission.rs:338:19
+    [1m[94m|[0m
+[1m[94m257[0m [1m[94m|[0m impl ModelGenerationAdmission {
+    [1m[94m|[0m [1m[94m-----------------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m338[0m [1m[94m|[0m     pub(crate) fn with_scheduler_quota_from(
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: function `uses_anthropic_messages_api` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/llm/factory.rs:255:15
+    [1m[94m|[0m
+[1m[94m255[0m [1m[94m|[0m pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    [1m[94m|[0m               [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: function `lines` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/porcelain.rs:498:21
+    [1m[94m|[0m
+[1m[94m498[0m [1m[94m|[0m pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    [1m[94m|[0m                     [1m[33m^^^^^[0m
+
+[1m[33mwarning[0m[1m: associated function `new` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/tools/types.rs:318:8
+    [1m[94m|[0m
+[1m[94m316[0m [1m[94m|[0m impl ModelGenerationPermitReservation {
+    [1m[94m|[0m [1m[94m-------------------------------------[0m [1m[94massociated function in this implementation[0m
+[1m[94m317[0m [1m[94m|[0m     /// Called from the `dynamic-workflow` surface.
+[1m[94m318[0m [1m[94m|[0m     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    [1m[94m|[0m        [1m[33m^^^[0m
+
+[1m[33mwarning[0m[1m: method `with_model_generation_permit` is never used[0m
+   [1m[94m--> [0mcrates/code/core/src/tools/types.rs:842:19
+    [1m[94m|[0m
+[1m[94m406[0m [1m[94m|[0m impl ToolContext {
+    [1m[94m|[0m [1m[94m----------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m842[0m [1m[94m|[0m     pub(crate) fn with_model_generation_permit(
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: associated functions `default_catalog` and `default_catalog_with_engine` are never used[0m
+   [1m[94m--> [0mcrates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    [1m[94m|[0m
+[1m[94m153[0m [1m[94m|[0m impl WorkspaceChunkCatalog {
+    [1m[94m|[0m [1m[94m--------------------------[0m [1m[94massociated functions in this implementation[0m
+[1m[94m...[0m
+[1m[94m287[0m [1m[94m|[0m     pub(crate) fn default_catalog() -> Arc<Self> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^[0m
+[1m[94m...[0m
+[1m[94m295[0m [1m[94m|[0m     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    [1m[94m|[0m                   [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[92m   Compiling[0m filedescriptor v0.8.3
+[1m[92m   Compiling[0m serial2 v0.2.39
+[1m[92m   Compiling[0m tracing-appender v0.2.5
+[1m[92m   Compiling[0m portable-pty v0.9.0
+[1m[92m   Compiling[0m vt100 v0.15.2
+[1m[92m   Compiling[0m aster-embedding v0.1.0 (/Users/roylin/code/aster/crates/embedding)
+[1m[33mwarning[0m[1m: unused import: `sha2::Digest`[0m
+  [1m[94m--> [0mcrates/embedding/src/hygiene.rs:10:5
+   [1m[94m|[0m
+[1m[94m10[0m [1m[94m|[0m use sha2::Digest as _;
+   [1m[94m|[0m     [1m[33m^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: variable does not need to be mutable[0m
+  [1m[94m--> [0mcrates/embedding/src/vector/hnsw.rs:41:13
+   [1m[94m|[0m
+[1m[94m41[0m [1m[94m|[0m         let mut index =
+   [1m[94m|[0m             [1m[94m----[0m[1m[33m^^^^^[0m
+   [1m[94m|[0m             [1m[94m|[0m
+   [1m[94m|[0m             [1m[94mhelp: remove this `mut`[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: field `dimension` is never read[0m
+  [1m[94m--> [0mcrates/embedding/src/vector/hnsw.rs:21:5
+   [1m[94m|[0m
+[1m[94m17[0m [1m[94m|[0m pub struct HnswBackend {
+   [1m[94m|[0m            [1m[94m-----------[0m [1m[94mfield in this struct[0m
+[1m[94m...[0m
+[1m[94m21[0m [1m[94m|[0m     dimension: usize,
+   [1m[94m|[0m     [1m[33m^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m: `aster-embedding` (lib) generated 3 warnings (run `cargo fix --lib -p aster-embedding` to apply 1 suggestion)
+[1m[92m   Compiling[0m aster-acp v9.2.1 (/Users/roylin/code/aster/crates/code/acp)
+[1m[33mwarning[0m[1m: function `register_embedding_provider` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/agent/local_embedding.rs:42:8
+   [1m[94m|[0m
+[1m[94m42[0m [1m[94m|[0m pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   [1m[94m|[0m        [1m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+   [1m[94m|[0m
+   [1m[94m= [0m[1mnote[0m: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[1m[33mwarning[0m[1m: method `as_str` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/host_context.rs:64:12
+   [1m[94m|[0m
+[1m[94m57[0m [1m[94m|[0m impl CompletionAttestation {
+   [1m[94m|[0m [1m[94m--------------------------[0m [1m[94mmethod in this implementation[0m
+[1m[94m...[0m
+[1m[94m64[0m [1m[94m|[0m     pub fn as_str(self) -> &'static str {
+   [1m[94m|[0m            [1m[33m^^^^^^[0m
+
+[1m[33mwarning[0m[1m: constant `CANCEL_SETTLE_GRACE` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/turn_cancel.rs:18:18
+   [1m[94m|[0m
+[1m[94m18[0m [1m[94m|[0m pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
+   [1m[94m|[0m                  [1m[33m^^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m[1m: constant `CANCEL_ABORT_GRACE` is never used[0m
+  [1m[94m--> [0mcrates/code/acp/src/turn_cancel.rs:21:18
+   [1m[94m|[0m
+[1m[94m21[0m [1m[94m|[0m pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);
+   [1m[94m|[0m                  [1m[33m^^^^^^^^^^^^^^^^^^[0m
+
+[1m[33mwarning[0m: `aster-acp` (lib) generated 4 warnings
+[1m[33mwarning[0m: `aster-core` (lib) generated 12 warnings (run `cargo fix --lib -p aster-core` to apply 2 suggestions)
+[1m[92m    Finished[0m `test` profile [unoptimized] target(s) in 4m 26s
+[1m[92m  Executable[0m tests/shipped_tui_e2e.rs (/home/lyon/aster-linux-x86-target/debug/deps/shipped_tui_e2e-c0c87483f3b4541d)
+=== e2e harness built 2026-11-09T19:40:33+08:00 ===
