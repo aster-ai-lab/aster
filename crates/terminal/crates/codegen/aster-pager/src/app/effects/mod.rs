@@ -548,7 +548,7 @@ pub(crate) fn execute(
                 .spawn(async move {
                     let mcp_servers = discover_mcp_servers(cwd.clone()).await;
                     if crate::app::aster_active() {
-                        crate::acp::model_preferences::add_session_effort(&cwd, &acp_session_id, &mut meta).await;
+                        crate::acp::model_preferences::add_session_selection(&cwd, &acp_session_id, &mut meta).await;
                     }
                     let _phase = startup::phase_scope(StartupPhase::SessionCreate);
                     ulog::info("session.load.start", Some(&acp_session_id.0), None);

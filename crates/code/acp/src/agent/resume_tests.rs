@@ -327,6 +327,40 @@ async fn saved_effort_is_bound_to_the_loaded_model() {
 }
 
 #[tokio::test]
+async fn unavailable_saved_model_does_not_open_session() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().to_owned();
+    let host = AsterCodeAgent::new(launch.clone());
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let session = host.sessions.lock().await[id.0.as_ref()].session.clone();
+    session.close().await;
+    drop(host);
+
+    let host = AsterCodeAgent::new(launch);
+    let error = host
+        .load_session(
+            acp::LoadSessionRequest::new(id, root.path()).meta(
+                json!({"aster/sessionModelId": "removed/model"})
+                    .as_object()
+                    .cloned(),
+            ),
+        )
+        .await
+        .unwrap_err();
+    assert_eq!(
+        error.data,
+        Some(json!("saved session model is unavailable: removed/model"))
+    );
+    assert!(host.sessions.lock().await.is_empty());
+    assert!(host.core_agent.lock().await.is_none());
+}
+
+#[tokio::test]
 async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
     use aster_core::store::{FileSessionStore, SessionStore};
 

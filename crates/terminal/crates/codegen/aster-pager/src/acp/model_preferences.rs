@@ -32,7 +32,7 @@ pub(crate) async fn persist_session(
         .await
 }
 
-pub(crate) async fn add_session_effort(
+pub(crate) async fn add_session_selection(
     cwd: &Path,
     id: &acp::SessionId,
     meta: &mut Option<acp::Meta>,
@@ -46,16 +46,18 @@ pub(crate) async fn add_session_effort(
         Ok(summary) => summary,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return,
         Err(error) => {
-            tracing::warn!(%error, "session effort could not be read");
+            tracing::warn!(%error, "session model selection could not be read");
             return;
         }
     };
+    let model_id = summary.current_model_id.0.as_ref();
+    if !model_id.contains('/') {
+        return;
+    }
+    let meta = meta.get_or_insert_with(acp::Meta::new);
+    meta.insert("aster/sessionModelId".into(), model_id.into());
     if let Some(effort) = summary.recorded_reasoning_effort() {
-        let meta = meta.get_or_insert_with(acp::Meta::new);
-        meta.insert(
-            "reasoningEffortModelId".into(),
-            summary.current_model_id.0.to_string().into(),
-        );
+        meta.insert("reasoningEffortModelId".into(), model_id.into());
         meta.insert(
             "reasoningEffort".into(),
             effort

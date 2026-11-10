@@ -559,6 +559,7 @@ pub struct AsterCodeAgent {
     model_id: Mutex<String>,
     /// Last `/effort` selection. Applied on every core session open.
     effort: Mutex<Option<EffortLimits>>,
+    launch_model_override: bool,
     launch_effort_override: bool,
     detected_models: std::sync::RwLock<HashMap<String, model_discovery::DetectedModel>>,
     client_model_discovery: std::cell::Cell<bool>,
@@ -650,6 +651,7 @@ impl AsterCodeAgent {
             session_loads: InflightSessionLoads::new(),
             model_id: Mutex::new(model_id),
             effort: Mutex::new(effort),
+            launch_model_override: false,
             launch_effort_override: false,
             goals: Mutex::new(HashMap::new()),
             turn_generation: Mutex::new(HashMap::new()),
@@ -670,6 +672,12 @@ impl AsterCodeAgent {
             client_permissions: RefCell::new(ClientPermissionRules::default()),
             first_run_config: false,
         }
+    }
+
+    /// Use the explicitly requested launch model when reopening a stored session.
+    pub fn with_launch_model_override(mut self) -> Self {
+        self.launch_model_override = true;
+        self
     }
 
     /// Set the host's initial reasoning effort; later session model selections still win.

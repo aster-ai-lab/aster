@@ -297,7 +297,7 @@ async fn run() -> Result<()> {
     if let Some(command) = &args.workspace_mcp {
         return run_workspace_mcp_command(&args, command);
     }
-    if let Some(model) = args.model {
+    if let Some(model) = &args.model {
         std::env::set_var("ASTER_DEFAULT_MODEL", model);
     }
     let load_config = || {
@@ -358,6 +358,9 @@ async fn run() -> Result<()> {
     }
     let workspace = launch.workspace.clone();
     let mut agent = AsterCodeAgent::new(launch).with_workspace_admission(admission);
+    if args.model.is_some() {
+        agent = agent.with_launch_model_override();
+    }
     if let Some(effort) = args.reasoning_effort.as_deref() {
         agent = agent.with_default_reasoning_effort(effort)?;
     }

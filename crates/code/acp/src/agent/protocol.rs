@@ -256,27 +256,43 @@ impl acp::Agent for AsterCodeAgent {
         }
         let components = crate::harness_assemble::components_from_meta(args.meta.as_ref())
             .map_err(|error| acp::Error::invalid_params().data(error))?;
-        self.admit_studio_documents(args.meta.as_ref());
-        let session_mcp = session_mcp_configs(&args.mcp_servers);
-        self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
-            .await?;
         let current = self
             .sessions
             .lock()
             .await
             .get(&session_id)
             .map(|live| (live.model_id.clone(), live.effort));
-        let use_saved_effort =
-            current.is_none() && !self.launch_effort_override && self.unattended.is_none();
+        let restore_selection = current.is_none() && self.unattended.is_none();
         let (model_id, mut effort) = match current {
             Some(selection) => selection,
-            None => (
-                self.model_id.lock().await.clone(),
-                *self.effort.lock().await,
-            ),
+            None => {
+                let default_model = self.model_id.lock().await.clone();
+                let saved_model = args
+                    .meta
+                    .as_ref()
+                    .filter(|_| restore_selection && !self.launch_model_override)
+                    .and_then(|meta| meta.get("aster/sessionModelId"))
+                    .and_then(serde_json::Value::as_str);
+                if let Some(saved_model) = saved_model.filter(|model| !self.known_model(model)) {
+                    return Err(acp::Error::invalid_params()
+                        .data(format!("saved session model is unavailable: {saved_model}")));
+                }
+                let model_id = saved_model.unwrap_or(&default_model);
+                let effort = if model_id == default_model || self.launch_effort_override {
+                    *self.effort.lock().await
+                } else {
+                    None
+                };
+                (model_id.to_owned(), effort)
+            }
         };
+        self.admit_studio_documents(args.meta.as_ref());
+        let session_mcp = session_mcp_configs(&args.mcp_servers);
+        self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
+            .await?;
         self.refresh_model(&model_id, true).await;
-        if use_saved_effort
+        if restore_selection
+            && !self.launch_effort_override
             && args
                 .meta
                 .as_ref()

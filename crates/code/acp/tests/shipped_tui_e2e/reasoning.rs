@@ -120,3 +120,111 @@ fn discovery_applies_effort_reset_and_restart() {
     pty.enter();
     pty.child.wait().unwrap();
 }
+
+#[test]
+fn resume_keeps_model_after_acl_default_changes() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir_all(&workspace).unwrap();
+    std::fs::create_dir_all(&home).unwrap();
+    let (address, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{address}/v1"));
+    let source =
+        std::fs::read_to_string(&config).unwrap() + "\nmemory { llm_extraction = false }\n";
+    std::fs::write(&config, &source).unwrap();
+    let mut owned = child_env(&binaries::acp_binary(), &config, &home);
+    owned.push((
+        "ASTER_HOME".into(),
+        home.join(".aster").display().to_string(),
+    ));
+    owned.push(("ASTER_DISABLE_CODEX_ACCOUNT".into(), "1".into()));
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let original = "CAPABILITY-PROBE-LOW";
+    let session = seed_marked_session(&env, &workspace, &state, original);
+    let seeded: Value = serde_json::from_str(&wait_body_all(
+        &state,
+        &[original],
+        Duration::from_secs(10),
+        true,
+    ))
+    .unwrap();
+    assert_eq!(seeded["model"], "gpt");
+    std::fs::write(
+        &config,
+        source.replace(
+            "default_model = \"mock/gpt\"",
+            "default_model = \"mock/alt\"",
+        ) + "\nreasoning_effort = \"low\"\n",
+    )
+    .unwrap();
+    assert_eq!(acl_default_model(&config), "mock/alt");
+    let sent = state.lock().unwrap().bodies.len();
+    let mut pty = open_pty_cleared(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap(), "--resume", &session],
+        &env,
+        &workspace,
+    );
+    pty.wait_for(original, Duration::from_secs(30));
+    let info = pty.open_session_info(Duration::from_secs(15));
+    assert_eq!(session_id_from_screen(&info), session);
+    assert_eq!(state.lock().unwrap().bodies.len(), sent);
+    pty.escape();
+    pty.focus_composer();
+    let followup = "CAPABILITY-PROBE-DEFAULT";
+    pty.type_text(followup);
+    pty.enter();
+    pty.wait_for(&format!("{followup}-DONE"), Duration::from_secs(20));
+    let body: Value = serde_json::from_str(&wait_body_all(
+        &state,
+        &[followup],
+        Duration::from_secs(10),
+        true,
+    ))
+    .unwrap();
+    assert_eq!(body["model"], "gpt", "resume must keep the original route");
+    assert!(body.get("reasoning_effort").is_none());
+    let user_messages = body["messages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|message| message["role"] == "user")
+        .map(|message| message["content"].as_str().unwrap())
+        .collect::<Vec<_>>();
+    assert_eq!(user_messages, [original, followup]);
+    pty.focus_composer();
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+    drop(pty);
+
+    let mut pty = open_pty_cleared(
+        &tui_binary(),
+        &[
+            "--cwd",
+            workspace.to_str().unwrap(),
+            "--resume",
+            &session,
+            "--model",
+            "mock/alt",
+        ],
+        &env,
+        &workspace,
+    );
+    pty.wait_for(followup, Duration::from_secs(30));
+    let info = pty.open_session_info(Duration::from_secs(15));
+    assert_eq!(session_id_from_screen(&info), session);
+    assert!(
+        info.contains("mock/alt"),
+        "explicit launch model was lost\n{info}"
+    );
+    pty.escape();
+    pty.focus_composer();
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+}
