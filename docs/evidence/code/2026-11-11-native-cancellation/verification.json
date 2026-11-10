@@ -1,0 +1,37 @@
+{
+  "receipt_tests": {
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0,
+    "log_sha256": "c54052c7a64992c9134ed1e14b6b0ea821a3ddd5e4c4c6d34c1f0480f5752522"
+  },
+  "workspace_format": {
+    "exit_code": 1,
+    "unrelated_paths": [
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_resource_broker.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/capabilities_registry.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_count.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_http.rs",
+      "/Users/roylin/code/aster/apps/studio/src-tauri/src/runtime_components_tests.rs",
+      "/Users/roylin/code/aster/crates/embedding/src/assets.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+      "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+      "/Users/roylin/code/aster/crates/use/tool-acquire/src/env_acl/tests.rs",
+      "/Users/roylin/code/aster/crates/use/tool-acquire/src/http.rs"
+    ]
+  },
+  "all_target_clippy": {
+    "exit_code": 0,
+    "existing_lib_test_warnings": 27
+  },
+  "candidate": "diagnostic; pre-existing ACP patch is not committed",
+  "product_release_published": false
+}

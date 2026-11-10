@@ -9,6 +9,7 @@ use super::{
     BashSandbox, NetworkGrant, SandboxCommandRequest, SandboxExecutionOutput, SandboxNetworkMode,
     SandboxOutput,
 };
+use crate::tools::OwnedProcessTermination;
 use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use ksandbox::{
@@ -214,6 +215,42 @@ impl BashSandbox for NativeBashSandbox {
             exit_code: output.exit_code,
             timed_out: output.timed_out,
         })
+    }
+
+    async fn exec_cancellable(
+        &self,
+        request: SandboxCommandRequest,
+        cancellation: &tokio_util::sync::CancellationToken,
+    ) -> Result<(SandboxExecutionOutput, OwnedProcessTermination)> {
+        let output_observer = request.output_observer.map(|observer| {
+            Arc::new(BridgedOutputObserver { inner: observer }) as Arc<dyn OutputObserver>
+        });
+        let (output, termination) = self
+            .inner
+            .execute_cancellable(
+                CommandRequest {
+                    command: request.command,
+                    timeout_ms: request.timeout_ms,
+                    output_observer,
+                    env: request.env,
+                },
+                cancellation.cancelled(),
+            )
+            .await?;
+        let termination = match termination {
+            ksandbox::CommandTermination::Completed => OwnedProcessTermination::Completed,
+            ksandbox::CommandTermination::TimedOut => OwnedProcessTermination::TimedOut,
+            ksandbox::CommandTermination::Cancelled => OwnedProcessTermination::Cancelled,
+        };
+        Ok((
+            SandboxExecutionOutput {
+                stdout: output.stdout,
+                stderr: output.stderr,
+                exit_code: output.exit_code,
+                timed_out: output.timed_out,
+            },
+            termination,
+        ))
     }
 
     async fn shutdown(&self) {}

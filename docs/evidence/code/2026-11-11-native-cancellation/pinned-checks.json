@@ -1,0 +1,52 @@
+{
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-core",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "log": "pinned-core-clippy.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "log": "pinned-fmt.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp",
+        "--bins"
+      ],
+      "exit_code": 0,
+      "log": "pinned-pair-build.log"
+    }
+  ],
+  "binaries": {
+    "aster": {
+      "build_id": "aster-cli-pair-v1:60bc0bc6cf24ea539a9b383c88aaf66701a35eb4:aarch64-apple-darwin",
+      "sha256": "8695d7e12c16f81b94e1af4a8766c0d9a9a674ad7d7fdde4933b29ea5fcd560b"
+    },
+    "aster-acp": {
+      "build_id": "aster-cli-pair-v1:60bc0bc6cf24ea539a9b383c88aaf66701a35eb4:aarch64-apple-darwin",
+      "sha256": "d007f739e6f7ce6a485e32cf172638f15d125b8ffb5416f468669f87db087e3f"
+    }
+  }
+}

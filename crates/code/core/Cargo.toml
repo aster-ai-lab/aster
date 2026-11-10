@@ -136,7 +136,7 @@ aster-common = {path = "../../common"}
 aster-effect = {path = "../../effect"}
 # Process-isolation boundary for BashSandbox (Seatbelt / namespaces / AppContainer).
 # Pinned public kense-labs/ksandbox — not kbox (MicroVM).
-ksandbox = { git = "https://github.com/kense-labs/ksandbox.git", rev = "6c7c8bddc66325480342916e0387ab6580139316" }
+ksandbox = { git = "https://github.com/kense-labs/ksandbox.git", rev = "aa626654a9f7bcc517c0917f61456322862e6f28" }
 
 [target.'cfg(unix)'.dependencies]
 libc = {workspace = true}

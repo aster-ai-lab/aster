@@ -1,0 +1,15 @@
+{
+  "session_id": "48bbd86a-3c04-41eb-9196-9f5027f1b71e",
+  "run_id": "run-8e04119f-b246-4627-bb4a-2c4b1cf293fe",
+  "status": "completed",
+  "admissions": 1,
+  "expected_bytes": "RESTORED-NATIVE-31\n",
+  "restored_cancelled_runs": [
+    "run-01736c2d-74a1-4f18-bdfc-8ee84f537988",
+    "run-b51c3f2c-eac8-4955-a43e-bf7ee63bcb39",
+    "run-1c9f5f60-de1e-48c8-aa2a-407ecc692d73"
+  ],
+  "context_tokens": 1048576,
+  "model": "deepseek/deepseek-flash",
+  "window": "w-55283"
+}

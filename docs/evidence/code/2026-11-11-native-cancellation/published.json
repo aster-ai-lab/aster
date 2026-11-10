@@ -1,0 +1,37 @@
+{
+  "repository": "kense-labs/ksandbox",
+  "branch": "fix/cooperative-command-cancellation",
+  "base_commit": "6c7c8bddc66325480342916e0387ab6580139316",
+  "commit": "aa626654a9f7bcc517c0917f61456322862e6f28",
+  "tree": "2e19f0355536451d39f6c1f3bb92bf62f3aefa33",
+  "files": {
+    "src/lib.rs": {
+      "sha256": "88a22bc19c71f97e6ce6a80a0b4418a62f19ea6360156b918239a5cda2ade9a1",
+      "blob": "10850ce1f2a4e77112d183305a6de3858006b9c3"
+    },
+    "src/platform/linux.rs": {
+      "sha256": "6ea6ce63a2b97a5c04dafccdd72bf9afa6c7e461f503f1c99b8c3fcf11050b67",
+      "blob": "5f4933e1e441e3e4dbbe8533a3c1fef7497dd3b8"
+    },
+    "src/platform/macos.rs": {
+      "sha256": "ca35c2aa01f420abb463c8d3ffd2ea793891860ef5d0d1f77bc7a872e61f8582",
+      "blob": "437eabeb8ebf0ae249cb4d45bd7eb7c9d729e521"
+    },
+    "src/platform/unsupported.rs": {
+      "sha256": "4a352b751a801235ad80d50b1df988e4471de7e343d555a9ea6fd3beceb10772",
+      "blob": "f8ec68653381766ead46c2d3bcc8622aca363a80"
+    },
+    "src/platform/windows.rs": {
+      "sha256": "069bc2a27199b10000e660b7634d628c243dbcb7827dbd131f6e0a92471dc399",
+      "blob": "3b13f53f64a1bf50a286a5e96319e9db865cf57d"
+    },
+    "src/process.rs": {
+      "sha256": "7015403c4730a1345b4505dbb5c6979e4aa3a2eb66564588f4b442fa44b33ffa",
+      "blob": "ffd6acc62e809f084dbbb6d7bce279512f6b7026"
+    }
+  },
+  "url": "https://github.com/kense-labs/ksandbox/commit/aa626654a9f7bcc517c0917f61456322862e6f28",
+  "authorization": "User explicitly approved publishing the proposed branch and updating the Aster reference",
+  "verified_remote_bytes": true,
+  "pull_request_created": false
+}

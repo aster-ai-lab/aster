@@ -1,0 +1,29 @@
+{
+  "repository": "kense-labs/ksandbox",
+  "base_commit": "6c7c8bddc66325480342916e0387ab6580139316",
+  "branch": "fix/cooperative-command-cancellation",
+  "files": [
+    "src/lib.rs",
+    "src/platform/linux.rs",
+    "src/platform/macos.rs",
+    "src/platform/unsupported.rs",
+    "src/platform/windows.rs",
+    "src/process.rs"
+  ],
+  "patch_sha256": "2081c3e664f24c6fffeded2f17051e43f69b4570c9c2428c6beb473c6b7274f9",
+  "aster_adapter_patch_sha256": "846ad67472b7e0915bba5de6f83933150b2140b0be004ae79220b8eec9b3de78",
+  "tests": {
+    "ksandbox_process": {
+      "passed": 8,
+      "failed": 0
+    },
+    "ksandbox_clippy": "passed",
+    "windows_compile": "x86_64-pc-windows-msvc passed",
+    "linux_compile": "aarch64-unknown-linux-gnu passed; Clang plus Zig ar",
+    "aster_core_clippy": "passed with existing warnings",
+    "native_sdk_probe": "passed: original exit 137, partial output/write and no late child write",
+    "core_receipt_acceptance": "passed for authorized host, YOLO and real macOS Seatbelt; temporary native variant restored"
+  },
+  "upstream_cache_modified": false,
+  "temporary_lock_and_source_overrides_restored": true
+}

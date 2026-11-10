@@ -1,0 +1,7 @@
+{
+  "status": "FAIL_INFRA",
+  "reason": "agent-desktop Return refused a dynamic window identity with unknown delivery; repeated observations showed unchanged pending permission and no process start; the frozen 60-second setup deadline expired",
+  "cleanup": "A subsequent native 2 selected rejection; the original Run ended without starting waiter.py. Native Ctrl+C at permission did not change the UI and remains under investigation.",
+  "retry": "normal-ctrlc-v2",
+  "oracles_changed": false
+}

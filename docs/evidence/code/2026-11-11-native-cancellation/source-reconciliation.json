@@ -1,0 +1,10 @@
+{
+  "head": "85e640c6d050bda7af1558390c05aa543fdc28c1",
+  "computed_build_id": "aster-cli-pair-v1:60bc0bc6cf24ea539a9b383c88aaf66701a35eb4:aarch64-apple-darwin",
+  "binary_build_id": "aster-cli-pair-v1:60bc0bc6cf24ea539a9b383c88aaf66701a35eb4:aarch64-apple-darwin",
+  "matches": true,
+  "changes_since_model_commit": [
+    ".github/workflows/ci.yml",
+    "apps/studio"
+  ]
+}

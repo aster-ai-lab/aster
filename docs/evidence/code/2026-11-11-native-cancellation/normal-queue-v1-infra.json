@@ -1,0 +1,8 @@
+{
+  "status": "FAIL_INFRA",
+  "reason": "agent-desktop type returned unknown delivery; subsequent observations showed an empty composer and no queued replacement. The original native command reached its sandbox deadline before force-insertion could be tested.",
+  "requested_timeout_ms": 900000,
+  "follow_up": "Inspect effective native timeout reporting separately",
+  "prompt_oracles_timeouts_changed": false,
+  "retry": "normal-queue-v2"
+}

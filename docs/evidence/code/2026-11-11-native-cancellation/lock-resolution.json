@@ -1,0 +1,125 @@
+{
+  "package_versions_unchanged": true,
+  "generated_by": "cargo update -p ksandbox --precise aa626654a9f7bcc517c0917f61456322862e6f28",
+  "changed": [
+    {
+      "package": "arboard",
+      "version": "3.7.0",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "dirs-sys",
+      "version": "0.5.0",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "errno",
+      "version": "0.3.14",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "gix-imara-diff",
+      "version": "0.2.1",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "io-extras",
+      "version": "0.19.0",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "is-terminal",
+      "version": "0.4.17",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "ksandbox",
+      "version": "0.2.3",
+      "fields": [
+        "source"
+      ]
+    },
+    {
+      "package": "nu-ansi-term",
+      "version": "0.50.3",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "os_pipe",
+      "version": "1.2.3",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "quinn-udp",
+      "version": "0.5.14",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "rustix",
+      "version": "1.1.6",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "rustls-platform-verifier",
+      "version": "0.6.2",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "rustls-platform-verifier",
+      "version": "0.7.1",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "seize",
+      "version": "0.5.1",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "tempfile",
+      "version": "3.27.0",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "terminal_size",
+      "version": "0.4.4",
+      "fields": [
+        "dependencies"
+      ]
+    },
+    {
+      "package": "winapi-util",
+      "version": "0.1.11",
+      "fields": [
+        "dependencies"
+      ]
+    }
+  ]
+}
