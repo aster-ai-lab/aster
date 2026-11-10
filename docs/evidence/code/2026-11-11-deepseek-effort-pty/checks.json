@@ -1,0 +1,122 @@
+{
+  "toolchain": "1.97.1-aarch64-apple-darwin",
+  "environment": {
+    "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "checks": [
+    {
+      "name": "model-discovery-module",
+      "command": [
+        "target/debug/deps/aster_acp-989324f9e788fe46",
+        "agent::model_discovery_tests::",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "Loopback provider; real ACP model replacement and Core request serialization",
+      "log_sha256": "5429c3a2186df998cc6c14ebb682e1981c74c021dcb221972e56f0abc9bc1498",
+      "note": "Direct execution of the current-source test binary; the preceding Cargo test compile and run are retained separately"
+    },
+    {
+      "name": "native-controls-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-acp",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 16.82
+    },
+    {
+      "name": "native-controls-pair",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp",
+        "--bin",
+        "aster",
+        "--bin",
+        "aster-acp"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 19.2
+    },
+    {
+      "name": "native-controls-source",
+      "command": [
+        "python3",
+        ".runtime/tui-full-e2e/source_pair.py",
+        "native-controls-source-reconciliation.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 18.66
+    },
+    {
+      "name": "relay-tests",
+      "command": [
+        "python3",
+        "acp_trace_proxy_tests.py"
+      ],
+      "working_directory": "private relay copy",
+      "passed": 6,
+      "failed": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "workspace-format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "unrelated_paths": [
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_resource_broker.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/capabilities_registry.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_count.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_http.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/runtime_components_tests.rs",
+        "/Users/roylin/code/aster/crates/embedding/src/assets.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/env_acl/tests.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/http.rs"
+      ],
+      "same_paths_as_preserved_baseline": true
+    },
+    {
+      "name": "touched-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--check",
+        "--config",
+        "skip_children=true",
+        "crates/code/acp/src/agent/model_discovery_tests.rs"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "case": "TUI-CMD-115 /quit",
+  "scope": "Real PTY keyboard dispatch and observed process identities; no native visual claim",
+  "startup_deadline_seconds": 45,
+  "quit_deadline_seconds": 10,
+  "assertions": [
+    "Observe the retained TUI and its actual ACP descendant before quit",
+    "/quit returns exit 0",
+    "Every observed original process identity is absent within 10 seconds",
+    "Zero prompt admissions"
+  ],
+  "runner_sha256": "1d38b0b7b4787307bc2d49b79f5ac02a5c55369ae44c9b0271155c0e2d108fb0"
+}

@@ -1,0 +1,23 @@
+{
+  "scope": "PTY quit with no admitted task; no native GUI acceptance",
+  "status": "PASS",
+  "model_selected_before_quit": false,
+  "quit_seconds": 4.697,
+  "known_processes": [
+    {
+      "pid": 29924,
+      "identity": "Wed Nov 11 05:16:37 2026     /Users/roylin/code/aster/target/debug/aster"
+    },
+    {
+      "pid": 29928,
+      "identity": "Wed Nov 11 05:16:37 2026     /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "pid": 29930,
+      "identity": "Wed Nov 11 05:16:37 2026     /Users/roylin/code/aster/target/debug/aster-acp"
+    }
+  ],
+  "original_processes_remaining": 0,
+  "prompt_requests": 0,
+  "proxy_close_marker": false
+}

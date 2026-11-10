@@ -1,0 +1,12 @@
+{
+  "classification": "FAIL_SPEC",
+  "reason": "Removing ANSI bytes cannot reconstruct terminal cursor overwrites",
+  "canonical_completed_run": "run-e94e8373-87b6-46b7-9900-35cf0a6859e6",
+  "original_trace_prompt_requests": 1,
+  "provider_prompt_response_seconds": 4.349569,
+  "actual_canary_visible_with_vt100": true,
+  "viewport_sha256": "94f61141e94ef1095512320a6b92c626aba4e637e87f60f956022936cc54030b",
+  "frozen_task_deadline_seconds": 120,
+  "additional_model_requests": 0,
+  "scope": "The original checker failed; this diagnoses its reader and does not retroactively certify its timing check"
+}

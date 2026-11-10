@@ -1,0 +1,142 @@
+{
+  "private_artifacts": [
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/run.py",
+      "bytes": 11266,
+      "sha256": "deaaf6711d6983749a47707c654540a129f985ba644be568244c353f6cd29887"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/plan.json",
+      "bytes": 2529,
+      "sha256": "f18da77e203a65de0a5938ec778e800e50d341a03f40f51efa46480cada20b20"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/result.json",
+      "bytes": 3868,
+      "sha256": "c1757d4d1590969a614bf76aa9d26d0f88210dcfed119506826ad432a767b336"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/trace.jsonl",
+      "bytes": 96096,
+      "sha256": "c1210b2d0c063c6efdd0c7809220bc94f7c1ea5cedf62c71d66d6be2376d0b62"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/terminal.raw",
+      "bytes": 55849,
+      "sha256": "5c07ea921c604eba65d9372f4b83ec4fad0109aaf99a634b25a444b8b3650499"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/raw-reader-run.py",
+      "bytes": 10510,
+      "sha256": "e875bc757060b2ca26b8eca43bd3173182860c29a721f0a7bc221c03e9c807c8"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/raw-reader-plan.json",
+      "bytes": 1946,
+      "sha256": "e24f202f266b81aea8966108beca720245b0a2f4f5dd4ff570a8b218135ad9ef"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/raw-reader-result.json",
+      "bytes": 1617,
+      "sha256": "3445d17d9ed06caca95936f7c255ef1884d5de87fdbea18a7493fb883a85a382"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/raw-reader-trace.jsonl",
+      "bytes": 33756,
+      "sha256": "36248056d569cfe939bdb7dbb2f8cb2fa4f8d14ea1971942d9423ea6b4420b68"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/raw-reader-terminal.raw",
+      "bytes": 25229,
+      "sha256": "35552a4edcf5dcf9172827e3ff0da8164b28d4e1b5a579977456c6922a8eaf18"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/initial-reader-assessment.json",
+      "bytes": 604,
+      "sha256": "696adb906b1554e233d650c8fa7d8826304dce6463067585cb43ac3a0c9448d2"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/vt_read.rs",
+      "bytes": 329,
+      "sha256": "92665559c2398e8025b6f002fa2d7275476926e99de9008885cc73a4842db015"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/relay-tests.log",
+      "bytes": 104,
+      "sha256": "26656cb4c1513add54cc55c69b4e540a51f473b017712168fc95a0b24d32f08a"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-compile-failed.log",
+      "bytes": 6078,
+      "sha256": "430e7d94683b79ad91f43814c96ddb6afb8932fe1a7a141faf1d271b6218283b"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-test.log",
+      "bytes": 7869,
+      "sha256": "3fd16f9d050da3c40b06e28333b1d36e6582239d8f7d96cfc25362a1a6f18977"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-get-isolated.log",
+      "bytes": 7704,
+      "sha256": "71a2750668e7c016209b9edc5d7532eae38cec053bc4a422f5d39a46b8ca1586"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-qualified.log",
+      "bytes": 7044,
+      "sha256": "cd4b31539496766daf49d8630931bb59dbf3d848ea3d5d28239d0e6c28728312"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-clippy.log",
+      "bytes": 36027,
+      "sha256": "e3e787ac30304f5d96ee9867bb2ad45d49842aabbdfd3cb6adb044b59d405a46"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-pair.log",
+      "bytes": 12436,
+      "sha256": "6854ea3b2f81135be2c57517b350d5ca426af854eccc8df492b72b5f8a256d89"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-format.log",
+      "bytes": 14589,
+      "sha256": "1eb5205a8d36ea82d80d5295f84664acaa26519924b23ec96ddb223cfefe2248"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/quit_probe.py",
+      "bytes": 4736,
+      "sha256": "1d38b0b7b4787307bc2d49b79f5ac02a5c55369ae44c9b0271155c0e2d108fb0"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/quit/plan.json",
+      "bytes": 513,
+      "sha256": "cc9f683ba86b55364a018a68b17fa94cd97c22d146d7932ab4908a3406c09f5a"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/quit/result.json",
+      "bytes": 744,
+      "sha256": "f58a719fe5d3eccfab1fad7b9fc29c68e491b903556af65f004d9dc78b1be9ac"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/quit/trace.jsonl",
+      "bytes": 241,
+      "sha256": "54bf2b7cdac73c4f6ff3c059a64f387c171b44061e4b045156d4d1138d2e24b6"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/quit/terminal.raw",
+      "bytes": 103,
+      "sha256": "7f1e9bdfa3d57a3fa3b41faf83ec0e3c2b04c780960124cd0ed1fa14fbc593e6"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/prior-delivery-guard.log",
+      "bytes": 304,
+      "sha256": "51037e780c235a82def82ace1576a7baa682addae142dc0ebcc90d230a9c4b41"
+    },
+    {
+      "private_path": ".runtime/tui-full-e2e/live-effort-matrix/native-controls-direct.log",
+      "bytes": 280,
+      "sha256": "5429c3a2186df998cc6c14ebb682e1981c74c021dcb221972e56f0abc9bc1498"
+    }
+  ],
+  "initial_stderr_note": "The first stderr log was overwritten before archiving; no claim of its retained bytes is made",
+  "selected_protocol": "Openai",
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7"
+}

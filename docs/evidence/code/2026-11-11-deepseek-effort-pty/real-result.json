@@ -1,0 +1,115 @@
+{
+  "status": "FAIL",
+  "scope": "Real shipped TUI through a PTY, ACP and Core to the supplied DeepSeek provider; no native visual acceptance",
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster",
+    "--model",
+    "deepseek/deepseek-flash",
+    "--no-plan",
+    "--no-subagents",
+    "--fullscreen"
+  ],
+  "cases": [
+    {
+      "effort": "max",
+      "status": "PASS",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "run_id": "run-17d31c73-2919-4fbc-8662-3e4cc94eac48",
+      "prompt_id": "301950c1-8604-4b25-9010-beeb7d20f526",
+      "read_calls": 1,
+      "receipt_outcome": "succeeded",
+      "latest_reported_input": 20354,
+      "thought_chunks": 56,
+      "canary_sha256": "74eed9616e086a1656761c5eaa6a326bb00f3c626fdd6498b66ad32a5d1f8615"
+    },
+    {
+      "effort": "default",
+      "status": "PASS",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "run_id": "run-dcc59578-379b-458d-aa37-e8d8ad0ffe33",
+      "prompt_id": "fb5dce37-6b6c-487d-bce6-bcabcb1d590b",
+      "read_calls": 1,
+      "receipt_outcome": "succeeded",
+      "latest_reported_input": 20488,
+      "thought_chunks": 0,
+      "canary_sha256": "b110899f66aa41926c657d9c2ffc16e2a86e1b1485d42baed7bf3771504d6a54"
+    },
+    {
+      "effort": "none",
+      "status": "PASS",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "run_id": "run-30858c1a-2006-4fa1-8cd3-d5d4b2c8cb17",
+      "prompt_id": "fe33dbb3-48d3-47e5-9b6b-f12407c15817",
+      "read_calls": 1,
+      "receipt_outcome": "succeeded",
+      "latest_reported_input": 20648,
+      "thought_chunks": 0,
+      "canary_sha256": "3fdc59ddc828a4b8153d3914539265812b67e840a0a1c15994ce00787bb9a264"
+    },
+    {
+      "effort": "low",
+      "status": "PASS",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "run_id": "run-e6695683-4e21-4c86-9833-54eff2161f1b",
+      "prompt_id": "382a055e-b69b-43e2-ba97-e113da8f27cc",
+      "read_calls": 1,
+      "receipt_outcome": "succeeded",
+      "latest_reported_input": 20883,
+      "thought_chunks": 0,
+      "canary_sha256": "83f9b6245993ca1e620b12d4c93c2642042a2f635e733b72f737d6098267a68c"
+    },
+    {
+      "effort": "high",
+      "status": "PASS",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "run_id": "run-56c53a1b-2f18-44d7-a1cc-4b388cbebdf3",
+      "prompt_id": "484afa6e-41c0-4b69-bbc7-1d6a0387f003",
+      "read_calls": 1,
+      "receipt_outcome": "succeeded",
+      "latest_reported_input": 21062,
+      "thought_chunks": 0,
+      "canary_sha256": "e0ea26cc8c64c2f8924aa1c00faed14c5b472e6ec9de66716df48e36a0228cde"
+    }
+  ],
+  "owned_tui_pid": 26493,
+  "plan_sha256": "f18da77e203a65de0a5938ec778e800e50d341a03f40f51efa46480cada20b20",
+  "build_id": "aster-cli-pair-v1:6802032282069feec5ac9e77371477a3f5a0896b:aarch64-apple-darwin",
+  "selected_capabilities": {
+    "reasoningEfforts": [
+      {
+        "value": "none",
+        "id": "none",
+        "label": "none",
+        "description": "Reasoning effort"
+      },
+      {
+        "value": "low",
+        "id": "low",
+        "label": "low",
+        "description": "Faster, lighter reasoning"
+      },
+      {
+        "value": "high",
+        "id": "high",
+        "label": "high",
+        "description": "Heavy reasoning"
+      },
+      {
+        "value": "max",
+        "id": "max",
+        "label": "max",
+        "description": "Maximum reasoning"
+      }
+    ],
+    "reasoningEffort": "max",
+    "defaultReasoningEffort": "high",
+    "reasoningSource": "provider+documented",
+    "contextWindowSource": "provider",
+    "totalContextTokens": 1048576,
+    "contextWindowKnown": true,
+    "capabilitiesStatus": "ready"
+  },
+  "error": "AssertionError: The relay did not observe all prompt closures",
+  "source_acl_unchanged": true,
+  "terminal_sha256": "5c07ea921c604eba65d9372f4b83ec4fad0109aaf99a634b25a444b8b3650499"
+}

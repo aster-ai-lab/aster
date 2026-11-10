@@ -1,0 +1,40 @@
+{
+  "scope": "Real shipped TUI through a PTY, ACP and Core to the supplied DeepSeek provider; no native visual acceptance",
+  "model": "deepseek/deepseek-flash",
+  "selected_account_source_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "cases": [
+    "max",
+    "default",
+    "none",
+    "low",
+    "high"
+  ],
+  "initial_expectation": "The configured explicit max remains selected; catalog default high stays distinct",
+  "prompt_template": "Read canary-{effort}.txt with the read tool and report its exact content. Do not edit files or call other tools.",
+  "switch_deadline_seconds": 20,
+  "task_deadline_seconds": 120,
+  "oracle": [
+    "Each switch has one correlated acknowledged model RPC carrying its exact selection",
+    "Only the requested DeepSeek route is selected",
+    "Each unseen canary is read once through one original successful read receipt",
+    "The canonical completed Run contains the exact new canary in its final answer",
+    "The real terminal output includes the canary; no response is injected",
+    "The source ACL and all canary files remain byte-identical; requested private preference changes may persist"
+  ],
+  "not_claimed": [
+    "Native mouse, focus, IME, screenshot or terminal restoration",
+    "A request setting proves hidden upstream compute effort or reasoning quality"
+  ],
+  "relay_source": "apps/aster/tests/tui_913_real_llm/acp_trace_proxy.py",
+  "relay_source_sha256": "eb204fa9881fff5b4dc54f18bf5ccc18f74443e9cddd52662246306816254bb1",
+  "relay_sha256": "3e53b51ad20d2050a921825c643d895139e36035cd3ff23765cd630cfc42aeac",
+  "relay_change": "Only additional scalar selection/capability observations; forwarded packet bytes are unchanged",
+  "startup_deadline_seconds": 45,
+  "runner_sha256": "deaaf6711d6983749a47707c654540a129f985ba644be568244c353f6cd29887",
+  "pair_build_id": "aster-cli-pair-v1:6802032282069feec5ac9e77371477a3f5a0896b:aarch64-apple-darwin",
+  "reader": "The repository-pinned vt100 parser, using the PTY geometry; ANSI stripping is not a screen oracle",
+  "reader_source_sha256": "92665559c2398e8025b6f002fa2d7275476926e99de9008885cc73a4842db015",
+  "calibration": "Retain the original raw-reader failure; first task is fully settled. New random canaries prevent prior-answer reuse, while prompts, model and deadlines stay unchanged.",
+  "initial_failure_sha256": "3445d17d9ed06caca95936f7c255ef1884d5de87fdbea18a7493fb883a85a382",
+  "reader_self_check": "A cursor overwrite renders ABCD; simple ANSI removal yields AXCDB"
+}

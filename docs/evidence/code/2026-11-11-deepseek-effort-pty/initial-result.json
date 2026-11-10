@@ -1,0 +1,54 @@
+{
+  "status": "FAIL",
+  "scope": "Real shipped TUI through a PTY, ACP and Core to the supplied DeepSeek provider; no native visual acceptance",
+  "argv": [
+    "/Users/roylin/code/aster/target/debug/aster",
+    "--model",
+    "deepseek/deepseek-flash",
+    "--no-plan",
+    "--no-subagents",
+    "--fullscreen"
+  ],
+  "cases": [],
+  "plan_sha256": "e24f202f266b81aea8966108beca720245b0a2f4f5dd4ff570a8b218135ad9ef",
+  "build_id": "aster-cli-pair-v1:6802032282069feec5ac9e77371477a3f5a0896b:aarch64-apple-darwin",
+  "selected_capabilities": {
+    "reasoningEfforts": [
+      {
+        "value": "none",
+        "id": "none",
+        "label": "none",
+        "description": "Reasoning effort"
+      },
+      {
+        "value": "low",
+        "id": "low",
+        "label": "low",
+        "description": "Faster, lighter reasoning"
+      },
+      {
+        "value": "high",
+        "id": "high",
+        "label": "high",
+        "description": "Heavy reasoning"
+      },
+      {
+        "value": "max",
+        "id": "max",
+        "label": "max",
+        "description": "Maximum reasoning"
+      }
+    ],
+    "reasoningEffort": "max",
+    "defaultReasoningEffort": "high",
+    "reasoningSource": "provider+documented",
+    "contextWindowSource": "provider",
+    "totalContextTokens": 1048576,
+    "contextWindowKnown": true,
+    "capabilitiesStatus": "ready"
+  },
+  "error": "AssertionError: The frozen observation deadline elapsed",
+  "cleanup": "The retained owned PTY process group was stopped",
+  "source_acl_unchanged": true,
+  "terminal_sha256": "35552a4edcf5dcf9172827e3ff0da8164b28d4e1b5a579977456c6922a8eaf18"
+}
