@@ -1,0 +1,14 @@
+{
+  "command": [
+    "target/debug/aster",
+    "--help"
+  ],
+  "scope": "CLI product-owned help; no native visual acceptance",
+  "assertions": [
+    "No Grok branding in root and dashboard help",
+    "No config.toml guidance in dashboard help",
+    "The sandbox argument retains its existing environment binding"
+  ],
+  "model_or_tool_requests": 0,
+  "source_before": "aster-cli-pair-v1:4f545da722ae77266e8f9d3156627f34eb33817e:aarch64-apple-darwin"
+}

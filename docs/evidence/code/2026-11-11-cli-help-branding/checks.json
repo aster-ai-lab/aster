@@ -1,0 +1,67 @@
+[
+  {
+    "name": "cli-tests",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster-pager",
+      "--lib",
+      "app::cli::",
+      "--",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 79.35,
+    "log_sha256": "53087d0ffcad35cc0e71f9b53fa7b4b508cb818294610439b493d3341991ddb3",
+    "passed": 32,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "name": "clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "-p",
+      "aster-pager",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 93.84,
+    "log_sha256": "fed2feed6b5a664b328b5cc64b2c34c93c0a656480022e1e83412ef154fdd396"
+  },
+  {
+    "name": "pair",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "-p",
+      "aster",
+      "-p",
+      "aster-acp",
+      "--bin",
+      "aster",
+      "--bin",
+      "aster-acp"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 42.78,
+    "log_sha256": "086399386a8d3025c132ccf62c4e130ef9b8e5148ab8d62cd09ab531d02a7832"
+  },
+  {
+    "name": "source",
+    "command": [
+      "python3",
+      ".runtime/tui-full-e2e/source_pair.py",
+      "help-source-reconciliation.json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 29.11,
+    "log_sha256": "aceeb9cda157737da690c64e84426c8f011618f43c72d593d65690a4007d289d"
+  }
+]

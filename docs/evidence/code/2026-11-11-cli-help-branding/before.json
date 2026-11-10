@@ -1,0 +1,9 @@
+{
+  "status": "FAIL_PRODUCT",
+  "findings": [
+    "[env: GROK_SANDBOX=]",
+    "dashboard    Open the Agent Dashboard view at startup. The dashboard shows every session, top-level and subagents. Disabled when `[dashboard].enabled = false` in `~/.aster/config.toml` or when the `GROK_AGENT_DASHBOARD=0` env var is set"
+  ],
+  "stdout_sha256": "c85ce50655fba4bc97007d21999cb1292cae12ae8eae40eb5759d69878ac2e79",
+  "plan_sha256": "68748059e5e62bf1e8866a122a17497dd61ca4badf63d6ba0b8e940b71bf5f6e"
+}

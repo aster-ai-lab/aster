@@ -150,7 +150,6 @@ See ~/.aster/README.md for more information.
     Workspace(WorkspaceMgmtArgs),
     /// Open the Agent Dashboard view at startup.
     /// The dashboard shows every session, top-level and subagents.
-    /// Disabled when `[dashboard].enabled = false` in `~/.aster/config.toml` or when the `GROK_AGENT_DASHBOARD=0` env var is set.
     Dashboard,
 }
 /// Arguments for the `wrap` subcommand: the command to run, then its args.
@@ -707,7 +706,7 @@ pub struct PagerArgs {
     )]
     pub background_wait_timeout_secs: u64,
     /// Sandbox profile for filesystem and network access.
-    #[arg(long, env = "GROK_SANDBOX", value_name = "PROFILE")]
+    #[arg(long, env = "GROK_SANDBOX", hide_env = true, value_name = "PROFILE")]
     pub sandbox: Option<String>,
     /// Session storage mode: local or writeback.
     #[arg(long = "storage-mode", value_name = "MODE", hide = true)]
@@ -1043,6 +1042,9 @@ impl PagerArgs {
 #[cfg(test)]
 #[path = "cli_cwd_tests.rs"]
 mod cwd_tests;
+#[cfg(test)]
+#[path = "cli_help_tests.rs"]
+mod help_tests;
 #[cfg(test)]
 mod tests {
     use super::*;

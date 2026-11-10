@@ -1,0 +1,12 @@
+[
+  {
+    "scope": "root",
+    "passed": true,
+    "stdout_sha256": "172a60f090a3f55c81129fafaf92f04561225862a00a8f5867f9e0dffdddc59e"
+  },
+  {
+    "scope": "dashboard",
+    "passed": true,
+    "stdout_sha256": "240cbbbba8bdec491ec8e780593136610d430b4ff659ae9dc2c0763d89ba00ee"
+  }
+]

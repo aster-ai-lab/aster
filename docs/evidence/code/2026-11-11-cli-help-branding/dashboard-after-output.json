@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "stdout": "Open the Agent Dashboard view at startup. The dashboard shows every session, top-level and subagents\n\nUsage: aster dashboard [OPTIONS]\n\nOptions:\n      --debug                 Enable debug logging\n      --debug-file <FILE>     Write debug logs to FILE\n  -h, --help                  Print help\n      --leader-socket <PATH>  Use a custom leader socket path instead of the default `~/.aster/leader.sock`. A local/branch build can thus run an isolated leader without colliding with the default one already running on the machine Name it `~/.aster/leader-*.sock` to keep `aster leader list/kill` able to find it; any other location works but won't be auto-discovered\n",
+  "stdout_sha256": "240cbbbba8bdec491ec8e780593136610d430b4ff659ae9dc2c0763d89ba00ee"
+}
