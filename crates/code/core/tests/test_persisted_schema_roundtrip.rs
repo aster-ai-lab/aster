@@ -208,7 +208,7 @@ fn gen_image_source(rng: &mut Rng) -> ImageSource {
     ImageSource {
         source_type: "base64".to_string(),
         media_type: "image/png".to_string(),
-        data: rng.string(),
+        data: rng.string().into(),
     }
 }
 

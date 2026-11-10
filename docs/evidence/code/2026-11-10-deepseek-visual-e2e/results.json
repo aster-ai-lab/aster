@@ -1,0 +1,33 @@
+{
+  "receipt-baseline": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 23s",
+    "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5891 filtered out; finished in 0.17s",
+    "error: test failed, to rerun pass `-p aster-core --lib`"
+  ],
+  "receipt-fixed": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 36s",
+    "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5891 filtered out; finished in 0.29s"
+  ],
+  "core-focused": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 25s",
+    "test result: ok. 114 passed; 0 failed; 0 ignored; 0 measured; 5778 filtered out; finished in 5.54s"
+  ],
+  "schema-roundtrip": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 40.01s",
+    "test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s"
+  ],
+  "acp-focused": [
+    "    Finished `test` profile [unoptimized + debuginfo] target(s) in 53.11s",
+    "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 509 filtered out; finished in 2.57s"
+  ],
+  "clippy-core": [
+    "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.37s"
+  ],
+  "build-final": [
+    "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 00s"
+  ],
+  "scoped_fmt": "PASS",
+  "workspace_fmt": "FAIL: 18 pre-existing files",
+  "gui_remaining": "BLOCKED: macOS loginwindow",
+  "source_config_unchanged": true
+}

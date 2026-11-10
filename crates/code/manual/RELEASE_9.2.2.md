@@ -13,6 +13,11 @@
   use Aster Night and Aster Day names.
 - Verification and tool refusals retain actionable diagnostics and current-run
   evidence instead of treating a narrative response as verified completion.
+- Cancellation preserves terminal receipts returned by the original tool during
+  cleanup. Invocations that do not return complete evidence still require
+  identity-bound reconciliation; process exit does not clear unknown effects.
+- The welcome screen no longer advertises the unavailable feedback command,
+  and imported legacy account descriptions use neutral product copy.
 - The current-source TUI test plan maps commands, settings, shortcuts, modals,
   forms and tools to explicit planned cases. Its catalogue is not a claim that
   a full platform/provider campaign has run.

@@ -616,7 +616,7 @@ fn model_picker_label(provider_name: &str, display_name: &str) -> String {
 
 fn model_picker_description(provider_name: &str) -> String {
     if provider_name == "grok" {
-        "Logged-in Grok account".to_string()
+        "Imported Legacy CLI account".to_string()
     } else if provider_name == "cursor" {
         "Logged-in Cursor account".to_string()
     } else if provider_name == "codex" {

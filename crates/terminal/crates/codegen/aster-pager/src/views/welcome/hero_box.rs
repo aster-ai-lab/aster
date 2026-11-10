@@ -30,7 +30,7 @@ const RIGHT_COL_MAX_WIDTH: u16 = 56;
 /// Reserved on top of the announcement text rows so the message never paints over the button.
 const UPGRADE_CTA_ROWS: u16 = 2;
 
-const HERO_SUBTITLE: &str = "Thanks for trying Aster, give feedback with /feedback!";
+const HERO_SUBTITLE: &str = "Describe your task";
 
 use super::logo::LogoTier;
 use super::{PROMPT_HEIGHT, VERSION_GAP};

@@ -64,7 +64,11 @@ pub(crate) async fn execute_tool_with_deadline(
     };
 
     invocation_cancellation.cancel();
-    let _ = tokio::time::timeout(TOOL_CANCELLATION_SETTLE_GRACE, &mut execution).await;
+    let settled = tokio::time::timeout(TOOL_CANCELLATION_SETTLE_GRACE, &mut execution).await;
+    if let (Stop::Cancelled, Ok(result)) = (&stop, settled) {
+        // The original invocation returned its own terminal evidence.
+        return result;
+    }
 
     match stop {
         Stop::Cancelled => Ok(ToolResult::error_with_kind(

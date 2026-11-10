@@ -1,0 +1,12 @@
+{
+  "pids": {
+    "parent": 28754,
+    "child": 28755
+  },
+  "before": "28754 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python waiter.py keyboard-live\n28755 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /private/tmp/aster-tui-deepseek-e2e/workspace/waiter.py keyboard-live child\n",
+  "after": "",
+  "action_started_at": 1794307770.65891,
+  "settled_at": 1794307771.514037,
+  "input": "System Events Ctrl+C after agent-desktop not_delivered",
+  "late": []
+}

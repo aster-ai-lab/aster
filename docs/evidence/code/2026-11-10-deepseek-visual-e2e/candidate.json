@@ -1,0 +1,36 @@
+{
+  "source_config_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "model": "deepseek/deepseek-flash",
+  "head": "e553cf89c6087997a997913578e8ffae327d1d22",
+  "dirty_diff_sha256": "7e068ff7509fed101aec7b83fde7b35cb15d8c886a8eaa9e737ffafbd170088b",
+  "source_diff_paths": [
+    "crates/code/acp/src/agent.rs",
+    "crates/code/acp/src/agent/turn.rs",
+    "crates/code/acp/src/agent/turn_terminal_tests.rs",
+    "crates/code/acp/src/agent_tests.rs",
+    "crates/code/acp/src/turn_cancel.rs"
+  ],
+  "gate_sha256": "1397f1fa6502bd25aaff1cb3544dd861965a707729a43b33eddff65f43236388",
+  "holdout_sha256": "59453cec216bfcf50a07e39a66cc2de28f6a0433f0aaa249b141d88e0664a28b",
+  "binaries": {
+    "aster": {
+      "sha256": "ddf1853de88cd0786c5e29b7b16f59713e1ab7f51b7abee55ce5542d68ee395c",
+      "build_id": "aster-cli-pair-v1:b61531cd75633b0262d192e06a0a9feef2666413:aarch64-apple-darwin"
+    },
+    "aster-acp": {
+      "sha256": "6990b16754b9537bf7a1b00a21f52ed7842e4bebd92975efd03ff2644ae3f45d",
+      "build_id": "aster-cli-pair-v1:b61531cd75633b0262d192e06a0a9feef2666413:aarch64-apple-darwin"
+    }
+  },
+  "final_binaries": {
+    "aster": {
+      "build_id": "aster-cli-pair-v1:d0d68f2e29d3e85c41e0befd0acdfb18f61bc43d:aarch64-apple-darwin",
+      "sha256": "bf91e5d2934c45ee4033d51bd8d7e710b3cc631f100d9e12ff93a1c735d4ace7"
+    },
+    "aster-acp": {
+      "build_id": "aster-cli-pair-v1:d0d68f2e29d3e85c41e0befd0acdfb18f61bc43d:aarch64-apple-darwin",
+      "sha256": "f9b9ca4d6842fe4235a032bc064b518b8621ce141cab95995bbbea394a92dd3e"
+    }
+  },
+  "final_diff_sha256": "6a3288471b0fa672990ab1ad1ca0002c30ffb95ff467cd08939ccd8b5786bd62"
+}

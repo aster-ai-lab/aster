@@ -1,0 +1,477 @@
+[
+  {
+    "seq": 9,
+    "identity": {
+      "turn": 1,
+      "cycle": 0,
+      "tool_call_id": "call_d4bb1601146f4fb19ed452633ae40b68",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60171fab-9a0c-4c21-ad56-092a804cf6a8",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 10,
+    "identity": {
+      "turn": 1,
+      "cycle": 0,
+      "tool_call_id": "call_0f4efee214ea476fa8eed81d04dbb500",
+      "batch_index": 1,
+      "admission": {
+        "run_id": "run-60171fab-9a0c-4c21-ad56-092a804cf6a8",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 18,
+    "identity": {
+      "turn": 2,
+      "cycle": 0,
+      "tool_call_id": "call_5b97a3c5ad424c7e8d596c94b441ecbd",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-e36d2b82-a236-4033-bd39-d234ea317696",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [
+      "rate.py"
+    ],
+    "unresolved": []
+  },
+  {
+    "seq": 22,
+    "identity": {
+      "turn": 2,
+      "cycle": 1,
+      "tool_call_id": "call_9bb739f7356e4d7f882e1cec29b4969b",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-e36d2b82-a236-4033-bd39-d234ea317696",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 26,
+    "identity": {
+      "turn": 2,
+      "cycle": 2,
+      "tool_call_id": "call_e378a994beb04fdb97083dd3a9e9c5a3",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-e36d2b82-a236-4033-bd39-d234ea317696",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "failed",
+    "exit_code": 1,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [
+      "runs.txt"
+    ],
+    "unresolved": []
+  },
+  {
+    "seq": 30,
+    "identity": {
+      "turn": 2,
+      "cycle": 3,
+      "tool_call_id": "call_5adf5845c1c24e329b8f5c453c8778a0",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-e36d2b82-a236-4033-bd39-d234ea317696",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 37,
+    "identity": {
+      "turn": 3,
+      "cycle": 0,
+      "tool_call_id": "call_a71251947b114c19ab1acd75b32814f7",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [
+      "fee.py"
+    ],
+    "unresolved": []
+  },
+  {
+    "seq": 40,
+    "identity": {
+      "turn": 3,
+      "cycle": 1,
+      "tool_call_id": "call_4a3523d9fae44e148a51d1298928b29b",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 43,
+    "identity": {
+      "turn": 3,
+      "cycle": 2,
+      "tool_call_id": "call_6540489252c64e3aa149e453a4a66a51",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [
+      "runs.txt"
+    ],
+    "unresolved": []
+  },
+  {
+    "seq": 46,
+    "identity": {
+      "turn": 3,
+      "cycle": 3,
+      "tool_call_id": "call_c2d61ed219494948bcfbb2b21236f1ab",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 49,
+    "identity": {
+      "turn": 3,
+      "cycle": 4,
+      "tool_call_id": "call_87c66f34035b40e288752b985d0162d6",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 56,
+    "identity": {
+      "turn": 4,
+      "cycle": 0,
+      "tool_call_id": "call_a132fae064a34a96b3b7f07a291eb993",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-fc783eeb-a077-4221-bff4-c6e51ca65354",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 59,
+    "identity": {
+      "turn": 4,
+      "cycle": 1,
+      "tool_call_id": "call_9bd0010ee29b4720972ff9e2563374e2",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-fc783eeb-a077-4221-bff4-c6e51ca65354",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 62,
+    "identity": {
+      "turn": 4,
+      "cycle": 2,
+      "tool_call_id": "call_f2a950644ecc4f61b814cea5687ddfbd",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-fc783eeb-a077-4221-bff4-c6e51ca65354",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "cancelled",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+    "paths": [
+      "mouse-stop.child-late",
+      "mouse-stop.child-started",
+      "mouse-stop.started.json"
+    ],
+    "unresolved": [
+      "sha256:9586bf695b14b7d66a6d0ca15ee844edc2b0ae7d590191c28140fccf1ffbdb0f"
+    ]
+  },
+  {
+    "seq": 68,
+    "identity": {
+      "turn": 5,
+      "cycle": 0,
+      "tool_call_id": "call_49ccb31f1c124507b4eb2eb548e084fb",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-30db9759-5412-4c1c-af4b-78810ad552e2",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "cancelled",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+    "paths": [
+      "mouse-live.child-started",
+      "mouse-live.started.json"
+    ],
+    "unresolved": [
+      "sha256:97294b29c318e9b3efb1b77a51006baffb67a85e2a8b3da7a6582d5fd30183dc"
+    ]
+  },
+  {
+    "seq": 74,
+    "identity": {
+      "turn": 6,
+      "cycle": 0,
+      "tool_call_id": "call_bb38c336d7ea4075a0c9fcbb158a8b5c",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-e6bbe35d-afcc-42fa-832b-ea9386615fcc",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "cancelled",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+    "paths": [
+      "keyboard-live.child-started",
+      "keyboard-live.started.json"
+    ],
+    "unresolved": [
+      "sha256:e225a012849190e7c2c3759ea5bb9f6cac8f625e6c359d0d7de79a073bfe0381"
+    ]
+  },
+  {
+    "seq": 80,
+    "identity": {
+      "turn": 7,
+      "cycle": 0,
+      "tool_call_id": "call_18c8aa30b44f491e90105c942ec8c612",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-38ebbb12-1fb3-4ac9-a849-0e1e0eafdc42",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "cancelled",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: execution did not return complete evidence",
+    "paths": [
+      "insert-live.child-started",
+      "insert-live.started.json"
+    ],
+    "unresolved": [
+      "sha256:75cc71d4f6665bf740a16cf944a631a6fd99cf6baba913eb86fb176abae62c21"
+    ]
+  },
+  {
+    "seq": 86,
+    "identity": {
+      "turn": 8,
+      "cycle": 0,
+      "tool_call_id": "call_990d0b63bb994e8799b2de7a24f0224a",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [
+      "queued-proof.txt"
+    ],
+    "unresolved": []
+  },
+  {
+    "seq": 89,
+    "identity": {
+      "turn": 8,
+      "cycle": 1,
+      "tool_call_id": "call_f7ce3283e7a1406bbf8502b6ca89d42f",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "denied",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped",
+    "paths": [],
+    "unresolved": [
+      "sha256:56996937118dd776fd289912a7a0728c96a63c4e41ad6f8984578e1819a41dc5"
+    ]
+  },
+  {
+    "seq": 92,
+    "identity": {
+      "turn": 8,
+      "cycle": 2,
+      "tool_call_id": "call_99a0023989184a01a878c4be174062a7",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 95,
+    "identity": {
+      "turn": 8,
+      "cycle": 3,
+      "tool_call_id": "call_c8d0fb91a0e848c2a83ae648f24792ff",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "exit_code": 0,
+    "completeness": "complete",
+    "reason": null,
+    "paths": [],
+    "unresolved": []
+  },
+  {
+    "seq": 98,
+    "identity": {
+      "turn": 8,
+      "cycle": 4,
+      "tool_call_id": "call_daa4d2a64a4f4eac96d71c10a431b1e8",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+        "thread_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "denied",
+    "exit_code": null,
+    "completeness": "incomplete",
+    "reason": "tool_effect_observation_incomplete: input hook ran before effective invocation stopped",
+    "paths": [],
+    "unresolved": [
+      "sha256:a5c2d0ab6afaeba8e07abcebdbe787987b298a09c22d82d5c4be860d4290dc11"
+    ]
+  }
+]

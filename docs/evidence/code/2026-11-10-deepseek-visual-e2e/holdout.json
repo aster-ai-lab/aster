@@ -1,0 +1,10 @@
+{
+  "sticker_price": {
+    "passed": true,
+    "samples": 7
+  },
+  "parcel_fee": {
+    "passed": true,
+    "samples": 7
+  }
+}

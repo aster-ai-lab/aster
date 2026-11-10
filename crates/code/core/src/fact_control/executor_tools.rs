@@ -536,7 +536,6 @@ impl ToolRunner for ExecutorTools {
             tokio::pin!(execution);
             // Forward host events while the tool runs: a tool that waits on the
             // host (ask_user_form) needs its question delivered before it returns.
-            let mut interrupted = false;
             let executed = loop {
                 tokio::select! {
                     biased;
@@ -553,13 +552,12 @@ impl ToolRunner for ExecutorTools {
                         }
                     } => {
                         invocation_cancel.cancel();
-                        interrupted = true;
                         break (&mut execution).await;
                     }
                     event = next_host_event(&mut bridged) => tools.emit(event).await,
                 }
             };
-            if interrupted || executed.as_ref().is_ok_and(|result| matches!(result.error_kind, Some(crate::tools::ToolErrorKind::Cancelled { .. }))) {
+            if executed.as_ref().is_ok_and(|result| matches!(result.error_kind, Some(crate::tools::ToolErrorKind::Cancelled { .. }))) {
                 let message = "cancelled".to_string();
                 tools.emit(crate::agent::AgentEvent::ToolEnd {
                     id: call.id.clone(), name: call.name.clone(), args: Some(args.clone()),

@@ -1,0 +1,13 @@
+{
+  "label": "mouse-live",
+  "gesture": "mouse",
+  "pids": {
+    "parent": 27789,
+    "child": 27790
+  },
+  "before": "27789 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python waiter.py mouse-live\n27790 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /private/tmp/aster-tui-deepseek-e2e/workspace/waiter.py mouse-live child\n",
+  "after": "",
+  "start": 1794307637.7728,
+  "settled": 1794307638.589427,
+  "late": []
+}

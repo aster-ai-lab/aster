@@ -1,0 +1,47 @@
+{
+  "session_id": "a21d193a-79a6-46b4-bba3-7bec8333f840",
+  "model": "deepseek/deepseek-flash",
+  "runs": [
+    {
+      "id": "run-60171fab-9a0c-4c21-ad56-092a804cf6a8",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "run-e36d2b82-a236-4033-bd39-d234ea317696",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "run-ff6e8f35-7621-42f9-b6a2-bcf7de520843",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "run-fc783eeb-a077-4221-bff4-c6e51ca65354",
+      "status": "cancelled",
+      "error": null
+    },
+    {
+      "id": "run-30db9759-5412-4c1c-af4b-78810ad552e2",
+      "status": "cancelled",
+      "error": null
+    },
+    {
+      "id": "run-e6bbe35d-afcc-42fa-832b-ea9386615fcc",
+      "status": "cancelled",
+      "error": null
+    },
+    {
+      "id": "run-38ebbb12-1fb3-4ac9-a849-0e1e0eafdc42",
+      "status": "cancelled",
+      "error": null
+    },
+    {
+      "id": "run-60a377fc-abc3-4cbc-9a49-613de243f7ad",
+      "status": "failed",
+      "error": "tool_effect_unresolved: 6 invocation obligation(s) require identity-bound reconciliation; local scans, final text, and ordinary waivers cannot discharge them."
+    }
+  ],
+  "queued_prompt_admissions": 1
+}

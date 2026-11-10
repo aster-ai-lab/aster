@@ -1,0 +1,62 @@
+[
+  {
+    "name": "coding-diagnosis",
+    "status": "PASS",
+    "oracle": "read-only diagnosis; fixture bytes unchanged"
+  },
+  {
+    "name": "coding-partial",
+    "status": "PASS",
+    "oracle": "only rate.py changed; actual checker exited 1 and printed SHOP-HOLD"
+  },
+  {
+    "name": "coding-complete",
+    "status": "PASS",
+    "oracle": "checker printed SHOP-PASS; 14 independent holdout inputs passed; checkers unchanged"
+  },
+  {
+    "name": "mouse-process-cancel",
+    "status": "PASS_CONTROL_ONLY",
+    "oracle": "both exact processes observed alive then absent; no late marker"
+  },
+  {
+    "name": "ctrl-c-process-cancel",
+    "status": "PASS_CONTROL_ONLY",
+    "oracle": "OS fallback after agent-desktop injection refused; both processes absent; no late marker"
+  },
+  {
+    "name": "send-now",
+    "status": "PARTIAL",
+    "oracle": "replacement admitted once and exact artifact created; terminal failed with unresolved original effects"
+  },
+  {
+    "name": "native-cancel-recovery",
+    "status": "BLOCKED_BY_UNRESOLVED_EFFECTS",
+    "oracle": "current contract preserves incomplete native command receipts; process exit does not settle all effects"
+  },
+  {
+    "name": "feedback-advertisement",
+    "status": "FAIL_BEFORE_FIX",
+    "oracle": "welcome advertised /feedback; backend refused it"
+  },
+  {
+    "name": "settled-tool-receipt",
+    "status": "FAIL_BEFORE_FIX",
+    "oracle": "original result returned but cancellation replaced it with Cancelled; regression reproduced"
+  },
+  {
+    "name": "settled-tool-receipt-fixed",
+    "status": "PASS_REGRESSION",
+    "oracle": "original identity, one invocation, exact byte observation; success, failure and incomplete-evidence variants all passed"
+  },
+  {
+    "name": "welcome-copy-final-build",
+    "status": "PASS_RENDER_ONLY",
+    "oracle": "fresh pair renders Describe your task; no unavailable feedback invitation"
+  },
+  {
+    "name": "remaining-headed-interactions",
+    "status": "BLOCKED",
+    "oracle": "macOS loginwindow prevents verified foreground delivery; no authenticated login attempted"
+  }
+]

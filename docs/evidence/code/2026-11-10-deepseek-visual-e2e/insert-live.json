@@ -1,0 +1,12 @@
+{
+  "pids": {
+    "parent": 29437,
+    "child": 29438
+  },
+  "before": "29437 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python waiter.py insert-live\n29438 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /private/tmp/aster-tui-deepseek-e2e/workspace/waiter.py insert-live child\n",
+  "after": "",
+  "action_started_at": 1794307889.8851461,
+  "settled_at": 1794307925.6113222,
+  "late": [],
+  "replacement": "QUEUE-ONCE-42\n"
+}

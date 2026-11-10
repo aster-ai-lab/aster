@@ -588,6 +588,10 @@ impl crate::tools::Tool for ReceiptProbe {
             std::fs::write(path, b"external side effect")?;
             anyhow::bail!("Workspace boundary: failure after external effect");
         }
+        if args["settle_on_cancel"] == true {
+            ctx.cancellation_token().cancelled().await;
+            tokio::task::yield_now().await;
+        }
         if args["write"] == true {
             std::fs::write(ctx.workspace.join("changed.txt"), "exact bytes")?;
         }
