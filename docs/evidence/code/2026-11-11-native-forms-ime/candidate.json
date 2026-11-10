@@ -1,0 +1,26 @@
+{
+  "head": "d5803c0c38fe91b71ca0ab1f8f2710ee758b3373",
+  "build_id": "aster-cli-pair-v1:60bc0bc6cf24ea539a9b383c88aaf66701a35eb4:aarch64-apple-darwin",
+  "model": "deepseek/deepseek-flash",
+  "platform": "macOS aarch64; native Terminal",
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "session": "48bbd86a-3c04-41eb-9196-9f5027f1b71e",
+  "artifacts": {
+    "form-plan.json": "dca55d27c40aa280905155b93664beb783d7cd741e4be9ca5a088f2e85c40d23",
+    "form-result.json": "1bbf0d996747784a467a4601d442bd29be85ec7c12a87bcd817d8bd83257539c",
+    "form-cancel-plan.json": "29207e178b0a0c7d98a18e33b133dd512757bf83dbde44fdeff7e572ae7809ed",
+    "form-cancel-result.json": "227952bfeac5f33c7b54eca3e3f310e03726ac37ae744f943d3bc38e18ae1302",
+    "ime-plan.json": "b469303d7a54d9c9736d84e06eebec2f70a432e10335e6022965ee4f53867fd6",
+    "ime-candidate-plan.json": "0e84b22e0f4984af7fef58f55be46c06eee9bfd93778b7dbcee2109ce975f9a4",
+    "ime-enter-raw-result.json": "8c16dc39bca73d09e2a63103c96c55b1916572cd863f8c945e2402684727d055",
+    "ime-result.json": "e530829255ff46bb2db675f697d7fc33b049faa87c359e667b5b5e268369a614",
+    "form-required-validation.png": "9329993f382a3b57adbfb9dce2cd2b2deedc29e3bc1a0c013d46ddefa572374d",
+    "form-range-validation.png": "64d9c582ff8233b439d91a4b9cee166ad3980f88f6284911d3037b4897f5a16a",
+    "form-submitted.png": "ee72305f370ec2bc24d6b161c4b1cf3ca19b1424f49b669ecda3910d62024c99",
+    "form-cancelled.png": "1cad3cb49a48ba30b699cfd7ea3a51fce1e6bebf34077d8fe610dee34e670931",
+    "ime-preedit.png": "921a1469f02d4dbc9b9dc094c258c4d3fe3026cc752f151141bbe44023a35d2a",
+    "ime-enter-raw-not-submitted.png": "da5e0d6685c9469e47e0c54e8d3085c148490bc2032ff769804ace8f7ce50817",
+    "ime-chinese-committed.png": "7a722449db907ab1c49a1f52ca5b5481226b399125ff41ca4fd88570feb40c2d",
+    "ime-submitted-once.png": "90757ccf1ff79e32851164030c4f1c48d5d3cc29d49712016d83f04076d91d18"
+  }
+}

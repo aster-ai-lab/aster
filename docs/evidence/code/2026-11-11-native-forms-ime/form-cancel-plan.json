@@ -1,0 +1,10 @@
+{
+  "prompt": "Read form.json. Call ask_user_form exactly once with its exact JSON Render document. If the user cancels, do not retry; report the cancellation without calling other tools.",
+  "open_timeout_seconds": 120,
+  "oracles": [
+    "one form call",
+    "cancel response in original receipt",
+    "no retry after cancellation"
+  ],
+  "frozen_before_first_run": true
+}

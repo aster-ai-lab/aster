@@ -1,0 +1,23 @@
+{
+  "run_id": "run-d9c70455-74ea-4577-8d62-9562c7365a22",
+  "status": "completed",
+  "form_calls": 1,
+  "identity": {
+    "turn": 11,
+    "cycle": 1,
+    "tool_call_id": "call_69cbbe987d8445cd8d31ab3b17fa5caf",
+    "batch_index": 0,
+    "admission": {
+      "run_id": "run-d9c70455-74ea-4577-8d62-9562c7365a22",
+      "thread_id": "48bbd86a-3c04-41eb-9196-9f5027f1b71e",
+      "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+    }
+  },
+  "tool_outcome": "failed",
+  "exit_code": 1,
+  "cancellation_text": "form was cancelled by the user",
+  "checker_correction": {
+    "initial": "FAIL_SPEC: expected a JSON action object that the tool contract does not return on cancellation",
+    "corrected": "Match the original prepared ask_user_form receipt and the declared explicit cancellation error; no product or intent-oracle change"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "expected_text": "你好",
+  "expected_utf8_hex": "e4bda0e5a5bd",
+  "before_run_count": 11,
+  "oracles": [
+    "preedit does not admit a task",
+    "commit Enter does not submit",
+    "explicit second Enter admits exact Unicode once"
+  ],
+  "frozen_before_first_run": true
+}

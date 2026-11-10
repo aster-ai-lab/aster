@@ -1,0 +1,11 @@
+{
+  "prompt": "Read form.json. Call ask_user_form exactly once with prompt 'Fill in details' and the exact JSON Render document from that file. After the user answers, report the returned values without calling other tools.",
+  "document_sha256": "8aaa610998aa25af05b7fc031aae101eece99265a3db092301ec96cee3c5bb26",
+  "expected_values": {
+    "name": "Ada",
+    "amount": 4,
+    "ready": true
+  },
+  "open_timeout_seconds": 120,
+  "frozen_before_first_run": true
+}

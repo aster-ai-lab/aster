@@ -1,0 +1,13 @@
+{
+  "run_id": "run-4ecb952f-eaf9-4da4-84b3-23d86f4bddf2",
+  "status": "completed",
+  "admissions": 1,
+  "text": "你好",
+  "utf8_hex": "e4bda0e5a5bd",
+  "preedit_admissions": 0,
+  "candidate_commit_admissions": 0,
+  "input_source": "Simplified Pinyin",
+  "typing_and_submit": "agent-desktop physical keys",
+  "candidate_selection": "Space",
+  "original_enter_expectation": "retained as a separate FAIL_SPEC record; raw Enter committed Latin pinyin without submitting"
+}

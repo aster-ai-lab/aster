@@ -3,7 +3,7 @@
 Aster now pins ksandbox commit
 [`aa626654`](https://github.com/kense-labs/ksandbox/commit/aa626654a9f7bcc517c0917f61456322862e6f28)
 and forwards cancellation to its original native command owner. The owner
-terminates the process tree, waits for the original child, and returns its
+terminates the owned process group, waits for the original child, and returns its
 observed exit and partial output. Existing execution APIs remain available.
 Aster maps that typed terminal into its existing prepared-invocation receipt
 path; it does not clear unknown effects or invent completion after a timer.
@@ -104,7 +104,9 @@ investigation.
 This completes the native cancellation integration, not the entire 508-case
 TUI plan or the expanded full-function goal. Configuration CRUD, every form,
 IME, boundary/fault matrices, and other remaining cases still require their
-own evidence. This is not native Linux/Windows or iTerm2 acceptance, nor proof
+own evidence. Detached or `setsid` descendants were not exercised; the macOS
+adapter documents that process-group termination does not reclaim them.
+This is not native Linux/Windows or iTerm2 acceptance, nor proof
 that custom/process-host SDK runners cooperate with cancellation. Pre-existing
 ACP source changes remain uncommitted; this dirty diagnostic candidate is not
 a clean release qualification and no Aster product release was published.

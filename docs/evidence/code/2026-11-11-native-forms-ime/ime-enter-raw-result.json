@@ -1,0 +1,9 @@
+{
+  "status": "FAIL_SPEC_CONTENT_EXPECTATION",
+  "input_source": "Simplified Pinyin",
+  "observed_committed_text": "nihao",
+  "new_task_admissions": 0,
+  "safety_property": "IME Return committed text without submitting a task",
+  "initial_expected_text": "你好",
+  "next_case": "Select the Chinese candidate explicitly with Space before the submission Enter"
+}

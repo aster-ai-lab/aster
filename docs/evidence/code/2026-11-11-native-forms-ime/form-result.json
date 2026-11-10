@@ -1,0 +1,26 @@
+{
+  "run_id": "run-159af61c-3b0d-4874-9f1c-a1dcc1586f27",
+  "status": "completed",
+  "admissions": 1,
+  "result": {
+    "identity": {
+      "turn": 10,
+      "cycle": 1,
+      "tool_call_id": "call_65294a77384f4a49b7faa88ed01c6b88",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-159af61c-3b0d-4874-9f1c-a1dcc1586f27",
+        "thread_id": "48bbd86a-3c04-41eb-9196-9f5027f1b71e",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "outcome": "succeeded",
+    "values": {
+      "name": "Ada",
+      "amount": 4.0,
+      "ready": true
+    }
+  },
+  "required_validation": "Name and Ready showed required errors without submitting",
+  "range_validation": "Amount 6 showed max 5 without submitting"
+}
