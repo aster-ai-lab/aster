@@ -97,9 +97,9 @@ impl ThemeKind {
 
     pub fn display_name(self) -> &'static str {
         match self {
-            Self::AsterNight => "groknight",
+            Self::AsterNight => "aster-night",
             Self::TokyoNight => "tokyonight",
-            Self::AsterDay => "grokday",
+            Self::AsterDay => "aster-day",
             Self::RosePineMoon => "rosepine-moon",
             Self::OscuraMidnight => "oscura-midnight",
             Self::Terminal => "terminal",
@@ -131,9 +131,9 @@ impl ThemeKind {
     /// Alternate lowercase spellings accepted by [`from_name`](Self::from_name), excluding [`display_name`](Self::display_name).
     pub fn aliases(self) -> &'static [&'static str] {
         match self {
-            Self::AsterNight => &["grok-night", "aster-night", "dark"],
+            Self::AsterNight => &["groknight", "grok-night", "dark"],
             Self::TokyoNight => &["tokyo-night", "tokyo"],
-            Self::AsterDay => &["grok-day", "aster-day", "light", "day"],
+            Self::AsterDay => &["grokday", "grok-day", "light", "day"],
             Self::RosePineMoon => &["rosepine", "rose-pine", "rose-pine-moon"],
             Self::OscuraMidnight => &["oscura"],
             Self::Terminal => &["terminal-default", "transparent", "native"],
@@ -181,13 +181,13 @@ pub fn canonical_name(value: &str) -> Option<&'static str> {
     ThemeKind::from_name(value).map(|k| k.display_name())
 }
 
-/// Human-friendly display name for a canonical theme value (e.g. `"groknight"` becomes `"Aster Night"`).
+/// Human-friendly display name for a theme value (e.g. `"aster-night"` becomes `"Aster Night"`).
 /// Falls back to `value` verbatim.
 pub fn display_name_for_canonical(value: &str) -> &str {
-    match value {
+    match canonical_name(value).unwrap_or(value) {
         "auto" => "Auto",
-        "groknight" => "Aster Night",
-        "grokday" => "Aster Day",
+        "aster-night" => "Aster Night",
+        "aster-day" => "Aster Day",
         "tokyonight" => "Tokyo Night",
         "rosepine-moon" => "Rose Pine Moon",
         "terminal" => "Terminal",
@@ -664,6 +664,9 @@ pub fn reset_cursor_color() {
 }
 
 #[cfg(test)]
+mod name_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -677,7 +680,10 @@ mod tests {
             other => panic!("expected RGB, got {other:?}"),
         };
         let night = Theme::groknight();
-        let faint = night.faint().fg.expect("AsterNight blends to a hard colour");
+        let faint = night
+            .faint()
+            .fg
+            .expect("AsterNight blends to a hard colour");
         assert!(luma(night.bg_base) < luma(faint) && luma(faint) < luma(night.gray_dim));
 
         let terminal = Theme::terminal_default();

@@ -6,6 +6,94 @@ fn meta(value: serde_json::Value) -> Option<acp::Meta> {
 }
 
 #[tokio::test]
+async fn switching_revalidates_and_returns_the_effective_selection() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = tests::test_launch(Some(root.path().join("store")));
+    launch.workspace = root.path().into();
+    launch.config.providers[1].models[0].reasoning_control = None;
+    let host = AsterCodeAgent::new(launch);
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let response = host
+        .set_session_model(acp::SetSessionModelRequest::new(
+            id.clone(),
+            acp::ModelId::new("openai/gpt-4o"),
+        ))
+        .await
+        .unwrap();
+    assert_eq!(response.meta.unwrap()["reasoningEffort"], "default");
+    assert!(host.sessions.lock().await[&id.0.to_string()]
+        .effort
+        .is_none());
+    let session = host.sessions.lock().await[&id.0.to_string()]
+        .session
+        .clone();
+    assert!(host
+        .set_session_model(
+            acp::SetSessionModelRequest::new(id.clone(), acp::ModelId::new("openai/gpt-4o"))
+                .meta(meta(serde_json::json!("high")))
+        )
+        .await
+        .is_err());
+    assert!(Arc::ptr_eq(
+        &session,
+        &host.sessions.lock().await[&id.0.to_string()].session
+    ));
+}
+
+#[tokio::test]
+async fn selections_are_owned_by_their_session() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = tests::test_launch(Some(root.path().join("store")));
+    launch.workspace = root.path().into();
+    let host = AsterCodeAgent::new(launch);
+    let first = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let second = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    for (id, token) in [(&first, "low"), (&second, "max")] {
+        host.set_session_model(
+            acp::SetSessionModelRequest::new(id.clone(), acp::ModelId::new("openai/gpt-4o"))
+                .meta(meta(serde_json::json!(token))),
+        )
+        .await
+        .unwrap();
+    }
+    let result = host
+        .set_session_model(acp::SetSessionModelRequest::new(
+            first.clone(),
+            acp::ModelId::new("openai/gpt-4o"),
+        ))
+        .await
+        .unwrap();
+    assert_eq!(result.meta.unwrap()["reasoningEffort"], "low");
+    let result = host
+        .set_session_model(
+            acp::SetSessionModelRequest::new(first.clone(), acp::ModelId::new("openai/gpt-4o"))
+                .meta(meta(serde_json::json!("default"))),
+        )
+        .await
+        .unwrap();
+    assert_eq!(result.meta.unwrap()["reasoningEffort"], "default");
+    assert_eq!(
+        host.sessions.lock().await[&second.0.to_string()]
+            .effort
+            .unwrap()
+            .token,
+        "max"
+    );
+}
+
+#[tokio::test]
 async fn new_agent_restores_acl_effort_and_explicit_launch_override_wins() {
     let root = tempfile::tempdir().unwrap();
     for (override_token, expected) in [(None, "max"), (Some("low"), "low")] {
@@ -82,7 +170,8 @@ async fn explicit_effort_default_clears_override_and_absence_preserves_selection
         .unwrap();
     for model in created.models.unwrap().available_models {
         let meta = model.meta.unwrap();
-        assert!(meta["reasoningEfforts"]
+        assert_eq!(meta["reasoningEffortReset"], true);
+        assert!(!meta["reasoningEfforts"]
             .as_array()
             .unwrap()
             .iter()
@@ -167,7 +256,7 @@ async fn unsupported_effort_is_refused_without_replacing_the_session() {
 /// Only the loopback provider is scripted. Real ACP session replacement and
 /// Core restoration build the subsequent requests and retain the transcript.
 #[tokio::test]
-async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_semantics() {
+async fn switching_preserves_history_and_anthropic_parameters() {
     let phrasings = [
         "核对材料中的数值后交付报告。",
         "请逐条检查来源，说明不能同时满足的要求。",
@@ -285,7 +374,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         .unwrap()
         .session_id;
     let provider = tokio::spawn(provider);
-    for (index, selected) in [None, Some("low"), Some("none"), Some("default")]
+    for (index, selected) in [None, Some("low"), Some("max"), Some("default")]
         .into_iter()
         .enumerate()
     {
@@ -392,9 +481,11 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
         }
     }
     assert_eq!(requests[0]["output_config"]["effort"], "high");
+    assert_eq!(requests[1]["output_config"]["effort"], "low");
+    assert_eq!(requests[2]["output_config"]["effort"], "max");
     for request in &requests[1..3] {
-        assert_eq!(request["output_config"]["effort"], "low");
         assert_eq!(request["thinking"]["type"], "adaptive");
+        assert!(request["thinking"].get("budget_tokens").is_none());
     }
     assert!(requests[3].get("output_config").is_none());
     assert!(requests[3].get("thinking").is_none());

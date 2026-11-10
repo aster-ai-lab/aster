@@ -42,6 +42,7 @@ pub struct LlmConfig {
     /// Clients translate this into the provider's own parameter. It does not
     /// change the session tool-round ceiling.
     pub reasoning_effort: Option<String>,
+    pub reasoning_capabilities: Option<crate::config::ReasoningCapabilities>,
     /// Request token-level log probabilities from OpenAI-compatible providers.
     pub logprobs: Option<bool>,
     /// Number of alternative logprobs per token when logprobs are requested.
@@ -77,6 +78,7 @@ impl std::fmt::Debug for LlmConfig {
             .field("max_tokens", &self.max_tokens)
             .field("thinking_budget", &self.thinking_budget)
             .field("reasoning_effort", &self.reasoning_effort)
+            .field("reasoning_capabilities", &self.reasoning_capabilities)
             .field("logprobs", &self.logprobs)
             .field("top_logprobs", &self.top_logprobs)
             .field("disable_temperature", &self.disable_temperature)
@@ -110,6 +112,7 @@ impl LlmConfig {
             max_tokens: None,
             thinking_budget: None,
             reasoning_effort: None,
+            reasoning_capabilities: None,
             logprobs: None,
             top_logprobs: None,
             disable_temperature: false,
@@ -257,7 +260,13 @@ pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>
 }
 
 /// Create LLM client with full configuration (supports custom base_url)
-pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
+pub fn create_client_with_config(mut config: LlmConfig) -> Arc<dyn LlmClient> {
+    config.reasoning_capabilities = config.reasoning_capabilities.or_else(|| {
+        crate::config::documented_at(config.protocol, &config.model, config.base_url.as_deref())
+    });
+    if config.reasoning_effort.as_deref() == Some("default") {
+        config.reasoning_effort = None;
+    }
     let retry = config.retry_config.clone().unwrap_or_default();
     let http = config.http_override.clone().or_else(|| {
         config.api_timeout_ms.map(|timeout_ms| {
@@ -289,6 +298,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             let mut client = AnthropicClient::new(api_key, config.model)
                 .with_provider_name(config.provider.clone())
                 .with_headers(headers.clone())
+                .with_reasoning_capabilities(config.reasoning_capabilities.clone())
                 .with_retry_config(retry);
             if let Some(http) = http.clone() {
                 client = client.with_http_client(http);
@@ -314,6 +324,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
         }
         ProviderProtocol::Glm => {
             let mut client = ZhipuClient::new(api_key, config.model)
+                .with_reasoning_capabilities(config.reasoning_capabilities.clone())
                 .with_retry_config(retry)
                 .with_text_only_input(config.text_only_input);
             if let Some(http) = http.clone() {
@@ -347,8 +358,9 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
                 .clone()
                 .or(http)
                 .unwrap_or_else(default_http_client);
-            let mut client =
-                CursorAccountClient::new(api_key, config.model).with_http_client(transport);
+            let mut client = CursorAccountClient::new(api_key, config.model)
+                .with_reasoning_effort(config.reasoning_effort)
+                .with_http_client(transport);
             if let Some(base_url) = config.base_url {
                 client = client.with_base_url(base_url);
             }
@@ -372,11 +384,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
                 .get("chatgpt-account-id")
                 .cloned()
                 .unwrap_or_default();
-            let reasoning_effort = config.reasoning_effort.clone().or_else(|| {
-                std::env::var("ASTERX_REASONING_EFFORT")
-                    .ok()
-                    .filter(|effort| !effort.trim().is_empty())
-            });
+            let reasoning_effort = config.reasoning_effort.clone();
             let client = CodexLoginClient::from_parts(
                 api_key,
                 account_id,
@@ -384,6 +392,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
                 config.session_id.as_deref().unwrap_or(""),
                 reasoning_effort,
             )
+            .with_reasoning_capabilities(config.reasoning_capabilities)
             .with_http_client(transport);
             Arc::new(client)
         }
@@ -401,6 +410,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             });
             let mut client = OpenAiClient::new(api_key, config.model)
                 .with_provider_name(config.provider.clone())
+                .with_reasoning_capabilities(config.reasoning_capabilities.clone())
                 .with_retry_config(retry)
                 .with_native_structured_support(native_structured_support)
                 .with_text_only_input(config.text_only_input);

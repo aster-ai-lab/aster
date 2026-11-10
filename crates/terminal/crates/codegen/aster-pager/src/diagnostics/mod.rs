@@ -398,7 +398,7 @@ fn sandbox_profile_conflict_warning_from(conflicts: Vec<String>) -> Option<Termi
         fix: None,
         config_path: None,
         note: Some(format!(
-            "Aster Code is using the user profile. Compare `.grok/sandbox.toml` with {}, then rename \
+            "Aster Code is using the user profile. Compare the project sandbox settings with {}, then rename \
              or remove the conflicting project profile. Project settings can add profile names \
              but can't redefine a user profile.",
             crate::util::display_user_grok_path(aster_config::SANDBOX_CONFIG_FILENAME)
@@ -1968,7 +1968,7 @@ mod tests {
         assert!(w.config_path.is_none());
         assert!(w.note.as_deref().is_some_and(|note| {
             note.contains("rename or remove")
-                && note.contains(".grok/sandbox.toml")
+                && note.contains("project sandbox settings")
                 && note.contains(&crate::util::display_user_grok_path(
                     aster_config::SANDBOX_CONFIG_FILENAME,
                 ))

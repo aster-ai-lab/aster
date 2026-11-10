@@ -24,16 +24,23 @@ impl SlashCommand for EffortCommand {
     }
 
     fn suggest_args(&self, ctx: &AppCtx, _args_query: &str) -> Option<Vec<ArgItem>> {
+        ctx.models.current.as_ref()?;
         let options = ctx.models.reasoning_effort_options();
-        if options.is_empty() {
-            return None;
-        }
-        Some(build_effort_arg_items(
+        let mut items = vec![crate::slash::commands::effort_levels::reset_item(
+            "default".into(),
+            ctx.models.reasoning_effort.is_none(),
+            ctx.models
+                .current
+                .as_ref()
+                .and_then(|id| ctx.models.default_effort_for(id)),
+        )];
+        items.extend(build_effort_arg_items(
             &options,
             ctx.models.reasoning_effort,
             true,
             |option| option.id.clone(),
-        ))
+        ));
+        Some(items)
     }
 
     fn run(&self, ctx: &mut CommandExecCtx, args: &str) -> CommandResult {
@@ -41,6 +48,13 @@ impl SlashCommand for EffortCommand {
         let Some(model_id) = ctx.models.current.clone() else {
             return CommandResult::Error("No active model".into());
         };
+
+        if trimmed.eq_ignore_ascii_case("default") {
+            return CommandResult::Action(Action::SwitchModel {
+                model_id,
+                effort: None,
+            });
+        }
 
         if trimmed.is_empty() {
             let offered: Vec<String> = ctx
@@ -88,6 +102,10 @@ mod tests {
             "supportsReasoningEffort".into(),
             serde_json::Value::Bool(true),
         );
+        meta.insert(
+            "reasoningEfforts".into(),
+            serde_json::json!([{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }]),
+        );
         let info = acp::ModelInfo::new(id.clone(), name.to_string())
             .meta(serde_json::Value::Object(meta).as_object().cloned());
         (id, info)
@@ -124,6 +142,19 @@ mod tests {
                 ..crate::settings::PagerLocalSnapshot::default()
             },
         }
+    }
+
+    #[test]
+    fn default_resets_even_without_native_levels() {
+        let mut state = ModelState::default();
+        let (id, model) = plain_model("unknown", "Unknown");
+        state.available.insert(id.clone(), model);
+        state.current = Some(id.clone());
+        let mut ctx = dummy_exec_ctx(&state);
+        assert!(
+            matches!(EffortCommand.run(&mut ctx, "default"), CommandResult::Action(Action::SwitchModel { model_id, effort: None }) if model_id == id)
+        );
+        assert!(state.reasoning_effort_options().is_empty());
     }
 
     #[test]
@@ -295,7 +326,7 @@ mod tests {
     }
 
     #[test]
-    fn suggest_args_none_without_current_or_support() {
+    fn suggestions_require_a_model_and_allow_reset() {
         let cmd = EffortCommand;
         let empty = ModelState::default();
         let ctx = AppCtx {
@@ -328,7 +359,9 @@ mod tests {
             screen_mode: crate::app::ScreenMode::Fullscreen,
             current_title: None,
         };
-        assert!(cmd.suggest_args(&ctx, "").is_none());
+        let items = cmd.suggest_args(&ctx, "").unwrap();
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0].insert_text, "default");
     }
 
     #[test]
@@ -353,10 +386,11 @@ mod tests {
             current_title: None,
         };
         let items = cmd.suggest_args(&ctx, "").unwrap();
-        assert_eq!(items.len(), EFFORT_LEVELS.len());
-        let [a, b, c, d, e] = items.as_slice() else {
-            panic!("expected 5 items: {items:?}");
+        assert_eq!(items.len(), EFFORT_LEVELS.len() + 1);
+        let [reset, a, b, c, d, e] = items.as_slice() else {
+            panic!("expected reset and five native items: {items:?}");
         };
+        assert_eq!(reset.insert_text, "default");
         assert_eq!(a.insert_text, "low");
         assert_eq!(b.insert_text, "medium");
         assert_eq!(c.insert_text, "high");

@@ -10,6 +10,9 @@ use std::collections::HashMap;
 use std::path::{Component, Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
+mod claim_loan;
+pub(crate) use claim_loan::WriteClaimLoan;
+
 pub const EXTERNAL_OBSERVATION_SCHEMA: &str = "aster.code.external-observation.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

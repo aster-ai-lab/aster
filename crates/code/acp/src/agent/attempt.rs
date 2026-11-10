@@ -35,7 +35,8 @@ impl AsterCodeAgent {
     where
         F: FnMut(&AgentEvent),
     {
-        let mut observer = stream.run.and_then(|run| {
+        let run = stream.run;
+        let mut observer = run.clone().and_then(|run| {
             observation.map(|binding| {
                 crate::run_observation::Observer::new(run, session_id.0.to_string(), binding)
             })
@@ -62,6 +63,10 @@ impl AsterCodeAgent {
             // Register before the map read. `notify_waiters` stores no permit.
             let notified = self.turn_cancel.notified();
             if self.turn_was_cancelled(&session_key, generation).await {
+                // The run must stop even while registry cleanup is waiting.
+                if let Some(run) = &run {
+                    run.cancel().await;
+                }
                 return AttemptDrive::Cancelled(
                     self.leave_cancelled_turn(
                         session_id,
@@ -114,6 +119,9 @@ impl AsterCodeAgent {
             loop {
                 let notified = self.turn_cancel.notified();
                 if self.turn_was_cancelled(&session_key, generation).await {
+                    if let Some(run) = &run {
+                        run.cancel().await;
+                    }
                     return AttemptDrive::Cancelled(
                         self.leave_cancelled_turn(
                             session_id,

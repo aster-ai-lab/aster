@@ -88,6 +88,7 @@ mod session_close;
 mod session_commands;
 mod session_compact;
 mod session_config;
+pub use session_config::resolve_session_llm_client;
 mod session_context_report;
 mod session_extensions;
 mod session_facade;

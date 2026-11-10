@@ -105,7 +105,7 @@ impl PermissionPosture {
                     .description("Read and plan without workspace writes"),
                 acp::SessionMode::new("auto", "Auto")
                     .description("Allow workspace edits and sandboxed commands; host execution and network grants require approval"),
-                acp::SessionMode::new("yolo", "Full access")
+                acp::SessionMode::new("yolo", "YOLO")
                     .description("Run local commands on the host without sandboxing or approval prompts; explicit tool denies still apply"),
             ],
         )

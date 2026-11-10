@@ -3,6 +3,14 @@
 use super::*;
 use std::collections::HashMap;
 
+fn reasoning_effort_catalog_meta(id: &str) -> serde_json::Map<String, serde_json::Value> {
+    let (provider, model) = id.split_once('/').unwrap();
+    models::reasoning_control_meta(aster_core::config::documented_reasoning(
+        aster_core::config::ProviderProtocol::resolve(None, provider, None),
+        model,
+    ))
+}
+
 #[path = "agent/approval_deadline_tests.rs"]
 mod approval_deadline;
 #[path = "agent/count_limit_tests.rs"]
@@ -94,8 +102,8 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
 
     let claude =
         AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
-    assert_eq!(claude.reasoning_effort.as_deref(), Some("high"));
-    assert_eq!(claude.thinking_budget, Some(high.thinking_budget));
+    assert!(claude.reasoning_effort.is_none());
+    assert!(claude.thinking_budget.is_none());
     assert_eq!(claude.max_tool_rounds, Some(0));
     let claude_budget = claude
         .prompt_slots
@@ -525,12 +533,13 @@ fn reasoning_meta_offers_parseable_budget_levels() {
         .iter()
         .filter_map(|entry| entry.get("value").and_then(|v| v.as_str()))
         .collect();
-    assert_eq!(values, ["default", "low", "medium", "high", "xhigh", "max"]);
+    assert_eq!(values, ["low", "medium", "high", "max"]);
     let high = efforts
         .iter()
         .find(|entry| entry.get("value").and_then(|v| v.as_str()) == Some("high"))
         .expect("high");
-    assert_eq!(high.get("default"), Some(&serde_json::Value::Bool(true)));
+    assert!(high.get("default").is_none());
+    assert_eq!(meta["reasoningEffortReset"], true);
     assert!(effort_guideline("high").is_some());
     assert!(effort_guideline("medium").is_none());
     assert_eq!(effort_limits("high").expect("high").token, "high");
@@ -573,23 +582,18 @@ fn reasoning_menu_follows_the_model() {
         claude.get("supportsReasoningEffort"),
         Some(&serde_json::Value::Bool(true))
     );
-    assert!(effort_values(&claude).contains(&"xhigh"));
+    assert!(!effort_values(&claude).contains(&"xhigh"));
 
-    let glm = reasoning_effort_catalog_meta("zhipu/glm-5");
+    let glm = reasoning_effort_catalog_meta("zhipu/glm-5.3");
     let glm_values = effort_values(&glm);
     assert!(!glm_values.contains(&"medium"));
     assert!(!glm_values.contains(&"xhigh"));
-    assert_eq!(glm_values, vec!["default", "low", "high", "max"]);
+    assert_eq!(glm_values, vec!["low", "high", "max"]);
 
     let local = reasoning_effort_catalog_meta("ollama/llama3");
-    assert_eq!(
-        local.get("supportsReasoningEffort"),
-        Some(&serde_json::Value::Bool(true))
-    );
-    assert_eq!(
-        effort_values(&local),
-        vec!["default", "low", "medium", "high", "xhigh", "max"]
-    );
+    assert_eq!(local["supportsReasoningEffort"], false);
+    assert_eq!(local["reasoningControlKnown"], false);
+    assert!(effort_values(&local).is_empty());
 }
 
 #[test]
@@ -1048,6 +1052,7 @@ fn test_model(id: &str, name: &str, family: &str) -> aster_core::ModelConfig {
         session_id_header: None,
         attachment: false,
         reasoning: false,
+        reasoning_control: None,
         tool_call: true,
         temperature: true,
         release_date: None,
@@ -1058,7 +1063,7 @@ fn test_model(id: &str, name: &str, family: &str) -> aster_core::ModelConfig {
 }
 
 pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::config::LaunchConfig {
-    let config = aster_core::CodeConfig {
+    let mut config = aster_core::CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![
             aster_core::ProviderConfig {
@@ -1087,6 +1092,34 @@ pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::co
         sessions_dir,
         ..aster_core::CodeConfig::default()
     };
+    config.reasoning_effort = Some(aster_core::config::ReasoningEffort::High);
+    config.providers[0].models[0].reasoning_control = Some(
+        aster_core::config::ReasoningCapabilities::new(
+            aster_core::config::ReasoningMode::Adaptive,
+            vec![
+                aster_core::config::ReasoningEffort::Low,
+                aster_core::config::ReasoningEffort::Medium,
+                aster_core::config::ReasoningEffort::High,
+                aster_core::config::ReasoningEffort::Xhigh,
+                aster_core::config::ReasoningEffort::Max,
+            ],
+        )
+        .unwrap(),
+    );
+    config.providers[1].models[0].reasoning_control = Some(
+        aster_core::config::ReasoningCapabilities::new(
+            aster_core::config::ReasoningMode::Effort,
+            vec![
+                aster_core::config::ReasoningEffort::None,
+                aster_core::config::ReasoningEffort::Low,
+                aster_core::config::ReasoningEffort::Medium,
+                aster_core::config::ReasoningEffort::High,
+                aster_core::config::ReasoningEffort::Xhigh,
+                aster_core::config::ReasoningEffort::Max,
+            ],
+        )
+        .unwrap(),
+    );
     crate::config::LaunchConfig {
         workspace: std::env::temp_dir(),
         model_id: "anthropic/claude-sonnet-4-20250514".to_string(),
@@ -2229,7 +2262,7 @@ fn tui_session_function_coverage_is_at_least_95_percent() {
         });
     record(
         "effort-menu",
-        values.as_deref() == Some(&["default", "low", "medium", "high", "xhigh", "max"][..]),
+        values.as_deref() == Some(&["low", "medium", "high", "max"][..]),
     );
     record(
         "effort-high-budget",

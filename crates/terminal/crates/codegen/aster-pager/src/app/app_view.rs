@@ -536,7 +536,6 @@ pub(crate) const ASTER_UNAVAILABLE_COMMANDS: &[&str] = &[
     "btw",
     "feedback",
     "queue",
-    "resume",
     "rename",
     "history",
     "transcript",
@@ -579,6 +578,7 @@ pub(crate) const ASTER_EFFECTIVE_COMMANDS: &[&str] = &[
     "settings",
     "config",
     "new",
+    "resume",
     "fork",
     "effort",
     "goal",
@@ -4782,7 +4782,7 @@ impl AppView {
                                 }
                                 Some((false, true, _)) => {
                                     flags_vec.push(crate::views::prompt_widget::PromptFlag {
-                                        text: "yolo",
+                                        text: "YOLO",
                                         color: Some(theme.accent_verify),
                                         bold: false,
                                     });
@@ -4796,12 +4796,19 @@ impl AppView {
                                 }
                                 None if welcome_default_yolo => {
                                     flags_vec.push(crate::views::prompt_widget::PromptFlag {
-                                        text: "yolo",
+                                        text: "YOLO",
                                         color: Some(theme.accent_verify),
                                         bold: false,
                                     });
                                 }
                                 _ => {}
+                            }
+                            if self.models.capabilities_pending() {
+                                flags_vec.push(crate::views::prompt_widget::PromptFlag {
+                                    text: "detecting",
+                                    color: Some(theme.accent_system),
+                                    bold: false,
+                                });
                             }
                             if !self.welcome_prompt.text().is_empty() {
                                 self.welcome_tip_typing_dismissed = true;
@@ -4813,7 +4820,7 @@ impl AppView {
                             };
                             let model_name_base =
                                 self.models.current_model_name().unwrap_or_default();
-                            let model_name = match self.models.reasoning_effort {
+                            let model_name = match self.models.effective_reasoning_effort() {
                                 Some(eff) => format!("{model_name_base} ({eff})"),
                                 None => model_name_base,
                             };

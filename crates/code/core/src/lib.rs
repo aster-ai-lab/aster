@@ -193,9 +193,9 @@ pub mod workspace;
 pub use agent::{context_window_for_model, documented_context_tokens, AgentExecutionFailure};
 pub use agent::{hostable_context_window, AgentEvent, AgentResult, ModelMiddlewareHealthSnapshot};
 pub use agent_api::{
-    validate_output_schema, Agent, AgentRunSpawn, AgentRunStream, AgentSession,
-    FollowUpSuggestions, GoalTickAdmission, GoalTickStream, ReadFileOptions, SessionOptions,
-    ToolCallResult,
+    resolve_session_llm_client, validate_output_schema, Agent, AgentRunSpawn, AgentRunStream,
+    AgentSession, FollowUpSuggestions, GoalTickAdmission, GoalTickStream, ReadFileOptions,
+    SessionOptions, ToolCallResult,
 };
 #[doc(hidden)]
 pub use agent_api::{HeavyToolResult, ProjectedUiHandle, SessionBuilder, SessionContextReport};

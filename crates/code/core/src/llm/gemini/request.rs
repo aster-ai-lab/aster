@@ -30,6 +30,23 @@ impl GeminiClient {
         {
             return Err(GeminiError::Invalid("ambiguous Gemini provider identity"));
         }
+        super::super::effort::validate_selection(
+            crate::config::ProviderProtocol::Gemini,
+            self.config.reasoning_capabilities.as_ref(),
+            self.config.reasoning_effort.as_deref(),
+        )
+        .map_err(|_| GeminiError::Invalid("unsupported Gemini reasoning selection"))?;
+        if self.config.thinking_budget.is_some()
+            && !self
+                .config
+                .reasoning_capabilities
+                .as_ref()
+                .is_some_and(|caps| caps.mode() == crate::config::ReasoningMode::Budget)
+        {
+            return Err(GeminiError::Invalid(
+                "model does not declare a Gemini thinking budget",
+            ));
+        }
         let identity = self.provider_identity();
         if identity.is_empty()
             || identity.len() > 256
@@ -245,7 +262,7 @@ impl GeminiClient {
         Ok(request)
     }
 
-    pub(super) fn endpoint(&self, streaming: bool) -> Result<url::Url, GeminiError> {
+    pub(crate) fn endpoint(&self, streaming: bool) -> Result<url::Url, GeminiError> {
         let mut url = url::Url::parse(
             self.config
                 .base_url

@@ -40,6 +40,7 @@ pub struct CodexLoginClient {
     account_id: String,
     model: String,
     reasoning_effort: Option<String>,
+    reasoning_capabilities: Option<crate::config::ReasoningCapabilities>,
     session_id: String,
     http: Arc<dyn HttpClient>,
     api: Option<ResponsesApi>,
@@ -78,12 +79,48 @@ impl CodexLoginClient {
             access_token,
             account_id,
             model: model.to_string(),
-            reasoning_effort: reasoning_effort.filter(|effort| !effort.trim().is_empty()),
+            reasoning_capabilities: crate::config::documented_reasoning(
+                crate::config::ProviderProtocol::Codex,
+                model,
+            ),
+            reasoning_effort: reasoning_effort
+                .filter(|effort| !effort.trim().is_empty() && effort != "default"),
             session_id: session_id.to_string(),
             http: default_http_client(),
             api: None,
             encrypted_reasoning: Arc::new(std::sync::Mutex::new(Vec::new())),
         }
+    }
+
+    pub(crate) fn with_reasoning_capabilities(
+        mut self,
+        capabilities: Option<crate::config::ReasoningCapabilities>,
+    ) -> Self {
+        self.reasoning_capabilities = capabilities;
+        self
+    }
+
+    pub(crate) fn catalog_model(config: &super::LlmConfig) -> Result<Option<crate::ModelConfig>> {
+        if config
+            .reasoning_capabilities
+            .as_ref()
+            .is_none_or(|caps| caps.source() != "account")
+        {
+            return Ok(None);
+        }
+        let Some(import) = account::load_logged_in_account()? else {
+            return Ok(None);
+        };
+        if import.provider.headers.get(account::ACCOUNT_ID_HEADER)
+            != config.headers.get(account::ACCOUNT_ID_HEADER)
+        {
+            return Ok(None);
+        }
+        Ok(import
+            .provider
+            .models
+            .into_iter()
+            .find(|model| model.id == config.model))
     }
 
     /// Swap the transport (factory timeout wiring, tests).
@@ -113,6 +150,7 @@ impl CodexLoginClient {
             config.session_id.as_deref().unwrap_or(""),
             config.reasoning_effort,
         );
+        client.reasoning_capabilities = config.reasoning_capabilities;
         client.api = Some(ResponsesApi {
             endpoint: super::metering::wire::UsageProtocol::OpenaiResponses.endpoint(
                 config
@@ -229,6 +267,7 @@ impl LlmClient for CodexLoginClient {
             account_id: self.account_id.clone(),
             model: self.model.clone(),
             reasoning_effort: self.reasoning_effort.clone(),
+            reasoning_capabilities: self.reasoning_capabilities.clone(),
             session_id: session_id.to_string(),
             http: Arc::clone(&self.http),
             api: self.api.clone(),
@@ -263,6 +302,11 @@ impl LlmClient for CodexLoginClient {
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
         super::gemini::refuse_foreign_state(messages)?;
+        super::effort::validate_selection(
+            crate::config::ProviderProtocol::OpenaiResponses,
+            self.reasoning_capabilities.as_ref(),
+            self.reasoning_effort.as_deref(),
+        )?;
         let body = self.build_body(messages, system, tools, true);
         let url = self.api.as_ref().map_or_else(
             || format!("{CODEX_BASE}/responses"),

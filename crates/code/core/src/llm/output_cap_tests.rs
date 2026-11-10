@@ -52,14 +52,16 @@ fn clients(
         OpenAiClient::new("test-key".into(), "gpt-5.4".into()).with_http_client(http.clone());
     let mut zhipu =
         ZhipuClient::new("test-key".into(), "glm-5.3".into()).with_http_client(http.clone());
-    let mut deepseek = OpenAiClient::new("test-key".into(), "deepseek-v4-flash".into())
+    let mut deepseek = OpenAiClient::new("test-key".into(), "deepseek-flash".into())
         .with_provider_name("deepseek")
         .with_http_client(http);
     if let Some(effort) = effort {
-        anthropic = anthropic.with_reasoning_effort(effort);
-        anthropic_glm = anthropic_glm.with_reasoning_effort(effort);
+        if effort != "none" {
+            anthropic = anthropic.with_reasoning_effort(effort);
+            anthropic_glm = anthropic_glm.with_reasoning_effort(effort);
+            zhipu = zhipu.with_reasoning_effort(effort);
+        }
         openai = openai.with_reasoning_effort(effort);
-        zhipu = zhipu.with_reasoning_effort(effort);
         deepseek = deepseek.with_reasoning_effort(effort);
     }
     if let Some(max_tokens) = max_tokens {
@@ -95,7 +97,7 @@ async fn sampling_output_caps_cannot_expand_default_wire_windows() {
         }
     }
     let http = Arc::new(CapturedHttp::default());
-    let legacy = AnthropicClient::new("test-key".into(), "claude-opus-4-6".into())
+    let legacy = AnthropicClient::new("test-key".into(), "claude-sonnet-4-20250514".into())
         .with_http_client(http.clone())
         .with_thinking_budget(2048);
     let original = request(&legacy, &http).await;
@@ -172,7 +174,7 @@ async fn explicit_output_cap_preserves_legacy_thinking_answer_reserve() {
     for cap in [1024, 2048, 2049, 4096] {
         for budget in [1023, 1024, 2048, 3071, 3072, 4096] {
             let http = Arc::new(CapturedHttp::default());
-            let client = AnthropicClient::new("test-key".into(), "claude-opus-4-6".into())
+            let client = AnthropicClient::new("test-key".into(), "claude-sonnet-4-20250514".into())
                 .with_http_client(http.clone())
                 .with_max_tokens(cap)
                 .with_thinking_budget(budget);
@@ -195,9 +197,9 @@ async fn uncapped_effort_requests_keep_existing_output_windows() {
             let body = request(client.as_ref(), &http).await;
             if index == 4 {
                 assert!(body.get("max_tokens").is_none(), "{body}");
-            } else if effort.is_some() || index == 1 {
+            } else if effort == Some("high") || (effort == Some("none") && index == 2) {
                 assert_eq!(body["max_tokens"], 65_536);
-            } else if index == 0 {
+            } else if index <= 1 {
                 assert_eq!(body["max_tokens"], 8192);
             } else {
                 assert!(body.get("max_tokens").is_none(), "{body}");

@@ -5,6 +5,10 @@ use super::*;
 impl AsterCodeAgent {
     pub(super) fn available_model_infos(&self) -> Vec<acp::ModelInfo> {
         let mut infos = Vec::new();
+        let detected = self
+            .detected_models
+            .read()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         for (provider, model) in self.launch.config.list_models() {
             let id = format!("{}/{}", provider.name, model.id);
             let display_name = if model.name.trim().is_empty() {
@@ -18,9 +22,59 @@ impl AsterCodeAgent {
             if let Some(description) = description {
                 info = info.description(description);
             }
-            let mut meta = reasoning_effort_catalog_meta(&id);
+            let lookup = detected.get(&id);
+            let discovered = lookup.and_then(|model| model.data.as_ref());
+            let baseline = model.reasoning_capabilities(
+                provider.model_protocol(model),
+                provider.get_base_url(model),
+            );
+            let controls = discovered
+                .and_then(|data| data.reasoning.clone())
+                .or_else(|| baseline.clone());
+            let referenced_default = baseline
+                .as_ref()
+                .and_then(|caps| caps.default_level())
+                .filter(|level| {
+                    controls
+                        .as_ref()
+                        .is_some_and(|caps| caps.supports(level.as_str()))
+                });
+            let mut meta = reasoning_control_meta(controls);
+            if !meta.contains_key("defaultReasoningEffort") {
+                if let Some(level) = referenced_default {
+                    meta.insert("defaultReasoningEffort".into(), level.as_str().into());
+                    meta.insert(
+                        "defaultReasoningEffortSource".into(),
+                        baseline
+                            .as_ref()
+                            .map_or("unknown", |caps| caps.source())
+                            .into(),
+                    );
+                }
+            }
+            meta.insert(
+                "capabilitiesStatus".into(),
+                lookup
+                    .map_or("unqueried", |model| model.status.as_str())
+                    .into(),
+            );
             let configured = (model.limit.context > 0).then_some(model.limit.context as usize);
-            let window = configured.or_else(|| aster_core::documented_context_tokens(&id));
+            let reported = discovered
+                .and_then(|data| data.context_tokens)
+                .map(|tokens| tokens as usize);
+            let window = reported
+                .or(configured)
+                .or_else(|| aster_core::documented_context_tokens(&id));
+            let source = if reported.is_some() {
+                discovered.map_or("unknown", |data| data.source)
+            } else if configured.is_some() {
+                "configured"
+            } else if window.is_some() {
+                "documented"
+            } else {
+                "unknown"
+            };
+            meta.insert("contextWindowSource".into(), source.into());
             meta.insert("contextWindowKnown".into(), window.is_some().into());
             if let Some(window) = window {
                 meta.insert("totalContextTokens".into(), window.into());
@@ -39,7 +93,7 @@ impl AsterCodeAgent {
         if infos.is_empty() && !self.launch.model_id.is_empty() {
             let id = self.launch.model_id.clone();
             let info = acp::ModelInfo::new(acp::ModelId::new(id.clone()), id.clone())
-                .meta(Some(reasoning_effort_catalog_meta(&id)));
+                .meta(Some(reasoning_control_meta(None)));
             infos.push(info);
         }
         infos
@@ -62,7 +116,8 @@ impl AsterCodeAgent {
                 .map(|info| info.model_id.0.to_string())
                 .unwrap_or_else(|| current.to_string())
         };
-        if let Some(token) = effort_token {
+        if let Some(token) = effort_token.filter(|token| self.model_supports_effort(current, token))
+        {
             if let Some(info) = available
                 .iter_mut()
                 .find(|info| info.model_id.0.as_ref() == current_id)
@@ -121,44 +176,91 @@ pub(super) struct EffortLimits {
     pub(super) max_continuation_turns: u32,
 }
 
-/// Advertise the effort values `/effort` can apply.
-///
-/// A native menu wins when the provider has one (GLM stays on low/high/max).
-/// Every other model still gets the host budget menu, because thinking budget
-/// applies whether or not the provider has an effort parameter.
-/// Each entry includes `value` so the pager's `ReasoningEffortOption` parser
-/// accepts it.
-pub(super) fn reasoning_effort_catalog_meta(
-    model_id: &str,
+/// Advertise only native controls declared by the resolved model catalog.
+pub(super) fn reasoning_control_meta(
+    capabilities: Option<aster_core::config::ReasoningCapabilities>,
 ) -> serde_json::Map<String, serde_json::Value> {
-    let native = aster_core::llm::native_effort_menu(model_id);
-    let levels: &[&str] = if native.is_empty() {
-        HOST_EFFORT_LEVELS
-    } else {
-        native
-    };
     let mut meta = serde_json::Map::new();
+    let levels = capabilities
+        .as_ref()
+        .map(|caps| caps.levels())
+        .unwrap_or_default();
     meta.insert(
         "supportsReasoningEffort".into(),
-        serde_json::Value::Bool(!levels.is_empty()),
+        (!levels.is_empty()).into(),
     );
-    let efforts = std::iter::once(&"default")
-        .chain(levels.iter())
-        .map(|level| {
-            let mut entry = serde_json::json!({
-                "value": level,
-                "id": level,
-                "label": level,
-                "description": effort_level_description(level),
-            });
-            if *level == "high" {
-                entry["default"] = serde_json::Value::Bool(true);
-            }
-            entry
-        })
-        .collect::<Vec<_>>();
-    meta.insert("reasoningEfforts".into(), serde_json::Value::Array(efforts));
+    meta.insert(
+        "reasoningControlKnown".into(),
+        capabilities
+            .as_ref()
+            .is_some_and(|caps| caps.mode() != aster_core::config::ReasoningMode::Unknown)
+            .into(),
+    );
+    if let Some(caps) = &capabilities {
+        meta.insert("reasoningControl".into(), caps.mode().as_str().into());
+        meta.insert("reasoningSource".into(), caps.source().into());
+        if let Some(level) = caps.default_level() {
+            meta.insert("defaultReasoningEffort".into(), level.as_str().into());
+            meta.insert("defaultReasoningEffortSource".into(), caps.source().into());
+        }
+    }
+    meta.insert("reasoningEffortReset".into(), true.into());
+    meta.insert("reasoningEfforts".into(), serde_json::json!(levels.iter().map(|level| {
+        let token = level.as_str();
+        serde_json::json!({"value":token,"id":token,"label":token,"description":effort_level_description(token)})
+    }).collect::<Vec<_>>()));
     meta
+}
+
+impl AsterCodeAgent {
+    pub(super) fn model_supports_effort(&self, id: &str, token: &str) -> bool {
+        if let Some(controls) = self
+            .detected_models
+            .read()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(id)
+            .and_then(|model| model.data.as_ref())
+            .and_then(|data| data.reasoning.as_ref())
+        {
+            return controls.supports(token);
+        }
+        self.launch
+            .config
+            .list_models()
+            .iter()
+            .find(|(provider, model)| format!("{}/{}", provider.name, model.id) == id)
+            .and_then(|(provider, model)| {
+                model.reasoning_capabilities(
+                    provider.model_protocol(model),
+                    provider.get_base_url(model),
+                )
+            })
+            .is_some_and(|caps| caps.supports(token))
+    }
+
+    pub(super) fn select_model_effort(
+        &self,
+        model: &str,
+        meta: Option<&acp::Meta>,
+        current: Option<EffortLimits>,
+    ) -> acp::Result<Option<EffortLimits>> {
+        let selected = selected_effort(meta, current)?;
+        let explicit = meta
+            .and_then(|meta| meta.get("reasoningEffort"))
+            .is_some_and(|value| !value.is_null() && value.as_str() != Some("default"));
+        if let Some(selection) = selected {
+            if self.model_supports_effort(model, selection.token) {
+                return Ok(Some(selection));
+            }
+            if explicit {
+                return Err(acp::Error::invalid_params().data(format!(
+                    "model {model} does not offer reasoning effort {}",
+                    selection.token
+                )));
+            }
+        }
+        Ok(None)
+    }
 }
 
 pub(super) fn effort_level_description(level: &str) -> &'static str {

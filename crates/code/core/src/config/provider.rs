@@ -76,6 +76,9 @@ pub struct ModelConfig {
     /// Supports reasoning/thinking
     #[serde(default)]
     pub reasoning: bool,
+    /// Native controls declared by configuration or an imported account catalog.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reasoning_control: Option<super::ReasoningCapabilities>,
     /// Supports tool calling
     #[serde(default = "default_true")]
     pub tool_call: bool,
@@ -236,6 +239,8 @@ pub(crate) fn apply_model_caps(
     model: &ModelConfig,
     thinking_budget: Option<usize>,
 ) -> LlmConfig {
+    config.reasoning_capabilities =
+        model.reasoning_capabilities(config.protocol, config.base_url.as_deref());
     // reasoning=true + thinking_budget set → pass budget to client (Anthropic only)
     if model.reasoning {
         if let Some(budget) = thinking_budget {
@@ -262,10 +267,26 @@ pub(crate) fn apply_model_caps(
     config
 }
 
+impl ModelConfig {
+    pub fn reasoning_capabilities(
+        &self,
+        protocol: ProviderProtocol,
+        base_url: Option<&str>,
+    ) -> Option<super::ReasoningCapabilities> {
+        self.reasoning_control
+            .clone()
+            .or_else(|| super::documented_at(protocol, &self.id, base_url))
+    }
+}
+
 impl ProviderConfig {
     /// Effective wire protocol for this provider.
     pub fn resolved_protocol(&self) -> ProviderProtocol {
         ProviderProtocol::resolve(self.protocol, &self.name, self.base_url.as_deref())
+    }
+
+    pub fn model_protocol(&self, model: &ModelConfig) -> ProviderProtocol {
+        ProviderProtocol::resolve(self.protocol, &self.name, self.get_base_url(model))
     }
 
     /// Find a model by ID

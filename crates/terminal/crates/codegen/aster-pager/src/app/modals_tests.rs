@@ -16,7 +16,7 @@ fn arg_picker_effort_phase_opens_on_default_row() {
     agent.session.models.available.insert(
         id.clone(),
         acp::ModelInfo::new(id, "Reasoning X").meta(
-            serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high" })
+            serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high", "reasoningEfforts": [{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }] })
                 .as_object()
                 .cloned(),
         ),

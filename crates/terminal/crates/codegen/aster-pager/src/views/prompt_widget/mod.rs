@@ -336,7 +336,11 @@ pub fn mode_flags<'a>(
     }
     if permission != PermissionLabel::Ask {
         flags.push(PromptFlag {
-            text: permission.as_canonical(),
+            text: if permission == PermissionLabel::AlwaysApprove {
+                "YOLO"
+            } else {
+                permission.as_canonical()
+            },
             // Auto: blue system/automation. Yolo: violet like Cursor "Run Everything".
             color: Some(if permission == PermissionLabel::Auto {
                 theme.accent_system

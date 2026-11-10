@@ -1795,7 +1795,7 @@ pub fn persist_respect_manual_folds(enabled: bool) -> std::io::Result<()> {
     if aster_config::user_grok_home().is_none() {
         return Err(Error::new(
             ErrorKind::NotFound,
-            "no user grok home resolved; refusing to write a cwd-relative pager.toml \
+            "no Aster home resolved; refusing to write a cwd-relative pager.toml \
              that startup would never read",
         ));
     }

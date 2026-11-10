@@ -1122,6 +1122,7 @@ impl CodeConfig {
                                 session_id_header: None,
                                 attachment: false,
                                 reasoning: false,
+                                reasoning_control: None,
                                 tool_call: true,
                                 temperature: true,
                                 release_date: None,
@@ -1169,6 +1170,22 @@ impl CodeConfig {
                                         model.reasoning =
                                             acl_bool_attr(model_block, &["reasoning"])
                                                 .unwrap_or(model.reasoning);
+                                    }
+                                    "reasoning_control" | "reasoningControl" => {
+                                        let declaration =
+                                            acl_value_to_json(value).ok_or_else(|| {
+                                                CodeError::Config(
+                                                    "reasoning_control must be an object".into(),
+                                                )
+                                            })?;
+                                        model.reasoning_control =
+                                            Some(serde_json::from_value(declaration).map_err(
+                                                |error| {
+                                                    CodeError::Config(format!(
+                                                        "invalid reasoning_control: {error}"
+                                                    ))
+                                                },
+                                            )?);
                                     }
                                     "toolCall" | "tool_call" => {
                                         model.tool_call =
@@ -1251,12 +1268,17 @@ impl CodeConfig {
                                     }
                                     other => {
                                         return Err(CodeError::Config(format!(
-                                            "models attribute `{other}` is not in the closed set name, family, api_key, base_url, session_id_header, headers, attachment, reasoning, tool_call, temperature, release_date, maxTokens, contextTokens, limit, modalities, cost"
+                                            "models attribute `{other}` is not in the closed set name, family, api_key, base_url, session_id_header, headers, attachment, reasoning, reasoning_control, tool_call, temperature, release_date, maxTokens, contextTokens, limit, modalities, cost"
                                         )));
                                     }
                                 }
                             }
 
+                            if let Some(control) = &model.reasoning_control {
+                                control
+                                    .validate_protocol(provider.model_protocol(&model))
+                                    .map_err(CodeError::Config)?;
+                            }
                             provider.models.push(model);
                         }
                     }
@@ -1311,7 +1333,7 @@ impl CodeConfig {
         let session_id_header = provider.get_session_id_header(model);
 
         let mut config = LlmConfig::new(&provider.name, &model.id, api_key)
-            .with_protocol(provider.resolved_protocol());
+            .with_protocol(provider.model_protocol(model));
         if let Some(url) = base_url {
             config = config.with_base_url(url);
         }
@@ -1324,6 +1346,7 @@ impl CodeConfig {
         if let Some(timeout_ms) = self.llm_api_timeout_ms {
             config = config.with_api_timeout(timeout_ms);
         }
+        config = config.with_protocol(provider.model_protocol(model));
         config = apply_model_caps(config, model, self.thinking_budget);
         Some(config)
     }
@@ -1340,7 +1363,7 @@ impl CodeConfig {
         let session_id_header = provider.get_session_id_header(model);
 
         let mut config = LlmConfig::new(&provider.name, &model.id, api_key)
-            .with_protocol(provider.resolved_protocol());
+            .with_protocol(provider.model_protocol(model));
         if let Some(url) = base_url {
             config = config.with_base_url(url);
         }
@@ -1353,6 +1376,7 @@ impl CodeConfig {
         if let Some(timeout_ms) = self.llm_api_timeout_ms {
             config = config.with_api_timeout(timeout_ms);
         }
+        config = config.with_protocol(provider.model_protocol(model));
         config = apply_model_caps(config, model, self.thinking_budget);
         Some(config)
     }

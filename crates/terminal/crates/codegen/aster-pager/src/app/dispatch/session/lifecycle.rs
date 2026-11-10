@@ -48,6 +48,10 @@ pub(crate) fn take_deferred_model_switch(
     }) = stashed
     {
         let effort_error = match cli_effort_token {
+            Some("default") => {
+                effort = None;
+                None
+            }
             Some(token) if effort.is_none() => {
                 match models.resolve_cli_effort_for_model(&model_id, token) {
                     Ok(resolved) => {
@@ -80,6 +84,16 @@ pub(crate) fn take_deferred_model_switch(
             effort_error: Some(EffortTokenError::NoActiveModel),
         };
     };
+    if token == "default" {
+        return DeferredSwitchOutcome {
+            switch: Some(DeferredModelSwitch {
+                model_id: current,
+                effort: None,
+                prev_model_id: None,
+            }),
+            effort_error: None,
+        };
+    }
     match models.resolve_cli_effort_for_model(&current, token) {
         Ok(effort) if models.reasoning_effort == Some(effort) => DeferredSwitchOutcome {
             switch: None,
@@ -1999,6 +2013,11 @@ pub(in crate::app::dispatch) fn handle_switch_model_complete(
                     .unwrap_or_else(|| model_id.0.to_string());
                 let prev_model = agent.session.models.current.clone();
                 let prev_effort = agent.session.models.reasoning_effort;
+                if let Some(model) = agent.session.models.available.get_mut(&model_id) {
+                    if let Some(meta) = &mut model.meta {
+                        meta.remove("reasoningEffort");
+                    }
+                }
                 agent.session.models.set_current(model_id.clone(), effort);
                 let resolved_effort = agent.session.models.reasoning_effort;
                 if let Some(used) = agent.context_state.as_ref().map(|c| c.used)

@@ -81,7 +81,7 @@ async fn interactive_permission_modes_apply_to_each_prompt_and_preserve_denies()
                     let executed = facts.iter().any(|fact| fact["type"] == "tool.result"
                         && fact["payload"]["receipt"]["outcome"] == "succeeded"
                         && fact["payload"]["receipt"]["exit_code"] == 0
-                        && fact["payload"]["output"].as_str().is_some_and(|output| output.contains(&marker)));
+                        && fact["payload"]["receipt"]["output"].as_str().is_some_and(|output| output.contains(&marker)));
                     assert_eq!(executed, mode != "plan", "{mode}/{operation}: actual command receipt");
                 }
                 assert!(!workspace.join("protected.txt").exists());

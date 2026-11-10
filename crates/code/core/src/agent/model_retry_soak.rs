@@ -161,6 +161,7 @@ async fn soak_http_retries_do_not_multiply_tool_execution() {
                 session_id_header: None,
                 attachment: false,
                 reasoning: false,
+                reasoning_control: None,
                 tool_call: true,
                 temperature: true,
                 release_date: None,

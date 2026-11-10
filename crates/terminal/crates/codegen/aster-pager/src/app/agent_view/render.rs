@@ -246,7 +246,7 @@ impl AgentView {
                     hints.push(HintItem::new(key!('e'), "edit pattern"));
                 }
                 hints.extend(ctrl_f_hint);
-                hints.push(HintItem::new(key!('o', CONTROL), "yolo"));
+                hints.push(HintItem::new(key!('o', CONTROL), "YOLO"));
                 hints.push(HintItem::new(key!('c', CONTROL), "cancel"));
                 hints.push(self.card_esc_hint());
                 hints
@@ -2306,8 +2306,17 @@ impl AgentView {
         } else {
             self.published_mode_label()
         };
-        let flags: Vec<PromptFlag> =
+        let mut flags: Vec<PromptFlag> =
             mode_flags(plan_label, self.session.permission_label(), &theme);
+        if self.session.models.capabilities_pending()
+            || (crate::app::aster_active() && self.session.model_switch_pending)
+        {
+            flags.push(PromptFlag {
+                text: "detecting",
+                color: Some(theme.accent_system),
+                bold: false,
+            });
+        }
         let multiline = self.multiline_mode;
         let warning = self.credit_balance.as_ref().and_then(|bal| {
             crate::views::credit_bar::usage_warning_for_session(
@@ -2320,7 +2329,7 @@ impl AgentView {
         let usage_warning_text: Option<String> = warning.as_ref().map(|(t, _)| t.clone());
         let usage_warning = usage_warning_text.as_deref();
         let usage_warning_critical = warning.is_some_and(|(_, critical)| critical);
-        let model_label = match self.session.models.reasoning_effort {
+        let model_label = match self.session.models.effective_reasoning_effort() {
             Some(eff) => format!("{model_id} ({eff})"),
             None => model_id,
         };

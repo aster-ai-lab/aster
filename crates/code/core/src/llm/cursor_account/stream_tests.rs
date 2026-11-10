@@ -47,6 +47,75 @@ fn read_tool() -> Vec<ToolDefinition> {
 }
 
 #[tokio::test]
+async fn catalog_replies_complete_mixed_native_batches() {
+    let catalog = connect_envelope(
+        br#"{"execServerMessage":{"mcpStateExecArgs":{"serverIdentifiers":["aster"]}}}"#,
+    );
+    let native = connect_envelope(br#"{"execServerMessage":{"mcpArgs":{"providerIdentifier":"aster","toolName":"read","args":{"file_path":"input.txt"}}}}"#);
+    let listed =
+        connect_envelope(br#"{"interactionUpdate":{"toolRequestsListed":{"callCount":2}}}"#);
+    for order in [
+        [0, 1, 2],
+        [0, 2, 1],
+        [1, 0, 2],
+        [1, 2, 0],
+        [2, 0, 1],
+        [2, 1, 0],
+    ] {
+        let mut frames = catalog.clone();
+        frames.extend(connect_envelope(
+            br#"{"interactionUpdate":{"toolRequestsListed":{"callCount":1}}}"#,
+        ));
+        frames.extend(connect_envelope(
+            br#"{"interactionUpdate":{"toolCallCompleted":{}}}"#,
+        ));
+        let batch = [&catalog, &native, &listed];
+        for index in order {
+            frames.extend(batch[index]);
+        }
+        let (replies, mut receiver) = mpsc::channel(4);
+        let output = read_run_response(
+            finite_response(frames),
+            "synthetic-secret",
+            CancellationToken::new(),
+            replies,
+            &read_tool(),
+            GENERATION_DEADLINE,
+        )
+        .await
+        .unwrap();
+        assert_eq!(output.calls.len(), 1, "{order:?}");
+        assert!(matches!(&output.calls[0], ContentBlock::ToolUse { name, .. } if name == "read"));
+        assert!(receiver.try_recv().is_ok());
+        assert!(receiver.try_recv().is_ok());
+    }
+}
+
+#[tokio::test]
+async fn catalog_replies_do_not_hide_missing_native_calls() {
+    let mut frames =
+        connect_envelope(br#"{"interactionUpdate":{"toolRequestsListed":{"callCount":3}}}"#);
+    frames.extend(connect_envelope(
+        br#"{"execServerMessage":{"mcpStateExecArgs":{}}}"#,
+    ));
+    frames.extend(connect_envelope(br#"{"execServerMessage":{"mcpArgs":{"providerIdentifier":"aster","toolName":"read","args":{}}}}"#));
+    let mut end = connect_envelope(b"{}");
+    end[0] = 2;
+    frames.extend(end);
+    let (replies, _receiver) = mpsc::channel(1);
+    assert!(read_run_response(
+        finite_response(frames),
+        "synthetic-secret",
+        CancellationToken::new(),
+        replies,
+        &read_tool(),
+        GENERATION_DEADLINE
+    )
+    .await
+    .is_err());
+}
+
+#[tokio::test]
 async fn native_parallel_calls_are_returned_without_executing_cursor_tools() {
     for listed_first in [false, true] {
         let mut frames = Vec::new();

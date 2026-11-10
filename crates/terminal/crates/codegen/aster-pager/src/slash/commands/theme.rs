@@ -270,7 +270,7 @@ mod tests {
             let items = cmd.suggest_args(&ctx, "").expect("should return items");
             let groknight = items
                 .iter()
-                .find(|i| i.insert_text == "groknight")
+                .find(|i| i.insert_text == "aster-night")
                 .expect("groknight should be in list");
             assert!(
                 groknight.description.contains("(active)"),
@@ -333,7 +333,7 @@ mod tests {
             let mut matcher = crate::slash::matcher::FuzzyMatcher::new();
             for (alias, canonical) in [
                 ("transparent", "terminal"),
-                ("dark", "groknight"),
+                ("dark", "aster-night"),
                 ("system", "auto"),
             ] {
                 let hits = matcher.rank(&items, alias, items.len(), |item| &item.match_text);
@@ -370,12 +370,12 @@ mod tests {
                     ..crate::settings::PagerLocalSnapshot::default()
                 },
             };
-            let result = cmd.run(&mut ctx, "groknight");
+            let result = cmd.run(&mut ctx, "aster-night");
             match result {
                 CommandResult::Action(Action::SetTheme(name)) => {
-                    assert_eq!(name, "groknight");
+                    assert_eq!(name, "aster-night");
                 }
-                other => panic!("expected Action::SetTheme(\"groknight\"), got {other:?}"),
+                other => panic!("expected Action::SetTheme(\"aster-night\"), got {other:?}"),
             }
         });
     }
@@ -534,9 +534,9 @@ mod tests {
             let result = cmd.run(&mut ctx, "dark");
             match result {
                 CommandResult::Action(Action::SetTheme(name)) => {
-                    assert_eq!(name, "groknight", "alias must normalise to canonical");
+                    assert_eq!(name, "aster-night", "alias must normalise to canonical");
                 }
-                other => panic!("expected Action::SetTheme(\"groknight\"), got {other:?}"),
+                other => panic!("expected Action::SetTheme(\"aster-night\"), got {other:?}"),
             }
         });
     }
@@ -559,7 +559,7 @@ mod tests {
         with_test_env(|| {
             theme_cache::set(ThemeKind::AsterNight);
             let cmd = ThemeCommand;
-            cmd.preview_arg("grokday");
+            cmd.preview_arg("aster-day");
             assert_eq!(Theme::current_kind(), ThemeKind::AsterDay);
         });
     }
@@ -586,11 +586,11 @@ mod tests {
             theme_cache::set(ThemeKind::AsterNight);
             let cmd = ThemeCommand;
             // Simulate user navigating into a different theme during preview.
-            cmd.preview_arg("grokday");
+            cmd.preview_arg("aster-day");
             assert_eq!(Theme::current_kind(), ThemeKind::AsterDay);
 
             // Then Escape (or arg picker dismissal): restore.
-            cmd.cancel_preview("groknight");
+            cmd.cancel_preview("aster-night");
             assert_eq!(
                 Theme::current_kind(),
                 ThemeKind::AsterNight,

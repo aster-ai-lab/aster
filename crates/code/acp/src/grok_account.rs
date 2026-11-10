@@ -387,6 +387,7 @@ fn model_config(id: &str, name: &str, _description: Option<&str>) -> ModelConfig
         session_id_header: None,
         attachment: false,
         reasoning: true,
+        reasoning_control: None,
         tool_call: true,
         temperature: true,
         release_date: None,

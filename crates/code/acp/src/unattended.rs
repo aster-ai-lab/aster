@@ -154,16 +154,13 @@ impl Unattended {
         Ok(self)
     }
 
-    /// One of the host effort levels; the provider maps it to its own scale.
+    /// Native effort selection, validated against the model when it is selected.
     pub fn with_reasoning_effort(mut self, effort: &str) -> Result<Self> {
-        let levels = crate::agent::HOST_EFFORT_LEVELS;
-        let Some(level) = levels.iter().find(|level| **level == effort) else {
-            bail!(
-                "--reasoning-effort must be one of {}: {effort}",
-                levels.join(", ")
-            );
-        };
-        self.reasoning_effort = level;
+        let level = aster_core::config::ReasoningEffort::parse(&effort.to_ascii_lowercase())?;
+        if level == aster_core::config::ReasoningEffort::Ultracode {
+            bail!("ultracode is not a native reasoning effort");
+        }
+        self.reasoning_effort = level.as_str();
         Ok(self)
     }
 

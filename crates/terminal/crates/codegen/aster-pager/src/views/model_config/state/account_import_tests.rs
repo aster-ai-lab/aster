@@ -40,7 +40,7 @@ fn first_run_offers_three_unchecked_accounts_before_api_key_setup() {
             "Signed-in accounts",
             "[ ] Codex",
             "[ ] Cursor",
-            "[ ] Grok",
+            "[ ] Legacy CLI",
             "API key",
             "Timeout",
         ] {

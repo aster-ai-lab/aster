@@ -1449,6 +1449,7 @@ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Mutex;
 use std::time::Duration;
 mod child_policy;
+mod claim_loan;
 use tokio::sync::{mpsc, Barrier, Notify};
 
 fn text_response(text: impl Into<String>) -> LlmResponse {

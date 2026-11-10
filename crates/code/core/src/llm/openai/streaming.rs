@@ -7,6 +7,11 @@ impl OpenAiClient {
         mut request: serde_json::Value,
         cancel_token: tokio_util::sync::CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::super::effort::validate_selection(
+            crate::config::ProviderProtocol::Openai,
+            self.reasoning_capabilities.as_ref(),
+            self.reasoning_effort.as_deref(),
+        )?;
         {
             request["stream"] = serde_json::json!(true);
             request["stream_options"] = serde_json::json!({ "include_usage": true });

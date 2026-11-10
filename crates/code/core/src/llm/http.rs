@@ -264,6 +264,18 @@ impl HttpClient for UnavailableHttpClient {
 
 #[async_trait]
 pub trait HttpClient: Send + Sync {
+    /// Read a provider catalog. Transports without catalog support refuse.
+    async fn get(
+        &self,
+        _url: &str,
+        _headers: Vec<(&str, &str)>,
+        _cancel_token: CancellationToken,
+    ) -> Result<HttpResponse> {
+        Err(anyhow::anyhow!(
+            "HTTP transport does not support model catalogs"
+        ))
+    }
+
     /// Make a POST request and return status + body
     async fn post(
         &self,
@@ -428,6 +440,50 @@ impl Default for ReqwestHttpClient {
 
 #[async_trait]
 impl HttpClient for ReqwestHttpClient {
+    async fn get(
+        &self,
+        url: &str,
+        headers: Vec<(&str, &str)>,
+        cancel_token: CancellationToken,
+    ) -> Result<HttpResponse> {
+        let mut request = self.client.get(url);
+        for (name, value) in headers {
+            request = request.header(name, value);
+        }
+        let read = async {
+            let response = request
+                .send()
+                .await
+                .map_err(|error| HttpClientError::from_reqwest("model catalog", error))?;
+            let status = response.status().as_u16();
+            let retry_after = response
+                .headers()
+                .get("retry-after")
+                .and_then(|value| value.to_str().ok())
+                .map(str::to_string);
+            let mut bytes = Vec::new();
+            let mut chunks = response.bytes_stream();
+            while let Some(chunk) = chunks.next().await {
+                let chunk = chunk
+                    .map_err(|error| HttpClientError::from_reqwest("model catalog body", error))?;
+                if bytes.len().saturating_add(chunk.len()) > 4 * 1024 * 1024 {
+                    anyhow::bail!("model catalog exceeds 4 MiB");
+                }
+                bytes.extend_from_slice(&chunk);
+            }
+            Ok(HttpResponse {
+                status,
+                retry_after,
+                body: String::from_utf8(bytes).context("model catalog is not UTF-8")?,
+            })
+        };
+        tokio::select! {
+            biased;
+            _ = cancel_token.cancelled() => Err(HttpClientError::cancelled("model catalog").into()),
+            result = read => result,
+        }
+    }
+
     async fn post(
         &self,
         url: &str,

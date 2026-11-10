@@ -735,7 +735,7 @@ pub(super) fn default_actions(
         // ── Agent ────────────────────────────────────────────────────
         ActionDef {
             id: ActionId::ToggleYolo,
-            label: "yolo",
+            label: "YOLO",
             description: "Toggle YOLO",
             default_key: key!('o', CONTROL),
             alt_keys: vec![],
@@ -1078,7 +1078,7 @@ pub(super) fn default_actions(
         // Reachable from the dashboard view (and from inside the session overlay)
         ActionDef {
             id: ActionId::DashboardToggleAutoApprove,
-            label: "yolo",
+            label: "YOLO",
             description: "Toggle YOLO",
             default_key: key!('o', CONTROL),
             alt_keys: vec![],

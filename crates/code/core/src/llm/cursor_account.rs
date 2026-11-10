@@ -30,7 +30,7 @@ use super::types::{
     ContentBlock, LlmResponse, LlmResponseMeta, Message, TokenUsage, ToolDefinition,
 };
 use super::{LlmClient, StreamEvent};
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use async_trait::async_trait;
 use futures::StreamExt;
 use serde_json::{json, Value};
@@ -62,6 +62,7 @@ pub(crate) struct CursorAccountClient {
     /// `GetUsableModels` alias map. `None` until a successful lookup.
     catalog: Arc<Mutex<Option<HashMap<String, String>>>>,
     generation_timeout: Duration,
+    reasoning_effort: Option<String>,
 }
 
 impl CursorAccountClient {
@@ -74,6 +75,7 @@ impl CursorAccountClient {
             http: super::http::default_http_client(),
             catalog: Arc::new(Mutex::new(None)),
             generation_timeout: GENERATION_DEADLINE,
+            reasoning_effort: None,
         }
     }
 
@@ -85,6 +87,11 @@ impl CursorAccountClient {
 
     pub(crate) fn with_headers(mut self, headers: HashMap<String, String>) -> Self {
         self.headers = headers;
+        self
+    }
+
+    pub(crate) fn with_reasoning_effort(mut self, effort: Option<String>) -> Self {
+        self.reasoning_effort = effort;
         self
     }
 
@@ -133,27 +140,30 @@ impl CursorAccountClient {
         &self,
         cancel_token: CancellationToken,
     ) -> Option<HashMap<String, String>> {
+        self.model_catalog(cancel_token)
+            .await
+            .ok()
+            .map(|value| account_model_alias_map(&value))
+    }
+
+    pub(crate) async fn model_catalog(&self, cancel_token: CancellationToken) -> Result<Value> {
         let url = self.usable_models_url();
         let owned_headers = self.catalog_headers();
-        let header_refs: Vec<(&str, &str)> = owned_headers
+        let headers = owned_headers
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
         let response = self
             .http
-            .post(
-                &url,
-                header_refs,
-                &json!({ "customModelIds": [] }),
-                cancel_token,
-            )
-            .await
-            .ok()?;
+            .post(&url, headers, &json!({"customModelIds":[]}), cancel_token)
+            .await?;
         if !(200..300).contains(&response.status) {
-            return None;
+            anyhow::bail!("Cursor model catalog HTTP {}", response.status);
         }
-        let value = serde_json::from_str::<Value>(&response.body).ok()?;
-        Some(account_model_alias_map(&value))
+        if response.body.len() > 4 * 1024 * 1024 {
+            anyhow::bail!("Cursor model catalog exceeds 4 MiB");
+        }
+        serde_json::from_str(&response.body).context("invalid Cursor model catalog")
     }
 
     fn catalog_headers(&self) -> Vec<(String, String)> {
@@ -221,6 +231,11 @@ impl CursorAccountClient {
         tools: &[super::types::ToolDefinition],
         cancel_token: CancellationToken,
     ) -> Result<LlmResponse> {
+        super::effort::validate_selection(
+            crate::config::ProviderProtocol::Cursor,
+            None,
+            self.reasoning_effort.as_deref(),
+        )?;
         super::gemini::refuse_foreign_state(messages)?;
         let url = self.endpoint();
         if url.contains("/v1/chat/completions") {
@@ -455,6 +470,17 @@ struct RunOutput {
     calls: Vec<ContentBlock>,
     usage: TokenUsage,
     expected_calls: Option<u64>,
+    catalog_calls: u64,
+}
+
+impl RunOutput {
+    fn received_calls(&self) -> u64 {
+        self.calls.len() as u64 + self.catalog_calls
+    }
+
+    fn batch_ready(&self) -> bool {
+        !self.calls.is_empty() && self.expected_calls == Some(self.received_calls())
+    }
 }
 
 async fn read_run_response(
@@ -560,6 +586,16 @@ async fn read_run_response(
                         tool_catalog = value
                             .pointer("/execServerMessage/mcpStateExecArgs")
                             .is_some(),
+                        listed_count = value
+                            .pointer("/interactionUpdate/toolRequestsListed/callCount")
+                            .and_then(|count| count.as_u64()),
+                        step_started = value.pointer("/interactionUpdate/stepStarted").is_some(),
+                        tool_completed = value
+                            .pointer("/interactionUpdate/toolCallCompleted")
+                            .is_some(),
+                        received_calls = output.calls.len(),
+                        catalog_calls = output.catalog_calls,
+                        expected_calls = output.expected_calls,
                         "Cursor response frame"
                     );
                     if let Some(call) = mcp::tool_call(&value, tools)? {
@@ -568,8 +604,11 @@ async fn read_run_response(
                             return Err(anyhow!("cursor account requested too many Aster tools"));
                         }
                         output.calls.push(call);
+                        if output.received_calls() > 64 {
+                            return Err(anyhow!("cursor account requested too many Aster tools"));
+                        }
                         pending_tools = true;
-                        if output.expected_calls == Some(output.calls.len() as u64) {
+                        if output.batch_ready() {
                             return finish_output(output);
                         }
                         continue;
@@ -577,7 +616,15 @@ async fn read_run_response(
                     let reply = match blobs.reply(&payload)? {
                         Some(reply) => Some(reply),
                         None => match mcp::state_reply(&value, tools)? {
-                            Some(reply) => Some(reply),
+                            Some(reply) => {
+                                output.catalog_calls += 1;
+                                if output.received_calls() > 64 {
+                                    return Err(anyhow!(
+                                        "cursor account requested too many Aster tools"
+                                    ));
+                                }
+                                Some(reply)
+                            }
                             None => context::reply(&payload)?,
                         },
                     };
@@ -589,6 +636,9 @@ async fn read_run_response(
                                 result.map_err(|_| anyhow!("cursor account duplex request closed before a protocol reply"))?;
                             }
                         }
+                        if output.batch_ready() {
+                            return finish_output(output);
+                        }
                         continue;
                     }
                     if value.get("interactionQuery").is_some() {
@@ -598,6 +648,7 @@ async fn read_run_response(
                         if update.get("stepStarted").is_some() {
                             step_completed = false;
                             output.expected_calls = None;
+                            output.catalog_calls = 0;
                         }
                         if update.get("stepCompleted").is_some() {
                             step_completed = true;
@@ -620,6 +671,7 @@ async fn read_run_response(
                         if update.get("toolCallCompleted").is_some() && output.calls.is_empty() {
                             pending_tools = false;
                             output.expected_calls = None;
+                            output.catalog_calls = 0;
                         }
                         if let Some(listed) = update.get("toolRequestsListed") {
                             let count = listed
@@ -631,7 +683,7 @@ async fn read_run_response(
                                 })?;
                             // The listing can precede the native execution messages.
                             output.expected_calls = Some(count);
-                            if !output.calls.is_empty() && count == output.calls.len() as u64 {
+                            if output.batch_ready() {
                                 return finish_output(output);
                             }
                         }
@@ -693,7 +745,7 @@ fn finish_output(output: RunOutput) -> Result<RunOutput> {
     if !output.calls.is_empty()
         && output
             .expected_calls
-            .is_some_and(|count| count != output.calls.len() as u64)
+            .is_some_and(|count| count != output.received_calls())
     {
         return Err(anyhow!("Cursor ended an incomplete Aster tool batch"));
     }

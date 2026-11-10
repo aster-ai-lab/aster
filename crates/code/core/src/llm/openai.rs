@@ -30,6 +30,7 @@ pub struct OpenAiClient {
     pub(crate) temperature: Option<f32>,
     pub(crate) max_tokens: Option<usize>,
     pub(crate) reasoning_effort: Option<String>,
+    pub(crate) reasoning_capabilities: Option<crate::config::ReasoningCapabilities>,
     pub(crate) logprobs: bool,
     pub(crate) top_logprobs: Option<usize>,
     pub(crate) http: Arc<dyn HttpClient>,
@@ -107,6 +108,10 @@ impl OpenAiClient {
         Self {
             provider_name: "openai".to_string(),
             api_key: SecretString::new(api_key),
+            reasoning_capabilities: crate::config::documented_reasoning(
+                crate::config::ProviderProtocol::Openai,
+                &model,
+            ),
             model,
             base_url: "https://api.openai.com".to_string(),
             chat_completions_path: "/v1/chat/completions".to_string(),
@@ -142,6 +147,17 @@ impl OpenAiClient {
 
     pub fn with_base_url(mut self, base_url: String) -> Self {
         self.base_url = normalize_base_url(&base_url);
+        if self
+            .reasoning_capabilities
+            .as_ref()
+            .is_none_or(|caps| caps.source() == "documented")
+        {
+            self.reasoning_capabilities = crate::config::documented_at(
+                crate::config::ProviderProtocol::Openai,
+                &self.model,
+                Some(&self.base_url),
+            );
+        }
         self
     }
 
@@ -172,6 +188,14 @@ impl OpenAiClient {
 
     pub fn with_max_tokens(mut self, max_tokens: usize) -> Self {
         self.max_tokens = Some(max_tokens);
+        self
+    }
+
+    pub(crate) fn with_reasoning_capabilities(
+        mut self,
+        capabilities: Option<crate::config::ReasoningCapabilities>,
+    ) -> Self {
+        self.reasoning_capabilities = capabilities;
         self
     }
 
@@ -393,28 +417,12 @@ impl OpenAiClient {
         }
     }
 
-    fn request_reasoning_effort(&self) -> Option<&'static str> {
+    fn request_reasoning_effort(&self) -> Option<&str> {
         let token = self.reasoning_effort.as_deref()?;
-        let url = url::Url::parse(&self.base_url).ok();
-        let host = url.as_ref().and_then(url::Url::host_str);
-        // A model name does not declare which vendor extensions a proxy accepts.
-        if matches!(self.provider_name.as_str(), "glm" | "zhipu" | "bigmodel") {
-            return super::effort::glm_reasoning_effort(token);
-        }
-        if (self.provider_name == "deepseek" || host == Some("api.deepseek.com"))
-            && super::effort::is_deepseek_model(&self.model)
-        {
-            return super::effort::deepseek_reasoning_effort(token);
-        }
-        if (matches!(
-            self.provider_name.as_str(),
-            "openai" | "gpt" | "grok" | "xai"
-        ) || host == Some("api.openai.com"))
-            && super::effort::is_openai_reasoning_model(&self.model)
-        {
-            return super::effort::openai_reasoning_effort(token);
-        }
-        None
+        self.reasoning_capabilities
+            .as_ref()
+            .filter(|caps| caps.supports(token))
+            .map(|_| token)
     }
 
     fn request_max_tokens(&self) -> Option<usize> {
@@ -510,6 +518,11 @@ impl OpenAiClient {
 
     /// Execute a fully-built (non-streaming) chat-completions request.
     pub(crate) async fn send_request(&self, request: serde_json::Value) -> Result<LlmResponse> {
+        super::effort::validate_selection(
+            crate::config::ProviderProtocol::Openai,
+            self.reasoning_capabilities.as_ref(),
+            self.reasoning_effort.as_deref(),
+        )?;
         {
             let request_started_at = Instant::now();
             let url = join_chat_completions_url(&self.base_url, &self.chat_completions_path);

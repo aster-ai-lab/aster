@@ -1448,7 +1448,10 @@ pub(crate) fn execute(
                         ),
                     );
                     log_prompt_result(&session_id, &result);
-                    if let (Some(blocks), Err(e)) = (requeue_blocks, &result) {
+                    if let (Some(blocks), Err(e)) = (requeue_blocks, &result)
+                        && aster_acp_lib::acp_channel_failure(e)
+                            == Some(aster_acp_lib::AcpChannelFailure::SendFailed)
+                    {
                         return TaskResult::SendPromptNowFailed {
                             agent_id,
                             session_id,
@@ -2013,18 +2016,7 @@ pub(crate) fn execute(
             let tx = acp_tx.clone();
             tasks
                 .spawn(async move {
-                    let meta = effort
-                        .map(|eff| {
-                            use aster_shell::sampling::types::{
-                                REASONING_EFFORT_META_KEY, reasoning_effort_meta_value,
-                            };
-                            let mut m = acp::Meta::new();
-                            m.insert(
-                                REASONING_EFFORT_META_KEY.to_string(),
-                                reasoning_effort_meta_value(eff),
-                            );
-                            m
-                        });
+                    let meta = Some([("reasoningEffort".into(), serde_json::json!(effort.map_or("default".to_string(), |value| value.to_string())))].into_iter().collect());
                     let req = acp::SetSessionModelRequest::new(
                             session_id,
                             model_id.clone(),
@@ -2032,7 +2024,9 @@ pub(crate) fn execute(
                         .meta(meta);
                     let result = acp_send(req, &tx)
                         .await
-                        .map(|_| ())
+                        .map(|response| {
+                            response.meta.as_ref().and_then(|meta| meta.get("reasoningEffort")).and_then(|value| value.as_str()).map(|token| token.parse().ok()).unwrap_or(effort)
+                        })
                         .map_err(|e| {
                             use aster_shell::agent::config::ModelSwitchIncompatibleAgentError;
                             if let Some(typed) = ModelSwitchIncompatibleAgentError::from_acp_error(
@@ -2046,10 +2040,12 @@ pub(crate) fn execute(
                                 SwitchModelError::Other(sanitize_user_error(&e.to_string()))
                             }
                         });
+                    let effective_effort = result.as_ref().ok().copied().flatten();
+                    let result = result.map(|_| ());
                     TaskResult::SwitchModelComplete {
                         agent_id,
                         model_id,
-                        effort,
+                        effort: effective_effort,
                         result,
                         prev_model_id,
                     }
@@ -5471,7 +5467,7 @@ fn session_info_fields(
     );
     push("Model", model_display.to_string(), true);
     if let Some(mode) = info.permission_posture.as_deref() {
-        push("Mode", mode.to_string(), true);
+        push("Mode", if mode == "yolo" { "YOLO" } else { mode }.to_string(), true);
     }
     if info.data.show_model_fingerprint
         && let Some(fp) = info.data.model_fingerprint.as_deref()

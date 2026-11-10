@@ -1,0 +1,21 @@
+{
+  "pair": "aster-cli-pair-v1:73b1d5b5ca5b9ca39f1496d3ac18fbf638bc47e9:aarch64-apple-darwin",
+  "checks": {
+    "render-theme": "test result: ok. 172 passed; 0 failed; 0 ignored; 0 measured; 1048 filtered out; finished in 0.32s",
+    "pager-settings": "test result: ok. 386 passed; 0 failed; 0 ignored; 0 measured; 9961 filtered out; finished in 1.26s",
+    "pager-theme": "test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 10329 filtered out; finished in 0.01s",
+    "pager-session-label": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10346 filtered out; finished in 0.00s",
+    "pager-account-label": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 10341 filtered out; finished in 0.28s",
+    "pager-version": "test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 10331 filtered out; finished in 0.28s",
+    "render-clipboard-rerun": "test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 1154 filtered out; finished in 0.01s",
+    "pager-diagnostics-rerun": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10346 filtered out; finished in 0.00s",
+    "pager-docs": "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 10328 filtered out; finished in 0.01s",
+    "model-discovery": "test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 5880 filtered out; finished in 0.01s"
+  },
+  "proof_bytes": 20,
+  "proof_sha256": "14eb3af38f788d77774e6490f7dd957c8fe00dbcd7faeeaf2975be192d0ad603",
+  "screenshots": 16,
+  "build_head": "b1be95c5b7d6",
+  "head_at_end": "682e4b15d8411763eca37e3266335032e90b743d",
+  "head_change": "Only the Studio gitlink changed externally during this run; tested CLI Rust sources were unaffected"
+}

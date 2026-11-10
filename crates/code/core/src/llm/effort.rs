@@ -14,54 +14,25 @@ pub(crate) const HIGH_EFFORT_OUTPUT_TOKENS: usize = 65_536;
 /// Host safety ceiling for tool rounds. Every effort level uses this same cap.
 pub const TOOL_ROUND_SAFETY_CEILING: usize = 3_200;
 
-pub(crate) fn normalize_effort(token: &str) -> &str {
-    token.trim()
-}
-
-/// Anthropic `output_config.effort`.
-pub(crate) fn anthropic_effort(token: &str) -> Option<&'static str> {
-    match normalize_effort(token) {
-        "none" | "minimal" | "low" => Some("low"),
-        "medium" => Some("medium"),
-        "high" => Some("high"),
-        "xhigh" => Some("xhigh"),
-        "max" | "ultracode" => Some("max"),
-        _ => None,
+pub(crate) fn validate_selection(
+    protocol: crate::config::ProviderProtocol,
+    capabilities: Option<&crate::config::ReasoningCapabilities>,
+    token: Option<&str>,
+) -> anyhow::Result<()> {
+    if let Some(capabilities) = capabilities {
+        capabilities
+            .validate_protocol(protocol)
+            .map_err(super::NonRetryableLlmError::new)?;
     }
-}
-
-/// OpenAI `reasoning_effort`. `max` is not an OpenAI value.
-pub(crate) fn openai_reasoning_effort(token: &str) -> Option<&'static str> {
-    match normalize_effort(token) {
-        "none" => Some("none"),
-        "minimal" => Some("minimal"),
-        "low" => Some("low"),
-        "medium" => Some("medium"),
-        "high" => Some("high"),
-        "xhigh" | "max" | "ultracode" => Some("xhigh"),
-        _ => None,
-    }
-}
-
-/// DeepSeek `reasoning_effort` (`none` disables thinking; `low` / `high` / `max`).
-pub(crate) fn deepseek_reasoning_effort(token: &str) -> Option<&'static str> {
-    match normalize_effort(token) {
-        "none" => Some("none"),
-        "minimal" | "low" => Some("low"),
-        "medium" | "high" | "xhigh" => Some("high"),
-        "max" | "ultracode" => Some("max"),
-        _ => None,
-    }
-}
-
-/// GLM `reasoning_effort` (`low` / `high` / `max`).
-pub(crate) fn glm_reasoning_effort(token: &str) -> Option<&'static str> {
-    match normalize_effort(token) {
-        "none" | "minimal" | "low" => Some("low"),
-        "medium" | "high" => Some("high"),
-        "xhigh" | "max" | "ultracode" => Some("max"),
-        _ => None,
-    }
+    let Some(token) = token.filter(|token| *token != "default") else {
+        return Ok(());
+    };
+    let capabilities = capabilities.ok_or_else(|| {
+        super::NonRetryableLlmError::new("reasoning controls are unknown for this model")
+    })?;
+    capabilities
+        .validate_effort(token)
+        .map_err(|error| super::NonRetryableLlmError::new(error).into())
 }
 
 /// Default output-window floor; an explicit `max_tokens` may be smaller.
@@ -79,14 +50,7 @@ pub(crate) fn resolved_max_tokens(explicit: Option<usize>, default: usize, level
 }
 
 pub(crate) fn is_glm_model(model: &str) -> bool {
-    let id = model.rsplit(['/', ':']).next().unwrap_or(model);
-    let id = id.trim().to_ascii_lowercase();
-    id.starts_with("glm-5.2")
-        || id.starts_with("glm-5.3")
-        || id.starts_with("glm-5-2")
-        || id.starts_with("glm-5-3")
-        || id.starts_with("glm-")
-        || id.starts_with("glm")
+    matches!(model, "glm-5.3" | "glm-5.3-flash" | "glm-5.3-flashx")
 }
 
 /// Sampling value DeepSeek applies while thinking is enabled.
@@ -102,142 +66,28 @@ pub fn deepseek_thinking_top_p(level: &str) -> Option<f64> {
 }
 
 pub(crate) fn is_deepseek_model(model: &str) -> bool {
-    let id = model.rsplit(['/', ':']).next().unwrap_or(model);
-    let id = id.trim().to_ascii_lowercase();
-    id.starts_with("deepseek")
+    matches!(model, "deepseek-flash" | "deepseek-v4-pro")
 }
 
-pub(crate) fn is_openai_reasoning_model(model: &str) -> bool {
-    let id = model.rsplit(['/', ':']).next().unwrap_or(model);
-    let id = id.trim().to_ascii_lowercase();
-    id.starts_with("gpt-5")
-        || id.starts_with("o1")
-        || id.starts_with("o3")
-        || id.starts_with("o4")
-        || id.starts_with("codex")
-        || id.contains("-codex")
-}
-
-/// Menu values the model actually accepts. Empty when effort is prompt-only.
+/// Legacy ID-only SDK view. Custom accounts must supply model capabilities.
 pub fn native_effort_menu(model_id: &str) -> &'static [&'static str] {
-    if !model_sends_native_effort(model_id) {
+    let Some((provider, model)) = model_id.split_once('/') else {
         return &[];
-    }
-    let id = model_id.trim().to_ascii_lowercase();
-    let (provider, name) = match id.split_once('/') {
-        Some((provider, name)) => (provider, name),
-        None => ("", id.as_str()),
     };
-    if matches!(provider, "glm" | "zhipu" | "bigmodel") || is_glm_model(name) {
-        return &["low", "high", "max"];
-    }
-    if provider == "deepseek" || is_deepseek_model(name) {
-        return &["low", "high", "max"];
-    }
-    &["low", "medium", "high", "xhigh", "max"]
+    let protocol = match provider {
+        "anthropic" | "claude" => crate::config::ProviderProtocol::Anthropic,
+        "glm" | "zhipu" | "bigmodel" => crate::config::ProviderProtocol::Glm,
+        "openai" | "deepseek" => crate::config::ProviderProtocol::Openai,
+        "codex" => crate::config::ProviderProtocol::Codex,
+        _ => return &[],
+    };
+    crate::config::documented_spec(protocol, model).map_or(&[], |(_, levels)| levels)
 }
 
-/// Whether this model id receives a native effort parameter instead of a
-/// prompt-only depth guideline.
 pub fn model_sends_native_effort(model_id: &str) -> bool {
-    let id = model_id.trim().to_ascii_lowercase();
-    if id.is_empty() {
-        return false;
-    }
-    let (provider, name) = match id.split_once('/') {
-        Some((provider, name)) => (provider, name),
-        None => ("", id.as_str()),
-    };
-    match provider {
-        "anthropic" | "claude" | "glm" | "zhipu" | "bigmodel" | "deepseek" => true,
-        "openai" | "gpt" | "grok" | "xai" | "codex" => is_openai_reasoning_model(name),
-        // Bare or custom-qualified ids still follow the model catalog: a host
-        // nickname such as `glm-01/glm-5.3-flash` must not lose GLM effort.
-        _ => {
-            is_glm_model(name)
-                || is_deepseek_model(name)
-                || name.starts_with("claude")
-                || is_openai_reasoning_model(name)
-        }
-    }
+    !native_effort_menu(model_id).is_empty()
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn providers_receive_their_own_effort_values() {
-        assert_eq!(anthropic_effort("high"), Some("high"));
-        assert_eq!(anthropic_effort("max"), Some("max"));
-        assert_eq!(anthropic_effort("minimal"), Some("low"));
-        assert_eq!(openai_reasoning_effort("max"), Some("xhigh"));
-        assert_eq!(openai_reasoning_effort("none"), Some("none"));
-        assert_eq!(glm_reasoning_effort("medium"), Some("high"));
-        assert_eq!(glm_reasoning_effort("xhigh"), Some("max"));
-        assert_eq!(deepseek_reasoning_effort("max"), Some("max"));
-        assert_eq!(deepseek_reasoning_effort("medium"), Some("high"));
-        assert_eq!(deepseek_reasoning_effort("none"), Some("none"));
-        assert!(is_deepseek_model("boyue/deepseek-v4-flash"));
-        assert!(model_sends_native_effort("deepseek/deepseek-v4-flash"));
-        assert_eq!(
-            native_effort_menu("deepseek/deepseek-v4-flash"),
-            &["low", "high", "max"]
-        );
-        assert_eq!(anthropic_effort("nope"), None);
-    }
-
-    #[test]
-    fn high_effort_lifts_the_output_window() {
-        assert_eq!(
-            resolved_max_tokens(None, 8_192, "high"),
-            HIGH_EFFORT_OUTPUT_TOKENS
-        );
-        assert_eq!(
-            resolved_max_tokens(None, 8_192, "low"),
-            HIGH_EFFORT_OUTPUT_TOKENS
-        );
-        assert_eq!(
-            resolved_max_tokens(None, 8_192, "medium"),
-            HIGH_EFFORT_OUTPUT_TOKENS
-        );
-        assert_eq!(resolved_max_tokens(None, 128_000, "max"), 128_000);
-        assert_eq!(resolved_max_tokens(Some(2_048), 8_192, "high"), 2_048);
-    }
-
-    #[test]
-    fn native_effort_follows_the_model() {
-        assert!(model_sends_native_effort("anthropic/claude-opus-4-6"));
-        assert!(model_sends_native_effort("openai/gpt-5.4"));
-        assert!(model_sends_native_effort("codex/gpt-5.4"));
-        assert!(model_sends_native_effort("zhipu/glm-5.3"));
-        assert!(model_sends_native_effort("glm-01/glm-5.3-flash"));
-        assert!(!model_sends_native_effort("ollama/llama3"));
-        assert!(!model_sends_native_effort("openai/gpt-4o"));
-        assert!(!model_sends_native_effort("cursor/gpt-5.2"));
-        assert!(!model_sends_native_effort("cursor/composer-2.5"));
-        assert!(model_sends_native_effort("openai/gpt-5.4"));
-    }
-
-    #[test]
-    fn effort_menu_lists_only_legal_values() {
-        assert_eq!(
-            native_effort_menu("anthropic/claude-opus-4-6"),
-            ["low", "medium", "high", "xhigh", "max"]
-        );
-        assert_eq!(native_effort_menu("zhipu/glm-5"), ["low", "high", "max"]);
-        assert!(native_effort_menu("ollama/llama3").is_empty());
-        assert!(native_effort_menu("openai/gpt-4o").is_empty());
-    }
-
-    #[test]
-    fn custom_providers_do_not_declare_native_effort_by_model_name() {
-        for provider in ["relay", "company-models"] {
-            for model in ["deepseek-v4-flash", "glm-5.3", "gpt-5.4", "claude-opus-4-6"] {
-                let id = format!("{provider}/{model}");
-                assert!(!model_sends_native_effort(&id), "{id}");
-                assert!(native_effort_menu(&id).is_empty(), "{id}");
-            }
-        }
-    }
-}
+#[path = "effort_tests.rs"]
+mod tests;

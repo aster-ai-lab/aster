@@ -268,7 +268,7 @@ fn field_line(state: &ModelConfigState, field: DetailField, focused: bool) -> St
             let name = match import {
                 AccountImport::Codex => "Codex",
                 AccountImport::Cursor => "Cursor",
-                AccountImport::Grok => "Grok",
+                AccountImport::Grok => "Legacy CLI",
             };
             let mark = if state.draft.import_accounts.contains(&import) {
                 "x"

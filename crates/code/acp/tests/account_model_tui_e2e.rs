@@ -389,14 +389,34 @@ fn assert_config_clean(fixture: &Fixture) {
 }
 
 #[test]
+fn yolo_banner_matches_footer() {
+    let fixture = prepare("");
+    let env = as_refs(&fixture.env);
+    let mut pty = open_pty(&tui_binary(), &fixture.workspace, &env);
+    wait_ready(&mut pty, "mock/m1", Duration::from_secs(45));
+    pty.write_bytes(b"\x1b[Z");
+    pty.wait_for("Switched to mode: Auto", Duration::from_secs(10));
+    pty.write_bytes(b"\x1b[Z");
+    let screen = pty.wait_for("Switched to mode: YOLO", Duration::from_secs(10));
+    assert!(!screen.contains("Full access"), "{screen}");
+    assert!(
+        screen
+            .lines()
+            .any(|line| line.contains("mock/m1") && line.contains("YOLO")),
+        "{screen}"
+    );
+    pty.quit();
+}
+
+#[test]
 fn selected_model_and_effort_survive_a_new_tui_process_in_another_workspace() {
     let fixture = prepare("");
     let source = std::fs::read_to_string(&fixture.config).unwrap();
     std::fs::write(
         &fixture.config,
-        source.replace(
+        format!("reasoning_effort = \"high\"\n{}", source).replace(
             "models \"m1\" { }",
-            "models \"m1\" { }\n  models \"m2\" { }",
+            "models \"m1\" { reasoning_control = { mode = \"effort\", levels = [\"low\", \"high\"] } }\n  models \"m2\" { reasoning_control = { mode = \"effort\", levels = [\"low\", \"high\"] } }",
         ),
     )
     .unwrap();
@@ -420,8 +440,23 @@ fn selected_model_and_effort_survive_a_new_tui_process_in_another_workspace() {
     std::fs::create_dir_all(&second_workspace).unwrap();
     let mut second = open_pty(&tui_binary(), &second_workspace, &env);
     wait_ready(&mut second, "mock/m2 (low)", Duration::from_secs(45));
-    second.quit();
     assert_eq!(std::fs::read_to_string(&fixture.config).unwrap(), saved);
+    second.write_bytes(b"\x1b[200~/effort default\x1b[201~");
+    second.enter();
+    second.wait_for("Switched to mock/m2", Duration::from_secs(15));
+    second.quit();
+    drop(second);
+    let reset =
+        aster_core::CodeConfig::from_acl(&std::fs::read_to_string(&fixture.config).unwrap())
+            .unwrap();
+    assert_eq!(
+        reset.reasoning_effort,
+        Some(aster_core::config::ReasoningEffort::Default)
+    );
+    let mut third = open_pty(&tui_binary(), &second_workspace, &env);
+    let screen = wait_ready(&mut third, "mock/m2", Duration::from_secs(45));
+    assert!(!screen.contains("mock/m2 (low)"), "{screen}");
+    third.quit();
 }
 
 #[test]

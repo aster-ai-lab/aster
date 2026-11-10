@@ -284,7 +284,49 @@ fn models_from_cache(cache: &Value) -> Vec<ModelConfig> {
             .and_then(Value::as_u64)
             .map(|window| window.min(u32::MAX as u64) as u32)
             .unwrap_or(0);
-        models.push(model_config(id, name, context_window));
+        let mut model = model_config(id, name, context_window);
+        let levels = entry
+            .get("supported_reasoning_levels")
+            .and_then(Value::as_array)
+            .map(|entries| {
+                entries
+                    .iter()
+                    .filter_map(|level| level.get("effort").and_then(Value::as_str))
+                    .filter_map(|token| crate::config::ReasoningEffort::parse(token).ok())
+                    .filter(|level| {
+                        !matches!(
+                            level,
+                            crate::config::ReasoningEffort::Default
+                                | crate::config::ReasoningEffort::Ultracode
+                        )
+                    })
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        let mode = if levels.is_empty() {
+            crate::config::ReasoningMode::Unknown
+        } else {
+            crate::config::ReasoningMode::Effort
+        };
+        model.reasoning_control = Some(
+            crate::config::ReasoningCapabilities::new(mode, levels)
+                .unwrap_or_else(|error| {
+                    tracing::warn!(%error, "invalid account reasoning catalog");
+                    crate::config::ReasoningCapabilities::unknown()
+                })
+                .with_account_source(),
+        );
+        if let Some(default) = entry
+            .get("default_reasoning_level")
+            .and_then(Value::as_str)
+            .and_then(|token| crate::config::ReasoningEffort::parse(token).ok())
+        {
+            model.reasoning_control = model
+                .reasoning_control
+                .take()
+                .map(|caps| caps.clone().with_default_level(default).unwrap_or(caps));
+        }
+        models.push(model);
     }
     models
 }
@@ -300,6 +342,7 @@ fn model_config(id: &str, name: &str, context_window: u32) -> ModelConfig {
         session_id_header: None,
         attachment: false,
         reasoning: true,
+        reasoning_control: None,
         tool_call: true,
         // The Responses reasoning models ignore sampling temperature.
         temperature: false,
@@ -382,6 +425,8 @@ mod tests {
                         "slug": "gpt-6.1-sol",
                         "display_name": "GPT-6.1-Sol",
                         "context_window": 500000,
+                        "supported_reasoning_levels": [{"effort":"low"},{"effort":"high"},{"effort":"max"},{"effort":"ultra"}],
+                        "default_reasoning_level": "low",
                         "visibility": "list",
                         "supported_in_api": true
                     },
@@ -444,6 +489,28 @@ mod tests {
         let sol = &import.provider.models[0];
         assert_eq!(sol.name, "GPT-6.1-Sol");
         assert_eq!(sol.limit.context, 500_000);
+        let controls = sol.reasoning_control.as_ref().unwrap();
+        assert_eq!(controls.source(), "account");
+        assert_eq!(
+            controls.levels(),
+            &[
+                crate::config::ReasoningEffort::Low,
+                crate::config::ReasoningEffort::High,
+                crate::config::ReasoningEffort::Max
+            ]
+        );
+        assert_eq!(
+            controls.default_level(),
+            Some(crate::config::ReasoningEffort::Low)
+        );
+        assert_eq!(
+            import.provider.models[1]
+                .reasoning_control
+                .as_ref()
+                .unwrap()
+                .mode(),
+            crate::config::ReasoningMode::Unknown
+        );
         // Cache order is the CLI's recommended order; the first listed
         // model becomes the default.
         assert_eq!(import.default_model_id, "gpt-6.1-sol");

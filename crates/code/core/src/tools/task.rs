@@ -906,6 +906,24 @@ impl TaskExecutor {
             .registry
             .get_arc(&params.agent)
             .context(format!("Unknown agent type: '{}'", params.agent))?;
+        let _verification_claims = if agent.native
+            && agent.name == crate::prompts::AgentStyle::Verification.builtin_agent_name()
+            && !params.background
+        {
+            parent_session_id
+                .filter(|parent| !parent.trim().is_empty())
+                .map(|parent| {
+                    crate::external_observation::WriteClaimLoan::new(
+                        parent,
+                        &session_id,
+                        std::path::Path::new(&self.workspace),
+                    )
+                })
+                .transpose()
+                .map_err(anyhow::Error::msg)?
+        } else {
+            None
+        };
         let tool_free = agent.tool_free;
         let tool_free_system = agent.prompt.clone();
         let inherited_security_provider = self

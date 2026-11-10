@@ -27,8 +27,11 @@ mod workspace_trust;
 
 pub use account_import::AccountImport;
 pub use editor::{rewrite_acl_sections, ConfigSection};
+mod reasoning;
 mod reasoning_effort;
 pub(crate) use loader::parse_mcp_server_block;
+pub(crate) use reasoning::{documented_at, documented_spec};
+pub use reasoning::{documented_reasoning, ReasoningCapabilities, ReasoningMode};
 pub use reasoning_effort::ReasoningEffort;
 /// Built-in provider name for Cloud-admitted Inference route models.
 pub const ASTER_INFERENCE_PROVIDER: &str = "aster-inference";

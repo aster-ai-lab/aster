@@ -491,7 +491,9 @@ pub(super) fn resolve_auto_delegation_config(
     auto_delegation
 }
 
-pub(super) fn resolve_session_llm_client(
+/// Build the session transport with the same model and sampling overrides as the Agent.
+/// Returns a configuration error when the model or its credentials are missing.
+pub fn resolve_session_llm_client(
     code_config: &CodeConfig,
     opts: &SessionOptions,
     session_id: Option<&str>,

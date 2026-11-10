@@ -3759,7 +3759,7 @@ mod tests {
         models.available.insert(
             id.clone(),
             acp::ModelInfo::new(id, "Reasoning X").meta(
-                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high" })
+                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high", "reasoningEfforts": [{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }] })
                     .as_object()
                     .cloned(),
             ),
@@ -3768,7 +3768,7 @@ mod tests {
         let text = "/model Reasoning X ";
         ctrl.refresh(&state, text, text.len(), &models);
         let snap = state.snapshot();
-        assert_eq!(2, snap.selected);
+        assert_eq!(3, snap.selected);
         assert_eq!(
             Some("Reasoning X high"),
             snap.selection().map(|row| row.insert_text.as_str())
@@ -3777,7 +3777,7 @@ mod tests {
         // Arrow navigation survives a same-text refresh; the opening row applies only to a new args context
         ctrl.move_selection(&state, 1);
         ctrl.refresh(&state, text, text.len(), &models);
-        assert_eq!(3, state.snapshot().selected);
+        assert_eq!(4, state.snapshot().selected);
 
         let text = "/model Reasoning X h";
         ctrl.refresh(&state, text, text.len(), &models);
@@ -3793,7 +3793,7 @@ mod tests {
         models.available.insert(
             id.clone(),
             acp::ModelInfo::new(id, "Aster Code 4.7").meta(
-                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high" })
+                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high", "reasoningEfforts": [{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }] })
                     .as_object()
                     .cloned(),
             ),
@@ -3833,7 +3833,7 @@ mod tests {
         models.available.insert(
             id.clone(),
             acp::ModelInfo::new(id.clone(), "Reasoning X").meta(
-                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high" })
+                serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high", "reasoningEfforts": [{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }] })
                     .as_object()
                     .cloned(),
             ),

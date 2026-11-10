@@ -212,6 +212,15 @@ async fn session_creation_publishes_and_applies_the_same_permission_postures() {
             modes
                 .available_modes
                 .iter()
+                .find(|mode| mode.id.0.as_ref() == "yolo")
+                .unwrap()
+                .name,
+            "YOLO"
+        );
+        assert_eq!(
+            modes
+                .available_modes
+                .iter()
                 .map(|mode| mode.id.0.as_ref())
                 .collect::<Vec<_>>(),
             ["default", "plan", "auto", "yolo"]

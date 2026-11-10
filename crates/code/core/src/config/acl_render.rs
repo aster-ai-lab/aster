@@ -868,6 +868,30 @@ fn render_model(
     );
     set_attr(
         &mut block,
+        &["reasoning_control", "reasoningControl"],
+        "reasoning_control",
+        model.reasoning_control.as_ref().map(|control| {
+            let mut fields = vec![
+                ("mode".into(), string(control.mode().as_str())),
+                (
+                    "levels".into(),
+                    string_list(
+                        &control
+                            .levels()
+                            .iter()
+                            .map(|level| level.as_str().to_string())
+                            .collect::<Vec<_>>(),
+                    ),
+                ),
+            ];
+            if let Some(level) = control.default_level() {
+                fields.push(("default_level".into(), string(level.as_str())));
+            }
+            Value::Object(fields)
+        }),
+    );
+    set_attr(
+        &mut block,
         &["temperature"],
         "temperature",
         Some(Value::Bool(model.temperature)),

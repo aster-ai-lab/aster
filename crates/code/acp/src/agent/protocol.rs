@@ -22,6 +22,20 @@ impl acp::Agent for AsterCodeAgent {
                 )
             }
         };
+        let discovery = match args
+            .meta
+            .as_ref()
+            .and_then(|meta| meta.get("aster/modelDiscovery"))
+        {
+            None => false,
+            Some(serde_json::Value::Bool(value)) => *value,
+            Some(_) => {
+                return Err(
+                    acp::Error::invalid_params().data("aster/modelDiscovery must be a boolean")
+                )
+            }
+        };
+        self.client_model_discovery.set(discovery);
         *self.client_rules.borrow_mut() = rules;
         *self.client_permissions.borrow_mut() = permissions;
         self.client_terminal_markdown.set(terminal_markdown);
@@ -131,6 +145,7 @@ impl acp::Agent for AsterCodeAgent {
         self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
             .await?;
         let model_id = self.model_id.lock().await.clone();
+        self.refresh_model(&model_id, true).await;
         let effort = *self.effort.lock().await;
         let plugin_tools = crate::plugin_tools::entries_from_meta(args.meta.as_ref());
         let components = crate::harness_assemble::components_from_meta(args.meta.as_ref())
@@ -159,7 +174,7 @@ impl acp::Agent for AsterCodeAgent {
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .posture
             .modes();
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
+        let effort_token = live.effort.map(|limits| limits.token);
         let models = self.model_state_with(&live.model_id, effort_token);
         let goal = match live.session.goal_definition() {
             Ok(Some(_)) => Ok(None),
@@ -245,17 +260,20 @@ impl acp::Agent for AsterCodeAgent {
         let session_mcp = session_mcp_configs(&args.mcp_servers);
         self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
             .await?;
-        let current_model = self
+        let current = self
             .sessions
             .lock()
             .await
             .get(&session_id)
-            .map(|live| live.model_id.clone());
-        let model_id = match current_model {
-            Some(model) => model,
-            None => self.model_id.lock().await.clone(),
+            .map(|live| (live.model_id.clone(), live.effort));
+        let (model_id, effort) = match current {
+            Some(selection) => selection,
+            None => (
+                self.model_id.lock().await.clone(),
+                *self.effort.lock().await,
+            ),
         };
-        let effort = *self.effort.lock().await;
+        self.refresh_model(&model_id, true).await;
         let plugin_tools = crate::plugin_tools::entries_from_meta(args.meta.as_ref());
         let setup = SessionSetup {
             workspace: workspace.clone(),
@@ -284,7 +302,7 @@ impl acp::Agent for AsterCodeAgent {
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .posture
             .modes();
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
+        let effort_token = live.effort.map(|limits| limits.token);
         let models = self.model_state_with(&live.model_id, effort_token);
         let transcript = Arc::clone(&live.session);
         let goal = match live.session.goal_definition() {
@@ -360,8 +378,6 @@ impl acp::Agent for AsterCodeAgent {
             return Err(acp::Error::invalid_params().data(format!("unknown model id: {model_id}")));
         }
 
-        let effort = models::selected_effort(args.meta.as_ref(), *self.effort.lock().await)?;
-
         let session_key = args.session_id.0.to_string();
         let turn_queue = self
             .sessions
@@ -374,6 +390,14 @@ impl acp::Agent for AsterCodeAgent {
             .acquire_owned()
             .await
             .ok_or_else(|| acp::Error::invalid_params().data("session operation queue is full"))?;
+        let changed = self
+            .sessions
+            .lock()
+            .await
+            .get(&session_key)
+            .is_some_and(|live| live.model_id != model_id);
+        self.refresh_model(&model_id, changed).await;
+        let effort;
         // Keep permission updates and replacement in one commit. Queued turns
         // look the session up again after acquiring this same queue.
         {
@@ -381,6 +405,7 @@ impl acp::Agent for AsterCodeAgent {
             let current = sessions
                 .get(&session_key)
                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
+            effort = self.select_model_effort(&model_id, args.meta.as_ref(), current.effort)?;
             let live = self
                 .replace_core_session(
                     current,
@@ -412,7 +437,15 @@ impl acp::Agent for AsterCodeAgent {
             self.announce_tooling(&session_key, session_tooling_projection(&session).await);
         }
 
-        Ok(acp::SetSessionModelResponse::new())
+        self.emit_model_catalog().await;
+        Ok(acp::SetSessionModelResponse::new().meta(Some(
+            [(
+                "reasoningEffort".into(),
+                serde_json::json!(effort.map_or("default", |selection| selection.token)),
+            )]
+            .into_iter()
+            .collect(),
+        )))
     }
 
     async fn set_session_config_option(
@@ -745,11 +778,27 @@ impl acp::Agent for AsterCodeAgent {
             .lock()
             .await
             .insert(session_key.clone(), generation);
+        self.turn_cancel.notify_waiters();
         let session = {
             let sessions = self.sessions.lock().await;
             sessions.get(&session_key).map(|live| live.session.clone())
         };
         if let Some(session) = session {
+            let run = session.current_run().await;
+            if self
+                .turn_generation
+                .lock()
+                .await
+                .get(&session_key)
+                .copied()
+                .unwrap_or(0)
+                != generation
+            {
+                return Ok(());
+            }
+            if let Some(run) = run {
+                run.cancel().await;
+            }
             let cancel_subagents = args
                 .meta
                 .as_ref()
@@ -761,9 +810,7 @@ impl acp::Agent for AsterCodeAgent {
                     session.cancel_subagent_task(&task.task_id).await;
                 }
             }
-            let _ = session.cancel().await;
         }
-        self.turn_cancel.notify_waiters();
         Ok(())
     }
 }

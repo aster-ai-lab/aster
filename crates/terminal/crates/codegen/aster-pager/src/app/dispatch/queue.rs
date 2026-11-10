@@ -36,11 +36,17 @@ fn combine_queued_prompts_enabled() -> bool {
 /// We must also not be mid-edit, mid-model-switch, or mid-replay.
 /// **Server-busy (`is_turn_running() || !shared_queue.is_empty()`):** the immediate-send path is for prompts that must queue server-side rather than start a turn locally.
 /// **FIFO guard (`pending_prompts.is_empty()`):** a prompt may only jump onto the server queue when the local drip-feed queue is empty.
-pub(super) fn immediate_server_send_eligible(agent: &AgentView, leader_mode: bool) -> bool {
+pub(super) fn immediate_server_send_eligible(
+    agent: &AgentView,
+    leader_mode: bool,
+    is_aster: bool,
+) -> bool {
     let wake_running = agent.running_wake_turn.is_some();
     let server_busy =
         agent.session.state.is_turn_running() || wake_running || !agent.shared_queue.is_empty();
-    (leader_mode || crate::appearance::cache::load_follow_up_steer() || wake_running)
+    // Aster uses local held prompts; it does not implement mutable server queues.
+    !is_aster
+        && (leader_mode || crate::appearance::cache::load_follow_up_steer() || wake_running)
         && server_busy
         && agent.session.session_id.is_some()
         && agent.session.pending_prompts.is_empty()

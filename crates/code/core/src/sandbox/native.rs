@@ -240,25 +240,30 @@ fn canonicalize_workspace(workspace: impl Into<PathBuf>) -> Result<PathBuf> {
 ///
 /// ksandbox protects `.kbox`; Aster's durable control plane is `.aster`.
 /// Existing Aster protected directories are write-denied when present; `.aster`
-/// is always materialised so Seatbelt can pin the deny before first use.
+/// is materialised only when harness state belongs inside the workspace.
 fn aster_bash_policy(workspace: &Path) -> Result<SandboxPolicy> {
     let mut policy = SandboxPolicy::kbash_baseline();
     let aster = workspace.join(".aster");
     let loops = aster.join("loops");
-    std::fs::create_dir_all(&loops).with_context(|| {
-        format!(
-            "failed to create Aster control-plane carve-out {}",
-            loops.display()
-        )
-    })?;
-    policy
-        .filesystem
-        .deny_write
-        .push(PathRule::Exact(".aster".into()));
-    policy
-        .filesystem
-        .write_exceptions
-        .push(PathRule::Exact(".aster/loops".into()));
+    let local_state = crate::state_root::state_root_override().is_none();
+    if local_state {
+        std::fs::create_dir_all(&loops).with_context(|| {
+            format!(
+                "failed to create Aster control-plane carve-out {}",
+                loops.display()
+            )
+        })?;
+        policy
+            .filesystem
+            .write_exceptions
+            .push(PathRule::Exact(".aster/loops".into()));
+    }
+    if aster.exists() {
+        policy
+            .filesystem
+            .deny_write
+            .push(PathRule::Exact(".aster".into()));
+    }
 
     for name in super::PROTECTED_WORKSPACE_DIRECTORIES {
         if name.eq_ignore_ascii_case(".aster") {

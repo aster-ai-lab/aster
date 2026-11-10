@@ -44,6 +44,36 @@ fn j<'a, V: JsonKeyed + ?Sized>(v: &'a V, key: &str) -> &'a serde_json::Value {
 use std::path::PathBuf;
 
 #[tokio::test]
+async fn send_now_requeues_only_when_the_channel_refuses_delivery() {
+    for failure in ["send", "receive", "provider"] {
+        let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
+        let broker = if failure == "send" {
+            drop(rx);
+            None
+        } else {
+            Some(tokio::spawn(async move {
+                let Some(aster_acp_lib::AcpAgentMessage::Prompt(args)) = rx.recv().await else {
+                    panic!("expected a prompt");
+                };
+                if failure == "provider" {
+                    args.response_tx.send(Err(acp::Error::internal_error().data("failed after output"))).unwrap();
+                }
+            }))
+        };
+        let mut tasks = JoinSet::new();
+        let (progress, _) = tokio::sync::mpsc::unbounded_channel();
+        execute(Effect::SendPromptNow {
+            session_id: acp::SessionId::new("fixture"), agent_id: AgentId(0),
+            blocks: vec![acp::ContentBlock::Text(acp::TextContent::new("keep this prompt"))],
+            prompt_id: "next".into(),
+        }, &mut tasks, &tx, Path::new("."), &SessionFlags::default(), &progress);
+        let result = tasks.join_next().await.unwrap().unwrap();
+        assert_eq!(matches!(result, TaskResult::SendPromptNowFailed { .. }), failure == "send");
+        if let Some(broker) = broker { broker.await.unwrap(); }
+    }
+}
+
+#[tokio::test]
 async fn refused_mode_precondition_never_sends_the_prompt() {
     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
     let broker = tokio::spawn(async move {
@@ -2896,12 +2926,12 @@ fn format_session_info_displays_returned_permission_posture() {
     assert!(session_info_fields(&info, None, false).contains(
         &crate::views::usage_modal::SessionInfoField {
             label: "Mode",
-            value: "yolo".into(),
+            value: "YOLO".into(),
             compact: true,
         }
     ));
     let text = format_session_info(&info, None, false, false, false);
-    assert!(text.contains("Mode: yolo"), "{text}");
+    assert!(text.contains("Mode: YOLO"), "{text}");
 }
 #[test]
 fn format_session_info_shows_resolved_when_enabled_and_different() {

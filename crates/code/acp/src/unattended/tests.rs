@@ -225,6 +225,25 @@ fn the_profile_answers_for_itself_with_every_capability_on() {
 }
 
 #[test]
+fn native_effort_and_reset_are_admitted() {
+    for token in [
+        "default", "none", "minimal", "low", "medium", "high", "xhigh", "max",
+    ] {
+        let profile = Unattended::new(1_000, None)
+            .unwrap()
+            .with_reasoning_effort(token)
+            .unwrap();
+        assert_eq!(profile.reasoning_effort, token);
+    }
+    for token in ["ultracode", "unknown"] {
+        assert!(Unattended::new(1_000, None)
+            .unwrap()
+            .with_reasoning_effort(token)
+            .is_err());
+    }
+}
+
+#[test]
 fn an_engineering_launch_puts_the_named_policy_on_every_session() {
     let profile = Unattended::new(1_000, None)
         .and_then(|profile| profile.with_engineering_policy("engineering-v1"))

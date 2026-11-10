@@ -155,7 +155,7 @@ async fn run(status: u16, scenario: Scenario) {
             fact["type"] == "tool.result"
                 && fact["payload"]["receipt"]["outcome"] == "succeeded"
                 && fact["payload"]["receipt"]["exit_code"] == 0
-                && fact["payload"]["output"].as_str()
+                && fact["payload"]["receipt"]["output"].as_str()
                     .and_then(|output| serde_json::from_str::<serde_json::Value>(output).ok())
                     .is_some_and(|output| output["metadata"]["verification_shell_command"] == CHECK)
         });

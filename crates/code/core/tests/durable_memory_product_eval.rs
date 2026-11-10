@@ -209,6 +209,7 @@ fn offline_config(llm_extraction: bool) -> CodeConfig {
                 session_id_header: None,
                 attachment: false,
                 reasoning: false,
+                reasoning_control: None,
                 tool_call: true,
                 temperature: true,
                 release_date: None,

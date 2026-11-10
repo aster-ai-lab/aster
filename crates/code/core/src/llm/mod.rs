@@ -20,6 +20,7 @@ pub mod gemini;
 pub mod http;
 pub mod local_policy;
 pub mod metering;
+pub mod model_discovery;
 pub mod openai;
 pub mod structured;
 #[cfg(test)]
@@ -246,3 +247,6 @@ pub trait LlmClient: Send + Sync {
 #[cfg(test)]
 #[path = "tests.rs"]
 mod tests_file;
+
+#[cfg(test)]
+mod reasoning_contract_tests;

@@ -12,7 +12,7 @@ fn make_client() -> OpenAiClient {
 #[test]
 fn reasoning_model_sends_reasoning_effort_and_keeps_output_room() {
     let client =
-        OpenAiClient::new("k".to_string(), "gpt-5.4".to_string()).with_reasoning_effort("max");
+        OpenAiClient::new("k".to_string(), "gpt-5.4".to_string()).with_reasoning_effort("xhigh");
     let req = client.build_chat_request(&[Message::user("fix it")], None, &[], None);
     assert_eq!(req["reasoning_effort"], "xhigh");
     assert!(req["max_tokens"].as_u64().unwrap() >= 65_536);
@@ -20,7 +20,7 @@ fn reasoning_model_sends_reasoning_effort_and_keeps_output_room() {
 
 #[test]
 fn deepseek_model_sends_thinking_effort_without_an_output_floor() {
-    let client = OpenAiClient::new("k".to_string(), "deepseek-v4-flash".to_string())
+    let client = OpenAiClient::new("k".to_string(), "deepseek-flash".to_string())
         .with_provider_name("deepseek")
         .with_reasoning_effort("max");
     let req = client.build_chat_request(&[Message::user("fix it")], None, &[], None);
@@ -29,7 +29,7 @@ fn deepseek_model_sends_thinking_effort_without_an_output_floor() {
     assert_eq!(req["top_p"], 0.95);
     assert!(req.get("max_tokens").is_none());
 
-    let disabled = OpenAiClient::new("k".to_string(), "deepseek-v4-flash".to_string())
+    let disabled = OpenAiClient::new("k".to_string(), "deepseek-flash".to_string())
         .with_provider_name("deepseek")
         .with_reasoning_effort("none");
     let off = disabled.build_chat_request(&[Message::user("fix it")], None, &[], None);
@@ -60,7 +60,7 @@ fn zhipu_client_sends_glm_reasoning_effort() {
 #[test]
 fn custom_openai_providers_do_not_inherit_native_controls_from_model_names() {
     for provider in ["relay", "company-models"] {
-        for model in ["deepseek-v4-flash", "glm-5.3", "gpt-5.4", "claude-opus-4-6"] {
+        for model in ["deepseek-flash", "glm-5.3", "gpt-5.4", "claude-opus-4-6"] {
             let client = OpenAiClient::new("k".into(), model.into())
                 .with_provider_name(provider)
                 .with_base_url("https://relay.example/v1".into())
@@ -85,7 +85,7 @@ fn deepseek_effort_requires_its_provider_or_exact_official_host() {
         ("https://api.deepseek.com.evil.example/v1", false),
         ("https://relay.example/api.deepseek.com", false),
     ] {
-        let client = OpenAiClient::new("k".into(), "deepseek-v4-flash".into())
+        let client = OpenAiClient::new("k".into(), "deepseek-flash".into())
             .with_provider_name("relay")
             .with_base_url(url.into())
             .with_reasoning_effort("max");
@@ -102,7 +102,7 @@ fn deepseek_effort_requires_its_provider_or_exact_official_host() {
             assert_eq!(request["top_p"], 0.95);
         }
     }
-    let generic = OpenAiClient::new("k".into(), "deepseek-v4-flash".into())
+    let generic = OpenAiClient::new("k".into(), "deepseek-flash".into())
         .with_base_url("https://relay.example/v1".into())
         .with_reasoning_effort("max");
     assert!(generic

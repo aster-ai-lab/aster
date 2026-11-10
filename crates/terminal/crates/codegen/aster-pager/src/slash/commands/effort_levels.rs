@@ -9,6 +9,7 @@ use crate::slash::command::ArgItem;
 
 /// Effort levels in the built-in fallback menu (weakest → strongest, matching the cli slider).
 /// `none`/`minimal` are still accepted by `ReasoningEffort::from_str` for power users.
+#[cfg(test)]
 pub(crate) const EFFORT_LEVELS: &[ReasoningEffort] = &[
     ReasoningEffort::Low,
     ReasoningEffort::Medium,
@@ -17,6 +18,7 @@ pub(crate) const EFFORT_LEVELS: &[ReasoningEffort] = &[
     ReasoningEffort::Max,
 ];
 
+#[cfg(test)]
 pub(crate) fn effort_description(level: ReasoningEffort) -> &'static str {
     match level {
         ReasoningEffort::None => "No reasoning",
@@ -32,6 +34,7 @@ pub(crate) fn effort_description(level: ReasoningEffort) -> &'static str {
 /// The built-in menu used when the server sends no `reasoningEfforts`.
 /// Reproduces BudgetProfile ids: labels are the lowercase level (via `Display`).
 /// The active row is matched by value against the session effort at render time, so `default` is left unset here.
+#[cfg(test)]
 pub(crate) fn legacy_effort_options() -> Vec<ReasoningEffortOption> {
     EFFORT_LEVELS
         .iter()
@@ -43,6 +46,25 @@ pub(crate) fn legacy_effort_options() -> Vec<ReasoningEffortOption> {
             default: false,
         })
         .collect()
+}
+
+pub(crate) fn reset_item(
+    insert_text: String,
+    active: bool,
+    default: Option<ReasoningEffort>,
+) -> ArgItem {
+    ArgItem {
+        display: format!(
+            "Default{}{}",
+            default
+                .map(|level| format!(" ({level})"))
+                .unwrap_or_default(),
+            if active { " (active)" } else { "" }
+        ),
+        match_text: format!("0 {insert_text}"),
+        insert_text,
+        description: "Use the model default".into(),
+    }
 }
 
 /// Build effort rows for autocomplete from a per-model option list. `match_text` gets an `a `/`b `/…` sort prefix

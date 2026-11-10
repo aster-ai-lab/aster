@@ -404,6 +404,7 @@ fn build_initialize_meta(flags: &ConnectFlags, target: CapabilityTarget) -> serd
         "clientType": client_type,
         "clientVersion": PAGER_CLIENT_VERSION,
         "aster/terminalMarkdown": true,
+        "aster/modelDiscovery": true,
     });
     if let Some(obj) = meta.as_object_mut() {
         if let Some(spo) = &flags.system_prompt_override {
@@ -1086,6 +1087,7 @@ mod tests {
         };
         let meta = build_initialize_meta(&flags, CapabilityTarget::Sidecar);
         assert_eq!(meta["aster/terminalMarkdown"], true);
+        assert_eq!(meta["aster/modelDiscovery"], true);
         assert_eq!(
             meta.get("rules").and_then(|v| v.as_str()),
             Some("Always reply in French.")

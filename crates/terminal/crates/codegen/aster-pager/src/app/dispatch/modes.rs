@@ -518,7 +518,7 @@ pub(super) fn permission_mode_toast(kind: crate::app::actions::PermissionModeKin
 pub(super) const YOLO_ON_UNDER_PLAN_TOAST: &str =
     "\u{26A0} YOLO ON: plan mode still blocks file edits until you exit plan mode";
 
-/// Banner and toast word. The prompt flag and the persisted id stay `yolo`.
+/// Display label; the persisted mode ID stays `yolo`.
 fn yolo_mode_label() -> &'static str {
     "YOLO"
 }

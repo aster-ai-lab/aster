@@ -27,13 +27,17 @@ use std::time::{Duration, Instant};
 
 use agent_client_protocol as acp;
 use async_trait::async_trait;
-use portable_pty::{CommandBuilder, PtySize, native_pty_system};
+use portable_pty::{native_pty_system, CommandBuilder, PtySize};
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
 const MODEL_ID: &str = "mock/gpt";
 
+#[path = "shipped_tui_e2e/reasoning.rs"]
+mod reasoning;
 #[path = "shipped_tui_e2e/retrieval.rs"]
 mod retrieval;
+#[path = "shipped_tui_e2e/session_controls.rs"]
+mod session_controls;
 const COMPACT_SUMMARY: &str = "COMPACT-SUMMARY-7f3a";
 const DURABLE_TOKEN: &str = "DURABLE-TOKEN-42";
 const GOAL_OBJECTIVE: &str = "准备好测试工作区 pty-goal-7b2e";
@@ -59,7 +63,6 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("btw", "side question without interrupting"),
     ("feedback", "Send feedback about the current session"),
     ("queue", "prompts queued behind"),
-    ("resume", "Resume a previous session"),
     ("rename", "Rename the current session"),
     ("transcript", "conversation transcript"),
     ("rewind", "Rewind to a previous turn"),
@@ -104,6 +107,7 @@ const FULLSCREEN_PALETTE: &[(&str, &str)] = &[
     ("settings", "Open the settings modal"),
     ("config", "Add and configure providers and models"),
     ("new", "Start a new session"),
+    ("resume", "Resume a previous session"),
     ("effort", "Set reasoning effort"),
     ("goal", "durable goal"),
     ("compact", "Compact conversation history"),
@@ -161,11 +165,19 @@ fn spawn_mock(write_path: &Path, late_path: &Path) -> (SocketAddr, Arc<Mutex<Moc
             let Ok(mut stream) = stream else { continue };
             let _ = stream.set_read_timeout(Some(Duration::from_secs(20)));
             if let Some(body) = read_http_body(&mut stream) {
+                if body.is_empty() {
+                    let catalog = serde_json::json!({"data":[{"id":"gpt","context_window":262144,"effort":{"supported_levels":["none","low","high"],"default_level":"high"}},{"id":"alt","context_window":131072,"effort":{"supported_levels":["low"],"default_level":"low"}}]});
+                    let _ = write_http(&mut stream, &catalog.to_string());
+                    continue;
+                }
                 let response = {
                     let mut guard = shared.lock().expect("mock");
                     guard.bodies.push(body.clone());
                     decide(&body, &mut guard)
                 };
+                if session_controls::hold_provider(&body, &mut stream) {
+                    continue;
+                }
                 let _ = write_http(&mut stream, &response);
             }
         }
@@ -392,7 +404,10 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         let args = serde_json::json!({ "path": "." }).to_string();
         return reply_tool("ls", &args, state, streaming);
     }
-    reply_text("ok", streaming)
+    if raw.contains("CONTROL-NEXT") {
+        return reply_text("CONTROL-NEXT-DONE", streaming);
+    }
+    reasoning::response(&parsed, streaming).unwrap_or_else(|| reply_text("ok", streaming))
 }
 
 fn has_tools(body: &serde_json::Value) -> bool {
@@ -660,6 +675,7 @@ providers "mock" {{
   base_url = "{base_url}"
   api_key = "test"
   models "gpt" {{
+    reasoning_control = {{ mode = "effort", levels = ["none", "low", "high"] }}
   }}
   models "alt" {{
   }}
@@ -1947,6 +1963,7 @@ impl PtySession {
         let deadline = Instant::now() + timeout;
         self.focus_composer();
         self.type_text("/session-info");
+        self.pump(Duration::from_millis(100));
         self.enter();
         let mut last = String::new();
         while Instant::now() < deadline {
@@ -1958,6 +1975,11 @@ impl PtySession {
             if last.contains("No active session") {
                 self.focus_composer();
                 self.type_text("/session-info");
+                self.enter();
+            } else if last
+                .lines()
+                .any(|line| line.trim_start().starts_with("→ /session-info"))
+            {
                 self.enter();
             }
         }
@@ -2518,7 +2540,7 @@ fn exercise_marker_navigation(
     pty.enter();
     let allow_expand = pty.wait_for("Yes, run on host", Duration::from_secs(20));
     assert!(
-        allow_expand.contains("Allow Execute?") && allow_expand.contains("Ctrl+o:yolo"),
+        allow_expand.contains("Allow Execute?") && allow_expand.contains("Ctrl+o:YOLO"),
         "execution approval must own the keyboard\n{allow_expand}"
     );
     assert!(
@@ -2552,11 +2574,9 @@ fn exercise_marker_navigation(
         1,
         "one scoped request must settle the original call"
     );
-    assert!(
-        requests
-            .first()
-            .is_some_and(|request| !request["rpc_id"].is_null())
-    );
+    assert!(requests
+        .first()
+        .is_some_and(|request| !request["rpc_id"].is_null()));
     let receipt = log_text(cwd)
         .lines()
         .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
@@ -3703,7 +3723,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     let yolo_frame = pty.pump(Duration::from_millis(400));
     assert!(
-        yolo_frame.contains("yolo"),
+        yolo_frame.contains("YOLO"),
         "info line did not show the yolo flag\n{yolo_frame}"
     );
     assert!(
@@ -3714,7 +3734,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         !yolo_frame.contains("always-approve"),
         "info line still shows always-approve\n{yolo_frame}"
     );
-    oracle(PTY_TEST, "yolo-flag", "yolo");
+    oracle(PTY_TEST, "yolo-flag", "YOLO");
     // Allow once already wrote this path and left the completion gate on
     // screen. Remove the file so this turn has to create it again.
     std::fs::remove_file(&write_path).expect("remove allow-once side effect");

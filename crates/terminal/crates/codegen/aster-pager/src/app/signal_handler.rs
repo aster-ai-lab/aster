@@ -225,7 +225,7 @@ fn flush_telemetry_and_exit(exit_code: i32) -> ! {
     // Flush the --debug firehose on TUI signal exit (this path bypasses main's flush).
     aster_telemetry::debug_log::flush();
     if let Some(path) = aster_telemetry::span_profile::finalize() {
-        eprintln!("grok: span profile written to {}", path.display());
+        eprintln!("aster: span profile written to {}", path.display());
     }
     std::process::exit(exit_code);
 }

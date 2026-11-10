@@ -35,6 +35,7 @@ pub struct AnthropicClient {
     pub(crate) temperature: Option<f32>,
     pub(crate) thinking_budget: Option<usize>,
     pub(crate) reasoning_effort: Option<String>,
+    pub(crate) reasoning_capabilities: Option<crate::config::ReasoningCapabilities>,
     pub(crate) http: Arc<dyn HttpClient>,
     pub(crate) retry_config: RetryConfig,
     headers: std::collections::HashMap<String, String>,
@@ -45,6 +46,10 @@ impl AnthropicClient {
         Self {
             provider_name: "anthropic".to_string(),
             api_key: SecretString::new(api_key),
+            reasoning_capabilities: crate::config::documented_reasoning(
+                crate::config::ProviderProtocol::Anthropic,
+                &model,
+            ),
             model,
             base_url: "https://api.anthropic.com".to_string(),
             max_tokens: DEFAULT_MAX_TOKENS,
@@ -60,6 +65,17 @@ impl AnthropicClient {
 
     pub fn with_base_url(mut self, base_url: String) -> Self {
         self.base_url = normalize_base_url(&base_url);
+        if self
+            .reasoning_capabilities
+            .as_ref()
+            .is_none_or(|caps| caps.source() == "documented")
+        {
+            self.reasoning_capabilities = crate::config::documented_at(
+                crate::config::ProviderProtocol::Anthropic,
+                &self.model,
+                Some(&self.base_url),
+            );
+        }
         self
     }
 
@@ -81,6 +97,14 @@ impl AnthropicClient {
 
     pub fn with_thinking_budget(mut self, budget: usize) -> Self {
         self.thinking_budget = Some(budget);
+        self
+    }
+
+    pub(crate) fn with_reasoning_capabilities(
+        mut self,
+        capabilities: Option<crate::config::ReasoningCapabilities>,
+    ) -> Self {
+        self.reasoning_capabilities = capabilities;
         self
     }
 
@@ -135,18 +159,11 @@ impl AnthropicClient {
     }
 
     fn request_max_tokens(&self) -> usize {
-        let effort = if glm_reasoning_model(&self.model) {
-            Some(
-                self.reasoning_effort
-                    .as_deref()
-                    .and_then(super::effort::glm_reasoning_effort)
-                    .unwrap_or_else(|| glm_budget_effort(self.thinking_budget)),
-            )
-        } else {
-            self.reasoning_effort
-                .as_deref()
-                .and_then(super::effort::anthropic_effort)
-        };
+        let effort = self.reasoning_effort.as_deref().filter(|token| {
+            self.reasoning_capabilities
+                .as_ref()
+                .is_some_and(|caps| caps.supports(token))
+        });
         effort.map_or(self.max_tokens, |level| {
             super::effort::resolved_max_tokens(
                 self.max_tokens_explicit.then_some(self.max_tokens),
@@ -234,30 +251,33 @@ impl AnthropicClient {
             request["temperature"] = serde_json::json!(temp);
         }
 
-        // GLM-5.2/5.3 always reason. Leaving the field off selects the server
-        // default `max`, and `thinking.type=disabled` is rejected. The latency
-        // knob is `reasoning_effort`, not a token budget and not a step cap.
-        if glm_reasoning_model(&self.model) {
-            let level = self
-                .reasoning_effort
-                .as_deref()
-                .and_then(super::effort::glm_reasoning_effort)
-                .unwrap_or_else(|| glm_budget_effort(self.thinking_budget));
-            request["thinking"] = serde_json::json!({ "type": "enabled" });
-            request["reasoning_effort"] = serde_json::json!(level);
+        if let Some(level) = self.reasoning_effort.as_deref().filter(|token| {
+            self.reasoning_capabilities
+                .as_ref()
+                .is_some_and(|caps| caps.supports(token))
+        }) {
+            match self.reasoning_capabilities.as_ref().map(|caps| caps.mode()) {
+                Some(crate::config::ReasoningMode::Effort) => {
+                    request["thinking"] = serde_json::json!({ "type": if level == "none" { "disabled" } else { "enabled" } });
+                    request["reasoning_effort"] = serde_json::json!(level);
+                }
+                Some(crate::config::ReasoningMode::OutputConfig) => {
+                    request["output_config"] = serde_json::json!({ "effort": level });
+                }
+                Some(crate::config::ReasoningMode::Adaptive) => {
+                    request["thinking"] = serde_json::json!({ "type": "adaptive" });
+                    request["output_config"] = serde_json::json!({ "effort": level });
+                }
+                _ => {}
+            }
             request["temperature"] = serde_json::json!(1.0);
-        } else if let Some(level) = self
-            .reasoning_effort
-            .as_deref()
-            .and_then(super::effort::anthropic_effort)
+        } else if let Some(budget) = fitted_thinking_budget(self.max_tokens, self.thinking_budget)
+            .filter(|_| {
+                self.reasoning_capabilities
+                    .as_ref()
+                    .is_some_and(|caps| caps.mode() == crate::config::ReasoningMode::Budget)
+            })
         {
-            // Current Claude models take `output_config.effort`. A fixed
-            // `budget_tokens` is omitted here: it either does not fit the
-            // output window or it spends the whole window on thinking.
-            request["thinking"] = serde_json::json!({ "type": "adaptive" });
-            request["output_config"] = serde_json::json!({ "effort": level });
-            request["temperature"] = serde_json::json!(1.0);
-        } else if let Some(budget) = fitted_thinking_budget(self.max_tokens, self.thinking_budget) {
             // A budget that does not leave room for the answer is omitted.
             // Raising max_tokens to fit it makes the model think for the whole
             // effort budget before any visible text.
@@ -286,23 +306,7 @@ pub(crate) fn fitted_thinking_budget(max_tokens: usize, budget: Option<usize>) -
 }
 
 fn glm_reasoning_model(model: &str) -> bool {
-    let id = model.rsplit(['/', ':']).next().unwrap_or(model);
-    let id = id.trim().to_ascii_lowercase();
-    id.starts_with("glm-5.2")
-        || id.starts_with("glm-5.3")
-        || id.starts_with("glm-5-2")
-        || id.starts_with("glm-5-3")
-}
-
-/// Map an aster thinking budget onto GLM-5.2/5.3 `low` / `high` / `max`.
-///
-/// An unset budget becomes `low`. The server default is `max`.
-fn glm_budget_effort(budget: Option<usize>) -> &'static str {
-    match budget.unwrap_or(0) {
-        0..=2_048 => "low",
-        2_049..=16_384 => "high",
-        _ => "max",
-    }
+    super::effort::is_glm_model(model)
 }
 
 impl AnthropicClient {
@@ -330,6 +334,11 @@ impl AnthropicClient {
 
     /// Execute a fully-built (non-streaming) request body.
     async fn send_request(&self, request_body: serde_json::Value) -> Result<LlmResponse> {
+        super::effort::validate_selection(
+            crate::config::ProviderProtocol::Anthropic,
+            self.reasoning_capabilities.as_ref(),
+            self.reasoning_effort.as_deref(),
+        )?;
         {
             let request_started_at = Instant::now();
             let url = format!("{}/v1/messages", self.base_url);
@@ -531,6 +540,11 @@ impl AnthropicClient {
         mut request_body: serde_json::Value,
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
+        super::effort::validate_selection(
+            crate::config::ProviderProtocol::Anthropic,
+            self.reasoning_capabilities.as_ref(),
+            self.reasoning_effort.as_deref(),
+        )?;
         {
             let request_started_at = Instant::now();
             request_body["stream"] = serde_json::json!(true);
@@ -1011,6 +1025,10 @@ mod tests {
         AnthropicClient::new("test-key".to_string(), "claude-opus-4-6".to_string())
     }
 
+    fn budget_client() -> AnthropicClient {
+        AnthropicClient::new("test-key".into(), "claude-sonnet-4-20250514".into())
+    }
+
     #[test]
     fn test_build_request_basic() {
         let client = make_client();
@@ -1024,7 +1042,7 @@ mod tests {
 
     #[test]
     fn test_build_request_with_thinking_budget() {
-        let client = make_client()
+        let client = budget_client()
             .with_max_tokens(16_000)
             .with_thinking_budget(10_000);
         let messages = vec![Message::user("Think carefully.")];
@@ -1059,8 +1077,8 @@ mod tests {
 
     #[test]
     fn glm_effort_token_is_the_provider_parameter() {
-        let mut client = make_client().with_reasoning_effort("xhigh");
-        client.model = "glm-5.3".to_string();
+        let client =
+            AnthropicClient::new("test-key".into(), "glm-5.3".into()).with_reasoning_effort("max");
         let req = client.build_request(&[Message::user("fix the bug")], None, &[]);
 
         assert_eq!(req["reasoning_effort"], "max");
@@ -1072,7 +1090,7 @@ mod tests {
     fn oversized_thinking_budget_is_omitted_on_the_default_window() {
         // A legacy 16384 thinking budget does not fit the 8192 window. Sending
         // it would be an invalid Anthropic request and a long hidden think.
-        let client = make_client().with_thinking_budget(16_384);
+        let client = budget_client().with_thinking_budget(16_384);
         let req = client.build_request(&[Message::user("fix the bug")], None, &[]);
 
         assert_eq!(req["max_tokens"], DEFAULT_MAX_TOKENS);
@@ -1080,39 +1098,22 @@ mod tests {
     }
 
     #[test]
-    fn glm_default_effort_uses_reasoning_effort_high_without_a_token_budget() {
-        let mut client = make_client().with_thinking_budget(16_384);
-        client.model = "glm-5.3-flash".to_string();
-        let req = client.build_request(&[Message::user("fix the bug")], None, &[]);
-
-        assert_eq!(req["thinking"]["type"], "enabled");
-        assert!(req["thinking"].get("budget_tokens").is_none());
-        assert_eq!(req["reasoning_effort"], "high");
-        assert!(req["max_tokens"].as_u64().unwrap() >= 65_536);
-    }
-
-    #[test]
-    fn glm_effort_tracks_the_aster_budget() {
-        let mut low = make_client().with_thinking_budget(2_048);
-        low.model = "glm-5.3".to_string();
-        let low_req = low.build_request(&[Message::user("hi")], None, &[]);
-        assert_eq!(low_req["reasoning_effort"], "low");
-        assert!(low_req["max_tokens"].as_u64().unwrap() >= 65_536);
-
-        let mut deep = make_client().with_thinking_budget(65_536);
-        deep.model = "glm-5.2".to_string();
-        let deep_req = deep.build_request(&[Message::user("hi")], None, &[]);
-        assert_eq!(deep_req["reasoning_effort"], "max");
-
-        let mut unset = make_client();
-        unset.model = "glm-5.3-flashx".to_string();
-        let unset_req = unset.build_request(&[Message::user("hi")], None, &[]);
-        assert_eq!(unset_req["reasoning_effort"], "low");
+    fn glm_defaults_do_not_derive_from_host_budgets() {
+        for model in ["glm-5.3", "glm-5.3-flash", "glm-5.3-flashx"] {
+            for budget in [None, Some(2048), Some(65536)] {
+                let mut client = AnthropicClient::new("test-key".into(), model.into());
+                client.thinking_budget = budget;
+                let request = client.build_request(&[Message::user("hi")], None, &[]);
+                assert!(request.get("thinking").is_none(), "{request}");
+                assert!(request.get("reasoning_effort").is_none(), "{request}");
+                assert_eq!(request["max_tokens"], DEFAULT_MAX_TOKENS);
+            }
+        }
     }
 
     #[test]
     fn thinking_budget_that_fits_stays_under_the_answer_reserve() {
-        let client = make_client().with_thinking_budget(2_048);
+        let client = budget_client().with_thinking_budget(2_048);
         let req = client.build_request(&[Message::user("fix the bug")], None, &[]);
 
         assert_eq!(req["max_tokens"], DEFAULT_MAX_TOKENS);
@@ -1151,7 +1152,7 @@ mod tests {
     #[test]
     fn test_build_request_thinking_overrides_temperature() {
         // Even if temperature was set, thinking forces it to 1.0
-        let client = make_client()
+        let client = budget_client()
             .with_temperature(0.5)
             .with_thinking_budget(5_000);
         let messages = vec![Message::user("Test")];
@@ -1206,7 +1207,7 @@ mod tests {
     #[test]
     fn test_build_request_thinking_budget_sets_max_tokens() {
         // max_tokens is still respected when thinking is enabled
-        let client = make_client()
+        let client = budget_client()
             .with_max_tokens(16_000)
             .with_thinking_budget(8_000);
         let messages = vec![Message::user("Test")];
@@ -1236,7 +1237,7 @@ mod tests {
             response_format: None,
             validation_schema: None,
         };
-        let claude = AnthropicClient::new("k".to_string(), "claude-sonnet-4".to_string())
+        let claude = AnthropicClient::new("k".to_string(), "claude-sonnet-4-6".to_string())
             .with_reasoning_effort("high");
         let mut req = claude.build_request(&[Message::user("x")], None, &[]);
         assert_eq!(req["thinking"]["type"], "adaptive");
@@ -1255,7 +1256,8 @@ mod tests {
         let glm = AnthropicClient::new("k".to_string(), "glm-5.3".to_string());
         let mut req = glm.build_request(&[Message::user("x")], None, &[]);
         glm.apply_directive(&mut req, &directive);
-        assert_eq!(req["thinking"]["type"], "enabled");
+        assert_ne!(req["thinking"]["type"], "disabled");
+        assert!(req.get("reasoning_effort").is_none());
     }
 
     #[test]

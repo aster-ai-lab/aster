@@ -640,6 +640,7 @@ fn model_config(id: &str, name: &str) -> ModelConfig {
         session_id_header: None,
         attachment: false,
         reasoning: false,
+        reasoning_control: Some(aster_core::config::ReasoningCapabilities::preset()),
         tool_call: true,
         temperature: true,
         release_date: None,

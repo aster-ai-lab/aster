@@ -15,6 +15,8 @@ use tokio::task::JoinHandle;
 use crate::config::LaunchConfig;
 
 mod attempt;
+#[cfg(test)]
+mod cancel_http_tests;
 mod client_fs;
 mod commands;
 mod emit;
@@ -25,6 +27,9 @@ mod host_methods;
 mod inspection_commands;
 mod local_embedding;
 mod memory_management;
+mod model_discovery;
+#[cfg(test)]
+mod model_discovery_tests;
 mod models;
 #[cfg(test)]
 mod native_send_now_tests;
@@ -49,7 +54,7 @@ use extensions::{parse_interject_params, recorded_session_homes, remove_recorded
 use host_methods::{session_tooling_projection, HostMethod};
 use models::{effort_guideline, effort_limits, EffortLimits};
 #[cfg(test)]
-use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
+use models::{effort_limits_from_meta, reasoning_effort_token};
 #[cfg(test)]
 use permission_ask::tool_permission_request;
 use permission_ask::{
@@ -250,6 +255,7 @@ struct LiveSession {
     session: Arc<AgentSession>,
     workspace: PathBuf,
     model_id: String,
+    effort: Option<EffortLimits>,
     /// Desired next-run permission state, shared with temporary admission guards.
     permissions: Arc<std::sync::Mutex<SessionPermissions>>,
     /// Same deny list `open_local_asset` reads while a turn is in flight.
@@ -553,6 +559,8 @@ pub struct AsterCodeAgent {
     model_id: Mutex<String>,
     /// Last `/effort` selection. Applied on every core session open.
     effort: Mutex<Option<EffortLimits>>,
+    detected_models: std::sync::RwLock<HashMap<String, model_discovery::DetectedModel>>,
+    client_model_discovery: std::cell::Cell<bool>,
     /// Durable `/goal` objectives keyed by ACP session id.
     goals: Mutex<HashMap<String, crate::goal::DurableGoal>>,
     /// Monotonic turn generation per session. `cancel` records the generation
@@ -625,7 +633,7 @@ impl AsterCodeAgent {
             launch
                 .config
                 .reasoning_effort
-                .map_or("high", |effort| effort.as_str()),
+                .map_or("default", |effort| effort.as_str()),
         );
         let managed_memory = Arc::new(aster_core::durable_memory_vec::LazyFileMemoryStore::new(
             session_memory_dir(&launch.workspace, &launch.config),
@@ -654,6 +662,8 @@ impl AsterCodeAgent {
             workspace_admission: Default::default(),
             client_reads_files: std::cell::Cell::new(false),
             client_terminal_markdown: std::cell::Cell::new(false),
+            client_model_discovery: std::cell::Cell::new(false),
+            detected_models: std::sync::RwLock::new(HashMap::new()),
             client_rules: RefCell::new(None),
             client_permissions: RefCell::new(ClientPermissionRules::default()),
             first_run_config: false,
@@ -662,9 +672,18 @@ impl AsterCodeAgent {
 
     /// Set the host's initial reasoning effort; later session model selections still win.
     pub fn with_default_reasoning_effort(mut self, token: &str) -> anyhow::Result<Self> {
-        let effort = effort_limits(token)
-            .ok_or_else(|| anyhow::anyhow!("unsupported reasoning effort: {token}"))?;
-        self.effort = Mutex::new(Some(effort));
+        let effort = if token.eq_ignore_ascii_case("default") {
+            None
+        } else {
+            Some(
+                effort_limits(token)
+                    .ok_or_else(|| anyhow::anyhow!("unsupported reasoning effort: {token}"))?,
+            )
+        };
+        self.effort = Mutex::new(effort);
+        self.launch.config.reasoning_effort = Some(aster_core::config::ReasoningEffort::parse(
+            effort.map_or("default", |effort| effort.token),
+        )?);
         Ok(self)
     }
 
@@ -703,6 +722,9 @@ impl AsterCodeAgent {
 
     /// Run every prompt unattended. Only the `--unattended` launch calls this.
     pub fn with_unattended(mut self, unattended: crate::unattended::Unattended) -> Self {
+        if self.launch.config.reasoning_effort.is_none() {
+            self.effort = Mutex::new(effort_limits(unattended.reasoning_effort));
+        }
         self.unattended = Some(unattended);
         self
     }
@@ -999,10 +1021,6 @@ struct ChildProgress {
     disposition: Option<String>,
     exit_code: Option<i64>,
 }
-
-/// Host budget levels offered when the provider has no native effort parameter.
-/// `ultracode` stays off the menu: it is not a `ReasoningEffort` variant.
-pub(crate) const HOST_EFFORT_LEVELS: &[&str] = &["low", "medium", "high", "xhigh", "max"];
 
 /// Always-on turn boundary. The skill command is an example, not a matcher.
 const SESSION_OUTCOME_BOUNDARY: &str = "\

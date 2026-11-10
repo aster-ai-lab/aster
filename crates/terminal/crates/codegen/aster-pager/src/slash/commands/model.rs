@@ -62,6 +62,15 @@ impl SlashCommand for ModelCommand {
             return CommandResult::Action(Action::SetDefaultModel(id));
         }
 
+        if let Some(prefix) = trimmed.strip_suffix(" default") {
+            if let Some(id) = ctx.models.resolve_by_name_or_id(prefix) {
+                return CommandResult::Action(Action::SwitchModel {
+                    model_id: id,
+                    effort: None,
+                });
+            }
+        }
+
         // Trailing effort on a reasoning model is a session switch. The token keeps its spaces.
         if let Some((id, token)) = split_model_effort(ctx.models, trimmed) {
             return match ctx.models.resolve_effort_for_model(&id, token) {
@@ -186,12 +195,18 @@ fn build_effort_items(models: &ModelState, model_id: &acp::ModelId, prefix: &str
     }
     let is_current_model = models.current.as_ref() == Some(model_id);
     let options = models.reasoning_effort_options_for(model_id);
-    build_effort_arg_items(
+    let mut items = vec![crate::slash::commands::effort_levels::reset_item(
+        format!("{prefix} default"),
+        is_current_model && models.reasoning_effort.is_none(),
+        models.default_effort_for(model_id),
+    )];
+    items.extend(build_effort_arg_items(
         &options,
         models.reasoning_effort,
         is_current_model,
         |option| effort_insert_text(prefix, option),
-    )
+    ));
+    items
 }
 
 fn effort_insert_text(prefix: &str, option: &ReasoningEffortOption) -> String {
@@ -278,6 +293,10 @@ mod tests {
             "supportsReasoningEffort".into(),
             serde_json::Value::Bool(true),
         );
+        meta.insert("reasoningEfforts".into(), serde_json::json!([
+            {"value":"low","label":"low"},{"value":"medium","label":"medium"},
+            {"value":"high","label":"high"},{"value":"xhigh","label":"xhigh"},{"value":"max","label":"max"}
+        ]));
         let info = acp::ModelInfo::new(id.clone(), name.to_string())
             .meta(serde_json::Value::Object(meta).as_object().cloned());
         (id, info)
@@ -400,10 +419,11 @@ mod tests {
         // The args query has a trailing space, so this is the effort phase
         // Items come out ordered low → max (cli BudgetProfile slider order) per EFFORT_LEVELS
         let items = cmd.suggest_args(&ctx, "Reasoning X ").unwrap();
-        assert_eq!(items.len(), 5);
-        let [a, b, c, d, e] = items.as_slice() else {
-            panic!("expected 5 items: {items:?}");
+        assert_eq!(items.len(), 6);
+        let [reset, a, b, c, d, e] = items.as_slice() else {
+            panic!("expected reset and five native items: {items:?}");
         };
+        assert_eq!(reset.insert_text, "Reasoning X default");
         assert_eq!(a.insert_text, "Reasoning X low");
         assert_eq!(b.insert_text, "Reasoning X medium");
         assert_eq!(c.insert_text, "Reasoning X high");
@@ -421,7 +441,7 @@ mod tests {
         let mut state = ModelState::default();
         let id = acp::ModelId::new(Arc::from("reasoning-x"));
         let info = acp::ModelInfo::new(id.clone(), "Reasoning X").meta(
-            serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high" })
+            serde_json::json!({ "supportsReasoningEffort": true, "reasoningEffort": "high", "reasoningEfforts": [{ "value":"low", "label":"low" },{ "value":"medium", "label":"medium" },{ "value":"high", "label":"high" },{ "value":"xhigh", "label":"xhigh" },{ "value":"max", "label":"max" }] })
                 .as_object()
                 .cloned(),
         );
@@ -441,10 +461,10 @@ mod tests {
             current_title: None,
         };
         // The preselection must name a row `suggest_args` actually builds, or the consumers fall back to row 0
-        // EFFORT_LEVELS order is low → max, so `high` sits at index 2
+        // Reset precedes the native levels, so high sits at index 3.
         let high_row = cmd
             .suggest_args(&ctx, "Reasoning X ")
-            .and_then(|items| items.get(2).map(|item| item.insert_text.clone()));
+            .and_then(|items| items.get(3).map(|item| item.insert_text.clone()));
         assert_eq!(Some("Reasoning X high".to_owned()), high_row);
         assert_eq!(high_row, cmd.preselected_arg(&ctx, "Reasoning X "));
         assert_eq!(None, cmd.preselected_arg(&ctx, "Reasoning X h"));
@@ -472,7 +492,7 @@ mod tests {
         };
         // Still in effort phase; the matcher upstream narrows to high and xhigh
         let items = cmd.suggest_args(&ctx, "Reasoning X h").unwrap();
-        assert_eq!(items.len(), 5);
+        assert_eq!(items.len(), 6);
     }
 
     #[test]

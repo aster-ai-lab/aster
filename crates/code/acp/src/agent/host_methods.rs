@@ -615,6 +615,7 @@ impl AsterCodeAgent {
             source,
             workspace,
             model_id,
+            effort,
             host,
             components,
             mcp_servers,
@@ -634,6 +635,7 @@ impl AsterCodeAgent {
                 Arc::clone(&live.session),
                 live.workspace.clone(),
                 live.model_id.clone(),
+                live.effort,
                 live.host.clone(),
                 live.components.clone(),
                 live.mcp_servers.clone(),
@@ -647,7 +649,6 @@ impl AsterCodeAgent {
         self.ensure_core_agent().await?;
         let store_dir =
             Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
-        let effort = *self.effort.lock().await;
         let setup = SessionSetup {
             workspace: workspace.clone(),
             model_id: &model_id,
@@ -664,6 +665,8 @@ impl AsterCodeAgent {
         }
         options = crate::harness_assemble::apply(options, &components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
+        options =
+            self.apply_detected_model(&model_id, &request.request.target_session_id, options)?;
         // Core requires an explicit, identical policy acceptance for forks.
         // Read the admitted source policy rather than reconstructing it from
         // optional load metadata, which a resumed TUI session need not send.
@@ -690,6 +693,7 @@ impl AsterCodeAgent {
                 session: Arc::clone(&child),
                 workspace,
                 model_id,
+                effort,
                 permissions: Arc::new(std::sync::Mutex::new(SessionPermissions::default())),
                 asset_denies,
                 host,

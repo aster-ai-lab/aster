@@ -1145,7 +1145,8 @@ pub(super) fn dispatch_send_prompt_submission(
             .recognized_token_ranges(&text, &agent.session.models);
 
         let immediate_server_send =
-            immediate_server_send_eligible(agent, leader_mode) && agent.prompt.images.is_empty();
+            immediate_server_send_eligible(agent, leader_mode, is_aster_from_app)
+                && agent.prompt.images.is_empty();
         tracing::debug!(
             target: "qtrace",
             pid = std::process::id(),
@@ -1168,7 +1169,7 @@ pub(super) fn dispatch_send_prompt_submission(
 
         // Images can't use immediate server-send; a park on an empty held wait still does a Send Now
         if !immediate_server_send
-            && immediate_server_send_eligible(agent, leader_mode)
+            && immediate_server_send_eligible(agent, leader_mode, is_aster_from_app)
             && !agent.prompt.images.is_empty()
             && parked_sendable_wait
             && !hold_behind_existing_queue
@@ -1321,6 +1322,7 @@ pub(super) fn dispatch_send_bash_command(app: &mut AppView, command: String) -> 
         return vec![];
     };
     let leader_mode = app.leader_mode;
+    let is_aster = app.is_aster;
     let Some(agent) = app.agents.get_mut(&id) else {
         return vec![];
     };
@@ -1336,7 +1338,7 @@ pub(super) fn dispatch_send_bash_command(app: &mut AppView, command: String) -> 
     // Server-authoritative immediate send for bash while running
     // A bash command typed while a turn is RUNNING is sent to the agent immediately (it's already a `session/prompt` with bash meta)
     // It is echoed into the shared queue with `kind="bash"`
-    let bash_immediate = immediate_server_send_eligible(agent, leader_mode);
+    let bash_immediate = immediate_server_send_eligible(agent, leader_mode, is_aster);
     tracing::debug!(
         target: "qtrace",
         pid = std::process::id(),
@@ -1487,6 +1489,12 @@ pub(super) fn handle_prompt_response(
                 // Server-initiated turn (auto-wake): adopt
                 agent.session.current_prompt_id = Some(response_pid.to_string());
             } else {
+                // A delivered failure must keep its user block and must never replay automatically.
+                if let Err(error) = &result
+                    && agent.send_now_painted_blocks.remove(response_pid).is_some()
+                {
+                    agent.show_toast(&format!("Send now failed: {error}"));
+                }
                 // Not the running turn: this response (Ok rewound/stale, or Err from a queued/removed prompt) must not touch the active turn
                 // Restore the adoption we popped above so a genuinely-draining next prompt can still be adopted by the real running turn's PromptResponse
                 // Unless it is the stashed turn's own response: that spent the turn's only exit, so consume (discard), never restore

@@ -10,8 +10,8 @@ Aster includes six built-in themes, plus an `auto` option that follows your syst
 
 | Theme | Config Names | Description | Truecolor Required |
 |-------|-------------|-------------|--------------------|
-| **AsterNight** | `groknight`, `grok-night`, `dark` | Neutral dark base with a magenta accent. Default theme. Survives quantization cleanly on 256-color and 16-color terminals. | No |
-| **AsterDay** | `grokday`, `grok-day`, `light`, `day` | Light theme for bright terminal backgrounds. | No |
+| **Aster Night** | `aster-night`, `dark` | Neutral graphite base with a silver accent. Default theme. Survives quantization cleanly on 256-color and 16-color terminals. | No |
+| **Aster Day** | `aster-day`, `light`, `day` | Light theme for bright terminal backgrounds. | No |
 | **TokyoNight** | `tokyonight`, `tokyo-night`, `tokyo` | Dark, blue-tinted backgrounds from the Tokyo Night palette. Loses its character when quantized. | Yes |
 | **RosePineMoon** | `rosepine`, `rose-pine`, `rosepine-moon`, `rose-pine-moon` | Muted dark palette with mauve accents, from the Rosé Pine family. | Yes |
 | **OscuraMidnight** | `oscura`, `oscura-midnight` | Deep dark base with purple accents. | Yes |
@@ -32,7 +32,7 @@ theme = "terminal"
 
 Contrast is only as good as your terminal profile: a profile with a very dark bright-black slot will render faint dividers, since Aster derives everything from your palette rather than hard-coding colors.
 
-The theme is rolling out gradually. Until the rollout reaches your account it is hidden from `/theme` and `/settings`, its names do not parse, and a configured `theme = "terminal"` falls back to the default theme. Set `GROK_TERMINAL_THEME=1` (or `[features] terminal_theme = true` in `config.toml`) to enable it locally ahead of the rollout.
+The theme is rolling out gradually. Until the rollout reaches your account it is hidden from `/theme` and `/settings`, its names do not parse, and a configured `theme = "terminal"` falls back to the default theme. Set `[features] terminal_theme = true` in `config.toml` to enable it locally ahead of the rollout.
 
 ### Minimal Mode Has No Theming
 
@@ -76,13 +76,13 @@ Set `theme = "auto"` to have Aster Code follow your operating system's light/dar
 theme = "auto"
 ```
 
-By default, dark mode maps to **AsterNight** and light mode maps to **AsterDay**. Override either mapping with `auto_dark_theme` and `auto_light_theme`:
+By default, dark mode maps to **Aster Night** and light mode maps to **Aster Day**. Override either mapping with `auto_dark_theme` and `auto_light_theme`:
 
 ```toml
 [ui]
 theme = "auto"
 auto_dark_theme = "tokyonight"
-auto_light_theme = "grokday"
+auto_light_theme = "aster-day"
 ```
 
 `theme = "system"` is an alias for `theme = "auto"`.
@@ -94,11 +94,11 @@ auto_light_theme = "grokday"
 | **macOS** | Reads `AppleInterfaceStyle` system preference |
 | **Linux** | Queries XDG Desktop Portal (`org.freedesktop.appearance.color-scheme`) |
 | **Windows** | Reads the system personalization registry |
-| **SSH / tmux / headless** | `GROK_APPEARANCE` or `LC_GROK_APPEARANCE` (`dark`/`light`), then `COLORFGBG`, then a startup OSC 11 background query. `aster wrap ssh …` stamps `LC_GROK_APPEARANCE` from the local OS theme so it survives SSH into the login shell. New tmux sessions inherit it only if the tmux server/session was created with that env (or `update-environment` includes it). OSC 11 is DCS-wrapped for tmux ≥ 3.3 when tmux is the immediate terminal (not an editor `:terminal`); reaching the outer emulator also needs `allow-passthrough`, and replies are best-effort. |
+| **SSH / tmux / headless** | The appearance forwarded by `aster wrap ssh …`, then `COLORFGBG`, then a startup OSC 11 background query. New tmux sessions inherit the forwarded appearance when the server or session was created with that environment. OSC 11 is DCS-wrapped for tmux ≥ 3.3 when tmux is the immediate terminal (not an editor `:terminal`); reaching the outer emulator also needs `allow-passthrough`, and replies are best-effort. |
 
 Once running, Aster polls desktop APIs and env hints every 5 seconds. Toggling your OS between light and dark mode on a local desktop takes effect within seconds without restarting. Over SSH the wrap-stamped env is fixed for that hop.
 
-You can also set `GROK_THEME` (or `LC_GROK_THEME`) to force a theme or `auto` without editing `config.toml`.
+Use `/theme <name>` to select a theme without editing `config.toml` by hand.
 
 ### Via the Settings Pane
 
@@ -165,8 +165,8 @@ Use compact mode on small screens to maximize content area.
 
 Aster bundles three `.tmTheme` files for code-block syntax highlighting and selects one based on the active theme:
 
-- `grok-night.tmTheme` -- AsterNight, RosePineMoon, and OscuraMidnight
-- `grok-day.tmTheme` -- AsterDay
+- The dark syntax palette for Aster Night, Rose Pine Moon, and Oscura Midnight
+- The light syntax palette for Aster Day
 - `tokyo-night.tmTheme` -- TokyoNight
 
 Aster selects the matching file automatically when you switch themes. The `.tmTheme` files are built into the binary, so you cannot replace them with your own.

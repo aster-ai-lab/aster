@@ -5,8 +5,6 @@ use aster_shell::sampling::types::{
 };
 use indexmap::IndexMap;
 
-use crate::slash::commands::effort_levels::legacy_effort_options;
-
 fn canonical_effort_if_offered(
     options: &[ReasoningEffortOption],
     token: &str,
@@ -76,6 +74,42 @@ impl ModelState {
         }
     }
 
+    /// A reported default stays separate from an explicit selection.
+    pub fn default_effort_for(&self, id: &acp::ModelId) -> Option<ReasoningEffort> {
+        let token = self
+            .available
+            .get(id)?
+            .meta
+            .as_ref()?
+            .get("defaultReasoningEffort")?
+            .as_str()?;
+        let effort = parse_canonical_effort_token(token)?;
+        self.reasoning_effort_options_for(id)
+            .iter()
+            .any(|option| option.value == effort)
+            .then_some(effort)
+    }
+
+    /// Resolve the display value without turning a default into an override.
+    pub fn effective_reasoning_effort(&self) -> Option<ReasoningEffort> {
+        self.reasoning_effort.or_else(|| {
+            self.current
+                .as_ref()
+                .and_then(|id| self.default_effort_for(id))
+        })
+    }
+
+    /// Whether the selected model's asynchronous lookup is pending.
+    pub fn capabilities_pending(&self) -> bool {
+        self.current
+            .as_ref()
+            .and_then(|id| self.available.get(id))
+            .and_then(|model| model.meta.as_ref())
+            .and_then(|meta| meta.get("capabilitiesStatus"))
+            .and_then(|value| value.as_str())
+            == Some("loading")
+    }
+
     /// Machine-readable model ID string for the current model (e.g. "aster-4.5").
     pub fn current_model_id_str(&self) -> Option<&str> {
         Some(self.current.as_ref()?.0.as_ref())
@@ -137,9 +171,22 @@ impl ModelState {
     }
 
     /// Replace the available-model list.
-    /// Leaves `current` and `reasoning_effort` alone; those change only via `/model`, create, or load.
+    /// A reported effort list revalidates the session's selection.
     pub fn update_catalog(&mut self, new_available: IndexMap<acp::ModelId, acp::ModelInfo>) {
         self.available = new_available;
+        if self
+            .current
+            .as_ref()
+            .and_then(|id| self.available.get(id))
+            .and_then(|info| info.meta.as_ref())
+            .is_some_and(|meta| meta.contains_key("reasoningEfforts"))
+        {
+            self.reasoning_effort = self.reasoning_effort.filter(|effort| {
+                self.reasoning_effort_options()
+                    .iter()
+                    .any(|option| option.value == *effort)
+            });
+        }
     }
 
     /// Set the current model and resolve reasoning effort from catalog meta.
@@ -160,7 +207,7 @@ impl ModelState {
     }
 
     /// The reasoning-effort menu for the current model. An unset or unsupported model yields no menu.
-    /// A supported model uses the server list when present, else the built-in fallback.
+    /// Levels come from the server catalog.
     pub fn reasoning_effort_options(&self) -> Vec<ReasoningEffortOption> {
         match self.current.as_ref() {
             Some(id) => self.reasoning_effort_options_for(id),
@@ -169,8 +216,7 @@ impl ModelState {
     }
 
     /// Menu for a specific catalog model id (used by `/model`'s effort phase).
-    /// `parse_reasoning_efforts_meta` returns `None` when the list is absent, not an array, or present but unusable.
-    /// All of those fall back to the built-in menu, exactly as the shell's session picker does.
+    /// Missing or malformed metadata never invents native effort levels.
     pub(crate) fn reasoning_effort_options_for(
         &self,
         id: &acp::ModelId,
@@ -181,7 +227,7 @@ impl ModelState {
         if !supports_reasoning_effort_meta(info.meta.as_ref()) {
             return Vec::new();
         }
-        parse_reasoning_efforts_meta(info.meta.as_ref()).unwrap_or_else(legacy_effort_options)
+        parse_reasoning_efforts_meta(info.meta.as_ref()).unwrap_or_default()
     }
 
     /// The effort row the pickers highlight when the menu for `id` opens. `None` leaves the cursor on the first row.
@@ -382,6 +428,48 @@ mod tests {
     }
 
     #[test]
+    fn provider_default_does_not_become_an_explicit_override() {
+        let mut state = sample_models();
+        let current = state.current.clone().unwrap();
+        state.available.get_mut(&current).unwrap().meta = Some(
+            serde_json::json!({
+                "supportsReasoningEffort":true,
+                "reasoningEfforts":["low","high"],
+                "defaultReasoningEffort":"high",
+                "capabilitiesStatus":"loading"
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        );
+        assert_eq!(
+            state.effective_reasoning_effort(),
+            Some(ReasoningEffort::High)
+        );
+        assert!(state.reasoning_effort.is_none());
+        assert!(state.capabilities_pending());
+        state.reasoning_effort = Some(ReasoningEffort::Low);
+        assert_eq!(
+            state.effective_reasoning_effort(),
+            Some(ReasoningEffort::Low)
+        );
+        let mut refreshed = state.available.clone();
+        refreshed
+            .get_mut(&current)
+            .unwrap()
+            .meta
+            .as_mut()
+            .unwrap()
+            .insert("reasoningEfforts".into(), serde_json::json!(["high"]));
+        state.update_catalog(refreshed);
+        assert!(state.reasoning_effort.is_none());
+        assert_eq!(
+            state.effective_reasoning_effort(),
+            Some(ReasoningEffort::High)
+        );
+    }
+
+    #[test]
     fn model_switch_discards_previous_window_and_unknown_is_not_a_capacity() {
         let mut state = sample_models();
         let a = acp::ModelId::new("model-a");
@@ -494,8 +582,8 @@ mod tests {
     }
 
     #[test]
-    fn reasoning_effort_options_falls_back_to_builtin_menu() {
-        // Supported but no server list falls back to the built-in menu (EFFORT_LEVELS: low → max)
+    fn missing_effort_metadata_has_no_levels() {
+        // The support flag alone does not declare any selectable native values.
         let state = state_with_meta(Some(serde_json::json!({
             "supportsReasoningEffort": true,
         })));
@@ -504,13 +592,11 @@ mod tests {
             .into_iter()
             .map(|o| o.id)
             .collect();
-        assert_eq!(ids, ["low", "medium", "high", "xhigh", "max"]);
+        assert!(ids.is_empty());
     }
 
     #[test]
-    fn reasoning_effort_options_falls_back_when_list_present_but_unusable() {
-        // An explicit empty list, and a list whose every entry was skipped as invalid under version skew, both fall back to the built-in menu
-        // Falling back rather than silently vanishing matches the shell picker
+    fn malformed_effort_metadata_has_no_levels() {
         for meta in [
             serde_json::json!({ "supportsReasoningEffort": true, "reasoningEfforts": [] }),
             serde_json::json!({
@@ -523,11 +609,7 @@ mod tests {
                 .into_iter()
                 .map(|o| o.id)
                 .collect();
-            assert_eq!(
-                ids,
-                ["low", "medium", "high", "xhigh", "max"],
-                "for meta {meta}"
-            );
+            assert!(ids.is_empty(), "for meta {meta}");
         }
     }
 
@@ -676,26 +758,23 @@ mod tests {
         })));
         assert_eq!(None, preselected_id(&state));
 
-        // Built-in fallback menu: its rows never carry `default`, so meta is the only source
+        // A current value without a declared menu does not invent selectable levels.
         let state = state_with_meta(Some(serde_json::json!({
             "supportsReasoningEffort": true,
             "reasoningEffort": "high",
         })));
-        assert_eq!(Some("high".to_owned()), preselected_id(&state));
+        assert_eq!(None, preselected_id(&state));
     }
 
     #[test]
-    fn resolve_effort_token_legacy_menu_rejects_none() {
-        // supportsReasoningEffort without a server list means the built-in low..xhigh menu
+    fn missing_menu_rejects_canonical_levels() {
+        // The boolean support flag alone cannot admit a native value.
         let state = state_with_meta(Some(serde_json::json!({
             "supportsReasoningEffort": true,
         })));
         assert!(state.resolve_effort_token("none").is_none());
         assert!(state.resolve_effort_token("minimal").is_none());
-        assert_eq!(
-            state.resolve_effort_token("low"),
-            Some(ReasoningEffort::Low)
-        );
+        assert_eq!(state.resolve_effort_token("low"), None);
     }
 
     #[test]

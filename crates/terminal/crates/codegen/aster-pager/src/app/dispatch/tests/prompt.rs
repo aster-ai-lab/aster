@@ -13,6 +13,98 @@ fn agent_ref(app: &AppView, id: AgentId) -> &AgentView {
 }
 
 #[test]
+fn resume_opens_the_existing_session_picker() {
+    let mut app = test_app_with_agent();
+    app.is_aster = true;
+    let effects = dispatch(Action::SendPrompt("/resume".into()), &mut app);
+    assert!(matches!(
+        agent_ref(&app, AgentId(0)).active_modal,
+        Some(crate::views::modal::ActiveModal::SessionPicker { .. })
+    ));
+    assert!(matches!(
+        effects.as_slice(),
+        [Effect::FetchSessionList { .. }]
+    ));
+}
+
+#[test]
+fn aster_holds_followups_locally_until_sent_now() {
+    let mut app = test_app_with_agent();
+    app.is_aster = true;
+    app.leader_mode = true;
+    dispatch(Action::SendPrompt("original".into()), &mut app);
+    let effects = dispatch(Action::SendPrompt("next exact message".into()), &mut app);
+    assert!(effects.is_empty());
+    let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+    assert_eq!(
+        agent.session.pending_prompts.front().unwrap().text,
+        "next exact message"
+    );
+    assert!(agent.shared_queue.is_empty());
+    agent.sync_queue_pane();
+    let row = *agent.queue.entry_ids().first().unwrap();
+    let outcome = agent.force_interject_queue_row(row);
+    let crate::app::app_view::InputOutcome::Action(action) = outcome else {
+        panic!("queued prompt must be sendable");
+    };
+    let effects = dispatch(action, &mut app);
+    assert!(
+        matches!(effects.as_slice(), [Effect::SendPromptNow { blocks, .. }] if blocks.iter().any(|block| matches!(block, acp::ContentBlock::Text(text) if text.text == "next exact message")))
+    );
+    assert!(
+        agent_ref(&app, AgentId(0))
+            .session
+            .pending_prompts
+            .is_empty()
+    );
+}
+
+#[test]
+fn failed_delivered_send_now_keeps_the_message_without_requeueing() {
+    for accepted in [false, true] {
+        let mut app = test_app_with_agent();
+        let id = AgentId(0);
+        dispatch(Action::SendPrompt("original".into()), &mut app);
+        app.agents.get_mut(&id).unwrap().front_message_committed = true;
+        let effects = dispatch(
+            Action::SendPromptNow {
+                text: "keep this message".into(),
+                images: vec![],
+                image_notice: None,
+            },
+            &mut app,
+        );
+        let [Effect::SendPromptNow { prompt_id, .. }] = effects.as_slice() else {
+            panic!("expected send now");
+        };
+        let prompt_id = prompt_id.clone();
+        let entry = app.agents[&id].send_now_painted_blocks[&prompt_id].0;
+        if accepted {
+            app.agents.get_mut(&id).unwrap().session.current_prompt_id = Some(prompt_id.clone());
+        }
+        dispatch(
+            Action::TaskComplete(TaskResult::PromptResponse {
+                agent_id: id,
+                result: Err("provider failed after delivery".into()),
+                http_status: None,
+                prompt_id: Some(prompt_id),
+            }),
+            &mut app,
+        );
+        let agent = agent_ref(&app, id);
+        assert!(agent.session.pending_prompts.is_empty());
+        assert!(agent.shared_queue.is_empty());
+        assert!(
+            agent.scrollback.get_by_id(entry).is_some(),
+            "the user's message must remain visible"
+        );
+        if accepted {
+            assert!(agent.session.state.is_idle());
+        }
+    }
+}
+
+#[test]
 fn send_now_feedback_survives_the_previous_response_and_repeated_handoffs() {
     use crate::acp::tracker::{TurnActivity, WaitingReason};
     use crate::scrollback::render::ScratchBuffer;

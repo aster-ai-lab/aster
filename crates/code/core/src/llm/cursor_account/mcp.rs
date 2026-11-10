@@ -6,6 +6,29 @@ use serde_json::{json, Value};
 
 const PROVIDER: &str = "aster";
 
+#[derive(Debug, thiserror::Error)]
+enum CallRejection {
+    #[error("missing_tool_name")]
+    MissingName,
+    #[error("provider_mismatch")]
+    ProviderMismatch,
+    #[error("approval_only")]
+    ApprovalOnly,
+    #[error("server_mismatch")]
+    ServerMismatch,
+    #[error("tool_unavailable")]
+    ToolUnavailable,
+    #[error("arguments_not_object")]
+    InvalidArguments,
+}
+
+fn reject(reason: CallRejection) -> anyhow::Error {
+    tracing::warn!(%reason, "Cursor tool request rejected");
+    anyhow!(super::super::NonRetryableLlmError::new(format!(
+        "Cursor tool request rejected: {reason}"
+    )))
+}
+
 pub(super) fn definitions(tools: &[ToolDefinition]) -> Vec<Value> {
     tools
         .iter()
@@ -67,30 +90,37 @@ pub(super) fn tool_call(value: &Value, tools: &[ToolDefinition]) -> Result<Optio
         return Ok(None);
     };
     let args = &request["mcpArgs"];
-    let invalid = || {
-        anyhow!(super::super::NonRetryableLlmError::new(
-            "Cursor requested a tool outside the presented Aster tools or sent invalid arguments"
-        ))
-    };
     let name = args
         .get("toolName")
         .and_then(Value::as_str)
-        .ok_or_else(invalid)?;
-    if args.get("providerIdentifier").and_then(Value::as_str) != Some(PROVIDER)
-        || args
-            .get("smartModeApprovalOnly")
-            .is_some_and(|approval| approval.as_bool() != Some(false))
-        || args
-            .get("serverIdentifier")
-            .is_some_and(|server| server.as_str() != Some(PROVIDER))
-        || !tools.iter().any(|tool| tool.name == name)
+        .ok_or_else(|| reject(CallRejection::MissingName))?;
+    if args.get("providerIdentifier").and_then(Value::as_str) != Some(PROVIDER) {
+        return Err(reject(CallRejection::ProviderMismatch));
+    }
+    if args
+        .get("smartModeApprovalOnly")
+        .is_some_and(|approval| approval.as_bool() != Some(false))
     {
-        return Err(invalid());
+        return Err(reject(CallRejection::ApprovalOnly));
+    }
+    if args
+        .get("serverIdentifier")
+        .is_some_and(|server| server.as_str() != Some(PROVIDER))
+    {
+        return Err(reject(CallRejection::ServerMismatch));
+    }
+    if !tools.iter().any(|tool| tool.name == name) {
+        return Err(reject(CallRejection::ToolUnavailable));
     }
     let input = match args.get("args") {
         None => json!({}),
         Some(input) if input.is_object() => input.clone(),
-        _ => return Err(invalid()),
+        _ => {
+            let reason = CallRejection::InvalidArguments;
+            tracing::warn!(%reason, "Cursor tool arguments require correction");
+            // The existing parse guard returns an error result without executing the tool.
+            json!({"__parse_error": reason.to_string()})
+        }
     };
     Ok(Some(ContentBlock::ToolUse {
         id: super::next_id(),

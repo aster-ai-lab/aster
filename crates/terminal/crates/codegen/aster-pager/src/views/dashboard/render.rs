@@ -2109,7 +2109,7 @@ fn paint_dispatch_config_badge(
             bold: false,
         }),
         DashboardDispatchMode::AlwaysApprove => flags.push(PromptFlag {
-            text: "yolo",
+            text: "YOLO",
             color: Some(theme.accent_verify),
             bold: false,
         }),

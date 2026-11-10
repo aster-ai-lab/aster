@@ -63,11 +63,12 @@ impl AsterCodeAgent {
             .with_max_tool_rounds(0)
             .with_auto_compact(true)
             .with_auto_compact_threshold(aster_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD);
+        options = options
+            .with_max_parallel_tasks(HOST_PARALLEL_TASKS)
+            .with_max_continuation_turns(HOST_CONTINUATION_TURNS);
         let mut guideline = String::new();
         if let Some(limits) = effort {
             options = options
-                .with_reasoning_effort(limits.token)
-                .with_thinking_budget(limits.thinking_budget)
                 .with_max_parallel_tasks(limits.max_parallel_tasks)
                 .with_max_continuation_turns(limits.max_continuation_turns);
             if limits.token == "ultracode" {
@@ -78,8 +79,7 @@ impl AsterCodeAgent {
                     .with_manual_delegation_enabled(true);
             }
             guideline = format!(
-                "The thinking budget is a maximum, not a quota. thinking_budget={}. Do not expand the task or invent checks to spend the budget. Stop when the user's outcome is done.",
-                limits.thinking_budget
+                "The thinking budget is a maximum, not a quota. thinking_budget={}. Do not expand the task or invent checks to spend the budget. Stop when the user's outcome is done.", limits.thinking_budget
             );
             if !aster_core::llm::model_sends_native_effort(model_id) {
                 if let Some(extra) = effort_guideline(limits.token) {
@@ -137,7 +137,25 @@ impl AsterCodeAgent {
         session_store_dir: &std::path::Path,
         embedding: Option<Arc<dyn aster_core::EmbeddingProvider>>,
     ) -> acp::Result<SessionOptions> {
-        let options = Self::core_session_options(session_id, setup.model_id, setup.effort);
+        let mut options = Self::core_session_options(session_id, setup.model_id, setup.effort);
+        if let Some(effort) = setup.effort {
+            if let Some((provider_id, model_id)) = setup.model_id.split_once('/') {
+                if config
+                    .find_provider(provider_id)
+                    .and_then(|provider| {
+                        provider.find_model(model_id).and_then(|model| {
+                            model.reasoning_capabilities(
+                                provider.model_protocol(model),
+                                provider.get_base_url(model),
+                            )
+                        })
+                    })
+                    .is_some_and(|caps| caps.supports(effort.token))
+                {
+                    options = options.with_reasoning_effort(effort.token);
+                }
+            }
+        }
         let mut slots = crate::host_context::merge_studio_host(
             options.prompt_slots.clone().unwrap_or_default(),
             &setup.host,
@@ -178,6 +196,7 @@ impl AsterCodeAgent {
         setup: &SessionSetup<'_>,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
+        let config = self.effective_model_config(setup.model_id);
         let started = std::time::Instant::now();
         let retrieval = self
             .launch
@@ -222,7 +241,7 @@ impl AsterCodeAgent {
             None => Self::host_session_options_with_embedding(
                 session_id,
                 setup,
-                &self.launch.config,
+                &config,
                 session_store_dir,
                 embedding,
             ),
@@ -231,6 +250,12 @@ impl AsterCodeAgent {
             Some(profile) => options.with_tool_presentation_profile(profile.clone()),
             None => options,
         };
+        if self.unattended.is_some() {
+            options.reasoning_effort = setup.effort.map(|effort| effort.token.to_string());
+        }
+        options.reasoning_effort = options
+            .reasoning_effort
+            .filter(|token| self.model_supports_effort(setup.model_id, token));
         if self.client_terminal_markdown.get() {
             let mut slots = options.prompt_slots.clone().unwrap_or_default();
             append_slot_extra(&mut slots, TERMINAL_MARKDOWN_PRESENTATION);
@@ -312,6 +337,7 @@ impl AsterCodeAgent {
         };
         let options = crate::harness_assemble::apply(options, setup.components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
+        let options = self.apply_detected_model(setup.model_id, session_id, options)?;
         let assembly_started = std::time::Instant::now();
         let session = match stored {
             Some(store) => {
@@ -372,6 +398,7 @@ impl AsterCodeAgent {
             session: Arc::new(session),
             workspace: setup.workspace,
             model_id: setup.model_id.to_string(),
+            effort: setup.effort,
             permissions: Arc::new(std::sync::Mutex::new(permissions)),
             asset_denies,
             host: setup.host,
@@ -504,6 +531,8 @@ impl AsterCodeAgent {
         }
         options = crate::harness_assemble::apply(options, setup.components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
+        options =
+            self.apply_detected_model(setup.model_id, current.session.session_id(), options)?;
         let session = if let Some(store) = current.session.session_store() {
             options = options.with_session_store(store);
             agent
@@ -535,6 +564,7 @@ impl AsterCodeAgent {
             session: Arc::new(session),
             workspace: setup.workspace,
             model_id: setup.model_id.to_string(),
+            effort: setup.effort,
             permissions: Arc::clone(&current.permissions),
             asset_denies,
             host: setup.host,

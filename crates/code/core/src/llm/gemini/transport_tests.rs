@@ -292,6 +292,10 @@ async fn native_stream_failure_never_replays_after_visible_tool_output() {
 async fn native_requests_honor_structured_modes_thinking_and_hard_output_caps() {
     let fixture = Arc::new(Fixture::default());
     let mut config = fixture.config();
+    config.reasoning_capabilities = Some(
+        crate::config::ReasoningCapabilities::new(crate::config::ReasoningMode::Budget, Vec::new())
+            .unwrap(),
+    );
     config.thinking_budget = Some(0);
     config.max_tokens = Some(8);
     let client = create_client_with_config(config)

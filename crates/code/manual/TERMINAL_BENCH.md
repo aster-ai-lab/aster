@@ -84,7 +84,10 @@ call is approved without approval learning, a model question gets a fixed
 "nobody is available" reply, harness state goes to a private temporary root
 instead of the graded workspace, and `--result-file` writes the same
 `aster.code.terminal-bench-result.v1` record. Without `--unattended` the agent is
-unchanged.
+unchanged. Local smoke without Harbor can drive the same path with
+`python3 apps/studio/scripts/acp_session_driver.py --unattended --cwd DIR
+--prompt "..." --result-file /tmp/aster.result.json` (`--max-execution-ms` is
+passed only with `--unattended`; exit status follows the result-file `outcome`).
 
 With no trusted `goal_control` override, bound-goal continuation stops after
 3 settled slices without an observed workspace mutation, within the run's

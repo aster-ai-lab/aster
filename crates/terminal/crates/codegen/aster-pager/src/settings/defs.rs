@@ -34,12 +34,12 @@ const THEME_CHOICES: &[EnumChoice] = &[
         description: "Follow system dark/light appearance.",
     },
     EnumChoice {
-        canonical: "groknight",
+        canonical: "aster-night",
         display: "Aster Night",
         description: "Aster blue and silver on a dark canvas.",
     },
     EnumChoice {
-        canonical: "grokday",
+        canonical: "aster-day",
         display: "Aster Day",
         description: "Aster brand blue on silver surfaces.",
     },
@@ -258,12 +258,12 @@ const SCREEN_MODE_CHOICES: &[EnumChoice] = &[
     EnumChoice {
         canonical: "fullscreen",
         display: "Fullscreen",
-        description: "Open plain grok in the standard fullscreen TUI. Default when unset.",
+        description: "Open plain aster in the standard fullscreen TUI. Default when unset.",
     },
     EnumChoice {
         canonical: "minimal",
         display: "Minimal",
-        description: "Open plain grok in scrollback-native (minimal) mode.",
+        description: "Open plain aster in scrollback-native (minimal) mode.",
     },
 ];
 
@@ -422,12 +422,12 @@ const VOICE_STT_LANGUAGE_CHOICES: &[EnumChoice] = &[
 /// There is no dark/light filtering: the user can pair any theme with any system-appearance bucket.
 const CONCRETE_THEME_CHOICES: &[EnumChoice] = &[
     EnumChoice {
-        canonical: "groknight",
+        canonical: "aster-night",
         display: "Aster Night",
         description: "Aster blue and silver on a dark canvas.",
     },
     EnumChoice {
-        canonical: "grokday",
+        canonical: "aster-day",
         display: "Aster Day",
         description: "Aster brand blue on silver surfaces.",
     },
@@ -493,7 +493,7 @@ pub fn default_settings() -> Vec<SettingMeta> {
             category: SettingCategory::Appearance,
             owner: SettingOwner::Shell,
             label: "Default screen mode",
-            description: "How plain grok opens next time: Fullscreen (default when unset) or \
+            description: "How plain aster opens next time: Fullscreen (default when unset) or \
                           Minimal. Writes [ui] screen_mode in config.toml. Restart required. \
                           Switch this session only with /minimal or /fullscreen.",
             keywords: &[
@@ -700,8 +700,8 @@ pub fn default_settings() -> Vec<SettingMeta> {
                 "light",
             ],
             kind: SettingKind::Enum {
-                // `Option<String>`: `None` resolves to "groknight"
-                default: "groknight",
+                // `Option<String>`: `None` resolves to "aster-night"
+                default: "aster-night",
                 choices: THEME_CHOICES,
                 supports_preview: true,
             },
@@ -716,8 +716,8 @@ pub fn default_settings() -> Vec<SettingMeta> {
             description: "Theme to use when the system is in dark mode (only with theme=auto).",
             keywords: &["auto", "dark", "theme", "system", "appearance", "night"],
             kind: SettingKind::Enum {
-                // `Option<String>`: `None` falls back to "groknight"
-                default: "groknight",
+                // `Option<String>`: `None` falls back to "aster-night"
+                default: "aster-night",
                 choices: CONCRETE_THEME_CHOICES,
                 supports_preview: true,
             },
@@ -732,8 +732,8 @@ pub fn default_settings() -> Vec<SettingMeta> {
             description: "Theme to use when the system is in light mode (only with theme=auto).",
             keywords: &["auto", "light", "theme", "system", "appearance", "day"],
             kind: SettingKind::Enum {
-                // `Option<String>`: `None` falls back to "grokday"
-                default: "grokday",
+                // `Option<String>`: `None` falls back to "aster-day"
+                default: "aster-day",
                 choices: CONCRETE_THEME_CHOICES,
                 supports_preview: true,
             },
@@ -848,7 +848,7 @@ pub fn default_settings() -> Vec<SettingMeta> {
             owner: SettingOwner::Shell,
             label: "Default model",
             description: "Model used for new sessions. Changing this also switches the active session. Pick `(no override)` to clear.",
-            keywords: &["model", "default", "agent", "llm", "grok", "switch"],
+            keywords: &["model", "default", "agent", "llm", "aster", "switch"],
             kind: SettingKind::DynamicEnum {
                 default: "",
                 source: DynamicEnumSource::ActiveModelCatalog,
@@ -866,7 +866,7 @@ pub fn default_settings() -> Vec<SettingMeta> {
             owner: SettingOwner::Shell,
             label: "Subagent model inheritance",
             description: "On: Aster Code cannot set models for subagents\n\
-                          Off: Grok may choose a different model for a subagent. Takes effect \
+                          Off: Aster Code may choose a different model for a subagent. Takes effect \
                           after restart.\n\
                           NOTE: This setting only applies when all models are Aster \
                           \"model_family\". You likely don't need to configure this setting.",

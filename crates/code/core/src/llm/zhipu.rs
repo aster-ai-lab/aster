@@ -46,6 +46,14 @@ impl ZhipuClient {
         self
     }
 
+    pub(crate) fn with_reasoning_capabilities(
+        mut self,
+        capabilities: Option<crate::config::ReasoningCapabilities>,
+    ) -> Self {
+        self.0 = self.0.with_reasoning_capabilities(capabilities);
+        self
+    }
+
     pub fn with_reasoning_effort(mut self, effort: impl Into<String>) -> Self {
         self.0 = self.0.with_reasoning_effort(effort);
         self

@@ -758,42 +758,38 @@ async fn apply_headless_model_and_effort(
         }
     };
     let effort = match effort_token {
-        None => None,
-        Some(token) if models.available.is_empty() => {
-            if parse_canonical_effort_token(token).is_none() {
-                anyhow::bail!(
-                    "--effort/--reasoning-effort: unknown effort level '{token}' \
-                     (model catalog unavailable; remapped menu ids require a loaded catalog)"
-                );
-            }
-            None
-        }
-        Some(token) => match models.resolve_cli_effort_for_model(&model_id, token) {
-            Ok(effort) => Some(effort),
-            Err(EffortTokenError::Unsupported) => {
-                tracing::warn!(
-                    model = %model_id.0,
-                    token,
-                    "--effort/--reasoning-effort: model does not support reasoning effort; ignoring"
-                );
-                None
-            }
-            Err(err) => {
-                anyhow::bail!("--effort/--reasoning-effort: {}", err.message())
-            }
-        },
+        None | Some("default") => None,
+        Some(token) => Some(
+            models
+                .resolve_cli_effort_for_model(&model_id, token)
+                .map_err(|error| {
+                    anyhow::anyhow!("--effort/--reasoning-effort: {}", error.message())
+                })?,
+        ),
     };
-    if model_name.is_none() && effort.is_none() {
+    let reset = effort_token == Some("default");
+    if model_name.is_none() && effort.is_none() && !reset {
         return Ok(());
     }
-    let meta = effort.map(|eff| {
-        let mut m = acp::Meta::new();
-        m.insert(
-            REASONING_EFFORT_META_KEY.to_string(),
-            reasoning_effort_meta_value(eff),
-        );
-        m
-    });
+    let meta = effort
+        .map(|effort| {
+            [(
+                REASONING_EFFORT_META_KEY.to_string(),
+                reasoning_effort_meta_value(effort),
+            )]
+            .into_iter()
+            .collect()
+        })
+        .or_else(|| {
+            reset.then(|| {
+                [(
+                    REASONING_EFFORT_META_KEY.to_string(),
+                    serde_json::json!("default"),
+                )]
+                .into_iter()
+                .collect()
+            })
+        });
     acp_send_bounded(
         acp::SetSessionModelRequest::new(session_id.clone(), model_id.clone()).meta(meta),
         acp_tx,
@@ -1173,7 +1169,7 @@ pub async fn run_single_turn(
         });
     }
     let effort_unresolved = |token: &str| {
-        if parse_canonical_effort_token(token).is_some() {
+        if token == "default" || parse_canonical_effort_token(token).is_some() {
             return false;
         }
         let target = options

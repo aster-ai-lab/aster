@@ -330,7 +330,7 @@ impl ClipboardFeedback {
             Self::CopiedOscContainer => "Copied via OSC 52 from the container.",
             Self::CopiedOscRemote => "Copied via OSC 52.",
             Self::UnverifiedOscRemote | Self::UnverifiedOscContainer => {
-                "Copy sent. If paste fails, use grok wrap or /minimal."
+                "Copy sent. If paste fails, use aster wrap or /minimal."
             }
             Self::VsCodeSshNonAscii => {
                 "Copied. VS Code over SSH may garble non-ASCII; use /minimal if needed."
@@ -524,7 +524,7 @@ pub fn write_copy_fallback(text: &str) -> std::io::Result<std::path::PathBuf> {
     let Some(path) = default_copy_fallback_path() else {
         return Err(std::io::Error::new(
             std::io::ErrorKind::NotFound,
-            "no home directory resolves; set GROK_COPY_FILE to enable the copy backup file",
+            "no home directory is available for the copy backup",
         ));
     };
     #[cfg(unix)]
@@ -2262,14 +2262,14 @@ mod tests {
             (
                 ClipboardFeedback::UnverifiedOscRemote,
                 ClipboardDelivery::Unverified,
-                "Copy sent. If paste fails, use grok wrap or /minimal.",
+                "Copy sent. If paste fails, use aster wrap or /minimal.",
                 "unverified_osc_remote",
                 120,
             ),
             (
                 ClipboardFeedback::UnverifiedOscContainer,
                 ClipboardDelivery::Unverified,
-                "Copy sent. If paste fails, use grok wrap or /minimal.",
+                "Copy sent. If paste fails, use aster wrap or /minimal.",
                 "unverified_osc_container",
                 120,
             ),
@@ -2413,7 +2413,7 @@ mod tests {
         if std::env::var_os("GROK_HOME").is_none() {
             let home = aster_dirs::home_dir().expect("home resolves in tests");
             assert_eq!(
-                display_copy_path(&home.join(".grok").join("last-copy.txt")),
+                display_copy_path(&home.join(".aster").join("last-copy.txt")),
                 "~/.aster/last-copy.txt"
             );
         }

@@ -5,6 +5,28 @@ use acp::Agent as _;
 use std::future::Future;
 
 #[tokio::test]
+async fn cancel_wakes_the_turn_before_registry_cleanup() {
+    let agent = AsterCodeAgent::new(tests::test_launch(None));
+    let registry = agent.sessions.lock().await;
+    let notified = agent.turn_cancel.notified();
+    tokio::pin!(notified);
+    let cancel = agent.cancel(acp::CancelNotification::new(acp::SessionId::new("blocked")));
+    tokio::pin!(cancel);
+    tokio::time::timeout(std::time::Duration::from_millis(150), async {
+        tokio::select! {
+            _ = &mut notified => {},
+            result = &mut cancel => panic!("registry cleanup must still be waiting: {result:?}"),
+        }
+    })
+    .await
+    .expect(
+        "recorded cancellation must wake the running turn without waiting for registry cleanup",
+    );
+    drop(registry);
+    cancel.await.unwrap();
+}
+
+#[tokio::test]
 async fn send_now_cancels_before_waiting_for_the_previous_turn_permit() {
     for (meta, cancelled) in [
         (serde_json::json!({"sendNow": true}), true),
