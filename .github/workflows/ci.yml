@@ -31,9 +31,9 @@ jobs:
         run: brew install protobuf just lld
       - name: Install pinned toolchain
         run: rustup show active-toolchain
-      - name: Desktop launcher
-        if: runner.os == 'macOS'
-        run: python3 tests/just_work.py
+      # Stale contract steps were removed with the backend migration (e4914338e)
+      # and ksandbox retirement (cd849b929): just_work.py, cli_sandbox*.py and
+      # app_icon_assets.py no longer exist in this repository.
       - name: Restore Rust dependency cache
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
         with:
@@ -65,8 +65,6 @@ jobs:
       - name: CLI pair delivery
         run: |
           python3 tests/cli_pair_delivery.py
-          python3 tests/cli_sandbox.py
-          python3 tests/cli_sandbox_smoke_test.py
           python3 tests/cli_pair_identity.py
       - name: Release tag and channel governance
         run: python3 tests/release_governance.py
@@ -81,8 +79,6 @@ jobs:
         run: |
           python3 -m unittest apps/studio/scripts/tests/studio_delivery_test.py apps/studio/scripts/tests/studio_product_test.py apps/studio/scripts/tests/test_document_assets.py
           python3 tests/desktop_channel_manifest.py
-      - name: App icon ladder and desktop identity
-        run: python3 tests/app_icon_assets.py
       - name: Compile workspace and tests
         run: cargo check --locked --workspace --all-targets
       - name: Check optional harness contracts
