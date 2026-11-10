@@ -1,0 +1,181 @@
+{
+  "cases": [
+    {
+      "mode": "fullscreen",
+      "input_row": "\u25c8 Read 1 file      \u2502  \u25c6 Reported input  21.2k tokens   (2.0%)                                                \u2502                        \u2588",
+      "responses": [
+        {
+          "seq": 31,
+          "pid": 70615,
+          "elapsed_us": 2037555,
+          "clock_origin_unix_us": 1794351022592057,
+          "unix_time_us": 1794351024629612,
+          "kind": "context-response",
+          "rpc_id": 4,
+          "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "response_session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "context": {
+            "used": 21177,
+            "total": 1048576,
+            "freeTokens": 1027399,
+            "usageAvailable": true,
+            "breakdownAvailable": false,
+            "turnCount": 6
+          },
+          "other_context_fields": [
+            "usagePct"
+          ]
+        },
+        {
+          "seq": 34,
+          "pid": 70615,
+          "elapsed_us": 2066783,
+          "clock_origin_unix_us": 1794351022592057,
+          "unix_time_us": 1794351024658840,
+          "kind": "context-response",
+          "rpc_id": 6,
+          "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "response_session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "context": {
+            "used": 21177,
+            "total": 1048576,
+            "freeTokens": 1027399,
+            "usageAvailable": true,
+            "breakdownAvailable": false,
+            "turnCount": 6
+          },
+          "other_context_fields": [
+            "usagePct"
+          ]
+        },
+        {
+          "seq": 35,
+          "pid": 70615,
+          "elapsed_us": 2070077,
+          "clock_origin_unix_us": 1794351022592057,
+          "unix_time_us": 1794351024662134,
+          "kind": "context-response",
+          "rpc_id": 8,
+          "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "response_session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "context": {
+            "used": 21177,
+            "total": 1048576,
+            "freeTokens": 1027399,
+            "usageAvailable": true,
+            "breakdownAvailable": false,
+            "turnCount": 6
+          },
+          "other_context_fields": [
+            "usagePct"
+          ]
+        }
+      ],
+      "viewport_sha256": "be56a5756464e73f99c27e8ca90fc43baa2332f751742d698ba4e4c102ef570b"
+    },
+    {
+      "mode": "minimal",
+      "input_row": "\u25c6 Reported input  21.2k tokens   (2.0%)",
+      "responses": [
+        {
+          "seq": 31,
+          "pid": 71309,
+          "elapsed_us": 1929685,
+          "clock_origin_unix_us": 1794351030082461,
+          "unix_time_us": 1794351032012146,
+          "kind": "context-response",
+          "rpc_id": 4,
+          "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "response_session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "context": {
+            "used": 21177,
+            "total": 1048576,
+            "freeTokens": 1027399,
+            "usageAvailable": true,
+            "breakdownAvailable": false,
+            "turnCount": 6
+          },
+          "other_context_fields": [
+            "usagePct"
+          ]
+        },
+        {
+          "seq": 33,
+          "pid": 71309,
+          "elapsed_us": 1952218,
+          "clock_origin_unix_us": 1794351030082461,
+          "unix_time_us": 1794351032034679,
+          "kind": "context-response",
+          "rpc_id": 6,
+          "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "response_session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+          "context": {
+            "used": 21177,
+            "total": 1048576,
+            "freeTokens": 1027399,
+            "usageAvailable": true,
+            "breakdownAvailable": false,
+            "turnCount": 6
+          },
+          "other_context_fields": [
+            "usagePct"
+          ]
+        }
+      ],
+      "viewport_sha256": "7e5da72862fd1e1199d2e9f44e98ab2f75d5adddbc43be44fbbb092abea0777e"
+    }
+  ],
+  "relay_tests": {
+    "command": [
+      "python3",
+      ".runtime/tui-full-e2e/context-pty/acp_trace_proxy_tests.py"
+    ],
+    "passed": 6
+  },
+  "probe_command": [
+    "python3",
+    ".runtime/tui-full-e2e/context-pty/probe.py"
+  ],
+  "private_files": [
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/probe.py",
+      "sha256": "a56415ad0fb09da6376ff9a7a1e5772ddaeae2a8c0a4d674af4da664e4ab620e"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/acp_trace_proxy.py",
+      "sha256": "78223ff8b94cb086976b8da7adb035b6721f19c91f36ec4609a4e5161701d14c"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/relay-tests.log",
+      "sha256": "99e5ae858f205f26ae0b792a2cc67f18122b98f1c35727289c324b3bf4a6b08e"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/run.log",
+      "sha256": "6a059f2b51a964319bb9ad057d7f3c086eb3a5f3867476c4729c3f59fb48baf8"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/fullscreen/terminal.raw",
+      "sha256": "476796a7362f4e7d3dd2232e301af3d5e319fd2a6dbc4ab4031ff3e599f8afbf"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/fullscreen/viewport.txt",
+      "sha256": "be56a5756464e73f99c27e8ca90fc43baa2332f751742d698ba4e4c102ef570b"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/fullscreen/trace.jsonl",
+      "sha256": "8e2c597aa3e203b7d8277cd57b94fd4b790c104747a61838fee144c6a35c646c"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/minimal/terminal.raw",
+      "sha256": "12f21225cefaec6548a5f5612748eed343da20ed4746d501b5b6f96b18bad0ea"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/minimal/viewport.txt",
+      "sha256": "7e5da72862fd1e1199d2e9f44e98ab2f75d5adddbc43be44fbbb092abea0777e"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/context-pty/minimal/trace.jsonl",
+      "sha256": "8f811bb424829d9f1bf27a3dd00386735010b76b5d5df8a3efa23f6224848fbe"
+    }
+  ]
+}

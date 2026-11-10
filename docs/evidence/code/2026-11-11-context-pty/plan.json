@@ -1,0 +1,34 @@
+{
+  "scope": "Real DeepSeek session loaded through the shipped PTY. Native interaction uses the separately frozen native plan.",
+  "modes": [
+    "fullscreen",
+    "minimal"
+  ],
+  "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+  "run_id": "run-c1122900-a761-4e58-809d-f0fcbe302713",
+  "model": "deepseek/deepseek-flash",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "snapshot_sha256": "3376915c2c2ed5b5b89e9f41659d873e63af272de9cb94fedc6e683ef054f611",
+  "report_values": [
+    21076,
+    21177
+  ],
+  "latest_reported_input": 21177,
+  "session_total_tokens": 249178,
+  "window_tokens": 1048576,
+  "input_display": "21.2k",
+  "startup_deadline_seconds": 45,
+  "context_deadline_seconds": 15,
+  "quit_deadline_seconds": 10,
+  "unreported_labels": [
+    "System prompt",
+    "Reasoning/overhead",
+    "Tool definitions",
+    "Auto-compact",
+    "Tool calls:",
+    "Compactions:"
+  ],
+  "runner_sha256": "a56415ad0fb09da6376ff9a7a1e5772ddaeae2a8c0a4d674af4da664e4ab620e",
+  "relay_sha256": "78223ff8b94cb086976b8da7adb035b6721f19c91f36ec4609a4e5161701d14c"
+}

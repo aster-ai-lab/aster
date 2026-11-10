@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "plan_sha256": "4f69e5a38e8bd47d6ef69433cd3837c38ed7feedb52374eecb427ec7afb6b2c8",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "cases": [
+    {
+      "mode": "fullscreen",
+      "status": "PASS",
+      "context": {
+        "used": 21177,
+        "total": 1048576,
+        "freeTokens": 1027399,
+        "usageAvailable": true,
+        "breakdownAvailable": false,
+        "turnCount": 6
+      },
+      "rpc_id": 8,
+      "input_display": "21.2k",
+      "viewport_sha256": "be56a5756464e73f99c27e8ca90fc43baa2332f751742d698ba4e4c102ef570b",
+      "prompt_requests": 0
+    },
+    {
+      "mode": "minimal",
+      "status": "PASS",
+      "context": {
+        "used": 21177,
+        "total": 1048576,
+        "freeTokens": 1027399,
+        "usageAvailable": true,
+        "breakdownAvailable": false,
+        "turnCount": 6
+      },
+      "rpc_id": 6,
+      "input_display": "21.2k",
+      "viewport_sha256": "7e5da72862fd1e1199d2e9f44e98ab2f75d5adddbc43be44fbbb092abea0777e",
+      "prompt_requests": 0
+    }
+  ],
+  "source_acl_unchanged": true
+}
