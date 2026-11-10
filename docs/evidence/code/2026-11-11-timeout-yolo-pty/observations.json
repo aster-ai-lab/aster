@@ -1,0 +1,42 @@
+{
+  "result": "PASS",
+  "build_id": "aster-cli-pair-v1:c00dde195b0f55e43b6c211bf5ccb9bf50985ad9:aarch64-apple-darwin",
+  "model": "deepseek/deepseek-flash",
+  "argv": [
+    "aster",
+    "--model",
+    "deepseek/deepseek-flash",
+    "--no-plan",
+    "--no-subagents",
+    "--yolo",
+    "--fullscreen"
+  ],
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "source_acl_unchanged": true,
+  "binary_sha256": {
+    "aster": "10097b6ff3c8ce193640ac30dbbbcbbe20270485b87c545b3956c8306f551fd6",
+    "aster-acp": "c158c7ba05317348e7634f4e07cfcbda31a6438adfff9319b5913aa53691754e"
+  },
+  "frozen_native_plan_sha256": "8f350934e5384de4b3013b24c6dece9e78c810b1e26c5468895ceabb2230a553",
+  "runner_sha256": "f1d95838966e506ade75bbfbed270e75528214e5a4e00ccedf7ac56d4c6a239c",
+  "trace_sha256": "96103b0aee0e2ec72e03bf19d8d7ceebbf87a4d9a780c5c8182ac3319283275e",
+  "permission_requests": 0,
+  "prompt_requests": 1,
+  "prompt_responses": 1,
+  "prepared_invocations": 1,
+  "receipts_for_original_call": 1,
+  "requested_timeout_ms": 1500,
+  "effective_timeout_ms": 1500,
+  "receipt_outcome": "failed",
+  "receipt_effects": "complete",
+  "output_captured": true,
+  "fixture_start_marker_captured": true,
+  "observation_incomplete": false,
+  "reported_exit_code": -1,
+  "sandboxed": false,
+  "parent_terminal_status": "completed",
+  "scoped_fixture_processes_observed": 1,
+  "scoped_fixture_survivors": 0,
+  "cli_exit_code": 0,
+  "native_window_exercised": false
+}
