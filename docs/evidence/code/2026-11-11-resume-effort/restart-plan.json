@@ -1,0 +1,28 @@
+{
+  "case": "TUI-SESSION-002 same-model cold resume",
+  "scope": "Real DeepSeek ACP and fullscreen TUI through a PTY; no native visual acceptance",
+  "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+  "model": "deepseek/deepseek-flash",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "cases": [
+    "high",
+    "default",
+    "none"
+  ],
+  "explicit_cli_override": "low",
+  "context_tokens": 1048576,
+  "startup_deadline_seconds": 45,
+  "switch_deadline_seconds": 20,
+  "quit_deadline_seconds": 10,
+  "task_deadline_seconds": 120,
+  "follow_up_prompt": "Read canary-resume.txt with the read tool and report its exact content. Do not edit files or call other tools.",
+  "runner_sha256": "6788ea1a35aca7eab23f2298d32ee7390aa1890a252546f21c3a4f5e63c16b88",
+  "oracle": [
+    "An older summary with no saved effort keeps the global max baseline",
+    "Each acknowledged effort is committed to the original session summary before exit",
+    "Reopen with the unchanged original ACL and exact session identity; default and none remain distinct",
+    "An explicit CLI override wins over the saved effort",
+    "Only one new prompt, one successful original read receipt, exact fresh canary and all previous Run identities retained"
+  ]
+}

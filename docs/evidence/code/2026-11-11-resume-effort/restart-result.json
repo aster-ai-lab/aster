@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "plan_sha256": "6d282f30d9e876ee00ae1a76a0ba3e894b0a91beb32b3807f52644aba0be5f7f",
+  "cases": [
+    {
+      "sent_effort": "high",
+      "accepted_effort": "high",
+      "footer": "high",
+      "context_tokens": 1048576,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "acknowledged": "high",
+      "recorded": "high",
+      "summary_sha256": "dced582b55e3b7897e095bf4b377f6b8a0609f69677d2dcee5ac370292fabd54"
+    },
+    {
+      "sent_effort": "default",
+      "accepted_effort": null,
+      "footer": "high",
+      "context_tokens": 1048576,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "acknowledged": "default",
+      "recorded": "default",
+      "summary_sha256": "34d15a71e2b04bc939a1e511b186591bca6a2e11929c1e933528172da3b93a9a"
+    },
+    {
+      "sent_effort": "none",
+      "accepted_effort": "none",
+      "footer": "none",
+      "context_tokens": 1048576,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "acknowledged": "none",
+      "recorded": "none",
+      "summary_sha256": "2055dccb332817cf8e280244999f923156ecc8c1ea30ee27784b2d7e836b5a5c"
+    }
+  ],
+  "legacy": {
+    "sent_effort": null,
+    "accepted_effort": "max",
+    "footer": "max",
+    "context_tokens": 1048576,
+    "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6"
+  },
+  "cli_override": {
+    "sent_effort": "none",
+    "accepted_effort": "low",
+    "footer": "low",
+    "context_tokens": 1048576,
+    "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6"
+  },
+  "follow_up": {
+    "run_id": "run-c1122900-a761-4e58-809d-f0fcbe302713",
+    "prompt_id": "7239b1a9-a2a7-403a-919b-dcd6618bee30",
+    "retained_history_count": 5,
+    "new_prompt_requests": 1,
+    "read_receipts": 1,
+    "canary_sha256": "d2e7d3313530160d9a559f5fd149eceb270d20393f005b6d6469d6787646d19d"
+  },
+  "source_acl_unchanged": true
+}

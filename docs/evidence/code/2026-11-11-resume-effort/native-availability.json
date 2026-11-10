@@ -1,0 +1,11 @@
+{
+  "checked_at": 1794350261.18952,
+  "console_locked_flags": [
+    true
+  ],
+  "agent_desktop": "2.5",
+  "terminal_window": "APP_NOT_FOUND",
+  "primary_display": "1920x1080, wallpaper only",
+  "screenshot_sha256": "0d6b3db95e4a606b54ec4f753c52d6408d23a52001f36a02c2fe9f1508d7dd19",
+  "native_input_sent": false
+}

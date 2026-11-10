@@ -1,0 +1,13 @@
+{
+  "case": "TUI-SESSION-002 restart effort retention",
+  "scope": "PTY load of the real DeepSeek session; no generation or native GUI acceptance",
+  "model": "deepseek/deepseek-flash",
+  "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+  "saved_effort": "high",
+  "global_effort": "max",
+  "acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "build_id": "aster-cli-pair-v1:fbef44abd3546407304d313c4def1924a9aa09bc:aarch64-apple-darwin",
+  "startup_deadline_seconds": 45,
+  "quit_deadline_seconds": 10,
+  "probe_sha256": "2036735f3a66c07e9bce22dd22e7b8599906e92890c4a83227ca3119f2ff4bb4"
+}

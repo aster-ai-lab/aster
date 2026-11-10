@@ -152,6 +152,7 @@ impl Summary {
             self.current_model_id = model.model_id.clone();
             if let Some(reasoning_effort) = &model.reasoning_effort {
                 self.reasoning_effort = *reasoning_effort;
+                self.reasoning_effort_uses_default = reasoning_effort.is_none();
             }
         }
         if let Some(agent) = &patch.agent {

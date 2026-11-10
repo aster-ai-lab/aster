@@ -103,6 +103,10 @@ async fn update_current_model_persists_leaves_and_clears_reasoning_effort() {
     let info = create_test_info();
     let model = default_model_id();
     adapter.init_session(&info, model.clone()).await.unwrap();
+    assert_eq!(
+        adapter.read_summary_sync(&info).unwrap().recorded_reasoning_effort(),
+        None,
+    );
     adapter
         .update_current_model_and_agent(
             &info,
@@ -127,9 +131,17 @@ async fn update_current_model_persists_leaves_and_clears_reasoning_effort() {
         .await
         .unwrap();
     assert_eq!(
-            adapter.read_summary_sync(&info).unwrap().reasoning_effort,
-            None,
-        );
+        adapter.read_summary_sync(&info).unwrap().recorded_reasoning_effort(),
+        Some(None),
+    );
+    adapter
+        .update_current_model_and_agent(&info, &model, None, Some(Some(ReasoningEffort::None)))
+        .await
+        .unwrap();
+    assert_eq!(
+        adapter.read_summary_sync(&info).unwrap().recorded_reasoning_effort(),
+        Some(Some(ReasoningEffort::None)),
+    );
 }
 #[tokio::test]
 async fn test_jsonl_round_trip() {
@@ -1304,6 +1316,7 @@ fn write_test_summary(
         agent: Default::default(),
         sandbox_profile: None,
         reasoning_effort: None,
+        reasoning_effort_uses_default: false,
         last_turn_summary: None,
         last_turn_summary_prompt_id: None,
         last_recap: None,

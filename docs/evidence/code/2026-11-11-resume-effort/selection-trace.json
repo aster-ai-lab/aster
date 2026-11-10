@@ -1,0 +1,562 @@
+{
+  "default": [
+    {
+      "seq": 1,
+      "pid": 62166,
+      "elapsed_us": 89741,
+      "clock_origin_unix_us": 1794350445416444,
+      "unix_time_us": 1794350445506185,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "default"
+    },
+    {
+      "seq": 23,
+      "pid": 62166,
+      "elapsed_us": 1620873,
+      "clock_origin_unix_us": 1794350445416444,
+      "unix_time_us": 1794350447037317,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": "default",
+      "effort_present": true
+    },
+    {
+      "seq": 24,
+      "pid": 62166,
+      "elapsed_us": 1620926,
+      "clock_origin_unix_us": 1794350445416444,
+      "unix_time_us": 1794350447037370,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    },
+    {
+      "seq": 26,
+      "pid": 62166,
+      "elapsed_us": 1772436,
+      "clock_origin_unix_us": 1794350445416444,
+      "unix_time_us": 1794350447188880,
+      "kind": "model-request",
+      "method": "session/set_model",
+      "rpc_id": 6,
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "none"
+    },
+    {
+      "seq": 27,
+      "pid": 62166,
+      "elapsed_us": 2352341,
+      "clock_origin_unix_us": 1794350445416444,
+      "unix_time_us": 1794350447768785,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 6,
+      "effort": "none",
+      "effort_present": true
+    }
+  ],
+  "high": [
+    {
+      "seq": 1,
+      "pid": 62072,
+      "elapsed_us": 71811,
+      "clock_origin_unix_us": 1794350438757386,
+      "unix_time_us": 1794350438829197,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "high"
+    },
+    {
+      "seq": 23,
+      "pid": 62072,
+      "elapsed_us": 1381994,
+      "clock_origin_unix_us": 1794350438757386,
+      "unix_time_us": 1794350440139380,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": "high",
+      "effort_present": true
+    },
+    {
+      "seq": 24,
+      "pid": 62072,
+      "elapsed_us": 1382013,
+      "clock_origin_unix_us": 1794350438757386,
+      "unix_time_us": 1794350440139399,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "reasoningEffort": "high",
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    },
+    {
+      "seq": 26,
+      "pid": 62072,
+      "elapsed_us": 1494503,
+      "clock_origin_unix_us": 1794350438757386,
+      "unix_time_us": 1794350440251889,
+      "kind": "model-request",
+      "method": "session/set_model",
+      "rpc_id": 6,
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "default"
+    },
+    {
+      "seq": 27,
+      "pid": 62072,
+      "elapsed_us": 1701376,
+      "clock_origin_unix_us": 1794350438757386,
+      "unix_time_us": 1794350440458762,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 6,
+      "effort": "default",
+      "effort_present": true
+    }
+  ],
+  "legacy": [
+    {
+      "seq": 1,
+      "pid": 61994,
+      "elapsed_us": 113451,
+      "clock_origin_unix_us": 1794350431809749,
+      "unix_time_us": 1794350431923200,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": false,
+      "effort": null
+    },
+    {
+      "seq": 23,
+      "pid": 61994,
+      "elapsed_us": 1592686,
+      "clock_origin_unix_us": 1794350431809749,
+      "unix_time_us": 1794350433402435,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": null,
+      "effort_present": false
+    },
+    {
+      "seq": 24,
+      "pid": 61994,
+      "elapsed_us": 1592715,
+      "clock_origin_unix_us": 1794350431809749,
+      "unix_time_us": 1794350433402464,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "reasoningEffort": "max",
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    },
+    {
+      "seq": 26,
+      "pid": 61994,
+      "elapsed_us": 1701003,
+      "clock_origin_unix_us": 1794350431809749,
+      "unix_time_us": 1794350433510752,
+      "kind": "model-request",
+      "method": "session/set_model",
+      "rpc_id": 6,
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "high"
+    },
+    {
+      "seq": 27,
+      "pid": 61994,
+      "elapsed_us": 1986292,
+      "clock_origin_unix_us": 1794350431809749,
+      "unix_time_us": 1794350433796041,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 6,
+      "effort": "high",
+      "effort_present": true
+    }
+  ],
+  "cli-override": [
+    {
+      "seq": 1,
+      "pid": 63032,
+      "elapsed_us": 95584,
+      "clock_origin_unix_us": 1794350455400285,
+      "unix_time_us": 1794350455495869,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "none"
+    },
+    {
+      "seq": 23,
+      "pid": 63032,
+      "elapsed_us": 1541825,
+      "clock_origin_unix_us": 1794350455400285,
+      "unix_time_us": 1794350456942110,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": "none",
+      "effort_present": true
+    },
+    {
+      "seq": 24,
+      "pid": 63032,
+      "elapsed_us": 1541866,
+      "clock_origin_unix_us": 1794350455400285,
+      "unix_time_us": 1794350456942151,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "reasoningEffort": "low",
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    },
+    {
+      "seq": 26,
+      "pid": 63032,
+      "elapsed_us": 1620342,
+      "clock_origin_unix_us": 1794350455400285,
+      "unix_time_us": 1794350457020627,
+      "kind": "model-request",
+      "method": "session/set_model",
+      "rpc_id": 6,
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "low"
+    }
+  ],
+  "none": [
+    {
+      "seq": 1,
+      "pid": 62987,
+      "elapsed_us": 90613,
+      "clock_origin_unix_us": 1794350452773068,
+      "unix_time_us": 1794350452863681,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "none"
+    },
+    {
+      "seq": 23,
+      "pid": 62987,
+      "elapsed_us": 1552447,
+      "clock_origin_unix_us": 1794350452773068,
+      "unix_time_us": 1794350454325515,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": "none",
+      "effort_present": true
+    },
+    {
+      "seq": 24,
+      "pid": 62987,
+      "elapsed_us": 1552470,
+      "clock_origin_unix_us": 1794350452773068,
+      "unix_time_us": 1794350454325538,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "reasoningEffort": "none",
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    }
+  ],
+  "follow-up": [
+    {
+      "seq": 1,
+      "pid": 63061,
+      "elapsed_us": 99406,
+      "clock_origin_unix_us": 1794350462013309,
+      "unix_time_us": 1794350462112715,
+      "kind": "model-request",
+      "method": "session/load",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "effort_present": true,
+      "effort": "none"
+    },
+    {
+      "seq": 23,
+      "pid": 63061,
+      "elapsed_us": 1604178,
+      "clock_origin_unix_us": 1794350462013309,
+      "unix_time_us": 1794350463617487,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "rpc_id": 2,
+      "effort": "none",
+      "effort_present": true
+    },
+    {
+      "seq": 24,
+      "pid": 63061,
+      "elapsed_us": 1604201,
+      "clock_origin_unix_us": 1794350462013309,
+      "unix_time_us": 1794350463617510,
+      "kind": "selected-capabilities",
+      "model_id": "deepseek/deepseek-flash",
+      "metadata": {
+        "reasoningEfforts": [
+          {
+            "value": "none",
+            "id": "none",
+            "label": "none",
+            "description": "Reasoning effort"
+          },
+          {
+            "value": "low",
+            "id": "low",
+            "label": "low",
+            "description": "Faster, lighter reasoning"
+          },
+          {
+            "value": "high",
+            "id": "high",
+            "label": "high",
+            "description": "Heavy reasoning"
+          },
+          {
+            "value": "max",
+            "id": "max",
+            "label": "max",
+            "description": "Maximum reasoning"
+          }
+        ],
+        "reasoningEffort": "none",
+        "defaultReasoningEffort": "high",
+        "reasoningSource": "provider+documented",
+        "contextWindowSource": "provider",
+        "totalContextTokens": 1048576,
+        "contextWindowKnown": true,
+        "capabilitiesStatus": "ready"
+      }
+    },
+    {
+      "seq": 26,
+      "pid": 63061,
+      "elapsed_us": 1749973,
+      "clock_origin_unix_us": 1794350462013309,
+      "unix_time_us": 1794350463763282,
+      "kind": "prompt-request",
+      "in_flight_before": 0,
+      "rpc_id": 6,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "prompt_id": "7239b1a9-a2a7-403a-919b-dcd6618bee30",
+      "prompt_digest": "sha256:c70f13bba5958cffc168065ad5a46a692dd0f76e3cde072998ba5fe7e9062ee4"
+    },
+    {
+      "seq": 82,
+      "pid": 63061,
+      "elapsed_us": 5311875,
+      "clock_origin_unix_us": 1794350462013309,
+      "unix_time_us": 1794350467325184,
+      "kind": "prompt-response",
+      "rpc_id": 6,
+      "session_id": "d362a90e-677b-40be-814d-88a58b8b78b6",
+      "prompt_id": "7239b1a9-a2a7-403a-919b-dcd6618bee30",
+      "prompt_digest": "sha256:c70f13bba5958cffc168065ad5a46a692dd0f76e3cde072998ba5fe7e9062ee4",
+      "stop_reason": "end_turn",
+      "error_code": null,
+      "completion_gate": false
+    }
+  ]
+}

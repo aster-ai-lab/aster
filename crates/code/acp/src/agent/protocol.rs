@@ -266,7 +266,9 @@ impl acp::Agent for AsterCodeAgent {
             .await
             .get(&session_id)
             .map(|live| (live.model_id.clone(), live.effort));
-        let (model_id, effort) = match current {
+        let use_saved_effort =
+            current.is_none() && !self.launch_effort_override && self.unattended.is_none();
+        let (model_id, mut effort) = match current {
             Some(selection) => selection,
             None => (
                 self.model_id.lock().await.clone(),
@@ -274,6 +276,17 @@ impl acp::Agent for AsterCodeAgent {
             ),
         };
         self.refresh_model(&model_id, true).await;
+        if use_saved_effort
+            && args
+                .meta
+                .as_ref()
+                .and_then(|meta| meta.get("reasoningEffortModelId"))
+                .and_then(serde_json::Value::as_str)
+                == Some(model_id.as_str())
+        {
+            effort = models::selected_effort(args.meta.as_ref(), effort)?
+                .filter(|saved| self.model_supports_effort(&model_id, saved.token));
+        }
         let plugin_tools = crate::plugin_tools::entries_from_meta(args.meta.as_ref());
         let setup = SessionSetup {
             workspace: workspace.clone(),

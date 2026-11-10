@@ -1323,6 +1323,8 @@ pub struct Summary {
     pub sandbox_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reasoning_effort: Option<ReasoningEffort>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub(crate) reasoning_effort_uses_default: bool,
     /// Ultra-short summary of the most recent successful turn, shown as the dashboard row's secondary line (via the roster for non-attached clients).
     /// Displayed until replaced by the next successful turn (or cleared by a conversation rewind).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1353,6 +1355,12 @@ pub fn default_model_id() -> acp::ModelId {
 }
 
 impl Summary {
+    /// An explicit reset is distinct from an older summary without a saved choice.
+    pub fn recorded_reasoning_effort(&self) -> Option<Option<ReasoningEffort>> {
+        (self.reasoning_effort.is_some() || self.reasoning_effort_uses_default)
+            .then_some(self.reasoning_effort)
+    }
+
     /// Re-asserting the current agent's name is a no-op: a model or reasoning-effort switch carries only
     /// the (built) name, and persisting that built definition would double-expand an inline agent on
     /// reload, so a same-name update must preserve the existing selection. Any other selection replaces it.
@@ -1423,6 +1431,7 @@ impl Summary {
             agent: PersistedAgentSelection::default(),
             sandbox_profile: None,
             reasoning_effort: None,
+            reasoning_effort_uses_default: false,
             last_turn_summary: None,
             last_turn_summary_prompt_id: None,
             last_recap: None,

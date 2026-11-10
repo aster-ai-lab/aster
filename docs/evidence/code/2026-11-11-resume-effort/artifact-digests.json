@@ -1,0 +1,212 @@
+[
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/probe.py",
+    "bytes": 4909,
+    "sha256": "2036735f3a66c07e9bce22dd22e7b8599906e92890c4a83227ca3119f2ff4bb4"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/run.log",
+    "bytes": 295,
+    "sha256": "212dca3d7a2f54619e8395106049bfdb577436e8c4c5bb94d20e86a8c9042eee"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/terminal.raw",
+    "bytes": 14812,
+    "sha256": "20cb39054c0e2cc19634138a9ef9a7e414f50c8384b575e842428a6e86f7a0a5"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/trace.jsonl",
+    "bytes": 6503,
+    "sha256": "21e7c0f8780775a5b8ddf91a2673ada651c8cb6f03c5426987905e49bf507eef"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart_matrix.py",
+    "bytes": 10325,
+    "sha256": "6788ea1a35aca7eab23f2298d32ee7390aa1890a252546f21c3a4f5e63c16b88"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/acp-resume-compile-failed.log",
+    "bytes": 5869,
+    "sha256": "d884afff44db7077ea5e9815a767fae9b0cc5a7bddc7db019ddfd66048372363"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/shell-summary-compile-failed.log",
+    "bytes": 2679,
+    "sha256": "6716c94b2c3bf12c65470e697c28c3786bb2b08b557f2a1bc037c5b4faba09d7"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/acp-resume-first-run.log",
+    "bytes": 8507,
+    "sha256": "0582331c34c84c2f2f020ca58fdda8d9b913f9e98351d294f026736e0e99058c"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/secondary-resume-isolated.log",
+    "bytes": 220,
+    "sha256": "f7768c57a1267c0d0344b4dc8df59f05abc6e667a5beb51844c0d5d9450b1ad4"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/format-final.log",
+    "bytes": 14589,
+    "sha256": "1eb5205a8d36ea82d80d5295f84664acaa26519924b23ec96ddb223cfefe2248"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/acp-resume.log",
+    "bytes": 7840,
+    "sha256": "3459ef22de96c60222dd6b5d1bd053e7c7a4b07202ee623b2cd896c91b91ce08"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/acp-models.log",
+    "bytes": 6970,
+    "sha256": "50b47178d36eea27bfd3fe694e3ab090c6be9df7f2ba5fa8cbcc45bc76ead98b"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/shell-summary.log",
+    "bytes": 2345,
+    "sha256": "6bcc5d1703de020b9953d0498dd508a05ba5c773ad9b1b9e87c33fc9dc4f3dbf"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/pager-preferences.log",
+    "bytes": 10647,
+    "sha256": "ef969c6936d3508b09fcb240f8951577ee882d68ebe414ee1e4b661242e1bbfe"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/shell-extra-0.log",
+    "bytes": 216,
+    "sha256": "16c9a0ad416befd5d4f6a6a8e1762b31fe21db3e55bbbf3ef5eb0322ea7dde7f"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/shell-extra-1.log",
+    "bytes": 207,
+    "sha256": "5fc599d43f354e199e9a0b13827c61fc483f7c666738740d05f45fbf84612923"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/clippy-aster-acp.log",
+    "bytes": 36027,
+    "sha256": "6801756b28e8fb45a478867cba661916bca67d4ebe44b0a5bfa68db4dee59957"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/clippy-aster-shell.log",
+    "bytes": 18506,
+    "sha256": "15f8ddf3f5eb950041417d480cd40485a05aeda2f540b616bad0a14c77609c44"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/clippy-aster-pager.log",
+    "bytes": 45712,
+    "sha256": "b5b2e88625af8b4d955f57fb510a3a884993d2ef585969ae74549fd249933547"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/pair.log",
+    "bytes": 12873,
+    "sha256": "915fc3c341d3ff059870a619f299d9676085058f34d63caefe344cf136a71993"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/reconcile.log",
+    "bytes": 399,
+    "sha256": "2b8b43ed18b6cb22c98a03a79143b17ff705ff59312610fa6f3882c70e78a319"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/cli-override-terminal.raw",
+    "bytes": 13788,
+    "sha256": "002d00c7ad8880d705d868dc93d76e9f7525ed0499a4e67304c07e658b0b0317"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/cli-override-view.txt",
+    "bytes": 6900,
+    "sha256": "5b7ed4a7752a4e8382f8b78e7239b92e2dc3258975928e9d8a0284efd455487e"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/cli-override.jsonl",
+    "bytes": 6810,
+    "sha256": "c88be2719365674620afc29c07890e6d347a044916b899f778bc85b934e3eb2f"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/default-terminal.raw",
+    "bytes": 20311,
+    "sha256": "8560d1eafeb877c5423d88efb65f85b1110b4f4abab876fdbfa70496e962030a"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/default-view.txt",
+    "bytes": 7012,
+    "sha256": "69ba6b22dadec3c1283f79eaa7e88bba839f1261ffb020896799170d4839dc8e"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/default.jsonl",
+    "bytes": 7071,
+    "sha256": "d313ce189b701036f73f53bfe567206e297ac363049193806d0d1b8e62f9f530"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/follow-up-terminal.raw",
+    "bytes": 29381,
+    "sha256": "ce866319b89dc67f263d8d4eb129822a8c229d7cc7f011df474cc06afa48a269"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/follow-up-view.txt",
+    "bytes": 7012,
+    "sha256": "47a723e280eb67d3844d70a53f195fc4d84544c88191074af1560c2af9b027a5"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/follow-up.jsonl",
+    "bytes": 22302,
+    "sha256": "2f4280e960cd4f0e44a19074dd3e3af0f50d2269a6a6182ba64b405bf63e6f9c"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/high-terminal.raw",
+    "bytes": 20269,
+    "sha256": "5aec76447b1da80e1aa348ff7256c67df7aa4dad9b9abf7eb113242385c2b876"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/high-view.txt",
+    "bytes": 7012,
+    "sha256": "69ba6b22dadec3c1283f79eaa7e88bba839f1261ffb020896799170d4839dc8e"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/high.jsonl",
+    "bytes": 7096,
+    "sha256": "7ce391867081a7d00d706c9490b731a65adec2678d9b5c417b33a044830c77d2"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/legacy-terminal.raw",
+    "bytes": 19099,
+    "sha256": "7adcbe32951cefead7325b13178d73289b0a7d7333bfcca7f8d7f2b4100b965e"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/legacy-view.txt",
+    "bytes": 6900,
+    "sha256": "3b1bbe2191b010b4d438a0615ba515a2741814b3e10db3b0cec6b08f200fadc5"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/legacy.jsonl",
+    "bytes": 7088,
+    "sha256": "2f65a0cbd929eeaa0a2180f9905c656820150a820cff481c45edfe987724f762"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/none-terminal.raw",
+    "bytes": 19048,
+    "sha256": "068ae3440e1fe9c6e435bce02a9fac11005c0ab3822a10684d1f631494105b45"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/none-view.txt",
+    "bytes": 7012,
+    "sha256": "ccd6cd684c7abc12f92ea0a34a4b464dea0d6875e8fcbabc9f335dbe5915eeaf"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/none.jsonl",
+    "bytes": 6506,
+    "sha256": "09b218710fb7a610c6e1550065e5641d024a9759a738267df4b929e428d00d11"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/plan.json",
+    "bytes": 1377,
+    "sha256": "6d282f30d9e876ee00ae1a76a0ba3e894b0a91beb32b3807f52644aba0be5f7f"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/result.json",
+    "bytes": 1964,
+    "sha256": "2c1649f5452fb615451a3a73f1da9c9eb756228e31552c59a77b4fcc5dd03235"
+  },
+  {
+    "private_path": ".runtime/tui-full-e2e/resume-settings/restart-matrix/run.log",
+    "bytes": 847,
+    "sha256": "23615bd13b88a3a4f495d084dd258fd79f9e503fdb6bbec05cefb57e4d6dd5b7"
+  }
+]

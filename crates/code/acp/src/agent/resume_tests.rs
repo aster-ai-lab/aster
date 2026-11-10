@@ -262,6 +262,71 @@ async fn an_empty_new_session_can_resume_without_a_turn() {
 }
 
 #[tokio::test]
+async fn saved_effort_is_bound_to_the_loaded_model() {
+    use aster_core::config::ReasoningEffort;
+
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().to_owned();
+    launch.model_id = "openai/gpt-4o".into();
+    launch.config.reasoning_effort = Some(ReasoningEffort::Max);
+    let host = AsterCodeAgent::new(launch.clone());
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let session = host.sessions.lock().await[id.0.as_ref()].session.clone();
+    session.close().await;
+    drop(host);
+
+    for (model, saved, override_effort, expected) in [
+        (launch.model_id.as_str(), "high", None, Some("high")),
+        (launch.model_id.as_str(), "none", None, Some("none")),
+        (launch.model_id.as_str(), "default", None, None),
+        (launch.model_id.as_str(), "minimal", None, None),
+        ("other/model", "high", None, Some("max")),
+        (launch.model_id.as_str(), "high", Some("low"), Some("low")),
+    ] {
+        let host = AsterCodeAgent::new(launch.clone());
+        let host = match override_effort {
+            Some(token) => host.with_default_reasoning_effort(token).unwrap(),
+            None => host,
+        };
+        let loaded = host
+            .load_session(
+                acp::LoadSessionRequest::new(id.clone(), root.path()).meta(
+                    json!({
+                        "reasoningEffortModelId": model,
+                        "reasoningEffort": saved,
+                    })
+                    .as_object()
+                    .cloned(),
+                ),
+            )
+            .await
+            .unwrap();
+        let models = loaded.models.unwrap();
+        let selected = models
+            .available_models
+            .iter()
+            .find(|info| info.model_id == models.current_model_id)
+            .unwrap();
+        let effective = selected
+            .meta
+            .as_ref()
+            .and_then(|meta| meta.get("reasoningEffort"))
+            .and_then(serde_json::Value::as_str);
+        assert_eq!(
+            effective, expected,
+            "saved {saved} for {model}, override {override_effort:?}"
+        );
+        let session = host.sessions.lock().await[id.0.as_ref()].session.clone();
+        session.close().await;
+    }
+}
+
+#[tokio::test]
 async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
     use aster_core::store::{FileSessionStore, SessionStore};
 

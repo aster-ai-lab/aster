@@ -1,0 +1,208 @@
+{
+  "toolchain": "1.97.1-aarch64-apple-darwin",
+  "env": {
+    "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "checks": [
+    {
+      "name": "acp-resume",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-acp",
+        "--lib",
+        "agent::resume_tests::"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 519 filtered out; finished in 0.40s"
+      ],
+      "elapsed_seconds": 18.55
+    },
+    {
+      "name": "acp-models",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-acp",
+        "--lib",
+        "agent::model_discovery_tests::"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 527 filtered out; finished in 0.74s"
+      ],
+      "elapsed_seconds": 1.42
+    },
+    {
+      "name": "shell-summary",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-shell",
+        "--lib",
+        "update_current_model_persists_leaves_and_clears_reasoning_effort"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7065 filtered out; finished in 0.12s"
+      ],
+      "elapsed_seconds": 109.44
+    },
+    {
+      "name": "pager-preferences",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-pager",
+        "--lib",
+        "model_preferences::tests::"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 10356 filtered out; finished in 0.03s"
+      ],
+      "elapsed_seconds": 206.36
+    },
+    {
+      "command": [
+        "target/debug/deps/aster_shell-d8468856c644732e",
+        "session::persistence::is_hidden_tests::summary_round_trips_and_defaults_reasoning_effort",
+        "--exact"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7065 filtered out; finished in 0.00s"
+      ],
+      "elapsed_seconds": 0.03
+    },
+    {
+      "command": [
+        "target/debug/deps/aster_shell-d8468856c644732e",
+        "session::storage::jsonl::tests::copy_session_data_creates_owner_only_target_dir",
+        "--exact"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7065 filtered out; finished in 0.03s"
+      ],
+      "elapsed_seconds": 0.05
+    },
+    {
+      "name": "clippy-aster-acp",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-acp",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 40.62
+    },
+    {
+      "name": "clippy-aster-shell",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-shell",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 98.55
+    },
+    {
+      "name": "clippy-aster-pager",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster-pager",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 129.16
+    },
+    {
+      "name": "pair",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp",
+        "--bin",
+        "aster",
+        "--bin",
+        "aster-acp"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 117.96
+    },
+    {
+      "name": "reconcile",
+      "command": [
+        "python3",
+        ".runtime/tui-full-e2e/source_pair.py",
+        "resume-settings-source-reconciliation.json"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 27.51
+    },
+    {
+      "name": "workspace-format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "baseline_paths_unchanged": true,
+      "reported_paths": [
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_resource_broker.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/capabilities_registry.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_count.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_http.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/runtime_components_tests.rs",
+        "/Users/roylin/code/aster/crates/embedding/src/assets.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/env_acl/tests.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/http.rs"
+      ]
+    }
+  ]
+}

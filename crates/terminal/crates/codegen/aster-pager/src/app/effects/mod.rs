@@ -547,6 +547,9 @@ pub(crate) fn execute(
             tasks
                 .spawn(async move {
                     let mcp_servers = discover_mcp_servers(cwd.clone()).await;
+                    if crate::app::aster_active() {
+                        crate::acp::model_preferences::add_session_effort(&cwd, &acp_session_id, &mut meta).await;
+                    }
                     let _phase = startup::phase_scope(StartupPhase::SessionCreate);
                     ulog::info("session.load.start", Some(&acp_session_id.0), None);
                     let load_started = std::time::Instant::now();
@@ -2014,11 +2017,12 @@ pub(crate) fn execute(
             prev_model_id,
         } => {
             let tx = acp_tx.clone();
+            let cwd = cwd.to_path_buf();
             tasks
                 .spawn(async move {
                     let meta = Some([("reasoningEffort".into(), serde_json::json!(effort.map_or("default".to_string(), |value| value.to_string())))].into_iter().collect());
                     let req = acp::SetSessionModelRequest::new(
-                            session_id,
+                            session_id.clone(),
                             model_id.clone(),
                         )
                         .meta(meta);
@@ -2041,6 +2045,11 @@ pub(crate) fn execute(
                             }
                         });
                     let effective_effort = result.as_ref().ok().copied().flatten();
+                    if result.is_ok() && crate::app::aster_active()
+                        && let Err(error) = crate::acp::model_preferences::persist_session(&cwd, session_id, &model_id, effective_effort).await
+                    {
+                        tracing::warn!(%error, "session effort could not be saved");
+                    }
                     let result = result.map(|_| ());
                     TaskResult::SwitchModelComplete {
                         agent_id,

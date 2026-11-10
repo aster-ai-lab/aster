@@ -559,6 +559,7 @@ pub struct AsterCodeAgent {
     model_id: Mutex<String>,
     /// Last `/effort` selection. Applied on every core session open.
     effort: Mutex<Option<EffortLimits>>,
+    launch_effort_override: bool,
     detected_models: std::sync::RwLock<HashMap<String, model_discovery::DetectedModel>>,
     client_model_discovery: std::cell::Cell<bool>,
     /// Durable `/goal` objectives keyed by ACP session id.
@@ -649,6 +650,7 @@ impl AsterCodeAgent {
             session_loads: InflightSessionLoads::new(),
             model_id: Mutex::new(model_id),
             effort: Mutex::new(effort),
+            launch_effort_override: false,
             goals: Mutex::new(HashMap::new()),
             turn_generation: Mutex::new(HashMap::new()),
             cancelled_generation: Mutex::new(HashMap::new()),
@@ -681,6 +683,7 @@ impl AsterCodeAgent {
             )
         };
         self.effort = Mutex::new(effort);
+        self.launch_effort_override = true;
         self.launch.config.reasoning_effort = Some(aster_core::config::ReasoningEffort::parse(
             effort.map_or("default", |effort| effort.token),
         )?);

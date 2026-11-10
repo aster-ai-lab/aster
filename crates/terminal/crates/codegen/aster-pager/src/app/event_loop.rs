@@ -4100,14 +4100,16 @@ fn process_effects(
             continue;
         };
         let effect_flags = session_flags_for_effect(&flags, app, &eff);
-        let (quit, meta) = effects::execute(
-            eff,
-            tasks,
-            &app.acp_tx,
-            &app.cwd,
-            &effect_flags,
-            progress_tx,
-        );
+        let cwd = match &eff {
+            Effect::SwitchModel { agent_id, .. } => app
+                .agents
+                .get(agent_id)
+                .map(|agent| agent.session.cwd.as_path())
+                .unwrap_or(&app.cwd),
+            _ => &app.cwd,
+        };
+        let (quit, meta) =
+            effects::execute(eff, tasks, &app.acp_tx, cwd, &effect_flags, progress_tx);
         if let Some((seq, abort_handle)) = meta.auth_abort_handle
             && let super::app_view::AuthState::Authenticating {
                 request_seq,

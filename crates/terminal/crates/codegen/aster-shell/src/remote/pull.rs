@@ -185,6 +185,7 @@ pub(crate) mod hydrate {
             // Hydrated locally: record the profile this process runs under
             sandbox_profile: aster_confine::configured_profile_name().map(String::from),
             reasoning_effort: None,
+            reasoning_effort_uses_default: false,
             last_turn_summary: None,
             last_turn_summary_prompt_id: None,
             last_recap: None,
