@@ -1,0 +1,23 @@
+{
+  "model": "deepseek/deepseek-flash",
+  "source_acl": "../../config.acl",
+  "cases": [
+    {
+      "label": "native-timeout-host",
+      "prompt": "Run exactly this foreground bash command once: python3 -c \"import time; print('TIMEOUT-START-native-timeout-host', flush=True); time.sleep(8)\". Set the bash timeout to 1500 milliseconds. Do not edit files, detach, retry, or call other tools. After it returns, report the actual tool outcome.",
+      "requested_timeout_ms": 1500,
+      "expected_timeout_ms": 1500,
+      "tool_receipt_deadline_seconds": 31.5,
+      "settle_deadline_seconds": 61.5,
+      "oracle": [
+        "one original bash invocation with exact requested timeout",
+        "original prepared invocation has one final receipt with complete observation",
+        "timeout content and metadata show effective budget; requested metadata preserved",
+        "parent settles once and no automatic retry",
+        "no waiter resurrects"
+      ]
+    }
+  ],
+  "change_under_test": "timeout diagnostics; original execution and outer timeout are unchanged",
+  "mode": "YOLO, existing HostAccessSandbox"
+}

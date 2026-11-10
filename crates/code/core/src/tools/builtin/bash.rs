@@ -757,6 +757,12 @@ impl Tool for BashTool {
                     None
                 };
                 let span = CommandSpan::begin(ctx.workspace.as_path()).await;
+                let effective_timeout_ms = match sandbox.effective_timeout_ms(timeout_ms) {
+                    Ok(value) => value,
+                    Err(error) => {
+                        return Ok(settled_pre_spawn_refusal(ctx, span, error.to_string()).await);
+                    }
+                };
                 let command_env = span.env(ctx.command_env.clone());
                 let cancellation = ctx.cancellation_token();
                 let execution = sandbox.exec_cancellable(
@@ -769,14 +775,18 @@ impl Tool for BashTool {
                     },
                     &cancellation,
                 );
-                let (result, termination) = match tokio::time::timeout(
-                    std::time::Duration::from_millis(
-                        timeout_ms.saturating_add(sandbox.execution_overhead_ms()),
-                    ),
-                    execution,
-                )
-                .await
-                {
+                let execution = if sandbox.owns_command_deadline() {
+                    Ok(execution.await)
+                } else {
+                    tokio::time::timeout(
+                        std::time::Duration::from_millis(
+                            timeout_ms.saturating_add(sandbox.execution_overhead_ms()),
+                        ),
+                        execution,
+                    )
+                    .await
+                };
+                let (result, termination) = match execution {
                     Ok(Err(error))
                         if crate::sandbox::native::is_native_process_lifetime_unqualified(
                             &error,
@@ -801,13 +811,15 @@ impl Tool for BashTool {
                             })
                         });
                         let mut timed_out = ToolOutput::error(format!(
-                            "[Command timed out after {}ms]",
+                            "[Command timed out after {}ms]\n[Command termination was not observed]",
                             timeout_ms
                         ));
                         timed_out.metadata = Some(with_changed_paths(
                             serde_json::json!({
                                 "exit_code": null,
                                 "timeout_ms": timeout_ms,
+                                "observation_incomplete": true,
+                                "output_complete": false,
                                 "sandboxed": isolated,
                                 "output": capture_metadata,
                             }),
@@ -854,12 +866,13 @@ impl Tool for BashTool {
                 if result.timed_out {
                     let mut timed_out = ToolOutput::error(format!(
                         "{}\n\n[Command timed out after {}ms]",
-                        output, timeout_ms
+                        output, effective_timeout_ms
                     ));
                     timed_out.metadata = Some(with_changed_paths(
                         serde_json::json!({
                             "exit_code": result.exit_code,
-                            "timeout_ms": timeout_ms,
+                            "timeout_ms": effective_timeout_ms,
+                            "requested_timeout_ms": requested_timeout_ms,
                             "sandboxed": isolated,
                             "output": capture_metadata,
                             "shell_output_streams": streams,
@@ -868,7 +881,7 @@ impl Tool for BashTool {
                     ));
                     timed_out.error_kind = Some(ToolErrorKind::Timeout {
                         op: "bash".to_string(),
-                        duration_ms: timeout_ms,
+                        duration_ms: effective_timeout_ms,
                     });
                     return Ok(timed_out);
                 }

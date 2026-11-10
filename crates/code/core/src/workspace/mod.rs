@@ -570,6 +570,12 @@ pub trait WorkspaceFileSystemExt: Send + Sync {
 /// Shell/command execution available to the `bash` tool.
 #[async_trait]
 pub trait WorkspaceCommandRunner: Send + Sync {
+    /// Enforce the command deadline and finish owned cleanup before returning.
+    /// Custom runners retain the caller's watchdog unless they opt in.
+    fn owns_command_deadline(&self) -> bool {
+        false
+    }
+
     /// Report the configured OS/shell without executing or probing the backend.
     /// Unreported custom or remote command runners remain unknown.
     fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {

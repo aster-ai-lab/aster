@@ -995,6 +995,10 @@ impl WorkspaceTextReader for ManifestWorkspaceBackend {
 
 #[async_trait]
 impl WorkspaceCommandRunner for ManifestWorkspaceBackend {
+    fn owns_command_deadline(&self) -> bool {
+        self.local.owns_command_deadline()
+    }
+
     fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {
         self.local.execution_target()
     }

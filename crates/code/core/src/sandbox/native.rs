@@ -14,7 +14,7 @@ use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use ksandbox::{
     CommandRequest, NativeSandbox, NetworkAllowRule, OutputObserver, OutputSummary, PathRule,
-    SandboxPolicy,
+    ResolvedResourceBudget, SandboxPolicy,
 };
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -154,6 +154,15 @@ impl BashSandbox for NativeBashSandbox {
 
     fn validate_execution_available(&self) -> Result<()> {
         Ok(())
+    }
+
+    fn effective_timeout_ms(&self, requested_ms: u64) -> Result<u64> {
+        ResolvedResourceBudget::resolve(&self.inner.policy().resources, requested_ms)
+            .map(|budget| budget.timeout_ms)
+    }
+
+    fn owns_command_deadline(&self) -> bool {
+        true
     }
 
     fn supports_background_execution(&self) -> bool {

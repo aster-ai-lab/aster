@@ -4,6 +4,34 @@ use crate::sandbox::native::NativeBashSandbox;
 use crate::tools::{Tool, ToolContext};
 
 #[tokio::test]
+#[cfg(unix)]
+async fn host_timeout_keeps_capture() {
+    let root = tempfile::tempdir().unwrap();
+    let sandbox = Arc::new(HostAccessSandbox {
+        runner: Arc::new(crate::workspace::LocalWorkspaceBackend::new(
+            root.path().into(),
+        )),
+    });
+    assert!(sandbox.owns_command_deadline());
+    let ctx = ToolContext::new(root.path().into()).with_sandbox(sandbox);
+    let command = "printf partial; sleep 8";
+    let output = crate::tools::builtin::bash::BashTool
+        .execute(
+            &serde_json::json!({"command":command,"timeout":1_000}),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    assert!(!output.success);
+    assert!(output.content.starts_with("partial"), "{}", output.content);
+    let metadata = output.metadata.unwrap();
+    assert!(metadata["exit_code"].is_i64());
+    assert_eq!(metadata["sandboxed"], false);
+    assert_eq!(metadata["output"]["timed_out"], true);
+    assert_ne!(metadata["observation_incomplete"], true);
+}
+
+#[tokio::test]
 async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
     let target =
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../target/yolo-fixtures");

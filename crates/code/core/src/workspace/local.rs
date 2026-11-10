@@ -1011,6 +1011,11 @@ impl WorkspaceGitWorktreeProvider for LocalWorkspaceBackend {
 
 #[async_trait]
 impl WorkspaceCommandRunner for LocalWorkspaceBackend {
+    fn owns_command_deadline(&self) -> bool {
+        // shortcut: Windows HTTP compatibility lacks a deadline; opt in once it enforces one.
+        !cfg!(windows)
+    }
+
     fn execution_target(&self) -> crate::sandbox::ShellExecutionTarget {
         crate::sandbox::ShellExecutionTarget::local_host_shell()
     }

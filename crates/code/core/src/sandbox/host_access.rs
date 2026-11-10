@@ -22,6 +22,10 @@ impl BashSandbox for HostAccessSandbox {
         self.runner.shell_note()
     }
 
+    fn owns_command_deadline(&self) -> bool {
+        self.runner.owns_command_deadline()
+    }
+
     async fn exec_command(&self, command: &str, _workspace: &str) -> anyhow::Result<SandboxOutput> {
         let output = self
             .exec(SandboxCommandRequest {

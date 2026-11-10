@@ -1,0 +1,67 @@
+{
+  "label": "native-timeout-request",
+  "run_id": "run-df0d46af-48d3-496a-b3d0-df92e22bdf6c",
+  "parent_status": "completed",
+  "prepared_calls": 1,
+  "receipt": {
+    "schema": "aster.code.tool-result.v1",
+    "identity": {
+      "turn": 2,
+      "cycle": 0,
+      "tool_call_id": "call_b4720501a2994e1093c7b4e123da5b3a",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-df0d46af-48d3-496a-b3d0-df92e22bdf6c",
+        "thread_id": "5a297fa9-7e75-4e93-8d89-193aca28c5bc",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "prepared_digest": "sha256:9a87aab8cf41be1586db09410b550daf10fc5b4952c6677303eef19f0be3d58e",
+    "outcome": "failed",
+    "exit_code": 1,
+    "output": "{\"kind\":\"aster.fact_tool_result\",\"text\":\"[Command timed out after 1500ms]\",\"is_error\":true,\"images\":[],\"exit_code\":1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":null,\"timeout_ms\":1500,\"sandboxed\":true,\"output\":null,\"aster_tool_result_evidence\":{\"schema\":\"aster.code.tool-result-evidence.v1\",\"original_bytes\":32,\"projected_bytes\":32,\"original_estimated_tokens\":8,\"projected_estimated_tokens\":8,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"content_digest\":\"sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a\",\"projected_digest\":\"sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a\",\"repeat_key\":\"sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a\",\"content_ref\":\"inline:sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"aster_tool_result_transform_binding\":{\"schema\":\"aster.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927\",\"binding_digest\":\"sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3\"}},\"observation_digest\":\"sha256:faa898a71687590994c75542d737f0378f5e299fcba66ce5fcee6358c12c43e0\"}",
+    "effects": {
+      "changes": [],
+      "completeness": "complete"
+    }
+  },
+  "wire": {
+    "kind": "aster.fact_tool_result",
+    "text": "[Command timed out after 1500ms]",
+    "is_error": true,
+    "images": [],
+    "exit_code": 1,
+    "outcome": "failed",
+    "observation_incomplete": false,
+    "metadata": {
+      "exit_code": null,
+      "timeout_ms": 1500,
+      "sandboxed": true,
+      "output": null,
+      "aster_tool_result_evidence": {
+        "schema": "aster.code.tool-result-evidence.v1",
+        "original_bytes": 32,
+        "projected_bytes": 32,
+        "original_estimated_tokens": 8,
+        "projected_estimated_tokens": 8,
+        "token_estimator": "utf8-bytes-ceil-div-4/v1",
+        "transform_algorithm": "aster.code.tool-result-transform.v1",
+        "content_digest": "sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a",
+        "projected_digest": "sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a",
+        "repeat_key": "sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a",
+        "content_ref": "inline:sha256:11789861652fa2340883062eefdd39bdc1f3bccc2557129d6b8a646d908a2d1a",
+        "loss_mode": "none",
+        "byte_delta": 0,
+        "estimated_token_delta": 0
+      },
+      "aster_tool_result_transform_binding": {
+        "schema": "aster.code.tool-result-transform-binding.v1",
+        "transform_algorithm": "aster.code.tool-result-transform.v1",
+        "policy_digest": "sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927",
+        "binding_digest": "sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3"
+      }
+    },
+    "observation_digest": "sha256:faa898a71687590994c75542d737f0378f5e299fcba66ce5fcee6358c12c43e0"
+  },
+  "check": "RUNNING"
+}

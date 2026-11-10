@@ -1,0 +1,46 @@
+{
+  "policy_budget_regression": {
+    "before": "0 passed, 2 failed; each isolated failure reproduced",
+    "after": "3 passed, 0 failed"
+  },
+  "deadline_owner_regression": {
+    "before": "0 passed, 1 failed; caller returned without original partial output",
+    "after": "included in final Bash regression"
+  },
+  "legacy_watchdog_regression": {
+    "before": "0 passed, 1 failed; missing incomplete-evidence marker",
+    "after": "included in final Bash regression"
+  },
+  "bash": {
+    "command": "cargo test --locked -p aster-core --lib tools::builtin::bash:: -- --test-threads=1",
+    "result": "73 passed, 0 failed, 1 ignored",
+    "log_sha256": "960f7e13a6541af1a018032912dcefefffa9f340406544fb21cadf0bf5430ad3"
+  },
+  "sandboxes": {
+    "command": "cargo test --locked -p aster-core --lib sandbox:: -- --test-threads=1",
+    "result": "32 passed, 0 failed, 0 ignored",
+    "log_sha256": "4eb39f005b4ac6df3c87a87c8d051edd153bdd5aa5ee5494baadf97cf8ca114b"
+  },
+  "receipts": {
+    "command": "cargo test --locked -p aster-core --lib fact_control::receipts::tests::event_cancellation -- --test-threads=1",
+    "result": "7 passed, 0 failed, 0 ignored",
+    "log_sha256": "7a25e31551db478a608e98e56813b0baf102254e14e829d9312755af24582e24"
+  },
+  "clippy": {
+    "command": "cargo clippy --locked -p aster-core --all-targets --no-deps",
+    "result": "passed; existing warnings, none in changed functions",
+    "log_sha256": "9a67a741b2f8fe324e1ff60f721fc5d26a43526a75894413a90b49e083813197"
+  },
+  "format": {
+    "command": "cargo fmt --all -- --check",
+    "result": "18 pre-existing failing paths; touched-file rustfmt and git diff --check passed"
+  },
+  "pair": {
+    "command": "cargo build --locked -p aster -p aster-acp --bins",
+    "result": "passed; current source/pair identity independently matched",
+    "log_sha256": "8f34945e3a61edea3651458d52b7e301569202351fd341a6fd14c4020046c49c"
+  },
+  "native_replay": {
+    "result": "PENDING: macOS locked before launching the final pair; no fixed native pass claimed"
+  }
+}

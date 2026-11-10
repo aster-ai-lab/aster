@@ -1,0 +1,7 @@
+{
+  "candidate": "aster-cli-pair-v1:2a0d00d9ae724ea12f83b7dc1fe523aff1796342:aarch64-apple-darwin",
+  "native-timeout-policy": "PASS, effective120000/requested900000, observed PID46939 exited",
+  "native-timeout-request": "FAIL, missing original output marker; metadata exit_code null and output null prove caller watchdog returned",
+  "native-timeout-host": "FAIL, same missing marker/null original exit and capture in YOLO",
+  "scope": "original prompts, deadlines, args, model and oracles retained; next candidate must rerun these exact scenarios"
+}

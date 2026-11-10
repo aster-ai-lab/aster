@@ -76,6 +76,8 @@ struct RecordedSandboxRequest {
 }
 
 struct RecordingExtendedSandbox {
+    timeout_limit_ms: Option<u64>,
+    deadline_owned: bool,
     called: Arc<AtomicBool>,
     request: Arc<std::sync::Mutex<Option<RecordedSandboxRequest>>>,
     output: SandboxExecutionOutput,
@@ -84,6 +86,17 @@ struct RecordingExtendedSandbox {
 
 #[async_trait]
 impl BashSandbox for RecordingExtendedSandbox {
+    fn owns_command_deadline(&self) -> bool {
+        self.deadline_owned
+    }
+
+    fn effective_timeout_ms(&self, requested_ms: u64) -> anyhow::Result<u64> {
+        match self.timeout_limit_ms {
+            Some(0) => anyhow::bail!("sandbox command budget unavailable"),
+            Some(limit) => Ok(limit),
+            None => Ok(requested_ms),
+        }
+    }
     async fn exec_command(
         &self,
         _command: &str,
@@ -94,6 +107,9 @@ impl BashSandbox for RecordingExtendedSandbox {
 
     async fn exec(&self, request: SandboxCommandRequest) -> anyhow::Result<SandboxExecutionOutput> {
         self.called.store(true, Ordering::SeqCst);
+        if self.deadline_owned {
+            tokio::time::sleep(std::time::Duration::from_millis(request.timeout_ms + 1)).await;
+        }
         *self.request.lock().unwrap() = Some(RecordedSandboxRequest {
             command: request.command,
             guest_workspace: request.guest_workspace,
@@ -220,6 +236,8 @@ async fn default_sandbox_execution_preserves_timeout_env_and_streaming_contract(
     let called = Arc::new(AtomicBool::new(false));
     let request = Arc::new(std::sync::Mutex::new(None));
     let sandbox = Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms: None,
+        deadline_owned: false,
         called: Arc::clone(&called),
         request: Arc::clone(&request),
         output: SandboxExecutionOutput {
@@ -354,6 +372,8 @@ async fn escalated_execution_skips_the_configured_sandbox() {
     let called = Arc::new(AtomicBool::new(false));
     let request = Arc::new(std::sync::Mutex::new(None));
     let sandbox = Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms: None,
+        deadline_owned: false,
         called: Arc::clone(&called),
         request,
         output: SandboxExecutionOutput {
@@ -395,10 +415,10 @@ async fn escalated_execution_skips_the_configured_sandbox() {
     assert_eq!(result.metadata.unwrap()["sandboxed"], false);
 }
 
-#[tokio::test]
-async fn sandbox_timeout_uses_the_sandbox_result_and_metadata() {
-    let tool = BashTool;
-    let sandbox = Arc::new(RecordingExtendedSandbox {
+fn timed_out_sandbox(timeout_limit_ms: Option<u64>) -> Arc<RecordingExtendedSandbox> {
+    Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms,
+        deadline_owned: false,
         called: Arc::new(AtomicBool::new(false)),
         request: Arc::new(std::sync::Mutex::new(None)),
         output: SandboxExecutionOutput {
@@ -413,7 +433,13 @@ async fn sandbox_timeout_uses_the_sandbox_result_and_metadata() {
             truncated: false,
             timed_out: true,
         },
-    });
+    })
+}
+
+#[tokio::test]
+async fn sandbox_timeout_uses_the_sandbox_result_and_metadata() {
+    let tool = BashTool;
+    let sandbox = timed_out_sandbox(None);
     let temp = tempfile::tempdir().unwrap();
     let ctx = ToolContext::new(temp.path().to_path_buf()).with_sandbox(sandbox);
 
@@ -438,6 +464,70 @@ async fn sandbox_timeout_uses_the_sandbox_result_and_metadata() {
     assert_eq!(metadata["sandboxed"], true);
     assert_eq!(metadata["timeout_ms"], 1_500);
     assert_eq!(metadata["output"]["timed_out"], true);
+}
+
+#[tokio::test]
+async fn reports_policy_timeout() {
+    let sandbox = timed_out_sandbox(Some(1_200));
+    let request = Arc::clone(&sandbox.request);
+    let root = tempfile::tempdir().unwrap();
+    let ctx = ToolContext::new(root.path().into()).with_sandbox(sandbox);
+    let result = BashTool
+        .execute(
+            &serde_json::json!({"command":"slow","timeout":900_000}),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    assert!(result.content.contains("timed out after 1200ms"));
+    assert!(!result.content.contains("after 900000ms"));
+    assert!(matches!(
+        result.error_kind,
+        Some(ToolErrorKind::Timeout {
+            duration_ms: 1_200,
+            ..
+        })
+    ));
+    let metadata = result.metadata.unwrap();
+    assert_eq!(metadata["timeout_ms"], 1_200);
+    assert_eq!(metadata["requested_timeout_ms"], 900_000);
+    assert_eq!(
+        request.lock().unwrap().as_ref().unwrap().timeout_ms,
+        900_000
+    );
+}
+
+#[tokio::test]
+async fn refuses_policy_timeout() {
+    let sandbox = timed_out_sandbox(Some(0));
+    let called = Arc::clone(&sandbox.called);
+    let root = tempfile::tempdir().unwrap();
+    let ctx = ToolContext::new(root.path().into()).with_sandbox(sandbox);
+    let result = BashTool
+        .execute(&serde_json::json!({"command":"not executed"}), &ctx)
+        .await
+        .unwrap();
+    assert!(!result.success);
+    assert!(result
+        .content
+        .contains("sandbox command budget unavailable"));
+    assert!(!called.load(Ordering::SeqCst));
+}
+
+#[tokio::test(start_paused = true)]
+async fn waits_for_owned_timeout() {
+    let mut sandbox = timed_out_sandbox(None);
+    Arc::get_mut(&mut sandbox).unwrap().deadline_owned = true;
+    let root = tempfile::tempdir().unwrap();
+    let ctx = ToolContext::new(root.path().into()).with_sandbox(sandbox);
+    let result = BashTool
+        .execute(&serde_json::json!({"command":"slow","timeout":1_500}), &ctx)
+        .await
+        .unwrap();
+    assert!(result.content.starts_with("partial"), "{}", result.content);
+    let metadata = result.metadata.unwrap();
+    assert_eq!(metadata["exit_code"], -1);
+    assert_eq!(metadata["output"]["captured_bytes"], 7);
 }
 
 #[tokio::test(start_paused = true)]
@@ -479,6 +569,7 @@ async fn sandbox_execution_is_bounded_when_the_backend_ignores_the_timeout() {
     let metadata = result.metadata.unwrap();
     assert_eq!(metadata["sandboxed"], true);
     assert_eq!(metadata["timeout_ms"], MIN_TIMEOUT_MS);
+    assert_eq!(metadata["observation_incomplete"], true);
 }
 
 #[tokio::test]
@@ -2748,6 +2839,8 @@ fn prefix_session_cwd_quotes_shell_metacharacters_in_the_cwd() {
 async fn sandbox_shaped_failure_proposes_one_escalated_retry() {
     let tool = BashTool;
     let sandbox = Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms: None,
+        deadline_owned: false,
         called: Arc::new(AtomicBool::new(false)),
         request: Arc::new(std::sync::Mutex::new(None)),
         output: SandboxExecutionOutput {
@@ -2795,6 +2888,8 @@ async fn unrelated_failure_and_success_never_propose_escalation() {
     let tool = BashTool;
     // A plain command error (bad flag) is not sandbox-shaped.
     let sandbox = Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms: None,
+        deadline_owned: false,
         called: Arc::new(AtomicBool::new(false)),
         request: Arc::new(std::sync::Mutex::new(None)),
         output: SandboxExecutionOutput {
@@ -2827,6 +2922,8 @@ async fn unrelated_failure_and_success_never_propose_escalation() {
     // A successful run never carries the hint even if its output mentions a
     // signal word in passing.
     let sandbox = Arc::new(RecordingExtendedSandbox {
+        timeout_limit_ms: None,
+        deadline_owned: false,
         called: Arc::new(AtomicBool::new(false)),
         request: Arc::new(std::sync::Mutex::new(None)),
         output: SandboxExecutionOutput {

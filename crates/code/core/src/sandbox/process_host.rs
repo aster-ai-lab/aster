@@ -108,6 +108,14 @@ impl BashSandbox for ProcessHostBashSandbox {
         super::ShellExecutionTarget::HostBash
     }
 
+    fn effective_timeout_ms(&self, requested_ms: u64) -> Result<u64> {
+        Ok(self.remaining_timeout_ms(requested_ms))
+    }
+
+    fn owns_command_deadline(&self) -> bool {
+        true
+    }
+
     async fn exec_command(&self, command: &str, guest_workspace: &str) -> Result<SandboxOutput> {
         let output = self
             .exec(SandboxCommandRequest {
@@ -568,6 +576,8 @@ mod tests {
             directory.path().to_path_buf(),
             Some(Instant::now() - Duration::from_secs(1)),
         );
+        assert!(sandbox.owns_command_deadline());
+        assert_eq!(sandbox.effective_timeout_ms(5_000).unwrap(), 0);
         let observer = Arc::new(RecordingObserver {
             deltas: Mutex::new(Vec::new()),
             completed: Mutex::new(None),

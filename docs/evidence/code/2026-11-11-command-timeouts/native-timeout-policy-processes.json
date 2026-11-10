@@ -1,0 +1,12 @@
+{
+  "observed_at": 1794333644.379286,
+  "processes": [
+    {
+      "pid": 46939,
+      "ppid": 46458,
+      "pgid": 46939,
+      "argv": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; print('TIMEOUT-START-native-timeout-policy', flush=True); time.sleep(300)"
+    }
+  ],
+  "after": "all observed owned processes exited"
+}

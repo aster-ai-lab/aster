@@ -1,0 +1,85 @@
+{
+  "label": "native-timeout-policy",
+  "run_id": "run-b86773d4-d220-4b3a-99cc-1d0aa41b4b4b",
+  "parent_status": "completed",
+  "prepared_calls": 1,
+  "receipt": {
+    "schema": "aster.code.tool-result.v1",
+    "identity": {
+      "turn": 1,
+      "cycle": 0,
+      "tool_call_id": "call_ee84e82fad25419e99b1aa355cc15161",
+      "batch_index": 0,
+      "admission": {
+        "run_id": "run-b86773d4-d220-4b3a-99cc-1d0aa41b4b4b",
+        "thread_id": "5a297fa9-7e75-4e93-8d89-193aca28c5bc",
+        "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+      }
+    },
+    "prepared_digest": "sha256:1342142ed09be4ad5f2106426975b6b2e9a3e70ca0ed9c31a10a420000954ba7",
+    "outcome": "failed",
+    "exit_code": -1,
+    "output": "{\"kind\":\"aster.fact_tool_result\",\"text\":\"TIMEOUT-START-native-timeout-policy\\npython3: error: couldn't create cache file '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/xcrun_db-lf81aboS' (errno=Operation not permitted)\\npython3: error: couldn't create cache file '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/xcrun_db-AQ4j1W1N' (errno=Operation not permitted)\\n\\n\\n[Command timed out after 120000ms]\",\"is_error\":true,\"images\":[],\"exit_code\":-1,\"outcome\":\"failed\",\"observation_incomplete\":false,\"metadata\":{\"exit_code\":-1,\"timeout_ms\":120000,\"requested_timeout_ms\":900000,\"sandboxed\":true,\"output\":{\"total_bytes\":324,\"captured_bytes\":324,\"truncated\":false,\"timed_out\":true},\"shell_output_streams\":{\"schema\":\"aster.code.shell-output-streams.v1\",\"stdout\":{\"text_bytes\":36,\"sha256\":\"f4db1a40822d915d15ac58c8c1e85347c72502a71f73a44c5aa3f4a9e9054b8e\"},\"stderr\":{\"text_bytes\":288,\"sha256\":\"4596d055622e977b6092d1da9377fc8f0c5036017bb69797f2a1f84d4f1c6585\"}},\"aster_tool_result_evidence\":{\"schema\":\"aster.code.tool-result-evidence.v1\",\"original_bytes\":360,\"projected_bytes\":360,\"original_estimated_tokens\":90,\"projected_estimated_tokens\":90,\"token_estimator\":\"utf8-bytes-ceil-div-4/v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"content_digest\":\"sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f\",\"projected_digest\":\"sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f\",\"repeat_key\":\"sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f\",\"content_ref\":\"inline:sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f\",\"loss_mode\":\"none\",\"byte_delta\":0,\"estimated_token_delta\":0},\"aster_tool_result_transform_binding\":{\"schema\":\"aster.code.tool-result-transform-binding.v1\",\"transform_algorithm\":\"aster.code.tool-result-transform.v1\",\"policy_digest\":\"sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927\",\"binding_digest\":\"sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3\"}},\"observation_digest\":\"sha256:c918a3eee6e4ba5592eef7fa7a4b9bbc224b42528feee5a663051c9504636124\"}",
+    "effects": {
+      "changes": [],
+      "completeness": "complete"
+    }
+  },
+  "wire": {
+    "kind": "aster.fact_tool_result",
+    "text": "TIMEOUT-START-native-timeout-policy\npython3: error: couldn't create cache file '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/xcrun_db-lf81aboS' (errno=Operation not permitted)\npython3: error: couldn't create cache file '/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/xcrun_db-AQ4j1W1N' (errno=Operation not permitted)\n\n\n[Command timed out after 120000ms]",
+    "is_error": true,
+    "images": [],
+    "exit_code": -1,
+    "outcome": "failed",
+    "observation_incomplete": false,
+    "metadata": {
+      "exit_code": -1,
+      "timeout_ms": 120000,
+      "requested_timeout_ms": 900000,
+      "sandboxed": true,
+      "output": {
+        "total_bytes": 324,
+        "captured_bytes": 324,
+        "truncated": false,
+        "timed_out": true
+      },
+      "shell_output_streams": {
+        "schema": "aster.code.shell-output-streams.v1",
+        "stdout": {
+          "text_bytes": 36,
+          "sha256": "f4db1a40822d915d15ac58c8c1e85347c72502a71f73a44c5aa3f4a9e9054b8e"
+        },
+        "stderr": {
+          "text_bytes": 288,
+          "sha256": "4596d055622e977b6092d1da9377fc8f0c5036017bb69797f2a1f84d4f1c6585"
+        }
+      },
+      "aster_tool_result_evidence": {
+        "schema": "aster.code.tool-result-evidence.v1",
+        "original_bytes": 360,
+        "projected_bytes": 360,
+        "original_estimated_tokens": 90,
+        "projected_estimated_tokens": 90,
+        "token_estimator": "utf8-bytes-ceil-div-4/v1",
+        "transform_algorithm": "aster.code.tool-result-transform.v1",
+        "content_digest": "sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f",
+        "projected_digest": "sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f",
+        "repeat_key": "sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f",
+        "content_ref": "inline:sha256:f44da1fcb4ac4f46af637d817a9120b3d4c538094a2ac368ab0374c7f32b409f",
+        "loss_mode": "none",
+        "byte_delta": 0,
+        "estimated_token_delta": 0
+      },
+      "aster_tool_result_transform_binding": {
+        "schema": "aster.code.tool-result-transform-binding.v1",
+        "transform_algorithm": "aster.code.tool-result-transform.v1",
+        "policy_digest": "sha256:6cdc525d1568113372fbc65320f3e579277d657074c17feb8ebe0fa6ae7fa927",
+        "binding_digest": "sha256:d898500821c796d0054fb2fcf44c15ef219fbf56edabf800270f391a8b2f23b3"
+      }
+    },
+    "observation_digest": "sha256:c918a3eee6e4ba5592eef7fa7a4b9bbc224b42528feee5a663051c9504636124"
+  },
+  "check": "PASS",
+  "terminal_observed_at": 1794333662.699051
+}

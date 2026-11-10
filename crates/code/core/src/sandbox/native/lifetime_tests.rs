@@ -23,3 +23,18 @@ fn validate_execution_available_when_constructed() {
         .validate_execution_available()
         .expect("constructed ksandbox admits execution");
 }
+
+#[test]
+fn resolves_policy_timeout() {
+    let workspace = tempfile::tempdir().unwrap();
+    let mut policy = aster_bash_policy(workspace.path()).unwrap();
+    policy.resources.timeout_ms = 83;
+    let sandbox = NativeBashSandbox {
+        inner: NativeSandbox::with_policy(workspace.path(), policy).unwrap(),
+        mediated: false,
+    };
+    assert_eq!(sandbox.effective_timeout_ms(1_000).unwrap(), 83);
+    assert_eq!(sandbox.effective_timeout_ms(20).unwrap(), 20);
+    assert!(sandbox.effective_timeout_ms(0).is_err());
+    assert!(sandbox.owns_command_deadline());
+}
