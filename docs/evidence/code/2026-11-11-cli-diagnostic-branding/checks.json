@@ -1,0 +1,219 @@
+{
+  "toolchain": "1.97.1-aarch64-apple-darwin",
+  "env": {
+    "CARGO_TARGET_DIR": "/Users/roylin/code/aster/target",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "checks": [
+    {
+      "name": "workspace",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--bin",
+        "aster",
+        "workspace_command"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.01s"
+      ],
+      "elapsed_seconds": 303.38,
+      "log_sha256": "c52c1885637e372c1e77bb38e8377f3a2b446c608857014edbca816ca530da99"
+    },
+    {
+      "name": "dashboard",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--bin",
+        "aster",
+        "dashboard_subcommand"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 53 filtered out; finished in 0.02s"
+      ],
+      "elapsed_seconds": 18.14,
+      "log_sha256": "ce5551fbbdc3e833500ed1272c1e65b6e7151de30d937a2f0005811f9d09bcbd"
+    },
+    {
+      "name": "workers",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--bin",
+        "aster",
+        "override_"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.00s"
+      ],
+      "elapsed_seconds": 3.11,
+      "log_sha256": "043016c7526fd0345bdff69be5b1a7cafcb8acc783d61defbf7b378acb8f0ba1"
+    },
+    {
+      "name": "pager-cli",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster-pager",
+        "--lib",
+        "app::cli::"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 10326 filtered out; finished in 0.03s"
+      ],
+      "elapsed_seconds": 319.08,
+      "log_sha256": "2491801d08b883882367fac0d04b77f859bca5cd004303a7e5605051805ccad3"
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-pager",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 101,
+      "test_results": [],
+      "elapsed_seconds": 311.6,
+      "log_sha256": "d39adfc5c149aa61c4a0c7a7b7abe7346f57f1fd7cf361ae5df880c31301a8ef"
+    },
+    {
+      "name": "clippy-restored",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-pager",
+        "--all-targets",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 14.77,
+      "log_sha256": "caf684737719df299524ffd679dce3ffc42b02fde2abe33972ae809bd52f4263"
+    },
+    {
+      "name": "frozen-prune",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "aster",
+        "--test",
+        "env_manager",
+        "prune_matches_twelve_frozen_native_cases_including_a_running_executable",
+        "--",
+        "--exact"
+      ],
+      "exit_code": 0,
+      "test_results": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 34.88s"
+      ],
+      "elapsed_seconds": 55.92,
+      "log_sha256": "af81ded0e6ae32d7d00a3729beb2c74a27451579921f6c7b90d41c530b9ed316"
+    },
+    {
+      "name": "pair",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "aster",
+        "-p",
+        "aster-acp",
+        "--bin",
+        "aster",
+        "--bin",
+        "aster-acp"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 214.14,
+      "log_sha256": "fc8e2e2b5a66c1db2f13788c74ceadca07c783557434be105caf5642c749eb8a"
+    },
+    {
+      "name": "source",
+      "command": [
+        "python3",
+        ".runtime/tui-full-e2e/source_pair.py",
+        "branding-source-reconciliation.json"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 27.14,
+      "log_sha256": "5d3851692af76f5d3f69481b01f8239a42ad42c2923ff3b527da120482271042"
+    },
+    {
+      "name": "actual",
+      "command": [
+        "python3",
+        "/Users/roylin/code/aster/.runtime/tui-full-e2e/branding-runtime/qualified/probe.py",
+        "after"
+      ],
+      "exit_code": 0,
+      "test_results": [],
+      "elapsed_seconds": 0.58,
+      "log_sha256": "ec516d0b6c29d71b1ad09bcc176a9019a53a6f0b0e5e8beb8a51d92d93425a6f"
+    },
+    {
+      "name": "workspace-format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 1,
+      "same_baseline_paths": true,
+      "paths": [
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/aix_episodes_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/agent_plane/edge_box.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/delivery_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/app_updater/github_feed_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_pure_local_tests.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/authority_resource_broker.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/capabilities_registry.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_count.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/model_control_http.rs",
+        "/Users/roylin/code/aster/apps/studio/src-tauri/src/runtime_components_tests.rs",
+        "/Users/roylin/code/aster/crates/embedding/src/assets.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-confine/src/lib.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-shell/src/sampling/error.rs",
+        "/Users/roylin/code/aster/crates/terminal/crates/codegen/aster-workspace/src/project_config.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/env_acl/tests.rs",
+        "/Users/roylin/code/aster/crates/use/tool-acquire/src/http.rs"
+      ],
+      "log_sha256": "1eb5205a8d36ea82d80d5295f84664acaa26519924b23ec96ddb223cfefe2248"
+    }
+  ],
+  "probe_sha256": "66352f34c00479b0549918c69d24962ab137115618e2d23587d1d28f0ccd8da9"
+}

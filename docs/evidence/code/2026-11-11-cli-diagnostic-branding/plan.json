@@ -1,0 +1,77 @@
+{
+  "scope": "Real CLI local help and diagnostic paths in an isolated profile",
+  "deadline_seconds": 10,
+  "cases": [
+    {
+      "name": "workspace-help",
+      "argv": [
+        "workspace",
+        "--help"
+      ],
+      "env": {},
+      "pty": false,
+      "exit_code": 0,
+      "behavior": "Usage:",
+      "forbidden": [
+        "grok"
+      ],
+      "expected": [
+        "ASTER_WORKSPACE_COMMAND=1"
+      ]
+    },
+    {
+      "name": "dashboard-disabled",
+      "argv": [
+        "dashboard"
+      ],
+      "env": {
+        "GROK_AGENT_DASHBOARD": "0"
+      },
+      "pty": true,
+      "exit_code": 1,
+      "behavior": "Dashboard is disabled",
+      "forbidden": [
+        "grok",
+        "config.toml"
+      ],
+      "expected": []
+    },
+    {
+      "name": "worker-invalid",
+      "argv": [
+        "du",
+        "--json"
+      ],
+      "env": {
+        "GROK_WORKER_THREADS": "invalid-test-value"
+      },
+      "pty": false,
+      "exit_code": 0,
+      "behavior": "invalid-test-value",
+      "json_stdout": true,
+      "forbidden": [
+        "grok_worker_threads"
+      ],
+      "expected": [
+        "worker thread count"
+      ]
+    },
+    {
+      "name": "setup-no-principal",
+      "argv": [
+        "setup"
+      ],
+      "env": {},
+      "pty": false,
+      "exit_code": 1,
+      "behavior": "No deployment key or team sign-in found",
+      "forbidden": [
+        "grok_deployment_key"
+      ],
+      "expected": [
+        "ASTER_DEPLOYMENT_KEY"
+      ]
+    }
+  ],
+  "runner_sha256": "66352f34c00479b0549918c69d24962ab137115618e2d23587d1d28f0ccd8da9"
+}

@@ -7,7 +7,8 @@ fn unknown_gate_has_local_opt_in_and_no_auth_diagnosis() {
         .expect_err("unknown gate must refuse activation")
         .to_string();
     assert!(error.contains("feature gate"), "{error}");
-    assert!(error.contains("GROK_WORKSPACE_COMMAND=1"), "{error}");
+    assert!(error.contains("ASTER_WORKSPACE_COMMAND=1"), "{error}");
+    assert!(!error.to_ascii_lowercase().contains("grok"), "{error}");
     assert!(!error.contains("network"), "{error}");
     assert!(!error.contains("login"), "{error}");
 }

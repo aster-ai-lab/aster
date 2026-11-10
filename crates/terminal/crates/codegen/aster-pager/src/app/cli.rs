@@ -145,7 +145,7 @@ See ~/.aster/README.md for more information.
     DiskUsage(crate::disk_usage_cmd::DiskUsageArgs),
     /// Expose this workspace to the Computer Hub (via the leader).
     ///
-    /// Disabled by default and enabled server-side per account; set `GROK_WORKSPACE_COMMAND=1` to enable it locally for testing.
+    /// Workspace sharing is enabled per account. Set `ASTER_WORKSPACE_COMMAND=1` to enable it locally for testing.
     #[command(hide = true)]
     Workspace(WorkspaceMgmtArgs),
     /// Open the Agent Dashboard view at startup.

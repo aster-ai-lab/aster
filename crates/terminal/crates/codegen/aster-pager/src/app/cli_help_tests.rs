@@ -11,6 +11,10 @@ fn help_uses_aster_names() {
     assert!(!help.to_ascii_lowercase().contains("grok"));
     assert!(!help.contains("config.toml"));
     assert!(help.contains("Dashboard"));
+    let workspace = root.find_subcommand_mut("workspace").unwrap();
+    let help = workspace.render_long_help().to_string();
+    assert!(!help.to_ascii_lowercase().contains("grok"));
+    assert!(help.contains("ASTER_WORKSPACE_COMMAND=1"));
 }
 
 #[test]

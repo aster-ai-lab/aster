@@ -1,0 +1,11 @@
+{
+  "source_hash": "333b719ba6663e760471acdde304e7e4aef4cb54",
+  "source_files": 13460,
+  "binaries": {
+    "aster": "aster-cli-pair-v1:333b719ba6663e760471acdde304e7e4aef4cb54:aarch64-apple-darwin",
+    "aster-acp": "aster-cli-pair-v1:333b719ba6663e760471acdde304e7e4aef4cb54:aarch64-apple-darwin"
+  },
+  "source_matches_pair": true,
+  "checked_at": 1794352404.203601,
+  "head": "e90cfc6c752c3974ee0ba43448b1cf3c1013ddf6"
+}

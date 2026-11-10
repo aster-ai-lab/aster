@@ -1,0 +1,18 @@
+{
+  "workspace-help": {
+    "stdout": "Expose this workspace to the Computer Hub (via the leader).\n\nWorkspace sharing is enabled per account. Set `ASTER_WORKSPACE_COMMAND=1` to enable it locally for testing.\n\nUsage: aster workspace [OPTIONS] <COMMAND>\n\nCommands:\n  start    Start (or update) the workspace-to-hub exposure\n  pause    Drain and disconnect from the hub, keeping the exposure warm\n  resume   Reconnect a paused exposure to the hub\n  stop     Stop exposing the workspace (the leader keeps running)\n  restart  Restart the exposure (stop, then start with the given options)\n  status   Show the current workspace-exposure status [alias: list]\n  help     Print this message or the help of the given subcommand(s)\n\nOptions:\n      --debug\n          Enable debug logging\n\n      --debug-file <FILE>\n          Write debug logs to FILE\n\n  -h, --help\n          Print help (see a summary with '-h')\n\n      --leader-socket <PATH>\n          Use a custom leader socket path instead of the default `~/.aster/leader.sock`. A local/branch build can thus run an isolated leader without colliding with the default one already running on the machine Name it `~/.aster/leader-*.sock` to keep `aster leader list/kill` able to find it; any other location works but won't be auto-discovered\n",
+    "stderr": ""
+  },
+  "dashboard-disabled": {
+    "stdout": "Aster: The Agent Dashboard is disabled by configuration.\r\n",
+    "stderr": ""
+  },
+  "worker-invalid": {
+    "stdout": "{\n  \"schema_version\": 2,\n  \"grok_home\": \"/Users/roylin/code/aster/.runtime/tui-full-e2e/branding-runtime/qualified/profile\",\n  \"total_bytes\": 696320,\n  \"volume_capacity_bytes\": 1995165736960,\n  \"volume_available_bytes\": 726786080768,\n  \"top_level_dirs\": [\n    {\n      \"name\": \"docs\",\n      \"bytes\": 692224\n    },\n    {\n      \"name\": \"logs\",\n      \"bytes\": 4096\n    }\n  ],\n  \"root_files_bytes\": 0,\n  \"redirections_bytes\": 0,\n  \"orphaned_redirections\": [],\n  \"unattributed_redirect_dirs\": [],\n  \"skipped_entries\": 0,\n  \"unreadable_dirs\": 0,\n  \"unstatable_entries\": 0,\n  \"other_filesystem_dirs\": 0,\n  \"unfollowed_dir_symlinks\": 0,\n  \"worktrees_outside_managed_roots\": 0,\n  \"registry\": \"absent\",\n  \"registry_path\": \"/Users/roylin/code/aster/.runtime/tui-full-e2e/branding-runtime/qualified/profile/worktrees.db\",\n  \"worktrees\": []\n}\n",
+    "stderr": "Aster: ignoring invalid worker thread count \"invalid-test-value\" (expected an integer)\n"
+  },
+  "setup-no-principal": {
+    "stdout": "",
+    "stderr": "No deployment key or team sign-in found.\n\nTo install managed configuration, sign in with a team using `aster login`,\nor set a deployment key:\n\n  export ASTER_DEPLOYMENT_KEY=<your-key>\n  aster setup\n\nOr add the key to ~/.aster/config.toml:\n\n  [endpoints]\n  deployment_key = \"<your-key>\"\n\nIf you don't have a deployment key, contact your organization's Aster administrator.\n"
+  }
+}

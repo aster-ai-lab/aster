@@ -1,0 +1,56 @@
+{
+  "status": "FAIL",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "plan_sha256": "07915864ca9d4e8793a3ae4700d031dd866a7f8c7e535dad97e05920cd9eb2bf",
+  "cases": [
+    {
+      "case": "workspace-help",
+      "exit_code": 0,
+      "passed": false,
+      "forbidden_seen": [
+        "grok"
+      ],
+      "expected_missing": [
+        "ASTER_WORKSPACE_COMMAND=1"
+      ],
+      "stdout_sha256": "4f055f36cb31f73bd777e54570eb8b0351738eef8c4624848d882cfe42c72c8a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "dashboard-disabled",
+      "exit_code": 1,
+      "passed": false,
+      "forbidden_seen": [
+        "grok",
+        "config.toml"
+      ],
+      "expected_missing": [],
+      "stdout_sha256": "6079cc94157261fd13ca99e48308cd7fdfe365fb45732231a389d72d6d42de52",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "worker-invalid",
+      "exit_code": 0,
+      "passed": false,
+      "forbidden_seen": [
+        "grok_worker_threads"
+      ],
+      "expected_missing": [
+        "worker thread count"
+      ],
+      "stdout_sha256": "cb288cd55df90e4e597c2247741e0e512ae0fa20240ad8ae5dcadbd65867787d",
+      "stderr_sha256": "b94eb6cde732318338fb5ea62691b135ffdb6bca765ddfe77291669835e44b98"
+    },
+    {
+      "case": "setup-no-principal",
+      "exit_code": 1,
+      "passed": false,
+      "forbidden_seen": [
+        "grok_deployment_key"
+      ],
+      "expected_missing": [],
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "68d9a09db35ecc1e5f3d42da9c5884b0dbe40db8807e9b6e9cda8b2e188ebc82"
+    }
+  ]
+}

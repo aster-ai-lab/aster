@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "build_id": "aster-cli-pair-v1:333b719ba6663e760471acdde304e7e4aef4cb54:aarch64-apple-darwin",
+  "plan_sha256": "07915864ca9d4e8793a3ae4700d031dd866a7f8c7e535dad97e05920cd9eb2bf",
+  "cases": [
+    {
+      "case": "workspace-help",
+      "exit_code": 0,
+      "passed": true,
+      "forbidden_seen": [],
+      "expected_missing": [],
+      "stdout_sha256": "614368aea7c8f7ed87bef8717659334ca2d790dbacbe3242964c76b505aafa92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "dashboard-disabled",
+      "exit_code": 1,
+      "passed": true,
+      "forbidden_seen": [],
+      "expected_missing": [],
+      "stdout_sha256": "16aee799f081d281d077f7f0de5aadebe35f3d7ba26d534621dcde22fac0ded8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "worker-invalid",
+      "exit_code": 0,
+      "passed": true,
+      "forbidden_seen": [],
+      "expected_missing": [],
+      "stdout_sha256": "a7e9d313570fda96533c3068eb6c41a495d9f70cb2b4178985c286260aed9c9b",
+      "stderr_sha256": "bea4ae7e2286bfa739f5872e865417347125cfb52e7d1daa4e08c3f18c150615"
+    },
+    {
+      "case": "setup-no-principal",
+      "exit_code": 1,
+      "passed": true,
+      "forbidden_seen": [],
+      "expected_missing": [],
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "89cbf304a61b5dd6df4079904c9780cfbe61a2458e309e0ff765749e87c6ddbe"
+    }
+  ]
+}

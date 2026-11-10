@@ -308,7 +308,6 @@ async fn run_setup_command(json: bool) {
         eprintln!();
         if cfg!(unix) {
             eprintln!("  export ASTER_DEPLOYMENT_KEY=<your-key>");
-            eprintln!("  # legacy alias: GROK_DEPLOYMENT_KEY");
         } else {
             eprintln!("  $env:ASTER_DEPLOYMENT_KEY=\"<your-key>\"");
         }
@@ -508,7 +507,7 @@ fn ensure_control_caps(reg: &LeaderRegistration) -> Result<&LeaderCapabilities> 
 }
 /// Env override for the `aster workspace` gate: any truthy value enables the command locally, a falsy one disables it.
 /// Either way it bypasses the remote settings flag.
-const WORKSPACE_COMMAND_ENV: &str = "GROK_WORKSPACE_COMMAND";
+const WORKSPACE_COMMAND_ENV: &str = "ASTER_WORKSPACE_COMMAND";
 /// One leader door's CLI identity, shared by `connect_leader_control` and `spawn_and_connect_leader`.
 struct LeaderDoorCli {
     /// The command name as the user types it (`aster workspace`); `<name> start` is its start command.
@@ -542,7 +541,7 @@ impl WorkspaceGate {
             ),
             Self::Unknown => anyhow::bail!(
                 "The feature gate for `aster workspace` could not be confirmed. \
-                 Set GROK_WORKSPACE_COMMAND=1 to enable it locally."
+                 Set {WORKSPACE_COMMAND_ENV}=1 to enable it locally."
             ),
         }
     }
@@ -550,10 +549,11 @@ impl WorkspaceGate {
 
 #[cfg(test)]
 mod workspace_command_gate_tests;
-/// The `GROK_WORKSPACE_COMMAND` override, if set (`Some(true)`/`Some(false)`); `None` defers to the remote settings flag.
+/// The Aster setting wins when both environment names are present.
 fn workspace_command_env_override() -> Option<bool> {
-    std::env::var(WORKSPACE_COMMAND_ENV)
-        .ok()
+    std::env::var_os(WORKSPACE_COMMAND_ENV)
+        .or_else(|| std::env::var_os("GROK_WORKSPACE_COMMAND"))
+        .and_then(|value| value.into_string().ok())
         .map(|v| env_flag_enabled(&v))
 }
 /// Resolve the gate.
@@ -1745,11 +1745,7 @@ fn flag_dashboard_at_startup_if_requested(args: &mut PagerArgs) -> Result<()> {
         return Ok(());
     }
     if !aster_pager::views::dashboard::dashboard_enabled() {
-        anyhow::bail!(
-            "the Agent Dashboard is disabled. Enable it by removing \
-             `[dashboard] enabled = false` from ~/.aster/config.toml and \
-             unsetting GROK_AGENT_DASHBOARD=0."
-        );
+        anyhow::bail!("The Agent Dashboard is disabled by configuration.");
     }
     args.command = None;
     unsafe { std::env::set_var("GROK_OPEN_DASHBOARD_AT_STARTUP", "1") };
@@ -1827,10 +1823,10 @@ impl WorkerCount {
                 used,
                 cores,
             } => Some(format!(
-                "Aster: clamped {GROK_WORKER_THREADS_ENV}={requested} to {used} (valid range is 1..={cores})"
+                "Aster: adjusted worker thread count from {requested} to {used} (valid range is 1..={cores})"
             )),
             Self::Ignored { value, .. } => Some(format!(
-                "Aster: ignoring {GROK_WORKER_THREADS_ENV}={value:?} (not a valid integer)"
+                "Aster: ignoring invalid worker thread count {value:?} (expected an integer)"
             )),
         }
     }
@@ -2861,7 +2857,7 @@ mod tests {
         );
         assert_eq!(
             resolve_worker_override("100000", cores).notice().unwrap(),
-            "Aster: clamped GROK_WORKER_THREADS=100000 to 360 (valid range is 1..=360)"
+            "Aster: adjusted worker thread count from 100000 to 360 (valid range is 1..=360)"
         );
     }
     #[test]
@@ -2874,7 +2870,7 @@ mod tests {
         }
         assert_eq!(
             resolve_worker_override("abc", cores).notice().unwrap(),
-            "Aster: ignoring GROK_WORKER_THREADS=\"abc\" (not a valid integer)"
+            "Aster: ignoring invalid worker thread count \"abc\" (expected an integer)"
         );
     }
     #[test]
@@ -3154,6 +3150,8 @@ mod tests {
         unsafe { std::env::remove_var("GROK_AGENT_DASHBOARD") };
         let err = result.expect_err("disabled dashboard must error");
         assert!(err.to_string().contains("disabled"), "got: {err}");
+        assert!(!err.to_string().to_ascii_lowercase().contains("grok"));
+        assert!(!err.to_string().contains("config.toml"));
         assert!(
             std::env::var("GROK_OPEN_DASHBOARD_AT_STARTUP").is_err(),
             "failure path must not flag the startup hook",
@@ -3196,13 +3194,21 @@ mod tests {
     #[serial_test::serial(GROK_WORKSPACE_COMMAND)]
     #[test]
     fn workspace_command_env_override_parsing() {
-        unsafe { std::env::remove_var("GROK_WORKSPACE_COMMAND") };
+        unsafe {
+            std::env::remove_var(WORKSPACE_COMMAND_ENV);
+            std::env::remove_var("GROK_WORKSPACE_COMMAND");
+        };
         assert_eq!(workspace_command_env_override(), None);
         unsafe { std::env::set_var("GROK_WORKSPACE_COMMAND", "1") };
         assert_eq!(workspace_command_env_override(), Some(true));
         unsafe { std::env::set_var("GROK_WORKSPACE_COMMAND", "off") };
         assert_eq!(workspace_command_env_override(), Some(false));
-        unsafe { std::env::remove_var("GROK_WORKSPACE_COMMAND") };
+        unsafe { std::env::set_var(WORKSPACE_COMMAND_ENV, "1") };
+        assert_eq!(workspace_command_env_override(), Some(true));
+        unsafe {
+            std::env::remove_var(WORKSPACE_COMMAND_ENV);
+            std::env::remove_var("GROK_WORKSPACE_COMMAND");
+        };
     }
     fn make_state() -> std::sync::Mutex<StdioReplayState> {
         std::sync::Mutex::new(StdioReplayState::default())
