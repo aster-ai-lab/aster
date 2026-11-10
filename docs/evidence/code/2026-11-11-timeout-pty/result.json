@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "plan_sha256": "a0cbc15bbc0983c37949fcf4358386b40bf123b40bd74acbd0cce38a7573cc76",
+  "cases": [
+    {
+      "case": "native-timeout-request",
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "run_id": "run-c0524a2d-4084-4288-85ed-7ba34a9a4553",
+      "prompt_id": "914b190b-f8c9-4d0d-abab-5a8d3f3d2313",
+      "terminal_status": "completed",
+      "receipt_identity": {
+        "turn": 1,
+        "cycle": 0,
+        "tool_call_id": "call_a4462e64ef1c4fdda663198ead7c9290",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-c0524a2d-4084-4288-85ed-7ba34a9a4553",
+          "thread_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "failed",
+      "effects": "complete",
+      "observed_exit": -1,
+      "observation_incomplete": false,
+      "timeout_ms": 1500,
+      "requested_timeout_ms": 1500,
+      "capture_shape": true,
+      "fixture_start_marker": true,
+      "observed_processes": {
+        "80223": "Wed Nov 11 06:59:11 2026     /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python"
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "native-timeout-policy",
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "run_id": "run-b8636266-a699-4756-a861-11989d6568b2",
+      "prompt_id": "1ec905ea-0161-45c7-95ca-19de5b420a6f",
+      "terminal_status": "completed",
+      "receipt_identity": {
+        "turn": 2,
+        "cycle": 0,
+        "tool_call_id": "call_992126d865a34265bb4281c1b199bb69",
+        "batch_index": 0,
+        "admission": {
+          "run_id": "run-b8636266-a699-4756-a861-11989d6568b2",
+          "thread_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+          "capability_binding_digest": "sha256:10e1b2104eca78a6b4b4da972599cbf2faf63d595c02f844f9b6fdff22500393"
+        }
+      },
+      "outcome": "failed",
+      "effects": "complete",
+      "observed_exit": -1,
+      "observation_incomplete": false,
+      "timeout_ms": 120000,
+      "requested_timeout_ms": 900000,
+      "capture_shape": true,
+      "fixture_start_marker": true,
+      "observed_processes": {
+        "80502": "Wed Nov 11 06:59:21 2026     /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python"
+      },
+      "status": "PASS"
+    }
+  ],
+  "approvals": [
+    {
+      "case": "native-timeout-request",
+      "tool_call_id": "call_a4462e64ef1c4fdda663198ead7c9290",
+      "key": "1",
+      "allow_once": true
+    },
+    {
+      "case": "native-timeout-policy",
+      "tool_call_id": "call_992126d865a34265bb4281c1b199bb69",
+      "key": "1",
+      "allow_once": true
+    }
+  ],
+  "cleanup_survivors": [],
+  "source_acl_unchanged": true
+}

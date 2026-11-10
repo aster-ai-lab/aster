@@ -1,0 +1,189 @@
+{
+  "probe_command": [
+    "python3",
+    ".runtime/tui-full-e2e/timeout-pty/probe.py"
+  ],
+  "cases": [
+    {
+      "case": "native-timeout-request",
+      "approval_viewport_sha256": "85adaee5949b4980c7e2321a5c782b4951d2c27d16cbb3d6a2d830de87c71d3e",
+      "settled_viewport_sha256": "2214b39bb4c3fa0bb1e5e1bf4a55b96e619d84f3c988656905d20646097e5466",
+      "observed_original_fixture_processes_now_remaining": 0
+    },
+    {
+      "case": "native-timeout-policy",
+      "approval_viewport_sha256": "67d205d26f8d4b4456a98ae4f3b280e2ddaf26810881f79234df2cad1fb1d04b",
+      "settled_viewport_sha256": "9bd2b3570fac72c98be7383af4b225898676c26ea9657b0edca3ee2ab808f191",
+      "observed_original_fixture_processes_now_remaining": 0
+    }
+  ],
+  "trace": [
+    {
+      "seq": 1,
+      "pid": 80041,
+      "elapsed_us": 177173,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351546010653,
+      "kind": "model-request",
+      "method": "session/new",
+      "rpc_id": 2,
+      "model_id": null,
+      "session_id": null,
+      "effort_present": false,
+      "effort": null
+    },
+    {
+      "seq": 2,
+      "pid": 80041,
+      "elapsed_us": 2317256,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351548150736,
+      "kind": "model-selected",
+      "model_id": "deepseek/deepseek-flash",
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "rpc_id": 2,
+      "effort": null,
+      "effort_present": false
+    },
+    {
+      "seq": 5,
+      "pid": 80041,
+      "elapsed_us": 2464982,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351548298462,
+      "kind": "prompt-request",
+      "in_flight_before": 0,
+      "rpc_id": 8,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "prompt_id": "914b190b-f8c9-4d0d-abab-5a8d3f3d2313",
+      "prompt_digest": "sha256:c7d93d861418a140f812423ac9cdadc10e67b1a89b209bfea8965d5f8511e65b"
+    },
+    {
+      "seq": 39,
+      "pid": 80041,
+      "elapsed_us": 5107477,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351550940957,
+      "kind": "permission-request",
+      "rpc_id": 0,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "tool_call_id": "call_a4462e64ef1c4fdda663198ead7c9290",
+      "exact_cases": [
+        "native-timeout-request"
+      ],
+      "allow_once_first": true
+    },
+    {
+      "seq": 183,
+      "pid": 80041,
+      "elapsed_us": 9679913,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351555513393,
+      "kind": "prompt-response",
+      "rpc_id": 8,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "prompt_id": "914b190b-f8c9-4d0d-abab-5a8d3f3d2313",
+      "prompt_digest": "sha256:c7d93d861418a140f812423ac9cdadc10e67b1a89b209bfea8965d5f8511e65b",
+      "stop_reason": "end_turn",
+      "error_code": null,
+      "completion_gate": false
+    },
+    {
+      "seq": 184,
+      "pid": 80041,
+      "elapsed_us": 9779329,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351555612809,
+      "kind": "prompt-request",
+      "in_flight_before": 0,
+      "rpc_id": 11,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "prompt_id": "1ec905ea-0161-45c7-95ca-19de5b420a6f",
+      "prompt_digest": "sha256:83c47c5a29648c26e7a48cbe2d7022e75fe35861347399d19e17622e5d61fb49"
+    },
+    {
+      "seq": 294,
+      "pid": 80041,
+      "elapsed_us": 14544281,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351560377761,
+      "kind": "permission-request",
+      "rpc_id": 1,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "tool_call_id": "call_992126d865a34265bb4281c1b199bb69",
+      "exact_cases": [
+        "native-timeout-policy"
+      ],
+      "allow_once_first": true
+    },
+    {
+      "seq": 567,
+      "pid": 80041,
+      "elapsed_us": 139165908,
+      "clock_origin_unix_us": 1794351545833480,
+      "unix_time_us": 1794351684999388,
+      "kind": "prompt-response",
+      "rpc_id": 11,
+      "session_id": "4f0e27dc-b0a9-490c-b731-897c48e955eb",
+      "prompt_id": "1ec905ea-0161-45c7-95ca-19de5b420a6f",
+      "prompt_digest": "sha256:83c47c5a29648c26e7a48cbe2d7022e75fe35861347399d19e17622e5d61fb49",
+      "stop_reason": "end_turn",
+      "error_code": null,
+      "completion_gate": false
+    }
+  ],
+  "private_files": [
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/frozen-native-cases.json",
+      "sha256": "8da11369bebd6e023d649d653c7c746109bff64e9da989b21eb4c4581fe35d1e"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/probe.py",
+      "sha256": "4b719d9b4e6db759b5ed3c19493e60cc3bf5b703395df313ae1ba324f88176b9"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/acp_trace_proxy.py",
+      "sha256": "3b5d6124ab6e532ce4a5b06066e755626806a3658009d2eb53b3c6bdfb30ec4a"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/trace.jsonl",
+      "sha256": "da642e2d41cf55f81ebd932b1eda251291dc7b4068713ab90b75d6a444447950"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/terminal.raw",
+      "sha256": "e3fc5960d35734d8aeeb63c6485cd165ac2b3277d5529089fc526e482869f8bc"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/run.log",
+      "sha256": "e50886473a672e3887e26cf8b2598a6120f31403f3b740433fe525df7761c588"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/preflight-failure.log",
+      "sha256": "a114a7707e63d18290f9b195edc99c15d884af098318c3f2a0f32249982d896c"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-policy-settled.txt",
+      "sha256": "9bd2b3570fac72c98be7383af4b225898676c26ea9657b0edca3ee2ab808f191"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-request-observed.json",
+      "sha256": "3a4ccb229b5488c6c80aa57057cc70c8c0947b9d081a4950aac4dc308896eec1"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-policy-approval.txt",
+      "sha256": "67d205d26f8d4b4456a98ae4f3b280e2ddaf26810881f79234df2cad1fb1d04b"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-request-approval.txt",
+      "sha256": "85adaee5949b4980c7e2321a5c782b4951d2c27d16cbb3d6a2d830de87c71d3e"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-policy-observed.json",
+      "sha256": "168d6c1f2eb03d5274ced11cb23788e262abbae495f921f00e3099629080c212"
+    },
+    {
+      "path": ".runtime/tui-full-e2e/timeout-pty/native-timeout-request-settled.txt",
+      "sha256": "2214b39bb4c3fa0bb1e5e1bf4a55b96e619d84f3c988656905d20646097e5466"
+    }
+  ]
+}

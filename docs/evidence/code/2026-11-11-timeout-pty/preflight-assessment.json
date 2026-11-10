@@ -1,0 +1,7 @@
+{
+  "status": "FAIL_SPEC",
+  "reason": "Relay assembly assumed an import that was absent, so the plan could not be written",
+  "trace_exists": false,
+  "model_requests": 0,
+  "prompts_delivered": 0
+}

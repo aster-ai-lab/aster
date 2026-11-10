@@ -1,0 +1,51 @@
+{
+  "model": "deepseek/deepseek-flash",
+  "source_acl": "../../config.acl",
+  "cases": [
+    {
+      "label": "native-timeout-request",
+      "prompt": "Run exactly this foreground bash command once: python3 -c \"import time; print('TIMEOUT-START-native-timeout-request', flush=True); time.sleep(8)\". Set the bash timeout to 1500 milliseconds. Do not edit files, detach, retry, or call other tools. After it returns, report the actual tool outcome.",
+      "requested_timeout_ms": 1500,
+      "expected_timeout_ms": 1500,
+      "tool_receipt_deadline_seconds": 31.5,
+      "settle_deadline_seconds": 61.5,
+      "oracle": [
+        "one original bash invocation with exact requested timeout",
+        "original prepared invocation has one final receipt with complete observation",
+        "timeout content and metadata show effective budget; requested metadata preserved",
+        "parent settles once and no automatic retry",
+        "no waiter resurrects"
+      ],
+      "command": "python3 -c \"import time; print('TIMEOUT-START-native-timeout-request', flush=True); time.sleep(8)\""
+    },
+    {
+      "label": "native-timeout-policy",
+      "prompt": "Run exactly this foreground bash command once: python3 -c \"import time; print('TIMEOUT-START-native-timeout-policy', flush=True); time.sleep(300)\". Set the bash timeout to 900000 milliseconds. Do not edit files, detach, retry, or call other tools. After it returns, report the actual tool outcome.",
+      "requested_timeout_ms": 900000,
+      "expected_timeout_ms": 120000,
+      "tool_receipt_deadline_seconds": 150.0,
+      "settle_deadline_seconds": 180.0,
+      "oracle": [
+        "one original bash invocation with exact requested timeout",
+        "original prepared invocation has one final receipt with complete observation",
+        "timeout content and metadata show effective budget; requested metadata preserved",
+        "parent settles once and no automatic retry",
+        "no waiter resurrects"
+      ],
+      "command": "python3 -c \"import time; print('TIMEOUT-START-native-timeout-policy', flush=True); time.sleep(300)\""
+    }
+  ],
+  "change_under_test": "timeout diagnostics; original execution and outer timeout are unchanged",
+  "scope": "Normal-mode real DeepSeek and shipped pair through PTY",
+  "build_id": "aster-cli-pair-v1:87f313b79042fb5ee64806794fc7b2300fbdd298:aarch64-apple-darwin",
+  "binaries_sha256": {
+    "aster": "dde318884caf023e750c4a146ca3bd035b7581a0c2f8f29eae1c9ec116023870",
+    "aster-acp": "7134eb163a5e85224d25ac26c3a3e098ba26bf4316ccb52d1c711bde73b7c96c"
+  },
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "native_plan_sha256": "8da11369bebd6e023d649d653c7c746109bff64e9da989b21eb4c4581fe35d1e",
+  "runner_sha256": "4b719d9b4e6db759b5ed3c19493e60cc3bf5b703395df313ae1ba324f88176b9",
+  "relay_sha256": "3b5d6124ab6e532ce4a5b06066e755626806a3658009d2eb53b3c6bdfb30ec4a",
+  "startup_deadline_seconds": 45,
+  "admission_deadline_seconds": 60
+}
