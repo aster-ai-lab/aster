@@ -65,7 +65,7 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 | Form limit rejection (`max 5`) | `shipped_native_form_submit_cancel_and_reject` | `range` `max 5` |
 | Form submit | `shipped_native_form_submit_cancel_and_reject` | `FORM-SUBMITTED` |
 | Form cancel | `shipped_native_form_submit_cancel_and_reject` | `FORM-CANCELLED` |
-| Form reject | `shipped_native_form_submit_cancel_and_reject` | `FORM-REJECTED` |
+| Form schema refusal | Core `ask_user_form` + ignored live form-schema wave | not hermetic PTY (no card) |
 | Allow once performs the write | `shipped_tui_launch_resume_and_visible_commands` | `ask-allow-once-gate` |
 | Reject leaves the write unrun | `shipped_tui_permission_reject_and_cancel_skip_the_side_effect` | `permission-reject` |
 | Cancel leaves the write unrun | `shipped_tui_permission_reject_and_cancel_skip_the_side_effect` | `permission-cancel` |

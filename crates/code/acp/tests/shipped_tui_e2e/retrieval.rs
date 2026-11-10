@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const PROMPT: &str = "RETRIEVAL-ORACLE: find the workspace retrieval probe using hybrid search";
 const SEMANTIC_PROMPT: &str = "RETRIEVAL-ORACLE: find configuration loading by meaning";
