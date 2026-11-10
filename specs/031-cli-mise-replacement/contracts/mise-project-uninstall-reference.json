@@ -1,0 +1,1371 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "timeout_seconds": 25,
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "installations": {
+    "fixture": [
+      "1.0.0",
+      "1.5.0",
+      "2.0.0"
+    ],
+    "other": [
+      "9.0.0"
+    ]
+  },
+  "status": "passed",
+  "cases": [
+    {
+      "name": "nearest_only",
+      "requests": {
+        "fixture": "1.0.0"
+      },
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  1.2s\nmise ✓ fixture@1.0.0  1.3s\nmise ✓ fixture@1.5.0  1.3s\nmise ████████████████ 3/3 · installed 3 tools in 1.3s\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  701ms\nmise ████████████████ 1/1 · installed 1 tool in 701ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise fixture@1.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/mise.toml\nmise by @jdx – removing 1 tool\nmise ✓ fixture@1.0.0  4ms\nmise ████████████████ 1/1 · removed 1 tool in 4ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/0/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "ordered_versions",
+      "requests": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ]
+      },
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  538ms\nmise ✓ fixture@1.5.0  558ms\nmise ✓ fixture@1.0.0  577ms\nmise ████████████████ 3/3 · installed 3 tools in 577ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  508ms\nmise ████████████████ 1/1 · installed 1 tool in 509ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise fixture@1.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/mise.toml\nmise fixture@2.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/mise.toml\nmise by @jdx – removing 2 tools\nmise ✓ fixture@1.0.0  4ms\nmise ✓ fixture@2.0.0  3ms\nmise ████████████████ 2/2 · removed 2 tools in 8ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/1/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "1.5.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "prefix_selection",
+      "requests": {
+        "fixture": "1"
+      },
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.5.0  574ms\nmise ✓ fixture@1.0.0  593ms\nmise ✓ fixture@2.0.0  612ms\nmise ████████████████ 3/3 · installed 3 tools in 613ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  509ms\nmise ████████████████ 1/1 · installed 1 tool in 510ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise fixture@1.5.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/mise.toml\nmise by @jdx – removing 1 tool\nmise ✓ fixture@1.5.0  4ms\nmise ████████████████ 1/1 · removed 1 tool in 4ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/2/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "external_requests",
+      "requests": {
+        "fixture": "path:../external",
+        "other": "system"
+      },
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.0.0  529ms\nmise ✓ fixture@1.5.0  549ms\nmise ✓ fixture@2.0.0  568ms\nmise ████████████████ 3/3 · installed 3 tools in 569ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  508ms\nmise ████████████████ 1/1 · installed 1 tool in 509ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise no installed tools are requested by the config in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project\nmise WARN  deprecated [system_tool_version]: @system is deprecated, use MISE_DISABLE_TOOLS instead\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/3/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "empty_nearest",
+      "requests": {},
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  506ms\nmise ✓ fixture@1.0.0  526ms\nmise ✓ fixture@1.5.0  545ms\nmise ████████████████ 3/3 · installed 3 tools in 546ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  578ms\nmise ████████████████ 1/1 · installed 1 tool in 579ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise no installed tools are requested by the config in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/4/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 0,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "no_project",
+      "requests": null,
+      "flags": [
+        "--yes"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  503ms\nmise ✓ fixture@1.5.0  523ms\nmise ✓ fixture@1.0.0  542ms\nmise ████████████████ 3/3 · installed 3 tools in 543ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  526ms\nmise ████████████████ 1/1 · installed 1 tool in 527ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--yes"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise ERROR no config file found in /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested or a parent directory\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/5/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 1,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "confirmation_required",
+      "requests": {
+        "fixture": "1.0.0"
+      },
+      "flags": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@2.0.0  509ms\nmise ✓ fixture@1.0.0  529ms\nmise ✓ fixture@1.5.0  549ms\nmise ████████████████ 3/3 · installed 3 tools in 550ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  509ms\nmise ████████████████ 1/1 · installed 1 tool in 509ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise fixture@1.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/mise.toml\nmise ERROR mise uninstall --project requires confirmation but there was nobody to ask; pass --yes to uninstall non-interactively\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/6/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 1,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    },
+    {
+      "name": "preview_code",
+      "requests": {
+        "fixture": [
+          "1.0.0",
+          "2.0.0"
+        ]
+      },
+      "flags": [
+        "--dry-run-code"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/plugin fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.0.0",
+            "fixture@1.5.0",
+            "fixture@2.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 3 tools\nmise ✓ fixture@1.0.0  506ms\nmise ✓ fixture@1.5.0  526ms\nmise ✓ fixture@2.0.0  546ms\nmise ████████████████ 3/3 · installed 3 tools in 547ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "other",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/plugin other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "other@9.0.0"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 1 tool\nmise ✓ other@9.0.0  581ms\nmise ████████████████ 1/1 · installed 1 tool in 581ms\nmise WARN  other installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use other\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/config/global.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/config/global.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "trust",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/mise.toml"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise trusted /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/mise.toml\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--project",
+            "--dry-run-code"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise fixture@1.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/mise.toml\nmise fixture@2.0.0 is requested by /private/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/mise.toml\nmise fixture@1.0.0   uninstall\nmise fixture@1.0.0   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/fixture/1.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/cache/fixture/1.0.0\nmise fixture@1.0.0 ✓ uninstalled (dry-run)\nmise fixture@2.0.0   uninstall\nmise fixture@2.0.0   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/fixture/2.0.0, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/cache/fixture/2.0.0\nmise fixture@2.0.0 ✓ uninstalled (dry-run)\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/fixture/1.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/fixture/1.5.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.5.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/fixture/2.0.0/bin/fixture"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "2.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/data/installs/other/9.0.0/bin/other"
+          ],
+          "cwd": "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster project uninstall 中文 lk9thlfg/7/parent/project/nested",
+          "status": "returned",
+          "exit": 0,
+          "stdout": "9.0.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "hooks": {
+        "fixture": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+        },
+        "other": {
+          "list-all": "f9ebe3897bb209494e1d6148132566e321f1812c0761db110d665b118e5e4a44",
+          "install": "b0a2a4995375b8c9c3f2f17ff4e323a0c6c6663b08ee5d47381483b4a184cbf4"
+        }
+      },
+      "exit": 1,
+      "retained": {
+        "fixture": [
+          "1.0.0",
+          "1.5.0",
+          "2.0.0"
+        ],
+        "other": [
+          "9.0.0"
+        ]
+      },
+      "declarations_unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "deletion_commit": "e4914338e",
+  "source_commit": "bcde2cc89274fff2f853093e19a4a44a7b51e638",
+  "fixtures": [
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-batch-install-reference.json",
+      "git_blob": "12a7d379f05ceb277e914bce7e5506beb4b71ec1",
+      "bytes": 41538,
+      "sha256": "7a0e1bd7735dab6567e70a803dca944cbebf28ba3a9260469fbff18be8f78f50"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-cli-reference.json",
+      "git_blob": "861bed16300e6547726c638e75c6e9f4ca7d692f",
+      "bytes": 15777,
+      "sha256": "8fced4022f4444bc52e9a4ec1a9fdb59e0e8845884d9de4ea2471793c393b40d"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-context-reference.json",
+      "git_blob": "275d4458b52b3f06b6fefe8d06fa2809c480be86",
+      "bytes": 5495,
+      "sha256": "12a88d2784c511b73af26f0bcbbf1229cf6d19a011ba80c7641595fe2f2319d4"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-exec-multiversion-reference.json",
+      "git_blob": "cfa16848468934bafc4e18352bc2646496e5cb62",
+      "bytes": 21884,
+      "sha256": "e19993e4c793867cff05d3045f41ab80f9a8c64a12d119195451c2ca626c4678"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-multi-uninstall-reference.json",
+      "git_blob": "2abb822dd5e540913e3688b27ad7285f827a39ee",
+      "bytes": 20339,
+      "sha256": "37173fe195b1f08129bd7f239fd513b5ae33bace4377f834f2db5dd6fdf9630b"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-multiversion-reference.json",
+      "git_blob": "7650e9415323a0ec100c96ef909413181f46f3e1",
+      "bytes": 15400,
+      "sha256": "70ab8db3b3034b0c20453e6638ddd64ac538b39d601a2d67f4dbc248107ec07b"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-project-uninstall-damaged-reference.json",
+      "git_blob": "981f39cef8a85ce6cec0734b19f4db4cbf06e3c3",
+      "bytes": 2921,
+      "sha256": "46093764cba6428f280009b96f9f59637c267a4a0e4bb5352101b46ca8c68367"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-project-uninstall-reference.json",
+      "git_blob": "e8991ceba828a6eb1c319237c2a8924bf38a92fe",
+      "bytes": 61338,
+      "sha256": "0a757e8c1c0d7e7645aaac930967e9c6c63273e2d4ed049947faedf7311d4585"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-prune-reference.json",
+      "git_blob": "28bd2071bcc4208f7e65876cca7bf1c7fa4c96ad",
+      "bytes": 63708,
+      "sha256": "02aed118f2b75f34515ba48e802c54aaf590c2b2fb45e199e7bbb153503b1e45"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-shims-reference.json",
+      "git_blob": "d2f0024302008303e2128f07e3fe82771003b9d4",
+      "bytes": 6765,
+      "sha256": "b985031dc80878ba0bce97c8ae89fda6e6a421684f36594b01d246e0885666e5"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-uninstall-reference.json",
+      "git_blob": "9ffa30c144cebc5176e5a560bb205b58a0032276",
+      "bytes": 32176,
+      "sha256": "2c4cfd8a78c2ab5a92422e991ed58ad3f33ca60f0259127c50ce4e9e5144255e"
+    },
+    {
+      "path": "specs/031-cli-mise-replacement/contracts/mise-version-reference.json",
+      "git_blob": "ce3f12d7fe68f711fda8eff216d5b1173a133725",
+      "bytes": 6629,
+      "sha256": "3bf3d6e006ac388e7a6e87af47e1a700da69f12307841dd13a75c87fd3670df5"
+    }
+  ]
+}

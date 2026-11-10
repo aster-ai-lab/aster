@@ -1,0 +1,59 @@
+[
+  {
+    "name": "clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "-p",
+      "aster",
+      "-p",
+      "aster-pager",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit_code": 101,
+    "test_results": [],
+    "elapsed_seconds": 311.6,
+    "log_sha256": "d39adfc5c149aa61c4a0c7a7b7abe7346f57f1fd7cf361ae5df880c31301a8ef"
+  },
+  {
+    "name": "clippy-restored",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "-p",
+      "aster",
+      "-p",
+      "aster-pager",
+      "--all-targets",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "test_results": [],
+    "elapsed_seconds": 14.77,
+    "log_sha256": "caf684737719df299524ffd679dce3ffc42b02fde2abe33972ae809bd52f4263"
+  },
+  {
+    "name": "frozen-prune",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "aster",
+      "--test",
+      "env_manager",
+      "prune_matches_twelve_frozen_native_cases_including_a_running_executable",
+      "--",
+      "--exact"
+    ],
+    "exit_code": 0,
+    "test_results": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 34.88s"
+    ],
+    "elapsed_seconds": 55.92,
+    "log_sha256": "af81ded0e6ae32d7d00a3729beb2c74a27451579921f6c7b90d41c530b9ed316"
+  }
+]

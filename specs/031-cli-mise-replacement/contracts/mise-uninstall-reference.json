@@ -1,0 +1,861 @@
+{
+  "tag": "v2026.10.25",
+  "release_commit": "3c78bbb2d58c0b668fe8d5bebf4a8cb66194e1aa",
+  "binary_sha256": "8a3ef00765b009278197aba627ac00d6e9c63f6aeb04d4f4b2cfe0e59ddc2fd6",
+  "host": {
+    "os": "Darwin",
+    "arch": "arm64"
+  },
+  "timeout_seconds": 25,
+  "paranoid": true,
+  "versions": [
+    "1.2",
+    "1.2.3",
+    "1.2.9",
+    "1.20.0"
+  ],
+  "hook_sha256": {
+    "list-all": "b1d170c052176be39889d383187be61b246f02607f2065710d8eb8f8fdfad54b",
+    "install": "581b8ab2241b390981dd8534662d5bdbd2dc30be1d0379cb1967445437ec140a"
+  },
+  "status": "passed",
+  "fixture": "Fresh owned local plugin state per case; fixed four-version installation and native uninstall/execution",
+  "cases": [
+    {
+      "name": "exact",
+      "request": "1.2",
+      "flags": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise ░░░░░░░░░░░░░░░░ 0/4 · 3.0s\n  fixture@1.2     resolving  3.0s\n  fixture@1.2.3   resolving  3.0s\n  fixture@1.2.9   resolving  3.0s\n  fixture@1.20.0  resolving  3.0s\nmise ✓ fixture@1.20.0  3.3s\nmise ✓ fixture@1.2.3   3.3s\nmise ✓ fixture@1.2     3.3s\nmise ✓ fixture@1.2.9   3.3s\nmise ████████████████ 4/4 · installed 4 tools in 3.3s\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture@1.2"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2  8ms\nmise ████████████████ 1/1 · removed 1 tool in 8ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/0/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/0/data/installs/fixture/1.2.9/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.9\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/0/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2  8ms\nmise ████████████████ 1/1 · removed 1 tool in 8ms\n",
+      "retained_versions": [
+        "1.2.3",
+        "1.2.9",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": true,
+          "link_target": "1.2.9"
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.9": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "bare_ambiguous",
+      "request": "1",
+      "flags": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise ✓ fixture@1.2     60ms\nmise ✓ fixture@1.2.9   76ms\nmise ✓ fixture@1.2.3   92ms\nmise ✓ fixture@1.20.0  108ms\nmise ████████████████ 4/4 · installed 4 tools in 109ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture@1"
+          ],
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise ERROR multiple tools specified, use --all to uninstall all versions\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/1/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/1/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/1/data/installs/fixture/1.2.9/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.9\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall bsio9zk7/1/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "mise ERROR multiple tools specified, use --all to uninstall all versions\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.2.9",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.9": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "name_ambiguous",
+      "request": null,
+      "flags": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall p70q91zf/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise ░░░░░░░░░░░░░░░░ 0/4 · 3.0s\n  fixture@1.2     resolving  3.0s\n  fixture@1.2.3   resolving  3.0s\n  fixture@1.2.9   resolving  3.0s\n  fixture@1.20.0  resolving  3.0s\nmise ░░░░░░░░░░░░░░░░ 0/4 · 6.0s\n  fixture@1.2     resolving  6.0s\n  fixture@1.2.3   resolving  6.0s\n  fixture@1.2.9   resolving  6.0s\n  fixture@1.20.0  resolving  6.0s\nmise ░░░░░░░░░░░░░░░░ 0/4 · 9.0s\n  fixture@1.2     resolving  9.0s\n  fixture@1.2.3   resolving  9.0s\n  fixture@1.2.9   resolving  9.0s\n  fixture@1.20.0  resolving  9.0s\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T10:42:29.635546Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2.3   10.4s\nmise ✓ fixture@1.20.0  10.4s\nmise ✓ fixture@1.2     10.5s\nmise ✓ fixture@1.2.9   10.5s\nmise ████████████████ 4/4 · installed 4 tools in 10.5s\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture"
+          ],
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise ERROR multiple tools specified, use --all to uninstall all versions\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall p70q91zf/2/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall p70q91zf/2/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall p70q91zf/2/data/installs/fixture/1.2.9/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.9\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall p70q91zf/2/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "mise ERROR multiple tools specified, use --all to uninstall all versions\nmise ERROR Version: 2026.10.25 macos-arm64 (2026-10-31)\nmise ERROR Run with --verbose or MISE_VERBOSE=1 for more information\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.2.9",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.9": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "prefix_ambiguous",
+      "request": "prefix:1.2",
+      "flags": [],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise ✓ fixture@1.2.9   888ms\nmise ✓ fixture@1.2     908ms\nmise ✓ fixture@1.20.0  927ms\nmise ✓ fixture@1.2.3   949ms\nmise ████████████████ 4/4 · installed 4 tools in 951ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "fixture@prefix:1.2"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2.9  5ms\nmise ████████████████ 1/1 · removed 1 tool in 5ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/3/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/3/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/3/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2.9  5ms\nmise ████████████████ 1/1 · removed 1 tool in 5ms\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "all_prefix",
+      "request": "prefix:1.2",
+      "flags": [
+        "--all"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T10:53:08.178304Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2     79ms\nmise ✓ fixture@1.20.0  98ms\nmise ✓ fixture@1.2.9   122ms\nmise ✓ fixture@1.2.3   138ms\nmise ████████████████ 4/4 · installed 4 tools in 140ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--all",
+            "fixture@prefix:1.2"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2.9  6ms\nmise ████████████████ 1/1 · removed 1 tool in 6ms\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/4/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/4/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/4/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise by @jdx – removing 1 tool\nmise ✓ fixture@1.2.9  6ms\nmise ████████████████ 1/1 · removed 1 tool in 6ms\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "all_named",
+      "request": null,
+      "flags": [
+        "--all"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise ✓ fixture@1.2     65ms\nmise ✓ fixture@1.20.0  77ms\nmise ✓ fixture@1.2.3   97ms\nmise ✓ fixture@1.2.9   113ms\nmise ████████████████ 4/4 · installed 4 tools in 114ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--all",
+            "fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – removing 4 tools\nmise ✓ fixture@1.2     6ms\nmise ✓ fixture@1.2.3   4ms\nmise ✓ fixture@1.2.9   5ms\nmise ✓ fixture@1.20.0  5ms\nmise ████████████████ 4/4 · removed 4 tools in 23ms\n"
+        }
+      ],
+      "status": "passed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise by @jdx – removing 4 tools\nmise ✓ fixture@1.2     6ms\nmise ✓ fixture@1.2.3   4ms\nmise ✓ fixture@1.2.9   5ms\nmise ✓ fixture@1.20.0  5ms\nmise ████████████████ 4/4 · removed 4 tools in 23ms\n",
+      "retained_versions": [],
+      "retained_entry_kinds": {}
+    },
+    {
+      "name": "dry_run",
+      "request": "1.2.3",
+      "flags": [
+        "--dry-run"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T10:53:09.702201Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2.9   53ms\nmise ✓ fixture@1.2     75ms\nmise ✓ fixture@1.20.0  94ms\nmise ✓ fixture@1.2.3   111ms\nmise ████████████████ 4/4 · installed 4 tools in 112ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--dry-run",
+            "fixture@1.2.3"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise fixture@1.2.3   uninstall\nmise fixture@1.2.3   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.2.3, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/cache/fixture/1.2.3\nmise fixture@1.2.3 ✓ uninstalled (dry-run)\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.2.9/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.9\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "mise fixture@1.2.3   uninstall\nmise fixture@1.2.3   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/data/installs/fixture/1.2.3, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/6/cache/fixture/1.2.3\nmise fixture@1.2.3 ✓ uninstalled (dry-run)\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.2.9",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.9": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    },
+    {
+      "name": "dry_run_code",
+      "request": "1.2.3",
+      "flags": [
+        "--dry-run-code"
+      ],
+      "commands": [
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "plugins",
+            "link",
+            "fixture",
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/owned plugin"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "install",
+            "fixture@1.2",
+            "fixture@1.2.3",
+            "fixture@1.2.9",
+            "fixture@1.20.0"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "",
+          "stderr": "mise by @jdx – installing 4 tools\nmise WARN  asdf:fixture@1.2.9 has no release date, so the 2026-10-31T10:53:11.286012Z cutoff cannot be checked and it is allowed (exclude it with minimum_release_age_excludes to silence this)\nmise ✓ fixture@1.2     70ms\nmise ✓ fixture@1.2.3   95ms\nmise ✓ fixture@1.20.0  111ms\nmise ✓ fixture@1.2.9   127ms\nmise ████████████████ 4/4 · installed 4 tools in 129ms\nmise WARN  fixture installed but not activated — it is not in any config file.\nTo install and activate, run:\n  mise use fixture\n"
+        },
+        {
+          "argv": [
+            "/Users/roylin/code/aster/.tmp/mise-replacement/reference/mise",
+            "uninstall",
+            "--dry-run-code",
+            "fixture@1.2.3"
+          ],
+          "status": "returned",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "mise fixture@1.2.3   uninstall\nmise fixture@1.2.3   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.2.3, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/cache/fixture/1.2.3\nmise fixture@1.2.3 ✓ uninstalled (dry-run)\n"
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.2/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.2.3/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.3\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.2.9/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.2.9\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.20.0/bin/fixture"
+          ],
+          "status": "returned",
+          "exit": 0,
+          "stdout": "1.20.0\n",
+          "stderr": ""
+        }
+      ],
+      "status": "passed",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "mise fixture@1.2.3   uninstall\nmise fixture@1.2.3   remove /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/data/installs/fixture/1.2.3, /var/folders/3d/0pn3wn612t7cs79b5ml89x440000gn/T/aster mise uninstall lss_3dk5/7/cache/fixture/1.2.3\nmise fixture@1.2.3 ✓ uninstalled (dry-run)\n",
+      "retained_versions": [
+        "1.2",
+        "1.2.3",
+        "1.2.9",
+        "1.20.0"
+      ],
+      "retained_entry_kinds": {
+        "1.2": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.3": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.2.9": {
+          "is_symlink": false,
+          "link_target": null
+        },
+        "1.20.0": {
+          "is_symlink": false,
+          "link_target": null
+        }
+      }
+    }
+  ],
+  "case_provenance": {
+    "exact": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-fixed.json",
+      "case_index": 0,
+      "sha256": "0278bc1adb263096baa250a2106987c0fde8a571dce2e5935f5b31cb963c2b9e"
+    },
+    "bare_ambiguous": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-fixed.json",
+      "case_index": 1,
+      "sha256": "0278bc1adb263096baa250a2106987c0fde8a571dce2e5935f5b31cb963c2b9e"
+    },
+    "name_ambiguous": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-remaining.json",
+      "case_index": 0,
+      "sha256": "e47edfe0d747002a1c56496e74085131edcf276eb9cbeb892638b9f71b5a6f48"
+    },
+    "prefix_ambiguous": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-provider-corrected.json",
+      "case_index": 0,
+      "sha256": "69e3513588d75ddefd8a4f80ac0b74b46340e4ae11913fdab7b97cf937094dcb"
+    },
+    "all_prefix": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-provider-corrected.json",
+      "case_index": 1,
+      "sha256": "69e3513588d75ddefd8a4f80ac0b74b46340e4ae11913fdab7b97cf937094dcb"
+    },
+    "all_named": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-provider-corrected.json",
+      "case_index": 2,
+      "sha256": "69e3513588d75ddefd8a4f80ac0b74b46340e4ae11913fdab7b97cf937094dcb"
+    },
+    "dry_run": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-provider-corrected.json",
+      "case_index": 3,
+      "sha256": "69e3513588d75ddefd8a4f80ac0b74b46340e4ae11913fdab7b97cf937094dcb"
+    },
+    "dry_run_code": {
+      "file": "docs/evidence/cli/2026-11-01-mise-replacement/mise-uninstall-reference-provider-corrected.json",
+      "case_index": 4,
+      "sha256": "69e3513588d75ddefd8a4f80ac0b74b46340e4ae11913fdab7b97cf937094dcb"
+    }
+  },
+  "collector_corrections": [
+    "Exclude compatibility symlinks from physical installed-version membership; preserve their targets separately",
+    "The initial explicit-prefix expected exit was wrong: pinned mise returns 0 and removes the resolved version. The original failed capture is retained."
+  ],
+  "tool_requests_versions_and_timeouts_unchanged": true,
+  "original_version_and_context_oracles_modified": false
+}
