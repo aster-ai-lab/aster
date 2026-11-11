@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "scope": "Native fullscreen queue editing, reordering, deletion, keyboard selection and unsent composer preservation",
+  "platform": "macOS arm64",
+  "model": "deepseek/deepseek-flash",
+  "source_hash": "4e0fd46b3e91f3ebc895c66e9674c8fea1f6e290",
+  "paired_build_ids": {
+    "aster": "aster-cli-pair-v1:4e0fd46b3e91f3ebc895c66e9674c8fea1f6e290:aarch64-apple-darwin",
+    "aster-acp": "aster-cli-pair-v1:4e0fd46b3e91f3ebc895c66e9674c8fea1f6e290:aarch64-apple-darwin"
+  },
+  "source_matches_pair": true,
+  "frozen_case_inputs_sha256": {
+    "plan.json": "b41b1c8a23afcf6b6c4c865bb1b842fd9c187e3a90323d1d6f98943872a95554",
+    "relay": "221b2159a9b23eac52e501ebfb1ca6822665139ed0ac2aee5fa4690e4bdc7b16",
+    "native-queue-edit-waiter.py": "0cf9971ca44619b707c331a939c4f635b23f61e93d6502a9ddf97557291c641b"
+  },
+  "results": {
+    "status": "PASS",
+    "initial_run_count": 0,
+    "prompt_requests_before_release": 1,
+    "runs": 3,
+    "prompt_requests": 3,
+    "original_status": "completed",
+    "queued_statuses": [
+      "completed",
+      "completed"
+    ],
+    "receipt_identity_retained": true,
+    "receipt_outcome": "succeeded",
+    "unsent_composer_retained": true,
+    "deleted_or_discarded_admitted": false,
+    "input_source_restored": true,
+    "fixture_owner_retired": true,
+    "exact_model_replies_verified": true
+  },
+  "exact_replies": [
+    "NATIVE-QUEUE-ORIGINAL-DONE",
+    "NATIVE-QUEUE-EDITED-DONE",
+    "NATIVE-QUEUE-LAST-DONE"
+  ],
+  "source_acl_unchanged": true,
+  "observer_corrections": {
+    "rendered_soft_wrap_before_first_submission": true,
+    "hover_buttons_are_not_keyboard_selection": true,
+    "receipt_outcome_verified_against_pinned_closed_set": true,
+    "same_original_cli_and_acp_processes": true,
+    "model_prompt_resubmissions": 0,
+    "ctrl_semicolon_shortcut_verified": false
+  },
+  "private_artifacts_sha256": {
+    "native-queue-edit/plan.json": "b41b1c8a23afcf6b6c4c865bb1b842fd9c187e3a90323d1d6f98943872a95554",
+    "native-queue-edit/trace.jsonl": "eea293fa6875e624ab4a1c97718f21e502452b9d8b06829caa0d5fa0970aa347",
+    "native-queue-edit/prepare.log": "86c01b3d346b6add06d91078797bb31564862356001f3bce48992c3e89add256",
+    "native-queue-edit/prepare-rebound.log": "b3126d91cd02c692ea631873d6679c2fbd3e4644f2e1870c1bebc39853864111",
+    "native-queue-edit/mutate.log": "f8da71274cf3641ef34d25f8bee0c0584291c623fa9b87603c4ea69f1af2267f",
+    "native-queue-edit/finish-mutations.log": "38d912182d62a116e07333366517c268cf728d3f63061192f2b618c11286e4be",
+    "native-queue-edit/release.log": "23479cc7ae24fa23ef0f7f269cae82895e675ddfee1fc180a054f90c57fc5d6a",
+    "native-queue-edit/settled-inspect.log": "dd4e3c4690433c80a4bbc1b2f44b1da73fe4ea042a9933704fffd27b59cea468",
+    "native-queue-edit/reply-validation.json": "cba4954a44a741951fef3030097573c7a3da9f9609e860a1ac3b1ba2e69f3a72",
+    "native-queue-edit/result.json": "ce8aa4621b818da69627050ea3345982625ab0f526e43db3a95db4f9712232cf",
+    "native-queue-edit/observer-before-outcome.py": "3490e684313631a91e9437bd7b7c8c2d4c82fefdf1a1d04ca288eee532b09cdd",
+    "native_queue_edit.py": "f891e669b3de5a45e0381b5dbb7b35cf7944c24595560609d446326730a2a87c",
+    "screens/native-queue-edit-after-open-attempt.png": "9601010314a07328c16788fd4884d458c4b7e432ee486cc1dbf99a446decad48",
+    "screens/native-queue-edit-down-selection-proven.png": "e276b3d5247c77d1f4d5884fc2b92c661dd8b5f132544ac680590362da429b13",
+    "screens/native-queue-edit-edit-discarded.png": "feede663f6c0606eeeb4a8318fc8559e2d2289888d89340039a392a3a6c4a759",
+    "screens/native-queue-edit-edit-saved.png": "38c1a24de31c07c05778bb32f41aa4919e2afb1fab65f928e764be5ce73eb8b3",
+    "screens/native-queue-edit-first-row-focused.png": "5b03b9b72dc4dcd4b0dbfea2befdf4acc1ef849ab1274081baef6832be401730",
+    "screens/native-queue-edit-key-edit-first.png": "7c7eb5cbc5fd843d10e3d45da8beb7c658883048c094f895953317a892966f1e",
+    "screens/native-queue-edit-key-verify-up-selection.png": "c1ee003dbbe5861a2a220f1beffdade74deb7eefaa79f21d214fb6503284c631",
+    "screens/native-queue-edit-mutations-complete.png": "a3f08b5cc173372207afcdca2fc3ddd41a068c0a4df9f543d004aa59eae80767",
+    "screens/native-queue-edit-prepared.png": "f1a626fc91f99742ab93358d298a1b12c50e228809d82f37a42dd0ce1869fd69",
+    "screens/native-queue-edit-reordered-down.png": "18b9d0df4e96f7d30f840f2097a35b64374a61a0f19e5ada7a4509444e814d70",
+    "screens/native-queue-edit-reordered-up.png": "183aa7dba8a92bdd2502168a8f056db12c66ddf7fedceb9af4b6a7bb3249305a",
+    "screens/native-queue-edit-row-deleted.png": "6614e2a2b8a51f31616b291bcf818d9a9f4078fb62b57211c26cb4451bcfd618",
+    "screens/native-queue-edit-settled.png": "00878d7cc924f94983494dcb5f085e7c76c3ac32030a5e7ca249a8debfd69cd9"
+  },
+  "product_source_changes": false,
+  "contains_pre_existing_uncommitted_foreground_cleanup": true,
+  "complete_queue_recovery_claimed": false,
+  "full_campaign_completion_claimed": false
+}
