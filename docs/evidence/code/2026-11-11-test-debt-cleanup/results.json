@@ -1,0 +1,85 @@
+{
+  "schema": "aster.test.debt.cleanup.v1",
+  "repository": "/Users/roylin/code/aster",
+  "starting_head": "49e0fd209",
+  "commits": ["b98ed674d", "1a2981490"],
+  "paired_build_id": "aster-cli-pair-v1:58adbc450c5f3d094591dcbfe417c788cb0cdbd3:aarch64-apple-darwin",
+  "source_hash": "58adbc450c5f3d094591dcbfe417c788cb0cdbd3",
+  "source_files_hashed": 13465,
+  "source_matches_pair": true,
+  "failure_progression": [
+    {"stage": "baseline", "passed": 10347, "failed": 25, "ignored": 4, "new_failures": []},
+    {"stage": "after snapshot baseline rename", "passed": 10358, "failed": 14, "ignored": 4, "new_failures": []},
+    {"stage": "after stale-brand assertions", "passed": 10368, "failed": 4, "ignored": 4, "new_failures": []},
+    {"stage": "after YOLO case alignment", "passed": 10369, "failed": 3, "ignored": 4, "new_failures": []}
+  ],
+  "fixed": 22,
+  "remaining_failures": [
+    "app::agent_view::render::status_line_draw_tests::short_terminal_leaves_the_row_four_of_its_five_rows",
+    "diagnostics::fix::tests::shell_aliases_expand_to_exact_argv_and_bypass_is_explicit",
+    "slash::highlight::tests::rendered_user_and_streaming_markdown_commands_keep_their_text_and_layout"
+  ],
+  "fix_groups": {
+    "insta_baseline_rename": {
+      "count": 11,
+      "root_cause": "crate renamed aster_code_pager -> aster_pager; tracked .snap files kept the old prefix so insta reported +new results",
+      "proof": "all 11 old baselines compared line-by-line with current output: 11 MATCH, 0 DIFFER",
+      "change": "git mv 11 files; 11/11 byte-identical (verified by sha256 against HEAD)",
+      "assertions_weakened": false
+    },
+    "stale_branding_assertions": {
+      "count": 10,
+      "root_cause": "brand migration a3s/grok -> Aster and yolo -> YOLO lengthened visible text and changed theme/model labels; test expectations and comments were not updated",
+      "product_output_correct": true,
+      "examples": [
+        "status_line link columns +2: [a3s] (6 cols) -> [Aster] (8 cols); a3s (3 cols) -> aster (5 cols)",
+        "semantic selection URL head 33 -> 40",
+        "promo [Get Aster Code] hit rect 14 -> 16",
+        "doctor theme fixture groknight/grokday -> aster-night/aster-day",
+        "dashboard peek yolo -> YOLO"
+      ]
+    },
+    "intentional_effort_menu": {
+      "count": 2,
+      "root_cause": "reset_item() intentionally adds a 'Use the model default' row to the shared /model and /effort dropdown; tests still expected the five levels only",
+      "change": "expect ['Default','low','medium','high','xhigh','max'] and selected index 3; assertions kept exact"
+    },
+    "contradictory_assertions": {
+      "count": 2,
+      "root_cause": "brand-cleanup commit 0935a85a6 introduced !text.contains(\"aster\") in the same test that requires 'Run `aster login`'",
+      "change": "removed the two impossible assertions (each test keeps 3-5 meaningful assertions); renamed ..._suggests_grok_login to ..._suggests_aster_login"
+    }
+  },
+  "remaining_analysis": {
+    "short_terminal_leaves_the_row_four_of_its_five_rows": {
+      "classification": "product layout decision required, not a stale expectation",
+      "evidence": "at 16 rows the borderless prompt draws two upper/lower half-block vpad rows (views/prompt_widget/mod.rs:3172, intentional visual design), so the status script keeps only row-1..row-3; the test asserts row-4 survives",
+      "follow_up": "decide whether short terminals should suppress vpad; changing the assertion to 3 rows would weaken the short-terminal usability contract"
+    },
+    "shell_aliases_expand_to_exact_argv_and_bypass_is_explicit": {
+      "classification": "test harness / environment defect with a network side effect",
+      "evidence": "bash -ic \"source rc; source rc; eval 'ssh -p 2222 host'\" never expands the alias because -c parses the whole command before the alias exists; the real ssh runs, connects to the sandbox proxy 198.18.4.254:2222 and exits 255. Reproduced manually with shopt -s expand_aliases as well.",
+      "follow_up": "redesign the fixture (e.g. bash --rcfile with a separate command line) so the capture assertion actually runs; do not just relax status.success()"
+    },
+    "rendered_user_and_streaming_markdown_commands_keep_their_text_and_layout": {
+      "classification": "suspected product defect, not yet localized",
+      "evidence": "at width=18 the magenta highlighted text is only '/acme:review'; '/model' is not highlighted even though slash/highlight.rs explicitly rejoins soft wraps to keep one command identity",
+      "follow_up": "inspect ResolvedSelectionModel ranges/lines at width=18 and find why the first command's token is dropped"
+    }
+  },
+  "verification": {
+    "full_lib": "cargo test --locked -p aster-pager --lib -- --test-threads=1: 10369 passed; 3 failed; 4 ignored",
+    "clippy": "cargo clippy --locked -p aster-pager --all-targets --no-deps: exit 0",
+    "fmt": "cargo fmt --all -- --check: 18 pre-existing files / 33 hunks, none of the changed files",
+    "input_recovery": "16 passed",
+    "release_governance": "10 tests OK",
+    "paired_build": "cargo build --locked -p aster -p aster-acp --bin aster --bin aster-acp: exit 0"
+  },
+  "release_gate": {
+    "status": "BLOCKED",
+    "dirty_entries": 8,
+    "local_commits_ahead": 2,
+    "tags_absent": ["aster-acp-v9.2.2", "aster-cli-v0.3.4"],
+    "published": false
+  }
+}
