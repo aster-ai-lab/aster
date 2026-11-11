@@ -23,7 +23,7 @@ use super::app_view::InputOutcome;
 pub(in crate::app) const STILL_QUEUEING_TOAST: &str = "Still queueing, try again in a moment";
 
 /// State of the prompt widget's editing context.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum PromptMode {
     /// Normal mode: typing a new prompt to send.
     Normal,

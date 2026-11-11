@@ -635,6 +635,20 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
             restore_degree,
             running_prompt_id,
         ),
+        TaskResult::InputRecovered {
+            agent_id,
+            session_id,
+            result,
+        } => {
+            if let Some(agent) = app.agents.get_mut(&agent_id)
+                && agent.receive_saved_input(&session_id, result)
+            {
+                let drain = super::queue::maybe_drain_queue(agent, &mut app.pending_image_notices);
+                super::queue::note_peek_page_flip(app, agent_id, drain.page_flip_entry);
+                return drain.effects;
+            }
+            vec![]
+        }
         TaskResult::SessionMetaFromDisk {
             agent_id,
             title,
@@ -2155,6 +2169,7 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
                             chip_elements: Vec::new(),
                             skill_token_ranges: Vec::new(),
                             combined_texts: Vec::new(),
+                            recovered: false,
                         });
                 }
                 agent.show_toast(&format!("Interjection failed. Requeued: {error}"));

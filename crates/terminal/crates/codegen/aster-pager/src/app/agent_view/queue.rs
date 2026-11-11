@@ -236,7 +236,9 @@ impl AgentView {
         }
         ServerRowCapabilities::for_local(mutation).can_send_now()
             && self.session.pending_prompts.front().is_some_and(|p| {
-                p.kind == crate::app::agent::QueueEntryKind::Prompt && p.wire_matches_display()
+                (p.recovered && self.session.state.is_idle())
+                    || (p.kind == crate::app::agent::QueueEntryKind::Prompt
+                        && p.wire_matches_display())
             })
     }
 
@@ -394,9 +396,26 @@ impl AgentView {
             }
             return InputOutcome::Changed;
         }
-        // Local rows: only plain prompts and raw skill rows can re-send (others would send display text, not payload)
+        if !is_server
+            && self.session.state.is_idle()
+            && let Some(position) = self
+                .session
+                .pending_prompts
+                .iter()
+                .position(|row| row.id == id && row.recovered)
+        {
+            let mut queued = self
+                .session
+                .pending_prompts
+                .remove(position)
+                .expect("position was found");
+            queued.recovered = false;
+            self.session.pending_prompts.push_front(queued);
+            return InputOutcome::Action(Action::DrainQueue);
+        }
+        // Mid-turn local rows must carry their complete payload through interjection.
         if self.queue_row_prompt_like(id) != Some(true) {
-            self.show_toast("Can't send this now: it runs when the current turn ends");
+            self.show_toast("Wait for the current turn to finish");
             return InputOutcome::Changed;
         }
         if let Some(prompt) = self.remove_local_queue_row(id) {

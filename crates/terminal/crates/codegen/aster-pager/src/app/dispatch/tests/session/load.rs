@@ -959,6 +959,15 @@ fn session_loaded_drains_pending_first_prompt_to_front() {
         }),
         &mut app,
     );
+    assert!(expect_agent(&app, new_id).input_recovery.loading);
+    dispatch(
+        Action::TaskComplete(TaskResult::InputRecovered {
+            agent_id: new_id,
+            session_id: "new-fork-sid".into(),
+            result: Ok(None),
+        }),
+        &mut app,
+    );
     let queue: Vec<_> = expect_agent(&app, new_id)
         .session
         .pending_prompts

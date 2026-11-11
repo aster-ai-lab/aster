@@ -228,6 +228,7 @@ pub(crate) struct TerminalState {
 pub(crate) struct RunResult {
     pub exit_info: Option<super::ExitInfo>,
     pub connection_closed: bool,
+    pub unsent_input: Vec<super::input_recovery::Snapshot>,
     pub quit_for_update: bool,
     /// stderr line to print after the TUI is restored (failed Welcome trust save).
     pub trust_quit_error: Option<String>,
@@ -1889,6 +1890,13 @@ pub(crate) async fn run(
         super::event_loop_stall::StallRollup::new(super::event_loop_stall::STALL_REPORT_WINDOW);
     let loop_entry = std::time::Instant::now();
     loop {
+        let mut restored = false;
+        for agent in app.agents.values_mut() {
+            restored |= agent.restore_saved_draft();
+        }
+        if restored {
+            presenter.request(false);
+        }
         if !session_load_barrier.is_empty() && acp_peek.is_none() {
             acp_peek = acp_rx.try_recv().ok();
         }
@@ -3170,6 +3178,11 @@ fn finish_run(app: &mut AppView) -> RunResult {
     RunResult {
         exit_info,
         connection_closed: false,
+        unsent_input: app
+            .agents
+            .values_mut()
+            .filter_map(super::input_recovery::Snapshot::take)
+            .collect(),
         quit_for_update: app.quit_for_update,
         trust_quit_error: app.trust_quit_error.clone(),
         relaunch: app.relaunch.clone(),

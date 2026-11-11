@@ -20,7 +20,7 @@ dunce = {workspace = true}
 # Diff hunk construction (extracted)
 
 # Rendering
-ratatui = {workspace = true}
+ratatui = {workspace = true, features = ["serde"]}
 crossterm = {workspace = true}
 textwrap = {workspace = true}
 regex = {workspace = true}

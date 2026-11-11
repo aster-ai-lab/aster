@@ -19,7 +19,7 @@ use std::time::{Duration, Instant, SystemTime};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct AgentId(pub usize);
 /// Whether a queue entry is a regular prompt or a slash command.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum QueueEntryKind {
     /// Regular user prompt, sent via `PromptRequest`.
     Prompt,
@@ -41,7 +41,7 @@ impl QueueEntryKind {
 /// An entry waiting in the queue to be sent to the agent.
 /// Each entry gets a monotonically increasing `id` for stable tracking.
 /// The user-facing display uses the 1-based positional index (`#1`, `#2`, …), never the internal `id`.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct QueuedPrompt {
     /// Monotonic ID, unique within this agent's session. Never reused.
     pub id: u64,
@@ -53,6 +53,7 @@ pub struct QueuedPrompt {
     /// Skill injection uses it: the display shows `/commit args` but the wire carries the skill XML content.
     pub wire_blocks: Option<Vec<acp::ContentBlock>>,
     /// Images attached to this prompt, drained from `PromptWidget` at submission time; they survive queue text edits.
+    #[serde(with = "super::input_recovery::images")]
     pub images: Vec<crate::prompt_images::PastedImage>,
     /// Whether this prompt should display as a skill invocation (teal accent).
     /// Only meaningful when `wire_blocks` is `Some`.
@@ -64,6 +65,9 @@ pub struct QueuedPrompt {
     pub chip_elements: Vec<ChipElement>,
     /// Combined-turn display segments (always at least two); drain paints one bubble each.
     pub combined_texts: Vec<String>,
+    /// Restored local input requires an explicit send before it can drain.
+    #[serde(skip)]
+    pub(crate) recovered: bool,
 }
 impl QueuedPrompt {
     /// Base row with every optional field at its default.
@@ -80,6 +84,7 @@ impl QueuedPrompt {
             skill_token_ranges: Vec::new(),
             chip_elements: Vec::new(),
             combined_texts: Vec::new(),
+            recovered: false,
         }
     }
     /// Whether the wire payload is exactly the display text.
@@ -787,7 +792,11 @@ pub struct InFlightPrompt {
 }
 /// Snapshot of a textarea chip element for rewind restore.
 /// Covers paste blocks, @-file refs, and image chips.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(
+    from = "super::input_recovery::Chip",
+    into = "super::input_recovery::Chip"
+)]
 pub struct ChipElement {
     pub range: std::ops::Range<usize>,
     pub kind: aster_ratatui_textarea::ElementKind,
@@ -840,7 +849,7 @@ impl AgentSession {
             ),
         )
     }
-    fn local_session_info(&self) -> Option<aster_shell::session::info::Info> {
+    pub(in crate::app) fn local_session_info(&self) -> Option<aster_shell::session::info::Info> {
         Some(aster_shell::session::info::Info {
             id: self.session_id.clone()?,
             cwd: self.cwd.to_string_lossy().to_string(),
@@ -1011,13 +1020,24 @@ impl AgentSession {
     }
     /// Pop the front prompt from the queue (next to send).
     pub fn dequeue_prompt(&mut self) -> Option<QueuedPrompt> {
+        if self
+            .pending_prompts
+            .front()
+            .is_some_and(|prompt| prompt.recovered)
+        {
+            return None;
+        }
         self.pending_prompts.pop_front()
     }
     /// Pop the front entry, merging consecutive plain `Prompt` followers via [`aster_prompt_queue::combine_prefix_len`].
     /// `editing_id` is held out of the merge (composer draft must not vanish). Front may keep images.
     pub fn dequeue_combined_prompt(&mut self, editing_id: Option<u64>) -> Option<QueuedPrompt> {
         use aster_prompt_queue::{CombineGate, TEXT_SEPARATOR, combine_prefix_len, join_texts};
-        if self.pending_prompts.is_empty() {
+        if self
+            .pending_prompts
+            .front()
+            .is_none_or(|prompt| prompt.recovered)
+        {
             return None;
         }
         let skip_id = editing_id.map(|id| id.to_string());
@@ -1037,7 +1057,7 @@ impl AgentSession {
                 // "/a" and "/b" into "/a\n/b" changes the command semantics
                 // (the backend parses only the first line).
                 is_plain_prompt: p.kind == QueueEntryKind::Prompt && !p.text.starts_with('/'),
-                is_synthetic: false,
+                is_synthetic: p.recovered,
                 is_expanded_skill: !p.wire_matches_display(),
                 is_bash: p.kind == QueueEntryKind::BashCommand,
                 has_images: !p.images.is_empty(),

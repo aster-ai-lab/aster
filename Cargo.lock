@@ -6184,6 +6184,7 @@ dependencies = [
  "itoa",
  "rustversion",
  "ryu",
+ "serde",
  "static_assertions",
 ]
 
@@ -16505,6 +16506,7 @@ dependencies = [
  "itertools 0.13.0",
  "lru 0.12.5",
  "paste",
+ "serde",
  "strum 0.26.3",
  "unicode-segmentation",
  "unicode-truncate 1.1.0",

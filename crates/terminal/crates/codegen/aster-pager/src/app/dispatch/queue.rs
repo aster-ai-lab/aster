@@ -211,7 +211,11 @@ pub(crate) fn flush_held_local_queue_into_wait(
             break;
         };
         if matches!(agent.prompt_mode, PromptMode::EditingQueued { .. })
-            || agent.session.pending_prompts.is_empty()
+            || agent
+                .session
+                .pending_prompts
+                .front()
+                .is_none_or(|row| row.recovered)
         {
             break;
         }
@@ -291,11 +295,9 @@ fn release_queued_prompt_from(app: &mut AppView, agent_id: Option<AgentId>) -> V
         return Vec::new();
     }
     if matches!(agent.prompt_mode, PromptMode::EditingQueued { .. })
-        || !agent
-            .session
-            .pending_prompts
-            .front()
-            .is_some_and(|p| matches!(p.kind, QueueEntryKind::Prompt) && p.wire_matches_display())
+        || !agent.session.pending_prompts.front().is_some_and(|p| {
+            !p.recovered && matches!(p.kind, QueueEntryKind::Prompt) && p.wire_matches_display()
+        })
     {
         return Vec::new();
     }
@@ -335,6 +337,16 @@ pub(super) fn maybe_drain_queue(agent: &mut AgentView, notices: &mut Vec<String>
         }
     };
 
+    if agent.input_recovery.loading
+        || agent
+            .session
+            .pending_prompts
+            .front()
+            .is_some_and(|p| p.recovered)
+    {
+        log_blocked("input_recovery", sid);
+        return QueueDrain::blocked();
+    }
     if !agent.session.state.is_idle() {
         log_blocked("turn_running", sid);
         return QueueDrain::blocked();

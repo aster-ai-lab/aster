@@ -2165,6 +2165,11 @@ pub enum Effect {
         /// Optional client-chosen ID for the forked session (`--session-id` with `--fork-session`).
         new_session_id: Option<String>,
     },
+    RecoverInput {
+        agent_id: AgentId,
+        session_id: acp::SessionId,
+        cwd: std::path::PathBuf,
+    },
     /// Read session display fields from local `summary.json` after load/resume.
     /// Those are the title (and `/rename` manual-ness) plus the last-turn summary for the dashboard secondary line.
     HydrateSessionMetaFromDisk {
@@ -2460,6 +2465,11 @@ pub enum TaskResult {
         agent_id: AgentId,
         session_id: acp::SessionId,
         error: String,
+    },
+    InputRecovered {
+        agent_id: AgentId,
+        session_id: acp::SessionId,
+        result: Result<Option<super::input_recovery::Saved>, String>,
     },
     /// Local `summary.json` display fields for [`Effect::HydrateSessionMetaFromDisk`].
     SessionMetaFromDisk {

@@ -37,6 +37,7 @@ impl AgentView {
     /// A stale cursor relies on exact-match failure for safety; a stale highwater could dedup-drop the new session's events outright.
     pub(crate) fn bind_session_id(&mut self, session_id: agent_client_protocol::SessionId) {
         if self.session.session_id.as_ref() != Some(&session_id) {
+            self.input_recovery = Default::default();
             self.session_binding_epoch = self.session_binding_epoch.wrapping_add(1);
             self.last_seen_event_id = None;
             self.last_seen_event_seq = None;
@@ -135,6 +136,7 @@ impl AgentView {
             session_binding_epoch: 0,
             scrollback,
             prompt,
+            input_recovery: Default::default(),
             tip_typing_dismissed: false,
             todo: TodoPane::new(),
             tasks: TasksPane::new(),
@@ -843,7 +845,13 @@ impl AgentView {
     }
     /// Whether Send now can target a local turn or an idle-looking automatic wake.
     pub(crate) fn can_send_now(&self) -> bool {
-        self.session.state.is_turn_running()
+        (self.session.state.is_idle()
+            && self
+                .session
+                .pending_prompts
+                .iter()
+                .any(|prompt| prompt.recovered))
+            || self.session.state.is_turn_running()
             || (self.wake_turn_active() && !self.wake_turn_cancelling())
     }
     /// Single setter for [`RunningWakeTurn`]. No-op unless the pane is idle and not replaying; keeps an in-flight cancel marker for the same id.

@@ -5016,6 +5016,15 @@ pub(crate) fn execute(
                     }
                 });
         }
+        Effect::RecoverInput { agent_id, session_id, cwd } => {
+            tasks.spawn(async move {
+                let info = aster_shell::session::info::Info {
+                    id: session_id.clone(), cwd: cwd.to_string_lossy().into_owned(),
+                };
+                let result = crate::app::input_recovery::load(info).await.map_err(|e| format!("{e:#}"));
+                TaskResult::InputRecovered { agent_id, session_id, result }
+            });
+        }
         Effect::HydrateSessionMetaFromDisk {
             agent_id,
             session_id,

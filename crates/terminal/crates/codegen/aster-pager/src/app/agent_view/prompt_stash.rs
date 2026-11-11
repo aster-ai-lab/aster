@@ -9,7 +9,7 @@ use crate::app::app_view::InputOutcome;
 use crate::views::prompt_widget::StashedPrompt;
 use crossterm::event::KeyEvent;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum StashCause {
     /// Stashed with Ctrl+S or Alt+S: restores automatically.
     Chord,
@@ -18,7 +18,7 @@ pub enum StashCause {
 }
 
 /// Carries the input mode it was typed in, so a `!` shell draft restores as one.
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct PromptStashEntry {
     pub prompt: StashedPrompt,
     pub input_mode: PromptInputMode,

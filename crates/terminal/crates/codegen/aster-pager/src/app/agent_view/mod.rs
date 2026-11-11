@@ -343,7 +343,7 @@ pub use super::queue_edit::PromptMode;
 /// Which special input mode the prompt is currently in.
 /// These modes are **mutually exclusive**: only one can be active at a time.
 /// `Normal` is the default. Each variant changes the prompt's visual appearance
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 pub enum PromptInputMode {
     /// Standard prompt: Enter sends `Action::SendPrompt`.
     #[default]
@@ -741,6 +741,7 @@ pub struct AgentView {
     pub(crate) session_binding_epoch: u32,
     pub scrollback: ScrollbackState,
     pub prompt: PromptWidget,
+    pub(crate) input_recovery: super::input_recovery::Recovery,
     /// Sticky: once the user types in the prompt, hide the tip for the session.
     pub tip_typing_dismissed: bool,
     pub todo: TodoPane,

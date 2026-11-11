@@ -443,13 +443,15 @@ pub struct PromptRenderResult {
 }
 
 /// Prompt state saved while another input context owns the composer.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct StashedPrompt {
     pub text: String,
     pub cursor: usize,
+    #[serde(with = "crate::app::input_recovery::images")]
     pub(crate) images: Vec<PastedImage>,
     pub(crate) chip_elements: Vec<crate::app::agent::ChipElement>,
     pub(crate) image_counter: usize,
+    #[serde(skip)]
     pub(crate) image_undo_stash: Vec<PastedImage>,
 }
 
