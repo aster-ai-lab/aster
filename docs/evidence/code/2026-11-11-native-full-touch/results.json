@@ -1,0 +1,75 @@
+{
+  "schema": "aster.native.full-touch.batch.v1",
+  "repository": "/Users/roylin/code/aster",
+  "date": "2026-11-11",
+  "goal": "Systematically drive the 508-case native agent-desktop TUI campaign toward zero untouched entries",
+  "campaign": {
+    "catalog": "crates/code/manual/tui-e2e/20261110/catalog.json",
+    "state_file": ".runtime/tui-full-e2e/campaign.json (excluded from git)",
+    "planned_cases": 508,
+    "expanded_execution_rows": 1047,
+    "status_before": {"NOT_RUN": 452, "PARTIAL": 56, "PASS": 0},
+    "status_after_batch1": {"NOT_RUN": 355, "PARTIAL": 153, "PASS": 0},
+    "status_after_batch2": {"NOT_RUN": 345, "PARTIAL": 163, "PASS": 0},
+    "cases_moved": 107,
+    "backups": ["campaign.json.batch1-backup", "campaign.json.batch2-backup"]
+  },
+  "batch1": {
+    "window": "w-62244 / w-62375",
+    "unique_command_entries_touched": 69,
+    "explicit_refusals_observed_in_ax": 30,
+    "other_observed_responses": 38,
+    "cases_moved_to_PARTIAL": 97
+  },
+  "batch2": {
+    "windows": ["w-63051", "w-63339"],
+    "stateful_entries": ["minimal", "fullscreen", "clear", "compact", "new", "fork", "resume", "debug", "delete", "gboom", "quit"],
+    "stateful_entries_touched": 11,
+    "cases_moved_to_PARTIAL": 10
+  },
+  "command_name_coverage": {
+    "source": "crates/code/manual/tui-e2e/20261110/inventory.json",
+    "unique_names": 80,
+    "touched": 80,
+    "untouched": [],
+    "screenshots": 80,
+    "ax_frames": 80,
+    "evidence_root": ".runtime/tui-full-e2e/full-touch-20261111/ (excluded from git)"
+  },
+  "harness_fixes": [
+    "composer parser confused the welcome-screen upper-half-block border with draft text",
+    "run_records land asynchronously; an early records[-2] index raced after Ctrl+O",
+    "Terminal window identity churn: activate-terminal retries and AX typed delivery",
+    "strict startup: a stale exit banner containing 'DeepSeek Flash · YOLO' was a false positive; require a live CLI process, a composer frame and no '[进程已完成]'",
+    "AX typed launch line produced 'zuexec ...' (zsh: command not found); verify the exact shell line with cleared-line retries",
+    "external editor recovery matched a bare '~' in the home-shortened status path and injected a spurious ':q!'; require a vim buffer signature",
+    "stateful commands poisoned the private session state; rebuild state/ and workspace/ between convergence rounds"
+  ],
+  "remaining": {
+    "NOT_RUN_by_family": {
+      "SETTING": 86, "KEY": 76, "SURFACE": 27, "TOOL": 25, "FIELD": 16,
+      "COMPONENT": 13, "INPUT": 8, "CANCEL": 8, "READ": 8, "TOOLS": 8,
+      "MODEL": 7, "ELICIT": 7, "BOOT": 6, "SLASH": 6, "CONFIG": 6,
+      "FAULT": 6, "DISPLAY": 5, "WELCOME": 3, "PERM": 3, "FORM": 3,
+      "SESSION": 3, "EXT": 3, "MEMORY": 3, "SOAK": 3, "PACKAGE": 3,
+      "GOAL": 2, "QUEUE": 1
+    },
+    "structurally_unreachable": {
+      "unavailable_local_commands": 38,
+      "unavailable_settings": 18,
+      "shell_gated_commands": 3,
+      "null_render_parts_and_internal_states": "docs/evidence/studio/2026-11-11-message-flow-visual-e2e/coverage-matrix.md D class",
+      "studio_missing_routes": ["知识库", "小程序"]
+    },
+    "oracle_verification_pending_for_PARTIAL": 163
+  },
+  "verification": {
+    "default_pair_bytes": {"aster": 899194232, "aster_acp": 308714456},
+    "default_pair_unchanged": true,
+    "build_id": "aster-cli-pair-v1:58adbc450c5f3d094591dcbfe417c788cb0cdbd3:aarch64-apple-darwin",
+    "input_source_restored": "com.apple.inputmethod.SCIM.ITABC",
+    "owned_processes_retired": true,
+    "repository_files_changed_by_this_evidence": 2
+  },
+  "status_semantics": "TOUCHED_NATIVE means the entry was submitted in a real Terminal TUI window with an AX frame and a pixel capture. Oracles are NOT verified, so PASS stays at 0. The campaign README forbids counting a screen keyword, planning check, mock, ignored test or model narrative as a product pass."
+}
