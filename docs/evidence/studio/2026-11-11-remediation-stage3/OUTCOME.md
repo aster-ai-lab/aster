@@ -144,3 +144,12 @@ STUDIO_RENDERER_DEV=0 STUDIO_RENDERER_PORT=4319 \
 - **父仓库**：`just studio-land-check` 在 bump 前后各跑一次，均 EXIT=0（`apps/studio worktree is clean`、`pointer advances 0a22f9b34ea8 -> 9561729c30cf`、`delivery commits … are clean`）。本次提交**只暂存** `apps/studio` gitlink 与 `docs/evidence/studio/2026-11-11-remediation-stage3/`；`git diff --cached --name-status` 核对无任何并发会话文件。
 - **并发会话隔离**：`crates/code/acp/**` 与 `docs/evidence/code/2026-11-10-acp-cancel-terminal/` 全程未 add、未 commit、未修改。父仓库 `main` 在本轮期间由并发会话从 `70e5f305c` 推进到 `3ebe8a65f`；推送为 fast-forward，会一并带上这些已提交的前序 commit。
 - **环境限制**：本机 Node 22 低于 `engines >=24.12`，`pnpm` 门禁使用等价入口（`node_modules/.bin/vitest`、`node_modules/.bin/tsx`、`node_modules/.bin/oxfmt`）；全局 `lefthook` 缺失只打印警告，commit/push EXIT 均为 0。
+
+## 10. 复核更正（后续批次追加，2026-11-11）
+
+后续复核发现 §2 的一处措辞过强，且一次口头风险清单里有一条是**误判**，在此更正；已发生的改动与测试结果不作改写。
+
+- **§2「修复全站『无焦点环』的根因」应更正为**：移除的是**全局层** `*:focus { outline-style: none }` 抑制，浏览器默认 `:focus-visible` 轮廓因此对未自行声明样式的元素恢复生效；组件级样式保持原样，仍有待审计面。
+- **误判更正**：曾把 `richtext.css:6,15`、`workbench-search.css:3`、`task-conversation.css:859/1123/2431/2508/2844` 的 `outline:none` 列为「无 focus-visible 兜底」。复核确认：后 5 处本身就是 `:focus-visible` 规则，用 `background` / `box-shadow` 作自定义焦点指示；`.tiptap` 是富文本编辑器，由文本光标指示焦点；`workbench-search__close` 在 `workbench-search.css:35-36` 有 `outline: 2px solid var(--ring)` 兜底。**这些是有意设计，不应改动**，补规则只会造成双环。
+- **真实待审计面**：`src/renderer` 共 2163 个 `.tsx`，其中 24 个文件含 `outline-none` 但整个文件无 `focus-visible` 字样（例如 `components/FindBar.tsx`、`components/ModelSelector/ModelSelector.tsx`、`components/composer/ComposerSurface.tsx`）。这是**静态可疑清单**，未逐元素确认是否可聚焦、是否有 CSS 文件级兜底，不宣称 24 个都是缺陷。
+- 本批次的后续修复与 agent-desktop 全量 E2E 证据见 `../2026-11-11-agent-desktop-e2e/`。
