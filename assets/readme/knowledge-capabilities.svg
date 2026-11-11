@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1240" viewBox="0 0 1200 1240" role="img" aria-labelledby="knowledge-title knowledge-desc">
+  <title id="knowledge-title">Aster 的上下文、知识与扩展能力</title>
+  <desc id="knowledge-desc">指令、会话历史、当前源码检索和长期记忆由 ContextAssembler 装配为模型输入。Skill、MCP、Task 和程序化工具调用绑定到运行能力快照，并受父级权限、取消和预算约束。知识内容与执行授权分别管理。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: Menlo, "SFMono-Regular", Consolas, "PingFang SC", "Microsoft YaHei", monospace; fill: #141413; font-weight: 400; }
+      .title { font-size: 36px; font-weight: 500; }
+      .heading { font-size: 26px; font-weight: 500; }
+      .body { font-size: 22px; }
+      .light { fill: #FDFCF9; }
+      .panel { fill: #FDFCF9; stroke: #141413; stroke-width: 1.2; }
+      .soft { fill: #FDFCF9; stroke: #DCD6C8; stroke-width: 1.2; }
+      .line { fill: none; stroke: #141413; stroke-width: 1.6; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1200" height="1240" rx="14" fill="#F8F6F0"/>
+  <text class="title" x="56" y="66">上下文、知识与扩展能力</text>
+  <text x="56" y="108" font-size="24">知识决定模型看到什么，能力决定运行能执行什么</text>
+
+  <g id="knowledge">
+    <rect class="panel" x="56" y="150" width="518" height="764" rx="8"/>
+    <path d="M64 150H566Q574 150 574 158V200H56V158Q56 150 64 150Z" fill="#141413"/>
+    <text class="heading light" x="315" y="184" text-anchor="middle">上下文与知识</text>
+    <g text-anchor="middle">
+      <rect class="soft" x="80" y="224" width="446" height="94" rx="6"/>
+      <text class="heading" x="303" y="262">指令与会话历史</text>
+      <text class="body" x="303" y="295">稳定前缀 / 路径规则 / 历史事实</text>
+      <rect class="soft" x="80" y="358" width="446" height="94" rx="6"/>
+      <text class="heading" x="303" y="396">工作区检索</text>
+      <text class="body" x="303" y="429">精确 / 词法 / 结构 / 语义</text>
+      <rect class="soft" x="80" y="492" width="446" height="94" rx="6"/>
+      <text class="heading" x="303" y="530">长期记忆</text>
+      <text class="body" x="303" y="563">召回 / 版本 / 命名空间</text>
+    </g>
+    <path class="line" d="M526 271H550V606H315 M526 405H550 M526 539H550"/>
+    <path class="line" d="M315 606V626" marker-end="url(#arrow)"/>
+    <rect x="80" y="626" width="470" height="112" rx="6" fill="#141413"/>
+    <text class="heading light" x="315" y="672" text-anchor="middle">ContextAssembler</text>
+    <text class="body light" x="315" y="710" text-anchor="middle">去重 / 排序 / 来源配额</text>
+    <path class="line" d="M315 738V770" marker-end="url(#arrow)"/>
+    <rect class="panel" x="80" y="770" width="470" height="106" rx="6"/>
+    <text class="heading" x="315" y="812" text-anchor="middle">模型输入</text>
+    <text class="body" x="315" y="849" text-anchor="middle">预算化上下文 / 压缩交接</text>
+  </g>
+
+  <g id="extensions">
+    <rect class="panel" x="626" y="150" width="518" height="764" rx="8"/>
+    <path d="M634 150H1136Q1144 150 1144 158V200H626V158Q626 150 634 150Z" fill="#141413"/>
+    <text class="heading light" x="885" y="184" text-anchor="middle">扩展与委派</text>
+    <g text-anchor="middle">
+      <rect class="soft" x="650" y="224" width="446" height="94" rx="6"/>
+      <text class="heading" x="873" y="262">Skill</text>
+      <text class="body" x="873" y="295">返回指令 / 受限子运行</text>
+      <rect class="soft" x="650" y="358" width="446" height="94" rx="6"/>
+      <text class="heading" x="873" y="396">MCP</text>
+      <text class="body" x="873" y="429">stdio / HTTP / SSE</text>
+      <rect class="soft" x="650" y="492" width="446" height="94" rx="6"/>
+      <text class="heading" x="873" y="530">Task</text>
+      <text class="body" x="873" y="563">子代理 / 后台 / 共享预算</text>
+      <rect class="soft" x="650" y="626" width="446" height="94" rx="6"/>
+      <text class="heading" x="873" y="664">程序化工具调用</text>
+      <text class="body" x="873" y="697">QuickJS / 调用次数 / 超时</text>
+    </g>
+    <path class="line" d="M1096 271H1120V746H885 M1096 405H1120 M1096 539H1120 M1096 673H1120"/>
+    <path class="line" d="M885 746V770" marker-end="url(#arrow)"/>
+    <rect x="650" y="770" width="470" height="106" rx="6" fill="#FDFCF9" stroke="#4E60FF" stroke-width="1.4"/>
+    <text x="885" y="812" font-size="24" text-anchor="middle">能力快照与 ToolInvoker</text>
+    <text class="body" x="885" y="849" text-anchor="middle">运行权限 / 取消 / 预算</text>
+  </g>
+
+  <g id="run-binding">
+    <path class="line" d="M315 914V972" marker-end="url(#arrow)"/>
+    <path class="line" d="M885 914V972" marker-end="url(#arrow)"/>
+    <rect class="panel" x="56" y="972" width="1088" height="144" rx="8"/>
+    <text class="heading" x="80" y="1014">运行绑定</text>
+    <text x="600" y="1053" font-size="24" text-anchor="middle">Session → Run → Subtask → Turn</text>
+    <text class="body" x="600" y="1090" text-anchor="middle">能力版本固定，父级权限与资源边界随子运行继承</text>
+    <rect x="56" y="1160" width="1088" height="44" rx="6" fill="#4E60FF"/>
+    <text class="body light" x="600" y="1189" text-anchor="middle">知识内容不授予工具权限，扩展名称不替代执行准入</text>
+  </g>
+</svg>

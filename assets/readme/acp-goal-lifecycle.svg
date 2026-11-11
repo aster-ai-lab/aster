@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1260" viewBox="0 0 1200 1260" role="img" aria-labelledby="acp-title acp-desc">
+  <title id="acp-title">ACP 交互与长期目标执行</title>
+  <desc id="acp-desc">客户端经 ACP 与 Core 会话交互，事件、确认与表单按调用身份关联。长期目标绑定版本、已接受计划和验收条件，每次 tick 检查等待、预算和截止时间，再执行原运行切片并保存进展证据。无人值守使用显式、有限的宿主策略。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: Menlo, "SFMono-Regular", Consolas, "PingFang SC", "Microsoft YaHei", monospace; fill: #141413; font-weight: 400; }
+      .title { font-size: 36px; font-weight: 500; }
+      .heading { font-size: 26px; font-weight: 500; }
+      .body { font-size: 22px; }
+      .light { fill: #FDFCF9; }
+      .panel { fill: #FDFCF9; stroke: #141413; stroke-width: 1.2; }
+      .soft { fill: #FDFCF9; stroke: #DCD6C8; stroke-width: 1.2; }
+      .line { fill: none; stroke: #141413; stroke-width: 1.6; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1200" height="1260" rx="14" fill="#F8F6F0"/>
+  <text class="title" x="56" y="66">ACP 与目标执行</text>
+  <text x="56" y="108" font-size="24">客户端交互与长期目标共用 Core 原运行</text>
+
+  <g id="protocol" text-anchor="middle">
+    <rect class="panel" x="56" y="150" width="340" height="104" rx="6"/>
+    <text class="heading" x="226" y="192">CLI / Studio</text>
+    <text class="body" x="226" y="230">请求 / 权限回答 / 表单</text>
+    <rect x="430" y="150" width="340" height="104" rx="6" fill="#141413"/>
+    <text class="heading light" x="600" y="192">AsterCodeAgent</text>
+    <text class="body light" x="600" y="230">stdio / 宿主扩展</text>
+    <rect class="panel" x="804" y="150" width="340" height="104" rx="6"/>
+    <text class="heading" x="974" y="192">AgentSession</text>
+    <text class="body" x="974" y="230">运行 / 工具 / 事件</text>
+  </g>
+  <path class="line" d="M396 202H430" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path class="line" d="M770 202H804" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path class="line" d="M600 254V312" marker-end="url(#arrow)"/>
+  <g id="interaction">
+    <rect class="panel" x="56" y="312" width="1088" height="142" rx="8"/>
+    <path d="M64 312H1136Q1144 312 1144 320V362H56V320Q56 312 64 312Z" fill="#141413"/>
+    <text class="heading light" x="80" y="346">交互与终态</text>
+    <text class="body" x="80" y="401">文本 / 推理 / 工具状态 / 用量 / 历史回放</text>
+    <text class="body" x="80" y="433">确认绑定调用身份；取消请求与后续收尾属于原运行</text>
+  </g>
+
+  <path class="line" d="M600 454V520" marker-end="url(#arrow)"/>
+  <text x="628" y="496" font-size="20" style="fill:#7A756C">显式目标</text>
+  <g id="goal">
+    <rect class="panel" x="56" y="520" width="1088" height="546" rx="8"/>
+    <path d="M64 520H1136Q1144 520 1144 528V570H56V528Q56 520 64 520Z" fill="#141413"/>
+    <text class="heading light" x="80" y="554">长期目标 · 每个切片是一轮原运行</text>
+    <rect class="soft" x="80" y="594" width="1040" height="64" rx="6"/>
+    <text class="body" x="600" y="635" text-anchor="middle">目标版本 / 已接受计划 / 工作策略 / 验收条件</text>
+    <path class="line" d="M240 658V704" marker-end="url(#arrow)"/>
+    <g text-anchor="middle">
+      <rect class="soft" x="80" y="704" width="320" height="136" rx="6"/>
+      <text class="heading" x="240" y="750">Tick 准入</text>
+      <text class="body" x="240" y="794">等待 / 预算 / 截止时间</text>
+      <rect x="440" y="704" width="320" height="136" rx="6" fill="#141413"/>
+      <text class="heading light" x="600" y="750">原运行切片</text>
+      <text class="body light" x="600" y="794">模型 / 工具 / 完成检查</text>
+      <rect class="soft" x="800" y="704" width="320" height="136" rx="6"/>
+      <text class="heading" x="960" y="750">进展与证据</text>
+      <text class="body" x="960" y="794">新效果 / 计划步骤 / 回执</text>
+    </g>
+    <path class="line" d="M400 772H440" marker-end="url(#arrow)"/>
+    <path class="line" d="M760 772H800" marker-end="url(#arrow)"/>
+    <path class="line" d="M960 840V872H240V840" marker-end="url(#arrow)"/>
+    <text class="body" x="600" y="908" text-anchor="middle">未完成且允许继续：重新检查目标状态</text>
+    <path class="line" d="M1120 772H1132V922H600V938" marker-end="url(#arrow)"/>
+    <rect class="panel" x="80" y="938" width="1040" height="90" rx="6"/>
+    <text x="600" y="992" font-size="24" text-anchor="middle">继续 / 等待 / 需输入 / 暂停 / 核对 / 预算耗尽 / 完成</text>
+  </g>
+
+  <rect x="56" y="1122" width="1088" height="92" rx="6" fill="#4E60FF"/>
+  <text class="heading light" x="80" y="1158">无人值守</text>
+  <text class="body light" x="80" y="1192">显式宿主策略 / 有限执行预算 / 重试与结果文件</text>
+</svg>

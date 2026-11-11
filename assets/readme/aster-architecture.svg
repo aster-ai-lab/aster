@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1248" viewBox="0 0 1200 1248" role="img" aria-labelledby="architecture-title architecture-desc">
+  <title id="architecture-title">Aster 运行架构</title>
+  <desc id="architecture-desc">终端和 Studio 通过 ACP stdio 调用 Core，Rust 宿主直接嵌入 Core。Core 管理运行准入、事实驱动执行、完成判定、上下文、工具和任务调度，再访问模型、工作区、ksandbox 与宿主服务。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: Menlo, "SFMono-Regular", Consolas, "PingFang SC", "Microsoft YaHei", monospace; fill: #141413; font-weight: 400; }
+      .title { font-size: 36px; font-weight: 500; }
+      .heading { font-size: 26px; font-weight: 500; }
+      .body { font-size: 22px; }
+      .note { font-size: 20px; fill: #7A756C; }
+      .light { fill: #FDFCF9; }
+      .panel { fill: #FDFCF9; stroke: #141413; stroke-width: 1.2; }
+      .soft { fill: #FDFCF9; stroke: #DCD6C8; stroke-width: 1.2; }
+      .line { fill: none; stroke: #141413; stroke-width: 1.6; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1200" height="1248" rx="14" fill="#F8F6F0"/>
+  <text class="title" x="56" y="66">Aster</text>
+  <text class="note" x="1144" y="64" text-anchor="end">运行架构</text>
+  <text x="56" y="108" font-size="24">终端与桌面共用执行内核，Rust 应用直接嵌入</text>
+
+  <g id="hosts" text-anchor="middle">
+    <rect class="panel" x="56" y="164" width="340" height="94" rx="6"/>
+    <text class="heading" x="226" y="203">Aster CLI</text>
+    <text class="body" x="226" y="236">输入 / 显示 / 会话管理</text>
+    <rect class="panel" x="430" y="164" width="340" height="94" rx="6"/>
+    <text class="heading" x="600" y="203">Studio</text>
+    <text class="body" x="600" y="236">桌面交互 / 宿主服务</text>
+    <rect class="panel" x="804" y="164" width="340" height="94" rx="6"/>
+    <text class="heading" x="974" y="203">Rust Host</text>
+    <text class="body" x="974" y="236">Agent / AgentSession</text>
+  </g>
+  <path class="line" d="M226 258V320" marker-end="url(#arrow)"/>
+  <path class="line" d="M600 258V320" marker-end="url(#arrow)"/>
+  <text class="note" x="254" y="297">ACP stdio</text>
+  <path class="line" d="M974 258V486" marker-end="url(#arrow)"/>
+  <text class="note" x="996" y="382">直接嵌入</text>
+
+  <g id="acp">
+    <rect class="panel" x="56" y="320" width="714" height="120" rx="8"/>
+    <path d="M64 320H762Q770 320 770 328V370H56V328Q56 320 64 320Z" fill="#141413"/>
+    <text class="heading light" x="80" y="353">aster-acp · 协议与宿主适配</text>
+    <text class="body" x="80" y="412">会话请求 / 事件转换 / 审批与表单 / 宿主扩展</text>
+  </g>
+  <path class="line" d="M413 440V486" marker-end="url(#arrow)"/>
+
+  <g id="core">
+    <rect class="panel" x="56" y="486" width="1088" height="454" rx="8"/>
+    <path d="M64 486H1136Q1144 486 1144 494V538H56V494Q56 486 64 486Z" fill="#141413"/>
+    <text class="heading light" x="80" y="520">aster-core · 执行与治理</text>
+    <g text-anchor="middle">
+      <rect class="soft" x="80" y="562" width="330" height="124" rx="6"/>
+      <text class="heading" x="245" y="600">运行准入</text>
+      <text class="body" x="245" y="634">身份 / 权限 / 能力快照</text>
+      <text class="body" x="245" y="663">资源所有权 / 取消</text>
+      <rect x="435" y="562" width="330" height="124" rx="6" fill="#141413"/>
+      <text class="heading light" x="600" y="600">FactRun</text>
+      <text class="body light" x="600" y="634">事实日志 → 状态 → 动作</text>
+      <text class="body light" x="600" y="663">Meta Harness 组件装配</text>
+      <rect x="790" y="562" width="330" height="124" rx="6" fill="#FDFCF9" stroke="#4E60FF" stroke-width="1.4"/>
+      <text class="heading" x="955" y="600">完成判定</text>
+      <text class="body" x="955" y="634">效果摘要 / 验证证据</text>
+      <text class="body" x="955" y="663">未决义务 / 宿主豁免</text>
+    </g>
+    <path class="line" d="M410 624H435" marker-end="url(#arrow)"/>
+    <path class="line" d="M765 624H790" marker-end="url(#arrow)"/>
+    <path class="line" d="M600 686V714 M245 714H955"/>
+    <path class="line" d="M245 714V742" marker-end="url(#arrow)"/>
+    <path class="line" d="M600 714V742" marker-end="url(#arrow)"/>
+    <path class="line" d="M955 714V742" marker-end="url(#arrow)"/>
+    <g text-anchor="middle">
+      <rect class="soft" x="80" y="742" width="330" height="104" rx="6"/>
+      <text class="heading" x="245" y="783">上下文与知识</text>
+      <text class="body" x="245" y="819">指令 / 压缩 / 检索 / 记忆</text>
+      <rect class="soft" x="435" y="742" width="330" height="104" rx="6"/>
+      <text class="heading" x="600" y="783">受控工具</text>
+      <text class="body" x="600" y="819">MCP / Skill / PTC</text>
+      <rect class="soft" x="790" y="742" width="330" height="104" rx="6"/>
+      <text class="heading" x="955" y="783">任务调度</text>
+      <text class="body" x="955" y="819">子代理 / 后台 / 目标切片</text>
+      <rect x="80" y="874" width="1040" height="42" rx="6" fill="#4E60FF"/>
+      <text class="body light" x="600" y="902">组件可组合，权限与完成检查由 Core 保留</text>
+    </g>
+  </g>
+
+  <path class="line" d="M226 940V1000" marker-end="url(#arrow)"/>
+  <path class="line" d="M600 940V1000" marker-end="url(#arrow)"/>
+  <path class="line" d="M974 940V1000" marker-end="url(#arrow)"/>
+  <g id="backends" text-anchor="middle">
+    <rect class="panel" x="56" y="1000" width="340" height="112" rx="6"/>
+    <text class="heading" x="226" y="1043">模型适配</text>
+    <text class="body" x="226" y="1080">API / Responses / 账号</text>
+    <rect class="panel" x="430" y="1000" width="340" height="112" rx="6"/>
+    <text class="heading" x="600" y="1043">工作区与进程</text>
+    <text class="body" x="600" y="1080">文件 / Git / ksandbox</text>
+    <rect class="panel" x="804" y="1000" width="340" height="112" rx="6"/>
+    <text class="heading" x="974" y="1043">宿主与外部服务</text>
+    <text class="body" x="974" y="1080">MCP / Office / 浏览器</text>
+  </g>
+  <rect x="56" y="1164" width="1088" height="44" rx="6" fill="#4E60FF"/>
+  <text class="body light" x="600" y="1193" text-anchor="middle">模型提出动作 · Core 决定权限与完成 · 宿主提供能力</text>
+</svg>
