@@ -1,0 +1,41 @@
+{
+  "window": "w-61022",
+  "results": [
+    {
+      "scenario": "workbench",
+      "onboarding_dismissed": {
+        "label": "继续",
+        "click_ok": true
+      },
+      "snapshot_ok": true,
+      "ax_nodes": 41,
+      "screenshot_ok": true,
+      "internal_markers": []
+    },
+    {
+      "scenario": "automation",
+      "control_found": true,
+      "click_ok": true,
+      "ax_nodes": 41,
+      "screenshot_ok": true,
+      "internal_markers": []
+    },
+    {
+      "scenario": "automation-test-run-feedback",
+      "control_found": false,
+      "click_ok": false,
+      "toast_visible": false,
+      "ax_nodes": 41,
+      "screenshot_ok": true
+    },
+    {
+      "scenario": "secondary",
+      "label": "技能",
+      "control_found": true,
+      "click_ok": true,
+      "ax_nodes": 42,
+      "screenshot_ok": true,
+      "internal_markers": []
+    }
+  ]
+}
