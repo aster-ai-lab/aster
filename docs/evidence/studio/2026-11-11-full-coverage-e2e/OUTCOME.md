@@ -148,3 +148,13 @@ stamp：`rootCommit=d802ea4659…`、`studioCommit=0161c1c2310b…`、`nativeBin
 第一次有效运行 **13 PASS / 7 FAIL（65%）**；7 个 FAIL 中 4 个是测试脚本自身的定位/类型 bug、1 个是断言写错但功能实际生效、2 个是疑似产品问题（搜索模态关闭后 AX 仍残留 `dialog` role；设置「关于」页返回后 composer 未出现在 AX 树）。修正脚本后的重跑因 `just studio` 后台实例中途退出而全部 `size=0`，判为作废并保留日志。完整用例矩阵、归因分类、状态副作用说明与复现命令见 `functional-test-report.md`。
 
 **不宣称 20/20 通过**；覆盖统计与功能测试是两套口径，本文前几节的 1193/1193 只代表可达性触达。
+
+### 收尾（`finalize-e2e.py` / `restore-config.py`）
+
+用**一个受管进程**启动窗口、跑测试、复核疑点再关窗口，解决了「`just studio` 独立后台任务中途退出」的问题（耗时 9m16s，`COMPLETED`）。第三批修正版结果 **14 PASS / 6 FAIL（70%）**，为最终采用值。
+
+- 6 个 FAIL 中 5 个源于**新窗口启动即残留展开浮层**（`baseline_nodes=247`，干净工作台应为 58；模型选择器与任务范围下拉同时展开），1 个是 F16 断言把 `focused` 状态也算进比较——开关值实际 `0→1→0` 完全正常。**没有一个是产品功能缺陷**，按行为口径实际验证了 15/20。
+- 上一版报告的两个「疑似产品问题」经 `f09_probe` / `f18_probe` **复核后撤回**：F09 残留的 `dialog` 是模型选择器浮层（搜索已关、`has_关闭=false`、composer 可用）；F18 根本没进设置子页（`clicked_back=false`，AX 里是任务范围下拉内容）。
+- 发现的新现象（**待复核、不下结论**）：应用重启后浮层仍处展开态，可能是状态持久化，也可能是 AX 暴露隐藏节点。这是后续拿干净高通过率的前置条件。
+- **配置副作用解除**：F04 留下的「先规划」在干净窗口 `w-68027` 中读取为 `授权模式: 请求批准`，`status=RESTORED`。该标记是会话级「下一轮生效」，重启即清，用户持久配置未被改动；上一版「建议人工检查」的提示作废。
+- 三批运行对比、6 个 FAIL 逐项归因、复核证据见 `functional-test-report.md` 的「收尾复核」章节；机器可读证据：`finalize-report.json`、`restore-config-report.json`、`functional-final.log`、`functional-results.json`（第三批）、`functional-results-run1.json`（第一批）、`functional-run2-invalid.log`（作废批）。

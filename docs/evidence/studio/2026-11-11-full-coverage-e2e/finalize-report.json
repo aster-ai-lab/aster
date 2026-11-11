@@ -1,0 +1,171 @@
+{
+  "launcher_pid": 96359,
+  "port": 4322,
+  "window": "w-67823",
+  "baseline_nodes": 247,
+  "planning_restore_before_tests": {
+    "status": "clean",
+    "labels": []
+  },
+  "functional_exit": 0,
+  "functional_summary": {
+    "window": "w-67823",
+    "cases": 20,
+    "passed": 14,
+    "failed": 6,
+    "pass_rate": 0.7
+  },
+  "functional_cases": [
+    {
+      "id": "F01",
+      "status": "FAIL",
+      "actual": "size 247->247, radiobutton=0, has_选择模型=False"
+    },
+    {
+      "id": "F02",
+      "status": "FAIL",
+      "actual": "option not found in picker"
+    },
+    {
+      "id": "F03",
+      "status": "PASS",
+      "actual": "menuitem=5, has_完全访问=True"
+    },
+    {
+      "id": "F04",
+      "status": "FAIL",
+      "actual": "control not found"
+    },
+    {
+      "id": "F05",
+      "status": "PASS",
+      "actual": "switch 1->3, has_自动审查=True"
+    },
+    {
+      "id": "F06",
+      "status": "PASS",
+      "actual": "opened=True, after_has_自动审查=False"
+    },
+    {
+      "id": "F07",
+      "status": "PASS",
+      "actual": "size 256->14, dialog=True, has_关闭=True"
+    },
+    {
+      "id": "F08",
+      "status": "PASS",
+      "actual": "set_value_ok=True, size 14->17, has_清除=True"
+    },
+    {
+      "id": "F09",
+      "status": "PASS",
+      "actual": "opened=True, has_关闭_after=False, has_描述任务=True, a11y_observation_dialog_role_still_present=False"
+    },
+    {
+      "id": "F10",
+      "status": "PASS",
+      "actual": "size 256->216->256, cond1=True, cond2=True"
+    },
+    {
+      "id": "F11",
+      "status": "PASS",
+      "actual": "size=115, has_全部=True, has_安装=True"
+    },
+    {
+      "id": "F12",
+      "status": "FAIL",
+      "actual": "field_found=True, set_value_ok=False, size 115->115, empty_state=False"
+    },
+    {
+      "id": "F13",
+      "status": "PASS",
+      "actual": "has_全部状态=True, has_暂无定时任务=False"
+    },
+    {
+      "id": "F14",
+      "status": "PASS",
+      "actual": "size 70->71, has_暂无=False"
+    },
+    {
+      "id": "F15",
+      "status": "PASS",
+      "actual": "switch=8, has_开机自动启动=True"
+    },
+    {
+      "id": "F16",
+      "status": "FAIL",
+      "actual": "before={'value': '0', 'states': []}, after={'value': '1', 'states': ['focused', 'checked']}, restored={'value': '0', 'states': ['focused']}"
+    },
+    {
+      "id": "F17",
+      "status": "PASS",
+      "actual": "size=1178, has_管理模型与价格=True, has_Token=True"
+    },
+    {
+      "id": "F18",
+      "status": "FAIL",
+      "actual": "sub_size=92, back_has_描述任务=False, back_has_开机自动启动=False"
+    },
+    {
+      "id": "F19",
+      "status": "PASS",
+      "actual": "textfield 2->2, restored=True"
+    },
+    {
+      "id": "F20",
+      "status": "PASS",
+      "actual": "size 70->77, menuitem=2"
+    }
+  ],
+  "f09_probe": {
+    "open_dialog_count": 2,
+    "after_dialog_count": 2,
+    "after_dialog_names": [
+      "选择模型",
+      null
+    ],
+    "after_dialog_child_counts": [
+      3,
+      6
+    ],
+    "after_nodes": 77,
+    "has_关闭": false,
+    "has_composer": true,
+    "verdict": "needs_manual_review"
+  },
+  "f18_probe": {
+    "subpage_nodes": 77,
+    "subpage_has_关于_related": false,
+    "back_button_candidates": [
+      "工作",
+      "关闭模型选择"
+    ],
+    "clicked_back": false,
+    "after_nodes": 77,
+    "after_has_composer": true,
+    "after_has_开机自动启动": false,
+    "after_names_tail": [
+      "配置自定义模型",
+      "当前目录 在所选项目文件夹里直接修改",
+      "新工作树 当前项目不是 Git 仓库，无法使用 Git 工作树",
+      "不使用项目",
+      "aster",
+      "新建项目",
+      "选择已有本地文件夹",
+      "Close",
+      "Full Screen",
+      "Minimize"
+    ]
+  },
+  "planning_restore_after_tests": {
+    "status": "FAILED",
+    "before": [
+      "授权模式: 请求批准 · 先规划"
+    ],
+    "after": [
+      "授权模式: 请求批准 · 先规划"
+    ]
+  },
+  "final_nodes": 76,
+  "status": "COMPLETED"
+}

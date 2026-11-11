@@ -1,0 +1,13 @@
+{
+  "launcher_pid": 27926,
+  "port": 4323,
+  "window": "w-68027",
+  "nodes_after_scrub": 64,
+  "labels_before": [
+    "授权模式: 请求批准"
+  ],
+  "labels_final": [
+    "授权模式: 请求批准"
+  ],
+  "status": "RESTORED"
+}
