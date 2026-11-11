@@ -1,0 +1,21 @@
+{
+  "build_id": "aster-cli-pair-v1:231f8384a785711f87cd25f0b7f172db278676d2:aarch64-apple-darwin",
+  "model": "deepseek/deepseek-flash",
+  "mode": "YOLO",
+  "reported_effort": "max",
+  "fixture_workspace_verified": true,
+  "prepared_invocations": 1,
+  "requested_timeout_ms": 1500,
+  "effective_timeout_ms": 1500,
+  "reported_exit_code": -1,
+  "receipt_outcome": "failed",
+  "receipt_completeness": "complete",
+  "output_captured": true,
+  "fixture_start_marker_captured": true,
+  "surviving_fixture_processes": 0,
+  "parent_run_status": "completed",
+  "input_source_restored": true,
+  "agent_desktop_return": true,
+  "source_acl_sha256": "0d16cc3d54069e83202d242d85caf730d411ae50078d7538c76b12ec0db57ad7",
+  "settled_capture_sha256": "1493478ac7c019f66cc5407f4db074ccb0d19e312b888ef4378f635ed389fd00"
+}
