@@ -29,7 +29,8 @@
 | 四 | 16 PASS / 4 FAIL | 干净前置（64 节点） |
 | 五（定稿） | **16 PASS / 4 FAIL** | 修正断言后稳定复现（`functional-results.json`） |
 | 隔离复验 | 4 个中 **F03/F04 补验 PASS**，F12/F18 未形成有效观测 | 每用例独立窗口，见文末 |
-| **优化后（定稿）** | **19 PASS / 1 工具边界 FAIL（95%）** | 单窗口稳定受管 + 修正 F18 断言，见最后一节 |
+| 优化后 | 19 PASS / 1 工具边界 FAIL（95%） | 单窗口稳定受管 + 修正 F18 断言 |
+| **最终（定稿）** | **20 PASS / 0 FAIL（100%）** | 打通 F12 输入 + 三处稳定性修复，见最后一节 |
 
 下表是第一轮的逐用例实测，用于说明每个用例的断言设计；**最终结论以文末「最终收敛」章节和 `functional-results.json` 为准（16/20）**。各批次差异、FAIL 归因与复核证据都在文末。
 
@@ -223,4 +224,40 @@ python3 functional-tests.py <window-id>
 - `functional-results.json` 为定稿结果；`clean-run-report.json` 记录 `ready=True`、baseline 与 after 均为 **64 节点干净工作台、零浮层、`授权模式: 请求批准`**；`permission_restore.status=clean`。**测试运行前后环境完全一致，没有留下任何配置或浮层副作用。**
 - `rerun-functional.py` 增加 `wait_ready()`（连续干净观测 + 弹窗清除），消除新 origin 首启弹窗与半渲染窗口造成的假基线。
 
-**仍不宣称 20/20。** 最后 1 个用例的前置条件是产品侧的可读输入值钩子，或物理输入授权——这属于产品/权限变更，不是 harness 再调能解决的。
+> 该阶段仍为 19/20；下面一节更正「F12 是硬工具边界」的结论并给出 20/20 定稿。
+
+## 定稿：20/20（100%）
+
+### 再更正一次：F12 不是工具边界，是我漏了聚焦
+
+`probe-input2.py` 把五种 headless 输入组合逐个试了一遍，关键线索来自 `type` 自己的错误详情：
+
+> "Some fields, often in Chromium and Electron apps, accept typed text without applying it. Read the field with `get`, then write the full intended value with `set-value`."
+
+| 组合 | 结果 |
+| --- | --- |
+| `focus` + `type` | `ACTION_FAILED`（post_state.value 仍为空） |
+| `click` + `type` | `ACTION_FAILED` |
+| `clipboard-set` + `press cmd+v` | clipboard helper 缺失；press `STALE_REF`（窗口焦点未确认） |
+| `press` 单字符 | `STALE_REF`（同上） |
+| **`focus` + `set-value`** | **ok=True** |
+
+即：直接 `set-value` 会 `ACTION_FAILED`，但**先 `focus` 再 `set-value` 就成功**。F12 改为这个顺序后：输入框值真实读到 `zzzz-no-such-connector`，连接器列表 **109→79 节点**（过滤生效）——完整的功能验证，无需 `--headed`、无需改产品代码。上一节「需要产品侧测试钩子」的结论作废。
+
+### 顺带修掉三处稳定性问题
+
+1. `restore_permission_label()` 改用「规划模式」菜单项 toggle（此前用重选「请求批准」，清不掉 `planFirst`）——`permission_restore.status=clean`。
+2. `rerun-functional.py` 加冷启动预热（3 次 AX 读取 + 500ms 间隔）；`wait_window()` 不再因 launcher 进程退出就误判 `NO_WINDOW`（`just studio` 可以 exec 后退出而窗口仍在）。
+3. F03/F04 改为按 AX 树前缀定位授权 chip（name 会随状态变成 `· 先规划`），打开失败重试一次；F19 改用页面可访问名签名变化判断新建态；F20 加前置归一化并按前缀定位「任务范围:」chip。
+
+### 最终结果与环境影响
+
+- **20 PASS / 0 FAIL（100%）**，逐用例断言与实测值见 `functional-results.json`（定稿）与 `functional-clean-run.log`。
+- `clean-run-report.json`：`ready=True`，baseline 57 节点、after 64 节点，**两者都是干净工作台、零浮层、composer 在、`授权模式: 请求批准`**；`permission_restore.status=clean`。**运行前后环境一致，无配置或浮层副作用。**
+- F12 的 PASS 证据：`focus_ok=True, set_value_ok=True, field_values=['zzzz-no-such-connector'], size 109→79, view_changed=True`。
+
+### 仍覆盖不到的功能（不变）
+
+真实模型任务、故障注入、错误/流式态、键盘焦点环（需物理 `press`）、`prefers-reduced-motion` 开启态、63 个静态路由中未经 UI 到达的页面。**20/20 只代表本文件定义的 20 个功能用例全部通过**，不等于全应用功能已穷尽。
+
+复现：`python3 rerun-functional.py`（受管启动 + 20 用例）；单用例：`ONLY_CASES=F12 python3 functional-tests.py <window-id>`。

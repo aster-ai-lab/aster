@@ -1,6 +1,6 @@
-{"id": "F01", "title": "模型选择器展开", "status": "PASS", "expected": "dialog shows 选择模型/搜索模型/配置自定义模型, >=3 provider groups, tree grows", "actual": "size 64->97, radiobutton=5, has_选择模型=True"}
+{"id": "F01", "title": "模型选择器展开", "status": "PASS", "expected": "dialog shows 选择模型/搜索模型/配置自定义模型, >=3 provider groups, tree grows", "actual": "size 57->90, radiobutton=5, has_选择模型=True"}
 {"id": "F02", "title": "切换模型并验证标签", "status": "PASS", "expected": "composer model label becomes K3.1 Pro", "actual": "K3.1 Pro visible in AX after select: True"}
-{"id": "F03", "title": "授权模式菜单五项", "status": "PASS", "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式", "actual": "menuitem=5, has_完全访问=True"}
+{"id": "F03", "title": "授权模式菜单五项", "status": "PASS", "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式", "actual": "chip_found=True, menuitem=5, has_完全访问=True"}
 {"id": "F04", "title": "切换授权模式并验证", "status": "PASS", "expected": "label reflects planning mode (e.g. 请求批准 · 先规划)", "actual": "labels=['授权模式: 请求批准 · 先规划']"}
 {"id": "F05", "title": "更多选项浮层开关", "status": "PASS", "expected": "上传附件/自动审查/产物追溯 visible, >=2 extra switches", "actual": "switch 1->3, has_自动审查=True"}
 {"id": "F06", "title": "关闭更多选项浮层", "status": "PASS", "expected": "自动审查 present when open, gone after 关闭", "actual": "opened=True, after_has_自动审查=False"}
@@ -9,13 +9,13 @@
 {"id": "F09", "title": "关闭搜索回到工作台", "status": "PASS", "expected": "关闭 hides the modal controls and the composer is usable again", "actual": "opened=True, has_关闭_after=False, has_描述任务=True, a11y_observation_dialog_role_still_present=False"}
 {"id": "F10", "title": "侧栏折叠与还原", "status": "PASS", "expected": "collapse hides sidebar and shows 展开侧边栏; expand restores", "actual": "size 64->24->64, cond1=True, cond2=True"}
 {"id": "F11", "title": "连接器目录加载", "status": "PASS", "expected": "connector catalog with 全部/精选 filters and installable cards", "actual": "size=109, has_全部=True, has_安装=True"}
-{"id": "F12", "title": "连接器搜索过滤", "status": "FAIL", "expected": "typed query is readable in the field and the catalog view reacts", "actual": "field_found=True, type_ok=False, type_error=ACTION_FAILED, field_value='', size 109->109, view_changed=False"}
+{"id": "F12", "title": "连接器搜索过滤", "status": "PASS", "expected": "focused query lands in the search field and the catalog reacts", "actual": "field_found=True, focus_ok=True, set_value_ok=True, field_values=['zzzz-no-such-connector'], size 109->79, view_changed=True"}
 {"id": "F13", "title": "自动化页筛选与空态", "status": "PASS", "expected": "status filters 全部状态/已暂停/已错过 and empty/new state", "actual": "has_全部状态=True, has_暂无定时任务=False"}
 {"id": "F14", "title": "自动化状态筛选", "status": "PASS", "expected": "selecting 活跃 changes the task list / shows an empty state", "actual": "size 64->65, has_暂无=False"}
 {"id": "F15", "title": "设置通用项渲染", "status": "PASS", "expected": "General settings with 开机自动启动/语言/启用上下文管理 and >=5 switches", "actual": "switch=8, has_开机自动启动=True"}
 {"id": "F16", "title": "设置开关切换与还原", "status": "PASS", "expected": "switch value toggles then returns to original", "actual": "before={'value': '0', 'states': []}, after={'value': '1', 'states': ['focused', 'checked']}, restored={'value': '0', 'states': ['focused']}, changed=True, restored_ok=True"}
 {"id": "F17", "title": "用量页统计渲染", "status": "PASS", "expected": "usage table with 时间/模型/Token/费用/耗时/状态 and 管理模型与价格", "actual": "size=1172, has_管理模型与价格=True, has_Token=True"}
 {"id": "F18", "title": "设置子页导航与返回", "status": "PASS", "expected": "关于 subpage renders; 返回应用 leaves Settings into the main app", "actual": "sub_size=86, left_settings=True, in_main_app=True, back_has_开机自动启动=False, back_size=65"}
-{"id": "F19", "title": "新建任务与返回", "status": "PASS", "expected": "new-task view changes editor state; home restores composer", "actual": "textfield 1->1, restored=True"}
+{"id": "F19", "title": "新建任务与返回", "status": "PASS", "expected": "new-task entry changes the view; home restores the composer", "actual": "clicked=True, view_changed=True, size 65->64, restored=True"}
 {"id": "F20", "title": "任务范围选择器", "status": "PASS", "expected": "task-scope selector opens (tree grows / menu items / close control)", "actual": "size 64->71, menuitem=2"}
-{"window": "w-69213", "cases": 20, "passed": 19, "failed": 1, "pass_rate": 0.95, "permission_restore": {"status": "clean", "labels": ["授权模式: 请求批准"]}}
+{"window": "w-70062", "cases": 20, "passed": 20, "failed": 0, "pass_rate": 1.0, "permission_restore": {"status": "clean", "labels": ["授权模式: 请求批准"]}}

@@ -1,10 +1,10 @@
 {
-  "launcher_pid": 78137,
+  "launcher_pid": 93522,
   "port": 4325,
-  "window": "w-69213",
+  "window": "w-70062",
   "ready": true,
   "baseline": {
-    "nodes": 64,
+    "nodes": 57,
     "dialogs": [],
     "has_composer": true,
     "has_model_picker": false,
@@ -15,11 +15,11 @@
   },
   "functional_exit": 0,
   "functional_summary": {
-    "window": "w-69213",
+    "window": "w-70062",
     "cases": 20,
-    "passed": 19,
-    "failed": 1,
-    "pass_rate": 0.95,
+    "passed": 20,
+    "failed": 0,
+    "pass_rate": 1.0,
     "permission_restore": {
       "status": "clean",
       "labels": [
@@ -31,7 +31,7 @@
     {
       "id": "F01",
       "status": "PASS",
-      "actual": "size 64->97, radiobutton=5, has_选择模型=True"
+      "actual": "size 57->90, radiobutton=5, has_选择模型=True"
     },
     {
       "id": "F02",
@@ -41,7 +41,7 @@
     {
       "id": "F03",
       "status": "PASS",
-      "actual": "menuitem=5, has_完全访问=True"
+      "actual": "chip_found=True, menuitem=5, has_完全访问=True"
     },
     {
       "id": "F04",
@@ -85,8 +85,8 @@
     },
     {
       "id": "F12",
-      "status": "FAIL",
-      "actual": "field_found=True, type_ok=False, type_error=ACTION_FAILED, field_value='', size 109->109, view_changed=False"
+      "status": "PASS",
+      "actual": "field_found=True, focus_ok=True, set_value_ok=True, field_values=['zzzz-no-such-connector'], size 109->79, view_changed=True"
     },
     {
       "id": "F13",
@@ -121,7 +121,7 @@
     {
       "id": "F19",
       "status": "PASS",
-      "actual": "textfield 1->1, restored=True"
+      "actual": "clicked=True, view_changed=True, size 65->64, restored=True"
     },
     {
       "id": "F20",

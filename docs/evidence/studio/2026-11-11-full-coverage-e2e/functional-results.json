@@ -1,9 +1,9 @@
 {
-  "window": "w-69213",
+  "window": "w-70062",
   "cases": 20,
-  "passed": 19,
-  "failed": 1,
-  "pass_rate": 0.95,
+  "passed": 20,
+  "failed": 0,
+  "pass_rate": 1.0,
   "permission_restore": {
     "status": "clean",
     "labels": [
@@ -16,7 +16,7 @@
       "title": "模型选择器展开",
       "status": "PASS",
       "expected": "dialog shows 选择模型/搜索模型/配置自定义模型, >=3 provider groups, tree grows",
-      "actual": "size 64->97, radiobutton=5, has_选择模型=True",
+      "actual": "size 57->90, radiobutton=5, has_选择模型=True",
       "screenshot": "ft-F01-模型选择器展开.png"
     },
     {
@@ -32,7 +32,7 @@
       "title": "授权模式菜单五项",
       "status": "PASS",
       "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式",
-      "actual": "menuitem=5, has_完全访问=True",
+      "actual": "chip_found=True, menuitem=5, has_完全访问=True",
       "screenshot": "ft-F03-授权模式菜单五项.png"
     },
     {
@@ -102,9 +102,9 @@
     {
       "id": "F12",
       "title": "连接器搜索过滤",
-      "status": "FAIL",
-      "expected": "typed query is readable in the field and the catalog view reacts",
-      "actual": "field_found=True, type_ok=False, type_error=ACTION_FAILED, field_value='', size 109->109, view_changed=False",
+      "status": "PASS",
+      "expected": "focused query lands in the search field and the catalog reacts",
+      "actual": "field_found=True, focus_ok=True, set_value_ok=True, field_values=['zzzz-no-such-connector'], size 109->79, view_changed=True",
       "screenshot": "ft-F12-连接器搜索过滤.png"
     },
     {
@@ -159,8 +159,8 @@
       "id": "F19",
       "title": "新建任务与返回",
       "status": "PASS",
-      "expected": "new-task view changes editor state; home restores composer",
-      "actual": "textfield 1->1, restored=True",
+      "expected": "new-task entry changes the view; home restores the composer",
+      "actual": "clicked=True, view_changed=True, size 65->64, restored=True",
       "screenshot": "ft-F19-新建任务与返回.png"
     },
     {

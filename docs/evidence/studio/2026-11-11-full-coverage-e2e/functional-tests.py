@@ -108,6 +108,16 @@ def permission_opener():
     return (p.get("data") or {}).get("match")
 
 
+def permission_chip_ref():
+    """The chip name changes with state (e.g. '· 先规划'), so locate it by
+    role + prefix in a fresh AX tree instead of a hard-coded full name."""
+    for x in flat(snapshot()):
+        if (x.get("role") == "combobox"
+                and str(x.get("name") or "").startswith("授权模式:")):
+            return x.get("ref_id")
+    return None
+
+
 def click(role, name):
     r = ref(role, name)
     if not r:
@@ -258,28 +268,38 @@ def f02():
 
 def f03():
     """Permission-mode menu lists all five modes with descriptions."""
-    click("combobox", "授权模式: 请求批准")
-    wait(450)
+    chip = permission_chip_ref()
+    if chip:
+        click_ref(chip)
+        wait(500)
     a = AX()
+    if a.count_role("menuitem") < 5:
+        # A cold first press sometimes only focuses the chip; press once more.
+        retry = permission_chip_ref()
+        if retry:
+            click_ref(retry)
+            wait(500)
+            a = AX()
     ok = (a.count_role("menuitem") >= 5 and a.has("完全访问 高风险")
           and a.has("只读权限") and a.has("智能授权") and a.has("规划模式"))
     return ok, "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式", \
-        f"menuitem={a.count_role('menuitem')}, has_完全访问={a.has('完全访问 高风险')}"
+        f"chip_found={bool(chip)}, menuitem={a.count_role('menuitem')}, " \
+        f"has_完全访问={a.has('完全访问 高风险')}"
 
 
 def f04():
     """Planning mode is a toggle: selecting it changes the label; toggle back."""
     try:
-        opener = find("combobox", "授权模式: 请求批准") or permission_opener()
-        if not opener:
+        chip = permission_chip_ref()
+        if not chip:
             return False, "permission combobox present", "control not found"
-        click_ref(opener["ref_id"])
+        click_ref(chip)
         wait(500)
         m = find("menuitem", "规划模式") or find_text("规划模式")
         if not m:
-            opener2 = permission_opener()
-            if opener2:
-                click_ref(opener2["ref_id"])
+            retry = permission_chip_ref()
+            if retry:
+                click_ref(retry)
                 wait(450)
                 m = find("menuitem", "规划模式") or find_text("规划模式")
         if not m:
@@ -294,9 +314,9 @@ def f04():
     finally:
         # 规划模式 behaves as a toggle inside the menu; click it again.
         home()
-        opener = permission_opener()
-        if opener:
-            click_ref(opener["ref_id"])
+        chip = permission_chip_ref()
+        if chip:
+            click_ref(chip)
             wait(400)
             toggle = find("menuitem", "规划模式")
             if toggle:
@@ -404,27 +424,32 @@ def f12():
             f"size={before.size}, has_全部={before.has('全部')}"
     query = "zzzz-no-such-connector"
     field = ref("textfield", "搜索连接器或关键词") or first_non_composer_textfield()
-    typed_ok = False
-    type_error = None
-    if field:
-        # This input exposes TypeText, not a working SetValue: `set-value`
-        # returns ACTION_FAILED and get --property value stays empty. `type`
-        # is still strict headless semantic delivery (no --headed).
-        typed = cli("type", field, query, "--timeout-ms", "10000", timeout=25)
-        typed_ok = bool(typed.get("ok"))
-        type_error = (typed.get("error") or {}).get("code")
-        wait(900)
+    # input-probe2.json: a bare set-value/type returns ACTION_FAILED on this
+    # controlled Chromium input, but focusing first makes set-value succeed
+    # (the tool's own ACTION_FAILED hint says the same). No --headed needed.
+    focus_ok = bool(field and cli("focus", field, "--timeout-ms", "3000",
+                                  timeout=20).get("ok"))
+    write_ok = bool(field and cli("set-value", field, query,
+                                  "--timeout-ms", "3000", timeout=20).get("ok"))
+    wait(850)
+    # After a real input the accessible name can change (placeholder drops),
+    # so read the value from every input-like node instead of matching a name.
+    values = []
+    for x in flat(snapshot()):
+        if (x.get("role") in ("textfield", "searchfield", "combobox")
+                and x.get("ref_id")):
+            p = cli("get", x["ref_id"], "--property", "value", timeout=20)
+            v = (p.get("data") or {}).get("value")
+            if v:
+                values.append(str(v))
+    committed = any(query[:8] in v for v in values)
     a = AX()
-    live = ref("textfield", "搜索连接器或关键词")
-    got = cli("get", live, "--property", "value", timeout=20) if live else {}
-    value = (got.get("data") or {}).get("value")
-    committed = bool(value and query[:8] in str(value))
     changed = (a.has("清除") or a.has("没有") or a.has("无结果") or a.has("暂无")
                or a.size != before.size)
     ok = committed and changed
-    return ok, "typed query is readable in the field and the catalog view reacts", \
-        f"field_found={bool(field)}, type_ok={typed_ok}, type_error={type_error}, " \
-        f"field_value={value!r}, size {before.size}->{a.size}, view_changed={changed}"
+    return ok, "focused query lands in the search field and the catalog reacts", \
+        f"field_found={bool(field)}, focus_ok={focus_ok}, set_value_ok={write_ok}, " \
+        f"field_values={values[:4]}, size {before.size}->{a.size}, view_changed={changed}"
 
 
 def f13():
@@ -545,20 +570,35 @@ def f18():
 def f19():
     """New-task entry opens an editable composer state, then restores."""
     before = AX()
-    click("button", "新建任务")
+    clicked = click("button", "新建任务")
     wait(650)
     a = AX()
-    ok = a.count_role("textfield") > before.count_role("textfield") or a.size != before.size
+    # The new-task entry changes visible content without necessarily adding a
+    # textfield or node, so compare the accessible-name signature instead.
+    changed = (set(a.names) != set(before.names) or a.size != before.size)
     home()
     restored = AX().has("描述任务")
-    return (ok and restored), "new-task view changes editor state; home restores composer", \
-        f"textfield {before.count_role('textfield')}->{a.count_role('textfield')}, restored={restored}"
+    return (clicked and changed and restored), \
+        "new-task entry changes the view; home restores the composer", \
+        f"clicked={clicked}, view_changed={changed}, " \
+        f"size {before.size}->{a.size}, restored={restored}"
 
 
 def f20():
     """Task-scope control opens its selector and can be closed again."""
+    if not AX().has("描述任务"):
+        r = ref("button", "工作")
+        if r:
+            click_ref(r)
+            wait(700)
     before = AX().size
-    r = ref("combobox", "任务范围: 选择项目 · 当前目录") or ref("combobox", "任务范围: aster · 当前目录")
+    # The chip name encodes the selected project, so locate it by prefix.
+    r = None
+    for x in flat(snapshot()):
+        if (x.get("role") == "combobox"
+                and str(x.get("name") or "").startswith("任务范围:")):
+            r = x.get("ref_id")
+            break
     if not r:
         return False, "task-scope combobox present", "control not found"
     try:
@@ -598,16 +638,21 @@ def restore_permission_label():
     labels = [n for n in AX().names if "授权模式:" in n]
     if not any("先规划" in x for x in labels):
         return {"status": "clean", "labels": labels[:2]}
-    opener = (find("combobox", "授权模式: 请求批准 · 先规划")
-              or permission_opener())
-    if opener:
-        click_ref(opener["ref_id"])
-        wait(450)
-        primary = (find_text("请求批准 读取无需确认")
-                   or find("menuitem", "请求批准 读取无需确认；修改和命令需确认。"))
-        if primary:
-            click_ref(primary["ref_id"])
-            wait(550)
+    # clear-plan-first.py proved the 规划模式 menu item is a toggle and that
+    # re-selecting 请求批准 does NOT clear planFirst. Use the toggle.
+    chip = None
+    for x in flat(snapshot()):
+        if (x.get("role") == "combobox"
+                and str(x.get("name") or "").startswith("授权模式:")):
+            chip = x.get("ref_id")
+            break
+    if chip:
+        click_ref(chip)
+        wait(500)
+        toggle = find("menuitem", "规划模式")
+        if toggle:
+            click_ref(toggle["ref_id"])
+            wait(600)
     after = [n for n in AX().names if "授权模式:" in n]
     return {"status": "restored" if after and not any("先规划" in x for x in after)
             else "FAILED", "before": labels[:2], "after": after[:2]}

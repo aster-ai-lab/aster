@@ -1,0 +1,218 @@
+{
+  "port": 4325,
+  "attempts": [
+    {
+      "name": "focus+type",
+      "focus": {
+        "ok": true,
+        "code": null,
+        "details": {}
+      },
+      "type": {
+        "ok": false,
+        "code": "ACTION_FAILED",
+        "details": {
+          "details": {
+            "after_action": {
+              "action": "type",
+              "disposition": {
+                "delivery": "delivered_unverified",
+                "retry": "unsafe"
+              },
+              "steps": [
+                {
+                  "label": "AXSelectedText",
+                  "mechanism": "semantic_api",
+                  "outcome": "succeeded",
+                  "verified": false
+                }
+              ]
+            },
+            "kind": "post_action_verification",
+            "post_state": {
+              "enabled": true,
+              "hidden": false,
+              "offscreen": false,
+              "role": "textfield",
+              "states": [
+                "focused"
+              ],
+              "value": ""
+            }
+          },
+          "disposition": {
+            "delivery": "delivered_unverified",
+            "retry": "unsafe"
+          },
+          "message": "Post-action state does not match the requested change",
+          "suggestion": "Some fields, often in Chromium and Electron apps, accept typed text without applying it. Read the field with 'get', then write the full intended value with 'set-value'."
+        }
+      },
+      "after": {
+        "ref": "@s1ktwc9jluees3:e1",
+        "get_ok": true,
+        "value": "",
+        "error": null
+      }
+    },
+    {
+      "name": "click+type",
+      "click": {
+        "ok": true,
+        "code": null,
+        "details": {}
+      },
+      "type": {
+        "ok": false,
+        "code": "ACTION_FAILED",
+        "details": {
+          "details": {
+            "after_action": {
+              "action": "type",
+              "disposition": {
+                "delivery": "delivered_unverified",
+                "retry": "unsafe"
+              },
+              "steps": [
+                {
+                  "label": "AXSelectedText",
+                  "mechanism": "semantic_api",
+                  "outcome": "succeeded",
+                  "verified": false
+                }
+              ]
+            },
+            "kind": "post_action_verification",
+            "post_state": {
+              "enabled": true,
+              "hidden": false,
+              "offscreen": false,
+              "role": "textfield",
+              "states": [
+                "focused"
+              ],
+              "value": ""
+            }
+          },
+          "disposition": {
+            "delivery": "delivered_unverified",
+            "retry": "unsafe"
+          },
+          "message": "Post-action state does not match the requested change",
+          "suggestion": "Some fields, often in Chromium and Electron apps, accept typed text without applying it. Read the field with 'get', then write the full intended value with 'set-value'."
+        }
+      },
+      "after": {
+        "ref": "@s2swz1xv3vwd7:e1",
+        "get_ok": true,
+        "value": "",
+        "error": null
+      }
+    },
+    {
+      "name": "clipboard+press cmd+v",
+      "clipboard": {
+        "ok": false,
+        "code": "ACTION_NOT_SUPPORTED",
+        "details": {
+          "details": {
+            "helper": "agent-desktop-macos-helper",
+            "kind": "clipboard_helper_invalid"
+          },
+          "disposition": {
+            "delivery": "not_delivered",
+            "retry": "safe"
+          },
+          "message": "The packaged macOS clipboard helper is missing or invalid",
+          "platform_detail": "Helper path crosses a directory writable by an untrusted principal: /opt/homebrew/lib"
+        }
+      },
+      "press": {
+        "ok": false,
+        "code": "STALE_REF",
+        "details": {
+          "details": {
+            "cause": "exact_window_focus_unconfirmed",
+            "check": "window_active",
+            "physical_delivery_started": false,
+            "window_id": "w-69620"
+          },
+          "disposition": {
+            "delivery": "not_delivered",
+            "retry": "safe"
+          },
+          "message": "The named window's exact focus could not be confirmed, so no key was sent",
+          "recovery": {
+            "requires_fresh_snapshot": true,
+            "retryable": true,
+            "strategy": "refresh_snapshot_then_retry_original"
+          },
+          "suggestion": "Retry with --headed so the named window is brought forward first, or name the active window"
+        }
+      },
+      "after": {
+        "ref": "@szpoaqi6wq50e:e1",
+        "get_ok": true,
+        "value": "",
+        "error": null
+      }
+    },
+    {
+      "name": "press single char",
+      "press": {
+        "ok": false,
+        "code": "STALE_REF",
+        "details": {
+          "details": {
+            "cause": "exact_window_focus_unconfirmed",
+            "check": "window_active",
+            "physical_delivery_started": false,
+            "window_id": "w-69620"
+          },
+          "disposition": {
+            "delivery": "not_delivered",
+            "retry": "safe"
+          },
+          "message": "The named window's exact focus could not be confirmed, so no key was sent",
+          "recovery": {
+            "requires_fresh_snapshot": true,
+            "retryable": true,
+            "strategy": "refresh_snapshot_then_retry_original"
+          },
+          "suggestion": "Retry with --headed so the named window is brought forward first, or name the active window"
+        }
+      },
+      "after": {
+        "ref": "@s1nj1kxqrdoq9r:e1",
+        "get_ok": true,
+        "value": "",
+        "error": null
+      }
+    },
+    {
+      "name": "focus+set-value",
+      "focus": {
+        "ok": true,
+        "code": null,
+        "details": {}
+      },
+      "set_value": {
+        "ok": true,
+        "code": null,
+        "details": {}
+      },
+      "after": {
+        "ref": null
+      }
+    }
+  ],
+  "window": "w-69620",
+  "baseline_value": {
+    "ref": "@s1fd249qvfya64:e1",
+    "get_ok": true,
+    "value": "",
+    "error": null
+  },
+  "success": [],
+  "status": "COMPLETED"
+}

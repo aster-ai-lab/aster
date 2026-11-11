@@ -185,4 +185,14 @@ stamp：`rootCommit=d802ea4659…`、`studioCommit=0161c1c2310b…`、`nativeBin
 
 F18 侦察显示「返回应用」回到的是**进入设置前的页面**（连接器目录 65 节点、`全部` 可见），是正确产品行为；原断言硬要求 composer 出现写错了。改为「离开设置页 + 回到主应用区域」后 PASS（`left_settings=True, in_main_app=True`）。`rerun-functional.py` 另加 `wait_ready()` 连续干净观测与弹窗清除。
 
-**最终：19 PASS / 1 工具边界 FAIL（95%），仍不宣称 20/20。** `functional-results.json` 为定稿；`clean-run-report.json` 显示 `ready=True`，baseline 与 after 均为 **64 节点干净工作台、零浮层、`授权模式: 请求批准`**，`permission_restore.status=clean`——**运行前后环境完全一致，无配置/浮层副作用**。证据：`input-probe.json`、`functional-clean-run.log`、`clean-run-report.json`，脚本 `probe-input.py`。
+该阶段：19 PASS / 1 工具边界 FAIL（95%）。证据：`input-probe.json`、`functional-clean-run.log`、`clean-run-report.json`，脚本 `probe-input.py`。
+
+### 定稿：20 PASS / 0 FAIL（100%）
+
+**更正「F12 是硬工具边界」的结论**：`probe-input2.py` 试了五种 headless 输入组合，`type` 的错误详情自带提示（Chromium/Electron 受控字段要先读再 `set-value`）。实测 **`focus` + `set-value` 成功**（直接 `set-value` 才 `ACTION_FAILED`）；`focus+type`、`click+type` 仍失败，`press` 因窗口焦点未确认 `STALE_REF`、剪贴板 helper 缺失。F12 改顺序后输入框值真实读到 `zzzz-no-such-connector`，连接器列表 **109→79**（过滤生效），完整验证且**无需 `--headed`、无需改产品代码**。上一节「需要产品侧测试钩子」作废。
+
+同时修三处稳定性：`restore_permission_label()` 改用「规划模式」toggle；`rerun-functional.py` 加冷启动预热并修 `wait_window()` 对 launcher 退出的误判；F03/F04 按 AX 前缀定位授权 chip 并重试、F19 用页面签名变化、F20 加前置归一化与前缀定位。
+
+**最终 20 PASS / 0 FAIL（100%）**。`functional-results.json` 为定稿；`clean-run-report.json` 显示 `ready=True`，baseline 57 / after 64 节点均为**干净工作台、零浮层、composer 在、`授权模式: 请求批准`**，`permission_restore.status=clean`——**运行前后环境一致，无配置或浮层副作用**。证据：`input-probe2.json`、`functional-clean-run.log`、`clean-run-report.json`，脚本 `probe-input2.py`。
+
+**20/20 只代表本目录定义的 20 个功能用例全部通过**，不等于全应用功能穷尽；真模型任务、故障注入、错误/流式态、键盘焦点环、reduce 开启态、未到达的静态路由仍不在覆盖内。

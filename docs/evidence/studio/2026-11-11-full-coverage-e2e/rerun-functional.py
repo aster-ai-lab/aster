@@ -108,8 +108,9 @@ def wait_ready(w, limit=40, stable=3):
 
 def wait_window(proc, limit=150):
     for _ in range(limit):
-        if proc.poll() is not None:
-            return None
+        # `just studio` can exec/exit while the Tauri window stays alive; do
+        # not treat a finished launcher as a failed launch. Only the actual
+        # window list decides.
         d = cli("list-windows")
         for w in (d.get("data") or []):
             if (w.get("app_name") in ("Aster", "KStudio") and w.get("visible")
@@ -137,6 +138,12 @@ def main():
             return report
 
         report["ready"] = wait_ready(w)
+        # Warm-up: the first few AX actions after a cold launch can be flaky
+        # even when the baseline looks clean. Let the renderer settle and read
+        # the tree a couple of times before the first case.
+        for _ in range(3):
+            snap(w)
+            cli("wait", "500", timeout=10)
         report["baseline"] = state(w)
 
         run = subprocess.run(
