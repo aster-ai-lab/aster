@@ -37,13 +37,13 @@ fn scanner_strips_escapes_and_records_link_columns() {
             "a bel-terminated link after plain text",
             "[Aster] \x1b]8;;https://example.com/repo\x07repo\x1b]8;;\x07",
             "[Aster] repo",
-            &[(6, 10, "https://example.com/repo")],
+            &[(8, 12, "https://example.com/repo")],
         ),
         (
             "an st-terminated link whose colour paints no columns",
             "\x1b]8;;https://github.com/aster-ai-lab/aster\x1b\\\x1b[32master\x1b[0m\x1b]8;;\x1b\\",
             "\x1b[32master\x1b[0m",
-            &[(0, 3, "https://github.com/aster-ai-lab/aster")],
+            &[(0, 5, "https://github.com/aster-ai-lab/aster")],
         ),
         (
             "two links on one line",
@@ -62,7 +62,7 @@ fn scanner_strips_escapes_and_records_link_columns() {
             "a charset escape is swallowed and takes no columns",
             "\x1b(B\x1b]8;;https://github.com/aster-ai-lab/aster\x07aster\x1b]8;;\x07",
             "aster",
-            &[(0, 3, "https://github.com/aster-ai-lab/aster")],
+            &[(0, 5, "https://github.com/aster-ai-lab/aster")],
         ),
         (
             "an erase csi never reaches the parser, the colour does",
@@ -101,9 +101,10 @@ fn link_on_the_second_line_is_measured_from_that_line() {
 
     assert_eq!(text.line_count(), 2);
     // Column 4 of the second line, not column 10 of the whole text.
+    // The linked word is `aster` (5 columns), not the legacy 3-column token.
     assert_eq!(
         (link.line, link.col_start, link.col_end, &*link.url),
-        (1, 4, 7, "https://github.com/aster-ai-lab/aster")
+        (1, 4, 9, "https://github.com/aster-ai-lab/aster")
     );
 }
 

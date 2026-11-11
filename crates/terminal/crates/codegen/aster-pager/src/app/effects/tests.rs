@@ -2887,10 +2887,11 @@ fn format_session_info_api_key_without_env() {
             text.contains("Run `aster login` to use your Aster Code subscription instead."),
             "{text}"
         );
-    assert!(!text.contains("aster"), "{text}");
+    // The brand-cleanup commit added `!text.contains("aster")` here while also
+    // requiring the `aster login` line above; the two cannot both hold.
 }
 #[test]
-fn format_session_info_api_key_auth_suggests_grok_login() {
+fn format_session_info_api_key_auth_suggests_aster_login() {
     let info = make_session_info("auto", None, 1000, 10000);
     let text = format_session_info(&info, None, false, true, true);
     assert!(text.contains("Auth method: API key (ASTER_API_KEY)"), "{text}");
@@ -2901,7 +2902,6 @@ fn format_session_info_api_key_auth_suggests_grok_login() {
         );
     assert!(!text.contains("Also present: ASTER_API_KEY"), "{text}");
     assert!(!text.contains("docs.aster.ai"), "{text}");
-    assert!(!text.contains("aster"), "{text}");
 }
 #[test]
 fn format_session_info_session_only_shows_oauth() {

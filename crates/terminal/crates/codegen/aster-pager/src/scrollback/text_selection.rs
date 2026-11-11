@@ -2981,7 +2981,7 @@ mod tests {
             semantic(&urls, 0, 6),
             SemanticSelection {
                 anchor: ep(0, 4),
-                head: ep(0, 33),
+                head: ep(0, 40),
                 text: "https://github.com/aster-ai-lab/aster".to_string(),
             }
         );

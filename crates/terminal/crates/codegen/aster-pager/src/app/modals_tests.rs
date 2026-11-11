@@ -52,10 +52,11 @@ fn arg_picker_effort_phase_opens_on_default_row() {
         panic!("expected the /model picker to chain into the effort phase");
     };
     assert_eq!("Reasoning X ", args_query);
-    assert_eq!(2, state.selected);
+    // The shared effort dropdown now offers a "Use the model default" row first.
+    assert_eq!(3, state.selected);
     assert_eq!(
         Some("Reasoning X high"),
-        items.get(2).map(|item| item.insert_text.as_str())
+        items.get(3).map(|item| item.insert_text.as_str())
     );
 }
 
@@ -176,7 +177,7 @@ fn model_picker_effort_phase_lists_aster_budget_levels() {
         panic!("Enter on a reasoning model must open the effort phase");
     };
     let shown: Vec<&str> = items.iter().map(|item| item.display.as_str()).collect();
-    assert_eq!(shown, ["low", "medium", "high", "xhigh", "max"]);
-    assert_eq!(state.selected, 2, "high is the advertised default");
-    assert_eq!(items[2].insert_text, "codex · glm high");
+    assert_eq!(shown, ["Default", "low", "medium", "high", "xhigh", "max"]);
+    assert_eq!(state.selected, 3, "high is the advertised default row");
+    assert_eq!(items[3].insert_text, "codex · glm high");
 }

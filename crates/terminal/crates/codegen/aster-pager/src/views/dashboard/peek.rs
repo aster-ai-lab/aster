@@ -1082,7 +1082,7 @@ mod tests {
             bottom.contains("Aster Code 4 Fast"),
             "model on bottom border: {bottom:?}"
         );
-        assert!(bottom.contains("yolo"), "yolo flag: {bottom:?}");
+        assert!(bottom.contains("YOLO"), "yolo flag: {bottom:?}");
 
         // Pending-question (approval) mode: badge still painted
         let mut q = fields("Response");
@@ -1107,8 +1107,8 @@ mod tests {
         plain.auto_approve = false;
         let plain_bottom = badge_row(&plain, 6);
         assert!(
-            !plain_bottom.contains("yolo"),
-            "no flag without yolo: {plain_bottom:?}",
+            !plain_bottom.contains("YOLO"),
+            "no flag without YOLO: {plain_bottom:?}",
         );
 
         // Plan mode shows a `plan` flag (so all three Shift+Tab cycle states are visible on the badge)
@@ -1126,7 +1126,7 @@ mod tests {
         planp.auto = true;
         let plan_yolo_bottom = badge_row(&planp, 6);
         assert!(
-            plan_yolo_bottom.contains("Aster Code 4 Fast · plan · yolo"),
+            plan_yolo_bottom.contains("Aster Code 4 Fast · plan · YOLO"),
             "plan must not hide yolo: {plan_yolo_bottom:?}",
         );
 
@@ -1141,8 +1141,8 @@ mod tests {
         planp.auto_approve = true;
         let yolo_bottom = badge_row(&planp, 6);
         assert!(
-            yolo_bottom.contains("yolo") && !yolo_bottom.contains("auto"),
-            "yolo wins over auto: {yolo_bottom:?}",
+            yolo_bottom.contains("YOLO") && !yolo_bottom.contains("auto"),
+            "YOLO wins over auto: {yolo_bottom:?}",
         );
     }
 
