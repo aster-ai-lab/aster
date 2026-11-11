@@ -109,6 +109,16 @@ pub(super) fn handle_queue_changed(notif: &acp::ExtNotification, app: &mut AppVi
 
     let sid = acp::SessionId::new(session_id.clone());
     let session_match = find_session_match(app, &sid);
+    if let (Some(SessionMatch::Root(id)), Some(pid)) = (session_match, running_prompt_id.as_ref())
+        && !pid.is_empty()
+        && !is_wake_prompt(pid)
+        && app
+            .agents
+            .get(&id)
+            .is_some_and(|agent| agent.terminal_prompt_ids.contains(pid))
+    {
+        return is_matched_agent_active(app, id);
+    }
     if let Some(SessionMatch::Child(parent_id)) = session_match {
         let acks_watch = broadcast_acks_watch(
             app.agents

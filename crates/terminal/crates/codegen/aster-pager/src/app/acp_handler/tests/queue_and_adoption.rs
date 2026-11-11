@@ -42,6 +42,36 @@
         }
     }
 
+    #[test]
+    fn late_start_cannot_reopen_a_settled_prompt() {
+        use crate::app::actions::{Action, TaskResult};
+        use crate::app::dispatch::dispatch;
+
+        for stop in [acp::StopReason::EndTurn, acp::StopReason::Cancelled] {
+            let mut app = make_app_with_agent("sess-1");
+            let id = AgentId(0);
+            let start = queue_changed_running("sess-1", &[], Some("first"));
+            handle_queue_changed(&start, &mut app);
+            assert_eq!(test_agent(&app, id).session.current_prompt_id.as_deref(), Some("first"));
+            dispatch(Action::TaskComplete(TaskResult::PromptResponse {
+                agent_id: id,
+                result: Ok(acp::PromptResponse::new(stop)),
+                http_status: None,
+                prompt_id: Some("first".into()),
+            }), &mut app);
+            assert!(test_agent(&app, id).session.state.is_idle());
+
+            handle_queue_changed(&queue_changed_ext("sess-1", &["next"]), &mut app);
+            handle_queue_changed(&start, &mut app);
+            let agent = test_agent(&app, id);
+            assert!(agent.session.state.is_idle());
+            assert_eq!(agent.shared_queue[0].id, "next");
+
+            handle_queue_changed(&queue_changed_running("sess-1", &[], Some("next")), &mut app);
+            assert_eq!(test_agent(&app, id).session.current_prompt_id.as_deref(), Some("next"));
+        }
+    }
+
     /// The pager reconciles the authoritative shared prompt queue from the `aster/queue/changed` broadcast, and an empty broadcast clears it.
     #[test]
     fn queue_changed_reconciles_shared_queue() {
@@ -654,7 +684,7 @@
             &mut app,
         );
         app.agents.get_mut(&id).unwrap().session.loading_replay = false;
-        assert!(test_agent(&app, id).replayed_terminal_prompts.contains("p-run"));
+        assert!(test_agent(&app, id).terminal_prompt_ids.contains("p-run"));
         assert!(test_agent(&app, id).session.current_prompt_id.is_none());
 
         // The leader re-reports the already-ended pid as running (stale slot).
@@ -1928,7 +1958,7 @@
         app.agents
             .get_mut(&id)
             .unwrap()
-            .replayed_terminal_prompts
+            .terminal_prompt_ids
             .insert("b1".to_string());
 
         prompt_response(&mut app, "p1");

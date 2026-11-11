@@ -697,6 +697,12 @@ pub(super) fn finalize_turn_from_terminal(
     if !agent.session.state.is_busy() && agent.session.current_prompt_id.is_none() {
         return TerminalApply::Ignored;
     }
+    if let Some(pid) = prompt_id
+        .filter(|pid| !pid.is_empty())
+        .or(agent.session.current_prompt_id.as_deref())
+    {
+        agent.terminal_prompt_ids.insert(pid.to_owned());
+    }
 
     // Capture elapsed BEFORE `mark_turn_finished()` clears `turn_started_at`
     // The anchor was back-dated from the authoritative `turnStartMs` on adoption, so this reads the same wall-clock duration the driver shows

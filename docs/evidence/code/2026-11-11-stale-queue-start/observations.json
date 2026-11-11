@@ -1,0 +1,35 @@
+{
+  "fixture": {
+    "red_source_hash": "ca84b308b9b3eb590dddf0dae8ee963da60764a7",
+    "driver_sha256": "a95c604fca0d10c471ddf12b7ab717a03eb9c208c2c0915d1905610cd12d2eba",
+    "relay_sha256": "4e2e32efeefca1851dc7407810e89b6620e3ba51a55496a984b9f2fcee529183"
+  },
+  "before": {
+    "source_hash": "ca84b308b9b3eb590dddf0dae8ee963da60764a7",
+    "status": "FAIL",
+    "original_runs": 1,
+    "wire_prompt_requests": 1,
+    "original_visible_before": 2,
+    "original_visible_after": 1,
+    "busy_after_replay": true,
+    "error": "late start reactivated the settled turn",
+    "prompt_requests": 1,
+    "completed_responses": 1,
+    "late_starts_delivered": 1,
+    "trace_sha256": "2be08f953ecbdc50a5272dd2be53435f0cb9ad497cbea01b7d2a1baf1dccc57c"
+  },
+  "after": {
+    "source_hash": "231f8384a785711f87cd25f0b7f172db278676d2",
+    "status": "PASS",
+    "original_runs": 1,
+    "wire_prompt_requests": 1,
+    "original_visible_before": 2,
+    "original_visible_after": 2,
+    "busy_after_replay": false,
+    "next_prompt_completed": true,
+    "prompt_requests": 2,
+    "completed_responses": 2,
+    "late_starts_delivered": 1,
+    "trace_sha256": "b36735fe1d80b12633863115af8a3d79aca13161f105f8b13cbf9224c3735f9a"
+  }
+}

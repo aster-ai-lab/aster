@@ -191,6 +191,11 @@
             len_before,
             "a duplicate TurnCompleted must not push a second marker"
         );
+        handle_ext_notification(
+            &queue_changed_running("sess-view", &[], Some("pid-driver")),
+            &mut app,
+        );
+        assert!(app.agents.get(&AgentId(0)).unwrap().session.state.is_idle());
     }
 
     #[test]
@@ -582,7 +587,7 @@
         let agent = app.agents.get(&AgentId(0)).unwrap();
         assert!(
             agent
-                .replayed_terminal_prompts
+                .terminal_prompt_ids
                 .contains("task-completed-bg1"),
             "the replay arm must keep recording wake pids"
         );
@@ -1299,7 +1304,7 @@
             "a replayed terminal records adoption state, not a redraw"
         );
         assert!(
-            app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry")).replayed_terminal_prompts.contains("p-run"),
+            app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry")).terminal_prompt_ids.contains("p-run"),
             "a replayed TurnCompleted must record its prompt id"
         );
 
@@ -1383,7 +1388,7 @@
         );
         assert!(
             app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry"))
-                .replayed_terminal_prompts
+                .terminal_prompt_ids
                 .contains("p-first")
         );
 
@@ -1401,7 +1406,7 @@
         app.agents.get_mut(&id).unwrap().begin_session_reload(1);
         let agent = &app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry"));
         assert!(
-            agent.replayed_terminal_prompts.is_empty(),
+            agent.terminal_prompt_ids.is_empty(),
             "the second load must not inherit the first load's terminal set"
         );
         assert_eq!(
@@ -1440,7 +1445,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
         match last_session_event(&agent.scrollback) {
             Some(SessionEvent::TurnCompleted { elapsed: Some(d) }) => {
                 assert_eq!(d, std::time::Duration::from_millis(2500));
@@ -1614,7 +1619,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 
@@ -1635,7 +1640,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 
@@ -1661,7 +1666,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("task-completed-bg1"));
+        assert!(agent.terminal_prompt_ids.contains("task-completed-bg1"));
         assert_eq!(agent.scrollback.len(), len_before + 1);
         assert!(matches!(
             last_session_event(&agent.scrollback),
@@ -1683,7 +1688,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("task-completed-bg1"));
+        assert!(agent.terminal_prompt_ids.contains("task-completed-bg1"));
         assert_eq!(agent.scrollback.len(), len_before);
         assert!(agent.failed_wake_marker_for.is_none());
     }
@@ -1705,7 +1710,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 
@@ -1725,7 +1730,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
         assert!(matches!(
             last_session_event(&agent.scrollback),
             Some(SessionEvent::TurnFailed { .. })
@@ -1780,8 +1785,8 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p1"));
-        assert!(agent.replayed_terminal_prompts.contains("p2"));
+        assert!(agent.terminal_prompt_ids.contains("p1"));
+        assert!(agent.terminal_prompt_ids.contains("p2"));
         assert_eq!(
             crate::app::agent_view::test_fixtures::count_turn_markers(agent),
             2
@@ -1798,7 +1803,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("task-completed-bg1"));
+        assert!(agent.terminal_prompt_ids.contains("task-completed-bg1"));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 
@@ -1820,7 +1825,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("task-completed-bg1"));
+        assert!(agent.terminal_prompt_ids.contains("task-completed-bg1"));
         assert!(
             !agent.replayed_visible_prompts.contains("task-completed-bg1"),
             "a suppressed TodoWrite must not count as visible output"
@@ -1850,7 +1855,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("task-completed-bg1"));
+        assert!(agent.terminal_prompt_ids.contains("task-completed-bg1"));
         assert!(agent.replayed_visible_prompts.contains("task-completed-bg1"));
         assert_eq!(agent.scrollback.len(), len_before);
         assert_eq!(
@@ -1876,7 +1881,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("goal-summary-g1"));
+        assert!(agent.terminal_prompt_ids.contains("goal-summary-g1"));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 
@@ -1898,7 +1903,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p-bash"));
+        assert!(agent.terminal_prompt_ids.contains("p-bash"));
         assert!(agent.replayed_bash_prompts.contains("p-bash"));
         assert_eq!(
             agent.scrollback.len(),
@@ -1925,7 +1930,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p-bash"));
+        assert!(agent.terminal_prompt_ids.contains("p-bash"));
         assert!(agent.replayed_bash_prompts.contains("p-bash"));
         assert_eq!(
             agent.scrollback.len(),
@@ -1956,7 +1961,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains("p-bash"));
+        assert!(agent.terminal_prompt_ids.contains("p-bash"));
         assert!(agent.replayed_bash_prompts.contains("p-bash"));
         assert_eq!(
             agent.scrollback.len(),
@@ -1986,7 +1991,7 @@
             &mut app,
         );
         let agent = app.agents.get(&AgentId(0)).unwrap();
-        assert!(agent.replayed_terminal_prompts.contains(""));
+        assert!(agent.terminal_prompt_ids.contains(""));
         assert_eq!(agent.scrollback.len(), len_before);
     }
 

@@ -151,7 +151,7 @@ impl AgentView {
             session_reload: None,
             unexpected_replay_drops: 0,
             late_replay_until: None,
-            replayed_terminal_prompts: HashSet::new(),
+            terminal_prompt_ids: HashSet::new(),
             replayed_visible_prompts: HashSet::new(),
             replayed_bash_prompts: HashSet::new(),
             failed_wake_marker_for: None,
@@ -598,7 +598,7 @@ impl AgentView {
     pub(crate) fn begin_replay_window(&mut self) {
         self.clear_minimal_btw_lifecycle();
         self.session.loading_replay = true;
-        self.replayed_terminal_prompts.clear();
+        self.terminal_prompt_ids.clear();
         self.replayed_visible_prompts.clear();
         self.replayed_bash_prompts.clear();
         self.unexpected_replay_drops = 0;
@@ -802,7 +802,7 @@ impl AgentView {
     /// Adopting it would re-strand the viewer on "Waiting…".
     pub(crate) fn should_adopt_running_prompt(&self, prompt_id: &str) -> bool {
         crate::app::acp_handler::should_adopt_running_prompt(prompt_id)
-            && !self.replayed_terminal_prompts.contains(prompt_id)
+            && !self.terminal_prompt_ids.contains(prompt_id)
             && !self.is_rewound_prompt(prompt_id)
     }
     /// Whether a wake turn is in flight (streaming or cancelling) while the pane is idle.

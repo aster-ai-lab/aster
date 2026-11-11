@@ -1060,7 +1060,7 @@
             &aster_turn_completed_notif("sess-1", "p-run", "end_turn", true),
             &mut app,
         );
-        assert!(app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry")).replayed_terminal_prompts.contains("p-run"));
+        assert!(app.agents.get(&id).unwrap_or_else(|| panic!("missing map entry")).terminal_prompt_ids.contains("p-run"));
 
         let finalized = app
             .agents

@@ -1539,6 +1539,7 @@ fn reconcile_finishes_cancelling_turn_after_grace() {
     );
     assert!(agent.session.current_prompt_id.is_none());
     assert!(agent.pending_turn_end_reconcile.is_none());
+    assert!(!agent.should_adopt_running_prompt("pid-stuck"));
     let has_cancelled_marker = (0..agent.scrollback.len()).any(|i| {
         matches!(
             agent.scrollback.entry(i).map(|e| &e.block),

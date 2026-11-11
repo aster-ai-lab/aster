@@ -398,7 +398,7 @@ pub(super) fn handle_session_notification_with_origin(
         } => {
             let error_kind = crate::app::error_display::wire_error_kind(error_kind.as_deref());
             if agent.session.loading_replay {
-                let first = agent.replayed_terminal_prompts.insert(prompt_id.clone());
+                let first = agent.terminal_prompt_ids.insert(prompt_id.clone());
                 if first
                     && !prompt_id.is_empty()
                     && let Some(event) = synthesize_replay_turn_marker(

@@ -612,6 +612,7 @@ pub(crate) fn reconcile_overdue_turn_ends(app: &mut AppView) -> Option<Vec<Effec
         }
 
         fired = true;
+        agent.terminal_prompt_ids.insert(pending.prompt_id.clone());
         let was_cancelling = agent.session.state.is_cancelling()
             || pending.stop_reason.as_deref() == Some("cancelled");
         // Send-now cancel: suppress the marker (wire `cancelTrigger` wins, else the armed expectation)

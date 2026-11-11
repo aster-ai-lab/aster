@@ -1454,6 +1454,15 @@ pub(super) fn handle_prompt_response(
                 .or_else(|| prompt_id.clone()),
             Err(_) => prompt_id.clone(),
         };
+        let terminal_notified = agent
+            .pending_turn_end_reconcile
+            .as_ref()
+            .is_some_and(|pending| response_pid.as_deref() == Some(pending.prompt_id.as_str()));
+        if (result.is_ok() || terminal_notified)
+            && let Some(pid) = response_pid.as_deref().filter(|pid| !pid.is_empty())
+        {
+            agent.terminal_prompt_ids.insert(pid.to_owned());
+        }
         if let (Some(response_pid), Some(sid)) =
             (response_pid.as_deref(), agent.session.session_id.as_ref())
         {
@@ -1470,9 +1479,7 @@ pub(super) fn handle_prompt_response(
         }
         // The turn-end RPC for this prompt arrived: clear the lost-response reconcile that `handle_prompt_complete` set for it
         // The broadcast is emitted before the RPC response, so in the healthy path the marker lives only a few ms
-        if let Some(pending) = agent.pending_turn_end_reconcile.as_ref()
-            && response_pid.as_deref() == Some(pending.prompt_id.as_str())
-        {
+        if terminal_notified {
             agent.pending_turn_end_reconcile = None;
         }
         if let Some(response_pid) = response_pid.as_deref()
