@@ -1577,6 +1577,8 @@ pub enum Effect {
     /// Cancel the current turn.
     CancelTurn {
         session_id: acp::SessionId,
+        /// The prompt observed by the cancel gesture, retained across retries.
+        prompt_id: Option<String>,
         cancel_subagents: bool,
         /// What user gesture triggered the cancel (ESC / Ctrl+C / mouse).
         /// Sent on `session/cancel` as `_meta.cancelTrigger` so the agent's `mid_turn_abort` telemetry can distinguish them.

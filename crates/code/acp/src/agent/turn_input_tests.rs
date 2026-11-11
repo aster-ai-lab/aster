@@ -6,24 +6,96 @@ use std::future::Future;
 
 #[tokio::test]
 async fn cancel_wakes_the_turn_before_registry_cleanup() {
-    let agent = AsterCodeAgent::new(tests::test_launch(None));
-    let registry = agent.sessions.lock().await;
-    let notified = agent.turn_cancel.notified();
-    tokio::pin!(notified);
-    let cancel = agent.cancel(acp::CancelNotification::new(acp::SessionId::new("blocked")));
-    tokio::pin!(cancel);
-    tokio::time::timeout(std::time::Duration::from_millis(150), async {
-        tokio::select! {
-            _ = &mut notified => {},
-            result = &mut cancel => panic!("registry cleanup must still be waiting: {result:?}"),
+    for prompt_id in [None, Some("active")] {
+        let agent = AsterCodeAgent::new(tests::test_launch(None));
+        agent.turn_generation.lock().await.insert(
+            "blocked".into(),
+            TurnGeneration {
+                number: 1,
+                prompt_id: Some("active".into()),
+            },
+        );
+        let registry = agent.sessions.lock().await;
+        let notified = agent.turn_cancel.notified();
+        tokio::pin!(notified);
+        let mut meta = acp::Meta::new();
+        if let Some(prompt_id) = prompt_id {
+            meta.insert("promptId".into(), prompt_id.into());
         }
-    })
-    .await
-    .expect(
-        "recorded cancellation must wake the running turn without waiting for registry cleanup",
+        let cancel = agent
+            .cancel(acp::CancelNotification::new(acp::SessionId::new("blocked")).meta(Some(meta)));
+        tokio::pin!(cancel);
+        tokio::time::timeout(std::time::Duration::from_millis(150), async {
+            tokio::select! {
+                _ = &mut notified => {},
+                result = &mut cancel => panic!("registry cleanup must still be waiting: {result:?}"),
+            }
+        })
+        .await
+        .expect(
+            "recorded cancellation must wake the running turn without waiting for registry cleanup",
+        );
+        drop(registry);
+        cancel.await.unwrap();
+    }
+}
+
+#[tokio::test]
+async fn stale_cancel_cannot_mark_the_next_generation() {
+    let agent = AsterCodeAgent::new(tests::test_launch(None));
+    let id = acp::SessionId::new("session");
+    agent.turn_generation.lock().await.insert(
+        id.0.to_string(),
+        TurnGeneration {
+            number: 2,
+            prompt_id: Some("next".into()),
+        },
     );
-    drop(registry);
-    cancel.await.unwrap();
+    let cancel = |prompt: &str| {
+        acp::CancelNotification::new(id.clone())
+            .meta(serde_json::json!({"promptId": prompt}).as_object().cloned())
+    };
+    agent.cancel(cancel("previous")).await.unwrap();
+    assert!(agent.cancelled_generation.lock().await.is_empty());
+    agent.cancel(cancel("next")).await.unwrap();
+    assert!(agent.turn_was_cancelled(id.0.as_ref(), 2).await);
+    agent
+        .turn_generation
+        .lock()
+        .await
+        .get_mut(id.0.as_ref())
+        .unwrap()
+        .prompt_id = None;
+    agent.cancelled_generation.lock().await.clear();
+    agent.cancel(cancel("next")).await.unwrap();
+    assert!(agent.cancelled_generation.lock().await.is_empty());
+    agent
+        .cancel(acp::CancelNotification::new(id.clone()))
+        .await
+        .unwrap();
+    assert!(agent.turn_was_cancelled(id.0.as_ref(), 2).await);
+}
+
+#[tokio::test]
+async fn malformed_cancel_target_does_not_cancel() {
+    let agent = AsterCodeAgent::new(tests::test_launch(None));
+    for target in [
+        serde_json::Value::Null,
+        serde_json::json!(true),
+        serde_json::json!(1),
+        serde_json::json!(""),
+        serde_json::json!({}),
+    ] {
+        let error = agent
+            .cancel(
+                acp::CancelNotification::new(acp::SessionId::new("session"))
+                    .meta(serde_json::json!({"promptId": target}).as_object().cloned()),
+            )
+            .await
+            .unwrap_err();
+        assert_eq!(serde_json::to_value(error).unwrap()["code"], -32602);
+        assert!(agent.cancelled_generation.lock().await.is_empty());
+    }
 }
 
 #[tokio::test]
@@ -42,11 +114,13 @@ async fn send_now_cancels_before_waiting_for_the_previous_turn_permit() {
             .await
             .unwrap()
             .session_id;
-        agent
-            .turn_generation
-            .lock()
-            .await
-            .insert(id.0.to_string(), 11);
+        agent.turn_generation.lock().await.insert(
+            id.0.to_string(),
+            TurnGeneration {
+                number: 11,
+                ..Default::default()
+            },
+        );
         let (queue, session) = {
             let sessions = agent.sessions.lock().await;
             let live = sessions.get(id.0.as_ref()).unwrap();

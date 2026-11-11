@@ -277,9 +277,12 @@ struct LiveSession {
     /// with). The agent-global manager serves the UNION of all live
     /// sessions' sets, so one session's sync can never delete another's.
     mcp_servers: Vec<aster_core::mcp::McpServerConfig>,
-    /// The client's prompt id for the in-flight turn, echoed on every
-    /// session notification per the ACP prompt-ack contract.
-    active_prompt_id: std::sync::Mutex<Option<String>>,
+}
+
+#[derive(Default)]
+struct TurnGeneration {
+    number: u64,
+    prompt_id: Option<String>,
 }
 
 /// Inputs shared by session creation and in-place replacement. Keeping one
@@ -567,7 +570,7 @@ pub struct AsterCodeAgent {
     goals: Mutex<HashMap<String, crate::goal::DurableGoal>>,
     /// Monotonic turn generation per session. `cancel` records the generation
     /// that was in flight, so a late cancel cannot mark the next turn.
-    turn_generation: Mutex<HashMap<String, u64>>,
+    turn_generation: Mutex<HashMap<String, TurnGeneration>>,
     /// Generation `cancel` observed for each session.
     cancelled_generation: Mutex<HashMap<String, u64>>,
     /// Wakes `stream_turn` after `cancel` records the generation.
@@ -812,19 +815,14 @@ impl AsterCodeAgent {
 
     /// The in-flight prompt id for this notification's session.
     ///
-    /// A try-lock miss leaves the update unstamped. Falling through to another
-    /// session's id would make the pager drop the update.
+    /// A try-lock miss leaves the update unstamped.
     fn prompt_id_for_session(&self, session_id: &acp::SessionId) -> Option<String> {
         let key = session_id.0.as_ref();
-        let sessions = self.sessions.try_lock().ok()?;
-        let prompt_id = sessions.get(key).and_then(|live| {
-            live.active_prompt_id
-                .lock()
-                .ok()
-                .and_then(|guard| guard.clone())
-        });
-        drop(sessions);
-        prompt_id
+        self.turn_generation
+            .try_lock()
+            .ok()?
+            .get(key)
+            .and_then(|turn| turn.prompt_id.clone())
     }
 
     pub fn set_client(&self, conn: Rc<acp::AgentSideConnection>) {

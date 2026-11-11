@@ -1,5 +1,20 @@
 #![cfg_attr(rustfmt, rustfmt::skip)]
 use super::*;
+
+#[test]
+fn cancel_metadata_preserves_the_observed_prompt() {
+    let scoped = cancel_notification_meta(false, Some("mouse"), Some("observed"), None);
+    assert_eq!(scoped["promptId"], "observed");
+    assert!(!scoped.contains_key("rewindIfNoOutput"));
+    assert!(!scoped.contains_key("rewindIfPristine"));
+
+    let rewind = cancel_notification_meta(false, None, None, Some("rewound"));
+    assert_eq!(rewind["promptId"], "rewound");
+    assert_eq!(rewind["rewindIfNoOutput"], true);
+    assert_eq!(rewind["rewindIfPristine"], true);
+    assert!(!cancel_notification_meta(true, None, None, None).contains_key("promptId"));
+}
+
 fn nth<T>(xs: &[T], i: usize) -> &T {
     let Some(x) = xs.get(i) else {
         panic!("expected index {i}, len {}", xs.len());

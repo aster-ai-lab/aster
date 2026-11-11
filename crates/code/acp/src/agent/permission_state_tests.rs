@@ -264,15 +264,16 @@ async fn invalid_permission_seed_is_refused_before_creating_any_session() {
 async fn stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity() {
     let root = tempfile::tempdir().unwrap();
     let (agent, id) = setup(root.path()).await;
-    agent
-        .turn_generation
-        .lock()
-        .await
-        .insert(id.0.to_string(), 2);
+    agent.turn_generation.lock().await.insert(
+        id.0.to_string(),
+        TurnGeneration {
+            number: 2,
+            prompt_id: Some("new-prompt".into()),
+        },
+    );
     {
         let sessions = agent.sessions.lock().await;
         let live = sessions.get(id.0.as_ref()).unwrap();
-        *live.active_prompt_id.lock().unwrap() = Some("new-prompt".into());
         *live.turn_started.lock().unwrap() = Some(std::time::Instant::now());
     }
     let response = agent
@@ -288,7 +289,7 @@ async fn stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity() {
     let sessions = agent.sessions.lock().await;
     let live = sessions.get(id.0.as_ref()).unwrap();
     assert_eq!(
-        live.active_prompt_id.lock().unwrap().as_deref(),
+        agent.prompt_id_for_session(&id).as_deref(),
         Some("new-prompt")
     );
     assert!(live.turn_started.lock().unwrap().is_some());

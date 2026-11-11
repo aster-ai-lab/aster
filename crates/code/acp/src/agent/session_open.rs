@@ -406,7 +406,6 @@ impl AsterCodeAgent {
             components: setup.components.to_vec(),
             turn_queue: Arc::new(TurnQueue::new()),
             mcp_servers: setup.mcp_servers,
-            active_prompt_id: std::sync::Mutex::new(None),
         };
         start_workspace_indexing(&live);
         tracing::info!(
@@ -572,7 +571,6 @@ impl AsterCodeAgent {
             components: setup.components.to_vec(),
             turn_queue: Arc::clone(&current.turn_queue),
             mcp_servers: setup.mcp_servers,
-            active_prompt_id: std::sync::Mutex::new(None),
         };
         let posture = live
             .permissions

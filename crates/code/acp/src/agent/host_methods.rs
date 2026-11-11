@@ -701,7 +701,6 @@ impl AsterCodeAgent {
                 components,
                 turn_queue: Arc::new(TurnQueue::new()),
                 mcp_servers,
-                active_prompt_id: std::sync::Mutex::new(None),
             };
             live = self.finish_plugin_tools(live, plugin_tools).await?;
             live.set_posture(posture, denies)?;

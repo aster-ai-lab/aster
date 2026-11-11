@@ -608,12 +608,6 @@ impl acp::Agent for AsterCodeAgent {
             }
             Arc::clone(&live.session)
         };
-        let generation = {
-            let mut generations = self.turn_generation.lock().await;
-            let slot = generations.entry(session_key.clone()).or_insert(0);
-            *slot = slot.saturating_add(1);
-            *slot
-        };
         // Echo the client's prompt id on every notification (the ACP
         // prompt-ack contract): the pager disarms its ack watch on the
         // first update naming the prompt.
@@ -623,15 +617,18 @@ impl acp::Agent for AsterCodeAgent {
             .and_then(|meta| meta.get("promptId"))
             .and_then(|v| v.as_str())
             .map(str::to_string);
+        let generation = {
+            let mut generations = self.turn_generation.lock().await;
+            let slot = generations.entry(session_key.clone()).or_default();
+            slot.number = slot.number.saturating_add(1);
+            slot.prompt_id = client_prompt_id.clone();
+            slot.number
+        };
         if let Some(live) = self.sessions.lock().await.get(&session_key) {
             *live
                 .turn_started
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
-            *live
-                .active_prompt_id
-                .lock()
-                .unwrap_or_else(|p| p.into_inner()) = client_prompt_id.clone();
         }
         {
             let client = self.client.borrow().clone();
@@ -796,13 +793,25 @@ impl acp::Agent for AsterCodeAgent {
 
     async fn cancel(&self, args: acp::CancelNotification) -> acp::Result<()> {
         let session_key = args.session_id.0.to_string();
-        let generation = self
-            .turn_generation
-            .lock()
-            .await
-            .get(&session_key)
-            .copied()
-            .unwrap_or(0);
+        let prompt_id = match args.meta.as_ref().and_then(|meta| meta.get("promptId")) {
+            None => None,
+            Some(serde_json::Value::String(id)) if !id.is_empty() => Some(id.as_str()),
+            Some(_) => {
+                return Err(
+                    acp::Error::invalid_params().data("cancel promptId must be a nonempty string")
+                );
+            }
+        };
+        let generation = {
+            let generations = self.turn_generation.lock().await;
+            let current = generations.get(&session_key);
+            if prompt_id
+                .is_some_and(|id| current.and_then(|turn| turn.prompt_id.as_deref()) != Some(id))
+            {
+                return Ok(());
+            }
+            current.map(|turn| turn.number).unwrap_or(0)
+        };
         self.cancelled_generation
             .lock()
             .await
@@ -819,7 +828,7 @@ impl acp::Agent for AsterCodeAgent {
                 .lock()
                 .await
                 .get(&session_key)
-                .copied()
+                .map(|turn| turn.number)
                 .unwrap_or(0)
                 != generation
             {

@@ -1,0 +1,95 @@
+{
+  "source_hash": "32f72c23c32b5fb383cc82df4b9774eb2ceb5753",
+  "unchanged_reproduction": {
+    "run.py": "8351379d2efcf3db4ef5ea47224e580c33b89d9a56487fa0c2f9a4df7bfb7fe7",
+    "relay.py": "c978f5257b55302fb75e9bab4653ef227c70adc35ac34afcd54c65c2ed73b954",
+    "plan.json": "d7f49e9786a925cee6bb4fa447f5ce54ada54430852e15ba51b1c255b17fa123"
+  },
+  "before": {
+    "run_statuses": [
+      "cancelled",
+      "cancelled",
+      "completed"
+    ],
+    "trace_sha256": "d5b1ee4353981aefb4e2b09f0a3f1daf81a98da49741c0f314fe2df8e53ca119"
+  },
+  "after": {
+    "run_statuses": [
+      "cancelled",
+      "completed",
+      "completed"
+    ],
+    "trace_sha256": "ddeb2fa4b17cbb84a8e846d94110b31c960a85e061bc7284168a4be9511ad02a",
+    "distinct_prompts": 3,
+    "distinct_rpc_ids": 3,
+    "cancel_requests": 2,
+    "cancel_targets_original_only": true,
+    "stop_reasons": [
+      "cancelled",
+      "end_turn",
+      "end_turn"
+    ],
+    "delayed_frame_unchanged": true,
+    "late_cancel_after_next_start": true
+  },
+  "native": {
+    "model": "deepseek/deepseek-flash",
+    "mode": "YOLO",
+    "screen": "fullscreen",
+    "text_input_and_capture_fallback": true,
+    "stop_gestures": "agent-desktop physical mouse, native text bounds",
+    "distinct_prompts": 3,
+    "distinct_rpc_ids": 3,
+    "cancel_requests": 2,
+    "cancel_targets_original_only": true,
+    "stop_reasons": [
+      "cancelled",
+      "end_turn",
+      "end_turn"
+    ],
+    "delayed_frame_unchanged": true,
+    "late_cancel_after_next_start": true,
+    "trace_sha256": "fe5af6edf1a48358890b57ba63f1974a636e5e96de3d198c7e896fd97de874c8",
+    "cancelled_runs": 1,
+    "completed_runs": 2,
+    "distinct_new_runs": 3,
+    "queue_order_exact": true,
+    "old_stop_did_not_cancel_next_tool": true,
+    "original_process_alive": false,
+    "first_process_alive": false,
+    "campaign_input_source_restored": true,
+    "source_acl_unchanged": true,
+    "receipts": [
+      {
+        "run": "original",
+        "prepared_calls": 1,
+        "matching_receipts": 1,
+        "tool": "bash",
+        "outcome": "cancelled",
+        "exit_code": 137,
+        "effect_observation": "complete"
+      },
+      {
+        "run": "first",
+        "prepared_calls": 1,
+        "matching_receipts": 1,
+        "tool": "bash",
+        "outcome": "succeeded",
+        "exit_code": 0,
+        "effect_observation": "complete"
+      }
+    ],
+    "captures": {
+      "two-queued": "87a818565a5ef702da67b3df4112e6d7806226ea8b3edf6e0e58ab96b47ac3b0",
+      "cancelling": "1f6a11ddf96700ed64d88dfdd15753b3ee4a97091afed03ac7c2b7dc85bb9178",
+      "next-survives": "16cb353fa5bd2c8073d11ec40c6b33324d4b97fc0f2d4c6737733463d85c4f4f",
+      "settled": "c791373c7b45439f34a2b4bf73e53026fc0acf4fb3bbbcd5545023fd7d744d7c"
+    }
+  },
+  "native_invalid_actuator": {
+    "status": "INVALID_ACTUATOR",
+    "cancel_requests": 0,
+    "cleanup_verified": true,
+    "retained_capture_sha256": "101106d26c5394d6bcf5c4bda13f2837d51879de01e28d365ed215d3a4ccef22"
+  }
+}

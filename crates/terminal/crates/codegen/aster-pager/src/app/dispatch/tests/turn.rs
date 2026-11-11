@@ -323,6 +323,7 @@ fn cancel_turn_forwards_trigger_hint_to_effect() {
     {
         let agent = app.agents.get_mut(&id).unwrap();
         agent.session.state = AgentState::TurnRunning;
+        agent.session.current_prompt_id = Some("observed-prompt".into());
         agent.cancel_trigger_hint = Some(CancelTrigger::DashboardStop);
     }
 
@@ -332,8 +333,9 @@ fn cancel_turn_forwards_trigger_hint_to_effect() {
         nth(&effects, 0),
         Effect::CancelTurn {
             trigger: Some(CancelTrigger::DashboardStop),
+            prompt_id: Some(prompt_id),
             ..
-        }
+        } if prompt_id == "observed-prompt"
     ));
     // One-shot: consumed when the cancel is built.
     assert_eq!(get_agent(&app, id).cancel_trigger_hint, None);
@@ -364,6 +366,7 @@ fn lost_cancel_is_resent_while_still_cancelling() {
     {
         let agent = app.agents.get_mut(&id).unwrap();
         agent.session.state = AgentState::TurnRunning;
+        agent.session.current_prompt_id = Some("p1".into());
         agent.cancel_trigger_hint = Some(CancelTrigger::Mouse);
     }
     let effects = dispatch(Action::CancelTurn, &mut app);
@@ -387,9 +390,10 @@ fn lost_cancel_is_resent_while_still_cancelling() {
             resent.as_slice(),
             [Effect::CancelTurn {
                 trigger: Some(CancelTrigger::Mouse),
+                prompt_id: Some(prompt_id),
                 rewind_prompt_id: None,
                 ..
-            }]
+            }] if prompt_id == "p1"
         ),
         "the resend replays the gesture trigger, got {resent:?}"
     );
@@ -451,6 +455,7 @@ fn cancel_retry_reuses_recorded_subagent_choice() {
     {
         let agent = app.agents.get_mut(&id).unwrap();
         agent.session.state = AgentState::TurnRunning;
+        agent.session.current_prompt_id = Some("p1".into());
         agent.cancel_trigger_hint = Some(CancelTrigger::CtrlC);
     }
 
@@ -462,8 +467,9 @@ fn cancel_retry_reuses_recorded_subagent_choice() {
         effects.as_slice(),
         [Effect::CancelTurn {
             cancel_subagents: false,
+            prompt_id: Some(prompt_id),
             ..
-        }]
+        }] if prompt_id == "p1"
     ));
 
     let effects = dispatch(Action::CancelTurn, &mut app);
@@ -472,8 +478,9 @@ fn cancel_retry_reuses_recorded_subagent_choice() {
             effects.as_slice(),
             [Effect::CancelTurn {
                 cancel_subagents: false,
+                prompt_id: Some(prompt_id),
                 ..
-            }]
+            }] if prompt_id == "p1"
         ),
         "the retry must not escalate past the one-shot choice, got {effects:?}"
     );
@@ -497,8 +504,9 @@ fn cancel_retry_reuses_recorded_subagent_choice() {
             effects.as_slice(),
             [Effect::CancelTurn {
                 cancel_subagents: false,
+                prompt_id: Some(prompt_id),
                 ..
-            }]
+            }] if prompt_id == "p1"
         ),
         "a confirmed cancel must not discard the recorded choice, got {effects:?}"
     );

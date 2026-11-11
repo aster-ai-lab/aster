@@ -760,13 +760,17 @@ impl AsterCodeAgent {
     ) -> acp::Result<acp::PromptResponse> {
         let elapsed = {
             let sessions = self.sessions.lock().await;
-            let current =
-                self.turn_generation.lock().await.get(session_key).copied() == Some(generation);
+            let mut generations = self.turn_generation.lock().await;
+            let current = generations
+                .get_mut(session_key)
+                .filter(|turn| turn.number == generation);
+            let current = if let Some(turn) = current {
+                turn.prompt_id = None;
+                true
+            } else {
+                false
+            };
             if let Some(live) = sessions.get(session_key).filter(|_| current) {
-                *live
-                    .active_prompt_id
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
                 live.turn_started
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner)

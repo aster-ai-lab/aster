@@ -471,16 +471,11 @@ impl AsterCodeAgent {
         outcome: serde_json::Value,
     ) {
         let prompt_id = self
-            .sessions
+            .turn_generation
             .lock()
             .await
             .get(session_id.0.as_ref())
-            .and_then(|live| {
-                live.active_prompt_id
-                    .lock()
-                    .ok()
-                    .and_then(|prompt| prompt.clone())
-            });
+            .and_then(|turn| turn.prompt_id.clone());
         let payload = serde_json::json!({
             "sessionId": session_id.0.as_ref(),
             "promptId": prompt_id,

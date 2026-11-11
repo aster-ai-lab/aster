@@ -216,11 +216,13 @@ async fn send_now_cancels_before_waiting_for_the_active_turn_permit() {
             .await
             .unwrap();
         let session_key = opened.session_id.0.to_string();
-        agent
-            .turn_generation
-            .lock()
-            .await
-            .insert(session_key.clone(), 9);
+        agent.turn_generation.lock().await.insert(
+            session_key.clone(),
+            TurnGeneration {
+                number: 9,
+                ..Default::default()
+            },
+        );
         let (queue, session) = {
             let sessions = agent.sessions.lock().await;
             let live = &sessions[&session_key];
@@ -864,11 +866,13 @@ async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {
             let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
                 .session
                 .clone();
-            agent
-                .turn_generation
-                .lock()
-                .await
-                .insert(opened.session_id.0.to_string(), 1);
+            agent.turn_generation.lock().await.insert(
+                opened.session_id.0.to_string(),
+                TurnGeneration {
+                    number: 1,
+                    ..Default::default()
+                },
+            );
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             let (read, write) = tokio::io::split(agent_end);
             let (connection, io) = acp::AgentSideConnection::new(

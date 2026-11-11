@@ -1541,6 +1541,7 @@ pub(crate) fn execute(
         }
         Effect::CancelTurn {
             session_id,
+            prompt_id,
             cancel_subagents,
             trigger,
             rewind_prompt_id,
@@ -1568,6 +1569,7 @@ pub(crate) fn execute(
                                 cancel_notification_meta(
                                     cancel_subagents,
                                     trigger_str,
+                                    prompt_id.as_deref(),
                                     rewind_prompt_id.as_deref(),
                                 ),
                             ),
@@ -5589,6 +5591,7 @@ fn prompt_request_meta(
 pub(crate) fn cancel_notification_meta(
     cancel_subagents: bool,
     trigger: Option<&str>,
+    prompt_id: Option<&str>,
     rewind_prompt_id: Option<&str>,
 ) -> acp::Meta {
     let mut meta = acp::Meta::new();
@@ -5599,10 +5602,12 @@ pub(crate) fn cancel_notification_meta(
             trigger.into(),
         );
     }
-    if let Some(pid) = rewind_prompt_id {
+    if let Some(pid) = prompt_id.or(rewind_prompt_id) {
+        meta.insert("promptId".into(), pid.into());
+    }
+    if rewind_prompt_id.is_some() {
         meta.insert("rewindIfNoOutput".into(), true.into());
         meta.insert("rewindIfPristine".into(), true.into());
-        meta.insert("promptId".into(), pid.into());
     }
     meta
 }

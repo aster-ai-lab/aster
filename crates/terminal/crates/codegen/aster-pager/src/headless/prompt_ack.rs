@@ -95,6 +95,7 @@ pub(super) async fn abort_unacknowledged_prompt(
             /* cancel_subagents */ false,
             /* trigger */ None,
             Some(prompt_id),
+            Some(prompt_id),
         ),
     ));
     match tokio::time::timeout(HEADLESS_ABORT_SEND_TIMEOUT, acp_send(cancel, acp_tx)).await {

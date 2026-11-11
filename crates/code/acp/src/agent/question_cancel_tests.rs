@@ -15,7 +15,13 @@ async fn cancelled_question_cancels_only_its_own_turn() {
         let other = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path())).await.unwrap();
         let session = agent.sessions.lock().await[opened.session_id.0.as_ref()].session.clone();
         for id in [&opened.session_id, &other.session_id] {
-            agent.turn_generation.lock().await.insert(id.0.to_string(), 1);
+            agent.turn_generation.lock().await.insert(
+                id.0.to_string(),
+                TurnGeneration {
+                    number: 1,
+                    ..Default::default()
+                },
+            );
         }
         let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
         let (read, write) = tokio::io::split(agent_end);

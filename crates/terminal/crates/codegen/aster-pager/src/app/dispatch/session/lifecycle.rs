@@ -636,6 +636,7 @@ pub(in crate::app::dispatch) fn dispatch_delete_current_session_answered(
     let after = after_delete_current_session(app, id);
     let mut effects = vec![Effect::CancelTurn {
         session_id: session_id.clone(),
+        prompt_id: None,
         cancel_subagents: true,
         trigger: None,
         rewind_prompt_id: None,
