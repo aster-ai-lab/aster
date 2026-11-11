@@ -96,7 +96,7 @@ node_modules/.bin/vitest run --project renderer \
 - 全场景 `internal_markers=[]`：未出现 `completion gate` / `effect_digest` / `reasoning effort default` / `workspace mutation`。**但该扫描只覆盖 AX 的 name/description/value**，见 `ux-analysis.md` 跨页面观察第 2 条的盲点说明。
 - 全场景 `status_nodes=0`、`alert_nodes=0`、`loading_label_seen=false`：本轮未触发加载/错误/慢路由，因此**新增的可见加载文字与 aria-live 只有单测证据，无真窗口行为实证**。
 - 工作台侧栏没有「知识库」「小程序」入口，这两个路由本轮**未覆盖**（run2 曾以猜测控件名尝试并如实记为 `CONTROL_NOT_FOUND`，定稿已移除假控件）。
-- 逐截图 UX 分析发现两处此前未记录的缺陷：`06` 连接器卡片把「该条目没有可识别的本地接入配置」当描述外露；`13` 任务详情浮层把词元/工具调用/失败工具/记忆条目等内部记账与用户可见信息平铺。详见 `ux-analysis.md`。
+- 逐截图 UX 分析初稿报了两处「新缺陷」，后续复核**更正其一**：`13` 任务详情浮层是 `WorkbenchSessionCard`（`role=region`「任务统计」、专用统计 API、逐指标 tooltip、完整单测）的**有意功能**，不是错误路径的内部诊断外露，已撤回缺陷判定且未改代码。保留的有效发现只有 `06` 连接器卡片的技术化不可用文案「该条目没有可识别的本地接入配置」，本批已改为用户向文案。详见 `ux-analysis.md` 的「更正」小节。
 
 ## 6. 逐截图 UX 分析
 

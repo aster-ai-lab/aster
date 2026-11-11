@@ -21,11 +21,21 @@
 | `11-permission-mode.png` | 授权模式 / 64 | 5 个选项各有图标 + 一行说明；「完全访问」用红色文字 + 「高风险」标签，危险等级视觉区分到位；选中项浅蓝底 + ✓ | 选中态、说明、「下一轮生效」提示齐全 | 选项语义完整 | **符合**（业界最佳实践正例） |
 | `12-restored-workbench.png` | 还原工作台 / 58 | 与 `01` 一致，restore 成功，无残留浮层 | 场景间状态隔离有效 | 节点数回到 58 | **符合** |
 | `14-composer-value.png` | composer 输入尝试 / 58 | 仍是空 composer 首页 | `set-value` 返回 `ACTION_FAILED`，输入框仍为空 → **headless 语义写入对 Tauri 富文本 composer 不可用**（与既有记录一致）；未点击发送，未产生真实任务 | **待改进**：空 composer 时「发送」在画面上不可见，但 AX 树仍暴露 `button 发送`；若未正确 `disabled`/`aria-hidden`，屏幕阅读器会读到不可见的提交按钮 | **工具限制 + 待改进** |
-| `13-context-menu.png` | 右键尝试 / — | 4 个候选 `right-click` 均 `ACTION_FAILED`；画面出现的是**任务详情 HoverCard**（不是系统菜单），说明 headless `AXShowMenu` 在此 WebArea 不生效 | 无菜单反馈 | `snapshot --surface menu` 返回 0 节点（应用内浮层不走 menu surface） | **缺陷（新发现）**：该浮层把「消耗词元 108.6万 / 输入词元 107.6万 / 工具调用 30 / 失败工具 3 / 百科条目 0 / 记忆条目 6」等**内部记账**与用户可见任务信息平铺，底部还有「直接按任务绑定统计；记忆按工作区级统计…」的内部说明小字，属 I4 未覆盖的新出口；需产品确认是否有意展示 |
+| `13-context-menu.png` | 右键尝试 / — | 4 个候选 `right-click` 均 `ACTION_FAILED`；画面出现的是**任务详情 HoverCard**（不是系统菜单），说明 headless `AXShowMenu` 在此 WebArea 不生效 | 无菜单反馈 | `snapshot --surface menu` 返回 0 节点（应用内浮层不走 menu surface） | **误判更正（见下方 §更正）**：初稿把该浮层判为「内部记账平铺」缺陷；复核 `WorkbenchSessionCard.tsx` 与 `WorkbenchSessionCard.test.tsx` 后确认它是**有意的产品功能**（`role="region" name="任务统计"`、专用统计 API、每个指标的 tooltip 口径说明、完整单测），不属于错误路径的内部诊断外露。保留工具限制记录，**撤回缺陷判定**，未改动该功能 |
 
 ## 跨页面观察
 
 1. **`status_nodes=0` / `alert_nodes=0` / `loading_label_seen=false` 出现在全部 14 个场景**。这不证明上一批的 `GlobalSearchState`、`AsterPageLoading` 改动无效——本轮没有触发加载态、错误态或慢路由；但必须承认：**新增的可见加载文字与 aria-live 状态只有单测证据，没有真窗口行为实证**。要拿到实证需要故障注入或慢速路由，本轮未做。
-2. **内部诊断标记扫描为 0，但扫描存在盲点**：它只覆盖 AX 节点的 `name` / `description` / `value`。`08` 截图里肉眼可见 `/Users/roylin/.aster` 却记为 0，`06` 的「没有可识别的本地接入配置」是可见描述文本但不属于那 4 个技术标记词。所以「0 标记」只能说明**没有 `completion gate` / `effect_digest` / `reasoning effort default` / `workspace mutation` 这几类字符串**，不能推论「无内部细节外露」——上表两处缺陷正是扫描规则外的。
+2. **内部诊断标记扫描为 0，但扫描存在盲点**：它只覆盖 AX 节点的 `name` / `description` / `value`。`08` 截图里肉眼可见 `/Users/roylin/.aster` 却记为 0，`06` 的「没有可识别的本地接入配置」是可见描述文本但不属于那 4 个技术标记词。所以「0 标记」只能说明**没有 `completion gate` / `effect_digest` / `reasoning effort default` / `workspace mutation` 这几类字符串**，不能推论「无内部细节外露」——上表保留的那处缺陷正是扫描规则外的。
 3. **正面**：技能页与连接器页共用同一套卡片/分类/分页结构，授权模式的危险等级表达、搜索的即时结果 + 高亮 + ESC 提示、设置页的开关与分组，都符合业界常见规范；场景切换后 `12` 能干净还原，无残留浮层或状态串台。
 4. **未覆盖**：错误卡、工具轨迹、流式推理、产物加载、键盘焦点环（需物理 `press`，本轮无 `--headed` 授权）、`prefers-reduced-motion` 开启态、真模型驱动的 222 项消息流形态。静态截图不评价动效时长与缓动。
+
+## 更正（后续复核追加）
+
+初稿把 `13-context-menu.png` 的任务详情浮层判为「I4 内部记账平铺」缺陷，属**误判**。复核依据：
+
+- `src/renderer/pages/agents/WorkbenchSessionCard.tsx` 是独立组件，渲染 `role="region"`、可访问名「任务统计」，数据来自专用 API `/agent-sessions/:sessionId/statistics`。
+- `src/renderer/pages/agents/__tests__/WorkbenchSessionCard.test.tsx:88-130` 明确断言 12 个指标标签、图标、数值与记忆分层全部存在；每个指标还有 `stat_hint.*` tooltip 解释统计口径，`workbench.session.card.partial_stats` 解释统计局限。
+- 它是**用户主动 hover 打开的用量面板**，与用户此前反馈的「错误卡被动暴露 `completion gate` / `effect_digest` / UUID / 工具轨迹」性质不同：后者是失败路径的内部诊断，前者是有标注、有口径说明的显式功能。
+
+因此**未修改该功能**，也不把它计入缺陷。本轮保留的有效新发现只有 `06` 连接器卡片的技术化不可用文案（已改为用户向文案）。`right-click` 在该 WebArea 的 `ACTION_FAILED` 仍是工具限制，不计为应用缺陷。
