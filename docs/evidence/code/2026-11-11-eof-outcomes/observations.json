@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "scope": "Original admitted outcome settlement after ACP stdin EOF; unsubmitted queue and draft recovery remains open",
+  "platform": "macOS arm64",
+  "toolchain": "Rust 1.97.1",
+  "source_hash": "4e0fd46b3e91f3ebc895c66e9674c8fea1f6e290",
+  "pair_matches_current_source": true,
+  "frozen_controlled_inputs_sha256": {
+    "run.py": "67378989736ef57153007d5f6f670303650e8e191a902dc70b44deb57a8106dd",
+    "relay.py": "66d36f25cc9813872fc7b746aea92ec32ac099e2438e8d64288d84635864f2a3",
+    "grade.py": "d05afcc733fb9358190bccca2f94cc23bba80efc782d0fd9a3aeb93601e9ad09",
+    "plan.json": "7ad0f33f56679811dae67668411b4093649e918b30e51ee4f5bdae0763881084"
+  },
+  "controlled": {
+    "original": {
+      "status": "FAIL_PRODUCT",
+      "failures": [
+        "Unexpected ACP EOF was reported as successful exit",
+        "Original Run was absent or duplicated",
+        "Original invocation lacks its bound result receipt",
+        "Connection failure has no visible explanation"
+      ],
+      "run_records": 0,
+      "original_status": null,
+      "prepared": 1,
+      "receipts": 0,
+      "receipt_outcome": null,
+      "cli_exit_code": 0,
+      "foreground_process_alive": false,
+      "model_generations": 1,
+      "prompt_requests": 1
+    },
+    "fixed": {
+      "status": "PASS",
+      "failures": [],
+      "run_records": 1,
+      "original_status": "cancelled",
+      "prepared": 1,
+      "receipts": 1,
+      "receipt_outcome": "cancelled",
+      "cli_exit_code": 1,
+      "foreground_process_alive": false,
+      "model_generations": 1,
+      "prompt_requests": 1
+    },
+    "explicit_resume": {
+      "status": "OBSERVED",
+      "model_post_requests": 0,
+      "cli_exit_code": null,
+      "prior_prompt_visible": true,
+      "busy": false,
+      "old_queued_prompts_visible": false,
+      "old_draft_visible": false
+    }
+  },
+  "native": {
+    "status": "PASS",
+    "model": "deepseek/deepseek-flash",
+    "prepared": 1,
+    "receipts": 1,
+    "receipt_outcome": "cancelled",
+    "original_status": "cancelled",
+    "process_owners_retired": true,
+    "error_visible": true,
+    "resume_hint_visible": true,
+    "prompt_requests": 1,
+    "input_source_restored": true,
+    "queued_text_recovered": false,
+    "draft_recovered": false,
+    "resume_prompt_requests": 0,
+    "same_run_retained": true,
+    "resumed_busy": false
+  },
+  "native_cli_exit_code_directly_measured": false,
+  "native_resume_observer_rebound_to_existing_process": true,
+  "source_acl_unchanged": true,
+  "tests": {
+    "acp_lifecycle": {
+      "passed": 1
+    },
+    "pager_app": {
+      "passed": 71
+    },
+    "shipped_tui_e2e": {
+      "passed": 26,
+      "ignored": 1
+    }
+  },
+  "format": {
+    "passed": false,
+    "pre_existing_file_count": 18,
+    "new_file_count": 0
+  },
+  "private_artifacts_sha256": {
+    "queue-eof/red/result.json": "95d9c94a0d4e9a0c72bf4d1168c2ac830c3e70bcf22964f4657d2eff761ff204",
+    "queue-eof/red/grade.json": "a3a34ca6d31b62c34a0ae699ceda4cffdbcd25128d9d28ae450e0ca455b0754c",
+    "queue-eof/red/trace.jsonl": "6ea5e355c22dda82e1a98291b749fdbe413aeea372dbff8310855e2fc3b117c0",
+    "queue-eof/result.json": "a2d874b124f4da1671df6a4a768f5fbd21c4715e5a8da0db17324e95b22fa83c",
+    "queue-eof/grade.json": "93f3d8a164115cbdbccbd9c1571bcf6443bf75598e7caa952fc77b6de9e3ac0d",
+    "queue-eof/trace.jsonl": "b3ac40e5232b4e6fe4e2b982f32c55e07016889c6fd0a3c673da6d85d9d11e4a",
+    "queue-eof/resume-result.json": "c490c1ab9ee5ea5135aa35d67b86c45a38922ba0c9faa592d09c6fa8b9fe15f8",
+    "queue-eof/acp-lifecycle.log": "de128bc436a3e690e7c9d6c833d45ec340be2fb32ce7fd9cf05db244ffb18b57",
+    "queue-eof/pager-exit.log": "7d74edcc44fe61fe55d3fcb5be76efff41ca061761fc4ca971861749163d114b",
+    "queue-eof/pair.log": "0be91bdee86c4894b8aee13cd76556636d5598dbcb5a0fc009ea341b74511765",
+    "queue-eof/shipped-suite.log": "1c4a2d56aa7cd0a91162030fcc360c33cebcf2526cbde2d528478c9c80507d04",
+    "queue-eof/clippy.log": "1d53b6b1ef08a3f8cd04d93922c2e02b736768c7e2b0e61def5c4a038dd8d1fe",
+    "queue-eof/format.log": "1eb5205a8d36ea82d80d5295f84664acaa26519924b23ec96ddb223cfefe2248",
+    "native-eof/result.json": "21c29abe720c4aaefe1a20cb1c711af81a567a23e9cb9e3abbfedec2d5bccab7",
+    "native-eof/trace.jsonl": "615f7179836131cfea80658aab7f2c6d338612b6e605f60aaba91976506063dc",
+    "native-eof/resume-trace.jsonl": "c32825f77391ee090e0f946fe5d99df7ea628b5caa247f07ba55f75e3368ab13",
+    "native-eof/resume-inspect.log": "ef60d0024579776725cf0743534d85550802b30ddc22293253af1bcabbb1610b",
+    "native-eof/resume-inspect-rebound.log": "f5cb02f29a83ab19f20a848004f3da428645b3f2cac64e1456e96cee4f0f5c92",
+    "screens/native-eof-before.png": "55674cb0c8b62cfaf8adec21261ebff6e5e093b5b78e91cba83a764c64255cc6",
+    "screens/native-eof-disconnected.png": "2c9d527f842e0d53f914e99c5a429deab4c91e07eec9cb7efccd7d7f03b84f1b",
+    "screens/native-eof-resumed.png": "f67ea95dd05cf6b3f509bcbf6e9cae22f4c674d7150887772ae7f896607c5989"
+  },
+  "contains_pre_existing_uncommitted_foreground_cleanup": true,
+  "complete_queue_recovery_claimed": false,
+  "full_campaign_completion_claimed": false
+}

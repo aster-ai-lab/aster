@@ -397,7 +397,7 @@ async fn run() -> Result<()> {
         "ACP phase completed"
     );
     let result = io_task.await;
-    agent.stop_document_bridge();
+    agent.close().await;
     result.context("ACP stdio I/O")?;
     Ok(())
 }

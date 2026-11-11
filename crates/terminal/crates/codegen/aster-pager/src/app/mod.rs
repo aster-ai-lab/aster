@@ -1174,7 +1174,7 @@ pub async fn run(
     signal_handler::clear_quit_notify();
     let forced_exit_code = match &result {
         Ok(run_result) if run_result.quit_for_update || run_result.relaunch.is_some() => None,
-        Ok(_) => Some(0),
+        Ok(run_result) => Some(i32::from(run_result.connection_closed)),
         Err(_) => Some(1),
     };
     if let Some(code) = forced_exit_code {
@@ -1242,6 +1242,9 @@ pub async fn run(
             {
                 let width = crossterm::terminal::size().map_or(80, |(cols, _)| cols as usize);
                 print_exit_resume_hint(&info, width, &mut io::stderr());
+            }
+            if run_result.connection_closed {
+                anyhow::bail!("Agent connection closed");
             }
             Ok(false)
         }

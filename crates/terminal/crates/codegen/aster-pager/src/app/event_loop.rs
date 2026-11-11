@@ -227,6 +227,7 @@ pub(crate) struct TerminalState {
 /// Result of the event loop run.
 pub(crate) struct RunResult {
     pub exit_info: Option<super::ExitInfo>,
+    pub connection_closed: bool,
     pub quit_for_update: bool,
     /// stderr line to print after the TUI is restored (failed Welcome trust save).
     pub trust_quit_error: Option<String>,
@@ -2218,7 +2219,11 @@ pub(crate) async fn run(
                     None => acp_rx.recv().await,
                 }
             }, if input_rx.is_empty() => {
-                let Some(msg) = msg else { break };
+                let Some(msg) = msg else {
+                    let mut result = finish_run_with_stall_flush(&mut app, &mut stall_rollup);
+                    result.connection_closed = true;
+                    return Ok(result);
+                };
                 let mut state_changed = acp_handler::handle(msg, &mut app);
                 if !app.pending_effects.is_empty() {
                     let effs = std::mem::take(&mut app.pending_effects);
@@ -3164,6 +3169,7 @@ fn finish_run(app: &mut AppView) -> RunResult {
     });
     RunResult {
         exit_info,
+        connection_closed: false,
         quit_for_update: app.quit_for_update,
         trust_quit_error: app.trust_quit_error.clone(),
         relaunch: app.relaunch.clone(),

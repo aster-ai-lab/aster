@@ -784,6 +784,16 @@ impl AsterCodeAgent {
         self.client.borrow_mut().take();
     }
 
+    /// Settle owned sessions and their durable results before the runtime exits.
+    pub async fn close(&self) {
+        self.stop_document_bridge();
+        // Keep the closed agent installed so pending opens cannot recreate it.
+        let agent = self.core_agent.lock().await;
+        if let Some(agent) = agent.as_ref() {
+            agent.close().await;
+        }
+    }
+
     fn validate_plugin_selection(
         &self,
         meta: Option<&serde_json::Map<String, serde_json::Value>>,
@@ -1155,3 +1165,7 @@ mod client_permission_tests;
 #[cfg(test)]
 #[path = "agent/turn_input_tests.rs"]
 mod turn_input_tests;
+
+#[cfg(test)]
+#[path = "agent/lifecycle_tests.rs"]
+mod lifecycle_tests;
