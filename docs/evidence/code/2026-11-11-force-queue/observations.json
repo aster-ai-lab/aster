@@ -1,0 +1,105 @@
+{
+  "source_hash": "231f8384a785711f87cd25f0b7f172db278676d2",
+  "queue-force": {
+    "cancelled_runs": 1,
+    "completed_runs": 3,
+    "queue_rows_after": 0,
+    "fixture_pid_still_alive": false,
+    "late_effect_exists": false,
+    "foreground_tool_terminals": 1,
+    "replacement_started_after_old_response": true,
+    "real_pair": true,
+    "provider": "isolated loopback",
+    "distinct_requests": 4,
+    "distinct_responses": 4,
+    "prompt_digests": [
+      "sha256:ef355c1f7b1a5d6f73b4795693e5b5f906344ada7e37711204abf867ee550e4c",
+      "sha256:b4a2a90d11e6c98813cc0fe996a7518e228173720c4c96647356be7115d28f1a",
+      "sha256:34ee74ec31b0c6cb2aa7fa8fd2e75187bd2ce42fd826c86360465573649b4ae7",
+      "sha256:c09f2a03b897a44b3108cb6fdd42a29480ec76b3cfa553308c8acbe11e58dd47"
+    ],
+    "send_now": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "stop_reasons": [
+      "cancelled",
+      "end_turn",
+      "end_turn",
+      "end_turn"
+    ],
+    "trace_sha256": "287266698549f25e36f8dd71f73438bb7c923d61f957cc05547ede880d8539b7",
+    "old_process_inactive_at_all_subsequent_provider_admissions": true
+  },
+  "queue-force-stale": {
+    "cancelled_runs": 1,
+    "completed_runs": 3,
+    "queue_rows_after": 0,
+    "fixture_pid_still_alive": false,
+    "late_effect_exists": false,
+    "foreground_tool_terminals": 1,
+    "replacement_started_after_old_response": true,
+    "real_pair": true,
+    "provider": "isolated loopback",
+    "distinct_requests": 5,
+    "distinct_responses": 5,
+    "prompt_digests": [
+      "sha256:ef355c1f7b1a5d6f73b4795693e5b5f906344ada7e37711204abf867ee550e4c",
+      "sha256:b4a2a90d11e6c98813cc0fe996a7518e228173720c4c96647356be7115d28f1a",
+      "sha256:34ee74ec31b0c6cb2aa7fa8fd2e75187bd2ce42fd826c86360465573649b4ae7",
+      "sha256:c09f2a03b897a44b3108cb6fdd42a29480ec76b3cfa553308c8acbe11e58dd47",
+      "sha256:18f63bd0d73a9c24ebfc5bb524f14ca62100cc101f1cc95e62c28fd26f619cf8"
+    ],
+    "send_now": [
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    "stop_reasons": [
+      "cancelled",
+      "end_turn",
+      "end_turn",
+      "end_turn",
+      "end_turn"
+    ],
+    "trace_sha256": "77ce7d271f8a4d354b76d0c067cff406d1df0b1a9e72d551453c390f52806056",
+    "old_process_inactive_at_all_subsequent_provider_admissions": true,
+    "stale_deliveries": 2,
+    "byte_identical_stale_frame": true,
+    "recovery_runs": 1,
+    "idle_after_replay": true,
+    "original_not_requeued": true,
+    "original_queue_order_retained": true,
+    "stale_frame_sha256": "14200085eaa75463fe7d2ec6aa1b64498cfcd56d1aac4494ab148c6c6be4b44f"
+  },
+  "native": {
+    "cancel_terminal_seconds": 0.589,
+    "distinct_new_runs": 4,
+    "cancelled_runs": 1,
+    "completed_runs": 3,
+    "exact_queue_order": true,
+    "original_tool_receipts": 1,
+    "source_acl_unchanged": true,
+    "input_source_restored": true,
+    "old_process_alive": false,
+    "late_effect_exists": false,
+    "final_capture_sha256": "68c9574bf8c3db5a734a8f7d5cd776041d8dcc36b5c3e6f5060c117dd1a83a91",
+    "model": "deepseek/deepseek-flash",
+    "mode": "YOLO",
+    "screen": "fullscreen",
+    "gesture": "ctrl+o",
+    "prior_runs_retained": 4,
+    "prepared_receipt_identity_matches": true,
+    "tool_receipt_outcome": "cancelled",
+    "exit_code": 137,
+    "effect_observation": "complete",
+    "queued_capture_sha256": "a69a17f7610aa36a5b187d3e21e10508a7d19fdfa850e646be74e23fbc01106a",
+    "fixture_sha256": "095a060e1a582b490e13ca9c768a6ff294bd08d56ae697a42ab0497f52e07bcb",
+    "text_input": "verified native keystrokes",
+    "gesture_and_captures": "agent-desktop"
+  }
+}
