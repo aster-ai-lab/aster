@@ -1064,8 +1064,16 @@ impl AgentView {
     /// Turn activity for the status spinner: an implicit "no activity" gap during a running inference turn resolves to an explicit [`WaitingReason`].
     /// `TaskOutput` / `Subagent` waits also get a display subject from live bg-task or subagent state so the spinner can read `{description}…`.
     pub(crate) fn resolve_turn_activity(&self) -> Option<crate::acp::tracker::TurnActivity> {
-        self.resolve_turn_activity_unenriched()
-            .map(|activity| self.enrich_waiting_activity(activity))
+        use crate::acp::tracker::{TurnActivity, WaitingReason};
+        // A send-now arm awaiting its own ack is a display-only wait. Keeping
+        // the synthetic state here preserves the spinner while predicates keep
+        // seeing the tracker's real wait instead of losing it to PromptAck.
+        let activity = if self.send_now_awaiting_current() {
+            Some(TurnActivity::Waiting(WaitingReason::PromptAck))
+        } else {
+            self.resolve_turn_activity_unenriched()
+        };
+        activity.map(|activity| self.enrich_waiting_activity(activity))
     }
     /// Wait detection without display enrichment, for predicates that need the wait's identity and must not churn with view-resolved display state.
     /// [`Self::resolve_turn_activity`] adds the display subject on top.
@@ -1074,9 +1082,6 @@ impl AgentView {
     ) -> Option<crate::acp::tracker::TurnActivity> {
         use crate::acp::tracker::{TurnActivity, WaitingReason};
         use crate::app::agent::AgentState;
-        if self.send_now_awaiting_current() {
-            return Some(TurnActivity::Waiting(WaitingReason::PromptAck));
-        }
         if let Some(activity) = self.session.turn_activity() {
             return Some(activity);
         }
