@@ -25,7 +25,9 @@ apps/web/
 
 首页使用 `content/home.html`、`public/home.css`、`public/home.js` 和 `public/cosmic.js`。首屏保留「Aster，让想法落地」的原位逐字输入，下载区保留紫色双旋臂星系、分层穿行星点、循环聚散、半透明玻璃卡片、指针视差、Canvas 2D 回退和减少动态模式。
 
-下载页使用 `content/download.html` 与 `public/download/` 中的静态资源。四张截图来自隔离演示数据；网页本身不提供桌面应用能力。首页和下载页只通过相对路径引用公开资源，兼容 GitHub Pages 的 `/aster/` 项目路径。
+首页保留线上版的首屏、场景排版、连接能力、安全与星系下载布局。截图直接使用原图，场景标题说明各端的用途。Studio 有四个场景；TUI 默认展示启动首页，另有执行、模型、上下文和恢复四个场景。每端只显示一张主画面，通过独立标签切换；两段图文左右交错，手机上回到单列。两组复用原有标签交互，支持方向键、Home、End 和减少动态模式。Studio 使用现有工作区、Office、审查和追溯截图；TUI 使用 `docs/evidence/code/2026-11-10-tui-visual-controls/` 与 `2026-11-10-deepseek-visual-e2e/` 中留存的原生终端截图，展示启动首页、任务执行、推理选项、上下文和会话恢复。首页测试逐字节核对九张构建产物与截图来源，并验证两个产品切换时互不干扰。关闭脚本后仍可阅读全部场景和打开原图，不用 HTML 仿制界面。Studio 的步骤说明只由点击切换，不定时轮播，也不暗示截图正在播放。MCP 与 Skills 入口连接固定版本文档；功能以所用版本和配置为准。
+
+下载页使用 `content/download.html` 与 `public/download/` 中的静态资源。四张 Studio 截图使用隔离演示数据，五张 TUI 截图来自实际 DeepSeek 会话中的独立测试工作区，均可查看原图。CLI 卡片先展示首页，可展开更多 TUI 实拍。TUI 网页展示区以淡紫与蓝色点缀；原始界面不做调色。网页本身不提供桌面应用能力。首页和下载页只通过相对路径引用公开资源，兼容 GitHub Pages 的 `/aster/` 项目路径。
 
 安装包地址使用 `content/releases.json` 中的 `{{download.*}}` 占位符。Astro 在构建时调用 `renderDownloadDocument` 渲染两个 HTML 源文件，不再生成 `public/index.html` 或 `public/download/index.html`。
 

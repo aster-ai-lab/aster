@@ -110,6 +110,11 @@ SCREENSHOT_FILES = (
     "download/screenshots/office.png",
     "download/screenshots/review.png",
     "download/screenshots/lineage.png",
+    "download/screenshots/tui-home.png",
+    "download/screenshots/tui.png",
+    "download/screenshots/tui-model.png",
+    "download/screenshots/tui-context.png",
+    "download/screenshots/tui-resume.png",
 )
 FONT_FILES = (
     "download/fonts/ubuntu-latin-400-normal.woff2",

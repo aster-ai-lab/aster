@@ -13,7 +13,9 @@ if (args.some((argument) => argument !== '--check')) throw new Error('Usage: pre
 
 const staticFiles = [
   'download/styles.css', 'download/app.js', 'download/canvas.js',
-  'download/screenshots/workspace.png', 'download/screenshots/office.png', 'download/screenshots/review.png', 'download/screenshots/lineage.png',
+  'download/screenshots/workspace.png', 'download/screenshots/office.png', 'download/screenshots/review.png', 'download/screenshots/lineage.png', 'download/screenshots/tui.png',
+  'download/screenshots/tui-model.png', 'download/screenshots/tui-context.png', 'download/screenshots/tui-resume.png',
+  'download/screenshots/tui-home.png',
   'download/fonts/ubuntu-latin-400-normal.woff2', 'download/fonts/ubuntu-latin-500-normal.woff2', 'download/fonts/ubuntu-latin-700-normal.woff2', 'download/fonts/Ubuntu-LICENSE.txt',
   'tenant/aster/logo.svg', 'tenant/aster/mark-light.png', 'tenant/aster/favicon.png',
   'home.css', 'home.js', 'cosmic.js', 'transitions.css', 'legal/styles.css',

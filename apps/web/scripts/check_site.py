@@ -195,7 +195,7 @@ def check_site(public_root=PUBLIC_ROOT):
     if seen_downloads != DOWNLOAD_URLS:
         raise ValueError("page does not expose all verified desktop/CLI download links")
     if not set(SCREENSHOT_FILES).issubset(seen_images):
-        raise ValueError("page does not reference all four PNG screenshots")
+        raise ValueError("page does not reference all PNG screenshots")
     css = re.sub(r"/\*.*?\*/", "", source["download/styles.css"], flags=re.S)
     if re.search(r"@import\b", css, flags=re.I):
         raise ValueError("CSS imports are not part of the standalone site")
@@ -288,8 +288,8 @@ def check_home_page(root):
             elif urlsplit(href).scheme or urlsplit(href).netloc:
                 if external_link(href):
                     seen_downloads.add(href)
-            elif href == "./docs/":
-                regular(root, "docs/index.html")
+            elif href.startswith("./docs/") and f"{href[2:]}index.html" in DOCS_PAGES:
+                regular(root, f"{href[2:]}index.html")
             else:
                 local_url(href)
         if node.tag == "script":
@@ -312,7 +312,7 @@ def check_home_page(root):
     if seen_downloads != DOWNLOAD_URLS:
         raise ValueError("homepage does not expose all verified desktop/CLI download links")
     if not set(SCREENSHOT_FILES).issubset(seen_images):
-        raise ValueError("homepage does not reference all four PNG screenshots")
+        raise ValueError("homepage does not reference all PNG screenshots")
     css = re.sub(r"/\*.*?\*/", "", source["home.css"], flags=re.S)
     if re.search(r"@import\b", css, flags=re.I):
         raise ValueError("CSS imports are not part of the standalone homepage")
@@ -333,8 +333,18 @@ def check_home_page(root):
             external_link(url)
     tabs = [node for node in nodes if node.attrs.get("role") == "tab"]
     panels = [node for node in nodes if node.attrs.get("role") == "tabpanel"]
-    if len(tabs) != 4 or len(panels) != 4:
-        raise ValueError("homepage must expose four task scenario tabs and panels")
+    tablists = [node for node in nodes if node.attrs.get("role") == "tablist"]
+    product_tabs = {"studio-tabs": 4, "tui-tabs": 5}
+    if {node.attrs.get("id") for node in tablists} != set(product_tabs) or len(tabs) != 9 or len(panels) != 9:
+        raise ValueError("homepage must expose Studio and TUI scenario tabs and panels")
+    for tablist in tablists:
+        group = [node for node in tablist.walk() if node.attrs.get("role") == "tab"]
+        if len(group) != product_tabs[tablist.attrs["id"]]:
+            raise ValueError("homepage product tablist has an unexpected scenario count")
+        for tab in group:
+            panel = ids.get(tab.attrs.get("aria-controls"))
+            if panel is None or panel.attrs.get("role") != "tabpanel" or panel.attrs.get("aria-labelledby") != tab.attrs.get("id"):
+                raise ValueError("homepage scenario tab must label its own panel")
     return {"status": "passed", "tabs": len(tabs), "download_links": len(seen_downloads)}
 
 

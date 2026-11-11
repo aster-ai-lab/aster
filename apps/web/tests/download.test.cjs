@@ -21,7 +21,12 @@ const screenshots = {
   workspace: 'Aster 工作区',
   office: 'Aster Office',
   review: 'Aster 自动审查',
-  lineage: 'Aster 产物追溯'
+  lineage: 'Aster 产物追溯',
+  tui: 'Aster TUI',
+  'tui-home': 'Aster TUI 首页',
+  'tui-model': 'Aster TUI 推理选项',
+  'tui-context': 'Aster TUI 上下文用量',
+  'tui-resume': 'Aster TUI 会话恢复'
 };
 const text = (element) => element.textContent.trim().replace(/\s+/g, ' ');
 
@@ -105,9 +110,8 @@ function selectedFeature(ui, key, { focused = false } = {}) {
   if (focused) assert.equal(ui.document.activeElement.id, `feature-${key}`);
 }
 
-// Run this without a name filter once the capture owner has supplied the four
-// actual PNGs. Missing images fail; this test does not create placeholder images.
-test('public assets exist, four screenshot PNGs have dimensions, and project Pages paths resolve', (t) => {
+// Missing captures fail; this test does not create placeholder images.
+test('public assets exist, product screenshot PNGs have dimensions, and project Pages paths resolve', (t) => {
   const { document } = page(t, { execute: false });
   for (const element of document.querySelectorAll('img[src], script[src], link[rel="stylesheet"][href], link[rel="icon"][href]')) {
     const url = new URL(element.getAttribute('src') || element.getAttribute('href'), pageUrl);
@@ -126,7 +130,7 @@ test('public assets exist, four screenshot PNGs have dimensions, and project Pag
   }
 });
 
-test('no-JS release links and labelled screenshots remain; retired simulated Office controls are absent', (t) => {
+test('no-JS release links and real Studio/TUI screenshots remain; simulated app controls are absent', (t) => {
   const { document } = page(t, { execute: false });
   const ids = [...document.querySelectorAll('[id]')].map((element) => element.id);
   assert.equal(ids.length, new Set(ids).size);
@@ -149,6 +153,8 @@ test('no-JS release links and labelled screenshots remain; retired simulated Off
   }
   assert.equal(document.querySelectorAll('#demo-form, #demo-prompt, [data-demo-reset], [data-tour], [data-demo-option], [data-review-action], .workspace-showcase, .office-paper, .office-toolbar, [contenteditable], select').length, 0);
   assert.equal(document.body.classList.contains('enhanced'), false);
+  assert.equal(document.querySelector('#cli-demo-text, .cli-demo'), null);
+  assert.ok(document.querySelector('#cli > .screenshot-figure [data-screenshot="tui-home"] img'));
   for (const panel of document.querySelectorAll('.feature-panel')) assert.equal(panel.hidden, false);
   for (const opener of document.querySelectorAll('[data-screenshot], [data-enlarge]')) {
     const key = opener.dataset.screenshot || opener.dataset.enlarge;
@@ -162,7 +168,13 @@ test('no-JS release links and labelled screenshots remain; retired simulated Off
     if (figure.classList.contains('hero-screen')) {
       assert.equal(text(caption.querySelector('span')), '真实 Aster 界面 · 演示数据');
     } else {
-      const captions = { workspace: '工作区 · 真实界面，演示数据', office: 'Office · 真实界面，演示文档', review: '自动审查 · 真实界面，演示记录', lineage: '产物追溯 · 真实界面，演示快照' };
+      const captions = {
+        workspace: '工作区 · 真实界面，演示数据', office: 'Office · 真实界面，演示文档',
+        review: '自动审查 · 真实界面，演示记录', lineage: '产物追溯 · 真实界面，演示快照',
+        tui: 'Aster TUI · 真实界面，独立测试任务', 'tui-model': '推理选项 · 真实界面，独立测试任务',
+        'tui-home': '启动首页 · 真实界面，独立测试工作区',
+        'tui-context': '上下文用量 · 真实界面，独立测试任务', 'tui-resume': '会话恢复 · 真实界面，独立测试任务'
+      };
       assert.equal(text(caption), captions[figure.querySelector('[data-screenshot]').dataset.screenshot]);
     }
   }

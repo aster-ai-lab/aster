@@ -6,15 +6,15 @@
     <meta name="theme-color" content="#ffffff" />
     <meta
       name="description"
-      content="下载 Aster。在一个工作区中完成对话、文件与 Office 协作，按需开启自动审查和产物追溯。"
+      content="下载 Aster Studio 桌面版或 Aster CLI。查看真实界面、选择安装包，并配置自己的模型服务。"
     />
-    <meta property="og:title" content="Aster — 让想法落地" />
+    <meta property="og:title" content="Aster：让想法落地" />
     <meta
       property="og:description"
-      content="你的任务，你的文件，你的 Aster。查看真实界面，下载桌面版或 CLI。"
+      content="查看 Aster Studio 和 TUI 的真实界面，下载适合你的安装包。"
     />
     <meta property="og:type" content="website" />
-    <title>下载 Aster — 让想法落地</title>
+    <title>下载 Aster：让想法落地</title>
     <link rel="icon" href="../tenant/aster/favicon.png" type="image/png" />
     <link rel="canonical" href="https://aster-ai-lab.github.io/aster/download/" />
     <link rel="stylesheet" href="../transitions.css" />
@@ -116,7 +116,7 @@
           aria-expanded="false"
           aria-controls="mobile-nav"
         >
-          <svg class="icon"><use href="#i-menu" /></svg>
+          <svg aria-hidden="true" class="icon"><use href="#i-menu" /></svg>
         </button>
       </div>
       <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航" hidden>
@@ -129,36 +129,16 @@
       <section class="hero" id="product" aria-labelledby="hero-title">
         <div class="hero-background" aria-hidden="true">
           <div class="aurora">
-            <span class="aurora-blob aurora-blob-a"></span>
-            <span class="aurora-blob aurora-blob-b"></span>
+
+
           </div>
           <canvas id="aster-canvas" aria-hidden="true"></canvas>
         </div>
         <div class="hero-copy">
-          <svg class="hero-mark" viewBox="0 0 256 256" aria-hidden="true">
-            <defs>
-              <linearGradient id="hc-star-fill" x1="96" y1="40" x2="164" y2="216" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#eaf6ff" />
-                <stop offset=".55" stop-color="#ffffff" />
-                <stop offset="1" stop-color="#9fd4ff" />
-              </linearGradient>
-            </defs>
-            <ellipse class="hc-ring" cx="128" cy="132" rx="113" ry="43" transform="rotate(-28 128 132)" />
-            <g class="hc-orbit hc-orbit-a">
-              <circle class="hc-orbit-path" cx="128" cy="132" r="88" />
-              <circle class="hc-comet" cx="216" cy="132" r="5" />
-            </g>
-            <g class="hc-orbit hc-orbit-b">
-              <circle class="hc-orbit-path hc-orbit-path-inner" cx="128" cy="132" r="60" />
-              <circle class="hc-comet hc-comet-small" cx="188" cy="132" r="3.4" />
-            </g>
-            <path class="hc-star" fill="url(#hc-star-fill)" d="M128 23C142 86 152 102 204 126C152 140 141 160 128 233C115 160 104 140 52 126C104 102 114 86 128 23Z" />
-            <path class="hc-core" d="m128 105 15 23-15 29-15-29 15-23Z" />
-            <path class="hc-spark" d="m204 35 4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10Z" />
-          </svg>
+          <img class="hero-mark" src="../tenant/aster/logo.svg" alt="" width="152" height="152" />
           <h1 id="hero-title">Aster</h1>
           <p>
-            从编程到办公，连接你的本地文件、模型和工具。<br />在一个工作区里规划、执行、审查，让每份产物有迹可循。
+            使用自己的模型，处理项目文件、文档和代码。<br />桌面版提供工作区，CLI 在终端里运行。
           </p>
           <div class="hero-actions">
             <a
@@ -170,26 +150,8 @@
                 <path class="an-tray" d="M4 16.4v2.4a1.6 1.6 0 0 0 1.6 1.6h12.8a1.6 1.6 0 0 0 1.6-1.6v-2.4"
               /></svg
               >下载 Aster<span class="button-divider"></span
-              ><svg class="icon small-icon"><use href="#i-chevron" /></svg
+              ><svg aria-hidden="true" class="icon small-icon"><use href="#i-chevron" /></svg
             ></a>
-          </div>
-          <div class="hero-marquee">
-            <div class="hero-marquee-track">
-              <ul class="hero-marquee-set">
-                <li>对话工作区</li>
-                <li>Office 协作</li>
-                <li>自动审查</li>
-                <li>产物追溯</li>
-                <li>CLI 与 Rust SDK</li>
-              </ul>
-              <ul class="hero-marquee-set" aria-hidden="true">
-                <li>对话工作区</li>
-                <li>Office 协作</li>
-                <li>自动审查</li>
-                <li>产物追溯</li>
-                <li>CLI 与 Rust SDK</li>
-              </ul>
-            </div>
           </div>
         </div>
         <figure class="hero-screen screenshot-figure">
@@ -216,15 +178,15 @@
               href="./screenshots/workspace.png"
               aria-haspopup="dialog"
             >
-              <svg class="icon small-icon"><use href="#i-expand" /></svg>放大查看
+              <svg aria-hidden="true" class="icon small-icon"><use href="#i-expand" /></svg>放大查看
             </a>
           </figcaption>
         </figure>
       </section>
 
       <section class="section features" id="features" aria-labelledby="features-title">
-        <p class="section-kicker"><span>真实界面</span></p>
-        <h2 class="section-title" id="features-title">一个工作区，串起任务与成果</h2>
+
+        <h2 class="section-title" id="features-title">Studio 的四个常用界面</h2>
         <p class="section-description">从打开文件，到审阅结果。每个界面都来自实际运行的 Aster。</p>
         <div class="feature-tabs" role="tablist" aria-label="Aster 功能">
           <button
@@ -272,8 +234,8 @@
           tabindex="0"
         >
           <div class="feature-copy">
-            <svg class="feature-icon icon"><use href="#i-folder" /></svg>
-            <h3>对话之外，<br />还有完整的工作现场。</h3>
+            <svg aria-hidden="true" class="feature-icon icon"><use href="#i-folder" /></svg>
+            <h3>项目文件，<br />和对话一起看</h3>
             <p>
               文件、浏览器、终端和变更，在同一工作区切换。多个文件标签保留在手边，查看资料、核对修改，再继续任务。
             </p>
@@ -288,7 +250,7 @@
               href="./screenshots/workspace.png"
               aria-haspopup="dialog"
             >
-              查看真实界面<svg class="icon small-icon"><use href="#i-expand" /></svg>
+              查看真实界面<svg aria-hidden="true" class="icon small-icon"><use href="#i-expand" /></svg>
             </a>
           </div>
           <figure class="feature-screen screenshot-figure">
@@ -318,16 +280,16 @@
           tabindex="0"
         >
           <div class="feature-copy">
-            <svg class="feature-icon icon"><use href="#i-file" /></svg>
-            <h3>打开项目文件，<br />继续打磨你的成果。</h3>
+            <svg aria-hidden="true" class="feature-icon icon"><use href="#i-file" /></svg>
+            <h3>打开文档，<br />直接编辑内容</h3>
             <p>
               从工作区文件进入 Office，编辑文档、表格和演示文稿，阅读 Markdown 与
               PDF。可用操作随文件类型而变。
             </p>
             <ul>
-              <li>DOCX、XLSX、PPTX 对应编辑界面</li>
+              <li>在对应界面编辑文档</li>
               <li>Markdown 与 PDF 对应阅读和处理能力</li>
-              <li>文件始终留在项目的工作流程中</li>
+              <li>修改后保存到项目文件</li>
             </ul>
             <a
               class="quiet-button"
@@ -335,7 +297,7 @@
               href="./screenshots/office.png"
               aria-haspopup="dialog"
             >
-              查看 Office 界面<svg class="icon small-icon"><use href="#i-expand" /></svg>
+              查看 Office 界面<svg aria-hidden="true" class="icon small-icon"><use href="#i-expand" /></svg>
             </a>
           </div>
           <figure class="feature-screen screenshot-figure">
@@ -365,8 +327,8 @@
           tabindex="0"
         >
           <div class="feature-copy">
-            <svg class="feature-icon icon"><use href="#i-shield" /></svg>
-            <h3>完成之后，<br />再认真检查一遍。</h3>
+            <svg aria-hidden="true" class="feature-icon icon"><use href="#i-shield" /></svg>
+            <h3>检查回复、<br />工具结果和文件</h3>
             <p>
               按需开启自动审查，让模型另起一次独立检查，核对回复、工具结果和产物。发现问题后尝试修复，未解决的发现留待你处理。
             </p>
@@ -381,7 +343,7 @@
               href="./screenshots/review.png"
               aria-haspopup="dialog"
             >
-              查看审查界面<svg class="icon small-icon"><use href="#i-expand" /></svg>
+              查看审查界面<svg aria-hidden="true" class="icon small-icon"><use href="#i-expand" /></svg>
             </a>
           </div>
           <figure class="feature-screen screenshot-figure">
@@ -411,8 +373,8 @@
           tabindex="0"
         >
           <div class="feature-copy">
-            <svg class="feature-icon icon"><use href="#i-layers" /></svg>
-            <h3>交付一个文件，<br />也留下它的来路。</h3>
+            <svg aria-hidden="true" class="feature-icon icon"><use href="#i-layers" /></svg>
+            <h3>查看文件版本<br />和操作来源</h3>
             <p>
               开启产物追溯，保留任务回合中的文件快照。查看来源、工具与执行记录，核对内容摘要，让眼前的成果有据可查。
             </p>
@@ -427,7 +389,7 @@
               href="./screenshots/lineage.png"
               aria-haspopup="dialog"
             >
-              查看追溯界面<svg class="icon small-icon"><use href="#i-expand" /></svg>
+              查看追溯界面<svg aria-hidden="true" class="icon small-icon"><use href="#i-expand" /></svg>
             </a>
           </div>
           <figure class="feature-screen screenshot-figure">
@@ -452,26 +414,26 @@
       </section>
 
       <section class="section scenes" id="scenes" aria-labelledby="scenes-title">
-        <p class="section-kicker"><span>多场景</span></p>
-        <h2 class="section-title" id="scenes-title">换任务，不换工具</h2>
-        <p class="section-description">同一套权限、同一份记录，在不同任务里保持一致。</p>
+
+        <h2 class="section-title" id="scenes-title">常见任务</h2>
+        <p class="section-description">使用当前配置的模型和工具处理任务，操作仍遵守权限设置。</p>
         <div class="scene-grid">
           <article class="scene-card" data-reveal>
-            <span class="scene-index">01</span>
+
             <svg class="scene-icon icon icon-anim anim-code" viewBox="0 0 24 24" aria-hidden="true">
               <path class="an-bracket an-bracket-l" d="m8.6 7-4.4 5 4.4 5" />
               <path class="an-bracket an-bracket-r" d="m15.4 7 4.4 5-4.4 5" />
               <path class="an-slash" d="m13.6 4.6-3.2 14.8" />
             </svg>
             <h3>编程开发</h3>
-            <p>在本地项目里读取和修改文件，按计划推进，最后跑一遍验证再交付。</p>
+            <p>读取现有代码，修改相关文件，并运行测试检查结果。</p>
             <ul class="scene-tags">
               <li>计划先审阅</li>
               <li>受控工具调用</li>
             </ul>
           </article>
           <article class="scene-card" data-reveal>
-            <span class="scene-index">02</span>
+
             <svg class="scene-icon icon icon-anim anim-doc" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M14 3H6.6A1.6 1.6 0 0 0 5 4.6v14.8A1.6 1.6 0 0 0 6.6 21h10.8a1.6 1.6 0 0 0 1.6-1.6V7.4Z" />
               <path d="M14 3v2.9a1.5 1.5 0 0 0 1.5 1.5H19" />
@@ -479,14 +441,14 @@
               <path class="an-line an-line-2" pathLength="100" d="M8.4 16.2h4.8" />
             </svg>
             <h3>文档与演示</h3>
-            <p>打开项目里的 DOCX、XLSX、PPTX 就地编辑，成果始终留在工作流中。</p>
+            <p>在工作区编辑 DOCX、XLSX、PPTX，也可以打开 Markdown 和 PDF。</p>
             <ul class="scene-tags">
               <li>Office 原生编辑</li>
               <li>Markdown · PDF</li>
             </ul>
           </article>
           <article class="scene-card" data-reveal>
-            <span class="scene-index">03</span>
+
             <svg class="scene-icon icon icon-anim anim-chart" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 3.6v16.2h16.4" />
               <path class="an-bar an-bar-1" d="M8.2 16.6v-3.4" />
@@ -494,14 +456,14 @@
               <path class="an-bar an-bar-3" d="M16.6 16.6v-9.4" />
             </svg>
             <h3>数据与脚本</h3>
-            <p>用受控的命令和工具处理数据、生成脚本，产出可检查的结果与日志。</p>
+            <p>用脚本整理数据，保存处理结果和运行记录。</p>
             <ul class="scene-tags">
               <li>命令与工具</li>
               <li>事实日志</li>
             </ul>
           </article>
           <article class="scene-card" data-reveal>
-            <span class="scene-index">04</span>
+
             <svg class="scene-icon icon icon-anim anim-window" viewBox="0 0 24 24" aria-hidden="true">
               <rect x="2.8" y="4.4" width="18.4" height="15.2" rx="3.2" />
               <path d="M2.8 9.4h18.4" />
@@ -510,7 +472,7 @@
               <path class="an-scan" pathLength="100" d="M6.6 13.4h10.8" />
             </svg>
             <h3>服务与接口</h3>
-            <p>连接本地服务与外部接口，按权限发起请求并核对每一次响应。</p>
+            <p>按已授予的权限，访问配置的本地服务和外部接口。</p>
             <ul class="scene-tags">
               <li>浏览器与终端</li>
               <li>沙箱边界</li>
@@ -520,64 +482,64 @@
       </section>
 
       <section class="section practices" id="practices" aria-labelledby="practices-title">
-        <p class="section-kicker"><span>最佳使用方式</span></p>
-        <h2 class="section-title" id="practices-title">五个步骤，把事情做完</h2>
-        <p class="section-description">Aster 的默认节奏：从授权到验收，每一步都留有依据。</p>
+
+        <h2 class="section-title" id="practices-title">开始一项任务</h2>
+        <p class="section-description">选好项目，说明目标，确认需要的权限，再查看结果。</p>
         <div class="practice-flow" aria-hidden="true"></div>
         <ol class="practice-grid">
           <li class="practice-step" data-reveal>
-            <span class="practice-index">01</span>
+
             <svg class="practice-icon icon icon-anim anim-folder" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3.2 19.4V6.3A1.7 1.7 0 0 1 4.9 4.6h4.2l2.6 2.9h7.4a1.7 1.7 0 0 1 1.7 1.7v1.4" />
               <path class="an-folder-flap" d="M3.2 19.4 5 10.6a1.7 1.7 0 0 1 1.66-1.4H21l-2 9.2a1.7 1.7 0 0 1-1.66 1.4Z" />
             </svg>
             <h3>选择项目文件夹</h3>
-            <p>只在你授权的目录里工作，宿主与工作区的信任边界保持清晰。</p>
+            <p>选择本地项目目录，确认当前工作区的信任设置。</p>
           </li>
           <li class="practice-step" data-reveal>
-            <span class="practice-index">02</span>
+
             <svg class="practice-icon icon icon-anim anim-flow" viewBox="0 0 24 24" aria-hidden="true">
               <path class="an-route" d="M4.5 6.6h5.2a3.6 3.6 0 0 1 3.6 3.6v3.6a3.6 3.6 0 0 0 3.6 3.6h3.6" />
               <circle class="an-traveler" cx="4.5" cy="6.6" r="1.9" />
             </svg>
-            <h3>先看计划再执行</h3>
-            <p>计划先交给你审阅，需要确认的动作停下来等你回答再继续。</p>
+            <h3>说明要做什么</h3>
+            <p>写清目标、允许修改的范围，以及希望怎样检查结果。</p>
           </li>
           <li class="practice-step" data-reveal>
-            <span class="practice-index">03</span>
+
             <svg class="practice-icon icon icon-anim anim-term" viewBox="0 0 24 24" aria-hidden="true">
               <rect x="2.6" y="4" width="18.8" height="16" rx="3.2" />
               <path d="m6.6 9.4 2.6 2.6-2.6 2.6" />
               <path class="an-caret" d="M12 14.6h4.4" />
             </svg>
-            <h3>按权限调用工具</h3>
-            <p>每次工具调用都过一遍权限判定，拒绝的动作不会悄悄发生。</p>
+            <h3>确认需要的权限</h3>
+            <p>工具按当前权限设置执行。需要确认的操作会等你回复。</p>
           </li>
           <li class="practice-step" data-reveal>
-            <span class="practice-index">04</span>
+
             <svg class="practice-icon icon icon-anim anim-shield" viewBox="0 0 24 24" aria-hidden="true">
               <path class="an-shield" d="m12 2.6 7.4 3.1v5.2c0 4.5-7.4 9-7.4 9s-7.4-4.5-7.4-9V5.7Z" />
               <path class="an-check" pathLength="100" d="m8.7 11.9 2.3 2.3 4.3-4.7" />
             </svg>
-            <h3>完成后自动审查</h3>
-            <p>让模型另起一次独立检查，核对回复、工具结果与产物。</p>
+            <h3>按需开启审查</h3>
+            <p>需要复核时，开启独立审查，检查回复、工具结果和生成文件。</p>
           </li>
           <li class="practice-step" data-reveal>
-            <span class="practice-index">05</span>
+
             <svg class="practice-icon icon icon-anim anim-layers" viewBox="0 0 24 24" aria-hidden="true">
               <path class="an-layer an-layer-1" d="m12 3.2 8.4 4.4-8.4 4.4-8.4-4.4Z" />
               <path class="an-layer an-layer-2" d="m4.4 12 7.6 4 7.6-4" />
               <path class="an-layer an-layer-3" d="m4.4 16.4 7.6 4 7.6-4" />
             </svg>
-            <h3>交付即有据可查</h3>
-            <p>产物保留来源、版本与执行记录，随时回看它是怎么来的。</p>
+            <h3>查看文件与记录</h3>
+            <p>需要追溯时，可开启文件快照，回看来源、版本和执行记录。</p>
           </li>
         </ol>
       </section>
 
       <section class="section platforms" id="platforms" aria-labelledby="platforms-title">
-        <p class="section-kicker"><span>在哪使用</span></p>
-        <h2 class="section-title" id="platforms-title">在你熟悉的地方，开始工作</h2>
+
+        <h2 class="section-title" id="platforms-title">选择下载版本</h2>
         <div class="platform-grid">
           <article class="platform-card" data-reveal>
             <svg class="platform-icon icon icon-anim anim-laptop" viewBox="0 0 24 24" aria-hidden="true">
@@ -624,7 +586,7 @@
                 aria-labelledby="platform-tab-macos"
                 tabindex="0"
               >
-                <p class="platform-spec"><strong>Apple Silicon</strong> · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</p>
+                <p class="platform-spec"><strong>Apple Silicon</strong> / v{{download.desktop.macos.version}} / {{download.desktop.macos.format}}</p>
                 <a
                   class="pill-button"
                   href="{{download.desktop.macos.url}}"
@@ -667,21 +629,37 @@
               <path d="m6.6 9.4 2.6 2.6-2.6 2.6" />
               <path class="an-caret" d="M12 14.6h4.4" />
             </svg>
-            <h3>Aster CLI</h3>
+            <h3>Aster TUI · CLI</h3>
             <p>进入项目目录，在熟悉的终端中完成编程任务。</p>
-            <div class="cli-demo">
-              <div class="cli-demo-bar">
-                <span></span><span></span><span></span><b>aster — ~/workspace</b>
-              </div>
-              <pre class="cli-demo-body"><code id="cli-demo-text">$ aster --cwd ~/workspace
-› 修复配置解析的边界错误，只修改相关文件
-  计划  定位解析入口 → 补充边界用例 → 运行测试
-  完成  修改 2 个文件 · 相关测试通过</code></pre>
-            </div>
+            <figure class="cli-screen screenshot-figure">
+              <a class="screenshot-button" data-screenshot="tui-home" href="./screenshots/tui-home.png" aria-label="放大 Aster TUI 首页真实界面" aria-haspopup="dialog">
+                <img src="./screenshots/tui-home.png" alt="Aster TUI 真实启动首页，包含任务输入、新建工作树和恢复会话入口" width="1323" height="882" loading="lazy" />
+              </a>
+              <figcaption>启动首页 · 真实界面，独立测试工作区</figcaption>
+            </figure>
+            <details class="cli-captures">
+              <summary>查看更多 TUI 真实界面</summary>
+              <figure class="cli-screen screenshot-figure">
+                <a class="screenshot-button" data-screenshot="tui" href="./screenshots/tui.png" aria-label="放大 Aster TUI 执行真实界面" aria-haspopup="dialog"><img src="./screenshots/tui.png" alt="Aster TUI 原生终端中的文件创建、读取与验证结果" width="1425" height="717" loading="lazy" /></a>
+                <figcaption>Aster TUI · 真实界面，独立测试任务</figcaption>
+              </figure>
+              <figure class="cli-screen screenshot-figure">
+                <a class="screenshot-button" data-screenshot="tui-model" href="./screenshots/tui-model.png" aria-label="放大 TUI 推理选项真实界面" aria-haspopup="dialog"><img src="./screenshots/tui-model.png" alt="Aster TUI 真实模型推理选项菜单" width="1350" height="926" loading="lazy" /></a>
+                <figcaption>推理选项 · 真实界面，独立测试任务</figcaption>
+              </figure>
+              <figure class="cli-screen screenshot-figure">
+                <a class="screenshot-button" data-screenshot="tui-context" href="./screenshots/tui-context.png" aria-label="放大 TUI 上下文用量真实界面" aria-haspopup="dialog"><img src="./screenshots/tui-context.png" alt="Aster TUI 真实上下文用量面板" width="1367" height="926" loading="lazy" /></a>
+                <figcaption>上下文用量 · 真实界面，独立测试任务</figcaption>
+              </figure>
+              <figure class="cli-screen screenshot-figure">
+                <a class="screenshot-button" data-screenshot="tui-resume" href="./screenshots/tui-resume.png" aria-label="放大 TUI 会话恢复真实界面" aria-haspopup="dialog"><img src="./screenshots/tui-resume.png" alt="Aster TUI 真实会话恢复列表" width="1367" height="926" loading="lazy" /></a>
+                <figcaption>会话恢复 · 真实界面，独立测试任务</figcaption>
+              </figure>
+            </details>
             <div class="cli-command">
               <code id="cli-install-command">curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/install.sh | bash -s -- --prefix "$HOME/.local/bin" --version {{download.cli.linux.version}}</code>
               <button class="copy-button" type="button" data-copy="#cli-install-command">
-                <svg class="icon"><use href="#i-copy" /></svg><span data-copy-label>复制</span>
+                <svg aria-hidden="true" class="icon"><use href="#i-copy" /></svg><span data-copy-label>复制</span>
               </button>
             </div>
             <div class="cli-links">
@@ -724,7 +702,7 @@
               href="https://github.com/aster-ai-lab/aster#运行机制"
               target="_blank"
               rel="noopener noreferrer"
-              >查看文档<svg class="icon small-icon"><use href="#i-arrow" /></svg
+              >查看文档<svg aria-hidden="true" class="icon small-icon"><use href="#i-arrow" /></svg
             ></a>
             <ul>
               <li>共享 Rust 执行内核</li>
@@ -736,19 +714,18 @@
       </section>
 
       <section class="section comparison" aria-labelledby="comparison-title">
-        <p class="section-kicker"><span>对比</span></p>
-        <h2 class="section-title" id="comparison-title">一个任务，两种熟悉的方式</h2>
+
+        <h2 class="section-title" id="comparison-title">桌面版与 CLI</h2>
         <div class="table-scroll">
           <table>
             <caption class="sr-only">
-              Aster 桌面版、Aster CLI 与传统工作方式的功能对比
+              Aster Studio 桌面版与 Aster CLI 的功能对照
             </caption>
             <thead>
               <tr>
                 <th scope="col">对比维度</th>
                 <th scope="col">Aster 桌面版</th>
                 <th scope="col">Aster CLI</th>
-                <th scope="col">传统工作方式</th>
               </tr>
             </thead>
             <tbody>
@@ -756,41 +733,35 @@
                 <th scope="row">使用方式</th>
                 <td>可视化对话与项目工作台</td>
                 <td>终端内的交互式编程工具</td>
-                <td>编辑器、终端与文档应用各自独立</td>
               </tr>
               <tr>
                 <th scope="row">项目文件</th>
-                <td>选择本地项目，查看文件与交付结果</td>
+                <td>在工作区查看文件和处理结果</td>
                 <td>从项目目录启动，读取与修改文件</td>
-                <td>文件与对话上下文需要手动对齐</td>
               </tr>
               <tr>
                 <th scope="row">任务规划</th>
-                <td>计划审阅、确认执行与进度展示</td>
-                <td>通过对话规划并推进任务</td>
-                <td>计划与执行过程通常不可见</td>
+                <td>在对话中安排步骤、查看进度</td>
+                <td>在对话中安排步骤、查看进度</td>
               </tr>
               <tr>
                 <th scope="row">模型配置</th>
                 <td>配置你使用的模型与接口</td>
                 <td>通过 ACL 配置模型与接口</td>
-                <td>依赖每个工具各自的设置</td>
               </tr>
               <tr>
                 <th scope="row">工具执行</th>
                 <td>按权限策略确认与执行</td>
                 <td>按权限策略确认与执行</td>
-                <td>过程记录分散在不同工具里</td>
               </tr>
               <tr>
                 <th scope="row">产物追溯</th>
                 <td>查看来源、版本与执行快照</td>
-                <td>保留事实日志与完成依据</td>
-                <td>缺少统一的来源与版本视图</td>
+                <td>保留执行记录和检查结果</td>
               </tr>
               <tr>
                 <th scope="row">执行内核</th>
-                <td colspan="3">共享 Rust 智能体执行内核，记录过程，检查完成依据</td>
+                <td colspan="2">两端使用相同的 Rust 执行内核</td>
               </tr>
             </tbody>
           </table>
@@ -798,12 +769,12 @@
       </section>
 
       <section class="section faq" aria-labelledby="faq-title">
-        <p class="section-kicker"><span>常见问题</span></p>
+
         <h2 class="section-title" id="faq-title">还有想确认的？</h2>
         <div class="faq-list">
           <details>
             <summary>
-              Aster 是什么？<svg class="icon"><use href="#i-plus" /></svg>
+              Aster 是什么？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               Aster 是基于 Rust 的智能体执行内核与编程工具。桌面版提供可视化的本地工作台，CLI
@@ -812,7 +783,7 @@
           </details>
           <details>
             <summary>
-              需要注册账号或订阅吗？<svg class="icon"><use href="#i-plus" /></svg>
+              需要注册账号或订阅吗？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               Aster 本地版无需注册 Aster
@@ -821,7 +792,7 @@
           </details>
           <details>
             <summary>
-              支持哪些系统？<svg class="icon"><use href="#i-plus" /></svg>
+              支持哪些系统？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               当前公开桌面安装包仅有 macOS Apple Silicon；Windows 与 Linux 桌面版敬请期待。CLI
@@ -831,7 +802,7 @@
           </details>
           <details>
             <summary>
-              网站里的应用画面是真实界面吗？<svg class="icon"><use href="#i-plus" /></svg>
+              网站里的应用画面是真实界面吗？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               是。截图由实际 Aster
@@ -841,7 +812,7 @@
           </details>
           <details>
             <summary>
-              下载后的界面会和截图完全相同吗？<svg class="icon"><use href="#i-plus" /></svg>
+              下载后的界面会和截图完全相同吗？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               截图展示当前开发版本的界面。下载弹层标明当前公开稳定安装包的版本与架构，可能早于截图。请查看<a
@@ -854,7 +825,7 @@
           </details>
           <details>
             <summary>
-              桌面版和 CLI 是两套东西吗？<svg class="icon"><use href="#i-plus" /></svg>
+              桌面版和 CLI 是两套东西吗？<svg aria-hidden="true" class="icon"><use href="#i-plus" /></svg>
             </summary>
             <p>
               不是。两者共用同一个 Rust
@@ -866,17 +837,17 @@
       </section>
 
       <section class="bottom-cta" aria-labelledby="cta-title">
-        <span class="cta-orb cta-orb-a" aria-hidden="true"></span>
-        <span class="cta-orb cta-orb-b" aria-hidden="true"></span>
+
+
         <div class="cta-inner">
           <img src="../tenant/aster/logo.svg" alt="" width="64" height="64" />
-          <h2 id="cta-title">让下一个想法，从 Aster 开始。</h2>
-          <p>你的任务，你的文件，你的 Aster。</p>
+          <h2 id="cta-title">下载 Aster，打开你的项目</h2>
+          <p>配置好模型服务，就可以开始使用。</p>
           <a
             class="pill-button pill-button-inverse"
             href="https://github.com/aster-ai-lab/aster/releases"
             data-download
-            ><svg class="icon"><use href="#i-download" /></svg>下载 Aster</a
+            ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg>下载 Aster</a
           >
         </div>
       </section>
@@ -923,7 +894,7 @@
       title="回到顶部"
       hidden
     >
-      <svg class="icon"><use href="#i-arrow-up" /></svg>
+      <svg aria-hidden="true" class="icon"><use href="#i-arrow-up" /></svg>
     </button>
     <dialog
       id="download-dialog"
@@ -937,7 +908,7 @@
           data-close-dialog
           aria-label="关闭下载选择"
         >
-          <svg class="icon"><use href="#i-close" /></svg>
+          <svg aria-hidden="true" class="icon"><use href="#i-close" /></svg>
         </button>
       </div>
       <h2 id="download-title">下载 Aster</h2>
@@ -946,39 +917,39 @@
         <p class="download-options-label">桌面端</p>
         <a
           href="{{download.desktop.macos.url}}"
-          ><svg class="icon"><use href="#i-laptop" /></svg
-          ><span><strong>macOS</strong><small>Apple Silicon · v{{download.desktop.macos.version}} · {{download.desktop.macos.format}}</small></span
-          ><svg class="icon"><use href="#i-download" /></svg></a
+          ><svg aria-hidden="true" class="icon"><use href="#i-laptop" /></svg
+          ><span><strong>macOS</strong><small>Apple Silicon / v{{download.desktop.macos.version}} / {{download.desktop.macos.format}}</small></span
+          ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg></a
         >
         <div class="download-option-soon" aria-disabled="true">
-          <svg class="icon"><use href="#i-menu" /></svg>
+          <svg aria-hidden="true" class="icon"><use href="#i-menu" /></svg>
           <span><strong>Windows</strong><small>敬请期待</small></span>
         </div>
         <div class="download-option-soon" aria-disabled="true">
-          <svg class="icon"><use href="#i-terminal" /></svg>
+          <svg aria-hidden="true" class="icon"><use href="#i-terminal" /></svg>
           <span><strong>Linux</strong><small>敬请期待</small></span>
         </div>
         <p class="download-options-label">命令行</p>
         <a
           href="{{download.cli.macos.url}}"
-          ><svg class="icon"><use href="#i-terminal" /></svg
+          ><svg aria-hidden="true" class="icon"><use href="#i-terminal" /></svg
           ><span><strong>macOS CLI</strong><small>v{{download.cli.macos.version}} · {{download.cli.macos.format}}</small></span
-          ><svg class="icon"><use href="#i-download" /></svg></a
+          ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg></a
         ><a
           href="{{download.cli.linux.url}}"
-          ><svg class="icon"><use href="#i-terminal" /></svg
+          ><svg aria-hidden="true" class="icon"><use href="#i-terminal" /></svg
           ><span><strong>Linux x86_64</strong><small>v{{download.cli.linux.version}} · {{download.cli.linux.format}}</small></span
-          ><svg class="icon"><use href="#i-download" /></svg></a
+          ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg></a
         ><a
           href="{{download.cli.linux-arm64.url}}"
-          ><svg class="icon"><use href="#i-terminal" /></svg
+          ><svg aria-hidden="true" class="icon"><use href="#i-terminal" /></svg
           ><span><strong>Linux arm64</strong><small>v{{download.cli.linux-arm64.version}} · {{download.cli.linux-arm64.format}}</small></span
-          ><svg class="icon"><use href="#i-download" /></svg></a
+          ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg></a
         ><a
           href="{{download.cli.windows.url}}"
-          ><svg class="icon"><use href="#i-menu" /></svg
+          ><svg aria-hidden="true" class="icon"><use href="#i-menu" /></svg
           ><span><strong>Windows CLI</strong><small>v{{download.cli.windows.version}} · {{download.cli.windows.format}}</small></span
-          ><svg class="icon"><use href="#i-download" /></svg></a
+          ><svg aria-hidden="true" class="icon"><use href="#i-download" /></svg></a
         >
       </div>
       <p class="release-note">
@@ -989,17 +960,17 @@
         href="https://github.com/aster-ai-lab/aster/releases"
         target="_blank"
         rel="noopener noreferrer"
-        >查看全部发行与校验文件<svg class="icon small-icon"><use href="#i-arrow" /></svg
+        >查看全部发行与校验文件<svg aria-hidden="true" class="icon small-icon"><use href="#i-arrow" /></svg
       ></a>
     </dialog>
     <dialog id="screenshot-dialog" aria-labelledby="screenshot-title">
       <div class="screenshot-dialog-heading">
         <h2 id="screenshot-title">Aster 真实界面</h2>
         <button class="icon-button" type="button" data-close-dialog aria-label="关闭界面截图">
-          <svg class="icon"><use href="#i-close" /></svg>
+          <svg aria-hidden="true" class="icon"><use href="#i-close" /></svg>
         </button>
       </div>
-      <img id="screenshot-full" alt="" />
+      <img id="screenshot-full" src="./screenshots/workspace.png" alt="Aster 工作区真实界面" loading="lazy" />
       <div class="screenshot-dialog-footer">
         <p>实际 Aster 界面 · 独立演示数据</p>
         <a

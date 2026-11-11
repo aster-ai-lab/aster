@@ -21,7 +21,8 @@ from check_site import check_site
 from site_contract import BRAND_FILES, DOCS_FILES, DOCS_PAGES, DOWNLOAD_MANIFEST, HOME_FILES, LEGAL_FILES, SHARED_FILES, SITE_FILES, documentation_pages
 from stage_site import stage_site
 
-SCREENSHOTS = tuple(f"download/screenshots/{name}.png" for name in ("workspace", "office", "review", "lineage"))
+SCREENSHOTS = tuple(f"download/screenshots/{name}.png" for name in (
+    "workspace", "office", "review", "lineage", "tui-home", "tui", "tui-model", "tui-context", "tui-resume"))
 FONTS = tuple(f"download/fonts/ubuntu-latin-{weight}-normal.woff2" for weight in (400, 500, 700))
 FONT_LICENSE = "download/fonts/Ubuntu-LICENSE.txt"
 
@@ -82,7 +83,7 @@ class SiteTest(unittest.TestCase):
             f'@font-face {{ font-family: Ubuntu; font-weight: {weight}; src: url("fonts/ubuntu-latin-{weight}-normal.woff2"); }}'
             for weight in (400, 500, 700)), encoding="utf-8")
 
-    def test_four_png_screenshots_and_three_local_fonts_with_license_are_public(self):
+    def test_product_screenshots_and_three_local_fonts_with_license_are_public(self):
         self.assertEqual(check_site(self.public)["files"], len(SITE_FILES + HOME_FILES + DOCS_FILES))
         destination = self.root / 'with-real-ui'
         receipt = stage_site(self.public, destination)
@@ -203,7 +204,7 @@ class SiteTest(unittest.TestCase):
         for replacement in ('', '<a href="screenshots/workspace.png">Screenshot</a>'):
             with self.subTest(replacement=replacement):
                 self.rewrite(original, replacement)
-                with self.assertRaisesRegex(ValueError, 'four PNG'):
+                with self.assertRaisesRegex(ValueError, 'all PNG'):
                     check_site(self.public)
         self.page.write_text(self.html, encoding='utf-8')
         self.css.write_text(self.css.read_text().replace('src: url("fonts/ubuntu-latin-500-normal.woff2");', ''))
@@ -229,6 +230,33 @@ class SiteTest(unittest.TestCase):
         result = check_site(self.public)
         self.assertEqual(result["download_links"], len(DOWNLOAD_MANIFEST))
         self.assertEqual(result["named_buttons"], 1)
+
+    def test_home_links_use_the_published_documentation_routes_without_allowing_doc_assets(self):
+        homepage = self.public / 'index.html'
+        original = homepage.read_text(encoding='utf-8')
+        for href in ('./docs/code/9.2.1/integration/', './docs/use/0.3.3/aix/'):
+            with self.subTest(href=href):
+                homepage.write_text(original.replace('href="./docs/"', f'href="{href}"', 1), encoding='utf-8')
+                self.assertEqual(check_site(self.public)['status'], 'passed')
+        for href in ('./docs/unpublished/', './docs/styles.css', './docs/search-index.json',
+                     './docs/code/9.2.1/integration/?redirect=1', './docs/code/9.2.1/integration/#missing'):
+            with self.subTest(href=href):
+                homepage.write_text(original.replace('href="./docs/"', f'href="{href}"', 1), encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, 'homepage'):
+                    check_site(self.public)
+        homepage.write_text(original.replace('</body>', '<script src="./docs/code/9.2.1/integration/"></script></body>'), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'unapproved homepage asset'):
+            check_site(self.public)
+
+    def test_home_scenario_tabs_require_their_own_product_panels(self):
+        homepage = self.public / 'index.html'
+        original = homepage.read_text(encoding='utf-8')
+        homepage.write_text(original.replace('aria-controls="panel-tui-model"', 'aria-controls="panel-document"'), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'own panel'):
+            check_site(self.public)
+        homepage.write_text(original.replace('id="tui-tabs"', 'id="unknown-tabs"'), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'Studio and TUI'):
+            check_site(self.public)
 
     def test_same_document_svg_symbol_references_resolve_and_unknown_symbols_refuse(self):
         self.rewrite('</body>', '<svg><symbol id="brand-symbol"></symbol><use href="#brand-symbol"/></svg></body>')

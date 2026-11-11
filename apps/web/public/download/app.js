@@ -124,6 +124,11 @@ const screenshotLabels = {
   office: "Aster Office",
   review: "Aster 自动审查",
   lineage: "Aster 产物追溯",
+  tui: "Aster TUI",
+  "tui-home": "Aster TUI 首页",
+  "tui-model": "Aster TUI 推理选项",
+  "tui-context": "Aster TUI 上下文用量",
+  "tui-resume": "Aster TUI 会话恢复",
 };
 document.querySelectorAll("[data-screenshot], [data-enlarge]").forEach((opener) =>
   opener.addEventListener("click", (event) => {
@@ -255,34 +260,6 @@ if (cursorGlow && !reducedMotion.matches) {
     },
     { passive: true },
   );
-}
-
-// The CLI card replays a short session so the terminal flow reads at a glance.
-const demoText = document.querySelector("#cli-demo-text");
-if (demoText && !reducedMotion.matches) {
-  const script = demoText.textContent;
-  const caret = document.createElement("span");
-  caret.className = "cli-caret";
-  let origin = performance.now();
-  function paint() {
-    const elapsed = performance.now() - origin;
-    const position = Math.min(script.length, Math.floor(elapsed / 22));
-    demoText.textContent = script.slice(0, position);
-    demoText.appendChild(caret);
-    if (position >= script.length) {
-      window.setTimeout(() => {
-        origin = performance.now();
-        paint();
-      }, 3400);
-      return;
-    }
-    window.setTimeout(paint, 40);
-  }
-  demoText.textContent = "";
-  window.setTimeout(() => {
-    origin = performance.now();
-    paint();
-  }, 600);
 }
 
 // Cards lean towards the pointer and carry a highlight with them.
