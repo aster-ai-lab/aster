@@ -14,6 +14,7 @@
   `builtAt=2026-11-11T08:06:33.061Z`。
   **先提交子模块再重建 stamp**，保证窗口服务的 renderer 与 `studioCommit` 一致（第一次构建时 stamp 仍指向旧 commit，已作废重跑）。
 - 窗口：`STUDIO_RENDERER_DEV=0 STUDIO_RENDERER_PORT=4320 STUDIO_RENDERER_DIST=.studio/dist/e2e-latest ASTER_TENANT_SLUG=aster just studio aster` → `w-61786` / pid 7549。端口 4318 被旧 dev server 占用、4319 属上一批窗口，故启用独立 4320；**未杀任何现存进程、未复用旧窗口**。
+- **stamp 时效性说明**：E2E 全部场景在 `builtAt=08:06:33Z` 之后、父仓库提交之前跑完，当时 stamp 与窗口一致。提交后 `e2e-fresh-build.mjs --verify` 会报 stale（`rootCommit` 前进到 `286aab73a`、并发会话重编使 `nativeBinarySha256` 改变），这是 stamp 绑定「构建时刻」的预期行为，**不表示本轮 E2E 跑在过期构建上**；若需再次真窗口验收，必须重新 `--build` 并重启窗口。
 
 ## 2. 本批优化（`8c4df145e7`，7 文件 +64/−18）
 
