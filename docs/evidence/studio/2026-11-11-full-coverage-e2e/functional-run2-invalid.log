@@ -1,0 +1,21 @@
+{"id": "F01", "title": "模型选择器展开", "status": "FAIL", "expected": "dialog shows 选择模型/搜索模型/配置自定义模型, >=3 provider groups, tree grows", "actual": "size 232->232, radiobutton=0, has_选择模型=False"}
+{"id": "F02", "title": "切换模型并验证标签", "status": "FAIL", "expected": "K3.1 Pro selectable", "actual": "option not found in picker"}
+{"id": "F03", "title": "授权模式菜单五项", "status": "FAIL", "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式", "actual": "menuitem=0, has_完全访问=False"}
+{"id": "F04", "title": "切换授权模式并验证", "status": "FAIL", "expected": "permission combobox present", "actual": "control not found"}
+{"id": "F05", "title": "更多选项浮层开关", "status": "FAIL", "expected": "上传附件/自动审查/产物追溯 visible, >=2 extra switches", "actual": "switch 0->0, has_自动审查=False"}
+{"id": "F06", "title": "关闭更多选项浮层", "status": "FAIL", "expected": "自动审查 present when open, gone after 关闭", "actual": "opened=False, after_has_自动审查=False"}
+{"id": "F07", "title": "任务搜索打开模态", "status": "FAIL", "expected": "dialog role present, 关闭 button, tree replaced by modal", "actual": "size 0->0, dialog=False, has_关闭=False"}
+{"id": "F08", "title": "搜索输入过滤", "status": "FAIL", "expected": "query text committed; clear control or result rows appear", "actual": "set_value_ok=False, size 0->0, has_清除=False"}
+{"id": "F09", "title": "关闭搜索回到工作台", "status": "FAIL", "expected": "关闭 hides the modal controls and the composer is usable again", "actual": "opened=False, has_关闭_after=False, has_描述任务=False, a11y_observation_dialog_role_still_present=False"}
+{"id": "F10", "title": "侧栏折叠与还原", "status": "FAIL", "expected": "collapse hides sidebar and shows 展开侧边栏; expand restores", "actual": "size 0->0->0, cond1=False, cond2=False"}
+{"id": "F11", "title": "连接器目录加载", "status": "FAIL", "expected": "connector catalog with 全部/精选 filters and installable cards", "actual": "size=0, has_全部=False, has_安装=False"}
+{"id": "F12", "title": "连接器搜索过滤", "status": "FAIL", "expected": "connector catalog loaded before searching", "actual": "size=0, has_全部=False"}
+{"id": "F13", "title": "自动化页筛选与空态", "status": "FAIL", "expected": "status filters 全部状态/已暂停/已错过 and empty/new state", "actual": "has_全部状态=False, has_暂无定时任务=False"}
+{"id": "F14", "title": "自动化状态筛选", "status": "FAIL", "expected": "selecting 活跃 changes the task list / shows an empty state", "actual": "size 0->0, has_暂无=False"}
+{"id": "F15", "title": "设置通用项渲染", "status": "FAIL", "expected": "General settings with 开机自动启动/语言/启用上下文管理 and >=5 switches", "actual": "switch=0, has_开机自动启动=False"}
+{"id": "F16", "title": "设置开关切换与还原", "status": "FAIL", "expected": "开机自动启动 switch present", "actual": "control not found"}
+{"id": "F17", "title": "用量页统计渲染", "status": "FAIL", "expected": "usage table with 时间/模型/Token/费用/耗时/状态 and 管理模型与价格", "actual": "size=0, has_管理模型与价格=False, has_Token=False"}
+{"id": "F18", "title": "设置子页导航与返回", "status": "FAIL", "expected": "关于 subpage rendered; 返回应用 restores workbench composer", "actual": "sub_size=0, back_has_描述任务=False, back_has_开机自动启动=False"}
+{"id": "F19", "title": "新建任务与返回", "status": "FAIL", "expected": "new-task view changes editor state; home restores composer", "actual": "textfield 0->0, restored=False"}
+{"id": "F20", "title": "任务范围选择器", "status": "FAIL", "expected": "task-scope combobox present", "actual": "control not found"}
+{"window": "w-66806", "cases": 20, "passed": 0, "failed": 20, "pass_rate": 0.0}

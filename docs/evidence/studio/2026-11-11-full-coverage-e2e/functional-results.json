@@ -1,0 +1,169 @@
+{
+  "window": "w-62659",
+  "cases": 20,
+  "passed": 13,
+  "failed": 7,
+  "pass_rate": 0.65,
+  "results": [
+    {
+      "id": "F01",
+      "title": "模型选择器展开",
+      "status": "PASS",
+      "expected": "dialog shows 选择模型/搜索模型/配置自定义模型, >=3 provider groups, tree grows",
+      "actual": "size 58->91, radiobutton=5, has_选择模型=True",
+      "screenshot": "ft-F01-模型选择器展开.png"
+    },
+    {
+      "id": "F02",
+      "title": "切换模型并验证标签",
+      "status": "FAIL",
+      "expected": "K3.1 Pro selectable",
+      "actual": "option not found in picker",
+      "screenshot": "ft-F02-切换模型并验证标签.png"
+    },
+    {
+      "id": "F03",
+      "title": "授权模式菜单五项",
+      "status": "PASS",
+      "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式",
+      "actual": "menuitem=5, has_完全访问=True",
+      "screenshot": "ft-F03-授权模式菜单五项.png"
+    },
+    {
+      "id": "F04",
+      "title": "切换授权模式并验证",
+      "status": "FAIL",
+      "expected": "permission combobox label switches to 规划模式",
+      "actual": "matching labels: ['授权模式: 请求批准 · 先规划']",
+      "screenshot": "ft-F04-切换授权模式并验证.png"
+    },
+    {
+      "id": "F05",
+      "title": "更多选项浮层开关",
+      "status": "PASS",
+      "expected": "上传附件/自动审查/产物追溯 visible, >=2 extra switches",
+      "actual": "switch 1->3, has_自动审查=True",
+      "screenshot": "ft-F05-更多选项浮层开关.png"
+    },
+    {
+      "id": "F06",
+      "title": "关闭更多选项浮层",
+      "status": "PASS",
+      "expected": "自动审查 present when open, gone after 关闭",
+      "actual": "opened=True, after_has_自动审查=False",
+      "screenshot": "ft-F06-关闭更多选项浮层.png"
+    },
+    {
+      "id": "F07",
+      "title": "任务搜索打开模态",
+      "status": "PASS",
+      "expected": "dialog role present, 关闭 button, tree replaced by modal",
+      "actual": "size 58->14, dialog=True, has_关闭=True",
+      "screenshot": "ft-F07-任务搜索打开模态.png"
+    },
+    {
+      "id": "F08",
+      "title": "搜索输入过滤",
+      "status": "PASS",
+      "expected": "query text committed; clear control or result rows appear",
+      "actual": "set_value_ok=True, size 14->17, has_清除=True",
+      "screenshot": "ft-F08-搜索输入过滤.png"
+    },
+    {
+      "id": "F09",
+      "title": "关闭搜索回到工作台",
+      "status": "FAIL",
+      "expected": "dialog closed and composer restored",
+      "actual": "opened=True, dialog_after=True, has_描述任务=True",
+      "screenshot": "ft-F09-关闭搜索回到工作台.png"
+    },
+    {
+      "id": "F10",
+      "title": "侧栏折叠与还原",
+      "status": "PASS",
+      "expected": "collapse hides sidebar and shows 展开侧边栏; expand restores",
+      "actual": "size 58->30->58, cond1=True, cond2=True",
+      "screenshot": "ft-F10-侧栏折叠与还原.png"
+    },
+    {
+      "id": "F11",
+      "title": "连接器目录加载",
+      "status": "PASS",
+      "expected": "connector catalog with 全部/精选 filters and installable cards",
+      "actual": "size=103, has_全部=True, has_安装=True",
+      "screenshot": "ft-F11-连接器目录加载.png"
+    },
+    {
+      "id": "F12",
+      "title": "连接器搜索过滤",
+      "status": "FAIL",
+      "expected": "typing an unmatched query shrinks results or shows an empty state",
+      "actual": "set_value_ok=False, size 103->103, empty_state=False",
+      "screenshot": "ft-F12-连接器搜索过滤.png"
+    },
+    {
+      "id": "F13",
+      "title": "自动化页筛选与空态",
+      "status": "PASS",
+      "expected": "status filters 全部状态/已暂停/已错过 and empty/new state",
+      "actual": "has_全部状态=True, has_暂无定时任务=False",
+      "screenshot": "ft-F13-自动化页筛选与空态.png"
+    },
+    {
+      "id": "F14",
+      "title": "自动化状态筛选",
+      "status": "PASS",
+      "expected": "selecting 活跃 changes the task list / shows an empty state",
+      "actual": "size 58->59, has_暂无=False",
+      "screenshot": "ft-F14-自动化状态筛选.png"
+    },
+    {
+      "id": "F15",
+      "title": "设置通用项渲染",
+      "status": "PASS",
+      "expected": "General settings with 开机自动启动/语言/启用上下文管理 and >=5 switches",
+      "actual": "switch=8, has_开机自动启动=True",
+      "screenshot": "ft-F15-设置通用项渲染.png"
+    },
+    {
+      "id": "F16",
+      "title": "设置开关切换与还原",
+      "status": "FAIL",
+      "expected": "no exception",
+      "actual": "TypeError: string indices must be integers, not 'str'\nTraceback (most recent call last):\n  File \"/Users/roylin/code/aster/docs/evidence/studio/2026-11-11-full-coverage-e2e/functional-tests.py\", line 152, in check\n    ok, expected, actual = fn()\n                           ~~^^\n  File \"/Users/roylin/code/aster/docs/evidence/studio/2026-11-11-full-coverage-e2e/functional-tests.py\", line 403, in f16\n    click_ref(r[\"ref_id\"])\n              ~^^^^^^^^^^\nTypeError: string indices must be integers, not 'str'\n",
+      "screenshot": "ft-F16-设置开关切换与还原.png"
+    },
+    {
+      "id": "F17",
+      "title": "用量页统计渲染",
+      "status": "PASS",
+      "expected": "usage table with 时间/模型/Token/费用/耗时/状态 and 管理模型与价格",
+      "actual": "size=1166, has_管理模型与价格=True, has_Token=True",
+      "screenshot": "ft-F17-用量页统计渲染.png"
+    },
+    {
+      "id": "F18",
+      "title": "设置子页导航与返回",
+      "status": "FAIL",
+      "expected": "关于 subpage rendered; 返回应用 restores workbench composer",
+      "actual": "sub_size=80, back_has_描述任务=False, back_has_开机自动启动=False",
+      "screenshot": "ft-F18-设置子页导航与返回.png"
+    },
+    {
+      "id": "F19",
+      "title": "新建任务与返回",
+      "status": "PASS",
+      "expected": "new-task view changes editor state; home restores composer",
+      "actual": "textfield 2->2, restored=True",
+      "screenshot": "ft-F19-新建任务与返回.png"
+    },
+    {
+      "id": "F20",
+      "title": "任务范围选择器",
+      "status": "FAIL",
+      "expected": "no exception",
+      "actual": "TypeError: string indices must be integers, not 'str'\nTraceback (most recent call last):\n  File \"/Users/roylin/code/aster/docs/evidence/studio/2026-11-11-full-coverage-e2e/functional-tests.py\", line 152, in check\n    ok, expected, actual = fn()\n                           ~~^^\n  File \"/Users/roylin/code/aster/docs/evidence/studio/2026-11-11-full-coverage-e2e/functional-tests.py\", line 463, in f20\n    click_ref(r[\"ref_id\"])\n              ~^^^^^^^^^^\nTypeError: string indices must be integers, not 'str'\n",
+      "screenshot": "ft-F20-任务范围选择器.png"
+    }
+  ]
+}
