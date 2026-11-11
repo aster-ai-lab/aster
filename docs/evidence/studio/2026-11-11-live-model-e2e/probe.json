@@ -1,0 +1,30 @@
+{
+  "windowId": "w-57385",
+  "prompt": "E2E 探针：只回复 OK 两个字母，不要调用任何工具，不要修改或读取任何文件。",
+  "delivery": "headless-semantic",
+  "steps": [
+    {
+      "method": "set-value",
+      "ok": false,
+      "error": "ACTION_FAILED",
+      "value_after": null,
+      "next_ref": "@s31cq2kgfhh0qa:e39"
+    },
+    {
+      "method": "type",
+      "ok": false,
+      "error": "ACTION_FAILED",
+      "value_after": null,
+      "next_ref": "@sh6qq3cc3uca3:e39"
+    }
+  ],
+  "initial": {
+    "ok": true,
+    "ref_count": 76,
+    "composer": {
+      "ref": "@s3789rz8xw85x0:e39",
+      "value": null
+    }
+  },
+  "result": "BLOCKED: headless semantic input cannot set the composer value"
+}

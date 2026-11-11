@@ -1,0 +1,4 @@
+# 2026-11-10 agent-desktop visual E2E: no Playwright renderer suite was executed in this run.
+# This empty list log is passed to e2e-coverage-gate.mjs so Gate A reports 0 passed / 483 unexecuted
+# instead of reusing a stale result. The 7 passing scenarios in scenarios.json are native AX scenarios,
+# not Playwright cases, and are deliberately not counted in Gate A.

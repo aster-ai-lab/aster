@@ -1,0 +1,52 @@
+{
+  "logs": [
+    "docs/evidence/studio/2026-11-10-agent-desktop-visual-e2e/playwright-not-run.log"
+  ],
+  "declaredTests": 483,
+  "declaredSource": "default full matrix (483)",
+  "perLog": [
+    {
+      "log": "docs/evidence/studio/2026-11-10-agent-desktop-visual-e2e/playwright-not-run.log",
+      "linesParsed": 0
+    }
+  ],
+  "linesParsed": 0,
+  "uniqueTests": 0,
+  "dedupedCount": 0,
+  "pass": 0,
+  "fail": 0,
+  "skip": 0,
+  "executed": 0,
+  "unexecuted": 483,
+  "passRateOfDeclared": 0,
+  "passRateOfExecuted": 0,
+  "gateA_target": 0.7,
+  "gateA_pass": false,
+  "gateA_planTarget": 0.95,
+  "gateA_planPass": false,
+  "gateA_executed": {
+    "rate": 0,
+    "target": 0.7,
+    "pass": false
+  },
+  "structuralCeilingOfDeclared": 0,
+  "requiredPassesForTarget": 339,
+  "gateB": {
+    "measurable": true,
+    "covered": 0,
+    "total": 1299,
+    "target": 0.7,
+    "coverage": 0,
+    "pass": false,
+    "zeroCoverage": 1299
+  },
+  "failures": [],
+  "skips": []
+}
+
+Gate A (E2E pass rate of 483 declared): 0.0% — FAIL (need 70.0% = 339 passes)
+  declared source: default full matrix (483); logs merged: 1
+  pass=0 fail=0 skip=0 executed=0; unexecuted=483; pass rate among executed=0.0% — FAIL at 70.0%
+  structural ceiling = 0.0% (0/483); deduped=0
+  original plan target 95.0%: FAIL
+Gate B (page x component): 0.0% — FAIL

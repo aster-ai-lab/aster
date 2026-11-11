@@ -1,0 +1,374 @@
+{
+  "windowId": "w-57385",
+  "authorised": "--headed physical input",
+  "model_switch": {
+    "ok": true,
+    "option": "K3.1 Pro",
+    "model_combobox": [
+      "k3.1-pro"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "T1-basic-reply",
+      "prompt": "只回复 OK 两个字母，不要调用任何工具，不要修改或读取任何文件。",
+      "covers": [
+        "R06",
+        "B02",
+        "S1",
+        "S5",
+        "R13",
+        "R26"
+      ],
+      "phases": [
+        {
+          "t": 5,
+          "refs": 104,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 10,
+          "refs": 104,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 15,
+          "refs": 104,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 20,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 25,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 30,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 35,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 40,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 45,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 50,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 55,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        },
+        {
+          "t": 60,
+          "refs": 112,
+          "markers": [
+            "17 次工具调用 1 失败 · bash 1.0s",
+            "14 次工具调用 3 失败 · read、read、bash 2.2s",
+            "12 次工具调用 3 失败 · bash、read、read 27.5s",
+            "12 次工具调用 1.9s",
+            "8 次工具调用 0.7s",
+            "连接器"
+          ],
+          "tail": [
+            "➜ aster git:(main) ✗ aster",
+            "更多：➜ aster git:(main) ✗ aster",
+            "你有什么技能？",
+            "更多：你有什么技能？",
+            "你好",
+            "更多：你好",
+            "hi",
+            "更多：hi",
+            "hi",
+            "更多：hi",
+            "收起侧边栏",
+            "Close",
+            "Full Screen",
+            "Minimize"
+          ]
+        }
+      ],
+      "before_refs": 101,
+      "type": {
+        "reported_ok": true,
+        "error": null,
+        "value_set": true
+      },
+      "send": {
+        "ok": true,
+        "error": null
+      },
+      "result": "OBSERVED"
+    }
+  ]
+}

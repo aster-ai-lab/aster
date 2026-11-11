@@ -1,0 +1,222 @@
+{
+  "windowId": "w-57751",
+  "prompt": "只回复 OK 两个字母，不要调用任何工具，不要修改或读取任何文件。",
+  "observations": [
+    {
+      "t": 5,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 10,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 15,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 20,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 25,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 30,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 35,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 40,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 45,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 50,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 55,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 60,
+      "refs": 112,
+      "ok": false,
+      "errors": [],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    }
+  ]
+}

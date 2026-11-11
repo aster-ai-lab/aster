@@ -1,0 +1,383 @@
+{
+  "windowId": "w-57385",
+  "prompt": "E2E 探针：只回复 OK 两个字母，不要调用任何工具，不要修改或读取任何文件。",
+  "authorised": "--headed physical input",
+  "steps": [
+    {
+      "action": "type --headed",
+      "ok": false,
+      "error": "ACTION_FAILED"
+    },
+    {
+      "action": "click 发送 --headed",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "foreground_before": "iTerm",
+  "composer_value_after_type": "E2E 探针：只回复 OK 两个字母，不要调用任何工具，不要修改\n",
+  "observations": [
+    {
+      "t": 5,
+      "ref_count": 82,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 10,
+      "ref_count": 82,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 15,
+      "ref_count": 82,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 20,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 25,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 30,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 35,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 40,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 45,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 50,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 55,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 60,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 65,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 70,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 75,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 80,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 85,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "t": 90,
+      "ref_count": 88,
+      "ok_text": false,
+      "live_markers": [
+        "连接器"
+      ],
+      "tail": [
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    }
+  ],
+  "result": "NO_CONFIRMED_RESPONSE",
+  "foreground_after": "iTerm"
+}

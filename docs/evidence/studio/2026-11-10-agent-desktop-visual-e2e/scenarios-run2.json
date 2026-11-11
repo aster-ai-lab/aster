@@ -1,0 +1,204 @@
+{
+  "app": "Aster",
+  "windowId": "w-52438",
+  "delivery": "agent-desktop-headless-semantic",
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "s01",
+      "steps": [
+        {
+          "check": "AX 树完整",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "工作页主界面",
+          "ok": true,
+          "detail": "ref_count=36"
+        },
+        {
+          "check": "composer 可访问",
+          "ok": true,
+          "detail": "ref_count=36"
+        },
+        {
+          "check": "无首启运行时模态",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "observation": "ref_count",
+          "value": 36
+        },
+        {
+          "screenshot": true
+        }
+      ],
+      "status": "pass",
+      "restored": true
+    },
+    {
+      "id": "S02",
+      "title": "s02",
+      "steps": [
+        {
+          "check": "语义点击设置",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "设置侧栏出现",
+          "ok": true,
+          "detail": "ref_count=67"
+        },
+        {
+          "check": "无 API 网关残留页",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "screenshot": true
+        },
+        {
+          "check": "返回应用",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "回到工作页",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "status": "pass",
+      "restored": true
+    },
+    {
+      "id": "S03",
+      "title": "s03",
+      "steps": [
+        {
+          "check": "打开搜索对话框",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "对话框可关闭且隔离主界面",
+          "ok": true,
+          "detail": "refs=7"
+        },
+        {
+          "screenshot": true
+        },
+        {
+          "check": "关闭对话框",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "工作页恢复",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "status": "pass",
+      "restored": true
+    },
+    {
+      "id": "S04",
+      "title": "s04",
+      "steps": [
+        {
+          "check": "打开任务会话",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "会话页有消息流控件",
+          "ok": false,
+          "detail": "distinct names=0"
+        },
+        {
+          "error": "AssertionError: 会话页有消息流控件: distinct names=0"
+        }
+      ],
+      "status": "fail",
+      "restored": false
+    },
+    {
+      "id": "S05",
+      "title": "s05",
+      "steps": [
+        {
+          "check": "模型选择器触发存在",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "error": "AssertionError: 模型选择器触发存在: "
+        }
+      ],
+      "status": "fail",
+      "restored": false
+    },
+    {
+      "id": "S06",
+      "title": "s06",
+      "steps": [
+        {
+          "check": "侧栏开关存在",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "切换侧栏",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "收起后导航控件消失",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "screenshot": true
+        },
+        {
+          "check": "恢复后导航控件回来",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "error": "AssertionError: 恢复后导航控件回来: "
+        }
+      ],
+      "status": "fail",
+      "restored": false
+    },
+    {
+      "id": "S07",
+      "title": "s07",
+      "steps": [
+        {
+          "check": "无运行时组件错误态",
+          "ok": true,
+          "detail": "matched=[]"
+        },
+        {
+          "check": "窗口仍可访问",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "status": "pass",
+      "restored": false
+    }
+  ],
+  "counts": {
+    "pass": 4,
+    "fail": 3,
+    "skipped": 0,
+    "notExecuted": 0
+  }
+}
