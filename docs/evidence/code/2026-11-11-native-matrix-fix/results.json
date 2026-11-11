@@ -1,0 +1,82 @@
+{
+  "schema": "aster.native.matrix.fix.evidence.v1",
+  "repository": "/Users/roylin/code/aster",
+  "head_at_verification": "3ebe8a65f65753b63bc17de4d23e297b9dedad2f",
+  "fix_commit": "3ebe8a65f",
+  "rust_toolchain": "1.97.1",
+  "platform": "macOS aarch64 / Terminal / fullscreen 176x53",
+  "model": "deepseek/deepseek-flash",
+  "paired_build_id": "aster-cli-pair-v1:61a5b499b92fc6a9c43a4c060228050401d861f6:aarch64-apple-darwin",
+  "source_hash": "61a5b499b92fc6a9c43a4c060228050401d861f6",
+  "source_files_hashed": 13465,
+  "source_matches_pair": true,
+  "fix": {
+    "file": "crates/terminal/crates/codegen/aster-pager/src/app/agent_view/session.rs",
+    "root_cause": "resolve_turn_activity_unenriched() injected a display-only synthetic WaitingReason::PromptAck for an armed send-now, overwriting the tracker's real TaskOutput wait. Predicates (is_parked_on_sendable_wait, held_queue_count, renders_parked) therefore lost the sendable wait while the queue pane still held real rows.",
+    "change": "Moved the synthetic PromptAck into resolve_turn_activity() (display layer); unenriched now returns the tracker's real wait. enrich_waiting_activity is still applied to both branches; PromptAck is an identity case there.",
+    "assertions_weakened": false,
+    "new_tests_added": 0,
+    "regression_test": "app::dispatch::queue::tests::held_queue_count_matches_pane_with_send_now_echo"
+  },
+  "verification": {
+    "focused_test": "1 passed; 0 failed",
+    "focused_suites": {
+      "app::dispatch::queue": "77 passed",
+      "app::agent_view::session": "40 passed",
+      "app::agent_view::queue": "47 passed",
+      "views::turn_status": "45 passed"
+    },
+    "full_lib_before": "10346 passed; 26 failed; 4 ignored",
+    "full_lib_after": "10347 passed; 25 failed; 4 ignored",
+    "new_failures": [],
+    "fixed": ["app::dispatch::queue::tests::held_queue_count_matches_pane_with_send_now_echo"],
+    "preexisting_failures_unchanged": 25,
+    "input_recovery_unit_tests": "16 passed",
+    "clippy": "cargo clippy --locked -p aster-pager --all-targets --no-deps: exit 0 (51 existing warnings)",
+    "fmt": "cargo fmt --all -- --check: 33 hunks in 18 pre-existing files; changed file not in the diff",
+    "paired_build": "cargo build --locked -p aster -p aster-acp --bin aster --bin aster-acp: exit 0"
+  },
+  "native_matrix": {
+    "isolation": "private ACL with only the deepseek provider, import_accounts=[], ASTER_DISABLE_*_ACCOUNT=1, private state/workspace/logs",
+    "credentials_in_evidence": false,
+    "window": "w-60932 (main), w-61039 (resume)",
+    "sessions": {
+      "main": "942faf58-22e9-492a-bd40-34c31db10706",
+      "orderly_quit": "73dafcd1-f1e9-44b1-9e33-e72d4dec66ce"
+    },
+    "phases": {
+      "queue-edits": "PASS: exact edit saved to #1, #2 deleted through its visible [cancel] row action, foreground fixture stayed alive, no extra prompt",
+      "forced-insertion": "PASS: Ctrl+O produced exactly one send_now prompt, original task cancelled, edited row completed once, original tool receipts identity-matched",
+      "mouse-stop": "PASS: click on [stop] cancelled its own run, retired the fixture, no extra prompt",
+      "ctrl-c": "PASS: Ctrl+C cancelled its own run, retired the fixture, text typed during cancellation stayed local",
+      "orderly-quit": "PASS: graceful quit saved the unsent draft to unsent-input.json, owners retired, no model prompt",
+      "resume-no-replay": "PASS: explicit --resume restored the draft with a 'Draft restored' cue and 0 prompt requests"
+    },
+    "audit": {
+      "main_runs": 4,
+      "cancelled_runs_with_matched_receipts": 3,
+      "completed_pure_text_run_without_tool_receipts": 1,
+      "main_prompt_requests": 4,
+      "unique_prompt_ids": 4,
+      "unique_rpc_ids": 4,
+      "send_now_flags": [false, true, false, false],
+      "resume_prompt_requests": 0,
+      "quit_session_prompt_requests": 0,
+      "late_markers": 0,
+      "surviving_fixtures": 0,
+      "resume_cli_retired": true
+    },
+    "input_source_restored": "com.apple.inputmethod.SCIM.ITABC"
+  },
+  "classified_limitations": {
+    "ctrl_q_gesture": "Ctrl+Q was swallowed by the terminal layer and did not reach the TUI. The graceful-quit funnel was verified with SIGTERM, which dispatches the same Action::Quit and Snapshot::take. The UI Ctrl+Q gesture itself is NOT claimed as verified.",
+    "slash_quit": "/quit consumes the composer as a slash command, so it is not a valid path for testing draft persistence; this was a harness mistake, not a product failure.",
+    "run_record_race": "run_records land asynchronously; an early records[-2] index aborted one phase after Ctrl+O was delivered. The already-delivered insertion was verified from the relay trace and session store without replaying a model request.",
+    "session_sandbox": "The agent shell denies /bin/ps and AppleEvents to Terminal, so agent-desktop press --app / screenshot / list-apps time out. Observation used AX snapshots, input used a private CGEvent helper, captures used screencapture -l <window id>, process identity used pgrep/lsof."
+  },
+  "release_gate": {
+    "status": "BLOCKED",
+    "reason": "mixed dirty worktree (uncommitted ACP cancellation patch, untracked evidence directory, dirty apps/studio submodule) and local-only commits; publish-aster-cli.sh refuses a non-empty git status --porcelain",
+    "published": false
+  }
+}
