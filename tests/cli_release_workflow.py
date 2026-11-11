@@ -41,7 +41,7 @@ class ReleaseAssembly(unittest.TestCase):
                  artifact_run_id="123", branch_qualification=1,
                  version="0.1.6", source_clean=True,
                  checkout_sha=None, source_status_exit=0, core_version="9.2.3",
-                 macos_members=None):
+                 macos_members=None, kylin=False, kylin_mismatch=False):
         lines = (ROOT / ".github/workflows/release-aster-cli.yml").read_text().splitlines()
         start = lines.index("      - name: Assemble draft aster-cli")
         start = lines.index("        run: |", start) + 1
@@ -81,6 +81,10 @@ class ReleaseAssembly(unittest.TestCase):
                                 package.addfile(entry, io.BytesIO(body))
                 else:
                     path.write_bytes(("opaque fixture " + name).encode())
+            if kylin or kylin_mismatch:
+                alias = dist / f"aster-cli-v{version}-kylin-x86_64.tar.gz"
+                linux = dist / f"aster-cli-v{version}-linux.tar.gz"
+                alias.write_bytes(linux.read_bytes() if kylin else b"a forked x86_64 build")
             if missing:
                 (dist / names[-1]).unlink()
             if extra:
@@ -200,13 +204,42 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                 )
 
     def test_missing_or_retired_archives_refuse_before_release_creation(self):
-        for missing, extra in [(True, False), (False, True)]:
+        for missing, extra, message in (
+            (True, False, "expected 4 or 5 release archives"),
+            (False, True, "unexpected release archive"),
+        ):
             with self.subTest(missing=missing, extra=extra):
                 result, manifest, args = self.assemble(missing=missing, extra=extra)
                 self.assertNotEqual(result.returncode, 0)
-                self.assertIn("expected 4 release archives", result.stderr)
+                self.assertIn(message, result.stderr)
                 self.assertIsNone(manifest)
                 self.assertIsNone(args)
+
+    def test_optional_kylin_alias_publishes_the_same_digest_as_linux(self):
+        result, manifest, args = self.assemble(kylin=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            set(manifest["assets"]),
+            {"macos", "linux", "linux-arm64", "windows", "kylin-x86_64"},
+        )
+        alias = manifest["assets"]["kylin-x86_64"]
+        self.assertEqual(alias["name"], "aster-cli-v0.1.6-kylin-x86_64.tar.gz")
+        self.assertEqual(alias["sha256"], manifest["assets"]["linux"]["sha256"])
+        self.assertIn("dist/aster-cli-v0.1.6-kylin-x86_64.tar.gz", args)
+
+    def test_kylin_alias_must_be_byte_identical_to_linux(self):
+        result, manifest, args = self.assemble(kylin_mismatch=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("byte-identical", result.stderr)
+        self.assertIsNone(manifest)
+        self.assertIsNone(args)
+
+    def test_kylin_alias_is_derived_not_rebuilt_in_the_release_workflow(self):
+        text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
+        self.assertIn("Derive the Kylin x86_64 named archive", text)
+        self.assertIn('cp -f "$CLI_ASSET_NAME" "${GITHUB_REF_NAME}-kylin-x86_64.tar.gz"', text)
+        self.assertIn("name: aster-cli-kylin-x86_64", text)
+        self.assertIn("! -name 'aster-cli-v*-kylin-x86_64.tar.gz'", text)
 
     def test_normal_build_qualifies_and_binds_the_draft_to_its_own_source(self):
         result, manifest, args = self.assemble(artifact_run_id="")

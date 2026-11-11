@@ -23,7 +23,7 @@ def workflow_script(name, step):
     return textwrap.dedent("\n".join(lines[start:end]))
 
 
-def manifest(version=VERSION):
+def manifest(version=VERSION, kylin=None, extra=None):
     assets = {}
     for platform, extension in (
         ("macos", "tar.gz"),
@@ -36,6 +36,11 @@ def manifest(version=VERSION):
             "name": name,
             "sha256": hashlib.sha256(name.encode()).hexdigest(),
         }
+    if kylin is not None:
+        name = f"aster-cli-v{version}-kylin-x86_64.tar.gz"
+        assets["kylin-x86_64"] = {"name": name, "sha256": kylin}
+    if extra:
+        assets.update(extra)
     return {"version": version, "tag": f"aster-cli-v{version}", "assets": assets}
 
 
@@ -132,6 +137,34 @@ esac
         self.assertIn("identity mismatch", result.stderr)
         self.assertEqual(mutations, [])
 
+    def test_optional_kylin_channel_key_is_accepted_when_byte_identical(self):
+        linux_sha = hashlib.sha256(f"aster-cli-v{VERSION}-linux.tar.gz".encode()).hexdigest()
+        result, mutations = self.publish(manifest_body=manifest(kylin=linux_sha))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(mutations), 2)
+
+    def test_kylin_channel_key_must_match_the_linux_digest(self):
+        result, mutations = self.publish(manifest_body=manifest(kylin="f" * 64))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("byte-identical", result.stderr)
+        self.assertEqual(mutations, [])
+
+    def test_unknown_channel_key_is_refused(self):
+        body = manifest(extra={"plan9": {"name": "aster-cli-v0.1.4-plan9.tar.gz", "sha256": "a" * 64}})
+        result, mutations = self.publish(manifest_body=body)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("platform set mismatch", result.stderr)
+        self.assertEqual(mutations, [])
+
+    def test_malformed_kylin_channel_name_is_refused(self):
+        linux_sha = hashlib.sha256(f"aster-cli-v{VERSION}-linux.tar.gz".encode()).hexdigest()
+        body = manifest(kylin=linux_sha)
+        body["assets"]["kylin-x86_64"]["name"] = f"aster-cli-v{VERSION}-linux.tar.gz"
+        result, mutations = self.publish(manifest_body=body)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("channel manifest asset mismatch: kylin-x86_64", result.stderr)
+        self.assertEqual(mutations, [])
+
     def test_non_desktop_latest_is_refused_before_channel_mutation(self):
         for tag in ("aster-acp-v9.1.7", "aster-cli-v0.1.4", "aster-cli-stable"):
             with self.subTest(tag=tag):
@@ -186,6 +219,13 @@ class ReleaseContracts(unittest.TestCase):
         self.assertIn("默认分支只有 `main`", text)
         self.assertIn("已完成发布的 `release/*` 分支", text)
         self.assertIn("PR 合并后自动删除头部分支", text)
+
+    def test_governance_documents_the_named_kylin_channel(self):
+        text = (ROOT / "docs/release-governance.md").read_text()
+        self.assertIn("`kylin-x86_64`", text)
+        self.assertIn("字节级复制", text)
+        self.assertIn("回退 `linux`", text)
+        self.assertIn("不要为具名通道改动更新器的平台映射", text)
 
     def test_ci_and_cli_preflight_run_release_governance(self):
         for name in (".github/workflows/ci.yml", ".github/workflows/release-aster-cli.yml"):

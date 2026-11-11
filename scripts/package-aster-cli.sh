@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 # Pack the aster-cli release binaries and embedding assets into one archive.
-# Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|windows> <bin-dir> <out-file>
+# Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|kylin-x86_64|windows> <bin-dir> <out-file>
 #
-# `linux` is x86_64 and `linux-arm64` is aarch64. Both target glibc 2.31. The
-# script refuses binaries that need a newer glibc, because the archive would
-# fail on the target machine with a missing GLIBC_2.3x symbol rather than at
-# packaging time.
+# `linux` and `kylin-x86_64` are both x86_64; `linux-arm64` is aarch64. All
+# three target glibc 2.31. `kylin-x86_64` is only a named distribution channel
+# for Kylin V10 SP1 x86_64, not a different ABI: the release workflow derives
+# it as a byte-identical copy of the `linux` archive. The script refuses
+# binaries that need a newer glibc, because the archive would fail on the
+# target machine with a missing GLIBC_2.3x symbol rather than at packaging
+# time.
 #
 # Embedding weights ship as `embedding/*` next to the binaries so `aster-acp`
 # release builds can omit `bundled-assets` without a network fetch.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
-  echo "Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|windows> <bin-dir> <out-file>" >&2
+  echo "Usage: scripts/package-aster-cli.sh <macos|linux|linux-arm64|kylin-x86_64|windows> <bin-dir> <out-file>" >&2
   exit 2
 fi
 
@@ -39,7 +42,7 @@ copy_file() {
 max_glibc=""
 case "$platform" in
   macos) suffix="" ;;
-  linux|linux-arm64)
+  linux|linux-arm64|kylin-x86_64)
     suffix=""
     max_glibc="2.31"
     ;;
@@ -92,7 +95,7 @@ sha256_file() {
   for name in "${release_files[@]}"; do sha256_file "$name"; done
 ) > "${stage}/SHA256SUMS"
 case "$platform" in
-  macos|linux|linux-arm64)
+  macos|linux|linux-arm64|kylin-x86_64)
     # File members only (no directory entries) so installers that refuse
     # non-regular members stay compatible.
     COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" \
