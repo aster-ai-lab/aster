@@ -1,0 +1,37 @@
+{
+  "source_hash": "231f8384a785711f87cd25f0b7f172db278676d2",
+  "platform": "macOS arm64 Terminal",
+  "screen": "fullscreen",
+  "model": "deepseek/deepseek-flash",
+  "saved_session_identity_confirmed": true,
+  "original_run_ids_retained": true,
+  "new_run_admissions": 1,
+  "prepared_read_calls": 1,
+  "matching_read_receipts": 1,
+  "exact_value_in_receipt_and_reply": true,
+  "fixture_sha256": "f0b7c9dcf9b00817d35c369c441689213cee2f6273cfc1ba42b56a56338ab23c",
+  "source_acl_unchanged": true,
+  "input_source_restored": true,
+  "before": {
+    "model_inputs": 6,
+    "model_reports": 6,
+    "reported_input": 18515,
+    "window": 1048576,
+    "display_input": "18.5k",
+    "display_window": "1.0m",
+    "modal_capture_sha256": "bcf968aa853c41e1324c52f5c1ef378c106f657b875902105077d776f8c69217",
+    "runs_and_reports_unchanged": true,
+    "runs": 3
+  },
+  "after": {
+    "model_inputs": 8,
+    "model_reports": 8,
+    "reported_input": 18886,
+    "window": 1048576,
+    "display_input": "18.9k",
+    "display_window": "1.0m",
+    "modal_capture_sha256": "d2062f9bf3103e08f40d1ed78295acadef4278b047344adbd15b1223d72e223c",
+    "runs_and_reports_unchanged": true,
+    "runs": 4
+  }
+}
