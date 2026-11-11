@@ -1,0 +1,31 @@
+{
+  "source_hash": "ca84b308b9b3eb590dddf0dae8ee963da60764a7",
+  "case_order": [
+    "QUEUE-HOLD",
+    "QUEUE-FIRST",
+    "QUEUE-SECOND",
+    "QUEUE-THIRD"
+  ],
+  "prompt_digests": [
+    "sha256:08b3f52093b987a8b0dd76daa9c98a8254101e8dcbd171aaaa737b20f1c54b67",
+    "sha256:9b86c4838ae2706976af3058d37543fd7450ef872b74d98195c46bccabbbbd28",
+    "sha256:eacae83a275a94fbafa5768333a1314009095ec2f8c5d6d43ca6d51731c571e9",
+    "sha256:f626629c90d2277b468e17d63d97210f2934698ae20eeaf6a22bd28f38037cdd"
+  ],
+  "distinct_prompt_ids": 4,
+  "distinct_rpc_ids": 4,
+  "sessions": 1,
+  "wire_starts": 4,
+  "wire_responses": 4,
+  "each_prior_response_preceded_next_start": true,
+  "stop_reasons": [
+    "end_turn",
+    "end_turn",
+    "end_turn",
+    "end_turn"
+  ],
+  "extra_prompt_requests": 0,
+  "cancel_requests": 0,
+  "native_window_exercised": false,
+  "trace_sha256": "3565bf79f1927c76e1ebf5991072f01e9c5f196e91d2ec1da62f7c0dba9ce2a5"
+}

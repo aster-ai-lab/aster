@@ -142,6 +142,7 @@ struct MockState {
     edit_tool_replies: u64,
     expand_replies: u64,
     ask_tool_replies: u64,
+    queue_release: Option<std::sync::mpsc::Receiver<()>>,
     write_path: String,
     late_path: String,
 }
@@ -164,6 +165,7 @@ fn spawn_mock_with_catalog(
         edit_tool_replies: 0,
         expand_replies: 0,
         ask_tool_replies: 0,
+        queue_release: None,
         write_path: write_path.display().to_string(),
         late_path: late_path.display().to_string(),
     }));
@@ -182,11 +184,17 @@ fn spawn_mock_with_catalog(
                 let response = {
                     let mut guard = shared.lock().expect("mock");
                     guard.bodies.push(body.clone());
-                    decide(&body, &mut guard)
+                    let response = decide(&body, &mut guard);
+                    if session_controls::hold_provider(
+                        &body,
+                        &stream,
+                        &response,
+                        &mut guard.queue_release,
+                    ) {
+                        continue;
+                    }
+                    response
                 };
-                if session_controls::hold_provider(&body, &mut stream) {
-                    continue;
-                }
                 let _ = write_http(&mut stream, &response);
             }
         }
@@ -363,7 +371,7 @@ fn decide(raw: &str, state: &mut MockState) -> String {
     }
     if raw.contains("ASK-ORACLE") && tools {
         if state.ask_tool_replies >= 1 {
-            return reply_text("ok", streaming);
+            return reply_text("ASK-ANSWER-DONE", streaming);
         }
         state.ask_tool_replies = state.ask_tool_replies.saturating_add(1);
         let args = serde_json::json!({
@@ -416,7 +424,9 @@ fn decide(raw: &str, state: &mut MockState) -> String {
     if raw.contains("CONTROL-NEXT") {
         return reply_text("CONTROL-NEXT-DONE", streaming);
     }
-    reasoning::response(&parsed, streaming).unwrap_or_else(|| reply_text("ok", streaming))
+    session_controls::response(&parsed, streaming)
+        .or_else(|| reasoning::response(&parsed, streaming))
+        .unwrap_or_else(|| reply_text("ok", streaming))
 }
 
 fn has_tools(body: &serde_json::Value) -> bool {
@@ -426,16 +436,26 @@ fn has_tools(body: &serde_json::Value) -> bool {
 }
 
 fn returned_form_values(value: &serde_json::Value) -> Option<serde_json::Value> {
-    if value["schema"] == "aster.code.user-form.v1" {
-        return value.get("values").cloned();
+    returned_result(value, "aster.code.user-form.v1")?
+        .get("values")
+        .cloned()
+}
+
+fn returned_result(value: &serde_json::Value, schema: &str) -> Option<serde_json::Value> {
+    if value["schema"] == schema {
+        return Some(value.clone());
     }
     match value {
-        serde_json::Value::Object(fields) => fields.values().find_map(returned_form_values),
-        serde_json::Value::Array(items) => items.iter().find_map(returned_form_values),
+        serde_json::Value::Object(fields) => fields
+            .values()
+            .find_map(|value| returned_result(value, schema)),
+        serde_json::Value::Array(items) => items
+            .iter()
+            .find_map(|value| returned_result(value, schema)),
         serde_json::Value::String(text) => {
             serde_json::from_str(text.strip_prefix("Tool exit code: 0\n").unwrap_or(text))
                 .ok()
-                .and_then(|nested| returned_form_values(&nested))
+                .and_then(|nested| returned_result(&nested, schema))
         }
         _ => None,
     }
@@ -4006,7 +4026,7 @@ fn shipped_tui_ask_user_and_edit_tool_oracles() {
     let home = isolate_dir("pty-ask-edit-home");
     let target = workspace.join("edit-target.txt");
     std::fs::write(&target, "seed-before-edit\n").expect("seed");
-    let (addr, _state) = spawn_mock(&target, &workspace.join("late.txt"));
+    let (addr, state) = spawn_mock(&target, &workspace.join("late.txt"));
     let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
     let owned = child_env(&binaries::acp_binary(), &config, &home);
     let env: Vec<(&str, &str)> = owned
@@ -4026,10 +4046,28 @@ fn shipped_tui_ask_user_and_edit_tool_oracles() {
     let card = pty.wait_for("alpha", Duration::from_secs(30));
     assert!(card.contains("beta"), "ask_user options missing\n{card}");
     pty.write_bytes(b"2");
-    let answered = pty.wait_for("ok", Duration::from_secs(30));
-    assert!(
-        answered.contains("ok") || answered.to_ascii_lowercase().contains("beta"),
-        "ask_user did not settle\n{answered}"
+    pty.wait_for("ASK-ANSWER-DONE", Duration::from_secs(30));
+    let schema = aster_core::ask_user::USER_ANSWER_SCHEMA;
+    let body = wait_body_all(
+        &state,
+        &["ASK-ORACLE a choice", schema],
+        Duration::from_secs(10),
+        true,
+    );
+    let request: serde_json::Value = serde_json::from_str(&body).unwrap();
+    let answer = returned_result(&request["messages"], schema).expect("typed question answer");
+    assert_eq!(answer["answer"], "beta");
+    assert_eq!(answer["permission_grant"], false);
+    let answers: Vec<_> = log_text(&workspace)
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .filter(|fact| fact["type"] == "question.answered")
+        .collect();
+    assert_eq!(answers.len(), 1);
+    assert_eq!(
+        serde_json::from_str::<serde_json::Value>(answers[0]["payload"]["text"].as_str().unwrap())
+            .unwrap(),
+        answer
     );
     oracle(
         "shipped_tui_ask_user_and_edit_tool_oracles",
