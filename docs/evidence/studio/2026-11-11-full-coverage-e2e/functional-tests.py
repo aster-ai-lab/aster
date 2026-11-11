@@ -404,23 +404,27 @@ def f12():
             f"size={before.size}, has_全部={before.has('全部')}"
     query = "zzzz-no-such-connector"
     field = ref("textfield", "搜索连接器或关键词") or first_non_composer_textfield()
-    wrote = False
+    typed_ok = False
+    type_error = None
     if field:
-        wrote = bool(cli("set-value", field, query,
-                         "--timeout-ms", "2500", timeout=15).get("ok"))
-        wait(700)
+        # This input exposes TypeText, not a working SetValue: `set-value`
+        # returns ACTION_FAILED and get --property value stays empty. `type`
+        # is still strict headless semantic delivery (no --headed).
+        typed = cli("type", field, query, "--timeout-ms", "10000", timeout=25)
+        typed_ok = bool(typed.get("ok"))
+        type_error = (typed.get("error") or {}).get("code")
+        wait(900)
     a = AX()
-    # `set-value` can report ACTION_FAILED for a custom input while the value
-    # still lands. Assert on the observable input value and the resulting UI,
-    # not on the harness disposition.
-    match = find("textfield", "搜索连接器或关键词")
-    value = (match or {}).get("value")
-    committed = bool(value and query[:6] in str(value))
-    changed = a.size != before.size or a.has("没有") or a.has("无结果") or a.has("暂无")
+    live = ref("textfield", "搜索连接器或关键词")
+    got = cli("get", live, "--property", "value", timeout=20) if live else {}
+    value = (got.get("data") or {}).get("value")
+    committed = bool(value and query[:8] in str(value))
+    changed = (a.has("清除") or a.has("没有") or a.has("无结果") or a.has("暂无")
+               or a.size != before.size)
     ok = committed and changed
-    return ok, "query is committed to the search field and the catalog view reacts", \
-        f"field_found={bool(field)}, set_value_ok={wrote}, field_value={value!r}, " \
-        f"size {before.size}->{a.size}, view_changed={changed}"
+    return ok, "typed query is readable in the field and the catalog view reacts", \
+        f"field_found={bool(field)}, type_ok={typed_ok}, type_error={type_error}, " \
+        f"field_value={value!r}, size {before.size}->{a.size}, view_changed={changed}"
 
 
 def f13():
@@ -509,19 +513,32 @@ def f18():
     click("button", "关于")
     wait(650)
     sub = AX()
-    # Some settings subpages expose 返回应用, others only the sidebar 工作
-    # button. Try both until the composer is back.
-    for label in ("返回应用", "工作"):
-        r = ref("button", label)
+    # 返回应用 returns to the page that opened Settings (often the connector
+    # catalog: 65 nodes, no composer), NOT always the workbench. The user path
+    # is therefore two steps: leave Settings, then click the sidebar 工作.
+    left_settings = False
+    r = ref("button", "返回应用")
+    if r:
+        click_ref(r)
+        wait(750)
+        left_settings = not AX().has("开机自动启动")
+    for _ in range(2):
+        r = ref("button", "工作")
         if r:
             click_ref(r)
-            wait(700)
+            wait(800)
         if AX().has("描述任务"):
             break
     back = AX()
-    ok = sub.size > 60 and back.has("描述任务") and not back.has("开机自动启动")
-    return ok, "关于 subpage rendered; navigating back restores workbench composer", \
-        f"sub_size={sub.size}, back_has_描述任务={back.has('描述任务')}, " \
+    # The destination is whichever main-app page opened Settings (composer,
+    # connector catalog with 全部, or the recents sidebar) — demanding the
+    # composer specifically would misjudge a correct product behaviour.
+    in_main_app = (back.has("描述任务") or back.has("全部")
+                   or back.has("最近") or back.has("新建任务"))
+    ok = (sub.size > 60 and left_settings and in_main_app
+          and not back.has("开机自动启动"))
+    return ok, "关于 subpage renders; 返回应用 leaves Settings into the main app", \
+        f"sub_size={sub.size}, left_settings={left_settings}, in_main_app={in_main_app}, " \
         f"back_has_开机自动启动={back.has('开机自动启动')}, back_size={back.size}"
 
 

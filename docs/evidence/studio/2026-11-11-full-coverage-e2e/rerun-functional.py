@@ -82,6 +82,30 @@ def state(w):
     }
 
 
+def wait_ready(w, limit=40, stable=3):
+    """Require consecutive clean observations so a late first-run modal or a
+    half-rendered webview cannot become a case's baseline."""
+    streak = 0
+    for _ in range(limit):
+        n = snap(w)
+        dialogs = [x for x in n if x.get("role") == "dialog"]
+        if dialogs:
+            for label in ("继续", "稍后设置", "关闭"):
+                m = find(w, role="button", name=label, exact="true")
+                if m:
+                    click(w, m.get("ref_id"))
+                    wait(350)
+                    break
+        clean = (not dialogs
+                 and any("描述任务" in str(x.get("name")) for x in n)
+                 and len(n) <= 90)
+        streak = streak + 1 if clean else 0
+        if streak >= stable:
+            return True
+        time.sleep(1)
+    return False
+
+
 def wait_window(proc, limit=150):
     for _ in range(limit):
         if proc.poll() is not None:
@@ -112,17 +136,8 @@ def main():
             report["status"] = "NO_WINDOW"
             return report
 
-        before = state(w)
-        report["baseline"] = before
-        # Only act if a first-run permission modal is actually present.
-        if before["dialogs"]:
-            for label in ("继续", "稍后设置", "关闭"):
-                m = find(w, role="button", name=label, exact="true")
-                if m:
-                    click(w, m.get("ref_id"))
-                    wait(350)
-                    break
-            report["after_modal_dismiss"] = state(w)
+        report["ready"] = wait_ready(w)
+        report["baseline"] = state(w)
 
         run = subprocess.run(
             [sys.executable, str(HERE / "functional-tests.py"), w],

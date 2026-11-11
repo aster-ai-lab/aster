@@ -1,0 +1,113 @@
+{
+  "port": 4325,
+  "window": "w-69029",
+  "connector_nodes": 109,
+  "field_before": [
+    {
+      "available_actions": [
+        "Click",
+        "RightClick",
+        "ScrollTo",
+        "SetValue",
+        "SetFocus",
+        "TypeText"
+      ],
+      "name": "搜索连接器或关键词",
+      "ref_id": "@sbymnd03u603w:e32",
+      "role": "textfield"
+    }
+  ],
+  "field_ref": "@sqtkab69vkd3i:e1",
+  "set_value": {
+    "ok": false,
+    "error": "ACTION_FAILED",
+    "data": {}
+  },
+  "field_after": [
+    {
+      "available_actions": [
+        "Click",
+        "RightClick",
+        "ScrollTo",
+        "SetValue",
+        "SetFocus",
+        "TypeText"
+      ],
+      "name": "搜索连接器或关键词",
+      "ref_id": "@s2jklfpmtsxwct:e32",
+      "role": "textfield"
+    }
+  ],
+  "nodes_after": 109,
+  "get_properties": {
+    "value": {
+      "ok": true,
+      "data": {
+        "property": "value",
+        "ref": "@sqtkab69vkd3i:e1",
+        "value": ""
+      },
+      "error": null
+    },
+    "name": {
+      "ok": false,
+      "data": {},
+      "error": "INVALID_ARGS"
+    },
+    "description": {
+      "ok": false,
+      "data": {},
+      "error": "INVALID_ARGS"
+    },
+    "text": {
+      "ok": true,
+      "data": {
+        "property": "text",
+        "ref": "@sqtkab69vkd3i:e1",
+        "value": "搜索连接器或关键词"
+      },
+      "error": null
+    },
+    "states": {
+      "ok": true,
+      "data": {
+        "property": "states",
+        "ref": "@sqtkab69vkd3i:e1",
+        "value": []
+      },
+      "error": null
+    },
+    "role": {
+      "ok": true,
+      "data": {
+        "property": "role",
+        "ref": "@sqtkab69vkd3i:e1",
+        "value": "textfield"
+      },
+      "error": null
+    }
+  },
+  "visible_markers": {
+    "has_query_text": false,
+    "has_清除": false,
+    "has_暂无": false,
+    "has_没有": false,
+    "names_tail": [
+      "安装",
+      "无影 Agent 开发套件 AgentBay",
+      "安装",
+      "银联MCP支付服务",
+      "安装",
+      "歌者PPT",
+      "安装",
+      "Github的维基百科DeepWiKi",
+      "安装",
+      "上一页",
+      "下一页",
+      "Close",
+      "Full Screen",
+      "Minimize"
+    ]
+  },
+  "status": "COMPLETED"
+}

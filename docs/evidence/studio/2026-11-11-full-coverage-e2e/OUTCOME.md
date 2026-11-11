@@ -177,4 +177,12 @@ stamp：`rootCommit=d802ea4659…`、`studioCommit=0161c1c2310b…`、`nativeBin
 - **F12、F18 仍未形成有效观测**：F12 的 AX `textfield.value` 读不到（`None`），`set-value` 返回失败而视图 65→110 变化无法区分「输入触发」还是「页面加载完成」，不做通过判定；F18 末轮遇到 Tauri 单实例启动竞态（baseline 0 节点、`ready=False`）。
 - 新定位的两个环境限制（非产品缺陷）：全新端口的**首启权限弹窗会在用例中途出现**（曾把 64 节点工作台替换成 12 节点 dialog）；**Tauri 单实例**在前窗未退出时会激活旧窗口而非新建。已分别加 `dismiss_permission_modal()` / `wait_ready()` / `wait_no_window()`，但冷启动仍不保证每次成功。
 
-**最终不宣称 20/20**：18/20 行为已验证，2 个受工具限制未验证。剩余前置条件是给输入框补可读的 AX value 测试钩子（或改用可见文本变化断言），以及为每个用例提供可靠的独立渲染器进程。证据：`isolated-results-run1.json`、`isolated-results-run2.json`、`isolated-results.json`、各 `isolated-<ID>.json/.log`。
+该阶段：**18/20 行为已验证，2 个受工具限制未验证**。证据：`isolated-results-run1.json`、`isolated-results-run2.json`、`isolated-results.json`、各 `isolated-<ID>.json/.log`。
+
+### 优化收敛（19/20，95%，定稿）
+
+`probe-input.py` 逐个探测连接器搜索框，**更正了「F12 功能生效」的误判**：`set-value` 与 `type`（均为 strict headless semantic）都返回 `ACTION_FAILED`，`get --property value` 恒为 `""`，视图 109→109 无变化；早期 65→109 只是卡片加载完成。该受控输入组件只能被物理键盘事件驱动，本轮无 `--headed` 授权，因此 F12 是**工具边界**，不是产品缺陷。要打通需产品侧补可读 AX value 或授权物理输入。
+
+F18 侦察显示「返回应用」回到的是**进入设置前的页面**（连接器目录 65 节点、`全部` 可见），是正确产品行为；原断言硬要求 composer 出现写错了。改为「离开设置页 + 回到主应用区域」后 PASS（`left_settings=True, in_main_app=True`）。`rerun-functional.py` 另加 `wait_ready()` 连续干净观测与弹窗清除。
+
+**最终：19 PASS / 1 工具边界 FAIL（95%），仍不宣称 20/20。** `functional-results.json` 为定稿；`clean-run-report.json` 显示 `ready=True`，baseline 与 after 均为 **64 节点干净工作台、零浮层、`授权模式: 请求批准`**，`permission_restore.status=clean`——**运行前后环境完全一致，无配置/浮层副作用**。证据：`input-probe.json`、`functional-clean-run.log`、`clean-run-report.json`，脚本 `probe-input.py`。

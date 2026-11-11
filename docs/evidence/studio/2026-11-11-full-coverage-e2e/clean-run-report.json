@@ -1,7 +1,8 @@
 {
-  "launcher_pid": 59696,
+  "launcher_pid": 78137,
   "port": 4325,
-  "window": "w-68337",
+  "window": "w-69213",
+  "ready": true,
   "baseline": {
     "nodes": 64,
     "dialogs": [],
@@ -9,23 +10,20 @@
     "has_model_picker": false,
     "has_task_scope": false,
     "permission_labels": [
-      "授权模式: 请求批准 · 先规划"
+      "授权模式: 请求批准"
     ]
   },
   "functional_exit": 0,
   "functional_summary": {
-    "window": "w-68337",
+    "window": "w-69213",
     "cases": 20,
-    "passed": 16,
-    "failed": 4,
-    "pass_rate": 0.8,
+    "passed": 19,
+    "failed": 1,
+    "pass_rate": 0.95,
     "permission_restore": {
-      "status": "FAILED",
-      "before": [
-        "授权模式: 请求批准 · 先规划"
-      ],
-      "after": [
-        "授权模式: 请求批准 · 先规划"
+      "status": "clean",
+      "labels": [
+        "授权模式: 请求批准"
       ]
     }
   },
@@ -33,7 +31,7 @@
     {
       "id": "F01",
       "status": "PASS",
-      "actual": "size 64->98, radiobutton=5, has_选择模型=True"
+      "actual": "size 64->97, radiobutton=5, has_选择模型=True"
     },
     {
       "id": "F02",
@@ -42,13 +40,13 @@
     },
     {
       "id": "F03",
-      "status": "FAIL",
-      "actual": "menuitem=0, has_完全访问=False"
+      "status": "PASS",
+      "actual": "menuitem=5, has_完全访问=True"
     },
     {
       "id": "F04",
-      "status": "FAIL",
-      "actual": "labels=['授权模式: 请求批准']"
+      "status": "PASS",
+      "actual": "labels=['授权模式: 请求批准 · 先规划']"
     },
     {
       "id": "F05",
@@ -83,12 +81,12 @@
     {
       "id": "F11",
       "status": "PASS",
-      "actual": "size=65, has_全部=True, has_安装=True"
+      "actual": "size=109, has_全部=True, has_安装=True"
     },
     {
       "id": "F12",
       "status": "FAIL",
-      "actual": "field_found=True, set_value_ok=False, size 109->109, empty_state=False"
+      "actual": "field_found=True, type_ok=False, type_error=ACTION_FAILED, field_value='', size 109->109, view_changed=False"
     },
     {
       "id": "F13",
@@ -117,8 +115,8 @@
     },
     {
       "id": "F18",
-      "status": "FAIL",
-      "actual": "sub_size=86, back_has_描述任务=False, back_has_开机自动启动=False, back_size=65"
+      "status": "PASS",
+      "actual": "sub_size=86, left_settings=True, in_main_app=True, back_has_开机自动启动=False, back_size=65"
     },
     {
       "id": "F19",
@@ -132,13 +130,13 @@
     }
   ],
   "after_state": {
-    "nodes": 70,
+    "nodes": 64,
     "dialogs": [],
     "has_composer": true,
     "has_model_picker": false,
     "has_task_scope": false,
     "permission_labels": [
-      "授权模式: 请求批准 · 先规划"
+      "授权模式: 请求批准"
     ]
   },
   "status": "COMPLETED"

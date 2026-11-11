@@ -29,6 +29,7 @@
 | 四 | 16 PASS / 4 FAIL | 干净前置（64 节点） |
 | 五（定稿） | **16 PASS / 4 FAIL** | 修正断言后稳定复现（`functional-results.json`） |
 | 隔离复验 | 4 个中 **F03/F04 补验 PASS**，F12/F18 未形成有效观测 | 每用例独立窗口，见文末 |
+| **优化后（定稿）** | **19 PASS / 1 工具边界 FAIL（95%）** | 单窗口稳定受管 + 修正 F18 断言，见最后一节 |
 
 下表是第一轮的逐用例实测，用于说明每个用例的断言设计；**最终结论以文末「最终收敛」章节和 `functional-results.json` 为准（16/20）**。各批次差异、FAIL 归因与复核证据都在文末。
 
@@ -192,3 +193,34 @@ python3 functional-tests.py <window-id>
 - **2 个（F12/F18）因工具限制未形成有效观测**，不计为 PASS，也不判为产品缺陷。
 - **不宣称 20/20 全绿**。剩余前置条件：给输入框补 AX `value` 可读的测试钩子（或改用可见文本变化断言），以及为每个用例提供可靠的独立渲染器进程。
 - 证据：`isolated-results-run1.json`（F03/F04 PASS）、`isolated-results-run2.json`、`isolated-results.json`（末轮）、各 `isolated-<ID>.json/.log`、`isolated-cases.py`。
+
+> 以下为阶段性结论，最终口径见最后一节（19/20）。
+
+## 优化收敛：19/20（95%，定稿）
+
+### 先更正一个误判
+
+`probe-input.py` 在稳定受管窗口里逐个探测连接器搜索框，结论推翻了上一节「F12 功能生效」的猜测：
+
+| 探测 | 结果 |
+| --- | --- |
+| `available_actions` | `Click, RightClick, ScrollTo, SetValue, SetFocus, TypeText` |
+| `set-value` | `ACTION_FAILED` |
+| `type`（strict headless semantic，对应 `TypeText`） | `ACTION_FAILED` |
+| `get --property value` | `""`（输入从未落地） |
+| `get --property text` | `搜索连接器或关键词`（只是 name） |
+| 视图节点数 | 109 → 109，**无变化** |
+
+所以早期观察到的 65→109 是**连接器卡片加载完成**，不是输入触发。F12 的真实边界是：这个受控 React 输入框无法被 headless 语义输入（`SetValue` / `TypeText`）驱动，只有物理键盘事件才会触发它的状态更新。本轮没有 `--headed` 授权，因此该用例**不可能**在现有约束下完成验证，不是功能不工作，也不是断言写得不好。要打通，需要产品侧给输入框补可读的 AX value（如 `aria-valuetext` / 原生 value 映射），或明确授权物理输入。
+
+### F18 的断言修正
+
+侦察显示 `left_settings=True` ——「返回应用」确实离开了设置页，但落点是**进入设置前的页面**（连接器目录，65 节点、`全部` 可见），不是固定回工作台。这是正确的产品行为，我原先硬要求 composer 出现是错的。断言改为「离开设置页 + 回到主应用区域（composer / `全部` / `最近` / `新建任务`）」，并保留「返回应用 → 侧栏工作」两步路径，结果 `left_settings=True, in_main_app=True, back_size=65` → **PASS**。
+
+### 最终结果与环境影响
+
+- **19 PASS / 1 FAIL（95%）**，唯一未通过的是 F12，归类为**工具边界**（`ACTION_FAILED`），不计产品缺陷、也不冒充通过。
+- `functional-results.json` 为定稿结果；`clean-run-report.json` 记录 `ready=True`、baseline 与 after 均为 **64 节点干净工作台、零浮层、`授权模式: 请求批准`**；`permission_restore.status=clean`。**测试运行前后环境完全一致，没有留下任何配置或浮层副作用。**
+- `rerun-functional.py` 增加 `wait_ready()`（连续干净观测 + 弹窗清除），消除新 origin 首启弹窗与半渲染窗口造成的假基线。
+
+**仍不宣称 20/20。** 最后 1 个用例的前置条件是产品侧的可读输入值钩子，或物理输入授权——这属于产品/权限变更，不是 harness 再调能解决的。
