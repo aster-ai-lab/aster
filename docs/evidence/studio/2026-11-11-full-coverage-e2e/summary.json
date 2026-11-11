@@ -5,8 +5,8 @@
   "functional_points": 1193,
   "ax_touched": 1193,
   "ax_touch_rate": 1.0,
-  "mutating_actions_observed": 7,
-  "action_rate": 0.0059,
+  "mutating_actions_observed": 119,
+  "action_rate": 0.0997,
   "role_counts": {
     "button": 641,
     "switch": 426,
@@ -25,7 +25,7 @@
       "observed": 26,
       "navigation_verified": true,
       "ax_touched": 26,
-      "mutating_actions": 7
+      "mutating_actions": 15
     },
     {
       "page": "连接器",
@@ -33,7 +33,7 @@
       "observed": 39,
       "navigation_verified": true,
       "ax_touched": 39,
-      "mutating_actions": 0
+      "mutating_actions": 11
     },
     {
       "page": "技能",
@@ -41,7 +41,7 @@
       "observed": 34,
       "navigation_verified": true,
       "ax_touched": 34,
-      "mutating_actions": 0
+      "mutating_actions": 28
     },
     {
       "page": "自动化",
@@ -49,7 +49,7 @@
       "observed": 26,
       "navigation_verified": true,
       "ax_touched": 26,
-      "mutating_actions": 0
+      "mutating_actions": 21
     },
     {
       "page": "设置/通用",
@@ -57,7 +57,7 @@
       "observed": 51,
       "navigation_verified": true,
       "ax_touched": 51,
-      "mutating_actions": 0
+      "mutating_actions": 44
     },
     {
       "page": "设置/快捷键",

@@ -18,7 +18,9 @@ pages = json.loads((HERE / "pages.json").read_text(encoding="utf-8"))["pages"]
 
 # Merge any mutating-action evidence from the per-control / chunk passes.
 executed: dict[tuple[str, str, str], dict] = {}
-for name in ("coverage.json", "coverage-batch.json"):
+# Later files override earlier ones; action-coverage.json is the authoritative
+# full mutating-action pass, so it is merged last.
+for name in ("coverage.json", "coverage-batch.json", "action-coverage.json"):
     p = HERE / name
     if not p.exists():
         continue
@@ -28,10 +30,14 @@ for name in ("coverage.json", "coverage-batch.json"):
         continue
     for r in d.get("coverage", []):
         key = (r.get("page", ""), r.get("role", ""), r.get("name", ""))
-        if r.get("ok") and (r.get("action") or "").startswith(("click", "toggle", "expand",
-                                                               "set-value", "open-and-cancel",
-                                                               "navigate")):
-            executed[key] = {"action": r.get("action"), "source": name}
+        action = r.get("action") or ""
+        # A page whose control count did not match the inventory was polluted
+        # by a residual overlay; its action records are not trustworthy.
+        if name == "action-coverage.json" and not r.get("navigation_verified"):
+            continue
+        # `get-states` is read-only AX inspection, not a mutating action.
+        if r.get("ok") and action and action != "get-states":
+            executed[key] = {"action": action, "source": name}
 
 by_page = defaultdict(list)
 for r in rows:
@@ -68,7 +74,8 @@ lines = [
     "",
     "> **两个口径不可混淆**：`get --property states` 是对每个控件的真实无障碍交互（读取状态、可操作性），",
     "> 证明该控件在当前构建里可达且可操作；它**不改变界面**，因此不等价于「执行了该功能」。",
-    "> 变更型动作在全量执行时受 `STALE_REF` 限制（详见 OUTCOME §4），只在部分页面完成，未宣称 100%。",
+    "> 续作（`action-coverage.py`）用「同 snapshot + `click` 批量」把变更动作推到 119 条；",
+    "> 全量动作执行仍未完成（详见 OUTCOME §9），**不宣称 100%**。",
     "",
     "## 按页面",
     "",
@@ -111,7 +118,7 @@ lines += [
     "",
     "## 仍未达成的口径（不隐藏）",
     "",
-    "- 「执行每一个功能」尚未达成：变更型动作只在部分页面留下成功证据；全量动作执行因 batch `STALE_REF` 与逐控件耗时限制未完成。",
+    "- 「执行每一个功能」尚未达成：119 个功能点有变更动作证据，集中在 5 个导航验证通过的页面；其余 9 页的全量动作执行因窗口状态污染与耗时（单次运行 40 分钟仅完成 6 页）而中止，见 OUTCOME §9。",
     "- 63 个静态路由中只有 14 个页面状态经真窗口 UI 可达并验证；其余需 deep link / 特定数据，未逐一验证。",
     "- 错误、加载、流式、故障注入、真模型任务、键盘焦点环、reduce 开启态未覆盖。",
     "",

@@ -1,0 +1,6 @@
+{"page": "工作台", "controls": 26, "expected": 26, "navigation_verified": true, "dispatched": 26, "ok": 19, "failed_then_repaired": 4, "still_failed": 7}
+{"page": "连接器", "controls": 42, "expected": 39, "navigation_verified": true, "dispatched": 42, "ok": 12, "failed_then_repaired": 0, "still_failed": 30}
+{"page": "技能", "controls": 37, "expected": 34, "navigation_verified": true, "dispatched": 37, "ok": 29, "failed_then_repaired": 2, "still_failed": 8}
+{"page": "自动化", "controls": 29, "expected": 26, "navigation_verified": true, "dispatched": 29, "ok": 21, "failed_then_repaired": 4, "still_failed": 8}
+{"page": "设置/通用", "controls": 54, "expected": 51, "navigation_verified": true, "dispatched": 54, "ok": 45, "failed_then_repaired": 7, "still_failed": 9}
+{"page": "设置/快捷键", "controls": 153, "expected": 94, "navigation_verified": false, "dispatched": 153, "ok": 77, "failed_then_repaired": 29, "still_failed": 76}
