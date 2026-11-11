@@ -1,0 +1,77 @@
+{
+  "cases": [
+    {
+      "case": "F12",
+      "port": 4351,
+      "launcher_pid": 94111,
+      "window": "w-68855",
+      "ready": true,
+      "baseline": {
+        "nodes": 64,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "query is committed to the search field and the catalog view reacts",
+        "actual": "field_found=True, set_value_ok=False, field_value=None, size 65->110, view_changed=True",
+        "screenshot": "ft-F12-连接器搜索过滤.png"
+      },
+      "after": {
+        "nodes": 110,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "case": "F18",
+      "port": 4352,
+      "launcher_pid": 26602,
+      "window": "w-68855",
+      "ready": false,
+      "baseline": {
+        "nodes": 0,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "关于 subpage rendered; navigating back restores workbench composer",
+        "actual": "sub_size=0, back_has_描述任务=False, back_has_开机自动启动=False, back_size=0",
+        "screenshot": null
+      },
+      "after": {
+        "nodes": 0,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "summary": {
+    "isolated_cases": 2,
+    "passed": 0,
+    "failed": 2
+  }
+}

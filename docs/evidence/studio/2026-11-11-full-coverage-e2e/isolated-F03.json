@@ -1,0 +1,20 @@
+{
+  "window": "w-68683",
+  "cases": 1,
+  "passed": 1,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "permission_restore": {
+    "status": "skipped"
+  },
+  "results": [
+    {
+      "id": "F03",
+      "title": "授权模式菜单五项",
+      "status": "PASS",
+      "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式",
+      "actual": "menuitem=5, has_完全访问=True",
+      "screenshot": "ft-F03-授权模式菜单五项.png"
+    }
+  ]
+}

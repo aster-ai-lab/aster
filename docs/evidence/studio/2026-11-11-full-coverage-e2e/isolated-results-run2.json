@@ -1,0 +1,88 @@
+{
+  "cases": [
+    {
+      "case": "F12",
+      "port": 4341,
+      "launcher_pid": 86046,
+      "window": "w-68751",
+      "baseline": {
+        "nodes": 64,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "connector catalog loaded before searching",
+        "actual": "size=12, has_全部=False",
+        "screenshot": "ft-F12-连接器搜索过滤.png"
+      },
+      "after": {
+        "nodes": 12,
+        "dialogs": [
+          "使用 Aster 前需要三项权限"
+        ],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "case": "F18",
+      "port": 4342,
+      "launcher_pid": 91815,
+      "window": "w-68751",
+      "baseline": {
+        "nodes": 12,
+        "dialogs": [
+          "使用 Aster 前需要三项权限"
+        ],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "after_modal": {
+        "nodes": 110,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "关于 subpage rendered; navigating back restores workbench composer",
+        "actual": "sub_size=131, back_has_描述任务=False, back_has_开机自动启动=False, back_size=110",
+        "screenshot": "ft-F18-设置子页导航与返回.png"
+      },
+      "after": {
+        "nodes": 110,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "summary": {
+    "isolated_cases": 2,
+    "passed": 0,
+    "failed": 2
+  }
+}

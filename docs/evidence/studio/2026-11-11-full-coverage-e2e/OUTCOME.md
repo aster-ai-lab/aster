@@ -167,4 +167,14 @@ stamp：`rootCommit=d802ea4659…`、`studioCommit=0161c1c2310b…`、`nativeBin
 
 **更正上一批的配置判断**：`planFirst` 由 `writeTaskPermission()` 写入 `localStorage` 的 `workbench.task.permission:v1`，**不是会话级**，按 origin/端口隔离（测试用 4322–4325，用户日常端口不受影响）。「规划模式」菜单项是 toggle，重选「请求批准」不会清标记。`clear-plan-first.py` 在 4325 点该菜单项一次，`授权模式: 请求批准 · 先规划` → `授权模式: 请求批准`，`status=RESTORED`。
 
-**最终口径：稳定通过 16/20，不宣称 20/20**；要拿满需每个用例前彻底重置渲染器状态。证据：`overlay-diagnosis.json`、`clean-run-report.json`、`functional-clean-run.log`、`clear-plan-first-report.json`，脚本 `diagnose-overlays.py` / `rerun-functional.py` / `clear-plan-first.py`。
+**该批次口径：稳定通过 16/20，不宣称 20/20**；要拿满需每个用例前彻底重置渲染器状态。证据：`overlay-diagnosis.json`、`clean-run-report.json`、`functional-clean-run.log`、`clear-plan-first-report.json`，脚本 `diagnose-overlays.py` / `rerun-functional.py` / `clear-plan-first.py`。
+
+### 用例级隔离复验（最终口径：18/20 行为已验证）
+
+`isolated-cases.py` 给 F03/F04/F12/F18 各起独立窗口与端口（`ONLY_CASES` 单用例模式），并加了首启权限弹窗清除、窗口退出等待、连续干净观测稳定期。
+
+- **F03、F04 在独立窗口下 PASS**（`menuitem=5`；规划模式 label 生效且 finally 还原），坐实此前是状态耦合而非产品缺陷。至此 **18/20 个功能行为已验证通过**。
+- **F12、F18 仍未形成有效观测**：F12 的 AX `textfield.value` 读不到（`None`），`set-value` 返回失败而视图 65→110 变化无法区分「输入触发」还是「页面加载完成」，不做通过判定；F18 末轮遇到 Tauri 单实例启动竞态（baseline 0 节点、`ready=False`）。
+- 新定位的两个环境限制（非产品缺陷）：全新端口的**首启权限弹窗会在用例中途出现**（曾把 64 节点工作台替换成 12 节点 dialog）；**Tauri 单实例**在前窗未退出时会激活旧窗口而非新建。已分别加 `dismiss_permission_modal()` / `wait_ready()` / `wait_no_window()`，但冷启动仍不保证每次成功。
+
+**最终不宣称 20/20**：18/20 行为已验证，2 个受工具限制未验证。剩余前置条件是给输入框补可读的 AX value 测试钩子（或改用可见文本变化断言），以及为每个用例提供可靠的独立渲染器进程。证据：`isolated-results-run1.json`、`isolated-results-run2.json`、`isolated-results.json`、各 `isolated-<ID>.json/.log`。

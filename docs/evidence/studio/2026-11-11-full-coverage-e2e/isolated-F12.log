@@ -1,0 +1,2 @@
+{"id": "F12", "title": "连接器搜索过滤", "status": "FAIL", "expected": "query is committed to the search field and the catalog view reacts", "actual": "field_found=True, set_value_ok=False, field_value=None, size 65->110, view_changed=True"}
+{"window": "w-68855", "cases": 1, "passed": 0, "failed": 1, "pass_rate": 0.0, "permission_restore": {"status": "skipped"}}

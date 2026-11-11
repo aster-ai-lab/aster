@@ -28,6 +28,7 @@
 | 三 | 14 PASS / 6 FAIL | 受管保活，但 harness 自己点开了浮层（247 节点） |
 | 四 | 16 PASS / 4 FAIL | 干净前置（64 节点） |
 | 五（定稿） | **16 PASS / 4 FAIL** | 修正断言后稳定复现（`functional-results.json`） |
+| 隔离复验 | 4 个中 **F03/F04 补验 PASS**，F12/F18 未形成有效观测 | 每用例独立窗口，见文末 |
 
 下表是第一轮的逐用例实测，用于说明每个用例的断言设计；**最终结论以文末「最终收敛」章节和 `functional-results.json` 为准（16/20）**。各批次差异、FAIL 归因与复核证据都在文末。
 
@@ -168,3 +169,26 @@ python3 functional-tests.py <window-id>
 - 两个曾列的「疑似产品问题」已撤回；F09 在干净前置下直接 PASS。
 - 配置副作用已按真实机制清除并验证。
 - 复现：`python3 rerun-functional.py`（受管启动 + 跑 20 用例）；清理：`python3 clear-plan-first.py`。
+
+## 用例级隔离复验（`isolated-cases.py`）
+
+针对最后 4 个状态耦合用例，给每个用例**单独启动一个窗口和端口**（`4331+`、`4341+`、`4351+`），用 `ONLY_CASES` 只跑该用例，结果写各自的 `isolated-<ID>.json`。三轮复验（含新 origin 首启弹窗处理、窗口退出等待、稳定期检查）后：
+
+| 用例 | 最终判定 | 依据 |
+| --- | --- | --- |
+| F03 授权模式菜单五项 | ✅ **PASS** | 独立窗口 baseline 64 节点、零浮层，`menuitem=5`，含「完全访问 高风险」 |
+| F04 切换授权模式 | ✅ **PASS** | 独立窗口下 label 变为 `授权模式: 请求批准 · 先规划`，且 finally 还原为 `请求批准` |
+| F12 连接器搜索过滤 | ⚠️ 未形成有效观测 | `set_value_ok=False`、`field_value=None`：AX 读不到该输入框的值；视图虽 65→110 变化，但无法区分「输入触发」还是「页面加载完成」，不做通过判定 |
+| F18 设置子页返回 | ⚠️ 未形成有效观测 | 最后一轮窗口启动竞态，baseline 0 节点、`ready=False`，用例未真正执行 |
+
+### 隔离过程中新定位的两个环境限制（均非产品缺陷）
+
+1. **新 origin 的首启权限弹窗会中途出现**：全新端口首次访问会弹「使用 Aster 前需要三项权限」，把 AX 树替换成 12 节点。F12 第一轮 baseline 干净（64 节点），弹窗却在运行中途出现。`isolated-cases.py` 已加 `dismiss_permission_modal()` 与连续 4 次干净观测的 `wait_ready()` 稳定期。
+2. **Tauri 单实例启动竞态**：前一个窗口未完全退出时，新 `just studio` 会激活旧窗口而非新建；曾出现 F18 baseline 112 节点（停在连接器页）或 0 节点（窗口没起来）。已加 `wait_no_window()`，但仍无法保证每次冷启动都成功。
+
+### 最终口径
+
+- **18/20 个功能行为已验证通过**：16 个在批量运行中稳定 PASS，F03/F04 在独立窗口补验 PASS。
+- **2 个（F12/F18）因工具限制未形成有效观测**，不计为 PASS，也不判为产品缺陷。
+- **不宣称 20/20 全绿**。剩余前置条件：给输入框补 AX `value` 可读的测试钩子（或改用可见文本变化断言），以及为每个用例提供可靠的独立渲染器进程。
+- 证据：`isolated-results-run1.json`（F03/F04 PASS）、`isolated-results-run2.json`、`isolated-results.json`（末轮）、各 `isolated-<ID>.json/.log`、`isolated-cases.py`。

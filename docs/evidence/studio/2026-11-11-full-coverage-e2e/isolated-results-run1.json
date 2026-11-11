@@ -1,0 +1,147 @@
+{
+  "cases": [
+    {
+      "case": "F03",
+      "port": 4331,
+      "launcher_pid": 75419,
+      "window": "w-68683",
+      "baseline": {
+        "nodes": 64,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "PASS",
+        "expected": "5 menu items incl. 请求批准/只读权限/智能授权/完全访问/规划模式",
+        "actual": "menuitem=5, has_完全访问=True",
+        "screenshot": "ft-F03-授权模式菜单五项.png"
+      },
+      "after": {
+        "nodes": 70,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 5
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "case": "F04",
+      "port": 4332,
+      "launcher_pid": 79916,
+      "window": "w-68683",
+      "baseline": {
+        "nodes": 70,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 5
+      },
+      "exit": 0,
+      "result": {
+        "status": "PASS",
+        "expected": "label reflects planning mode (e.g. 请求批准 · 先规划)",
+        "actual": "labels=['授权模式: 请求批准 · 先规划']",
+        "screenshot": "ft-F04-切换授权模式并验证.png"
+      },
+      "after": {
+        "nodes": 64,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "case": "F12",
+      "port": 4333,
+      "launcher_pid": 80448,
+      "window": "w-68683",
+      "baseline": {
+        "nodes": 64,
+        "dialogs": [],
+        "has_composer": true,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [
+          "授权模式: 请求批准"
+        ],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "typing an unmatched query shrinks results or shows an empty state",
+        "actual": "field_found=True, set_value_ok=False, size 65->112, empty_state=False",
+        "screenshot": "ft-F12-连接器搜索过滤.png"
+      },
+      "after": {
+        "nodes": 112,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "case": "F18",
+      "port": 4334,
+      "launcher_pid": 80651,
+      "window": "w-68683",
+      "baseline": {
+        "nodes": 112,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "exit": 0,
+      "result": {
+        "status": "FAIL",
+        "expected": "关于 subpage rendered; navigating back restores workbench composer",
+        "actual": "sub_size=133, back_has_描述任务=False, back_has_开机自动启动=False, back_size=112",
+        "screenshot": "ft-F18-设置子页导航与返回.png"
+      },
+      "after": {
+        "nodes": 112,
+        "dialogs": [],
+        "has_composer": false,
+        "has_model_picker": false,
+        "has_task_scope": false,
+        "permission_labels": [],
+        "menuitem_count": 0
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "summary": {
+    "isolated_cases": 4,
+    "passed": 2,
+    "failed": 2
+  }
+}

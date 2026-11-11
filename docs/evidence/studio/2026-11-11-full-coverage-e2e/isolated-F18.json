@@ -1,0 +1,20 @@
+{
+  "window": "w-68855",
+  "cases": 1,
+  "passed": 0,
+  "failed": 1,
+  "pass_rate": 0.0,
+  "permission_restore": {
+    "status": "skipped"
+  },
+  "results": [
+    {
+      "id": "F18",
+      "title": "设置子页导航与返回",
+      "status": "FAIL",
+      "expected": "关于 subpage rendered; navigating back restores workbench composer",
+      "actual": "sub_size=0, back_has_描述任务=False, back_has_开机自动启动=False, back_size=0",
+      "screenshot": null
+    }
+  ]
+}

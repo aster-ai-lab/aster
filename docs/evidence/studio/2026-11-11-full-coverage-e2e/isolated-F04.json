@@ -1,0 +1,20 @@
+{
+  "window": "w-68683",
+  "cases": 1,
+  "passed": 1,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "permission_restore": {
+    "status": "skipped"
+  },
+  "results": [
+    {
+      "id": "F04",
+      "title": "切换授权模式并验证",
+      "status": "PASS",
+      "expected": "label reflects planning mode (e.g. 请求批准 · 先规划)",
+      "actual": "labels=['授权模式: 请求批准 · 先规划']",
+      "screenshot": "ft-F04-切换授权模式并验证.png"
+    }
+  ]
+}
