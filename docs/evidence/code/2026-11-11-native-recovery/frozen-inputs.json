@@ -1,0 +1,12 @@
+{
+  "plan.json": "8cc56823810c0198595e73ec69e04843155696c630330490ac98bf6a0b60b18b",
+  "relay/relay": "66d36f25cc9813872fc7b746aea92ec32ac099e2438e8d64288d84635864f2a3",
+  "resume-relay/relay": "66d36f25cc9813872fc7b746aea92ec32ac099e2438e8d64288d84635864f2a3",
+  "workspace/native-input-recovery-original.py": "f6c23df8e1e94fef440578f477f3b5591b85031cf2ede82438e86ea2efd9d286",
+  "recovery-image.png": "f2212d1aeee13e0843e917e8e696ffdeeec9908a2507851a8a5e2e84b8dc0472",
+  "build_ids": {
+    "aster": "aster-cli-pair-v1:ad5c65763c18686d10b397aaa033c969c45a1cb4:aarch64-apple-darwin",
+    "aster-acp": "aster-cli-pair-v1:ad5c65763c18686d10b397aaa033c969c45a1cb4:aarch64-apple-darwin"
+  },
+  "head": "70e5f305cd078d89f422288daa418e3997125bef"
+}
