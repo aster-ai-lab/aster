@@ -132,7 +132,13 @@ with `RELEASE_9.2.2.md`, CLI at 0.3.4, and tags `aster-acp-v9.2.2` /
 pushed; the parallel ACP patch is not. No tag, workflow dispatch, channel
 manifest or `cargo publish` was run. In particular, no assumption was made
 that `aster-core` is publishable via `cargo publish`; the repository contract
-requires `release-code.yml` on an `aster-acp-vX.Y.Z` tag.
+requires `release-code.yml` on an `aster-acp-vX.Y.Z` tag, tagged versions that
+match both `aster-core` and `aster-acp`, and a successful `qualify-code.yml`
+run for the tagged commit. `scripts/publish-aster-cli.sh` additionally refuses
+to run when `git status --porcelain` is non-empty (`source_status`), which is
+the case here. The CLI release also needs `GH_REPO`, `BUILD_SHA`,
+`ARTIFACT_RUN_ID` and archives downloaded from one build run, none of which
+were supplied.
 
 ## Explicitly not claimed
 
