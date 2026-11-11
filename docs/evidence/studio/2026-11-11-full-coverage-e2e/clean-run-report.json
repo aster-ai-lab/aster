@@ -1,0 +1,145 @@
+{
+  "launcher_pid": 59696,
+  "port": 4325,
+  "window": "w-68337",
+  "baseline": {
+    "nodes": 64,
+    "dialogs": [],
+    "has_composer": true,
+    "has_model_picker": false,
+    "has_task_scope": false,
+    "permission_labels": [
+      "授权模式: 请求批准 · 先规划"
+    ]
+  },
+  "functional_exit": 0,
+  "functional_summary": {
+    "window": "w-68337",
+    "cases": 20,
+    "passed": 16,
+    "failed": 4,
+    "pass_rate": 0.8,
+    "permission_restore": {
+      "status": "FAILED",
+      "before": [
+        "授权模式: 请求批准 · 先规划"
+      ],
+      "after": [
+        "授权模式: 请求批准 · 先规划"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "F01",
+      "status": "PASS",
+      "actual": "size 64->98, radiobutton=5, has_选择模型=True"
+    },
+    {
+      "id": "F02",
+      "status": "PASS",
+      "actual": "K3.1 Pro visible in AX after select: True"
+    },
+    {
+      "id": "F03",
+      "status": "FAIL",
+      "actual": "menuitem=0, has_完全访问=False"
+    },
+    {
+      "id": "F04",
+      "status": "FAIL",
+      "actual": "labels=['授权模式: 请求批准']"
+    },
+    {
+      "id": "F05",
+      "status": "PASS",
+      "actual": "switch 1->3, has_自动审查=True"
+    },
+    {
+      "id": "F06",
+      "status": "PASS",
+      "actual": "opened=True, after_has_自动审查=False"
+    },
+    {
+      "id": "F07",
+      "status": "PASS",
+      "actual": "size 64->14, dialog=True, has_关闭=True"
+    },
+    {
+      "id": "F08",
+      "status": "PASS",
+      "actual": "set_value_ok=True, size 14->17, has_清除=True"
+    },
+    {
+      "id": "F09",
+      "status": "PASS",
+      "actual": "opened=True, has_关闭_after=False, has_描述任务=True, a11y_observation_dialog_role_still_present=False"
+    },
+    {
+      "id": "F10",
+      "status": "PASS",
+      "actual": "size 64->24->64, cond1=True, cond2=True"
+    },
+    {
+      "id": "F11",
+      "status": "PASS",
+      "actual": "size=65, has_全部=True, has_安装=True"
+    },
+    {
+      "id": "F12",
+      "status": "FAIL",
+      "actual": "field_found=True, set_value_ok=False, size 109->109, empty_state=False"
+    },
+    {
+      "id": "F13",
+      "status": "PASS",
+      "actual": "has_全部状态=True, has_暂无定时任务=False"
+    },
+    {
+      "id": "F14",
+      "status": "PASS",
+      "actual": "size 64->65, has_暂无=False"
+    },
+    {
+      "id": "F15",
+      "status": "PASS",
+      "actual": "switch=8, has_开机自动启动=True"
+    },
+    {
+      "id": "F16",
+      "status": "PASS",
+      "actual": "before={'value': '0', 'states': []}, after={'value': '1', 'states': ['focused', 'checked']}, restored={'value': '0', 'states': ['focused']}, changed=True, resto"
+    },
+    {
+      "id": "F17",
+      "status": "PASS",
+      "actual": "size=1172, has_管理模型与价格=True, has_Token=True"
+    },
+    {
+      "id": "F18",
+      "status": "FAIL",
+      "actual": "sub_size=86, back_has_描述任务=False, back_has_开机自动启动=False, back_size=65"
+    },
+    {
+      "id": "F19",
+      "status": "PASS",
+      "actual": "textfield 1->1, restored=True"
+    },
+    {
+      "id": "F20",
+      "status": "PASS",
+      "actual": "size 64->71, menuitem=2"
+    }
+  ],
+  "after_state": {
+    "nodes": 70,
+    "dialogs": [],
+    "has_composer": true,
+    "has_model_picker": false,
+    "has_task_scope": false,
+    "permission_labels": [
+      "授权模式: 请求批准 · 先规划"
+    ]
+  },
+  "status": "COMPLETED"
+}

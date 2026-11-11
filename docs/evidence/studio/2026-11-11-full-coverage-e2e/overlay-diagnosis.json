@@ -1,0 +1,73 @@
+{
+  "launcher_pid": 35330,
+  "port": 4324,
+  "steps": [
+    {
+      "tag": "initial",
+      "nodes": 64,
+      "overlays": [],
+      "has_选择模型": false,
+      "has_当前目录": false,
+      "has_composer": true,
+      "buttons_tail": [
+        "hi",
+        "➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "你好",
+        "hi",
+        "➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "hi",
+        "发送",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "tag": "skip:关闭模型选择",
+      "reason": "not found"
+    },
+    {
+      "tag": "skip:关闭",
+      "reason": "not found"
+    },
+    {
+      "tag": "skip:取消",
+      "reason": "not found"
+    },
+    {
+      "tag": "skip:工作",
+      "reason": "not found"
+    },
+    {
+      "tag": "skip:返回应用",
+      "reason": "not found"
+    }
+  ],
+  "window": "w-68110",
+  "clean_achieved": true,
+  "final": {
+    "tag": "before-toggle-probe",
+    "nodes": 64,
+    "overlays": [],
+    "has_选择模型": false,
+    "has_当前目录": false,
+    "has_composer": true,
+    "buttons_tail": [
+      "hi",
+      "➜ aster git:(main) ✗ aster",
+      "你有什么技能？",
+      "你好",
+      "hi",
+      "➜ aster git:(main) ✗ aster",
+      "你有什么技能？",
+      "hi",
+      "发送",
+      "Close",
+      "Full Screen",
+      "Minimize"
+    ]
+  },
+  "status": "COMPLETED"
+}

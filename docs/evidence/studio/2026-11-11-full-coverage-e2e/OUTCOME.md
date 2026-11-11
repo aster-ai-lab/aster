@@ -157,4 +157,14 @@ stamp：`rootCommit=d802ea4659…`、`studioCommit=0161c1c2310b…`、`nativeBin
 - 上一版报告的两个「疑似产品问题」经 `f09_probe` / `f18_probe` **复核后撤回**：F09 残留的 `dialog` 是模型选择器浮层（搜索已关、`has_关闭=false`、composer 可用）；F18 根本没进设置子页（`clicked_back=false`，AX 里是任务范围下拉内容）。
 - 发现的新现象（**待复核、不下结论**）：应用重启后浮层仍处展开态，可能是状态持久化，也可能是 AX 暴露隐藏节点。这是后续拿干净高通过率的前置条件。
 - **配置副作用解除**：F04 留下的「先规划」在干净窗口 `w-68027` 中读取为 `授权模式: 请求批准`，`status=RESTORED`。该标记是会话级「下一轮生效」，重启即清，用户持久配置未被改动；上一版「建议人工检查」的提示作废。
-- 三批运行对比、6 个 FAIL 逐项归因、复核证据见 `functional-test-report.md` 的「收尾复核」章节；机器可读证据：`finalize-report.json`、`restore-config-report.json`、`functional-final.log`、`functional-results.json`（第三批）、`functional-results-run1.json`（第一批）、`functional-run2-invalid.log`（作废批）。
+- 三批运行对比、6 个 FAIL 逐项归因、复核证据见 `functional-test-report.md` 的「收尾复核」章节；机器可读证据：`finalize-report.json`、`restore-config-report.json`、`functional-final.log`、`functional-results-run1.json`（第一批）、`functional-run2-invalid.log`（作废批）。
+
+### 最终收敛（16/20，80%）
+
+`diagnose-overlays.py` 逐步测量**证伪了「应用重启后残留浮层」**：新窗口初始就是干净的（64 节点、零浮层）。247 节点是 `home()` / `scrub()` 盲目点击通用关闭按钮自己点开的。修法：`home()` 先判断、干净就不动；`rerun-functional.py` 受管启动且只在真有首启弹窗时才点关闭。
+
+第四、五批在干净前置下**稳定 16 PASS / 4 FAIL**，F16 的「断言过严」也修正为只比较开关 `value`（忽略 `focused`），转 PASS。剩余 F03/F04/F12/F18 是**用例间状态耦合**导致未形成有效观测（`is_clean_workbench()` 不检查焦点与浮层内部状态，F02 模型切换 / F20 浮层会影响后续用例），不是产品缺陷，也不计入通过。F09 在干净前置下直接 PASS，进一步印证两个「疑似产品问题」的撤回。
+
+**更正上一批的配置判断**：`planFirst` 由 `writeTaskPermission()` 写入 `localStorage` 的 `workbench.task.permission:v1`，**不是会话级**，按 origin/端口隔离（测试用 4322–4325，用户日常端口不受影响）。「规划模式」菜单项是 toggle，重选「请求批准」不会清标记。`clear-plan-first.py` 在 4325 点该菜单项一次，`授权模式: 请求批准 · 先规划` → `授权模式: 请求批准`，`status=RESTORED`。
+
+**最终口径：稳定通过 16/20，不宣称 20/20**；要拿满需每个用例前彻底重置渲染器状态。证据：`overlay-diagnosis.json`、`clean-run-report.json`、`functional-clean-run.log`、`clear-plan-first-report.json`，脚本 `diagnose-overlays.py` / `rerun-functional.py` / `clear-plan-first.py`。

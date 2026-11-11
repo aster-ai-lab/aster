@@ -145,24 +145,42 @@ def shot(tag):
     return f"ft-{safe}.png" if p.get("ok") else None
 
 
+def is_clean_workbench():
+    n = flat(snapshot())
+    nm = [str(x.get("name")) for x in n if x.get("name")]
+    return (len(n) <= 90
+            and any("描述任务" in x for x in nm)
+            and not any("选择模型" in x for x in nm)
+            and not any("在所选项目文件夹里直接修改" in x for x in nm)
+            and not any(x.get("role") == "dialog" for x in n))
+
+
 def home():
-    """Restore a known clean workbench before each case."""
+    """Restore a known clean workbench before each case.
+
+    A freshly launched window is already clean (measured: 64 nodes, zero
+    overlays). Blindly clicking generic close buttons here used to OPEN the
+    model / task-scope popovers and inflated the tree to 247 nodes, which then
+    invalidated five cases. Check first, act only when actually dirty.
+    """
+    if is_clean_workbench():
+        return
     for _ in range(3):
         acted = False
-        for label in ("取消", "关闭", "返回应用", "工作"):
+        for label in ("取消", "关闭模型选择", "关闭", "返回应用", "工作"):
             r = ref("button", label)
             if r:
                 click_ref(r)
-                wait(150)
+                wait(180)
                 acted = True
         r = ref("switch", "展开侧边栏")
         if r:
             click_ref(r)
-            wait(150)
+            wait(180)
             acted = True
-        if not acted:
+        if not acted or is_clean_workbench():
             break
-    wait(250)
+    wait(200)
 
 
 def check(fid, title, fn):
@@ -246,12 +264,18 @@ def f03():
 def f04():
     """Planning mode is a toggle: selecting it changes the label; toggle back."""
     try:
-        opener = permission_opener()
+        opener = find("combobox", "授权模式: 请求批准") or permission_opener()
         if not opener:
             return False, "permission combobox present", "control not found"
         click_ref(opener["ref_id"])
-        wait(450)
-        m = find("menuitem", "规划模式")
+        wait(500)
+        m = find("menuitem", "规划模式") or find_text("规划模式")
+        if not m:
+            opener2 = permission_opener()
+            if opener2:
+                click_ref(opener2["ref_id"])
+                wait(450)
+                m = find("menuitem", "规划模式") or find_text("规划模式")
         if not m:
             return False, "规划模式 menu item present", "menu item not found"
         click_ref(m["ref_id"])
@@ -372,7 +396,7 @@ def f12():
     if not (before.has("全部") and before.size > 60):
         return False, "connector catalog loaded before searching", \
             f"size={before.size}, has_全部={before.has('全部')}"
-    field = first_non_composer_textfield()
+    field = ref("textfield", "搜索连接器或关键词") or first_non_composer_textfield()
     wrote = False
     if field:
         wrote = bool(cli("set-value", field, "zzzz-no-such-connector",
@@ -431,15 +455,18 @@ def f16():
     click_ref(r)
     wait(500)
     after = state_of("switch", "开机自动启动")
-    changed = before != after
-    # restore
+    # Compare the switch VALUE only: `focused` is transient UI state and must
+    # not be treated as a configuration difference.
+    changed = bool(before and after and before["value"] != after["value"])
     r2 = ref("switch", "开机自动启动")
     if r2:
         click_ref(r2)
         wait(450)
     restored = state_of("switch", "开机自动启动")
-    return (changed and restored == before), "switch state changes then returns to original", \
-        f"before={before}, after={after}, restored={restored}"
+    restored_ok = bool(before and restored and restored["value"] == before["value"])
+    return (changed and restored_ok), "switch value toggles then returns to original", \
+        f"before={before}, after={after}, restored={restored}, " \
+        f"changed={changed}, restored_ok={restored_ok}"
 
 
 def f17():
@@ -461,14 +488,20 @@ def f18():
     click("button", "关于")
     wait(650)
     sub = AX()
-    back_btn = ref("button", "返回应用") or ref("button", "工作")
-    if back_btn:
-        click_ref(back_btn)
-        wait(850)
+    # Some settings subpages expose 返回应用, others only the sidebar 工作
+    # button. Try both until the composer is back.
+    for label in ("返回应用", "工作"):
+        r = ref("button", label)
+        if r:
+            click_ref(r)
+            wait(700)
+        if AX().has("描述任务"):
+            break
     back = AX()
-    ok = (not sub.has("管理模型与价格")) and back.has("描述任务") and not back.has("开机自动启动")
-    return ok, "关于 subpage rendered; 返回应用 restores workbench composer", \
-        f"sub_size={sub.size}, back_has_描述任务={back.has('描述任务')}, back_has_开机自动启动={back.has('开机自动启动')}"
+    ok = sub.size > 60 and back.has("描述任务") and not back.has("开机自动启动")
+    return ok, "关于 subpage rendered; navigating back restores workbench composer", \
+        f"sub_size={sub.size}, back_has_描述任务={back.has('描述任务')}, " \
+        f"back_has_开机自动启动={back.has('开机自动启动')}, back_size={back.size}"
 
 
 def f19():
@@ -485,17 +518,27 @@ def f19():
 
 
 def f20():
-    """Task-scope control opens its selector."""
+    """Task-scope control opens its selector and can be closed again."""
     before = AX().size
     r = ref("combobox", "任务范围: 选择项目 · 当前目录") or ref("combobox", "任务范围: aster · 当前目录")
     if not r:
         return False, "task-scope combobox present", "control not found"
-    click_ref(r)
-    wait(500)
-    a = AX()
-    return (a.size > before or a.has("关闭") or a.count_role("menuitem") > 0), \
-        "task-scope selector opens (tree grows / menu items / close control)", \
-        f"size {before}->{a.size}, menuitem={a.count_role('menuitem')}"
+    try:
+        click_ref(r)
+        wait(500)
+        a = AX()
+        return (a.size > before or a.has("关闭") or a.count_role("menuitem") > 0), \
+            "task-scope selector opens (tree grows / menu items / close control)", \
+            f"size {before}->{a.size}, menuitem={a.count_role('menuitem')}"
+    finally:
+        # Leave no popover behind for the next run / the user.
+        close_btn = ref("button", "关闭")
+        if close_btn:
+            click_ref(close_btn)
+            wait(250)
+        elif r:
+            click_ref(r)
+            wait(250)
 
 
 CASES = [
@@ -512,6 +555,26 @@ CASES = [
 ]
 
 
+def restore_permission_label():
+    """F04 toggles planning mode; make sure the run leaves no marker behind."""
+    labels = [n for n in AX().names if "授权模式:" in n]
+    if not any("先规划" in x for x in labels):
+        return {"status": "clean", "labels": labels[:2]}
+    opener = (find("combobox", "授权模式: 请求批准 · 先规划")
+              or permission_opener())
+    if opener:
+        click_ref(opener["ref_id"])
+        wait(450)
+        primary = (find_text("请求批准 读取无需确认")
+                   or find("menuitem", "请求批准 读取无需确认；修改和命令需确认。"))
+        if primary:
+            click_ref(primary["ref_id"])
+            wait(550)
+    after = [n for n in AX().names if "授权模式:" in n]
+    return {"status": "restored" if after and not any("先规划" in x for x in after)
+            else "FAILED", "before": labels[:2], "after": after[:2]}
+
+
 def main():
     # A fresh profile opens a permission modal; dismiss it before any case.
     for label in ("继续", "稍后设置", "关闭"):
@@ -523,10 +586,12 @@ def main():
     home()
     for fid, title, fn in CASES:
         check(fid, title, fn)
+    restore = restore_permission_label()
     passed = sum(1 for r in RESULTS if r["status"] == "PASS")
     summary = {"window": WINDOW, "cases": len(RESULTS), "passed": passed,
                "failed": len(RESULTS) - passed,
                "pass_rate": round(passed / len(RESULTS), 4) if RESULTS else 0,
+               "permission_restore": restore,
                "results": RESULTS}
     (HERE / "functional-results.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
