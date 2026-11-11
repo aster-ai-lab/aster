@@ -76,9 +76,9 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  --radius-control: var(--spec-radius-row, 0.5rem);
-  --radius-panel: var(--spec-radius-dialog, 0.75rem);
-  --radius-surface: var(--spec-radius-dialog, 0.75rem);
+  --radius-control: var(--spec-radius-row, 0.625rem);
+  --radius-panel: var(--spec-radius-dialog, 0.875rem);
+  --radius-surface: var(--spec-radius-dialog, 0.875rem);
   --radius-pill: 9999px;
   --control-height-sm: var(--control-h-sm, 1.875rem);
   --control-height-md: var(--control-h, 2.25rem);

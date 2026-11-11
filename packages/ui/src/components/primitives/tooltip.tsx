@@ -284,7 +284,7 @@ export type TooltipContentProps = React.ComponentProps<typeof RadixContent> & {
   showArrow?: boolean
 }
 
-const TOOLTIP_HOVER_DELAY_MS = 500
+const TOOLTIP_HOVER_DELAY_MS = 300
 
 /** True under an explicit `TooltipProvider`: its tooltips share one open/skip-delay state. */
 const SharedTooltipProviderContext = React.createContext(false)

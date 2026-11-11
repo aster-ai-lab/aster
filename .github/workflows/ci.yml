@@ -171,4 +171,6 @@ jobs:
       - name: Studio launcher contracts
         run: pnpm exec vitest run --project scripts scripts/__tests__/studioDev.test.ts scripts/__tests__/check-dependency-lockstep.test.ts
       - name: Studio perf/layout contracts
-        run: pnpm run test:contracts:perf-layout
+        run: node scripts/run-perf-layout-contracts.mjs
+      - name: Motion contract
+        run: node scripts/check-motion-contract.mjs
