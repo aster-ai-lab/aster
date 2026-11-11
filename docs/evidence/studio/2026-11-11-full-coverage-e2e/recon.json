@@ -1,0 +1,2591 @@
+{
+  "window": "w-62191",
+  "states": [
+    {
+      "label": "工作台",
+      "nodes": 58,
+      "named_nodes": 41,
+      "interactive_instances": 35,
+      "unique_interactive": 29,
+      "role_counts": {
+        "button": 21,
+        "combobox": 12,
+        "switch": 1,
+        "textfield": 1
+      },
+      "controls": [
+        {
+          "role": "button",
+          "name": "工作",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "设置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "连接器",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "技能",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "自动化",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建项目",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "expanded"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "在项目中新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你好",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你好",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "收起侧边栏",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "textfield",
+          "name": "描述任务，输入 / 使用指令或技能，@ 选择工作区文件",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus",
+            "TypeText"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多选项",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "combobox",
+          "name": "授权模式: 请求批准",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "combobox",
+          "name": "优化提示词",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "disabled",
+            "readonly"
+          ]
+        },
+        {
+          "role": "combobox",
+          "name": "DeepSeek Flash",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "发送",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "disabled"
+          ]
+        },
+        {
+          "role": "combobox",
+          "name": "任务范围: 选择项目 · 当前目录",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "Close",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Full Screen",
+          "actions": [
+            "Click",
+            "RightClick"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Minimize",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        }
+      ],
+      "all_names": [
+        "Aster",
+        "Aster",
+        "工作",
+        "设置",
+        "新建任务",
+        "搜索任务",
+        "工作导航",
+        "连接器",
+        "技能",
+        "自动化",
+        "项目",
+        "新建项目",
+        "aster",
+        "在项目中新建任务",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "最近",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "描述任务，输入 / 使用指令或技能，@ 选择工作区文件",
+        "更多选项",
+        "授权模式: 请求批准",
+        "优化提示词",
+        "DeepSeek Flash",
+        "发送",
+        "任务范围",
+        "任务范围: 选择项目 · 当前目录",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "label": "连接器",
+      "nodes": 59,
+      "named_nodes": 42,
+      "interactive_instances": 35,
+      "unique_interactive": 29,
+      "role_counts": {
+        "button": 24,
+        "combobox": 7,
+        "radiobutton": 2,
+        "switch": 1,
+        "textfield": 1
+      },
+      "controls": [
+        {
+          "role": "button",
+          "name": "工作",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "设置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "连接器",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "技能",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "自动化",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建项目",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "expanded"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "在项目中新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你好",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你好",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "收起侧边栏",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "textfield",
+          "name": "搜索连接器或关键词",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus",
+            "TypeText"
+          ],
+          "states": []
+        },
+        {
+          "role": "radiobutton",
+          "name": "市场",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "radiobutton",
+          "name": "已安装",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "刷新",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "创建",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "全部",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "精选",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Close",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Full Screen",
+          "actions": [
+            "Click",
+            "RightClick"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Minimize",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        }
+      ],
+      "all_names": [
+        "Aster",
+        "Aster",
+        "工作",
+        "设置",
+        "新建任务",
+        "搜索任务",
+        "工作导航",
+        "连接器",
+        "技能",
+        "自动化",
+        "项目",
+        "新建项目",
+        "aster",
+        "在项目中新建任务",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "最近",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "搜索连接器或关键词",
+        "连接器",
+        "市场",
+        "已安装",
+        "刷新",
+        "创建",
+        "连接器",
+        "全部",
+        "精选",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "label": "技能",
+      "nodes": 59,
+      "named_nodes": 42,
+      "interactive_instances": 35,
+      "unique_interactive": 29,
+      "role_counts": {
+        "button": 23,
+        "combobox": 8,
+        "radiobutton": 2,
+        "switch": 1,
+        "textfield": 1
+      },
+      "controls": [
+        {
+          "role": "button",
+          "name": "工作",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "设置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "连接器",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "技能",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "自动化",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建项目",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "expanded"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "在项目中新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你好",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你好",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "收起侧边栏",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "textfield",
+          "name": "搜索技能或关键词...",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus",
+            "TypeText"
+          ],
+          "states": []
+        },
+        {
+          "role": "radiobutton",
+          "name": "市场",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "radiobutton",
+          "name": "已安装",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "刷新",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "创建",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "全部",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "精选",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Close",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Full Screen",
+          "actions": [
+            "Click",
+            "RightClick"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Minimize",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        }
+      ],
+      "all_names": [
+        "Aster",
+        "Aster",
+        "工作",
+        "设置",
+        "新建任务",
+        "搜索任务",
+        "工作导航",
+        "连接器",
+        "技能",
+        "自动化",
+        "项目",
+        "新建项目",
+        "aster",
+        "在项目中新建任务",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "最近",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "搜索技能或关键词...",
+        "技能",
+        "市场",
+        "已安装",
+        "刷新",
+        "创建",
+        "技能",
+        "全部",
+        "精选",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "label": "自动化",
+      "nodes": 58,
+      "named_nodes": 41,
+      "interactive_instances": 35,
+      "unique_interactive": 29,
+      "role_counts": {
+        "button": 25,
+        "combobox": 8,
+        "switch": 1,
+        "textfield": 1
+      },
+      "controls": [
+        {
+          "role": "button",
+          "name": "工作",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "设置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "连接器",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "技能",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "自动化",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建项目",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "expanded"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "在项目中新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你好",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你好",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "收起侧边栏",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "textfield",
+          "name": "搜索定时任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus",
+            "TypeText"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "新建",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "全部状态",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "活跃",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已暂停",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已完成",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已错过",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Close",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Full Screen",
+          "actions": [
+            "Click",
+            "RightClick"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Minimize",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        }
+      ],
+      "all_names": [
+        "Aster",
+        "Aster",
+        "工作",
+        "设置",
+        "新建任务",
+        "搜索任务",
+        "工作导航",
+        "连接器",
+        "技能",
+        "自动化",
+        "项目",
+        "新建项目",
+        "aster",
+        "在项目中新建任务",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "最近",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "搜索定时任务",
+        "新建",
+        "按状态筛选",
+        "全部状态",
+        "活跃",
+        "已暂停",
+        "已完成",
+        "已错过",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    },
+    {
+      "label": "设置",
+      "nodes": 93,
+      "named_nodes": 71,
+      "interactive_instances": 60,
+      "unique_interactive": 54,
+      "role_counts": {
+        "button": 38,
+        "combobox": 10,
+        "switch": 8,
+        "incrementor": 3,
+        "textfield": 1
+      },
+      "controls": [
+        {
+          "role": "button",
+          "name": "工作",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "设置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "连接器",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "技能",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "自动化",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "新建项目",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "expanded"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "在项目中新建任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "➜ aster git:(main) ✗ aster",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：➜ aster git:(main) ✗ aster",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你有什么技能？",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你有什么技能？",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "你好",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：你好",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "hi",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "更多：hi",
+          "actions": [
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "收起侧边栏",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "textfield",
+          "name": "搜索定时任务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus",
+            "TypeText"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "新建",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "全部状态",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "活跃",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已暂停",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已完成",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "已错过",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "返回应用",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "搜索设置...",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "通用",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "快捷键",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "用量",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "模型服务",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "模型配置",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "网络搜索",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "文档处理",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "数据",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "归档",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "关于",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "switch",
+          "name": "开机自动启动",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "switch",
+          "name": "启动时最小化到托盘",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "switch",
+          "name": "显示托盘图标",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "关闭时最小化到托盘",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "switch",
+          "name": "运行任务时保持系统唤醒",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "combobox",
+          "name": "语言",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "更改",
+          "actions": [
+            "Click",
+            "RightClick",
+            "ScrollTo",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "incrementor",
+          "name": "保留最近消息数",
+          "actions": [
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "switch",
+          "name": "启用上下文管理",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": [
+            "checked"
+          ]
+        },
+        {
+          "role": "incrementor",
+          "name": "工具输出截断阈值(字符)",
+          "actions": [
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": []
+        },
+        {
+          "role": "switch",
+          "name": "自动压缩",
+          "actions": [
+            "Click",
+            "Toggle",
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": [
+            "checked",
+            "offscreen"
+          ]
+        },
+        {
+          "role": "incrementor",
+          "name": "压缩触发阈值",
+          "actions": [
+            "RightClick",
+            "ScrollTo",
+            "SetValue",
+            "SetFocus"
+          ],
+          "states": [
+            "offscreen"
+          ]
+        },
+        {
+          "role": "combobox",
+          "name": "跟随当前模型",
+          "actions": [
+            "Click",
+            "ScrollTo",
+            "SetFocus",
+            "Expand",
+            "Collapse"
+          ],
+          "states": [
+            "readonly",
+            "offscreen"
+          ]
+        },
+        {
+          "role": "button",
+          "name": "Close",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Full Screen",
+          "actions": [
+            "Click",
+            "RightClick"
+          ],
+          "states": []
+        },
+        {
+          "role": "button",
+          "name": "Minimize",
+          "actions": [
+            "Click"
+          ],
+          "states": []
+        }
+      ],
+      "all_names": [
+        "Aster",
+        "Aster",
+        "工作",
+        "设置",
+        "新建任务",
+        "搜索任务",
+        "工作导航",
+        "连接器",
+        "技能",
+        "自动化",
+        "项目",
+        "新建项目",
+        "aster",
+        "在项目中新建任务",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "最近",
+        "➜ aster git:(main) ✗ aster",
+        "更多：➜ aster git:(main) ✗ aster",
+        "你有什么技能？",
+        "更多：你有什么技能？",
+        "你好",
+        "更多：你好",
+        "hi",
+        "更多：hi",
+        "hi",
+        "更多：hi",
+        "收起侧边栏",
+        "搜索定时任务",
+        "新建",
+        "按状态筛选",
+        "全部状态",
+        "活跃",
+        "已暂停",
+        "已完成",
+        "已错过",
+        "返回应用",
+        "搜索设置...",
+        "通用",
+        "快捷键",
+        "用量",
+        "模型服务",
+        "模型配置",
+        "网络搜索",
+        "文档处理",
+        "数据",
+        "归档",
+        "关于",
+        "开机自动启动",
+        "启动时最小化到托盘",
+        "显示托盘图标",
+        "关闭时最小化到托盘",
+        "运行任务时保持系统唤醒",
+        "语言",
+        "更改",
+        "保留最近消息数: 仅发送最近若干条消息，更早的消息不进入上下文；留空表示不限制。任务可单独覆盖",
+        "保留最近消息数",
+        "启用上下文管理: 自动管理对话上下文：转存超长工具输出，并在接近窗口上限时压缩历史。关闭后不做处理，超出模型窗口的请求将失败",
+        "启用上下文管理",
+        "工具输出截断阈值(字符): 超过该字符数的工具输出会被转存为文件并截断，模型可按需读回。任务可单独覆盖",
+        "工具输出截断阈值(字符)",
+        "自动压缩: 接近上下文窗口上限时自动摘要较早的对话。任务可单独覆盖",
+        "自动压缩",
+        "压缩触发阈值: 对话超过可用输入上下文（模型上下文窗口减去预留输出）的该百分比时触发压缩。任务可单独覆盖",
+        "压缩触发阈值",
+        "跟随当前模型",
+        "Close",
+        "Full Screen",
+        "Minimize"
+      ]
+    }
+  ]
+}
