@@ -12,6 +12,26 @@ fn a_launch_without_the_flag_stays_interactive() {
 }
 
 #[test]
+fn configuration_overlays_preserve_base_selection_and_declaration_order() {
+    let args = parse(&[
+        "--config",
+        "host.acl",
+        "--config-overlay",
+        "first.acl",
+        "--config-overlay",
+        "第二层.acl",
+    ])
+    .expect("args");
+    assert_eq!(args.config, Some("host.acl".into()));
+    assert_eq!(
+        args.config_overlays,
+        vec![PathBuf::from("first.acl"), PathBuf::from("第二层.acl")]
+    );
+    assert!(parse(&[]).expect("args").config_overlays.is_empty());
+    assert!(parse(&["--config-overlay"]).is_err());
+}
+
+#[test]
 fn the_unattended_flag_carries_budget_and_result_file() {
     let args = parse(&["--unattended"]).expect("args");
     assert_eq!(

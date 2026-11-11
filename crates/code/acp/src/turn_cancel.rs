@@ -1,5 +1,3 @@
-//! Stop returns the prompt while a tool poll is still on a pool thread.
-//!
 //! The public stream join is only a waiter. Aborting it does not stop the
 //! fact worker. The turn lock stays with that join until the worker settles
 //! or [`CANCEL_JOIN_HOLD`] elapses.
@@ -8,10 +6,6 @@ use std::time::Duration;
 
 use tokio::sync::OwnedMutexGuard;
 use tokio::task::JoinHandle;
-
-/// How long a cancelled turn keeps reading events so a waiting tool can
-/// append `tool.result` `cancelled` before the public response returns.
-pub(crate) const CANCEL_EVENT_DRAIN: Duration = Duration::from_millis(150);
 
 /// Let an owned VM finish its bounded shutdown before aborting its fact worker.
 /// Premature abort can retain an unproved admission lease after the VM is gone.

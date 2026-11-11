@@ -94,16 +94,19 @@ impl AsterCodeAgent {
                 id,
                 name,
                 args: tool_args,
-            } => match note_tool_row(&mut state.painted_tools, &id) {
-                ToolRowPaint::Open => {
-                    self.emit_tool_call(session_id, &id, &name, Some(&tool_args))
-                        .await;
+            } => {
+                state.pending_tools.insert(id.clone());
+                match note_tool_row(&mut state.painted_tools, &id) {
+                    ToolRowPaint::Open => {
+                        self.emit_tool_call(session_id, &id, &name, Some(&tool_args))
+                            .await;
+                    }
+                    ToolRowPaint::Update => {
+                        self.emit_tool_call_started(session_id, &id, &name, &tool_args)
+                            .await;
+                    }
                 }
-                ToolRowPaint::Update => {
-                    self.emit_tool_call_started(session_id, &id, &name, &tool_args)
-                        .await;
-                }
-            },
+            }
             AgentEvent::ToolOutputDelta { id, name, delta } => {
                 self.emit_tool_call_output_delta(session_id, &id, &name, &delta)
                     .await;
@@ -138,6 +141,7 @@ impl AsterCodeAgent {
                     )
                     .await;
                 }
+                state.pending_tools.remove(&id);
             }
             AgentEvent::ConfirmationRequired {
                 tool_id,
@@ -349,6 +353,7 @@ impl AsterCodeAgent {
                 args: tool_args,
                 reason,
             } => {
+                state.pending_tools.remove(&tool_id);
                 if state.painted_tools.insert(tool_id.clone()) {
                     self.emit_tool_call(session_id, &tool_id, &tool_name, Some(&tool_args))
                         .await;
@@ -668,11 +673,8 @@ impl AsterCodeAgent {
         }
     }
 
-    /// Return `Cancelled` without awaiting a stuck public join.
-    ///
-    /// A short drain lets a tool that is already waiting append `cancelled`.
-    /// The original worker must finish its capability cleanup and release
-    /// proof. The public join retains the turn lock while that happens.
+    /// Prove original-run cleanup and flush foreground tool terminals before acknowledging cancel.
+    /// Detached child tasks keep their existing observer and cleanup lifecycle.
     pub(super) async fn leave_cancelled_turn(
         &self,
         session_id: &acp::SessionId,
@@ -682,16 +684,29 @@ impl AsterCodeAgent {
         join: JoinHandle<()>,
         turn_permit: OwnedMutexGuard<()>,
     ) -> acp::Result<acp::PromptResponse> {
-        let deadline = tokio::time::Instant::now() + crate::turn_cancel::CANCEL_EVENT_DRAIN;
-        loop {
-            let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
-            if remaining.is_zero() {
-                break;
+        let deadline = tokio::time::Instant::now()
+            + crate::turn_cancel::CANCEL_SETTLE_GRACE
+            + crate::turn_cancel::CANCEL_ABORT_GRACE;
+        let mut settlement = Box::pin(session.cancel_and_settle(
+            crate::turn_cancel::CANCEL_SETTLE_GRACE,
+            crate::turn_cancel::CANCEL_ABORT_GRACE,
+        ));
+        let mut settled = false;
+        let mut events_open = true;
+        let drained = loop {
+            if settled && state.pending_tools.is_empty() && (!events_open || rx.is_empty()) {
+                break true;
             }
             tokio::select! {
                 biased;
-                _ = tokio::time::sleep(remaining) => break,
-                event = rx.recv() => {
+                result = &mut settlement, if !settled => {
+                    if !result {
+                        break false;
+                    }
+                    settled = true;
+                }
+                _ = tokio::time::sleep_until(deadline) => break false,
+                event = rx.recv(), if events_open => {
                     match event {
                         Some(event) => {
                             if matches!(
@@ -709,13 +724,19 @@ impl AsterCodeAgent {
                             .await
                             .is_err()
                             {
-                                break;
+                                break false;
                             }
                         }
-                        None => break,
+                        None => events_open = false,
                     }
                 }
             }
+        };
+        if !drained {
+            crate::turn_cancel::detach_turn_permit(turn_permit, join);
+            return Err(agent_failure_error(
+                "cancelled run cleanup or foreground tool results are still pending",
+            ));
         }
         self.settle_public_join(join, turn_permit).await;
         self.close_run_observation(state).await;

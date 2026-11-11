@@ -1029,6 +1029,7 @@ struct TurnState {
     /// Tool calls already given a pager row. A later start for the same id
     /// updates that row instead of opening another Run card.
     painted_tools: HashSet<String>,
+    pending_tools: HashSet<String>,
     /// Last model invocation's usage, paired with End's response metadata for measured TPS.
     last_turn_usage: Option<aster_core::llm::TokenUsage>,
     end_usage: Option<aster_core::llm::TokenUsage>,

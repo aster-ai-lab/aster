@@ -9,7 +9,7 @@
 //! Without the opt-in, no other product's login, keychain item or database
 //! is read.
 //!
-//! Layer authority: only a layer the host consented to (`--config`,
+//! Layer authority: only a layer the host consented to (`--config`, `--config-overlay`,
 //! `ASTER_CONFIG`, or `~/.aster/config.acl`) may set host-authoritative posture
 //! (sandbox, providers, verification_contract and goal_control). A workspace `.aster/config.acl` is untrusted
 //! repository content; it may configure the agent but never arm, narrow, or
@@ -63,9 +63,31 @@ pub fn load_launch_config_with_imports(
     explicit_config: Option<PathBuf>,
     requested: &[AccountImport],
 ) -> Result<(LaunchConfig, WorkspaceLayerAdmission)> {
+    load_launch_config_with_overlays(workspace, explicit_config, requested, &[])
+}
+
+/// Append explicitly authorized ACL layers without promoting workspace configuration.
+pub fn load_launch_config_with_overlays(
+    workspace: PathBuf,
+    explicit_config: Option<PathBuf>,
+    requested: &[AccountImport],
+    overlays: &[PathBuf],
+) -> Result<(LaunchConfig, WorkspaceLayerAdmission)> {
+    let mut sources = layer_sources(&workspace, explicit_config.as_deref());
+    if !overlays.is_empty() {
+        let mut layers = match sources {
+            Ok(layers) => layers,
+            Err(error) if explicit_config.is_none() && is_missing_acl(&error) => Vec::new(),
+            Err(error) => return Err(error),
+        };
+        for path in overlays {
+            layers.push(LayerSource::read(LayerKind::Explicit, path)?);
+        }
+        sources = Ok(layers);
+    }
     let mut withheld_orphan = None;
     let mut admission = WorkspaceLayerAdmission::default();
-    let mut config = match layer_sources(&workspace, explicit_config.as_deref()) {
+    let mut config = match sources {
         Ok(layers) => {
             let layer_acls = layers
                 .iter()
@@ -750,6 +772,7 @@ mod tests {
     mod diagnostics;
     mod execution_capabilities;
     mod goal_control;
+    mod overlays;
     use super::*;
     use std::io::Write;
 

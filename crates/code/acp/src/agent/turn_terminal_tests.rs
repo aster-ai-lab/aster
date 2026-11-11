@@ -561,6 +561,72 @@ async fn forced_stop_is_not_a_successful_end_turn() {
 }
 
 #[tokio::test]
+async fn cancelled_prompt_waits_for_foreground_tool_terminal() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().to_owned();
+    let agent = AsterCodeAgent::new(launch);
+    let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap();
+    let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
+        .session
+        .clone();
+    let mut state = TurnState::default();
+    agent
+        .handle_event(
+            &opened.session_id,
+            &session,
+            &mut state,
+            AgentEvent::ToolExecutionStart {
+                id: "foreground".into(),
+                name: "bash".into(),
+                args: serde_json::json!({"command":"controlled"}),
+            },
+        )
+        .await;
+    let (sender, events) = tokio::sync::mpsc::channel(1);
+    let (release, waiting) = tokio::sync::oneshot::channel();
+    let worker = tokio::spawn(async move {
+        waiting.await.unwrap();
+        sender
+            .send(AgentEvent::ToolEnd {
+                id: "foreground".into(),
+                name: "bash".into(),
+                args: None,
+                output: "cancelled".into(),
+                exit_code: 130,
+                metadata: None,
+                error_kind: None,
+            })
+            .await
+            .unwrap();
+    });
+    let lock = Arc::new(tokio::sync::Mutex::new(()));
+    let mut response = Box::pin(agent.leave_cancelled_turn(
+        &opened.session_id,
+        &session,
+        &mut state,
+        events,
+        worker,
+        lock.lock_owned().await,
+    ));
+    assert!(
+        tokio::time::timeout(std::time::Duration::from_millis(600), &mut response)
+            .await
+            .is_err(),
+        "cancelled response must wait for the active tool's real terminal event"
+    );
+    release.send(()).unwrap();
+    let result = tokio::time::timeout(std::time::Duration::from_secs(2), response)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(result.stop_reason, acp::StopReason::Cancelled);
+    session.close().await;
+}
+
+#[tokio::test]
 async fn cancellation_after_event_eof_returns_while_retaining_the_live_worker_permit() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));
