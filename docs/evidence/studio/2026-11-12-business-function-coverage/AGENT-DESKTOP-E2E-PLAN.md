@@ -1,6 +1,7 @@
 # 基于 agent-desktop 的 F 层端到端覆盖率提升规划
 
-> 状态：**规划稿**，未执行任何用例。事实基线来自只读调研（PLAN §4/§9、MATRIX、OUTCOME、specs、renderer 源码、agent-desktop help）。
+> 状态：**v2（含执行进展）**。初版为只读规划；§0–§7 保留原始事实基线与阶段划分，**§8 起为 2026-11-13 更新**：并入第三十/三十三轮实测、工程前置修复、逐功能用例规格表与数字路径。
+> 事实基线来自只读调研（PLAN §4/§9、MATRIX、OUTCOME、specs、renderer 源码、agent-desktop help）与两轮真窗口探测。
 > 目标：在用户口径下把 F 层从当前 **1/17** 尽可能往上推，并明确哪些项目不可能靠写用例达标。
 
 ## 0. 口径、现状与一个待裁决点
@@ -136,3 +137,93 @@ agent-desktop list-apps                    # host 健康确认，必要时预热
 3. **`--headed` 口径**：`type --headed` 已被本台账接受，但 `COVERAGE_UPLIFT_PLAN.md:139` 文字上禁止；建议统一成「允许物理键盘、禁止坐标/鼠标拖拽」并写进口径注。
 4. **工作树状态**：父仓仍有并行 WIP，发布前需干净工作树；本规划文档自身不要变成发布阻塞项。
 5. **上限诚实**：D 类 4 项决定了 100% 不可能靠测试侧达成，目标应表述为「把可测面吃满」而非「全达标」。
+
+---
+
+# v2 更新（2026-11-13）
+
+## 8. 已执行进展与工程前置
+
+### 8.1 台账现状（与 §0 的初版数字对比）
+
+| 项 | 初版（规划时） | v2（实测后） |
+| --- | --- | --- |
+| F 层（用户口径） | 1/17 | **1/17，未变** |
+| F 层（PLAN §9 原口径） | 2/17 | 2/17，未变 |
+| 真宿主验证用例 | 7/7 | **8/8** |
+| 完全合规可视化 E2E | 3 条 | **4 条** |
+| P0 口径裁决 | 待裁决 | **仍待裁决**（两次未回应，见 §10） |
+
+### 8.2 已交付的工程优化
+
+| 产物 | 内容 | 实测 |
+| --- | --- | --- |
+| `specs/host_readiness.py` | host 自愈，`ensure_host()` 集成进主骨架 `launch()` | 一次 `HOST_READY: PASS`（97 apps）；**收尾复测 `FAIL`，见 8.4** |
+| `specs/composer-controls-visual-e2e.py` | F02 控件子集，12 条纯语义断言 | 修正时序后**连续 3 次 `COMPOSER_CONTROLS_L3: PASS`** |
+| 回归 | 主骨架改动后重跑 F11 | `AGENT_DESKTOP_LAUNCH_L3: PASS (766baa)` |
+
+**host 退化的两个真根因**（此前被当成随机抖动）：
+1. `open -a` 对已运行 bundle **只激活、不执行 launcher** → 必须 `open -n -a`；且只有已获辅助功能授权的 `AsterVisualE2E.app` 上下文能执行 `/bin/ps`（新建独立 warmup app 不行）。
+2. **Bash 轮询竞态**：`open -n` 异步，Python 立即 `host_ok()` 会抢先把 host spawn 到受限上下文 → 必须等 wrapper 写 `done.flag`。
+
+### 8.3 新发现的能力边界：`type --headed` 前置条件
+
+两轮真窗口探测确认的 AX 控件（窗口 `w-75255`/`w-75348`）：composer textfield、`更多选项` combobox、`授权模式: 请求批准` combobox（F06 线索）、`优化提示词` combobox、`收起侧边栏` switch（checked/value=1）、`dialog:更多选项` 内「上传附件」（disabled）。
+
+但本会话 `type --headed` 全部返回：
+```
+TIMEOUT / focus_verification / "application did not become frontmost"
+disposition: delivered_unverified, retry: unsafe
+```
+中文与 `/clear` 均未进入 composer（value 恒 `'\n'`），斜杠命令菜单、队列 dock 的 `find` 命中为 0；先加语义 click「工作」仍失败。对比 F11 成功时 `launch ok=True`、本轮多为 `False`，判定为**窗口焦点/TCC 状态**，非产品缺陷；`retry: unsafe` 故不重试写动作。
+
+> 这条限制是当前 F02 完整断言、以及所有需要真实键盘输入的用例（中文输入法、Shift+Enter、命令面板快捷键）的**共同关键路径**，排在 §10 的 P1 之前。
+
+### 8.4 不能声称已解决的
+
+- **host 自愈不是 100% 可靠**：本轮收尾时 host 再次退化，单独 `host_readiness.py --force` 返回 `HOST_READY: FAIL`（`list-apps ok=False`）。Launch Services / TCC 仍有未定位的偶发因素。**每次 GUI 跑前仍须手动确认 `list-apps`**，不能假设自愈成功。
+- F02 只覆盖了控件/附件子集，不含中文输入、斜杠命令、队列；不声称 F02 达标。
+- `COMPOSER_CONTROLS_L3` 第一次复跑 FAIL 于对话框异步挂载，修正方式是 `wait_for()` 轮询控件出现（**等待就绪，不是放宽断言**）。
+
+## 9. 逐功能用例规格表（17 项，v2 新增）
+
+统一前置：§1.3 的构建/verify/host 确认；统一模板见 §3。所有脚本放 `specs/`，用 `importlib` 复用主骨架。
+
+| ID | 目标脚本 | 数据前置 | 关键动作序列 | 主断言（AX 层） | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| F01 | `draft-navigation-visual-e2e.py`（已有） | — | `launch → focus → re-find → type --headed → click 设置 → click 工作 → get value` | 草稿跨页保留；**待补**空草稿不落盘、切 Tab 状态保持 | 已 2×PASS，待补 2 断言 |
+| F02 | `composer-controls-visual-e2e.py`（已有） | — | `find composer/更多选项/授权模式/优化提示词/侧栏 switch → click 更多选项 → find 上传附件 → press escape → get value` | 控件存在、附件项在 dialog 下、面板不改草稿 | **3×PASS（子集）** |
+| F02 | `composer-input-visual-e2e.py`（待建） | 解锁 frontmost | `focus → type --headed` 中文、`/clear`、Shift+Enter、粘贴 | 中文回读、斜杠菜单项与 `promptText` 一致、队列 dock 文本、空白不落盘 | **阻塞：8.3** |
+| F03 | `streaming-turn-visual-e2e.py` | `model_server.py` 合成 turn | `find aria-busy → find Stop → find 工具披露行/引用链接` | 流式状态迁移、终态不重放、聚合行、引用可跳转 | P2，需 fixture |
+| F04 | `virtual-list-visual-e2e.py` | >100 条消息会话 | `scroll --direction down → 切走切回 → get --property bounds / find --count` | 节点回收、滚动位置恢复、搜索命中跳转 | P2，需 fixture |
+| F05 | `model-selector-visual-e2e.py` | — | `find --role tab → find --role tablist → set-value 搜索 → press 上下键 → get value` | 唯一实例、过滤/键盘导航、选中态与思考强度还原 | P1 可写（不用键盘输入） |
+| F06 | — | 真 ACP 发 `session/request_permission` | `click 允许/拒绝` | 两次终态可区分、结果真实回写 | **结构不可达**（§5） |
+| F07 | `acp-turn-visual-e2e.py` | synthetic MCP（`capability_mcp.py`） | `launch` 起实例 → UI 发起任务 → `find` 回执 | 真实回复/工具记录；磁盘 HTTP 仅作 evidence | P2，需 fixture + 口径声明 |
+| F08 | `sidebar-persist-visual-e2e.py` | — | 侧栏 `setPinned/reorder` → `close-app --force` → `launch` → `find --name` | 重启后顺序与 pin 仍生效 | P1 可写（复用 F11 重启骨架） |
+| F09 | — | 工作区 tab 入口 | — | Ctrl+Tab / detach / 新窗口焦点 | **结构不可达**（真窗口 0 个 `role=tab`） |
+| F10 | `global-search-visual-e2e.py` | — | `press cmd+k` → `set-value`「搜索设置...」→ `find --count` | 结果项/空结果态/可清除/恢复开会话 | P1 可写（`set-value` 实测有效） |
+| F11 | `agent-desktop-launch-e2e.py`（已有） | — | `launch → toggle → 读 ACL → close-app → launch → 回读 → 还原` | 四项必须断言全覆盖 | **已达标，勿回归** |
+| F12 | — | document tool 产物 | — | DOCX/XLSX/PPTX/PDF/PNG 真实字节 | **结构不可达**（断言落磁盘，非 UI 层） |
+| F13 | `f13-first-run-e2e.py` 升级 | 产品补装 3 个组件 | 首启 → 组件安装 → 权限对话框 → 重启不再弹 | 3 个 runtime 组件、摘要一致 | P3，需产品改造 |
+| F14 | `single-instance-visual-e2e.py`（已有） | — | `launch → 二次 launch → 比对 PID/窗口 ID` | 不产生第二实例 | 已 PASS；**待补** `MainExitGuard` Dialog、更新通道/清单 |
+| F15 | — | 非交互截图接口 | — | pooled 窗口、pin、真实文件 | **结构不可达**（入口隐藏 + 物理鼠标） |
+| F16 | `error-states-visual-e2e.py` | — | `find` 空/加载/重试/离线文案 → `is --property focused` → `snapshot --surface alert` | 文案固定 locale、焦点返回、name/role/value 完整 | P1 可写（UI 部分） |
+| F17 | `appearance-bounds-visual-e2e.py` | — | `resize-window` 窄窗口 + `snapshot --include-bounds` | 100/125/200% 无重叠溢出 | P1 可写（外观页隐藏，主题切换受限） |
+
+## 10. 数字路径与优先级（v2）
+
+| 里程碑 | 动作 | 增量 | 累计 F 层 | 前置 |
+| --- | --- | --- | --- | --- |
+| 现状 | — | — | **1/17** | — |
+| **P0** | 裁决「真窗口 L2 断言满足 §9.2 最低执行面」，改 MATRIX F01 行 | +1 | 2/17 | Lyon 裁决（两次未回应） |
+| **P0'** | 补齐 F01 的空草稿/切 Tab 断言，坐实达标 | 0 | 2/17 | 8.3 部分影响 |
+| **P1-a** | F05 / F08 / F10 / F16(UI) / F17 各一条真窗口断言用例 | +5 | 7/17 | **P0 通过**；这 5 条不依赖 `type --headed` |
+| **P1-b** | 解锁 frontmost → 补齐 F02 输入/斜杠命令/队列断言 | +1 | 8/17 | 8.3 + P0 |
+| **P2** | F03 / F04 / F07（fixture），主断言留 AX 层 | +0~2 | 8–10/17 | fixture 口径裁决 |
+| **P3/D** | F13 / F14 / F16(L3) 与 F06/F09/F12/F15 | 0 | — | 产品改造，不在测试侧 |
+
+**优先顺序建议**：P0 裁决 → **8.3 frontmost 定位**（它是 F02 完整用例与所有键盘类断言的共同前置）→ P1-a 五条（不依赖键盘，可立即产出）→ P1-b → P2。
+
+**P0 裁决的合理假设**：若暂不裁决，可按 §9.2 字面（「执行面 ≥ 最低执行面」，排除的是 Playwright/内存桩）**先按「真窗口断言即满足」推进 P1-a**，同时在 OUTCOME 明确标注「计入以裁决通过为前提」，避免停摆；一旦裁决否定，把这批降级为抽样、不虚报数字。
+
+**上限仍维持 §2 的诚实结论**：不改产品约 7–9/17（P2 顺利可到 10–11/17，但 fixture 口径有风险）；D 类 4 项决定 100% 不可达。
