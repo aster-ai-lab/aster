@@ -48,13 +48,25 @@ jobs:
           if manifest.get("version") != version or manifest.get("tag") != f"aster-cli-v{version}":
               raise SystemExit("channel manifest identity mismatch")
           assets = manifest.get("assets")
-          if not isinstance(assets, dict) or set(assets) != {"macos", "linux", "linux-arm64", "windows"}:
+          if not isinstance(assets, dict):
               raise SystemExit("channel manifest platform set mismatch")
-          for platform, extension in (("macos", "tar.gz"), ("linux", "tar.gz"), ("linux-arm64", "tar.gz"), ("windows", "zip")):
+          # A named distro channel is optional: older releases publish only the
+          # four canonical platforms, and old updaters must ignore unknown keys.
+          required = {"macos", "linux", "linux-arm64", "windows"}
+          optional = {"kylin-x86_64"}
+          platforms = set(assets)
+          if not required <= platforms or platforms - required - optional:
+              raise SystemExit("channel manifest platform set mismatch")
+          checks = [("macos", "tar.gz"), ("linux", "tar.gz"), ("linux-arm64", "tar.gz"), ("windows", "zip")]
+          if "kylin-x86_64" in platforms:
+              checks.append(("kylin-x86_64", "tar.gz"))
+          for platform, extension in checks:
               entry = assets[platform]
               expected = f"aster-cli-v{version}-{platform}.{extension}"
-              if entry.get("name") != expected or not re.fullmatch(r"[0-9a-f]{64}", entry.get("sha256", "")):
+              if not isinstance(entry, dict) or entry.get("name") != expected or not re.fullmatch(r"[0-9a-f]{64}", entry.get("sha256", "")):
                   raise SystemExit(f"channel manifest asset mismatch: {platform}")
+          if "kylin-x86_64" in platforms and assets["kylin-x86_64"]["sha256"] != assets["linux"]["sha256"]:
+              raise SystemExit("kylin-x86_64 channel must be byte-identical to linux")
           PY
           latest_tag="$(gh api "repos/${GH_REPO}/releases/latest" --jq .tag_name)"
           if [[ "$latest_tag" != v[0-9]* ]]; then

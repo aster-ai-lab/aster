@@ -117,7 +117,7 @@ class GlibcCeilingTest(unittest.TestCase):
 
 
 class LinuxPackagingTest(unittest.TestCase):
-    def package_fixture(self, dump):
+    def package_fixture(self, dump, platform="linux"):
         with tempfile.TemporaryDirectory(prefix="aster-linux-package-") as directory:
             root = Path(directory)
             bins, commands = root / "bins", root / "commands"
@@ -133,7 +133,7 @@ class LinuxPackagingTest(unittest.TestCase):
             trace = root / "readelf.log"
             archive = root / "linux.tar.gz"
             env = dict(os.environ, PATH=str(commands) + os.pathsep + os.environ["PATH"], FAKE_READELF_LOG=str(trace), FAKE_ABI_DUMP=dump)
-            result = subprocess.run(["bash", str(PACKAGE), "linux", str(bins), str(archive)], env=env, capture_output=True, text=True, timeout=10)
+            result = subprocess.run(["bash", str(PACKAGE), platform, str(bins), str(archive)], env=env, capture_output=True, text=True, timeout=10)
             return result, archive.exists(), trace.read_text() if trace.exists() else ""
 
     def test_linux_packaging_checks_both_binaries_against_the_baseline(self):
@@ -150,8 +150,22 @@ class LinuxPackagingTest(unittest.TestCase):
         self.assertIn("GLIBC_2.34", result.stderr)
         self.assertFalse(exists)
 
+    def test_kylin_x86_64_packaging_keeps_the_glibc_231_gate(self):
+        result, exists, trace = self.package_fixture(DUMP_231, platform="kylin-x86_64")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(exists)
+        self.assertIn("--version-info", trace)
+        for name in NAMES:
+            self.assertIn("/" + name + "\n", trace)
+
+    def test_kylin_x86_64_packaging_refuses_a_newer_glibc_requirement(self):
+        result, exists, _ = self.package_fixture(DUMP_238, platform="kylin-x86_64")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("GLIBC_2.34", result.stderr)
+        self.assertFalse(exists)
+
     def test_retired_and_unknown_platforms_are_refused(self):
-        for platform in ("kylin", "plan9"):
+        for platform in ("kylin", "kylin-arm64", "plan9"):
             with self.subTest(platform=platform):
                 result = subprocess.run(["bash", str(PACKAGE), platform, "/missing", "/missing/out.tar.gz"], capture_output=True, text=True, timeout=10)
                 self.assertNotEqual(result.returncode, 0)
@@ -187,7 +201,29 @@ class LinuxChannelSelectionTest(unittest.TestCase):
         env = dict(os.environ, ASTER_RELEASE_BASE=str(self.assets), PATH=str(self.fake) + os.pathsep + os.environ["PATH"])
         env.pop("ASTER_INSTALL_URL", None)
         env.pop("GROK_INSTALL_URL", None)
+        # Never let an ambient distro override decide which channel a test observes.
+        env.pop("ASTER_OS_RELEASE_FILE", None)
         return env
+
+    def asset(self, platform, name=None, digest="0" * 64):
+        name = name or f"aster-cli-v{VERSION}-{platform}.tar.gz"
+        return f'"{platform}":{{"name":"{name}","sha256":"{digest}"}}'
+
+    def write_manifest(self, *entries):
+        (self.assets / "latest.json").write_text(
+            f'{{"version":"{VERSION}","tag":"aster-cli-v{VERSION}","assets":{{{",".join(entries)}}}}}\n'
+        )
+
+    def os_release(self, ident):
+        path = self.root / "os-release"
+        path.write_text(f'ID={ident}\nNAME="Fixture Linux"\nVERSION_ID="10 SP1"\n')
+        return str(path)
+
+    def install(self, env):
+        return subprocess.run(
+            ["bash", str(INSTALL), "--prefix", str(self.prefix)],
+            env=env, capture_output=True, text=True, timeout=10,
+        )
 
     def test_linux_hosts_request_the_same_archive_without_a_special_channel(self):
         for version in ("2.31", "2.39", None):
@@ -222,6 +258,63 @@ class LinuxChannelSelectionTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("does not download that binary", result.stderr)
         self.assertFalse(marker.exists())
+
+    def test_kylin_x86_64_prefers_the_named_channel(self):
+        self.write_manifest(self.asset("kylin-x86_64"), self.asset("linux"))
+        env = self.environment()
+        env["ASTER_OS_RELEASE_FILE"] = self.os_release("kylin")
+        result = self.install(env)
+        self.assertIn(f"local release is missing aster-cli-v{VERSION}-kylin-x86_64.tar.gz", result.stderr)
+
+    def test_kylin_x86_64_falls_back_to_linux_on_old_manifest(self):
+        # The default fixture has no kylin-x86_64 key: older releases must stay installable.
+        env = self.environment()
+        env["ASTER_OS_RELEASE_FILE"] = self.os_release("kylin")
+        result = self.install(env)
+        self.assertIn(f"local release is missing aster-cli-v{VERSION}-linux.tar.gz", result.stderr)
+
+    def test_only_exact_distro_ids_enable_the_named_channel(self):
+        for ident, expected in (("kylin", "kylin-x86_64"), ("kylinos", "kylin-x86_64"),
+                                ("ubuntu", "linux"), ("Kylin", "linux")):
+            with self.subTest(ident=ident):
+                self.write_manifest(self.asset("kylin-x86_64"), self.asset("linux"))
+                env = self.environment()
+                env["ASTER_OS_RELEASE_FILE"] = self.os_release(ident)
+                result = self.install(env)
+                self.assertIn(f"local release is missing aster-cli-v{VERSION}-{expected}.tar.gz", result.stderr)
+
+    def test_kylin_aarch64_host_stays_on_linux_arm64(self):
+        self.fake_uname("aarch64")
+        self.write_manifest(self.asset("kylin-x86_64"), self.asset("linux-arm64"))
+        env = self.environment()
+        env["ASTER_OS_RELEASE_FILE"] = self.os_release("kylin")
+        result = self.install(env)
+        self.assertIn(f"local release is missing aster-cli-v{VERSION}-linux-arm64.tar.gz", result.stderr)
+
+    def test_malformed_kylin_entries_never_widen_the_asset_name(self):
+        for name in (f"aster-cli-v{VERSION}-linux.tar.gz", "../../evil.tar.gz"):
+            with self.subTest(name=name):
+                self.write_manifest(self.asset("kylin-x86_64", name=name), self.asset("linux"))
+                env = self.environment()
+                env["ASTER_OS_RELEASE_FILE"] = self.os_release("kylin")
+                result = self.install(env)
+                self.assertIn(f"local release is missing aster-cli-v{VERSION}-linux.tar.gz", result.stderr)
+                self.assertNotIn("evil", result.stderr)
+
+    def test_direct_kylin_archive_url_is_accepted(self):
+        marker = self.root / "network-called"
+        self.fake_tool("curl", 'printf called > "$NETWORK_MARKER"; exit 99')
+        env = self.environment()
+        env["NETWORK_MARKER"] = str(marker)
+        url = (f"https://github.com/aster-ai-lab/aster/releases/download/"
+               f"aster-cli-v{VERSION}/aster-cli-v{VERSION}-kylin-x86_64.tar.gz")
+        result = subprocess.run(
+            ["bash", str(INSTALL), "--prefix", str(self.prefix), url],
+            env=env, capture_output=True, text=True, timeout=10,
+        )
+        self.assertNotIn("does not download that binary", result.stderr)
+        self.assertTrue(marker.exists())
+        self.assertIn("platform=kylin-x86_64", result.stdout)
 
 
 if __name__ == "__main__":

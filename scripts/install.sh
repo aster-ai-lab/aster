@@ -9,7 +9,9 @@
 # `--version X.Y.Z` installs that exact release. A positional URL may name
 # one official archive directly. macOS downloads a .tar.gz, Linux a .tar.gz,
 # Windows a .zip; each archive contains aster and aster-acp.
-# The Linux archive uses a single x86_64, glibc 2.31 compatibility baseline.
+# Linux archives keep the glibc 2.31 baseline. On Kylin V10 SP1 x86_64 the
+# installer prefers the `kylin-x86_64` named channel and falls back to `linux`
+# when the release manifest does not publish it, so older releases keep working.
 # The command does not clone this repository and does not compile.
 set -euo pipefail
 
@@ -57,7 +59,7 @@ while [[ $# -gt 0 ]]; do
       usage
       ;;
     *://*)
-      if [[ "$1" =~ ^https://github\.com/aster-ai-lab/aster/releases/download/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+-(macos|linux|linux-arm64|windows)\.(tar\.gz|zip)$ ]]; then
+      if [[ "$1" =~ ^https://github\.com/aster-ai-lab/aster/releases/download/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+/aster-cli-v[0-9]+\.[0-9]+\.[0-9]+-(macos|linux|linux-arm64|kylin-x86_64|windows)\.(tar\.gz|zip)$ ]]; then
         direct_url="$1"
       else
         refuse
@@ -84,13 +86,34 @@ if [[ -n "$want_version" ]]; then
   fi
 fi
 
+# Probe the distro ID from os-release. ASTER_OS_RELEASE_FILE only exists so the
+# probe can be exercised in tests and minimal containers; it selects a named
+# channel, never weakens any checksum or archive-member check below.
+is_kylin_host() {
+  local release_file="${ASTER_OS_RELEASE_FILE:-/etc/os-release}"
+  [[ -r "$release_file" ]] || return 1
+  local id
+  id="$(sed -n 's/^[[:space:]]*ID[[:space:]]*=[[:space:]]*//p' "$release_file" | head -1)"
+  id="${id#\"}"; id="${id%\"}"
+  id="${id#\'}"; id="${id%\'}"
+  [[ "$id" == "kylin" || "$id" == "kylinos" ]]
+}
+
 uname_s="$(uname -s 2>/dev/null || true)"
 uname_m="$(uname -m 2>/dev/null || true)"
+# Candidates are tried in order. Only Kylin x86_64 gets a preferred named
+# channel; it always falls back to the generic linux asset.
+platform_candidates=()
 case "$uname_s" in
   Darwin) platform=macos ;;
   Linux)
     case "$uname_m" in
-      x86_64|amd64) platform=linux ;;
+      x86_64|amd64)
+        platform=linux
+        if is_kylin_host; then
+          platform_candidates=(kylin-x86_64 linux)
+        fi
+        ;;
       aarch64|arm64) platform=linux-arm64 ;;
       *)
         echo "error: unsupported Linux architecture: ${uname_m:-unknown}" >&2
@@ -108,9 +131,12 @@ case "$uname_s" in
     fi
     ;;
 esac
+if [[ ${#platform_candidates[@]} -eq 0 ]]; then
+  platform_candidates=("$platform")
+fi
 
 case "$platform" in
-  macos|linux|linux-arm64) extension="tar.gz" ;;
+  macos|linux|linux-arm64|kylin-x86_64) extension="tar.gz" ;;
   windows) extension="zip" ;;
 esac
 
@@ -128,6 +154,11 @@ release_base="${ASTER_RELEASE_BASE:-}"
 if [[ -n "$direct_url" ]]; then
   asset_url="$direct_url"
   asset_name="${direct_url##*/}"
+  # A direct URL names its asset explicitly; reflect a named Kylin channel in
+  # the reported platform without changing any checksum or member check.
+  case "$asset_name" in
+    *-kylin-x86_64.tar.gz) platform=kylin-x86_64 ;;
+  esac
 elif [[ -n "$release_base" ]]; then
   case "$release_base" in
     *://*) refuse ;;
@@ -162,14 +193,26 @@ if [[ -n "$manifest_json" ]]; then
     echo "error: release ${tag} does not match the requested version ${want_version}" >&2
     exit 1
   fi
-  asset_name="aster-cli-v${version}-${platform}.${extension}"
-  # grep exits 1 when the platform key is absent; keep going so we can report it.
-  entry="$(printf '%s' "$compact" | grep -oE "\"${platform}\":\{\"name\":\"[^\"]+\",\"sha256\":\"[0-9a-f]{64}\"\}" | head -1 || true)"
-  expected_sha="$(printf '%s' "$entry" | grep -oE '[0-9a-f]{64}' || true)"
-  if [[ "$entry" != "\"${platform}\":{\"name\":\"${asset_name}\",\"sha256\":\"${expected_sha}\"}" ]]; then
-    echo "error: channel manifest has no ${asset_name}" >&2
+  # Try candidates in order. A manifest that omits the optional Kylin channel
+  # still resolves to the generic linux asset, so older releases stay installable.
+  selected=""
+  for candidate in "${platform_candidates[@]}"; do
+    candidate_asset="aster-cli-v${version}-${candidate}.${extension}"
+    # grep exits 1 when the platform key is absent; keep going to the fallback.
+    candidate_entry="$(printf '%s' "$compact" | grep -oE "\"${candidate}\":\{\"name\":\"[^\"]+\",\"sha256\":\"[0-9a-f]{64}\"\}" | head -1 || true)"
+    candidate_sha="$(printf '%s' "$candidate_entry" | grep -oE '[0-9a-f]{64}' || true)"
+    if [[ "$candidate_entry" == "\"${candidate}\":{\"name\":\"${candidate_asset}\",\"sha256\":\"${candidate_sha}\"}" ]]; then
+      selected="$candidate"
+      asset_name="$candidate_asset"
+      expected_sha="$candidate_sha"
+      break
+    fi
+  done
+  if [[ -z "$selected" ]]; then
+    echo "error: channel manifest has no aster-cli-v${version}-${platform_candidates[0]}.${extension} (tried: ${platform_candidates[*]})" >&2
     exit 1
   fi
+  platform="$selected"
   if [[ -n "$release_base" ]]; then
     asset_url="${release_base}/${asset_name}"
     local_asset="$asset_url"

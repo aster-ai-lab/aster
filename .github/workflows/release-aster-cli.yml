@@ -331,10 +331,25 @@ jobs:
           . "$HOME/.cargo/env"
           bin_dir="${CARGO_TARGET_DIR:-target}/${CLI_PROFILE}"
           bash scripts/package-aster-cli.sh "$CLI_PLATFORM" "$bin_dir" "$CLI_ASSET_NAME"
+      # Kylin V10 SP1 x86_64 gets its own named asset. It is a byte-identical
+      # copy of the linux archive, never a second build: the two channels cannot
+      # diverge in ABI, build identity, or checksum.
+      - name: Derive the Kylin x86_64 named archive
+        if: ${{ matrix.platform == 'linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -f "$CLI_ASSET_NAME" "${GITHUB_REF_NAME}-kylin-x86_64.tar.gz"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-${{ matrix.platform }}
           path: ${{ env.CLI_ASSET_NAME }}
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ matrix.platform == 'linux' }}
+        with:
+          name: aster-cli-kylin-x86_64
+          path: ${{ github.ref_name }}-kylin-x86_64.tar.gz
           if-no-files-found: error
 
   publish:
@@ -361,7 +376,7 @@ jobs:
           path: dist
           run-id: ${{ inputs.artifact_run_id != '' && inputs.artifact_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Keep only the four platform archives
+      - name: Keep only the release archives
         shell: bash
         run: |
           set -euo pipefail
@@ -370,6 +385,7 @@ jobs:
           # Intermediate bin/sandbox artifacts share the aster-cli-* prefix; drop them.
           find dist -mindepth 1 -maxdepth 1 ! -name 'aster-cli-v*-macos.tar.gz' \
             ! -name 'aster-cli-v*-linux.tar.gz' ! -name 'aster-cli-v*-linux-arm64.tar.gz' \
+            ! -name 'aster-cli-v*-kylin-x86_64.tar.gz' \
             ! -name 'aster-cli-v*-windows.zip' -exec rm -rf {} +
           ls -la dist
       - name: Assemble draft aster-cli

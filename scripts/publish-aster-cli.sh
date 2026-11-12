@@ -6,8 +6,11 @@ set -euo pipefail
 ARTIFACT_RUN_ID="${ARTIFACT_RUN_ID:-}"
 shopt -s nullglob
 files=(dist/*)
-if [[ ${#files[@]} -ne 4 ]]; then
-  echo "expected 4 release archives, found ${#files[@]}" >&2
+# The Kylin x86_64 named channel is optional: republishing an older four-archive
+# qualification run must still work. A fifth file is only allowed if it is the
+# byte-identical Kylin alias of the linux archive (checked below).
+if [[ ${#files[@]} -ne 4 && ${#files[@]} -ne 5 ]]; then
+  echo "expected 4 or 5 release archives, found ${#files[@]}" >&2
   printf '%s\n' "${files[@]:-}" >&2
   exit 1
 fi
@@ -36,6 +39,19 @@ for asset in "${tag}-macos.tar.gz" "${tag}-linux.tar.gz" "${tag}-linux-arm64.tar
     exit 1
   fi
 done
+# Reject stray or retired names instead of uploading them as release assets.
+for file in "${files[@]}"; do
+  case "${file##*/}" in
+    "${tag}-macos.tar.gz"|"${tag}-linux.tar.gz"|"${tag}-linux-arm64.tar.gz"|\
+    "${tag}-kylin-x86_64.tar.gz"|"${tag}-windows.zip") ;;
+    *) echo "unexpected release archive: ${file##*/}" >&2; exit 1 ;;
+  esac
+done
+kylin_asset="dist/${tag}-kylin-x86_64.tar.gz"
+if [[ -f "$kylin_asset" && ${#files[@]} -ne 5 ]]; then
+  echo "expected 5 release archives with the Kylin alias, found ${#files[@]}" >&2
+  exit 1
+fi
 successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-aster-cli.yml/runs?head_sha=${built}&event=push&status=completed&per_page=100" --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')"
 if [[ "$successful_runs" -eq 0 ]]; then
   echo "refusing release: artifact source $built has no successful branch qualification" >&2
@@ -67,15 +83,27 @@ macos_sha="$(shasum -a 256 -b "dist/${tag}-macos.tar.gz" | cut -d' ' -f1)"
 linux_sha="$(shasum -a 256 -b "dist/${tag}-linux.tar.gz" | cut -d' ' -f1)"
 linux_arm64_sha="$(shasum -a 256 -b "dist/${tag}-linux-arm64.tar.gz" | cut -d' ' -f1)"
 windows_sha="$(shasum -a 256 -b "dist/${tag}-windows.zip" | cut -d' ' -f1)"
+# The optional Kylin channel is a name, not a second build: publishing a
+# different archive under that name would silently fork the x86_64 baseline.
+kylin_entry=""
+if [[ -f "$kylin_asset" ]]; then
+  kylin_sha="$(shasum -a 256 -b "$kylin_asset" | cut -d' ' -f1)"
+  if [[ "$kylin_sha" != "$linux_sha" ]]; then
+    echo "error: Kylin x86_64 alias must be byte-identical to the linux archive" >&2
+    exit 1
+  fi
+  kylin_entry=',"kylin-x86_64":{"name":"'"${tag}"'-kylin-x86_64.tar.gz","sha256":"'"${kylin_sha}"'"}'
+fi
 # Compact single-line manifest: scripts/install.sh parses this exact shape.
-printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","sha256":"%s"},"linux":{"name":"%s-linux.tar.gz","sha256":"%s"},"linux-arm64":{"name":"%s-linux-arm64.tar.gz","sha256":"%s"},"windows":{"name":"%s-windows.zip","sha256":"%s"}}}\n' \
-  "$version" "$tag" "$tag" "$macos_sha" "$tag" "$linux_sha" "$tag" "$linux_arm64_sha" "$tag" "$windows_sha" > dist/latest.json
+printf '{"version":"%s","tag":"%s","assets":{"macos":{"name":"%s-macos.tar.gz","sha256":"%s"},"linux":{"name":"%s-linux.tar.gz","sha256":"%s"},"linux-arm64":{"name":"%s-linux-arm64.tar.gz","sha256":"%s"},"windows":{"name":"%s-windows.zip","sha256":"%s"}%s}}\n' \
+  "$version" "$tag" "$tag" "$macos_sha" "$tag" "$linux_sha" "$tag" "$linux_arm64_sha" "$tag" "$windows_sha" "$kylin_entry" > dist/latest.json
 cat > notes.md <<EOF
 aster-cli v${version} — Core / ACP ${acp_version}
 
 Aster CLI ships the aster + aster-acp pair plus the offline Model2Vec embedding assets under embedding/. Process isolation uses the locked ksandbox dependency in Core, not companions or kbox MicroVM inside this archive.
 Each archive contains the locked release build of Aster ${version} and ACP ${acp_version} from this repository, with their shared BUILD_ID and SHA256SUMS. The binaries are unsigned.
 Linux archives use glibc 2.31: \`linux\` is x86_64 and \`linux-arm64\` is aarch64.
+When published, \`kylin-x86_64\` is a byte-identical named channel of \`linux\` for Kylin V10 SP1 x86_64; \`aster update\` keeps using the \`linux\` channel.
 Update with \`aster update\`, or inspect with \`aster update --check\`, then restart the TUI to use the new pair.
 EOF
 printf 'Built from %s.\n' "$built" >> notes.md

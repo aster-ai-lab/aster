@@ -38,6 +38,7 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 - 从仓库根目录使用固定 Rust 工具链和锁文件构建。
 - CLI 的 `aster` 与 `aster-acp` 必须从同一干净提交构建、验证并成对发布；归档同时携带共享 `BUILD_ID` 和 `SHA256SUMS`。
 - CLI Linux 归档按架构拆分：`linux` 为 x86_64，`linux-arm64` 为 aarch64；二者均以 glibc 2.31 为基线。
+- `kylin-x86_64` 是银河麒麟桌面 V10 SP1 x86_64 的具名分发通道，不是第二种二进制：由 `release-aster-cli.yml` 从同一 `linux` 归档字节级复制产生，`publish-aster-cli.sh` 校验两者 SHA-256 相同，禁止在该名称下发布不同 ABI 或不同构建身份的产物。`scripts/install.sh` 在麒麟 x86_64 上优先选择该键，清单不含该键时回退 `linux`，以便继续安装旧版 Release。
 - 桌面版通过 `release-aster-desktop.yml` 构建并更新 `desktop-stable`；安装包版本与 Core／ACP 版本相互独立。
 - Core／ACP 通过 `release-code.yml` 构建。只有 `aster-acp-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。归档文件名使用同一前缀（`aster-acp-vX.Y.Z-<platform>.*`）。
 - 不得从有未提交修改或未完成指定平台验证的工作树发布。发布记录必须能定位到准确源码提交。
@@ -61,7 +62,8 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 
 #### CLI 更新器兼容
 
-- **通道清单**：`latest.json` 的 `assets` 可增加新平台键；已发布更新器必须忽略未知键，不能因未知平台拒绝整份清单。先发布带该行为的 CLI，再把新平台键写入 `aster-cli-stable`。
+- **通道清单**：`latest.json` 的 `assets` 可增加新平台键；已发布更新器必须忽略未知键，不能因未知平台拒绝整份清单。先发布带该行为的 CLI，再把新平台键写入 `aster-cli-stable`。`release-aster-cli-channel.yml` 因此要求四个标准平台齐全，并只允许 `kylin-x86_64` 作为可选键。
+- **具名通道与更新器**：`kylin-x86_64` 只影响 `scripts/install.sh` 的资产选择；`aster update` 按 `channel_for()` 继续使用 `linux`，因为两个归档字节相同。不要为具名通道改动更新器的平台映射，否则会破坏「未知键可忽略」这一兼容承诺。
 - **归档成员**：新增*必需*成员（如 `embedding/`）会使更旧的更新器无法解包。不要假设 `aster update` 能跨越这类布局变更；公告中写明用 `scripts/install.sh` / `scripts/install.ps1` 重装，或先发过渡版本。
 - **禁止**为迁就旧更新器而跳过未知归档成员后仍报告成功：会装出缺文件的半套 pair。
 
