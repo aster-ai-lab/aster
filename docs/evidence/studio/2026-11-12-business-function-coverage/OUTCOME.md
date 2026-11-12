@@ -941,6 +941,36 @@ AGENT_DESKTOP_LAUNCH_L3: PASS (token b6af4a)      E2E_EXIT=0, 55s
 - 默认产物字节未变：`aster` 899194232、`aster-acp` 306630680。
 - 4318/4325/4326/4327/4388 全空闲；无可见 Aster 窗口；`agent-desktop list-windows` `ok=True`。
 
+## 第二十五轮：第 2 条完全合规可视化用例 —— F01 跨页草稿抽样 **FAIL（真实发现）**
+
+环境复查：`permissions` = `accessibility: granted` / `screen_recording: granted`，`list-windows ok=True` 116 窗口，`e2e-fresh-build --verify` = `019c9a3f0/0161c1c23` 绿，五端口空闲。
+
+用第二十四轮跑通的骨架扩第二条用例：`specs/draft-navigation-visual-e2e.py`（经 `importlib` 复用 `agent-desktop-launch-e2e.py` 的 wrapper/launch/wait/ref 辅助，不重复实现）。目标 **F01 的 L3 抽样「跨页导航后草稿保持」**，与第十六轮的「跨进程草稿 `NOT_PERSISTED`」形成对照。
+
+### 两次运行（结论一致）
+
+```
+[1] agent-desktop launch → ok=True
+[2] focus -> re-find -> type --headed 输入 ASTERNAVF85146
+    value = 'ASTERNAVF85146\n'   ui_text_matches = 1
+[3] 点「设置」切页
+[4] 点「工作」切回
+    value = ''                  ui_text_matches = 0
+[5] clear 还原
+DRAFT_NAV_L3: FAIL             NAV2_EXIT=1, 26s
+```
+
+首跑（`ASTERNAV04EA91`）同样 `value = ''` → FAIL。为避免把「输入只落在 AX 属性、没进编辑器」误判成产品行为，第二跑加了 **UI 文本对照**：切页前 `find --name <token>` 命中 1 处，证明文字确实进了实时 UI；切回后命中 0 处。因此**草稿在跨页往返时丢失是真实观察**，不是测试手法问题。
+
+按 fail-closed **没有把断言改成「草稿为空」来凑 PASS**；脚本输出 `FAIL`，明确记为发现、**不计入任何覆盖**。可能的产品解释是切换视图时 composer 被卸载/重建，或「工作」按钮回到的是新任务视图；未进一步断定，需产品侧确认。
+
+### 判定与状态
+
+- 这是**第 2 条完全符合用户口径的可视化 E2E**（`agent-desktop launch` 启动 + 全程 agent-desktop 驱动 + `close-app` 退出），但**结果为 FAIL**；按 §9「每条功能至少一条通过用例」，F01 **不计入 F 层**。
+- 真宿主验证用例 **5 → 6**；新口径 F 层仍 **1/17**（仅 F11），原口径仍 2/17。
+- 与第十六轮合起来得到完整画像：**新建任务 composer 草稿既不跨进程保留，也不跨页导航保留**。
+- 收尾：草稿已清空、ACL 仍 `value = false`、默认产物字节未变、五端口全空闲、无可见 Aster 窗口、`list-windows ok=True`。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -965,4 +995,5 @@ AGENT_DESKTOP_LAUNCH_L3: PASS (token b6af4a)      E2E_EXIT=0, 55s
 - ~~不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过~~ → **该条已被第二十四轮推翻**：脚本经读数修复后两次完整复跑 `PASS`（EXIT 0），现为 F11 完全合规用例。此处保留仅为说明演进，不再作为有效免责。
 - 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。（第二十二轮已找到绕过方式，第二十四轮已跑通。）
 - **不声称第二十四轮改变了 F 层数字**：新口径仍 1/17、原口径仍 2/17；变化的是 F11 的达标用例从「折中形态」升级为「完全合规且两次通过」。不声称 F06/F09/F12/F15、F13/F14 或任何 Gate A 套件因此计入覆盖。
+- **不声称 F01 已覆盖**：第二十五轮的 L3 抽样用例 `DRAFT_NAV_L3: FAIL`，虽完全符合 agent-desktop 可视化 E2E 口径但不通过；不声称把断言放宽后算 PASS，也不声称已断定产品根因（仅记录跨页往返后草稿丢失的观察）。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。

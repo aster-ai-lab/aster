@@ -17,11 +17,11 @@ Rosetta + arch -arm64 re-exec that made the launch identities disagree).
 The disk ACL snapshot is read with Python only as evidence, never as a test
 action. Requires `just build-studio` from this checkout first (AGENTS.md).
 
-Status at the time of writing: the launch half was verified on 2026-11-12
-(launcher.log showed studio-webview-url / studio-main-window visible=true),
-but the host session then lost `ps` exec permission, which makes all
-agent-desktop window commands time out. This script is complete and
-py_compile-clean; run it once the desktop driver's global inventory recovers.
+Status 2026-11-12 (OUTCOME round 24): fully working. Requires the
+AsterVisualE2E wrapper app to have Accessibility granted in System Settings,
+and the agent-desktop host to have been respawned from that wrapper's
+Launch Services context (where the setuid /bin/ps is executable). Two
+independent runs passed with --instance f11-live-01 --port 4325.
 """
 import argparse
 import json
