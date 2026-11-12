@@ -1115,6 +1115,30 @@ it.each(['aster', 'aster'])('only mounts organization runtimes for the managed t
 - `just studio-land-check` 仍因子模块里两个非本任务的未提交 connector spec 而 EXIT 1，**父仓 gitlink 仍未 bump**（保持 `0161c1c2`）；父仓本轮只提交证据。
 - 本轮**未改任何产品源码**，F 层数字与用例计数均不变（新口径 1/17、原口径 2/17，真宿主 7/7）。
 
+## 第二十九轮：按最佳实践处理发布前置（未发布）
+
+用户问「能否发布新版本 Aster Studio」后授权「根据最佳实践处理」。只读盘点发现**当前不具备发布条件**，其中最危险的一条：CI 的 `.github/actions/checkout-studio` 按 `HEAD:apps/studio` 检出，而父仓 gitlink 仍是 `0161c1c231`，子模块 `main` 已到 `4ba6056222` —— 直接触发发布会打出**旧 Studio 源码**。
+
+### 本轮实际处理（只做内部、可回滚的前置）
+
+1. **核实两个阻塞 spec 的来路**：`connector-native.spec.ts`(M, 186 行 vs HEAD 170) 与 `restart-persistence.spec.ts`(??) 均为本会话早前产物，且在 `specs/` 下已有**逐字节一致**的备份（`cmp -s` 通过）。按新口径它们不计覆盖、也未经完整验证，故**不入库**：工作树副本再归档到 `/tmp/aster-release-prep/specs/`，tracked 文件 `git checkout --` 恢复 HEAD，未跟踪文件移出工作树。evidence 里的备份原件保留。
+2. **发现并修复上一轮的推送遗漏**：`4ba6056222`（第二十八轮的测试修复）其实**没推上去**，远程 `studio.git` 的 main 仍是 `cc0a7bd098`。若此时 bump gitlink，CI 会去检出一个远程不存在的 commit。`git switch -C main 4ba6056222` 结束 detached，`git push origin main` 补推成功；复核 `HEAD == main == origin/main == 4ba6056222`。
+3. **过门禁**：`just studio-land-check` **EXIT 0**：
+   ```
+   apps/studio worktree is clean
+   apps/studio pointer advances 0161c1c2310b -> 4ba6056222fa
+   studio delivery commits 0161c1c2310b..4ba6056222fa are clean
+   ```
+4. **bump 父仓 gitlink**：只 stage `apps/studio`，提交 `221d7c145`（本地，1 行改动）。复核父仓 HEAD gitlink、子模块 HEAD、远程 studio main **三者一致** = `4ba6056222`。
+
+### 明确未做（需 Lyon 决策/授权）
+
+- **未推送父仓**（本地领先 `origin/main` 2 个 commit：gitlink bump 与本证据提交）——按约定「推送与发布前单独确认」。
+- **未 bump 版本号**：三处仍 `0.2.2`，`dist/desktop-latest.json` 已是 `0.2.2`，清单生成会拒绝 `existing >= version`；新版本号需你定（如 `0.2.3`）。
+- **未构建、未签名公证、未打 tag、未触发 `release-aster-desktop.yml`、未创建 Release**。
+- **未动父仓其他 WIP**：`apps/aster/tests/{cli_update,env_manager}.rs`、`crates/code/acp/tests/cursor_account_tui_e2e.rs`、`crates/code/core/...` 两个文件、`docs/evidence/code/20261112-acp-child-tool-events/` 属并行任务，按 AGENTS.md 一律保留。`release-governance.md:43` 要求干净工作树发布，这些仍需其主人处理。
+- 本机 Node 22 vs 要求 24.12、CI 无签名/公证 secret、桌面发布无 tag 自动触发（仅 `workflow_dispatch` + 人工中英双语 notes）——这些是发布形态决策，未擅自绕过。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
