@@ -154,6 +154,40 @@ fixture 仍是**一次真实 turn 的完整 parts**（没有拼接不同 turn �
 
 **S1 达成**：4 类真实 part 有组件渲染断言（2× 94/94）、R9 checklist 固化、live gate 约定固化。仍未做（如实）：`coverage-matrix.md` 的 222 项统计未改，因为它的 R/B/L/S/F/C 编号描述真窗口截图场景、没有组件渲染维度，硬套会造假。
 
+## 第四轮：真实 4 类 part 的覆盖补齐 —— 两个 D 类 part 的正确路径
+
+S1 完成后继续推进「全部能力和组件渲染」。检查真实 fixture 的 4 类 part 各自在渲染层的去向，发现一个**不能硬造断言**的事实：
+
+| part | `MessagePartsRenderer` 行为 | 可观察路径 |
+| --- | --- | --- |
+| `text` | markdown 叶子渲染 | ✅ 已有真实断言（`mock-markdown`） |
+| `reasoning` | 折叠 process disclosure 内的 `ThinkingBlock` | ✅ 已有真实断言（展开后 `mock-thinking-block`） |
+| `data-context-usage` | **`:672` 直接 `return null`** | 数据投影：`projectAgentContextChunk → restoreReportedAgentContext → context-usage 缓存 → ContextUsageSummary` |
+| `step-start` | 无专门渲染分支 | 内部步边界，不可见 |
+
+后两类正是 `coverage-matrix.md` 定义的 **D 类**（代码 `return null` / 内部状态，只能静态代码验收）。因此**没有给它们编造组件渲染断言**，而是补上真实数据链路的验证。
+
+### 新增用例：`agentSessionContextProjection.test.ts`
+
+复用该文件既有的 `projectAgentContextChunk` / `cacheService.getSharedSnapshot` 通道，把**真实 fixture 的 `data-context-usage.data`**（`totalTokens: 24798`、`maxTokens: 1000000`、`percentage: 2.4798`、`windowSource: "runtime"`、`measuredAt` 真实时间戳）喂进投影，断言这些**真实数值**进入缓存快照。
+
+因为 `restoreReportedAgentContext` 用 `reportedAgentContextUsageSchema.safeParse`（zod 会 strip 未知字段），断言的是关键字段值而不是 `toEqual` 整个对象——避免把 schema 的正常规范化误判为失败。
+
+### 验证（实测）
+
+| 检查 | 结果 |
+| --- | --- |
+| `vitest run --project renderer agentSessionContextProjection.test.ts` | **7 passed (7)**，EXIT 0 |
+| 两文件一起复跑（`MessagePartsRenderer` + `agentSessionContextProjection`） | **2 passed (2)**，EXIT 0 |
+| `oxlint --deny-warnings` 新测试文件 | **0 warning / 0 error**，EXIT 0 |
+| `git diff --check` | OK |
+
+### 判定
+
+- 真实 LLM turn 的 4 类 part 现在**各有正确归属**：2 类有组件渲染断言，2 类明确为 D 类并验证其中一类的数据投影链路。
+- **不改 222 项统计**、`coverage-matrix.md` 不动（理由同第三轮）；**F 层仍 1/17 / 2/17**，组件/数据层 vitest 不计入用户口径。
+- 未改产品源码。
+
 ## Explicitly not claimed
 
 - 不声称「任务对话流全部能力和组件渲染」已测完；只跑通了 1 个真 turn、验到 4 种 part 类型，222 项形态里绝大多数未执行。
