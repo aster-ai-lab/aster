@@ -79,6 +79,10 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: |
+          # The PTY suites spawn the shipped binaries from target/debug.
+          # `cargo test` only builds test harnesses, so build the pair from
+          # this checkout first (AGENTS.md: E2E must run against current sources).
+          cargo build --locked -p aster -p aster-acp --bin aster --bin aster-acp
           for suite in \
             shell_bypass_learning \
             memory_management \
