@@ -36,7 +36,7 @@
 | F03 | 流式消息/工具披露/引用 | L2 + 契约门禁 | L2 桩 | 见 Gate A 结果 | 需契约门禁绿 |
 | F04 | 消息虚拟列表与滚动记忆 | L2 + 契约门禁 | L2 桩 | 见 Gate A 结果 | 需契约门禁绿 |
 | F05 | 模型选择整链 | L2 + 契约门禁 | L2 桩 | 见 Gate A 结果 | 需契约门禁绿 |
-| F06 | 工具审批批准/拒绝 | **L3** | **无** | **未覆盖** | 需 live native ACP；`permission-mode.spec.ts:108` 明写需真宿主 |
+| F06 | 工具审批批准/拒绝 | **L3** | **无** | **未覆盖**（本轮已探测） | 已打通 HTTP 装 MCP + 真实 ACP turn，但 `permission_mode:'default'` 在 synthetic harness 下不发 `session/request_permission`，`pendingApprovals` 恒为空；详见 OUTCOME 第八轮 |
 | F07 | 真实 ACP turn 与连接器/MCP 调用 | **L3** | **有 1 条** | ✅ **本轮 L3 通过** | 已达标（见 OUTCOME 第三轮） |
 | F08 | 项目/工作区/侧栏重排固定 | L2 + L3 抽样 | 仅 L2 桩 | 见 Gate A 结果 | 需 L3 抽样（重启后 reorder/pin 仍生效） |
 | F09 | 多标签与窗口编排 | **L3** | **无** | **未覆盖** | 需真窗口 detach、Ctrl+Tab、关最后一个关窗 |

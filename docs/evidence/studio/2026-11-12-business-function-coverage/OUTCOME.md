@@ -308,6 +308,27 @@ expect(received).not.toBeNull()  Received: null
 
 **F 层仍 1/17**；本轮净结果是证伪了一条错误捷径 + 记录 F06 的可执行契约，未新增通过用例。
 
+## 第八轮：F06 审批链路探测（打通工具注册，但审批未触发）
+
+按第七轮留下的契约实测 F06。写了一个临时 `approval-probe.spec.ts`（跑完已删除，套件恢复 `2 tests in 2 files`），逐步打印真实 HTTP 形状。
+
+### 打通的部分（可复用的新能力）
+
+1. `GET /api/providers` → `{providers:[...]}`；必须挑 **`isCustom` / `baseUrl` 指向 `127.0.0.1` 的 synthetic provider**（第一次误选预设 `silicon`，turn 直接报 `model ... absent from the complete launch generation`）。
+2. `POST /api/agents` 带 `configuration: { permission_mode: 'default' }` 成功创建 agent，`POST /api/agent-sessions` 用 `workspace: {type:'system'}` 成功创建 session。
+3. **`PUT /api/capabilities/custom`** 可直接用 HTTP 装连接器（`{ok:true}`，`GET` 回读确认），无需 UI 流程；它同时写出 `capabilities/custom-connectors.json` 与 `capabilities/mcp.json`。
+4. **关键坑**：PUT 会丢掉 `env`，而 `capability_mcp.py` 启动即读 `os.environ['ASTER_TEST_MCP_LOG']`，缺了就 KeyError 退出 → MCP 进程起不来 → 工具不进 turn（`offered:false`、模型回 `CAPABILITY-MISSING:mcp`）。按 F07 成功时的格式直接补写 `mcp.json` 的 `env` 后 **`host.restart()`**，实测 `offered: true`、`mcp-process.jsonl` 出现 `started`、turn 进入 `attached` 并产生 `tool-input-start`。
+
+至此，「不经过 UI、纯 HTTP 自包含地装 MCP 连接器并发起真实 ACP turn」这条链路是通的，可作为后续用例的基座。
+
+### 没打通的部分（F06 的真实阻塞）
+
+`GET /api/agent-sessions/{id}/turn`（即 `ai.stream.attach`）的 `streamStatus.pendingApprovals` **始终为 `[]`**，`bufferedChunks` 里只有 `start` / `start-step` / `message-metadata` / `tool-input-start`，**没有 `tool-approval-request`**，消息 parts 也没有 `state="approval-requested"`。turn 长时间停在 `attached`，MCP 进程只 `started`、未被 `called`。
+
+也就是说：agent 的 `permission_mode: 'default'` 被接收并落盘了，但**这个 synthetic ACP harness 不会对 MCP 工具调用发出 `session/request_permission`**，因此 `POST /api/agent-approvals/{id}` 根本没有可响应的审批。这属于 ACP runtime 行为，不是 HTTP 契约问题；要触发审批可能需要换成需要授权的内置工具（如 `write`/`edit`）、或让 ACP node fixture 主动发 `session/request_permission`，本轮未做。
+
+**F06 仍无用例，F 层仍 1/17**。本轮没有新增通过用例，净收益是打通了可复用的工具注册链路并精确定位了审批触发的阻塞点。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
@@ -319,7 +340,7 @@ expect(received).not.toBeNull()  Received: null
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过（本轮实测失败并已删除该 test）、不声称 F06 有任何用例或覆盖、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
+- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过（实测失败并已删除该 test）、不声称 F06 有任何用例或覆盖（本轮探测确认审批未触发）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已入库：它仍在子模块工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。
