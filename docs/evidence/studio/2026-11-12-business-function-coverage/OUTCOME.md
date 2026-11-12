@@ -523,6 +523,38 @@ F13_L3: PARTIAL_PASS   (SCRIPT_EXIT=0, 53s)
 
 环境：4325 已释放、无可见 Aster 窗口；其余端口（4318/4326/4388）保持空闲。
 
+## 第十四轮：F15 探测，以及「剩余 4 条 L3」的结构性结论
+
+### F15 实测（无入口）
+
+真窗口（`f11-live-01` / 4325）上，设置侧栏 26 个 button 无任何截图相关项；`find --name 截图 / 录屏 / 视觉 / 标注 / 划词` **全部 0 个**。源码侧实现是齐的：
+
+- `settingsMenu.ts:395` 有 `/settings/screenshot` 路由，但 `configMenuEntries` 未把它渲染到当前侧栏；
+- `desktopHost.ts` 的 `screenshot` / `recording` capability 由 `__ASTER_STUDIO_DESKTOP__` 注入，`boot_contract.rs:316` 按 host family 决定（`platform == "darwin"` 为 true）；
+- `screenshot.rs:141` 用 `/usr/sbin/screencapture -i -x -t png`，`-i` 是**交互式区域选择**，必须物理鼠标拖拽；
+- `capture/`（录影）、`visual_feedback/`（标注、导出、`redact` 脱敏）、`ComposerScreenshotEditor` 的 `confirm/copy/save` 导出动作都存在，但都需要先有一张截图。
+
+即便入口可见，`screencapture -i` 也与 `PLAN.md` S4「不用 focus-window / 坐标 / 鼠标」的约束冲突。**F15 仍无用例、未覆盖**。
+
+### 连续两轮的结论：不再零敲碎打
+
+F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图）卡的是同一件事：**产品没有暴露可被外部测试驱动的接口或稳定 UI 前置状态**。这不是「再点几下」或「再跑一次」能解决的。下表把剩余 4 条 L3 的缺口和已定位线索一次列清，作为后续排期的依据：
+
+| 功能 | 卡点 | 已定位的具体线索 | 需要的动作 |
+| --- | --- | --- | --- |
+| F06 工具审批 | synthetic ACP harness 不发 `session/request_permission`，`pendingApprovals` 恒空 | `POST /api/agent-approvals/{id}` 六字段 `ApprovalAnswer`；`GET /api/agent-sessions/{id}/turn` 的 `streamStatus.pendingApprovals`；`native_approval_alignment_tests.rs` 契约 | 造能发审批请求的 ACP fixture，或换用会触发审批的内置工具 |
+| F09 多标签/窗口 | 主窗口无 `role=tab`、无「关闭标签页」、无 Launchpad/detach 按钮 | `AppShellTabBar` 的 `data-ui=app.tab-bar`、`tab.close/next/prev` 命令、`isFocusedTab` 分支 | 弄清产生工作区 tab 的用户操作，或提供构造 detached/focused 窗口的入口 |
+| F12 文档真实字节 | 现有 office 工具链自认内存文件边界 | `office/host-journeys.acl`；需 DOCX/XLSX/PPTX/PDF/PNG 真实字节校验 | 接通真实 office 转换/导出，产出可校验的磁盘文件 |
+| F15 截图/录屏/标注 | 无可见入口；`screencapture -i` 需物理鼠标 | `screenshot.rs` PNG 产物、`capture/`、`visual_feedback/`、`ComposerScreenshotEditor` 导出动作 | 提供非交互截图接口（或 pooled 窗口的 AX 可驱动入口） |
+
+另有两条**部分覆盖**要补完，同样需要产品侧确认：F13 的「3 个组件」与当前只装 1 个的偏差（是修订 PLAN 还是补实现）、F14 缺的真实更新通道/清单与退出守卫。
+
+**F 层仍 2/17**；按现有用例的结构上限 11/17。要从 2 走到 11 以上，投入应放在「产品侧测试接口/前置状态」而非继续在 UI 上找入口。
+
+### 收尾
+
+窗口已停，4325 释放；4318/4326/4388 保持空闲，无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -539,4 +571,4 @@ F13_L3: PARTIAL_PASS   (SCRIPT_EXIT=0, 53s)
 - 不声称 4 条无用例的 L3 功能（F06/F09/F12/F15）已被补齐；不声称已执行真实更新通道/DB 迁移/系统权限授权/真模型等操作。F11 与 F13 确实执行了**真进程退出并重启**及**真实 runtime 组件安装**（均为新建隔离实例，已还原/未触碰用户主 profile）。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
 - 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。
-- 不声称 F09 有任何用例或覆盖；本轮只确认了当前主窗口未渲染可操作标签栏控件，未找到产生工作区 tab 的入口。
+- 不声称 F09 或 F15 有任何用例或覆盖；两轮都只确认了「当前真窗口没有可驱动的入口」，未找到触发前置状态的方法。不声称剩余 4 条 L3 的缺口能靠增加测试执行次数解决。
