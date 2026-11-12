@@ -249,6 +249,39 @@ Gate B UNMEASURABLE
 
 **F 层仍 1/17**：Gate A 的场景通过率提升不增加任何业务功能覆盖，两者分母与判定规则都不同。
 
+## 第六轮：新增第二条 L3 真宿主用例（F14 部分覆盖）
+
+不再刷 Gate A，改为复用已跑通的 `nativeHarness` 写一条**新的 L3 用例**，验证 F14 的一个真实业务断言。
+
+```bash
+# 真 native host 的静态 renderer（带仓库现成的 runtime 桩）
+STUDIO_RENDERER_PORT=4388 STUDIO_RENDERER_DIST=.studio/dist/e2e-latest \
+  STUDIO_E2E_STUB_RUNTIME=1 node scripts/e2e-preview.mjs
+
+./node_modules/.bin/playwright test --config playwright.connectors.config.ts \
+  --grep 'agent-plane entities' --output=/tmp/aster-restart-e2e --reporter=list
+# ✓ restart-persistence.spec.ts:27:5 (6.3s)   1 passed (28.3s)
+```
+
+新增 `apps/studio/tests/e2e/connectors/restart-persistence.spec.ts`，断言链：
+
+1. `GET /api/agent-sessions` 返回 harness 初始化时创建的 `host.session.id`；
+2. `host.profile/agent-plane/sessions.json` 落盘文件包含该 id、`model-control/usage.sqlite` 非空；
+3. `host.restart()` —— **停掉 proxy 与真实 native host 二进制再重新拉起**，不是页面 reload、不是内存 fixture；
+4. 重启后再次 `GET /api/agent-sessions` 仍返回同一 session，`sessions.json` / `agents.json` 仍可读、`usage.sqlite` 仍非空。
+
+`cleanup` 因 sandbox safe-delete 保护（94 文件 > 阈值 50）跳过，**未绕过**。
+
+### 为什么 F 层仍是 1/17，不是 2/17
+
+`PLAN.md` §4 给 F14 的「必须断言」是四项：真实更新通道与清单、**DB 迁移后旧数据可读**、二次启动激活已运行窗口后退出、退出守卫保留进行中任务。本用例只覆盖第二项（且未真正触发 schema 迁移）。按 §9「每条功能至少一条通过用例且执行面达标」的完整语义，**记为 F14 部分覆盖，不预支为严格达标**。
+
+补齐还需要的三项里，「单实例」有可行路径：`src-tauri/src/single_instance.rs` 用 `flock` 做租户锁，锁失败时 activate 已有窗口再退出，可在 host 运行时再 spawn 一次 `stage-launcher` 输出的 Studio 二进制（同 `ASTER_STUDIO_INSTANCE`）并断言第二个进程很快退出。但那要额外起一个真窗口进程，且「更新通道/清单」「退出守卫」仍无法覆盖，本轮未做。
+
+当前 `playwright.connectors.config.ts --list`：**2 tests in 2 files**（F07 的 `connector-native.spec.ts` + 本轮 `restart-persistence.spec.ts`），两条都 PASS。**L3 真宿主用例数 1 → 2，F 层严格达标仍 1/17**。
+
+两个 spec 都在 `apps/studio` 子模块工作树（`connector-native.spec.ts` 为 M、`restart-persistence.spec.ts` 未跟踪），父仓 gitlink 未 bump——向子模块远程推送需单独授权。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
@@ -260,7 +293,7 @@ Gate B UNMEASURABLE
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称 F07 的 L3 真宿主用例通过**（1 passed / 37.7s，有 receipts），但**不声称**其余 7 条 L3 功能有覆盖、不声称 F 层达到 100%、不声称 Gate A / Gate B 达标。
+- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已入库：它仍在子模块工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。
