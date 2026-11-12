@@ -971,6 +971,47 @@ DRAFT_NAV_L3: FAIL             NAV2_EXIT=1, 26s
 - 与第十六轮合起来得到完整画像：**新建任务 composer 草稿既不跨进程保留，也不跨页导航保留**。
 - 收尾：草稿已清空、ACL 仍 `value = false`、默认产物字节未变、五端口全空闲、无可见 Aster 窗口、`list-windows ok=True`。
 
+## 第二十六轮：F14 单实例二次启动 —— **PASS**（含设计修正与局限）
+
+环境复查：`accessibility/screen_recording: granted`、`list-windows` 116 窗口、`verify 4fa385023/0161c1c23` 绿、五端口空闲。源码确认产品契约：`apps/studio/src-tauri/src/single_instance.rs`「one process per tenant；二次启动让运行中的实例显示窗口并在启动 authority 前退出」，`lib.rs:439` 的 `Claim::Busy -> process::exit(0)`。
+
+新增 `specs/single-instance-visual-e2e.py`（第 3 条完全合规可视化 E2E，经 importlib 复用 F11 骨架）。
+
+### 两次设计修正（都基于观察，不是猜）
+
+| 版本 | 问题 | 修正 |
+| --- | --- | --- |
+| 初版 `--no-attach` | 第二次 launch 后窗口 `w-74232 → w-74250`、PID `9833 → 10181`，旧实例被**替换**；`settings` 也因只等 6s 未找到 | `--no-attach` 是 NSWorkspace 层的「强制新实例」，测不到产品 flock 语义 → **去掉**；判定改为比对 PID/窗口 ID 是否保持；UI 就绪加 8 次重试 |
+| 首跑/复跑 `first launch ok=False` | `list-apps` 报回 `ps: Operation not permitted` —— host 被后续 Bash 调用 respawn 回了受限上下文 | 按第二十二轮验证过的方法：清理全部 Aster/Studio，从包装 app 上下文杀掉旧 host 并调一次 `list-apps` 预热，确认 `ok=True, 92 apps` 后再跑 |
+
+### 最终结果
+
+```
+$ python3 specs/single-instance-visual-e2e.py --instance f11-live-01 --port 4325
+[1] first launch ok=True
+    visible Aster windows = 1 ['w-74268']
+    foreground Aster apps = 1 [(11796, 'dev.aster.studio.aster.f11-live-01')]
+[2] second launch ok=False APP_UNRESPONSIVE
+    visible Aster windows = 1 ['w-74268']
+    foreground Aster apps = 1 [(11796, ...)]      ← 完全没变
+[3] settings button found = True
+    same_pid=True same_window=True no_extra=True
+SINGLE_INSTANCE_L3: PASS                          EXIT 0, 53s
+```
+
+第二次 launch 后**原进程、原窗口、原交互能力全部保持**，没有第二个 Aster 实例出现。
+
+### 必须说明的局限
+
+第二次 `agent-desktop launch` 返回 `APP_UNRESPONSIVE`——NSWorkspace 因 app 已在运行而**没有真正拉起第二个进程**，因此这条用例验证的是「从 agent-desktop 视角二次 launch 不产生第二个实例」，**并未触发产品 `claim()` 的 `Claim::Busy` 分支**。要覆盖那个分支需要绕过 NSWorkspace 直接第二次执行 native binary，那就不是「agent-desktop 启动」的用例了。此局限不影响本用例的 PASS 判定对象，但不声称产品 flock 路径已被可视化 E2E 覆盖。
+
+### 判定与状态
+
+- **F14 仍为部分覆盖、不计入 F 层严格达标**：还缺更新通道/清单与退出守卫；本轮只补了单实例这一项正面观察。
+- 真宿主验证用例 **6 → 7**（6 通过 / 1 失败）；新口径 F 层仍 **1/17**，原口径 2/17。
+- 符合用户口径的可视化 E2E 现为 **3 条**（F11 PASS、F01 抽样 FAIL、F14 抽样 PASS）。
+- 收尾：ACL 仍 `value = false`、默认产物字节未变（899194232 / 306630680）、五端口全空闲、无可见 Aster 窗口、`list-windows ok=True`。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -996,4 +1037,5 @@ DRAFT_NAV_L3: FAIL             NAV2_EXIT=1, 26s
 - 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。（第二十二轮已找到绕过方式，第二十四轮已跑通。）
 - **不声称第二十四轮改变了 F 层数字**：新口径仍 1/17、原口径仍 2/17；变化的是 F11 的达标用例从「折中形态」升级为「完全合规且两次通过」。不声称 F06/F09/F12/F15、F13/F14 或任何 Gate A 套件因此计入覆盖。
 - **不声称 F01 已覆盖**：第二十五轮的 L3 抽样用例 `DRAFT_NAV_L3: FAIL`，虽完全符合 agent-desktop 可视化 E2E 口径但不通过；不声称把断言放宽后算 PASS，也不声称已断定产品根因（仅记录跨页往返后草稿丢失的观察）。
+- **不声称 F14 已严格达标、也不声称产品 `Claim::Busy` 分支被可视化 E2E 覆盖**：第二十六轮只证明「二次 `agent-desktop launch` 未产生第二个 Aster 实例」；第二次 launch 返回 `APP_UNRESPONSIVE` 意味着 NSWorkspace 没拉起第二个进程。F14 仍缺更新通道/清单与退出守卫，不计入 F 层。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
