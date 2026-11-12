@@ -750,6 +750,30 @@ EXIT=124
 
 需要 `ps` 的 execve 禁令解除（新会话 / 宿主沙箱策略恢复）；之后直接执行该脚本即可，无需改代码。已清理：`~/Applications/AsterVisualE2E.app` 移除、两个路径的 Launch Services 注册均撤销、Studio 与 dev server 进程停止、4318/4325/4326/4327/4388 全空闲。
 
+## 第十九轮：把桌面驱动故障定位到宿主层，并固化诊断工具
+
+继续推进前先复查环境，`ps` 禁令与 `global_window_inventory_unstable` 依旧。这轮把「能不能绕过」穷尽掉，避免后续会话重复试错。
+
+| 尝试 | 结果 |
+| --- | --- |
+| **`libproc` 直接枚举进程** | ✅ 成功：`proc_listallpids` + `proc_pidinfo` 列出 2784 个 PID，完全不执行被禁的 `/bin/ps` |
+| 把 libproc 版 `ps` 放到 PATH 最前再跑 `agent-desktop list-apps` | ❌ 仍 `ps: Operation not permitted`。说明 agent-desktop **不从我给的 PATH 查 ps** |
+| 找出常驻 host 并重启 | `agent-desktop` daemon 存在（PID 81428 / 99289，**PPID 1**，launchd 托管）；`kill` 后自动重启，`list-apps` 错误不变 |
+| `launchctl setenv PATH ...` 想改 host 的 PATH 后重启 | ❌ `Not privileged to set domain environment`，未改动（已核对 launchd PATH 仍为空） |
+| `agent-desktop screenshot --app WorkBuddy` | ❌ 同样 `application_inventory_unstable / ps: Operation not permitted`，确认**所有子命令**共用同一个全局 inventory |
+
+**定位结论**：这是**宿主会话层的 execve 禁令**（`/bin/ps` 对包括 Python `subprocess` 在内的所有调用者返回 EPERM，沙箱内外一致），叠加 agent-desktop 由 launchd 托管的常驻 host 独立执行 ps。测试侧改 PATH、重启 host、换子命令都无法绕过。
+
+### 交付物
+
+`specs/libproc-process-inventory.py`（`py_compile` 通过）：在 `ps` 被禁的本机仍可枚举 PID / PPID / 进程名，用于新会话排查同类故障。它**不是**产品测试，只是诊断工具，不计任何覆盖。
+
+### 状态
+
+- 本轮**未运行任何可视化 E2E、未新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。
+- `specs/agent-desktop-launch-e2e.py` 保持完整待跑状态；恢复条件仍是**能执行 `ps` 的新会话**。
+- 五个端口全空闲、包装 app 已移除、launchd 环境未改动。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -772,3 +796,4 @@ EXIT=124
 - **不声称 F16 已覆盖**：`draft-restart-visual-e2e.py` 是第 3 条符合新口径的可视化 E2E，但观察结果是 `NOT_PERSISTED`，属负面发现；不声称通过放宽断言把它变成通过用例。
 - **不声称第十七轮完成了可视化 E2E 用例**：包装 app 让 `agent-desktop launch` 拉起了真应用，但 `launch` 返回 `APP_UNRESPONSIVE`、随后 `ps` 被系统拒绝导致窗口清单超时，**断言环节未完成**；不声称该方案已可复跑、不声称它改变任何覆盖计数。
 - **不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过**：脚本完整且 `py_compile` 通过、启动环节实测有效，但实跑 `EXIT=124`、可视化断言零完成；不声称它计入覆盖、不声称 F 层有变化。
+- 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。
