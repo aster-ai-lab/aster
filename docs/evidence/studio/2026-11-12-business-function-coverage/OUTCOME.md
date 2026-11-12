@@ -798,6 +798,37 @@ EXIT=124
 - 本轮**未运行 E2E、未新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。
 - 五个端口全空闲、无可见 Aster 窗口；`agent-desktop-launch-e2e.py` 保持完整待跑。
 
+## 第二十一轮：把 `ps` 禁令的根因定位到 setuid，并排除最后两条绕行路径
+
+复查：`ps` 仍被拒、全局 inventory 仍超时；`e2e-fresh-build --verify` 保持 **EXIT 0**（`e7bdf42c6/0161c1c23`）。这轮把根因和剩余绕行可能一次查清。
+
+### 根因：拦的是 setuid 执行，不是进程枚举
+
+```
+/bin/ps  →  -rwsr-xr-x  1 root  wheel  restricted,compressed  170432
+```
+
+`/bin/ls`、`/usr/bin/id`、`/usr/bin/whoami`、`/bin/date`、`/usr/sbin/lsof`、`/bin/sleep` 全部 `rc=0`；只有这个 **setuid root + SIP `restricted`** 的二进制被 EPERM。即宿主沙箱禁止执行 setuid 程序，agent-desktop 的 inventory 恰好依赖 `ps`。
+
+### 排除的绕行路径
+
+| 尝试 | 结果 |
+| --- | --- |
+| 复制 `/bin/ps` 并去掉 setuid 位后执行 | `rc=137`（SIGKILL），SIP 拒绝运行被复制的 restricted 二进制 |
+| 杀掉常驻 host **同时**前置 libproc 版 `ps`（上轮这两步分开做过，本轮合并重做） | 仍 `ps: Operation not permitted`，host 不吃注入的 PATH |
+| CoreGraphics `CGWindowListCopyWindowInfo` 直接枚举窗口（不经 ps） | ✅ 可用：列出 57 个窗口，找到 Aster 窗口 `73534` / `73447` |
+| `agent-desktop snapshot --window-id w-73534` / `find --window-id` | ❌ 仍 `TIMEOUT: global_window_inventory_unstable` —— **单窗口路径也依赖同一个全局 inventory** |
+
+顺带确认 `osascript` 走 System Events 也报权限违例 `-10004`，不是可用的替代枚举通道。
+
+**结论**：宿主会话对 setuid 二进制的 exec 禁令无法通过替换二进制、改 PATH、重启 host、换子命令或指定 window-id 绕过。后续会话不必重复这些尝试。
+
+### 状态
+
+- 本轮**零可视化断言、零新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。
+- 已停掉探测用 Studio 进程；五个端口全空闲。
+- `agent-desktop-launch-e2e.py` 保持完整待跑；恢复条件仍是能执行 `ps` 的会话，且该会话里先跑 `--verify`（当前为绿）。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
