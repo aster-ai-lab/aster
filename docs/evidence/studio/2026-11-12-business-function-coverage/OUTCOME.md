@@ -499,6 +499,30 @@ F13_L3: PARTIAL_PASS   (SCRIPT_EXIT=0, 53s)
 
 真宿主用例从 3 条增至 **4 条**（F07、F11 达标；F14、F13 部分）。**完全无用例的 L3 功能从 5 条减为 4 条**（F06/F09/F12/F15）。四个端口（4318/4325/4326/4388）全空闲、无 Aster 残留窗口，隔离实例均为新建且未触碰主 profile。
 
+## 第十三轮：F09 多标签/窗口编排探测（无可用入口，未覆盖）
+
+按上一轮建议攻 F09，仍用真 Tauri webview（`ASTER_STUDIO_INSTANCE=f11-live-01 STUDIO_RENDERER_PORT=4325 just studio`，已初始化实例、无首启弹窗）。
+
+**源码侧**确认了实现与预期入口：`layout/AppShellTabBar.tsx` 的 `header[data-ui="app.tab-bar"]`、`aria-label={tab.title}` 的标签按钮、`tab.close`（中文「关闭标签页」）、`tab.open_in_new_window`（`detachTab`）、Launchpad「+」按钮；`AppShell.tsx:194-196` 注册 `tab.close` / `tab.next` / `tab.prev` 命令；`isFocusedTab` 才渲染 detach 按钮。
+
+**真窗口实测**（agent-desktop）：
+
+| 检查 | 结果 |
+| --- | --- |
+| `find --role tab` | 0 个 |
+| `find --name 关闭标签页` | 0 个 |
+| Launchpad /「新建工作区标签」/「在新窗口中打开」 | 0 个 |
+| `find --role button` 全部 | 26 个，「工作」「设置」的 AX 路径在 `scrollarea > webarea` 内容区，**不是 tab bar** |
+| 可见 Aster 窗口 | 1 个（另有 9 个隐藏辅助窗口） |
+
+即当前主窗口**没有渲染任何可操作的标签栏控件**，因此 Ctrl+Tab、关闭、关最后一个关窗、拖拽重排、detach 到独立窗口都无从驱动。`AppShellTabBar.tsx` 里 `isFocusedTab` 与 `!isFocusedTab` 两支分别控制 detach 按钮和 Launchpad 按钮，两者都没出现，说明当前窗口既非 focused-tab 模式、也没有工作区 tab 被创建。
+
+**结论**：F09 不是「再点几下」能覆盖的，需要先弄清产生工作区 tab 的用户操作（或构造 detached/focused 窗口）。本轮**未新增用例、未改 F 层计数**，F09 仍为「无 / 未覆盖」，F 层 **2/17**。上述源码与 AX 事实已记录，作为下一轮的确定起点。
+
+顺带修正 `MATRIX.md` 里一处漏改的第一轮结论（「8 条 L3 里 7 条完全无用例」），改为当前口径：2 条达标、2 条部分覆盖、4 条完全无用例。
+
+环境：4325 已释放、无可见 Aster 窗口；其余端口（4318/4326/4388）保持空闲。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -515,3 +539,4 @@ F13_L3: PARTIAL_PASS   (SCRIPT_EXIT=0, 53s)
 - 不声称 4 条无用例的 L3 功能（F06/F09/F12/F15）已被补齐；不声称已执行真实更新通道/DB 迁移/系统权限授权/真模型等操作。F11 与 F13 确实执行了**真进程退出并重启**及**真实 runtime 组件安装**（均为新建隔离实例，已还原/未触碰用户主 profile）。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
 - 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。
+- 不声称 F09 有任何用例或覆盖；本轮只确认了当前主窗口未渲染可操作标签栏控件，未找到产生工作区 tab 的入口。
