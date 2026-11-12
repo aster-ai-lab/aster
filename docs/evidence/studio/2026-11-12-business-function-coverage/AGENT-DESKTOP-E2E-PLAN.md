@@ -182,6 +182,7 @@ disposition: delivered_unverified, retry: unsafe
 ### 8.4 不能声称已解决的
 
 - **host 自愈不是 100% 可靠**：本轮收尾时 host 再次退化，单独 `host_readiness.py --force` 返回 `HOST_READY: FAIL`（`list-apps ok=False`）。Launch Services / TCC 仍有未定位的偶发因素。**每次 GUI 跑前仍须手动确认 `list-apps`**，不能假设自愈成功。
+- **⚠️ 第三十四轮升级：已确诊为系统级硬阻塞，自愈方案整体失效**。`error.details` 明确为 `ps: Operation not permitted (os error 1), source: "ps"`；`strings agent-desktop` 显示**硬编码 `/bin/ps`**（SIP 保护、不可替换），所以 libproc shim 无效；连 `open -n -a` 的 Launch Services 上下文里 `list-apps` 也仍 TIMEOUT。**所有 agent-desktop GUI E2E 在本会话暂停**，解锁条件见 OUTCOME 第三十四轮。此前 §2/§4/§10 的用例规划与数字路径**继续有效但不可执行**，不是被否决。
 - F02 只覆盖了控件/附件子集，不含中文输入、斜杠命令、队列；不声称 F02 达标。
 - `COMPOSER_CONTROLS_L3` 第一次复跑 FAIL 于对话框异步挂载，修正方式是 `wait_for()` 轮询控件出现（**等待就绪，不是放宽断言**）。
 

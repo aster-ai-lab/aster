@@ -1297,6 +1297,47 @@ SETTINGS_SEARCH_L3: PASS
 - 真宿主验证用例 **9 → 10**；完全合规可视化 E2E 增至 6 条。
 - 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
 
+## 第三十四轮：GUI E2E 环境确诊为系统级硬阻塞（本轮无新用例）
+
+用户再次要求「继续测试」，按「单次 launch」模板准备 F05 模型选择器用例，先做 AX 探测。探测脚本在 `launch()` 前置即失败：
+
+```
+HEAL=124（shell 侧 host_readiness --force 超时）
+RuntimeError: agent-desktop host not ready after warmup
+```
+
+### 决定性诊断（逐层排除）
+
+| 检查 | 实测 | 结论 |
+| --- | --- | --- |
+| `agent-desktop list-apps` | `TIMEOUT` / `application_inventory_unstable` / `attempts: 336` | host 不可用 |
+| `error.details.last_failure_details` | **`{"failures":[{"code":"INTERNAL","message":"ps: Operation not permitted (os error 1)","source":"ps"}]}`** | 失败源明确是系统 `ps` |
+| 当前 Bash 执行 `/bin/ps -p 1` | `operation not permitted` | 本上下文被拒 |
+| `agent-desktop permissions` | `accessibility: granted`, `screen_recording: granted` | TCC 授权本身没丢 |
+| 包装 app launcher | 正确的 `exec just studio`（`install_wrapper()` 已恢复） | 不是 launcher 被污染 |
+| Aster 进程残留 | `killed []`，端口空闲 | 不是窗口 churn |
+| **`open -n -a` 从 Launch Services 上下文手动预热** | wrapper 日志里 `list-apps` **仍 `TIMEOUT / attempts: 329`** | **换上下文也救不回来**，推翻了此前「从已授权 app 上下文 respawn 即可恢复」的结论 |
+
+### 为什么 libproc 替代也无效
+
+仓库已有 `specs/libproc-process-inventory.py`（libproc 版 minimal ps）与 `/tmp/aster-visual-e2e/bin/ps` shim。但 `strings /opt/homebrew/bin/agent-desktop` 明确包含 **`/bin/ps`** 与 **`pid=,comm=`** —— agent-desktop **硬编码绝对路径**调用 ps，不走 PATH，shim 不会被解析到。`/bin/ps` 是 SIP 保护的 setuid 二进制，不能替换。
+
+**结论**：本会话的 macOS 进程枚举源已系统级失效，`agent-desktop` 的全局 app inventory 无法完成，所有依赖 `launch`/`list-apps`/`list-windows` 的 GUI E2E 都跑不起来。这不是测试设计、断言、host spawn 上下文或预热逻辑的问题；重试、加等待、换用例形态都不再有效。
+
+### 本轮实际结果
+
+- **未产出新用例**，F05 探测未完成，未新增任何通过用例。
+- **数字全部未变**：F 层 1/17（新口径）/ 2/17（原口径），真宿主 10/10，合规可视化 E2E 6 条，P0 裁决仍未给出。
+- 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口、包装 app launcher 已恢复为正式版。
+
+### 解锁条件（需 Lyon / 系统侧处理）
+
+1. 在**不受沙箱限制的终端**（Terminal.app / iTerm2 直接登录会话）里跑同一条 `agent-desktop list-apps` 确认 `/bin/ps` 可执行；若可以，把 E2E 放到该上下文执行。
+2. 或重启机器 / 重新授予相关 app 的辅助功能与自动化权限后复测（注意 `permissions` 现在就报 granted，所以更可能是沙箱而非 TCC）。
+3. 或由 agent-desktop 上游把进程枚举改为 libproc / `sysctl` 实现，绕开对 setuid `/bin/ps` 的依赖。
+
+在此之前，继续「跑用例 → host 超时 → 重试」不会产生任何覆盖进展。可改做不依赖 GUI 的工作（P0 口径裁决、D 类产品改造清单、fixture 准备）。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1331,3 +1372,4 @@ SETTINGS_SEARCH_L3: PASS
 - **不声称第三十一轮解决了 frontmost、也不声称 F08 已严格达标**：`focus-window` 的解锁效果因 host 退化未验证成功；`sidebar-persist-visual-e2e.py` 只覆盖侧栏折叠状态跨进程持久化，未覆盖项目新建/切换、`reorder/setPinned`。不声称三次复跑全绿（实为 2 PASS / 1 次 host 环境 ERROR），也不声称 F 层数字变化。
 - **不声称第三十二轮产出了新用例或解决了 host 退化**：`ensure_host()` 加重试后 F08 三次仍是 2 PASS / 1 环境 ERROR；F10 只探明「搜索设置...」是 button 入口，点击后控件因 host 退化未验，未新增通过用例、未改任何覆盖数字。不声称 F10 已可写或已达标。
 - **不声称第三十三轮 F10 已严格达标或三次运行全绿**：`settings-search-visual-e2e.py` 只覆盖「设置搜索入口变可写控件 + 值往返」，未覆盖命令面板、结果项/空态、深链、快捷键重绑；运行为 2 PASS / 1 次 host 环境 FAIL（发生在窗口出现前）。不声称 F 层数字变化。
+- **不声称第三十四轮产出了任何测试或解决了 host 问题**：F05 探测在 launch 前置即失败，未新增用例、未改任何覆盖数字。「Launch Services 上下文可恢复 host」这一此前结论已被本轮实测**推翻**；不声称预热、重试、改用例形态或 libproc shim 能让当前会话的 GUI E2E 恢复。
