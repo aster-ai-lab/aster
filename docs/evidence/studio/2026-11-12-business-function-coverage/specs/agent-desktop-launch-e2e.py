@@ -137,7 +137,7 @@ def dismiss_onboarding():
 def ref(name, role=None):
     data = ax("find", "--app", "Aster", "--name", name, "--exact").get("data", {})
     for match in data.get("matches", []):
-        if role is None or match.get("role") == role:
+        if (role is None or match.get("role") == role) and match.get("ref_id"):
             return match.get("ref_id"), match
     return None, None
 
@@ -153,7 +153,16 @@ def open_settings():
 
 
 def switch_value():
-    return str(ref(SWITCH, "switch")[1].get("value"))
+    # Read via `get --property value`; the find payload's value field is not
+    # always populated right after a relaunch or a toggle.
+    for _ in range(6):
+        r, _ = ref(SWITCH, "switch")
+        if r:
+            result = ax("get", r, "--property", "value")
+            if result.get("ok"):
+                return str(result.get("data", {}).get("value"))
+        time.sleep(1)
+    raise RuntimeError("switch value not readable via agent-desktop")
 
 
 def acl_path(instance):
@@ -217,7 +226,14 @@ def main():
         check(acl_path(args.instance).read_text() == snapshot, "ACL snapshot unchanged")
 
         print("[6] restore", flush=True)
-        r, _ = ref(SWITCH, "switch")
+        r = None
+        for _ in range(6):
+            r, _ = ref(SWITCH, "switch")
+            if r:
+                break
+            time.sleep(1)
+        if not r:
+            raise RuntimeError("switch control not found for restore")
         ax("toggle", r)
         time.sleep(2)
         check(switch_value() == before, "switch restored to original")

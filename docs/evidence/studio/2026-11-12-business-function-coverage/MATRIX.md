@@ -43,7 +43,7 @@
 | F08 | 项目/工作区/侧栏重排固定 | L2 + L3 抽样 | 仅 L2 桩 | 见 Gate A 结果 | 需 L3 抽样（重启后 reorder/pin 仍生效） |
 | F09 | 多标签与窗口编排 | **L3** | **无** | **未覆盖** | 需真窗口 detach、Ctrl+Tab、关最后一个关窗 |
 | F10 | 命令面板/全局搜索/深链 | L2 | L2 桩 | 见 Gate A 结果 | 达 L2 即可 |
-| F11 | 偏好与跨进程持久化 | **L3** | **有 1 条**（agent-desktop 脚本） | ✅ **本轮 L3 通过，严格达标** | 真 Tauri webview + 真 IPC + ACL 磁盘快照 + 真进程退出重启；四项必须断言全覆盖。见 OUTCOME 第十一轮 |
+| F11 | 偏好与跨进程持久化 | **L3** | **有 2 条** | ✅ **严格达标；且新增完全合规用例** | 原 `f11-desktop-e2e.py`（`just studio` 启动 + agent-desktop 驱动）；第二十四条新增 `agent-desktop-launch-e2e.py`：**launch/drive/quit/relaunch 全部由 agent-desktop 完成**，四项必须断言全覆盖，两次完整复跑均 `PASS`。见 OUTCOME 第十一、二十四轮 |
 | F12 | 知识库/文件/文档真实字节产物 | **L3** | **无** | **未覆盖** | 需 DOCX/XLSX/PPTX/PDF/PNG 真实字节校验；`office/host-journeys.acl` 自认内存文件边界 |
 | F13 | 首次运行/运行时组件/系统权限 | **L3** | **有 1 条（部分）** | ⚠️ `PARTIAL_PASS`，未严格达标 | 真实首启全链路 + 磁盘字节证据已验证；但产品只装 1 个 required 组件，PLAN 要求 3 个（另 2 个 optional 且依赖页隐藏）。见 OUTCOME 第十二轮 |
 | F14 | 更新/退出守卫/单实例 | **L3** | **有 1 条（部分）** | ⚠️ 新 L3 用例通过，未严格达标 | 已验证「重启后旧数据可读 + 落盘」；仍缺更新通道/清单、单实例二次启动、退出守卫 |
@@ -63,9 +63,9 @@
 | Gate A（**6/7 config**，正式配置） | 490 | 181 | 40 | 62 | 207 | **36.9%** | FAIL |
 | Gate A（**7 份日志合并**，含 composer-audit chromium 诊断运行） | 490 | **228** | 95 | 62 | 105 | **46.5%** | FAIL（目标 100%） |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
-| 真宿主验证用例 | **4** | **4** | 0 | 0 | 0 | **100%** | ✅ F07、F11 达标；F14、F13 部分覆盖 |
+| 真宿主验证用例 | **5** | **5** | 0 | 0 | 0 | **100%** | ✅ F07、F11 达标（F11 有 2 条）；F14、F13 部分覆盖 |
 
-> **新口径（用户 15:06 追加）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。按此口径，上表 4 条里只有 **F11、F13 两条**符合（agent-desktop 在真 Tauri 窗口上驱动），F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**；F 层因此为 **1/17**（仅 F11 严格达标，F13 部分符合）。第十六轮又新增第 3 条符合形态的 `specs/draft-restart-visual-e2e.py`（F16 抽样），但结果为 `NOT_PERSISTED` 负面发现、**不计覆盖**。启动环节仍由 `just studio` 完成——`agent-desktop launch` 四次实测均无法启动实例 bundle，详见 `OUTCOME.md`「口径补充」。本轮 Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。
+> **新口径（用户 15:06 追加，第二十四轮达成）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**。第二十四轮的 `specs/agent-desktop-launch-e2e.py` 让 **F11 首次拥有完全合规的通过用例**：`launch / snapshot / find / toggle / get / close-app / relaunch` 全部由 agent-desktop 完成，四项必须断言全覆盖，**两次完整复跑 `AGENT_DESKTOP_LAUNCH_L3: PASS`**（EXIT 0，55s / 58s）。按新口径 F 层 **1/17**（仅 F11），数字未变但合规性从「折中形态」变为完全达标。F13 部分符合；`draft-restart-visual-e2e.py`（F16 抽样）为 `NOT_PERSISTED` 负面发现、不计覆盖。Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。历史尝试详见 `OUTCOME.md`「口径补充」及第十七至二十四轮。
 
 - 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
 - 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。

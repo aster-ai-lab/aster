@@ -5,7 +5,7 @@
 **未达成，且不是「再跑一次」能达成的。** 按仓库权威口径（`PLAN.md` §4/§9），F 层 17 条业务功能中 **8 条要求 L3 真宿主用例**。经本日多轮推进，当前 **2 条严格达标（F07 + F11，2/17 ≈ 11.8%）**，F14 与 F13 各有部分覆盖用例但不计入；仍有 **4 条 L3 功能完全没有用例**（F06/F09/F12/F15）。按现有用例，F 层结构性上限 **11/17 ≈ 64.7%**（9 条 L2 + F07 + F11），100% 需要新写产品级真宿主测试，任何「100%」的说法都只能靠换分母得到。
 
 - F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn（第三轮）。
-- F11：真 Tauri webview 改偏好 → ACL 磁盘快照 → **真进程退出并重启** → UI 与磁盘双重回读；四项必须断言全覆盖，用例可复跑（第十一轮）。
+- F11：真 Tauri webview 改偏好 → ACL 磁盘快照 → **真进程退出并重启** → UI 与磁盘双重回读；四项必须断言全覆盖，用例可复跑（第十一轮）。**第二十四轮追加 `agent-desktop-launch-e2e.py`：连启动都由 `agent-desktop launch` 完成，两次复跑 PASS，完全符合用户新口径。**
 - F13 部分：真实首启安装状态序列、25 个真实 payload 文件、摘要版本一致、三项权限、重启后不再弹；但产品只装 1 个组件，PLAN 要求 3 个（第十二轮）。
 
 > ⚠️ 上表是**仓库原口径（PLAN §9）**。用户 15:06 追加「必须是 agent-desktop 启动应用的可视化端到端测试」后，按新口径 F 层为 **1/17**（仅 F11），F07/F14 及全部 Gate A 套件不计入。详见下一节「口径补充」。
@@ -20,6 +20,7 @@
 | `specs/f11-desktop-e2e.py`（F11 达标） | `just studio` 子进程 | **agent-desktop** 在真 Tauri 窗口上 snapshot/find/click/toggle | ✅ 动作符合；启动环节见下 |
 | `specs/f13-first-run-e2e.py`（F13 部分） | `just studio` 子进程 | **agent-desktop** 同上 | ✅ 动作符合；启动环节见下 |
 | `specs/draft-restart-visual-e2e.py`（F16 抽样，第十六轮） | `just studio` 子进程 | **agent-desktop** `focus` + `type --headed` 物理键盘、真窗口回读 | ✅ 动作符合；结果为负面发现，不计覆盖 |
+| `specs/agent-desktop-launch-e2e.py`（F11，第二十四轮） | **`agent-desktop launch`** | **agent-desktop** 全部动作 | ✅ **完全符合，两次 PASS，F11 严格达标** |
 | `connector-native.spec.ts`（F07） | `nativeHarness` + 静态 preview | **Playwright 浏览器 + runtime 桩** | ❌ 渲染器桩，不是可视化 E2E |
 | `restart-persistence.spec.ts`（F14 部分） | 同上 | **Playwright 浏览器 + HTTP 断言** | ❌ 同上 |
 | Gate A 全部 7 个 config | `e2e-preview.mjs` + `--stub-runtime` | Playwright 浏览器 | ❌ 全部不计入 |
@@ -42,7 +43,7 @@
 
 结论：实例目录下手工生成的 `Aster.app`（bundle id `dev.aster.studio.aster.<instance>`）**无法被 Launch Services 启动**，它需要 `just studio` 通过 `stage-launcher` 输出的 `Studio` 二进制并继承整套环境变量与 runtime descriptor。因此**上表三条脚本**的形态是：`just studio` 负责启动真应用，之后全部测试动作由 agent-desktop 在真窗口上完成。
 
-> **第十七轮更新**：用户第二次强调后，用包装 app 方案已让 `agent-desktop launch` 真正拉起真应用（详见文末第十七轮）。但那次引入 `ps` 权限异常与全局窗口清单不稳定，**尚未能完成可视化断言**，故上表三条脚本的启动方式暂未改动，也不把新方案计入覆盖。
+> **第二十四轮更新（口径达成）**：包装 app + Launch Services 上下文的方案经多轮攻坚后跑通，且用户已授予辅助功能权限。`specs/agent-desktop-launch-e2e.py` 现在**连启动都由 `agent-desktop launch` 完成**，两次完整复跑 `PASS`，是 F11 严格达标的完全合规用例。第十七至二十三轮的中间失败与定位过程保留在下文，作为排障记录。
 
 ## 口径（不自选分母）
 
@@ -898,6 +899,48 @@ TCC 授权按负责进程判定且**不能由程序自动授予**，所以这一
 
 本轮**未跑完整可视化断言、未新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。构建基线在提交后按既有流程重新对齐。
 
+## 第二十四轮：完整 `agent-desktop` 启动并全程驱动的可视化 E2E —— **PASS（两次）**
+
+用户要求的形态终于完整达成。前置：`e2e-fresh-build --verify` 在 `2ed7a71e0` 为绿（本轮未改产品源码），`accessibility: granted` 已在包装 app 上下文生效。
+
+### 打通的最后两处
+
+1. **churn 元凶**：`global_window_owner_churn` 不是 host 问题，而是**遗留的孤儿 Aster 进程/窗口**（`visual-e2e-01` 实例留下的 pid 86332 / 61686）。彻底清掉后 `list-windows` 立刻返回 `ok=True, 105 windows`；用 `just studio` 启动 `f11-live-01` 时甚至能拿到 115 窗口和 `snapshot --app Aster` 的完整 AX 树（ref_count=22）。改用**已验证稳定的 `f11-live-01` 实例**，包装实例不再造成 churn。
+2. **脚本读数**：首跑已跑通 1–5 步，只在第 6 步「还原」报 `'NoneType' object has no attribute 'get'`——`switch_value()` 依赖 `find` 结果里的 `value` 字段，重启后该字段不总存在。改为 **`agent-desktop get <ref> --property value` + 6 次重试**，`ref()` 过滤空 `ref_id`，还原动作也加重试。这是测试写法问题，不是产品缺陷。
+
+### 完整结果（可复跑）
+
+```
+$ python3 specs/agent-desktop-launch-e2e.py --instance f11-live-01 --port 4325
+[0] install the agent-desktop-launchable wrapper
+[1] agent-desktop launch                       → True
+[2] initial switch = 0 ; OK switch toggled to 1
+[3] OK ACL snapshot exists
+    OK ACL has app.power.prevent_sleep_when_busy = true
+[4] agent-desktop close-app --force   (真实进程退出)
+[5] agent-desktop launch again
+    OK switch restored after agent-desktop relaunch
+    OK ACL snapshot unchanged
+[6] OK switch restored to original
+AGENT_DESKTOP_LAUNCH_L3: PASS (token b6af4a)      E2E_EXIT=0, 55s
+```
+
+**复跑**（清理后独立再执行一次）：`AGENT_DESKTOP_LAUNCH_L3: PASS (token c58be2)`，`REPEAT_EXIT=0`，58s。两次全绿。
+
+生命周期动作全部是 agent-desktop 命令：`launch --env/--activate`、`snapshot/find/click/toggle/get`、`close-app --force`、再次 `launch`。Python 只负责安装包装 bundle、解析 JSON 和读取 `.acl` 磁盘证据。
+
+### 判定
+
+- 这条用例覆盖 **F11 的四项必须断言**（真窗口改偏好 → ACL 磁盘快照 → 真进程退出并重启 → UI 与磁盘双重回读），且**首次完全符合用户「agent-desktop 启动应用的可视化端到端测试」口径**（此前的 `f11-desktop-e2e.py` 启动由 `just studio` 代劳）。
+- 按用户新口径 **F 层仍为 1/17（仅 F11）**，数字未变，但这一条从「折中形态」变成**完全合规且两次通过**。不把 F13 部分覆盖、F07/F14 的 Playwright 桩或 Gate A 套件计入。
+- 按仓库原口径仍为 2/17（F07 + F11）。
+
+### 收尾核对
+
+- 偏好已还原：`value = false`（`f11-live-01/preferences/local/*.acl`）。
+- 默认产物字节未变：`aster` 899194232、`aster-acp` 306630680。
+- 4318/4325/4326/4327/4388 全空闲；无可见 Aster 窗口；`agent-desktop list-windows` `ok=True`。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -919,6 +962,7 @@ TCC 授权按负责进程判定且**不能由程序自动授予**，所以这一
 - **不声称 Playwright + runtime 桩的套件符合用户新增的 agent-desktop 可视化 E2E 口径**；不声称 `agent-desktop launch` 能启动当前实例 bundle（四次实测均失败）；不声称 Gate A 补跑的 142 passed 属于端到端测试成果。
 - **不声称 F16 已覆盖**：`draft-restart-visual-e2e.py` 是第 3 条符合新口径的可视化 E2E，但观察结果是 `NOT_PERSISTED`，属负面发现；不声称通过放宽断言把它变成通过用例。
 - **不声称第十七轮完成了可视化 E2E 用例**：包装 app 让 `agent-desktop launch` 拉起了真应用，但 `launch` 返回 `APP_UNRESPONSIVE`、随后 `ps` 被系统拒绝导致窗口清单超时，**断言环节未完成**；不声称该方案已可复跑、不声称它改变任何覆盖计数。
-- **不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过**：脚本完整且 `py_compile` 通过、启动环节实测有效，但实跑 `EXIT=124`、可视化断言零完成；不声称它计入覆盖、不声称 F 层有变化。
-- 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。
+- ~~不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过~~ → **该条已被第二十四轮推翻**：脚本经读数修复后两次完整复跑 `PASS`（EXIT 0），现为 F11 完全合规用例。此处保留仅为说明演进，不再作为有效免责。
+- 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。（第二十二轮已找到绕过方式，第二十四轮已跑通。）
+- **不声称第二十四轮改变了 F 层数字**：新口径仍 1/17、原口径仍 2/17；变化的是 F11 的达标用例从「折中形态」升级为「完全合规且两次通过」。不声称 F06/F09/F12/F15、F13/F14 或任何 Gate A 套件因此计入覆盖。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
