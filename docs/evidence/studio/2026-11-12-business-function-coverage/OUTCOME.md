@@ -199,10 +199,62 @@ node scripts/e2e-coverage-gate.mjs --logs=<6 logs> --declared=490 --target=1.0
 
 F 层仍 **1/17**；Gate A 提升不等于 F 层提升，二者口径不同。
 
+## 第五轮：查清 composer-audit 为什么跑不完
+
+第 7 个 config 一直「跑十几分钟没结果」，本轮定位到**两个独立原因**，都不是产品问题。
+
+### 1. 启动即被 safe-delete 拦截
+
+直接单引擎运行时 1 秒就退出：
+
+```
+Error: [safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED]
+{"count":117,"threshold":50,"targets":[".../test-results/composer-audit"]}
+```
+
+Playwright 启动要清空 `test-results/composer-audit`（累积 117 个文件），超过沙箱阈值 50。**未绕过保护**，改为给每次运行指定全新的 `--output=/tmp/...` 空目录，问题消失。
+
+### 2. 真正的耗时瓶颈：失败用例各等满 20–23 秒
+
+`playwright.composer-audit.config.ts` 继承 `workbench-office`：`timeout 90s`、`expect.timeout 20s`、`use.actionTimeout 20s`、`workers 1`、`fullyParallel false`。单引擎 102 例实测：
+
+- 通过的用例 **1–3 秒**（最慢 3.2s）
+- 失败的用例 **20–23 秒**，集中在 `message-actions.spec.ts`（MA-02/03/05/06/08/09/15–18，导出/保存/复制为图片）、`composer-audit.spec.ts`（UI-04 中文输入法等）、`permission-posture.spec.ts`、`popup-motion.spec.ts`
+- 正式配置下跑到第 66/102 例即撞 12 分钟上限（`exit=124`）；按 28/66 的失败率外推，单引擎约 18 分钟、**双引擎约 36 分钟**，与之前 16m50s / 35m17s 两次超时吻合
+
+这些失败用例需要 native 文件保存、真实 IME、真实动画帧等能力，静态 renderer preview 提供不了，因此在当前环境下**注定失败**，只是每个都要等满超时。
+
+### 3. 受控实验：压缩超时，跑完全量
+
+临时诊断 config 把 `expect.timeout` 和 `use.actionTimeout` **同时**设为 8s（只压 `expect` 无效，第一版实验仍有大量 20–22s 失败，说明等待发生在 action 层）。8s 远大于通过用例最慢的 3.2s、远小于失败用例的 20s，**不改变任何通过/失败判定**：
+
+```
+47 passed / 55 failed，9.7 分钟跑完 chromium 全量 102 例
+失败耗时降为 8.4–9.9s
+```
+
+诊断 config 跑完已删除，未留在工作树。
+
+### 4. 合并后的门禁数字
+
+把这份 chromium 日志与之前 6 个 config 一起喂给官方门禁（`--logs=<7 logs> --declared=490`）：
+
+```
+Gate A 46.5% FAIL  pass=228 fail=95 skip=62 executed=323 unexecuted=105
+pass rate among executed=70.6%  structural ceiling=65.9%  deduped=3
+Gate B UNMEASURABLE
+```
+
+相比 6 config 的 36.9% 又进了一步，但**这份日志来自诊断配置，不是正式门禁运行**，口径已在 `MATRIX.md` 标注。剩余 105 例未执行几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。
+
+**F 层仍 1/17**：Gate A 的场景通过率提升不增加任何业务功能覆盖，两者分母与判定规则都不同。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
-- 不声称 Gate A 达到 70%/95%/100%（最终官方门禁 **36.9% FAIL，6/7 config**，执行内 81.9%）；不声称第 7 个 config `composer-audit` 的任何结果（两次运行均超时中止，204 例未执行）。
+- 不声称 Gate A 达到 70%/95%/100%（正式配置 6/7 config 为 **36.9% FAIL**；合并诊断日志后 **46.5% FAIL**，执行内 70.6%）。
+- 不声称 `composer-audit` 的 **webkit 引擎**有任何结果（102 例未执行）；不声称 chromium 全量那次是正式门禁运行（它用了 8s 超时的诊断配置，仅判定不变）。
+- 不声称把 `expect.timeout` / `actionTimeout` 改成 8s 是正式配置变更；临时诊断 config 已删除。
 - 不声称 Gate B 可测量（UNMEASURABLE）。
 - 不声称 L3 用例通过；不声称用渲染器桩证明 native 行为。
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。

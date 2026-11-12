@@ -58,12 +58,14 @@
 | 口径 | 分母 | 通过 | 失败 | 跳过 | 未执行 | 通过率 | 判定 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | **F 层（业务功能验证）** | 17 | **1** | — | — | — | **5.9%** | **未达成 100%** |
-| Gate A（场景通过率，**6/7 config**，官方门禁） | 490 | **181** | 40 | 62 | 207 | **36.9%** | FAIL（目标 100%） |
-| Gate A 执行内通过率 | 221 | 181 | 40 | — | — | **81.9%** | FAIL |
+| Gate A（**6/7 config**，正式配置） | 490 | 181 | 40 | 62 | 207 | **36.9%** | FAIL |
+| Gate A（**7 份日志合并**，含 composer-audit chromium 诊断运行） | 490 | **228** | 95 | 62 | 105 | **46.5%** | FAIL（目标 100%） |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
 | L3 真宿主用例 | 1 | **1** | 0 | 0 | 0 | **100%** | ✅ PASS |
 
-官方门禁命令与输出：`node scripts/e2e-coverage-gate.mjs --logs=<6 个 config 日志> --declared=490 --target=1.0` → `Gate A 36.9% FAIL`，`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，`structural ceiling = 45.1% (221/490)`，`deduped=3`，`Gate B UNMEASURABLE`。未执行的 207 例几乎全部是第 7 个 config `composer-audit`（204 例、chromium+webkit 双引擎）；该 config 带 `--stub-runtime` 跑 16m50s 仍未完成，本轮主动中止。
+- 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
+- 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。
+- 两次 `--stub-runtime` 全量尝试（16m50s、35m17s）均未完成；根因见 `OUTCOME.md` 第五轮：不是卡住，是失败用例各耗 20–23s 超时累积。
 
 F 层「1」= F07 本轮在真 native host 上通过（stdio/SSE/HTTP 三种 MCP 的真实 ACP turn、安装持久化、restart 后仍在、删除后不再调用）。9 条 L2 功能虽有 41 个通过场景，但尚未逐条完成「每条至少一例通过且执行面达标」的映射核定，不预支为达标；其余 7 条 L3 功能仍无用例。
 
