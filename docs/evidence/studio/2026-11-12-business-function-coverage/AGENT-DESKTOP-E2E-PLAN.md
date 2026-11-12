@@ -150,8 +150,8 @@ agent-desktop list-apps                    # host 健康确认，必要时预热
 | --- | --- | --- |
 | F 层（用户口径） | 1/17 | **1/17，未变** |
 | F 层（PLAN §9 原口径） | 2/17 | 2/17，未变 |
-| 真宿主验证用例 | 7/7 | **8/8** |
-| 完全合规可视化 E2E | 3 条 | **4 条** |
+| 真宿主验证用例 | 7/7 | **9/9**（v2 初版记 8/8，第三十一轮 F08 用例后 +1） |
+| 完全合规可视化 E2E | 3 条 | **5 条**（v2 初版记 4 条） |
 | P0 口径裁决 | 待裁决 | **仍待裁决**（两次未回应，见 §10） |
 
 ### 8.2 已交付的工程优化
@@ -199,7 +199,7 @@ disposition: delivered_unverified, retry: unsafe
 | F05 | `model-selector-visual-e2e.py` | — | `find --role tab → find --role tablist → set-value 搜索 → press 上下键 → get value` | 唯一实例、过滤/键盘导航、选中态与思考强度还原 | P1 可写（不用键盘输入） |
 | F06 | — | 真 ACP 发 `session/request_permission` | `click 允许/拒绝` | 两次终态可区分、结果真实回写 | **结构不可达**（§5） |
 | F07 | `acp-turn-visual-e2e.py` | synthetic MCP（`capability_mcp.py`） | `launch` 起实例 → UI 发起任务 → `find` 回执 | 真实回复/工具记录；磁盘 HTTP 仅作 evidence | P2，需 fixture + 口径声明 |
-| F08 | `sidebar-persist-visual-e2e.py` | — | 侧栏 `setPinned/reorder` → `close-app --force` → `launch` → `find --name` | 重启后顺序与 pin 仍生效 | P1 可写（复用 F11 重启骨架） |
+| F08 | `sidebar-persist-visual-e2e.py`（**已有**） | — | `find 收起侧边栏/展开侧边栏 → toggle → close-app --force → launch → 回读控件名` | 侧栏折叠状态跨真进程重启保持 | **2 PASS / 1 次 host 环境 ERROR**；仅抽样，未覆盖项目/reorder/pin |
 | F09 | — | 工作区 tab 入口 | — | Ctrl+Tab / detach / 新窗口焦点 | **结构不可达**（真窗口 0 个 `role=tab`） |
 | F10 | `global-search-visual-e2e.py` | — | `press cmd+k` → `set-value`「搜索设置...」→ `find --count` | 结果项/空结果态/可清除/恢复开会话 | P1 可写（`set-value` 实测有效） |
 | F11 | `agent-desktop-launch-e2e.py`（已有） | — | `launch → toggle → 读 ACL → close-app → launch → 回读 → 还原` | 四项必须断言全覆盖 | **已达标，勿回归** |

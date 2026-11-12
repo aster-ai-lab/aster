@@ -1186,6 +1186,47 @@ disposition: delivered_unverified, retry: unsafe
 
 **自愈可靠性补充（如实记）**：本轮结束后 host 再次退化，此时单独跑 `python3 specs/host_readiness.py --force` **返回 `HOST_READY: FAIL`**（`list-apps` 仍 `ok=False`）。即该模块在本轮实测中确实成功过一次（97 apps）并支撑了 4 次用例运行，但**并非 100% 可靠**，Launch Services / TCC 状态仍有未定位的偶发因素。不声称 host 退化已被彻底解决；下次跑用例前仍应先确认 `list-apps`。
 
+## 第三十一轮：继续测试 —— frontmost 定位 + F08 侧栏持久化新用例
+
+### 前置（实测）
+
+```
+e2e-fresh-build --verify  verified f1d9a2d3e/4ba605622 (EXIT 0)
+permissions                accessibility/screen_recording: granted
+host_readiness.py --force   HOST_READY: PASS (91 apps)
+```
+
+### frontmost 根因定位（未解决，但已收敛）
+
+- `launcher.log` 实测 `studio-main-window focused=false visible=true`；`list-apps` 的 foreground 列表**没有 Aster**（前台是 WorkBuddy / 终端 / iTerm2 等）。这解释了 `type --headed` 的 `focus_verification / "application did not become frontmost"`。
+- 尝试 `agent-desktop focus-window --app Aster` 的诊断脚本在 host 退化后返回 `TIMEOUT`，未能验证它是否能解锁；**不声称已解决**。
+- 另一个硬观察：**Aster 进程存在时 host 无法恢复**。保留窗口、只重启 agent-desktop host 的预热变体返回 `warm: False`、`list-apps` 仍坏；而「先杀光 Aster/Studio → 预热 → 立刻跑短用例」能成功。这解释了为何 7–30s 的用例（F11 回归、F02 三次、本轮 F08）能过，而长诊断脚本会挂。
+
+### 新用例 `specs/sidebar-persist-visual-e2e.py`（F08 侧栏状态跨进程持久化）
+
+完全复用 F11 的 `toggle → close-app --force → launch → 回读` 模式，**不需要键盘输入**，因此绕开 frontmost 限制。
+
+首跑暴露的是**我的断言缺陷**：固定找「收起侧边栏」，toggle 后 `get --property value` 返回 `None`，被误判成「状态改变」；重启后同样找不到控件。短探测发现**控件名随状态切换**：展开态叫「收起侧边栏」、收起态叫「展开侧边栏」——而且下一次 launch 显示「展开侧边栏」，恰恰说明上一轮把收起状态**真的持久化**了。改为按两个名字之一查找、用**控件名**作状态判定（不把 `None` 当合法状态）。
+
+修正后完整链路：
+
+```
+[1] initial = '展开侧边栏'（收起态）
+[2] toggle → '收起侧边栏'（展开态）
+[3] close-app --force（真进程退出）
+[4] launch → 回读 '收起侧边栏'   ← 持久化生效
+[5] 还原 → '展开侧边栏'
+SIDEBAR_PERSIST_L3: PASS
+```
+
+**运行统计（如实）**：首跑 PASS、复跑 RUN2 PASS（`收起侧边栏 → 展开侧边栏 → restart → 展开侧边栏`）、复跑 RUN1 **ERROR**（`close-app` 后第二次 launch 时 `agent-desktop host not ready after warmup`）。**2 PASS / 1 环境 ERROR**，不声称连续三次全绿；ERROR 发生在 host 恢复而非任何断言，属已记录的 8.4 限制。
+
+### 判定与状态
+
+- **F 层数字未变**：新口径仍 **1/17**、原口径 2/17。该用例是 F08 的「侧栏状态跨进程持久化」抽样，未覆盖 §4 的项目新建/切换、范围筛选、`reorder/setPinned` 等必须断言；P0 口径裁决仍未给出。
+- 真宿主验证用例 **8 → 9**；完全合规可视化 E2E 增至 5 条。
+- 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1217,3 +1258,4 @@ disposition: delivered_unverified, retry: unsafe
 - **不声称 F14 已严格达标、也不声称产品 `Claim::Busy` 分支被可视化 E2E 覆盖**：第二十六轮只证明「二次 `agent-desktop launch` 未产生第二个 Aster 实例」；第二次 launch 返回 `APP_UNRESPONSIVE` 意味着 NSWorkspace 没拉起第二个进程。F14 仍缺更新通道/清单与退出守卫，不计入 F 层。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
 - **不声称第三十轮抬高了 F 层、也不声称 F02 已达标**：`composer-controls-visual-e2e.py` 只是 F02 的控件/附件子集，中文输入、斜杠命令、队列等 §4 必须断言因 `type --headed` 的 `focus_verification`（窗口未 frontmost）而未覆盖。不声称该失败是产品缺陷，不声称放宽过断言（复跑 FAIL 后只加了 UI 就绪轮询），也不声称 P0 口径裁决已有结论。
+- **不声称第三十一轮解决了 frontmost、也不声称 F08 已严格达标**：`focus-window` 的解锁效果因 host 退化未验证成功；`sidebar-persist-visual-e2e.py` 只覆盖侧栏折叠状态跨进程持久化，未覆盖项目新建/切换、`reorder/setPinned`。不声称三次复跑全绿（实为 2 PASS / 1 次 host 环境 ERROR），也不声称 F 层数字变化。
