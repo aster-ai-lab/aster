@@ -1184,6 +1184,8 @@ disposition: delivered_unverified, retry: unsafe
 - 真宿主验证用例 **7 → 8**（8/8 通过）；完全合规可视化 E2E 增至 4 条。
 - 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
 
+**自愈可靠性补充（如实记）**：本轮结束后 host 再次退化，此时单独跑 `python3 specs/host_readiness.py --force` **返回 `HOST_READY: FAIL`**（`list-apps` 仍 `ok=False`）。即该模块在本轮实测中确实成功过一次（97 apps）并支撑了 4 次用例运行，但**并非 100% 可靠**，Launch Services / TCC 状态仍有未定位的偶发因素。不声称 host 退化已被彻底解决；下次跑用例前仍应先确认 `list-apps`。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
