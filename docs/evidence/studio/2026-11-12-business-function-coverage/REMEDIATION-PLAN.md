@@ -1,6 +1,6 @@
 # 测试覆盖率与工程债修复计划
 
-> 状态：**S1 部分完成（R2 已交付，S1 未全达成）**。承接 `AGENT-DESKTOP-E2E-PLAN.md` v2 与 `docs/evidence/studio/2026-11-13-live-llm-e2e/OUTCOME.md`。R2 结果见该 OUTCOME「第二轮」；其余项仍为规划。
+> 状态：**S1 已完成**（4 类真实 part 组件断言、R9 checklist、live gate 约定）。承接 `AGENT-DESKTOP-E2E-PLAN.md` v2 与 `docs/evidence/studio/2026-11-13-live-llm-e2e/OUTCOME.md`（第二、三轮）。**S2 起仍为规划**：S2 需 R1 裁决，S3 需 R3 系统侧动作，S4 需推送授权。
 > 事实基线（2026-11-13 03:38 实测）：HEAD `ed054809b`，**本地领先远程 11 个 commit 未推送**；父仓 8 个 modified + 2 个未跟踪目录（并行 WIP）；子模块干净；4318/4325/4388/4598 全空闲；`agent-desktop list-apps` 仍 `TIMEOUT`。
 > 目标不是「冲 100%」——`F06/F09/F12/F15` 结构不可达决定了上限。目标是**把可测面吃满、把阻塞归位、把工程债清零**。
 
@@ -115,11 +115,23 @@ R4 真 host 渲染通道 ──> 产品/工程改造，或判定由 R2 替代、
 | 同一规划写了两版 | 新请求先读现有文档，增量更新而非重写 |
 | 擅自改数字/放宽断言 | 任何计入都要两次独立 PASS + OUTCOME 轮次 + 免责段 |
 
+**R9 已固化为以下可勾选 checklist（每轮 E2E 开工前逐条确认）**：
+
+- [ ] 环境类失败**第一步读取完整 `error.details`**，禁止在未换诊断方向前连续重试 ≥3 次
+- [ ] 失败先单跑拿根因，才允许归类为「既有 / 环境」；证据写进 OUTCOME
+- [ ] `None` / 缺失 / 空值**永不当作合法状态或通过**；控件随状态改名时按名字判定
+- [ ] 判定条件覆盖用户诉求的**全部维度**（例：真模型用例必须 `apiOk && renderOk`，不能只凭 API 成功）
+- [ ] 新请求先读现有文档，增量更新而非重写
+- [ ] 任何计入覆盖的用例：两次独立 PASS + 更新台账 + OUTCOME 轮次 + `Explicitly not claimed`
+- [ ] lint / 测试警告必须与 HEAD 同目录对比后再判「既有」，不顺手改无关代码、不放宽 gate
+- [ ] 真实模型调用：`ASTER_E2E_LIVE_MODEL=1`、单次 turn、超时上限、凭证仅内存、回执脱敏
+- [ ] 收尾：ACL 还原、端口空闲、无残留进程、构建基线重新对齐
+
 ## 3. 阶段与量化 Checkpoint
 
 | 阶段 | 内容 | 出口判据 |
 | --- | --- | --- |
-| **S1（可立即做）** | R2 + R9 + R8 的治理项 | **R2 已完成（3 类 part，2× 94/94 PASS）**；但「≥4 类」未达成、`coverage-matrix` 未改、R9 规则尚未固化成文档、仓库级 live gate 仍只在脚本内 → **S1 未全达成** |
+| **S1（可立即做）** | R2 + R9 + R8 的治理项 | **✅ 已达成**：R2 补到 **4 类真实 part**（`step-start`/`reasoning`/`text`/`data-context-usage`，2× 94/94 PASS），R9 checklist 已固化于 §2 R9，live gate 约定已固化于 live-llm OUTCOME §7。仍如实保留：`coverage-matrix.md` 编号体系不匹配，222 项统计未改 |
 | **S2（需一条裁决）** | R1 → R5 | F 层 **2/17 → 7/17**（裁决通过）；五条用例各两次 PASS |
 | **S3（需系统侧动作）** | R3 → R6 | `list-apps ok=true`；F02 完整断言 PASS；F 层 → **8/17** |
 | **S4（需授权）** | R8 推送/版本/工作树 + R7 产品清单移交 | 0 未推送 commit、工作树干净、版本号 > 0.2.2、四项缺口有产品侧 owner |

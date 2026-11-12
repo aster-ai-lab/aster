@@ -116,6 +116,44 @@ R2 原计划第 4 步要「把触发的编号在 `coverage-matrix.md` 里标为�
 - **F 层数字不变**：1/17（用户口径）/ 2/17（PLAN §9）。组件层 vitest 按用户 15:06 口径（必须 agent-desktop 可视化 E2E）**不计入 F 层**；这是 F03/F07 的真实模型补充验收证据。
 - 未改产品源码；父仓 gitlink 已按 land discipline 推进到 `bbc7bb9c01`。
 
+## 第三轮：S1 收尾 —— 4 类 part + R9 checklist + live gate 约定
+
+### 1. 补到 4 类真实 part（没有放宽判据）
+
+第二轮 S1 缺口是「≥4 类 part」只拿到 3 类（`reasoning` 未出现）。本轮**不修改判据**，而是按模型非确定性重跑同一 gated 真 turn：第 1、2 次仍 3 类，**第 3 次拿到单次真实 turn 的 4 类 part**：
+
+```
+step-start / reasoning(text, state=done, thinkingMs=553) / text("LIVELLMREADY") / data-context-usage
+```
+
+fixture 仍是**一次真实 turn 的完整 parts**（没有拼接不同 turn 冒充）。同步更新子模块 fixture 与组件断言：4 类 part 集合、reasoning 的 `state=done` 与文本内容、markdown 叶子渲染真实回复。
+
+**一次失败与修正**：首次断言直接找 `mock-thinking-block` 失败（1 failed | 93 passed）。读 DOM 后确认 `reasoning` 按设计收在**折叠的 process disclosure** 内（`MessagePartsRenderer.tsx` 开头注释即说明 reasoning 与 child tool groups 共用顶层 disclosure），`ThinkingBlock` 延迟挂载。按现有测试的既有做法加 `fireEvent.click(completed-process-trigger)` 展开再断言 `data-streaming="false"` 与真实 reasoning 文本 → **两次独立 `94/94 PASS`**（EXIT 0）。这是组件设计，不是产品缺陷；没有靠删断言换绿。
+
+`oxlint --deny-warnings` 仍为 1 warning / 0 errors（与 HEAD 同，既有 `import React` 提示）；`git diff --check` OK。
+
+### 2. R9 规则已固化
+
+`REMEDIATION-PLAN.md` §2 R9 已把本会话的失误反推成**可勾选 checklist**（环境失败先读 `error.details`、禁止未换方向连重试 ≥3、`None` 永不当状态、判定覆盖全部诉求维度、两次独立 PASS 才计入、lint 警告与 HEAD 对比、真模型 gate、收尾还原）。开工前逐条确认。
+
+### 3. 仓库级 live gate 约定（本节起生效）
+
+真模型测试在本仓库的**唯一**准入方式：
+
+| 约束 | 约定 |
+| --- | --- |
+| 开关 | 显式 `ASTER_E2E_LIVE_MODEL=1`；不设即 `SKIPPED`，CI 无任何 LLM secret，**永不默认触发** |
+| 规模 | 一次运行**一个 turn**；`LIVE_TURN_TIMEOUT_MS` 默认 120000 上限；不跑长 campaign（C07 是 12 轮 / 7200s，需单独授权） |
+| 凭证 | 只从 `~/.aster/config.acl` 在内存读取，不打印、不写回执、不进日志、不进环境变量 |
+| 输出 | 回执脱敏（provider 名 / model / host / part 类型 / 耗时），失败保留原始结构化回执与断言结果 |
+| 断言 | 不比对模型自由文本；只验结构事实、token 往返、part 类型与渲染形态 |
+| 记账 | 组件层 vitest **不计入**用户 15:06 口径的 F 层；每次运行写 OUTCOME 轮次与 `Explicitly not claimed` |
+| 费用 | 无预算门禁，靠「本地手动 + 单次 turn + 显式 gate」约束；异常重试需人工判断，不自动重试 |
+
+### 4. S1 判定
+
+**S1 达成**：4 类真实 part 有组件渲染断言（2× 94/94）、R9 checklist 固化、live gate 约定固化。仍未做（如实）：`coverage-matrix.md` 的 222 项统计未改，因为它的 R/B/L/S/F/C 编号描述真窗口截图场景、没有组件渲染维度，硬套会造假。
+
 ## Explicitly not claimed
 
 - 不声称「任务对话流全部能力和组件渲染」已测完；只跑通了 1 个真 turn、验到 4 种 part 类型，222 项形态里绝大多数未执行。

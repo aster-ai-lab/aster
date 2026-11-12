@@ -4,13 +4,14 @@
   "model": "deepseek-flash",
   "endpointHost": "api.deepseek.com",
   "prompt": "Reply with exactly the token LIVELLMREADY and nothing else.",
-  "startedAt": "2026-11-12T19:46:34.715Z",
-  "elapsedMs": 2026,
+  "startedAt": "2026-11-12T19:54:35.799Z",
+  "elapsedMs": 4043,
   "status": "success",
   "searchableTextLength": 12,
   "tokenPresent": true,
   "partTypes": [
     "step-start",
+    "reasoning",
     "text",
     "data-context-usage"
   ],
@@ -18,5 +19,5 @@
     "ok": false,
     "detail": "http=404 title= htmlLength=39 bodyLength=0 messageNodes=0 tokenVisible=false consoleErrors=[\"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
   },
-  "finishedAt": "2026-11-12T19:46:43.141Z"
+  "finishedAt": "2026-11-12T19:54:46.187Z"
 }
