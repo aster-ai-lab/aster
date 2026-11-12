@@ -33,6 +33,7 @@ import time
 import uuid
 
 REPO = Path(__file__).resolve().parents[5]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 HOME = Path.home()
 APP_DIR = HOME / "Applications" / "AsterVisualE2E.app"
 BUNDLE_ID = "dev.aster.studio.visual-e2e.launcher"
@@ -81,6 +82,11 @@ def install_wrapper():
 
 
 def launch(instance, port):
+    # The host loses /bin/ps exec when respawned from a sandboxed Bash session.
+    # Recover before any window command; see specs/host_readiness.py.
+    from host_readiness import ensure_host
+    if not ensure_host():
+        raise RuntimeError("agent-desktop host not ready after warmup")
     return ax(
         "launch", BUNDLE_ID,
         "--env", f"ASTER_STUDIO_INSTANCE={instance}",

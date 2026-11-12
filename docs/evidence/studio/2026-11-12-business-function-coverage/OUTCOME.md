@@ -1139,6 +1139,51 @@ it.each(['aster', 'aster'])('only mounts organization runtimes for the managed t
 - **未动父仓其他 WIP**：`apps/aster/tests/{cli_update,env_manager}.rs`、`crates/code/acp/tests/cursor_account_tui_e2e.rs`、`crates/code/core/...` 两个文件、`docs/evidence/code/20261112-acp-child-tool-events/` 属并行任务，按 AGENTS.md 一律保留。`release-governance.md:43` 要求干净工作树发布，这些仍需其主人处理。
 - 本机 Node 22 vs 要求 24.12、CI 无签名/公证 secret、桌面发布无 tag 自动触发（仅 `workflow_dispatch` + 人工中英双语 notes）——这些是发布形态决策，未擅自绕过。
 
+## 第三十轮：开始执行 P1 —— host 自愈优化 + 首条 F02 真窗口用例
+
+### 强制前置（按 AGENTS.md，实测）
+
+```
+just build-studio                          EXIT 0
+node scripts/e2e-fresh-build.mjs --build   EXIT 0
+node scripts/e2e-fresh-build.mjs --verify  EXIT 0
+  verified 790e6e4ff/4ba605622 native=ab09b8247864 renderer=6db68bf2fcd0
+```
+
+### 优化：把反复出现的 host 退化固化成可靠自愈 `specs/host_readiness.py`
+
+本轮实测到两个此前被误判为「随机」的**真根因**：
+
+1. **`open -a` 对已运行的 bundle 只激活、不执行 launcher**。新建的 `AsterHostWarmup.app` 因未获 TCC 授权，其上下文里 `/bin/ps` 仍被拒（`list-apps TIMEOUT`）；复用**已授权辅助功能**的 `AsterVisualE2E.app` 并改用 **`open -n -a`**（强制新实例）才真正执行预热脚本，实测该上下文 `/bin/ps rc=0`、`accessibility: granted`。
+2. **Bash 轮询竞态**：`open -n` 是异步的，Python 若立刻从 Bash 调 `host_ok()`，会先把 host spawn 到受限上下文，wrapper 内的 `list-apps` 反而连上坏 host。改为先等 wrapper 写 `done.flag`，再从 Bash 检查。
+
+另在 `warmup()` 内用 libproc 清掉残留 `Aster`/`Studio` 进程（否则窗口 churn），并在 `finally` 恢复 launcher，避免与 `install_wrapper()` 冲突。
+
+验证：`python3 specs/host_readiness.py --force` → **`HOST_READY: PASS`**，`list-apps ok=True, 97 apps`。已集成进主骨架 `launch()`（每次启动前自动 `ensure_host()`）。**F11 回归 `AGENT_DESKTOP_LAUNCH_L3: PASS (token 766baa)`**，确认未破坏既有用例。
+
+### F02 真实 AX 探测（两轮 `agent-desktop launch` 起的真窗口）
+
+拿到的控件（窗口 `w-75255`/`w-75348`，`ref_count` 7→22）：composer textfield、「更多选项」combobox、「授权模式: 请求批准」combobox（F06 线索）、「优化提示词」combobox、「收起侧边栏」switch（checked/value=1）、侧栏「工作/设置/新建任务/搜索任务/连接器/技能/自动化」。点击「更多选项」弹出 `dialog:更多选项`，内含「上传附件」combobox（`disabled`, `readonly`）。
+
+**未解决的入口限制**：`type --headed` 在本轮两次探测均返回
+```
+TIMEOUT / focus_verification / "application did not become frontmost"
+disposition: delivered_unverified, retry: unsafe
+```
+中文与 `/clear` 都没进入 composer（value 恒为 `'\n'`），斜杠命令菜单与队列 dock 的 `find` 命中均为 0。先加语义 click「工作」仍失败，故判定为**当前会话窗口焦点/TCC 状态问题**（`launch` 本轮多返回 False，而 F11 成功时 `ok=True`），不是产品缺陷，也不重试写动作（`retry: unsafe`）。
+
+### 新增用例 `specs/composer-controls-visual-e2e.py`（F02 控件子集）
+
+只用 headless 语义动作，12 条断言：composer / 更多选项 / 授权模式 / 优化提示词 / 侧栏 switch 存在且 checked → click「更多选项」→ 断言「上传附件」在 `dialog:更多选项` 的 path 下 → escape 关闭后 composer value 不变（`'\n' → '\n'`，对应 §4「附件面板不改草稿」）。
+
+首跑 PASS、复跑 FAIL（对话框异步挂载时序），按 fail-closed **没有放宽断言**，改为 `wait_for()` 轮询控件真正出现（等待就绪，不是降低判定）。修正后**连续三次 `COMPOSER_CONTROLS_L3: PASS`**（EXIT 0，各约 7–9s）。
+
+### 判定与状态
+
+- **F 层数字未变**：新口径仍 **1/17**、原口径 2/17。这条用例只覆盖 F02 的控件/附件子集，**不含中文输入、斜杠命令、队列**等 §4 必须断言，不声称 F02 达标；P0 口径裁决也仍未给出。
+- 真宿主验证用例 **7 → 8**（8/8 通过）；完全合规可视化 E2E 增至 4 条。
+- 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1169,3 +1214,4 @@ it.each(['aster', 'aster'])('only mounts organization runtimes for the managed t
 - **不声称父仓 gitlink 已 bump、也不声称 `just studio-land-check` 通过**：该检查因子模块里非本任务的两个未提交 spec 而 EXIT 1；子模块修复已单独推送到 `studio.git` 的 `main`，父仓指针仍为 `0161c1c231`。
 - **不声称 F14 已严格达标、也不声称产品 `Claim::Busy` 分支被可视化 E2E 覆盖**：第二十六轮只证明「二次 `agent-desktop launch` 未产生第二个 Aster 实例」；第二次 launch 返回 `APP_UNRESPONSIVE` 意味着 NSWorkspace 没拉起第二个进程。F14 仍缺更新通道/清单与退出守卫，不计入 F 层。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
+- **不声称第三十轮抬高了 F 层、也不声称 F02 已达标**：`composer-controls-visual-e2e.py` 只是 F02 的控件/附件子集，中文输入、斜杠命令、队列等 §4 必须断言因 `type --headed` 的 `focus_verification`（窗口未 frontmost）而未覆盖。不声称该失败是产品缺陷，不声称放宽过断言（复跑 FAIL 后只加了 UI 就绪轮询），也不声称 P0 口径裁决已有结论。
