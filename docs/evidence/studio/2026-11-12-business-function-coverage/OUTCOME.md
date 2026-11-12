@@ -145,9 +145,16 @@ node scripts/e2e-coverage-gate.mjs --logs=<3 个已完成日志> --declared=490 
 - 产物目录 `work/connector-e2e-c566e257-f52/`（同批最新）：`mcp-process.jsonl`（`started`/`called`）、`stdio-turn.json`（1294 B 真实 turn 收据）、`model.jsonl`、`native.log`、`proxy.log`。
 - 清理：`afterAll` 因 sandbox safe-delete 保护（144 文件 > 阈值 50）跳过删除，**未绕过**；隔离 profile 留在 `~/Library/Application Support/dev.aster.studio/studio/aster/instances/`。
 
-### F11 尝试与中止理由
+### F11 尝试与中止理由（含实测）
 
-尝试复用同一 harness 写「UI 改设置 → 真进程重启 → 回读」的 F11 L3 用例，但：偏好走 Tauri IPC `preference_read` / `preference_commit`，需要 `hostToken`，renderer 侧没有可定位的注入全局；设置页也没有 `workbench.nav.settings` 这类稳定 `data-ui`。按 `AGENTS.md` 的 fail-closed 约束**不靠猜写测试**，本轮未产出半成品 spec。
+本轮实际写了 `preferences-native.spec.ts` 并跑了一次（不是纸上推断），确认了两条**结构性约束**：
+
+1. **Playwright 浏览器里写不了偏好**。`GeneralSettings.tsx` 的 5 个开关全部走 `usePreference()` → Tauri IPC（`preference_read` / `preference_commit`），而 `playwright.connectors.config.ts` 的 `page` 是普通 Chromium（经 4598 proxy 访问静态 renderer），**没有 `__TAURI_INTERNALS__`**。实测：进入设置页成功、`#setting-general-launch-onboot` 的 switch 可见、`aria-checked=false`，点击后 15s 内仍是 `false`（`toHaveAttribute` 超时）。F07 之所以能过，是因为它的写操作走 `host.api()` 的 HTTP 路由，UI 只承担展示与安装触发。
+2. **即便换成真 Tauri webview，也过不了 F11 的验收标准**。`PLAN.md` §4 对 F11 的要求是「退出进程后重启从磁盘恢复（**非 localStorage 假象**）」。进程重启后 `localStorage` 依然保留，headless 又无法执行 JS 清除它，因此「重启后值还在」无法区分真磁盘持久化与 localStorage 桩。要严格达标，需要能在重启前清空 webview 存储并对 SQLite 落盘做独立校验。
+
+另外 `hostToken` 在 renderer 侧无可定位的注入全局，也没有 `/api/preferences` HTTP 路由（已查 `src-tauri/src` 路由表），所以没有捷径。
+
+按 `AGENTS.md` 的 fail-closed 约束，**已删除该未通过的 spec 与其 `test-results` 产物**，不留半成品；上述结论作为后续实现 F11 的前置条件记录在此。F 层仍为 **1/17**。
 
 ### 测试源码仍未入库
 
