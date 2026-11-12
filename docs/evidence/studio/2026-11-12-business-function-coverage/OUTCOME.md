@@ -1256,6 +1256,47 @@ find '搜索设置...': total=1 ; find '搜索设置': 1 ; find '搜索': 3
 - `host_readiness.py` 的改动是工程健壮性，不改变任何覆盖判定。
 - 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
 
+## 第三十三轮：F10 设置搜索用例（单次 launch 模式）
+
+上一轮判断「瓶颈已从测试设计转移到环境可靠性」，本轮据此**改变用例形态**：不再做 `close-app` + 二次 launch，改为**单次 launch、纯语义动作、7–30s 内跑完**，把探测与断言合在一次窗口会话里。
+
+### 新用例 `specs/settings-search-visual-e2e.py`
+
+链路与断言：
+
+```
+[1] agent-desktop launch / wait_for_window / dismiss_onboarding
+[2] find 设置 button → click
+[3] find 搜索设置... → 断言 role=button（入口按钮，不是输入框）
+[4] click 入口 → 枚举可写控件 → 断言出现
+[5] 按名字选中「搜索设置...」combobox → set-value "网络"
+    → get --property value → 回读 '网络'
+[6] close-app
+SETTINGS_SEARCH_L3: PASS
+```
+
+**关键产品行为**：点击「搜索设置...」button 后，**同一个控件变成 combobox**（`find --role combobox` 里出现 `搜索设置...`），`set-value` 成功、回读一致。这补上了第三十二轮未探明的部分，也把 v2 §9 那行从「待探明」升级为已验证。
+
+**两次修正都基于观察，没放宽断言**：
+- 首跑 [5] 选了 `controls[0]`（其实是「更多选项」combobox），`set-value` 报 `ACTION_NOT_SUPPORTED` → 改成按名字选搜索控件。
+- shell 侧 `--force` 自愈那次返回 `HEAL=124`（超时），但**用例内 `ensure_host()` 自愈成功**并把整条 PASS 跑完 —— 第三十二轮加的有限重试在这里确实救回了一次。
+
+### 运行统计（如实）
+
+| 运行 | 结果 |
+| --- | --- |
+| 首跑 | `SETTINGS_SEARCH_L3: PASS`，`HEAL=124` 但用例内自愈成功 |
+| 复跑 RUN1 | **FAIL** — `Aster window never appeared via agent-desktop`（host 退化） |
+| 复跑 RUN2 | `SETTINGS_SEARCH_L3: PASS`，`typed value round-trips - got '网络'` |
+
+**2 PASS / 1 环境 FAIL**，不声称连续三次全绿；FAIL 发生在窗口出现之前，不是任何断言失败。
+
+### 判定与状态
+
+- **F 层未变**：新口径 **1/17**、原口径 2/17。该用例是 F10「设置搜索入口可写可读」子集，未覆盖命令面板、全局搜索结果项/空态、`?focusId` 深链、快捷键重绑等 §4 必须断言；P0 口径裁决仍未给出。
+- 真宿主验证用例 **9 → 10**；完全合规可视化 E2E 增至 6 条。
+- 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1289,3 +1330,4 @@ find '搜索设置...': total=1 ; find '搜索设置': 1 ; find '搜索': 3
 - **不声称第三十轮抬高了 F 层、也不声称 F02 已达标**：`composer-controls-visual-e2e.py` 只是 F02 的控件/附件子集，中文输入、斜杠命令、队列等 §4 必须断言因 `type --headed` 的 `focus_verification`（窗口未 frontmost）而未覆盖。不声称该失败是产品缺陷，不声称放宽过断言（复跑 FAIL 后只加了 UI 就绪轮询），也不声称 P0 口径裁决已有结论。
 - **不声称第三十一轮解决了 frontmost、也不声称 F08 已严格达标**：`focus-window` 的解锁效果因 host 退化未验证成功；`sidebar-persist-visual-e2e.py` 只覆盖侧栏折叠状态跨进程持久化，未覆盖项目新建/切换、`reorder/setPinned`。不声称三次复跑全绿（实为 2 PASS / 1 次 host 环境 ERROR），也不声称 F 层数字变化。
 - **不声称第三十二轮产出了新用例或解决了 host 退化**：`ensure_host()` 加重试后 F08 三次仍是 2 PASS / 1 环境 ERROR；F10 只探明「搜索设置...」是 button 入口，点击后控件因 host 退化未验，未新增通过用例、未改任何覆盖数字。不声称 F10 已可写或已达标。
+- **不声称第三十三轮 F10 已严格达标或三次运行全绿**：`settings-search-visual-e2e.py` 只覆盖「设置搜索入口变可写控件 + 值往返」，未覆盖命令面板、结果项/空态、深链、快捷键重绑；运行为 2 PASS / 1 次 host 环境 FAIL（发生在窗口出现前）。不声称 F 层数字变化。
