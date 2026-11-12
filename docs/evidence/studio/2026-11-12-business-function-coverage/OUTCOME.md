@@ -116,16 +116,55 @@ node scripts/e2e-coverage-gate.mjs --logs=<3 个已完成日志> --declared=490 
 - 以上均**未提交**：按 `AGENTS.md` 的 Studio land discipline，测试源码改动应在子模块落地后再 bump 父仓 gitlink；当前父仓有并发会话改动，未擅自 bump。是否入库请用户决定。
 - 隔离 profile 因 safe-delete 保护未清理，留在 `~/Library/Application Support/dev.aster.studio/studio/aster/instances/`；未绕过该保护。
 
+## 第三轮：F07 通过，F 层 0/17 → 1/17
+
+继续推进后，**唯一那条 L3 真宿主用例真正跑通了**：
+
+```
+1 passed (37.7s)
+✓ tests/e2e/connectors/connector-native.spec.ts:37:5
+  real authority persists installations and real ACP invokes stdio, SSE and HTTP connectors
+```
+
+它在真 native host 上验证了：连接器安装经 reload 持久化、stdio/SSE/HTTP 三种 MCP 传输的真实 ACP turn 与工具回执、`host.restart()` 后 `capabilities/mcp.json` 仍在、删除连接器后不再被调用。**这是 F 层第一条严格达标的业务功能（1/17 ≈ 5.9%）**，按 §9 不是桩、不是凑数。
+
+### 又定位并修掉的两个根因
+
+| 阻塞 | 根因 | 处理 |
+| --- | --- | --- |
+| 首启对话框遮罩拦截点击 | 真 native host 上 `requiredPrepared=false` | 给 4388 静态服务加仓库现成的 `STUDIO_E2E_STUB_RUNTIME=1`（拦截 `runtime_components_ipc` 并透传其余 IPC），**未自写代理、未改 spec 逻辑** |
+| `dialog.locator('textarea')` strict mode violation | 弹窗里「参数」与「JSON」两个 textarea | 改用稳定的 `[data-ui="capabilities.connector.custom.json-input"]` |
+| ACP turn 返回 `CAPABILITY-MISSING:mcp`（工具未注入） | **`tests/e2e/capability_mcp.py` 也缺失**，stdio 连接器指向不存在的脚本，MCP 进程从未启动 | 从历史 commit `e9a4acb36` 恢复 31 行；恢复后 `mcp-process.jsonl` 出现 `started`/`called` |
+
+即：L3 fixture 集一共缺了 **2 个文件**（`capability_baseline.py` 234 行、`capability_mcp.py` 31 行），这是它此前从未跑通的结构性原因，与产品功能无关。
+
+### 真宿主证据（constitution 要求）
+
+- 构建：沿用 00:34 的 `e2e-fresh-build --build` 产物（root `137b868cd` / studio `0161c1c231`，native `79776bccd8ae`、renderer `3bd7b192d981`）；此后仅文档提交，产物未变。
+- 启动命令：`STUDIO_RENDERER_PORT=4388 STUDIO_E2E_STUB_RUNTIME=1 node scripts/e2e-preview.mjs`，`./node_modules/.bin/playwright test --config playwright.connectors.config.ts --reporter=list`。
+- 产物目录 `work/connector-e2e-c566e257-f52/`（同批最新）：`mcp-process.jsonl`（`started`/`called`）、`stdio-turn.json`（1294 B 真实 turn 收据）、`model.jsonl`、`native.log`、`proxy.log`。
+- 清理：`afterAll` 因 sandbox safe-delete 保护（144 文件 > 阈值 50）跳过删除，**未绕过**；隔离 profile 留在 `~/Library/Application Support/dev.aster.studio/studio/aster/instances/`。
+
+### F11 尝试与中止理由
+
+尝试复用同一 harness 写「UI 改设置 → 真进程重启 → 回读」的 F11 L3 用例，但：偏好走 Tauri IPC `preference_read` / `preference_commit`，需要 `hostToken`，renderer 侧没有可定位的注入全局；设置页也没有 `workbench.nav.settings` 这类稳定 `data-ui`。按 `AGENTS.md` 的 fail-closed 约束**不靠猜写测试**，本轮未产出半成品 spec。
+
+### 测试源码仍未入库
+
+- `apps/studio/tests/e2e/connectors/connector-native.spec.ts`（helper + textarea 选择器修复，子模块内 M）
+- `tests/e2e/capability_baseline.py`、`tests/e2e/capability_mcp.py`（父仓未跟踪，从历史恢复）
+- 子模块 `apps/studio` **无 upstream**，按 land discipline 无法「push 子模块提交后再 bump 父仓 gitlink」，因此本轮不硬提交、不 bump，全部留在工作树待用户决定。
+
 ## Explicitly not claimed
 
-- **不声称业务功能验证覆盖率 100%**，也不声称 F 层任何一条已严格达标。
+- **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
 - 不声称 Gate A 达到 70%/95%/100%（实测 5.9% FAIL，且仅 3/7 config 计入）；不声称剩余 4 个 config 的结果。
 - 不声称 Gate B 可测量（UNMEASURABLE）。
 - 不声称 L3 用例通过；不声称用渲染器桩证明 native 行为。
 - 不声称 `capability_baseline.py` 的恢复已被项目正式接纳（仅恢复到工作树用于本轮验证，需评审后决定是否入库）。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- 不声称 L3 用例通过、不声称 F 层有任何一条达标、不声称覆盖率因本轮修复达到 100%。
+- **声称 F07 的 L3 真宿主用例通过**（1 passed / 37.7s，有 receipts），但**不声称**其余 7 条 L3 功能有覆盖、不声称 F 层达到 100%、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
 - 不声称 `connector-native.spec.ts` 与 `capability_baseline.py` 的修复已入库；两者均留在工作树待评审。
