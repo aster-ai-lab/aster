@@ -71,6 +71,24 @@ jobs:
           cargo test --locked -p aster-acp --test acp_conformance_stdio -- --test-threads=1
           cargo test --locked -p aster-acp --test unattended_e2e -- convergence cycle original_refusals child_refusal --test-threads=1
           cargo test --locked -p aster-acp --test deloop_real_llm --test deloop_generalization_real_llm -- --test-threads=1
+      # These suites drive a real PTY and were qualified as a full matrix on
+      # macOS. Linux keeps the stdio subset above until its PTY matrix is
+      # qualified. Suites with open failures are deliberately excluded, not
+      # hidden behind continue-on-error.
+      - name: Deterministic PTY E2E suites (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          for suite in \
+            shell_bypass_learning \
+            memory_management \
+            memory_canonical_stdio \
+            protocol_commands_stdio \
+            workspace_layer_trust_stdio \
+            unattended_e2e \
+            shipped_tui_e2e; do
+            cargo test --locked -p aster-acp --test "$suite" -- --test-threads=1
+          done
 
   test-windows:
     name: Core/ACP portable tests (windows-latest)
