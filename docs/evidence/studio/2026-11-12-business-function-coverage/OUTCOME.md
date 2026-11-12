@@ -555,6 +555,40 @@ F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图�
 
 窗口已停，4325 释放；4318/4326/4388 保持空闲，无可见 Aster 窗口。
 
+## 第十五轮：F13 补完尝试（失败）+ 4 条真宿主用例统一回归
+
+### 先试把 F13 从「部分」补成「达标」
+
+目标很具体：F13 只差「3 个 runtime 组件」。`/settings/dependencies` 虽有完整 3 张组件卡片，但被 `LOCAL_HIDDEN_SETTINGS_ROUTES` 从侧栏隐藏；若能通过别的可 AX 驱动路径进这个路由，就可能安装另两个 optional 组件。
+
+试的是设置页自带的搜索：真窗口里点开设置，对 combobox「搜索设置...」用 `set-value` 写入「依赖」（`type` 对该 combobox 报 `ACTION_FAILED`，`set-value` 成功且 `get --property value` 回读为「依赖」）。结果：
+
+- 侧栏仍是原来 10 个入口，**没有出现「依赖」路由按钮**
+- 只多出「清除」「取消搜索」两个按钮，以及一个无 ref 的 statictext「依赖」
+- `find --name 运行时组件 / 运行时依赖 / 依赖管理` 全部 0
+
+即**隐藏路由不通过设置搜索暴露**，测试侧没有补装另两个组件的 UI 路径。因此 `PLAN.md` 的「3 个组件」与当前产品只装 1 个之间的偏差，确实需要产品侧确认（修订验收标准或补实现），`F13_L3: PARTIAL_PASS` 的结论稳固。
+
+### 4 条真宿主用例统一回归（最终 HEAD `01bb041d7`）
+
+不再新开功能，把一整天积累的 4 条用例在最终状态下完整跑一遍，确认没有退化：
+
+| 用例 | 命令 | 结果 |
+| --- | --- | --- |
+| F07 真实 ACP/MCP | `playwright test --config playwright.connectors.config.ts --output=/tmp/aster-l3-regression` | `✓ (24.0s)` |
+| F14 部分 重启持久化 | 同上 | `✓ (6.2s)` |
+| 合计 | | **`2 passed (56.3s)`，EXIT 0** |
+| F11 偏好跨进程 | `python3 specs/f11-desktop-e2e.py` | **`F11_L3: PASS`**，8 步全绿，EXIT 0 |
+| F13 真实首启 | `python3 specs/f13-first-run-e2e.py` | **`F13_L3: PARTIAL_PASS`**（组件数偏差，同上），EXIT 0 |
+
+前置的静态 renderer：`STUDIO_RENDERER_PORT=4388 STUDIO_RENDERER_DIST=.studio/dist/e2e-latest STUDIO_E2E_STUB_RUNTIME=1 node scripts/e2e-preview.mjs`（仅 Playwright 两条需要）。两个 Python 脚本自管 `just studio` 进程组，端口 4325 / 4326，跑完各自还原并清理。
+
+**结论**：4 条真宿主用例在最终 HEAD 下全部按预期通过；F 层仍 **2/17**（F07 + F11 严格达标，F14/F13 部分覆盖），Gate A 46.5% / Gate B UNMEASURABLE 不变。本轮**未新增用例、未改变任何计数**，只做验证与负结论确认。
+
+### 收尾
+
+4318/4325/4326/4388 全部空闲，无可见 Aster 窗口；`playwright.connectors.config.ts --list` 保持 `2 tests in 2 files`。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -572,3 +606,4 @@ F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图�
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
 - 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。
 - 不声称 F09 或 F15 有任何用例或覆盖；两轮都只确认了「当前真窗口没有可驱动的入口」，未找到触发前置状态的方法。不声称剩余 4 条 L3 的缺口能靠增加测试执行次数解决。
+- 不声称 F13 已补成严格达标；设置搜索「依赖」无法暴露被隐藏的 `/settings/dependencies` 路由，另两个 optional 组件在测试侧无安装入口。统一回归只证明 4 条既有用例未退化，**不声称本轮改变了任何覆盖计数**。
