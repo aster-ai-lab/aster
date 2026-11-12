@@ -1338,6 +1338,59 @@ RuntimeError: agent-desktop host not ready after warmup
 
 在此之前，继续「跑用例 → host 超时 → 重试」不会产生任何覆盖进展。可改做不依赖 GUI 的工作（P0 口径裁决、D 类产品改造清单、fixture 准备）。
 
+## 第三十五轮：R8 诊断 —— 全量 renderer 套件超时的根因（无代码改动）
+
+按 `REMEDIATION-PLAN.md` R8 的「先定位卡在哪个文件，再逐批修过时断言」执行第一步。本轮**只读诊断，未改任何源码、未放宽任何 gate**。
+
+### 1. 不是单文件死锁，是规模 × 本机吞吐
+
+历史记录（第二十八轮，`:1108`）为「全量 `vitest run --project renderer --silent` **EXIT 124（20m 超时）**」。为区分「某个文件卡住」与「纯规模」，取 `src/renderer/components/chat` 子目录做计时：
+
+```
+chat 目录测试文件 = 172 ；全部 renderer 测试文件 = 1572
+timeout 900s vitest run --project renderer src/renderer/components/chat --silent
+  → EXIT 124（15 分钟）
+  → 去除 ANSI 后统计：完成 116 / 172 个文件
+  → 日志里每个文件的自身耗时多为 ~1s，但墙钟约 7.8s/文件
+```
+
+**结论**：日志持续有 `✓ renderer ... (N tests)` 输出，**不存在卡死的单文件**；全量 20m 超时是套件规模与本机执行吞吐不匹配。按 116 文件/900s 线性外推，1572 文件约需 **3.4 小时**。修复方向应是**分片（shard）/ 提高 CI 超时 / 降低 worker 启动开销**，而不是等它跑完或去修某个「超时文件」。
+
+### 2. 既有失败的真实规模：chat 子目录 7 文件 / 27 条
+
+15 分钟跑出的 116 个文件里有 **27 条失败断言，集中在 7 个文件**：
+
+| 文件（均在 `src/renderer/components/chat/`） |
+| --- |
+| `actions/__tests__/topicContextMenuActions.test.tsx` |
+| `messages/blocks/__tests__/MessageHtmlArtifact.test.tsx` |
+| `messages/frame/__tests__/MessageOutline.test.tsx` |
+| `messages/hooks/__tests__/useMessageActivityState.test.tsx` |
+| `messages/markdown/__tests__/CitationTooltip.integration.test.tsx` |
+| `messages/markdown/__tests__/JsonRenderMessage.test.tsx` |
+| `messages/tools/agent/__tests__/AgentFileDiffView.test.tsx` |
+
+**与本会话改动无关**：本轮改过的 `MessagePartsRenderer.test.tsx`（2× 94/94 PASS）与 `agentSessionContextProjection.test.ts`（7/7 PASS）**都不在失败清单**。
+
+另单跑历史点名的 `pages/knowledge/__tests__/WorkspaceTaskDetails.test.tsx`，**3 failed / 2 passed**，精确根因：
+
+| 行 | 断言 | 实际 |
+| --- | --- | --- |
+| `:89` | `queryByText('question')).not.toBeInTheDocument()` | 找到 `<p>question</p>`（Results tab 现在显示问题原文，旧断言过时） |
+| `:119` | `getByText('Started')).toBeVisible()` | 元素存在但为**空 `<dt/>` 且不可见** |
+| `:261` | `findByText('New statement')).toBeVisible()` | 元素存在但为**空 `<div/>` 且不可见** |
+
+后两例像是 i18n/mock 未提供文本导致的内容为空，**不能**通过把断言改成 `not.toBeVisible()` 或删除来凑绿。
+
+### 3. 判定：记录不修
+
+按 AGENTS.md「记录但不顺手修、不扩大范围，除非阻塞当前任务」：这些失败**不阻塞**真实 LLM 对话流测试，本轮**不改任何测试或产品源码**，也不声称全量套件通过。它们属于独立的「UI 演进后测试未跟上」欠账，需要逐个比对产品预期行为后单独排期。
+
+### 4. 状态
+
+- 无代码改动、无子模块改动、无覆盖数字变化（F 层仍 1/17 / 2/17）。
+- 收尾：无残留测试进程（计时跑已被 `timeout` 终止）、端口未被占用。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
