@@ -1227,6 +1227,35 @@ SIDEBAR_PERSIST_L3: PASS
 - 真宿主验证用例 **8 → 9**；完全合规可视化 E2E 增至 5 条。
 - 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
 
+## 第三十二轮：继续测试 —— host 重试增强、F10 探测、环境阻塞如实记录
+
+### 1. `host_readiness.ensure_host()` 增加有限重试
+
+针对第三十一轮 RUN1 的 `agent-desktop host not ready after warmup`（`close-app` 后第二次 launch 与垂死进程竞态），改为最多 2 次 `warmup()`、间隔 3s，而不是一次失败就抛错。
+
+**验证（F08 用例连跑 3 次）**：RUN1 PASS、RUN2 **ERROR**（这次在**首次** launch 就 `host not ready after warmup`）、RUN3 PASS = **2 PASS / 1 环境 ERROR**。重试**改善了但没有根治**：退化发生在 shell 侧预热与用例内 `ensure_host()` 之间，属 Launch Services / TCC 偶发。不声称已解决，也不把 ERROR 算成断言失败。
+
+### 2. F10 设置页搜索控件探测（一次成功）
+
+`agent-desktop launch` 起真窗口、点「设置」后 `snapshot -i --compact` 实测：
+
+```
+[["button","设置"], ["button","搜索任务"], ["button","搜索设置..."], ["button","网络搜索"]]
+find '搜索设置...': total=1 ; find '搜索设置': 1 ; find '搜索': 3
+```
+
+**纠正规划里的一个假设**：v2 §9 把 F10 写成「`set-value` 写『搜索设置...』」——实际这是一个 **button 入口**，不是输入框；需先点击才会出现可写的搜索控件。规划 §9 已按此更正。
+
+### 3. 未完成的部分（环境阻塞）
+
+补探「点击『搜索设置...』后弹出的控件」那一轮 `launch: False`、`wait_for_window` 超时 3m21s，host 再次退化；按第三十一轮结论（Aster 进程存在时 host 无法恢复）不再硬钻。**本轮未产出新的 F10 用例**，也没有新增通过用例。
+
+### 判定与状态
+
+- **数字全部未变**：F 层 1/17（新口径）/ 2/17（原口径），真宿主 9/9，合规可视化 E2E 5 条，P0 裁决仍未给出。
+- `host_readiness.py` 的改动是工程健壮性，不改变任何覆盖判定。
+- 收尾：ACL `value = false`、五端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1259,3 +1288,4 @@ SIDEBAR_PERSIST_L3: PASS
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
 - **不声称第三十轮抬高了 F 层、也不声称 F02 已达标**：`composer-controls-visual-e2e.py` 只是 F02 的控件/附件子集，中文输入、斜杠命令、队列等 §4 必须断言因 `type --headed` 的 `focus_verification`（窗口未 frontmost）而未覆盖。不声称该失败是产品缺陷，不声称放宽过断言（复跑 FAIL 后只加了 UI 就绪轮询），也不声称 P0 口径裁决已有结论。
 - **不声称第三十一轮解决了 frontmost、也不声称 F08 已严格达标**：`focus-window` 的解锁效果因 host 退化未验证成功；`sidebar-persist-visual-e2e.py` 只覆盖侧栏折叠状态跨进程持久化，未覆盖项目新建/切换、`reorder/setPinned`。不声称三次复跑全绿（实为 2 PASS / 1 次 host 环境 ERROR），也不声称 F 层数字变化。
+- **不声称第三十二轮产出了新用例或解决了 host 退化**：`ensure_host()` 加重试后 F08 三次仍是 2 PASS / 1 环境 ERROR；F10 只探明「搜索设置...」是 button 入口，点击后控件因 host 退化未验，未新增通过用例、未改任何覆盖数字。不声称 F10 已可写或已达标。

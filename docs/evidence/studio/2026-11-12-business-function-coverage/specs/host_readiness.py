@@ -112,11 +112,21 @@ def warmup(attempts=12):
         LAUNCHER.chmod(0o755)
 
 
-def ensure_host(force=False):
-    """Return True when list-apps is healthy, respawning the host if needed."""
+def ensure_host(force=False, retries=2):
+    """Return True when list-apps is healthy, respawning the host if needed.
+
+    A launch immediately after close-app can race with the dying Aster process;
+    one warmup is then not enough. Retry rather than failing a whole case on
+    infrastructure recovery.
+    """
     if not force and host_ok():
         return True
-    return warmup()
+    for attempt in range(retries):
+        if warmup():
+            return True
+        if attempt + 1 < retries:
+            time.sleep(3)
+    return False
 
 
 if __name__ == "__main__":

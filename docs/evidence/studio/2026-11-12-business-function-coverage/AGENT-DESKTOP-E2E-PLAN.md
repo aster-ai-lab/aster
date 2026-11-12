@@ -201,7 +201,7 @@ disposition: delivered_unverified, retry: unsafe
 | F07 | `acp-turn-visual-e2e.py` | synthetic MCP（`capability_mcp.py`） | `launch` 起实例 → UI 发起任务 → `find` 回执 | 真实回复/工具记录；磁盘 HTTP 仅作 evidence | P2，需 fixture + 口径声明 |
 | F08 | `sidebar-persist-visual-e2e.py`（**已有**） | — | `find 收起侧边栏/展开侧边栏 → toggle → close-app --force → launch → 回读控件名` | 侧栏折叠状态跨真进程重启保持 | **2 PASS / 1 次 host 环境 ERROR**；仅抽样，未覆盖项目/reorder/pin |
 | F09 | — | 工作区 tab 入口 | — | Ctrl+Tab / detach / 新窗口焦点 | **结构不可达**（真窗口 0 个 `role=tab`） |
-| F10 | `global-search-visual-e2e.py` | — | `press cmd+k` → `set-value`「搜索设置...」→ `find --count` | 结果项/空结果态/可清除/恢复开会话 | P1 可写（`set-value` 实测有效） |
+| F10 | `global-search-visual-e2e.py` | — | `click 设置` → **`click`「搜索设置...」button** → 待探明弹出控件 → `set-value` → `find --count` | 结果项/空结果态/可清除/恢复开会话 | 探测确认「搜索设置...」是 **button 入口不是输入框**（第三十二轮）；点击后的控件因 host 退化未探明 |
 | F11 | `agent-desktop-launch-e2e.py`（已有） | — | `launch → toggle → 读 ACL → close-app → launch → 回读 → 还原` | 四项必须断言全覆盖 | **已达标，勿回归** |
 | F12 | — | document tool 产物 | — | DOCX/XLSX/PPTX/PDF/PNG 真实字节 | **结构不可达**（断言落磁盘，非 UI 层） |
 | F13 | `f13-first-run-e2e.py` 升级 | 产品补装 3 个组件 | 首启 → 组件安装 → 权限对话框 → 重启不再弹 | 3 个 runtime 组件、摘要一致 | P3，需产品改造 |
