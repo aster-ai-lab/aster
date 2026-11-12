@@ -58,9 +58,12 @@
 | 口径 | 分母 | 通过 | 失败 | 跳过 | 未执行 | 通过率 | 判定 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | **F 层（业务功能验证）** | 17 | **1** | — | — | — | **5.9%** | **未达成 100%** |
-| Gate A（场景通过率，3/7 config，修复后） | 490 | 41 | 31 | 7 | 411 | **≈8.4%** | FAIL（目标 100%） |
+| Gate A（场景通过率，**6/7 config**，官方门禁） | 490 | **181** | 40 | 62 | 207 | **36.9%** | FAIL（目标 100%） |
+| Gate A 执行内通过率 | 221 | 181 | 40 | — | — | **81.9%** | FAIL |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
 | L3 真宿主用例 | 1 | **1** | 0 | 0 | 0 | **100%** | ✅ PASS |
+
+官方门禁命令与输出：`node scripts/e2e-coverage-gate.mjs --logs=<6 个 config 日志> --declared=490 --target=1.0` → `Gate A 36.9% FAIL`，`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，`structural ceiling = 45.1% (221/490)`，`deduped=3`，`Gate B UNMEASURABLE`。未执行的 207 例几乎全部是第 7 个 config `composer-audit`（204 例、chromium+webkit 双引擎）；该 config 带 `--stub-runtime` 跑 16m50s 仍未完成，本轮主动中止。
 
 F 层「1」= F07 本轮在真 native host 上通过（stdio/SSE/HTTP 三种 MCP 的真实 ACP turn、安装持久化、restart 后仍在、删除后不再调用）。9 条 L2 功能虽有 41 个通过场景，但尚未逐条完成「每条至少一例通过且执行面达标」的映射核定，不预支为达标；其余 7 条 L3 功能仍无用例。
 
@@ -74,6 +77,6 @@ F 层「1」= F07 本轮在真 native host 上通过（stdio/SSE/HTTP 三种 MCP
 | 失败 | 43 | **31** |
 | task-conversation 通过 | 0 | **13** |
 
-按同口径 Gate A 约 41/490 = **8.4%**，F 层仍 **0/17**。F07 的 L3 用例从「结构性无法启动」推进到「页面正常渲染、卡在首启对话框遮罩」，**仍未通过**。详见 `OUTCOME.md`「授权后的实质推进」。
+这一阶段同 3 个 config 的 Gate A 约 8.4%；**后续第三轮 F07 已通过、第四轮扩展到 6/7 config 后官方门禁为 36.9%**，见上表与 `OUTCOME.md` 的第三、四轮章节。本表保留阶段性数字以说明演进，最终数字以上表为准。
 
 命令、hash、逐项失败归因、100% 所需清单与 `Explicitly not claimed` 见同目录 `OUTCOME.md`。
