@@ -78,6 +78,44 @@ node scripts/e2e-coverage-gate.mjs --logs=<3 个已完成日志> --declared=490 
 5. **外部授权**：真实安装、更新通道、DB 迁移、退出重启、系统权限、真模型链路（`2026-11-11-live-model-e2e/OUTCOME.md` 记真模型 0 请求到达）。这些会改动运行环境，需要用户明确授权；本轮未执行。
 6. **契约门禁**：F03/F04/F05 还要求 `just studio-contracts` 9 个 pinned vitest 全绿，本轮未跑。
 
+## 授权后的实质推进（第二轮）
+
+用户明确授权「写 L3 测试并执行破坏性操作」后，按「隔离实例、不碰日常 profile」前提执行，优先修杠杆最大的阻塞。
+
+### 根因链与修复（逐条有验证）
+
+| # | 阻塞 | 根因 | 处理 | 验证结果 |
+| --- | --- | --- | --- | --- |
+| 1 | L3 用例 `Synthetic model did not start` | `tests/e2e/capability_baseline.py` 在当前工作树缺失 | 从历史 commit `a2fdfd625` 恢复 234 行 | `model_server.py` 正常输出 port/executable |
+| 2 | 首启对话框关闭按钮定位超时 | spec 用 `getByRole('dialog', {name:'正在准备组件'})`；当前产品标题已变，且 `canDismiss=requiredPrepared` 为 false 时**不渲染关闭按钮** | 改用稳定 `data-ui` 定位、容忍无关闭按钮；`afterAll` 清理失败不再污染判定（**未绕过 safe-delete**） | 不再卡对话框，推进到下一步 |
+| 3 | 页面**全白屏** | native host 把 webview 指向 `http://127.0.0.1:4388`，但**该端口无任何服务监听**（harness 漏起静态 preview） | 补起 `STUDIO_RENDERER_PORT=4388 e2e-preview.mjs` | `HTTP 200`，renderer 正常渲染 |
+| 4 | 36 个 task-conversation 用例连锁失败 | 同一首启对话框：`runtime.components.required_missing` 无桩 → `requiredPrepared=false` | 用 runner 自带的 `--stub-runtime`（L2 渲染器 fixture，不改变其 L2 性质） | **0 通过 → 13 通过** |
+| 5 | fresh-build stamp 反复 stale | 父仓提交推进 rootCommit | 重新 `e2e-fresh-build.mjs --build`（1m19s，stamp `137b868cd`） | `--verify` 通过 |
+
+### 数字变化（Gate A，3 个 config）
+
+| | 修复前 | 修复后（带 `--stub-runtime`） |
+| --- | ---: | ---: |
+| 通过 | 29 | **41** |
+| 失败 | 43 | **31** |
+| 跳过 | 7 | 7 |
+| task-conversation 通过 | 0 | **13** |
+
+分 config（修复后）：`settings` 22/3/2、`task-conversation` 13/23/0、`knowledge` 6/5/5。官方 gate 未重算，按同口径 Gate A 约 **41/490 = 8.4%**，仍远未达 100%。
+
+### L3 用例当前卡点（未通过）
+
+补上 4388 服务后页面正常渲染，但 `dialog-overlay` 遮罩仍拦截点击：首启对话框因 `required_missing` 非空而 `canDismiss=false`，既无关闭按钮也不消失。要让 native host 侧放行需注入 Tauri IPC 代理（拦截 `runtime_components_ipc` 并透传其余命令），属于测试基建改造；且即便修通这一条，F06/F09/F11/F12/F13/F14/F15 **7 条功能仍完全没有 L3 用例**，不会改变 100% 不可达的结论。
+
+`--stub-runtime` 只作用于静态 preview 的 L2 套件；对走真 native host 的 L3 用例不适用，未用它凑 L3 通过数。
+
+### 工作树改动（未提交，待评审）
+
+- `apps/studio/tests/e2e/connectors/connector-native.spec.ts`：修 `dismissBrowserBootstrap()` 与 `afterAll` 清理容错（子模块内修改）。
+- `tests/e2e/capability_baseline.py`：从历史恢复的 234 行，未跟踪。
+- 以上均**未提交**：按 `AGENTS.md` 的 Studio land discipline，测试源码改动应在子模块落地后再 bump 父仓 gitlink；当前父仓有并发会话改动，未擅自 bump。是否入库请用户决定。
+- 隔离 profile 因 safe-delete 保护未清理，留在 `~/Library/Application Support/dev.aster.studio/studio/aster/instances/`；未绕过该保护。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**，也不声称 F 层任何一条已严格达标。
@@ -87,3 +125,7 @@ node scripts/e2e-coverage-gate.mjs --logs=<3 个已完成日志> --declared=490 
 - 不声称 `capability_baseline.py` 的恢复已被项目正式接纳（仅恢复到工作树用于本轮验证，需评审后决定是否入库）。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
+- 不声称 L3 用例通过、不声称 F 层有任何一条达标、不声称覆盖率因本轮修复达到 100%。
+- 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
+- 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
+- 不声称 `connector-native.spec.ts` 与 `capability_baseline.py` 的修复已入库；两者均留在工作树待评审。
