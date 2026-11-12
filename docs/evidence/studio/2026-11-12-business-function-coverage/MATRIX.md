@@ -25,7 +25,7 @@
 | 无 spec 的功能域 | `interactive-coding/`、`document-tools/`、`office/`、`messages/`、`followup/` |
 | 全仓 `matrix.json` | 从未生成（全量矩阵此前未跑过） |
 
-> 上表是**本日开始时**的静态盘点，保留作为基线。后续新增的真宿主用例：`restart-persistence.spec.ts`（F14 部分）、`specs/f11-desktop-e2e.py`（F11，真 Tauri webview + agent-desktop，四条必须断言全覆盖）。当前严格达标 F07 + F11 = **2/17**。
+> 上表是**本日开始时**的静态盘点，保留作为基线。后续新增的真宿主用例：`restart-persistence.spec.ts`（F14 部分）、`specs/f11-desktop-e2e.py`（F11 达标）、`specs/f13-first-run-e2e.py`（F13 部分）。当前严格达标 F07 + F11 = **2/17**。
 
 `connector-native.spec.ts` 用隔离 `ASTER_STUDIO_INSTANCE` profile、synthetic `model_server.py`、真实 MCP SDK 与 native host（端口 4598），**不需要真实模型 API**。另两条真宿主用例是 `restart-persistence.spec.ts`（native host 重启）与 `specs/f11-desktop-e2e.py`（真 Tauri webview + agent-desktop）。
 
@@ -45,7 +45,7 @@
 | F10 | 命令面板/全局搜索/深链 | L2 | L2 桩 | 见 Gate A 结果 | 达 L2 即可 |
 | F11 | 偏好与跨进程持久化 | **L3** | **有 1 条**（agent-desktop 脚本） | ✅ **本轮 L3 通过，严格达标** | 真 Tauri webview + 真 IPC + ACL 磁盘快照 + 真进程退出重启；四项必须断言全覆盖。见 OUTCOME 第十一轮 |
 | F12 | 知识库/文件/文档真实字节产物 | **L3** | **无** | **未覆盖** | 需 DOCX/XLSX/PPTX/PDF/PNG 真实字节校验；`office/host-journeys.acl` 自认内存文件边界 |
-| F13 | 首次运行/运行时组件/系统权限 | **L3** | **无** | **未覆盖** | 需真实安装 3 个 runtime 组件、真实系统权限；现有 `first-run-sequence.spec.ts` 是内存桩 |
+| F13 | 首次运行/运行时组件/系统权限 | **L3** | **有 1 条（部分）** | ⚠️ `PARTIAL_PASS`，未严格达标 | 真实首启全链路 + 磁盘字节证据已验证；但产品只装 1 个 required 组件，PLAN 要求 3 个（另 2 个 optional 且依赖页隐藏）。见 OUTCOME 第十二轮 |
 | F14 | 更新/退出守卫/单实例 | **L3** | **有 1 条（部分）** | ⚠️ 新 L3 用例通过，未严格达标 | 已验证「重启后旧数据可读 + 落盘」；仍缺更新通道/清单、单实例二次启动、退出守卫 |
 | F15 | 截图/录屏/视觉标注 | **L3** | **无** | **未覆盖** | 需 pooled 截图窗口、真实导出文件、脱敏 |
 | F16 | 错误态/离线/崩溃恢复/无障碍 | L2 + L3 抽样 | 仅 L2 桩 | 见 Gate A 结果 | 需 L3 抽样（杀进程重启草稿保留） |
@@ -53,7 +53,7 @@
 
 **结构性缺口：8 条 L3 功能里 7 条完全没有 L3 用例**（F06/F09/F11/F12/F13/F14/F15）。按 §9「L3 用桩通过不计覆盖」，这 7 条无论 Gate A 跑出多少通过数都**永远计 0**。
 
-因此 F 层理论上限 = 9 条 L2 功能 + F07 = **10/17 ≈ 58.8%**（F07 本轮已通过），前提是 9 条 L2 功能全部有通过用例且契约门禁绿。
+因此 F 层当前理论上限 = 9 条 L2 功能 + F07 + F11 = **11/17 ≈ 64.7%**，前提是 9 条 L2 功能全部有通过用例且契约门禁绿。（F11 达标前该上限为 10/17；若再补完 F13/F14 的部分覆盖用例可达 13/17，但那需要新增断言。）
 
 ## 本轮实测结果
 
@@ -63,7 +63,7 @@
 | Gate A（**6/7 config**，正式配置） | 490 | 181 | 40 | 62 | 207 | **36.9%** | FAIL |
 | Gate A（**7 份日志合并**，含 composer-audit chromium 诊断运行） | 490 | **228** | 95 | 62 | 105 | **46.5%** | FAIL（目标 100%） |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
-| 真宿主验证用例 | **3** | **3** | 0 | 0 | 0 | **100%** | ✅ F07、F14 部分、F11 全 PASS |
+| 真宿主验证用例 | **4** | **4** | 0 | 0 | 0 | **100%** | ✅ F07、F11 达标；F14、F13 部分覆盖 |
 
 - 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
 - 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。
@@ -74,9 +74,14 @@
 - F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn、安装持久化、restart 后仍在、删除后不再调用。
 - F11（第十一轮新增）：**真 Tauri webview** 改偏好 → `PreferenceStore` 写 ACL 快照 → 真进程退出 → 重启同实例 → UI 与磁盘双重回读；四项必须断言（IPC 回读、跨页即时生效、重启后从磁盘恢复、非 localStorage 假象）全覆盖，用例可复跑（`specs/f11-desktop-e2e.py`，`F11_L3: PASS`）。
 
-F14 另有一条 L3 用例通过（`restart-persistence.spec.ts`：真进程重启后 `GET /api/agent-sessions` 仍返回同一 session，`sessions.json`/`agents.json` 落盘可读、`usage.sqlite` 非空），但只覆盖其 4 项必须断言中的 1 项，**按 §9 不算严格达标**，不预支。9 条 L2 功能虽有通过场景，但尚未逐条核定「每条至少一例通过且执行面达标」，不预支为达标；另有 **5 条 L3 功能仍无任何用例**（F06/F09/F12/F13/F15）。
+另有**两条部分覆盖用例，均不预支为达标**：
 
-**结构性上限**：即便补齐所有 L2 映射、契约门禁全绿，F 层最多 **10/17 ≈ 58.8%**。剩下 5 条 L3 功能需要新写产品级真宿主测试，属于开发工作量而非执行次数。
+- F14（`restart-persistence.spec.ts`）：真进程重启后 `GET /api/agent-sessions` 仍返回同一 session、`sessions.json`/`agents.json` 落盘可读、`usage.sqlite` 非空；只覆盖其 4 项必须断言中的 1 项。
+- F13（`specs/f13-first-run-e2e.py`，`F13_L3: PARTIAL_PASS`）：真实例首启完整链路（检查→连接插件源→下载→安装→就绪）、`registry.json` + 25 个非空 payload 文件 + sha256、UI 摘要版本与磁盘一致、三项权限对话框、主页可用、退出并重启后不再弹首启；但**产品实际只安装 1 个 required 组件**，PLAN.md 要求 3 个（另 2 个 optional 且 `/settings/dependencies` 在 Aster 租户隐藏）。
+
+9 条 L2 功能虽有通过场景，但尚未逐条核定「每条至少一例通过且执行面达标」，不预支为达标；**完全无任何用例的 L3 功能剩 4 条**（F06/F09/F12/F15）。
+
+**结构性上限**：即便补齐所有 L2 映射、契约门禁全绿，按现有 L3 用例最多 **11/17 ≈ 64.7%**。剩下 4 条需新写产品级真宿主测试，另有 F13/F14 需补完必须断言（补完可到 13/17），都属于开发工作量而非执行次数。
 
 ### 授权后修复带来的变化（Gate A，同 3 个 config）
 

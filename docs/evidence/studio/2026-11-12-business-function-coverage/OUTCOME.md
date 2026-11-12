@@ -2,10 +2,11 @@
 
 ## 结论先行
 
-**未达成，且不是「再跑一次」能达成的。** 按仓库权威口径（`PLAN.md` §4/§9），F 层 17 条业务功能中 **8 条要求 L3 真宿主用例**。经本日多轮推进，当前 **2 条严格达标（F07 + F11，2/17 ≈ 11.8%）**，F14 有一条部分覆盖用例但不计入；仍有 **5 条 L3 功能完全没有用例**（F06/F09/F12/F13/F15）。F 层结构性上限约 10/17（58.8%），100% 需要新写产品级真宿主测试，任何「100%」的说法都只能靠换分母得到。
+**未达成，且不是「再跑一次」能达成的。** 按仓库权威口径（`PLAN.md` §4/§9），F 层 17 条业务功能中 **8 条要求 L3 真宿主用例**。经本日多轮推进，当前 **2 条严格达标（F07 + F11，2/17 ≈ 11.8%）**，F14 与 F13 各有部分覆盖用例但不计入；仍有 **4 条 L3 功能完全没有用例**（F06/F09/F12/F15）。按现有用例，F 层结构性上限 **11/17 ≈ 64.7%**（9 条 L2 + F07 + F11），100% 需要新写产品级真宿主测试，任何「100%」的说法都只能靠换分母得到。
 
 - F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn（第三轮）。
 - F11：真 Tauri webview 改偏好 → ACL 磁盘快照 → **真进程退出并重启** → UI 与磁盘双重回读；四项必须断言全覆盖，用例可复跑（第十一轮）。
+- F13 部分：真实首启安装状态序列、25 个真实 payload 文件、摘要版本一致、三项权限、重启后不再弹；但产品只装 1 个组件，PLAN 要求 3 个（第十二轮）。
 - 各轮详细命令、计数与 `Explicitly not claimed` 见下文；逐条台账见 `MATRIX.md`。
 
 ## 口径（不自选分母）
@@ -57,7 +58,7 @@ node scripts/e2e-coverage-gate.mjs --logs=<3 个已完成日志> --declared=490 
 - `task-conversation` 36 例全失败：首启「运行时组件」对话框的 `[data-slot="dialog-close"]` 定位超时（35 处 `Timeout 20000ms exceeded`）。`--stub-runtime` 可绕过，但那是注入桩、对 L3 业务验证无意义，故未用于凑数。
 - `knowledge` 5 失败 + 5 跳过：`knowledge-hub.spec.ts` 的 `test.skip`/`describe.skip`。
 
-### F 层结论
+### F 层结论（**第一轮当时状态，后续已更新；当前口径见文首「结论先行」**）
 
 - 9 条最低执行面为 L2 的功能：依赖 Gate A 场景通过；当前 29 个通过场景里尚未逐条完成「每条功能至少一例通过且执行面达标」的映射核定，**不计为已达标**。
 - 8 条 L3 功能：**F06/F09/F11/F12/F13/F14/F15 共 7 条无任何 L3 用例**；F07 有 1 条，本轮结果见下。
@@ -449,6 +450,55 @@ F11_L3: PASS                          (SCRIPT_EXIT=0, 1m16s)
 
 三个端口（4318/4325/4388）全部空闲、无 Aster 残留窗口，临时 `f11-window-probe.spec.ts` 已删；`playwright.connectors.config.ts --list` 仍为 `2 tests in 2 files`。F11 用例是父仓证据目录下的 Python 脚本，不依赖子模块推送。
 
+## 第十二轮：F13 真实首启链路（部分覆盖）+ 一处验收口径偏差
+
+复用第十一轮验证过的「真 Tauri webview + agent-desktop + 核对 native profile 落盘」骨架，攻 F13。用**全新隔离实例**触发真实首启：
+
+```
+ASTER_STUDIO_INSTANCE=f13-e2e-<ts> STUDIO_RENDERER_PORT=4326 just studio
+```
+
+### 第一次运行反而抓到了最想要的东西
+
+脚本第一次在窗口出现后立刻读对话框，断言「组件已就绪」失败，打印出的是：
+
+```
+正在准备组件 | 文档运行组件 v0.1.0 正在连接插件源… | 正在安装…
+```
+
+即**真实安装正在进行中**。据此把用例改成轮询记录完整状态序列，而不是假设已装完。这也让 F13 要求的「插件检查→安装」成为可断言的过程。
+
+### 复跑结果（`specs/f13-first-run-e2e.py`）
+
+```
+$ timeout 600 python3 specs/f13-first-run-e2e.py
+[2] observed states: 正在准备组件 | 正在连接插件源… | 正在下载… | 正在安装… | 组件已就绪
+  OK  component check / install / ready phases observed
+  OK  component summary: 文档运行组件 v0.1.0 就绪
+[3] OK registry.json created / 1 route / manifest + package sha256 / 25 non-empty payload files
+[4] OK UI 0.1.0 == disk 0.1.0
+[5] OK 使用 Aster 前需要三项权限 dialog
+[6] OK no onboarding dialog remains / main page usable
+[7] OK window gone + port released / artifacts survive / onboarding does not repeat / main page usable
+F13_L3: PARTIAL_PASS   (SCRIPT_EXIT=0, 53s)
+```
+
+磁盘证据：`instances/<instance>/runtime-plugins/state/registry.json`（`packageId: aster/aster-document`、`version: 0.1.0+<sha>`、`manifestSha256`、`packageSha256`），`runtime-plugins/data/extensions/aster/aster-document/lifecycle-1-*/payload/` 下 25 个非空真实文件（含 `libpdfium.dylib`、licenses）。这些是**真实安装产物**，不是内存桩。
+
+### 为什么是 PARTIAL_PASS 而不是达标
+
+`PLAN.md` §4 要求「真实匿名安装 **3 个** runtime 组件、摘要一致」。实测当前产品：
+
+- `src-tauri/src/runtime_components.rs` 的 `COMPONENTS` 确有 3 个规格（`aster-document` required、`aster-office` / `aster-ocr` optional）；
+- 但首启只安装 required 的 `aster-document`，`registry.json` 的 `routes` 长度为 **1**，`data/extensions/aster/` 下只有 `aster-document` 一个目录；
+- 完整的 `/settings/dependencies` 页（3 张组件卡片）被 `LOCAL_HIDDEN_SETTINGS_ROUTES` 对 Aster 租户隐藏，注释写明「Aster manages local dependencies through Plugins」。
+
+因此 **PLAN.md 的「3 个组件」与当前产品状态不符**。按 fail-closed，不把 1 个包装成 3 个，判为**部分覆盖**；F 层仍 **2/17**。这条偏差本身是有价值的发现，需要产品侧确认验收标准是否应按当前实现修订。
+
+### 状态
+
+真宿主用例从 3 条增至 **4 条**（F07、F11 达标；F14、F13 部分）。**完全无用例的 L3 功能从 5 条减为 4 条**（F06/F09/F12/F15）。四个端口（4318/4325/4326/4388）全空闲、无 Aster 残留窗口，隔离实例均为新建且未触碰主 profile。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -460,8 +510,8 @@ F11_L3: PASS                          (SCRIPT_EXIT=0, 1m16s)
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称三条真宿主用例通过**：F07（`1 passed / 37.7s`，有 receipts）、F14 部分（`1 passed / 28.3s`，复验 `1 passed / 20.7s`）、F11（`specs/f11-desktop-e2e.py` 完整复跑 `F11_L3: PASS`，8 步全绿）。**F07 与 F11 严格达标（F 层 2/17）**；**不声称 F14 严格达标**（只覆盖 4 项必须断言中的 1 项）、不声称单实例验证通过、不声称 F06 有覆盖、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 5 条 L3 功能有用例、不声称 F 层达到 100%、不声称 Gate A / Gate B 达标。
+- **声称四条真宿主用例运行成功**：F07（`1 passed / 37.7s`，有 receipts）、F11（`f11-desktop-e2e.py` → `F11_L3: PASS`）、F14 部分（`1 passed / 20.7s`）、F13 部分（`f13-first-run-e2e.py` → `F13_L3: PARTIAL_PASS`）。**只有 F07 与 F11 严格达标（F 层 2/17）**；**不声称 F14 严格达标**（4 项必须断言只覆盖 1 项）、**不声称 F13 严格达标**（产品只装 1 个 runtime 组件，PLAN 要求 3 个）、不声称单实例验证通过、不声称 F06 有覆盖、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 4 条 L3 功能有用例、不声称 F 层达到 100%、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
-- 不声称 5 条无用例的 L3 功能（F06/F09/F12/F13/F15）已被补齐；不声称已执行真实安装/更新通道/DB 迁移/系统权限/真模型等操作。F11 确实执行了**真进程退出并重启**（隔离实例 `f11-live-01`，已还原），但未触碰用户主 profile。
+- 不声称 4 条无用例的 L3 功能（F06/F09/F12/F15）已被补齐；不声称已执行真实更新通道/DB 迁移/系统权限授权/真模型等操作。F11 与 F13 确实执行了**真进程退出并重启**及**真实 runtime 组件安装**（均为新建隔离实例，已还原/未触碰用户主 profile）。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
 - 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。
