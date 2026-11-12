@@ -774,6 +774,30 @@ EXIT=124
 - `specs/agent-desktop-launch-e2e.py` 保持完整待跑状态；恢复条件仍是**能执行 `ps` 的新会话**。
 - 五个端口全空闲、包装 app 已移除、launchd 环境未改动。
 
+## 第二十轮：按 AGENTS.md 刷新 GUI E2E 的构建基线（发现此前产物 stale）
+
+复查环境：`ps` 禁令与 `global_window_inventory_unstable` 仍在，本会话无法做可视化断言。于是补做一件 AGENTS.md 明确要求、此前一直欠着的前置工作：**任何 Studio GUI E2E 之前必须从当前 checkout 构建被测应用**。
+
+| 命令 | 结果 |
+| --- | --- |
+| `just build-studio`（仓库根） | **EXIT 0**，4s 增量；`Finished dev profile in 0.54s`；139 个既有 warning，无错误 |
+| `node scripts/e2e-fresh-build.mjs --verify` | **EXIT 1 — stale artifacts**：`rootCommit recorded=69d4933f… current=59a49a9a6…`、`nativeBinarySha256 recorded=79776bcc… current=abc2896d…` |
+| `node scripts/e2e-fresh-build.mjs --build` | **EXIT 0**，1m10s（`ready built in 59.8s`）；stamp 写入 `.studio/e2e-build-stamp.json` |
+| `node scripts/e2e-fresh-build.mjs --verify`（复验） | **EXIT 0**：`verified 59a49a9a6/0161c1c23 native=abc2896da5da renderer=3bd7b192d981` |
+
+新 stamp：`rootCommit=59a49a9a60ee5102d8180349e2d980fc6177a127`、`studioCommit=0161c1c2310b60d8fe52725c43bbc5e21058f44c`、`nativeBinarySha256=abc2896da5dafbd2bbba38423c21042005e824ac4d99ebb1dae614ba850bca59`、`rendererEntrySha256=3bd7b192d9815d6715cf89905a051c6a42cb94b59c2b5b8a052611e9ae5afeb6`、`rendererDist=.studio/dist/e2e-latest`、`builtAt=2026-11-12T08:56:45.899Z`。
+
+### 一个需要记下的判定
+
+`--verify` 首次失败说明：本日前几轮 GUI 场景使用的 `.studio/dist/e2e-latest` 是 **`69d4933f` + native `79776bcc…`** 时代的产物，而父仓 HEAD 已推进到 `59a49a9a6`、native binary 也已变化。按 AGENTS.md「a green scenario against an outdated UI is invalid」，**那些绿色结果不能作为「针对当前 checkout 的合规 GUI E2E」引用**；它们作为历史行为观察仍然成立，但恢复会话后重跑必须使用本轮刷新的产物。
+
+### 影响核对与状态
+
+- `just build-studio` 使用独立 `target/studio/aster`，默认产物字节数未变：`aster` 899194232、`aster-acp` 306630680。
+- 工作树里存在**非本轮**的改动（`crates/code/core` 两个 Rust 文件、`docs/evidence/code/20261112-acp-child-tool-events/`、子模块 dirty），按 AGENTS.md 一律保留未动。
+- 本轮**未运行 E2E、未新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。
+- 五个端口全空闲、无可见 Aster 窗口；`agent-desktop-launch-e2e.py` 保持完整待跑。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -797,3 +821,4 @@ EXIT=124
 - **不声称第十七轮完成了可视化 E2E 用例**：包装 app 让 `agent-desktop launch` 拉起了真应用，但 `launch` 返回 `APP_UNRESPONSIVE`、随后 `ps` 被系统拒绝导致窗口清单超时，**断言环节未完成**；不声称该方案已可复跑、不声称它改变任何覆盖计数。
 - **不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过**：脚本完整且 `py_compile` 通过、启动环节实测有效，但实跑 `EXIT=124`、可视化断言零完成；不声称它计入覆盖、不声称 F 层有变化。
 - 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。
+- **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。
