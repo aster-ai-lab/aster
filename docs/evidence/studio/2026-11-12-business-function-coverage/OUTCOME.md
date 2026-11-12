@@ -1075,6 +1075,46 @@ node scripts/e2e-fresh-build.mjs --verify  EXIT 0
 - 「草稿不跨进程重启保留」（F16 观察）**未修**：`homeDrafts` 仍是纯内存 Map，产品侧是否要落盘需另行决策，本轮未改。
 - 收尾：草稿已清空、ACL `value = false`、默认产物字节未变（899194232 / 306630680）、五端口全空闲、无可见 Aster 窗口。
 
+## 第二十八轮：修复上一轮记录的两类「既有测试失败」
+
+用户再次要求「修复失败问题」。上一轮把全量 renderer 套件的失败判为「既有/环境」而未深挖，本轮逐个定位，**结论是两处都可修、且都不是产品 bug**。
+
+### 1. `KnowledgeMaintenanceWorkspace.test.tsx` 17 例全挂
+
+```
+Error: [vitest] No "SelectionHighlight" export is defined on the
+"@aster-ai-lab/ui" mock. Did you forget to return it from "vi.mock"?
+ ❯ src/renderer/pages/knowledge/KnowledgeMaintenanceWorkspace.tsx:556
+```
+
+该测试的 `vi.mock('@aster-ai-lab/ui', ...)` 只 spread 了 7 个基础模块，而产品导航后来加了 `<SelectionHighlight>`（plate 高亮）。补一个最小展示 stub，复用 `TasksSettings.test.tsx:848` 已有写法（保留 `data-slot` / `data-layout-id` / `data-layout-dependency`）。
+
+### 2. `AppShell.test.tsx` 的 tenant-runtime 用例
+
+```
+it.each(['aster', 'aster'])('only mounts organization runtimes for the managed tenant (%s)', ...)
+  expect(messageRuntime.calls.length > 0).toBe(tenant === 'aster')   // ← 方向反了
+```
+
+产品 `AppShell.tsx:448` 是 `PUBLIC_STUDIO_TENANT !== 'aster'` 才挂载 `MessageAttentionRuntime`/`BossRoomRuntime`。`87ed6624d1 refactor(studio): retire toyou/kense tenants, keep aster as the only identity` 把租户统一成单一 `aster`（`env.d.ts:17` 字面量类型），却留下双份同参数 `it.each` 和旧断言方向。改成单测：aster 身份下两者都**不该**挂载（`not.toHaveBeenCalled()`），断言比原来更明确。
+
+### 验证（实际结果）
+
+| 检查 | 结果 |
+| --- | --- |
+| 三个相关测试文件一起跑 | **79 passed (79)**：KM 17 + sidebar runtime 27 + AppShell 35 |
+| `oxlint --deny-warnings`（4 文件） | `0 warnings, 0 errors` |
+| `git diff --check` | OK |
+| 全量 `vitest run --project renderer --silent` 重跑 | **仍 EXIT 124（20m 超时）**，但日志中 `KnowledgeMaintenanceWorkspace ✓ 17 tests` 已转绿 |
+
+全量套件里还观察到**其他**既有失败，例如 `WorkspaceTaskDetails.test.tsx` 单跑 3 例失败（`expect(...).not.toBeInTheDocument()` 找到了 `question` 文本）、ActivityBar 插件贡献 1 例。它们与本次两个文件无 import 关系，属产品 UI 演进后测试未跟上的另一批欠账；按 AGENTS.md「记录但不顺手修、不扩大范围」**未改动**，也不声称全量套件通过或超时已解决。
+
+### 落地
+
+- 子模块 **`4ba6056222`**（parent = `cc0a7bd098` = `origin/main`），只含上述 2 个测试文件，已 fast-forward 推送到 `studio.git` 的 `main`。
+- `just studio-land-check` 仍因子模块里两个非本任务的未提交 connector spec 而 EXIT 1，**父仓 gitlink 仍未 bump**（保持 `0161c1c2`）；父仓本轮只提交证据。
+- 本轮**未改任何产品源码**，F 层数字与用例计数均不变（新口径 1/17、原口径 2/17，真宿主 7/7）。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
