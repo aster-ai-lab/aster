@@ -1391,6 +1391,53 @@ timeout 900s vitest run --project renderer src/renderer/components/chat --silent
 - 无代码改动、无子模块改动、无覆盖数字变化（F 层仍 1/17 / 2/17）。
 - 收尾：无残留测试进程（计时跑已被 `timeout` 终止）、端口未被占用。
 
+## 第三十六轮：R8 分片方案实测 —— 找到根因，否决了有副作用的「提速」
+
+承接第三十五轮（全量 20m 超时非单文件死锁）。本轮在同一基线片 `src/renderer/components/chat --shard=1/8` 上做 A/B 实测，**纯命令行实验，未改任何配置或源码**。
+
+### 1. vitest 自己给出了根因
+
+`shard=1/8` 日志末尾的性能提示：
+
+```
+Isolate  22 workers spawned · ~13.23s startup each (spawn + environment, per file)
+at least ~19.11s faster with isolate: false — reuses workers across files instead of one per file
+```
+
+`isolate: true`（默认）让**每个测试文件都 spawn 一个新 worker，启动约 13 秒**。这解释了第三十五轮「文件自身 ~1s、墙钟 ~7.8s/文件」的差值。配置里无 `pool` / `maxWorkers` / `fileParallelism` 覆盖，走 vitest 默认值；`server.deps.inline` 列了 20+ 个大包，进一步放大每个 worker 的初始化成本。
+
+### 2. 三组 A/B（同一片，相同文件集）
+
+| 方案 | `real` | 完成文件 | 失败断言 | 判定 |
+| --- | --- | --- | --- | --- |
+| 基线（默认 `forks` + `isolate`） | **100.70s** | 19 | **2**（既有） | 基准 |
+| `--no-isolate` | **64.97s** | 13 | **38** | ⛔ **否决**：提速 35%，但新增 36 条失败（视频 URL、pane 等无关用例），是测试间状态污染 |
+| `--pool=threads`（仍 isolate） | **98.78s** | 19 | **2**（既有） | 保持隔离，但几乎无提速 |
+| `--shard=1/8` | 同基线 | 19 | **2**（既有） | ✅ 不改变测试语义，失败数不变 |
+
+`--no-isolate` 虽是 vitest 自己建议的，但**实测破坏了测试隔离**。按 AGENTS.md「never weaken a test or gate to obtain a pass」明确否决，不写进配置。基线片与分片片的 2 条失败都属第三十五轮已记录的既有项，非本轮引入。
+
+### 3. 建议方案（安全可行）
+
+**CI 并行分片**：`vitest run --project renderer --shard=i/N --silent`，N 个 job 各跑一片；配合提高 job 级超时。分片不触碰 isolate 语义，是唯一在实测中**既降墙钟又不增失败**的方案。
+
+按实测 19 文件/100.7s（≈5.3s/文件）外推 1572 文件：
+
+| 分片数 N | 每片文件数 | 预计单片墙钟 |
+| --- | --- | --- |
+| 1（现状） | 1572 | ≈ 139 分钟（必然 20m 超时） |
+| 8 | ≈197 | ≈ 17 分钟（仍偏紧） |
+| **16（推荐）** | ≈98 | **≈ 8.7 分钟** |
+| 20 | ≈79 | ≈ 7 分钟 |
+
+本机开发可用 `vitest --changed` 或指定目录/片，避免跑全量。
+
+### 4. 判定与状态
+
+- **R8 第一步（定位）与第二步（方案）完成**：根因是 isolate 每文件 spawn worker；解法是分片并行 + 调 job 超时；`--no-isolate` 实测有副作用已否决。
+- **未改任何源码、配置或测试**；不声称全量套件已通过，既有 7 文件 / 27 条失败仍在（第三十五轮）。
+- 无覆盖数字变化（F 层 1/17 / 2/17）、无子模块改动、无推送。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
