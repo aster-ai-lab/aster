@@ -346,6 +346,37 @@ expect(received).not.toBeNull()  Received: null
 
 **F 层仍 1/17**。连续三轮（单实例证伪、F06 探测、F11 HTTP 直写）都没有新增通过用例——瓶颈始终在「先造测试能力」，不在执行次数。当前 `playwright.connectors.config.ts --list` 保持 `2 tests in 2 files`（F07 + F14 部分），无半成品。
 
+## 第十轮：路线 2 不成立，并把 L3 成果固化到父仓
+
+### 「Tauri IPC 桥」可行性证伪
+
+上一轮把「给 Playwright 页面架一座 Tauri IPC 桥」列为可立项的基础工程。本轮查证后**它不成立**：
+
+- `preferences.rs:784/805` 的 `preference_read` / `preference_commit` 是 `#[tauri::command]`，签名强依赖 `tauri::Webview` 与 `tauri::State<PreferenceHost>`；`check_window()` 校验 webview label、URL 与 `host_token`。
+- `lib.rs:245-246` 只把它们注册进 Tauri 的 `invoke_handler`；`controllers.rs`、`authority.rs` 里**没有任何 preference HTTP 路由**。
+- 因此在普通 Chromium 里转发 HTTP 替代不了它；要「架桥」必须改产品 Rust 代码新增路由并绕过 webview 校验，那已经不是测试基建，且会触碰并发会话正在改的 crate 范围。本轮**未改产品代码**。
+
+顺带查清偏好真实落盘：`preferences.rs:155` 的 `PreferenceStore` 用 `std::fs` 把 ACL 快照写到 `<root>/<scope>.acl`（不是 localStorage）。这给了后续用**真 Tauri webview**（agent-desktop）做 F11 的一条理论路径：改设置后核对 `.acl` 文件、退出进程重启、再回读，即可排除 localStorage 假象。本轮未实施。
+
+### 不需要推送也能保住成果
+
+之前一直说「两个 spec 在子模块工作树、不 push 就会丢」。其实不必 push：已把完整内容固化进父仓证据目录 `specs/`：
+
+| 文件 | 内容 |
+| --- | --- |
+| `specs/connector-native.spec.ts` | F07 L3 用例的完整当前内容（含修好的 helper / textarea 选择器 / afterAll 容错） |
+| `specs/restart-persistence.spec.ts` | F14 部分覆盖 L3 用例的完整内容 |
+
+恢复方式：把两个 `.ts` 复制回 `apps/studio/tests/e2e/connectors/` 覆盖同名文件即可（子模块 HEAD 为 `0161c1c231`）。配合本轮已入库父仓的 `tests/e2e/capability_baseline.py` 与 `capability_mcp.py`、以及 `STUDIO_RENDERER_PORT=4388 STUDIO_E2E_STUB_RUNTIME=1 node scripts/e2e-preview.mjs`，即可复现 `1 passed / 37.7s`（F07）与 `1 passed / 20.7s`（F14 部分）。
+
+> 原先还存了一份 `connector-native.patch`（相对子模块 HEAD 的 diff），但它作为纯文本被 `git diff --check` 判为尾随空格（上下文空行在 diff 格式里就是一个空格），且完整 `.ts` 副本已能恢复，故移除。
+
+**这解决了「成果随时可能丢」的风险，且不依赖向子模块远程推送的授权。**
+
+### 当前状态
+
+`playwright.connectors.config.ts --list` = `2 tests in 2 files`，两条都曾通过；**F 层仍 1/17**，本轮无新增通过用例。连续第四轮试探未提升 F 层，但排除了一个被高估的方案并固化了已有成果。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
@@ -353,11 +384,12 @@ expect(received).not.toBeNull()  Received: null
 - 不声称 `composer-audit` 的 **webkit 引擎**有任何结果（102 例未执行）；不声称 chromium 全量那次是正式门禁运行（它用了 8s 超时的诊断配置，仅判定不变）。
 - 不声称把 `expect.timeout` / `actionTimeout` 改成 8s 是正式配置变更；临时诊断 config 已删除。
 - 不声称 Gate B 可测量（UNMEASURABLE）。
-- 不声称 L3 用例通过；不声称用渲染器桩证明 native 行为。
+- 不声称用渲染器桩证明 native 行为。（F07 与 F14 部分两条 L3 用例确实通过，见下条；此处仅不认可以桩充数。）
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
 - **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过、不声称 F06 或 F11 有任何用例或覆盖（两轮探测均失败并已删除临时 spec）、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
-- 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已入库：它仍在子模块工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。
+- 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
+- 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（本轮只做可行性查证，结论是「不成立」）；不声称 F11 已有覆盖。
