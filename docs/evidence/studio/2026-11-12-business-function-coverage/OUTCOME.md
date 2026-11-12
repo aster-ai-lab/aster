@@ -329,6 +329,23 @@ expect(received).not.toBeNull()  Received: null
 
 **F06 仍无用例，F 层仍 1/17**。本轮没有新增通过用例，净收益是打通了可复用的工具注册链路并精确定位了审批触发的阻塞点。
 
+## 第九轮：F11 再探（HTTP 直写 desktop-settings，仍失败）
+
+之前 F11 卡在「Playwright 页面没有 Tauri IPC」和「localStorage 无法排除」。这轮换了思路：找 native host 自己的 HTTP 设置入口，用磁盘文件作为「非 localStorage 假象」的证据。
+
+**找到的契约**：`authority.rs:1203` 的 `POST /api/desktop-settings`，body 为 5 个必填 bool（`launchOnBoot`/`tray`/`trayOnClose`/`trayOnLaunch`/`preventSleepWhenBusy`）+ `language`；`desktop_settings::update()` 会 `save()` 到 `support_dir(slug)/desktop-settings.json`。这个文件正是 GeneralSettings 那批开关的落盘位置，由 **Rust 进程**写入，浏览器 localStorage 不可能写到 native host 的 support 目录。
+
+写了临时 `desktop-settings-persistence.spec.ts`（跑完已删），两次运行：
+
+1. 第一次 `ENOENT`：全新隔离 profile 里 `desktop-settings.json` 本来就不存在（host 只在首次 update 时写）。改为先显式 POST 一个 baseline 建立文件。
+2. 第二次：写入成功 `{ok:true}`、磁盘核对 `preventSleepWhenBusy: true` **通过**；但 `host.restart()` 之后磁盘值变回 `false`，`expect(afterRestart).toEqual(onDisk)` FAIL。
+
+**原因未定**：`desktop_settings::boot()` 只 `load()` 不写；renderer 源码里也找不到直接 POST `/api/desktop-settings` 的调用点。可能是 storage_slug 差异、或重启后 renderer 首次 preference 同步把默认值写回。在没有确凿证据前，**不把它报成产品缺陷**，也不改期望值去凑绿。
+
+可以确定的是：**HTTP 直写绕过了产品真实的 preference 链路**（`usePreference` → Tauri IPC），所以即便它没被重置也不构成 F11 覆盖。F11 的三项必须断言（IPC 回读、跨页即时生效、重启后从磁盘恢复且非 localStorage）仍未满足。
+
+**F 层仍 1/17**。连续三轮（单实例证伪、F06 探测、F11 HTTP 直写）都没有新增通过用例——瓶颈始终在「先造测试能力」，不在执行次数。当前 `playwright.connectors.config.ts --list` 保持 `2 tests in 2 files`（F07 + F14 部分），无半成品。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
@@ -340,7 +357,7 @@ expect(received).not.toBeNull()  Received: null
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过（实测失败并已删除该 test）、不声称 F06 有任何用例或覆盖（本轮探测确认审批未触发）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
+- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过、不声称 F06 或 F11 有任何用例或覆盖（两轮探测均失败并已删除临时 spec）、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已入库：它仍在子模块工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。
