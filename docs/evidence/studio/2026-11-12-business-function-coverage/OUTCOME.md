@@ -7,7 +7,39 @@
 - F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn（第三轮）。
 - F11：真 Tauri webview 改偏好 → ACL 磁盘快照 → **真进程退出并重启** → UI 与磁盘双重回读；四项必须断言全覆盖，用例可复跑（第十一轮）。
 - F13 部分：真实首启安装状态序列、25 个真实 payload 文件、摘要版本一致、三项权限、重启后不再弹；但产品只装 1 个组件，PLAN 要求 3 个（第十二轮）。
+
+> ⚠️ 上表是**仓库原口径（PLAN §9）**。用户 15:06 追加「必须是 agent-desktop 启动应用的可视化端到端测试」后，按新口径 F 层为 **1/17**（仅 F11），F07/F14 及全部 Gate A 套件不计入。详见下一节「口径补充」。
 - 各轮详细命令、计数与 `Explicitly not claimed` 见下文；逐条台账见 `MATRIX.md`。
+
+## 口径补充：用户要求「agent-desktop 启动应用的可视化端到端测试」（15:06 插入）
+
+用户在本日 15:06 明确追加要求：**测试必须是 agent-desktop 启动应用的可视化端到端测试**。这比 `PLAN.md` §9 的 L3 定义更严格，据此重新判定，两个口径分开列、不混用：
+
+| 用例 | 启动方式 | 测试动作 | 符合新口径？ |
+| --- | --- | --- | --- |
+| `specs/f11-desktop-e2e.py`（F11 达标） | `just studio` 子进程 | **agent-desktop** 在真 Tauri 窗口上 snapshot/find/click/toggle | ✅ 动作符合；启动环节见下 |
+| `specs/f13-first-run-e2e.py`（F13 部分） | `just studio` 子进程 | **agent-desktop** 同上 | ✅ 动作符合；启动环节见下 |
+| `connector-native.spec.ts`（F07） | `nativeHarness` + 静态 preview | **Playwright 浏览器 + runtime 桩** | ❌ 渲染器桩，不是可视化 E2E |
+| `restart-persistence.spec.ts`（F14 部分） | 同上 | **Playwright 浏览器 + HTTP 断言** | ❌ 同上 |
+| Gate A 全部 7 个 config | `e2e-preview.mjs` + `--stub-runtime` | Playwright 浏览器 | ❌ 全部不计入 |
+
+- **按仓库原口径（PLAN §9）**：F 层 **2/17**（F07 + F11）。
+- **按用户新口径**：F 层 **1/17**（仅 F11 严格达标），F13 部分符合但组件数不足；F07/F14 不计入。
+
+> 这不是成果倒退，是分母口径变严导致的重新判定。本轮补跑的 Gate A 三个 config（`142 passed / 10 failed / 55 skipped`）以及此前所有 Playwright 桩套件，按新口径**均不作为端到端测试成果计入**。
+
+### 「agent-desktop 启动应用」的可行性实测
+
+尝试把启动环节也交给 `agent-desktop launch`，共四次，均未成功：
+
+| 尝试 | 结果 |
+| --- | --- |
+| `launch <Aster.app 绝对路径>` | `INVALID_ARGS`：只接受裸应用名或 bundle ID |
+| `launch <bundle id> --cwd ...` | `ACTION_NOT_SUPPORTED`：macOS Launch Services 不支持指定工作目录 |
+| `launch <bundle id>`（去掉 cwd，带全部 env） | `ACTION_FAILED: NSWorkspace failed to launch` |
+| `lsregister -f <Aster.app>` 注册成功后再 launch / 裸名 `Aster` | 仍 `NSWorkspace failed to launch`；`open -a` 同样不产生窗口 |
+
+结论：实例目录下手工生成的 `Aster.app`（bundle id `dev.aster.studio.aster.<instance>`）**无法被 Launch Services 启动**，它需要 `just studio` 通过 `stage-launcher` 输出的 `Studio` 二进制并继承整套环境变量与 runtime descriptor。因此当前能做到的最大化形态是：**`just studio` 负责启动真应用，之后全部测试动作由 agent-desktop 在真窗口上完成**（F11/F13 两条脚本正是如此）。若要求「连启动也必须是 agent-desktop」，需要产品侧提供一个可被 Launch Services 正常启动的标准 app bundle。
 
 ## 口径（不自选分母）
 
@@ -607,3 +639,4 @@ F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图�
 - 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。
 - 不声称 F09 或 F15 有任何用例或覆盖；两轮都只确认了「当前真窗口没有可驱动的入口」，未找到触发前置状态的方法。不声称剩余 4 条 L3 的缺口能靠增加测试执行次数解决。
 - 不声称 F13 已补成严格达标；设置搜索「依赖」无法暴露被隐藏的 `/settings/dependencies` 路由，另两个 optional 组件在测试侧无安装入口。统一回归只证明 4 条既有用例未退化，**不声称本轮改变了任何覆盖计数**。
+- **不声称 Playwright + runtime 桩的套件符合用户新增的 agent-desktop 可视化 E2E 口径**；不声称 `agent-desktop launch` 能启动当前实例 bundle（四次实测均失败）；不声称 Gate A 补跑的 142 passed 属于端到端测试成果。
