@@ -1012,6 +1012,69 @@ SINGLE_INSTANCE_L3: PASS                          EXIT 0, 53s
 - 符合用户口径的可视化 E2E 现为 **3 条**（F11 PASS、F01 抽样 FAIL、F14 抽样 PASS）。
 - 收尾：ACL 仍 `value = false`、默认产物字节未变（899194232 / 306630680）、五端口全空闲、无可见 Aster 窗口、`list-windows ok=True`。
 
+## 第二十七轮：**修复 F01 草稿跨页丢失（产品 bug），可视化 E2E 由 FAIL 转 PASS**
+
+用户要求「修复失败问题」，对应第二十五轮唯一的真实产品缺口：`DRAFT_NAV_L3: FAIL`（composer 草稿在「设置 → 工作」往返后丢失）。
+
+### 根因（只读定位，非推测）
+
+`apps/studio/src-tauri/src/../..` 渲染层：
+
+- 设置页是**浮层**，`settingsOverlayState.ts` 明确「the workspace tab that stays mounted」；`AppShell.tsx` 用 `underlayTabId` 让 workspace tab 保持 `isActive=true`，`AppShell.test.tsx` 还锁定了「离开设置要恢复原工作 tab」。
+- 但侧栏「工作」按钮走 `sidebarShortcuts/runtime.tsx` 的 `openWorkspace`：`appProvider.activate` 传 `matchesTab: () => false`，当 activeTab 是 settings 时落到 **`updateTab(activeTab.id, { url: '/app/agents' })`** —— 把浮层 tab **原地改写**成工作页，tab id 变成另一个。
+- 首页草稿存在 `pages/agents/workbenchComposerBridge.ts` 的模块级内存 `Map homeDrafts`，**按 `useCurrentTabId()` 分 key**（`WorkbenchHome.tsx:537`、`AgentComposer.tsx:2897`）。新 tab id 查不到 → `readWorkbenchHomeDraft()` 返回 `''` → 输入框空。
+
+判定为 bug 而非设计行为：设置浮层「保持挂载」、离开设置「恢复原 tab」、首页草稿「专门做缓存」三者都是明确的保留语义，只有侧栏这条路径绕开了。
+
+### 修复（最小改动，2 个文件）
+
+`src/renderer/components/app/sidebarShortcuts/runtime.tsx`：
+- 抽出 `latestWorkspaceTab(tabs)`（复用原 `workspaceSurfaceUrl` 里按 `lastAccessTime` 选最近非 settings route tab 的 reduce），`workspaceSurfaceUrl` 改为调用它。
+- `openWorkspace` 在 `activeTab` 是 settings path **且目标无 conversation** 时，`setActiveTab(surface.id)` 回到仍挂载的 workspace tab，而不是 `updateTab`；找不到 workspace tab 时保留原 fallback。`!destination.conversation` 保证从设置页打开具体会话的路径不受影响。
+
+`.../__tests__/runtime.test.ts`：新增 2 个 hermetic 用例（用现成的 `statefulTabContext`）：
+- `returns to the mounted workspace tab instead of rewriting the Settings overlay tab` — 断言 `activeTabId === 'work'`、settings tab 仍是 `/settings/general`、tab 数不变（即草稿的 owner id 不变）
+- `repurposes the Settings tab when no workspace tab is mounted` — 断言无 workspace tab 时仍走原 fallback
+
+### 验证（全部实际结果）
+
+| 检查 | 结果 |
+| --- | --- |
+| `vitest run --project renderer <runtime.test.ts>` | **27 passed (27)**，含新增 2 例 |
+| `oxlint --deny-warnings` 两个改动文件 | `Found 0 warnings and 0 errors`（EXIT 0） |
+| `git diff --check` | OK |
+| **全量** `vitest run --project renderer --silent` | **EXIT 124（15m 超时）**；`KnowledgeMaintenanceWorkspace.test.tsx` 17 例失败 |
+| `AppShell.test.tsx` 单跑 | 34 passed / 2 failed（同一用例 `only mounts organization runtimes for the managed tenant`，断言 tenant runtime 挂载） |
+| `KnowledgeMaintenanceWorkspace.test.tsx` 单跑 | 17 例全失败（知识库维护工作区） |
+
+后两项与侧栏导航模块无 import 关系、断言内容也无关，判为**既有/环境失败**，未做任何修改、未弱化任何 gate 换绿。
+
+按 AGENTS.md 重建后再做可视化验收：
+```
+just build-studio                          EXIT 0
+node scripts/e2e-fresh-build.mjs --build   EXIT 0
+  rendererEntrySha256 3bd7b192d981 → 8da351c7b828（修复确实进了产物）
+node scripts/e2e-fresh-build.mjs --verify  EXIT 0
+```
+
+`draft-navigation-visual-e2e.py --instance f11-live-01 --port 4325`（同一条用例，修复前 FAIL）：
+
+```
+修复前 [4] value = ''                    ui_text_matches = 0   → FAIL
+修复后 [2] value = 'ASTERNAV6157C2\n'    ui_text_matches = 1
+       [4] value = 'ASTERNAV6157C2\n'    ui_text_matches = 1   → PASS (EXIT 0, 21s)
+复跑    [4] value = 'ASTERNAV2E7B08\n'    ui_text_matches = 1   → PASS (EXIT 0, 22s)
+```
+
+两次 PASS，草稿在真实跨页往返后完整保留。首次验收因 host 退化（`list-apps TIMEOUT`）失败，按第二十二轮方法从包装 app 上下文预热 host（`ok=True, 86 apps`）后通过——这是测试环境问题，与产品修复无关。
+
+### 判定与状态
+
+- **F01 的 L3 抽样点由 FAIL 转 PASS**，该用例现在是通过的合规可视化 E2E；但 F01 最低执行面是「L2 + L3 抽样」，L2 桩按用户新口径不计入，故 **F 层仍为 1/17（新口径）/ 2/17（原口径）**，不声称 F01 已严格达标。
+- 真宿主用例仍 7 条，通过数 6 → 7（F01 用例由 FAIL 转 PASS，表格改为 7/7）。
+- 「草稿不跨进程重启保留」（F16 观察）**未修**：`homeDrafts` 仍是纯内存 Map，产品侧是否要落盘需另行决策，本轮未改。
+- 收尾：草稿已清空、ACL `value = false`、默认产物字节未变（899194232 / 306630680）、五端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -1036,6 +1099,9 @@ SINGLE_INSTANCE_L3: PASS                          EXIT 0, 53s
 - ~~不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过~~ → **该条已被第二十四轮推翻**：脚本经读数修复后两次完整复跑 `PASS`（EXIT 0），现为 F11 完全合规用例。此处保留仅为说明演进，不再作为有效免责。
 - 不声称第十九轮绕过了 `ps` 禁令或恢复了桌面驱动；`libproc-process-inventory.py` 只是诊断工具，不是端到端测试，不声称本轮有任何可视化断言或覆盖变化。（第二十二轮已找到绕过方式，第二十四轮已跑通。）
 - **不声称第二十四轮改变了 F 层数字**：新口径仍 1/17、原口径仍 2/17；变化的是 F11 的达标用例从「折中形态」升级为「完全合规且两次通过」。不声称 F06/F09/F12/F15、F13/F14 或任何 Gate A 套件因此计入覆盖。
-- **不声称 F01 已覆盖**：第二十五轮的 L3 抽样用例 `DRAFT_NAV_L3: FAIL`，虽完全符合 agent-desktop 可视化 E2E 口径但不通过；不声称把断言放宽后算 PASS，也不声称已断定产品根因（仅记录跨页往返后草稿丢失的观察）。
+- ~~不声称 F01 已覆盖~~ → **第二十七轮修复后 L3 抽样已 PASS**，但仍**不声称 F01 严格达标**：其最低执行面是「L2 + L3 抽样」，L2 桩按用户新口径不计入。不声称 F 层数字变化（仍 1/17 新口径 / 2/17 原口径），也不声称把断言放宽过。
+- **不声称草稿已能跨进程保留**：`homeDrafts` 仍是模块级内存 Map，第二十七轮只修了「跨页导航」这一条路径；F16 的 `NOT_PERSISTED` 观察依然成立，未做落盘改动。
+- **不声称全量 renderer 套件通过**：15m 超时（EXIT 124），`KnowledgeMaintenanceWorkspace` 17 例与 `AppShell` 的 1 个 tenant-runtime 用例失败，均判为既有/环境失败，未修改也未弱化 gate。
+- **不声称父仓 gitlink 已 bump、也不声称 `just studio-land-check` 通过**：该检查因子模块里非本任务的两个未提交 spec 而 EXIT 1；子模块修复已单独推送到 `studio.git` 的 `main`，父仓指针仍为 `0161c1c231`。
 - **不声称 F14 已严格达标、也不声称产品 `Claim::Busy` 分支被可视化 E2E 覆盖**：第二十六轮只证明「二次 `agent-desktop launch` 未产生第二个 Aster 实例」；第二次 launch 返回 `APP_UNRESPONSIVE` 意味着 NSWorkspace 没拉起第二个进程。F14 仍缺更新通道/清单与退出守卫，不计入 F 层。
 - **不声称本日前几轮 GUI 场景是「针对当前 checkout 的合规 E2E」**：首次 `--verify` 证明当时 dist 为旧 `rootCommit`/native sha；那些结果仅作历史行为观察。第二十轮只刷新构建基线，不声称重跑过任何场景，也不声称覆盖计数变化。

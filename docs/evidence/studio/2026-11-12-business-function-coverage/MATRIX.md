@@ -33,7 +33,7 @@
 
 | ID | 业务功能 | 最低执行面 | 现有 L3 用例 | 本轮状态 | 达标缺口 |
 | --- | --- | --- | --- | --- | --- |
-| F01 | 会话/草稿生命周期与导航保持 | L2 + L3 抽样 | 仅 L2 桩 + 1 条 L3 抽样（FAIL） | ⚠️ L3 抽样未通过 | `draft-navigation-visual-e2e.py`（完全合规 agent-desktop 可视化 E2E）实测跨页往返后草稿丢失，两次一致且有 UI 文本对照；按 §9 不计覆盖。见 OUTCOME 第二十五轮 |
+| F01 | 会话/草稿生命周期与导航保持 | L2 + L3 抽样 | 仅 L2 桩 + 1 条 L3 抽样（**已修复并 PASS**） | ⚠️ L3 抽样通过，仍未严格达标 | 第二十五轮发现跨页草稿丢失（FAIL）；第二十七轮修复侧栏「工作」按钮改写 settings tab 的产品 bug 后，同一用例**两次 `DRAFT_NAV_L3: PASS`**。但 L2 桩按用户新口径不计入，故 F01 不计覆盖。见 OUTCOME 第二十五、二十七轮 |
 | F02 | Composer 输入/斜杠命令/附件/队列 | L2 | L2 桩 | 见 Gate A 结果 | 达 L2 即可 |
 | F03 | 流式消息/工具披露/引用 | L2 + 契约门禁 | L2 桩 | 见 Gate A 结果 | 需契约门禁绿 |
 | F04 | 消息虚拟列表与滚动记忆 | L2 + 契约门禁 | L2 桩 | 见 Gate A 结果 | 需契约门禁绿 |
@@ -63,9 +63,9 @@
 | Gate A（**6/7 config**，正式配置） | 490 | 181 | 40 | 62 | 207 | **36.9%** | FAIL |
 | Gate A（**7 份日志合并**，含 composer-audit chromium 诊断运行） | 490 | **228** | 95 | 62 | 105 | **46.5%** | FAIL（目标 100%） |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
-| 真宿主验证用例 | **7** | **6** | 1 | 0 | 0 | **85.7%** | ✅ F07、F11 达标（F11 有 2 条）；F14（2 条）、F13 部分覆盖，F14 单实例抽样 PASS；❌ F01 L3 抽样 FAIL（草稿跨页丢失，真实发现） |
+| 真宿主验证用例 | **7** | **7** | 0 | 0 | 0 | **100%** | ✅ F07、F11 达标（F11 有 2 条）；F14（2 条）、F13 部分覆盖；F01 L3 抽样经产品 bug 修复后由 FAIL 转 PASS（两次复跑） |
 
-> **新口径（用户 15:06 追加，第二十四轮达成）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**。第二十四轮的 `specs/agent-desktop-launch-e2e.py` 让 **F11 首次拥有完全合规的通过用例**：`launch / snapshot / find / toggle / get / close-app / relaunch` 全部由 agent-desktop 完成，四项必须断言全覆盖，**两次完整复跑 `AGENT_DESKTOP_LAUNCH_L3: PASS`**（EXIT 0，55s / 58s）。按新口径 F 层 **1/17**（仅 F11），数字未变但合规性从「折中形态」变为完全达标。F13 部分符合；`draft-restart-visual-e2e.py`（F16 抽样）为 `NOT_PERSISTED` 负面发现、不计覆盖。第二十五轮再新增第 2 条完全合规用例 `draft-navigation-visual-e2e.py`（F01 L3 抽样），结果为 `DRAFT_NAV_L3: FAIL`（草稿跨页往返丢失，两次一致、有 UI 文本对照），**同样不计覆盖**，F 层仍 1/17。第二十六轮新增第 3 条完全合规用例 `single-instance-visual-e2e.py`（F14 单实例抽样），`SINGLE_INSTANCE_L3: PASS`（二次 launch 后 PID/窗口/交互能力不变），但局限是 NSWorkspace 未真正拉起第二进程、未触发产品 `Claim::Busy` 分支；F14 仍部分覆盖、F 层仍 1/17。Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。历史尝试详见 `OUTCOME.md`「口径补充」及第十七至二十六轮。
+> **新口径（用户 15:06 追加，第二十四轮达成）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**。第二十四轮的 `specs/agent-desktop-launch-e2e.py` 让 **F11 首次拥有完全合规的通过用例**：`launch / snapshot / find / toggle / get / close-app / relaunch` 全部由 agent-desktop 完成，四项必须断言全覆盖，**两次完整复跑 `AGENT_DESKTOP_LAUNCH_L3: PASS`**（EXIT 0，55s / 58s）。按新口径 F 层 **1/17**（仅 F11），数字未变但合规性从「折中形态」变为完全达标。F13 部分符合；`draft-restart-visual-e2e.py`（F16 抽样）为 `NOT_PERSISTED` 负面发现、不计覆盖。第二十五轮再新增第 2 条完全合规用例 `draft-navigation-visual-e2e.py`（F01 L3 抽样），结果为 `DRAFT_NAV_L3: FAIL`（草稿跨页往返丢失，两次一致、有 UI 文本对照），**同样不计覆盖**，F 层仍 1/17。第二十六轮新增第 3 条完全合规用例 `single-instance-visual-e2e.py`（F14 单实例抽样），`SINGLE_INSTANCE_L3: PASS`（二次 launch 后 PID/窗口/交互能力不变），但局限是 NSWorkspace 未真正拉起第二进程、未触发产品 `Claim::Busy` 分支；F14 仍部分覆盖、F 层仍 1/17。第二十七轮**修复了 F01 草稿跨页丢失的产品 bug**（侧栏「工作」按钮不再改写 settings 浮层 tab），同一用例两次 `DRAFT_NAV_L3: PASS`；但 F01 的 L2 桩按新口径不计入，F 层仍 **1/17**。Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。历史尝试详见 `OUTCOME.md`「口径补充」及第十七至二十七轮。
 
 - 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
 - 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。
