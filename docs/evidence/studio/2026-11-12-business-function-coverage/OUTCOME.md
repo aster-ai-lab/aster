@@ -282,6 +282,32 @@ STUDIO_RENDERER_PORT=4388 STUDIO_RENDERER_DIST=.studio/dist/e2e-latest \
 
 两个 spec 都在 `apps/studio` 子模块工作树（`connector-native.spec.ts` 为 M、`restart-persistence.spec.ts` 未跟踪），父仓 gitlink 未 bump——向子模块远程推送需单独授权。
 
+## 第七轮：证伪单实例捷径，定位 F06 审批契约
+
+### 单实例验证实测失败（更正第六轮的判断）
+
+第六轮末尾我写「单实例有可行路径：`single_instance.rs` 用 `flock`，再 spawn 一次 Studio 断言第二进程退出」。本轮**实际写了这个 test 并跑了**，结论是**错的**：
+
+```
+1 failed / 1 passed (41.1s)
+expect(received).not.toBeNull()  Received: null
+输出里出现 studio-main-window focused=false visible=true
+```
+
+第二个实例没有自行退出，反而启动了新窗口，20 秒后被测试主动 kill。`src-tauri/src/lib.rs:428-440` 显示锁用的是 `tenant::storage_slug(&tenant_slug)`，而 launcher 的 `storage_slug` / fork 选择并不按我假设的 `ASTER_STUDIO_INSTANCE` 简单共享；`claim_quiet` 的注释也写明「Used while picking a free fork」。要正确触发 `Claim::Busy` 需先弄清 launcher 如何选 fork，本轮未继续深挖。
+
+**已删除该失败 test 与其 import**，套件恢复 `2 tests in 2 files`（`--list` 确认），并复验第一条仍通过：`✓ ... (6.3s) / 1 passed (20.7s)`。没有留下跑不通的半成品。残留 Studio 进程已确认清空（4388 只剩 preview，随后也已停止）。
+
+### F06 的契约已定位，可作为下一轮起点
+
+查到工具审批在真 native host 上的完整 HTTP 面：
+
+- `apps/studio/src-tauri/src/agent_plane/controllers.rs:937`：`#[controller("/api/agent-approvals")]`，`POST /api/agent-approvals/{id}`，body 为 `{approved, sessionId, executionId, anchorMessageId, messageId, toolCallId}`（`ApprovalAnswer`，缺字段或多余字段都拒绝），返回 `{ok}`。
+- 触发链：ACP `session/request_permission` → SSE `awaiting-approval` → 消息 part `state="approval-requested"`，其 `approval.id` 与绑定字段见 `agent_plane/native_approval_alignment_tests.rs`（含「错误身份一律拒绝且单次有效」的契约）。
+- 要用它复现 F06，需要新建 `permission_mode: 'default'` 的 agent/session（harness 现有的是 `bypassPermissions`，直接改会破坏 F07），再从消息流提取绑定，分别批准/拒绝并断言两次终态可区分。本轮**未实现**，故 F06 仍无用例。
+
+**F 层仍 1/17**；本轮净结果是证伪了一条错误捷径 + 记录 F06 的可执行契约，未新增通过用例。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
@@ -293,7 +319,7 @@ STUDIO_RENDERER_PORT=4388 STUDIO_RENDERER_DIST=.studio/dist/e2e-latest \
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
+- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过（本轮实测失败并已删除该 test）、不声称 F06 有任何用例或覆盖、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
 - 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已入库：它仍在子模块工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。
