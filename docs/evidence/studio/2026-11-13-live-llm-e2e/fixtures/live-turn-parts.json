@@ -1,0 +1,37 @@
+{
+  "source": "live-llm-turn",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "capturedAt": "2026-11-12T19:46:36.798Z",
+  "status": "success",
+  "partTypes": [
+    "step-start",
+    "text",
+    "data-context-usage"
+  ],
+  "parts": [
+    {
+      "type": "step-start"
+    },
+    {
+      "type": "text",
+      "text": "LIVELLMREADY",
+      "state": "done"
+    },
+    {
+      "type": "data-context-usage",
+      "id": "native-context-usage",
+      "data": {
+        "categories": [],
+        "totalTokens": 24797,
+        "maxTokens": 1000000,
+        "percentage": 2.4797,
+        "model": "6db4a941-0911-48dc-9914-0367d8e655ca::deepseek-flash",
+        "windowSource": "runtime",
+        "measuredAt": "2026-11-12T19:46:36.414Z",
+        "outputTokens": 7,
+        "turnTokens": 24804
+      }
+    }
+  ]
+}

@@ -69,6 +69,53 @@
 - 业务功能覆盖台账的 F 层数字**不变**（新口径 1/17、原口径 2/17）：本轮用的是真宿主 + 真模型 Playwright 通道，按用户 15:06 口径（必须 agent-desktop 可视化 E2E）**不计入 F 层**；但它是 F03/F07 的真实模型补充验收证据。
 - 收尾：无残留 Aster/Studio 进程，4318/4325/4388/4598 全空闲，未改子模块源码、未改产品源码。
 
+## 第二轮：R2 完成 —— 真实 parts 进入组件渲染层
+
+按 `docs/evidence/studio/2026-11-12-business-function-coverage/REMEDIATION-PLAN.md` 的 S1 优先项执行。
+
+### 1. 脚本补上完整 parts 导出
+
+`live-conversation-e2e.mts` 现在把 assistant 的**完整 `data.parts`**（不是仅类型名）写到 `fixtures/live-turn-parts.json`。固定合成 prompt（`Reply with exactly the token LIVELLMREADY...`），所以载荷不含凭证或个人信息。
+
+再跑一次真 turn（`ASTER_E2E_LIVE_MODEL=1`，2.0s，`status=success`），捕获到的真实 parts：
+
+| # | type | 真实内容 |
+| --- | --- | --- |
+| 1 | `step-start` | 无负载 |
+| 2 | `text` | `text: "LIVELLMREADY"`, `state: "done"` |
+| 3 | `data-context-usage` | `totalTokens: 24797`, `maxTokens: 1000000`, `percentage: 2.4797`, `outputTokens: 7`, `turnTokens: 24804`, `windowSource: "runtime"` |
+
+（本轮模型未产出 `reasoning` part；上一轮部分运行里出现过，属模型非确定性，不作为断言前提。）
+
+### 2. 复用现有组件测试，不新建 harness
+
+在子模块 `MessagePartsRenderer.test.tsx`（原有 2602 行、完整 `MessageListProvider` / `PartsProvider` setup）里**追加 1 条 `it()`**，复用模块级 `renderParts()` helper，把真实 fixture 直接喂给 `MessagePartsRenderer`：
+
+- 断言 fixture 元信息（`source=live-llm-turn`、`status=success`）与三类 part 集合
+- 断言真实 text 内容为 `LIVELLMREADY`
+- `renderParts(parts)` 后断言容器存在、**无 `mock-error-block`**、markdown 叶子渲染出真实回复文本
+
+没有把业务分发逻辑复制进测试，也没有新建一套 Provider/mock。
+
+### 3. 验证（两次独立运行，实测）
+
+| 检查 | 结果 |
+| --- | --- |
+| `vitest run --project renderer MessagePartsRenderer.test.tsx` | **94 passed (94)**，EXIT 0；**复跑同样 94/94 EXIT 0** |
+| `git diff --check` | OK |
+| `oxlint --deny-warnings` | 1 warning / 0 errors —— **与 HEAD 版本在同目录跑完全一致**（既有 `import React from 'react'` default-export 提示），本次 +30 行未引入新 lint 发现 |
+| 子模块落地 | `bbc7bb9c01` 已推送 `studio.git` main；`just studio-land-check` **EXIT 0**（clean / pointer advances / delivery commits clean） |
+
+### 4. 关于 222 项清单，如实说明偏差
+
+R2 原计划第 4 步要「把触发的编号在 `coverage-matrix.md` 里标为已执行」。实际打开后发现那份清单的编号是**真窗口截图场景**（R/B/L/S/F/C 系列，如 `R06`、`C06`、`F04`），没有「text part 组件渲染」这一维度。硬套编号会制造假覆盖，因此**不改 222 项统计**，也不声称其中任何一项因本工作变为「已执行」。本轮的覆盖是**组件层 vitest**，单独计账。
+
+### 5. 判定
+
+- **R2 完成**：真实 LLM 输出的 3 类 part 已进入渲染层组件测试并通过断言。S1 的「≥4 类 part」**未完全达成**（本轮只捕获到 3 类，`reasoning` 未出现），如实标注。
+- **F 层数字不变**：1/17（用户口径）/ 2/17（PLAN §9）。组件层 vitest 按用户 15:06 口径（必须 agent-desktop 可视化 E2E）**不计入 F 层**；这是 F03/F07 的真实模型补充验收证据。
+- 未改产品源码；父仓 gitlink 已按 land discipline 推进到 `bbc7bb9c01`。
+
 ## Explicitly not claimed
 
 - 不声称「任务对话流全部能力和组件渲染」已测完；只跑通了 1 个真 turn、验到 4 种 part 类型，222 项形态里绝大多数未执行。

@@ -1,6 +1,6 @@
 # 测试覆盖率与工程债修复计划
 
-> 状态：**规划稿，未执行**。承接 `AGENT-DESKTOP-E2E-PLAN.md` v2 与 `docs/evidence/studio/2026-11-13-live-llm-e2e/OUTCOME.md`。
+> 状态：**S1 部分完成（R2 已交付，S1 未全达成）**。承接 `AGENT-DESKTOP-E2E-PLAN.md` v2 与 `docs/evidence/studio/2026-11-13-live-llm-e2e/OUTCOME.md`。R2 结果见该 OUTCOME「第二轮」；其余项仍为规划。
 > 事实基线（2026-11-13 03:38 实测）：HEAD `ed054809b`，**本地领先远程 11 个 commit 未推送**；父仓 8 个 modified + 2 个未跟踪目录（并行 WIP）；子模块干净；4318/4325/4388/4598 全空闲；`agent-desktop list-apps` 仍 `TIMEOUT`。
 > 目标不是「冲 100%」——`F06/F09/F12/F15` 结构不可达决定了上限。目标是**把可测面吃满、把阻塞归位、把工程债清零**。
 
@@ -47,7 +47,8 @@ R4 真 host 渲染通道 ──> 产品/工程改造，或判定由 R2 替代、
   3. 复用现有 `MainTextBlock` / `ThinkingBlock` / `MessageCostSummary` / `MessageTokenDetailsCard` 测试，补「真实 part 输入」这一条路径，不复制业务逻辑进测试。
   4. 在 222 项 `coverage-matrix.md` 里把由此实际触发的编号从「未执行」改为「已执行（真实模型 parts + 组件层）」，并**单独标注执行面是组件层、不是真窗口**。
 - **验收**：vitest 绿、`git diff --check` 绿、至少 4 类 part 有断言；**不声称 F 层数字变化**（组件层不计入用户口径）。
-- **责任**：我。前置：子模块改动需走 land discipline（提交→push→`studio-land-check`→父仓 gitlink bump）。
+- **✅ 已完成（2026-11-13）**：真实 turn 捕获 3 类 part 并固化成 fixture；在 `MessagePartsRenderer.test.tsx` 追加 1 条用例复用 `renderParts` helper；两次独立 `94/94 PASS`；oxlint 与 HEAD 同（既有 warning，未引入新问题）；子模块 `bbc7bb9c01` 已推送、land-check EXIT 0、父仓 gitlink 已 bump。**S1 的「≥4 类」未达成**（本轮模型未产出 `reasoning`），且 `coverage-matrix.md` 编号体系是真窗口截图场景、无对应维度，按不造假原则未改 222 项统计。详见 `2026-11-13-live-llm-e2e/OUTCOME.md`「第二轮」。
+- **责任**：我（已完成）。
 
 ### R3 · 解除 `/bin/ps` 系统级阻塞（Lyon / 系统侧）
 
@@ -118,7 +119,7 @@ R4 真 host 渲染通道 ──> 产品/工程改造，或判定由 R2 替代、
 
 | 阶段 | 内容 | 出口判据 |
 | --- | --- | --- |
-| **S1（可立即做）** | R2 + R9 + R8 的治理项 | ≥4 类真实 part 有组件渲染断言；仓库级 live gate 落地；0 次「未诊断就重试」 |
+| **S1（可立即做）** | R2 + R9 + R8 的治理项 | **R2 已完成（3 类 part，2× 94/94 PASS）**；但「≥4 类」未达成、`coverage-matrix` 未改、R9 规则尚未固化成文档、仓库级 live gate 仍只在脚本内 → **S1 未全达成** |
 | **S2（需一条裁决）** | R1 → R5 | F 层 **2/17 → 7/17**（裁决通过）；五条用例各两次 PASS |
 | **S3（需系统侧动作）** | R3 → R6 | `list-apps ok=true`；F02 完整断言 PASS；F 层 → **8/17** |
 | **S4（需授权）** | R8 推送/版本/工作树 + R7 产品清单移交 | 0 未推送 commit、工作树干净、版本号 > 0.2.2、四项缺口有产品侧 owner |

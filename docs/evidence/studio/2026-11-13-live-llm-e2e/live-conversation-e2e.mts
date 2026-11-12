@@ -13,6 +13,7 @@
  */
 import { randomUUID } from 'node:crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname } from 'node:path'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
@@ -26,6 +27,7 @@ const PROMPT = 'Reply with exactly the token LIVELLMREADY and nothing else.'
 const TOKEN = 'LIVELLMREADY'
 const TURN_TIMEOUT = Number(process.env.LIVE_TURN_TIMEOUT_MS ?? '120000')
 const RECEIPT = resolve('/Users/roylin/code/aster/docs/evidence/studio/2026-11-13-live-llm-e2e/last-turn.json')
+const FIXTURE = resolve('/Users/roylin/code/aster/docs/evidence/studio/2026-11-13-live-llm-e2e/fixtures/live-turn-parts.json')
 
 type ProviderConfig = { name: string; baseUrl: string; apiKey: string; modelId: string }
 
@@ -136,9 +138,27 @@ async function main(): Promise<number> {
     receipt.status = assistant?.status ?? 'no-assistant-message'
     receipt.searchableTextLength = assistant?.searchableText?.length ?? 0
     receipt.tokenPresent = (assistant?.searchableText ?? '').includes(TOKEN)
-    receipt.partTypes = assistant?.data?.parts?.map((p) => p.type) ?? []
+    const liveParts = (assistant?.data?.parts ?? []) as unknown as Array<Record<string, unknown>>
+    receipt.partTypes = liveParts.map((p) => String(p.type))
     log('turn result:', receipt.status, 'elapsed', receipt.elapsedMs, 'ms',
         'parts', JSON.stringify(receipt.partTypes))
+
+    // Persist the REAL turn parts as a rendering fixture. The turn uses a
+    // fixed synthetic prompt, so the payload contains no credentials or
+    // personal data; provider keys are never included.
+    if (liveParts.length > 0) {
+      mkdirSync(dirname(FIXTURE), { recursive: true })
+      writeFileSync(FIXTURE, JSON.stringify({
+        source: 'live-llm-turn',
+        provider: provider.name,
+        model: provider.modelId,
+        capturedAt: new Date().toISOString(),
+        status: assistant?.status,
+        partTypes: receipt.partTypes,
+        parts: liveParts
+      }, null, 2))
+      log('fixture written:', FIXTURE, 'parts =', liveParts.length)
+    }
 
     const apiOk = assistant?.status === 'success'
       && (assistant.searchableText ?? '').length > 0
