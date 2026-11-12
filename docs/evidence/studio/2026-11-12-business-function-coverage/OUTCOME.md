@@ -2,7 +2,11 @@
 
 ## 结论先行
 
-**未达成，且不是「再跑一次」能达成的。** 按仓库权威口径（`PLAN.md` §4/§9），F 层 17 条业务功能中 **8 条要求 L3 真宿主用例，其中 7 条在本仓库里根本没有 L3 用例**；唯一 1 条 L3 用例本轮也未通过。因此 F 层结构性上限约 10/17（58.8%），当前严格达标数为 **0/17**。任何「100%」的说法都只能靠换分母得到。
+**未达成，且不是「再跑一次」能达成的。** 按仓库权威口径（`PLAN.md` §4/§9），F 层 17 条业务功能中 **8 条要求 L3 真宿主用例**。经本日多轮推进，当前 **2 条严格达标（F07 + F11，2/17 ≈ 11.8%）**，F14 有一条部分覆盖用例但不计入；仍有 **5 条 L3 功能完全没有用例**（F06/F09/F12/F13/F15）。F 层结构性上限约 10/17（58.8%），100% 需要新写产品级真宿主测试，任何「100%」的说法都只能靠换分母得到。
+
+- F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn（第三轮）。
+- F11：真 Tauri webview 改偏好 → ACL 磁盘快照 → **真进程退出并重启** → UI 与磁盘双重回读；四项必须断言全覆盖，用例可复跑（第十一轮）。
+- 各轮详细命令、计数与 `Explicitly not claimed` 见下文；逐条台账见 `MATRIX.md`。
 
 ## 口径（不自选分母）
 
@@ -377,19 +381,87 @@ expect(received).not.toBeNull()  Received: null
 
 `playwright.connectors.config.ts --list` = `2 tests in 2 files`，两条都曾通过；**F 层仍 1/17**，本轮无新增通过用例。连续第四轮试探未提升 F 层，但排除了一个被高估的方案并固化了已有成果。
 
+## 第十一轮：F11 严格达标，F 层 1/17 → 2/17
+
+按上一轮留下的线索，用**真 Tauri webview** 而不是浏览器，拿到了 F11 的第一条完整 L3 用例。
+
+### 路径排除与最终可行方案
+
+- `nativeHarness` 起的 native host 虽有 `studio-main-window visible=true` 日志，但 `agent-desktop list-windows` 里**没有 Aster 窗口**（当时列表里唯一的「书生·端砚」是上海 AI 实验室的认证 app，已排除）。此路不通。
+- `just studio` + `STUDIO_RENDERER_DEV=0` + 11-04 的旧实例 `clean-e2e` 卡在 `rebuilding the client`。
+- **可行**：默认 dev 模式、全新隔离实例 `f11-live-01`、端口 4325：
+  ```
+  ASTER_STUDIO_INSTANCE=f11-live-01 STUDIO_RENDERER_PORT=4325 just studio
+  ```
+  约 75 秒后 `agent-desktop list-windows` 出现 `Aster` 窗口、4325 监听。新实例首启会连弹两个对话框（「组件已就绪」→「使用 Aster 前需要三项权限」），分别点「继续」「稍后设置」跳过；**已初始化的实例重启后不再弹**。
+
+### 手动逐步验证（真窗口、真 IPC、真磁盘）
+
+1. 设置/通用里「运行任务时保持系统唤醒」`value=0`，`instances/f11-live-01/preferences/` 只有 `.lock` 文件。
+2. 用 agent-desktop `toggle` 后 `value=1`（`checked`），**目录里从无到有生成** `local/00000000-0000-4000-8000-000000000001.acl`：
+   ```
+   preferences "00000000-0000-4000-8000-000000000001" {
+     revision = "1"
+     preference "app.power.prevent_sleep_when_busy" { value = true }
+   }
+   ```
+   这是 Rust `PreferenceStore` 用 `std::fs` 写的 ACL 快照，浏览器 localStorage 无法写入该路径 —— **「非 localStorage 假象」的直接证据**。
+3. 切到「工作」页再回设置，`value` 仍为 1（跨页即时生效）。
+4. 终止 `just studio` 进程组：Aster 窗口消失、4325 释放、ACL 文件仍在且内容不变。
+5. 用**完全相同**的命令重启同实例同端口；回读 `value=1`、ACL 仍为 `revision = "1" / value = true`。
+6. 还原开关，ACL 变为 `revision = "2" / value = false`。
+
+### 固化为可复跑用例并完整复跑
+
+手工操作不算 §9 的「用例」，因此把整条流程写成自包含脚本 `specs/f11-desktop-e2e.py`（管理进程组启停、动态查找 AX ref、处理首启、跨页、磁盘核对、重启、回读、还原、异常时还原）。完整复跑结果：
+
+```
+$ timeout 600 python3 specs/f11-desktop-e2e.py
+[1] start f11-live-01 on 4325        initial switch value = 0
+[2] toggle through the real webview   OK  switch is now 1
+[3] verify the Rust-owned ACL         OK  ACL snapshot created
+                                      OK  ACL contains app.power.prevent_sleep_when_busy = true
+[4] cross-page immediate effect       OK  switch still reflects the new value
+[5] exit the real process             OK  Aster window is gone
+                                      OK  port 4325 released
+                                      OK  ACL snapshot survives process exit
+[6] relaunch the same instance
+[7] read back after restart           OK  switch restored from disk as 1
+                                      OK  ACL snapshot unchanged across restart
+[8] restore original value            OK  switch back to 0
+F11_L3: PASS                          (SCRIPT_EXIT=0, 1m16s)
+```
+
+### 为什么算严格达标
+
+`PLAN.md` §4 给 F11 的四项必须断言逐条对应：
+
+| 必须断言 | 证据 |
+| --- | --- |
+| 偏好写入 IPC 回读 | 真 Tauri webview 的 `usePreference` → `preference_commit`，UI `value` 0→1 且 ACL `revision` 递增 |
+| 跨页即时生效 | 步骤 4：切「工作」再回设置仍为 1 |
+| 退出进程后重启从磁盘恢复 | 步骤 5 真进程退出（窗口消失 + 端口释放）→ 步骤 6/7 重启后 UI 与 ACL 双重回读 |
+| 非 localStorage 假象 | ACL 快照由 Rust 写进 native profile，进程退出后仍在；browser localStorage 到不了该路径 |
+
+执行面为 **L3**（真 native host + 真 webview + 真 IPC + 真进程重启），用例可复跑且本次完整通过。**F 层 0→1→2，即 2/17 ≈ 11.8%**；F14 仍是部分覆盖不计入。剩余无用例的 L3 功能从 6 条减为 **5 条**（F06/F09/F12/F13/F15）。
+
+### 收尾
+
+三个端口（4318/4325/4388）全部空闲、无 Aster 残留窗口，临时 `f11-window-probe.spec.ts` 已删；`playwright.connectors.config.ts --list` 仍为 `2 tests in 2 files`。F11 用例是父仓证据目录下的 Python 脚本，不依赖子模块推送。
+
 ## Explicitly not claimed
 
-- **不声称业务功能验证覆盖率 100%**。F 层仅 **F07 一条**严格达标（1/17 ≈ 5.9%），其余 16 条未达标或未核定。
+- **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
 - 不声称 Gate A 达到 70%/95%/100%（正式配置 6/7 config 为 **36.9% FAIL**；合并诊断日志后 **46.5% FAIL**，执行内 70.6%）。
 - 不声称 `composer-audit` 的 **webkit 引擎**有任何结果（102 例未执行）；不声称 chromium 全量那次是正式门禁运行（它用了 8s 超时的诊断配置，仅判定不变）。
 - 不声称把 `expect.timeout` / `actionTimeout` 改成 8s 是正式配置变更；临时诊断 config 已删除。
 - 不声称 Gate B 可测量（UNMEASURABLE）。
-- 不声称用渲染器桩证明 native 行为。（F07 与 F14 部分两条 L3 用例确实通过，见下条；此处仅不认可以桩充数。）
+- 不声称用渲染器桩证明 native 行为。（F07、F14 部分、F11 三条真宿主用例确实通过，见下条；此处仅不认可以桩充数。）
 - 两个恢复的 fixture 已于第四轮提交到父仓 `tests/e2e/`；但**不声称**它们是当前版本重新设计的产物（内容为历史文件原样恢复），也不声称已通过独立代码评审。
 - 不声称零覆盖已消除、不声称发布就绪、不声称未跑过的检查通过。
 - 不声称绕过了 safe-delete 保护；隔离 profile 未被清理。
-- **声称两条 L3 真宿主用例通过**（F07 `1 passed / 37.7s` 有 receipts；F14 部分 `1 passed / 28.3s`，清理后复验 `1 passed / 20.7s`），但**不声称 F14 严格达标**（只覆盖其 4 项必须断言中的 1 项）、不声称单实例验证通过、不声称 F06 或 F11 有任何用例或覆盖（两轮探测均失败并已删除临时 spec）、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 6 条 L3 功能有用例、不声称 F 层达到 100%（仍 1/17）、不声称 Gate A / Gate B 达标。
+- **声称三条真宿主用例通过**：F07（`1 passed / 37.7s`，有 receipts）、F14 部分（`1 passed / 28.3s`，复验 `1 passed / 20.7s`）、F11（`specs/f11-desktop-e2e.py` 完整复跑 `F11_L3: PASS`，8 步全绿）。**F07 与 F11 严格达标（F 层 2/17）**；**不声称 F14 严格达标**（只覆盖 4 项必须断言中的 1 项）、不声称单实例验证通过、不声称 F06 有覆盖、不声称 `desktop-settings` 重启后被重置是产品缺陷（原因未定）、不声称其余 5 条 L3 功能有用例、不声称 F 层达到 100%、不声称 Gate A / Gate B 达标。
 - 不声称 `--stub-runtime` 可用于或已用于 L3 真宿主验证；它只作用于静态 preview 的 L2 套件。
-- 不声称 7 条无用例的 L3 功能已被补齐，也不声称已执行真实安装/更新/DB 迁移/退出重启/系统权限/真模型等破坏性操作——用户虽已授权，本轮在定位到结构性缺口后未继续扩大改动范围。
+- 不声称 5 条无用例的 L3 功能（F06/F09/F12/F13/F15）已被补齐；不声称已执行真实安装/更新通道/DB 迁移/系统权限/真模型等操作。F11 确实执行了**真进程退出并重启**（隔离实例 `f11-live-01`，已还原），但未触碰用户主 profile。
 - 不声称 `apps/studio/tests/e2e/connectors/connector-native.spec.ts` 的修复已在子模块正式入库：它仍在工作树，父仓 gitlink 未 bump（向子模块远程推送需单独授权）。`specs/` 里的固化副本只是内容备份，不等同于正式提交。
-- 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（本轮只做可行性查证，结论是「不成立」）；不声称 F11 已有覆盖。
+- 不声称 Tauri IPC 桥已实现、不声称改过任何产品 Rust 代码（可行性查证结论是「不成立」）。F11 不是靠桥拿下的，而是改用真 Tauri webview 走原生 IPC。

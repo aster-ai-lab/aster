@@ -25,7 +25,9 @@
 | 无 spec 的功能域 | `interactive-coding/`、`document-tools/`、`office/`、`messages/`、`followup/` |
 | 全仓 `matrix.json` | 从未生成（全量矩阵此前未跑过） |
 
-`connector-native.spec.ts` 用隔离 `ASTER_STUDIO_INSTANCE` profile、synthetic `model_server.py`、真实 MCP SDK 与 native host（端口 4598），**不需要真实模型 API**，是唯一符合 L3 定义的用例。
+> 上表是**本日开始时**的静态盘点，保留作为基线。后续新增的真宿主用例：`restart-persistence.spec.ts`（F14 部分）、`specs/f11-desktop-e2e.py`（F11，真 Tauri webview + agent-desktop，四条必须断言全覆盖）。当前严格达标 F07 + F11 = **2/17**。
+
+`connector-native.spec.ts` 用隔离 `ASTER_STUDIO_INSTANCE` profile、synthetic `model_server.py`、真实 MCP SDK 与 native host（端口 4598），**不需要真实模型 API**。另两条真宿主用例是 `restart-persistence.spec.ts`（native host 重启）与 `specs/f11-desktop-e2e.py`（真 Tauri webview + agent-desktop）。
 
 ## F 层 17 条逐条台账
 
@@ -41,7 +43,7 @@
 | F08 | 项目/工作区/侧栏重排固定 | L2 + L3 抽样 | 仅 L2 桩 | 见 Gate A 结果 | 需 L3 抽样（重启后 reorder/pin 仍生效） |
 | F09 | 多标签与窗口编排 | **L3** | **无** | **未覆盖** | 需真窗口 detach、Ctrl+Tab、关最后一个关窗 |
 | F10 | 命令面板/全局搜索/深链 | L2 | L2 桩 | 见 Gate A 结果 | 达 L2 即可 |
-| F11 | 偏好与跨进程持久化 | **L3** | **无** | **未覆盖**（两轮探测） | Playwright 页面无 `__TAURI_INTERNALS__` 写不了 preference；HTTP 直写 `/api/desktop-settings` 虽能落盘但重启后被重置且绕过真实链路。详见 OUTCOME 第四、九轮 |
+| F11 | 偏好与跨进程持久化 | **L3** | **有 1 条**（agent-desktop 脚本） | ✅ **本轮 L3 通过，严格达标** | 真 Tauri webview + 真 IPC + ACL 磁盘快照 + 真进程退出重启；四项必须断言全覆盖。见 OUTCOME 第十一轮 |
 | F12 | 知识库/文件/文档真实字节产物 | **L3** | **无** | **未覆盖** | 需 DOCX/XLSX/PPTX/PDF/PNG 真实字节校验；`office/host-journeys.acl` 自认内存文件边界 |
 | F13 | 首次运行/运行时组件/系统权限 | **L3** | **无** | **未覆盖** | 需真实安装 3 个 runtime 组件、真实系统权限；现有 `first-run-sequence.spec.ts` 是内存桩 |
 | F14 | 更新/退出守卫/单实例 | **L3** | **有 1 条（部分）** | ⚠️ 新 L3 用例通过，未严格达标 | 已验证「重启后旧数据可读 + 落盘」；仍缺更新通道/清单、单实例二次启动、退出守卫 |
@@ -57,21 +59,24 @@
 
 | 口径 | 分母 | 通过 | 失败 | 跳过 | 未执行 | 通过率 | 判定 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| **F 层（业务功能验证）** | 17 | **1** | — | — | — | **5.9%** | **未达成 100%** |
+| **F 层（业务功能验证）** | 17 | **2** | — | — | — | **11.8%** | **未达成 100%** |
 | Gate A（**6/7 config**，正式配置） | 490 | 181 | 40 | 62 | 207 | **36.9%** | FAIL |
 | Gate A（**7 份日志合并**，含 composer-audit chromium 诊断运行） | 490 | **228** | 95 | 62 | 105 | **46.5%** | FAIL（目标 100%） |
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
-| L3 真宿主用例 | **2** | **2** | 0 | 0 | 0 | **100%** | ✅ 两条都 PASS |
+| 真宿主验证用例 | **3** | **3** | 0 | 0 | 0 | **100%** | ✅ F07、F14 部分、F11 全 PASS |
 
 - 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
 - 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。
 - 两次 `--stub-runtime` 全量尝试（16m50s、35m17s）均未完成；根因见 `OUTCOME.md` 第五轮：不是卡住，是失败用例各耗 20–23s 超时累积。
 
-F 层「1」= F07 在真 native host 上通过（stdio/SSE/HTTP 三种 MCP 的真实 ACP turn、安装持久化、restart 后仍在、删除后不再调用）。
+**F 层「2」= F07 + F11**，两条都在真宿主上严格达标：
 
-第六轮又新增并通过了 **F14 的一条 L3 用例**（`restart-persistence.spec.ts`：真进程重启后 `GET /api/agent-sessions` 仍返回同一 session，`sessions.json`/`agents.json` 落盘可读、`usage.sqlite` 非空）。但 §4 给 F14 的「必须断言」共 4 项，这条只覆盖「DB 迁移后旧数据可读」一项，**按 §9 不算严格达标**，故 F 层仍记 1/17 而非 2/17。9 条 L2 功能虽有通过场景，但尚未逐条核定「每条至少一例通过且执行面达标」，不预支为达标；另有 **6 条 L3 功能仍无任何用例**（F06/F09/F11/F12/F13/F15）。
+- F07：真 native host 上 stdio/SSE/HTTP 三种 MCP 的真实 ACP turn、安装持久化、restart 后仍在、删除后不再调用。
+- F11（第十一轮新增）：**真 Tauri webview** 改偏好 → `PreferenceStore` 写 ACL 快照 → 真进程退出 → 重启同实例 → UI 与磁盘双重回读；四项必须断言（IPC 回读、跨页即时生效、重启后从磁盘恢复、非 localStorage 假象）全覆盖，用例可复跑（`specs/f11-desktop-e2e.py`，`F11_L3: PASS`）。
 
-**结构性上限**：即便补齐所有 L2 映射、契约门禁全绿、并修好 F07，F 层最多 **10/17 ≈ 58.8%**。剩下 7 条 L3 功能需要新写产品级真宿主测试，属于开发工作量而非执行次数。
+F14 另有一条 L3 用例通过（`restart-persistence.spec.ts`：真进程重启后 `GET /api/agent-sessions` 仍返回同一 session，`sessions.json`/`agents.json` 落盘可读、`usage.sqlite` 非空），但只覆盖其 4 项必须断言中的 1 项，**按 §9 不算严格达标**，不预支。9 条 L2 功能虽有通过场景，但尚未逐条核定「每条至少一例通过且执行面达标」，不预支为达标；另有 **5 条 L3 功能仍无任何用例**（F06/F09/F12/F13/F15）。
+
+**结构性上限**：即便补齐所有 L2 映射、契约门禁全绿，F 层最多 **10/17 ≈ 58.8%**。剩下 5 条 L3 功能需要新写产品级真宿主测试，属于开发工作量而非执行次数。
 
 ### 授权后修复带来的变化（Gate A，同 3 个 config）
 
