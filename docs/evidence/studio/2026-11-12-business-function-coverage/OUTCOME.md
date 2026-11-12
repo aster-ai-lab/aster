@@ -40,7 +40,9 @@
 | `launch <bundle id>`（去掉 cwd，带全部 env） | `ACTION_FAILED: NSWorkspace failed to launch` |
 | `lsregister -f <Aster.app>` 注册成功后再 launch / 裸名 `Aster` | 仍 `NSWorkspace failed to launch`；`open -a` 同样不产生窗口 |
 
-结论：实例目录下手工生成的 `Aster.app`（bundle id `dev.aster.studio.aster.<instance>`）**无法被 Launch Services 启动**，它需要 `just studio` 通过 `stage-launcher` 输出的 `Studio` 二进制并继承整套环境变量与 runtime descriptor。因此当前能做到的最大化形态是：**`just studio` 负责启动真应用，之后全部测试动作由 agent-desktop 在真窗口上完成**（F11/F13 两条脚本正是如此）。若要求「连启动也必须是 agent-desktop」，需要产品侧提供一个可被 Launch Services 正常启动的标准 app bundle。
+结论：实例目录下手工生成的 `Aster.app`（bundle id `dev.aster.studio.aster.<instance>`）**无法被 Launch Services 启动**，它需要 `just studio` 通过 `stage-launcher` 输出的 `Studio` 二进制并继承整套环境变量与 runtime descriptor。因此**上表三条脚本**的形态是：`just studio` 负责启动真应用，之后全部测试动作由 agent-desktop 在真窗口上完成。
+
+> **第十七轮更新**：用户第二次强调后，用包装 app 方案已让 `agent-desktop launch` 真正拉起真应用（详见文末第十七轮）。但那次引入 `ps` 权限异常与全局窗口清单不稳定，**尚未能完成可视化断言**，故上表三条脚本的启动方式暂未改动，也不把新方案计入覆盖。
 
 ## 口径（不自选分母）
 
@@ -665,6 +667,37 @@ SCRIPT_EXIT=0   (39s)
 - 记录了一条真实的产品缺口，以及富文本 composer 的可复用物理输入序列。
 - 未改任何覆盖计数、未改产品代码。五个端口全空闲、无可见 Aster 窗口。
 
+## 第十七轮：把「agent-desktop 启动应用」真正做出来（启动打通，但 AX 环境受损）
+
+用户第二次强调同一要求，因此不再接受「`just studio` 代劳启动」的折中。改用**可被 Launch Services 启动的包装 app**：`~/Applications/AsterVisualE2E.app`（bundle id `dev.aster.studio.visual-e2e.launcher`），`Contents/MacOS/AsterVisualE2E` 是一段 shell，由 `agent-desktop launch <bundle id> --env ... --activate` 拉起，脚本内部 `exec just studio`。
+
+### 逐层突破（每一步都有日志）
+
+| 步骤 | 现象 | 修法 |
+| --- | --- | --- |
+| bundle 放 `/tmp` | `APP_NOT_FOUND: Application bundle was not found`（`lsregister -f` 有记录但 NSWorkspace 不认） | 移到 `~/Applications` 并重新注册 |
+| 首次启动 | `launch` 报 `ACTION_FAILED`，但 `launcher.log` 证明脚本**已执行**：`studio-shell: node not found`，PATH 只有 `/usr/bin:/bin:...` | 脚本里 `export NODE=/opt/homebrew/bin/node`（v26.8.1，满足 >=24.12）并补全 PATH |
+| 第二次 | `document_assets.py: ValueError: unsupported document runtime target` | 加诊断行发现 **`WRAPPER PY darwin x86_64`** —— NSWorkspace 把包装 app 跑在 **Rosetta/x86_64**，`PDFIUM` 只有 `("darwin","arm64")` |
+| 第三次 | 脚本开头 `exec /usr/bin/arch -arm64 "$0"` | ✅ `WRAPPER PY darwin arm64`，`document_assets.py` 通过，cargo 编译完成，日志出现 `studio-webview-url http://127.0.0.1:4325/...`、`studio-main-window focused=true visible=true`、`studio-result-save receiver-ready`，`Studio` 进程（pid 59541）实际在跑 |
+
+**结论一（正面）**：`agent-desktop launch` 确实把真应用完整拉起来了，启动链不再是 `just studio` 子进程代劳。这推翻了第十六轮「四次实测均失败、无法启动」对**实例自带 bundle** 的结论——那个结论仍成立，但通过包装 app 已绕开。
+
+**结论二（阻塞）**：`launch` 本身返回 `APP_UNRESPONSIVE: NSWorkspace and libproc returned different launch identities` —— `arch -arm64` 的 re-exec 使进程身份不一致。更严重的是此后系统开始拒绝进程枚举：
+
+```
+list-apps → failure: "ps: Operation not permitted (os error 1)"
+list-windows / snapshot → TIMEOUT: global_window_inventory_unstable,
+                          global_window_owner_churn
+```
+
+连 Bash 里的 `ps` 也变成 `operation not permitted`（沙箱内外均如此），`session gc` 与等待 25s 均未恢复。**桌面驱动的全局窗口清单当前不可用，因此本轮无法完成任何可视化断言**。
+
+### 判定与清理
+
+- **不计入任何覆盖、不算完成的用例**：只做到了「启动」，没做到「可视化断言」。按新口径 F 层仍 **1/17**（仅 F11）。
+- 下一步应改 `Info.plist` 加 `LSArchitecturePriority = (arm64)`，让 Launch Services 直接以 arm64 启动，从而**去掉 `arch -arm64` re-exec**，避免进程身份变动与 AX churn；并等 `ps` 权限恢复后再验证窗口归属与断言。
+- 已清理：`~/Applications/AsterVisualE2E.app` 移除、包装脚本仅留在 `/tmp/aster-visual-e2e/`、Studio/dev server 进程已停、4318/4325/4326/4327/4388 全空闲。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -685,3 +718,4 @@ SCRIPT_EXIT=0   (39s)
 - 不声称 F13 已补成严格达标；设置搜索「依赖」无法暴露被隐藏的 `/settings/dependencies` 路由，另两个 optional 组件在测试侧无安装入口。统一回归只证明 4 条既有用例未退化，**不声称本轮改变了任何覆盖计数**。
 - **不声称 Playwright + runtime 桩的套件符合用户新增的 agent-desktop 可视化 E2E 口径**；不声称 `agent-desktop launch` 能启动当前实例 bundle（四次实测均失败）；不声称 Gate A 补跑的 142 passed 属于端到端测试成果。
 - **不声称 F16 已覆盖**：`draft-restart-visual-e2e.py` 是第 3 条符合新口径的可视化 E2E，但观察结果是 `NOT_PERSISTED`，属负面发现；不声称通过放宽断言把它变成通过用例。
+- **不声称第十七轮完成了可视化 E2E 用例**：包装 app 让 `agent-desktop launch` 拉起了真应用，但 `launch` 返回 `APP_UNRESPONSIVE`、随后 `ps` 被系统拒绝导致窗口清单超时，**断言环节未完成**；不声称该方案已可复跑、不声称它改变任何覆盖计数。
