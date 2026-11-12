@@ -65,7 +65,7 @@
 | Gate B（页面 × 组件） | 1522 | — | — | — | — | **UNMEASURABLE** | 无合规 inventory |
 | 真宿主验证用例 | **4** | **4** | 0 | 0 | 0 | **100%** | ✅ F07、F11 达标；F14、F13 部分覆盖 |
 
-> **新口径（用户 15:06 追加）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。按此口径，上表 4 条里只有 **F11、F13 两条**符合（agent-desktop 在真 Tauri 窗口上驱动），F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**；F 层因此为 **1/17**（仅 F11 严格达标，F13 部分符合）。启动环节仍由 `just studio` 完成——`agent-desktop launch` 四次实测均无法启动实例 bundle，详见 `OUTCOME.md`「口径补充」。本轮 Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。
+> **新口径（用户 15:06 追加）**：测试必须是 agent-desktop 启动应用的可视化端到端测试。按此口径，上表 4 条里只有 **F11、F13 两条**符合（agent-desktop 在真 Tauri 窗口上驱动），F07/F14 与全部 Gate A 套件是 Playwright + runtime 桩、**不计入**；F 层因此为 **1/17**（仅 F11 严格达标，F13 部分符合）。第十六轮又新增第 3 条符合形态的 `specs/draft-restart-visual-e2e.py`（F16 抽样），但结果为 `NOT_PERSISTED` 负面发现、**不计覆盖**。启动环节仍由 `just studio` 完成——`agent-desktop launch` 四次实测均无法启动实例 bundle，详见 `OUTCOME.md`「口径补充」。本轮 Gate A 补跑的 `142 passed / 10 failed / 55 skipped` 同样不计入。
 
 - 6 config 官方门禁：`pass=181 fail=40 skip=62 executed=221 unexecuted=207`，执行内 81.9%，`structural ceiling=45.1%`，`deduped=3`。
 - 7 份日志合并：`pass=228 fail=95 skip=62 executed=323 unexecuted=105`，执行内 **70.6%**，`structural ceiling=65.9%`，`deduped=3`。**第 7 份日志来自诊断配置（`expect.timeout` 与 `use.actionTimeout` 均 8s），不是正式门禁运行**；其通过/失败判定未改变（正式配置下通过用例最慢 3.2s、失败用例 20–23s），但口径须标注。剩余未执行的 105 例几乎全是 `composer-audit` 的 **webkit 引擎**（102 例）。

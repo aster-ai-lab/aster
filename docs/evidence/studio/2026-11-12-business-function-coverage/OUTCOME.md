@@ -19,6 +19,7 @@
 | --- | --- | --- | --- |
 | `specs/f11-desktop-e2e.py`（F11 达标） | `just studio` 子进程 | **agent-desktop** 在真 Tauri 窗口上 snapshot/find/click/toggle | ✅ 动作符合；启动环节见下 |
 | `specs/f13-first-run-e2e.py`（F13 部分） | `just studio` 子进程 | **agent-desktop** 同上 | ✅ 动作符合；启动环节见下 |
+| `specs/draft-restart-visual-e2e.py`（F16 抽样，第十六轮） | `just studio` 子进程 | **agent-desktop** `focus` + `type --headed` 物理键盘、真窗口回读 | ✅ 动作符合；结果为负面发现，不计覆盖 |
 | `connector-native.spec.ts`（F07） | `nativeHarness` + 静态 preview | **Playwright 浏览器 + runtime 桩** | ❌ 渲染器桩，不是可视化 E2E |
 | `restart-persistence.spec.ts`（F14 部分） | 同上 | **Playwright 浏览器 + HTTP 断言** | ❌ 同上 |
 | Gate A 全部 7 个 config | `e2e-preview.mjs` + `--stub-runtime` | Playwright 浏览器 | ❌ 全部不计入 |
@@ -621,6 +622,49 @@ F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图�
 
 4318/4325/4326/4388 全部空闲，无可见 Aster 窗口；`playwright.connectors.config.ts --list` 保持 `2 tests in 2 files`。
 
+## 第十六轮：新增第 3 条 agent-desktop 可视化 E2E（草稿跨进程保留 → 负面发现）
+
+按用户新口径写一条**全新的可视化 E2E**，目标选 F16 的 L3 抽样点「杀进程重启后草稿保留」：纯 UI 可见、agent-desktop 可直接断言、此前没做过。脚本 `specs/draft-restart-visual-e2e.py`。
+
+### 一个可复用的输入技巧
+
+composer 是富文本编辑器，**AX 语义输入全部被拒**：
+
+| 尝试 | 结果 |
+| --- | --- |
+| `type <ref> token`（headless 语义） | `ACTION_FAILED`，value 仍 `""` |
+| `set-value <ref> token` | `ACTION_FAILED`，value 仍 `""` |
+| `focus <ref>` → 直接 `type --headed` 用旧 ref | `STALE_REF`（focus 使旧 snapshot ref 失效） |
+| **`focus` → 重新 `find` 取 ref → `type --headed`** | ✅ `delivered_verified`，value = `ASTERDRAFT...`，UI 文本可见 |
+
+`--headed` 是物理键盘输入（不涉及坐标或鼠标），仍属 agent-desktop 可视化操作，符合 `PLAN.md` S4 约束。
+
+### 完整复跑结果
+
+```
+$ timeout 600 python3 specs/draft-restart-visual-e2e.py
+[1] start f11-live-01 on 4325
+[2] type draft ASTERDRAFT468427 via agent-desktop physical keyboard
+    composer value = 'ASTERDRAFT468427\n'
+  OK  draft visible in the real window
+[3] kill the real process
+[4] relaunch the same instance
+[5] read the composer back in the real window
+    composer value = ''
+DRAFT_RESTART: NOT_PERSISTED
+SCRIPT_EXIT=0   (39s)
+```
+
+**判定**：新建任务 composer 的草稿**不跨进程保留**。这是真实的产品行为（输入确实进了编辑器，AX 与 UI 都能读到；重启后清空），不是测试手法问题。`PLAN.md` 给 F16 的 L3 抽样断言「杀进程重启后草稿保留」在当前产品下**未实现**。
+
+按 fail-closed，**没有把断言改成「重启后草稿为空」来凑一个 PASS**；脚本输出的是观察结果，明确标注 `NOT counted as F16 coverage`。F 层按新口径仍 **1/17**（仅 F11 严格达标），F16 不计入。
+
+### 净收益
+
+- 符合用户新口径的 agent-desktop 可视化 E2E 脚本从 **2 条增至 3 条**（F11、F13 部分、本轮 F16 抽样）。
+- 记录了一条真实的产品缺口，以及富文本 composer 的可复用物理输入序列。
+- 未改任何覆盖计数、未改产品代码。五个端口全空闲、无可见 Aster 窗口。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -640,3 +684,4 @@ F09（标签栏未渲染 tab 控件）与 F15（无入口 + 物理交互截图�
 - 不声称 F09 或 F15 有任何用例或覆盖；两轮都只确认了「当前真窗口没有可驱动的入口」，未找到触发前置状态的方法。不声称剩余 4 条 L3 的缺口能靠增加测试执行次数解决。
 - 不声称 F13 已补成严格达标；设置搜索「依赖」无法暴露被隐藏的 `/settings/dependencies` 路由，另两个 optional 组件在测试侧无安装入口。统一回归只证明 4 条既有用例未退化，**不声称本轮改变了任何覆盖计数**。
 - **不声称 Playwright + runtime 桩的套件符合用户新增的 agent-desktop 可视化 E2E 口径**；不声称 `agent-desktop launch` 能启动当前实例 bundle（四次实测均失败）；不声称 Gate A 补跑的 142 passed 属于端到端测试成果。
+- **不声称 F16 已覆盖**：`draft-restart-visual-e2e.py` 是第 3 条符合新口径的可视化 E2E，但观察结果是 `NOT_PERSISTED`，属负面发现；不声称通过放宽断言把它变成通过用例。
