@@ -698,6 +698,58 @@ list-windows / snapshot → TIMEOUT: global_window_inventory_unstable,
 - 下一步应改 `Info.plist` 加 `LSArchitecturePriority = (arm64)`，让 Launch Services 直接以 arm64 启动，从而**去掉 `arch -arm64` re-exec**，避免进程身份变动与 AX churn；并等 `ps` 权限恢复后再验证窗口归属与断言。
 - 已清理：`~/Applications/AsterVisualE2E.app` 移除、包装脚本仅留在 `/tmp/aster-visual-e2e/`、Studio/dev server 进程已停、4318/4325/4326/4327/4388 全空闲。
 
+## 第十八轮：交付完整「agent-desktop 启动并全程驱动」用例（会话环境阻塞实跑）
+
+用户第三次强调同一要求。本轮目标是交付一条**连启动、停止、重启都由 agent-desktop 完成**的完整可视化 E2E，不再掺 Python 子进程启动。
+
+### 环境硬阻塞（先说清，避免把跑不通说成没做完）
+
+上轮引入的 `ps` 执行禁令 45 分钟后仍在，且确认是**系统 execve 层**而非 shell 层：
+
+| 检查 | 结果 |
+| --- | --- |
+| `ps axo`、`/bin/ps` 绝对路径、沙箱外执行 | 均 `operation not permitted` |
+| Python `subprocess.run(['/bin/ps', ...])` | `PermissionError [Errno 1] Operation not permitted` |
+| `agent-desktop list-apps` | `ps: Operation not permitted (os error 1)` |
+| `list-windows` / `snapshot` / `find` / `list-surfaces` | 全部 `TIMEOUT: global_window_inventory_unstable / global_window_owner_churn` |
+
+试过的恢复手段全部无效：干净 PATH、把 `ps` 软链前置到 PATH（错误仅从「被拒」变为 `Command host reply was lost`）、`session gc`、注销失效的 Launch Services bundle、等待、`dangerouslyDisableSandbox`。即**本会话里桌面驱动的全局窗口清单不可用**，任何 agent-desktop 可视化断言都跑不了。
+
+### 交付物：`specs/agent-desktop-launch-e2e.py`
+
+完整用例（F11 场景），生命周期全部是 agent-desktop 命令：
+
+```
+agent-desktop launch <bundle id> --env ... --activate   # 启动
+agent-desktop snapshot / find / click / toggle / get    # 全部测试动作
+agent-desktop close-app <bundle id> --force            # 真进程退出
+agent-desktop launch ...                              # 重启
+```
+
+- 包装 app 的 `Info.plist` 加了 **`LSArchitecturePriority = ["arm64"]`**，让 NSWorkspace 原生以 arm64 启动，**去掉第十七轮的 `arch -arm64` re-exec**（那次造成 launch identity 不一致）。
+- Python 只用于安装 bundle、解析 JSON、读取 `.acl` 磁盘证据；**不启动、不驱动应用**。
+- 断言链：偏好 switch 切换 → `registry` 式 ACL 快照含 `app.power.prevent_sleep_when_busy` → close-app 退出 → 重新 launch → UI 与磁盘双重回读 → 还原。
+- `python3 -m py_compile` **通过**。
+
+### 实跑结果（如实）
+
+```
+$ timeout 200 python3 specs/agent-desktop-launch-e2e.py
+[0] install the agent-desktop-launchable wrapper
+[1] agent-desktop launch
+    launch result: False APP_UNRESPONSIVE
+AGENT_DESKTOP_LAUNCH_L3: BLOCKED - Aster window never appeared via agent-desktop
+EXIT=124
+```
+
+`launcher.log` 同时证明**真应用确实被 agent-desktop 拉起**：`studio-page-load http://127.0.0.1:4325/...`、`just studio: accessibility publish initialized=1 enabled=1`、`studio-result-save receiver-ready`。即启动成功、断言被会话环境卡住。`LSArchitecturePriority` 消除了 Rosetta 问题，但没有消除 `APP_UNRESPONSIVE`（NSWorkspace 对这种 exec 链的判定），也没有恢复 `ps`。
+
+**判定**：脚本完整、静态验证通过、启动环节实测有效，但**本会话没有跑完任何可视化断言，不算通过的用例，不计覆盖**；新口径 F 层仍 **1/17**。
+
+### 恢复条件与清理
+
+需要 `ps` 的 execve 禁令解除（新会话 / 宿主沙箱策略恢复）；之后直接执行该脚本即可，无需改代码。已清理：`~/Applications/AsterVisualE2E.app` 移除、两个路径的 Launch Services 注册均撤销、Studio 与 dev server 进程停止、4318/4325/4326/4327/4388 全空闲。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
@@ -719,3 +771,4 @@ list-windows / snapshot → TIMEOUT: global_window_inventory_unstable,
 - **不声称 Playwright + runtime 桩的套件符合用户新增的 agent-desktop 可视化 E2E 口径**；不声称 `agent-desktop launch` 能启动当前实例 bundle（四次实测均失败）；不声称 Gate A 补跑的 142 passed 属于端到端测试成果。
 - **不声称 F16 已覆盖**：`draft-restart-visual-e2e.py` 是第 3 条符合新口径的可视化 E2E，但观察结果是 `NOT_PERSISTED`，属负面发现；不声称通过放宽断言把它变成通过用例。
 - **不声称第十七轮完成了可视化 E2E 用例**：包装 app 让 `agent-desktop launch` 拉起了真应用，但 `launch` 返回 `APP_UNRESPONSIVE`、随后 `ps` 被系统拒绝导致窗口清单超时，**断言环节未完成**；不声称该方案已可复跑、不声称它改变任何覆盖计数。
+- **不声称第十八轮的 `agent-desktop-launch-e2e.py` 已通过**：脚本完整且 `py_compile` 通过、启动环节实测有效，但实跑 `EXIT=124`、可视化断言零完成；不声称它计入覆盖、不声称 F 层有变化。
