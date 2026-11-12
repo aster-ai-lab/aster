@@ -879,6 +879,25 @@ killing host 34235
 
 **结论**：从「宿主限制无解」推进到「只差一次系统授权」。给包装 app 授予辅助功能后，先 `just build-studio` + `e2e-fresh-build --verify`，再跑 `specs/agent-desktop-launch-e2e.py` 即可。本轮**未跑完整可视化断言、未新增用例、覆盖计数未变**，新口径 F 层仍 **1/17**。
 
+## 第二十三轮：把「授权后一键跑完」的路径铺好
+
+上一轮定位到只差一次 TCC 授权。本轮不再等，把授权前能做的全部做完：
+
+1. **重建并注册包装 app** `~/Applications/AsterVisualE2E.app`（bundle id `dev.aster.studio.visual-e2e.launcher`，`LSArchitecturePriority=arm64`），其可执行文件已固化为 `specs/visual-e2e-launcher.sh`。它会：在非受限上下文杀掉旧 host → 触发 `list-apps` 让新 host 继承该上下文 → 运行 `specs/agent-desktop-launch-e2e.py` → 把全过程写到 `/tmp/aster-visual-e2e/e2e-result.txt`（含 `E2E_EXIT`）。
+2. **打开授权页**：`open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"`，已确认 System Settings 在运行。
+3. **复查授权状态**：在包装 app 上下文重启 host 后 `agent-desktop permissions` 仍报 `accessibility: denied`，`list-windows` 仍超时 —— 用户尚未勾选，`PERM_DENIED` 未解除。
+4. **恢复环境**：杀掉无权限 host、从 WorkBuddy 上下文重建，`permissions` 回到 `accessibility: granted` / `screen_recording: granted`；五个端口全空闲。
+
+### 剩下需要用户做的一次性动作
+
+> 系统设置 → 隐私与安全性 → **辅助功能** → 勾选 **AsterVisualE2E**（若列表里没有，用 `+` 添加 `~/Applications/AsterVisualE2E.app`）→ 然后 `open -a "$HOME/Applications/AsterVisualE2E.app"` 或在访达双击。结果读 `/tmp/aster-visual-e2e/e2e-result.txt`。
+
+TCC 授权按负责进程判定且**不能由程序自动授予**，所以这一步无法代劳；`tccutil` 只能重置不能添加。授权后新 host 同时具备「能执行 `/bin/ps`」与「有 AX 权限」，第二十二轮验证过的 `list-apps` 成功路径即可覆盖 `snapshot` / `find` / `toggle`，完整 E2E 就能跑通。
+
+### 状态
+
+本轮**未跑完整可视化断言、未新增用例、未改覆盖计数**；新口径 F 层仍 **1/17**。构建基线在提交后按既有流程重新对齐。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
