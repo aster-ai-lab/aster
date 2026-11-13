@@ -1735,6 +1735,58 @@ attempts 145-152, last_code APP_UNRESPONSIVE
 - 分片方案结论**不变**（N=20~24、job 超时 ≥15 分钟、`isolate:false` 维持否决）：分片解决超时，不解决这 21 个真失败。
 - **F 层仍 1/17 / 2/17**；P0' 未执行、无 PASS、不计入。无产品源码/测试改动、无覆盖数字变化、无子模块改动。
 
+## 第四十四轮：修掉 1 类纯技术性失败（`Intl.Locale` 兼容），8 条转绿
+
+延续「继续推进测试」。第四十三轮把 21 个真失败按首错分类后，其中有**不需要产品意图决策**的纯技术性问题，本轮修掉一类。
+
+### 根因（有实据，不猜）
+
+`LocalUsageSettings.test.tsx` 的 8 条失败全部是 `TypeError: locale.getWeekInfo is not a function`。追到 `src/renderer/utils/time.ts:40` 的 `getLocaleFirstDayOfWeek()`：
+
+```ts
+const locale = new Intl.Locale(...) as Intl.Locale & { getWeekInfo(): { firstDay: number } }
+return locale.getWeekInfo().firstDay % 7
+```
+
+实测当前 V8 / Node `v22.22.2`：
+
+```
+new Intl.Locale('en-US').getWeekInfo  -> undefined
+new Intl.Locale('en-US').weekInfo    -> { firstDay: 7, weekend: [6,7], minimalDays: 1 }
+Intl.Locale.prototype 属性：... textInfo, timeZones, weekInfo
+```
+
+即 **V8 暴露的是 `weekInfo` getter，不是规范定稿的 `getWeekInfo()` 方法**；产品代码只假设了后者，jsdom 环境下渲染用量热力图/分布图就抛错。这是标准 API 两种实现形态的兼容问题，不是产品行为变更、也不需要判断 UI 改名。
+
+### 修复（子模块 `57e57d1a94`，已推）
+
+`time.ts` 改为优先 `getWeekInfo?.()`、回退 `weekInfo?.firstDay`、两者皆无时按 Intl 的 `7`（周日）降级。`7 % 7 = 0` 对应 `Date#getDay` 的周日基准。语义不变，实测：
+
+| locale | `weekInfo.firstDay` | `getLocaleFirstDayOfWeek` | 既有断言 |
+| --- | --- | --- | --- |
+| `en-US` | 7 | 0 | 0 ✓ |
+| `zh-CN` | 1 | 1 | 1 ✓ |
+| `ja-JP` | 7 | 0 | — |
+| `de-DE` | 1 | 1 | — |
+
+### 验证（实测）
+
+| 检查 | 结果 |
+| --- | --- |
+| `vitest run --project renderer time.test.ts + LocalUsageSettings.test.tsx + UsageHeatmap.test.ts` | **3 passed (3)**，EXIT 0；**独立复跑同样 3/3 EXIT 0** |
+| `oxlint --deny-warnings src/renderer/utils/time.ts` | **0 warning / 0 error** |
+| `git diff --check` | OK |
+| `just studio-land-check` | **EXIT 0**（clean / delivery commits clean） |
+
+**21 个已知失败文件隔离复跑对比**：修复前 `0/21` 通过 → 修复后 `2/21`。其中 `LocalUsageSettings.test.tsx`（**8 条失败**）是本次修复的确定收益；`preview.test.tsx` 也转绿，但它原报的是 i18n 文本 `workbench.feature.pdf.tools.workspace.office.layout_error` 找不到、与本次改动无关，判为 flaky，**不计入收益**。
+
+### 判定
+
+- 修复 1 类纯技术性失败，**8 条断言转绿**；20 个文件 / 其余失败仍在，多为 AX 名称或 i18n key 与当前产品不符，需产品侧确认，按 AGENTS.md 未改。
+- **未放宽任何断言、未删测试、未改判定口径**。
+- **F 层仍 1/17 / 2/17**：这是 renderer 单元测试修复，按用户 15:06 口径不计入 F 层。
+- 父仓 gitlink `e710d4a773 → 57e57d1a94` 已 bump（land discipline 全流程）。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
