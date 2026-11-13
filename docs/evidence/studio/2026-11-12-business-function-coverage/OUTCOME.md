@@ -1547,6 +1547,45 @@ Fail-closed 设计：
 - **F 层仍 1/17 / 2/17**。解锁后需连续两次独立 `F01_P0_PRIME: PASS`，才按 §10 的合理假设把 MATRIX 改为 2/17；若断言 B 长期 `INCOMPLETE`，则维持 1/17 并如实标注卡点。
 - 无覆盖数字变化、无产品源码改动、无子模块改动。
 
+## 第四十轮：验证 Lyon 的 `2cb736721`，发现 1 例时序 flaky（记录不修）
+
+本轮不空等 host，改为验证 Lyon 08:47 提交的 `2cb736721`（`fix(test): resolve all 16 TUI E2E failures`，含 9 个文件、+149/-140）。**该 commit 不是本任务改动，只做只读验证，未修改任何源码或测试。**
+
+> 环境说明：工作树尚有 2 个未提交的 `crates/code/core` 改动（`stream.rs`、`executor_tools.rs`），因此结果反映「commit + WIP」的混合状态，不是纯 commit 状态。
+
+### 实测命令与结果
+
+```
+cargo test --locked -p aster --test cli_update --test env_manager \
+                     -p aster-acp --test v912_seam
+```
+
+| 目标 | 结果 |
+| --- | --- |
+| `aster --test cli_update` | **10 passed / 0 failed**（25.71s） |
+| `aster --test env_manager` | **38 passed / 0 failed / 1 ignored**（54.22s） |
+| `aster-acp --test v912_seam` | **9 passed / 1 FAILED / 1 ignored**（7.60s），整体 `CARGO_EXIT=101` |
+
+失败用例：`v912_readonly_git_parallel_commit_opens_the_gate`，panic 于 `crates/code/acp/tests/v912_seam.rs:1263`：
+`a foreign concurrent write must open the completion gate` —— 期望「并发写入触发 completion gate 报错」，但 `say()` 返回了 `Ok(...)`，说明 gate 未触发。
+
+### 根因：时序敏感，不是产品缺陷、也不是该 commit 未修好
+
+- 该测试**正是 `2cb736721` 改动的**（`v912_seam.rs` +31/-9，`git log -S` 命中同一 commit）。
+- 用例结构是后台 committer 线程 `sleep(Duration::from_millis(300))` 后写 `guest.txt` 并 commit，主线程同时 `say(...)`；靠**固定 sleep** 制造并发窗口。
+- 单独精确复跑 **2 次全 PASS**（`--exact --nocapture`，6.19s / 5.51s，均 EXIT 0）。
+
+判定：批量跑时 3 个测试目标并行、机器负载高，`say()` 抢在 300ms 写入之前完成，并发窗口没形成 → gate 未被触发。属于**固定 sleep 造并发的固有竞态**，单跑时序对得上就通过。
+
+### 记录不修
+
+按 AGENTS.md「记录但不顺手修、不扩大范围」，且这是 Lyon 的测试改动：**不改任何代码**。建议（留给该 commit 的 owner）：把固定 `sleep(300ms)` 换成同步屏障 / channel 握手，让「并发写已发生」成为确定事件，而不是靠时间竞争；或把该用例标记为串行执行。在此之前，批量/CI 场景仍可能偶发这一例失败。
+
+### 状态
+
+- 本轮**无源码/测试改动**、无覆盖数字变化（F 层仍 1/17 / 2/17）、无子模块改动、无推送。
+- 顺带复核：`/tmp/aster-visual-e2e/host-recheck.json` 仍是 08:39 旧回执，GUI 阻塞未解除。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
