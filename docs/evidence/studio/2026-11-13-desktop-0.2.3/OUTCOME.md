@@ -251,6 +251,62 @@ node apps/web/scripts/build_releases.mjs --check
 
 `desktop-stable` 滚动 channel 的 `Aster-darwin-aarch64-v0.2.3.zip` 属于另一条链路（`release-aster-desktop.yml`），需单独触发该 workflow；网站 desktop.macos 只取两者中版本更高者，本轮不改动该 channel。
 
+## 内置 TUF 信任根后重新构建签名 DMG（19:33 起）
+
+用户要求「重新构建新的签名 dmg」，按上一轮确认的方案理解为：**先把 TUF bootstrap root 内置进安装包（解决首启必须联网 GitHub raw 的失败），再重新打包**。若只想重签内容不变的包，本次改动可回退。
+
+### 改动（子模块 `944864f277`，已推 studio main；父仓 `78fb7bade` bump gitlink）
+
+| 文件 | 改动 |
+| --- | --- |
+| `scripts/package_runtime_components.py` | 新增 `bundle_official_registry_root()`：把 `plugins/registry/metadata/root.json` 复制为 `Contents/Resources/official-plugins-root.json`，**先校验 sha256 等于 ACL pin，不一致即构建失败** |
+| `src-tauri/src/runtime_components.rs` | 新增 `bundled_registry_root()`；`bundled_official_registry()` 把 `TrustedRegistry::new` 的第 4 参数从 `None` 改为 `Some(path)`；文件缺失时仍回退 `None`（兼容旧包联网路径） |
+| `scripts/tests/test_bundled_registry_root.py`（新） | 3 个 hermetic case：仅复制 pin 匹配的文件、hash 不匹配拒绝、源文件缺失拒绝 |
+| `src-tauri/src/runtime_components_tests.rs` | 1 个 case：只有 regular file 才被认作内置根 |
+
+**安全不降级**：信任锚仍是 `official-plugins.acl` 里的 `root_sha256`；`load_trusted_root()` 对读到的字节执行 `verify_root_bytes()`，篡拒绝。TUF metadata/targets 校验与 root 轮换不变。`delivery_manifest required_files()` 未改，因 `validate()` 只校验列表内路径，且实测该资源已被 `studio-delivery.json` 自动封存。
+
+### 验证
+
+| 检查 | 结果 |
+| --- | --- |
+| Python 新测 / 既有 registry 测 | **3/3 OK**、**2/2 OK** |
+| `cargo check --locked -p aster-studio --lib` | **EXIT 0**（139 个既有 warning） |
+| `cargo clippy --locked -p aster-studio --lib --no-deps` | **EXIT 0**；带 `-D warnings` 报 353 个既有问题，**指向本次改动文件 0 个** |
+| `cargo fmt --all -- --check` | 既有失败；**本次改动文件 0 diff** |
+| `git diff --check` | OK |
+| `cargo test -p aster-studio --lib` | ⚠️ **无法编译**：仓库既有 5 个 `include_bytes!` fixture 缺失（如 `apps/api/vendor/web/public/cases/acp-cloud-agent.aix`），与本次改动无关，单独标注 |
+| `just studio-land-check` | **两次 EXIT 0**；gitlink `e7afbf20c9a8 → 944864f2775f` |
+
+### 集成验证（构建后实测）
+
+```
+package-host.sh  -> HOST_EXIT=0（16m05s，Cargo release 4m47s）
+package-dmg.sh   -> DMG_EXIT=0
+```
+
+- `.app/Contents/Resources/official-plugins-root.json` 1,567 B，sha256 `e1cf8be6…9b`
+- **三方哈希一致**：ACL pin = bundle 文件 = 仓库 `root.sha256` = `e1cf8be656c072939721b765eef12a597c668fe9c33cc0de2379370d3879ae9b`
+- `studio-delivery.json` 已封存该资源（`{'sha256': 'e1cf8be6…', 'size': 1567}`）
+- `.app` `codesign --verify --deep --strict` **EXIT 0**
+- **挂载 DMG 到 `/tmp/aster-visual-e2e/dmg-mnt` 复核**：内置根文件存在、sha 一致、manifest 封存为真。（首次挂 `/Volumes` 时因沙箱禁止读取该路径得到「文件不存在」的假象，改用 `/tmp` 自建挂载点后确认无误；残留挂载已 eject。）
+
+### 最终产物（`dist/`）
+
+| 文件 | 说明 |
+| --- | --- |
+| `aster_0.2.3_aarch64.dmg` | 138M，按 versioned release 规范命名并重新 Developer ID 签名；SHA256 `7f1ddf864932de9f171c2df3df42b33f1aae5ead29e35a32243cf2f2b66a4319` |
+| `aster_0.2.3_aarch64.dmg.sha256` | 相对名格式；在 `dist/` 内 `shasum -a 256 -c` → **OK** |
+| `Aster-darwin-aarch64-v0.2.3.zip` | 134M，从新 `Aster.zip` 复制；`desktop_release_manifest.py generate/check` 均 **EXIT 0** |
+
+`codesign --verify --strict` **EXIT 0**，`Identifier=aster_0.2.3_aarch64`，Authority = Developer ID Application: Lijin Zhu (5L9P7TS6DM)。
+
+### 仍未解决 / 未改动
+
+- ⚠️ `spctl --assess` 仍 **`rejected / Unnotarized Developer ID`**：Apple `403 A required agreement is missing or has expired` 未解除，keychain 无备用公证凭证。按 `v0.2.2` 的「签名 + 公证 + staple」标准尚未完全达标。
+- `package-dmg.sh` 末尾仍报 `dirty worktree — local artifact only, not releasable`，原因是**用户自己的工作树 WIP** `scripts/publish-aster-cli.sh`（19:50，收窄 CLI 发布的 dirty 检查），与本次改动无关，**未提交、未还原、未触碰**。
+- 未上传、未创建 release、未触发网站部署；父仓 `78fb7bade` + 本证据 commit 未推送。
+
 ## Explicitly not claimed
 
 - **未触发** `release-aster-desktop.yml`，**未构建**发布用的 `.zip`，**未上传/覆盖** `desktop-stable` 的任何资产，未创建新 tag 或 GitHub Release。
