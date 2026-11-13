@@ -1,0 +1,10 @@
+{
+  "status": "BLOCKED_EXTERNAL",
+  "round": 19,
+  "provider": "DeepSeek from user configuration",
+  "httpStatus": 402,
+  "reason": "Insufficient Balance",
+  "acpErrorCode": -32603,
+  "remainingRounds": 6,
+  "originalSuiteAccepted": false
+}

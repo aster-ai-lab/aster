@@ -1,0 +1,180 @@
+{
+  "status": "PASS",
+  "harness": "aster",
+  "suite": "long",
+  "model": "deepseek-flash",
+  "image": "docker.io/library/krun-base@sha256:e59b8450a06b2f1caf2d6eff1274d517b468f916e4fadbfbb56dddba3ba14af2",
+  "seconds": 3032.57,
+  "cases": [
+    {
+      "id": "L4-1",
+      "status": "PASS",
+      "message": "complex coding, 30 minutes of fresh input, 24 turns and at least 50 real tool calls",
+      "detail": {
+        "seconds": 2527.433,
+        "turns": 25,
+        "toolCalls": 193,
+        "batches": 312,
+        "rounds": 24
+      },
+      "ts": "2026-11-12T02:06:11Z"
+    },
+    {
+      "id": "L4-2",
+      "status": "PASS",
+      "message": "persisted ACP session and remembered context restore in a fresh KBox execution",
+      "detail": {
+        "method": "session/load",
+        "previousExecution": "a4a028e2-6ad9-4cb4-bdf7-1e8066c73b1d",
+        "execution": "8ae9a6d4-3527-427c-83d9-fa80c9e33aee"
+      },
+      "ts": "2026-11-12T02:08:57Z"
+    },
+    {
+      "id": "L4-3",
+      "status": "PASS",
+      "message": "external Unicode files, binary hashes, prior outputs and private resource cleanup",
+      "detail": {
+        "binaryBytes": 16777216,
+        "binarySha256": "3f6761a11c9089353e49abe528397659c6eb328d6ee0ac3fbe6d74ff940c9e86",
+        "retainedReports": 24,
+        "executions": [],
+        "volumes": []
+      },
+      "ts": "2026-11-12T02:09:04Z"
+    }
+  ],
+  "receipts": [
+    {
+      "label": "long",
+      "available": {
+        "schema": "krun.instance.v1",
+        "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+        "name": "task-acceptance",
+        "workspace": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/long-tasks/\u5de5\u4f5c \u533a",
+        "desiredState": "up",
+        "observedState": "available",
+        "harness": {
+          "id": "aster",
+          "version": "0.1.5",
+          "digest": "sha256:7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6"
+        },
+        "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+        "engine": {
+          "name": "kbox",
+          "executionId": "a4a028e2-6ad9-4cb4-bdf7-1e8066c73b1d",
+          "generation": 1,
+          "executionGeneration": 1
+        },
+        "connection": {
+          "state": "none"
+        },
+        "operation": {
+          "schema": "kbox.engine.accepted.v1",
+          "engineId": "0c50a788-3cc7-49c1-9518-89e0660414d1",
+          "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+          "requestId": "a075e654-3088-410e-a160-cef7672aa070",
+          "operationId": "edf648f9-7964-484e-b73e-224a5a31b0b0",
+          "intentRevision": 1,
+          "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb"
+        },
+        "error": null
+      },
+      "down": {
+        "connection": {
+          "state": "none"
+        },
+        "desiredState": "down",
+        "engine": null,
+        "error": null,
+        "harness": {
+          "digest": "sha256:7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6",
+          "id": "aster",
+          "version": "0.1.5"
+        },
+        "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+        "name": "task-acceptance",
+        "observedState": "down",
+        "operation": {
+          "engineId": "0c50a788-3cc7-49c1-9518-89e0660414d1",
+          "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+          "intentRevision": 2,
+          "operationId": "2f92672e-e1a3-4970-8b0d-4344f64de943",
+          "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+          "requestId": "0e11fef9-6409-4627-8820-605c38b22586",
+          "schema": "kbox.engine.accepted.v1"
+        },
+        "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+        "schema": "krun.instance.v1",
+        "workspace": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/long-tasks/\u5de5\u4f5c \u533a"
+      }
+    },
+    {
+      "label": "restored",
+      "available": {
+        "schema": "krun.instance.v1",
+        "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+        "name": "task-acceptance",
+        "workspace": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/long-tasks/\u5de5\u4f5c \u533a",
+        "desiredState": "up",
+        "observedState": "available",
+        "harness": {
+          "id": "aster",
+          "version": "0.1.5",
+          "digest": "sha256:7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6"
+        },
+        "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+        "engine": {
+          "name": "kbox",
+          "executionId": "8ae9a6d4-3527-427c-83d9-fa80c9e33aee",
+          "generation": 3,
+          "executionGeneration": 1
+        },
+        "connection": {
+          "state": "none"
+        },
+        "operation": {
+          "schema": "kbox.engine.accepted.v1",
+          "engineId": "0c50a788-3cc7-49c1-9518-89e0660414d1",
+          "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+          "requestId": "0ea15aa1-fe51-45a3-b4fb-3eefa331a5e5",
+          "operationId": "455cd88c-decf-4672-a601-965c0452257c",
+          "intentRevision": 3,
+          "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb"
+        },
+        "error": null
+      },
+      "down": {
+        "connection": {
+          "state": "none"
+        },
+        "desiredState": "down",
+        "engine": null,
+        "error": null,
+        "harness": {
+          "digest": "sha256:7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6",
+          "id": "aster",
+          "version": "0.1.5"
+        },
+        "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+        "name": "task-acceptance",
+        "observedState": "down",
+        "operation": {
+          "engineId": "0c50a788-3cc7-49c1-9518-89e0660414d1",
+          "instanceId": "0c780f2b-c1e7-4dd1-9c57-c6aaf4bb9178",
+          "intentRevision": 4,
+          "operationId": "aa0b7697-5293-4157-ba7c-4e8e27e88eb8",
+          "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+          "requestId": "7f44738e-c639-40cf-970f-9da725f4e3a2",
+          "schema": "kbox.engine.accepted.v1"
+        },
+        "planDigest": "sha256:b59ca6e679a7d840c6cc19e60b4de10c23a972eff16948322e47c07244df86fb",
+        "schema": "krun.instance.v1",
+        "workspace": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/long-tasks/\u5de5\u4f5c \u533a"
+      }
+    }
+  ],
+  "harnessSha256": "7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6",
+  "kboxSha256": "46c9b99677eb0a22e812ba91c2bab36b4f82d3d3403a3f1074c7f3a47f86be63",
+  "krunSha256": "85856fea8282bae9efa554e80bce2f3a8a14c25ee878f0d1d8baeebe7aaf742b"
+}

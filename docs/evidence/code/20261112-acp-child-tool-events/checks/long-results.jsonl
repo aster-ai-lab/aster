@@ -1,0 +1,3 @@
+{"id": "L4-2", "status": "FAIL", "message": "persisted ACP session and remembered context restore in a fresh KBox execution", "detail": {"type": "RpcError", "message": "Internal error"}, "ts": "2026-11-11T17:38:20Z"}
+{"id": "L4-3", "status": "FAIL", "message": "external Unicode files, binary hashes, prior outputs and private resource cleanup", "detail": {"type": "RpcError", "message": "Internal error"}, "ts": "2026-11-11T17:38:20Z"}
+{"id": "L4-1", "status": "FAIL", "message": "complex coding, 30 minutes of fresh input, 24 turns and at least 50 real tool calls", "detail": {"type": "RpcError", "message": "Internal error"}, "ts": "2026-11-11T17:38:20Z"}

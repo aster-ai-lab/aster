@@ -1,0 +1,50 @@
+{
+  "finalRunId": "01912df266c540999fda5b5bb317b3c1",
+  "sourceRunDirectory": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1",
+  "sourceJobDirectory": "/Users/roylin/code/kense/krun/.build/aster-long-phases-ecde778db086497cad591650f899d8b5",
+  "note": "Byte-for-byte copies of the final complete PASS run. Historical long-* failure evidence is untouched.",
+  "files": {
+    "long-final-result.json": {
+      "source": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/result.json",
+      "sha256": "5df7aa222a2fe107b6c32ce76c1627aa71830ffca8b826c747fb6bdd1db37671",
+      "bytes": 7017,
+      "copyMatches": true
+    },
+    "long-final-results.jsonl": {
+      "source": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/results.jsonl",
+      "sha256": "cf531dce15091736d2bd8dce5dfe00221245abf194c0260595ea954c444a03f7",
+      "bytes": 899,
+      "copyMatches": true
+    },
+    "long-final-run-spec.json": {
+      "source": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/run-spec.json",
+      "sha256": "06c2bc35d40a190a28149c1335d8d18fadc4994f208cd4d9627287a2cd987a48",
+      "bytes": 799,
+      "copyMatches": true
+    },
+    "long-final-post-run-audit.json": {
+      "source": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/post-run-audit.json",
+      "sha256": "3b0da7b6e7da6cf4223e10154f255f5669c3384480f3e0fd567bd622e1e58d17",
+      "bytes": 275,
+      "copyMatches": true
+    },
+    "long-final-restored.stderr.log": {
+      "source": "/Users/roylin/code/kense/krun/docs/evidence/2026-11-12-long-tasks-aster/01912df266c540999fda5b5bb317b3c1/long-tasks/restored.stderr.log",
+      "sha256": "4131882e3f89bbf9f5ac6a9bc78aaec38165913b50279dbff53b9516dab6d4d1",
+      "bytes": 35626,
+      "copyMatches": true
+    },
+    "long-final-exit.json": {
+      "source": "/Users/roylin/code/kense/krun/.build/aster-long-phases-ecde778db086497cad591650f899d8b5/exit.json",
+      "sha256": "4bfeea411c42fe96c674ac68a7d0319e9943457d9a4244634a62c9191f26260f",
+      "bytes": 37,
+      "copyMatches": true
+    },
+    "long-final-runner.log": {
+      "source": "/Users/roylin/code/kense/krun/.build/aster-long-phases-ecde778db086497cad591650f899d8b5/runner.log",
+      "sha256": "915bed3cb7cb7a3d9dbf300a60f5e8a4e793bb3a0b50e77d4582e82ef2fd7daf",
+      "bytes": 860,
+      "copyMatches": true
+    }
+  }
+}

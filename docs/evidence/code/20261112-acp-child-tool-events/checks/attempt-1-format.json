@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/Users/roylin/code/kense/krun/.build/doctor-final-prefix-c9b8e068a3144a8aa367eb9c4ff84f79/bin/kbox",
+    "run",
+    "--rm",
+    "-i",
+    "--name",
+    "aster-child-format-f22560ded0c6",
+    "--cpus",
+    "2",
+    "--memory",
+    "4g",
+    "--entrypoint",
+    "bash",
+    "--workdir",
+    "/src",
+    "-v",
+    "/Users/roylin/code/kense/kbox/.tmp/acp-harnesses/aster-source:/src",
+    "-v",
+    "/Users/roylin/code/kense/kbox/.tmp/acp-harnesses/aster-cargo/bin:/cargo/bin",
+    "-v",
+    "/Users/roylin/code/kense/kbox/.tmp/acp-harnesses/aster-rustup:/rustup",
+    "docker.io/library/aster-current-builder@sha256:0cff1ea0ce1b5e09f5a0fab35abac8e32b557937bfc8a6e69c1cc051688dc2c5",
+    "--",
+    "-s"
+  ],
+  "exitCode": 0,
+  "seconds": 13.893
+}

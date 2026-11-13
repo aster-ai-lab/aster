@@ -1,0 +1,11 @@
+
+running 1 test
+test agent_api::tests::stream::test_stream_settles_delegated_tool_calls_before_the_parent ... FAILED
+
+failures:
+
+failures:
+    agent_api::tests::stream::test_stream_settles_delegated_tool_calls_before_the_parent
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5893 filtered out; finished in 0.11s
+

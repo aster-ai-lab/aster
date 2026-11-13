@@ -1,0 +1,48 @@
+   Compiling aster-core v9.2.2 (/src/crates/code/core)
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: struct `CountingScopedWorkflowTool` is never constructed
+  --> crates/code/core/src/agent_api/tests/fixtures.rs:17:19
+   |
+17 | pub(crate) struct CountingScopedWorkflowTool {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `assert_native_start_is_unsupported` is never used
+   --> crates/code/core/src/tools/builtin/background/tests.rs:140:10
+    |
+140 | async fn assert_native_start_is_unsupported(
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib test) generated 5 warnings
+    Finished `release-dist` profile [optimized] target(s) in 10m 01s
+     Running unittests src/lib.rs (/target/release-dist/deps/aster_core-8469f4dfc6c0b40e)

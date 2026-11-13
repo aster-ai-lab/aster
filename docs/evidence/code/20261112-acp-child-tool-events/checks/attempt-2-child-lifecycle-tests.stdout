@@ -1,0 +1,6 @@
+
+running 1 test
+test agent_api::tests::stream::test_stream_bridges_subagent_lifecycle_events ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5893 filtered out; finished in 0.10s
+

@@ -266,6 +266,93 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
         .all(|task| task.status == SubagentStatus::Completed));
 }
 
+#[tokio::test(flavor = "multi_thread")]
+async fn test_stream_settles_delegated_tool_calls_before_the_parent() {
+    for exists in [true, false] {
+        let workspace = tempfile::tempdir().unwrap();
+        if exists {
+            std::fs::write(workspace.path().join("source.txt"), "child source proof").unwrap();
+        }
+        let client = Arc::new(ScriptedStreamingClient::new(vec![
+            scripted_tool_call_response(
+                "parent-task",
+                "task",
+                serde_json::json!({"tasks":[{
+                    "agent":"lifecycle-child", "description":"Read the source",
+                    "prompt":"Read source.txt and report the actual result."
+                }]}),
+            ),
+            scripted_tool_call_response(
+                "child-read",
+                "read",
+                serde_json::json!({"file_path":"source.txt"}),
+            ),
+            scripted_text_response("Child finished."),
+            scripted_text_response("Parent finished."),
+        ]));
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let options = SessionOptions::new()
+            .with_session_id("stream-child-tool-terminal")
+            .with_planning_mode(crate::PlanningMode::Disabled)
+            .with_auto_delegation_enabled(false)
+            .with_manual_delegation_enabled(true)
+            .with_continuation(false)
+            .with_worker_agent(crate::subagent::WorkerAgentSpec::read_only(
+                "lifecycle-child",
+                "Read the delegated source",
+            ))
+            .with_permission_policy(
+                crate::permissions::PermissionPolicy::new().allow_all(&["task", "read"]),
+            );
+        let session = agent
+            .build_session(workspace.path().display().to_string(), client, &options)
+            .unwrap();
+        let (mut events, worker) = session
+            .stream("Delegate the source read.", None)
+            .await
+            .unwrap();
+        let mut order = Vec::new();
+        let mut child_id = None;
+        let mut child_started = false;
+        let mut child_finished = false;
+        while let Some(event) = events.recv().await {
+            match event {
+                AgentEvent::SubagentStart { .. } => child_started = true,
+                AgentEvent::SubagentEnd { .. } => child_finished = true,
+                AgentEvent::ToolExecutionStart { id, name, .. } if name == "read" => {
+                    assert!(child_started && !child_finished);
+                    assert!(child_id.replace(id).is_none());
+                    order.push("child-start");
+                }
+                AgentEvent::ToolEnd {
+                    id,
+                    name,
+                    exit_code,
+                    output,
+                    ..
+                } if name == "read" => {
+                    assert_eq!(child_id.as_ref(), Some(&id));
+                    assert_eq!(exit_code == 0, exists, "{output}");
+                    if exists {
+                        assert!(output.contains("child source proof"));
+                    }
+                    order.push("child-end");
+                }
+                AgentEvent::ToolEnd { name, output, .. } if name == "task" => {
+                    assert!(child_started && child_finished, "{output}");
+                    order.push("parent-end");
+                }
+                AgentEvent::End { .. } => break,
+                _ => {}
+            }
+        }
+        worker.await.unwrap();
+        assert_eq!(order, ["child-start", "child-end", "parent-end"]);
+        session.close().await;
+        agent.close().await;
+    }
+}
+
 #[tokio::test]
 async fn test_stream_with_custom_history_does_not_update_session_history() {
     let agent = Agent::from_config(test_config()).await.unwrap();

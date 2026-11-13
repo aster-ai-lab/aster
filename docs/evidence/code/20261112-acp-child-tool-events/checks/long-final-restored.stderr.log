@@ -1,0 +1,248 @@
+[2m2026-11-12T02:08:25.158496Z[0m [32m INFO[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"config_load" [3melapsed_ms[0m[2m=[0m0.6326250000000001 [3msuccess[0m[2m=[0mtrue
+[2m2026-11-12T02:08:25.158998Z[0m [32m INFO[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"stdio_ready" [3melapsed_ms[0m[2m=[0m3.328667
+[2m2026-11-12T02:08:25.163090Z[0m [32m INFO[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"initialize" [3melapsed_ms[0m[2m=[0m0.172834
+[2m2026-11-12T02:08:25.200952Z[0m [32m INFO[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"core_agent" [3mreused[0m[2m=[0mfalse [3melapsed_ms[0m[2m=[0m3.716792
+[2m2026-11-12T02:08:25.244357Z[0m [32m INFO[0m [1mopen_core_session[0m[1m{[0m[3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mrestore[0m[2m=[0mtrue[1m}[0m[2m:[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"core_agent" [3mreused[0m[2m=[0mtrue [3melapsed_ms[0m[2m=[0m0.0027089999999999996
+[2m2026-11-12T02:08:25.245632Z[0m [32m INFO[0m [1mopen_core_session[0m[1m{[0m[3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mrestore[0m[2m=[0mtrue[1m}[0m[2m:[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"session_embedding" [3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mavailable[0m[2m=[0mfalse [3melapsed_ms[0m[2m=[0m0.001542
+[2m2026-11-12T02:08:25.316574Z[0m [32m INFO[0m [1mopen_core_session[0m[1m{[0m[3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mrestore[0m[2m=[0mtrue[1m}[0m[2m:[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"core_session_build" [3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3melapsed_ms[0m[2m=[0m69.245125
+[2m2026-11-12T02:08:25.332006Z[0m [32m INFO[0m [1mopen_core_session[0m[1m{[0m[3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mrestore[0m[2m=[0mtrue[1m}[0m[2m:[0m [2master_acp::retrieval_phase[0m[2m:[0m ACP phase completed [3mphase[0m[2m=[0m"core_session" [3msession_id[0m[2m=[0m"c0babd24-7e73-4915-8ded-2e65e1f96c71" [3mrestore[0m[2m=[0mtrue [3melapsed_ms[0m[2m=[0m127.48625
+[2m2026-11-12T02:08:25.489306Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m prompt_enter
+[2m2026-11-12T02:08:47.459459Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mThe
+[2m2026-11-12T02:08:47.475092Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m round
+[2m2026-11-12T02:08:47.475570Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:47.475922Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m24
+[2m2026-11-12T02:08:47.489010Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m output
+[2m2026-11-12T02:08:47.491034Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m is
+[2m2026-11-12T02:08:47.491635Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m present
+[2m2026-11-12T02:08:47.492370Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m and
+[2m2026-11-12T02:08:47.493238Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0m contains
+[2m2026-11-12T02:08:47.505129Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m all
+[2m2026-11-12T02:08:47.505632Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m 
+[2m2026-11-12T02:08:47.505985Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m13
+[2m2026-11-12T02:08:47.506483Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m batches
+[2m2026-11-12T02:08:47.507899Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m.
+[2m2026-11-12T02:08:47.508378Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m Now
+[2m2026-11-12T02:08:47.521036Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m I
+[2m2026-11-12T02:08:47.521705Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m'll
+[2m2026-11-12T02:08:47.522337Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m verify
+[2m2026-11-12T02:08:47.522911Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m the
+[2m2026-11-12T02:08:47.523356Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m test
+[2m2026-11-12T02:08:47.537076Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m suite
+[2m2026-11-12T02:08:47.539914Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m still
+[2m2026-11-12T02:08:47.540489Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m passes
+[2m2026-11-12T02:08:47.552408Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m.
+[2m2026-11-12T02:08:48.405620Z[0m [33m WARN[0m [2master_core::workspace::retrieval::runtime[0m[2m:[0m workspace persistent index update failed [3merror[0m[2m=[0mstale workspace revision 2; current revision is 450 [3mretryable[0m[2m=[0mfalse [3mretries[0m[2m=[0m0
+[2m2026-11-12T02:08:49.973451Z[0m [33m WARN[0m [2master_core::workspace::retrieval::runtime[0m[2m:[0m workspace persistent index update failed [3merror[0m[2m=[0mstale workspace revision 3; current revision is 450 [3mretryable[0m[2m=[0mfalse [3mretries[0m[2m=[0m0
+[2m2026-11-12T02:08:52.387460Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0mTests
+[2m2026-11-12T02:08:52.393161Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m pass
+[2m2026-11-12T02:08:52.393576Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m.
+[2m2026-11-12T02:08:52.393987Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m I
+[2m2026-11-12T02:08:52.394374Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m'll
+[2m2026-11-12T02:08:52.394761Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m write
+[2m2026-11-12T02:08:52.410363Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m the
+[2m2026-11-12T02:08:52.411011Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m exact
+[2m2026-11-12T02:08:52.411615Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m proof
+[2m2026-11-12T02:08:52.431494Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m with
+[2m2026-11-12T02:08:52.431955Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m no
+[2m2026-11-12T02:08:52.455756Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0m trailing
+[2m2026-11-12T02:08:52.456349Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m new
+[2m2026-11-12T02:08:52.459353Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mline
+[2m2026-11-12T02:08:52.459780Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m and
+[2m2026-11-12T02:08:52.478861Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m verify
+[2m2026-11-12T02:08:52.479178Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m it
+[2m2026-11-12T02:08:52.479421Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m byte
+[2m2026-11-12T02:08:52.479636Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m-for
+[2m2026-11-12T02:08:52.479844Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m-by
+[2m2026-11-12T02:08:52.480036Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mte
+[2m2026-11-12T02:08:52.480214Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m.
+[2m2026-11-12T02:08:57.023760Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mVer
+[2m2026-11-12T02:08:57.039961Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0mification
+[2m2026-11-12T02:08:57.044181Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m phrase
+[2m2026-11-12T02:08:57.044568Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m:
+[2m2026-11-12T02:08:57.055239Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m `
+[2m2026-11-12T02:08:57.055692Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mlong
+[2m2026-11-12T02:08:57.073891Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m-m
+[2m2026-11-12T02:08:57.074315Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0memory
+[2m2026-11-12T02:08:57.074686Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.075027Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m419
+[2m2026-11-12T02:08:57.075390Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m6
+[2m2026-11-12T02:08:57.075741Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mde
+[2m2026-11-12T02:08:57.087882Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mab
+[2m2026-11-12T02:08:57.088348Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m2
+[2m2026-11-12T02:08:57.088745Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mf
+[2m2026-11-12T02:08:57.089105Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m8
+[2m2026-11-12T02:08:57.104440Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0me
+[2m2026-11-12T02:08:57.106259Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m5
+[2m2026-11-12T02:08:57.106683Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mcf
+[2m2026-11-12T02:08:57.107063Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m42
+[2m2026-11-12T02:08:57.107462Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0meb
+[2m2026-11-12T02:08:57.107830Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m498
+[2m2026-11-12T02:08:57.121561Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m77
+[2m2026-11-12T02:08:57.122056Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mee
+[2m2026-11-12T02:08:57.122439Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m3
+[2m2026-11-12T02:08:57.122827Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mbd
+[2m2026-11-12T02:08:57.123209Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m506
+[2m2026-11-12T02:08:57.136566Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m`
+[2m2026-11-12T02:08:57.152887Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m  
+
+[2m2026-11-12T02:08:57.157015Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mIt
+[2m2026-11-12T02:08:57.157485Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m remains
+[2m2026-11-12T02:08:57.157916Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m session
+[2m2026-11-12T02:08:57.169048Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m-only
+[2m2026-11-12T02:08:57.169492Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m and
+[2m2026-11-12T02:08:57.169890Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m was
+[2m2026-11-12T02:08:57.170245Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m not
+[2m2026-11-12T02:08:57.201142Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m written
+[2m2026-11-12T02:08:57.201490Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m to
+[2m2026-11-12T02:08:57.207142Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m any
+[2m2026-11-12T02:08:57.207585Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m project
+[2m2026-11-12T02:08:57.207946Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m or
+[2m2026-11-12T02:08:57.208280Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0m external
+[2m2026-11-12T02:08:57.217352Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m file
+[2m2026-11-12T02:08:57.218064Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m.
+
+
+[2m2026-11-12T02:08:57.218542Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.219943Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m Read
+[2m2026-11-12T02:08:57.234113Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m `/
+[2m2026-11-12T02:08:57.234527Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0mworks
+[2m2026-11-12T02:08:57.234882Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mpace
+[2m2026-11-12T02:08:57.235202Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m/
+[2m2026-11-12T02:08:57.235445Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mout
+[2m2026-11-12T02:08:57.249561Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m/
+[2m2026-11-12T02:08:57.249960Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0mround
+[2m2026-11-12T02:08:57.250271Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.250633Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m24
+[2m2026-11-12T02:08:57.251069Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m.json
+[2m2026-11-12T02:08:57.251491Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m`:
+[2m2026-11-12T02:08:57.269180Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m 
+[2m2026-11-12T02:08:57.269638Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m13
+[2m2026-11-12T02:08:57.283679Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m batch
+[2m2026-11-12T02:08:57.298292Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m entries
+[2m2026-11-12T02:08:57.298748Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m present
+[2m2026-11-12T02:08:57.299129Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m.
+
+[2m2026-11-12T02:08:57.299477Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.299861Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m Tests
+[2m2026-11-12T02:08:57.314506Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m:
+[2m2026-11-12T02:08:57.314982Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m `
+[2m2026-11-12T02:08:57.315368Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mnode
+[2m2026-11-12T02:08:57.319786Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m test
+[2m2026-11-12T02:08:57.333665Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m-led
+[2m2026-11-12T02:08:57.337841Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mger
+[2m2026-11-12T02:08:57.338282Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m.m
+[2m2026-11-12T02:08:57.341917Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mjs
+[2m2026-11-12T02:08:57.346143Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m`
+[2m2026-11-12T02:08:57.346672Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m —
+[2m2026-11-12T02:08:57.348359Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m **
+[2m2026-11-12T02:08:57.348775Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m12
+[2m2026-11-12T02:08:57.349109Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m passed
+[2m2026-11-12T02:08:57.349462Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m,
+[2m2026-11-12T02:08:57.349820Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m 
+[2m2026-11-12T02:08:57.350161Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m0
+[2m2026-11-12T02:08:57.364001Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m7 [3mpreview[0m[2m=[0m failed
+[2m2026-11-12T02:08:57.364669Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m**
+[2m2026-11-12T02:08:57.365179Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m.
+
+[2m2026-11-12T02:08:57.365646Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.366256Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m W
+[2m2026-11-12T02:08:57.384117Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mrote
+[2m2026-11-12T02:08:57.386289Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m `/
+[2m2026-11-12T02:08:57.389384Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0mexternal
+[2m2026-11-12T02:08:57.389897Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m/res
+[2m2026-11-12T02:08:57.406317Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mumed
+[2m2026-11-12T02:08:57.406753Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m.txt
+[2m2026-11-12T02:08:57.407146Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m`
+[2m2026-11-12T02:08:57.407556Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m with
+[2m2026-11-12T02:08:57.411826Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m8 [3mpreview[0m[2m=[0m exactly
+[2m2026-11-12T02:08:57.412238Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m `
+[2m2026-11-12T02:08:57.412696Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m027
+[2m2026-11-12T02:08:57.413092Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m679
+[2m2026-11-12T02:08:57.433083Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m164
+[2m2026-11-12T02:08:57.433557Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m6
+[2m2026-11-12T02:08:57.433915Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mea
+[2m2026-11-12T02:08:57.434337Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m0
+[2m2026-11-12T02:08:57.434743Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mc
+[2m2026-11-12T02:08:57.435085Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m516
+[2m2026-11-12T02:08:57.445435Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mef
+[2m2026-11-12T02:08:57.445883Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mbe
+[2m2026-11-12T02:08:57.462190Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m46
+[2m2026-11-12T02:08:57.462679Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mc
+[2m2026-11-12T02:08:57.463066Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m889
+[2m2026-11-12T02:08:57.463434Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mfb
+[2m2026-11-12T02:08:57.463824Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m959
+[2m2026-11-12T02:08:57.476484Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m`.
+
+[2m2026-11-12T02:08:57.477003Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.477437Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0m Verified
+[2m2026-11-12T02:08:57.493169Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m:
+[2m2026-11-12T02:08:57.493643Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m **
+[2m2026-11-12T02:08:57.510823Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m32
+[2m2026-11-12T02:08:57.511160Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m6 [3mpreview[0m[2m=[0m bytes
+[2m2026-11-12T02:08:57.511411Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m**,
+[2m2026-11-12T02:08:57.511628Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m no
+[2m2026-11-12T02:08:57.526992Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0m trailing
+[2m2026-11-12T02:08:57.527584Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m new
+[2m2026-11-12T02:08:57.528011Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0mline
+[2m2026-11-12T02:08:57.528407Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m,
+[2m2026-11-12T02:08:57.528827Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m5 [3mpreview[0m[2m=[0m byte
+[2m2026-11-12T02:08:57.540981Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.541451Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m9 [3mpreview[0m[2m=[0midentical
+[2m2026-11-12T02:08:57.541894Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m via
+[2m2026-11-12T02:08:57.557800Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m `
+[2m2026-11-12T02:08:57.558286Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mcmp
+[2m2026-11-12T02:08:57.558704Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m`.
+
+[2m2026-11-12T02:08:57.559103Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.559478Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m4 [3mpreview[0m[2m=[0m SHA
+[2m2026-11-12T02:08:57.559925Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m-
+[2m2026-11-12T02:08:57.574457Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m256
+[2m2026-11-12T02:08:57.574754Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m:
+[2m2026-11-12T02:08:57.574976Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m `
+[2m2026-11-12T02:08:57.575188Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m192
+[2m2026-11-12T02:08:57.642420Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m0
+[2m2026-11-12T02:08:57.643042Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mad
+[2m2026-11-12T02:08:57.643454Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m7
+[2m2026-11-12T02:08:57.643851Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mec
+[2m2026-11-12T02:08:57.644097Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m8
+[2m2026-11-12T02:08:57.644321Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mf
+[2m2026-11-12T02:08:57.644554Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m2
+[2m2026-11-12T02:08:57.644785Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mc
+[2m2026-11-12T02:08:57.645014Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m03
+[2m2026-11-12T02:08:57.645241Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mc
+[2m2026-11-12T02:08:57.645441Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m553
+[2m2026-11-12T02:08:57.645659Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m7
+[2m2026-11-12T02:08:57.645880Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mf
+[2m2026-11-12T02:08:57.646090Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m5
+[2m2026-11-12T02:08:57.646324Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mfc
+[2m2026-11-12T02:08:57.646534Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m7
+[2m2026-11-12T02:08:57.646816Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0mefa
+[2m2026-11-12T02:08:57.647022Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m5
+[2m2026-11-12T02:08:57.647238Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0me
+[2m2026-11-12T02:08:57.647471Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m4
+[2m2026-11-12T02:08:57.647693Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mb
+[2m2026-11-12T02:08:57.647906Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m880
+[2m2026-11-12T02:08:57.648120Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m3
+[2m2026-11-12T02:08:57.648329Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mcf
+[2m2026-11-12T02:08:57.663576Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m304
+[2m2026-11-12T02:08:57.664097Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m914
+[2m2026-11-12T02:08:57.664757Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0md
+[2m2026-11-12T02:08:57.665160Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m2
+[2m2026-11-12T02:08:57.679957Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mb
+[2m2026-11-12T02:08:57.680390Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m46
+[2m2026-11-12T02:08:57.680792Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mac
+[2m2026-11-12T02:08:57.681194Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m3 [3mpreview[0m[2m=[0m583
+[2m2026-11-12T02:08:57.681619Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m1
+[2m2026-11-12T02:08:57.687855Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0ma
+[2m2026-11-12T02:08:57.688275Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m66
+[2m2026-11-12T02:08:57.688643Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mb
+[2m2026-11-12T02:08:57.689029Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0mda
+[2m2026-11-12T02:08:57.689403Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m2 [3mpreview[0m[2m=[0m96
+[2m2026-11-12T02:08:57.689765Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0mf
+[2m2026-11-12T02:08:57.703566Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m chunk_emit [3mlen[0m[2m=[0m1 [3mpreview[0m[2m=[0m`
+[2m2026-11-12T02:08:58.004123Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m turn_text_assembly [3mdelta_chars[0m[2m=[0m699 [3mdelta_preview[0m[2m=[0mThe round-24 output is present and contains all 13 batches. Now I'll verify the test suite still passes.Tests pass. I'll [3mend_preview[0m[2m=[0mVerification phrase: `long-memory-4196deab2f8e5cf42eb49877ee3bd506`  
+It remains session-only and was not written to any
+[2m2026-11-12T02:08:58.004496Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m stream_turn_tail [3mevents_drained_ms[0m[2m=[0m32425 [3mjoin_ms[0m[2m=[0m0
+[2m2026-11-12T02:08:58.005202Z[0m [32m INFO[0m [2mperf_probe[0m[2m:[0m prompt_return
+[2m2026-11-12T02:09:03.142087Z[0m [33m WARN[0m [2master_core::agent_api::session_close[0m[2m:[0m Completed-turn memory extraction did not drain before close timeout [3msession_id[0m[2m=[0mc0babd24-7e73-4915-8ded-2e65e1f96c71
+[2m2026-11-12T02:09:03.142863Z[0m [33m WARN[0m [2master_core::agent::memory_extraction_runtime[0m[2m:[0m LLM memory extraction failed [3merror[0m[2m=[0mOperation cancelled by user

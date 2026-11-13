@@ -1,0 +1,16 @@
+{
+  "harness": "aster",
+  "suite": "long",
+  "model": "deepseek-flash",
+  "package": "/Users/roylin/code/kense/krun/harness/aster/acp-0.1.5.zip",
+  "packageSha256": "7f6f226f1d87a82db0a952819056ea7154ec889b8dc1615fe13b818a508d88a6",
+  "image": "docker.io/library/krun-base@sha256:e59b8450a06b2f1caf2d6eff1274d517b468f916e4fadbfbb56dddba3ba14af2",
+  "testSources": {
+    "test_tasks_native.py": "46dab76afc1bf5a94214f50e823653bbacdb68173029094f02c9ee786885a2fa",
+    "long_tasks_native.py": "693d06e7d14a3c440d0570577797126dfd0ed9c4dc8c5f707dc7689c3c683789"
+  },
+  "supportSources": {
+    "e2e-dsh-acp/lib/acp_client.py": "8c2ef3b6c1d0c90b8b4f35ca42c288b9e8edfa6cffc8db52b6bb8d0a77158463",
+    "e2e-acp-harnesses/profiles.py": "98b37f597395654104a329e23581cefda0e407cc335ebe3d180d555f10331046"
+  }
+}

@@ -1,0 +1,829 @@
+    Checking aster-core v9.2.2 (/src/crates/code/core)
+warning: unused import: `attachments_from_fact_tool_images`
+  --> crates/code/core/src/fact_control.rs:86:5
+   |
+86 |     attachments_from_fact_tool_images, confirmation_parked, decision_from_response,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProgressBasis`
+  --> crates/code/core/src/goal_control/facts.rs:45:75
+   |
+45 | pub(crate) use run::{prepare_run, render_run_context, ContinuationSource, ProgressBasis};
+   |                                                                           ^^^^^^^^^^^^^
+
+warning: unreachable pattern
+   --> crates/code/core/src/workspace/manifest/scanner.rs:459:19
+    |
+458 |                 | ".aster"
+    |                   -------- matches all the relevant values
+459 |                 | ".aster"
+    |                   ^^^^^^^^ no value can reach this
+    |
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable pattern
+  --> crates/code/core/src/workspace/source_egress.rs:65:19
+   |
+64 |                 | ".aster"
+   |                   -------- matches all the relevant values
+65 |                 | ".aster"
+   |                   ^^^^^^^^ no value can reach this
+
+warning: associated function `observed_mutations` is never used
+  --> crates/code/core/src/goal_control/facts/run/continuation.rs:26:19
+   |
+25 | impl ContinuationSource {
+   | ----------------------- associated function in this implementation
+26 |     pub(crate) fn observed_mutations(
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `recorded_uncertainties` is never used
+   --> crates/code/core/src/harness_loop.rs:746:19
+    |
+366 | impl MutationLedger {
+    | ------------------- method in this implementation
+...
+746 |     pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `with_scheduler_quota_from` is never used
+   --> crates/code/core/src/llm/admission.rs:338:19
+    |
+257 | impl ModelGenerationAdmission {
+    | ----------------------------- method in this implementation
+...
+338 |     pub(crate) fn with_scheduler_quota_from(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `uses_anthropic_messages_api` is never used
+   --> crates/code/core/src/llm/factory.rs:258:15
+    |
+258 | pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `lines` is never used
+   --> crates/code/core/src/porcelain.rs:498:21
+    |
+498 | pub(crate) async fn lines(root: &Path) -> Option<Vec<String>> {
+    |                     ^^^^^
+
+warning: associated function `new` is never used
+   --> crates/code/core/src/tools/types.rs:320:8
+    |
+318 | impl ModelGenerationPermitReservation {
+    | ------------------------------------- associated function in this implementation
+319 |     /// Called from the `dynamic-workflow` surface.
+320 |     fn new(permit: Arc<crate::llm::ModelGenerationPermit>) -> Self {
+    |        ^^^
+
+warning: method `with_model_generation_permit` is never used
+   --> crates/code/core/src/tools/types.rs:861:19
+    |
+408 | impl ToolContext {
+    | ---------------- method in this implementation
+...
+861 |     pub(crate) fn with_model_generation_permit(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `default_catalog` and `default_catalog_with_engine` are never used
+   --> crates/code/core/src/workspace/retrieval/catalog.rs:287:19
+    |
+153 | impl WorkspaceChunkCatalog {
+    | -------------------------- associated functions in this implementation
+...
+287 |     pub(crate) fn default_catalog() -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^
+...
+295 |     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 12 warnings (run `cargo clippy --fix --lib -p aster-core -- --no-deps` to apply 2 suggestions)
+   Compiling aster-acp v9.2.2 (/src/crates/code/acp)
+    Checking aster-embedding v0.1.0 (/src/crates/embedding)
+warning: unused import: `sha2::Digest`
+  --> crates/embedding/src/hygiene.rs:10:5
+   |
+10 | use sha2::Digest as _;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> crates/embedding/src/vector/hnsw.rs:41:13
+   |
+41 |         let mut index =
+   |             ----^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `dimension` is never read
+  --> crates/embedding/src/vector/hnsw.rs:21:5
+   |
+17 | pub struct HnswBackend {
+   |            ----------- field in this struct
+...
+21 |     dimension: usize,
+   |     ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-embedding` (lib) generated 3 warnings (run `cargo clippy --fix --lib -p aster-embedding -- --no-deps` to apply 1 suggestion)
+warning: function `register_embedding_provider` is never used
+  --> crates/code/acp/src/agent/local_embedding.rs:42:8
+   |
+42 | pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `as_str` is never used
+  --> crates/code/acp/src/host_context.rs:64:12
+   |
+57 | impl CompletionAttestation {
+   | -------------------------- method in this implementation
+...
+64 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: large size difference between variants
+  --> crates/code/acp/src/agent/attempt.rs:15:1
+   |
+15 | / pub(super) enum AttemptDrive {
+16 | |     Ended(AttemptCompletion),
+   | |     ------------------------ the largest variant contains at least 784 bytes
+17 | |     Cancelled(acp::Result<acp::PromptResponse>),
+   | |     ------------------------------------------- the second-largest variant contains at least 176 bytes
+18 | | }
+   | |_^ the entire enum is at least 784 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#large_enum_variant
+   = note: `#[warn(clippy::large_enum_variant)]` on by default
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+16 -     Ended(AttemptCompletion),
+16 +     Ended(Box<AttemptCompletion>),
+   |
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/src/agent/emit.rs:186:5
+    |
+186 | /     pub(super) async fn emit_tool_call_completed(
+187 | |         &self,
+188 | |         session_id: &acp::SessionId,
+189 | |         id: &str,
+...   |
+194 | |         metadata: Option<&serde_json::Value>,
+195 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/src/agent/emit.rs:496:5
+    |
+496 | /     pub(super) async fn emit_subagent_start(
+497 | |         &self,
+498 | |         session_id: &acp::SessionId,
+499 | |         task_id: &str,
+...   |
+504 | |         started_ms: u64,
+505 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: large size difference between variants
+  --> crates/code/acp/src/agent/extensions.rs:10:1
+   |
+10 | / enum ReplayNotification {
+11 | |     Acp(acp::SessionNotification),
+   | |     ----------------------------- the largest variant contains at least 552 bytes
+12 | |     Typed(acp::ExtNotification),
+   | |     --------------------------- the second-largest variant contains at least 32 bytes
+13 | | }
+   | |_^ the entire enum is at least 552 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#large_enum_variant
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+11 -     Acp(acp::SessionNotification),
+11 +     Acp(Box<acp::SessionNotification>),
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/agent/tool_render.rs:201:8
+    |
+201 |     if metadata.get("validated")?.as_bool()? != true
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+    = note: `#[warn(clippy::bool_comparison)]` on by default
+
+warning: this function has too many arguments (11/7)
+   --> crates/code/acp/src/agent/turn.rs:451:5
+    |
+451 | /     pub(super) async fn stream_turn(
+452 | |         &self,
+453 | |         session_id: &acp::SessionId,
+454 | |         session: &AgentSession,
+...   |
+462 | |         output_schema: Option<&serde_json::Value>,
+463 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/src/agent/turn.rs:512:5
+    |
+512 | /     pub(super) async fn drain_turn(
+513 | |         &self,
+514 | |         session_id: &acp::SessionId,
+515 | |         session: &AgentSession,
+...   |
+520 | |         observation: Option<&crate::run_observation::Binding>,
+521 | |     ) -> acp::Result<acp::PromptResponse> {
+    | |_________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+
+warning: unneeded `return` statement
+  --> crates/code/acp/src/office_file.rs:26:9
+   |
+26 |         return crate::artifact_image::render_png(svg);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_return
+   = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+   |
+26 -         return crate::artifact_image::render_png(svg);
+26 +         crate::artifact_image::render_png(svg)
+   |
+
+warning: inequality checks against true can be replaced by a negation
+   --> crates/code/acp/src/office_file.rs:203:12
+    |
+203 |         if metadata.get("validated")?.as_bool()? != true
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `!metadata.get("validated")?.as_bool()?`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_comparison
+
+warning: the borrowed expression implements the required traits
+   --> crates/code/acp/src/unattended.rs:426:37
+    |
+426 |             progress.remember_error(&error.to_string());
+    |                                     ^^^^^^^^^^^^^^^^^^ help: change this to: `error.to_string()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#needless_borrows_for_generic_args
+    = note: `#[warn(clippy::needless_borrows_for_generic_args)]` on by default
+
+warning: `aster-acp` (lib) generated 12 warnings (run `cargo clippy --fix --lib -p aster-acp -- --no-deps` to apply 4 suggestions)
+warning: function `digest` is never used
+  --> crates/code/acp/tests/long_horizon/artifact.rs:45:8
+   |
+45 | pub fn digest(path: &Path) -> std::io::Result<String> {
+   |        ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variants `Process`, `Executable`, and `OpaqueId` are never constructed
+  --> crates/code/acp/tests/long_horizon/timing.rs:87:5
+   |
+85 | pub enum Subject {
+   |          ------- variants in this enum
+86 |     Request(usize),
+87 |     Process(u32),
+   |     ^^^^^^^
+88 |     Executable(String),
+   |     ^^^^^^^^^^
+89 |     OpaqueId([u8; 32]),
+   |     ^^^^^^^^
+   |
+   = note: `Subject` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: field `path` is never read
+   --> crates/code/acp/tests/long_horizon/timing.rs:113:5
+    |
+108 | struct State {
+    |        ----- field in this struct
+...
+113 |     path: PathBuf,
+    |     ^^^^
+
+warning: struct `Guard` is never constructed
+   --> crates/code/acp/tests/long_horizon/timing.rs:207:12
+    |
+207 | pub struct Guard {
+    |            ^^^^^
+
+warning: associated function `open` is never used
+   --> crates/code/acp/tests/long_horizon/timing.rs:221:12
+    |
+220 | impl Guard {
+    | ---------- associated function in this implementation
+221 |     pub fn open(directory: &Path) -> std::io::Result<Self> {
+    |            ^^^^
+
+warning: function `point` is never used
+   --> crates/code/acp/tests/long_horizon/timing.rs:314:8
+    |
+314 | pub fn point(phase: Phase, subject: Option<Subject>) {
+    |        ^^^^^
+
+warning: function `opaque_id` is never used
+   --> crates/code/acp/tests/long_horizon/timing.rs:324:8
+    |
+324 | pub fn opaque_id(value: &str) -> Subject {
+    |        ^^^^^^^^^
+
+warning: `aster-acp` (test "acp_conformance_stdio") generated 7 warnings
+warning: associated function `acp_binary` is never used
+   --> crates/code/acp/tests/long_horizon/candidate.rs:131:12
+    |
+102 | impl Candidate {
+    | -------------- associated function in this implementation
+...
+131 |     pub fn acp_binary(default: &str, expected: &str) -> PathBuf {
+    |            ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `load` and `goal_state` are never used
+   --> crates/code/acp/tests/long_horizon/driver.rs:525:18
+    |
+369 | impl Driver {
+    | ----------- methods in this implementation
+...
+525 |     pub async fn load(
+    |                  ^^^^
+...
+550 |     pub async fn goal_state(&self, session: &acp::SessionId) -> Result<Value, &'static str> {
+    |                  ^^^^^^^^^^
+
+warning: field `name` is never read
+   --> crates/code/acp/tests/long_horizon/live.rs:104:9
+    |
+ 96 | pub struct Campaign {
+    |            -------- field in this struct
+...
+104 |     pub name: String,
+    |         ^^^^
+
+warning: associated function `prepare` is never used
+   --> crates/code/acp/tests/long_horizon/live.rs:114:18
+    |
+113 | impl Campaign {
+    | ------------- associated function in this implementation
+114 |     pub async fn prepare(prefix: &str) -> Self {
+    |                  ^^^^^^^
+
+warning: method `upstream_calls` is never used
+   --> crates/code/acp/tests/long_horizon/relay.rs:158:12
+    |
+ 76 | impl Relay {
+    | ---------- method in this implementation
+...
+158 |     pub fn upstream_calls(&self) -> usize {
+    |            ^^^^^^^^^^^^^^
+
+warning: this `if` can be collapsed into the outer `match`
+  --> crates/code/acp/tests/long_horizon/driver.rs:40:17
+   |
+40 | /                 if self.timing_tools.remove(id).is_none() {
+41 | |                     timing::point(Phase::ToolMissingStart, Some(timing::opaque_id(id)));
+42 | |                 }
+   | |_________________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#collapsible_match
+   = note: `#[warn(clippy::collapsible_match)]` on by default
+help: collapse nested if block
+   |
+39 ~             acp::ToolCallStatus::Completed | acp::ToolCallStatus::Failed
+40 ~                 if self.timing_tools.remove(id).is_none() => {
+41 |                     timing::point(Phase::ToolMissingStart, Some(timing::opaque_id(id)));
+42 ~                 }
+   |
+
+warning: this function has too many arguments (8/7)
+   --> crates/code/acp/tests/long_horizon/relay.rs:312:1
+    |
+312 | / async fn serve(
+313 | |     mut socket: TcpStream,
+314 | |     route: Arc<Route>,
+315 | |     authorization: String,
+...   |
+320 | |     http: Arc<dyn HttpClient>,
+321 | | ) {
+    | |_^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: `aster-acp` (test "deloop_generalization_real_llm") generated 7 warnings (run `cargo clippy --fix --test "deloop_generalization_real_llm" -p aster-acp -- --no-deps` to apply 1 suggestion)
+warning: constant `ARTIFACTS` is never used
+  --> crates/code/acp/tests/long_horizon/fixture.rs:34:11
+   |
+34 | pub const ARTIFACTS: [&str; 7] = [
+   |           ^^^^^^^^^
+
+warning: associated function `from_environment` is never used
+  --> crates/code/acp/tests/long_horizon/fixture.rs:67:12
+   |
+54 | impl FixtureSeed {
+   | ---------------- associated function in this implementation
+...
+67 |     pub fn from_environment() -> Result<Self, &'static str> {
+   |            ^^^^^^^^^^^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> crates/code/acp/tests/long_horizon/report.rs:18:12
+   |
+17 | impl Status {
+   | ----------- associated items in this implementation
+18 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+...
+32 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: associated items `parse` and `as_str` are never used
+  --> crates/code/acp/tests/long_horizon/report.rs:57:12
+   |
+56 | impl FailureLayer {
+   | ----------------- associated items in this implementation
+57 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+...
+70 |     pub fn as_str(self) -> &'static str {
+   |            ^^^^^^
+
+warning: associated function `parse` is never used
+  --> crates/code/acp/tests/long_horizon/report.rs:96:12
+   |
+95 | impl Check {
+   | ---------- associated function in this implementation
+96 |     pub fn parse(value: &str) -> Result<Self, String> {
+   |            ^^^^^
+
+warning: `aster-acp` (test "long_horizon_real_llm") generated 10 warnings (5 duplicates)
+warning: `aster-acp` (test "unattended_e2e") generated 7 warnings (7 duplicates)
+warning: variant `Bash` is never constructed
+  --> crates/code/acp/tests/boundary_e2e.rs:41:5
+   |
+28 | enum Arm {
+   |      --- variant in this enum
+...
+41 |     Bash {
+   |     ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-acp` (test "boundary_e2e") generated 1 warning
+warning: large size difference between variants
+  --> crates/code/acp/examples/interactive_client.rs:21:1
+   |
+21 | /  enum Pending {
+22 | |/     Permission(
+23 | ||         acp::RequestPermissionRequest,
+24 | ||         oneshot::Sender<acp::RequestPermissionResponse>,
+25 | ||     ),
+   | ||_____- the largest variant contains at least 432 bytes
+26 | |      Form(oneshot::Sender<acp::ExtResponse>),
+   | |      --------------------------------------- the second-largest variant contains at least 8 bytes
+27 | |  }
+   | |__^ the entire enum is at least 432 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#large_enum_variant
+   = note: `#[warn(clippy::large_enum_variant)]` on by default
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+23 -         acp::RequestPermissionRequest,
+23 +         Box<acp::RequestPermissionRequest>,
+   |
+
+warning: `aster-acp` (example "interactive_client") generated 1 warning
+warning: unused variable: `screen`
+   --> crates/code/acp/tests/aster_tui_live_e2e/driver.rs:772:21
+    |
+772 |                 let screen = loop {
+    |                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_screen`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: called `Iterator::last` on a `DoubleEndedIterator`; this will needlessly iterate the entire iterator
+   --> crates/code/acp/tests/aster_tui_live_e2e/lifecycle.rs:635:22
+    |
+635 |           let answer = facts
+    |  ______________________^
+636 | |             .iter()
+637 | |             .filter(|f| f["type"] == "model.turn")
+638 | |             .filter_map(|f| f["payload"]["text"].as_str())
+639 | |             .filter(|s| !s.is_empty())
+640 | |             .last()
+    | |___________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#double_ended_iterator_last
+    = note: `#[warn(clippy::double_ended_iterator_last)]` on by default
+help: try
+    |
+640 -             .last()
+640 +             .next_back()
+    |
+
+warning: `aster-acp` (test "aster_tui_live_e2e") generated 2 warnings (run `cargo clippy --fix --test "aster_tui_live_e2e" -p aster-acp -- --no-deps` to apply 2 suggestions)
+warning: value assigned to `last` is never read
+   --> crates/code/acp/tests/tui_913_hermetic.rs:997:24
+    |
+997 |         let mut last = String::new();
+    |                        ^^^^^^^^^^^^^ this value is reassigned later and never used
+998 |         loop {
+999 |             last = pty.screen();
+    |             ---- `last` is overwritten here before the previous value is read
+    |
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `open_pty` is never used
+   --> crates/code/acp/tests/tui_913_hermetic.rs:591:4
+    |
+591 | fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)]) -> PtySession {
+    |    ^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-acp` (test "tui_913_hermetic") generated 2 warnings
+warning: fields `name` and `output_tokens` are never read
+   --> crates/code/acp/tests/long_horizon/live.rs:104:9
+    |
+ 96 | pub struct Campaign {
+    |            -------- fields in this struct
+...
+104 |     pub name: String,
+    |         ^^^^
+...
+107 |     pub output_tokens: u32,
+    |         ^^^^^^^^^^^^^
+
+warning: associated functions `prepare` and `prepare_with_context` are never used
+   --> crates/code/acp/tests/long_horizon/live.rs:114:18
+    |
+113 | impl Campaign {
+    | ------------- associated functions in this implementation
+114 |     pub async fn prepare(prefix: &str) -> Self {
+    |                  ^^^^^^^
+...
+118 |     pub async fn prepare_with_context(prefix: &str, context: Option<u32>) -> Self {
+    |                  ^^^^^^^^^^^^^^^^^^^^
+
+warning: `aster-acp` (test "deloop_real_llm") generated 7 warnings (5 duplicates)
+warning: useless conversion to the same type: `std::string::String`
+    --> crates/code/acp/tests/shipped_tui_e2e.rs:3051:44
+     |
+3051 |         ("ASTER_TUI_TEST_ACP_REAL".into(), acp_bin.into()),
+     |                                            ^^^^^^^^^^^^^^ help: consider removing `.into()`: `acp_bin`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#useless_conversion
+     = note: `#[warn(clippy::useless_conversion)]` on by default
+
+warning: `aster-acp` (test "shipped_tui_e2e") generated 1 warning (run `cargo clippy --fix --test "shipped_tui_e2e" -p aster-acp -- --no-deps` to apply 1 suggestion)
+warning: methods `path` and `credential_header` are never used
+  --> crates/code/acp/tests/long_horizon/upstream.rs:21:12
+   |
+20 | impl Protocol {
+   | ------------- methods in this implementation
+21 |     pub fn path(self) -> &'static str {
+   |            ^^^^
+...
+28 |     pub fn credential_header(self) -> &'static str {
+   |            ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field assignment outside of initializer for an instance created with Default::default()
+  --> crates/code/acp/tests/long_horizon_preflight.rs:97:5
+   |
+97 |     config.memory_dir = Some(PathBuf::from("private-memory-sentinel"));
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: consider initializing the variable with `aster_core::CodeConfig { memory_dir: Some(PathBuf::from("private-memory-sentinel")), sessions_dir: Some(PathBuf::from("private-session-sentinel")), storage_backend: StorageBackend::Custom, storage_url: Some("private-connection-sentinel".into()), ..Default::default() }` and removing relevant reassignments
+  --> crates/code/acp/tests/long_horizon_preflight.rs:96:5
+   |
+96 |     let mut config = CodeConfig::default();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#field_reassign_with_default
+   = note: `#[warn(clippy::field_reassign_with_default)]` on by default
+
+warning: `aster-acp` (test "long_horizon_preflight") generated 2 warnings
+warning: variant `Executable` is never constructed
+  --> crates/code/acp/tests/long_horizon/timing.rs:88:5
+   |
+85 | pub enum Subject {
+   |          ------- variant in this enum
+...
+88 |     Executable(String),
+   |     ^^^^^^^^^^
+   |
+   = note: `Subject` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated functions `from_environment` and `acp_binary` are never used
+   --> crates/code/acp/tests/long_horizon/candidate.rs:125:12
+    |
+102 | impl Candidate {
+    | -------------- associated functions in this implementation
+...
+125 |     pub fn from_environment(expected: &str) -> Result<Option<Self>, &'static str> {
+    |            ^^^^^^^^^^^^^^^^
+...
+131 |     pub fn acp_binary(default: &str, expected: &str) -> PathBuf {
+    |            ^^^^^^^^^^
+
+warning: field `rpc_errors` is never read
+  --> crates/code/acp/tests/long_horizon/driver.rs:24:9
+   |
+18 | pub struct Capture {
+   |            ------- field in this struct
+...
+24 |     pub rpc_errors: Vec<Value>,
+   |         ^^^^^^^^^^
+
+warning: struct `Driver` is never constructed
+   --> crates/code/acp/tests/long_horizon/driver.rs:361:12
+    |
+361 | pub struct Driver {
+    |            ^^^^^^
+
+warning: multiple associated items are never used
+   --> crates/code/acp/tests/long_horizon/driver.rs:370:12
+    |
+369 | impl Driver {
+    | ----------- associated items in this implementation
+370 |     pub fn process_id(&self) -> Option<u32> {
+    |            ^^^^^^^^^^
+...
+374 |     pub fn spawn(
+    |            ^^^^^
+...
+454 |     pub async fn open(
+    |                  ^^^^
+...
+484 |     pub async fn prompt(
+    |                  ^^^^^^
+...
+525 |     pub async fn load(
+    |                  ^^^^
+...
+550 |     pub async fn goal_state(&self, session: &acp::SessionId) -> Result<Value, &'static str> {
+    |                  ^^^^^^^^^^
+...
+568 |     pub async fn close(self) -> Result<(), &'static str> {
+    |                  ^^^^^
+
+warning: unnecessary use of `clone` to create a slice from a reference
+  --> crates/code/acp/tests/long_horizon_contracts.rs:68:53
+   |
+68 |         report::summarize(CAMPAIGN, &definitions(), &[valid.clone()])
+   |                                                     ^^^^^^^^^^^^^^^^ help: try: `std::slice::from_ref(&valid)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#cloned_ref_to_slice_refs
+   = note: `#[warn(clippy::cloned_ref_to_slice_refs)]` on by default
+
+warning: `aster-acp` (test "long_horizon_contracts") generated 11 warnings (5 duplicates) (run `cargo clippy --fix --test "long_horizon_contracts" -p aster-acp -- --no-deps` to apply 1 suggestion)
+warning: function `remember_denies` is never used
+   --> crates/code/acp/src/agent.rs:532:4
+    |
+532 | fn remember_denies(live: &mut LiveSession) {
+    |    ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `first_run_acl_is_created_once_and_lists_unconfigured_models` is never used
+   --> crates/code/acp/src/config.rs:971:8
+    |
+971 |     fn first_run_acl_is_created_once_and_lists_unconfigured_models() {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `successful_tool_json` is never used
+   --> crates/code/acp/src/document_read_tests.rs:293:4
+    |
+293 | fn successful_tool_json(text: &str) -> Value {
+    |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `successful_tool_json` is never used
+  --> crates/code/acp/src/document_run_tests.rs:13:4
+   |
+13 | fn successful_tool_json(text: &str) -> Value {
+   |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `successful_tool_json` is never used
+  --> crates/code/acp/src/office_read_governed_tests.rs:16:4
+   |
+16 | fn successful_tool_json(text: &str) -> Value {
+   |    ^^^^^^^^^^^^^^^^^^^^
+
+warning: field assignment outside of initializer for an instance created with Default::default()
+  --> crates/code/acp/src/agent/emit_tests.rs:47:13
+   |
+47 | /             config.memory = Some(aster_core::memory::MemoryConfig {
+48 | |                 llm_extraction: false,
+49 | |                 ..Default::default()
+50 | |             });
+   | |_______________^
+   |
+note: consider initializing the variable with `aster_core::CodeConfig { memory: Some(aster_core::memory::MemoryConfig {
+                      llm_extraction: false,
+                      ..Default::default()
+                  }), ..Default::default() }` and removing relevant reassignments
+  --> crates/code/acp/src/agent/emit_tests.rs:46:13
+   |
+46 |             let mut config = aster_core::CodeConfig::default();
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#field_reassign_with_default
+   = note: `#[warn(clippy::field_reassign_with_default)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/agent/native_send_now_tests.rs:205:9
+    |
+205 |     let seen = client.seen.lock().unwrap();
+    |         ^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/agent/native_send_now_tests.rs:242:21
+    |
+242 |     session.close().await;
+    |                     ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+    = note: `#[warn(clippy::await_holding_lock)]` on by default
+
+warning: called `.err().expect()` on a `Result` value
+    --> crates/code/acp/src/agent_tests.rs:2097:10
+     |
+2097 |           .err()
+     |  __________^
+2098 | |         .expect("invalid image rejected");
+     | |_______________^ help: try: `expect_err`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#err_expect
+     = note: `#[warn(clippy::err_expect)]` on by default
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/document_run_tests.rs:487:21
+    |
+487 |                 let texts = f.model.results.lock().unwrap();
+    |                     ^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/document_run_tests.rs:505:26
+    |
+505 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: this `MutexGuard` is held across an await point
+   --> crates/code/acp/src/document_run_tests.rs:488:21
+    |
+488 |                 let errors = f.model.result_errors.lock().unwrap();
+    |                     ^^^^^^
+    |
+    = help: consider using an async-aware `Mutex` type or ensuring the `MutexGuard` is dropped before calling `await`
+note: these are all the await points this lock is held through
+   --> crates/code/acp/src/document_run_tests.rs:505:26
+    |
+505 |                 f.stop().await;
+    |                          ^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#await_holding_lock
+
+warning: manual implementation of `.is_multiple_of()`
+  --> crates/code/acp/src/memory_search/tests.rs:31:19
+   |
+31 |         } else if self.calls.fetch_add(1, Ordering::SeqCst) % 2 == 0 {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace with: `self.calls.fetch_add(1, Ordering::SeqCst).is_multiple_of(2)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#manual_is_multiple_of
+   = note: `#[warn(clippy::manual_is_multiple_of)]` on by default
+
+warning: used `assert_eq!` with a literal bool
+   --> crates/code/acp/src/office_file_tests.rs:789:5
+    |
+789 |     assert_eq!(xml.matches("w:w=\"2340\"").count() >= 4, true, "{xml}");
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.97.0/index.html#bool_assert_comparison
+    = note: `#[warn(clippy::bool_assert_comparison)]` on by default
+help: replace it with `assert!(..)`
+    |
+789 -     assert_eq!(xml.matches("w:w=\"2340\"").count() >= 4, true, "{xml}");
+789 +     assert!(xml.matches("w:w=\"2340\"").count() >= 4, "{xml}");
+    |
+
+warning: `aster-acp` (lib test) generated 22 warnings (10 duplicates) (run `cargo clippy --fix --lib -p aster-acp --tests -- --no-deps` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 33.02s

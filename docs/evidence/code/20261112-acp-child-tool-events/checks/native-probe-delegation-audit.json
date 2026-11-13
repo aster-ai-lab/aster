@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "marker": "KRUN_CHILD_PROOF:61c9bcc08386a0e9e041bc1569867b2e",
+  "toolCalls": 2,
+  "seconds": 12.93,
+  "verified": [
+    {
+      "parent": "call_5d2b3e9489394a80a62c4743d54cf624",
+      "child": "call_82fa78a0637d44f488f6cbb2e01edba6",
+      "startIndex": 6,
+      "terminalIndex": 8,
+      "parentTerminalIndex": 9
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "stage": "/Users/roylin/code/kense/krun/.build/aster-child-events-10d31355de674eaba470f22560ded0c6",
+  "source": "/Users/roylin/code/kense/kbox/.tmp/acp-harnesses/aster-source",
+  "sourceRepository": "/Users/roylin/code/aster",
+  "sourceCommit": "6a8bf40f3d10101165e18cf0f60fbd17e6213f81",
+  "dirty": true,
+  "sourceSnapshotDigest": "sha256:c4e974fa9100db04c2c8d66f5b179aea7cfe21d9e206bedbb8d84c9303be4340",
+  "fileCount": 14008,
+  "prefix": "/Users/roylin/code/kense/krun/.build/doctor-final-prefix-c9b8e068a3144a8aa367eb9c4ff84f79",
+  "kboxHome": "/Users/roylin/code/kense/krun/.build/aster-child-events-10d31355de674eaba470f22560ded0c6/kbox-home",
+  "builderContext": "/Users/roylin/code/kense/krun/.build/aster-current-7e88b748954f4780a6cab8406b213f4b/builder",
+  "builderParent": "docker.io/library/acp-aster-base@sha256:a4d73637cfb0723ed270ad43aafb85d65e09857640af721742cf41fe9030ce6d",
+  "builderTag": "aster-current-builder:b915ae9e9ca2",
+  "builderImage": "docker.io/library/aster-current-builder@sha256:0cff1ea0ce1b5e09f5a0fab35abac8e32b557937bfc8a6e69c1cc051688dc2c5",
+  "builderProtocContext": "/Users/roylin/code/kense/krun/.build/aster-current-7e88b748954f4780a6cab8406b213f4b/builder-protoc",
+  "builderProtocTag": "aster-current-builder:protoc-a34f4946d6ad",
+  "archive": "/Users/roylin/code/kense/krun/.build/aster-child-events-10d31355de674eaba470f22560ded0c6/artifacts/aster-cli-linux-arm64.tar.gz",
+  "archiveSha256": "2fc52be325b0631af7261e9a3ccec9bf4f7ab6a554b6b6fde07ff6079fa25464",
+  "sourceChangeOriginHead": "78ca852039eb16e94a6080fc43dc58be4274907a",
+  "overlayPaths": [
+    "crates/code/acp/src/config.rs",
+    "crates/code/acp/src/lib.rs",
+    "crates/code/acp/src/bin/aster-acp.rs",
+    "crates/code/acp/src/bin/aster-acp/tests.rs",
+    "crates/code/acp/src/config/tests/overlays.rs"
+  ],
+  "additionalTestFixtures": [
+    "tests/fixtures/office/evaluation-numeric-display.xlsx",
+    "tests/fixtures/terminal/config.acl",
+    "packages/intelligent-ui/fixtures/form.json"
+  ],
+  "sourceSnapshotFormat": "SHA256 of exact UTF-8 source-snapshot.json bytes",
+  "baseSourceSnapshotDigest": "sha256:2d352dbb89c79ccd85b1f51d7fd1913746b7d46bb505f80a6c40ca73181d9491",
+  "additionalChanges": [
+    "crates/code/core/src/fact_control/executor_tools.rs",
+    "crates/code/core/src/agent_api/tests/stream.rs"
+  ]
+}

@@ -1,0 +1,6 @@
+Creating box aster-child-events-compile-f22560ded0c6 (c8f04f24c4e6)...
+Box aster-child-events-compile-f22560ded0c6 (c8f04f24c4e6) started. Press Ctrl-C to stop.
+init.krun: setup_redirects ok
+init.krun: execvp(/sbin/init) starting
+Retained logs for removed box aster-child-events-compile-f22560ded0c6 at /Users/roylin/code/kense/krun/.build/aster-child-events-10d31355de674eaba470f22560ded0c6/kbox-home/removed-logs/c8f04f24-c4e6-4a0f-bc82-fae496c3d45c. View with: kbox logs aster-child-events-compile-f22560ded0c6
+Box aster-child-events-compile-f22560ded0c6 exited and was removed.

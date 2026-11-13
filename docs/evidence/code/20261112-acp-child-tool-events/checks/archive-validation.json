@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "buildId": "aster-cli-pair-v1:028b037742b6a8745a8e3e8a855697a7b6599600:aarch64-unknown-linux-gnu",
+  "archiveSha256": "2fc52be325b0631af7261e9a3ccec9bf4f7ab6a554b6b6fde07ff6079fa25464",
+  "binaries": [
+    {
+      "name": "aster",
+      "sha256": "40155dc5a37b74495202e0d0c9243bf2accfd686761ec9caab754d94a1524ea1",
+      "bytes": 156647480,
+      "maxGlibc": "2.30"
+    },
+    {
+      "name": "aster-acp",
+      "sha256": "c56d4f0a3428dd48cac83506fc192c901d2fe5135fadb45d03c1a5caf2496bdb",
+      "bytes": 43664504,
+      "maxGlibc": "2.30"
+    }
+  ]
+}

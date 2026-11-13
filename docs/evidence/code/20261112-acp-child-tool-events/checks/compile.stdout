@@ -1,0 +1,10 @@
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+cargo 1.97.1 (c980f4866 2026-06-30)
+KRUN_BUILD_PHASE=child-tool-tests
+KRUN_BUILD_PHASE=clippy
+KRUN_BUILD_PHASE=cli
+KRUN_BUILD_PHASE=acp
+KRUN_BUILD_PHASE=archive
+/tmp/tmp.xxyQDVKFOd/aster: glibc <= 2.31
+/tmp/tmp.xxyQDVKFOd/aster-acp: glibc <= 2.31
+KRUN_BUILD_PHASE=done

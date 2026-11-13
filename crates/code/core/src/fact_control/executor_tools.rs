@@ -191,6 +191,10 @@ pub(super) fn host_bridge_event(event: &crate::agent::AgentEvent) -> bool {
             | crate::agent::AgentEvent::ConfirmationReceived { .. }
             | crate::agent::AgentEvent::ConfirmationTimeout { .. }
             | crate::agent::AgentEvent::UserQuestion { .. }
+            | crate::agent::AgentEvent::ToolExecutionStart { .. }
+            | crate::agent::AgentEvent::ToolOutputDelta { .. }
+            | crate::agent::AgentEvent::ToolEnd { .. }
+            | crate::agent::AgentEvent::PermissionDenied { .. }
     )
 }
 

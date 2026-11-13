@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "ownedRegularFiles": 137,
+  "bytesChecked": 4436731376,
+  "knownProviderCredentialCount": 2,
+  "mcpCredentialSha256": "92b15dbc1dcc5126222747fd4dc804dbe39d76357f4eb6c6223a0d8832d12393",
+  "hexCandidatesChecked": 60150,
+  "temporarySourcesRemoved": 2,
+  "followsSymlinks": false,
+  "executions": [],
+  "volumes": []
+}

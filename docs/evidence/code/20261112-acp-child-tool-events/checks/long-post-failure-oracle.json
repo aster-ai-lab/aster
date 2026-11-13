@@ -1,0 +1,17 @@
+{
+  "status": "PARTIAL",
+  "completedRoundDataCheck": "PASS",
+  "completedRoundsVerified": 18,
+  "inputBatches": 234,
+  "binaryBytesEach": 16777216,
+  "retainedReports": 18,
+  "phraseFileCheck": "FAIL",
+  "phraseLocation": ".aster/memory/durable_memory/wal (native automatic storage)",
+  "overallLongSuiteAccepted": false,
+  "unperformed": [
+    "rounds 19-24",
+    "fresh-execution native resume with real model",
+    "end-of-suite canary check"
+  ],
+  "nextFixtureChange": "explicit native memory_dir=/data/.aster/memory; no memory feature disabled or grader change"
+}
