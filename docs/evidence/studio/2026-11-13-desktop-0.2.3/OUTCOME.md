@@ -101,6 +101,51 @@ ASTER_NOTARY_PROFILE=aster-notary bash scripts/package-dmg.sh
 
 `docs/release-governance.md` 明确「不得从有未提交修改…的工作树发布」。**本轮未擅自提交该生成文件**（它是构建副产物，提交与否属源码治理决策）。若要让此 DMG 满足正式发布来源要求：先决定是提交还是还原该 wasm，再重跑一次 `package-dmg.sh`（`.app` 无需重建）并复核 sha256。
 
+## 修复与重打包（18:08 起）
+
+用户要求「完成修复和打包」。**修复已完成；打包已完成但公证被 Apple 账号侧阻断。**
+
+### 1. dirty worktree 修复（完成）
+
+- 实测可复现性：强制重编译同一份 `crates/office/crates/web-kernel` 源码，wasm sha256 前后均为 `1e6525696622437b7676089f2c94502e0fc737582700a1684885b0b80c04a6d4` → **字节确定**，提交一次即可避免以后反复 dirty。
+- 确认本次 `Cargo.lock` 改动只有 `aster-studio 0.2.2 → 0.2.3`，与 kernel 依赖无关；触发重编译是因为 `needs_rebuild()` 用 mtime 比对整份 lock。
+- 提交 `19f99a34d`：`packages/office/generated/office-kernel.wasm`（1,490,739 → 1,491,127 字节）。提交而非还原，使仓库内核与已嵌入 `.app` 的内核一致。
+- 双仓 `git status --porcelain` 均为空 → `release-governance.md` 的干净工作树前提满足。
+
+### 2. 重打包（完成，但公证降级）
+
+| 尝试 | 结果 |
+| --- | --- |
+| `ASTER_NOTARY_PROFILE=aster-notary package-dmg.sh` | `DMG_EXIT=1`：`HTTP 403 — A required agreement is missing or has expired`。`notarytool history` 同样 403，确认是 Apple 开发者账号协议级稳定失败，非临时抖动。脚本 `set -e` 中途退出，导致当时 dmg 与旧 `.sha256` 不匹配（`shasum -c FAILED`）、且无 staple 票据 |
+| 不设 `ASTER_NOTARY_PROFILE` 重跑 | `DMG_EXIT=0`，`signed but NOT notarized`，**无 dirty worktree 警告**，重新生成自洽的 sha256 |
+
+最终产物 `dist/Aster-0.2.3-macos-arm64.dmg`（138M）+ `.sha256`
+
+| 复核 | 结果 |
+| --- | --- |
+| `shasum -a 256 -c` | **OK**；SHA256 `adb9acb99358030156b11e285b6aea226e945bcd68fab645c9349d28fc0070a9` |
+| `codesign --verify --strict` | **EXIT 0** |
+| `codesign -dv` | Developer ID Application: Lijin Zhu (5L9P7TS6DM)，Timestamp 2026-11-13 18:11:25 |
+| `spctl --assess --type open` | **rejected — `source=Unnotarized Developer ID`** |
+
+⚠️ 因此该 DMG **已签名但未公证，Gatekeeper 会拒绝直接打开**，不能直接对外分发。首次构建（15:44）曾成功公证并 `spctl accepted`，但其 dmg 已被后续重打包覆盖，未保留副本。
+
+### 3. 恢复公证所需的用户侧动作
+
+403 来自 App Store Connect 的团队法律协议（未签署或已过期），需要账号持有人登录接受最新协议。完成后重跑：
+
+```bash
+cd apps/studio
+ASTER_NOTARY_PROFILE=aster-notary bash scripts/package-dmg.sh
+```
+
+预期 `notarytool status Accepted` → stapler staple/validate OK → `spctl accepted / Notarized Developer ID`，并生成新的 `.sha256`。届时才满足对外发布条件。
+
+### 4. 状态
+
+- 父仓 HEAD `19f99a34d`，**未推送 2 个 commit**（`c6e244bba` 首次打包记录、`19f99a34d` wasm 修复）+ 本证据提交；本轮未擅自推送。
+- 工作树干净。**未上传、未发布、未触发 `release-aster-desktop.yml`**。
+
 ## Explicitly not claimed
 
 - **未触发** `release-aster-desktop.yml`，**未构建**发布用的 `.zip`，**未上传/覆盖** `desktop-stable` 的任何资产，未创建新 tag 或 GitHub Release。
