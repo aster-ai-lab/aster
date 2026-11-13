@@ -60,7 +60,9 @@ R4 真 host 渲染通道 ──> 产品/工程改造，或判定由 R2 替代、
   3. 若系统层始终拒绝 → 向 agent-desktop 上游提需求：进程枚举改 libproc / `sysctl`，去掉 setuid `/bin/ps` 依赖。
 - **验收**：`list-apps ok=true` 且 F11 `AGENT_DESKTOP_LAUNCH_L3: PASS` 重跑成功。
 - **⛔ 自动路径已穷尽（第三十八、四十一轮）**：沙箱 Bash / `open -n -a` wrapper / `osascript`→Terminal（`-10004`）/ `open .command` / **重建构建后直接 `agent-desktop launch`** 五条全部实测失败。**根因已实锤**：`close-app` 错误详情直接写出 `ps: Operation not permitted`；`permissions` 与 `list-windows`（无 Aster 时）正常，`find`/`snapshot` 快速返回，但**一旦 Aster 在跑，所有需要 app/window inventory 的命令都 `global_window_owner_churn` 到超时**。不是 host 全挂，是 inventory 依赖 setuid `/bin/ps`。唯一剩余动作是 Lyon **本人**在 Terminal.app / iTerm2 手动跑一次 `specs/recheck-host.sh` 并把回执给回。
-- **责任**：Lyon 手动一条命令；我提供脚本与判据。**在此之前不再尝试任何预热、重试或上下文切换**（R9 禁止未换诊断方向连重试）。
+- **第六条也失败（第四十二轮）**：重建构建后直接 launch → 应用起来了但 `list-windows`（无 `--app`）同样 TIMEOUT，拿不到 `--window-id`；清理 pid 后 `list-windows` 立刻复原（`ok=True, 62`），因果闭环。**本机 6 条路径穷尽，不再尝试第七条。**
+- **🔀 替代路径（需决策）**：把 GUI E2E 接到 **macOS CI runner**。只读调研：仓库 9 个 workflow 中 `macos-latest` / `macos-14` 均存在，但**零个**引用 `agent-desktop` / `visual-e2e` / `f01-p0-prime`。需新增 workflow（装 agent-desktop、生成 wrapper、处理 TCC、`just build-studio`、收集两次 PASS 回执）。这属于团队 CI 范围变更，**未经 Lyon 拍板不擅自改**。
+- **责任**：Lyon 手动一条命令，或拍板 CI 改造；我提供脚本、判据与 workflow 方案。
 
 ### R4 · 真 native host 的 renderer 通道（产品/工程，建议暂缓）
 

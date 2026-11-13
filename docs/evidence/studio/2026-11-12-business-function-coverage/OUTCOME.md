@@ -1654,6 +1654,42 @@ attempts 145-152, last_code APP_UNRESPONSIVE
 - **F 层仍 1/17 / 2/17**，P0' 用例本轮**未执行、无 PASS、不计入**。
 - 无产品源码/测试改动、无覆盖数字变化、无子模块改动。
 
+## 第四十二轮：第六条自动路径失败，因果闭环；转向 CI 可行性调研
+
+### 1. `--window-id` 路径实测失败
+
+基于第四十一轮发现（`find --help` 提供 `--window-id <id>`，且无 Aster 时 `list-windows` 正常），尝试用 window-id 绕开全局 app inventory。
+
+- 按 AGENTS.md 先重建构建（基线又因证据提交 stale）：`--build` 0、`--verify verified 2bc12da1f/e710d4a77 native=ac39c3b1193d renderer=d4cbf930937a`。
+- `agent-desktop launch ... --activate` 仍 `APP_UNRESPONSIVE`（`NSWorkspace and libproc returned different launch identities`，pid 94961），但应用确实启动。
+- **启动后 `list-windows`（无 `--app`）也 `TIMEOUT`（`ok=false, windows=0`）**，拿不到任何 `w-*` window-id，因此 `--window-id` 无法使用。这是第六条自动路径，同样失败。
+
+### 2. 因果链闭环
+
+清理本次启动的两个 pid（`libproc` TERM，`after=[]`，端口全空闲）后，**`list-windows` 立刻复原**：`ok=True, windows=62`。
+
+即：无 Aster 进程 → inventory 正常；Aster 一运行 → inventory churn 到超时；进程消失 → 立刻恢复。结合第四十一轮 `close-app` 里 agent-desktop 自述的 `ps: Operation not permitted`，阻塞机制已完全确证，不再需要第七次本机尝试（R9 禁止未换方向连重试）。
+
+### 3. 换个方向：CI 可行性（只读调研）
+
+本机沙箱无解，改查仓库 CI 能否承担 GUI E2E：
+
+| 检查 | 结果 |
+| --- | --- |
+| `.github/workflows/` 数量 | 9（`ci.yml`、`qualify-code.yml`、`release-*.yml` 等） |
+| macOS runner | **有**：`release-aster-cli.yml:160,214` = `macos-latest`，`release-aster-desktop.yml:34` = `macos-14` |
+| 引用 `agent-desktop` / `visual-e2e` / `f01-p0-prime` 的 workflow | **0 个** |
+| 引用 `draft-navigation` / `agent-desktop-launch` 的 workflow | **0 个** |
+
+结论：**CI 有 macOS runner，但目前完全没有 GUI E2E 通道**。要在此跑 P0'，需新增 workflow，至少包含：安装/构建 `agent-desktop`、生成 `~/Applications/AsterVisualE2E.app` wrapper、处理 TCC 辅助功能授权、`just build-studio`、执行 `f01-p0-prime-visual-e2e.py` 并收集回执。这是真实的工程投入，且会改动团队 CI，属于需要 Lyon 拍板的范围变更——本轮**未擅自改动任何 workflow**。
+
+### 4. 判定与状态
+
+- **R3 本机路径至此穷尽（6 条）**；唯一无需 CI 改造的解法仍是 Lyon 在非受限终端跑一次 `specs/recheck-host.sh`。
+- **提出的替代路径**：把 GUI E2E 接到 macOS CI runner（无本机沙箱限制），由 CI 产出两次 `F01_P0_PRIME: PASS` 后再改台账。需先确认是否投入 workflow 改造、以及 CI runner 的 TCC 策略。
+- **F 层仍 1/17 / 2/17**；P0' 用例本轮未执行、无 PASS、不计入。
+- 收尾：无残留进程、端口全空闲、`list-windows` 已复原。无产品源码/测试改动、无覆盖数字变化、无子模块改动。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
