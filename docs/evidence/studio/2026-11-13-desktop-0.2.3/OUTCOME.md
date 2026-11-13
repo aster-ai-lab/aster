@@ -200,6 +200,57 @@ spctl --assess --type open --context context:primary-signature --verbose=2 dist/
 cd apps/studio && ASTER_NOTARY_PROFILE=aster-notary pnpm package:host
 ```
 
+## 网站与 GitHub Releases 发布准备（18:46 起，等待公证前置）
+
+用户要求「更新 aster 的网站，上传安装包到 github releases」。因安装包缺公证且网站更新等价于正式发布，经确认选择 **「先补公证再发布」**。本轮只做准备，**未上传、未创建 release、未触发网站部署**。
+
+### 机制调研（只读）
+
+| 事实 | 依据 |
+| --- | --- |
+| 网站源码在 `apps/web/`，由 `.github/workflows/aster-pages.yml` 部署到 GitHub Pages | workflow `validate` + `deploy` job |
+| 下载数据**自动从 GitHub Releases 解析**，无需手改页面 | `apps/web/scripts/build_releases.mjs --refresh` → `content/releases.json` → `home.html` / `download.html` 模板 |
+| `selectDownloads()` 只认 `draft=false` + `prerelease=false` + 有 `published_at` 的 release，缺任一 target 即抛错 | `build_releases.mjs:35,53` |
+| desktop.macos 认两种资产：`aster_<version>_aarch64.dmg`（tag 必须 `v<version>`）或 `Aster-darwin-aarch64-v<version>.zip`（tag `desktop-stable`） | `build_releases.mjs:11,43` |
+| deploy 会在 `release` 事件或 `main` push（改动 `apps/web/**`）时执行 | `aster-pages.yml` deploy job `if` |
+| 网站当前快照：`desktop.macos = 0.2.2 / v0.2.2 / aster_0.2.2_aarch64.dmg`；`--check` EXIT 0 | 本地 `apps/web/content/releases.json` |
+| `v0.2.3` release **不存在**；`desktop-stable` 已是非 draft 正式 channel | `gh release view` |
+
+**结论**：draft / prerelease 上传后网站不会认，所以「上传 + 更新网站」必然是正式发布——这正是必须先补公证的原因。
+
+### 已完成的准备
+
+1. **命名与 tag 全链路模拟**（纯只读，调用 `selectDownloads()`）：把线上 release 元数据加上一个假设的 `v0.2.3`（`draft=false`、`prerelease=false`、`tag_name=v0.2.3`、资产 `aster_0.2.3_aarch64.dmg`），结果 `desktop.macos -> version=0.2.3 tag=v0.2.3 asset=aster_0.2.3_aarch64.dmg`，**网站会正确切换**，无隐藏坑。
+2. **推送发布前置 commit**：`cea025ee3..96f2b43d5` → `origin/main`，未推送归零，凭证扫描 0 命中。打 tag 时远程已有对应源码（`release-governance.md` 要求发布记录能定位准确提交）。
+3. **生成中英双语 release 文案** `release-body.md`，结构对齐 `v0.2.2`（安装说明 + New Features / Improvements / Bug Fixes + 中文对应）。文案内显式写明：**`spctl --assess` 返回 `accepted / Notarized Developer ID` 之前禁止使用**，避免虚报公证状态。
+
+### 协议解除后的执行清单（未执行）
+
+```bash
+# 0. 前置：确认 Apple 403 已解除
+xcrun notarytool history --keychain-profile aster-notary
+
+# 1. 对规范命名的 dmg 补公证（无需重打包）
+xcrun notarytool submit dist/aster_0.2.3_aarch64.dmg --keychain-profile aster-notary --wait
+xcrun stapler staple dist/aster_0.2.3_aarch64.dmg
+spctl --assess --type open --context context:primary-signature --verbose=2 dist/aster_0.2.3_aarch64.dmg  # 必须 accepted
+cd dist && shasum -a 256 aster_0.2.3_aarch64.dmg > aster_0.2.3_aarch64.dmg.sha256  # staple 改字节，必须重算
+
+# 2. 创建正式 release（文案含公证声明，仅在步骤 1 通过后使用）
+gh release create v0.2.3 \
+  --title "Aster v0.2.3 · macOS Apple Silicon" \
+  --notes-file docs/evidence/studio/2026-11-13-desktop-0.2.3/release-body.md \
+  dist/aster_0.2.3_aarch64.dmg dist/aster_0.2.3_aarch64.dmg.sha256
+
+# 3. 网站：release published 事件会自动触发 aster-pages.yml；必要时手动
+gh workflow run aster-pages.yml --ref main
+
+# 4. 验证网站快照切到 0.2.3
+node apps/web/scripts/build_releases.mjs --check
+```
+
+`desktop-stable` 滚动 channel 的 `Aster-darwin-aarch64-v0.2.3.zip` 属于另一条链路（`release-aster-desktop.yml`），需单独触发该 workflow；网站 desktop.macos 只取两者中版本更高者，本轮不改动该 channel。
+
 ## Explicitly not claimed
 
 - **未触发** `release-aster-desktop.yml`，**未构建**发布用的 `.zip`，**未上传/覆盖** `desktop-stable` 的任何资产，未创建新 tag 或 GitHub Release。
