@@ -59,7 +59,8 @@ R4 真 host 渲染通道 ──> 产品/工程改造，或判定由 R2 替代、
   2. 可执行 → 把 GUI E2E 整体迁到该上下文执行（脚本不改）；不可执行 → 重启机器 / 重置辅助功能授权后复测。
   3. 若系统层始终拒绝 → 向 agent-desktop 上游提需求：进程枚举改 libproc / `sysctl`，去掉 setuid `/bin/ps` 依赖。
 - **验收**：`list-apps ok=true` 且 F11 `AGENT_DESKTOP_LAUNCH_L3: PASS` 重跑成功。
-- **责任**：Lyon 操作；我提供复测脚本与判据。**在此之前不再尝试任何预热/重试**（已在第三十四轮证明无效）。
+- **⛔ 自动路径已穷尽（第三十八轮）**：沙箱 Bash / `open -n -a` wrapper / `osascript`→Terminal（`-10004` 权限违例）/ `open .command`（回执未更新）四条全部实测失败，**我没有任何自动替代方案**。唯一剩余动作是 Lyon **本人**在 Terminal.app / iTerm2 手动跑一次 `specs/recheck-host.sh` 并把回执给回。
+- **责任**：Lyon 手动一条命令；我提供脚本与判据。**在此之前不再尝试任何预热、重试或上下文切换**（R9 禁止未换诊断方向连重试）。
 
 ### R4 · 真 native host 的 renderer 通道（产品/工程，建议暂缓）
 

@@ -1,11 +1,16 @@
 #!/bin/bash
-# Run this in an UNRESTRICTED login terminal (Terminal.app / iTerm2), not in
-# the WorkBuddy sandboxed shell. It only reads process/permission state and
-# writes a redacted JSON receipt; it does not launch Studio or call any LLM.
+# RUN THIS YOURSELF in an UNRESTRICTED login terminal (Terminal.app / iTerm2).
+# Mira cannot do it for you: four automatic routes were measured and all fail
+# (sandboxed bash, open -n -a wrapper, osascript -> Terminal -10004, and
+# opening a .command file). See OUTCOME.md round 38.
+#
+# It only reads process/permission state and writes a redacted JSON receipt;
+# it does not launch Studio or call any LLM.
 #
 #   bash /Users/roylin/code/aster/docs/evidence/studio/2026-11-12-business-function-coverage/specs/recheck-host.sh
 #
-# Then tell Mira; she reads /tmp/aster-visual-e2e/host-recheck.json.
+# Then paste the receipt (or just say "host 恢复了") back to Mira; she reads
+# /tmp/aster-visual-e2e/host-recheck.json and resumes the GUI E2E cases.
 
 OUT=/tmp/aster-visual-e2e/host-recheck.json
 mkdir -p /tmp/aster-visual-e2e
