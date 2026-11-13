@@ -1438,6 +1438,52 @@ at least ~19.11s faster with isolate: false — reuses workers across files inst
 - **未改任何源码、配置或测试**；不声称全量套件已通过，既有 7 文件 / 27 条失败仍在（第三十五轮）。
 - 无覆盖数字变化（F 层 1/17 / 2/17）、无子模块改动、无推送。
 
+## 第三十七轮：分片建议的全量实测修正（纯实验，无改动）
+
+第三十六轮给出「N=16 → 每片 ≈8.7 分钟」是**从 chat 子集外推**的。本轮对**完整 renderer 套件**跑 `--shard=1/16` 实测，结果需要修正两处。
+
+### 1. 耗时：外推低估了
+
+```
+timeout 900s vitest run --project renderer --shard=1/16 --silent
+  real 702.18s（11.7 分钟），user 180.57s，sys 34.75s
+  Test Files  23 failed | 76 passed (99)
+  Tests       85 failed | 1391 passed (1476)
+```
+
+不是 8.7 分钟，是 **11.7 分钟**。按 99 文件 / 702s（≈7.1s/文件）重新外推：
+
+| N | 每片文件 | 预计单片 |
+| --- | --- | --- |
+| 16（实测） | 99 | **11.7 分钟** |
+| 20 | ≈79 | ≈9.3 分钟 |
+| 24 | ≈66 | ≈7.8 分钟 |
+
+**修正建议**：CI 用 **N=20~24**（每片 <10 分钟），或 N=16 但把 job 超时提到 **≥15 分钟**。根因仍是 `isolate:true` 每文件 spawn worker（本片日志再次出现 `~131.88s faster with isolate: false`），但第三十六轮已实测 `isolate:false` 会让失败暴涨，**维持否决**。
+
+### 2. 既有失败规模：远大于之前看到的局部
+
+这一片就有 **85 条失败 / 23 个失败文件**，而第三十五轮 chat 子集只看到 7 文件 / 27 条。按文件归属统计，主要有：
+
+| 失败数 | 文件 |
+| --- | --- |
+| 18 | `src/renderer/utils/__tests__/citation.test.ts` |
+| 7 | `src/renderer/pages/knowledge/__tests__/useWorkspaceAnalysisClock.test.tsx` |
+| 5 | `src/renderer/data/hooks/__tests__/useCache.test.ts` |
+| 4 | `src/renderer/components/FilePreview/plugins/markdown/__tests__/MarkdownFilePreview.test.tsx` |
+| 2 | `ComposerCore.test.tsx`、`WorkspaceEditorTabs.test.tsx` |
+| 各 1 | `WorkspaceWikiCatalog`、`WorkbenchScopePicker`、`knowledgeCompileAgent` 等 |
+
+样本断言包括「defaults an unset language to Chinese…」「shows window theme and language, and not wallpaper or the retired layout rows…」，形态是**产品 UI 演进后测试未跟上**。另有 43 条为汇总型 FAIL 行、无法归到单个文件。
+
+**关键修正**：分片**只解决超时，不解决失败**。全量套件即使分片跑完也不会绿；必须另有独立排期逐批比对产品预期后修过时断言。按 AGENTS.md 本轮仍**记录不修**（不阻塞当前任务，且不猜产品意图）。
+
+### 3. 判定与状态
+
+- 第三十六轮的分片方案**方向正确但数字需修正**：N=16 实测 11.7 分钟；推荐 N=20~24 或提高 job 超时。
+- 纯命令行实验，**未改任何源码/配置/测试**；不声称全量套件通过或失败已修。
+- 无覆盖数字变化（F 层 1/17 / 2/17）、无子模块改动、无推送。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
