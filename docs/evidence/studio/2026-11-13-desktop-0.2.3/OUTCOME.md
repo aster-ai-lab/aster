@@ -307,6 +307,46 @@ package-dmg.sh   -> DMG_EXIT=0
 - `package-dmg.sh` 末尾仍报 `dirty worktree — local artifact only, not releasable`，原因是**用户自己的工作树 WIP** `scripts/publish-aster-cli.sh`（19:50，收窄 CLI 发布的 dirty 检查），与本次改动无关，**未提交、未还原、未触碰**。
 - 未上传、未创建 release、未触发网站部署；父仓 `78fb7bade` + 本证据 commit 未推送。
 
+## v0.2.3 正式发布到 GitHub Releases + 网站联动（21:29 起）
+
+用户要求「替换发布到 github releases」。因产物未公证且 `v0.2.3` release 不存在，先用 AskUserQuestion 明确风险与「替换」含义；用户**知情选择「现在就发 v0.2.3 正式版」**（接受 Gatekeeper 拒绝风险）。未覆盖 `v0.2.2` 资产（会造成 tag 与文件版本号错乱），而是新建 `v0.2.3` 并设为 Latest，即替换「当前最新版」的地位。
+
+### 发布内容
+
+```bash
+gh release create v0.2.3 --target main \
+  --title "Aster v0.2.3 · macOS Apple Silicon" \
+  --notes-file <如实文案> --latest \
+  dist/aster_0.2.3_aarch64.dmg dist/aster_0.2.3_aarch64.dmg.sha256
+```
+
+**文案调整**：未使用早先准备的 `release-body.md`（其中含「已公证、Gatekeeper 直接接受」的不实声明），改为生成一份在 `/tmp` 的中英双语文案，明确写明 **Developer ID 已签名、Apple 公证尚未完成、Gatekeeper 可能拒绝、需手动放行或等待公证版**。线上 body 已复核包含该说明。
+
+| 复核 | 结果 |
+| --- | --- |
+| `gh release view v0.2.3` | `isDraft=false`、`isPrerelease=false`、`publishedAt=2026-11-13T13:34:08Z` |
+| `gh release list --limit 3` | `Aster v0.2.3 · macOS Apple Silicon` 标记为 **Latest**，`v0.2.2` 退为历史 |
+| 资产 | `aster_0.2.3_aarch64.dmg` 145,046,616 B、`aster_0.2.3_aarch64.dmg.sha256` 90 B，均 `state=uploaded` |
+| 线上 sha256 资产 | `1c459139244eef758c2357ff14eab3c9bf01c940af38496904c8aaa573d19ce4`，与本地一致 |
+| 网站脚本只读模拟 | `selectDownloads()` → `desktop.macos version=0.2.3 tag=v0.2.3 asset=aster_0.2.3_aarch64.dmg` |
+
+### 网站联动（release 事件自动触发，首次失败后手动补齐）
+
+| run | 触发 | 结果 |
+| --- | --- | --- |
+| `43434781473` | `release` 事件，`headBranch=v0.2.3` | `validate` success、**`deploy` failure** |
+| `43435577666` | `workflow_dispatch --ref main` | `validate` + `deploy` **均 success** |
+
+失败根因（非本次发布引入）：`github-pages` environment 有 `deployment_branch_policy`（`custom_branch_policies=true`、`protected_branches=false`），只允许从 main 部署；release 事件的 headBranch 是 tag `v0.2.3`，被环境策略在步骤执行前拒绝（`steps: []`）。历史上 11-11 的 `aster-cli-v0.3.3` release 事件同样失败，而 push/workflow_dispatch on main 都成功。**未修改仓库 environment 配置**，改用现有 workflow 从 main 手动触发补齐。
+
+线上复核：`https://aster-ai-lab.github.io/aster/` 首页下载链接为 `releases/download/v0.2.3/aster_0.2.3_aarch64.dmg`，`/download/` 页同样显示 `aster_0.2.3_aarch64.dmg` / `v0.2.3`。
+
+### 仍需注意
+
+- ⚠️ 该 release 的 dmg **已签名、未公证**，`spctl` 仍为 `rejected / Unnotarized Developer ID`。release 文案已如实告知用户手动放行；这不满足 `v0.2.2` 声明的「notarized + stapled」标准。
+- 协议恢复后的收尾：`notarytool submit` + `stapler staple` → 重算 sha256 → `gh release upload v0.2.3 ... --clobber` 覆盖同名资产（链接不变，无需再触发网站）。
+- 未做真窗口 GUI E2E（`/bin/ps` 沙箱阻塞）；未改 Pages environment 配置；未改动任何源码。
+
 ## Explicitly not claimed
 
 - **未触发** `release-aster-desktop.yml`，**未构建**发布用的 `.zip`，**未上传/覆盖** `desktop-stable` 的任何资产，未创建新 tag 或 GitHub Release。
