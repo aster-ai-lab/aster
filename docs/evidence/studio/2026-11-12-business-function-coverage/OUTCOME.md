@@ -1586,6 +1586,74 @@ cargo test --locked -p aster --test cli_update --test env_manager \
 - 本轮**无源码/测试改动**、无覆盖数字变化（F 层仍 1/17 / 2/17）、无子模块改动、无推送。
 - 顺带复核：`/tmp/aster-visual-e2e/host-recheck.json` 仍是 08:39 旧回执，GUI 阻塞未解除。
 
+## 第四十一轮：R3 根因实锤，阻塞边界精确化（`ps: Operation not permitted`）
+
+本轮重新审视第三十八轮「所有 GUI E2E 不可用」的结论，发现**边界描述过粗**，做了更细的探测并拿到 agent-desktop 自述的直接证据。
+
+### 1. 命令面澄清
+
+`agent-desktop --help` 显示是**扁平命令**（`snapshot` / `find` / `get` / `click` / `type` / `set-value` / `launch` / `close-app` / `list-windows` / `permissions`），**没有 `ax` 子命令**；既有脚本里的 `h.ax("find", ...)` 是 helper 自己包装的。此前只反复测 `list-apps`，把它的 TIMEOUT 误当成整个 host 挂了。
+
+### 2. 阻塞只发生在「全局应用/窗口清单」类命令
+
+| 命令（无 Aster 在跑） | 结果 |
+| --- | --- |
+| `permissions` | `ok=true`；accessibility / screen_recording = granted |
+| `list-windows` | **正常返回** WorkBuddy、iTerm 等窗口列表 |
+| `find --app Aster --role window` | 844ms 快速返回 `APP_NOT_FOUND`（「No running application matches 'Aster'」），**无 TIMEOUT** |
+| `snapshot --app Aster` | 同上，`APP_NOT_FOUND` |
+| `list-apps` | TIMEOUT（`application_inventory_unstable`） |
+
+### 3. 按规矩重建构建后直接 launch（绕过 `ensure_host`）
+
+AGENTS.md 要求 GUI E2E 前从当前 checkout 构建。实测基线 stale（`recorded=cca9e8f30` vs `current=8253ab82c`），先重建：
+
+```
+node scripts/e2e-fresh-build.mjs --build   -> BUILD=0
+node scripts/e2e-fresh-build.mjs --verify  -> verified 8253ab82c/e710d4a77
+                                             native=f20b80b2bb94 renderer=d4cbf930937a
+```
+
+再直接执行（不经 `host_readiness.ensure_host()`）：
+
+```
+agent-desktop launch dev.aster.studio.visual-e2e.launcher \
+  --env ASTER_STUDIO_INSTANCE=f11-live-01 --env STUDIO_RENDERER_PORT=4325 \
+  --activate --timeout 90000
+  -> APP_UNRESPONSIVE: "NSWorkspace and libproc returned different launch identities" (pid 53773)
+```
+
+但应用**确实起来了**：紧接着 `find --app Aster` 从 `APP_NOT_FOUND` 变为 `WINDOW_NOT_FOUND`（「Application 'Aster' is running but has no matching window」），libproc 查到 `Aster 53773` / `Studio 53556`。
+
+随后连续 3 轮观察，`list-windows --app Aster` 与 `find --app Aster --role window` 全部变成：
+
+```
+TIMEOUT / global_window_inventory_unstable / global_window_owner_churn
+attempts 145-152, last_code APP_UNRESPONSIVE
+```
+
+即**一旦 Aster 在跑，任何需要枚举窗口 owner 的命令都 churn 到超时**，窗口无法驱动。
+
+### 4. 直接证据
+
+`close-app --force` 的错误详情第一次把根因写全：
+
+```json
+{"code":"TIMEOUT","details":{"kind":"application_inventory_unstable",
+ "last_failure":"A required macOS app inventory source failed",
+ "last_failure_details":{"failures":[{"code":"INTERNAL",
+  "message":"ps: Operation not permitted"}]}}}
+```
+
+不再是推断：**agent-desktop 的 app/window inventory 依赖 setuid `/bin/ps`，在本沙箱上下文被系统拒绝**。`list-apps`、`list-windows --app`、`find --app`、`snapshot --app`、`close-app` 全部走这条路径；`permissions` 与无 app 参数的快速路径不受影响。
+
+### 5. 收尾与判定
+
+- 清理：`close-app` 自身 TIMEOUT，改用 libproc 对本次启动的两个 pid 发 TERM，`after = []`；4318/4325/4388/4598 全空闲。
+- **R3 结论不变但更精确**：不是「agent-desktop 全挂」，而是**应用能启动、AX 权限齐备，唯独 inventory 依赖的 `/bin/ps` 被拒**，导致窗口命令不可用。第三十八轮「只能由 Lyon 在非受限终端跑 `specs/recheck-host.sh`」仍是唯一解；本轮直接 launch 是第五条自动路径，同样失败。
+- **F 层仍 1/17 / 2/17**，P0' 用例本轮**未执行、无 PASS、不计入**。
+- 无产品源码/测试改动、无覆盖数字变化、无子模块改动。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
