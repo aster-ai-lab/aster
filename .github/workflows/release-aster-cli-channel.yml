@@ -71,6 +71,24 @@ jobs:
               --notes "Rolling CLI channel. latest.json names the current versioned release." \
               --latest=false
           fi
+          # Older updaters only understand macos/linux/windows. Keep the same
+          # versioned identity but drop linux-arm64 before publishing the
+          # compatibility manifest on the repository Latest.
+          python3 - latest.json <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          path = Path(sys.argv[1])
+          manifest = json.loads(path.read_text(encoding="utf-8"))
+          assets = manifest.get("assets")
+          if not isinstance(assets, dict) or "linux-arm64" not in assets:
+              raise SystemExit("cannot derive legacy compatibility manifest")
+          manifest["assets"] = {
+              key: value for key, value in assets.items() if key != "linux-arm64"
+          }
+          path.write_text(json.dumps(manifest, separators=(",", ":")), encoding="utf-8")
+          PY
           # Pre-stable installers still resolve repository Latest. Keep their
           # compatibility manifest current without coupling new clients to it.
           gh release upload "$latest_tag" latest.json --clobber
