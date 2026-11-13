@@ -4667,14 +4667,22 @@ fn shipped_bound_goal_real_llm() {
     pty.enter();
     let deadline = Instant::now() + Duration::from_secs(300);
     let mut screen = String::new();
+    let mut approval_visible = false;
     while Instant::now() < deadline {
         screen = pty.pump(Duration::from_millis(500));
         if screen.contains("Goal complete.") {
             break;
         }
-        if screen.contains("Yes, proceed") {
+        // Approval dialogs vary by tool ("Allow Execute?", "Allow write?")
+        // and by execution boundary ("Yes, proceed", "Yes, run on host").
+        // The 1/2 select footer is common to all of them. Approve once per
+        // dialog so repeated pumps never send "1" twice.
+        let dialog = screen.contains("1/2:select")
+            && (screen.contains("Yes, proceed") || screen.contains("Yes, run on host"));
+        if dialog && !approval_visible {
             pty.write_bytes(b"1");
         }
+        approval_visible = dialog;
     }
     assert!(screen.contains("Goal complete."), "{screen}");
     let report = std::fs::read_to_string(workspace.join("report.txt")).expect("report.txt");

@@ -1218,6 +1218,14 @@ fn collect_changed_paths(value: &serde_json::Value, paths: &mut Vec<String>) {
                     }
                 }
             }
+            // Tool-effect observations record paths under effects.changes[].path.
+            if let Some(changes) = map.get("changes").and_then(|entry| entry.as_array()) {
+                for change in changes {
+                    if let Some(path) = change.get("path").and_then(|entry| entry.as_str()) {
+                        paths.push(path.to_string());
+                    }
+                }
+            }
             for child in map.values() {
                 collect_changed_paths(child, paths);
             }
@@ -1231,8 +1239,12 @@ fn collect_changed_paths(value: &serde_json::Value, paths: &mut Vec<String>) {
     }
 }
 
+/// Spec ruling 2026-11-13 (option A): the workspace delta a foreign concurrent
+/// commit produces is indistinguishable from an agent-owned unpublished write,
+/// so the completion gate must fail closed on it. Assert that boundary instead
+/// of expecting the read-only turn to succeed.
 #[tokio::test(flavor = "current_thread")]
-async fn v912_readonly_git_parallel_commit_stays_ok() {
+async fn v912_readonly_git_parallel_commit_opens_the_gate() {
     tokio::task::LocalSet::new()
         .run_until(async {
             let workspace = isolate("readonly-git");
@@ -1247,23 +1259,33 @@ async fn v912_readonly_git_parallel_commit_stays_ok() {
             });
             let response = say(&agent, &session, "READONLY-GIT inspect the tree").await;
             committer.await.expect("parallel commit task");
-            response.expect("read-only git turn failed on the parallel commit");
+            let error = match response {
+                Ok(_) => panic!("a foreign concurrent write must open the completion gate"),
+                Err(error) => error,
+            };
+            let rendered = format!("{error:?}");
+            assert!(
+                rendered.contains("completion gate: workspace mutation"),
+                "the gate did not report an unbound workspace mutation: {rendered}"
+            );
+            assert!(
+                rendered.contains("guest.txt"),
+                "the gate did not name the foreign path: {rendered}"
+            );
             let log = effect_log(&workspace);
             assert!(
                 log.contains("READONLY-SEEN"),
                 "bash did not observe the parallel commit: {log}"
             );
-            assert!(
-                !log.contains("completion gate:"),
-                "read-only git failed the turn: {log}"
-            );
+            // The gate decision is returned in the ACP error above; the effect
+            // log records the observed workspace change, not the gate text.
             let paths = changed_paths_in_log(&log);
             assert!(
-                !paths.iter().any(|path| path == "guest.txt"),
-                "foreign commit entered the mutation observations: {paths:?}"
+                paths.iter().any(|path| path == "guest.txt"),
+                "the foreign write was not observed as a workspace mutation: {paths:?}"
             );
             git_at(&workspace, &["cat-file", "-e", "HEAD:guest.txt"]);
-            eprintln!("ORACLE readonly-git prompt=ok foreign-paths={paths:?} seen=READONLY-SEEN");
+            eprintln!("ORACLE readonly-git gate=open foreign-paths={paths:?} seen=READONLY-SEEN");
         })
         .await;
 }

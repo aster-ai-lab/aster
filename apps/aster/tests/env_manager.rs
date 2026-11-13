@@ -128,7 +128,7 @@ async fn tool_upgrade_previews_offline_updates_and_keeps_other_project_selection
 
 use std::ffi::OsStr;
 use std::path::Path;
-use std::process::Output;
+use std::process::{Output, Stdio};
 use std::time::Duration;
 
 #[cfg(unix)]
@@ -151,6 +151,7 @@ fn isolated_binary_command(binary: &Path, project: &Path, home: &Path) -> tokio:
         .env("ASTER_HOME", home)
         .current_dir(project)
         .arg("--no-auto-update")
+        .stdin(Stdio::null())
         .kill_on_drop(true);
     for name in [
         "PATH",

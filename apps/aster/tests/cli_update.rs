@@ -114,16 +114,6 @@ fn copy_tree(source: &Path, destination: &Path) {
 fn package(bin_dir: &Path, assets: &Path, version: &str) -> PathBuf {
     fs::create_dir_all(assets).expect("assets");
     let archive = assets.join(asset_name(version));
-    if cfg!(target_os = "macos") {
-        let status = Command::new("python3")
-            .arg("-c")
-            .arg("import hashlib,json,sys\nfrom pathlib import Path\nsys.path.insert(0,sys.argv[1])\nfrom sandbox_assets import FILES\nroot=Path(sys.argv[2])\nfor name in FILES:\n p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(('synthetic runtime '+name).encode())\nfor name in ['aster-oci','aster-oci-krun-shim']: (root/name).chmod(0o755)\n(root/'manifest.json').write_text(json.dumps({'schema':1,'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in FILES}}))")
-            .arg(repo_root().join("apps/studio/scripts"))
-            .arg(bin_dir.join("sandbox"))
-            .status()
-            .expect("sandbox fixture");
-        assert!(status.success(), "sandbox fixture could not be created");
-    }
     let status = Command::new("bash")
         .arg(repo_root().join("scripts/package-aster-cli.sh"))
         .arg(if cfg!(target_os = "macos") {
@@ -490,15 +480,15 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
                     .into_owned()
             })
             .collect();
-        assert_eq!(
-            names.len(),
-            if cfg!(target_os = "macos") { 3 } else { 2 },
-            "{names:?}"
-        );
-        if cfg!(target_os = "macos") {
-            assert_eq!(
-                snapshot(&install.join("sandbox")),
-                snapshot(&bins.join("sandbox"))
+        assert_eq!(names.len(), 3, "{names:?}");
+        for member in [
+            "embedding/potion-code-16M-v2.safetensors",
+            "embedding/potion-code-16M-v2.tokenizer.json",
+            "embedding/potion-code-16M-v2.config.json",
+        ] {
+            assert!(
+                install.join(member).is_file(),
+                "update did not install {member}: {names:?}"
             );
         }
         let _ = root;
@@ -626,9 +616,6 @@ fn shipped_update_check_and_current_leave_bytes() {
     fs::copy(bins.join("aster-acp"), current.join("aster-acp")).expect("copy acp");
     chmod(&current.join("aster"));
     chmod(&current.join("aster-acp"));
-    if cfg!(target_os = "macos") {
-        copy_tree(&bins.join("sandbox"), &current.join("sandbox"));
-    }
     let current_aster = fs::read(current.join("aster")).expect("current aster");
     let current_acp = fs::read(current.join("aster-acp")).expect("current acp");
     let (current_code, current_stdout, current_stderr) =
@@ -653,47 +640,58 @@ fn shipped_update_check_and_current_leave_bytes() {
 #[cfg(target_os = "macos")]
 #[test]
 fn shipped_update_repairs_the_runtime_when_the_binary_pair_is_already_current() {
-    use std::os::unix::fs::PermissionsExt;
-    for damage in ["missing", "changed", "not-executable"] {
+    // A current binary pair must still repair missing or damaged embedding
+    // assets from the verified archive, without reinstalling the binaries.
+    for damage in ["missing", "changed"] {
         let root = temp_root(damage);
         let home = prepare_home(&root);
         let home_before = snapshot(&home);
         let bins = root.join("bins");
         write_pair(&bins, NEW_ID, true, true);
         let assets = root.join("assets");
-        package(&bins, &assets, FIXTURE_VERSION);
+        let archive = package(&bins, &assets, FIXTURE_VERSION);
+        let unpack = root.join("unpack");
+        fs::create_dir(&unpack).unwrap();
+        assert!(
+            Command::new("tar")
+                .arg("-xzf")
+                .arg(&archive)
+                .arg("-C")
+                .arg(&unpack)
+                .status()
+                .unwrap()
+                .success()
+        );
+        let expected = snapshot(&unpack.join("embedding"));
+        assert_eq!(
+            expected.len(),
+            3,
+            "archive must carry three embedding assets"
+        );
         let install = root.join("install");
         fs::create_dir(&install).unwrap();
         for name in ["aster", "aster-acp"] {
             fs::copy(bins.join(name), install.join(name)).unwrap();
         }
-        if damage != "missing" {
-            copy_tree(&bins.join("sandbox"), &install.join("sandbox"));
-            if damage == "changed" {
-                fs::write(install.join("sandbox/bundle/rootfs.tar"), "changed runtime").unwrap();
-            } else {
-                fs::set_permissions(
-                    install.join("sandbox/aster-oci"),
-                    fs::Permissions::from_mode(0o644),
-                )
-                .unwrap();
-            }
+        if damage == "changed" {
+            copy_tree(&unpack.join("embedding"), &install.join("embedding"));
+            fs::write(
+                install.join("embedding/potion-code-16M-v2.safetensors"),
+                "damaged embedding asset",
+            )
+            .unwrap();
         }
         let (code, stdout, stderr) =
             capture_pipe(&install.join("aster"), &["update"], &home, &assets);
         assert_eq!(code, 0, "{damage}: {stdout}\n{stderr}");
-        assert!(stdout.contains("installed Aster"), "{damage}: {stdout}");
-        assert_eq!(
-            snapshot(&install.join("sandbox")),
-            snapshot(&bins.join("sandbox"))
+        assert!(
+            stdout.contains("Aster CLI pair is current"),
+            "{damage}: {stdout}"
         );
         assert_eq!(
-            fs::metadata(install.join("sandbox/aster-oci"))
-                .unwrap()
-                .permissions()
-                .mode()
-                & 0o111,
-            0o111
+            snapshot(&install.join("embedding")),
+            expected,
+            "{damage}: embedding assets were not repaired"
         );
         assert_eq!(snapshot(&home), home_before);
     }
@@ -740,7 +738,7 @@ fn shipped_update_rejects_a_binary_only_macos_release_with_valid_checksums() {
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     assert_ne!(code, 0, "{stdout}\n{stderr}");
     assert!(
-        stderr.contains("macOS release is missing sandbox companions"),
+        stderr.contains("did not contain embedding assets"),
         "{stderr}"
     );
     assert_eq!(snapshot(&install), before);
@@ -775,13 +773,17 @@ fn shipped_update_rejects_a_tampered_runtime_before_changing_the_installation() 
             .unwrap()
             .success()
     );
-    fs::write(unpack.join("sandbox/bundle/rootfs.tar"), "tampered runtime").unwrap();
+    // A retired sandbox/ companion in the archive must be refused outright,
+    // not skipped: skipping it would install a half pair.
+    fs::create_dir_all(unpack.join("sandbox")).unwrap();
+    fs::write(unpack.join("sandbox/aster-oci"), "retired companion").unwrap();
     assert!(
         Command::new("tar")
             .env("COPYFILE_DISABLE", "1")
             .arg("-czf")
             .arg(&archive)
             .args(members.lines())
+            .arg("sandbox/aster-oci")
             .current_dir(&unpack)
             .status()
             .unwrap()
@@ -790,13 +792,13 @@ fn shipped_update_rejects_a_tampered_runtime_before_changing_the_installation() 
     write_manifest(&assets, &archive, FIXTURE_VERSION);
     let install = root.join("install");
     write_pair(&install, OLD_ID, true, false);
-    fs::create_dir(install.join("sandbox")).unwrap();
-    fs::write(install.join("sandbox/keep"), "previous runtime").unwrap();
+    fs::create_dir_all(install.join("embedding")).unwrap();
+    fs::write(install.join("embedding/keep"), "previous asset").unwrap();
     let before = snapshot(&install);
     let home_before = snapshot(&home);
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     assert_ne!(code, 0, "{stdout}\n{stderr}");
-    assert!(stderr.contains("checksum mismatch"), "{stderr}");
+    assert!(stderr.contains("sandbox companions"), "{stderr}");
     assert_eq!(snapshot(&install), before);
     assert_eq!(snapshot(&home), home_before);
 }
@@ -963,7 +965,7 @@ fn package_two_binaries(bin_dir: &Path, archive: &Path) {
     names.sort();
     assert_eq!(
         names,
-        vec!["aster-acp".to_string(), "aster".to_string()],
+        vec!["aster".to_string(), "aster-acp".to_string()],
         "pinned-style archive must be only the two binaries"
     );
 }
@@ -992,76 +994,15 @@ fn shipped_update_handles_legacy_two_file_release() {
     let old_acp = fs::read(install.join("aster-acp")).expect("old acp");
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     println!("CAPTURE two-file\n{stdout}\n{stderr}");
-    if cfg!(target_os = "macos") {
-        assert_ne!(code, 0, "{stdout}\n{stderr}");
-        assert!(
-            stderr.contains("macOS release is missing sandbox companions"),
-            "{stderr}"
-        );
-        assert_eq!(fs::read(install.join("aster")).unwrap(), old_aster);
-        assert_eq!(fs::read(install.join("aster-acp")).unwrap(), old_acp);
-        assert_eq!(snapshot(&home), before_home);
-        return;
-    }
-    assert_eq!(code, 0, "{stdout}\n{stderr}");
+    // A pinned two-binary archive predates the required embedding/ layout.
+    // Every platform must refuse it without touching the installed pair.
+    assert_ne!(code, 0, "{stdout}\n{stderr}");
     assert!(
-        stdout.contains(&format!("installed Aster v{FIXTURE_VERSION}")),
-        "{stdout}"
+        stderr.contains("did not contain embedding assets"),
+        "{stderr}"
     );
-    assert!(!stdout.contains("identity="), "{stdout}");
-    assert!(!stderr.contains("identity mismatch"), "{stderr}");
-    assert_no_frames(&stdout);
-    assert_no_frames(&stderr);
-    assert_eq!(
-        fs::read(install.join("aster")).expect("new aster"),
-        aster_body.as_bytes()
-    );
-    assert_eq!(
-        fs::read(install.join("aster-acp")).expect("new acp"),
-        acp_body.as_bytes()
-    );
-    assert_ne!(
-        fs::read(install.join("aster")).expect("replaced"),
-        old_aster
-    );
-    assert_ne!(
-        fs::read(install.join("aster-acp")).expect("replaced"),
-        old_acp
-    );
-
-    let replaced_aster = Command::new(install.join("aster"))
-        .stdin(Stdio::null())
-        .status()
-        .expect("run replaced aster");
-    assert!(replaced_aster.success(), "replaced aster is not runnable");
-    let replaced_acp = Command::new(install.join("aster-acp"))
-        .stdin(Stdio::null())
-        .status()
-        .expect("run replaced acp");
-    assert!(replaced_acp.success(), "replaced acp is not runnable");
-
-    let aster_id = Command::new(install.join("aster"))
-        .arg("--build-id")
-        .stdin(Stdio::null())
-        .output()
-        .expect("aster --build-id");
-    assert_eq!(aster_id.status.code(), Some(2));
-    let aster_err = String::from_utf8_lossy(&aster_id.stderr);
-    assert!(
-        aster_err.contains("unexpected argument '--build-id'"),
-        "{aster_err}"
-    );
-    let acp_id = Command::new(install.join("aster-acp"))
-        .arg("--build-id")
-        .stdin(Stdio::null())
-        .output()
-        .expect("acp --build-id");
-    assert_eq!(acp_id.status.code(), Some(1));
-    let acp_err = String::from_utf8_lossy(&acp_id.stderr);
-    assert!(
-        acp_err.contains("unknown argument: --build-id"),
-        "{acp_err}"
-    );
+    assert_eq!(fs::read(install.join("aster")).unwrap(), old_aster);
+    assert_eq!(fs::read(install.join("aster-acp")).unwrap(), old_acp);
     assert_eq!(snapshot(&home), before_home);
 }
 

@@ -538,7 +538,11 @@ fn assert_workspace_untouched(fixture: &Fixture) {
             let entry = entry.unwrap();
             let name = entry.file_name();
             assert!(
-                name == "index" || name == "sessions" || name == "effect-log" || name == "memory",
+                name == "index"
+                    || name == "sessions"
+                    || name == "effect-log"
+                    || name == "memory"
+                    || name == "loops",
                 "unexpected workspace path .aster/{name:?}"
             );
             assert!(

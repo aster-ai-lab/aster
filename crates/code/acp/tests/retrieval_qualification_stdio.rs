@@ -78,7 +78,15 @@ async fn bundled_semantic_order_survives_the_existing_vector_index() {
 #[tokio::test]
 async fn bundled_provider_binds_to_the_existing_durable_memory_projection() {
     let preview = bundled_memory_probe(false).await;
-    assert_eq!(preview.hits[0].node_id, "settings");
+    // Default RRF fusion deliberately ranks the hybrid `weather` node first;
+    // linear fusion is what preserves the semantic margin (see
+    // durable_memory::fusion_tests::linear_preserves_similarity_margin_and_later_verified_revision).
+    // This case qualifies the binding itself: both active memories are recalled
+    // through the shared bundled provider and the candidate stays excluded.
+    assert_eq!(preview.hits.len(), 2);
+    assert!(preview.hits.iter().any(|hit| hit.node_id == "settings"));
+    assert!(preview.hits.iter().any(|hit| hit.node_id == "weather"));
+    assert!(preview.hits.iter().all(|hit| hit.node_id != "candidate"));
 }
 
 #[tokio::test]

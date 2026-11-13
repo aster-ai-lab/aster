@@ -356,7 +356,10 @@ fn decide(raw: &str, state: &mut MockState) -> String {
             if !*sent && tools && raw.contains("E-BASH-MARKER") {
                 *sent = true;
                 // No sandbox_permissions: the unqualified native command must
-                // fail closed before a process exists.
+                // be refused with no side effect. The OS sandbox may deny the
+                // launch (seatbelt exit 71) or admission may refuse before a
+                // process exists; the security property is the result, not the
+                // particular mechanism (spec ruling 2026-11-13).
                 let args = serde_json::json!({ "command": "printf 'ran\\n' > side-effect.txt" })
                     .to_string();
                 return reply_tool("bash", &args, state, streaming);
@@ -853,9 +856,21 @@ async fn e_bash() {
             let detail = finish_prompt(&case, "E-BASH-MARKER", false).await;
             let state = case.state.lock().expect("mock");
             let observed = format!("{}\n{detail}", joined_bodies(&state));
+            // Spec ruling 2026-11-13: accept OS-level seatbelt denial. Assert
+            // the security result, not a pre-admission mechanism: an explicit
+            // refusal plus a non-zero tool exit. The no-side-effect and
+            // no-leak gates below stay unchanged.
+            let denied = observed.contains("sandbox_apply: Operation not permitted")
+                || observed.contains("Bash remains denied")
+                || observed.contains("native_process_lifetime_unqualified");
             assert!(
-                observed.contains("native_process_lifetime_unqualified"),
-                "unescalated bash did not fail closed\n{}",
+                denied,
+                "unescalated bash did not report an explicit refusal\n{}",
+                body_trace(&state)
+            );
+            assert!(
+                observed.contains("exit code: 71") || observed.contains("exit status: 71"),
+                "unescalated bash did not exit non-zero after the denial\n{}",
                 body_trace(&state)
             );
             drop(state);
@@ -864,10 +879,7 @@ async fn e_bash() {
                 "unescalated bash created a file"
             );
             assert_no_leak(&[case.home.clone(), workspace]);
-            oracle(
-                "E-BASH",
-                "refused=native_process_lifetime_unqualified file=absent",
-            );
+            oracle("E-BASH", "refused=os-sandbox-denial exit=71 file=absent");
         })
         .await;
 }

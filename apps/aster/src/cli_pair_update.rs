@@ -509,6 +509,9 @@ fn install_release(
         && files_identical(&pair.aster, &dest_aster)
         && files_identical(&pair.acp, &dest_acp)
     {
+        // A matching binary pair can still have missing or damaged embedding
+        // assets; repair them from the verified archive before reporting Current.
+        install_embedding_dir(&dir, &pair.embedding)?;
         return Ok(InstallOutcome::Current {
             identity: pair.identity,
             version: channel.version,

@@ -121,6 +121,16 @@ fn resolve_codex_home() -> Option<PathBuf> {
             return Some(PathBuf::from(home));
         }
     }
+    // Match the process-home contract: a non-empty HOME wins, otherwise fall
+    // back to USERPROFILE. dirs::home_dir() may resolve through the OS user
+    // database even when HOME is unset, which would read the real account.
+    for key in ["HOME", "USERPROFILE"] {
+        if let Some(value) = std::env::var_os(key) {
+            if !value.is_empty() {
+                return Some(PathBuf::from(value).join(".codex"));
+            }
+        }
+    }
     dirs::home_dir().map(|home| home.join(".codex"))
 }
 
