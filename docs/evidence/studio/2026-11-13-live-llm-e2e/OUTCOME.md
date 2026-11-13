@@ -188,6 +188,39 @@ S1 完成后继续推进「全部能力和组件渲染」。检查真实 fixture
 - **不改 222 项统计**、`coverage-matrix.md` 不动（理由同第三轮）；**F 层仍 1/17 / 2/17**，组件/数据层 vitest 不计入用户口径。
 - 未改产品源码。
 
+## 第五轮：真实 token 用量闭合到可见 UI
+
+第四轮把 `data-context-usage` 验到了「投影进缓存」，但还差最后一环：**那些真实数字有没有显示在界面上**。本轮补上，至此「真实 LLM turn → 消息 part → 数据链路 → 可见组件」闭合。
+
+### 做法
+
+`MessagePartsRenderer` 对该 part `return null`，所以可见 UI 由 `ContextUsageSummary` + `ContextUsageMeter` 消费缓存数据渲染。在现有 `contextUsage.test.tsx`（3 个用例）里追加 1 条，用**同一份真实 fixture** 的 `data-context-usage.data` 构造组件入参：
+
+```
+totalTokens 24798 → usedTokens
+maxTokens 1000000
+percentage 2.4798
+model  "<uuid>::deepseek-flash" → modelName
+```
+
+断言真实数字出现在渲染文本里，且 `role="meter"` 的 `aria-valuenow` 与真实百分比一致。
+
+**一次失败与修正**：首版用 `getByText(/24798/)` 找不到——组件做了**千分位格式化**，实际渲染 `24,798 / 1,000,000 (2.5%)`。改为从真实数字推导期望（`container.textContent` 去逗号后比对 `totalTokens`/`maxTokens`/`percentage.toFixed(1)`），断言针对**数值本身而非排版**，没有删断言或放宽匹配换绿。
+
+### 验证（实测）
+
+| 检查 | 结果 |
+| --- | --- |
+| `vitest run --project renderer contextUsage.test.tsx` | **1 passed (1)**，EXIT 0；**复跑同样 PASS** |
+| `oxlint --deny-warnings` | **0 warning / 0 error**，EXIT 0 |
+| `git diff --check` | OK |
+
+### 判定
+
+- 真实 LLM turn 的 4 类 part 现有完整归属：`text` / `reasoning` 有组件渲染断言，`step-start` 为不可见内部边界，`data-context-usage` 验到**投影 + 可见 UI 两环**。
+- **不改 222 项统计**（理由同第三、四轮），**F 层仍 1/17 / 2/17**：组件层 vitest 按 15:06 口径不计入。
+- 未改产品源码。fixture 在子模块测试目录各有一份副本，均同步自父仓 `fixtures/live-turn-parts.json`。
+
 ## Explicitly not claimed
 
 - 不声称「任务对话流全部能力和组件渲染」已测完；只跑通了 1 个真 turn、验到 4 种 part 类型，222 项形态里绝大多数未执行。
