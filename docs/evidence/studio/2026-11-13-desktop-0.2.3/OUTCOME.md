@@ -146,6 +146,60 @@ ASTER_NOTARY_PROFILE=aster-notary bash scripts/package-dmg.sh
 - 父仓 HEAD `19f99a34d`，**未推送 2 个 commit**（`c6e244bba` 首次打包记录、`19f99a34d` wasm 修复）+ 本证据提交；本轮未擅自推送。
 - 工作树干净。**未上传、未发布、未触发 `release-aster-desktop.yml`**。
 
+## 发布命名规范对齐（18:35 起）
+
+用户要求「安装包要签名，且符合 aster 主仓库发布命名规范」。核对后发现主仓库有**两套**规范，均已产出对应产物。
+
+### 规范依据（只读核对）
+
+| 链路 | 资产名 | 依据 |
+| --- | --- | --- |
+| versioned release（dmg 安装包） | `aster_<version>_aarch64.dmg` + `.sha256` | `gh release view v0.2.2 --json assets`：`aster_0.2.2_aarch64.dmg`、`aster_0.2.2_aarch64.dmg.sha256` |
+| CI 滚动 channel（zip） | `Aster-darwin-aarch64-v<version>.zip` | `release-aster-desktop.yml:81,116,139` 与 `desktop_release_manifest.py:128` 的硬校验 |
+
+`v0.2.2` 的 release body 明确写明签名要求：「signed with a Developer ID Application certificate, **notarized by Apple and stapled**. Gatekeeper accepts both the disk image and the app directly」。
+
+另外线上 `.sha256` 格式为 `<hash>␠␠<相对文件名>`（例：`65cd2949…  aster_0.2.2_aarch64.dmg`），而 `package-dmg.sh` 本地输出的是**绝对路径**，也一并对齐。
+
+### 产出（均在 `dist/`）
+
+| 文件 | 说明 |
+| --- | --- |
+| `aster_0.2.3_aarch64.dmg`（138M） | 由本地 dmg 按规范改名，**重新用 Developer ID 签名**（`codesign --force --timestamp`），签名 Identifier 随之变为 `aster_0.2.3_aarch64` |
+| `aster_0.2.3_aarch64.dmg.sha256` | 相对名格式，与线上一致；`50961735bb57d101b1b05be7e6911f8280a55681615c0efdd81f0358a39a731a` |
+| `Aster-darwin-aarch64-v0.2.3.zip`（134M） | 复制自 `package-host.sh` 生成的 `target/release/bundle/macos/Aster.zip`，与 CI build job 的 `cp` 步骤一致 |
+
+旧名 `Aster-0.2.3-macos-arm64.dmg` 已改名（不保留重复副本，避免多占 138M 磁盘），旧 `.sha256` 移至 `/tmp/aster-visual-e2e/old-dmg-sha256.txt`。
+
+### 实测验证
+
+| 检查 | 结果 |
+| --- | --- |
+| `codesign --verify --strict aster_0.2.3_aarch64.dmg` | **EXIT 0**；Authority = Developer ID Application: Lijin Zhu (5L9P7TS6DM)，Timestamp 18:38:38 |
+| `shasum -a 256 -c aster_0.2.3_aarch64.dmg.sha256` | **OK** |
+| `desktop_release_manifest.py generate --zip ... --asset Aster-darwin-aarch64-v0.2.3.zip --version 0.2.3` | **EXIT 0**：`wrote … version 0.2.3 platform darwin-aarch64`（内含官方 `verify_archive` 校验） |
+| `desktop_release_manifest.py check` | **EXIT 0**：`manifest ok: version 0.2.3 platforms ['darwin-aarch64']` |
+| `.app` 层签名 | Developer ID + hardened runtime（`flags=0x10000(runtime)`），`codesign --verify --deep --strict` EXIT 0 |
+
+### ⚠️ 仍缺的一环：公证（非命名/签名问题）
+
+`spctl --assess` 仍为 **`rejected / Unnotarized Developer ID`**；`.app` 的 `xcrun stapler validate` 也报「does not have a ticket stapled」。原因是 `ASTER_NOTARY_PROFILE=aster-notary` 的 notarytool 请求持续返回 `HTTP 403 — A required agreement is missing or has expired`，`notarytool history` 同样 403，keychain 里没有备用公证凭证。这是 Apple 开发者账号协议级阻塞，**无法在仓库侧绕过**。
+
+按 `v0.2.2` 的规范，完整签名 = Developer ID 签名 + 公证 + staple。当前两份产物满足命名与签名，但**尚未满足公证，不能宣称达到 v0.2.2 的发布标准**。
+
+**恢复步骤**（账号持有人接受 App Store Connect 最新协议后）：
+
+```bash
+# dmg：直接对规范命名的文件补公证，无需重打包
+xcrun notarytool submit dist/aster_0.2.3_aarch64.dmg --keychain-profile aster-notary --wait
+xcrun stapler staple dist/aster_0.2.3_aarch64.dmg
+spctl --assess --type open --context context:primary-signature --verbose=2 dist/aster_0.2.3_aarch64.dmg
+# 之后重算 sha256（staple 会改变文件字节）
+
+# zip：用 notary profile 重跑 host 使 .app 带票据，再重新 archive
+cd apps/studio && ASTER_NOTARY_PROFILE=aster-notary pnpm package:host
+```
+
 ## Explicitly not claimed
 
 - **未触发** `release-aster-desktop.yml`，**未构建**发布用的 `.zip`，**未上传/覆盖** `desktop-stable` 的任何资产，未创建新 tag 或 GitHub Release。
