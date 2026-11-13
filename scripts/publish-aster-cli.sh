@@ -17,7 +17,21 @@ else
   built="$BUILD_SHA"
 fi
 source_commit="$(git rev-parse HEAD)"
-source_status="$(git status --porcelain -- . ':!dist' ':!qualification' ':!notes.md')"
+# A release must be traceable to clean CLI inputs. Other product lines in this
+# monorepo (Studio desktop assets, evidence docs) cannot affect the aster +
+# aster-acp pair, so their uncommitted work must not block a CLI release.
+cli_inputs=(
+  apps/aster
+  crates
+  Cargo.toml
+  Cargo.lock
+  rust-toolchain.toml
+  .cargo/config.toml
+  scripts/cli_pair_build.rs
+  scripts/package-aster-cli.sh
+  scripts/publish-aster-cli.sh
+)
+source_status="$(git status --porcelain -- "${cli_inputs[@]}")"
 if [[ "$source_commit" != "$built" || -n "$source_status" ]]; then
   echo "refusing release: publish from the clean artifact source commit $built" >&2
   exit 1
