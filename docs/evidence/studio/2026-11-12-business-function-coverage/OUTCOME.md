@@ -1690,6 +1690,51 @@ attempts 145-152, last_code APP_UNRESPONSIVE
 - **F 层仍 1/17 / 2/17**；P0' 用例本轮未执行、无 PASS、不计入。
 - 收尾：无残留进程、端口全空闲、`list-windows` 已复原。无产品源码/测试改动、无覆盖数字变化、无子模块改动。
 
+## 第四十三轮：纠正第三十七轮的失败清单解析错误，给出 21/2 真失败分类
+
+「继续推进测试」，本轮对 renderer 既有失败做**隔离复跑**，结果先纠正了我自己上一轮的一个分析错误。
+
+### 1. 第三十七轮的失败文件清单是错的
+
+第三十七轮从 `--shard=1/16` 日志用「最近的 `✓/×` 文件行」归属 `×` 测试行，得出 `citation.test.ts 18`、`useWorkspaceAnalysisClock 7`、`useCache 5`… 等清单。**这个解析器漏了 vitest 的失败文件格式**：失败文件在日志里是
+
+```
+❯  renderer  src/renderer/pages/settings/AppearanceSettings/__tests__/AppearanceSettings.test.tsx (11 tests | 8 failed) 95ms
+```
+
+用的是 `❯` 前缀，不是 `×`。而测试级 `×` 行会被错配给**最近出现的通过文件行**，于是把 76 个通过文件里的用例张冠李戴。日志里实际 `citation.test.ts` 是 `✓ (43 tests)`、`useWorkspaceAnalysisClock` 是 `✓ (6 tests)`，两者单跑也确实全绿。
+
+按 `❯` 行重新提取，得到 **23 个文件**，各文件失败数相加 **正好 85**，与汇总 `Test Files 23 failed | 76 passed (99)` / `Tests 85 failed | 1391 passed (1476)` 完全吻合。第三十七轮的「85 条」数字没错，**错的是文件清单和「产品 UI 演进」的归因样本**。
+
+真实清单（节选大项）：`draftRuntimeCatalog.e2e.test.tsx` 13、`AppearanceSettings.test.tsx` 8、`LocalUsageSettings.test.tsx` 8、`OrgAuthorization.test.tsx` 8、`AgentPage.test.tsx` 7、`WebviewBrowser.test.tsx` 7、`WorkspaceTaskDetails.test.tsx` 2 等，完整 23 项见本轮日志解析产物 `/tmp/aster-visual-e2e/real-failed-files.txt`。
+
+### 2. 隔离复跑：21 真失败 / 2 环境性
+
+对 23 个文件**逐个单独执行** `vitest run --project renderer <file> --silent`：
+
+| 分类 | 数量 | 文件 |
+| --- | --- | --- |
+| **隔离后仍失败**（真失败） | **21** | 其余全部 |
+| 隔离后通过（批量环境性） | **2** | `ReviewOfficeDocument.test.tsx`、`noNativeSelect.test.ts` |
+
+「85 条主要是批量污染」的假设**被证伪**：绝大多数是可稳定复现的真实失败。仅 `noNativeSelect.test.ts`（AGENTS.md 明确要求的原生 select 检查）与 `ReviewOfficeDocument.test.tsx` 表现为顺序/环境污染，值得单独排期。
+
+### 3. 根因样本（3 个最小失败文件，均为产品 UI 演进）
+
+| 文件 | 根因 |
+| --- | --- |
+| `PageEntry.test.tsx` | `expected to have a length of 6 but got +0` |
+| `ProfileDialog.test.tsx` | `Unable to find ... role "radio" and name "马尾"` |
+| `pluginSidebarProviders.test.ts` | `Unable to find ... role "button" and name "review/entry"` |
+
+形态是预期 AX 名称 / 元素数量与当前产品不符。**修断言需要先判断「产品改名了」还是「产品有 bug」**，属于产品意图决策；按 AGENTS.md「记录但不顺手修、不猜」，本轮**未修改任何测试或产品源码**。
+
+### 4. 判定与状态
+
+- 第三十七轮的**数字保留、清单与归因纠正**；`REMEDIATION-PLAN.md` R8 行的「7 文件 / 27 条」「85 条 / 23 文件」表述同步更正为「分片 1/16：23 文件 / 85 条，其中 21 个文件隔离复跑仍失败」。
+- 分片方案结论**不变**（N=20~24、job 超时 ≥15 分钟、`isolate:false` 维持否决）：分片解决超时，不解决这 21 个真失败。
+- **F 层仍 1/17 / 2/17**；P0' 未执行、无 PASS、不计入。无产品源码/测试改动、无覆盖数字变化、无子模块改动。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
