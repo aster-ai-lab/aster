@@ -1512,6 +1512,41 @@ bash /Users/roylin/code/aster/docs/evidence/studio/2026-11-12-business-function-
 - 本轮无源码/配置/测试改动、无覆盖数字变化；`/tmp/aster-visual-e2e/recheck-host.command` 为临时探针，不在仓库内。
 - 父仓另有 Lyon 的 `2cb736721` 未推送，**本轮未代推、未改动**。
 
+## 第三十九轮：P0' 两条 F01 断言的代码就绪（未执行、未计入）
+
+复核 `/tmp/aster-visual-e2e/host-recheck.json` 仍是 08:39 旧回执（`ps.ok=false`、`list_apps.ok=false`），GUI 阻塞未解除。本轮不空等，把 P0' 缺的两条断言**写成可执行代码**，host 一恢复即可直接跑、改台账。
+
+### 交付：`specs/f01-p0-prime-visual-e2e.py`
+
+**不改已两次 PASS 的 `draft-navigation-visual-e2e.py`**（避免动既有通过记录），新建独立用例，复用其 `load_helpers` / `composer_value` / `clear_draft` / `type_draft` / `visible_text_count` 五个 helper，全程仍由 `agent-desktop` launch / drive / close-app。
+
+| 断言 | 做法 | 判定 |
+| --- | --- | --- |
+| **A 空草稿不落盘** | 清空 composer → 「设置」→「工作」往返 → 断言前后 composer 均为空 | PASS / FAIL |
+| **B 切 Tab 后状态保持** | 用 `--role tab` **动态发现** tab（不猜控件名）→ 输入草稿 → 切到另一个 tab → 重新查找并切回 → 断言草稿文本与 UI 可见性都保持 | PASS / FAIL / **INCOMPLETE** |
+
+Fail-closed 设计：
+- 第二个 tab 不可观察、或切回时找不到原 tab → `F01_P0_PRIME: INCOMPLETE`（退出码 2），**不算 PASS**。
+- 任一断言观察到真实问题 → `FAIL`（退出码 1）。
+- 仅两条全绿才 `PASS`（退出码 0）。
+- 输出明确写「需非受限 host；`/bin/ps` 阻塞期间不可执行，作为 ready-to-run 代码交付，不是通过用例」。
+
+**范围诚实**：断言 A 覆盖的是「不落盘」的 UI 可观察部分（composer 终态）；磁盘字节证据需要另一条带 fixture 的独立用例，本轮未做、也未声称覆盖。
+
+### 静态验证（实测，未启动 GUI）
+
+| 检查 | 结果 |
+| --- | --- |
+| `python3 -m py_compile` | OK |
+| AST 依赖核对（复用的 5 个 helper 是否都存在于原脚本） | **MISSING = none** |
+| 无 GUI 的模块加载冒烟（`exec_module`） | `IMPORT_OK (no GUI launched)`，5 个入口 callable |
+
+### 判定
+
+- **P0' 代码部分完成；执行部分未做**。`F01_P0_PRIME` **从未跑过、无 PASS、不计入任何覆盖数字**。
+- **F 层仍 1/17 / 2/17**。解锁后需连续两次独立 `F01_P0_PRIME: PASS`，才按 §10 的合理假设把 MATRIX 改为 2/17；若断言 B 长期 `INCOMPLETE`，则维持 1/17 并如实标注卡点。
+- 无覆盖数字变化、无产品源码改动、无子模块改动。
+
 ## Explicitly not claimed
 
 - **不声称业务功能验证覆盖率 100%**。F 层 **F07 + F11 两条**严格达标（2/17 ≈ 11.8%），其余 15 条未达标或未核定。
