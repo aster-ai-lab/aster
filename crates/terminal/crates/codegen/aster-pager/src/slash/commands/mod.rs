@@ -30,6 +30,7 @@ pub mod home;
 pub mod imagine;
 pub mod imagine_video;
 pub mod import_claude;
+pub mod init;
 pub mod jump;
 pub mod login;
 pub mod logout;
@@ -146,6 +147,7 @@ pub fn builtin_commands() -> Vec<Arc<dyn SlashCommand>> {
         Arc::new(imagine_video::ImagineVideoCommand),
         // Docs, account and one-off maintenance.
         Arc::new(docs::DocsCommand),
+        Arc::new(init::InitCommand),
         Arc::new(release_notes::ReleaseNotesCommand),
         Arc::new(announcements::AnnouncementsCommand),
         Arc::new(feedback::FeedbackCommand),

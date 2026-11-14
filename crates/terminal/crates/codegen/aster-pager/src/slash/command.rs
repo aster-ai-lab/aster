@@ -348,6 +348,13 @@ pub trait SlashCommand: Send + Sync {
     #[allow(unused_variables)]
     fn cancel_preview(&self, previous: &str) {}
 
+    /// Refuse execution before the submit path mutates anything, using the
+    /// session's working directory. A `Some` message is rendered as a system
+    /// line and `run()` is skipped. Defaults to no refusal.
+    fn pre_run_refusal(&self, _cwd: &std::path::Path) -> Option<String> {
+        None
+    }
+
     /// Execute the command synchronously.
     ///
     /// For async work, return `CommandResult::Action(action)` and let the dispatch layer handle the effect pipeline.

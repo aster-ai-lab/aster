@@ -876,6 +876,8 @@ pub(super) fn dispatch_send_prompt_submission(
                         .refusal(invocation.token, ctx.screen_mode)
                     {
                         CommandResult::Message(refusal)
+                    } else if let Some(refusal) = command.pre_run_refusal(&app.cwd) {
+                        CommandResult::Message(refusal)
                     } else {
                         agent
                             .prompt

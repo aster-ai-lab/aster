@@ -1245,6 +1245,7 @@ pub(super) fn dispatch_run_edited_queued_command(
     // Resolve every command refusal before removing the row. The send path will surface the same
     // refusal after this gate keeps the original queued prompt and its attachments intact.
     let screen_mode = app.screen_mode;
+    let cwd = app.cwd.clone();
     let gate = {
         let Some(agent) = app.agents.get(&agent_id) else {
             preserve_queued_image_paths(app, &mut submission);
@@ -1260,6 +1261,7 @@ pub(super) fn dispatch_run_edited_queued_command(
                             .mode_support()
                             .refusal(invocation.token, screen_mode)
                             .is_some()
+                            || command.pre_run_refusal(&cwd).is_some()
                             || command
                                 .submission_refusal(
                                     invocation.args,
