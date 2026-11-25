@@ -61,6 +61,11 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。
 3. 运行 `release-aster-cli-channel.yml`，输入相同的 `X.Y.Z`。该流程拒绝草稿或预发布版本，验证清单后更新 `aster-cli-stable` 和 Aster Latest 上的旧客户端兼容清单。
 
+如果已有 CLI 标签运行的 macOS 冷构建超时，在 `main` 上手动运行
+`release-aster-cli.yml`，将该运行 ID 填入 `artifact_run_id`，并启用
+`warm_macos_cache`。这个分支以原标签的源码预热 macOS 缓存。预热通过后，
+重跑原标签运行中失败的 macOS 作业，再使用该标签运行的完整归档走发布流程。
+
 #### CLI 更新器兼容
 
 - **通道清单**：`latest.json` 的 `assets` 可增加新平台键；已发布更新器必须忽略未知键，不能因未知平台拒绝整份清单。musl 双架构现为新版本的必需键，`release-aster-cli-channel.yml` 检查六个标准平台齐全，只允许 `kylin-x86_64` 作为可选键。`scripts/install.sh` 在 Linux 上优先选择 musl 归档，旧清单缺键时回退 glibc；`aster update` 按运行二进制的 libc 选择配对通道。

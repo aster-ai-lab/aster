@@ -85,3 +85,17 @@ ACP archive contained one executable, and its help reported Core `9.3.1`.
 - Clean-source release builds, GitHub branch qualification, formal platform
   archives, or native Linux and Windows execution for these candidates.
 - Publication, tags, stable-channel updates, or changes to the desktop Latest.
+
+## macOS release cache recovery
+
+The first [CLI tag build](https://github.com/aster-ai-lab/aster/actions/runs/45587301980)
+passed five platform lanes. Its macOS lane restored no cache and reached
+the 180-minute job deadline while building `aster`. The same release
+workflow can prewarm the macOS cache on `main` for the original tag
+commit. A subsequent rerun of the original macOS job retains the source
+tag and the other platform archives. The warm run stores build cache only.
+
+With Python 3.12, `tests/cli_release_workflow.py` passed 23 tests and
+`tests/release_governance.py` passed 18. The recovery test covers a valid
+tag run and refuses a non-tag run, a different workflow, a changed tag,
+and a source outside main.

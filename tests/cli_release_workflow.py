@@ -10,6 +10,11 @@ import tempfile
 import textwrap
 import unittest
 
+try:
+    from .release_governance import workflow_script
+except ImportError:
+    from release_governance import workflow_script
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
 NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
@@ -337,6 +342,60 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
 
 
 class ReleaseWorkflowContract(unittest.TestCase):
+    def test_macos_cache_recovery_uses_the_immutable_cli_tag_on_main(self):
+        script = workflow_script("release-aster-cli.yml", "Resolve macOS cache source")
+        for event, workflow, tagged_sha, main_ancestor in (
+            ("push", "release-aster-cli.yml", SOURCE_SHA, SOURCE_SHA),
+            ("workflow_dispatch", "release-aster-cli.yml", SOURCE_SHA, SOURCE_SHA),
+            ("push", "release-code.yml", SOURCE_SHA, SOURCE_SHA),
+            ("push", "release-aster-cli.yml", "c" * 40, SOURCE_SHA),
+            ("push", "release-aster-cli.yml", SOURCE_SHA, "c" * 40),
+        ):
+            with self.subTest(event=event, workflow=workflow, tagged_sha=tagged_sha, main_ancestor=main_ancestor):
+                with tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    github_output = root / "github-output"
+                    gh = root / "gh"
+                    gh.write_text("""#!/bin/sh
+set -eu
+test "$1" = api
+case "$2" in
+  repos/fixture/aster/actions/runs/123)
+    printf '%s\t%s\t%s\t%s\n' "$EVENT" ".github/workflows/$WORKFLOW" aster-cli-v0.4.1 "$SOURCE" ;;
+  repos/fixture/aster/commits/aster-cli-v0.4.1) printf '%s\n' "$TAGGED_SHA" ;;
+  "repos/fixture/aster/compare/$SOURCE...$GITHUB_SHA") printf '%s\n' "$MAIN_ANCESTOR" ;;
+  *) exit 2 ;;
+esac
+""")
+                    gh.chmod(0o755)
+                    result = subprocess.run(
+                        ["bash", "-c", script],
+                        env={
+                            **os.environ,
+                            "PATH": str(root) + os.pathsep + os.environ["PATH"],
+                            "GH_REPO": "fixture/aster",
+                            "ARTIFACT_RUN_ID": "123",
+                            "GITHUB_OUTPUT": str(github_output),
+                            "GITHUB_SHA": "b" * 40,
+                            "EVENT": event,
+                            "WORKFLOW": workflow,
+                            "SOURCE": SOURCE_SHA,
+                            "TAGGED_SHA": tagged_sha,
+                            "MAIN_ANCESTOR": main_ancestor,
+                        },
+                        text=True, capture_output=True, timeout=10,
+                    )
+                    accepted = (
+                        event == "push" and workflow == "release-aster-cli.yml"
+                        and tagged_sha == main_ancestor == SOURCE_SHA
+                    )
+                    if accepted:
+                        self.assertEqual(result.returncode, 0, result.stderr)
+                        self.assertEqual(github_output.read_text(), f"sha={SOURCE_SHA}\n")
+                    else:
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertFalse(github_output.exists())
+
     def test_tag_builds_require_premerge_qualification_without_repeating_it(self):
         text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
         self.assertIn('tags:\n      - "aster-cli-v[0-9]+.[0-9]+.[0-9]+"', text)

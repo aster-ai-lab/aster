@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact_run_id:
-        description: Republish archives from a previously qualified run without rebuilding them.
+        description: Release run whose archives should be republished or whose macOS build cache should be warmed.
         required: true
         type: string
       qualified_runner:
@@ -12,6 +12,10 @@ on:
         required: false
         type: string
         default: ""
+      warm_macos_cache:
+        description: Warm the macOS release cache on main for the exact source of artifact_run_id.
+        type: boolean
+        default: false
   push:
     tags:
       - "aster-cli-v[0-9]+.[0-9]+.[0-9]+"
@@ -155,17 +159,44 @@ jobs:
   # companions ship inside aster-cli archives.
   build-macos-bins:
     needs: preflight
-    if: ${{ github.ref_type == 'tag' && inputs.artifact_run_id == '' }}
+    if: ${{ (github.ref_type == 'tag' && inputs.artifact_run_id == '') || (github.ref == 'refs/heads/main' && inputs.warm_macos_cache) }}
     name: macos-bins
     runs-on: macos-latest
-    # release-dist + thin LTO routinely exceeds 90m on GHA macos-latest cold caches.
-    timeout-minutes: 180
+    # A cold thin-LTO build can spend 180 minutes on aster before starting aster-acp.
+    timeout-minutes: 300
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
       CLI_PROFILE: release-dist
     steps:
+      - name: Resolve macOS cache source
+        id: cache-source
+        if: inputs.warm_macos_cache
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ARTIFACT_RUN_ID: ${{ inputs.artifact_run_id }}
+        run: |
+          set -euo pipefail
+          [[ "$ARTIFACT_RUN_ID" =~ ^[0-9]+$ ]]
+          recorded="$(gh api "repos/${GH_REPO}/actions/runs/${ARTIFACT_RUN_ID}" \
+            --jq '[.event, .path, .head_branch, .head_sha] | @tsv')"
+          IFS=$'\t' read -r event workflow_path tag source <<< "$recorded"
+          if [[ "$event" != push || "$workflow_path" != .github/workflows/release-aster-cli.yml ||
+                ! "$tag" =~ ^aster-cli-v[0-9]+\.[0-9]+\.[0-9]+$ || ! "$source" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "macOS cache recovery requires a versioned CLI tag run" >&2
+            exit 1
+          fi
+          if [[ "$(gh api "repos/${GH_REPO}/commits/${tag}" --jq .sha)" != "$source" ||
+                "$(gh api "repos/${GH_REPO}/compare/${source}...${GITHUB_SHA}" --jq .merge_base_commit.sha)" != "$source" ]]; then
+            echo "macOS cache source must match the tag and be in main" >&2
+            exit 1
+          fi
+          printf 'sha=%s\n' "$source" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ steps.cache-source.outputs.sha || github.sha }}
       - name: Check out pinned desktop sources
         uses: ./.github/actions/checkout-studio
         with:
@@ -191,6 +222,7 @@ jobs:
         with:
           shared-key: aster-cli-release-dist-macos-bins
           save-if: "true"
+          cache-workspace-crates: ${{ inputs.warm_macos_cache && 'true' || 'false' }}
       - name: Build locked release
         shell: bash
         run: |
@@ -199,6 +231,7 @@ jobs:
           env -u GROK_VERSION cargo build --locked --profile "$CLI_PROFILE" -p aster-acp \
             --no-default-features --features svg-png,account-import
       - name: Upload macOS CLI binaries
+        if: ${{ !inputs.warm_macos_cache }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aster-cli-macos-bins
@@ -512,7 +545,7 @@ jobs:
       contents: write
       actions: read
     needs: [preflight, qualified, build, build-macos, build-linux, build-linux-musl]
-    if: ${{ inputs.qualified_runner != '' && !cancelled() && needs.preflight.result == 'success' && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-macos.result == 'success' && needs.build-linux.result == 'success' && needs.build-linux-musl.result == 'success')) }}
+    if: ${{ !inputs.warm_macos_cache && inputs.qualified_runner != '' && !cancelled() && needs.preflight.result == 'success' && (inputs.artifact_run_id != '' || (github.ref_type == 'tag' && needs.qualified.result == 'success' && needs.build.result == 'success' && needs.build-macos.result == 'success' && needs.build-linux.result == 'success' && needs.build-linux-musl.result == 'success')) }}
     runs-on: ${{ inputs.qualified_runner }}
     timeout-minutes: 20
     steps:
