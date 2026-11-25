@@ -48,6 +48,9 @@ impl LlmClient for StructuredModel {
             .iter()
             .any(|message| message.text().contains("additionalProperties"))
         {
+            assert!(messages
+                .iter()
+                .any(|message| message.text().contains("action source_lines")));
             self.schema_prompts.fetch_add(1, Ordering::SeqCst);
         }
         let call = self.streaming_calls.fetch_add(1, Ordering::SeqCst) + 1;

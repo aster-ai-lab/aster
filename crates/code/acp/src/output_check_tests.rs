@@ -99,3 +99,78 @@ async fn provenance_refuses_invalid_record_keys_and_unknown_arguments() {
         assert!(!output.success, "{}", output.content);
     }
 }
+
+#[tokio::test]
+async fn source_lines_return_exact_workspace_text_without_guessing_repairs() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::create_dir(root.path().join("pkg")).unwrap();
+    std::fs::write(
+        root.path().join("pkg/example.py"),
+        "def run():\n    print('exact')\n    print('other')\n",
+    )
+    .unwrap();
+    let output = OutputCheckTool
+        .execute(
+            &json!({"action":"source_lines","references":[
+                {"file":"pkg/example.py","line":2,"code":"    print('exact')"},
+                {"file":"pkg/example.py","line":2,"code":"print('exact')"},
+                {"file":"pkg/example.py","line":2,"code":"print('wrong')"},
+                {"file":"pkg/example.py","line":4,"code":""},
+                {"file":"setup.py","line":1,"code":"print('exact')"},
+                {"file":"../outside.py","line":1,"code":"secret"}
+            ]}),
+            &ToolContext::new(root.path().to_path_buf()),
+        )
+        .await
+        .unwrap();
+    assert!(output.success, "{}", output.content);
+    let result: Value = serde_json::from_str(&output.content).unwrap();
+    assert_eq!(result["valid"], false);
+    assert_eq!(result["results"][0]["match"], "exact");
+    assert_eq!(result["results"][0]["valid"], true);
+    assert_eq!(result["results"][1]["match"], "whitespace");
+    assert_eq!(result["results"][1]["exactCode"], "    print('exact')");
+    assert_eq!(result["results"][2]["match"], "mismatch");
+    assert_eq!(result["results"][2]["exactCode"], "    print('exact')");
+    assert_eq!(result["results"][3]["match"], "line_out_of_range");
+    assert_eq!(result["results"][4]["match"], "unreadable");
+    assert_eq!(result["results"][5]["match"], "invalid_path");
+    assert!(result["results"][4]["exactCode"].is_null());
+    assert!(result["results"][5]["exactCode"].is_null());
+}
+
+#[tokio::test]
+async fn source_lines_enforce_citation_and_output_budgets() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("long.txt"), "x".repeat(8193) + "\n").unwrap();
+    let ctx = ToolContext::new(root.path().to_path_buf());
+    for references in [
+        vec![],
+        vec![json!({"file":"long.txt","line":1,"code":""}); 33],
+    ] {
+        let output = OutputCheckTool
+            .execute(
+                &json!({"action":"source_lines","references":references}),
+                &ctx,
+            )
+            .await
+            .unwrap();
+        assert!(!output.success, "{}", output.content);
+    }
+    let output = OutputCheckTool
+        .execute(
+            &json!({"action":"source_lines","references":[
+                {"file":"long.txt","line":1,"code":""},
+                {"file":"long.txt","line":0,"code":""},
+                {"file":"long.txt","line":1,"code":"x".repeat(8193)}
+            ]}),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    let result: Value = serde_json::from_str(&output.content).unwrap();
+    assert_eq!(result["results"][0]["match"], "line_too_long");
+    assert!(result["results"][0]["exactCode"].is_null());
+    assert_eq!(result["results"][1]["match"], "invalid_line");
+    assert_eq!(result["results"][2]["match"], "invalid_argument");
+}

@@ -89,6 +89,7 @@ async fn sequences_report_every_decrease_and_keep_missing_and_zero_distinct() {
 #[tokio::test]
 async fn projected_schema_and_governed_execution_accept_the_same_action_fields() {
     let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("sample.py"), "    value = 1\n").unwrap();
     let store = tempfile::tempdir().unwrap();
     let agent = aster_core::Agent::from_config(
         crate::agent::test_launch(Some(store.path().to_path_buf())).config,
@@ -113,6 +114,7 @@ async fn projected_schema_and_governed_execution_accept_the_same_action_fields()
         json!({"action":"date_span","start":"2026-01-01","end":"2026-01-03","endpoint_counting":"inclusive"}),
         json!({"action":"sequence_changes","values":[10,8,9]}),
         json!({"action":"record_provenance","key":"id","source":[{"id":"A","value":1}],"output":[{"id":"A","value":1},{"id":"TOTAL","value":1}],"compare_fields":["value"],"allow_derived_keys":["TOTAL"]}),
+        json!({"action":"source_lines","references":[{"file":"sample.py","line":1,"code":"    value = 1"}]}),
     ] {
         let result = session.governed_tool("output_check", args).await.unwrap();
         assert_eq!(result.exit_code, 0, "{}", result.output);
@@ -122,6 +124,7 @@ async fn projected_schema_and_governed_execution_accept_the_same_action_fields()
         json!({"action":"percentage_change","pairs":[],"text":"extra"}),
         json!({"action":"date_span","start":"2026-01-01","end":"2026-01-03","endpoint_counting":"inclusive","values":[1,2]}),
         json!({"action":"sequence_changes","values":[1,2],"start":"2026-01-01"}),
+        json!({"action":"source_lines","references":[{"file":"sample.py","line":1,"code":"    value = 1"}],"text":"extra"}),
     ] {
         let result = session.governed_tool("output_check", args).await.unwrap();
         assert_ne!(result.exit_code, 0);

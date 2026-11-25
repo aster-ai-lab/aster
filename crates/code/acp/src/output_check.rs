@@ -1,4 +1,4 @@
-//! In-process checks for the user's text length and percentage requirements.
+//! In-process checks for output measurements, provenance and source citations.
 
 use anyhow::Result;
 use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
@@ -8,6 +8,9 @@ use serde_json::{json, Value};
 
 #[path = "output_check_metrics.rs"]
 mod metrics;
+
+const MAX_SOURCE_REFERENCES: usize = 32;
+const MAX_SOURCE_LINE_BYTES: usize = 8192;
 
 pub(crate) struct OutputCheckTool;
 
@@ -37,6 +40,112 @@ enum Check {
         #[serde(default)]
         allow_derived_keys: Vec<Value>,
     },
+    SourceLines {
+        references: Vec<SourceLineReference>,
+    },
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SourceLineReference {
+    file: String,
+    line: usize,
+    code: String,
+}
+
+async fn source_lines(
+    references: Vec<SourceLineReference>,
+    ctx: &ToolContext,
+) -> Result<Value, String> {
+    if references.is_empty() || references.len() > MAX_SOURCE_REFERENCES {
+        return Err(format!(
+            "references must contain 1..{MAX_SOURCE_REFERENCES} source citations"
+        ));
+    }
+    if !ctx.workspace_services.capabilities().read {
+        return Err("workspace does not grant reads".into());
+    }
+    let mut files = std::collections::BTreeMap::new();
+    let mut results = Vec::with_capacity(references.len());
+    for (index, reference) in references.into_iter().enumerate() {
+        let mut result = json!({
+            "index": index,
+            "file": reference.file.clone(),
+            "line": reference.line,
+            "valid": false,
+            "exactCode": Value::Null,
+        });
+        if reference.line == 0 {
+            result["match"] = json!("invalid_line");
+            results.push(result);
+            continue;
+        }
+        if reference.file.is_empty()
+            || reference.file.len() > 4096
+            || reference.code.len() > MAX_SOURCE_LINE_BYTES
+        {
+            result["match"] = json!("invalid_argument");
+            results.push(result);
+            continue;
+        }
+        let path = match ctx.resolve_workspace_path(&reference.file) {
+            Ok(path) => path,
+            Err(error) => {
+                result["match"] = json!("invalid_path");
+                result["error"] = json!(error.to_string());
+                results.push(result);
+                continue;
+            }
+        };
+        let key = path.as_str().to_owned();
+        if !files.contains_key(&key) {
+            let fs = ctx.workspace_services.fs();
+            let read_path = path.clone();
+            let read = ctx
+                .workspace_services
+                .run_with_timeout("read_text", async move { fs.read_text(&read_path).await })
+                .await
+                .map(|content| content.lines().map(str::to_owned).collect::<Vec<String>>())
+                .map_err(|error| error.to_string());
+            files.insert(key.clone(), read);
+        }
+        let lines = match &files[&key] {
+            Ok(lines) => lines,
+            Err(error) => {
+                result["match"] = json!("unreadable");
+                result["error"] = json!(error);
+                results.push(result);
+                continue;
+            }
+        };
+        let Some(actual) = reference
+            .line
+            .checked_sub(1)
+            .and_then(|line| lines.get(line))
+        else {
+            result["match"] = json!("line_out_of_range");
+            result["totalLines"] = json!(lines.len());
+            results.push(result);
+            continue;
+        };
+        if actual.len() > MAX_SOURCE_LINE_BYTES {
+            result["match"] = json!("line_too_long");
+            results.push(result);
+            continue;
+        }
+        result["exactCode"] = json!(actual);
+        if actual == &reference.code {
+            result["match"] = json!("exact");
+            result["valid"] = json!(true);
+        } else if actual.trim() == reference.code.trim() {
+            result["match"] = json!("whitespace");
+        } else {
+            result["match"] = json!("mismatch");
+        }
+        results.push(result);
+    }
+    let valid = results.iter().all(|result| result["valid"] == true);
+    Ok(json!({"valid":valid,"results":results}))
 }
 
 #[derive(Deserialize)]
@@ -156,12 +265,12 @@ impl Tool for OutputCheckTool {
     }
 
     fn description(&self) -> &str {
-        "Check text length, percentage changes, date spans or every adjacent sequence change in process, without Bash. text_length counts Unicode extended grapheme clusters (user-perceived characters, so ZWJ emoji sequences count as 1) including punctuation/whitespace, non-whitespace clusters, and whitespace-delimited words. percentage_change uses (current-previous)/abs(previous)*100, returns full numeric values and signed prose rounded to at most 2 decimals with ASCII signs (+10%, -50%); explicit user precision still takes precedence. date_span requires exact YYYY-MM-DD dates and explicit elapsed or inclusive endpoint counting; reversed dates are refused. sequence_changes returns every adjacent difference and every decrease with zero-based indices; missing values leave the complete-sequence conclusion unknown. record_provenance compares source and output records by key and reports missing, unexpected, duplicate and changed records; allow_derived_keys is only for task-authorized derived records. Missing values and zero baselines are never converted to zero changes. These measurements do not establish business meaning or resolve conflicting user requirements; compare every final claim with its source and counting rule."
+        "Check text length, percentage changes, date spans, sequence changes, record provenance or exact workspace source citations in process, without Bash. text_length counts Unicode extended grapheme clusters (user-perceived characters, so ZWJ emoji sequences count as 1) including punctuation/whitespace, non-whitespace clusters, and whitespace-delimited words. percentage_change uses (current-previous)/abs(previous)*100, returns full numeric values and signed prose rounded to at most 2 decimals with ASCII signs (+10%, -50%); explicit user precision still takes precedence. date_span requires exact YYYY-MM-DD dates and explicit elapsed or inclusive endpoint counting; reversed dates are refused. sequence_changes returns every adjacent difference and every decrease with zero-based indices; missing values leave the complete-sequence conclusion unknown. record_provenance compares source and output records by key and reports missing, unexpected, duplicate and changed records; allow_derived_keys is only for task-authorized derived records. source_lines checks 1-based file/line/code citations and returns exactCode from the workspace; before returning source citations, check every citation and copy exactCode verbatim, including indentation. whitespace and mismatch are not exact; never guess a missing path or move a line number. Missing values and zero baselines are never converted to zero changes. These measurements do not establish business meaning or resolve conflicting user requirements; compare every final claim with its source and counting rule."
     }
 
     fn parameters(&self) -> Value {
         json!({"type":"object","properties":{
-            "action":{"type":"string","enum":["text_length","percentage_change","date_span","sequence_changes","record_provenance"]},
+            "action":{"type":"string","enum":["text_length","percentage_change","date_span","sequence_changes","record_provenance","source_lines"]},
             "text":{"type":"string","maxLength":32768,"description":"Required only for text_length."},
             "start":{"type":"string","minLength":10,"maxLength":10,"description":"Required for date_span: YYYY-MM-DD."},
             "end":{"type":"string","minLength":10,"maxLength":10,"description":"Required for date_span: YYYY-MM-DD, on or after start."},
@@ -172,6 +281,12 @@ impl Tool for OutputCheckTool {
             "key":{"type":"string","minLength":1,"maxLength":64,"description":"Record identifier field for record_provenance."},
             "compare_fields":{"type":"array","maxItems":64,"items":{"type":"string","minLength":1,"maxLength":64},"description":"Fields to compare; omitted compares all source fields except the key."},
             "allow_derived_keys":{"type":"array","maxItems":256,"items":{"type":["string","number"]},"description":"Task-authorized derived record keys."},
+            "references":{"type":"array","minItems":1,"maxItems":MAX_SOURCE_REFERENCES,"description":"Required for source_lines: exact workspace citations to verify.","items":{
+                "type":"object","properties":{
+                    "file":{"type":"string","minLength":1,"maxLength":4096,"description":"Workspace-relative or admitted absolute text file path."},
+                    "line":{"type":"integer","minimum":1},
+                    "code":{"type":"string","maxLength":MAX_SOURCE_LINE_BYTES,"description":"Proposed source line, excluding its line ending."}
+                },"required":["file","line","code"],"additionalProperties":false}},
             "pairs":{"type":"array","maxItems":512,"items":{
                 "type":"object","properties":{
                     "current":{"type":["number","null"]},
@@ -183,7 +298,8 @@ impl Tool for OutputCheckTool {
             {"properties":{"action":{"const":"percentage_change"},"pairs":{}},"required":["pairs"],"additionalProperties":false},
             {"properties":{"action":{"const":"date_span"},"start":{},"end":{},"endpoint_counting":{}},"required":["start","end","endpoint_counting"],"additionalProperties":false},
             {"properties":{"action":{"const":"sequence_changes"},"values":{}},"required":["values"],"additionalProperties":false},
-            {"properties":{"action":{"const":"record_provenance"},"source":{},"output":{},"key":{},"compare_fields":{},"allow_derived_keys":{}},"required":["source","output","key"],"additionalProperties":false}
+            {"properties":{"action":{"const":"record_provenance"},"source":{},"output":{},"key":{},"compare_fields":{},"allow_derived_keys":{}},"required":["source","output","key"],"additionalProperties":false},
+            {"properties":{"action":{"const":"source_lines"},"references":{}},"required":["references"],"additionalProperties":false}
         ]})
     }
 
@@ -191,7 +307,7 @@ impl Tool for OutputCheckTool {
         ToolCapabilities::parallel_safe_read(1)
     }
 
-    async fn execute(&self, args: &Value, _ctx: &ToolContext) -> Result<ToolOutput> {
+    async fn execute(&self, args: &Value, ctx: &ToolContext) -> Result<ToolOutput> {
         let check: Check = match serde::Deserialize::deserialize(args) {
             Ok(check) => check,
             Err(error) => {
@@ -318,6 +434,10 @@ impl Tool for OutputCheckTool {
                     Err(reason) => return Ok(ToolOutput::error(reason)),
                 }
             }
+            Check::SourceLines { references } => match source_lines(references, ctx).await {
+                Ok(result) => result,
+                Err(reason) => return Ok(ToolOutput::error(reason)),
+            },
         };
         Ok(ToolOutput::success(result.to_string()))
     }

@@ -533,7 +533,7 @@ impl AsterCodeAgent {
             || prompt.to_string(),
             |schema| {
                 format!(
-                    "{prompt}\n\nWhen you are ready to return the final answer, respond with only one JSON object satisfying this JSON Schema; do not add prose or Markdown fences:\n{schema}"
+                    "{prompt}\n\nWhen you are ready to return the final answer, respond with only one JSON object satisfying this JSON Schema; do not add prose or Markdown fences. If the answer cites workspace source lines, first call output_check with action source_lines for every citation and copy exactCode verbatim; do not guess missing paths or line numbers:\n{schema}"
                 )
             },
         );
