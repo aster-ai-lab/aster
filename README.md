@@ -74,7 +74,7 @@ $env:Path = "$bin;$env:Path"
 aster --version
 ```
 
-安装器校验归档成员、`BUILD_ID` 和 `SHA256SUMS`，安装配套的 `aster`、`aster-acp` 与 `embedding/`（当前稳定发布：`aster-cli v0.4.0` / Core & ACP `9.3.0`）。
+安装器校验归档成员、`BUILD_ID` 和 `SHA256SUMS`，安装配套的 `aster`、`aster-acp` 与 `embedding/`（当前稳定发布：`aster-cli v0.4.2` / Core & ACP `9.3.2`）。
 两个可执行文件需要保持配套。另指定 ACP 路径时使用 `ASTER_ACP_AGENT_BIN`。
 Linux 归档分 x86_64 与 arm64，安装器优先选择不依赖宿主机 glibc 的静态 musl 配对包（`linux-musl` / `linux-musl-arm64`）；glibc 兼容归档基线为 2.31（`linux` / `linux-arm64`，另有与 `linux` 字节一致的 `kylin-x86_64` 具名通道）。独立发布的 `aster-acp` 同样提供 `linux-musl` / `linux-musl-arm64` 静态包。解压后将两个程序与 `embedding/` 保留在同一目录。
 
