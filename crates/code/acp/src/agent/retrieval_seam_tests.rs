@@ -476,11 +476,12 @@ async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
         "retrieval-seam-on",
         Some(blocking_port.clone()),
     );
-    let attached = blocked_options
+    let attached_options = blocked_options
         .workspace_retrieval
         .as_ref()
-        .expect("retrieval options")
-        .embedding_provider();
+        .expect("retrieval options");
+    assert!(format!("{attached_options:?}").contains("semantic_readiness_timeout: 10s"));
+    let attached = attached_options.embedding_provider();
     assert!(Arc::ptr_eq(&blocking_port, &attached));
     let blocked_note = capability_note(&blocked_options);
     assert!(blocked_note.contains("search modes: grep, glob, bm25, semantic, hybrid."));

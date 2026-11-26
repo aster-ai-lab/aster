@@ -103,6 +103,15 @@ fn configured_model_id(model_id: &str) -> Result<&str, &'static str> {
 /// full user turn, and a client this far ahead is malfunctioning.
 const MAX_QUEUED_PROMPTS: usize = 32;
 const MODEL_CONFIG_ID: &str = "model";
+const HOST_SEMANTIC_READINESS_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
+
+/// Build retrieval options with a bounded wait for initial local indexing so fast first turns do not race a cold CPU index.
+pub(super) fn host_workspace_retrieval_options(
+    provider: Arc<dyn aster_core::EmbeddingProvider>,
+) -> aster_core::WorkspaceRetrievalOptions {
+    aster_core::WorkspaceRetrievalOptions::new(provider)
+        .with_semantic_readiness_timeout(HOST_SEMANTIC_READINESS_TIMEOUT)
+}
 
 /// A reserved spot in a [`TurnQueue`]'s waiting count. Dropping it (turn
 /// granted, future cancelled, or task panicked) gives the slot back — a
@@ -981,8 +990,7 @@ impl AsterCodeAgent {
             )),
         ));
         if let Some(provider) = embedding {
-            options = options
-                .with_workspace_retrieval(aster_core::WorkspaceRetrievalOptions::new(provider));
+            options = options.with_workspace_retrieval(host_workspace_retrieval_options(provider));
         }
         Ok(options.with_file_session_store(session_store_dir))
     }

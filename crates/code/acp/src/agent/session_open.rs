@@ -249,7 +249,7 @@ impl AsterCodeAgent {
                 )
                 .map(|options| match embedding {
                     Some(provider) => options.with_workspace_retrieval(
-                        aster_core::WorkspaceRetrievalOptions::new(provider),
+                        super::host_workspace_retrieval_options(provider),
                     ),
                     None => options,
                 })
