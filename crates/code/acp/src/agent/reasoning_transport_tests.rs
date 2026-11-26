@@ -349,7 +349,10 @@ async fn switching_preserves_history_and_anthropic_parameters() {
             other_requests.len(),
             other_requests.last()
         );
-        assert_eq!(other_requests.len(), 5, "one pre-analysis per turn");
+        assert!(
+            other_requests.is_empty(),
+            "zero-tool turns defer intent classification: {other_requests:?}"
+        );
         requests
     };
     let root = tempfile::tempdir().unwrap();

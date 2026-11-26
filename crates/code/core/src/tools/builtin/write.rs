@@ -14,7 +14,7 @@ impl Tool for WriteTool {
     }
 
     fn description(&self) -> &str {
-        "Write a file (default overwrite), or append bounded chunks after the first write with expected_offset for safe retries."
+        "Write or chunk-append a file (use expected_offset on append for safe retries)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -23,23 +23,21 @@ impl Tool for WriteTool {
             "additionalProperties": false,
             "properties": {
                 "file_path": {
-                    "type": "string",
-                    "description": "File path."
+                    "type": "string"
                 },
                 "content": {
                     "type": "string",
-                    "description": "Full replacement/first chunk for overwrite; next chunk for append."
+                    "description": "Content or chunk."
                 },
                 "mode": {
                     "type": "string",
                     "enum": ["overwrite", "append"],
-                    "default": "overwrite",
-                    "description": "overwrite replaces the file (default); append adds a chunk and requires expected_offset."
+                    "default": "overwrite"
                 },
                 "expected_offset": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Append requires the stored UTF-8 byte size. Chunks adopt existing line endings; continue from the reported size. Matching already-applied chunks retry successfully; other mismatches fail. Overwrite may omit this or send neutral 0 (ignored)."
+                    "description": "Append only: exact current byte len."
                 }
             },
             "required": ["file_path", "content"],

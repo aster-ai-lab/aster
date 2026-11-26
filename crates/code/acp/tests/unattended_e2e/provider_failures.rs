@@ -8,6 +8,7 @@ enum Scenario {
     Exhausted,
     Recovered,
     GoalFailure,
+    AfterRefusal,
 }
 
 pub(super) fn planning_reply(request: &serde_json::Value) -> Option<String> {
@@ -47,12 +48,15 @@ struct ProviderState {
     failures: usize,
     guidance_seen: bool,
     checks: usize,
+    refusal_sent: bool,
+    recovery_seen: bool,
 }
 
 fn provider(
     source: PathBuf,
     status: u16,
     recover_after: Option<usize>,
+    after_refusal: bool,
 ) -> (SocketAddr, Arc<Mutex<ProviderState>>) {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let address = listener.local_addr().unwrap();
@@ -60,6 +64,8 @@ fn provider(
         failures: 0,
         guidance_seen: false,
         checks: 0,
+        refusal_sent: false,
+        recovery_seen: false,
     }));
     let observed = Arc::clone(&state);
     std::thread::spawn(move || {
@@ -86,7 +92,17 @@ fn provider(
             }
             let mut state = observed.lock().unwrap();
             state.guidance_seen |= raw.contains("Next step: run one `bash` command");
-            if !source.exists() {
+            state.recovery_seen |= raw.contains("[host tool recovery]");
+            if after_refusal && !state.refusal_sent {
+                state.refusal_sent = true;
+                let body = reply_tool(
+                    "write",
+                    serde_json::json!({"file_path":"protected.txt","content":"forbidden"}),
+                    1,
+                    streaming,
+                );
+                write_http(&mut stream, &body).unwrap();
+            } else if !after_refusal && !source.exists() {
                 let body = reply_tool(
                     "write",
                     serde_json::json!({"file_path":"answer.txt","content":"42\n"}),
@@ -128,13 +144,14 @@ fn provider(
 async fn run(status: u16, scenario: Scenario) {
     let recover = matches!(scenario, Scenario::Recovered);
     let goal = matches!(scenario, Scenario::GoalFailure);
+    let after_refusal = matches!(scenario, Scenario::AfterRefusal);
     tokio::task::LocalSet::new().run_until(async {
         let workspace = isolate("provider failure 工作区");
         let outside = isolate("provider-failure-state");
         let home = isolate("provider-failure-home");
         let tmp = isolate("provider-failure-tmp");
         // Eleven HTTP attempts exhaust one default provider retry cycle.
-        let (address, observed) = provider(workspace.join("answer.txt"), status, recover.then_some(13));
+        let (address, observed) = provider(workspace.join("answer.txt"), status, recover.then_some(13), after_refusal);
         let config = write_acl(&outside, &format!("http://{address}/v1"));
         let result_file = outside.join("result.json");
         let result_arg = result_file.display().to_string();
@@ -142,9 +159,21 @@ async fn run(status: u16, scenario: Scenario) {
             "--unattended", if goal { "--goal-continuation" } else { "--no-goal-continuation" }, "--max-execution-ms", "45000",
             "--result-file", &result_arg,
         ]).await;
-        let session = open(&agent, &workspace).await;
+        let session = if after_refusal {
+            let meta = serde_json::json!({"permissionRules":{"deny":["Write(protected.txt)"]}});
+            acp::Agent::initialize(agent.conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1)
+                .meta(meta.as_object().cloned())).await.unwrap();
+            acp::Agent::new_session(agent.conn.as_ref(), acp::NewSessionRequest::new(workspace.clone()))
+                .await.unwrap().session_id
+        } else {
+            open(&agent, &workspace).await
+        };
         let response = tokio::time::timeout(Duration::from_secs(60), say(
-            &agent, &session, "Write answer.txt containing 42 followed by a newline. Verify its contents with bash before finishing.",
+            &agent, &session, if after_refusal {
+                "Use the workspace observation required by this synthetic task."
+            } else {
+                "Write answer.txt containing 42 followed by a newline. Verify its contents with bash before finishing."
+            },
         )).await.expect("ACP run must settle within the test deadline");
         let record: serde_json::Value = serde_json::from_slice(&std::fs::read(&result_file).unwrap()).unwrap();
         eprintln!("PROVIDER_RESULT status={status} goal={goal} record={record} response={response:?}");
@@ -159,10 +188,25 @@ async fn run(status: u16, scenario: Scenario) {
                     .and_then(|output| serde_json::from_str::<serde_json::Value>(output).ok())
                     .is_some_and(|output| output["metadata"]["verification_shell_command"] == CHECK)
         });
-        assert_eq!(std::fs::read(workspace.join("answer.txt")).unwrap(), b"42\n");
         let state = observed.lock().unwrap();
         eprintln!("ORACLE issue=295 status={status} recover={recover} failures={} checks={} record={record} response={response:?}", state.failures, state.checks);
         assert_eq!(response.unwrap().stop_reason, acp::StopReason::EndTurn);
+        if after_refusal {
+            let receipts: Vec<_> = facts.iter().filter_map(|fact| fact["payload"].get("receipt")).collect();
+            assert_eq!(receipts.len(), 1);
+            assert_eq!(receipts[0]["outcome"], "denied");
+            assert!(receipts[0]["exit_code"].is_null());
+            assert!(state.refusal_sent && state.recovery_seen);
+            assert!(!workspace.join("protected.txt").exists());
+            assert_eq!(record["outcome"], "failed");
+            assert_eq!(record["reason"], "retryable_external");
+            assert_eq!(record["providerStatus"], status);
+            assert!(state.failures > 0);
+            assert!(!verified);
+            eprintln!("E10 status={status} denial=1 recovery_sent=true provider_failures={}", state.failures);
+            return;
+        }
+        assert_eq!(std::fs::read(workspace.join("answer.txt")).unwrap(), b"42\n");
         if recover {
             assert_eq!(record["outcome"], "succeeded", "{record}");
             assert_eq!(record["exitCode"], 0);
@@ -204,5 +248,12 @@ async fn recovered_provider_can_receive_gate_guidance_and_verify_the_write() {
 async fn failed_goal_provider_is_retryable_without_replaying_the_exact_run() {
     for status in [429, 503] {
         run(status, Scenario::GoalFailure).await;
+    }
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn exhausted_provider_after_refusal_retains_the_original_denial() {
+    for status in [429, 503] {
+        run(status, Scenario::AfterRefusal).await;
     }
 }

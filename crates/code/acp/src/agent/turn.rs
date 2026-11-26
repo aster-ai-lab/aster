@@ -190,7 +190,7 @@ impl AsterCodeAgent {
                             .await;
                     }
                 }
-                let approved = self
+                let answer = self
                     .request_tool_permission(
                         session_id,
                         &tool_id,
@@ -199,11 +199,8 @@ impl AsterCodeAgent {
                         session.workspace(),
                     )
                     .await;
-                let reason = if approved {
-                    Some("approved via ACP request_permission".into())
-                } else {
-                    Some("rejected via ACP request_permission".into())
-                };
+                let approved = answer == permission_ask::ToolPermissionAnswer::Approved;
+                let reason = Some(answer.as_str().into());
                 if let Err(error) = session.confirm_tool_use(&tool_id, approved, reason).await {
                     self.emit_text(
                         session_id,

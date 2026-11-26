@@ -2,6 +2,11 @@ use super::*;
 use agent_client_protocol::Agent as _;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt};
 
+fn is_pre_analysis_request(body: &serde_json::Value) -> bool {
+    body.to_string()
+        .contains("You are a pre-analysis assistant.")
+}
+
 #[tokio::test]
 async fn selected_catalog_updates_the_menu_and_execution() {
     let root = tempfile::tempdir().unwrap();
@@ -165,16 +170,23 @@ async fn selected_catalog_updates_the_menu_and_execution() {
     session.close().await;
     stop.send(()).unwrap();
     let requests = provider.await.unwrap();
+    assert!(
+        requests.iter().all(|body| !is_pre_analysis_request(body)),
+        "zero-tool turns defer intent classification: {requests:#?}"
+    );
     let first = requests
         .iter()
         .find(|body| {
-            body.to_string().contains("Reply READY")
+            !is_pre_analysis_request(body)
+                && body.to_string().contains("Reply READY")
                 && !body.to_string().contains("Reply READY again")
         })
         .unwrap();
     let second = requests
         .iter()
-        .find(|body| body.to_string().contains("Reply READY again"))
+        .find(|body| {
+            !is_pre_analysis_request(body) && body.to_string().contains("Reply READY again")
+        })
         .unwrap();
     assert_eq!(first["output_config"]["effort"], "high");
     assert_eq!(first["max_tokens"], 32768);
@@ -327,9 +339,16 @@ async fn switches_rebuild_native_controls() {
             .unwrap();
         let sent = captured.lock().await;
         assert!(sent.len() > before);
+        let mut saw_primary = false;
         for request in &sent[before..] {
             assert_eq!(request["model"], "deepseek-flash");
             assert_eq!(request["max_tokens"], 393_216);
+            if is_pre_analysis_request(request) {
+                assert_eq!(request["reasoning_effort"], "none");
+                assert_eq!(request["thinking"]["type"], "disabled");
+                continue;
+            }
+            saw_primary = true;
             if level == "default" {
                 assert!(
                     request.get("reasoning_effort").is_none(),
@@ -351,6 +370,7 @@ async fn switches_rebuild_native_controls() {
                 );
             }
         }
+        assert!(saw_primary, "missing primary model request for {level}");
     }
     let session = host.sessions.lock().await[&id.0.to_string()]
         .session

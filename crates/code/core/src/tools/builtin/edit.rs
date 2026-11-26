@@ -14,9 +14,7 @@ impl Tool for EditTool {
     }
 
     fn description(&self) -> &str {
-        "Replace exact strings using old_string/new_string or one atomic ordered edits array \
-         per file. Every entry is validated before writing; old_string must be unique unless \
-         replace_all. LF/CRLF match and retain the file's endings; mixed/CR-only endings are refused."
+        "Exact replacement via old_string/new_string or atomic edits array (unique unless replace_all); preserves LF/CRLF and refuses mixed endings."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -25,28 +23,27 @@ impl Tool for EditTool {
             "additionalProperties": false,
             "properties": {
                 "file_path": {
-                    "type": "string",
-                    "description": "File path."
+                    "type": "string"
                 },
                 "edits": {
                     "type": "array",
                     "minItems": 1,
-                    "description": "Ordered atomic same-file replacements; mutually exclusive with old_string/new_string.",
+                    "description": "Atomic same-file replacements (mutually exclusive with old_string/new_string).",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
                             "old_string": {
                                 "type": "string",
-                                "description": "Exact match; unique unless replace_all=true."
+                                "description": "Exact match (unique unless replace_all)."
                             },
                             "new_string": {
                                 "type": "string",
-                                "description": "Replacement; empty deletes the match."
+                                "description": "Replacement."
                             },
                             "replace_all": {
                                 "type": "boolean",
-                                "description": "Replace every occurrence for this entry; default false."
+                                "default": false
                             }
                         },
                         "required": ["old_string", "new_string"]
@@ -54,29 +51,30 @@ impl Tool for EditTool {
                 },
                 "old_string": {
                     "type": "string",
-                    "description": "Single-edit match; required unless edits is used. Unique unless replace_all=true."
+                    "description": "Exact match unless edits (unique unless replace_all)."
                 },
                 "new_string": {
                     "type": "string",
-                    "description": "Single-edit replacement; required unless edits is used."
+                    "description": "Replacement unless edits."
                 },
                 "replace_all": {
                     "type": "boolean",
-                    "description": "Replace every occurrence; default false."
+                    "default": false
                 },
                 "dry_run": {
                     "type": "boolean",
-                    "description": "Preview exact diff/count without writing; default false."
+                    "default": false,
+                    "description": "Preview only."
                 },
                 "max_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Reject before writing if the whole-call replacement count exceeds this ceiling."
+                    "description": "Max allowed."
                 },
                 "expected_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Reject before writing unless the whole-call replacement count equals this value."
+                    "description": "Exact required."
                 }
             },
             "required": ["file_path"],

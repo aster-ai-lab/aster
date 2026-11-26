@@ -86,6 +86,9 @@ pub struct LoopConvergenceState {
     /// Intent admitted by structured pre-analysis or an explicit host role.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub read_only_synthesis_intent: Option<ReadOnlySynthesisIntent>,
+    /// Intent classification deferred until `read_only_synthesis_rounds` reaches budget.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only_synthesis_classification_pending: bool,
     /// The synthesis turn requested one final gap-filling tool wave. The next
     /// provider call must answer without tools.
     #[serde(default, skip_serializing_if = "is_false")]

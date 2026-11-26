@@ -27,15 +27,20 @@ fn information_identity_includes_images_and_exit_outcomes_but_rejects_incomplete
     assert_ne!(first, second);
     result.outcome = ToolExecutionOutcome::Failed;
     result.exit_code = Some(1);
-    assert_ne!(
-        second,
-        super::super::novelty::information_identity(
-            "read",
-            &result,
-            &prepared.effective_args_digest
-        )
-        .unwrap()
-    );
+    let failed = super::super::novelty::information_identity(
+        "read",
+        &result,
+        &prepared.effective_args_digest,
+    )
+    .unwrap();
+    let failed_with_other_input = super::super::novelty::information_identity(
+        "read",
+        &result,
+        &aster_effect::tool_args_digest(&json!({"path":"other"})).unwrap(),
+    )
+    .unwrap();
+    assert_ne!(second, failed);
+    assert_eq!(failed, failed_with_other_input);
     result.effects = ToolEffectObservationV1::incomplete("missing original observation");
     assert!(super::super::novelty::information_identity(
         "read",

@@ -21,8 +21,9 @@ impl AgentSession {
             agent_loop.scoped_llm_client_for_parts(Some(&self.session_id), &None, &cancellation);
         let client = governed
             .fork_for_session(&format!("{}:session-title", self.session_id))
-            .unwrap_or(governed)
-            .with_output_cap(100)?;
+            .unwrap_or(governed);
+        let client = client.with_minimal_reasoning().unwrap_or(client);
+        let client = client.with_output_cap(100)?;
         let schema = serde_json::json!({
             "type": "object", "additionalProperties": false,
             "required": ["session_title"],

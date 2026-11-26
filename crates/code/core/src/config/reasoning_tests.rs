@@ -90,3 +90,28 @@ fn unknown_is_distinct_from_unsupported_and_presets() {
     );
     assert_eq!(caps.source(), "documented");
 }
+
+#[test]
+fn lowest_effort_picks_minimum_supported_compute_level() {
+    use crate::config::ProviderProtocol;
+    for (protocol, model, expected) in [
+        (ProviderProtocol::Openai, "deepseek-flash", Some("none")),
+        (ProviderProtocol::Openai, "k3.1-pro", Some("low")),
+        (ProviderProtocol::Openai, "gpt-5.4", Some("none")),
+        (ProviderProtocol::Anthropic, "glm-5.3", Some("low")),
+        (
+            ProviderProtocol::Anthropic,
+            "claude-sonnet-4-6",
+            Some("low"),
+        ),
+        (
+            ProviderProtocol::Gemini,
+            "gemini-3-flash-preview",
+            Some("minimal"),
+        ),
+        (ProviderProtocol::Openai, "gpt-4o", None),
+    ] {
+        let caps = documented_reasoning(protocol, model).unwrap();
+        assert_eq!(caps.lowest_effort(), expected, "{protocol:?}/{model}");
+    }
+}

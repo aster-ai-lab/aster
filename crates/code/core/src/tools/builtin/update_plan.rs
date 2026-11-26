@@ -22,10 +22,7 @@ impl Tool for UpdatePlanTool {
     }
 
     fn description(&self) -> &str {
-        "Replace the live task checklist shown to the user. Pass the full plan \
-         array on every call. Use for multi-step work: create 2–8 concrete steps \
-         early, keep exactly one in_progress, and mark steps completed as you finish. \
-         Skip for trivial single-step requests."
+        "Replace task checklist (full plan array each call; 2–8 steps for multi-step work, one in_progress; skip trivial tasks)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -35,7 +32,7 @@ impl Tool for UpdatePlanTool {
             "properties": {
                 "plan": {
                     "type": "array",
-                    "description": "Required. Complete ordered checklist. Each call replaces the previous list.",
+                    "description": "Ordered steps.",
                     "minItems": 1,
                     "maxItems": MAX_PLAN_TASKS,
                     "items": {
@@ -44,7 +41,7 @@ impl Tool for UpdatePlanTool {
                         "properties": {
                             "step": {
                                 "type": "string",
-                                "description": "Required. Short actionable step label."
+                                "description": "Step label."
                             },
                             "status": {
                                 "type": "string",
@@ -55,12 +52,11 @@ impl Tool for UpdatePlanTool {
                                     "failed",
                                     "skipped",
                                     "cancelled"
-                                ],
-                                "description": "Required. Step status. Prefer exactly one in_progress while working."
+                                ]
                             },
                             "id": {
                                 "type": "string",
-                                "description": "Optional stable id. Defaults to plan-{index}."
+                                "description": "Optional ID."
                             }
                         },
                         "required": ["step", "status"]

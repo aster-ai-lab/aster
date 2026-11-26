@@ -51,7 +51,12 @@ async fn unchanged_denials_identify_the_authority_without_claiming_a_rewrite() {
         result.ensure_prepared(&identity).unwrap();
         assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
         assert_eq!(result.exit_code, None);
-        let output = result.output.as_str().unwrap();
+        let envelope = decode_fact_tool_result(result.output.as_str().unwrap()).unwrap();
+        assert_eq!(
+            envelope.metadata.unwrap()["host_refusal"],
+            "permission_denied"
+        );
+        let output = &envelope.text;
         assert!(output.contains("tool_effect_effective_arguments_unapproved"));
         assert!(output.contains(expected), "{output}");
         assert!(output.contains("arguments_changed=false"), "{output}");
@@ -66,7 +71,7 @@ async fn unchanged_denials_identify_the_authority_without_claiming_a_rewrite() {
         assert!(
             matches!(received.try_recv().unwrap(), crate::agent::AgentEvent::PermissionDenied {
             tool_id, args: event_args, reason, ..
-        } if tool_id == "unchanged-denied" && event_args == args && reason == output)
+        } if tool_id == "unchanged-denied" && event_args == args && &reason == output)
         );
         assert!(received.try_recv().is_err());
     }

@@ -1145,7 +1145,7 @@ fn tool_response(calls: Vec<(&str, &str, serde_json::Value)>) -> LlmResponse {
 }
 
 #[tokio::test]
-async fn one_response_keeps_every_non_question_tool_call() {
+async fn a_question_parks_the_turn_before_other_calls_in_its_batch() {
     let policy = PermissionPolicy::default();
     let both = decision_from_response(
         &tool_response(vec![
@@ -1173,13 +1173,7 @@ async fn one_response_keeps_every_non_question_tool_call() {
         None,
     )
     .await;
-    match mixed {
-        ModelDecision::Tool { call, also } => {
-            assert_eq!(call.name, "grep");
-            assert!(also.is_empty());
-        }
-        other => panic!("expected the non-question call, got {other:?}"),
-    }
+    assert!(matches!(mixed, ModelDecision::Question { question, .. } if question == "which?"));
     let only_question = decision_from_response(
         &tool_response(vec![(
             "q",
@@ -3056,6 +3050,7 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
         budget: crate::compaction::CompactionBudget::for_auto_compaction(8000, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(8000)),
         prompt_tokens: Arc::new(AtomicU64::new(8000)),
+        repeats: Arc::default(),
     };
     let mut lines = vec!["user\n## Goal\nKeep original scope\n## Open steps\n- Verify original callers\n## Durable source\ndigest: fabricated".into()];
     for _ in 0..2 {
@@ -3096,6 +3091,253 @@ fn repeated_result_note_counts_identical_text_and_leaves_json_parseable() {
     let json = r#"{"retainedForRun":true}"#;
     assert_eq!(repeated_result_note(&repeats, "read", &args, json), None);
     assert_eq!(repeated_result_note(&repeats, "read", &args, json), None);
+}
+
+#[test]
+fn large_repeated_tool_outputs_compact_to_first_call_reference() {
+    let repeats = Mutex::new(std::collections::HashMap::new());
+    let args = serde_json::json!({"file_path": "src/lib.rs"});
+    let large = "fn item() {}\n".repeat(120);
+    assert!(large.len() > REPEAT_COMPACTION_MIN_BYTES);
+
+    assert!(observe_repeated_result(&repeats, "call-1", "read", &args, &large).is_none());
+    let second = observe_repeated_result(&repeats, "call-2", "read", &args, &large)
+        .expect("second identical large call compacts");
+    match second {
+        RepeatedResultProjection::CompactModelOutput {
+            model_output,
+            ui_note,
+        } => {
+            assert!(model_output.len() < large.len() / 4);
+            assert!(model_output.contains("earlier call `call-1`"));
+            assert!(model_output.contains("2 times in a row"));
+            assert!(ui_note.contains("2 times in a row"));
+        }
+        RepeatedResultProjection::AppendNote(_) => panic!("expected compact model output"),
+    }
+
+    // Small outputs preserve original full body + appended note.
+    let small = "short fail";
+    assert!(observe_repeated_result(&repeats, "call-3", "bash", &args, small).is_none());
+    assert!(matches!(
+        observe_repeated_result(&repeats, "call-4", "bash", &args, small),
+        Some(RepeatedResultProjection::AppendNote(_))
+    ));
+
+    // Structured JSON results remain unrewritten and parseable even when large.
+    let large_json = serde_json::json!({"items": vec!["alpha"; 100]}).to_string();
+    assert!(large_json.len() > REPEAT_COMPACTION_MIN_BYTES);
+    assert!(observe_repeated_result(&repeats, "call-5", "read", &args, &large_json).is_none());
+    assert!(observe_repeated_result(&repeats, "call-6", "read", &args, &large_json).is_none());
+
+    // Clearing the repeat table (e.g. after compaction) emits full text again.
+    repeats.lock().unwrap().clear();
+    assert!(observe_repeated_result(&repeats, "call-7", "read", &args, &large).is_none());
+}
+
+#[test]
+fn cross_turn_repeat_seeding_compacts_unchanged_large_reread_and_resets_after_compaction() {
+    let args = serde_json::json!({"file_path": "src/lib.rs"});
+    let large = "fn item() {}\n".repeat(120);
+    assert!(large.len() > REPEAT_COMPACTION_MIN_BYTES);
+
+    let fact = |seq, kind: &str, key: &str, payload| aster_effect::Fact {
+        seq,
+        kind: kind.into(),
+        key: key.into(),
+        cause: None,
+        payload,
+    };
+    let tool_turn = |seq, key: &str, id: &str| {
+        fact(
+            seq,
+            "model.turn",
+            key,
+            serde_json::to_value(ModelDecision::Tool {
+                call: aster_effect::ToolCall {
+                    id: id.into(),
+                    name: "read".into(),
+                    args: args.clone(),
+                    needs_confirmation: false,
+                    text: None,
+                    reasoning: None,
+                },
+                also: Vec::new(),
+            })
+            .unwrap(),
+        )
+    };
+
+    let turn1_facts = vec![
+        tool_turn(1, "model:1:0", "turn1-call-1"),
+        fact(
+            2,
+            "tool.result",
+            "tool:1:0",
+            serde_json::json!({
+                "toolCallId": "turn1-call-1",
+                "output": large,
+                "ok": true,
+            }),
+        ),
+    ];
+
+    let repeats = Mutex::new(seed_repeats_from_facts(&turn1_facts));
+    let turn2 = observe_repeated_result(&repeats, "turn2-call-1", "read", &args, &large)
+        .expect("Turn 2 re-read of unchanged >512B file compacts to Turn 1 reference");
+    let turn2_stub = match turn2 {
+        RepeatedResultProjection::CompactModelOutput { model_output, .. } => {
+            assert!(model_output.contains("earlier call `turn1-call-1`"));
+            assert!(model_output.contains("2 times in a row"));
+            model_output
+        }
+        RepeatedResultProjection::AppendNote(_) => panic!("expected CompactModelOutput"),
+    };
+
+    // Seeding a Turn 2 stub followed by Turn 3 keeps `first_call_id = "turn1-call-1"` and increments count.
+    let mut turn2_facts = turn1_facts.clone();
+    turn2_facts.push(tool_turn(3, "model:2:0", "turn2-call-1"));
+    turn2_facts.push(fact(
+        4,
+        "tool.result",
+        "tool:2:0",
+        serde_json::json!({
+            "toolCallId": "turn2-call-1",
+            "output": turn2_stub,
+            "ok": true,
+        }),
+    ));
+    let repeats_after_stub = Mutex::new(seed_repeats_from_facts(&turn2_facts));
+    match observe_repeated_result(&repeats_after_stub, "turn3-call-1", "read", &args, &large)
+        .expect("Turn 3 still compacts to Turn 1 reference")
+    {
+        RepeatedResultProjection::CompactModelOutput { model_output, .. } => {
+            assert!(model_output.contains("earlier call `turn1-call-1`"));
+            assert!(model_output.contains("3 times in a row"));
+        }
+        RepeatedResultProjection::AppendNote(_) => panic!("expected CompactModelOutput"),
+    }
+
+    // After a compaction that drops the Turn 1 result, seeding clears old repeat state.
+    turn2_facts.push(fact(
+        5,
+        "compaction.done",
+        "compact:2",
+        serde_json::json!({ "kept": [] }),
+    ));
+    let repeats_compacted = Mutex::new(seed_repeats_from_facts(&turn2_facts));
+    assert!(
+        observe_repeated_result(
+            &repeats_compacted,
+            "turn3-after-compact",
+            "read",
+            &args,
+            &large
+        )
+        .is_none(),
+        "compaction that drops Turn 1 result must emit full text on next read"
+    );
+}
+
+#[test]
+fn token_optimization_measurements_report() {
+    let standing = crate::prompts::SystemPromptSlots::default().build();
+    let lang_override = crate::prompts::turn_output_language_override("zh-CN");
+    let registry = crate::tools::ToolRegistry::new(std::path::PathBuf::from("."));
+    let services = std::sync::Arc::new(crate::workspace::WorkspaceServices::local(
+        std::path::PathBuf::from("."),
+    ));
+    crate::tools::builtin::register_builtins(&registry, &services);
+    let defs = registry.definitions();
+    let raw_tools_bytes: usize = defs
+        .iter()
+        .map(|d| serde_json::to_string(d).unwrap().len())
+        .sum();
+    let openai = crate::llm::OpenAiClient::new("k".into(), "k3.1-pro".into());
+    let wire_tools = openai.convert_tools(&defs);
+    let wire_tools_bytes: usize = serde_json::to_string(&wire_tools).unwrap().len();
+
+    let mut raw_schema_only_bytes = 0usize;
+    let mut wire_schema_only_bytes = 0usize;
+    for d in &defs {
+        raw_schema_only_bytes += serde_json::to_string(&d.parameters).unwrap().len();
+        wire_schema_only_bytes +=
+            serde_json::to_string(&crate::llm::wire_tool_parameters(&d.parameters))
+                .unwrap()
+                .len();
+    }
+
+    let (full_session_raw_bytes, full_session_wire_bytes) = {
+        let full_registry = std::sync::Arc::new(crate::tools::ToolRegistry::new(
+            std::path::PathBuf::from("."),
+        ));
+        crate::tools::builtin::register_builtins(&full_registry, &services);
+        crate::tools::builtin::register_batch(&full_registry);
+        #[cfg(feature = "ptc")]
+        crate::tools::builtin::register_program(&full_registry);
+        crate::tools::builtin::register_generate_object(
+            &full_registry,
+            std::sync::Arc::new(openai.clone()),
+        );
+        let agent_registry = std::sync::Arc::new(crate::subagent::AgentRegistry::new());
+        crate::tools::builtin::register_task_with_mcp(
+            &full_registry,
+            std::sync::Arc::new(openai.clone()),
+            agent_registry,
+            ".".to_string(),
+            None,
+            None,
+            Some(std::sync::Arc::new(
+                crate::subagent_task_tracker::InMemorySubagentTaskTracker::new(),
+            )),
+        );
+        let full_defs = full_registry.definitions();
+        let raw_bytes: usize = full_defs
+            .iter()
+            .map(|d| serde_json::to_string(d).unwrap().len())
+            .sum();
+        let wire_bytes = serde_json::to_string(&openai.convert_tools(&full_defs))
+            .unwrap()
+            .len();
+        (raw_bytes, wire_bytes)
+    };
+
+    assert!(
+        standing.len() < 5_350,
+        "standing prompt {} B",
+        standing.len()
+    );
+    assert!(
+        lang_override.len() < 400,
+        "language override {} B",
+        lang_override.len()
+    );
+    assert!(
+        wire_schema_only_bytes < raw_schema_only_bytes && wire_schema_only_bytes < 8_150,
+        "expected stripped wire schemas ({wire_schema_only_bytes}) < raw ({raw_schema_only_bytes}) and < 8150 B"
+    );
+    assert!(
+        full_session_wire_bytes < 16_600,
+        "full session wire tools ({full_session_wire_bytes} B) exceeded 16600 B budget"
+    );
+    let pre_analysis_full_bytes = crate::prompts::PRE_ANALYSIS_SYSTEM.trim_end().len()
+        + 1
+        + crate::prompts::PRE_ANALYSIS_PLANNING_ADDENDUM.len();
+    println!(
+        "TOKEN_OPT_METRICS standing_bytes={} lang_override_bytes={} pre_analysis_sys_bytes={} pre_analysis_full_bytes={} tool_count={} raw_defs_bytes={} raw_schema_bytes={} wire_schema_bytes={} schema_saved_bytes={} openai_wire_tools_bytes={} full_session_raw_bytes={} full_session_wire_bytes={}",
+        standing.len(),
+        lang_override.len(),
+        crate::prompts::PRE_ANALYSIS_SYSTEM.len(),
+        pre_analysis_full_bytes,
+        defs.len(),
+        raw_tools_bytes,
+        raw_schema_only_bytes,
+        wire_schema_only_bytes,
+        raw_schema_only_bytes - wire_schema_only_bytes,
+        wire_tools_bytes,
+        full_session_raw_bytes,
+        full_session_wire_bytes,
+    );
 }
 
 struct RefuseBeforeSpawn;

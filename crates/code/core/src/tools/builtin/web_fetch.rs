@@ -32,7 +32,7 @@ impl Tool for WebFetchTool {
     }
 
     fn description(&self) -> &str {
-        "Fetch content from a URL and convert to text or markdown. Supports HTML to Markdown conversion and text extraction from PDF documents. 5MB download size limit and capped tool output. Configurable timeout (max 120 seconds)."
+        "Fetch http(s) URL (max 5MB) as markdown, text, or html (incl. PDF text)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -42,31 +42,34 @@ impl Tool for WebFetchTool {
             "properties": {
                 "url": {
                     "type": "string",
-                    "description": "Required. The URL to fetch content from. Must start with http:// or https://. Always provide this exact field name: 'url'."
+                    "description": "http(s) URL."
                 },
                 "format": {
                     "type": "string",
                     "enum": ["markdown", "text", "html"],
-                    "description": "Optional. Output format. Default: markdown."
+                    "default": "markdown"
                 },
                 "timeout": {
                     "type": "integer",
-                    "description": "Optional. Timeout in seconds. Default: 30. Maximum: 120."
+                    "description": "Seconds (default 30, max 120)."
                 },
                 "body_only": {
                     "type": "boolean",
-                    "description": "Optional. For HTML responses, extract the semantic main element when present, otherwise the body element, before conversion. Default: true."
+                    "default": true,
+                    "description": "Main body before HTML->md."
                 },
                 "offset": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Optional. Character offset into the converted content. Default: 0."
+                    "default": 0,
+                    "description": "Char offset."
                 },
                 "max_chars": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_CONTENT_CHARS,
-                    "description": "Optional. Maximum converted characters to return. Default: 50000; maximum: 100000."
+                    "default": DEFAULT_MAX_CHARS,
+                    "description": "Max chars."
                 }
             },
             "required": ["url"],

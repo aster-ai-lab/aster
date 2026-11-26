@@ -34,43 +34,18 @@ const JSON_OUTPUT_RESERVE_BYTES: usize = 4 * 1024;
 const MAX_JSON_OUTPUT_BYTES: usize = crate::tools::MAX_OUTPUT_SIZE - JSON_OUTPUT_RESERVE_BYTES;
 
 #[cfg(feature = "headless-search")]
-const WEB_SEARCH_DESCRIPTION: &str = "When saved notes are available, this tool searches them before the network. A matching note is returned and the web is not queried. Call web_search again with the same query if those passages do not answer. \
-     Search the web through a structurally gated cascade: native APIs first, HTTP/RSS engines \
-     only when needed, and the bundled Moli headless browser only when earlier tiers remain insufficient. \
-     Unavailable engines are skipped through session-scoped circuit state, and all executed tiers \
-     are deduplicated and ranked together. An explicit engines list runs only those requested tiers. \
-     Moli is discovered from the package or installed once in the shared Aster Code cache, then reused by all local Code processes. \
-     Supports proxy configuration for conventional and headless search transports.";
+const WEB_SEARCH_DESCRIPTION: &str = "Search saved notes first, then web via cascade (native APIs, HTTP/RSS, Moli headless). Explicit `engines` runs only requested tiers.";
 
 #[cfg(not(feature = "headless-search"))]
-const WEB_SEARCH_DESCRIPTION: &str = "When saved notes are available, this tool searches them before the network. A matching note is returned and the web is not queried. Call web_search again with the same query if those passages do not answer. \
-     Search the web through a structurally gated cascade of native APIs and HTTP/RSS engines. \
-     Unavailable engines are skipped through session-scoped circuit state, and all executed tiers \
-     are deduplicated and ranked together. An explicit engines list runs only those requested tiers. \
-     Supports proxy configuration for conventional search transports.";
+const WEB_SEARCH_DESCRIPTION: &str = "Search saved notes first, then web via native APIs/HTTP/RSS. Explicit `engines` runs only requested tiers.";
 
 #[cfg(feature = "headless-search")]
 const ENGINE_CATALOG_DESCRIPTION: &str =
-    "Optional. List of search engines or native providers to use. Without explicit configuration, \
-     all built-in providers that advertise anonymous access are combined with the public HTTP \
-     defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
-     or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
-     wiki (Wikipedia), sogou (Sogou), 360 / so360 (360 Search), bing_cn (Bing China RSS), \
-     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and aster (named only; \
-     they are not in the default cascade), \
-     g / google (Google, headless), baidu (Baidu, headless), bing_browser (Bing, headless), \
-     brave_browser (Brave, headless). The default headless backend is Moli; Chrome \
-     remains an explicit compatibility backend.";
+    "Default anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster; headless (Moli): g/google (Google, headless), baidu, bing_browser, brave_browser.";
 
 #[cfg(not(feature = "headless-search"))]
 const ENGINE_CATALOG_DESCRIPTION: &str =
-    "Optional. List of search engines or native providers to use. Without explicit configuration, \
-     all built-in providers that advertise anonymous access are combined with the public HTTP \
-     defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
-     or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
-     wiki (Wikipedia), sogou (Sogou), 360 / so360 (360 Search), bing_cn (Bing China RSS), \
-     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and aster (named only; \
-     they are not in the default cascade).";
+    "Default anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster.";
 
 #[cfg(test)]
 pub(crate) use engines::bridge_search_config;
@@ -474,8 +449,7 @@ impl Tool for WebSearchTool {
             "additionalProperties": false,
             "properties": {
                 "query": {
-                    "type": "string",
-                    "description": "Required. The search query. Always provide this exact field name: 'query'."
+                    "type": "string"
                 },
                 "engines": {
                     "type": "array",
@@ -486,26 +460,29 @@ impl Tool for WebSearchTool {
                 },
                 "limit": {
                     "type": "integer",
-                    "description": "Optional. Maximum number of results to return. Default: 10. Maximum: 50."
+                    "default": 10,
+                    "maximum": 50
                 },
                 "timeout": {
                     "type": "integer",
-                    "description": "Optional. Search timeout in seconds. Default: 20. Maximum: 60."
+                    "default": 20,
+                    "maximum": 60,
+                    "description": "Seconds."
                 },
                 "proxy": {
                     "type": "string",
-                    "description": "Optional. Proxy URL, for example http://127.0.0.1:8080 or socks5://127.0.0.1:1080."
+                    "description": "http:// or socks5://."
                 },
                 "format": {
                     "type": "string",
                     "enum": ["text", "json"],
-                    "description": "Optional. Output format. Default: json for complete results; degraded-source context stays text. Explicit text is always honored."
+                    "default": "json"
                 },
                 "full_text_bytes": {
                     "type": "integer",
                     "minimum": MIN_FULL_TEXT_BYTES,
                     "maximum": MAX_FULL_TEXT_BYTES,
-                    "description": "Optional. For JSON output, include at most this many UTF-8 bytes of provider-returned full source text per result. Omitted by default."
+                    "description": "Full-text bytes/item."
                 }
             },
             "required": ["query"],

@@ -99,3 +99,13 @@ async fn provenance_refuses_invalid_record_keys_and_unknown_arguments() {
         assert!(!output.success, "{}", output.content);
     }
 }
+
+#[test]
+fn output_check_definition_omits_one_of_while_parameters_keeps_it() {
+    let params = OutputCheckTool.parameters();
+    let def = OutputCheckTool.definition();
+    assert!(params.get("oneOf").is_some());
+    assert!(def.parameters.get("oneOf").is_none());
+    assert_eq!(def.parameters["required"], json!(["action"]));
+    assert!(def.parameters.to_string().len() < params.to_string().len());
+}

@@ -43,8 +43,8 @@ impl Tool for TaskControlTool {
 
     fn description(&self) -> &str {
         match self {
-            Self::Output(_) => "Query an existing child task by task_id. Set timeout_ms to wait up to 300000 ms; 0 polls. A timeout leaves the task running. Never relaunch a task to wait for it.",
-            Self::Stop(_) => "Request cancellation of an existing child task by task_id. Returns the observed status; cancellation does not mean cleanup has finished.",
+            Self::Output(_) => "Query child task by task_id; timeout_ms (<=300000) waits, 0 polls. Never relaunch to wait.",
+            Self::Stop(_) => "Request cancellation of child task by task_id.",
         }
     }
 

@@ -121,29 +121,29 @@ fn read_properties() -> serde_json::Value {
     serde_json::json!({
         "file_path": {
             "type": "string",
-            "description": "Absolute/workspace-relative file or aster://tool-output/... URI from a tool result. Choose file_path or files."
+            "description": "Path or aster://tool-output/... URI (xor files)."
         },
         "offset": {
             "type": "integer",
             "minimum": 0,
-            "description": "0-based start line; default 0."
+            "description": "0-based line."
         },
         "byte_offset": {
             "type": "integer",
             "minimum": 0,
-            "description": "Byte index in the first returned line only (default 0, at most its length); later lines are whole. Resume with the returned line offset and byte_offset."
+            "description": "UTF-8 offset in first line."
         },
         "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": MAX_READ_LINES,
-            "description": "Line limit; default/max 2000."
+            "description": "Max lines (default 2000)."
         },
         "files": {
             "type": "array",
             "minItems": 1,
             "maxItems": MAX_BATCH_READ_FILES,
-            "description": "Text ranges in request order, sharing one output budget. Per-member errors preserve successful members.",
+            "description": "Batch text reads.",
             "items": {
                 "type": "object",
                 "additionalProperties": false,
@@ -151,24 +151,20 @@ fn read_properties() -> serde_json::Value {
                     "path": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": MAX_BATCH_READ_PATH_BYTES,
-                        "description": "Absolute/workspace-relative text file."
+                        "maxLength": MAX_BATCH_READ_PATH_BYTES
                     },
                     "offset": {
                         "type": "integer",
-                        "minimum": 0,
-                        "description": "0-based start line; default 0."
+                        "minimum": 0
                     },
                     "byte_offset": {
                         "type": "integer",
-                        "minimum": 0,
-                        "description": "Byte index in this entry's first returned line; default 0, at most its length."
+                        "minimum": 0
                     },
                     "limit": {
                         "type": "integer",
                         "minimum": 1,
-                        "maximum": MAX_READ_LINES,
-                        "description": "Line limit for this file; default/max 2000."
+                        "maximum": MAX_READ_LINES
                     }
                 },
                 "required": ["path"]
@@ -178,7 +174,7 @@ fn read_properties() -> serde_json::Value {
             "type": "integer",
             "minimum": MIN_BATCH_READ_OUTPUT_BYTES,
             "maximum": MAX_BATCH_READ_OUTPUT_BYTES,
-            "description": "Shared batch byte budget, including continuation; default 65536, max 98304."
+            "description": "Batch bytes (default 65536)."
         }
     })
 }
@@ -223,7 +219,7 @@ impl Tool for ReadTool {
     }
 
     fn description(&self) -> &str {
-        "Read text/images or batch 1-32 text files under one output budget. Returns line numbers and exact continuations. Lines over 2000 bytes are cut; use the returned byte_offset to resume."
+        "Read text/images or batch 1-32 text files with line numbers and continuations (lines >2000B cut; pass byte_offset to resume)."
     }
 
     fn parameters(&self) -> serde_json::Value {

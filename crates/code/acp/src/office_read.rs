@@ -105,18 +105,18 @@ impl Tool for OfficeReadTool {
     }
     fn description(&self) -> &str {
         if self.host.is_some() {
-            "Read persisted DOCX/XLSX/PPTX, PDFs and images without Bash or installing packages. Studio provides local PP-OCRv6: PDF text layers are read directly; scanned pages and images use OCR. Source SHA-256 and page numbers are retained; OCR is untrusted extracted evidence. PDF/image reads use start_page (default 1) and page_count (default 8, max 16); follow next_page until null before claiming full coverage. Repeated reads reuse cached results. Office reads return stable native nodes and typed spreadsheet cells; limit is an entry count (1..1000, default 200) and the serialized result is also capped at 64 KiB. When truncated is true, continue from next_node_path (or a narrower node_path) instead of raising limit alone."
+            "Read DOCX/XLSX/PPTX, PDFs, and images natively (no Bash). Studio provides local PP-OCRv6 for scanned PDFs/images (OCR is untrusted; keeps SHA-256 + page numbers). PDF/image: start_page (default 1), page_count (default 8, max 16; follow next_page until null). Office: stable nodes + typed cells; entry limit 1..1000 (default 200, <=64 KiB total); follow next_node_path when truncated."
         } else {
-            "Read persisted DOCX/XLSX/PPTX sources with stable native nodes, typed cells and source SHA-256. Input max 20 MiB. limit is an entry count (1..1000, default 200); serialized output is also capped at 64 KiB and returns truncated/next_node_path when more remains. PDF and image OCR require an admitted Studio document host and are unavailable here."
+            "Read DOCX/XLSX/PPTX natively with node paths, typed cells, and SHA-256 (max 20 MiB; limit 1..1000 entries, default 200, <=64 KiB total; follow next_node_path when truncated). PDF/image OCR requires an admitted Studio document host."
         }
     }
     fn parameters(&self) -> Value {
         json!({"type":"object","additionalProperties":false,"required":["file_path"],"properties":{
-            "file_path":{"type":"string","description":"Persisted Office source path inside the current workspace."},
-            "node_path":{"type":"string","description":"Optional exact native semantic path returned by a previous read; no wildcard or guessed business label. When continuing a truncated list, pass the prior next_node_path."},
-            "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Annotated entry count bound (not bytes); default 200. Output is also capped at 64 KiB and may return fewer entries with truncated=true. Exact node reads return that node without children."}
-            ,"start_page":{"type":"integer","minimum":1,"maximum":500,"description":"First PDF page, numbered from 1; default 1."}
-            ,"page_count":{"type":"integer","minimum":1,"maximum":16,"description":"PDF page count; default 8. Follow next_page for remaining pages."}
+            "file_path":{"type":"string","description":"Workspace-relative or workspace file path."},
+            "node_path":{"type":"string","description":"Exact prior node path or next_node_path (no wildcards)."},
+            "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Max entries (default 200; output also <=64 KiB). Exact reads return that node."}
+            ,"start_page":{"type":"integer","minimum":1,"maximum":500,"description":"1-based first PDF page (default 1)."}
+            ,"page_count":{"type":"integer","minimum":1,"maximum":16,"description":"PDF pages to read (default 8)."}
         }})
     }
     fn capabilities(&self, _: &Value) -> ToolCapabilities {

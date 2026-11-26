@@ -61,6 +61,34 @@ fn deepseek_model_sends_thinking_effort_without_an_output_floor() {
     assert_eq!(off["reasoning_effort"], "none");
     assert_eq!(off["thinking"]["type"], "disabled");
     assert!(off.get("top_p").is_none());
+
+    let minimized = OpenAiClient::new("k".to_string(), "deepseek-flash".to_string())
+        .with_provider_name("deepseek")
+        .with_reasoning_effort("max")
+        .with_minimal_reasoning()
+        .expect("deepseek-flash has minimal reasoning level");
+    assert!(Arc::strong_count(&minimized) >= 1);
+    let ds_min = OpenAiClient::new("k".to_string(), "deepseek-flash".to_string())
+        .with_provider_name("deepseek")
+        .with_reasoning_effort("max");
+    let ds_min = ds_min
+        .reasoning_capabilities
+        .as_ref()
+        .and_then(|c| c.lowest_effort());
+    assert_eq!(ds_min, Some("none"));
+
+    let kimi =
+        OpenAiClient::new("k".to_string(), "k3.1-pro".to_string()).with_reasoning_effort("max");
+    assert_eq!(
+        kimi.reasoning_capabilities
+            .as_ref()
+            .and_then(|c| c.lowest_effort()),
+        Some("low")
+    );
+    assert!(kimi.with_minimal_reasoning().is_some());
+    assert!(OpenAiClient::new("k".to_string(), "gpt-4o".to_string())
+        .with_minimal_reasoning()
+        .is_none());
 }
 
 #[test]
@@ -1508,4 +1536,147 @@ fn kimi_fixed_temperature_models_omit_explicit_temperature() {
     let standard = make_client().with_temperature(0.0);
     let standard_body = standard.build_chat_request(&[Message::user("hi")], None, &[], None);
     assert_eq!(standard_body["temperature"], serde_json::json!(0.0));
+}
+
+#[test]
+fn openai_strips_prior_user_turn_reasoning_content_but_keeps_active_turn_reasoning() {
+    let client = OpenAiClient::new("test-key".into(), "k3.1-pro".into());
+    let mut prev_call = Message::assistant("checking");
+    prev_call.reasoning_content = Some("stale prior turn thinking".repeat(20));
+    prev_call.content.push(ContentBlock::ToolUse {
+        id: "t1".into(),
+        name: "read".into(),
+        input: serde_json::json!({"file_path": "a.rs"}),
+    });
+    let mut prev_reply = Message::assistant("first done");
+    prev_reply.reasoning_content = Some("more stale thinking".into());
+
+    let mut cur_call_1 = Message::assistant("");
+    cur_call_1.reasoning_content = Some("current turn step 1".into());
+    cur_call_1.content.push(ContentBlock::ToolUse {
+        id: "t2".into(),
+        name: "read".into(),
+        input: serde_json::json!({"file_path": "b.rs"}),
+    });
+    let mut cur_call_2 = Message::assistant("");
+    cur_call_2.reasoning_content = Some("current turn step 2".into());
+    cur_call_2.content.push(ContentBlock::ToolUse {
+        id: "t3".into(),
+        name: "read".into(),
+        input: serde_json::json!({"file_path": "c.rs"}),
+    });
+
+    let messages = vec![
+        Message::user("turn 1"),
+        prev_call,
+        Message::tool_result("t1", "contents a", false),
+        prev_reply,
+        Message::user("turn 2"),
+        cur_call_1,
+        Message::tool_result("t2", "contents b", false),
+        cur_call_2,
+        Message::tool_result("t3", "contents c", false),
+    ];
+
+    let converted = client.convert_messages(&messages);
+    // Prior user turn's assistant messages keep the field key as "" (no CoT replay).
+    assert_eq!(converted[1]["reasoning_content"], serde_json::json!(""));
+    assert_eq!(converted[3]["reasoning_content"], serde_json::json!(""));
+    // Active user turn keeps full interleaved reasoning_content across tool loops.
+    assert_eq!(
+        converted[5]["reasoning_content"],
+        serde_json::json!("current turn step 1")
+    );
+    assert_eq!(
+        converted[7]["reasoning_content"],
+        serde_json::json!("current turn step 2")
+    );
+
+    // Standalone assistant message without a preceding user message keeps reasoning.
+    let single = client.convert_messages(&[Message {
+        role: "assistant".into(),
+        content: vec![ContentBlock::Text {
+            text: "only".into(),
+        }],
+        reasoning_content: Some("solo reasoning".into()),
+        transcript_text: None,
+        transcript_visibility: Default::default(),
+    }]);
+    assert_eq!(
+        single[0]["reasoning_content"],
+        serde_json::json!("solo reasoning")
+    );
+}
+
+#[test]
+fn openai_convert_tools_strips_examples_and_preserves_schema() {
+    let client = make_client();
+    let tools = vec![ToolDefinition {
+        name: "read".into(),
+        description: "Read file".into(),
+        parameters: serde_json::json!({
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                },
+                "date": {
+                    "type": "string",
+                    "maxLength": 40
+                },
+                "lines": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 500
+                },
+                "pair": {
+                    "type": "array",
+                    "minItems": 2
+                },
+                "line": {
+                    "type": "integer",
+                    "maximum": 4294967295_u64
+                },
+                "limit": {
+                    "type": "integer",
+                    "maximum": 500
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"}
+                },
+                "nested": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {},
+                    "required": []
+                }
+            },
+            "required": ["file_path"],
+            "examples": [{"file_path": "src/main.rs"}]
+        }),
+    }];
+    let converted = client.convert_tools(&tools);
+    let params = &converted[0]["function"]["parameters"];
+    assert!(params.get("examples").is_none());
+    assert!(params.get("additionalProperties").is_none());
+    assert!(params["properties"]["file_path"].get("minLength").is_none());
+    assert!(params["properties"]["file_path"].get("maxLength").is_none());
+    assert_eq!(params["properties"]["date"]["maxLength"], 40);
+    assert!(params["properties"]["lines"].get("minItems").is_none());
+    assert_eq!(params["properties"]["pair"]["minItems"], 2);
+    assert!(params["properties"]["line"].get("maximum").is_none());
+    assert_eq!(params["properties"]["limit"]["maximum"], 500);
+    assert_eq!(
+        params["properties"]["labels"]["additionalProperties"],
+        serde_json::json!({"type": "string"})
+    );
+    assert!(params["properties"]["nested"].get("required").is_none());
+    assert!(params["properties"]["nested"]
+        .get("additionalProperties")
+        .is_none());
+    assert_eq!(params["required"], serde_json::json!(["file_path"]));
 }

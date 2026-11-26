@@ -101,7 +101,7 @@ impl Tool for OpenWorkspaceBrowserTool {
     }
 
     fn description(&self) -> &str {
-        "Open an http(s) or file URL in Aster's built-in workspace browser pane. Returns the opened URL on success, or the exact rejection reason. This confirms navigation intent only — it does not read the page DOM, click, or screenshot. Prefer this over asking the user to open the pane after a failed web_fetch or web_search for a public URL."
+        "Open http(s)/file URL in Aster's workspace browser pane (navigation only; no DOM/click/screenshot). Returns opened URL or exact rejection. Prefer after failed web_fetch/web_search for public URLs."
     }
 
     fn parameters(&self) -> Value {
@@ -114,7 +114,7 @@ impl Tool for OpenWorkspaceBrowserTool {
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 8192,
-                    "description": "http(s) or file URL to show in the workspace browser pane. Credentialed and javascript: addresses are rejected."
+                    "description": "http(s) or file URL (rejects credentials/javascript:)."
                 }
             }
         })

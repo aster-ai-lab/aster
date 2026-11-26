@@ -56,7 +56,7 @@ const MAX_TASK_SOURCE_CANDIDATES: usize = MAX_TASK_SOURCE_ANCHORS * 4;
 const MAX_TASK_SOURCE_TOOL_BYTES: usize = 64;
 const MAX_TASK_SOURCE_VALUE_BYTES: usize = 4 * 1024;
 const MAX_PARALLEL_TASK_SOURCE_ANCHORS: usize = MAX_TASK_SOURCE_ANCHORS;
-const TASK_TOOL_DESCRIPTION: &str = "Delegate one bounded child or independent tasks concurrently. Background supports one item; multiple items are collected by the parent. Any child failure fails the group by default; allow_partial_failure permits partial success. Use canonical live-catalog names. Custom agents: agent_dirs or .aster/agents; .claude/agents remains compatible.";
+const TASK_TOOL_DESCRIPTION: &str = "Delegate >=1 concurrent child tasks; background=true needs 1 item. Fails if any child fails unless allow_partial_failure=true. Custom agents: agent_dirs, .aster/agents, .claude/agents.";
 
 /// Task tool parameters
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1915,9 +1915,7 @@ pub(super) fn task_agent_parameter_schema(agents: &[AgentDefinition]) -> serde_j
         .join("\n");
     serde_json::json!({
         "type": "string",
-        "description": format!(
-            "Canonical name from the live agent catalog:\n{catalog}"
-        ),
+        "description": format!("Agent:\n{catalog}"),
         "examples": examples
     })
 }
@@ -1972,14 +1970,14 @@ pub(super) fn task_item_params_schema_for_agents(
             "description".to_string(),
             serde_json::json!({
                 "type": "string",
-                "description": "Short display/tracking label."
+                "description": "Short label."
             }),
         ),
         (
             "prompt".to_string(),
             serde_json::json!({
                 "type": "string",
-                "description": "Detailed child-run instructions."
+                "description": "Child instructions."
             }),
         ),
         (
@@ -1987,14 +1985,14 @@ pub(super) fn task_item_params_schema_for_agents(
             serde_json::json!({
                 "type": "integer",
                 "minimum": 1,
-                "description": "Task step limit."
+                "description": "Step cap."
             }),
         ),
         (
             "output_schema".to_string(),
             serde_json::json!({
                 "type": "object",
-                "description": "JSON Schema for the child result; a coerced, validated object returns in metadata."
+                "description": "JSON Schema validated into metadata."
             }),
         ),
     ]);
@@ -2003,7 +2001,7 @@ pub(super) fn task_item_params_schema_for_agents(
             "background".to_string(),
             serde_json::json!({
                 "type": "boolean",
-                "description": "Run in background; only a single-item outer tasks array supports this. Default false.",
+                "description": "Single-task only.",
                 "default": false
             }),
         );

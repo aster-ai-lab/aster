@@ -3247,3 +3247,106 @@ async fn bash_without_workspace_command_runner_returns_error_instead_of_panickin
         result.content
     );
 }
+
+struct SpawnRefusingRunner;
+
+#[async_trait]
+impl crate::workspace::WorkspaceCommandRunner for SpawnRefusingRunner {
+    async fn exec(
+        &self,
+        _request: crate::workspace::CommandRequest,
+    ) -> anyhow::Result<crate::workspace::CommandOutput> {
+        Err(super::host_shell_spawn_refused(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "bash",
+        )))
+    }
+}
+
+struct PostSpawnFailingRunner;
+
+#[async_trait]
+impl crate::workspace::WorkspaceCommandRunner for PostSpawnFailingRunner {
+    async fn exec(
+        &self,
+        _request: crate::workspace::CommandRequest,
+    ) -> anyhow::Result<crate::workspace::CommandOutput> {
+        anyhow::bail!("Failed to capture shell output: broken pipe")
+    }
+}
+
+#[test]
+fn host_shell_spawn_refused_matches_only_the_typed_error() {
+    let typed =
+        super::host_shell_spawn_refused(std::io::Error::new(std::io::ErrorKind::NotFound, "bash"));
+    assert!(super::is_host_shell_spawn_refused(&typed));
+    let wrapped = typed.context("outer context");
+    assert!(super::is_host_shell_spawn_refused(&wrapped));
+    let lookalike = anyhow::anyhow!("Failed to spawn shell: No such file or directory");
+    assert!(!super::is_host_shell_spawn_refused(&lookalike));
+}
+
+#[tokio::test]
+async fn host_shell_spawn_refusal_reports_settled_non_execution_without_sandbox() {
+    let temp = tempfile::tempdir().unwrap();
+    let base = crate::workspace::WorkspaceServices::local(temp.path());
+    let services =
+        crate::workspace::WorkspaceServicesBuilder::new(base.workspace_ref().clone(), base.fs())
+            .command_runner(Arc::new(SpawnRefusingRunner))
+            .build();
+    let ctx = ToolContext::new(temp.path().to_path_buf()).with_workspace_services(services);
+    let result = BashTool
+        .execute(&escalated_args("echo hi"), &ctx)
+        .await
+        .expect("typed host shell spawn refusal must return a settled tool output");
+    assert!(!result.success);
+    assert!(matches!(
+        result.error_kind,
+        Some(ToolErrorKind::Unsupported { .. })
+    ));
+    let metadata = result.metadata.expect("refusal metadata");
+    assert!(metadata["exit_code"].is_null());
+    assert_eq!(metadata["command_started"], false);
+    assert_eq!(metadata["sandboxed"], false);
+    assert_eq!(metadata["sandbox_available"], false);
+}
+
+#[tokio::test]
+async fn host_shell_post_spawn_failure_remains_an_execution_error() {
+    let temp = tempfile::tempdir().unwrap();
+    let base = crate::workspace::WorkspaceServices::local(temp.path());
+    let services =
+        crate::workspace::WorkspaceServicesBuilder::new(base.workspace_ref().clone(), base.fs())
+            .command_runner(Arc::new(PostSpawnFailingRunner))
+            .build();
+    let ctx = ToolContext::new(temp.path().to_path_buf()).with_workspace_services(services);
+    let err = BashTool
+        .execute(&escalated_args("echo hi"), &ctx)
+        .await
+        .expect_err("post-spawn failure must remain Err so receipts book Unknown");
+    assert!(
+        err.to_string().contains("Workspace bash execution failed"),
+        "{err}"
+    );
+}
+
+#[test]
+fn clean_terminal_output_preserves_plain_and_crlf_and_strips_ansi_and_progress_cr() {
+    use std::borrow::Cow;
+    assert!(matches!(
+        clean_terminal_output("plain ASCII\n中文 e\u{301}\r\n"),
+        Cow::Borrowed(_)
+    ));
+
+    let ansi = "\x1b[1;32mCompiling\x1b[0m aster-core\n\x1b]0;title\x07\x1b[31merror\x1b[K\n";
+    assert_eq!(
+        clean_terminal_output(ansi).as_ref(),
+        "Compiling aster-core\nerror\n"
+    );
+
+    let progress = "header\nDownloading 10%\rDownloading 55%\rDownloading 100%\ndone\r\n";
+    assert_eq!(
+        clean_terminal_output(progress).as_ref(),
+        "header\nDownloading 100%\ndone\r\n"
+    );
+}

@@ -129,6 +129,7 @@ impl AgentSession {
             .llm_client
             .fork_for_session(&format!("{}:follow-up", self.session_id))
             .unwrap_or_else(|| Arc::clone(&self.llm_client));
+        let client = client.with_minimal_reasoning().unwrap_or(client);
         generate_with_client(
             client.as_ref(),
             prompt,

@@ -450,12 +450,7 @@ impl Tool for PatchTool {
     }
 
     fn description(&self) -> &str {
-        "Apply a unified diff patch to one file (file_path + diff), or several files in ONE \
-         all-or-nothing call (patches: [{file_path, diff}, ...] — every diff is validated \
-         in memory before any write, so a bad hunk anywhere changes nothing). Prefer the \
-         patches form when editing two or more files in the same step, and one diff with \
-         several hunks when several regions of one file change together. String-based \
-         `edit` with an `edits` array is easier when exact line numbers are unknown."
+        "Apply unified diff patch(es) atomically to one file (file_path+diff) or multiple files (patches)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -464,30 +459,26 @@ impl Tool for PatchTool {
             "additionalProperties": false,
             "properties": {
                 "file_path": {
-                    "type": "string",
-                    "description": "Single-file mode: path to the file to patch. Use exactly this field name."
+                    "type": "string"
                 },
                 "diff": {
                     "type": "string",
-                    "description": "Unified diff content with @@ hunk headers for file_path."
+                    "description": "Unified diff with @@ hunks."
                 },
                 "patches": {
                     "type": "array",
                     "minItems": 1,
                     "maxItems": 64,
-                    "description": "Multi-file mode: one entry per file, applied all-or-nothing. \
-                     Takes precedence over file_path/diff.",
+                    "description": "Atomic multi-file patches (overrides file_path/diff).",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
                             "file_path": {
-                                "type": "string",
-                                "description": "Path to the file this entry patches."
+                                "type": "string"
                             },
                             "diff": {
-                                "type": "string",
-                                "description": "Unified diff with @@ hunk headers for this file only."
+                                "type": "string"
                             }
                         },
                         "required": ["file_path", "diff"]

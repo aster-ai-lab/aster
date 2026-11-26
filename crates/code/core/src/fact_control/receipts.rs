@@ -8,7 +8,11 @@ pub(super) use cache_proof::CacheProofCursor;
 mod novelty;
 pub(super) use novelty::{information_identity, novel_information};
 mod refusal;
-pub(super) use refusal::{child_execution_cycle, execution_cycle, ExecutionCycle};
+use refusal::RefusalKind;
+pub(super) use refusal::{child_execution_control, execution_control, ExecutionControl};
+
+const UNRESOLVED_MUTATION: &str =
+    "tool_effect_unresolved: mutating calls require reconciliation of earlier uncertain invocations";
 
 use aster_effect::{
     Effect, PreparedToolExecution, ToolAdmissionIdentityV1, ToolEffectObservationV1,
@@ -33,12 +37,16 @@ pub(super) fn runner_result_value(
         == Some(true);
     let images = tool_results::encode_fact_tool_images(images, effect_dir);
     let cancelled = metadata.is_some_and(|value| value["command_cancelled"] == true);
+    let never_started = metadata
+        .and_then(|value| value.get("command_started"))
+        .and_then(serde_json::Value::as_bool)
+        == Some(false);
     let mut envelope = serde_json::json!({
         "kind": FACT_TOOL_RESULT_KIND,
         "text": output,
         "is_error": is_error,
         "images": images,
-        "exit_code": exit_code,
+        "exit_code": if never_started { None } else { Some(exit_code) },
         "outcome": if evidence_incomplete { ToolExecutionOutcome::Unknown }
             else if cancelled { ToolExecutionOutcome::Cancelled }
             else if is_error { ToolExecutionOutcome::Failed } else { ToolExecutionOutcome::Succeeded },
@@ -101,14 +109,9 @@ pub(super) async fn prepare_tools_with_refusal(
     // shape hint is diagnostic only: it never changes the reason or the
     // decision, so every existing receipt assertion still holds.
     let denial_hint = actionable_denial_hint(&request.call.args);
-    // Deadlock exit: obligations from prior model turns settle into the
-    // recorded, goal-visible set; only same-turn uncertainty still denies
-    // mutating calls below.
     if let Some(ledger) = tools.ledger.as_ref() {
         if let Ok(mut guard) = ledger.lock() {
-            // The delta is the Phase 2 admission input; Phase 1 observes it
-            // without acting.
-            let _delta = guard.settle_prior_turns(request.identity.turn);
+            guard.advance_tool_turn(request.identity.turn);
         }
     }
     let original_evaluation = evaluate_run_permission(
@@ -200,6 +203,17 @@ pub(super) async fn prepare_tools_with_refusal(
     if denial.is_none() && argument_error.is_none() && !cancel.is_cancelled() {
         denial = refusal;
     }
+    let blocked_before_hook = tools.ledger.as_ref().is_some_and(|ledger| {
+        super::tool_results::unresolved_effect_blocks_tool(
+            ledger,
+            tools.executor.registry(),
+            &request.call.name,
+            &request.call.args,
+        )
+    });
+    if blocked_before_hook && denial.is_none() {
+        denial = Some(UNRESOLVED_MUTATION.into());
+    }
     if denial.is_none() && argument_error.is_none() && !cancel.is_cancelled() {
         if let Some(agent) = &tools.agent {
             let session = tools.context.session_id.clone().unwrap_or_default();
@@ -255,15 +269,16 @@ pub(super) async fn prepare_tools_with_refusal(
         .registry()
         .capabilities(&request.call.name, &request.call.args)
         .is_some_and(|capabilities| capabilities.read_only);
-    if !read_only
-        && tools.ledger.as_ref().is_some_and(|ledger| {
-            ledger
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                .has_uncertain_tool_invocations()
-        })
-    {
-        denial = Some("tool_effect_unresolved: mutating calls require reconciliation of earlier uncertain invocations".into());
+    let unresolved = blocked_before_hook
+        || (!read_only
+            && tools.ledger.as_ref().is_some_and(|ledger| {
+                ledger
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .has_uncertain_tool_invocations()
+            }));
+    if unresolved {
+        denial = Some(UNRESOLVED_MUTATION.into());
     }
     // The actor already settled any confirmation attached to this exact
     // original call. A false needs_confirmation also covers the host's
@@ -272,6 +287,7 @@ pub(super) async fn prepare_tools_with_refusal(
     // authority when no actor confirmation was required. Rewritten Ask
     // arguments never inherit approval of the original arguments.
     let unconfirmed_ask = if argument_error.is_none()
+        && !unresolved
         && effective_permission == PermissionDecision::Ask
         && !request.call.needs_confirmation
     {
@@ -308,12 +324,19 @@ pub(super) async fn prepare_tools_with_refusal(
                 None
             }
         });
+    let mut refusal_kind =
+        (execution_unavailable && !unresolved).then_some(RefusalKind::ExecutionUnavailable);
     if !execution_unavailable {
         if let Some(reason) = permission_refusal {
             if denial.is_none() || original_permission == PermissionDecision::Deny {
-                let next_action = if original_permission != PermissionDecision::Deny
-                    && effective_permission == PermissionDecision::Ask
-                {
+                let confirmation_required = original_permission != PermissionDecision::Deny
+                    && effective_permission == PermissionDecision::Ask;
+                refusal_kind = Some(if confirmation_required {
+                    RefusalKind::ConfirmationRequired
+                } else {
+                    RefusalKind::PermissionDenied
+                });
+                let next_action = if confirmation_required {
                     "obtain approval for this exact effective invocation"
                 } else if original_evaluation
                     == super::tool_results::PermissionEvaluation::ChildConfirmationUnavailable
@@ -444,6 +467,17 @@ pub(super) async fn prepare_tools_with_refusal(
         None
     };
     if let Some((outcome, output)) = rejection {
+        let output = match refusal_kind.filter(|_| outcome == ToolExecutionOutcome::Denied) {
+            Some(kind) => serde_json::json!({
+                "kind": FACT_TOOL_RESULT_KIND,
+                "text": output,
+                "is_error": true,
+                "outcome": outcome,
+                "metadata": { "host_refusal": kind.as_str() },
+            })
+            .to_string(),
+            None => output,
+        };
         let result = result_after_input_hook(&prepared, outcome, output, input_hook_ran)?;
         return Ok(PreparedToolExecution {
             prepared,
@@ -787,7 +821,7 @@ fn actionable_denial_hint(args: &serde_json::Value) -> String {
         return String::new();
     }
     format!(
-        "; hint=refused command shape: {}; retry as one short command, put multi-step logic in a script inside the workspace, and avoid paths outside cwd",
+        "; hint=refused command shape: {}; use a different permitted action, such as one short command scoped to the workspace",
         findings.join(", ")
     )
 }

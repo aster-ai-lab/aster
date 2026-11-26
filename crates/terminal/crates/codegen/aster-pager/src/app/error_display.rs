@@ -21,6 +21,7 @@ pub(crate) enum WireErrorType {
     RateLimited,
     MaxTokensTruncation,
     ToolEffectUnresolved,
+    ToolProgressBlocked,
     Other,
 }
 
@@ -33,6 +34,7 @@ impl WireErrorType {
         };
         match s {
             "tool_effect_unresolved" => Self::ToolEffectUnresolved,
+            "run.tool_refusal_cycle" | "run.tool_state_cycle" => Self::ToolProgressBlocked,
             "auth_transient" => Self::AuthTransient,
             "legacy_auth" => Self::LegacyAuth,
             s if s == aster_shell::extensions::notification::CONTEXT_LENGTH_ERROR_TYPE => {
@@ -182,6 +184,18 @@ pub(crate) fn format_request_failure(
             headline: "Tool execution needs reconciliation".into(),
             detail: "Reconcile the original operations in this session before sending another task. Do not repeat them.".into(),
             wire: WireErrorType::ToolEffectUnresolved,
+        };
+    }
+    let blocked = raw.split_once(':').and_then(|(code, detail)| {
+        (WireErrorType::parse(Some(code)) == WireErrorType::ToolProgressBlocked)
+            .then_some(detail.trim())
+    });
+    if blocked.is_some() || error_type == Some(WireErrorType::ToolProgressBlocked) {
+        return FormattedRequestFailure {
+            status: None,
+            headline: "Tool progress blocked".into(),
+            detail: blocked.unwrap_or(raw).to_owned(),
+            wire: WireErrorType::ToolProgressBlocked,
         };
     }
     let untyped = error_type.is_none();
@@ -761,6 +775,17 @@ mod tests {
             formatted.message(),
             "Response truncated: The model hit its output limit."
         );
+    }
+
+    #[test]
+    fn tool_progress_blocks_name_the_next_action_without_suggesting_resend() {
+        for code in ["run.tool_refusal_cycle", "run.tool_state_cycle"] {
+            let raw = format!("{code}: change the approach or obtain the required host input");
+            let failure = format_request_failure(None, None, &raw);
+            assert_eq!(failure.wire, WireErrorType::ToolProgressBlocked);
+            assert!(failure.message().contains("obtain the required host input"));
+            assert!(!failure.message().contains("Try sending again"));
+        }
     }
 
     #[test]

@@ -605,14 +605,7 @@ impl Tool for BackgroundTool {
     }
 
     fn description(&self) -> &str {
-        "Run a shell command in the background and react to its output later. \
-         start launches the command under the current Run: each output line \
-         arrives as a fact and reaches you on your next turn, and the task is \
-         terminated when the Run completes. tail returns the recent output \
-         window and can wait for a pattern. stop terminates one task early. \
-         Background tasks use the configured sandbox and share the workspace. \
-         They are bounded: at most 4 per Run, 256 recorded lines each, and one \
-         hour of execution."
+        "Sandboxed background cmd (<=4/Run, 256 lines, 1h): start (streams next turn, stops on Run end), tail, or stop."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -622,24 +615,23 @@ impl Tool for BackgroundTool {
             "properties": {
                 "action": {
                     "type": "string",
-                    "enum": ["start", "tail", "stop"],
-                    "description": "Required. start launches, tail reads recent output (optionally waiting for a pattern), stop terminates early."
+                    "enum": ["start", "tail", "stop"]
                 },
                 "name": {
                     "type": "string",
-                    "description": "Task name, unique within the Run. Required for every action."
+                    "description": "Unique task name."
                 },
                 "command": {
                     "type": "string",
-                    "description": "For start: the shell command to run in the workspace."
+                    "description": "Shell cmd (start)."
                 },
                 "wait_for": {
                     "type": "string",
-                    "description": "For tail: return as soon as a retained line contains this substring."
+                    "description": "Tail until line matches."
                 },
                 "timeout_ms": {
                     "type": "integer",
-                    "description": "For tail: bound the wait (default 5000, max 30000)."
+                    "description": "Tail wait ms (default 5000, max 30000)."
                 }
             },
             "required": ["action", "name"]

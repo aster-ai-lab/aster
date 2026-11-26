@@ -752,6 +752,7 @@ async fn automatic_summary_sees_public_checkpoint_before_the_retained_tool_resul
         budget: crate::compaction::CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
         prompt_tokens: Arc::new(AtomicU64::new(4_000)),
+        repeats: Arc::default(),
     };
     let kept = vec![
         format!("assistant\ntool read\n{}", next["call"]["args"]),

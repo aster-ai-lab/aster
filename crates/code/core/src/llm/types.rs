@@ -96,6 +96,60 @@ pub struct ToolDefinition {
     pub parameters: serde_json::Value, // JSON Schema
 }
 
+/// Project a tool's JSON Schema for the LLM wire without non-functional
+/// documentation `examples`, empty `"required": []` arrays, or pure
+/// local-validation constraints (`additionalProperties: false`, trivial
+/// `minLength: 1` / `minItems: 1`, and high anti-DoS/overflow ceilings),
+/// while keeping `Tool::parameters()` intact for strict local validation.
+pub(crate) fn wire_tool_parameters(parameters: &serde_json::Value) -> serde_json::Value {
+    wire_tool_parameters_with_closed_object(parameters, true)
+}
+
+/// Variant for providers whose native `parametersJsonSchema` enforces closed
+/// objects on the wire (`additionalProperties: false`).
+pub(crate) fn wire_tool_parameters_preserving_closed_objects(
+    parameters: &serde_json::Value,
+) -> serde_json::Value {
+    wire_tool_parameters_with_closed_object(parameters, false)
+}
+
+fn wire_tool_parameters_with_closed_object(
+    parameters: &serde_json::Value,
+    strip_closed_object: bool,
+) -> serde_json::Value {
+    match parameters {
+        serde_json::Value::Object(map) => {
+            let mut stripped = serde_json::Map::with_capacity(map.len());
+            for (key, value) in map {
+                if key == "examples"
+                    || (key == "required" && value.as_array().is_some_and(Vec::is_empty))
+                    || (strip_closed_object
+                        && key == "additionalProperties"
+                        && value.as_bool() == Some(false))
+                    || (key == "minLength" && value.as_u64() == Some(1))
+                    || (key == "minItems" && value.as_u64() == Some(1))
+                    || (key == "maxLength" && value.as_u64().is_some_and(|n| n >= 128))
+                    || (key == "maximum" && value.as_u64().is_some_and(|n| n >= 1_000_000))
+                {
+                    continue;
+                }
+                stripped.insert(
+                    key.clone(),
+                    wire_tool_parameters_with_closed_object(value, strip_closed_object),
+                );
+            }
+            serde_json::Value::Object(stripped)
+        }
+        serde_json::Value::Array(items) => serde_json::Value::Array(
+            items
+                .iter()
+                .map(|item| wire_tool_parameters_with_closed_object(item, strip_closed_object))
+                .collect(),
+        ),
+        other => other.clone(),
+    }
+}
+
 /// Image attachment for multi-modal messages.
 ///
 /// Supports JPEG, PNG, GIF, and WebP. Bytes are shared via [`Arc`] so message

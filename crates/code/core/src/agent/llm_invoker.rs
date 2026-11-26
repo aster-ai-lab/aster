@@ -927,6 +927,12 @@ impl LlmClient for LlmInvoker {
             .map(|inner| Arc::new(self.with_inner_preserving_state(inner)) as Arc<dyn LlmClient>)
     }
 
+    fn with_minimal_reasoning(&self) -> Option<Arc<dyn LlmClient>> {
+        self.inner
+            .with_minimal_reasoning()
+            .map(|inner| Arc::new(self.with_inner_preserving_state(inner)) as Arc<dyn LlmClient>)
+    }
+
     fn with_active_generation_timeout(&self, timeout: Duration) -> Option<Arc<dyn LlmClient>> {
         self.inner
             .with_active_generation_timeout(timeout)

@@ -305,6 +305,35 @@ async fn workspace_watch(root: &std::path::Path) -> crate::porcelain::Watch {
     crate::porcelain::Watch::start(root).await
 }
 
+/// The host shell executable was not started. No command process exists.
+#[derive(Debug)]
+struct HostShellSpawnRefused {
+    source: std::io::Error,
+}
+
+impl std::fmt::Display for HostShellSpawnRefused {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(formatter, "Failed to spawn shell: {}", self.source)
+    }
+}
+
+impl std::error::Error for HostShellSpawnRefused {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        Some(&self.source)
+    }
+}
+
+pub(crate) fn host_shell_spawn_refused(source: std::io::Error) -> anyhow::Error {
+    HostShellSpawnRefused { source }.into()
+}
+
+pub(crate) fn is_host_shell_spawn_refused(error: &anyhow::Error) -> bool {
+    error.is::<HostShellSpawnRefused>()
+        || error
+            .chain()
+            .any(|cause| cause.is::<HostShellSpawnRefused>())
+}
+
 /// A typed pre-spawn refusal never created a process. Close the span, and
 /// do not attribute paths seen in that window to the command. A refusal that
 /// carries a stable sandbox violation code reports it as
@@ -313,13 +342,15 @@ async fn settled_pre_spawn_refusal(
     ctx: &ToolContext,
     span: CommandSpan,
     error: &anyhow::Error,
+    sandboxed: bool,
+    sandbox_available: bool,
 ) -> ToolOutput {
     let message = error.to_string();
     let _ = span.finish(ctx).await;
     let mut metadata = serde_json::json!({
         "exit_code": null,
-        "sandboxed": true,
-        "sandbox_available": true,
+        "sandboxed": sandboxed,
+        "sandbox_available": sandbox_available,
         "command_started": false,
     });
     if let Some(code) = pre_spawn_violation_code(error) {
@@ -785,7 +816,7 @@ impl Tool for BashTool {
     }
 
     fn description(&self) -> &str {
-        "Execute a workspace command using the Bash execution target in <env>. Its OS/shell can differ from the host. Use for commands, package installation, and tests."
+        "Execute a workspace command for <env> target (OS/shell may differ from host)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -795,44 +826,37 @@ impl Tool for BashTool {
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "Exact command for the execution target OS/shell in <env>. require_escalated selects the workspace command runner only after exact-invocation authorization."
+                    "description": "Shell command."
                 },
                 "timeout": {
                     "type": "integer",
                     "description": format!(
-                        "Milliseconds. You SHOULD estimate this yourself from the command: \
-                         short checks need a few seconds, but builds, installs, migrations and \
-                         full test suites commonly need 5-30 minutes. Underestimating kills the \
-                         command and loses its work, so prefer a generous value. The fallback is \
-                         {}ms (minimum 1000ms). If a command times out, retry once with a larger \
-                         timeout instead of assuming the command failed.",
-                        DEFAULT_TIMEOUT_MS
+                        "ms (fallback {DEFAULT_TIMEOUT_MS}, min 1000)."
                     )
                 },
                 "sandbox_permissions": {
                     "type": "string",
                     "enum": ["use_default", "require_escalated", "request_network_grant"],
                     "default": "use_default",
-                    "description": "use_default (or omit): configured sandbox; fail closed if absent. require_escalated: necessary host execution after sandbox denial and interactive host approval. request_network_grant: after network denial, ask permission for exactly network_grant.host/port, then run sandboxed."
+                    "description": "use_default (sandbox), require_escalated (host retry after sandbox denial), or request_network_grant."
                 },
                 "justification": {
                     "type": "string",
-                    "description": "With require_escalated, explain why the workspace sandbox cannot run the command."
+                    "description": "For require_escalated."
                 },
                 "network_grant": {
                     "type": "object",
                     "properties": {
                         "host": {
                             "type": "string",
-                            "description": "Exact host, no wildcards. localhost and 127.0.0.1 never alias."
+                            "description": "Exact host (no wildcards; localhost != 127.0.0.1)."
                         },
                         "port": {
-                            "type": "integer",
-                            "description": "Omit for any port on the host; otherwise pin this port."
+                            "type": "integer"
                         }
                     },
                     "required": ["host"],
-                    "description": "Required with request_network_grant; the user must authorize this exact origin."
+                    "description": "For request_network_grant."
                 }
             },
             "required": ["command"],
@@ -995,7 +1019,9 @@ impl Tool for BashTool {
                 let effective_timeout_ms = match sandbox.effective_timeout_ms(timeout_ms) {
                     Ok(value) => value,
                     Err(error) => {
-                        return Ok(settled_pre_spawn_refusal(ctx, span, &error).await);
+                        return Ok(
+                            settled_pre_spawn_refusal(ctx, span, &error, isolated, true).await
+                        );
                     }
                 };
                 let command_env = span.env(ctx.command_env.clone());
@@ -1074,11 +1100,14 @@ impl Tool for BashTool {
                             &error,
                         ) || crate::sandbox::process_host::is_process_host_spawn_refused(
                             &error,
-                        ) || crate::sandbox::violation_code_of(&error).is_some() =>
+                        ) || is_host_shell_spawn_refused(&error)
+                            || crate::sandbox::violation_code_of(&error).is_some() =>
                     {
                         // The process does not exist. A later string wrap would
                         // drop this type and the receipt would book Unknown.
-                        return Ok(settled_pre_spawn_refusal(ctx, span, &error).await);
+                        return Ok(
+                            settled_pre_spawn_refusal(ctx, span, &error, isolated, true).await
+                        );
                     }
                     Ok(result) => result
                         .map_err(|e| anyhow::anyhow!("Sandbox bash execution failed: {}", e))?,
@@ -1114,11 +1143,14 @@ impl Tool for BashTool {
                     }
                 };
 
-                // Combine stdout and stderr the same way the local path does.
-                let streams = output_streams::capture(&result.stdout, &result.stderr);
-                let mut output = result.stdout;
-                if !result.stderr.is_empty() {
-                    output.push_str(&result.stderr);
+                // Strip terminal ANSI escapes and collapse bare `\r` progress
+                // frames while keeping `\r\n` verbatim, BEFORE hashing streams.
+                let clean_stdout = clean_terminal_output(&result.stdout);
+                let clean_stderr = clean_terminal_output(&result.stderr);
+                let streams = output_streams::capture(clean_stdout.as_ref(), clean_stderr.as_ref());
+                let mut output = clean_stdout.into_owned();
+                if !clean_stderr.is_empty() {
+                    output.push_str(clean_stderr.as_ref());
                 }
 
                 let capture_summary = *event_observer
@@ -1223,7 +1255,7 @@ impl Tool for BashTool {
         let span = CommandSpan::begin(ctx.workspace.as_path()).await;
         let command_env = span.env(ctx.command_env.clone());
         let cancellation = ctx.cancellation_token();
-        let (result, termination) = runner
+        let (result, termination) = match runner
             .exec_cancellable(
                 CommandRequest {
                     command: command.to_string(),
@@ -1234,15 +1266,34 @@ impl Tool for BashTool {
                 &cancellation,
             )
             .await
-            .map_err(|e| anyhow::anyhow!("Workspace bash execution failed: {}", e))?;
+        {
+            Ok(outcome) => outcome,
+            Err(error) if is_host_shell_spawn_refused(&error) => {
+                return Ok(settled_pre_spawn_refusal(
+                    ctx,
+                    span,
+                    &error,
+                    false,
+                    ctx.sandbox.is_some(),
+                )
+                .await);
+            }
+            Err(error) => {
+                return Err(anyhow::anyhow!(
+                    "Workspace bash execution failed: {}",
+                    error
+                ));
+            }
+        };
         let capture_summary = *event_observer.summary.lock().unwrap();
         let capture_metadata =
             capture_summary.map(|summary| capture_output_metadata(summary, summary.timed_out));
+        let clean_output = clean_terminal_output(&result.output).into_owned();
         if termination == crate::tools::OwnedProcessTermination::Cancelled {
             return Ok(cancelled_command(
                 ctx,
                 span,
-                result.output,
+                clean_output,
                 result.exit_code,
                 serde_json::json!({
                     "sandboxed": false,
@@ -1256,7 +1307,7 @@ impl Tool for BashTool {
         if result.timed_out {
             let mut output = ToolOutput::error(format!(
                 "{}\n\n[Command timed out after {}ms]",
-                result.output, timeout_ms
+                clean_output, timeout_ms
             ));
             output.metadata = crate::verification::merge_shell_verification_metadata(
                 Some(with_changed_paths(
@@ -1281,7 +1332,7 @@ impl Tool for BashTool {
         }
 
         Ok(ToolOutput {
-            content: result.output,
+            content: clean_output,
             success: result.exit_code == 0,
             metadata: crate::verification::merge_shell_verification_metadata(
                 Some(with_changed_paths(
@@ -1544,6 +1595,99 @@ fn shell_admission(ctx: &ToolContext, command: &str) -> crate::shell_session::Co
     } else {
         crate::shell_session::CommandAdmission::Allow
     }
+}
+
+/// Strip ANSI CSI/OSC escape sequences and collapse bare `\r` progress-bar
+/// overwrites while preserving `\r\n` CRLF line endings verbatim.
+pub(crate) fn clean_terminal_output(input: &str) -> std::borrow::Cow<'_, str> {
+    if !input.as_bytes().contains(&0x1b) && !has_bare_cr(input) {
+        return std::borrow::Cow::Borrowed(input);
+    }
+    let stripped = if input.as_bytes().contains(&0x1b) {
+        std::borrow::Cow::Owned(strip_ansi_escapes(input))
+    } else {
+        std::borrow::Cow::Borrowed(input)
+    };
+    if !has_bare_cr(stripped.as_ref()) {
+        return stripped;
+    }
+    std::borrow::Cow::Owned(collapse_bare_cr(stripped.as_ref()))
+}
+
+fn has_bare_cr(s: &str) -> bool {
+    let bytes = s.as_bytes();
+    bytes
+        .iter()
+        .enumerate()
+        .any(|(i, &b)| b == b'\r' && bytes.get(i + 1) != Some(&b'\n'))
+}
+
+fn strip_ansi_escapes(input: &str) -> String {
+    let bytes = input.as_bytes();
+    let mut out = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == 0x1b {
+            match bytes.get(i + 1).copied() {
+                Some(b'[') => {
+                    i += 2;
+                    while i < bytes.len() && (0x20..=0x3F).contains(&bytes[i]) {
+                        i += 1;
+                    }
+                    if i < bytes.len() && (0x40..=0x7E).contains(&bytes[i]) {
+                        i += 1;
+                    }
+                    continue;
+                }
+                Some(b']') => {
+                    i += 2;
+                    while i < bytes.len() {
+                        if bytes[i] == 0x07 {
+                            i += 1;
+                            break;
+                        }
+                        if bytes[i] == 0x1b && bytes.get(i + 1) == Some(&b'\\') {
+                            i += 2;
+                            break;
+                        }
+                        i += 1;
+                    }
+                    continue;
+                }
+                Some(b) if (0x40..=0x7E).contains(&b) => {
+                    i += 2;
+                    continue;
+                }
+                _ => {
+                    i += 1;
+                    continue;
+                }
+            }
+        }
+        out.push(bytes[i]);
+        i += 1;
+    }
+    // SAFETY: We copied `input.as_bytes()` verbatim except for ASCII escape
+    // sequences (bytes in 0x00..=0x7E), so every UTF-8 multi-byte sequence is intact.
+    String::from_utf8(out).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())
+}
+
+fn collapse_bare_cr(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    for line in input.split_inclusive('\n') {
+        let (body, ending) = if let Some(stripped) = line.strip_suffix("\r\n") {
+            (stripped, "\r\n")
+        } else if let Some(stripped) = line.strip_suffix('\n') {
+            (stripped, "\n")
+        } else {
+            (line, "")
+        };
+        if let Some(last) = body.split('\r').rfind(|segment| !segment.is_empty()) {
+            out.push_str(last);
+        }
+        out.push_str(ending);
+    }
+    out
 }
 
 #[cfg(test)]

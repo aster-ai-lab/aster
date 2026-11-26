@@ -269,3 +269,143 @@ async fn missing_execution_evidence_overrides_a_path_budget() {
     assert!(missed.effects.changes.is_empty());
     assert!(uncertain);
 }
+
+struct SpawnRefusingRunner;
+
+#[async_trait]
+impl crate::workspace::WorkspaceCommandRunner for SpawnRefusingRunner {
+    async fn exec(
+        &self,
+        _request: crate::workspace::CommandRequest,
+    ) -> anyhow::Result<crate::workspace::CommandOutput> {
+        Err(crate::tools::builtin::bash::host_shell_spawn_refused(
+            std::io::Error::new(std::io::ErrorKind::NotFound, "bash"),
+        ))
+    }
+}
+
+struct PostSpawnFailingRunner;
+
+#[async_trait]
+impl crate::workspace::WorkspaceCommandRunner for PostSpawnFailingRunner {
+    async fn exec(
+        &self,
+        _request: crate::workspace::CommandRequest,
+    ) -> anyhow::Result<crate::workspace::CommandOutput> {
+        anyhow::bail!("Failed to capture shell output: pipe closed after child started")
+    }
+}
+
+#[tokio::test]
+async fn host_escalated_spawn_refusal_books_failed_with_null_exit_code_and_allows_writes() {
+    let root = tempfile::tempdir().unwrap();
+    let base = crate::workspace::WorkspaceServices::local(root.path());
+    let services =
+        crate::workspace::WorkspaceServicesBuilder::new(base.workspace_ref().clone(), base.fs())
+            .command_runner(Arc::new(SpawnRefusingRunner))
+            .build();
+    let (base_tools, _) = executor_tools(root.path());
+    let mut tools = base_tools.as_ref().clone();
+    tools.context = tools.context.with_workspace_services(services);
+    let tools = Arc::new(tools);
+    let mut refused = request(
+        "host-bash-missing",
+        json!({
+            "command": "echo hi",
+            "sandbox_permissions": "require_escalated",
+            "justification": "Exercise explicit OS shell spawn refusal on host runner",
+        }),
+    );
+    refused.call.name = "bash".into();
+    refused.call.needs_confirmation = true;
+    let prepared = prepare_tools(
+        Arc::clone(&tools),
+        refused,
+        tokio_util::sync::CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let refused_result = execute_prepared(Arc::clone(&tools), prepared).await;
+    assert_eq!(refused_result.outcome, ToolExecutionOutcome::Failed);
+    assert_eq!(refused_result.exit_code, None);
+    assert_eq!(
+        refused_result.effects,
+        ToolEffectObservationV1::complete(Vec::new())
+    );
+    assert!(!tools
+        .ledger
+        .as_ref()
+        .unwrap()
+        .lock()
+        .unwrap()
+        .has_uncertain_tool_invocations());
+
+    let later = prepare_tools(
+        Arc::clone(&tools),
+        request("later-write", json!({"write": true})),
+        tokio_util::sync::CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let later_result = execute_prepared(Arc::clone(&tools), later).await;
+    assert_eq!(later_result.outcome, ToolExecutionOutcome::Succeeded);
+    assert_eq!(
+        std::fs::read(root.path().join("changed.txt")).unwrap(),
+        b"exact bytes"
+    );
+}
+
+#[tokio::test]
+async fn host_escalated_post_spawn_failure_books_unknown_and_blocks_later_writes() {
+    let root = tempfile::tempdir().unwrap();
+    let base = crate::workspace::WorkspaceServices::local(root.path());
+    let services =
+        crate::workspace::WorkspaceServicesBuilder::new(base.workspace_ref().clone(), base.fs())
+            .command_runner(Arc::new(PostSpawnFailingRunner))
+            .build();
+    let (base_tools, _) = executor_tools(root.path());
+    let mut tools = base_tools.as_ref().clone();
+    tools.context = tools.context.with_workspace_services(services);
+    let tools = Arc::new(tools);
+    let mut uncertain = request(
+        "host-bash-capture-fail",
+        json!({
+            "command": "echo hi",
+            "sandbox_permissions": "require_escalated",
+            "justification": "Exercise post-spawn failure on host runner",
+        }),
+    );
+    uncertain.call.name = "bash".into();
+    uncertain.call.needs_confirmation = true;
+    let prepared = prepare_tools(
+        Arc::clone(&tools),
+        uncertain,
+        tokio_util::sync::CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let uncertain_result = execute_prepared(Arc::clone(&tools), prepared).await;
+    assert_eq!(uncertain_result.outcome, ToolExecutionOutcome::Unknown);
+    assert!(!uncertain_result
+        .effects
+        .unresolved_external_operations
+        .is_empty());
+    assert!(tools
+        .ledger
+        .as_ref()
+        .unwrap()
+        .lock()
+        .unwrap()
+        .has_uncertain_tool_invocations());
+
+    let blocked = prepare_tools(
+        Arc::clone(&tools),
+        request("blocked-write", json!({"write": true})),
+        tokio_util::sync::CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let blocked_result = execute_prepared(Arc::clone(&tools), blocked).await;
+    assert_eq!(blocked_result.outcome, ToolExecutionOutcome::Denied);
+    assert!(!root.path().join("changed.txt").exists());
+}

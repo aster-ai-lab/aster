@@ -263,9 +263,18 @@ impl OpenAiClient {
     }
 
     pub(crate) fn convert_messages(&self, messages: &[Message]) -> Vec<serde_json::Value> {
+        let last_user_turn_idx = messages.iter().rposition(|m| {
+            m.role == "user"
+                && !m.content.is_empty()
+                && !m
+                    .content
+                    .iter()
+                    .all(|b| matches!(b, ContentBlock::ToolResult { .. }))
+        });
         messages
             .iter()
-            .map(|msg| {
+            .enumerate()
+            .map(|(idx, msg)| {
                 let content: serde_json::Value = if msg.content.len() == 1 {
                     match &msg.content[0] {
                         ContentBlock::Text { text } => serde_json::json!(text),
@@ -343,10 +352,17 @@ impl OpenAiClient {
                         .collect::<Vec<_>>())
                 };
 
-                // Handle assistant messages — kimi-k2.5 requires reasoning_content
-                // on all assistant messages when thinking mode is enabled
+                // Handle assistant messages — kimi-k2.5 requires the
+                // `reasoning_content` field on assistant messages in thinking
+                // mode, but completed prior user turns only need `""` rather
+                // than replaying full historical CoT traces.
                 if msg.role == "assistant" {
-                    let rc = msg.reasoning_content.as_deref().unwrap_or("");
+                    let keep_reasoning = last_user_turn_idx.is_none_or(|boundary| idx > boundary);
+                    let rc = if keep_reasoning {
+                        msg.reasoning_content.as_deref().unwrap_or("")
+                    } else {
+                        ""
+                    };
                     let tool_calls: Vec<_> = msg.tool_calls();
                     if !tool_calls.is_empty() {
                         return serde_json::json!({
@@ -389,7 +405,7 @@ impl OpenAiClient {
                     "function": {
                         "name": t.name,
                         "description": t.description,
-                        "parameters": t.parameters,
+                        "parameters": super::wire_tool_parameters(&t.parameters),
                     }
                 })
             })
@@ -703,6 +719,19 @@ impl LlmClient for OpenAiClient {
         }
         Some(std::sync::Arc::new(
             self.clone().with_max_tokens(max_tokens),
+        ))
+    }
+
+    fn with_minimal_reasoning(&self) -> Option<std::sync::Arc<dyn LlmClient>> {
+        let level = self
+            .reasoning_capabilities
+            .as_ref()
+            .and_then(|caps| caps.lowest_effort())?;
+        if self.reasoning_effort.as_deref() == Some(level) {
+            return None;
+        }
+        Some(std::sync::Arc::new(
+            self.clone().with_reasoning_effort(level),
         ))
     }
 

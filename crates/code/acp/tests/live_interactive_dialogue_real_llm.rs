@@ -31,6 +31,7 @@ struct AutoReadOnlyClient {
 struct QueuedGate {
     tool: String,
     options: Vec<String>,
+    request: acp::RequestPermissionRequest,
     reply: tokio::sync::oneshot::Sender<String>,
 }
 
@@ -61,6 +62,7 @@ impl Client for GatedToolClient {
         let _ = self.gates.send(QueuedGate {
             tool,
             options,
+            request: args,
             reply: tx,
         });
         let chosen = rx.await.unwrap_or_else(|_| "cancel".to_string());
@@ -140,26 +142,24 @@ fn repo_config_path() -> PathBuf {
         })
 }
 
-async fn spawn_real_agent(
+fn spawn_live_client(
     workspace: &std::path::Path,
-) -> (
-    tokio::process::Child,
-    std::rc::Rc<ClientSideConnection>,
-    std::sync::Arc<std::sync::Mutex<Vec<String>>>,
-    std::sync::Arc<std::sync::Mutex<String>>,
-) {
+    model: Option<&str>,
+    client: impl Client + 'static,
+) -> (tokio::process::Child, std::rc::Rc<ClientSideConnection>) {
     let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
     let home = workspace.join("home");
     std::fs::create_dir_all(&home).expect("home");
-    let denied = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
-    let client_denied = std::sync::Arc::clone(&denied);
-    let agent_text = std::sync::Arc::new(std::sync::Mutex::new(String::new()));
-    let client_text = std::sync::Arc::clone(&agent_text);
     let stderr_path = workspace.join("acp.stderr");
     let stderr = std::fs::File::create(&stderr_path).expect("acp stderr");
-    let mut child = tokio::process::Command::new(bin)
+    let mut command = tokio::process::Command::new(bin);
+    if let Some(model) = model {
+        command.args(["--model", model]);
+    }
+    let mut child = command
         .arg("--cwd")
         .arg(workspace)
+        .kill_on_drop(true)
         .env("ASTER_CONFIG", repo_config_path())
         .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
         .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
@@ -171,21 +171,35 @@ async fn spawn_real_agent(
         .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
-    let conn = ClientSideConnection::new(
-        AutoReadOnlyClient {
-            denied: client_denied,
-            agent_text: client_text,
-        },
-        stdin,
-        stdout,
-        |fut| {
-            tokio::task::spawn_local(fut);
-        },
-    );
+    let conn = ClientSideConnection::new(client, stdin, stdout, |fut| {
+        tokio::task::spawn_local(fut);
+    });
     let (conn, io) = (std::rc::Rc::new(conn.0), conn.1);
     tokio::task::spawn_local(async move {
         let _ = io.await;
     });
+    (child, conn)
+}
+
+async fn spawn_real_agent(
+    workspace: &std::path::Path,
+    model: Option<&str>,
+) -> (
+    tokio::process::Child,
+    std::rc::Rc<ClientSideConnection>,
+    std::sync::Arc<std::sync::Mutex<Vec<String>>>,
+    std::sync::Arc<std::sync::Mutex<String>>,
+) {
+    let denied = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+    let agent_text = std::sync::Arc::new(std::sync::Mutex::new(String::new()));
+    let (child, conn) = spawn_live_client(
+        workspace,
+        model,
+        AutoReadOnlyClient {
+            denied: denied.clone(),
+            agent_text: agent_text.clone(),
+        },
+    );
     (child, conn, denied, agent_text)
 }
 
@@ -194,6 +208,68 @@ fn prompt(session: &acp::SessionId, text: &str) -> acp::PromptRequest {
         session.clone(),
         vec![acp::ContentBlock::Text(acp::TextContent::new(text))],
     )
+}
+
+#[path = "live_interactive_dialogue_real_llm/recovery.rs"]
+mod recovery;
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires a real provider configured in ASTER_CONFIG_FILE"]
+async fn real_agent_recovers_from_an_outside_workspace_refusal_in_the_same_turn() {
+    tokio::task::LocalSet::new().run_until(async {
+        let model = std::env::var("ASTER_LIVE_MODEL")
+            .unwrap_or_else(|_| "deepseek/deepseek-flash".into());
+        let root = tempfile::tempdir().unwrap();
+        let workspace = root.path().join("workspace");
+        std::fs::create_dir(&workspace).unwrap();
+        let outside = root.path().join("outside.txt");
+        std::fs::write(&outside, "PRIVATE-FIXTURE-NOT-READ").unwrap();
+        std::fs::write(workspace.join("source.txt"), "ASTER-RECOVERY-FIXTURE-5927").unwrap();
+        let (mut child, conn, _, text) =
+            spawn_real_agent(&workspace, Some(&model)).await;
+        acp::Agent::initialize(conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
+            .await.unwrap();
+        let session = acp::Agent::new_session(conn.as_ref(), acp::NewSessionRequest::new(workspace.clone()))
+            .await.unwrap().session_id;
+        let task = format!(
+            "Read the content from a fixture and quote it. For this isolation check, first use the read tool on '{}'. \
+             If the host denies it, take the alternative route and read source.txt inside this workspace. \
+             Use the actual tool result. This task never requires writing files or expanded permissions.",
+            outside.display(),
+        );
+        let started = std::time::Instant::now();
+        let result = tokio::time::timeout(
+            Duration::from_secs(120),
+            acp::Agent::prompt(conn.as_ref(), prompt(&session, &task)),
+        ).await;
+        let facts = aster_core::fact_control::read_workspace_facts(&workspace, session.0.as_ref());
+        let _ = child.kill().await;
+        let facts = facts.unwrap();
+        let receipts: Vec<_> = facts.iter().filter_map(|fact| {
+            Some((fact.seq, fact.payload.get("receipt")?))
+        }).collect();
+        println!("E11 model={model} elapsed_ms={} model_turns={} deadline_exceeded={} receipts={:?}",
+            started.elapsed().as_millis(), facts.iter().filter(|fact| fact.kind == "model.turn").count(),
+            result.is_err(), receipts.iter().map(|(seq, receipt)| (*seq, &receipt["outcome"])).collect::<Vec<_>>());
+        let (denied_seq, denied) = receipts.iter().find(|(_, receipt)| {
+            receipt["outcome"] == "denied" && receipt["exit_code"].is_null()
+                && receipt["output"].as_str()
+                    .and_then(|output| serde_json::from_str::<serde_json::Value>(output).ok())
+                    .is_some_and(|output| output["metadata"]["host_refusal"] == "permission_denied")
+        }).expect("the model must exercise the actual pre-execution refusal");
+        let (allowed_seq, allowed) = receipts.iter().find(|(_, receipt)| {
+            receipt["outcome"] == "succeeded"
+                && receipt["output"].as_str().is_some_and(|output| output.contains("ASTER-RECOVERY-FIXTURE-5927"))
+        }).expect("the model must read the permitted source");
+        assert!(denied_seq < allowed_seq, "the refused read must precede the alternative");
+        let run_id = &denied["identity"]["admission"]["run_id"];
+        assert!(run_id.is_string(), "refusal must belong to an original Run");
+        assert_eq!(run_id, &allowed["identity"]["admission"]["run_id"]);
+        assert_eq!(result.unwrap().unwrap().stop_reason, acp::StopReason::EndTurn);
+        let answer = text.lock().unwrap();
+        assert!(answer.contains("ASTER-RECOVERY-FIXTURE-5927"));
+        assert!(!answer.contains("PRIVATE-FIXTURE-NOT-READ"));
+    }).await;
 }
 
 #[tokio::test(flavor = "multi_thread")]
@@ -207,7 +283,7 @@ async fn real_agent_holds_an_interactive_dialogue_over_the_wire() {
         ));
         let _ = std::fs::remove_dir_all(&workspace);
         std::fs::create_dir_all(&workspace).expect("workspace");
-            let (mut child, conn, denied, _agent_text) = spawn_real_agent(&workspace).await;
+            let (mut child, conn, denied, _agent_text) = spawn_real_agent(&workspace, None).await;
 
             acp::Agent::initialize(conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
                 .await
@@ -503,7 +579,7 @@ async fn real_agent_dialogue_resumes_after_process_restart() {
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
-            let (mut first, conn, _denied, _text) = spawn_real_agent(&workspace).await;
+            let (mut first, conn, _denied, _text) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(
                 conn.as_ref(),
                 acp::InitializeRequest::new(acp::ProtocolVersion::V1),
@@ -541,7 +617,7 @@ async fn real_agent_dialogue_resumes_after_process_restart() {
             let _ = first.kill().await;
 
             // A new process resumes the same session id.
-            let (mut second, conn2, _denied2, _text2) = spawn_real_agent(&workspace).await;
+            let (mut second, conn2, _denied2, _text2) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(
                 conn2.as_ref(),
                 acp::InitializeRequest::new(acp::ProtocolVersion::V1),
@@ -598,7 +674,7 @@ async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
             )
             .expect("fixture");
 
-            let (mut child, conn, _denied, agent_text) = spawn_real_agent(&workspace).await;
+            let (mut child, conn, _denied, agent_text) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
                 .await
                 .expect("initialize");
@@ -811,6 +887,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
                     let _ = self.gates.send(QueuedGate {
                         tool,
                         options,
+                        request: args,
                         reply: tx,
                     });
                     // An interactive user approving an install: AllowOnce for
@@ -1060,7 +1137,7 @@ async fn real_agent_effort_switch_mid_dialogue_tracks_the_new_budget() {
                 )
                 .expect("fixture");
             }
-            let (mut child, conn, _denied, _text) = spawn_real_agent(&workspace).await;
+            let (mut child, conn, _denied, _text) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
                 .await
                 .expect("initialize");
@@ -1209,7 +1286,7 @@ async fn real_agent_wire_soak_fourteen_turns() {
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
-            let (mut child, conn, _denied, _text) = spawn_real_agent(&workspace).await;
+            let (mut child, conn, _denied, _text) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(
                 conn.as_ref(),
                 acp::InitializeRequest::new(acp::ProtocolVersion::V1),
@@ -1346,7 +1423,7 @@ for raw in sys.stdin:
             .expect("write echo MCP server");
 
             const CODE: &str = "RELAY-8f4a";
-            let (mut first, conn, _denied, _text) = spawn_real_agent(&workspace).await;
+            let (mut first, conn, _denied, _text) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(conn.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
                 .await
                 .expect("initialize");
@@ -1375,7 +1452,7 @@ for raw in sys.stdin:
             let _ = first.kill().await;
 
             // Restart + load WITH the MCP server attached.
-            let (mut second, conn2, _denied2, _text2) = spawn_real_agent(&workspace).await;
+            let (mut second, conn2, _denied2, _text2) = spawn_real_agent(&workspace, None).await;
             acp::Agent::initialize(conn2.as_ref(), acp::InitializeRequest::new(acp::ProtocolVersion::V1))
                 .await
                 .expect("re-initialize");
@@ -1435,6 +1512,212 @@ for raw in sys.stdin:
                 "the echo_token MCP tool must have executed with the pre-restart code"
             );
             println!("MT_ROW id=acp_real_mcp_resume model=live verdict=load+mcp+echo-executed");
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires real providers configured in ASTER_CONFIG_FILE"]
+async fn live_multi_turn_token_and_cache_efficiency_e2e() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            struct TelemetryClient {
+                text: std::sync::Arc<std::sync::Mutex<String>>,
+                usage_updates: std::sync::Arc<std::sync::Mutex<Vec<serde_json::Value>>>,
+            }
+
+            #[async_trait(?Send)]
+            impl Client for TelemetryClient {
+                async fn session_notification(
+                    &self,
+                    notification: acp::SessionNotification,
+                ) -> Result<(), acp::Error> {
+                    match notification.update {
+                        acp::SessionUpdate::AgentMessageChunk(chunk) => {
+                            if let acp::ContentBlock::Text(text) = chunk.content {
+                                self.text
+                                    .lock()
+                                    .unwrap_or_else(|p| p.into_inner())
+                                    .push_str(text.text.as_str());
+                            }
+                        }
+                        acp::SessionUpdate::UsageUpdate(update) => {
+                            let val = serde_json::json!({
+                                "used": update.used,
+                                "size": update.size,
+                                "meta": update.meta,
+                            });
+                            println!("LIVE_USAGE_EVENT {val}");
+                            self.usage_updates
+                                .lock()
+                                .unwrap_or_else(|p| p.into_inner())
+                                .push(val);
+                        }
+                        _ => {}
+                    }
+                    Ok(())
+                }
+
+                async fn request_permission(
+                    &self,
+                    args: acp::RequestPermissionRequest,
+                ) -> Result<acp::RequestPermissionResponse, acp::Error> {
+                    let option_ids: Vec<String> = args
+                        .options
+                        .iter()
+                        .map(|option| option.option_id.0.to_string())
+                        .collect();
+                    let tool = args.tool_call.fields.title.clone().unwrap_or_default();
+                    let kind = args.tool_call.fields.kind;
+                    let safe = matches!(
+                        kind,
+                        Some(acp::ToolKind::Read | acp::ToolKind::Search | acp::ToolKind::Execute)
+                    ) || tool.contains("read")
+                        || tool.contains("ls")
+                        || tool.contains("grep")
+                        || tool.contains("search")
+                        || tool.contains("bash");
+                    println!("LIVE_PERMISSION tool={tool:?} kind={kind:?} safe={safe} options={option_ids:?}");
+                    if safe {
+                        if let Some(allow) = option_ids.iter().find(|id| id.contains("allow")) {
+                            return Ok(acp::RequestPermissionResponse::new(
+                                acp::RequestPermissionOutcome::Selected(
+                                    acp::SelectedPermissionOutcome::new(acp::PermissionOptionId::new(
+                                        allow.clone(),
+                                    )),
+                                ),
+                            ));
+                        }
+                    }
+                    Ok(acp::RequestPermissionResponse::new(
+                        acp::RequestPermissionOutcome::Cancelled,
+                    ))
+                }
+            }
+
+            let model = std::env::var("ASTER_LIVE_MODEL")
+                .unwrap_or_else(|_| "kimi-01/k3.1-pro".into());
+            let root = tempfile::tempdir().unwrap();
+            let workspace = root.path().join("workspace");
+            std::fs::create_dir(&workspace).unwrap();
+            std::fs::write(workspace.join("alpha.txt"), "ALPHA-MARKER-8419\n").unwrap();
+            std::fs::write(workspace.join("beta.txt"), "BETA-MARKER-2903\n").unwrap();
+            std::fs::write(workspace.join("gamma.txt"), "GAMMA-MARKER-6174\n").unwrap();
+
+            let text = std::sync::Arc::new(std::sync::Mutex::new(String::new()));
+            let usage_updates = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+            let (mut child, conn) = spawn_live_client(
+                &workspace,
+                Some(&model),
+                TelemetryClient {
+                    text: text.clone(),
+                    usage_updates: usage_updates.clone(),
+                },
+            );
+
+            acp::Agent::initialize(
+                conn.as_ref(),
+                acp::InitializeRequest::new(acp::ProtocolVersion::V1),
+            )
+            .await
+            .expect("initialize");
+            let session = acp::Agent::new_session(
+                conn.as_ref(),
+                acp::NewSessionRequest::new(workspace.clone()),
+            )
+            .await
+            .expect("new session")
+            .session_id;
+
+            let t1_start = std::time::Instant::now();
+            let t1 = match tokio::time::timeout(
+                Duration::from_secs(240),
+                acp::Agent::prompt(
+                    conn.as_ref(),
+                    prompt(
+                        &session,
+                        "Read alpha.txt and beta.txt, and run bash command `printf '\\033[32mANSI-OK-5512\\033[0m\\n'`. Quote all three exact markers.",
+                    ),
+                ),
+            )
+            .await
+            {
+                Ok(Ok(res)) => res,
+                other => {
+                    let stderr_tail =
+                        std::fs::read_to_string(workspace.join("acp.stderr")).unwrap_or_default();
+                    let facts =
+                        aster_core::fact_control::read_workspace_facts(&workspace, session.0.as_ref());
+                    panic!(
+                        "turn 1 failed/timed out: {other:?}\nfacts_len={}\nstderr_tail:\n{}",
+                        facts.map(|f| f.len()).unwrap_or(0),
+                        stderr_tail.chars().rev().take(2000).collect::<String>().chars().rev().collect::<String>()
+                    );
+                }
+            };
+            let t1_ms = t1_start.elapsed().as_millis();
+            assert_eq!(t1.stop_reason, acp::StopReason::EndTurn);
+            let t1_answer = std::mem::take(&mut *text.lock().unwrap());
+            assert!(
+                t1_answer.contains("ALPHA-MARKER-8419")
+                    && t1_answer.contains("BETA-MARKER-2903")
+                    && t1_answer.contains("ANSI-OK-5512"),
+                "turn 1 missing markers: {t1_answer}"
+            );
+
+            let t2_start = std::time::Instant::now();
+            let t2 = match tokio::time::timeout(
+                Duration::from_secs(240),
+                acp::Agent::prompt(
+                    conn.as_ref(),
+                    prompt(
+                        &session,
+                        "Now read gamma.txt and report the GAMMA marker together with the ANSI-OK marker from the previous turn.",
+                    ),
+                ),
+            )
+            .await
+            {
+                Ok(Ok(res)) => res,
+                other => {
+                    let stderr_tail =
+                        std::fs::read_to_string(workspace.join("acp.stderr")).unwrap_or_default();
+                    panic!(
+                        "turn 2 failed/timed out: {other:?}\nstderr_tail:\n{}",
+                        stderr_tail.chars().rev().take(2000).collect::<String>().chars().rev().collect::<String>()
+                    );
+                }
+            };
+            let t2_ms = t2_start.elapsed().as_millis();
+            assert_eq!(t2.stop_reason, acp::StopReason::EndTurn);
+            let t2_answer = std::mem::take(&mut *text.lock().unwrap());
+            assert!(
+                t2_answer.contains("GAMMA-MARKER-6174") && t2_answer.contains("ANSI-OK-5512"),
+                "turn 2 missing markers: {t2_answer}"
+            );
+
+            let facts = aster_core::fact_control::read_workspace_facts(&workspace, session.0.as_ref())
+                .expect("read workspace facts");
+            let updates = usage_updates.lock().unwrap().clone();
+            drop(conn);
+            let _ = child.kill().await;
+
+            // Verify bash receipts contain no raw ANSI CSI escapes.
+            for fact in &facts {
+                if let Some(receipt) = fact.payload.get("receipt") {
+                    if let Some(out) = receipt.get("output").and_then(|v| v.as_str()) {
+                        assert!(
+                            !out.contains('\u{1b}'),
+                            "bash receipt still contained raw ANSI escape: {out:?}"
+                        );
+                    }
+                }
+            }
+            let model_turns = facts.iter().filter(|f| f.kind == "model.turn").count();
+            println!(
+                "LIVE_TOKEN_CACHE_E2E model={model} t1_ms={t1_ms} t2_ms={t2_ms} model_turns={model_turns} usage_updates={}",
+                serde_json::to_string(&updates).unwrap()
+            );
         })
         .await;
 }

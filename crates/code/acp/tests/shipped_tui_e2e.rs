@@ -38,6 +38,8 @@ mod goal_setup;
 mod operation_liveness;
 #[path = "shipped_tui_e2e/reasoning.rs"]
 mod reasoning;
+#[path = "shipped_tui_e2e/recovery.rs"]
+mod recovery;
 #[path = "shipped_tui_e2e/retrieval.rs"]
 mod retrieval;
 #[path = "shipped_tui_e2e/session_controls.rs"]
@@ -319,6 +321,9 @@ fn decide(raw: &str, state: &mut MockState) -> String {
     if let Some(response) = retrieval::response(&parsed, state, streaming) {
         return response;
     }
+    if let Some(response) = recovery::response(&parsed, state, streaming) {
+        return response;
+    }
     if raw.contains("FORM-ORACLE") {
         // Cancel / invalid arms first so a prior submit's values cannot short-circuit
         // a later FORM-ORACLE-* turn in the same session.
@@ -435,6 +440,40 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         })
         .to_string();
         return reply_tool("bash", &args, state, streaming);
+    }
+    let recovery_turn = parsed["messages"].as_array().and_then(|messages| {
+        let start = messages.iter().rposition(|message| {
+            let content = message["content"].to_string();
+            message["role"] == "user"
+                && (content.contains("TOOL-RECOVERY-ORACLE") || content.contains("CONTROL-NEXT"))
+        })?;
+        messages[start]["content"]
+            .to_string()
+            .contains("TOOL-RECOVERY-ORACLE")
+            .then(|| serde_json::json!(&messages[start..]).to_string())
+    });
+    if let Some(turn) = recovery_turn.filter(|_| tools) {
+        if turn.contains("TRUSTED-WORKSPACE-OBSERVATION") {
+            return reply_text("TOOL-RECOVERY-DONE", streaming);
+        }
+        let path = if turn.contains("[host tool recovery]") {
+            if turn.contains("STUBBORN-RECOVERY") {
+                Path::new(&state.late_path)
+                    .with_extension("next")
+                    .display()
+                    .to_string()
+            } else {
+                "source.txt".to_string()
+            }
+        } else {
+            state.late_path.clone()
+        };
+        return reply_tool(
+            "read",
+            &serde_json::json!({"file_path":path}).to_string(),
+            state,
+            streaming,
+        );
     }
     if raw.contains("REPEAT-LIST-ORACLE") && tools {
         return reply_tool("ls", r#"{"path":"probe"}"#, state, streaming);
@@ -590,8 +629,21 @@ fn reply_text(text: &str, streaming: bool) -> String {
 }
 
 fn reply_tool(name: &str, args: &str, state: &mut MockState, streaming: bool) -> String {
-    state.tool_seq = state.tool_seq.saturating_add(1);
-    let id = format!("call_{name}_{}", state.tool_seq);
+    reply_tools(&[(name, args)], state, streaming)
+}
+
+fn reply_tools(calls: &[(&str, &str)], state: &mut MockState, streaming: bool) -> String {
+    let mut tool_calls: Vec<_> = calls
+        .iter()
+        .map(|(name, args)| {
+            state.tool_seq = state.tool_seq.saturating_add(1);
+            serde_json::json!({
+                "id": format!("call_{name}_{}", state.tool_seq),
+                "type": "function",
+                "function": { "name": name, "arguments": args },
+            })
+        })
+        .collect();
     if !streaming {
         return serde_json::json!({
             "id": "cmpl",
@@ -601,11 +653,7 @@ fn reply_tool(name: &str, args: &str, state: &mut MockState, streaming: bool) ->
                 "message": {
                     "role": "assistant",
                     "content": null,
-                    "tool_calls": [{
-                        "id": id,
-                        "type": "function",
-                        "function": { "name": name, "arguments": args }
-                    }]
+                    "tool_calls": tool_calls
                 },
                 "finish_reason": "tool_calls"
             }],
@@ -613,14 +661,13 @@ fn reply_tool(name: &str, args: &str, state: &mut MockState, streaming: bool) ->
         })
         .to_string();
     }
+    for (index, call) in tool_calls.iter_mut().enumerate() {
+        call["index"] = serde_json::json!(index);
+    }
     let chunk = serde_json::json!({
         "choices": [{
             "delta": {
-                "tool_calls": [{
-                    "index": 0,
-                    "id": id,
-                    "function": { "name": name, "arguments": args }
-                }]
+                "tool_calls": tool_calls
             }
         }]
     });
@@ -928,6 +975,74 @@ async fn answer_gate(agent: &mut AgentProc, option_id: &str) {
         gate.option_ids
     );
     gate.reply.send(option_id.to_string()).expect("reply");
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn shipped_agent_recovers_from_a_refused_tool_and_bounds_repeated_denials() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let root = tempfile::tempdir().unwrap();
+            let workspace = root.path().join("workspace");
+            let home = root.path().join("home");
+            std::fs::create_dir_all(&workspace).unwrap();
+            std::fs::create_dir_all(&home).unwrap();
+            std::fs::write(
+                workspace.join("source.txt"),
+                "TRUSTED-WORKSPACE-OBSERVATION",
+            )
+            .unwrap();
+            let outside = root.path().join("outside.txt");
+            std::fs::write(&outside, "DENIED-OUTSIDE-OBSERVATION").unwrap();
+            let (addr, state) = spawn_mock(&workspace.join("unused"), &outside);
+            let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+            let agent = connect_agent(&workspace, &config, &home).await;
+            for stubborn in [false, true] {
+                let session = acp::Agent::new_session(
+                    agent.conn.as_ref(),
+                    acp::NewSessionRequest::new(&workspace),
+                )
+                .await
+                .unwrap();
+                let prompt = if stubborn {
+                    "TOOL-RECOVERY-ORACLE STUBBORN-RECOVERY"
+                } else {
+                    "TOOL-RECOVERY-ORACLE"
+                };
+                let result = tokio::time::timeout(
+                    Duration::from_secs(30),
+                    acp::Agent::prompt(
+                        agent.conn.as_ref(),
+                        user_prompt(&session.session_id, prompt),
+                    ),
+                )
+                .await
+                .expect("tool recovery must settle");
+                if stubborn {
+                    let error = result.expect_err("a second denial without progress must stop");
+                    assert!(error
+                        .data
+                        .is_some_and(|data| data.to_string().contains("run.tool_refusal_cycle")));
+                } else {
+                    assert_eq!(result.unwrap().stop_reason, acp::StopReason::EndTurn);
+                }
+            }
+            let bodies = state.lock().unwrap().bodies.clone();
+            assert!(bodies
+                .iter()
+                .any(|body| body.contains("TRUSTED-WORKSPACE-OBSERVATION")));
+            assert!(!bodies
+                .iter()
+                .any(|body| body.contains("DENIED-OUTSIDE-OBSERVATION")));
+            assert_eq!(
+                bodies
+                    .iter()
+                    .filter(|body| body.contains("[host tool recovery]"))
+                    .count(),
+                2
+            );
+            stop_agent(agent).await;
+        })
+        .await;
 }
 
 #[tokio::test(flavor = "current_thread")]
@@ -4044,6 +4159,50 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     let _ = late_path;
     let _ = std::fs::remove_dir_all(&workspace);
     let _ = std::fs::remove_dir_all(&home);
+}
+
+#[test]
+fn shipped_tui_shows_recovery_and_an_actionable_stop_in_the_same_session() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+    std::fs::write(
+        workspace.join("source.txt"),
+        "TRUSTED-WORKSPACE-OBSERVATION",
+    )
+    .unwrap();
+    let outside = root.path().join("outside.txt");
+    std::fs::write(&outside, "DENIED-OUTSIDE-OBSERVATION").unwrap();
+    let (addr, _) = spawn_mock(&workspace.join("unused"), &outside);
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("TOOL-RECOVERY-ORACLE");
+    pty.enter();
+    pty.wait_for("TOOL-RECOVERY-DONE", Duration::from_secs(30));
+    pty.type_text("TOOL-RECOVERY-ORACLE STUBBORN-RECOVERY");
+    pty.enter();
+    let stopped = pty.wait_for("Tool progress blocked", Duration::from_secs(30));
+    assert!(!stopped.contains("Try sending again"), "{stopped}");
+    assert!(stopped.contains("required host input"), "{stopped}");
+    pty.type_text("CONTROL-NEXT");
+    pty.enter();
+    pty.wait_for("CONTROL-NEXT-DONE", Duration::from_secs(30));
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
 }
 
 /// Ask-user choice and edit tool mutate through the real pager under yolo.

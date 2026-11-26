@@ -18,7 +18,7 @@ impl Tool for CodeDiagnosticsTool {
     }
 
     fn description(&self) -> &str {
-        "Return language diagnostics for saved workspace code. Provide path for one document or omit it for a bounded manifest-backed workspace query. For document queries only, an empty items array means diagnostics were received and cleared. Workspace queries start relevant language runtimes; truncated can also mean partial language coverage."
+        "Language diagnostics for a saved file or workspace (empty file items = cleared)."
     }
 
     fn parameters(&self) -> Value {
@@ -29,7 +29,7 @@ impl Tool for CodeDiagnosticsTool {
                 "path": {
                     "type": "string",
                     "minLength": 1,
-                    "description": "Optional saved workspace document path. Omit for workspace diagnostics."
+                    "description": "Saved file (omit for workspace)."
                 }
             },
             "examples": [{}, {"path": "src/lib.rs"}]

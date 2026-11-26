@@ -125,6 +125,48 @@ struct FormattedCell {
     number_format: String,
 }
 
+fn office_file_properties(include_block_all_of: bool) -> Value {
+    let mut block_item = json!({
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type"],
+        "properties": {
+            "type": {"type": "string", "enum": ["paragraph", "table"]},
+            "text": {"type": "string"},
+            "rows": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "array", "minItems": 1, "maxItems": 63, "items": {"type": "string"}}}
+        }
+    });
+    if include_block_all_of {
+        block_item.as_object_mut().unwrap().insert(
+            "allOf".into(),
+            json!([
+                {"if": {"properties": {"type": {"const": "paragraph"}}, "required": ["type"]}, "then": {"required": ["text"], "not": {"required": ["rows"]}}},
+                {"if": {"properties": {"type": {"const": "table"}}, "required": ["type"]}, "then": {"required": ["rows"], "not": {"required": ["text"]}}}
+            ]),
+        );
+    }
+    json!({
+        "file_path": {"type": "string", "description": "New workspace path matching kind; parent dirs must exist."},
+        "kind": {"type": "string", "enum": ["docx", "xlsx", "pptx", "png"]},
+        "blocks": {"type": "array", "minItems": 1, "maxItems": 1000, "description": "docx only (<=10000 cells total): {type:\"paragraph\",text} or {type:\"table\",rows}.", "items": block_item},
+        "sheets": {"type": "array", "minItems": 1, "maxItems": 32, "description": "xlsx only (<=10000 cells total).", "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": {"name": {"type": "string"}, "rows": {"type": "array", "maxItems": 1000, "items": {"type": "array", "maxItems": 100, "items": {"oneOf": [
+                {"type": ["string", "number", "boolean", "null"]},
+                {"type": "object", "additionalProperties": false, "properties": {"formula": {"type": "string"}, "number_format": {"type": "string"}}, "required": ["formula"]},
+                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": ["string", "number", "boolean", "null"]}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]}
+            ]}}}},
+            "required": ["name", "rows"]
+        }},
+        "slides": {"type": "array", "minItems": 1, "maxItems": 30, "description": "pptx only.", "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": {"title": {"type": "string", "maxLength": 40}, "body": {"type": "array", "maxItems": 3, "items": {"type": "string", "maxLength": 100}}, "chart": {"type": "object", "additionalProperties": false, "description": "Optional SVG chart (requires body=[]; same bounded SVG rules as png).", "properties": {"svg": {"type": "string"}, "alt_text": {"type": "string", "minLength": 1, "maxLength": 1000}}, "required": ["svg", "alt_text"]}},
+            "required": ["title", "body"]
+        }},
+        "svg": {"type": "string", "description": "png only (<=64 KiB SVG, <=4096px/axis, <=8MP, numeric/px dimensions or viewBox; presentation attrs only)."}
+    })
+}
+
 #[async_trait]
 impl Tool for OfficeFileTool {
     fn name(&self) -> &str {
@@ -132,47 +174,34 @@ impl Tool for OfficeFileTool {
     }
 
     fn description(&self) -> &str {
-        "Create and verify a real .docx document, .xlsx workbook, .pptx presentation, or .png chart in the local workspace without Bash or external programs. Existing files are never overwritten. DOCX takes ordered paragraph/table blocks. XLSX takes named sheets with JSON scalar cells (strings including '=...' stay literal), explicit {formula, number_format?} cells, or {value, number_format} cells for dates/percentages. Formulas are recalculated in process; formula errors refuse publication. Excel dates use numeric serials with a date format. PPTX takes slides with a title and up to 3 short body blocks, or a chart with SVG and alt_text and an empty body; charts are fitted below the title. PNG and embedded charts use bounded self-contained SVG with presentation attributes, numeric/px dimensions or viewBox, and no style, image, use, filter, scripts or external resources. Saves, reopens and validates Office files before publication; returns saved text readback. Read sources with the document tools first."
+        "Create and validate .docx/.xlsx/.pptx/.png in workspace without Bash/external tools (never overwrites). \
+         DOCX: blocks. XLSX: sheets of scalars ('=...' stays literal), {formula,number_format?}, or {value,number_format} \
+         (recalculated in process; formula errors rejected; dates use numeric serial+format). \
+         PPTX: slides with title+<=3 short bodies, or SVG chart+alt_text with empty body. \
+         PNG/chart: bounded SVG (presentation attrs, no style/image/use/filter/scripts/external refs). \
+         Reopens & validates before returning text readback; read sources first."
     }
 
     fn parameters(&self) -> Value {
         json!({
-            "type": "object", "additionalProperties": false,
-            "properties": {
-                "file_path": {"type": "string", "description": "New workspace path, with an extension matching kind. Parent directories must already exist."},
-                "kind": {"type": "string", "enum": ["docx", "xlsx", "pptx", "png"]},
-                "blocks": {"type": "array", "minItems": 1, "maxItems": 1000, "description": "Required only for docx. Ordered paragraphs and rectangular tables; at most 10000 table cells total. Tables need 1..1000 rectangular rows of 1..63 string cells.", "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["type"],
-                    "properties": {
-                        "type": {"type": "string", "enum": ["paragraph", "table"]},
-                        "text": {"type": "string"},
-                        "rows": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "array", "minItems": 1, "maxItems": 63, "items": {"type": "string"}}}
-                    },
-                    "allOf": [
-                        {"if": {"properties": {"type": {"const": "paragraph"}}, "required": ["type"]}, "then": {"required": ["text"], "not": {"required": ["rows"]}}},
-                        {"if": {"properties": {"type": {"const": "table"}}, "required": ["type"]}, "then": {"required": ["rows"], "not": {"required": ["text"]}}}
-                    ]
-                }},
-                "sheets": {"type": "array", "minItems": 1, "maxItems": 32, "description": "Required only for xlsx; at most 10000 total cells.", "items": {
-                    "type": "object", "additionalProperties": false,
-                    "properties": {"name": {"type": "string"}, "rows": {"type": "array", "maxItems": 1000, "items": {"type": "array", "maxItems": 100, "items": {"oneOf": [
-                        {"type": ["string", "number", "boolean", "null"]},
-                        {"type": "object", "additionalProperties": false, "properties": {"formula": {"type": "string"}, "number_format": {"type": "string"}}, "required": ["formula"]},
-                        {"type": "object", "additionalProperties": false, "properties": {"value": {"type": ["string", "number", "boolean", "null"]}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]}
-                    ]}}}},
-                    "required": ["name", "rows"]
-                }},
-                "slides": {"type": "array", "minItems": 1, "maxItems": 30, "description": "Required only for pptx; split dense material over additional slides.", "items": {
-                    "type": "object", "additionalProperties": false,
-                    "properties": {"title": {"type": "string", "maxLength": 40}, "body": {"type": "array", "maxItems": 3, "items": {"type": "string", "maxLength": 100}}, "chart": {"type": "object", "additionalProperties": false, "description": "Optional chart, requires empty body. The same bounded SVG rules as png apply. No local image reads.", "properties": {"svg": {"type": "string"}, "alt_text": {"type": "string", "minLength": 1, "maxLength": 1000}}, "required": ["svg", "alt_text"]}},
-                    "required": ["title", "body"]
-                }},
-                "svg": {"type": "string", "description": "Required only for png: self-contained SVG chart, at most 64 KiB. Set width/height as numbers or px, or provide viewBox. Use presentation attributes; style, image, use, filter, scripts, linked files and network resources are refused. At most 4096 pixels per axis and 8 megapixels."}
-            },
+            "type": "object",
+            "additionalProperties": false,
+            "properties": office_file_properties(true),
             "required": ["file_path", "kind"]
         })
+    }
+
+    fn definition(&self) -> aster_core::llm::ToolDefinition {
+        aster_core::llm::ToolDefinition {
+            name: self.name().to_string(),
+            description: self.description().to_string(),
+            parameters: json!({
+                "type": "object",
+                "additionalProperties": false,
+                "properties": office_file_properties(false),
+                "required": ["file_path", "kind"]
+            }),
+        }
     }
 
     fn validate_execution_available(&self, _args: &Value, ctx: &ToolContext) -> Result<()> {

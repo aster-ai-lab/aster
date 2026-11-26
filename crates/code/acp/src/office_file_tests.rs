@@ -839,3 +839,18 @@ async fn workbook_round_matches_excel_half_up_on_decimal_midpoints() {
     assert_eq!(document.get("/Sheet1/C1", 0).unwrap().text, "1.02");
     assert_eq!(document.get("/Sheet1/D1", 0).unwrap().text, "5.01");
 }
+
+#[test]
+fn office_file_definition_omits_block_all_of_while_parameters_keeps_it() {
+    let root = tempfile::tempdir().unwrap();
+    let tool = OfficeFileTool::new(root.path()).unwrap();
+    let params = tool.parameters();
+    let def = tool.definition();
+    assert!(params["properties"]["blocks"]["items"]
+        .get("allOf")
+        .is_some());
+    assert!(def.parameters["properties"]["blocks"]["items"]
+        .get("allOf")
+        .is_none());
+    assert!(def.parameters.to_string().len() < params.to_string().len());
+}

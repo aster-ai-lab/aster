@@ -23,8 +23,8 @@ pub(super) struct ExecutorTools {
     pub(super) targeted_paths: Option<Arc<Mutex<Vec<String>>>>,
     /// Set only by the preparation adapter after resolving input hooks once.
     pub(super) pre_tool_hook_resolved: bool,
-    /// Per run: call digest -> (last result digest, identical results in a row).
-    pub(super) repeats: Arc<Mutex<std::collections::HashMap<String, (String, u32)>>>,
+    /// Per run: call digest -> last repeated result state.
+    pub(super) repeats: Arc<Mutex<std::collections::HashMap<String, RepeatObservation>>>,
     /// Effect/session directory for durable tool-image storage.
     pub(super) effect_dir: PathBuf,
 }
@@ -684,25 +684,43 @@ impl ToolRunner for ExecutorTools {
                 &super::tool_results::message_from_tool_observation("observation", &output, result.exit_code != 0,
                     &result.images, Some(result.exit_code)),
             ).map_err(|error| ActorError::Schema(format!("tool_observation_digest: {error}")))?;
-            if let Some(note) = repeated_result_note(&tools.repeats, &call.name, &call.args, &output) {
-                output.push_str(&note);
-            }
+            let mut ui_output = output;
+            let model_output = match observe_repeated_result(
+                &tools.repeats,
+                &call.id,
+                &call.name,
+                &call.args,
+                &ui_output,
+            ) {
+                Some(RepeatedResultProjection::AppendNote(note)) => {
+                    ui_output.push_str(&note);
+                    ui_output.clone()
+                }
+                Some(RepeatedResultProjection::CompactModelOutput {
+                    model_output,
+                    ui_note,
+                }) => {
+                    ui_output.push_str(&ui_note);
+                    model_output
+                }
+                None => ui_output.clone(),
+            };
             tools
                 .emit(crate::agent::AgentEvent::ToolEnd {
                     id: call.id.clone(),
                     name: call.name.clone(),
                     args: Some(call.args.clone()),
-                    output: output.clone(),
+                    output: ui_output,
                     exit_code: result.exit_code,
                     metadata: metadata.clone(),
                     error_kind: result.error_kind.clone(),
                 })
                 .await;
             tools
-                .save_checkpoint(&call, &output, result.exit_code != 0, &result.images)
+                .save_checkpoint(&call, &model_output, result.exit_code != 0, &result.images)
                 .await?;
             Ok(receipts::runner_result_value(
-                &output,
+                &model_output,
                 result.exit_code != 0,
                 &result.images,
                 result.exit_code,

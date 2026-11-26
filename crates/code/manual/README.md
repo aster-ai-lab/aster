@@ -83,4 +83,5 @@ Product tags, build boundaries, release gates, and retention follow the
 - [9.2.7 / Aster CLI 0.3.9](RELEASE_9.2.7.md)
 - [9.3.0 / Aster CLI 0.4.0](RELEASE_9.3.0.md)
 - [9.3.1 / Aster CLI 0.4.1](RELEASE_9.3.1.md)
+- [9.3.2 / Aster CLI 0.4.2](RELEASE_9.3.2.md)
 - [Historical upstream 9.1.3 test contract](TEST_PLAN_9.1.3.md)

@@ -502,38 +502,63 @@ impl PreparedFactModelCall {
         accounting: &FactModelAccountingObservation,
     ) -> anyhow::Result<FactModelCallOutcome> {
         let (binding, permit) = self.admit_leg(sender, attempt, true).await?;
+        let stream_cancel = attempt.child_token();
+        let _stream_cancel_guard = stream_cancel.clone().drop_guard();
         let stream = tokio::select! {
             biased;
             _ = self.view.cancellation().cancelled() => anyhow::bail!("Operation cancelled by user"),
             _ = attempt.cancelled() => anyhow::bail!("Operation cancelled by user"),
-            stream = self.transport.complete_streaming(&self.messages, self.system.as_deref(), &self.tools, attempt.clone()) => stream,
+            stream = self.transport.complete_streaming(&self.messages, self.system.as_deref(), &self.tools, stream_cancel) => stream,
         };
         match stream {
-            Ok(mut stream) => loop {
-                let event = tokio::select! {
-                    biased;
-                    _ = self.view.cancellation().cancelled() => anyhow::bail!("Operation cancelled by user"),
-                    _ = attempt.cancelled() => anyhow::bail!("Operation cancelled by user"),
-                    event = stream.recv() => event,
-                };
-                match event {
-                    Some(StreamEvent::Done(response)) => {
-                        // No EOF wait and no cancellation check between the
-                        // winning provider poll and marking this actual success.
-                        accounting.required(&response.usage);
-                        let result = self
-                            .finish_success(response, binding, sender, attempt, accounting)
-                            .await;
-                        drop(permit);
-                        return result;
+            Ok(mut stream) => {
+                let idle = crate::llm::http::stream_idle_timeout();
+                let enforce_idle = idle < std::time::Duration::from_millis(u64::MAX);
+                let progress = tokio::time::sleep(if enforce_idle {
+                    idle
+                } else {
+                    std::time::Duration::from_secs(3600)
+                });
+                tokio::pin!(progress);
+                loop {
+                    let event = tokio::select! {
+                        biased;
+                        _ = self.view.cancellation().cancelled() => anyhow::bail!("Operation cancelled by user"),
+                        _ = attempt.cancelled() => anyhow::bail!("Operation cancelled by user"),
+                        _ = &mut progress, if enforce_idle => {
+                            tracing::warn!(idle_ms = idle.as_millis(), "Model stream stopped making progress");
+                            anyhow::bail!("stream ended before a response");
+                        }
+                        event = stream.recv() => event,
+                    };
+                    match event {
+                        Some(StreamEvent::Done(response)) => {
+                            // No EOF wait and no cancellation check between the
+                            // winning provider poll and marking this actual success.
+                            accounting.required(&response.usage);
+                            let result = self
+                                .finish_success(response, binding, sender, attempt, accounting)
+                                .await;
+                            drop(permit);
+                            return result;
+                        }
+                        Some(event) => {
+                            let made_progress = match &event {
+                                StreamEvent::TextDelta(delta)
+                                | StreamEvent::ReasoningDelta(delta)
+                                | StreamEvent::ToolUseInputDelta { delta, .. } => !delta.is_empty(),
+                                StreamEvent::ToolUseStart { .. } | StreamEvent::Done(_) => true,
+                            };
+                            self.send(sender, FactModelFrame::RawStream(event), attempt)
+                                .await?;
+                            if made_progress && enforce_idle {
+                                progress.as_mut().set(tokio::time::sleep(idle));
+                            }
+                        }
+                        None => anyhow::bail!("stream ended before a response"),
                     }
-                    Some(event) => {
-                        self.send(sender, FactModelFrame::RawStream(event), attempt)
-                            .await?
-                    }
-                    None => anyhow::bail!("stream ended before a response"),
                 }
-            },
+            }
             Err(error) => {
                 drop(permit);
                 if self.view.cancellation().is_cancelled() || attempt.is_cancelled() {

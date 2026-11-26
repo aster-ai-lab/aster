@@ -150,6 +150,41 @@ impl AnthropicClient {
         super::http::invocation_headers(headers)
     }
 
+    fn is_cacheable_block(block: &serde_json::Value) -> bool {
+        match block.get("type").and_then(|v| v.as_str()) {
+            Some("thinking" | "redacted_thinking") => false,
+            Some("text") => block
+                .get("text")
+                .and_then(|v| v.as_str())
+                .is_some_and(|text| !text.is_empty()),
+            _ => true,
+        }
+    }
+
+    fn mark_message_cache_breakpoint(message: &mut serde_json::Value) {
+        match &message["content"] {
+            serde_json::Value::String(text) if !text.is_empty() => {
+                message["content"] = serde_json::json!([{
+                    "type": "text",
+                    "text": text,
+                    "cache_control": { "type": "ephemeral" }
+                }]);
+            }
+            serde_json::Value::Array(blocks) => {
+                let mut blocks = blocks.clone();
+                if let Some(block) = blocks
+                    .iter_mut()
+                    .rev()
+                    .find(|block| Self::is_cacheable_block(block))
+                {
+                    block["cache_control"] = serde_json::json!({ "type": "ephemeral" });
+                }
+                message["content"] = serde_json::Value::Array(blocks);
+            }
+            _ => {}
+        }
+    }
+
     fn initial_tool_input_json(input: &serde_json::Value) -> Option<String> {
         match input {
             serde_json::Value::Object(map) if map.is_empty() => None,
@@ -205,7 +240,7 @@ impl AnthropicClient {
                     serde_json::json!({
                         "name": t.name,
                         "description": t.description,
-                        "input_schema": t.parameters,
+                        "input_schema": super::wire_tool_parameters(&t.parameters),
                     })
                 })
                 .collect();
@@ -219,30 +254,17 @@ impl AnthropicClient {
             request["tools"] = serde_json::json!(tool_defs);
         }
 
-        // Conversation-prefix breakpoint: mark the final message's
-        // content so the whole conversation through this turn caches; the
-        // next request's breakpoint moves forward and hits this entry as
-        // its prefix (the standard incremental pattern). With system and
-        // tools that is three of the four allowed breakpoints.
+        // Conversation-prefix breakpoints: mark both the penultimate message
+        // (anchored prefix when the final tool result carries transient tail
+        // notes) and the final message, using up to four total breakpoints
+        // (`system`, `tools`, penultimate message, final message).
         if let Some(messages_value) = request["messages"].as_array_mut() {
+            let len = messages_value.len();
+            if len >= 2 {
+                Self::mark_message_cache_breakpoint(&mut messages_value[len - 2]);
+            }
             if let Some(last) = messages_value.last_mut() {
-                match &last["content"] {
-                    serde_json::Value::String(text) => {
-                        last["content"] = serde_json::json!([{
-                            "type": "text",
-                            "text": text,
-                            "cache_control": { "type": "ephemeral" }
-                        }]);
-                    }
-                    serde_json::Value::Array(blocks) => {
-                        let mut blocks = blocks.clone();
-                        if let Some(block) = blocks.last_mut() {
-                            block["cache_control"] = serde_json::json!({ "type": "ephemeral" });
-                        }
-                        last["content"] = serde_json::Value::Array(blocks);
-                    }
-                    _ => {}
-                }
+                Self::mark_message_cache_breakpoint(last);
             }
         }
 
@@ -472,6 +494,27 @@ impl LlmClient for AnthropicClient {
         Some(std::sync::Arc::new(
             self.clone().with_max_tokens(max_tokens),
         ))
+    }
+
+    fn with_minimal_reasoning(&self) -> Option<std::sync::Arc<dyn LlmClient>> {
+        if let Some(level) = self
+            .reasoning_capabilities
+            .as_ref()
+            .and_then(|caps| caps.lowest_effort())
+        {
+            if self.reasoning_effort.as_deref() == Some(level) && self.thinking_budget.is_none() {
+                return None;
+            }
+            let mut client = self.clone().with_reasoning_effort(level);
+            client.thinking_budget = None;
+            return Some(std::sync::Arc::new(client));
+        }
+        if self.thinking_budget.is_some() {
+            let mut client = self.clone();
+            client.thinking_budget = None;
+            return Some(std::sync::Arc::new(client));
+        }
+        None
     }
 
     fn model_generation_pool(&self) -> Option<ModelGenerationPool> {
@@ -1318,6 +1361,12 @@ mod tests {
         let earlier = wire_messages[0]["content"].as_array().unwrap();
         assert_eq!(earlier[0]["text"], "first turn");
         assert!(earlier[0].get("cache_control").is_none());
+        // The penultimate and final messages both carry ephemeral breakpoints.
+        let penultimate = &wire_messages[1];
+        let penultimate_blocks = penultimate["content"].as_array().unwrap();
+        assert_eq!(penultimate_blocks.len(), 1);
+        assert_eq!(penultimate_blocks[0]["text"], "first reply");
+        assert_eq!(penultimate_blocks[0]["cache_control"]["type"], "ephemeral");
         // The final message becomes a cache-marked block.
         let last = wire_messages.last().unwrap();
         let blocks = last["content"].as_array().unwrap();
@@ -1326,10 +1375,74 @@ mod tests {
         assert_eq!(blocks[0]["text"], "second turn");
         assert_eq!(blocks[0]["cache_control"]["type"], "ephemeral");
 
-        // Exactly three breakpoints: system, tools, final message.
+        // Four breakpoints: system, tools, penultimate message, final message.
         let serialized = serde_json::to_string(&request).unwrap();
         let breakpoint_count = serialized.matches("cache_control").count();
-        assert_eq!(breakpoint_count, 3, "breakpoint budget: {serialized}");
+        assert_eq!(breakpoint_count, 4, "breakpoint budget: {serialized}");
+    }
+
+    #[test]
+    fn build_request_strips_schema_examples_and_preserves_penultimate_breakpoint() {
+        let client = AnthropicClient::new("test-key".to_string(), "claude-sonnet-4".to_string());
+        let turn_one = client.build_request(
+            &[
+                Message::user("go"),
+                Message::assistant("ok"),
+                Message::tool_result("c1", "result\n\n[host verification state]", false),
+            ],
+            Some("system"),
+            &[ToolDefinition {
+                name: "read".to_string(),
+                description: "Read file".to_string(),
+                parameters: serde_json::json!({
+                    "type": "object",
+                    "properties": {"file_path": {"type": "string"}},
+                    "examples": [{"file_path": "src/main.rs"}]
+                }),
+            }],
+        );
+        let turn_two = client.build_request(
+            &[
+                Message::user("go"),
+                Message::assistant("ok"),
+                Message::tool_result("c1", "result", false),
+                Message::assistant("done"),
+            ],
+            Some("system"),
+            &[ToolDefinition {
+                name: "read".to_string(),
+                description: "Read file".to_string(),
+                parameters: serde_json::json!({
+                    "type": "object",
+                    "properties": {"file_path": {"type": "string"}},
+                    "examples": [{"file_path": "src/main.rs"}]
+                }),
+            }],
+        );
+        assert!(turn_one["tools"][0]["input_schema"]
+            .get("examples")
+            .is_none());
+        assert_eq!(
+            turn_one["tools"][0]["input_schema"]["properties"]["file_path"]["type"],
+            "string"
+        );
+        assert_eq!(
+            turn_one["messages"][1]["content"][0]["cache_control"]["type"],
+            "ephemeral"
+        );
+        assert_eq!(
+            turn_two["messages"][2]["content"][0]["cache_control"]["type"],
+            "ephemeral"
+        );
+        let mut turn_one_penultimate = turn_one["messages"][1].clone();
+        turn_one_penultimate["content"][0]
+            .as_object_mut()
+            .unwrap()
+            .remove("cache_control");
+        assert_eq!(
+            turn_one_penultimate, turn_two["messages"][1],
+            "earlier message prefix stays identical even when transient tail verification text disappears next turn"
+        );
     }
 
     #[test]
@@ -1352,5 +1465,51 @@ mod tests {
             "only the last block carries the breakpoint"
         );
         assert_eq!(blocks[1]["cache_control"]["type"], "ephemeral");
+    }
+
+    #[test]
+    fn mark_message_cache_breakpoint_skips_empty_text_and_thinking_blocks() {
+        let mut empty_str = serde_json::json!({"role": "user", "content": ""});
+        AnthropicClient::mark_message_cache_breakpoint(&mut empty_str);
+        assert_eq!(empty_str["content"], "");
+
+        let mut trailing_thinking = serde_json::json!({
+            "role": "assistant",
+            "content": [
+                {"type": "tool_use", "id": "tu-1", "name": "read", "input": {}},
+                {"type": "text", "text": ""},
+                {"type": "thinking", "thinking": "step"},
+                {"type": "redacted_thinking", "data": "abc"}
+            ]
+        });
+        AnthropicClient::mark_message_cache_breakpoint(&mut trailing_thinking);
+        let blocks = trailing_thinking["content"].as_array().unwrap();
+        assert_eq!(blocks[0]["cache_control"]["type"], "ephemeral");
+        assert!(blocks[1].get("cache_control").is_none());
+        assert!(blocks[2].get("cache_control").is_none());
+        assert!(blocks[3].get("cache_control").is_none());
+    }
+
+    #[test]
+    fn with_minimal_reasoning_drops_to_lowest_level_or_clears_budget() {
+        let glm = AnthropicClient::new("test-key".to_string(), "glm-5.3".to_string())
+            .with_reasoning_effort("max");
+        assert!(glm.with_minimal_reasoning().is_some());
+        let caps_lowest = glm
+            .reasoning_capabilities
+            .as_ref()
+            .and_then(|c| c.lowest_effort());
+        assert_eq!(caps_lowest, Some("low"));
+
+        let claude = AnthropicClient::new("test-key".to_string(), "claude-sonnet-4-6".to_string())
+            .with_reasoning_effort("max");
+        assert!(claude.with_minimal_reasoning().is_some());
+
+        let budget_claude = AnthropicClient::new(
+            "test-key".to_string(),
+            "claude-sonnet-4-20250514".to_string(),
+        )
+        .with_thinking_budget(4096);
+        assert!(budget_claude.with_minimal_reasoning().is_some());
     }
 }

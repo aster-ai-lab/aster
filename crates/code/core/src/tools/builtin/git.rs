@@ -31,7 +31,23 @@ impl Tool for GitTool {
     }
 
     fn description(&self) -> &str {
-        "Git operations in the current workspace."
+        "Git operations in workspace."
+    }
+
+    fn definition(&self) -> crate::llm::ToolDefinition {
+        let mut parameters = self.parameters();
+        if let Some(properties) = parameters
+            .get_mut("properties")
+            .and_then(serde_json::Value::as_object_mut)
+        {
+            // Deprecated log-only alias (`limit` is canonical); omit from LLM wire while keeping local schema support.
+            properties.remove("max_count");
+        }
+        crate::llm::ToolDefinition {
+            name: self.name().to_string(),
+            description: self.description().to_string(),
+            parameters,
+        }
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -43,79 +59,77 @@ impl Tool for GitTool {
                     "type": "string",
                     "enum": [
                         "status", "log", "branch", "checkout", "diff", "stash", "remote", "worktree"
-                    ],
-                    "description": "Git command."
+                    ]
                 },
                 "subcommand": {
                     "type": "string",
                     "enum": ["list", "create", "remove"],
-                    "description": "Worktree subcommand; default list."
+                    "description": "Worktree op (default list)."
                 },
                 "name": {
                     "type": "string",
-                    "description": "Branch name for branch/checkout/worktree."
+                    "description": "Branch/worktree."
                 },
                 "path": {
                     "type": "string",
-                    "description": "Path for worktree operations."
+                    "description": "Worktree path."
                 },
                 "ref": {
                     "type": "string",
-                    "description": "Checkout ref (branch/tag/commit)."
+                    "description": "Checkout ref."
                 },
                 "force": {
-                    "type": "boolean",
-                    "description": "Force checkout/create; may lose changes."
+                    "type": "boolean"
                 },
                 "target": {
                     "type": "string",
-                    "description": "Diff target ref; omit for working-tree diff."
+                    "description": "Diff ref."
                 },
                 "max_count": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Deprecated log-only alias for limit."
+                    "description": "Log limit alias."
                 },
                 "limit": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_GIT_PAGE_LIMIT,
-                    "description": "Entries per page; default 10 (log), 50 (other lists), max 200."
+                    "description": "Page size (default 10 log, 50 list)."
                 },
                 "cursor": {
-                    "type": "string",
-                    "description": "Exact prior cursor for log/branch/stash/remote/worktree lists."
+                    "type": "string"
                 },
                 "byte_offset": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Byte offset for the next diff page."
+                    "description": "Diff byte offset."
                 },
                 "max_bytes": {
                     "type": "integer",
                     "minimum": MIN_DIFF_BYTES,
                     "maximum": MAX_OUTPUT_SIZE,
-                    "description": "Diff UTF-8 byte limit; default 65536, max 102400."
+                    "description": "Diff byte cap (default 65536)."
                 },
                 "message": {
                     "type": "string",
-                    "description": "Message for stash."
+                    "description": "Stash msg."
                 },
                 "include_untracked": {
                     "type": "boolean",
-                    "description": "Stash untracked files; default false."
+                    "default": false
                 },
                 "remote_name": {
                     "type": "string",
-                    "description": "Remote name; reserved for provider-specific filtering."
+                    "description": "Remote filter."
                 },
                 "new_branch": {
                     "type": "boolean",
-                    "description": "Create worktree branch; default true."
+                    "default": true,
+                    "description": "Worktree branch."
                 },
                 "base": {
                     "type": "string",
-                    "description": "New-branch base ref; default HEAD."
+                    "description": "Branch base (default HEAD)."
                 }
             },
             "required": ["command"],
@@ -1583,5 +1597,14 @@ mod tests {
             .unwrap();
         assert!(removed.success, "explicit remove: {}", removed.content);
         assert!(!std::path::Path::new(&path).exists());
+    }
+
+    #[test]
+    fn git_definition_omits_deprecated_max_count_while_parameters_keeps_it() {
+        let params = GitTool.parameters();
+        let def = GitTool.definition();
+        assert!(params["properties"].get("max_count").is_some());
+        assert!(def.parameters["properties"].get("max_count").is_none());
+        assert!(def.parameters["properties"].get("limit").is_some());
     }
 }

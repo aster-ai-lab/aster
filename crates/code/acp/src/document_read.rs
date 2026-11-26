@@ -586,10 +586,10 @@ impl Tool for DocumentReadTool {
         "studio_document_read"
     }
     fn description(&self) -> &str {
-        "Read UTF-8 plain text, including unsaved text, version and advisory diagnostics from the shared editor document model. This tool does not parse Office or PDF files; use office_read when the host exposes it, with an absolute file path or workspace-relative path for persisted DOCX/XLSX/PPTX sources. Report unavailable Office support when it is absent. PDF text, page-image and OCR capabilities require a separately admitted tool that explicitly provides them. An empty published set does not verify a document. Set retain_for_run to keep its model identity until Run cleanup."
+        "Read UTF-8 plain text (including unsaved edits/version/diagnostics) from the editor model. Does not parse Office or PDF files: use office_read when exposed with an absolute file path or workspace-relative path (report if Office/PDF/OCR is unavailable). Set retain_for_run to keep pinned until Run ends."
     }
     fn parameters(&self) -> Value {
-        json!({"type":"object","properties":{"file_path":{"type":"string","description":"UTF-8 text file path, absolute or relative to the current workspace; not a document ID."},"retain_for_run":{"type":"boolean","description":"Keep this model pinned until the current Run releases its resources."}},"required":["file_path"],"additionalProperties":false})
+        json!({"type":"object","properties":{"file_path":{"type":"string","description":"UTF-8 path, absolute or relative to the current workspace; not a document ID."},"retain_for_run":{"type":"boolean","description":"Pin model until Run ends."}},"required":["file_path"],"additionalProperties":false})
     }
     fn capabilities(&self, _: &Value) -> ToolCapabilities {
         // Fencing a cancelled RPC does not certify settlement of native blocking I/O.

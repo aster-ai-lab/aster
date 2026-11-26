@@ -207,11 +207,7 @@ impl Tool for SkillTool {
     }
 
     fn description(&self) -> &str {
-        "Load a skill for this turn. \
-Use a JSON object with the canonical shape {\"skill_name\":\"<skill-name>\",\"prompt\":\"<optional prompt>\"}. \
-Always send the skill name in the 'skill_name' field. Do not use aliases such as 'name' or 'skillName', and do not wrap the payload in 'input' or 'arguments'. \
-A skill with no allowed-tools returns its instructions; follow them here and answer the user. \
-A skill that declares allowed-tools runs inside this call with only those tools, then returns."
+        "Load/run a skill (`skill_name` required, not `name`/`skillName`/nested); instruction skills return steps, allowed-tools skills run scoped."
     }
 
     fn parameters(&self) -> Value {
@@ -221,11 +217,11 @@ A skill that declares allowed-tools runs inside this call with only those tools,
             "properties": {
                 "skill_name": {
                     "type": "string",
-                    "description": "Required. Canonical skill identifier to invoke. Always provide this exact field name: 'skill_name'."
+                    "description": "Exact skill name."
                 },
                 "prompt": {
                     "type": "string",
-                    "description": "Optional prompt or query to pass to the skill after it is loaded."
+                    "description": "Optional prompt for the skill."
                 }
             },
             "required": ["skill_name"],

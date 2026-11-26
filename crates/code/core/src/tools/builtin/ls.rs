@@ -14,7 +14,7 @@ impl Tool for LsTool {
     }
 
     fn description(&self) -> &str {
-        "List contents of a directory with file types and sizes."
+        "List directory entries with types and sizes."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -24,17 +24,17 @@ impl Tool for LsTool {
             "properties": {
                 "path": {
                     "type": "string",
-                    "description": "Optional. Directory path to list. Default: workspace root."
+                    "description": "Dir (default root)."
                 },
                 "limit": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_PAGE_LIMIT,
-                    "description": "Optional. Maximum entries to return. Default: 200; maximum: 1000."
+                    "default": DEFAULT_PAGE_LIMIT
                 },
                 "cursor": {
                     "type": "string",
-                    "description": "Optional. Omit on the first call. On a continuation, copy the exact opaque cursor returned by the previous ls call; never invent a placeholder."
+                    "description": "Page cursor."
                 }
             },
             "required": [],
@@ -91,7 +91,7 @@ impl Tool for LsTool {
         };
 
         let mut output = format!(
-            "Directory: {}\n\n",
+            "Directory: {}\n",
             ctx.workspace_services.display_path(&workspace_path)
         );
 
@@ -102,13 +102,10 @@ impl Tool for LsTool {
                 let kind = entry.kind.as_tool_kind();
                 let size_str = format_size(entry.size);
                 let suffix = if kind == "dir" { "/" } else { "" };
-                output.push_str(&format!(
-                    "{:<6} {:>8}  {}{}\n",
-                    kind, size_str, entry.name, suffix
-                ));
+                output.push_str(&format!("{} {} {}{}\n", kind, size_str, entry.name, suffix));
             }
             output.push_str(&format!(
-                "\n{} of {} entries\n",
+                "{} of {} entries\n",
                 page.items.len(),
                 page.total_items
             ));

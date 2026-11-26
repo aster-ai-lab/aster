@@ -605,6 +605,18 @@ fn effort_limits_preserve_thinking_and_parallel_resource_settings() {
     assert_eq!(ultra.max_parallel_tasks, max.max_parallel_tasks);
     assert_eq!(ultra.max_continuation_turns, max.max_continuation_turns);
     assert_eq!(ultra.thinking_budget, max.thinking_budget);
+    let default_options =
+        AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", None);
+    assert_eq!(
+        default_options.planning_mode,
+        aster_core::PlanningMode::Disabled
+    );
+    let medium_options =
+        AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(medium));
+    assert_eq!(
+        medium_options.planning_mode,
+        aster_core::PlanningMode::Disabled
+    );
     let ultra_options =
         AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(ultra));
     assert_eq!(ultra_options.planning_mode, aster_core::PlanningMode::Auto);
@@ -872,7 +884,7 @@ async fn permission_ask_records_elicitation_across_the_host_hitl() {
                     root.path(),
                 )
                 .await;
-            assert!(approved, "allow-once must approve");
+            assert_eq!(approved, permission_ask::ToolPermissionAnswer::Approved);
             let settled = aster_core::elicitation::get(&elicitation_id).expect("ledger settled");
             assert_eq!(
                 settled.phase,
@@ -945,7 +957,7 @@ async fn duplicate_pending_permission_elicitation_denies_without_host_ask() {
                     root.path(),
                 )
                 .await;
-            assert!(!approved, "duplicate pending must deny");
+            assert_eq!(approved, permission_ask::ToolPermissionAnswer::Pending);
             assert_eq!(
                 host_asks.get(),
                 0,
@@ -992,8 +1004,9 @@ async fn unanswered_asks_fail_closed_at_the_deadline() {
                         root.path(),
                     )
                     .await;
-                assert!(
-                    !approved,
+                assert_eq!(
+                    approved,
+                    permission_ask::ToolPermissionAnswer::TimedOut,
                     "an unanswered permission ask must deny, not park the turn forever"
                 );
 

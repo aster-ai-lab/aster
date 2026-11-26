@@ -200,3 +200,124 @@ async fn fact_spine_injects_nothing_when_no_rule_matches_the_target() {
         "a rule that matches no targeted path must inject nothing"
     );
 }
+
+#[tokio::test]
+async fn fact_spine_pins_path_instructions_anchor_across_subsequent_tool_calls() {
+    struct MultiTurnClient {
+        calls: std::sync::atomic::AtomicUsize,
+        snapshots: std::sync::Mutex<Vec<Vec<Message>>>,
+    }
+
+    #[async_trait::async_trait]
+    impl crate::llm::LlmClient for MultiTurnClient {
+        async fn complete(
+            &self,
+            messages: &[Message],
+            _system: Option<&str>,
+            _tools: &[crate::llm::ToolDefinition],
+        ) -> anyhow::Result<LlmResponse> {
+            self.snapshots
+                .lock()
+                .expect("snapshots")
+                .push(messages.to_vec());
+            let call = self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            let message = match call {
+                0 => Message {
+                    role: "assistant".into(),
+                    content: vec![crate::llm::ContentBlock::ToolUse {
+                        id: "read-src".into(),
+                        name: "read".into(),
+                        input: serde_json::json!({ "file_path": "src/lib.rs" }),
+                    }],
+                    reasoning_content: None,
+                    transcript_text: None,
+                    transcript_visibility: crate::llm::TranscriptVisibility::Wire,
+                },
+                1 => Message {
+                    role: "assistant".into(),
+                    content: vec![crate::llm::ContentBlock::ToolUse {
+                        id: "read-other".into(),
+                        name: "read".into(),
+                        input: serde_json::json!({ "file_path": "README.md" }),
+                    }],
+                    reasoning_content: None,
+                    transcript_text: None,
+                    transcript_visibility: crate::llm::TranscriptVisibility::Wire,
+                },
+                _ => Message::assistant("done"),
+            };
+            Ok(LlmResponse {
+                message,
+                usage: TokenUsage::default(),
+                stop_reason: None,
+                token_logprobs: Vec::new(),
+                meta: None,
+            })
+        }
+
+        async fn complete_streaming(
+            &self,
+            _messages: &[Message],
+            _system: Option<&str>,
+            _tools: &[crate::llm::ToolDefinition],
+            _cancel_token: tokio_util::sync::CancellationToken,
+        ) -> anyhow::Result<tokio::sync::mpsc::Receiver<crate::llm::StreamEvent>> {
+            anyhow::bail!("streaming not used by this pin")
+        }
+    }
+
+    let workspace = tempfile::tempdir().unwrap();
+    let src = workspace.path().join("src");
+    std::fs::create_dir_all(&src).unwrap();
+    std::fs::write(src.join("lib.rs"), "pub fn depot() {}\n").unwrap();
+    std::fs::write(workspace.path().join("README.md"), "# readme\n").unwrap();
+
+    let client = Arc::new(MultiTurnClient {
+        calls: std::sync::atomic::AtomicUsize::new(0),
+        snapshots: std::sync::Mutex::new(Vec::new()),
+    });
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            workspace.path().to_string_lossy().to_string(),
+            Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
+            &SessionOptions::new()
+                .with_session_id("path-inject-anchor")
+                .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("read"))
+                .with_planning_mode(crate::prompts::PlanningMode::Disabled)
+                .with_auto_delegation_enabled(false)
+                .with_manual_delegation_enabled(false)
+                .with_path_rules(vec![src_rule()]),
+        )
+        .unwrap();
+    let result = session
+        .send("Read src/lib.rs then README.md.", None)
+        .await
+        .expect("fact turn");
+    assert_eq!(result.text, "done");
+
+    let snapshots = client.snapshots.lock().expect("snapshots");
+    assert!(
+        snapshots.len() >= 3,
+        "expected call 0, call 1, call 2 (plus optional post-turn extraction)"
+    );
+    let call1 = &snapshots[1];
+    let call2 = &snapshots[2];
+    assert!(
+        call1
+            .last()
+            .expect("path fragment on call 1")
+            .text()
+            .contains("[path instructions digest="),
+        "call 1 must end with the newly injected path fragment"
+    );
+    assert!(
+        call2.len() > call1.len(),
+        "call 2 appends the second tool round"
+    );
+    assert_eq!(
+        serde_json::to_value(call1).unwrap(),
+        serde_json::to_value(&call2[..call1.len()]).unwrap(),
+        "path instruction fragment must remain pinned at its call 1 prefix index so call 2 gets a 100% KV-cache prefix hit"
+    );
+}

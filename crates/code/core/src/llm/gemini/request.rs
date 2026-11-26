@@ -209,7 +209,7 @@ impl GeminiClient {
             request["systemInstruction"] = json!({"parts":instructions});
         }
         if !tools.is_empty() {
-            request["tools"] = json!([{"functionDeclarations":tools.iter().map(|tool|json!({"name":tool.name,"description":tool.description,"parametersJsonSchema":tool.parameters})).collect::<Vec<_>>()}]);
+            request["tools"] = json!([{"functionDeclarations":tools.iter().map(|tool|json!({"name":tool.name,"description":tool.description,"parametersJsonSchema":super::super::wire_tool_parameters_preserving_closed_objects(&tool.parameters)})).collect::<Vec<_>>()}]);
         }
         let config = &mut request["generationConfig"];
         if !self.config.disable_temperature {

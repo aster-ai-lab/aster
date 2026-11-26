@@ -256,7 +256,8 @@ async fn engineering_shared_host_options_preserve_policy_and_contracts_after_fil
             .iter()
             .filter(|system| system.contains("You are a pre-analysis assistant."))
             .count(),
-        2
+        0,
+        "zero-tool turns under PlanningMode::Disabled defer intent classification"
     );
     let primary: Vec<_> = inputs
         .iter()

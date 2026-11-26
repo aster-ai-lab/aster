@@ -60,10 +60,7 @@ impl Tool for BatchTool {
     }
 
     fn description(&self) -> &str {
-        "Run independent same-step calls concurrently; put dependencies in later steps. \
-         Bind an earlier result with the single-key argument object \
-         {\"$ref\":\"files.output_lines.0\"} (invocation id plus result path), not a JSON Schema \
-         fragment URI. Each call supplies a tool and args."
+        "Run same-step calls concurrently (ordered by step); reference earlier outputs via {\"$ref\":\"<id>.<path>\"}."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -78,29 +75,22 @@ impl Tool for BatchTool {
             "properties": {
                 "invocations": {
                     "type": "array",
-                    "description": "Calls grouped by step; later steps may bind earlier results as described above.",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
-                            "id": {
-                                "type": "string",
-                                "description": "Caller-defined result correlation ID."
-                            },
-                            "tool": {
-                                "type": "string",
-                                "description": "Tool name."
-                            },
+                            "id": { "type": "string" },
+                            "tool": { "type": "string" },
                             "args": {
                                 "type": "object",
-                                "description": "Argument object; values may be JSON or a single-key $ref binding to an earlier step."
+                                "description": "Args or single-key $ref binding."
                             },
                             "step": {
                                 "type": "integer",
                                 "minimum": 1,
                                 "maximum": MAX_BATCH_STEPS,
                                 "default": 1,
-                                "description": "Dependency group; same-step calls see no peer results. Later steps may bind earlier results."
+                                "description": "Same step runs concurrently."
                             }
                         },
                         "required": ["tool", "args"]
@@ -112,7 +102,7 @@ impl Tool for BatchTool {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_BATCH_CONCURRENCY,
-                    "description": "Concurrency; default 8, max 16. Mutating/non-idempotent calls serialize."
+                    "description": "Default 8, max 16; writes serialize."
                 }
             },
             "required": ["invocations"]

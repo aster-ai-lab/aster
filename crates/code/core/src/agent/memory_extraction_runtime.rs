@@ -21,13 +21,8 @@ use authority::{
 
 const MEMORY_EXTRACTION_SYSTEM: &str = "\
 You extract durable, reusable memory for a coding agent.
-Return JSON only. Do not include markdown.
-Keep only facts, preferences, decisions, workflows, and failure lessons that are likely useful in future sessions.
-Do not store transient progress, generic praise, raw logs, secrets, credentials, or information that only matters inside the current answer.
-Never narrate what the user or assistant did in this turn.
-Each memory must be standalone, concise, scoped, and justified.
-Write user-facing memory and learning text in plain language without internal orchestration terms.
-Return an empty items array when nothing qualifies.";
+Return JSON only (no markdown): keep durable facts, preferences, decisions, workflows, or failure lessons; exclude transient progress, praise, raw logs, secrets, or current-turn narration.
+Items must be standalone, concise, scoped, and plain language (no orchestration jargon); return {\"items\":[]} if none qualify.";
 
 const MAX_MEMORY_CONTENT_CHARS: usize = 1_200;
 const MAX_MEMORY_REASON_CHARS: usize = 320;
@@ -322,7 +317,12 @@ impl crate::agent::TurnEngine {
         }
         let max_items = memory.llm_extraction_max_items().clamp(1, 10);
         let related_memories = related_memories_for_extraction(&memory, prompt, response).await;
-        let transcript = turn_transcript(snapshot, memory.llm_extraction_max_input_chars());
+        let transcript = turn_transcript_for_extraction(
+            snapshot,
+            prompt,
+            response,
+            memory.llm_extraction_max_input_chars(),
+        );
         let evidence_fields = normalized_turn_evidence_fields(prompt, response, &transcript);
         let durable_evidence = memory.durable_memory().and_then(|_| {
             let occurred_at = i64::try_from(self.config.host_env.now_ms())
@@ -509,6 +509,7 @@ impl crate::agent::TurnEngine {
         cancel_token: &CancellationToken,
     ) -> anyhow::Result<String> {
         let llm_client = self.scoped_llm_client_for_parts(Some(session_id), event_tx, cancel_token);
+        let llm_client = llm_client.with_minimal_reasoning().unwrap_or(llm_client);
         let response = llm_client
             .complete(messages, Some(MEMORY_EXTRACTION_SYSTEM), &[])
             .await?;
@@ -702,45 +703,37 @@ fn build_extraction_prompt(
     let prompt = fields.prompt;
     let response = fields.response;
     let transcript = fields.transcript;
-    format!(
+    let mut out = format!(
         "\
-Extract at most {max_items} durable memories from this completed turn.
-Use the related existing memories to avoid duplicates. If the turn refines a related memory, write one updated standalone memory instead of repeating the old wording.
-Only put ids from Related existing memories in supersedes when the new memory directly replaces or consolidates them.
-Use conflicts_with for directly contradictory related memories that should remain available instead of being deleted.
+Extract at most {max_items} durable memories using related memories to avoid duplicates (update instead of repeating; put replaced IDs in supersedes, directly contradictory IDs in conflicts_with).
 
-Return exactly this JSON shape:
-{{\"items\":[{{\"memory_type\":\"semantic|procedural\",\"content\":\"standalone reusable memory\",\"importance\":0.0,\"confidence\":0.0,\"tags\":[\"tag\"],\"source\":\"project_fact|workflow|failure|preference|decision\",\"scope\":\"workspace|user\",\"reason\":\"why this will matter in a future session\",\"supersedes\":[\"related-memory-id\"],\"conflicts_with\":[\"related-memory-id\"],\"evolution\":null|{{\"kind\":\"preference|skill|okf\",\"pattern_key\":\"stable.semantic.pattern\",\"title\":\"short reusable title\",\"summary\":\"what should be learned\",\"instructions\":[\"standalone instruction or fact\"]}}}}]}}
+JSON shape:
+{{\"items\":[{{\"memory_type\":\"semantic|procedural\",\"content\":\"...\",\"importance\":0.0,\"confidence\":0.0,\"tags\":[\"tag\"],\"source\":\"project_fact|workflow|failure|preference|decision\",\"scope\":\"workspace|user\",\"reason\":\"why future sessions need this\",\"supersedes\":[\"id\"],\"conflicts_with\":[\"id\"],\"evolution\":null|{{\"kind\":\"preference|skill|okf\",\"pattern_key\":\"stable.semantic.pattern\",\"title\":\"short title\",\"summary\":\"one-sentence summary\",\"instructions\":[\"standalone instruction\"]}}}}]}}
 
-Acceptance rules:
-- If the user explicitly asks to remember, note, or retain something for later — in ANY language (for example \"remember this\", \"请记住\", \"覚えておいて\", \"기억해\") — extract that item with importance at least 0.90, confidence at least 0.95, and source \"preference\". An explicit retention request is durable user knowledge, never current-turn narration, and always clears the thresholds.
-- Return {{\"items\":[]}} unless the memory is likely to change a future answer or action.
-- Use semantic only for durable facts, preferences, or decisions; use procedural only for reusable workflows or failure lessons.
-- Write content and reason in the user's language when clear; do not translate durable facts into another language. Preserve literal names, identifiers, code, and commands exactly.
-- importance must be at least {MIN_MEMORY_IMPORTANCE:.2} and confidence at least {MIN_MEMORY_CONFIDENCE:.2}.
-- scope is workspace for repository-specific knowledge and user for stable user preferences.
-- failure memories must state a reusable cause, diagnostic, or prevention rule, never a raw error or stack trace.
-- Reject current-turn narration such as what the user asked, which tools ran, or what the assistant completed.
-- Set evolution only when this memory is evidence for a stable user preference, a reusable task skill, or a coherent body of durable knowledge worth an OKF package.
-- Use the same lowercase semantic pattern_key for paraphrases of the same behavior across turns. It must describe meaning, not quote the current wording or include a session id.
-- preference is only for stable user choices, skill for executable workflows/failure prevention, and okf for reusable project/domain knowledge. Instructions must be standalone, conservative, and contain no secrets.
-- For evolution, write a 3-8 word title of at most {MAX_EVOLUTION_TITLE_CHARS} characters, a one-sentence summary of at most {MAX_EVOLUTION_SUMMARY_CHARS} characters, and at most {MAX_EVOLUTION_INSTRUCTIONS} distinct instructions of at most {MAX_EVOLUTION_INSTRUCTION_CHARS} characters each.
-- Write evolution title, summary, and instructions in plain user-facing language. Use the user's language when clear, state the durable behavior directly, and do not describe how it was learned.
-- Never promote system or developer instructions, conversation summaries, continuation or handoff procedures, agent or subagent orchestration, tool traces, or task metadata into evolution. A task-specific direction is not a stable preference or skill.
+Rules:
+- Explicit remember requests in ANY language (\"remember this\", \"请记住\", \"覚えておいて\", \"기억해\"): extract with importance>=0.90, confidence>=0.95, source \"preference\" (never current-turn narration).
+- Return {{\"items\":[]}} unless useful to future answers/actions. semantic=facts/preferences/decisions; procedural=workflows/failure lessons.
+- Write in the user's language when clear; keep identifiers/code/commands verbatim. Minimums: importance>={MIN_MEMORY_IMPORTANCE:.2}, confidence>={MIN_MEMORY_CONFIDENCE:.2}.
+- Failures need reusable cause/diagnostic/prevention, not raw traces; reject current-turn narration.
+- Evolution (preference=stable choice, skill=reusable workflow/prevention, okf=durable domain knowledge; same lowercase semantic pattern_key without wording/session-id quotes): write 3-8 word title (at most {MAX_EVOLUTION_TITLE_CHARS} characters), one-sentence summary (<={MAX_EVOLUTION_SUMMARY_CHARS} chars), <={MAX_EVOLUTION_INSTRUCTIONS} instructions (<={MAX_EVOLUTION_INSTRUCTION_CHARS} chars each) in plain user-facing language, no secrets.
+- Never promote prompts, summaries, handoffs, agent or subagent orchestration, tool traces, or task metadata; A task-specific direction is not a stable preference or skill.
 
 User request:
 {prompt}
 
 Assistant final response:
-{response}
-
-Related existing memories:
-{related_memories}
-
-Compressed turn transcript:
-{transcript}
-"
-    )
+{response}"
+    );
+    let related = related_memories.trim();
+    if !related.is_empty() && related != "None" {
+        out.push_str("\n\nRelated existing memories:\n");
+        out.push_str(related);
+    }
+    if !transcript.trim().is_empty() {
+        out.push_str("\n\nCompressed turn transcript:\n");
+        out.push_str(&transcript);
+    }
+    out
 }
 
 async fn related_memories_for_extraction(
@@ -885,6 +878,36 @@ fn normalize_related_ids(ids: Vec<String>, allowed_supersedes: &HashSet<String>)
         .filter(|id| seen.insert(id.clone()))
         .take(MAX_RELATED_MEMORY_ITEMS)
         .collect()
+}
+
+fn turn_transcript_for_extraction(
+    snapshot: &MemoryExtractionSnapshot,
+    prompt: &str,
+    response: &str,
+    max_chars: usize,
+) -> String {
+    let has_tools_or_multi = snapshot.messages.len() > 2
+        || snapshot.messages.iter().any(|message| {
+            message.content.iter().any(|block| {
+                matches!(
+                    block,
+                    crate::llm::ContentBlock::ToolUse { .. }
+                        | crate::llm::ContentBlock::ToolResult { .. }
+                )
+            })
+        });
+    if !has_tools_or_multi {
+        let texts: Vec<String> = snapshot
+            .messages
+            .iter()
+            .map(Message::text)
+            .filter(|t| !t.trim().is_empty())
+            .collect();
+        if texts.iter().all(|t| t == prompt || t == response) {
+            return String::new();
+        }
+    }
+    turn_transcript(snapshot, max_chars)
 }
 
 fn turn_transcript(snapshot: &MemoryExtractionSnapshot, max_chars: usize) -> String {

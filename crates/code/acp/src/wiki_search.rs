@@ -211,9 +211,9 @@ impl Tool for SearchWikiTool {
 
     fn description(&self) -> &str {
         if self.host.is_some() {
-            "Decide whether saved evidence is useful for the current task; retrieval is optional, not required for every answer. Search published OKF encyclopedia pages across this Studio profile's task/project workspaces and personal materials library (default scope=all), or scope=current for this task only. The host resolves saved bindings; callers cannot supply roots. Results identify their task, project or personal library and page. Follow nextCursor with cursor for further collections. Pending collections are not a no-match: report incomplete coverage and continue with available evidence, marking unsupported facts as unconfirmed. Compilation runs separately; do not sleep, busy-wait or repeatedly poll for publication within this task. Legacy personal wiki/local, raw source packets, history and unpublished candidates are excluded. Results describe saved knowledge; check original files for current facts."
+            "Optional search over published OKF encyclopedia pages across Studio workspaces/personal library (default scope=all, or scope=current for this task; host resolves bindings). Excludes legacy local wiki, raw source packets, history, and unpublished pages. Pass nextCursor as cursor; pending=incomplete coverage (mark unconfirmed), never poll/sleep for publication. Verify current files."
         } else {
-            "Search the current workspace's published OKF encyclopedia. Personal wiki/local, other workspaces, source packets, history and unpublished candidates are excluded. Use returned page paths and passages as evidence. not-ready means no readable generation is available; no-match means this workspace has no relevant page."
+            "Search this workspace's published OKF encyclopedia (excludes personal/other workspaces, source packets, history, unpublished pages). Check page paths and passages; not-ready=no readable generation, no-match=no relevant page."
         }
     }
 

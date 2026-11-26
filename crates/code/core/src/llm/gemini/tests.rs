@@ -219,3 +219,27 @@ fn native_agent_tool_recovery_preserves_examples_empty_parts_and_actual_calls() 
         );
     }
 }
+
+#[test]
+fn gemini_request_strips_examples_from_tool_declarations() {
+    let mut headers = std::collections::HashMap::new();
+    headers.insert("x-aster-provider-id".into(), "google".into());
+    let config =
+        crate::llm::LlmConfig::new("google", "gemini-2.5-pro", "test-key").with_max_tokens(1024);
+    let client = GeminiClient::new(config, headers, crate::llm::default_http_client());
+    let tool = crate::llm::ToolDefinition {
+        name: "read".into(),
+        description: "Read file".into(),
+        parameters: json!({
+            "type": "object",
+            "properties": {"file_path": {"type": "string"}},
+            "examples": [{"file_path": "src/main.rs"}]
+        }),
+    };
+    let request = client
+        .request(&[Message::user("hi")], None, &[tool], None)
+        .unwrap();
+    let decl = &request["tools"][0]["functionDeclarations"][0]["parametersJsonSchema"];
+    assert!(decl.get("examples").is_none());
+    assert_eq!(decl["properties"]["file_path"]["type"], "string");
+}

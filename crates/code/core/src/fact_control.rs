@@ -67,13 +67,16 @@ pub(crate) use goal_evidence::{
 pub(crate) use history_seed::seed_history;
 use history_seed::{
     attachments_from_user_payload, emit_tool_request_bound, folded_message_with_images,
-    images_for_user_line, recorded_call_from, recorded_tool_calls_in, recorded_tool_messages,
-    repeat_note_prefix, repeated_result_note, scheduler_tool_record_indexes,
-    tool_image_ids_to_stub, user_attachment_plan, user_message_fact, user_message_with_images,
-    visible_tool_output, workspace_boundary_error, RecordedCall,
+    images_for_user_line, observe_repeated_result, recorded_call_from, recorded_tool_calls_in,
+    recorded_tool_messages, repeat_note_prefix, scheduler_tool_record_indexes,
+    seed_repeats_from_facts, tool_image_ids_to_stub, user_attachment_plan, user_message_fact,
+    user_message_with_images, visible_tool_output, workspace_boundary_error, RecordedCall,
+    RepeatObservation, RepeatedResultProjection,
 };
 #[cfg(test)]
 use history_seed::{recorded_tool_calls, PlannedUserImages};
+#[cfg(test)]
+use history_seed::{repeated_result_note, REPEAT_COMPACTION_MIN_BYTES};
 pub(crate) use model_call::model_error;
 #[cfg(test)]
 use model_call::project_model_frame;
@@ -302,6 +305,95 @@ impl PreparedPrompt {
     }
 }
 
+#[derive(Default)]
+struct PathInstructionAnchors {
+    summary: String,
+    anchors: Vec<(String, Option<String>)>,
+}
+
+fn last_tool_result_id(messages: &[Message]) -> Option<String> {
+    messages.iter().rev().find_map(|message| {
+        message.content.iter().rev().find_map(|block| match block {
+            crate::llm::ContentBlock::ToolResult { tool_use_id, .. } => Some(tool_use_id.clone()),
+            _ => None,
+        })
+    })
+}
+
+fn index_after_tool_result(messages: &[Message], anchor_id: &str) -> Option<usize> {
+    messages
+        .iter()
+        .position(|message| {
+            message.content.iter().any(|block| {
+                matches!(
+                    block,
+                    crate::llm::ContentBlock::ToolResult { tool_use_id, .. }
+                        if tool_use_id == anchor_id
+                )
+            })
+        })
+        .map(|index| index + 1)
+}
+
+fn inject_pinned_path_instructions(
+    surface: &SessionSurface,
+    anchors: &Mutex<PathInstructionAnchors>,
+    summary: &str,
+    messages: &mut Vec<Message>,
+) {
+    let rules = surface.agent.path_rules();
+    if rules.is_empty() {
+        return;
+    }
+    let targeted = surface
+        .targeted_paths
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .clone();
+    let budget = surface
+        .agent
+        .path_injection_budget()
+        .unwrap_or(crate::path_instructions::INJECTION_BYTE_BUDGET);
+    let injection = crate::path_instructions::inject_with_budget("", rules, &targeted, budget);
+    let Some(fragment) = injection.model_input_fragment() else {
+        return;
+    };
+    if messages
+        .iter()
+        .any(|message| message.text().contains(&injection.injected_digest))
+    {
+        return;
+    }
+    let mut state = anchors
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if state.summary != summary {
+        state.summary = summary.to_string();
+        state.anchors.clear();
+    }
+    let existing_anchor = state
+        .anchors
+        .iter()
+        .find(|(digest, _)| digest == &injection.injected_digest)
+        .and_then(|(_, anchor_id)| anchor_id.as_deref())
+        .and_then(|anchor_id| index_after_tool_result(messages, anchor_id));
+    if let Some(insert_at) = existing_anchor {
+        messages.insert(insert_at, Message::user_wire(&fragment));
+        return;
+    }
+    let new_anchor = last_tool_result_id(messages);
+    if let Some(entry) = state
+        .anchors
+        .iter_mut()
+        .find(|(digest, _)| digest == &injection.injected_digest)
+    {
+        entry.1 = new_anchor;
+    } else {
+        state.anchors.push((injection.injected_digest, new_anchor));
+    }
+    messages.push(Message::user_wire(&fragment));
+}
+
 pub struct LiveCompletion {
     client: Arc<dyn LlmClient>,
     calls: Arc<AtomicUsize>,
@@ -316,6 +408,7 @@ pub struct LiveCompletion {
     context_ready: Arc<AtomicBool>,
     cached_system: Arc<Mutex<Option<String>>>,
     cached_prompt: Arc<Mutex<Option<Arc<PreparedPrompt>>>>,
+    path_instruction_anchors: Arc<Mutex<PathInstructionAnchors>>,
     prompt_tokens: Arc<AtomicU64>,
     fixed_prompt_tokens: Arc<AtomicU64>,
     standing_system: Option<String>,
@@ -349,6 +442,7 @@ impl LiveCompletion {
                 context_ready: Arc::new(AtomicBool::new(false)),
                 cached_system: Arc::new(Mutex::new(None)),
                 cached_prompt: Arc::new(Mutex::new(None)),
+                path_instruction_anchors: Arc::new(Mutex::new(PathInstructionAnchors::default())),
                 prompt_tokens: Arc::new(AtomicU64::new(0)),
                 fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
                 standing_system: None,
@@ -411,6 +505,7 @@ impl Completion for LiveCompletion {
         let ready_flag = Arc::clone(&self.context_ready);
         let system_slot = Arc::clone(&self.cached_system);
         let prompt_slot = Arc::clone(&self.cached_prompt);
+        let path_instruction_anchors = Arc::clone(&self.path_instruction_anchors);
         let prompt_tokens = Arc::clone(&self.prompt_tokens);
         let fixed_prompt_tokens = Arc::clone(&self.fixed_prompt_tokens);
         let standing_system = self.standing_system.clone();
@@ -625,36 +720,6 @@ impl Completion for LiveCompletion {
                 ));
             }
             folded.extend(request.messages.iter().cloned());
-            // Path-scoped instruction fragments — the fact-path twin of the
-            // legacy loop's `inject_turn_scoped_evidence`. A tool call that
-            // targeted a matching path admits the (budget-cut) fragment into
-            // this model input; the digest check keeps one copy per request.
-            // Appended after the stable prefix, so the standing-context
-            // digest freeze is untouched.
-            if let Some(surface) = &surface {
-                let rules = surface.agent.path_rules();
-                if !rules.is_empty() {
-                    let targeted = surface
-                        .targeted_paths
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .clone();
-                    let budget = surface
-                        .agent
-                        .path_injection_budget()
-                        .unwrap_or(crate::path_instructions::INJECTION_BYTE_BUDGET);
-                    let injection =
-                        crate::path_instructions::inject_with_budget("", rules, &targeted, budget);
-                    if let Some(fragment) = injection.model_input_fragment() {
-                        if !folded
-                            .iter()
-                            .any(|text| text.contains(&injection.injected_digest))
-                        {
-                            folded.push(format!("user\n{fragment}"));
-                        }
-                    }
-                }
-            }
             let summary_offset = usize::from(!request.summary.is_empty());
             // Cached context belongs to its original user-line prefix, not a later answer or steer.
             let prompt_index = prompt_override
@@ -662,11 +727,11 @@ impl Completion for LiveCompletion {
                 .and_then(|prepared| prepared.source_index(&request))
                 .map(|index| index + summary_offset);
             let thread_facts = surface.as_ref().map(surface_thread_facts);
-            let cycle = match (&surface, &thread_facts) {
+            let execution_control = match (&surface, &thread_facts) {
                 (Some(surface), Some(Ok(facts)))
                     if original_model.is_some() || surface.agent.is_child_run() =>
                 {
-                    model_call::run_execution_cycle(surface, facts)?
+                    model_call::run_execution_control(surface, facts)?
                 }
                 _ => None,
             };
@@ -742,6 +807,19 @@ impl Completion for LiveCompletion {
                 tool_results::apply_verification_context(&mut messages, &mut system, gate);
             }
             if let Some(surface) = &surface {
+                // Anchor each path-instruction fragment after the tool result
+                // that first triggered it so subsequent turns extend rather
+                // than shift the cached conversation prefix. Run after
+                // `apply_verification_context` so the latest ToolResult is
+                // still the tail message when injected.
+                inject_pinned_path_instructions(
+                    surface,
+                    &path_instruction_anchors,
+                    &request.summary,
+                    &mut messages,
+                );
+            }
+            if let Some(surface) = &surface {
                 apply_run_controls(surface, &mut messages).await?;
                 if surface.cancel.is_cancelled() {
                     if let Ok(mut guard) = surface.ledger.lock() {
@@ -752,11 +830,11 @@ impl Completion for LiveCompletion {
                     });
                 }
                 // A newly committed user steer can supersede the candidate window.
-                if cycle.is_some() {
-                    if let Some(cycle) =
-                        model_call::run_execution_cycle(surface, &surface_thread_facts(surface)?)?
+                if execution_control.is_some() {
+                    if let Some(control) =
+                        model_call::run_execution_control(surface, &surface_thread_facts(surface)?)?
                     {
-                        return Err(ActorError::Defect(cycle.diagnostic()));
+                        control.apply(&mut messages)?;
                     }
                 }
             }
@@ -792,6 +870,23 @@ impl Completion for LiveCompletion {
                 .into_iter()
                 .filter(|tool| visibility.expose_to_model(&tool.name))
                 .collect::<Vec<_>>();
+            if let Some(surface) = surface.as_ref() {
+                if surface
+                    .agent
+                    .fact_needs_lazy_read_only_synthesis_classification()
+                {
+                    surface
+                        .agent
+                        .fact_resolve_lazy_read_only_synthesis(
+                            &user_text,
+                            &surface.session_id,
+                            &surface.events,
+                            &surface.cancel,
+                        )
+                        .await
+                        .map_err(model_error)?;
+                }
+            }
             let synthesis_directive = surface
                 .as_ref()
                 .and_then(|surface| surface.agent.fact_read_only_synthesis_directive());
@@ -1533,8 +1628,9 @@ impl FactRun {
                 .as_ref()
                 .map(|goal| goal.goal.description.clone());
         }
+        let existing_facts = shared_log.read(&thread)?;
         let durable_source =
-            crate::store::SessionFactSourceV1::from_facts(session_id, &shared_log.read(&thread)?)?;
+            crate::store::SessionFactSourceV1::from_facts(session_id, &existing_facts)?;
         let checkpoint = surface.checkpoint.map(|checkpoint| CheckpointState {
             sink: checkpoint.sink,
             run_id: checkpoint.run_id,
@@ -1552,6 +1648,7 @@ impl FactRun {
             inner: Arc::new(completion),
             prompt_tokens: Arc::clone(&prompt_tokens),
         });
+        let repeats = Arc::new(Mutex::new(seed_repeats_from_facts(&existing_facts)));
         let compactor = Arc::new(SessionCompact {
             client: Arc::clone(&client),
             history: (Arc::clone(&shared_log), thread.clone()),
@@ -1561,6 +1658,7 @@ impl FactRun {
             budget: agent.fact_compaction_budget(),
             fixed_prompt_tokens,
             prompt_tokens,
+            repeats: Arc::clone(&repeats),
         });
         let tools = Arc::new(ExecutorTools {
             capability_operation: None,
@@ -1579,7 +1677,7 @@ impl FactRun {
             reports,
             targeted_paths: Some(Arc::clone(&surface.targeted_paths)),
             pre_tool_hook_resolved: false,
-            repeats: Arc::default(),
+            repeats,
             effect_dir: effect_dir.clone(),
         });
         let mut run = Self::open_with_optional_step_limit(

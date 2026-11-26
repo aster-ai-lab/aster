@@ -35,7 +35,7 @@ impl Tool for DownloadTool {
     }
 
     fn description(&self) -> &str {
-        "Download an HTTP(S) resource into the local workspace. Streams binary data to an adjacent temporary file, verifies Range responses and optional SHA-256, then atomically promotes the completed file. Supports adaptive 1-4 connection downloads, bounded retries, cancellation, and sequential fallback."
+        "Download HTTP(S) file into workspace atomically (1-4 Range connections, optional SHA-256)."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -45,41 +45,40 @@ impl Tool for DownloadTool {
             "properties": {
                 "url": {
                     "type": "string",
-                    "description": "Required. Public http:// or https:// URL. Signed query parameters are preserved for the request but never returned in metadata."
+                    "description": "Public http(s) URL."
                 },
                 "file_path": {
                     "type": "string",
-                    "description": "Optional workspace-relative destination. When omitted, a safe filename is inferred from Content-Disposition, URL query/path, or download.bin."
+                    "description": "Relative dest."
                 },
                 "overwrite": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Optional. Replace an existing regular file only after the new download is complete and verified. Default: false."
+                    "default": false
                 },
                 "connections": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_CONNECTIONS,
-                    "description": "Optional. Requested parallel Range connections (1-4). Omit for adaptive selection based on file size."
+                    "description": "Range connections."
                 },
                 "max_bytes": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": ABSOLUTE_MAX_BYTES,
                     "default": DEFAULT_MAX_BYTES,
-                    "description": "Optional hard limit for declared and streamed bytes. Default: 536870912 (512 MiB); maximum: 8589934592 (8 GiB)."
+                    "description": "Max bytes."
                 },
                 "timeout": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_TIMEOUT_SECONDS,
                     "default": DEFAULT_TIMEOUT_SECONDS,
-                    "description": "Optional total timeout in seconds, including retries, verification, and atomic promotion. Default: 300; maximum: 3600."
+                    "description": "Seconds."
                 },
                 "expected_sha256": {
                     "type": "string",
                     "pattern": "^[A-Fa-f0-9]{64}$",
-                    "description": "Optional expected lowercase or uppercase SHA-256 hex digest. The final file is not promoted when verification fails."
+                    "description": "64-hex SHA-256."
                 }
             },
             "required": ["url"],

@@ -75,9 +75,9 @@ fn delegated_tasks_params_schema_for_agents(
     tool_name: &str,
 ) -> serde_json::Value {
     let task_description = if min_items == 1 {
-        "One focused child, or independent children concurrently."
+        "One child or concurrent independent children."
     } else {
-        "Independent children executed concurrently."
+        "Concurrent independent children."
     };
     serde_json::json!({
         "type": "object",
@@ -92,18 +92,18 @@ fn delegated_tasks_params_schema_for_agents(
             },
             "allow_partial_failure": {
                 "type": "boolean",
-                "description": format!("{tool_name} succeeds when any child succeeds; failed children stay in content/metadata. Default false."),
+                "description": format!("{tool_name} succeeds if any child succeeds."),
                 "default": false
             },
             "timeout_ms": {
                 "type": "integer",
                 "minimum": 1,
-                "description": "Collection deadline in ms; completed results return and unfinished children fail."
+                "description": "Deadline ms."
             },
             "min_success_count": {
                 "type": "integer",
                 "minimum": 1,
-                "description": "Return early after this many successes; requires allow_partial_failure."
+                "description": "Early-return successes (needs allow_partial_failure)."
             }
         },
         "required": ["tasks"],

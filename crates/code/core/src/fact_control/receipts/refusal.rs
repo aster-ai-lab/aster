@@ -4,32 +4,77 @@ use super::*;
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet};
 
-pub(in crate::fact_control) enum ExecutionCycle {
+pub(in crate::fact_control) enum ExecutionControl {
+    Replan { tool: String, kind: RefusalKind },
     Refused(String),
     ObservedState(String),
 }
 
-impl ExecutionCycle {
-    pub(in crate::fact_control) fn diagnostic(self) -> String {
+impl ExecutionControl {
+    pub(in crate::fact_control) fn apply(
+        self,
+        messages: &mut Vec<Message>,
+    ) -> Result<(), ActorError> {
         match self {
-            Self::Refused(tool) => format!(
-                "run.tool_refusal_cycle: tool '{tool}' repeated a refused invocation without fresh original progress; revise the approach or obtain new host input"
-            ),
-            Self::ObservedState(tool) => format!(
+            Self::Replan { tool, kind } => {
+                messages.push(Message::user_wire(&format!(
+                    "[host tool recovery] The host refused '{tool}' before execution ({}). \
+                     Use tools already authorized for a different way to achieve the original task. \
+                     Do not retry the refused action without new authorization. If no authorized route \
+                     exists, report the specific blocker and preserve verified work.",
+                    kind.as_str(),
+                )));
+                Ok(())
+            }
+            Self::Refused(tool) => Err(ActorError::Defect(format!(
+                "run.tool_refusal_cycle: tool '{tool}' repeated a refusal without fresh original progress; change the approach or obtain the required host input"
+            ))),
+            Self::ObservedState(tool) => Err(ActorError::Defect(format!(
                 "run.tool_state_cycle: tool '{tool}' exhausted its duplicate allowance while revisiting already observed workspace states without fresh original information; revise the approach or obtain new host input"
-            ),
+            ))),
         }
     }
 }
 
-pub(in crate::fact_control) fn execution_cycle(
+#[derive(Clone, Copy)]
+pub(in crate::fact_control) enum RefusalKind {
+    PermissionDenied,
+    ConfirmationRequired,
+    ExecutionUnavailable,
+}
+
+impl RefusalKind {
+    fn parse(code: &str) -> Option<Self> {
+        match code {
+            "permission_denied" => Some(Self::PermissionDenied),
+            "confirmation_required" => Some(Self::ConfirmationRequired),
+            "execution_unavailable" => Some(Self::ExecutionUnavailable),
+            _ => None,
+        }
+    }
+
+    pub(super) fn as_str(self) -> &'static str {
+        match self {
+            Self::PermissionDenied => "permission_denied",
+            Self::ConfirmationRequired => "confirmation_required",
+            Self::ExecutionUnavailable => "execution_unavailable",
+        }
+    }
+
+    fn from_result(result: &ToolExecutionResultV1) -> Option<Self> {
+        let envelope = decode_fact_tool_result(result.output.as_str()?)?;
+        Self::parse(envelope.metadata?.get("host_refusal")?.as_str()?)
+    }
+}
+
+pub(in crate::fact_control) fn execution_control(
     facts: &[aster_effect::Fact],
     session_id: &str,
     run_id: &str,
     binding: &str,
     duplicate_threshold: u32,
-) -> Option<ExecutionCycle> {
-    fold_execution_cycle(
+) -> Option<ExecutionControl> {
+    fold_execution_control(
         facts,
         Some((session_id, run_id, binding)),
         duplicate_threshold,
@@ -37,18 +82,18 @@ pub(in crate::fact_control) fn execution_cycle(
 }
 
 /// Only the host-owned, exclusively fenced ChildRun log may use unbound receipts.
-pub(in crate::fact_control) fn child_execution_cycle(
+pub(in crate::fact_control) fn child_execution_control(
     facts: &[aster_effect::Fact],
     duplicate_threshold: u32,
-) -> Option<ExecutionCycle> {
-    fold_execution_cycle(facts, None, duplicate_threshold)
+) -> Option<ExecutionControl> {
+    fold_execution_control(facts, None, duplicate_threshold)
 }
 
-fn fold_execution_cycle(
+fn fold_execution_control(
     facts: &[aster_effect::Fact],
     admission: Option<(&str, &str, &str)>,
     duplicate_threshold: u32,
-) -> Option<ExecutionCycle> {
+) -> Option<ExecutionControl> {
     // None is a private child-log authority, never inferred from a missing Run id.
     let current = |result: &ToolExecutionResultV1| match (admission, &result.identity.admission) {
         (Some((session_id, run_id, binding)), Some(source))
@@ -64,8 +109,9 @@ fn fold_execution_cycle(
         .iter()
         .rposition(|fact| fact.kind == "user.message")
         .map_or(0, |index| index + 1);
-    // Only repeated actions need the full workspace-state fold.
+    // Only possible recovery or repeated actions need the full fold.
     let mut denied = 0u32;
+    let mut recoverable = false;
     let mut mutated: BTreeMap<(String, String), u32> = BTreeMap::new();
     let mut preparations = None;
     let mut state_candidate = false;
@@ -75,7 +121,10 @@ fn fold_execution_cycle(
         .filter_map(|fact| ToolExecutionResultV1::deserialize(fact.payload.get("receipt")?).ok())
         .filter(|result| current(result) == Some(true))
     {
-        denied += u32::from(result.outcome == ToolExecutionOutcome::Denied);
+        if result.outcome == ToolExecutionOutcome::Denied {
+            denied += 1;
+            recoverable |= RefusalKind::from_result(&result).is_some();
+        }
         if duplicate_threshold > 0
             && super::super::goal_evidence::observed_workspace_mutation(&result.effects)
         {
@@ -86,11 +135,11 @@ fn fold_execution_cycle(
                 state_candidate |= *count > duplicate_threshold;
             }
         }
-        if denied >= 2 || state_candidate {
+        if recoverable || denied >= 2 || state_candidate {
             break;
         }
     }
-    if denied < 2 && !state_candidate {
+    if !recoverable && denied < 2 && !state_candidate {
         return None;
     }
     let debt = fold_cache_evidence(facts);
@@ -103,6 +152,7 @@ fn fold_execution_cycle(
     let mut executions: BTreeMap<(String, String), u32> = BTreeMap::new();
     let mut workspace = crate::goal_control::MutationProgress::default();
     let mut cycle = None;
+    let mut first_refusal: Option<((u64, u64), String, RefusalKind)> = None;
     for projection in &debt.projection_order {
         let index = debt.projection_fact_index(projection)?;
         let ReceiptProjection::Tool(tool_index) = projection else {
@@ -114,6 +164,7 @@ fn fold_execution_cycle(
                 refused.clear();
                 executions.clear();
                 cycle = None;
+                first_refusal = None;
             }
             continue;
         };
@@ -142,6 +193,13 @@ fn fold_execution_cycle(
             refused.clear();
             executions.clear();
             cycle = None;
+            first_refusal = None;
+        }
+        let round = (result.identity.turn, result.identity.cycle);
+        if let Some((first, tool, _)) = &first_refusal {
+            if *first != round {
+                cycle = Some(ExecutionControl::Refused(tool.clone()));
+            }
         }
         if duplicate_threshold > 0
             && coherent
@@ -155,18 +213,22 @@ fn fold_execution_cycle(
             let count = executions.entry((tool.clone(), args.clone())).or_default();
             *count = count.saturating_add(1);
             if *count > duplicate_threshold {
-                cycle = Some(ExecutionCycle::ObservedState(tool.clone()));
+                cycle = Some(ExecutionControl::ObservedState(tool.clone()));
             }
         }
         if result.outcome == ToolExecutionOutcome::Denied
             && result.effects.completeness == ToolObservationCompleteness::Complete
             && result.effects.changes.is_empty()
-            && !refused.insert((tool.clone(), args.clone()))
         {
-            cycle = Some(ExecutionCycle::Refused(tool.clone()));
+            if !refused.insert((tool.clone(), args.clone())) {
+                cycle = Some(ExecutionControl::Refused(tool.clone()));
+            }
+            if let Some(kind) = RefusalKind::from_result(result) {
+                first_refusal.get_or_insert_with(|| (round, tool.clone(), kind));
+            }
         }
     }
-    cycle
+    cycle.or_else(|| first_refusal.map(|(_, tool, kind)| ExecutionControl::Replan { tool, kind }))
 }
 
 fn prepared_actions(facts: &[aster_effect::Fact]) -> BTreeMap<String, (String, String)> {

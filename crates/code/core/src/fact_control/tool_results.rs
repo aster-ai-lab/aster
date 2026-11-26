@@ -228,7 +228,7 @@ pub(super) fn apply_verification_context(
         });
     let context = match gate {
         crate::harness_loop::CompletionGate::Allow(crate::harness_loop::CompletionTerminal::Verified { .. }) if result.is_some() =>
-            "[host verification state]\nThe current workspace changes are verified. Further edits invalidate this verification; finish with the requested answer when the task is satisfied.".to_string(),
+            "[host verification state]\nThe current workspace changes are verified; further edits invalidate this. Finish when satisfied.".to_string(),
         gate => match crate::harness_loop::model_verification_context(gate) {
             Some(context) => context,
             None => return,
@@ -542,6 +542,22 @@ pub(super) fn skill_denial(
     agent.skill_restriction_denial(name)
 }
 
+pub(super) fn unresolved_effect_blocks_tool(
+    ledger: &std::sync::Mutex<crate::harness_loop::MutationLedger>,
+    registry: &crate::tools::ToolRegistry,
+    name: &str,
+    args: &serde_json::Value,
+) -> bool {
+    let has_uncertainty = ledger
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .has_uncertain_tool_invocations();
+    has_uncertainty
+        && !registry
+            .capabilities(name, args)
+            .is_some_and(|capabilities| capabilities.read_only)
+}
+
 pub(super) async fn confirmation_parked(
     policy: &PermissionPolicy,
     surface: Option<&SessionSurface>,
@@ -549,7 +565,14 @@ pub(super) async fn confirmation_parked(
     args: &serde_json::Value,
 ) -> bool {
     if let Some(surface) = surface {
-        if skill_denial(&surface.agent, name).is_some() {
+        if skill_denial(&surface.agent, name).is_some()
+            || unresolved_effect_blocks_tool(
+                &surface.ledger,
+                surface.agent.tool_executor_handle().registry(),
+                name,
+                args,
+            )
+        {
             return false;
         }
     }
@@ -629,8 +652,9 @@ pub(super) async fn decision_from_response(
     };
     let host_owned_tools =
         surface.is_some_and(|surface| surface.agent.tool_executor_handle().host_owned_tools());
-    if !host_owned_tools && calls.iter().all(|call| call.1 == "ask_user") {
-        if let Some((id, name, args)) = calls.first() {
+    if !host_owned_tools {
+        if let Some((id, name, args)) = calls.iter().find(|call| call.1 == "ask_user") {
+            // Further tools must be selected with the answer in context.
             return question_from_call(&crate::llm::ToolCall {
                 id: id.clone(),
                 name: name.clone(),
@@ -653,9 +677,6 @@ pub(super) async fn decision_from_response(
     let mut tools = Vec::new();
     let mut approval_ids = std::collections::HashMap::new();
     for (id, name, args) in calls {
-        if !host_owned_tools && name == "ask_user" {
-            continue;
-        }
         let needs_confirmation = confirmation_parked(policy, surface, &name, &args).await;
         // A provider can reuse IDs; host consent must name one original invocation.
         // Hosts that own the entire tool surface preserve canonical provider call IDs.

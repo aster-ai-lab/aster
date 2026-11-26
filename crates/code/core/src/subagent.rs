@@ -779,29 +779,22 @@ pub fn builtin_agents() -> Vec<AgentDefinition> {
         // Explore agent: Fast codebase exploration (read-only)
         AgentDefinition::new(
             "explore",
-            "Fast read-only codebase explorer. Delegate one specific, well-scoped question; \
-             use parallel explore tasks for independent questions and reuse prior findings \
-             instead of rescanning files.",
+            "Read-only codebase explorer for a well-scoped question (parallelize independent queries).",
         )
         .native()
         .with_permissions(explore_permissions())
         .with_max_steps(8)
         .with_prompt(EXPLORE_PROMPT),
         // General agent: Multi-step task execution
-        AgentDefinition::new(
-            "general",
-            "General-purpose agent for multi-step task execution. Can read, write, \
-             and execute commands.",
-        )
-        .native()
-        .with_permissions(general_permissions())
-        .with_max_steps(50),
+        AgentDefinition::new("general", "Multi-step read/write/exec.")
+            .native()
+            .with_permissions(general_permissions())
+            .with_max_steps(50),
         // DeepResearch evidence agent: inherit the parent session's tool/skill
         // policy instead of applying explore's read-only default-deny policy.
         AgentDefinition::new(
             "deep-research",
-            "DeepResearch evidence agent. Inherits the parent session's tools, \
-             skills, permissions, and HITL policy for bounded evidence collection.",
+            "Inherits parent tools/permissions for evidence collection.",
         )
         .native()
         .hidden()
@@ -828,30 +821,21 @@ pub fn builtin_agents() -> Vec<AgentDefinition> {
         .with_max_steps(4)
         .with_prompt(LOOP_CHECKER_PROMPT),
         // Plan agent: Read-only planning mode
-        AgentDefinition::new(
-            "plan",
-            "Planning agent for designing implementation approaches. Read-only access \
-             to explore codebase and create plans.",
-        )
-        .native()
-        .with_permissions(plan_permissions())
-        .with_max_steps(30)
-        .with_prompt(PLAN_PROMPT),
+        AgentDefinition::new("plan", "Read-only planner.")
+            .native()
+            .with_permissions(plan_permissions())
+            .with_max_steps(30)
+            .with_prompt(PLAN_PROMPT),
         // Verification agent: adversarial validation and repro
-        AgentDefinition::new(
-            "verification",
-            "Verification agent for adversarial validation. Prefer real checks, \
-             reproductions, and regression testing over code reading alone.",
-        )
-        .native()
-        .with_permissions(verification_permissions())
-        .with_max_steps(30)
-        .with_prompt(VERIFICATION_PROMPT),
+        AgentDefinition::new("verification", "Validation, repro, and regression tester.")
+            .native()
+            .with_permissions(verification_permissions())
+            .with_max_steps(30)
+            .with_prompt(VERIFICATION_PROMPT),
         // Review agent: review-focused analysis
         AgentDefinition::new(
             "review",
-            "Code review agent focused on correctness, regressions, security, \
-             maintainability, and clear findings.",
+            "Code review (correctness, regressions, security).",
         )
         .native()
         .with_permissions(review_permissions())

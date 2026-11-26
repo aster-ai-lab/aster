@@ -72,11 +72,7 @@ impl Tool for GenerateObjectTool {
     }
 
     fn description(&self) -> &str {
-        "Generate a JSON value that strictly conforms to a provided JSON Schema. \
-         Use when you need structured output: extracting fields from text, classifying \
-         data, converting natural language to typed records, or producing machine-readable \
-         results. The root value may be an object, array, or scalar. Returns the validated \
-         value on success."
+        "Generate a JSON value (object, array, or scalar) matching the supplied JSON Schema."
     }
 
     fn parameters(&self) -> Value {
@@ -87,11 +83,10 @@ impl Tool for GenerateObjectTool {
             "properties": {
                 "schema": {
                     "type": "object",
-                    "description": "JSON Schema that the output value must conform to"
+                    "description": "Target JSON Schema."
                 },
                 "schema_name": {
                     "type": "string",
-                    "description": "Short name for the schema (used internally for tool naming)",
                     "minLength": 1,
                     "maxLength": MAX_SCHEMA_NAME_BYTES,
                     "pattern": "^[A-Za-z0-9_-]+$",
@@ -99,43 +94,38 @@ impl Tool for GenerateObjectTool {
                 },
                 "schema_description": {
                     "type": "string",
-                    "description": "Optional description of what the schema represents",
                     "maxLength": MAX_SCHEMA_DESCRIPTION_BYTES
                 },
                 "prompt": {
                     "type": "string",
-                    "description": "The prompt describing what value to generate or extract",
                     "minLength": 1,
                     "maxLength": MAX_PROMPT_BYTES
                 },
                 "system": {
                     "type": "string",
-                    "description": "Optional system prompt to guide generation",
                     "maxLength": MAX_SYSTEM_BYTES
                 },
                 "mode": {
                     "type": "string",
                     "enum": ["auto", "strict", "json", "tool", "prompt"],
-                    "description": "Output mode. 'auto' selects the best mode for the provider. 'tool' uses tool-calling (most reliable cross-provider). 'strict' uses OpenAI native JSON schema. 'json' uses json_object mode. 'prompt' appends schema to prompt.",
                     "default": "auto"
                 },
                 "max_repair_attempts": {
                     "type": "integer",
-                    "description": "Maximum repair attempts if output fails validation (0-5)",
+                    "description": "Retries.",
                     "default": 2,
                     "minimum": 0,
                     "maximum": 5
                 },
                 "include_raw_text": {
                     "type": "boolean",
-                    "description": "Include the raw model text/tool arguments used to extract the final value. Defaults to false to avoid exposing reasoning-channel text.",
                     "default": false
                 },
                 "timeout_ms": {
                     "type": "integer",
                     "minimum": 1000,
                     "maximum": MAX_TIMEOUT_MS,
-                    "description": "Active generation deadline in milliseconds. Admission queue wait is excluded. Default 120000; maximum 600000.",
+                    "description": "Deadline ms.",
                     "default": DEFAULT_TIMEOUT_MS
                 }
             }

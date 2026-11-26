@@ -2,6 +2,84 @@ use super::*;
 use crate::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use serde_json::{json, Value};
 
+#[tokio::test]
+async fn denied_bash_gives_one_bounded_opportunity_to_change_approach() {
+    for alternate in [true, false] {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::write(root.path().join("source.txt"), "observed source").unwrap();
+        let mut config = test_config();
+        config.memory = None;
+        let agent = crate::Agent::from_config(config).await.unwrap();
+        let seen = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let session = session_for(
+            &agent,
+            root.path(),
+            "denied-bash-recovery",
+            Arc::new(ScriptedClient {
+                seen: Arc::clone(&seen),
+                responses: std::sync::Mutex::new(vec![
+                    tool_response("first", "bash", json!({"command":"touch first"})),
+                    if alternate {
+                        tool_response("read", "read", json!({"file_path":"source.txt"}))
+                    } else {
+                        tool_response("second", "bash", json!({"command":"touch second"}))
+                    },
+                    text_response("The source is observed."),
+                ]),
+            }),
+            &crate::SessionOptions::new()
+                .with_permission_policy(
+                    crate::permissions::PermissionPolicy::new()
+                        .deny("bash(*)")
+                        .allow("read(*)"),
+                )
+                .with_max_tool_rounds(0)
+                .with_auto_compact(false)
+                .with_auto_delegation_enabled(false)
+                .with_continuation(false),
+        );
+        let result = session.send("Observe the existing source.", None).await;
+        let facts = read_workspace_facts(root.path(), session.session_id()).unwrap();
+        session.close().await;
+        agent.close().await;
+
+        assert!(!root.path().join("first").exists());
+        assert!(!root.path().join("second").exists());
+        let requests = seen.lock().unwrap();
+        let recovery_requests = requests
+            .iter()
+            .filter(|request| {
+                request.messages.iter().any(|message| {
+                    message.role == "user" && message.text().contains("[host tool recovery]")
+                })
+            })
+            .count();
+        assert_eq!(recovery_requests, 1, "exactly one recovery instruction");
+        if alternate {
+            assert!(result.is_ok(), "{result:?}");
+            assert!(facts.iter().any(|fact| {
+                fact.kind == "tool.result"
+                    && fact.payload["receipt"]["outcome"] == "succeeded"
+                    && fact.payload["receipt"]["output"]
+                        .as_str()
+                        .is_some_and(|output| output.contains("observed source"))
+            }));
+        } else {
+            assert!(result
+                .unwrap_err()
+                .to_string()
+                .contains("run.tool_refusal_cycle"));
+            assert_eq!(
+                requests
+                    .iter()
+                    .filter(|request| !request.tools.is_empty())
+                    .count(),
+                2
+            );
+        }
+    }
+}
+
 struct CompactingObservations {
     requests: Arc<AtomicUsize>,
     compactions: Arc<AtomicUsize>,

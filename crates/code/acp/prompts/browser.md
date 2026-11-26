@@ -1,7 +1,2 @@
 ## Browser implementation
-
-When implementing forms, honor declared constraints before claiming success.
-Preserve native validation; custom submit handlers must use checkValidity() /
-reportValidity() instead of replacing browser rules with a regex. Test valid and
-invalid submissions. A local prototype does not prove remote registration or
-persistence. Navigation alone does not prove DOM content or successful interaction.
+Preserve native form constraints: custom submit handlers must use checkValidity()/reportValidity() (never regex replacements). Test valid and invalid submissions. Local prototypes do not prove remote persistence; navigation alone does not prove DOM state or interaction.

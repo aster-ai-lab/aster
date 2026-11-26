@@ -160,11 +160,32 @@ impl crate::agent::TurnEngine {
         self.emit_context_resolved(&context_assembly, event_tx)
             .await;
 
+        let (memory_items, static_items): (Vec<_>, Vec<_>) = context_assembly
+            .items
+            .into_iter()
+            .partition(|item| item.context_type == ContextType::Memory);
+        let static_assembly = ContextAssembly {
+            items: static_items,
+            total_tokens: 0,
+            truncated: context_assembly.truncated,
+        };
+        let effective_prompt = if memory_items.is_empty() {
+            effective_prompt
+        } else {
+            // Attach query-dependent memory recall to the user message rather
+            // than `system` so cross-turn recall changes do not bust the KV cache.
+            let memory_xml = ContextAssembly {
+                items: memory_items,
+                total_tokens: 0,
+                truncated: false,
+            }
+            .to_xml();
+            format!("{memory_xml}\n\n{effective_prompt}")
+        };
+
         Ok(TurnContext {
-            augmented_system: self.build_augmented_system_prompt_with_base(
-                effective_system_prompt,
-                &context_assembly,
-            ),
+            augmented_system: self
+                .build_augmented_system_prompt_with_base(effective_system_prompt, &static_assembly),
             effective_prompt,
             recalled_memories,
             section_digests: crate::context::section_digests(&context_results),

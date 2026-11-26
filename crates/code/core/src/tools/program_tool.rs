@@ -23,7 +23,8 @@ const DELEGATION_SCRIPT_TIMEOUT_MS: u64 = 600_000;
 const DEFAULT_SCRIPT_MAX_TOOL_CALLS: usize = 20;
 const DEFAULT_SCRIPT_MAX_OUTPUT_BYTES: usize = 64 * 1024;
 const PROGRAM_CANCELLATION_SETTLE_GRACE: Duration = Duration::from_millis(500);
-const SCRIPT_DESCRIPTION: &str = "Run a sandboxed JavaScript PTC script. The script defines async function run(ctx, inputs) and may call only allowed ctx tools.";
+const SCRIPT_DESCRIPTION: &str =
+    "Run sandboxed JS (`async function run(ctx, inputs)`) over allowed ctx tools.";
 // Template data is passed as JSON inputs, never interpolated into source. The
 // same VM and nested gateway enforce script limits and session governance.
 const TEMPLATE_RUNNER: &str = r#"
@@ -96,13 +97,23 @@ impl ProgramTool {
     fn from_catalog(fallback_invoker: Arc<dyn ToolInvoker>, catalog: ProgramCatalog) -> Self {
         let mut description = SCRIPT_DESCRIPTION.to_string();
         if !catalog.list().is_empty() {
-            description.push_str(" Or run a registered template with type=\"template\", its exact name, and inputs. Available templates:");
+            description.push_str(" Or type=\"template\" with name+inputs:");
             for template in catalog.list() {
+                let params = template
+                    .parameters
+                    .iter()
+                    .map(|p| {
+                        if p.required {
+                            p.name.clone()
+                        } else {
+                            format!("{}?", p.name)
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join(",");
                 description.push_str(&format!(
-                    "\n- {}: {} Parameters: {}",
-                    template.name,
-                    template.description,
-                    serde_json::json!(template.parameters),
+                    "\n- {}: {} ({params})",
+                    template.name, template.description,
                 ));
             }
         }
@@ -163,6 +174,58 @@ impl ProgramTool {
         }
         Ok(program)
     }
+    fn base_parameters(&self) -> serde_json::Value {
+        let mut schema = serde_json::json!({
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "script only.",
+                    "enum": [ProgramKind::Script.as_str()]
+                },
+                "inputs": {
+                    "type": "object",
+                    "description": "Second arg to run() or template inputs."
+                },
+                "language": {
+                    "type": "string",
+                    "enum": ["javascript"]
+                },
+                "source": {
+                    "type": "string",
+                    "description": "Inline JS defining async function run(ctx, inputs)."
+                },
+                "path": {
+                    "type": "string",
+                    "description": "Workspace .js/.mjs path when source omitted."
+                },
+                "allowed_tools": {
+                    "type": "array",
+                    "description": "Callable ctx tools (default all except program/dynamic_workflow/parallel_task).",
+                    "items": { "type": "string" }
+                },
+                "limits": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "timeoutMs": { "type": "integer", "minimum": 1 },
+                        "maxToolCalls": { "type": "integer", "minimum": 1 },
+                        "maxOutputBytes": { "type": "integer", "minimum": 1 }
+                    }
+                }
+            },
+            "required": ["type"]
+        });
+        if !self.catalog.list().is_empty() {
+            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"script or template.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
+            schema["properties"]["name"] = serde_json::json!({
+                "type":"string", "description":"Template name (required for template).",
+                "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
+            });
+        }
+        schema
+    }
 }
 
 #[async_trait]
@@ -201,56 +264,8 @@ impl Tool for ProgramTool {
     }
 
     fn parameters(&self) -> serde_json::Value {
-        let mut schema = serde_json::json!({
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "description": "Program kind; script only.",
-                    "enum": [ProgramKind::Script.as_str()]
-                },
-                "inputs": {
-                    "type": "object",
-                    "description": "Script second argument, or declared template parameters."
-                },
-                "language": {
-                    "type": "string",
-                    "description": "JavaScript only.",
-                    "enum": ["javascript"]
-                },
-                "source": {
-                    "type": "string",
-                    "description": "Inline JavaScript defining async function run(ctx, inputs)."
-                },
-                "path": {
-                    "type": "string",
-                    "description": "Workspace-relative .js/.mjs defining async function run(ctx, inputs); used when source is omitted."
-                },
-                "allowed_tools": {
-                    "type": "array",
-                    "description": "Callable ctx tools; default all registered except program, dynamic_workflow and legacy parallel_task.",
-                    "items": { "type": "string" }
-                },
-                "limits": {
-                    "type": "object",
-                    "description": "timeoutMs, maxToolCalls, maxOutputBytes.",
-                    "additionalProperties": false,
-                    "properties": {
-                        "timeoutMs": { "type": "integer", "minimum": 1 },
-                        "maxToolCalls": { "type": "integer", "minimum": 1 },
-                        "maxOutputBytes": { "type": "integer", "minimum": 1 }
-                    }
-                }
-            },
-            "required": ["type"]
-        });
+        let mut schema = self.base_parameters();
         if !self.catalog.list().is_empty() {
-            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"script: JavaScript source/path; template: registered name.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
-            schema["properties"]["name"] = serde_json::json!({
-                "type":"string", "description":"Exact registered name; required for template.",
-                "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
-            });
             let mut variants = vec![
                 serde_json::json!({"properties":{"type":{"const":ProgramKind::Script.as_str()}},"required":["type"]}),
             ];
@@ -282,6 +297,14 @@ impl Tool for ProgramTool {
             schema["oneOf"] = serde_json::json!(variants);
         }
         schema
+    }
+
+    fn definition(&self) -> crate::llm::ToolDefinition {
+        crate::llm::ToolDefinition {
+            name: self.name().to_string(),
+            description: self.description().to_string(),
+            parameters: self.base_parameters(),
+        }
     }
 
     async fn execute(&self, args: &serde_json::Value, ctx: &ToolContext) -> Result<ToolOutput> {

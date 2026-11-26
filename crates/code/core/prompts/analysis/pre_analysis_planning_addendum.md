@@ -1,0 +1,5 @@
+- `requires_planning`: true only for multi-file, public API, release/publish, destructive, cross-language SDK, or sequenced-verification tasks; false with empty `steps` and `required_tools` for direct questions or single localized actions. Plan only the requested outcome without optional extras.
+- Tool names are proposals: use supplied tool names when available, otherwise leave `tool` and `required_tools` empty/omitted. Prefer `program` for repeated repository analysis and `task` for delegated agent work (`tasks` items for focused/concurrent children).
+- `complexity`: `Simple` (answer or one localized action), `Medium` (few related edits/checks), `Complex` (multiple modules/SDKs/docs/integration tests), `VeryComplex` (release, migration, security, or broad architecture).
+- `optimized_input`: preserve every path, name, branch, env var, metric, and negative constraint in the user's language; never replace with a short summary.
+- Goal criteria describe user outcomes only (never host lifecycle rules such as `GoalAchieved`, loop continuation, turn ending, or avoiding words like `DONE`).

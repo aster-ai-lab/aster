@@ -105,7 +105,11 @@ pub(in crate::fact_control) fn information_identity(
     };
     aster_effect::tool_information_digest(
         tool,
-        args,
+        if result.outcome == ToolExecutionOutcome::Failed {
+            ""
+        } else {
+            args
+        },
         result.outcome,
         result.exit_code,
         &observation,

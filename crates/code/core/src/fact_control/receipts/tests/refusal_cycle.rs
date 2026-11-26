@@ -3,15 +3,15 @@
 use super::*;
 
 fn refusal_cycle(facts: &[Fact], session: &str, run: &str, binding: &str) -> Option<String> {
-    match super::super::execution_cycle(facts, session, run, binding, 0)? {
-        super::super::ExecutionCycle::Refused(tool) => Some(tool),
+    match super::super::execution_control(facts, session, run, binding, 0)? {
+        super::super::ExecutionControl::Refused(tool) => Some(tool),
         _ => None,
     }
 }
 
 fn child_refusal_cycle(facts: &[Fact]) -> Option<String> {
-    match super::super::child_execution_cycle(facts, 0)? {
-        super::super::ExecutionCycle::Refused(tool) => Some(tool),
+    match super::super::child_execution_control(facts, 0)? {
+        super::super::ExecutionControl::Refused(tool) => Some(tool),
         _ => None,
     }
 }
@@ -344,8 +344,8 @@ fn state_facts() -> Vec<Fact> {
     facts
 }
 
-fn state_cycle(facts: &[Fact], threshold: u32) -> Option<super::super::ExecutionCycle> {
-    super::super::execution_cycle(facts, "session", "current", &binding(), threshold)
+fn state_cycle(facts: &[Fact], threshold: u32) -> Option<super::super::ExecutionControl> {
+    super::super::execution_control(facts, "session", "current", &binding(), threshold)
 }
 
 #[test]
@@ -353,12 +353,12 @@ fn repeated_original_workspace_states_consume_only_the_existing_allowance() {
     let facts = state_facts();
     assert!(state_cycle(&facts[..14], 3).is_none());
     assert!(
-        matches!(state_cycle(&facts, 3), Some(super::super::ExecutionCycle::ObservedState(tool)) if tool == "bash")
+        matches!(state_cycle(&facts, 3), Some(super::super::ExecutionControl::ObservedState(tool)) if tool == "bash")
     );
     assert!(state_cycle(&facts, 8).is_none());
     assert!(state_cycle(&facts, 0).is_none());
-    assert!(super::super::execution_cycle(&facts, "other", "current", &binding(), 3).is_none());
-    assert!(super::super::execution_cycle(&facts, "session", "other", &binding(), 3).is_none());
+    assert!(super::super::execution_control(&facts, "other", "current", &binding(), 3).is_none());
+    assert!(super::super::execution_control(&facts, "session", "other", &binding(), 3).is_none());
 }
 
 #[test]
@@ -405,7 +405,7 @@ fn harness_files_do_not_reset_a_detected_workspace_cycle() {
     receipt["effects"]["changes"][0]["path"] = json!(".aster/internal-journal");
     assert!(matches!(
         state_cycle(&facts, 3),
-        Some(super::super::ExecutionCycle::ObservedState(_))
+        Some(super::super::ExecutionControl::ObservedState(_))
     ));
 }
 
@@ -439,8 +439,8 @@ fn private_child_state_cycles_preserve_their_own_log_authority() {
         pair[1].payload["receipt"] = json!(receipt);
     }
     assert!(matches!(
-        super::super::child_execution_cycle(&facts, 3),
-        Some(super::super::ExecutionCycle::ObservedState(_))
+        super::super::child_execution_control(&facts, 3),
+        Some(super::super::ExecutionControl::ObservedState(_))
     ));
     assert!(state_cycle(&facts, 3).is_none());
 }
@@ -466,7 +466,7 @@ fn state_cycle_detection_resumes_after_original_continuity_recovers() {
     push_state(&mut facts, "B", "A", "B");
     assert!(matches!(
         state_cycle(&facts, 3),
-        Some(super::super::ExecutionCycle::ObservedState(_))
+        Some(super::super::ExecutionControl::ObservedState(_))
     ));
 }
 

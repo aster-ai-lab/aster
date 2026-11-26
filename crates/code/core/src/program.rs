@@ -765,20 +765,20 @@ pub fn builtin_program_templates() -> Vec<ProgramTemplate> {
 pub fn program_code_search() -> ProgramTemplate {
     ProgramTemplate::new(
         "program_code_search",
-        "Search code with a bounded grep pass and return file/line matches.",
+        "Bounded grep returning file/line matches.",
     )
     .with_parameter(ProgramParameter::required(
         "query",
-        "Regex or literal pattern to search for.",
+        "Regex or literal pattern.",
     ))
     .with_parameter(ProgramParameter::optional(
         "path",
-        "Workspace-relative path to search.",
+        "Workspace path.",
         serde_json::json!("."),
     ))
     .with_parameter(ProgramParameter::optional(
         "glob",
-        "Optional file glob filter.",
+        "File glob filter.",
         serde_json::json!("*"),
     ))
     .with_step(
@@ -799,11 +799,11 @@ pub fn program_code_search() -> ProgramTemplate {
 pub fn program_repo_map() -> ProgramTemplate {
     let mut template = ProgramTemplate::new(
         "program_repo_map",
-        "Map the repository shape with root listing and key project files.",
+        "Map repo root and key config/doc files.",
     )
     .with_parameter(ProgramParameter::optional(
         "path",
-        "Workspace-relative path to map.",
+        "Workspace path.",
         serde_json::json!("."),
     ))
     .with_step(

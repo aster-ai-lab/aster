@@ -155,7 +155,7 @@ async fn empty_hooks_do_not_create_refusal_debt() {
         ));
         let tools = Arc::new(tools);
         let ledger = tools.ledger.as_ref().unwrap();
-        ledger.lock().unwrap().settle_prior_turns(1);
+        ledger.lock().unwrap().advance_tool_turn(1);
         ledger
             .lock()
             .unwrap()
@@ -186,11 +186,10 @@ async fn empty_hooks_do_not_create_refusal_debt() {
 }
 
 #[tokio::test]
-async fn actual_hook_effects_remain_uncertain_after_refusal() {
+async fn unresolved_tool_effect_blocks_mutation_before_its_input_hook() {
     let root = tempfile::tempdir().unwrap();
     let (tools, calls, hooks) = super::argument_validation::schema_tools(root.path(), None);
     let ledger = tools.ledger.as_ref().unwrap();
-    ledger.lock().unwrap().settle_prior_turns(1);
     ledger
         .lock()
         .unwrap()
@@ -199,7 +198,7 @@ async fn actual_hook_effects_remain_uncertain_after_refusal() {
         ]));
     let prepared = prepare_tools(
         Arc::clone(&tools),
-        request("refused-after-hook", json!({"write":true})),
+        request("refused-before-hook", json!({"write":true})),
         Default::default(),
     )
     .await
@@ -208,18 +207,12 @@ async fn actual_hook_effects_remain_uncertain_after_refusal() {
     assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
     assert_eq!(
         result.effects.completeness,
-        ToolObservationCompleteness::Incomplete
+        ToolObservationCompleteness::Complete
     );
-    assert_eq!(
-        result.effects.unresolved_external_operations,
-        vec![result.identity.key().unwrap()]
-    );
-    assert_eq!(
-        std::fs::read(root.path().join("hook-effect.txt")).unwrap(),
-        b"actual input-hook effect"
-    );
+    assert!(result.effects.unresolved_external_operations.is_empty());
+    assert!(!root.path().join("hook-effect.txt").exists());
     assert_eq!(calls.load(Ordering::SeqCst), 0);
-    assert_eq!(hooks.load(Ordering::SeqCst), 1);
+    assert_eq!(hooks.load(Ordering::SeqCst), 0);
 }
 
 #[tokio::test]

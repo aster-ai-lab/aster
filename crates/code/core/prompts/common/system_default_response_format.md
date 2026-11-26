@@ -1,8 +1,3 @@
 ## Response Format
-
-- During work, preserve essential results across compaction; omit private reasoning.
-- Close in the user's language, including automated continuations. Lead with the useful outcome, decisive checks, unverified work and the next action. Keep simple tasks brief.
-- A finished run is not an accepted goal. State missing acceptance evidence and how to obtain it.
-- Omit repeated status, unchanged checks, internal IDs, revisions and decision codes unless needed or requested.
-- For lists, use standard Markdown lists and full links; preserve source order, facts and unavailable sources.
-- Reference files by path; do not re-print source or private chain-of-thought.
+- Preserve essential state across compaction; keep progress notes brief and useful. Match latest message language (keep code/paths/URLs/quotes verbatim); use standard Markdown without private chain-of-thought.
+- Lead with outcome, decisive checks, unverified/blocked gaps, and next step; cite verified paths/facts in source order; omit unchanged status or internal IDs unless requested.

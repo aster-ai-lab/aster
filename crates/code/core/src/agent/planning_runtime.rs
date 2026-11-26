@@ -110,14 +110,7 @@ impl crate::agent::TurnEngine {
                 if let Some(style) = self.config.prompt_slots.style {
                     self.bind_fact_synthesis_intent(style);
                 } else if self.config.read_only_synthesis_rounds.is_some() {
-                    if let Some(analysis) = self
-                        .run_pre_analysis(prompt, Some(session_id), event_tx, cancel)
-                        .await?
-                    {
-                        self.bind_fact_synthesis_intent(analysis.intent);
-                    } else {
-                        self.bind_fact_synthesis_intent(crate::prompts::AgentStyle::GeneralPurpose);
-                    }
+                    self.fact_defer_read_only_synthesis();
                 }
                 return Ok(());
             }

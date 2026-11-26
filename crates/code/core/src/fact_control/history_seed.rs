@@ -890,9 +890,199 @@ pub(super) fn repeat_note_prefix(name: &str) -> String {
     format!("\n\n[aster host: `{name}` returned byte-identical output for identical arguments")
 }
 
+pub(super) const REPEAT_COMPACTION_MIN_BYTES: usize = 512;
+
+#[derive(Debug, Clone, Default)]
+pub(super) struct RepeatObservation {
+    pub(super) result_digest: String,
+    pub(super) count: u32,
+    pub(super) first_call_id: String,
+}
+
+pub(super) enum RepeatedResultProjection {
+    AppendNote(String),
+    CompactModelOutput {
+        model_output: String,
+        ui_note: String,
+    },
+}
+
+pub(super) fn repeat_call_digest(name: &str, args: &serde_json::Value) -> String {
+    crate::content_digest::digest_bytes(
+        "aster.code.tool-repeat.call.v1",
+        format!("{name}\n{args}").as_bytes(),
+    )
+}
+
+pub(super) fn repeat_result_digest(output: &str) -> String {
+    crate::content_digest::digest_bytes("aster.code.tool-repeat.result.v1", output.as_bytes())
+}
+
+pub(super) fn is_compacted_repeat_stub(name: &str, output: &str) -> bool {
+    output.starts_with(&format!(
+        "[aster host: `{name}` returned byte-identical output ("
+    ))
+}
+
+/// Seed repeat tracking from uncompacted prior-turn `tool.result` facts after the
+/// latest `compaction.done` so Turn 2+ re-reads of unchanged large (>512 B) results
+/// collapse into back-references without mutating earlier KV-cached prefixes.
+pub(super) fn seed_repeats_from_facts(
+    facts: &[aster_effect::Fact],
+) -> std::collections::HashMap<String, RepeatObservation> {
+    struct CompletedEntry {
+        id: String,
+        name: String,
+        args: serde_json::Value,
+        role_line: String,
+        output: String,
+    }
+
+    let mut pending: std::collections::VecDeque<(String, String, serde_json::Value)> =
+        std::collections::VecDeque::new();
+    let mut completed: Vec<CompletedEntry> = Vec::new();
+
+    for fact in facts {
+        if fact.kind == "model.turn"
+            && fact.payload.get("kind").and_then(|kind| kind.as_str()) == Some("tool")
+        {
+            pending.clear();
+            let Ok(ModelDecision::Tool { call, also }) = ModelDecision::deserialize(&fact.payload)
+            else {
+                continue;
+            };
+            for call in std::iter::once(call).chain(also) {
+                pending.push_back((call.id, call.name, call.args));
+            }
+        } else if fact.kind == "tool.result" {
+            let Some((id, name, args)) = pending.pop_front() else {
+                continue;
+            };
+            let output = super::fact_reads::tool_result_fact_output(&fact.payload).to_owned();
+            let ok = fact
+                .payload
+                .get("ok")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(true);
+            let role = if ok { "tool" } else { "tool-error" };
+            completed.push(CompletedEntry {
+                id,
+                name,
+                args,
+                role_line: format!("{role}\n{output}"),
+                output,
+            });
+        } else if fact.kind == "compaction.done" {
+            #[derive(Deserialize)]
+            struct CompactionPayload {
+                #[serde(default)]
+                kept: Vec<String>,
+            }
+            if let Ok(payload) = CompactionPayload::deserialize(&fact.payload) {
+                let retained: Vec<_> = payload
+                    .kept
+                    .iter()
+                    .filter(|line| line.starts_with("tool\n") || line.starts_with("tool-error\n"))
+                    .collect();
+                if let Some(start) = completed.len().checked_sub(retained.len()) {
+                    if completed[start..]
+                        .iter()
+                        .zip(&retained)
+                        .all(|(entry, kept)| entry.role_line == **kept)
+                    {
+                        completed.drain(..start);
+                    } else {
+                        completed.clear();
+                    }
+                } else {
+                    completed.clear();
+                }
+            } else {
+                completed.clear();
+            }
+            pending.clear();
+        }
+    }
+
+    let mut repeats: std::collections::HashMap<String, RepeatObservation> =
+        std::collections::HashMap::new();
+    for entry in completed {
+        if serde_json::from_str::<serde_json::Value>(&entry.output).is_ok() {
+            continue;
+        }
+        let call = repeat_call_digest(&entry.name, &entry.args);
+        if is_compacted_repeat_stub(&entry.name, &entry.output) {
+            if let Some(existing) = repeats.get_mut(&call) {
+                existing.count += 1;
+            }
+            continue;
+        }
+        let result = repeat_result_digest(&entry.output);
+        let obs = repeats.entry(call).or_default();
+        if obs.result_digest == result {
+            obs.count += 1;
+        } else {
+            *obs = RepeatObservation {
+                result_digest: result,
+                count: 1,
+                first_call_id: entry.id,
+            };
+        }
+    }
+    repeats
+}
+
+pub(super) fn observe_repeated_result(
+    repeats: &Mutex<std::collections::HashMap<String, RepeatObservation>>,
+    call_id: &str,
+    name: &str,
+    args: &serde_json::Value,
+    output: &str,
+) -> Option<RepeatedResultProjection> {
+    let call = repeat_call_digest(name, args);
+    let result = repeat_result_digest(output);
+    let mut repeats = repeats
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let entry = repeats.entry(call).or_default();
+    if entry.result_digest == result {
+        entry.count += 1;
+    } else {
+        *entry = RepeatObservation {
+            result_digest: result,
+            count: 1,
+            first_call_id: call_id.to_string(),
+        };
+    }
+    if entry.count <= 1 || serde_json::from_str::<serde_json::Value>(output).is_ok() {
+        return None;
+    }
+    let ui_note = format!(
+        "{} {} times in a row this run; it observed nothing new.]",
+        repeat_note_prefix(name),
+        entry.count
+    );
+    if output.len() > REPEAT_COMPACTION_MIN_BYTES {
+        let model_output = format!(
+            "[aster host: `{name}` returned byte-identical output ({} bytes) to earlier call `{}` for identical arguments {} times in a row this run; it observed nothing new. Refer to `{}` above.]",
+            output.len(),
+            entry.first_call_id,
+            entry.count,
+            entry.first_call_id,
+        );
+        Some(RepeatedResultProjection::CompactModelOutput {
+            model_output,
+            ui_note,
+        })
+    } else {
+        Some(RepeatedResultProjection::AppendNote(ui_note))
+    }
+}
+
 /// Mechanical feedback when a call repeats the name, arguments and output of the
 /// previous call with the same name and arguments in this run. It never blocks.
 /// A JSON result stays parseable for its consumer, so it carries no note.
+#[cfg_attr(not(test), allow(dead_code))]
 pub(super) fn repeated_result_note(
     repeats: &Mutex<std::collections::HashMap<String, (String, u32)>>,
     name: &str,

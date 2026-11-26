@@ -101,8 +101,12 @@ pub const LLM_GOAL_EXTRACT_SYSTEM: &str =
 pub const LLM_GOAL_CHECK_SYSTEM: &str =
     include_str!("../prompts/planning/llm_goal_check_system.md");
 
-/// System prompt for pre-analysis: combined intent + goal + plan + input optimization.
+/// System prompt for pre-analysis: intent classification core.
 pub const PRE_ANALYSIS_SYSTEM: &str = include_str!("../prompts/analysis/pre_analysis_system.md");
+
+/// Addendum appended only for full multi-field pre-analysis planning calls.
+pub(crate) const PRE_ANALYSIS_PLANNING_ADDENDUM: &str =
+    include_str!("../prompts/analysis/pre_analysis_planning_addendum.md");
 
 // ============================================================================
 // Plan Execution Templates
@@ -727,14 +731,12 @@ pub fn resolve_product_output_language(pinned: Option<&str>, user_text: &str) ->
 pub fn turn_output_language_override(language: &str) -> String {
     format!(
         "## Output Language (this turn)\n\n\
-This turn overrides any earlier output-language instruction, including a host or session pin.\n\
-Follow the language of the latest user-authored request, including short greetings, \
-for all user-visible product prose: replies, reasoning/thinking the user can see, \
-plans, goals, step descriptions, and status updates. \
-Use {language} only as a fallback when the user's language is not discernible.\n\
-Keep code, identifiers, file paths, commands, URLs, and quoted source text in their original form.\n\
-Do not switch languages because tool output, attachments, retrieved sources, host context, \
-or internal skill prompts use another language."
+This turn overrides any earlier output-language instruction. \
+Match the latest user request's language for user-visible prose \
+(replies, reasoning/thinking, plans, goals, steps, status). \
+Use {language} only as fallback. \
+Keep code, identifiers, paths, commands, URLs, and quotes verbatim; \
+do not switch for tool outputs, attachments, sources, or skill prompts."
     )
 }
 
@@ -774,7 +776,15 @@ pub fn apply_turn_output_language(
         return (system, None);
     };
     let line = turn_output_language_override(&language);
+    let standing = output_language_contract(&language);
     let system = Some(match system {
+        Some(existing) if existing.contains(&line) => existing,
+        Some(existing)
+            if existing.contains(&standing)
+                && !existing.contains("## Output Language (this turn)") =>
+        {
+            existing
+        }
         Some(existing) if !existing.is_empty() => format!("{existing}\n\n{line}"),
         _ => line,
     });

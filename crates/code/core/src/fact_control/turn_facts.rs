@@ -256,6 +256,7 @@ pub(super) fn checkpoint_mutation_cache_covered(
         }
     }
     let mut mutations = checkpoint.convergence.mutations.clone();
+    mutations.restore_unresolved_tool_effects(Default::default(), &Default::default());
     let (tool_keys, background_keys) = mutations.checkpoint_receipt_keys();
     let tool_keys = tool_keys.clone();
     let mut background_keys = background_keys.clone();

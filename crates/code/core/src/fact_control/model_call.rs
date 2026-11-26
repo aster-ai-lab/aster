@@ -2,13 +2,13 @@
 
 use super::*;
 
-pub(super) fn run_execution_cycle(
+pub(super) fn run_execution_control(
     surface: &SessionSurface,
     facts: &[aster_effect::Fact],
-) -> Result<Option<receipts::ExecutionCycle>, ActorError> {
+) -> Result<Option<receipts::ExecutionControl>, ActorError> {
     let threshold = surface.agent.duplicate_tool_threshold();
     if surface.agent.is_child_run() {
-        return Ok(receipts::child_execution_cycle(facts, threshold));
+        return Ok(receipts::child_execution_control(facts, threshold));
     }
     let Some(run_id) = surface.run_id.as_deref() else {
         return Ok(None);
@@ -24,7 +24,7 @@ pub(super) fn run_execution_cycle(
     let digest =
         crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
             .map_err(|error| ActorError::Schema(error.to_string()))?;
-    Ok(receipts::execution_cycle(
+    Ok(receipts::execution_control(
         facts,
         &thread_for_session(&surface.session_id),
         run_id,

@@ -8,6 +8,45 @@ use aster_core::permissions::{
 };
 use std::path::Path;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum ToolPermissionAnswer {
+    Approved,
+    Declined,
+    Cancelled,
+    TimedOut,
+    ClientUnavailable,
+    Pending,
+    InvalidResponse,
+}
+
+impl ToolPermissionAnswer {
+    pub(super) fn as_str(self) -> &'static str {
+        match self {
+            Self::Approved => "approved via ACP request_permission",
+            Self::Declined => "rejected via ACP request_permission",
+            Self::Cancelled => "permission request was cancelled",
+            Self::TimedOut => "permission request timed out without an answer",
+            Self::ClientUnavailable => "permission request could not reach the interactive client",
+            Self::Pending => "permission request is already pending",
+            Self::InvalidResponse => "permission request returned an unrecognized option",
+        }
+    }
+
+    fn parse(response: &acp::RequestPermissionResponse) -> Self {
+        match &response.outcome {
+            acp::RequestPermissionOutcome::Selected(selected) => {
+                match selected.option_id.0.as_ref() {
+                    "allow-once" | "allow-always" => Self::Approved,
+                    "reject-once" => Self::Declined,
+                    _ => Self::InvalidResponse,
+                }
+            }
+            acp::RequestPermissionOutcome::Cancelled => Self::Cancelled,
+            _ => Self::InvalidResponse,
+        }
+    }
+}
+
 /// Where a bash call would run after this approval. Industry practice (Codex /
 /// Claude Code) requires the first HITL prompt to name the boundary: sandboxed
 /// default, host escalation, or a single mediated network origin.
@@ -263,17 +302,17 @@ impl AsterCodeAgent {
         tool_name: &str,
         args: &serde_json::Value,
         workspace: &std::path::Path,
-    ) -> bool {
+    ) -> ToolPermissionAnswer {
         // The unattended launch is the operator's standing approval. It must
         // not learn a prefix into the graded workspace either.
         if self.unattended.is_some() {
-            return true;
+            return ToolPermissionAnswer::Approved;
         }
         // A rule the user chose "don't ask again" for in this workspace
         // skips the round-trip; see approval_learning for what can match.
         if crate::approval_learning::is_previously_approved(workspace, tool_name, args) {
             tracing::debug!(tool = tool_name, "tool call approved by a learned rule");
-            return true;
+            return ToolPermissionAnswer::Approved;
         }
         let posture = self.session_permission_posture(session_id).await;
         let request = permission_ask::tool_permission_ask(
@@ -286,7 +325,7 @@ impl AsterCodeAgent {
         );
         let client = self.client.borrow().clone();
         let Some(client) = client else {
-            return false;
+            return ToolPermissionAnswer::ClientUnavailable;
         };
         // P2-10 Permission channel: ledger spans the host HITL, not the hook gate.
         // Duplicate pending ids fail closed here — never open a second host ask
@@ -303,7 +342,7 @@ impl AsterCodeAgent {
                 ?error,
                 "permission elicitation begin refused; denying without a second host ask"
             );
-            return false;
+            return ToolPermissionAnswer::Pending;
         }
         let mut elicitation_guard = ElicitationCancelGuard::new(elicitation_id.clone());
         let ask = client.request_permission(request);
@@ -319,12 +358,13 @@ impl AsterCodeAgent {
                 );
                 let _ = aster_core::elicitation::cancel(&elicitation_id);
                 elicitation_guard.disarm();
-                return false;
+                return ToolPermissionAnswer::TimedOut;
             }
         };
         match response {
             Ok(response) => {
-                let approved = permission_response_approved(&response);
+                let answer = ToolPermissionAnswer::parse(&response);
+                let approved = answer == ToolPermissionAnswer::Approved;
                 if approved {
                     let answer = match &response.outcome {
                         acp::RequestPermissionOutcome::Selected(selected) => {
@@ -361,12 +401,12 @@ impl AsterCodeAgent {
                         ),
                     }
                 }
-                approved
+                answer
             }
             Err(_) => {
                 let _ = aster_core::elicitation::cancel(&elicitation_id);
                 elicitation_guard.disarm();
-                false
+                ToolPermissionAnswer::ClientUnavailable
             }
         }
     }
@@ -442,15 +482,9 @@ impl Drop for ElicitationCancelGuard {
 }
 
 /// Whether a `request_permission` response grants the tool.
+#[cfg(test)]
 pub(super) fn permission_response_approved(response: &acp::RequestPermissionResponse) -> bool {
-    match &response.outcome {
-        acp::RequestPermissionOutcome::Selected(selected) => {
-            // YOLO picks the first AllowOnce (`allow-once`). RejectOnce / cancel stay false.
-            matches!(selected.option_id.0.as_ref(), "allow-once" | "allow-always")
-        }
-        acp::RequestPermissionOutcome::Cancelled => false,
-        _ => false,
-    }
+    ToolPermissionAnswer::parse(response) == ToolPermissionAnswer::Approved
 }
 
 /// Whether the user answered "don't ask again". Only this answer learns.

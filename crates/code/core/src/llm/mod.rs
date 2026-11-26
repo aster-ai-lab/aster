@@ -175,6 +175,13 @@ pub trait LlmClient: Send + Sync {
         None
     }
 
+    /// Return a view configured with minimal reasoning effort (or thinking
+    /// disabled where supported) for lightweight internal calls such as intent
+    /// classification, title generation, and post-turn memory extraction.
+    fn with_minimal_reasoning(&self) -> Option<std::sync::Arc<dyn LlmClient>> {
+        None
+    }
+
     /// Requested output tokens that share this client's input context window.
     /// Clients with separate limits or without a known reservation return zero.
     fn context_output_reserve(&self) -> usize {

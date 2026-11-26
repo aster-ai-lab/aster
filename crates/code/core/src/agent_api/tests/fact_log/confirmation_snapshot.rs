@@ -7,6 +7,88 @@ use std::sync::atomic::AtomicBool;
 use tokio::sync::oneshot;
 
 #[tokio::test]
+async fn the_same_run_can_wait_for_a_question_then_tool_confirmation() {
+    let workspace = tempfile::tempdir().unwrap();
+    let mut config = test_config();
+    config.memory = None;
+    let agent = crate::Agent::from_config(config).await.unwrap();
+    let (confirmation_events, _) = tokio::sync::broadcast::channel(8);
+    let client = Arc::new(ScriptedClient {
+        seen: Default::default(),
+        responses: std::sync::Mutex::new(vec![
+            tool_response(
+                "question",
+                "ask_user",
+                json!({"question":"Continue?","allow_free_text":true}),
+            ),
+            tool_response(
+                "write",
+                "write",
+                json!({"file_path":"confirmed.txt","content":"confirmed"}),
+            ),
+            text_response("The host confirmed the operation."),
+        ]),
+    });
+    let session = session_for(
+        &agent,
+        workspace.path(),
+        "question-then-confirmation",
+        client,
+        &crate::SessionOptions::new()
+            .with_confirmation_manager(Arc::new(crate::hitl::ConfirmationManager::new(
+                ConfirmationPolicy::enabled(),
+                confirmation_events,
+            )))
+            .with_permission_policy(crate::permissions::PermissionPolicy::new())
+            .with_auto_delegation_enabled(false)
+            .with_continuation(false),
+    );
+    let (mut events, worker) = session
+        .stream("Ask me before creating the file.", None)
+        .await
+        .unwrap();
+    let path = workspace.path().join("confirmed.txt");
+    let (asked, confirmed) = tokio::time::timeout(std::time::Duration::from_secs(10), async {
+        let mut asked = false;
+        let mut confirmed = false;
+        while let Some(event) = events.recv().await {
+            match event {
+                crate::AgentEvent::UserQuestion { question_id, .. } => {
+                    assert!(!asked && !path.exists());
+                    crate::ask_user::answer(&question_id, "Continue");
+                    asked = true;
+                }
+                crate::AgentEvent::ConfirmationRequired { tool_id, .. } => {
+                    assert!(asked && !confirmed && !path.exists());
+                    assert!(session
+                        .confirm_tool_use(&tool_id, true, None)
+                        .await
+                        .unwrap());
+                    confirmed = true;
+                }
+                _ => {}
+            }
+        }
+        worker.await.unwrap();
+        (asked, confirmed)
+    })
+    .await
+    .unwrap();
+    let facts = read_workspace_facts(workspace.path(), session.session_id()).unwrap();
+    session.close().await;
+    agent.close().await;
+    assert!(asked && confirmed);
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "confirmed");
+    assert_eq!(
+        facts
+            .iter()
+            .filter(|fact| fact.kind == "tool.result")
+            .count(),
+        1
+    );
+}
+
+#[tokio::test]
 async fn confirmed_usage_is_saved_before_waiting_for_host_input() {
     use crate::store::{FileSessionStore, SessionStore};
 

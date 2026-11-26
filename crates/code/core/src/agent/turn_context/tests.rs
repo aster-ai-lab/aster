@@ -304,3 +304,88 @@ fn semantic_usage_threshold_validates_fail_closed() {
         );
     }
 }
+
+#[tokio::test]
+async fn prepare_turn_context_keeps_recalled_memories_out_of_system_for_kv_cache_stability() {
+    struct StaticMemoryProvider;
+    #[async_trait::async_trait]
+    impl crate::context::ContextProvider for StaticMemoryProvider {
+        fn name(&self) -> &str {
+            "test-memory"
+        }
+        async fn query(
+            &self,
+            query: &crate::context::ContextQuery,
+        ) -> anyhow::Result<crate::context::ContextResult> {
+            let mut res = crate::context::ContextResult::new("test-memory");
+            res.add_item(crate::context::ContextItem::new(
+                format!("mem-{}", query.query),
+                crate::context::ContextType::Memory,
+                format!("Remembered fact for: {}", query.query),
+            ));
+            res.add_item(crate::context::ContextItem::new(
+                "static-doc",
+                crate::context::ContextType::Resource,
+                "Static workspace guidance",
+            ));
+            Ok(res)
+        }
+    }
+
+    struct DummyClient;
+    #[async_trait::async_trait]
+    impl crate::llm::LlmClient for DummyClient {
+        async fn complete(
+            &self,
+            _messages: &[crate::llm::Message],
+            _system: Option<&str>,
+            _tools: &[crate::llm::ToolDefinition],
+        ) -> anyhow::Result<crate::llm::LlmResponse> {
+            anyhow::bail!("unused")
+        }
+        async fn complete_streaming(
+            &self,
+            _messages: &[crate::llm::Message],
+            _system: Option<&str>,
+            _tools: &[crate::llm::ToolDefinition],
+            _cancel_token: tokio_util::sync::CancellationToken,
+        ) -> anyhow::Result<tokio::sync::mpsc::Receiver<crate::llm::StreamEvent>> {
+            anyhow::bail!("unused")
+        }
+    }
+
+    let tmp = tempfile::tempdir().unwrap();
+    let engine = crate::agent::AgentLoop::new(
+        std::sync::Arc::new(DummyClient),
+        std::sync::Arc::new(crate::tools::ToolExecutor::new(
+            tmp.path().display().to_string(),
+        )),
+        crate::tools::ToolContext::new(tmp.path().to_path_buf()),
+        crate::agent::AgentConfig {
+            context_providers: vec![std::sync::Arc::new(StaticMemoryProvider)],
+            ..Default::default()
+        },
+    );
+
+    let t1 = engine
+        .prepare_turn_context("base system", "first question", 1, Some("s1"), &None)
+        .await
+        .unwrap();
+    let t2 = engine
+        .prepare_turn_context("base system", "second question", 3, Some("s1"), &None)
+        .await
+        .unwrap();
+
+    assert_eq!(t1.augmented_system, t2.augmented_system);
+    let sys = t1.augmented_system.unwrap();
+    assert!(sys.contains("Static workspace guidance"));
+    assert!(!sys.contains("type=\"Memory\""));
+    assert!(t1
+        .effective_prompt
+        .contains("Remembered fact for: first question"));
+    assert!(t1.effective_prompt.contains("first question"));
+    assert!(t2
+        .effective_prompt
+        .contains("Remembered fact for: second question"));
+    assert!(t2.effective_prompt.contains("second question"));
+}

@@ -321,12 +321,12 @@ fn session_capability_note(
         "search modes: grep, glob, bm25, semantic, hybrid.\n\
          If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."
     } else {
-        "search modes: grep, glob, bm25, hybrid.\nSemantic retrieval is disabled; hybrid uses available exact, lexical and symbol channels."
+        "search modes: grep, glob, bm25, hybrid.\nSemantic retrieval is disabled."
     };
     format!(
         "Session capabilities:\n\
          {retrieval}\n\
-         code_symbols and code_navigation are available. The language server starts on the first code_symbols or code_navigation call.\n\
+         code_symbols and code_navigation start LSP on first call.\n\
          memory: {memory}.\n\
          hooks: {hooks}. pending hooks: {pending_hooks}. mcp: {mcp_servers}."
     )
@@ -1109,33 +1109,23 @@ struct ChildProgress {
 /// Always-on turn boundary. The skill command is an example, not a matcher.
 const SESSION_OUTCOME_BOUNDARY: &str = "\
 Finish the user's outcome in this turn. Do not read or explain the product \
-implementation merely to perform a product operation. Read and explain it when \
-the user requests explanation, diagnosis, review or modification. For usage \
-questions, give the known host command directly. For execution requests, perform \
-the authorized operation with exposed tools and report its actual result; naming \
-a command alone does not execute it. Preserve the requested deliverables and \
-verify their content against authoritative sources and the user's criteria. \
-Stop once the outcome and required checks are complete. \
-If the user's content, format and length requirements cannot all be satisfied, \
-explain the conflict and ask which takes priority instead of silently dropping \
-a requirement or inventing missing facts.";
+implementation merely to run an operation; inspect/explain it only when the user \
+asks for explanation, diagnosis, review or modification. Give known host commands \
+for usage asks. For execution requests, perform authorized actions with exposed \
+tools and report actual results (naming a command alone does not execute it). \
+Verify deliverables against authoritative sources/criteria and stop once checks \
+pass. If requirements conflict, explain the conflict and ask which takes priority \
+instead of dropping constraints or inventing facts.";
 
 const HOST_PARALLEL_TASKS: usize = 8;
 const HOST_CONTINUATION_TURNS: u32 = 8;
 
 const TERMINAL_MARKDOWN_PRESENTATION: &str = "\
-The client displays terminal Markdown, not browser HTML. Use Markdown for the \
-readable answer, including a text explanation of diagrams. When an HTML visual \
-is requested, create a standalone UTF-8 .html artifact with the available file \
-tools at the user's requested path (otherwise choose a workspace path), read it \
-back, and link it with a relative Markdown file link labelled Open HTML preview. \
-Keep the title and a concise summary in the message so SSH, tmux and ordinary \
-terminals remain usable. The link opens in the OS default application, usually a browser; do not claim an \
-inline browser preview. Prefer self-contained static HTML/CSS/SVG without scripts \
-or remote resources unless the requested artifact needs them. Do not dump raw \
-HTML/CSS/SVG into prose unless the user explicitly requests source code. Preserve \
-the user's source, required content and output path; never replace a requested \
-HTML artifact with only a summary or an image.";
+Client renders terminal Markdown, not browser HTML. For HTML visuals, write a \
+standalone UTF-8 .html artifact at the requested path (or workspace path), \
+read it back, link `[Open HTML preview](rel.html)` (opens in OS app, not inline), \
+and include title + short Markdown summary. Avoid scripts/remote assets unless needed, \
+don't dump raw HTML/CSS/SVG in prose unless asked, and preserve exact source/content/path.";
 
 /// Meta key marking a `request_permission` as an agent question riding the
 /// permission channel, not a permission ask; the payload carries

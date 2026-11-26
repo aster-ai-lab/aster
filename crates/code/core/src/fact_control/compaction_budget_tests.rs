@@ -33,6 +33,7 @@ async fn fixed_context_does_not_force_a_fitting_public_handoff_into_the_minimum_
         budget: CompactionBudget::for_auto_compaction(24_576, 0.85, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(14_000)),
         prompt_tokens: Arc::new(AtomicU64::new(23_000)),
+        repeats: Arc::default(),
     };
     let prefix = vec![format!(
         "assistant\n{state}\n{}",
@@ -117,6 +118,7 @@ async fn retained_receipt_metadata_does_not_displace_public_summary_context() {
                 budget: CompactionBudget::for_auto_compaction(32_768, 0.8, 0),
                 fixed_prompt_tokens: Arc::new(AtomicU64::new(1_000)),
                 prompt_tokens: Arc::new(AtomicU64::new(32_000)),
+                repeats: Arc::default(),
             };
             let kept = vec![
                 format!("assistant\ntool read\n{}", decision["call"]["args"]),
@@ -204,6 +206,7 @@ async fn archived_fallback_keeps_observations_instead_of_receipt_metadata() {
         budget: CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(4_000)),
         prompt_tokens: Arc::new(AtomicU64::new(6_000)),
+        repeats: Arc::default(),
     };
     let kept = vec!["user\nContinue the original task.".into()];
     let original_kept = kept.clone();
@@ -264,6 +267,7 @@ async fn archived_handoff_attempts_summary_before_falling_back_with_public_check
         budget: CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(4_000)),
         prompt_tokens: Arc::new(AtomicU64::new(6_000)),
+        repeats: Arc::default(),
     };
     let kept = vec![
         format!("assistant\ntool read\n{}", next["call"]["args"]),
@@ -324,6 +328,7 @@ async fn latest_compaction_source_directly_recovers_older_original_observations(
         budget: CompactionBudget::for_auto_compaction(2048, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
         prompt_tokens: Arc::new(AtomicU64::new(4000)),
+        repeats: Arc::default(),
     };
     let mut summary = String::new();
     let mut first_uri = String::new();
@@ -420,6 +425,7 @@ async fn fact_compaction_archives_public_results_without_private_call_metadata()
         budget: CompactionBudget::for_auto_compaction(2048, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
         prompt_tokens: Arc::new(AtomicU64::new(4000)),
+        repeats: Arc::default(),
     };
     let lines = vec![
         "user\nRetain original observations.".into(),
@@ -648,6 +654,7 @@ async fn automatic_budget_reserves_fixed_prompt_and_retained_tail_and_reports_to
         budget: CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(1_000)),
         prompt_tokens: Arc::new(AtomicU64::new(4_000)),
+        repeats: Arc::default(),
     };
     let kept = vec![format!("tool\n{}", "retained🙂".repeat(200))];
     let original_kept = kept.clone();
@@ -809,6 +816,7 @@ async fn automatic_budget_reserves_original_kept_reasoning_without_exposing_it()
         budget: CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(1_000)),
         prompt_tokens: Arc::new(AtomicU64::new(4_000)),
+        repeats: Arc::default(),
     };
     let summary = compactor
         .compact_with_tail(

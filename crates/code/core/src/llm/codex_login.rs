@@ -766,7 +766,7 @@ fn convert_tools(tools: &[ToolDefinition]) -> Vec<Value> {
                 "type": "function",
                 "name": tool.name,
                 "description": tool.description,
-                "parameters": tool.parameters,
+                "parameters": super::wire_tool_parameters(&tool.parameters),
                 // Responses otherwise promotes optional fields to required ones.
                 "strict": false,
             })
@@ -1027,5 +1027,30 @@ mod tests {
         let response = done.expect("Done");
         assert_eq!(response.text(), "hello");
         assert!(!response.text().contains('\r'));
+    }
+
+    #[test]
+    fn codex_convert_tools_strips_examples() {
+        let converted = convert_tools(&[ToolDefinition {
+            name: "read".into(),
+            description: "Read file".into(),
+            parameters: json!({
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {"file_path": {"type": "string", "minLength": 1}},
+                "examples": [{"file_path": "src/main.rs"}]
+            }),
+        }]);
+        assert!(converted[0]["parameters"].get("examples").is_none());
+        assert!(converted[0]["parameters"]
+            .get("additionalProperties")
+            .is_none());
+        assert!(converted[0]["parameters"]["properties"]["file_path"]
+            .get("minLength")
+            .is_none());
+        assert_eq!(
+            converted[0]["parameters"]["properties"]["file_path"]["type"],
+            "string"
+        );
     }
 }

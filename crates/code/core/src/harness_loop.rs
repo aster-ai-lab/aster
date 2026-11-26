@@ -197,7 +197,7 @@ pub struct TurnProgressDelta {
     pub information_delta: u64,
     /// Verified effect records this turn (changes or failed paths).
     pub mutation_delta: u64,
-    /// Net decrease of unresolved plus recorded obligations.
+    /// Net decrease of outstanding obligations.
     pub uncertainty_delta: i64,
     /// Assistant output or a host-accepted plan step landed.
     pub plan_delta: u64,
@@ -221,8 +221,7 @@ impl MutationLedger {
 
     /// The deltas of the turn being settled, then reset the counters.
     fn take_turn_delta(&mut self) -> TurnProgressDelta {
-        let open_now =
-            (self.unresolved_tool_effects.len() + self.recorded_uncertainties.len()) as i64;
+        let open_now = self.unresolved_obligations().count() as i64;
         let delta = TurnProgressDelta {
             information_delta: self.turn_progress.receipts_applied,
             mutation_delta: self.turn_progress.effects_recorded,
@@ -245,8 +244,7 @@ impl MutationLedger {
     /// the settle fall back to mutation-only progress.
     pub(crate) fn take_slice_delta(&mut self) -> TurnProgressDelta {
         self.take_turn_delta();
-        let open_now =
-            (self.unresolved_tool_effects.len() + self.recorded_uncertainties.len()) as i64;
+        let open_now = self.unresolved_obligations().count() as i64;
         let delta = TurnProgressDelta {
             information_delta: self.slice_progress.receipts_applied,
             mutation_delta: self.slice_progress.effects_recorded,
@@ -284,14 +282,10 @@ pub struct MutationLedger {
     /// workspace-attribution gap is not stored here; the run scan owns that.
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
     unresolved_tool_effects: std::collections::BTreeSet<String>,
-    /// Obligations that survived their turn: recorded, goal-visible debt that
-    /// no longer denies future mutating calls. Never silently cleared — a
-    /// later matching observation removes the record.
+    /// Older checkpoints stored some outstanding obligations under this key.
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
     recorded_uncertainties: std::collections::BTreeSet<String>,
-    /// The highest model turn whose PRIOR turns' obligations have settled
-    /// into the recorded set. Same-turn denies stay byte-identical; the
-    /// latch releases only when the model advances to a later turn.
+    /// The highest model turn accounted for by the progress counters.
     #[serde(default)]
     settled_turn_watermark: u64,
     /// Progress counters for the CURRENT turn (reset at each settle).
@@ -569,6 +563,8 @@ impl MutationLedger {
         unresolved: std::collections::BTreeSet<String>,
         settled_workspace_children: &std::collections::BTreeSet<String>,
     ) {
+        self.unresolved_tool_effects
+            .append(&mut self.recorded_uncertainties);
         self.unresolved_tool_effects.extend(unresolved);
         self.open_children.retain(|child| {
             !settled_workspace_children.contains(&format!("workspace-child:{}", child.task_id))
@@ -593,9 +589,9 @@ impl MutationLedger {
         if !self.open_children.is_empty()
             || self.observation_incomplete
             || self.failed_effect_paths != original.failed_effect_paths
-            || !self
-                .unresolved_tool_effects
-                .is_subset(&original.unresolved_tool_effects)
+            || self
+                .unresolved_obligations()
+                .any(|key| !original.unresolved_tool_effects.contains(key))
         {
             return false;
         }
@@ -670,10 +666,10 @@ impl MutationLedger {
             && self.open_children.is_empty()
             && self.failed_effect_paths.is_empty()
             && !self.observation_incomplete
-            && !self.unresolved_tool_effects.is_empty()
+            && self.has_unresolved_effects()
             && self
-                .unresolved_tool_effects
-                .is_subset(validated_original_uncertainty)
+                .unresolved_obligations()
+                .all(|key| validated_original_uncertainty.contains(key))
     }
 
     /// A checkpoint is a conservative cache of the log projection. Fill
@@ -713,7 +709,7 @@ impl MutationLedger {
                 .or_insert_with(|| after.clone());
         }
         self.unresolved_tool_effects
-            .extend(cached.unresolved_tool_effects.iter().cloned());
+            .extend(cached.unresolved_obligations().cloned());
         self.started_absent
             .extend(cached.started_absent.iter().cloned());
         if cached_has_evidence && !original_cache_coverage_complete {
@@ -730,52 +726,34 @@ impl MutationLedger {
         !self.records.is_empty()
             || !self.failed_effect_paths.is_empty()
             || !self.open_children.is_empty()
-            || !self.unresolved_tool_effects.is_empty()
+            || self.has_unresolved_effects()
             || self.observation_incomplete
             || !self.applied_tool_receipts.is_empty()
             || !self.applied_background_receipts.is_empty()
     }
 
     pub(crate) fn has_uncertain_tool_invocations(&self) -> bool {
-        self.unresolved_tool_effects
-            .iter()
+        self.unresolved_obligations()
             .any(|key| !key.starts_with("workspace-child:"))
     }
 
-    /// Obligations that outlived their turn, recorded for the goal to see.
-    pub(crate) fn recorded_uncertainties(&self) -> &std::collections::BTreeSet<String> {
-        &self.recorded_uncertainties
+    fn has_unresolved_effects(&self) -> bool {
+        !self.unresolved_tool_effects.is_empty() || !self.recorded_uncertainties.is_empty()
     }
 
-    /// Release prior turns' obligations when the model advances: obligations
-    /// from BEFORE `turn` settle into the recorded set; same-turn denies are
-    /// untouched. This is the deadlock exit — the latch can no longer outlive
-    /// the turn it arose in.
-    pub(crate) fn settle_prior_turns(&mut self, turn: u64) -> Option<TurnProgressDelta> {
+    fn unresolved_obligations(&self) -> impl Iterator<Item = &String> {
+        self.unresolved_tool_effects
+            .union(&self.recorded_uncertainties)
+    }
+
+    /// A model turn advances the progress window. Only matching evidence can
+    /// change the outstanding execution obligations.
+    pub(crate) fn advance_tool_turn(&mut self, turn: u64) -> Option<TurnProgressDelta> {
         if turn > self.settled_turn_watermark {
-            self.settle_turn_uncertainties();
             self.settled_turn_watermark = turn;
             return Some(self.take_turn_delta());
         }
         None
-    }
-
-    /// Turn settlement: unresolved non-child obligations become recorded,
-    /// goal-visible debt instead of a permanent write ban. The record is
-    /// removed only by a later matching observation — never by a waiver.
-    pub(crate) fn settle_turn_uncertainties(&mut self) {
-        let remaining: std::collections::BTreeSet<String> = self
-            .unresolved_tool_effects
-            .iter()
-            .filter(|key| key.starts_with("workspace-child:"))
-            .cloned()
-            .collect();
-        for key in &self.unresolved_tool_effects {
-            if !key.starts_with("workspace-child:") {
-                self.recorded_uncertainties.insert(key.clone());
-            }
-        }
-        self.unresolved_tool_effects = remaining;
     }
 
     /// A full log projection must apply every typed event in log order. An
@@ -812,8 +790,7 @@ impl MutationLedger {
         }
         // Obligations are NOT discharged by an observed receipt: the pinned
         // invariants (future terminal never erases prepared debt; child debt
-        // needs its exact committed terminal) own every discharge path. The
-        // only additional path is turn settlement into the recorded set.
+        // needs its exact committed terminal) own every discharge path.
         let mut failed_changed = false;
         for change in &result.effects.changes {
             if !crate::porcelain::is_harness_path(&change.path)
@@ -1055,7 +1032,7 @@ impl MutationLedger {
                 .bytes()
                 .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
             || self.observation_incomplete
-            || !self.unresolved_tool_effects.is_empty()
+            || self.has_unresolved_effects()
         {
             return;
         }
@@ -1102,7 +1079,7 @@ impl MutationLedger {
         if self.is_empty()
             || self.observation_incomplete
             || self.has_open_children()
-            || !self.unresolved_tool_effects.is_empty()
+            || self.has_unresolved_effects()
             || !self.observes_current_workspace(workspace)
         {
             return None;
@@ -1217,7 +1194,7 @@ impl MutationLedger {
     ) {
         if !self.nested_mutation_window_is_current(epoch)
             || self.observation_incomplete
-            || !self.unresolved_tool_effects.is_empty()
+            || self.has_unresolved_effects()
             || command.len() > aster_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES
         {
             return;
@@ -1300,7 +1277,7 @@ impl MutationLedger {
         if self.is_empty()
             || self.observation_incomplete
             || self.has_open_children()
-            || !self.unresolved_tool_effects.is_empty()
+            || self.has_unresolved_effects()
             || self.active_nested_mutations != 0
             || self.nested_shell_verifications.is_empty()
             || !self.observes_current_workspace(workspace)
@@ -1344,7 +1321,7 @@ impl MutationLedger {
         effects: &aster_effect::ToolEffectObservationV1,
         allow_shell: bool,
     ) {
-        if child.observation_incomplete || !child.unresolved_tool_effects.is_empty() {
+        if child.observation_incomplete || child.has_unresolved_effects() {
             return;
         }
         for change in &effects.changes {
@@ -1662,8 +1639,8 @@ pub struct ToolEffectUnresolved {
 
 impl ToolEffectUnresolved {
     pub fn from_ledger(ledger: &MutationLedger) -> Option<Self> {
-        (!ledger.unresolved_tool_effects.is_empty()).then(|| Self {
-            obligation_ids: ledger.unresolved_tool_effects.iter().cloned().collect(),
+        ledger.has_unresolved_effects().then(|| Self {
+            obligation_ids: ledger.unresolved_obligations().cloned().collect(),
         })
     }
 }
@@ -1985,7 +1962,7 @@ pub(crate) fn model_verification_context(gate: CompletionGate) -> Option<String>
     unbound_mutation_digest(&message)?;
     let diagnostic = serde_json::Value::String(message);
     Some(format!(
-        "[host verification state]\nWorkspace verification is still incomplete. A tool exit code of 0 does not itself bind verification to the current changes. Follow the verification method in the diagnostic using only exposed tools. Run an admitted command unchanged after the latest edit; run cleanup and status printing separately. Do not repeat completed mutations. This note grants no execution permission, verification or waiver. Diagnostic data:\n{diagnostic}"
+        "[host verification state]\nWorkspace verification incomplete (exit 0 alone does not bind current changes). Run an admitted verification check unchanged after the last edit using exposed tools; keep cleanup/status separate; do not repeat completed edits. Grants no permission/waiver. Diagnostic data:\n{diagnostic}"
     ))
 }
 

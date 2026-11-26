@@ -1101,7 +1101,7 @@ impl LocalWorkspaceBackend {
             &self.root,
             request.env.as_deref(),
         )
-        .map_err(|e| anyhow!("Failed to spawn shell: {}", e))?;
+        .map_err(crate::tools::builtin::bash::host_shell_spawn_refused)?;
 
         let output = crate::tools::process::read_process_output_cancellable(
             &mut child,

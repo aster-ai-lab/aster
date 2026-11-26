@@ -95,6 +95,10 @@ impl LlmClient for ZhipuClient {
         self.0.with_output_cap(max_tokens)
     }
 
+    fn with_minimal_reasoning(&self) -> Option<std::sync::Arc<dyn LlmClient>> {
+        self.0.with_minimal_reasoning()
+    }
+
     fn gateway_decision_auth(&self) -> Option<crate::llm::GatewayDecisionAuth> {
         self.0.gateway_decision_auth()
     }

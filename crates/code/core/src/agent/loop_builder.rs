@@ -312,6 +312,7 @@ impl crate::agent::TurnEngine {
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         convergence.read_only_synthesis_rounds = 0;
         convergence.read_only_synthesis_intent = intent;
+        convergence.read_only_synthesis_classification_pending = false;
         convergence.read_only_synthesis_finalization_pending = false;
         convergence.read_only_synthesis_status = if intent.is_some()
             && self
@@ -325,6 +326,54 @@ impl crate::agent::TurnEngine {
         };
     }
 
+    pub(crate) fn fact_defer_read_only_synthesis(&self) {
+        use crate::loop_checkpoint::ReadOnlySynthesisStatus;
+        let eligible = self
+            .config
+            .read_only_synthesis_rounds
+            .is_some_and(|rounds| rounds > 0);
+        let mut convergence = self
+            .fact_convergence
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        convergence.read_only_synthesis_rounds = 0;
+        convergence.read_only_synthesis_intent = None;
+        convergence.read_only_synthesis_finalization_pending = false;
+        convergence.read_only_synthesis_classification_pending = eligible;
+        convergence.read_only_synthesis_status = if eligible {
+            ReadOnlySynthesisStatus::Collecting
+        } else {
+            ReadOnlySynthesisStatus::Ineligible
+        };
+    }
+
+    pub(crate) fn fact_needs_lazy_read_only_synthesis_classification(&self) -> bool {
+        let convergence = self
+            .fact_convergence
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        convergence.read_only_synthesis_classification_pending
+            && convergence.read_only_synthesis_status
+                == crate::loop_checkpoint::ReadOnlySynthesisStatus::Pending
+    }
+
+    pub(crate) fn fact_resolve_deferred_read_only_synthesis(
+        &self,
+        style: crate::prompts::AgentStyle,
+    ) {
+        use crate::loop_checkpoint::ReadOnlySynthesisStatus;
+        let intent = crate::loop_checkpoint::ReadOnlySynthesisIntent::from_style(style);
+        let mut convergence = self
+            .fact_convergence
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        convergence.read_only_synthesis_classification_pending = false;
+        convergence.read_only_synthesis_intent = intent;
+        if intent.is_none() {
+            convergence.read_only_synthesis_status = ReadOnlySynthesisStatus::Ineligible;
+        }
+    }
+
     pub(crate) fn fact_read_only_synthesis_directive(
         &self,
     ) -> Option<super::FactReadOnlySynthesisDirective> {
@@ -333,9 +382,7 @@ impl crate::agent::TurnEngine {
             .fact_convergence
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        if convergence.read_only_synthesis_intent.is_none() {
-            return None;
-        }
+        convergence.read_only_synthesis_intent?;
         if convergence.read_only_synthesis_finalization_pending {
             return Some(super::FactReadOnlySynthesisDirective::Finalize);
         }
@@ -355,7 +402,9 @@ impl crate::agent::TurnEngine {
             .fact_convergence
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        if convergence.read_only_synthesis_intent.is_none() {
+        if convergence.read_only_synthesis_intent.is_none()
+            && !convergence.read_only_synthesis_classification_pending
+        {
             return;
         }
         match convergence.read_only_synthesis_status {
@@ -391,6 +440,8 @@ impl crate::agent::TurnEngine {
         convergence.read_only_synthesis_rounds = checkpoint.read_only_synthesis_rounds;
         convergence.read_only_synthesis_status = checkpoint.read_only_synthesis_status;
         convergence.read_only_synthesis_intent = checkpoint.read_only_synthesis_intent;
+        convergence.read_only_synthesis_classification_pending =
+            checkpoint.read_only_synthesis_classification_pending;
         convergence.read_only_synthesis_finalization_pending =
             checkpoint.read_only_synthesis_finalization_pending;
     }

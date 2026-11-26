@@ -52,6 +52,14 @@ fn program_catalog_is_discoverable_in_the_published_tool_contract() {
     assert!(projected[0]
         .description
         .contains("permission, confirmation, cancellation, and audit boundaries"));
+
+    let def = tool.definition();
+    assert!(tool.parameters().get("oneOf").is_some());
+    assert!(def.parameters.get("oneOf").is_none());
+    assert!(def.parameters["properties"]["name"]["enum"]
+        .to_string()
+        .contains("program_code_search"));
+    assert!(def.parameters.to_string().len() < tool.parameters().to_string().len());
 }
 
 fn echo_catalog() -> ProgramCatalog {

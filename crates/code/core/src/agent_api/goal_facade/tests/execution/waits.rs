@@ -140,6 +140,18 @@ async fn goal_wait_gates_only_its_step_and_an_answer_reaches_the_next_run() {
 
     // Only the open question remains: no model call, no fact, no Run.
     let before = facts(root.path());
+    let blocked = session.goal_definition().unwrap().unwrap();
+    assert_eq!(blocked.state, GoalState::Active);
+    assert!(blocked
+        .waits
+        .iter()
+        .any(|wait| wait.step_id == "ask" && wait.observed.is_none()));
+    assert!(
+        !before
+            .iter()
+            .any(|fact| fact.kind == "aster.goal.completed"),
+        "a positive judgment for the independent step cannot close the whole Goal"
+    );
     assert_eq!(
         decided(&session, &request(&session, "wake-2")).await,
         GoalTickDecisionV1::NeedsInput

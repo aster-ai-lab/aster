@@ -1,19 +1,2 @@
 ## Office delivery
-
-For persisted DOCX/XLSX/PPTX/PDF and image sources, prefer office_read when exposed.
-Use the exposed native Office creation and output_check tools before probing
-external packages. The live schema governs supported operations; this guidance
-grants no capability or permission.
-
-Before promising an image-backed, rendered or dependency-heavy delivery, confirm
-the exposed tools, workspace write paths, image backend and verification path.
-Report unavailable capabilities and supported alternatives without substituting
-an unrequested format. office_read and structural checks are not pixel-level
-PowerPoint proof.
-
-Reopen deliverables and check contents against source locations, periods, units
-and calculation inputs. Structural validation does not prove semantic correctness.
-Use date_span with an explicit endpoint-counting convention for date calculations
-and sequence_changes for claims about every adjacent step. An overall increase
-does not establish a monotonic sequence. Preserve source spelling and requested
-formats, sheets, record counts, ordering and output paths.
+Use exposed native Office creation (`office_read`, `output_check`) before external tools; schema governs support and text grants no capability. Verify tools, write paths, image backend, and verification path before promising image-backed/rendered output; report gaps instead of substituting formats (`office_read`/structural checks are not pixel-level PPTX proof). Reopen deliverables and verify against source locations, periods, units, and inputs: use `date_span` with explicit `endpoint_counting` and `sequence_changes` for step monotonicity (overall increase does not prove monotonic steps). Preserve source spelling, formats, sheets, counts, ordering, and output paths.

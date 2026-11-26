@@ -21,7 +21,7 @@ impl Tool for CodeNavigationTool {
     }
 
     fn description(&self) -> &str {
-        "Navigate saved workspace code by language semantics. Resolves definitions, declarations, references, or implementations from a zero-based UTF-16 position. Each result includes one declaration line and not the function body; use read when the full body is needed."
+        "Resolve definition, declaration, references, or implementations from 0-based UTF-16 position (declaration lines only; use read for bodies)."
     }
 
     fn parameters(&self) -> Value {
@@ -36,19 +36,19 @@ impl Tool for CodeNavigationTool {
                 "path": {
                     "type": "string",
                     "minLength": 1,
-                    "description": "Saved workspace document path."
+                    "description": "Saved file path."
                 },
                 "line": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 4294967295_u64,
-                    "description": "Zero-based line."
+                    "description": "0-based line."
                 },
                 "character": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 4294967295_u64,
-                    "description": "Zero-based UTF-16 code-unit offset."
+                    "description": "0-based UTF-16 col."
                 }
             },
             "required": ["operation", "path", "line", "character"],

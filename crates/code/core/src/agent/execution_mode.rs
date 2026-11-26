@@ -241,6 +241,7 @@ impl crate::agent::TurnEngine {
             self.begin_capability_operation(0, cancel_token, "pre-analysis orchestration")?;
         let llm_client =
             self.scoped_llm_client_for_parts(session_id, event_tx, operation.cancellation());
+        let llm_client = llm_client.with_minimal_reasoning().unwrap_or(llm_client);
         let language = crate::prompts::resolve_product_output_language(
             self.config.prompt_slots.output_language.as_deref(),
             prompt,
@@ -264,6 +265,56 @@ impl crate::agent::TurnEngine {
                 Ok(None)
             }
         }
+    }
+
+    pub(super) async fn run_intent_classification(
+        &self,
+        prompt: &str,
+        session_id: Option<&str>,
+        event_tx: &Option<mpsc::Sender<AgentEvent>>,
+        cancel_token: &tokio_util::sync::CancellationToken,
+    ) -> Result<Option<crate::prompts::AgentStyle>> {
+        if !self.should_run_pre_analysis() {
+            return Ok(None);
+        }
+
+        let operation =
+            self.begin_capability_operation(0, cancel_token, "intent classification")?;
+        let llm_client =
+            self.scoped_llm_client_for_parts(session_id, event_tx, operation.cancellation());
+        let llm_client = llm_client.with_minimal_reasoning().unwrap_or(llm_client);
+        let result = LlmPlanner::classify_intent(&llm_client, prompt).await;
+        operation.close().await?;
+
+        match result {
+            Ok(intent) => {
+                tracing::debug!(?intent, "Intent classification completed");
+                Ok(Some(intent))
+            }
+            Err(e) if Self::planning_control_error(&e, cancel_token) => Err(e),
+            Err(e) => {
+                tracing::warn!(error = %e, "Intent classification failed; using GeneralPurpose");
+                Ok(None)
+            }
+        }
+    }
+
+    pub(crate) async fn fact_resolve_lazy_read_only_synthesis(
+        &self,
+        prompt: &str,
+        session_id: &str,
+        event_tx: &Option<mpsc::Sender<AgentEvent>>,
+        cancel: &tokio_util::sync::CancellationToken,
+    ) -> Result<()> {
+        if !self.fact_needs_lazy_read_only_synthesis_classification() {
+            return Ok(());
+        }
+        let intent = self
+            .run_intent_classification(prompt, Some(session_id), event_tx, cancel)
+            .await?
+            .unwrap_or(crate::prompts::AgentStyle::GeneralPurpose);
+        self.fact_resolve_deferred_read_only_synthesis(intent);
+        Ok(())
     }
 
     #[cfg(test)]

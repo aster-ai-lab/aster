@@ -476,6 +476,25 @@ fn select_turn_reply_language_keeps_a_published_language() {
     assert_eq!(language.as_deref(), Some("zh-CN"));
     assert!(system.contains("zh-CN"));
     assert!(system.contains("standing"));
+
+    // Do not duplicate turn override when standing system prompt already sets the same language.
+    let standing_zh = SystemPromptSlots::default()
+        .with_output_language("zh-CN")
+        .build();
+    let (deduped, same_lang) =
+        apply_turn_output_language(Some(standing_zh.clone()), "继续", Some("zh-CN"), false);
+    assert_eq!(same_lang.as_deref(), Some("zh-CN"));
+    assert_eq!(deduped.as_deref(), Some(standing_zh.as_str()));
+
+    // Still append override when user switches to a different language.
+    let (switched, new_lang) = apply_turn_output_language(
+        Some(standing_zh),
+        "Please reply in English now",
+        Some("zh-CN"),
+        false,
+    );
+    assert_eq!(new_lang.as_deref(), Some("en"));
+    assert!(switched.unwrap().contains("## Output Language (this turn)"));
 }
 
 #[test]

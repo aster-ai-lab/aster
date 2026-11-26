@@ -154,14 +154,6 @@ impl SearchTool {
         }
     }
 
-    fn mode_schema_description(&self) -> String {
-        if self.modes().contains(&"bm25") {
-            "Select a listed mode; bm25 may automatically use the durable local index.".into()
-        } else {
-            "Select a listed mode.".into()
-        }
-    }
-
     fn adapted_args(
         &self,
         mode: SearchMode,
@@ -318,7 +310,6 @@ impl Tool for SearchTool {
                 "limit": 8
             }));
         }
-        let mode_description = self.mode_schema_description();
         let query_description = query_schema_description(&modes);
         let limit_description = limit_schema_description(&modes);
         let grep_output_modes = if self.backend_search_enabled && self.read_enabled {
@@ -332,8 +323,7 @@ impl Tool for SearchTool {
             "properties": {
                 "mode": {
                     "type": "string",
-                    "enum": modes,
-                    "description": mode_description
+                    "enum": modes
                 },
                 "query": {
                     "type": "string",
@@ -342,25 +332,25 @@ impl Tool for SearchTool {
                 },
                 "path": {
                     "type": "string",
-                    "description": "Workspace-relative directory/file, or aster://tool-output/... URI (grep only); default workspace root."
+                    "description": "Path or aster://tool-output/... URI (grep)."
                 },
                 "include": {
                     "type": "string",
-                    "description": "Candidate-file glob, e.g. '*.rs' or '*.{ts,tsx}'."
+                    "description": "Glob filter."
                 },
                 "context": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "grep/bm25 context lines; BM25 default 2, max 8."
+                    "description": "Context lines (bm25 default 2, max 8)."
                 },
                 "case_sensitive": {
                     "type": "boolean",
-                    "description": "grep case sensitivity; default true."
+                    "description": "grep default true."
                 },
                 "output_mode": {
                     "type": "string",
                     "enum": grep_output_modes,
-                    "description": "grep: content (default) pages matches with context; files_with_matches/count page files; summary returns totals."
+                    "description": "grep default content."
                 },
                 "limit": {
                     "type": "integer",
@@ -369,13 +359,12 @@ impl Tool for SearchTool {
                     "description": limit_description
                 },
                 "cursor": {
-                    "type": "string",
-                    "description": "Exact prior opaque cursor for glob/paginated grep."
+                    "type": "string"
                 },
                 "sort": {
                     "type": "string",
                     "enum": ["path", "backend"],
-                    "description": "glob: backend preserves backend order (default); path sorts lexically before paging."
+                    "description": "glob default backend."
                 }
             },
             "required": ["mode", "query"],
@@ -596,30 +585,27 @@ fn copy_if_present(
 
 fn describe_modes(modes: &[&str]) -> String {
     if modes.is_empty() {
-        return "Workspace search has no available mode in this session.".to_string();
+        return "Workspace search has no available mode.".to_string();
     }
     let hints = modes
         .iter()
         .map(|mode| match *mode {
-            "grep" => "grep for an exact string or regex",
-            "glob" => "glob for file names",
-            "bm25" => "bm25 for ranked lexical matches",
-            "semantic" => "semantic for concept similarity",
-            "hybrid" => "hybrid to fuse available evidence channels",
+            "grep" => "grep (regex/literal)",
+            "glob" => "glob (paths)",
+            "bm25" => "bm25 (ranked lexical)",
+            "semantic" => "semantic (concepts)",
+            "hybrid" => "hybrid (fused channels)",
             other => other,
         })
         .collect::<Vec<_>>();
-    format!(
-        "Search the workspace with one model-selected mode. Use {}.",
-        hints.join(", ")
-    )
+    format!("Workspace search: {}.", hints.join(", "))
 }
 
 fn query_schema_description(modes: &[&str]) -> String {
     if modes.is_empty() {
-        return "Required. No search mode is available in this session.".to_string();
+        return "No search mode available.".to_string();
     }
-    "Query for the selected mode.".into()
+    "Mode query.".into()
 }
 
 fn limit_schema_description(modes: &[&str]) -> String {
@@ -629,11 +615,10 @@ fn limit_schema_description(modes: &[&str]) -> String {
         .filter(|mode| matches!(*mode, "bm25" | "semantic" | "hybrid"))
         .collect::<Vec<_>>();
     if ranked.is_empty() {
-        return "grep content matches with context, or glob/grep files/count files: default 200, max 1000. Unused by grep summary."
-            .to_string();
+        return "grep/glob page cap (default 200, max 1000).".to_string();
     }
     format!(
-        "grep content matches with context, or glob/grep files/count files: default 200, max 1000; {} results: default 10, max 25. Unused by grep summary.",
+        "grep/glob page cap (default 200, max 1000); {} (default 10, max 25).",
         ranked.join("/")
     )
 }

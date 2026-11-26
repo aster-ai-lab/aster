@@ -37,10 +37,11 @@ pub(crate) fn estimate_prompt_tokens(
         }
     }
     for tool in tools {
+        let parameters = super::wire_tool_parameters(&tool.parameters);
         chars = chars
             .saturating_add(tool.name.len())
             .saturating_add(tool.description.len())
-            .saturating_add(tool.parameters.to_string().len())
+            .saturating_add(parameters.to_string().len())
             .saturating_add(16);
     }
     chars.saturating_add(3) / 4

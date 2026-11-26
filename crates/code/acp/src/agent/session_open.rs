@@ -78,6 +78,7 @@ impl AsterCodeAgent {
             .with_auto_compact(true)
             .with_auto_compact_threshold(aster_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD);
         options = options
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_max_parallel_tasks(HOST_PARALLEL_TASKS)
             .with_max_continuation_turns(HOST_CONTINUATION_TURNS);
         let mut guideline = String::new();

@@ -25,6 +25,23 @@ impl LlmClient for GeminiClient {
         Some(std::sync::Arc::new(client))
     }
 
+    fn with_minimal_reasoning(&self) -> Option<std::sync::Arc<dyn LlmClient>> {
+        let caps = self.config.reasoning_capabilities.clone().or_else(|| {
+            crate::config::documented_at(
+                crate::config::ProviderProtocol::Gemini,
+                &self.config.model,
+                self.config.base_url.as_deref(),
+            )
+        })?;
+        let level = caps.lowest_effort()?;
+        if self.config.reasoning_effort.as_deref() == Some(level) {
+            return None;
+        }
+        let mut client = self.clone();
+        client.config.reasoning_effort = Some(level.to_string());
+        Some(std::sync::Arc::new(client))
+    }
+
     fn model_generation_pool(&self) -> Option<ModelGenerationPool> {
         ModelGenerationPool::for_endpoint(
             &self.config.provider,

@@ -3345,14 +3345,19 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
 
     {
         let systems = mock_client.request_systems.lock().unwrap();
-        assert!(systems.iter().any(|system| system.contains(active_content)));
+        let texts = mock_client.request_texts.lock().unwrap();
+        assert!(texts.iter().any(|text| text.contains(active_content)));
+        assert!(texts
+            .iter()
+            .filter(|text| text.contains(active_content))
+            .all(|text| text.matches(active_content).count() == 1));
         assert!(systems
             .iter()
-            .filter(|system| system.contains(active_content))
-            .all(|system| system.matches(active_content).count() == 1));
-        assert!(systems
+            .all(|system| !system.contains(active_content)));
+        assert!(texts
             .iter()
-            .all(|system| !system.contains("unapproved candidate")));
+            .chain(systems.iter())
+            .all(|payload| !payload.contains("unapproved candidate")));
     }
     assert_eq!(
         repository

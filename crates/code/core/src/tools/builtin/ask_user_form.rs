@@ -21,7 +21,7 @@ impl Tool for AskUserFormTool {
 
     fn description(&self) -> &str {
         static DESCRIPTION: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
-            let mut description = "Pause for structured user input. Supply one JSON Render document as the form string, without a Markdown fence. The document has root, elements and optional state.form. Each element has type, props and optional children containing element IDs. Bind input value (or Checkbox checked) with {\"$bindState\":\"/form/name\"}; initial scalar values live in state.form. Use Button with action submit. Write titles, labels and placeholders in the user's language. Submitted named scalar values return as this tool's result and the same turn continues. Unknown components, properties, actions, cycles and unbound state are refused. Component catalog: ".to_owned();
+            let mut description = "Structured form (no Markdown fence): root, elements (type, props, optional children IDs), optional state.form; bind inputs via {\"$bindState\":\"/form/name\"}, Button action submit, labels in user's language. Catalog: ".to_owned();
             description.push_str(&aster_form_core::json_render_component_catalog().to_string());
             description
         });

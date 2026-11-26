@@ -193,6 +193,20 @@ impl ReasoningCapabilities {
         self.levels.iter().any(|level| level.as_str() == token)
     }
 
+    /// Lowest supported reasoning effort token for lightweight auxiliary calls.
+    pub fn lowest_effort(&self) -> Option<&'static str> {
+        const ORDER: [ReasoningEffort; 4] = [
+            ReasoningEffort::None,
+            ReasoningEffort::Minimal,
+            ReasoningEffort::Low,
+            ReasoningEffort::Medium,
+        ];
+        ORDER
+            .iter()
+            .find(|candidate| self.levels.contains(candidate))
+            .map(|level| level.as_str())
+    }
+
     /// Reject explicit unsupported selections before contacting a provider.
     pub fn validate_effort(&self, token: &str) -> Result<(), String> {
         if self.supports(token) {

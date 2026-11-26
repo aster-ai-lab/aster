@@ -334,3 +334,66 @@ async fn built_in_explore_runs_through_real_task_delegation() {
     session.close().await;
     agent.close().await;
 }
+
+#[tokio::test]
+async fn disabled_planning_defers_intent_classification_until_synthesis_budget() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("note.txt"), "one-wave evidence\n").unwrap();
+
+    // 0-round and 1-round turns never trigger the auxiliary classify_intent call.
+    let zero_round_client = Arc::new(ReadOnlyAnalysisClient::new(
+        "Plan",
+        vec![scripted_text_response("Direct answer without tools.")],
+    ));
+    let one_round_client = Arc::new(ReadOnlyAnalysisClient::new(
+        "Plan",
+        vec![
+            scripted_tool_call_response(
+                "read-note",
+                "read",
+                serde_json::json!({"file_path":"note.txt"}),
+            ),
+            scripted_text_response("Answered after one read wave."),
+        ],
+    ));
+
+    for (client, prompt, expected_text, expected_tools) in [
+        (
+            zero_round_client.clone(),
+            "Say hello",
+            "Direct answer without tools.",
+            0usize,
+        ),
+        (
+            one_round_client.clone(),
+            "Read note.txt and summarize",
+            "Answered after one read wave.",
+            1usize,
+        ),
+    ] {
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let options = SessionOptions::new()
+            .with_llm_client(client.clone())
+            .with_planning_mode(PlanningMode::Disabled)
+            .with_confirmation_policy(crate::hitl::ConfirmationPolicy::enabled())
+            .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("read"))
+            .with_read_only_synthesis_rounds(2)
+            .with_auto_compact(false);
+        let session = agent
+            .session_async(root.path().display().to_string(), Some(options))
+            .await
+            .unwrap();
+        let result = session.send(prompt, None).await.unwrap();
+        assert_eq!(result.text, expected_text);
+        assert_eq!(result.tool_calls_count, expected_tools);
+        assert_eq!(
+            client
+                .pre_analysis_calls
+                .load(std::sync::atomic::Ordering::SeqCst),
+            0,
+            "turns below synthesis budget must not pay an intent-classification call"
+        );
+        session.close().await;
+        agent.close().await;
+    }
+}

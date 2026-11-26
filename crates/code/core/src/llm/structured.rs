@@ -1068,7 +1068,7 @@ fn build_initial_messages(req: &StructuredRequest, mode: StructuredMode) -> Vec<
                 } else {
                     "\n"
                 },
-                serde_json::to_string_pretty(&response_schema).unwrap_or_default()
+                serde_json::to_string(&response_schema).unwrap_or_default()
             );
             vec![Message::user(&augmented)]
         }
@@ -1087,10 +1087,10 @@ fn build_system_prompt(req: &StructuredRequest, mode: StructuredMode) -> String 
     match mode {
         StructuredMode::Tool => {
             format!(
-                "{}{}You MUST respond by calling the `emit_{}` tool exactly once with a valid argument matching the schema. Do not output any text outside the tool call.{}{}",
+                "{}{}Call `{}` once with schema-valid arguments; no extra text.{}{}",
                 base,
                 if base.is_empty() { "" } else { "\n\n" },
-                req.schema_name,
+                format!("emit_{}", req.schema_name),
                 if envelope_instruction.is_empty() {
                     ""
                 } else {
@@ -1101,7 +1101,7 @@ fn build_system_prompt(req: &StructuredRequest, mode: StructuredMode) -> String 
         }
         StructuredMode::Prompt | StructuredMode::Json => {
             format!(
-                "{}{}You are a structured data extraction assistant. Always respond with valid JSON only, no markdown fences, no explanation text.{}{}",
+                "{}{}Respond with valid JSON only; no markdown fences or prose.{}{}",
                 base,
                 if base.is_empty() { "" } else { "\n\n" },
                 if envelope_instruction.is_empty() {

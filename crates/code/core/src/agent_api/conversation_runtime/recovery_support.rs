@@ -50,30 +50,38 @@ pub(crate) async fn settle_host_input(
     mut settled: aster_effect::Settlement<aster_effect::CodingView>,
     surface: &crate::fact_control::SessionSurface,
 ) -> anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>> {
-    while settled.view.phase == aster_effect::CodingPhase::Confirm {
-        let Some(pending) = settled.view.pending_confirmation.clone() else {
-            break;
-        };
-        let approved = await_host_confirmation(surface, &pending).await;
-        if surface.cancel.is_cancelled() {
-            let _ = run.confirm(&pending.tool_call_id, false).await;
+    loop {
+        if settled.view.phase == aster_effect::CodingPhase::Confirm {
+            let Some(pending) = settled.view.pending_confirmation.clone() else {
+                break;
+            };
+            let response = await_host_confirmation(surface, &pending).await;
+            if surface.cancel.is_cancelled() {
+                let _ = run.confirm(&pending.tool_call_id, false).await;
+                break;
+            }
+            settled = run
+                .confirm(&pending.tool_call_id, response.approved)
+                .await?;
+            if !response.approved {
+                emit_interactive_host_event(
+                    surface,
+                    AgentEvent::PermissionDenied {
+                        tool_id: pending.tool_call_id,
+                        tool_name: pending.name,
+                        args: pending.args,
+                        reason: response.reason.unwrap_or_else(|| {
+                            "Tool execution was rejected by the host confirmation.".into()
+                        }),
+                    },
+                )
+                .await;
+            }
+            continue;
+        }
+        if settled.view.phase != aster_effect::CodingPhase::Question {
             break;
         }
-        settled = run.confirm(&pending.tool_call_id, approved).await?;
-        if !approved {
-            emit_interactive_host_event(
-                surface,
-                AgentEvent::PermissionDenied {
-                    tool_id: pending.tool_call_id,
-                    tool_name: pending.name,
-                    args: pending.args,
-                    reason: "Tool execution was rejected by the host confirmation.".into(),
-                },
-            )
-            .await;
-        }
-    }
-    while settled.view.phase == aster_effect::CodingPhase::Question {
         let Some(pending) = settled.view.pending_question.clone() else {
             break;
         };
@@ -127,12 +135,15 @@ pub(crate) async fn settle_host_input(
     Ok(settled)
 }
 
-pub(super) async fn await_host_confirmation(
+async fn await_host_confirmation(
     surface: &crate::fact_control::SessionSurface,
     pending: &aster_effect::PendingConfirmation,
-) -> bool {
+) -> crate::hitl::ConfirmationResponse {
     let Some(manager) = &surface.confirmation else {
-        return false;
+        return crate::hitl::ConfirmationResponse {
+            approved: false,
+            reason: Some("No interactive confirmation authority is available.".into()),
+        };
     };
     let mut requested = false;
     let mut announced = false;
@@ -162,7 +173,7 @@ pub(super) async fn await_host_confirmation(
         }
     };
     let reason = Some("Confirmation cancelled".to_string());
-    let approved = match response {
+    match response {
         Some(response) => {
             let response = response.unwrap_or(crate::hitl::ConfirmationResponse {
                 approved: false,
@@ -173,11 +184,11 @@ pub(super) async fn await_host_confirmation(
                 AgentEvent::ConfirmationReceived {
                     tool_id: pending.tool_call_id.clone(),
                     approved: response.approved,
-                    reason: response.reason,
+                    reason: response.reason.clone(),
                 },
             )
             .await;
-            response.approved
+            response
         }
         None => {
             let cleanup = if requested {
@@ -201,15 +212,17 @@ pub(super) async fn await_host_confirmation(
                     AgentEvent::ConfirmationReceived {
                         tool_id: pending.tool_call_id.clone(),
                         approved: false,
-                        reason,
+                        reason: reason.clone(),
                     },
                 )
                 .await;
             }
-            false
+            crate::hitl::ConfirmationResponse {
+                approved: false,
+                reason,
+            }
         }
-    };
-    approved
+    }
 }
 
 #[cfg(test)]

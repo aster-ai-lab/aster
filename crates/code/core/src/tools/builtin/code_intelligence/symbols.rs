@@ -23,18 +23,18 @@ fn code_symbols_properties() -> Value {
         "path": {
             "type": "string",
             "minLength": 1,
-            "description": "Saved workspace document path. Required for outline."
+            "description": "Saved file path (outline)."
         },
         "query": {
             "type": "string",
             "minLength": 1,
-            "description": "Semantic symbol query. Required for search."
+            "description": "Symbol query (search)."
         },
         "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": MAX_SEARCH_LIMIT,
-            "description": "Maximum workspace symbols for search. Default: 100; maximum: 500."
+            "description": "Max symbols for search (default 100, max 500)."
         }
     })
 }
@@ -68,7 +68,7 @@ impl Tool for CodeSymbolsTool {
     }
 
     fn description(&self) -> &str {
-        "Query semantic symbols from saved workspace files. The outline operation returns the hierarchy of one document. The search operation returns one declaration line and not the function body. Use read when the full body is needed."
+        "Query semantic symbols from saved files: outline (hierarchy) or search (one declaration line, not the function body; use read for full bodies)."
     }
 
     fn parameters(&self) -> Value {

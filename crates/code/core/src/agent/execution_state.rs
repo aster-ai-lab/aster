@@ -217,6 +217,7 @@ impl ExecutionLoopState {
             read_only_synthesis_rounds: self.read_only_synthesis_rounds,
             read_only_synthesis_status: self.read_only_synthesis_status,
             read_only_synthesis_intent: None,
+            read_only_synthesis_classification_pending: false,
             read_only_synthesis_finalization_pending: false,
             duplicate_finalization_pending: self.duplicate_finalization_pending,
             last_incomplete_response_hash: self.last_incomplete_response_hash.clone(),

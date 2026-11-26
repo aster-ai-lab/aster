@@ -149,6 +149,38 @@ fn record_provenance(
     }))
 }
 
+fn output_check_properties() -> Value {
+    json!({
+        "action":{"type":"string","enum":["text_length","percentage_change","date_span","sequence_changes","record_provenance"]},
+        "text":{"type":"string","maxLength":32768},
+        "start":{"type":"string","minLength":10,"maxLength":10,"description":"YYYY-MM-DD"},
+        "end":{"type":"string","minLength":10,"maxLength":10,"description":"YYYY-MM-DD"},
+        "endpoint_counting":{"type":"string","enum":["elapsed","inclusive"]},
+        "values":{"type":"array","minItems":2,"maxItems":512,"items":{"type":["number","null"]},"description":"Ordered numbers (null=missing)."},
+        "source":{"type":"array","maxItems":2048,"items":{"type":"object"}},
+        "output":{"type":"array","maxItems":2048,"items":{"type":"object"}},
+        "key":{"type":"string","minLength":1,"maxLength":64,"description":"ID field."},
+        "compare_fields":{"type":"array","maxItems":64,"items":{"type":"string","minLength":1,"maxLength":64},"description":"Fields (default non-key source fields)."},
+        "allow_derived_keys":{"type":"array","maxItems":256,"items":{"type":["string","number"]}},
+        "pairs":{"type":"array","maxItems":512,"items":{
+            "type":"object","properties":{
+                "current":{"type":["number","null"]},
+                "previous":{"type":["number","null"]}
+            },"required":["current","previous"],"additionalProperties":false}}
+    })
+}
+
+/// Model-facing schema without top-level `oneOf` (matches `ReadTool`/`CodeSymbolsTool`
+/// pattern); strict variant validation remains in `parameters()` and `execute()`.
+fn output_check_model_parameters() -> Value {
+    json!({
+        "type": "object",
+        "properties": output_check_properties(),
+        "required": ["action"],
+        "additionalProperties": false
+    })
+}
+
 #[async_trait]
 impl Tool for OutputCheckTool {
     fn name(&self) -> &str {
@@ -156,35 +188,33 @@ impl Tool for OutputCheckTool {
     }
 
     fn description(&self) -> &str {
-        "Check text length, percentage changes, date spans or every adjacent sequence change in process, without Bash. text_length counts Unicode extended grapheme clusters (user-perceived characters, so ZWJ emoji sequences count as 1) including punctuation/whitespace, non-whitespace clusters, and whitespace-delimited words. percentage_change uses (current-previous)/abs(previous)*100, returns full numeric values and signed prose rounded to at most 2 decimals with ASCII signs (+10%, -50%); explicit user precision still takes precedence. date_span requires exact YYYY-MM-DD dates and explicit elapsed or inclusive endpoint counting; reversed dates are refused. sequence_changes returns every adjacent difference and every decrease with zero-based indices; missing values leave the complete-sequence conclusion unknown. record_provenance compares source and output records by key and reports missing, unexpected, duplicate and changed records; allow_derived_keys is only for task-authorized derived records. Missing values and zero baselines are never converted to zero changes. These measurements do not establish business meaning or resolve conflicting user requirements; compare every final claim with its source and counting rule."
+        "Deterministic checks (prefer over Bash): text_length, percentage_change ((cur-prev)/|prev|*100), \
+         date_span (elapsed/inclusive YYYY-MM-DD), sequence_changes (0-based deltas/decreases), \
+         record_provenance (key/field diff). Null/0 baselines stay null; stats do not resolve semantics."
     }
 
     fn parameters(&self) -> Value {
-        json!({"type":"object","properties":{
-            "action":{"type":"string","enum":["text_length","percentage_change","date_span","sequence_changes","record_provenance"]},
-            "text":{"type":"string","maxLength":32768,"description":"Required only for text_length."},
-            "start":{"type":"string","minLength":10,"maxLength":10,"description":"Required for date_span: YYYY-MM-DD."},
-            "end":{"type":"string","minLength":10,"maxLength":10,"description":"Required for date_span: YYYY-MM-DD, on or after start."},
-            "endpoint_counting":{"type":"string","enum":["elapsed","inclusive"],"description":"Required for date_span. elapsed counts end minus start; inclusive counts both endpoints."},
-            "values":{"type":"array","minItems":2,"maxItems":512,"items":{"type":["number","null"]},"description":"Required for sequence_changes, in source order; null is missing."},
-            "source":{"type":"array","maxItems":2048,"items":{"type":"object"},"description":"Source records for record_provenance."},
-            "output":{"type":"array","maxItems":2048,"items":{"type":"object"},"description":"Output records for record_provenance."},
-            "key":{"type":"string","minLength":1,"maxLength":64,"description":"Record identifier field for record_provenance."},
-            "compare_fields":{"type":"array","maxItems":64,"items":{"type":"string","minLength":1,"maxLength":64},"description":"Fields to compare; omitted compares all source fields except the key."},
-            "allow_derived_keys":{"type":"array","maxItems":256,"items":{"type":["string","number"]},"description":"Task-authorized derived record keys."},
-            "pairs":{"type":"array","maxItems":512,"items":{
-                "type":"object","properties":{
-                    "current":{"type":["number","null"]},
-                    "previous":{"type":["number","null"]}
-                },"required":["current","previous"],"additionalProperties":false}}
-        },"required":["action"],"additionalProperties":false,
-        "oneOf":[
-            {"properties":{"action":{"const":"text_length"},"text":{}},"required":["text"],"additionalProperties":false},
-            {"properties":{"action":{"const":"percentage_change"},"pairs":{}},"required":["pairs"],"additionalProperties":false},
-            {"properties":{"action":{"const":"date_span"},"start":{},"end":{},"endpoint_counting":{}},"required":["start","end","endpoint_counting"],"additionalProperties":false},
-            {"properties":{"action":{"const":"sequence_changes"},"values":{}},"required":["values"],"additionalProperties":false},
-            {"properties":{"action":{"const":"record_provenance"},"source":{},"output":{},"key":{},"compare_fields":{},"allow_derived_keys":{}},"required":["source","output","key"],"additionalProperties":false}
-        ]})
+        json!({
+            "type":"object",
+            "properties":output_check_properties(),
+            "required":["action"],
+            "additionalProperties":false,
+            "oneOf":[
+                {"properties":{"action":{"const":"text_length"},"text":{}},"required":["text"],"additionalProperties":false},
+                {"properties":{"action":{"const":"percentage_change"},"pairs":{}},"required":["pairs"],"additionalProperties":false},
+                {"properties":{"action":{"const":"date_span"},"start":{},"end":{},"endpoint_counting":{}},"required":["start","end","endpoint_counting"],"additionalProperties":false},
+                {"properties":{"action":{"const":"sequence_changes"},"values":{}},"required":["values"],"additionalProperties":false},
+                {"properties":{"action":{"const":"record_provenance"},"source":{},"output":{},"key":{},"compare_fields":{},"allow_derived_keys":{}},"required":["source","output","key"],"additionalProperties":false}
+            ]
+        })
+    }
+
+    fn definition(&self) -> aster_core::llm::ToolDefinition {
+        aster_core::llm::ToolDefinition {
+            name: self.name().to_string(),
+            description: self.description().to_string(),
+            parameters: output_check_model_parameters(),
+        }
     }
 
     fn capabilities(&self, _args: &Value) -> ToolCapabilities {

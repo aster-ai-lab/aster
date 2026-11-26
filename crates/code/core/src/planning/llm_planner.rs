@@ -92,6 +92,16 @@ struct PreAnalysisPlan {
     required_tools: Vec<String>,
 }
 
+fn parse_intent_style(intent: &str) -> crate::prompts::AgentStyle {
+    match intent.trim().to_ascii_lowercase().as_str() {
+        "plan" => crate::prompts::AgentStyle::Plan,
+        "explore" => crate::prompts::AgentStyle::Explore,
+        "verification" => crate::prompts::AgentStyle::Verification,
+        "codereview" | "code review" => crate::prompts::AgentStyle::CodeReview,
+        _ => crate::prompts::AgentStyle::GeneralPurpose,
+    }
+}
+
 fn claim_step_id(seen: &mut std::collections::HashSet<String>, id: String) -> Result<String> {
     let id = id.trim().to_string();
     if id.is_empty() {
@@ -230,6 +240,40 @@ impl LlmPlanner {
         }
     }
 
+    /// Classify only the task intent for read-only synthesis routing.
+    ///
+    /// Keeps `PRE_ANALYSIS_SYSTEM` so host mocks matching that prompt still route,
+    /// while requesting a single `intent` field instead of full plan generation.
+    pub async fn classify_intent(
+        llm: &Arc<dyn LlmClient>,
+        prompt: &str,
+    ) -> Result<crate::prompts::AgentStyle> {
+        let request = StructuredRequest {
+            prompt: format!("User request:\n{prompt}"),
+            system: Some(crate::prompts::PRE_ANALYSIS_SYSTEM.to_string()),
+            schema: serde_json::json!({
+                "type": "object",
+                "required": ["intent"],
+                "properties": {
+                    "intent": { "type": "string" }
+                }
+            }),
+            schema_name: "intent_classification".to_string(),
+            schema_description: Some("Task intent label".to_string()),
+            mode: StructuredMode::Auto,
+            max_repair_attempts: 1,
+        };
+        let result = generate_blocking(&**llm, &request)
+            .await
+            .context("LLM intent classification failed")?;
+        let intent = result
+            .object
+            .get("intent")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("GeneralPurpose");
+        Ok(parse_intent_style(intent))
+    }
+
     /// Perform pre-analysis in a single LLM call: intent classification, goal extraction,
     /// execution plan, and input optimization. Falls back to heuristics on failure.
     pub async fn pre_analyze(
@@ -237,15 +281,12 @@ impl LlmPlanner {
         prompt: &str,
         language: Option<&str>,
     ) -> Result<PreAnalysis> {
-        Self::pre_analyze_with_step_limit(
-            llm,
-            prompt,
-            language,
-            5,
-            crate::prompts::PRE_ANALYSIS_SYSTEM,
-            false,
-        )
-        .await
+        let full_system = format!(
+            "{}\n{}",
+            crate::prompts::PRE_ANALYSIS_SYSTEM.trim_end(),
+            crate::prompts::PRE_ANALYSIS_PLANNING_ADDENDUM
+        );
+        Self::pre_analyze_with_step_limit(llm, prompt, language, 5, &full_system, false).await
     }
 
     pub(crate) fn goal_pre_analysis_request(
@@ -372,13 +413,7 @@ impl LlmPlanner {
         parsed: PreAnalysisResponse,
         original_prompt: &str,
     ) -> Result<PreAnalysis> {
-        let intent = match parsed.intent.to_lowercase().as_str() {
-            "plan" => crate::prompts::AgentStyle::Plan,
-            "explore" => crate::prompts::AgentStyle::Explore,
-            "verification" => crate::prompts::AgentStyle::Verification,
-            "codereview" | "code review" => crate::prompts::AgentStyle::CodeReview,
-            _ => crate::prompts::AgentStyle::GeneralPurpose,
-        };
+        let intent = parse_intent_style(&parsed.intent);
 
         let goal_description = parsed.goal.description.clone();
         let goal =
@@ -924,5 +959,28 @@ mod tests {
             .await
             .unwrap();
         assert_eq!(pa.optimized_input, "opt");
+    }
+
+    #[tokio::test]
+    async fn test_classify_intent_accepts_compact_and_legacy_shapes() {
+        let compact: Arc<dyn LlmClient> = Arc::new(ReplayClient::new(vec![
+            r#"{"intent":"Explore"}"#.to_string(),
+        ]));
+        assert_eq!(
+            LlmPlanner::classify_intent(&compact, "find files")
+                .await
+                .unwrap(),
+            crate::prompts::AgentStyle::Explore
+        );
+
+        let legacy = r#"{"intent":"Plan","requires_planning":false,"goal":{"description":"g","success_criteria":[]},"execution_plan":{"complexity":"Simple","steps":[],"required_tools":[]},"optimized_input":"x"}"#;
+        let legacy_client: Arc<dyn LlmClient> =
+            Arc::new(ReplayClient::new(vec![legacy.to_string()]));
+        assert_eq!(
+            LlmPlanner::classify_intent(&legacy_client, "design module")
+                .await
+                .unwrap(),
+            crate::prompts::AgentStyle::Plan
+        );
     }
 }
