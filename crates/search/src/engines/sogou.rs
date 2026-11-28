@@ -1,7 +1,7 @@
 //! Sogou search engine implementation.
 
 use crate::html_engine::{
-    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
+    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchQuery, SearchResult};
 use scraper::Html;

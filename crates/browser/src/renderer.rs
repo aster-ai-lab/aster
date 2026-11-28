@@ -9,7 +9,7 @@ use sha2::{Digest, Sha256};
 use tracing::warn;
 use url::Url;
 
-use crate::pool::{BrowserPool, browser_error};
+use crate::pool::{browser_error, BrowserPool};
 use crate::{PageRenderer, RenderRequest, RenderedPage, WaitCondition};
 
 #[async_trait]

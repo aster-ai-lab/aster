@@ -1,7 +1,7 @@
 //! Browser provider lifecycle for Chrome and Lightpanda.
 
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::Arc;
 #[cfg(feature = "lightpanda")]
 use std::time::Duration;
 
@@ -10,8 +10,8 @@ use futures::StreamExt;
 use tokio::sync::{Mutex, Semaphore};
 use tracing::{debug, warn};
 
-pub use crate::cdp::LocalCdpEndpoint;
 pub(crate) use crate::cdp::browser_error;
+pub use crate::cdp::LocalCdpEndpoint;
 use aster_use_core::UseResult;
 
 /// Selects which headless browser backend the pool uses.

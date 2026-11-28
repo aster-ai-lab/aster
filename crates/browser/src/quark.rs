@@ -8,12 +8,12 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use serde::Deserialize;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use tokio::sync::Mutex;
-use tokio::time::{Instant, sleep};
+use tokio::time::{sleep, Instant};
 use tracing::warn;
 
-use crate::cdp::{CdpConnection, LocalCdpEndpoint, browser_error};
+use crate::cdp::{browser_error, CdpConnection, LocalCdpEndpoint};
 use crate::{UseError, UseResult};
 
 const QUARK_NEW_CONVERSATION: &str = "https://kbot.quark.cn/quarkchat";

@@ -3,7 +3,7 @@
 use anyhow::Result;
 use clap::ValueEnum;
 
-use aster_search::{SearchCascadeOutcomeV2, SearchResult, SearchResults, select_structural_window};
+use aster_search::{select_structural_window, SearchCascadeOutcomeV2, SearchResult, SearchResults};
 
 /// CLI output format.
 #[derive(Clone, Copy, ValueEnum, Debug)]

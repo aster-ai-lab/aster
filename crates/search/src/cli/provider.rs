@@ -6,8 +6,8 @@ use anyhow::Result;
 
 use aster_search::product::create_provider_engine as product_create_provider_engine;
 use aster_search::{
-    SearchConfig,
     providers::{BuiltinProvider, ProviderAuthentication, ProviderEngine, ProviderReadiness},
+    SearchConfig,
 };
 
 pub(crate) fn list_engines(config_path: Option<&Path>) -> Result<()> {

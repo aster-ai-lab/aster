@@ -5,7 +5,7 @@
 //! CSS classes. Unknown card shapes are skipped; unrelated pages fail closed.
 
 use crate::html_engine::{
-    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
+    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchQuery, SearchResult};
 use scraper::Html;
@@ -182,11 +182,9 @@ mod tests {
     #[test]
     fn validates_results_empty_state_and_parser_drift() {
         assert!(QuarkParser.validate(RESULTS).is_ok());
-        assert!(
-            QuarkParser
-                .validate(r#"<main id="results"></main>"#)
-                .is_ok()
-        );
+        assert!(QuarkParser
+            .validate(r#"<main id="results"></main>"#)
+            .is_ok());
         let error = QuarkParser
             .validate(r#"<html><body><main>home</main></body></html>"#)
             .unwrap_err();

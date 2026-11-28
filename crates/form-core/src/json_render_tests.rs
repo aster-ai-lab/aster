@@ -105,18 +105,14 @@ fn layout_and_select_refusals_identify_the_field_and_allowed_values() {
     stack["elements"]["root"]["type"] = json!("Stack");
     stack["elements"]["root"]["props"] = json!({"direction":"row", "gap":"md"});
     let error = parse_json_render(&stack.to_string()).err().unwrap();
-    assert!(
-        error
-            .to_string()
-            .contains("Stack.direction must be vertical or horizontal")
-    );
+    assert!(error
+        .to_string()
+        .contains("Stack.direction must be vertical or horizontal"));
     stack["elements"]["root"]["props"]["direction"] = json!("vertical");
     let error = parse_json_render(&stack.to_string()).err().unwrap();
-    assert!(
-        error
-            .to_string()
-            .contains("Stack.gap must be a number from 0 to 24")
-    );
+    assert!(error
+        .to_string()
+        .contains("Stack.gap must be a number from 0 to 24"));
     stack["elements"]["root"]["props"]["gap"] = json!(8);
     assert!(parse_json_render(&stack.to_string()).is_ok());
 
@@ -124,16 +120,12 @@ fn layout_and_select_refusals_identify_the_field_and_allowed_values() {
     select["elements"]["choice"]["props"]["options"] =
         json!([{"label": "Alpha", "value": "alpha"}]);
     let error = parse_json_render(&select.to_string()).err().unwrap();
-    assert!(
-        error
-            .to_string()
-            .contains("Select.options must be an array of 1 to 64 distinct nonempty strings")
-    );
+    assert!(error
+        .to_string()
+        .contains("Select.options must be an array of 1 to 64 distinct nonempty strings"));
     select["elements"]["choice"]["props"]["options"] = json!(["gamma"]);
     let error = parse_json_render(&select.to_string()).err().unwrap();
-    assert!(
-        error
-            .to_string()
-            .contains("Select state must match an option or be empty")
-    );
+    assert!(error
+        .to_string()
+        .contains("Select state must match an option or be empty"));
 }

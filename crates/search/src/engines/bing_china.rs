@@ -51,8 +51,8 @@ impl HtmlParser for BingChinaParser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Engine;
     use crate::fetcher_http::HttpFetcher;
+    use crate::Engine;
     use std::sync::Arc;
 
     fn make_bing_china() -> BingChina {

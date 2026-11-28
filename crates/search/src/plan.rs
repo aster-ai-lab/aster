@@ -8,8 +8,8 @@ use std::collections::HashSet;
 use std::fmt;
 use std::str::FromStr;
 
-use crate::SearchConfig;
 use crate::providers::BuiltinProvider;
+use crate::SearchConfig;
 
 #[cfg(feature = "headless")]
 const DEFAULT_HTTP_TIER: [&str; 3] = ["wiki", "ddg", "bing"];

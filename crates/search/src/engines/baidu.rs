@@ -4,7 +4,7 @@
 //! page relies on JavaScript rendering that plain HTTP requests cannot handle.
 
 use crate::html_engine::{
-    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
+    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchQuery, SearchResult};
 use scraper::Html;
@@ -103,8 +103,8 @@ impl HtmlParser for BaiduParser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Engine;
     use crate::fetcher_http::HttpFetcher;
+    use crate::Engine;
     use std::sync::Arc;
 
     fn make_baidu() -> Baidu {

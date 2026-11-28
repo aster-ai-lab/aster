@@ -13,10 +13,10 @@ use aster_search::{EngineTier, EngineTierPlan, SafeSearch, SearchQuery, TimeRang
 mod cli;
 
 use cli::cascade::{
-    CascadeRequest, CliEngineTier, DEFAULT_TIMEOUT_SECONDS, HeadlessBrowser, execute_cascade,
+    execute_cascade, CascadeRequest, CliEngineTier, HeadlessBrowser, DEFAULT_TIMEOUT_SECONDS,
 };
 use cli::circuit_state::PersistentCircuitState;
-use cli::output::{OutputFormat, print_cascade_results};
+use cli::output::{print_cascade_results, OutputFormat};
 use cli::provider::{list_engines, load_search_config};
 use cli::proxy::report_proxy_scope;
 
@@ -25,8 +25,8 @@ use cli::provider::create_provider_engine;
 
 #[cfg(test)]
 use aster_search::{
-    Engine, SearchResults,
     providers::{BuiltinProvider, ProviderAuthentication, ProviderReadiness},
+    Engine, SearchResults,
 };
 #[cfg(test)]
 use cli::output::{json_output, truncate_str};
@@ -298,9 +298,9 @@ struct SearchArgs {
 }
 
 #[cfg(test)]
-use aster_search::SearchConfig;
-#[cfg(test)]
 use aster_search::product::is_config_enabled;
+#[cfg(test)]
+use aster_search::SearchConfig;
 
 async fn run_search(args: SearchArgs) -> Result<()> {
     let config = load_search_config(args.config.as_deref())?;

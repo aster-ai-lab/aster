@@ -2,8 +2,8 @@
 
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 use aster_use_core::{Artifact, UseError, UseResult, UseSessionId};
 use chromiumoxide::Page;
@@ -11,9 +11,9 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock};
 use url::Url;
 
-use crate::WaitCondition;
-use crate::pool::{BrowserPool, browser_error};
+use crate::pool::{browser_error, BrowserPool};
 use crate::renderer::{apply_wait_condition, capture_screenshot};
+use crate::WaitCondition;
 
 const MAX_SNAPSHOT_TEXT_BYTES: usize = 50_000;
 const MAX_SNAPSHOT_ELEMENTS: usize = 1_000;

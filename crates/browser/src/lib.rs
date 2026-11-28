@@ -65,8 +65,8 @@ pub use cdp::LocalCdpEndpoint;
 pub use chrome::{detect_chrome, ensure_chrome};
 #[cfg(feature = "chrome")]
 pub use management::{
-    BrowserInstallSource, BrowserRuntimeStatus, ManagedBrowser, browser_status, browser_statuses,
-    install_browser, repair_browser, uninstall_managed_browsers, update_browser,
+    browser_status, browser_statuses, install_browser, repair_browser, uninstall_managed_browsers,
+    update_browser, BrowserInstallSource, BrowserRuntimeStatus, ManagedBrowser,
 };
 #[cfg(feature = "chrome")]
 pub use pool::{BrowserBackend, BrowserPool, BrowserPoolConfig, BrowserProvider};

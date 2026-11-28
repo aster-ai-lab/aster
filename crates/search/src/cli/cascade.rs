@@ -2,12 +2,12 @@
 
 use anyhow::Result;
 
-pub(crate) use aster_search::EngineTierPlan;
 pub(crate) use aster_search::product::DEFAULT_TIMEOUT_SECONDS;
 use aster_search::product::{
-    CascadeControls, CascadeRequest as ProductCascadeRequest,
-    HeadlessBrowser as ProductHeadlessBrowser, execute_cascade as execute_product_cascade,
+    execute_cascade as execute_product_cascade, CascadeControls,
+    CascadeRequest as ProductCascadeRequest, HeadlessBrowser as ProductHeadlessBrowser,
 };
+pub(crate) use aster_search::EngineTierPlan;
 
 mod plan;
 

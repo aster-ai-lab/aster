@@ -8,12 +8,12 @@
 use std::time::Duration;
 
 use base64::Engine as _;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use url::Url;
 
+use crate::cdp::{browser_error, validate_loopback_ws_url, CdpConnection, LocalCdpEndpoint};
 #[cfg(feature = "chrome")]
 use crate::BrowserPool;
-use crate::cdp::{CdpConnection, LocalCdpEndpoint, browser_error, validate_loopback_ws_url};
 #[cfg(feature = "chrome")]
 use crate::{RenderRequest, RenderedPage};
 use crate::{UseError, UseResult};

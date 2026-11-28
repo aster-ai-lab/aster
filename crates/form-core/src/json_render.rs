@@ -3,7 +3,7 @@
 use std::collections::{BTreeMap, HashSet};
 
 use serde::Deserialize;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 pub const MAX_JSON_RENDER_BYTES: usize = 65_536;
 
