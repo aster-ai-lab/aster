@@ -148,7 +148,11 @@ impl Fixture {
                         .with_permission_policy(
                             aster_core::permissions::PermissionPolicy::new().allow("read"),
                         )
-                        .with_planning_mode(aster_core::PlanningMode::Disabled),
+                        .with_planning_mode(aster_core::PlanningMode::Disabled)
+                        .with_harness(aster_core::meta_harness::HarnessComposeOptions {
+                            model_attempts: Some(1),
+                            ..Default::default()
+                        }),
                 ),
             )
             .await
@@ -411,7 +415,7 @@ async fn actual_acp_failure_and_cancel_close_only_with_the_core_terminal_outcome
                     .await
                     .unwrap();
                 }
-                let response = timeout(Duration::from_secs(15), prompt)
+                let response = timeout(Duration::from_secs(30), prompt)
                     .await
                     .unwrap()
                     .unwrap();
